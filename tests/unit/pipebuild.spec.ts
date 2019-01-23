@@ -1,11 +1,9 @@
-import { mongoToPipe } from '@/pipebuild';
+import { MongoStep, mongoToPipe } from '@/pipebuild';
 
 describe('Pipebuild translator', () => {
-  it('generate basic pipeline steps from mongo steps', () => {
-    const pipeline = mongoToPipe([{ $match: { name: 'bla' } }])
-    expect(pipeline.length).toBe(1);
-    expect(pipeline).toEqual([
-      { $match: { name: 'bla' }, translated: true }
-    ])
-  })
-})
+    it('generate match steps', () => {
+        const query: Array<MongoStep> = [{ $match: { domain: 'test_cube' } }];
+        const pipeline = mongoToPipe(query);
+        expect(pipeline).toEqual([{ step: 'Domain', query: { $match: { domain: 'test_cube' } } }]);
+    });
+});
