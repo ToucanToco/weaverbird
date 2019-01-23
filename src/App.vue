@@ -1,18 +1,24 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <Pipeline :steps="steps"/>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import Pipeline from './components/Pipeline.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
-  }
+    Pipeline
+  },
+  data: () => ({
+    steps: [
+      { name: 'filter', query: { $match: { my_column: 'Test' } } },
+      { name: 'rename', query: { $project: { my_column: 'Test' } } }
+    ]
+  })
 }
 </script>
 
