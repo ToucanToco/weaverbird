@@ -23,6 +23,7 @@ export interface PipelineStep {
  * properties.
  *
  * @param matchStep the match mongo step
+ * @returns the corresponding pipeline steps
  */
 function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
     const output: Array<PipelineStep> = [];
@@ -34,6 +35,38 @@ function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
     if (Object.keys(nodomain).length) {
         output.push({ step: 'Filter', query: { $match: nodomain } });
     }
+    return output;
+}
+
+/**
+ * Transform a mongo `$project` step into a list of pipeline steps.
+ *
+ * @param matchStep the match mongo step
+ * @returns the corresponding pipeline steps
+ */
+function transformProject(matchStep: MongoStep): Array<PipelineStep> {
+    const output: Array<PipelineStep> = [];
+    const needsRenaming = [];
+    const needsDeletion = [];
+    const needsCustom = [];
+    for (let [outcol, incol] of Object.entries(matchStep.$project)) {
+        if (typeof incol === 'string' && incol[0] === '$') {
+            // case { $project: { zone: '$Region' } }
+            needsRenaming.push({ step: 'Rename column', query: { $project: { [outcol]: incol } } });
+        } else if (typeof incol === 'number') {
+            if (incol === 0) {
+                // case { $project: { zone: 0 } }
+                needsDeletion.push({
+                    step: 'Delete column',
+                    query: { $project: { [outcol]: incol } },
+                });
+            } else {
+                // case { $project: { zone: 1 } }
+                needsCustom.push({ step: 'Custom step', query: { $project: { [outcol]: incol } } });
+            }
+        }
+    }
+    output.push(...needsRenaming, ...needsDeletion, ...needsCustom);
     return output;
 }
 
@@ -57,7 +90,14 @@ function transformFallback(step: MongoStep): Array<PipelineStep> {
 export function mongoToPipe(mongoSteps: Array<MongoStep>): Array<PipelineStep> {
     const listOfSteps: Array<PipelineStep> = [];
     for (const step of mongoSteps) {
-        const transformer = step.$match ? transformMatch : transformFallback;
+        let transformer;
+        if (step.$match !== undefined) {
+            transformer = transformMatch;
+        } else if (step.$project !== undefined) {
+            transformer = transformProject;
+        } else {
+            transformer = transformFallback;
+        }
         listOfSteps.push(...transformer(step));
     }
     return listOfSteps;
