@@ -1,9 +1,11 @@
 <template>
-  <ul>
-    <div v-for="(step, index) in steps" :key="index">
-        <Step :step="step" :isFirst="index === 0" :isLast="index === steps.length - 1"/>
-    </div>
-  </ul>
+  <div>
+    <Step v-for="(step, index) in steps" :key="index"
+          :isFirst="index === 0"
+          :isLast="index === steps.length - 1"
+          :step="step"
+    />
+  </div>
 </template>
 <script>
 import Step from './Step';
