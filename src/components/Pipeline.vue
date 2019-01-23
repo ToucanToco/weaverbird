@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="query-pipeline">
     <Step v-for="(step, index) in steps" :key="index"
           :isFirst="index === 0"
           :isLast="index === steps.length - 1"
@@ -20,4 +20,10 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped>
+
+  .query-pipeline {
+    height: 100%;
+  }
+
+</style>
