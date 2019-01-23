@@ -1,26 +1,20 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <Pipeline :steps="steps"/>
+    <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
   </div>
 </template>
 
-<script>
-import Pipeline from './components/Pipeline.vue'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import HelloWorld from './components/HelloWorld.vue';
 
-export default {
-  name: 'app',
+@Component({
   components: {
-    Pipeline
+    HelloWorld,
   },
-  data: () => ({
-    steps: [
-      { name: 'filter', query: { $match: { my_column: 'Test' } } },
-      { name: 'group', query: { $match: { my_column: 'Test' } } },
-      { name: 'rename', query: { $project: { my_column: 'Test' } } }
-    ]
-  })
-}
+})
+export default class App extends Vue {}
 </script>
 
 <style>
