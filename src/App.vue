@@ -16,6 +16,7 @@ export default {
   data: () => ({
     steps: [
       { name: 'filter', query: { $match: { my_column: 'Test' } } },
+      { name: 'group', query: { $match: { my_column: 'Test' } } },
       { name: 'rename', query: { $project: { my_column: 'Test' } } }
     ]
   })
