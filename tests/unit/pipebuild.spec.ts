@@ -1,4 +1,4 @@
-import { MongoStep, mongoToPipe } from '@/pipebuild';
+import { MongoStep, mongoToPipe, PipelineStep, pipeToMongo } from '@/pipebuild';
 
 describe('Pipebuild translator', () => {
     it('generate domain step', () => {
@@ -132,6 +132,50 @@ describe('Pipebuild translator', () => {
                     $group: { _id: '$Manager', Value: { $sum: '$Value' } },
                 },
             },
+        ]);
+    });
+});
+
+describe('Pipeline to mongo translator', () => {
+    it('can generate domain steps', () => {
+        const pipeline: Array<PipelineStep> = [{ step: 'domain', domain: 'test_cube' }];
+        const querySteps = pipeToMongo(pipeline);
+        expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
+    });
+
+    it('can generate match steps', () => {
+        const pipeline: Array<PipelineStep> = [
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'select', columns: ['Region'] },
+            { step: 'rename', oldname: 'Region', newname: 'zone' },
+            { step: 'delete', columns: ['Manager'] },
+            {
+                step: 'newcolumn',
+                column: 'id',
+                query: { $concat: ['$country', ' - ', '$Region'] },
+            },
+        ];
+        const querySteps = pipeToMongo(pipeline);
+        expect(querySteps).toEqual([
+            { $match: { domain: 'test_cube' } },
+            { $project: { Region: 1 } },
+            { $project: { zone: '$Region' } },
+            { $project: { Manager: 0 } },
+            { $project: { id: { $concat: ['$country', ' - ', '$Region'] } } },
+        ]);
+    });
+
+    it('can generate filter steps', () => {
+        const pipeline: Array<PipelineStep> = [
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'filter', column: 'Manager', value: 'Pierre' },
+            { step: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
+        ];
+        const querySteps = pipeToMongo(pipeline);
+        expect(querySteps).toEqual([
+            { $match: { domain: 'test_cube' } },
+            { $match: { Manager: 'Pierre' } },
+            { $match: { Region: 'Europe' } },
         ]);
     });
 });

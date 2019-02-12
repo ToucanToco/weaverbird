@@ -109,3 +109,52 @@ export function mongoToPipe(mongoSteps: Array<MongoStep>): Array<PipelineStep> {
     }
     return listOfSteps;
 }
+
+/**
+ * Transform a standard pipeline into a list of mongo steps.
+ *
+ * - 'domain' steps are transformed into `$match` statements,
+ * - 'select', 'rename', 'delete' and 'newcolumn' steps are transformed into
+ *   `$project` statements,
+ * - 'filter' steps are transformed into `match` statements.
+ *
+ * NOTE: there is no intelligence for now, an output mongo step is generated
+ * for each pipeline step, no merge is performed on output steps.
+ *
+ * @param pipeline the input pipeline
+ *
+ * @returns the list of corresponding mongo steps
+ */
+export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
+    const mongoSteps: Array<MongoStep> = [];
+    for (const step of pipeline) {
+        if (step.step === 'domain') {
+            mongoSteps.push({ $match: { domain: step.domain } });
+        } else if (step.step === 'select') {
+            const projection: { [propName: string]: number } = {};
+            for (const column of step.columns) {
+                projection[column] = 1;
+            }
+            mongoSteps.push({ $project: projection });
+        } else if (step.step === 'rename') {
+            mongoSteps.push({ $project: { [step.newname]: `$${step.oldname}` } });
+        } else if (step.step === 'delete') {
+            const projection: { [propName: string]: number } = {};
+            for (const column of step.columns) {
+                projection[column] = 0;
+            }
+            mongoSteps.push({ $project: projection });
+        } else if (step.step === 'filter') {
+            if (step.operator === undefined || step.operator === 'eq') {
+                mongoSteps.push({ $match: { [step.column]: step.value } });
+            } else {
+                throw new Error(`Operator ${step.operator} is not handled yet.`);
+            }
+        } else if (step.step === 'newcolumn') {
+            mongoSteps.push({ $project: { [step.column]: step.query } });
+        } else if (step.step === 'custom') {
+            mongoSteps.push(step.query);
+        }
+    }
+    return mongoSteps;
+}
