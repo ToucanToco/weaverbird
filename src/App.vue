@@ -16,9 +16,9 @@ export default {
   data: () => ({
     steps: [
       { name: 'domain', domain: 'cities_data' },
-      { name: 'filter', query: { $match: { my_column: 'Test' } } },
-      { name: 'group', query: { $match: { my_column: 'Test' } } },
-      { name: 'rename', query: { $project: { my_column: 'Test' } } }
+      // { name: 'filter', query: { $match: { my_column: 'Test' } } },
+      // { name: 'group', query: { $match: { my_column: 'Test' } } },
+      // { name: 'rename', query: { $project: { my_column: 'Test' } } }
     ],
     domainsList: [
       'horizontal_barchart',

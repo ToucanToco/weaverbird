@@ -42,10 +42,11 @@ export default {
     justify-content: flex-start;
     align-items: center;
     padding-bottom: 20px;
+    width: 100%;
   }
 
   .domain-selector__label {
-    color: rgb(71, 71, 71);
+    color: rgb(154, 154, 154);
     font-weight: 600;
     font-size: 12px;
     margin-right: 10px;
@@ -66,7 +67,7 @@ export default {
     appearance: none;
 
     color: rgb(154, 154, 154);
-    font-weight: bold;
+    font-weight: 600;
     font-size: 15px;
 
     width: 110%;

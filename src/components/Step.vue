@@ -77,11 +77,12 @@ export default {
     flex-direction: row;
     align-items: center;
     height: 70px;
+    width: 100%;
   }
 
   .query-pipeline-queue {
     position: relative;
-    width: 50px;
+    margin-right: 20px;
     height: 100%;
     flex-direction: column;
     display: flex;
