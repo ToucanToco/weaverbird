@@ -4,7 +4,7 @@ describe('Pipebuild translator', () => {
     it('generate domain step', () => {
         const query: Array<MongoStep> = [{ $match: { domain: 'test_cube' } }];
         const pipeline = mongoToPipe(query);
-        expect(pipeline).toEqual([{ step: 'Domain', query: { $match: { domain: 'test_cube' } } }]);
+        expect(pipeline).toEqual([{ step: 'domain', domain: 'test_cube' }]);
     });
 
     it('generate domain and filter steps from one match', () => {
@@ -13,8 +13,9 @@ describe('Pipebuild translator', () => {
         ];
         const pipeline = mongoToPipe(query);
         expect(pipeline).toEqual([
-            { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-            { step: 'Filter', query: { $match: { Region: 'Europe', Manager: 'Pierre' } } },
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'filter', column: 'Manager', value: 'Pierre' },
+            { step: 'filter', column: 'Region', value: 'Europe' },
         ]);
     });
 
@@ -25,8 +26,8 @@ describe('Pipebuild translator', () => {
         ];
         const pipeline = mongoToPipe(query);
         expect(pipeline).toEqual([
-            { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-            { step: 'Filter', query: { $match: { Region: 'Europe' } } },
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'filter', column: 'Region', value: 'Europe' },
         ]);
     });
 
@@ -37,8 +38,9 @@ describe('Pipebuild translator', () => {
         ];
         const pipeline = mongoToPipe(query);
         expect(pipeline).toEqual([
-            { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-            { step: 'Filter', query: { $match: { Region: 'Europe', Manager: 'Pierre' } } },
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'filter', column: 'Manager', value: 'Pierre' },
+            { step: 'filter', column: 'Region', value: 'Europe' },
         ]);
     });
 
@@ -49,8 +51,20 @@ describe('Pipebuild translator', () => {
         ];
         const pipeline = mongoToPipe(query);
         expect(pipeline).toEqual([
-            { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-            { step: 'Rename column', query: { $project: { zone: '$Region' } } },
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'rename', oldname: 'Region', newname: 'zone' },
+        ]);
+    });
+
+    it('generate domain and be clever if key and column are the same', () => {
+        const query: Array<MongoStep> = [
+            { $match: { domain: 'test_cube' } },
+            { $project: { Region: '$Region' } },
+        ];
+        const pipeline = mongoToPipe(query);
+        expect(pipeline).toEqual([
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'select', columns: ['Region'] },
         ]);
     });
 
@@ -61,8 +75,8 @@ describe('Pipebuild translator', () => {
         ];
         const pipeline = mongoToPipe(query);
         expect(pipeline).toEqual([
-            { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-            { step: 'Delete column', query: { $project: { Manager: 0 } } },
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'delete', columns: ['Manager'] },
         ]);
     });
 
@@ -73,21 +87,29 @@ describe('Pipebuild translator', () => {
         ];
         const pipeline = mongoToPipe(query);
         expect(pipeline).toEqual([
-            { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-            { step: 'Custom step', query: { $project: { Manager: 1 } } },
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'select', columns: ['Manager'] },
         ]);
     });
 
-    // it('generate domain and custom steps from heterogeneous project', () => {
+    // it('generate steps from heterogeneous project', () => {
     //     const query: Array<MongoStep> = [
     //         { $match: { domain: 'test_cube' } },
-    //         { $project: { zone: '$Region', Manager: 0 } },
+    //         {
+    //             $project: {
+    //                 zone: '$Region',
+    //                 Region: '$Region',
+    //                 Manager: 0,
+    //                 id: { $concat: ['$country', ' - ', '$Region'] },
+    //             },
+    //         },
     //     ];
     //     const pipeline = mongoToPipe(query);
     //     expect(pipeline).toEqual([
-    //         { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-    //         { step: 'Custom step', query: { $project: { zone: '$Region',
-    //         Manager: 0 } } },
+    //         { step: 'domain', domain: 'test_cube' },
+    //         { step: 'select', columns: ['Region'] },
+    //         { step: 'rename', oldname: 'Region', newname: 'zone' },
+    //         { step: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
     //     ]);
     // });
 

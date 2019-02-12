@@ -28,12 +28,12 @@ export interface PipelineStep {
 function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
     const output: Array<PipelineStep> = [];
     if (matchStep.$match.domain !== undefined) {
-        output.push({ step: 'Domain', query: { $match: { domain: matchStep.$match.domain } } });
+        output.push({ step: 'domain', domain: matchStep.$match.domain });
     }
-    const nodomain = { ...matchStep.$match };
-    delete nodomain.domain;
-    if (Object.keys(nodomain).length) {
-        output.push({ step: 'Filter', query: { $match: nodomain } });
+    for (const column of Object.keys(matchStep.$match).sort()) {
+        if (column !== 'domain') {
+            output.push({ step: 'filter', column, value: matchStep.$match[column] });
+        }
     }
     return output;
 }
@@ -48,25 +48,29 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
     const output: Array<PipelineStep> = [];
     const needsRenaming = [];
     const needsDeletion = [];
-    const needsCustom = [];
+    const select = [];
     for (let [outcol, incol] of Object.entries(matchStep.$project)) {
-        if (typeof incol === 'string' && incol[0] === '$') {
-            // case { $project: { zone: '$Region' } }
-            needsRenaming.push({ step: 'Rename column', query: { $project: { [outcol]: incol } } });
+        if (typeof incol === 'string') {
+            if (incol[0] === '$' && incol.slice(1) !== outcol) {
+                // case { $project: { zone: '$Region' } }
+                needsRenaming.push({ step: 'rename', oldname: incol.slice(1), newname: outcol });
+            } else if (incol.slice(1) === outcol) {
+                select.push(outcol);
+            }
         } else if (typeof incol === 'number') {
             if (incol === 0) {
                 // case { $project: { zone: 0 } }
-                needsDeletion.push({
-                    step: 'Delete column',
-                    query: { $project: { [outcol]: incol } },
-                });
+                needsDeletion.push({ step: 'delete', columns: [outcol] });
             } else {
                 // case { $project: { zone: 1 } }
-                needsCustom.push({ step: 'Custom step', query: { $project: { [outcol]: incol } } });
+                select.push(outcol);
             }
         }
     }
-    output.push(...needsRenaming, ...needsDeletion, ...needsCustom);
+    if (select.length) {
+        output.push({ step: 'select', columns: select });
+    }
+    output.push(...needsRenaming, ...needsDeletion);
     return output;
 }
 
