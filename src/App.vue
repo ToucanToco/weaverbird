@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <Pipeline :steps="steps"/>
+    <Pipeline :steps="steps" :domains-list="domainsList"/>
   </div>
 </template>
 
@@ -15,9 +15,15 @@ export default {
   },
   data: () => ({
     steps: [
+      { name: 'domain', domain: 'cities_data' },
       { name: 'filter', query: { $match: { my_column: 'Test' } } },
       { name: 'group', query: { $match: { my_column: 'Test' } } },
       { name: 'rename', query: { $project: { my_column: 'Test' } } }
+    ],
+    domainsList: [
+      'horizontal_barchart',
+      'bubble_chart',
+      'cities_data'
     ]
   })
 }

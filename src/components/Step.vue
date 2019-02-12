@@ -57,7 +57,7 @@ export default {
   },
   methods: {
     select() {
-      this.$emit('selected');
+      this.$emit('selectedStep');
     }
   }
 }
