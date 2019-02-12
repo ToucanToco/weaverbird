@@ -15,7 +15,7 @@
     "vue-property-decorator": "^7.0.0"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-free": "^5.7.1",
+    "@fortawesome/fontawesome-free": "^5.7.2",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
