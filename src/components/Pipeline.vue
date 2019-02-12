@@ -1,9 +1,11 @@
 <template>
   <div class="query-pipeline">
     <Step v-for="(step, index) in steps" :key="index"
+          :isActive="isSelected(index)"
           :isFirst="index === 0"
           :isLast="index === steps.length - 1"
           :step="step"
+          @selected="selectStep(index)"
     />
   </div>
 </template>
@@ -17,6 +19,19 @@ export default {
   },
   props: {
     steps: Array
+  },
+  data() {
+    return {
+      selectedStep: this.steps.length - 1
+    }
+  },
+  methods: {
+    isSelected(index) {
+      return this.selectedStep === index;
+    },
+    selectStep(index) {
+      this.selectedStep = index;
+    }
   },
 }
 </script>

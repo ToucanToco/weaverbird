@@ -2,7 +2,9 @@
   <div class="query-pipeline-step__container">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass"></div>
-      <div class="query-pipeline-queue__dot"></div>
+      <div :class="classDot" @click="select()">
+        <div :class="classDotInk"></div>
+      </div>
       <div :class="lastStrokeClass"></div>
     </div>
     <div class="query-pipeline-step">
@@ -22,11 +24,24 @@
 export default {
   name: 'step',
   props: {
-    step: Object,
     isFirst: Boolean,
     isLast: Boolean,
+    isActive: Boolean,
+    step: Object,
   },
   computed: {
+    classDot() {
+      return {
+        'query-pipeline-queue__dot': true,
+        'query-pipeline-queue__dot--active': this.isActive,
+      }
+    },
+    classDotInk() {
+      return {
+        'query-pipeline-queue__dot-ink': true,
+        'query-pipeline-queue__dot-ink--active': this.isActive,
+      }
+    },
     firstStrokeClass() {
       return {
         'query-pipeline-queue__stroke': true,
@@ -38,11 +53,25 @@ export default {
         'query-pipeline-queue__stroke': true,
         'query-pipeline-queue__stroke--hidden': this.isLast,
       }
+    },
+  },
+  methods: {
+    select() {
+      this.$emit('selected');
     }
   }
 }
 </script>
 <style scoped>
+  @keyframes scaler {
+    0% {
+        transform: scale(0);
+    }
+    100% {
+        transform: scale(1);
+    }
+  }
+
   .query-pipeline-step__container {
     display: flex;
     flex-direction: row;
@@ -61,16 +90,39 @@ export default {
   }
 
   .query-pipeline-queue__dot {
-    background-color: rgb(71, 71, 71);
+    background-color:rgb(245, 245, 245);
     width: 20px;
     height: 20px;
     border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transform: scale(1);
+    transition: transform 0.2s;
   }
+
+  .query-pipeline-queue__dot--active {
+    background-color: rgba(38, 101, 163, .1);
+    animation: scaler .3s;
+  }
+
+  .query-pipeline-queue__dot-ink {
+    background-color: rgb(154, 154, 154);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .query-pipeline-queue__dot-ink--active {
+    background-color: #2665a3;
+  }
+
   .query-pipeline-queue__stroke {
     width: 2px;
     flex-grow: 1;
     justify-self: end;
-    background-color: rgb(71, 71, 71);
+    background-color:rgb(245, 245, 245);
   }
 
   .query-pipeline-queue__stroke--hidden {
@@ -91,7 +143,7 @@ export default {
   .query-pipeline-step__name {
     font-weight: bold;
     text-transform: capitalize;
-    color: rgb(71, 71, 71);
+    color: rgb(154, 154, 154);
   }
 
   .query-pipeline-step__actions {
