@@ -158,10 +158,14 @@ describe('Pipeline to mongo translator', () => {
         const querySteps = pipeToMongo(pipeline);
         expect(querySteps).toEqual([
             { $match: { domain: 'test_cube' } },
-            { $project: { Region: 1 } },
-            { $project: { zone: '$Region' } },
-            { $project: { Manager: 0 } },
-            { $project: { id: { $concat: ['$country', ' - ', '$Region'] } } },
+            {
+                $project: {
+                    Region: 1,
+                    zone: '$Region',
+                    Manager: 0,
+                    id: { $concat: ['$country', ' - ', '$Region'] },
+                },
+            },
         ]);
     });
 
@@ -173,9 +177,37 @@ describe('Pipeline to mongo translator', () => {
         ];
         const querySteps = pipeToMongo(pipeline);
         expect(querySteps).toEqual([
-            { $match: { domain: 'test_cube' } },
-            { $match: { Manager: 'Pierre' } },
-            { $match: { Region: 'Europe' } },
+            { $match: { domain: 'test_cube', Manager: 'Pierre', Region: 'Europe' } },
+        ]);
+    });
+
+    it('can simplify complex queries', () => {
+        const pipeline: Array<PipelineStep> = [
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'filter', column: 'Manager', value: 'Pierre' },
+            { step: 'select', columns: ['Region'] },
+            { step: 'rename', oldname: 'Region', newname: 'zone' },
+            { step: 'delete', columns: ['Manager'] },
+            { step: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
+            {
+                step: 'custom',
+                query: { $group: { _id: '$country', population: { $sum: '$population' } } },
+            },
+        ];
+        const querySteps = pipeToMongo(pipeline);
+        expect(querySteps).toEqual([
+            { $match: { domain: 'test_cube', Manager: 'Pierre' } },
+            {
+                $project: {
+                    Region: 1,
+                    zone: '$Region',
+                    Manager: 0,
+                    id: { $concat: ['$country', ' - ', '$Region'] },
+                },
+            },
+            {
+                $group: { _id: '$country', population: { $sum: '$population' } },
+            },
         ]);
     });
 });

@@ -118,9 +118,6 @@ export function mongoToPipe(mongoSteps: Array<MongoStep>): Array<PipelineStep> {
  *   `$project` statements,
  * - 'filter' steps are transformed into `match` statements.
  *
- * NOTE: there is no intelligence for now, an output mongo step is generated
- * for each pipeline step, no merge is performed on output steps.
- *
  * @param pipeline the input pipeline
  *
  * @returns the list of corresponding mongo steps
@@ -156,5 +153,36 @@ export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
             mongoSteps.push(step.query);
         }
     }
-    return mongoSteps;
+    return simplifyMongoPipeline(mongoSteps);
+}
+
+/**
+ * Simplify a list of mongo steps (i.e. merge them whenever possible)
+ *
+ * - if multiple `$match` steps are chained, merge them,
+ * - if multiple `$project` steps are chained, merge them.
+ *
+ * @param mongoSteps the input pipeline
+ *
+ * @returns the list of simplified mongo steps
+ */
+function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
+    const outputSteps: Array<MongoStep> = [];
+    let lastStep: MongoStep = mongoSteps[0];
+    outputSteps.push(lastStep);
+
+    for (const step of mongoSteps.slice(1)) {
+        if (step.$project !== undefined && lastStep.$project !== undefined) {
+            // merge $project steps together
+            lastStep.$project = { ...lastStep.$project, ...step.$project };
+            continue;
+        } else if (step.$match !== undefined && lastStep.$match !== undefined) {
+            // merge $match steps together
+            lastStep.$match = { ...lastStep.$match, ...step.$match };
+            continue;
+        }
+        lastStep = step;
+        outputSteps.push(lastStep);
+    }
+    return outputSteps;
 }
