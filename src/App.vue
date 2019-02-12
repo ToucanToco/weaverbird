@@ -5,13 +5,13 @@
   </div>
 </template>
 
-<script>
-import Pipeline from './components/Pipeline.vue'
+<script lang="ts">
+import { Component, Vue } from 'vue-property-decorator';
+import Pipeline from './components/Pipeline.vue';
 
-export default {
-  name: 'app',
+@Component({
   components: {
-    Pipeline
+    Pipeline,
   },
   data: () => ({
     steps: [
@@ -25,8 +25,9 @@ export default {
       'bubble_chart',
       'cities_data'
     ]
-  })
-}
+  }),
+})
+export default class App extends Vue {}
 </script>
 
 <style>

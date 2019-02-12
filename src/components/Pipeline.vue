@@ -18,8 +18,8 @@
 </template>
 <script>
 import _ from 'lodash';
-import DomainSelector from './DomainSelector'
-import Step from './Step';
+import DomainSelector from './DomainSelector.vue'
+import Step from './Step.vue';
 
 export default {
   name: 'pipeline',
