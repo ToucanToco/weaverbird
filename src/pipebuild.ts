@@ -48,6 +48,7 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
     const output: Array<PipelineStep> = [];
     const needsRenaming = [];
     const needsDeletion = [];
+    const computedColumns = [];
     const select = [];
     for (let [outcol, incol] of Object.entries(matchStep.$project)) {
         if (typeof incol === 'string') {
@@ -65,20 +66,22 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
                 // case { $project: { zone: 1 } }
                 select.push(outcol);
             }
+        } else if (typeof incol === 'object') {
+            computedColumns.push({ step: 'newcolumn', column: outcol, query: incol });
         }
     }
     if (select.length) {
         output.push({ step: 'select', columns: select });
     }
-    output.push(...needsRenaming, ...needsDeletion);
+    output.push(...needsRenaming, ...needsDeletion, ...computedColumns);
     return output;
 }
 
 function transformFallback(step: MongoStep): Array<PipelineStep> {
     return [
         {
-            step: 'Fallback',
-            input: step,
+            step: 'custom',
+            query: step,
         },
     ];
 }

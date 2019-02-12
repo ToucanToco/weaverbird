@@ -92,40 +92,46 @@ describe('Pipebuild translator', () => {
         ]);
     });
 
-    // it('generate steps from heterogeneous project', () => {
-    //     const query: Array<MongoStep> = [
-    //         { $match: { domain: 'test_cube' } },
-    //         {
-    //             $project: {
-    //                 zone: '$Region',
-    //                 Region: '$Region',
-    //                 Manager: 0,
-    //                 id: { $concat: ['$country', ' - ', '$Region'] },
-    //             },
-    //         },
-    //     ];
-    //     const pipeline = mongoToPipe(query);
-    //     expect(pipeline).toEqual([
-    //         { step: 'domain', domain: 'test_cube' },
-    //         { step: 'select', columns: ['Region'] },
-    //         { step: 'rename', oldname: 'Region', newname: 'zone' },
-    //         { step: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
-    //     ]);
-    // });
+    it('generate steps from heterogeneous project', () => {
+        const query: Array<MongoStep> = [
+            { $match: { domain: 'test_cube' } },
+            {
+                $project: {
+                    zone: '$Region',
+                    Region: '$Region',
+                    Manager: 0,
+                    id: { $concat: ['$country', ' - ', '$Region'] },
+                },
+            },
+        ];
+        const pipeline = mongoToPipe(query);
+        expect(pipeline).toEqual([
+            { step: 'domain', domain: 'test_cube' },
+            { step: 'select', columns: ['Region'] },
+            { step: 'rename', oldname: 'Region', newname: 'zone' },
+            { step: 'delete', columns: ['Manager'] },
+            {
+                step: 'newcolumn',
+                column: 'id',
+                query: { $concat: ['$country', ' - ', '$Region'] },
+            },
+        ]);
+    });
 
-    // it('generate domain and custom steps from unknown operator', () => {
-    //     const query: Array<MongoStep> = [
-    //         { $match: { domain: 'test_cube' } },
-    //         { $group: { _id: '$Manager', Value: { $sum: '$Value' } } },
-    //     ];
-    //     const pipeline = mongoToPipe(query);
-    //     expect(pipeline).toEqual([
-    //         { step: 'Domain', query: { $match: { domain: 'test_cube' } } },
-    //         {
-    //             step: 'Custom step',
-    //             query: { $group: { _id: '$Manager', Value: { $sum: '$Value' } }
-    //             },
-    //         },
-    //     ]);
-    // });
+    it('generate domain and custom steps from unknown operator', () => {
+        const query: Array<MongoStep> = [
+            { $match: { domain: 'test_cube' } },
+            { $group: { _id: '$Manager', Value: { $sum: '$Value' } } },
+        ];
+        const pipeline = mongoToPipe(query);
+        expect(pipeline).toEqual([
+            { step: 'domain', domain: 'test_cube' },
+            {
+                step: 'custom',
+                query: {
+                    $group: { _id: '$Manager', Value: { $sum: '$Value' } },
+                },
+            },
+        ]);
+    });
 });
