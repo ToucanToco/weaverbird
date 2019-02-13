@@ -18,14 +18,14 @@
 </template>
 <script>
 import _ from 'lodash';
-import DomainSelector from './DomainSelector.vue'
+import DomainSelector from './DomainSelector.vue';
 import Step from './Step.vue';
 
 export default {
   name: 'pipeline',
   components: {
     DomainSelector,
-    Step
+    Step,
   },
   props: {
     steps: Array,
@@ -33,8 +33,8 @@ export default {
   },
   data() {
     return {
-      selectedStep: this.steps.length - 2
-    }
+      selectedStep: this.steps.length - 2,
+    };
   },
   computed: {
     isEmpty() {
@@ -58,35 +58,33 @@ export default {
       return newDomain; // Emit an event
     },
   },
-}
+};
 </script>
 <style scoped>
+.query-pipeline {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 
-  .query-pipeline {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+.query-pipeline__empty-container {
+  width: 60%;
+}
 
-  .query-pipeline__empty-container {
-    width: 60%;
-  }
+.query-pipeline__empty-message {
+  font-size: 24px;
+  color: rgb(154, 154, 154);
+  margin-top: 120px;
+  margin-bottom: 170px;
+}
 
-  .query-pipeline__empty-message {
-    font-size: 24px;
-    color: rgb(154, 154, 154);
-    margin-top: 120px;
-    margin-bottom: 170px;
-  }
+.fa-code {
+  color: rgba(239, 239, 239);
+}
 
-  .fa-code {
-    color: rgba(239, 239, 239);
-  }
-
-  .fa-magic {
-    color: rgba(239, 239, 239);
-    font-size: 64px;
-  }
-
+.fa-magic {
+  color: rgba(239, 239, 239);
+  font-size: 64px;
+}
 </style>
