@@ -1,8 +1,4 @@
-import Vue from 'vue';
-import App from './App.vue';
+export { mongoToPipe, pipeToMongo } from './pipebuild';
+import Pipeline from './components/Pipeline.vue';
 
-Vue.config.productionTip = false;
-
-new Vue({
-  render: h => h(App),
-}).$mount('#app');
+export { Pipeline };
