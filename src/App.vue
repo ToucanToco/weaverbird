@@ -12,22 +12,25 @@ import Pipeline from './components/Pipeline.vue';
 @Component({
   components: {
     Pipeline,
-  },
-  data: () => ({
-    steps: [
-      { name: 'domain', domain: 'cities_data' },
-      // { name: 'filter', query: { $match: { my_column: 'Test' } } },
-      // { name: 'group', query: { $match: { my_column: 'Test' } } },
-      // { name: 'rename', query: { $project: { my_column: 'Test' } } }
-    ],
-    domainsList: [
-      'horizontal_barchart',
-      'bubble_chart',
-      'cities_data'
-    ]
-  }),
+  }
 })
-export default class App extends Vue {}
+export default class App extends Vue {
+  steps = [
+      { step: 'domain', domain: 'cities_data' },
+      { step: 'filter', query: { $match: { my_column: 'Test' } } },
+      { step: 'group', query: { $match: { my_column: 'Test' } } },
+      { step: 'rename', query: { $project: { my_column: 'Test' } } }
+  ];
+  domainsList = [
+    'horizontal_barchart',
+    'bubble_chart',
+    'cities_data'
+  ];
+
+  setSteps(pipeline:Array<any>) {
+    this.steps = pipeline;
+  }
+}
 </script>
 
 <style>
