@@ -83,10 +83,18 @@ export default {
       // We emit the active pipeline with the step 0 (select domain) to the parent
       this.$emit('selectedPipeline', pipeline.concat(this.stepDomain, this.activePipeline));
     },
+    resetSelectedStep() {
+      this.selectedStep = -1;
+    },
     updateDomain(newDomain) {
       return newDomain; // Emit an event
     },
   },
+  watch: {
+    steps() {
+      this.resetSelectedStep();
+    }
+  }
 };
 </script>
 <style scoped>
