@@ -41,7 +41,9 @@ export default {
   },
   data() {
     return {
-      selectedStep: this.steps.length - 2,
+      selectedStep: -1,
+      activePipeline: [],
+      disabledPipeline: [],
     };
   },
   computed: {
@@ -61,7 +63,7 @@ export default {
       return this.steps[0];
     },
     stepsWithoutDomain() {
-      return this.steps.slice(1);
+      return this.steps.slice(1).concat(this.disabledPipeline);
     },
   },
   methods: {
@@ -71,11 +73,17 @@ export default {
       }
       return index > this.selectedStep;
     },
-    isStepSelected(index) {
-      return this.selectedStep === index;
-    },
     selectStep(index) {
+      let pipeline = [];
       this.selectedStep = index;
+
+      this.activePipeline = this.stepsWithoutDomain.slice(0, this.selectedStep + 1);
+
+      // Separate steps that are after the selected one to keep in memory
+      this.disabledPipeline = this.stepsWithoutDomain.slice(this.selectedStep + 1, this.stepsWithoutDomain.length);
+
+      // We emit the active pipeline with the step 0 (select domain) to the parent
+      this.$emit('selectedPipeline', pipeline.concat(this.stepDomain, this.activePipeline));
     },
     updateDomain(newDomain) {
       return newDomain; // Emit an event
