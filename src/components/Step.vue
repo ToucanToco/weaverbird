@@ -7,8 +7,8 @@
       </div>
       <div :class="lastStrokeClass"></div>
     </div>
-    <div class="query-pipeline-step">
-      <span class="query-pipeline-step__name">{{ step.name }}</span>
+    <div class="classStep">
+      <span class="query-pipeline-step__name">{{ step.step }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
           <i class="fas fa-cog"></i>
@@ -26,7 +26,14 @@ export default {
   props: {
     isFirst: Boolean,
     isLast: Boolean,
-    isActive: Boolean,
+    isActive: {
+      type: Boolean,
+      default: false
+    },
+    isDisabled: {
+      type: Boolean,
+      default: false,
+    },
     step: Object,
   },
   computed: {
@@ -34,13 +41,21 @@ export default {
       return {
         'query-pipeline-queue__dot': true,
         'query-pipeline-queue__dot--active': this.isActive,
+        'query-pipeline-queue__dot--disabled': this.isDisabled,
       };
     },
     classDotInk() {
       return {
         'query-pipeline-queue__dot-ink': true,
         'query-pipeline-queue__dot-ink--active': this.isActive,
+        'query-pipeline-queue__dot-ink--disabled': this.isDisabled,
       };
+    },
+    classStep() {
+      return {
+        'query-pipeline-step': true,
+        'query-pipeline-step--disabled': this.isDisabled,
+      }
     },
     firstStrokeClass() {
       return {
@@ -106,6 +121,12 @@ export default {
 .query-pipeline-queue__dot--active {
   background-color: rgba(38, 101, 163, 0.1);
   animation: scaler 0.3s;
+}
+
+.query-pipeline-queue__dot--disabled,
+.query-pipeline-queue__dot-ink--disabled,
+.query-pipeline-step--disabled {
+  opacity: .5;
 }
 
 .query-pipeline-queue__dot-ink {
