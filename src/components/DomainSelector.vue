@@ -74,9 +74,8 @@ export default {
   outline: none;
   border: 0;
   margin: 0;
-  padding: 0.75em;
+  padding-left: 12px;
   border-radius: 0;
-
   overflow: hidden;
   text-overflow: ellipsis;
 }
