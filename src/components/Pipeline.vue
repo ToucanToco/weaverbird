@@ -16,9 +16,10 @@
       v-else
       v-for="(step, index) in stepsWithoutDomain"
       :key="index"
-      :isActive="isStepSelected(index)"
-      :isFirst="index === 0"
-      :isLast="index === stepsWithoutDomain.length - 1"
+      :is-active="isActive[index]"
+      :is-disabled="isDisabled(index)"
+      :is-first="index === 0"
+      :is-last="index === stepsWithoutDomain.length - 1"
       :step="step"
       @selectedStep="selectStep(index)"
     />
@@ -44,6 +45,15 @@ export default {
     };
   },
   computed: {
+    isActive() {
+      let selectedIndex = this.selectedStep;
+      if (selectedIndex < 0) {
+        selectedIndex = this.stepsWithoutDomain.length -1;
+      }
+      return this.stepsWithoutDomain.map((step, index) => {
+        return index === selectedIndex;
+      });
+    },
     isEmpty() {
       return this.stepsWithoutDomain.length === 0;
     },
@@ -55,6 +65,12 @@ export default {
     },
   },
   methods: {
+    isDisabled(index) {
+      if (this.selectedStep < 0) {
+        return false;
+      }
+      return index > this.selectedStep;
+    },
     isStepSelected(index) {
       return this.selectedStep === index;
     },
