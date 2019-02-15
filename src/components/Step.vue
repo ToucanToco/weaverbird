@@ -193,7 +193,4 @@ export default {
   color: rgb(71, 71, 71);
 }
 
-/* .query-pipeline-step--active {
-
-  } */
 </style>
