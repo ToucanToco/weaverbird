@@ -2,7 +2,7 @@
   <div class="query-pipeline">
     <DomainSelector
       :domains-list="domainsList"
-      :selected-domain="selectedDomain"
+      :selected-domain="stepDomain.domain"
       @selectedDomain="updateDomain"
     />
     <div v-if="isEmpty" class="query-pipeline__empty-container">
@@ -47,8 +47,8 @@ export default {
     isEmpty() {
       return this.stepsWithoutDomain.length === 0;
     },
-    selectedDomain() {
-      return this.steps[0].domain;
+    stepDomain() {
+      return this.steps[0];
     },
     stepsWithoutDomain() {
       return this.steps.slice(1);
