@@ -6,9 +6,8 @@
       @selectedDomain="updateDomain"
     />
     <div v-if="isEmpty" class="query-pipeline__empty-container">
-      <div
-          class="query-pipeline__empty-message"
-      >Start playing with data right from the table opposite or switch to Code View with
+      <div class="query-pipeline__empty-message">
+          Start playing with data right from the table opposite or switch to Code View with
           <i class="fas fa-code"></i> !
       </div>
       <i class="fas fa-magic"></i>
@@ -78,6 +77,10 @@ export default {
 
 .query-pipeline__empty-container {
   width: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-weight: lighter;
 }
 
 .query-pipeline__empty-message {
@@ -85,6 +88,7 @@ export default {
   color: rgb(154, 154, 154);
   margin-top: 120px;
   margin-bottom: 170px;
+  text-align: center;
 }
 
 .fa-code {
