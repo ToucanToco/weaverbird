@@ -17,12 +17,14 @@ describe('Pipeline.vue', () => {
     expect(step1).toEqual({
       step: { name: 'rename' },
       isActive: false,
+      isDisabled: false,
       isFirst: true,
       isLast: false,
     });
     expect(step2).toEqual({
       step: { name: 'group' },
       isActive: true,
+      isDisabled: false,
       isFirst: false,
       isLast: true,
     });
