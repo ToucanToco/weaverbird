@@ -1,3 +1,5 @@
+[![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/vue-query-builder.svg)](https://circleci.com/gh/ToucanToco/vue-query-builder)
+
 # vue-query-builder
 
 ## Project setup
