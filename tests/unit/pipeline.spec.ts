@@ -20,6 +20,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: true,
       isLast: false,
+      isDisabled: false,
     });
     expect(step2).toEqual({
       step: { name: 'group' },
@@ -27,6 +28,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: false,
       isLast: true,
+      isDisabled: false,
     });
   });
 });
