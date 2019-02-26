@@ -16,10 +16,10 @@ import Pipeline from './components/Pipeline.vue';
 })
 export default class App extends Vue {
   steps = [
-      { step: 'domain', domain: 'cities_data' },
-      { step: 'filter', query: { $match: { my_column: 'Test' } } },
-      { step: 'group', query: { $match: { my_column: 'Test' } } },
-      { step: 'rename', query: { $project: { my_column: 'Test' } } }
+      { name: 'domain', domain: 'cities_data' },
+      { name: 'filter', query: { $match: { my_column: 'Test' } } },
+      { name: 'group', query: { $match: { my_column: 'Test' } } },
+      { name: 'rename', query: { $project: { my_column: 'Test' } } }
   ];
   domainsList = [
     'horizontal_barchart',

@@ -6,7 +6,7 @@ This step is meant to select a specific domain (using MongoDB terminology).
 
 ```javascript
 {
-    step: 'domain',
+    name: 'domain',
     domain: 'my-domain'
 }
 ```
@@ -17,7 +17,7 @@ Filter out lines that don't match a filter definition.
 
 ```javascript
 {
-    step: 'filter',
+    name: 'filter',
     column: 'my-column',
     value: 42
     operator: 'ne'
@@ -36,7 +36,7 @@ the `select` is used, it will only keep selected columns in the output.
 
 ```javascript
 {
-    step: 'select',
+    name: 'select',
     column: 'my-column'
 }
 ```
@@ -47,7 +47,7 @@ Rename a column.,
 
 ```javascript
 {
-    step: 'filter',
+    name: 'filter',
     oldname: 'old-column-name',
     newname: 'new-column-name'
 }
@@ -59,7 +59,7 @@ Delete a column.
 
 ```javascript
 {
-    step: 'delete',
+    name: 'delete',
     column: 'my-column'
 }
 ```
@@ -71,7 +71,7 @@ other existing steps.
 
 ```javascript
 {
-    step: 'custom',
+    name: 'custom',
     query: '$group: {_id: ...}',
 }
 ```

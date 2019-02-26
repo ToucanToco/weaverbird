@@ -12,7 +12,7 @@ export interface MongoStep {
 }
 
 export interface PipelineStep {
-  step: string;
+  name: string;
   [propName: string]: any;
 }
 
@@ -28,11 +28,11 @@ export interface PipelineStep {
 function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
   const output: Array<PipelineStep> = [];
   if (matchStep.$match.domain !== undefined) {
-    output.push({ step: 'domain', domain: matchStep.$match.domain });
+    output.push({ name: 'domain', domain: matchStep.$match.domain });
   }
   for (const column of Object.keys(matchStep.$match).sort()) {
     if (column !== 'domain') {
-      output.push({ step: 'filter', column, value: matchStep.$match[column] });
+      output.push({ name: 'filter', column, value: matchStep.$match[column] });
     }
   }
   return output;
@@ -54,24 +54,24 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
     if (typeof incol === 'string') {
       if (incol[0] === '$' && incol.slice(1) !== outcol) {
         // case { $project: { zone: '$Region' } }
-        needsRenaming.push({ step: 'rename', oldname: incol.slice(1), newname: outcol });
+        needsRenaming.push({ name: 'rename', oldname: incol.slice(1), newname: outcol });
       } else if (incol.slice(1) === outcol) {
         select.push(outcol);
       }
     } else if (typeof incol === 'number') {
       if (incol === 0) {
         // case { $project: { zone: 0 } }
-        needsDeletion.push({ step: 'delete', columns: [outcol] });
+        needsDeletion.push({ name: 'delete', columns: [outcol] });
       } else {
         // case { $project: { zone: 1 } }
         select.push(outcol);
       }
     } else if (typeof incol === 'object') {
-      computedColumns.push({ step: 'newcolumn', column: outcol, query: incol });
+      computedColumns.push({ name: 'newcolumn', column: outcol, query: incol });
     }
   }
   if (select.length) {
-    output.push({ step: 'select', columns: select });
+    output.push({ name: 'select', columns: select });
   }
   output.push(...needsRenaming, ...needsDeletion, ...computedColumns);
   return output;
@@ -80,7 +80,7 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
 function transformFallback(step: MongoStep): Array<PipelineStep> {
   return [
     {
-      step: 'custom',
+      name: 'custom',
       query: step,
     },
   ];
@@ -125,31 +125,31 @@ export function mongoToPipe(mongoSteps: Array<MongoStep>): Array<PipelineStep> {
 export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
   const mongoSteps: Array<MongoStep> = [];
   for (const step of pipeline) {
-    if (step.step === 'domain') {
+    if (step.name === 'domain') {
       mongoSteps.push({ $match: { domain: step.domain } });
-    } else if (step.step === 'select') {
+    } else if (step.name === 'select') {
       const projection: { [propName: string]: number } = {};
       for (const column of step.columns) {
         projection[column] = 1;
       }
       mongoSteps.push({ $project: projection });
-    } else if (step.step === 'rename') {
+    } else if (step.name === 'rename') {
       mongoSteps.push({ $project: { [step.newname]: `$${step.oldname}` } });
-    } else if (step.step === 'delete') {
+    } else if (step.name === 'delete') {
       const projection: { [propName: string]: number } = {};
       for (const column of step.columns) {
         projection[column] = 0;
       }
       mongoSteps.push({ $project: projection });
-    } else if (step.step === 'filter') {
+    } else if (step.name === 'filter') {
       if (step.operator === undefined || step.operator === 'eq') {
         mongoSteps.push({ $match: { [step.column]: step.value } });
       } else {
         throw new Error(`Operator ${step.operator} is not handled yet.`);
       }
-    } else if (step.step === 'newcolumn') {
+    } else if (step.name === 'newcolumn') {
       mongoSteps.push({ $project: { [step.column]: step.query } });
-    } else if (step.step === 'custom') {
+    } else if (step.name === 'custom') {
       mongoSteps.push(step.query);
     }
   }
