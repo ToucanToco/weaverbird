@@ -7,15 +7,17 @@
 yarn install
 ```
 
-### Compiles and hot-reloads for development
-```
-yarn run serve
-```
-
 ### Compiles and minifies for production
 ```
-yarn run build
+yarn build
 ```
+
+### Compiles target library
+```
+yarn build-bundle
+```
+
+This will generate an importable JS `VisualQueryBuilder` library in the `dist` directory.
 
 ### Run your tests
 ```
@@ -31,7 +33,7 @@ yarn test:unit --watchAll
 
 ### Lints and fixes files
 ```
-yarn run lint
+yarn lint
 ```
 
 ### Customize configuration
