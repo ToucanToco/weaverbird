@@ -90,11 +90,6 @@ export default {
       return newDomain; // Emit an event
     },
   },
-  watch: {
-    steps() {
-      this.resetSelectedStep();
-    }
-  }
 };
 </script>
 <style scoped>
