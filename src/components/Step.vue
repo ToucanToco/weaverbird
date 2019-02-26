@@ -8,7 +8,7 @@
       <div :class="lastStrokeClass"></div>
     </div>
     <div :class="classStep">
-      <span class="query-pipeline-step__name">{{ step.step }}</span>
+      <span class="query-pipeline-step__name">{{ step.name }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
           <i class="fas fa-cog"></i>

@@ -4,7 +4,7 @@ describe('Pipebuild translator', () => {
   it('generate domain step', () => {
     const query: Array<MongoStep> = [{ $match: { domain: 'test_cube' } }];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([{ step: 'domain', domain: 'test_cube' }]);
+    expect(pipeline).toEqual([{ name: 'domain', domain: 'test_cube' }]);
   });
 
   it('generate domain and filter steps from one match', () => {
@@ -13,9 +13,9 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'filter', column: 'Manager', value: 'Pierre' },
-      { step: 'filter', column: 'Region', value: 'Europe' },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'filter', column: 'Manager', value: 'Pierre' },
+      { name: 'filter', column: 'Region', value: 'Europe' },
     ]);
   });
 
@@ -26,8 +26,8 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'filter', column: 'Region', value: 'Europe' },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'filter', column: 'Region', value: 'Europe' },
     ]);
   });
 
@@ -38,9 +38,9 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'filter', column: 'Manager', value: 'Pierre' },
-      { step: 'filter', column: 'Region', value: 'Europe' },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'filter', column: 'Manager', value: 'Pierre' },
+      { name: 'filter', column: 'Region', value: 'Europe' },
     ]);
   });
 
@@ -51,8 +51,8 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'rename', oldname: 'Region', newname: 'zone' },
     ]);
   });
 
@@ -63,8 +63,8 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'select', columns: ['Region'] },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'select', columns: ['Region'] },
     ]);
   });
 
@@ -75,8 +75,8 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'delete', columns: ['Manager'] },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'delete', columns: ['Manager'] },
     ]);
   });
 
@@ -87,8 +87,8 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'select', columns: ['Manager'] },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'select', columns: ['Manager'] },
     ]);
   });
 
@@ -106,12 +106,12 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'select', columns: ['Region'] },
-      { step: 'rename', oldname: 'Region', newname: 'zone' },
-      { step: 'delete', columns: ['Manager'] },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'select', columns: ['Region'] },
+      { name: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'delete', columns: ['Manager'] },
       {
-        step: 'newcolumn',
+        name: 'newcolumn',
         column: 'id',
         query: { $concat: ['$country', ' - ', '$Region'] },
       },
@@ -125,9 +125,9 @@ describe('Pipebuild translator', () => {
     ];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
-      { step: 'domain', domain: 'test_cube' },
+      { name: 'domain', domain: 'test_cube' },
       {
-        step: 'custom',
+        name: 'custom',
         query: {
           $group: { _id: '$Manager', Value: { $sum: '$Value' } },
         },
@@ -138,19 +138,19 @@ describe('Pipebuild translator', () => {
 
 describe('Pipeline to mongo translator', () => {
   it('can generate domain steps', () => {
-    const pipeline: Array<PipelineStep> = [{ step: 'domain', domain: 'test_cube' }];
+    const pipeline: Array<PipelineStep> = [{ name: 'domain', domain: 'test_cube' }];
     const querySteps = pipeToMongo(pipeline);
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
   });
 
   it('can generate match steps', () => {
     const pipeline: Array<PipelineStep> = [
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'select', columns: ['Region'] },
-      { step: 'rename', oldname: 'Region', newname: 'zone' },
-      { step: 'delete', columns: ['Manager'] },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'select', columns: ['Region'] },
+      { name: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'delete', columns: ['Manager'] },
       {
-        step: 'newcolumn',
+        name: 'newcolumn',
         column: 'id',
         query: { $concat: ['$country', ' - ', '$Region'] },
       },
@@ -171,9 +171,9 @@ describe('Pipeline to mongo translator', () => {
 
   it('can generate filter steps', () => {
     const pipeline: Array<PipelineStep> = [
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'filter', column: 'Manager', value: 'Pierre' },
-      { step: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'filter', column: 'Manager', value: 'Pierre' },
+      { name: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
     ];
     const querySteps = pipeToMongo(pipeline);
     expect(querySteps).toEqual([
@@ -183,14 +183,14 @@ describe('Pipeline to mongo translator', () => {
 
   it('can simplify complex queries', () => {
     const pipeline: Array<PipelineStep> = [
-      { step: 'domain', domain: 'test_cube' },
-      { step: 'filter', column: 'Manager', value: 'Pierre' },
-      { step: 'select', columns: ['Region'] },
-      { step: 'rename', oldname: 'Region', newname: 'zone' },
-      { step: 'delete', columns: ['Manager'] },
-      { step: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'filter', column: 'Manager', value: 'Pierre' },
+      { name: 'select', columns: ['Region'] },
+      { name: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'delete', columns: ['Manager'] },
+      { name: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
       {
-        step: 'custom',
+        name: 'custom',
         query: { $group: { _id: '$country', population: { $sum: '$population' } } },
       },
     ];
