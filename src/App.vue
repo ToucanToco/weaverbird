@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <Pipeline :steps="steps" :domains-list="domainsList"/>
+    <Pipeline :steps="steps" :domains-list="domainsList" @selectedPipeline="setSteps" />
   </div>
 </template>
 

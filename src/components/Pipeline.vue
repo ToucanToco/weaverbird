@@ -2,7 +2,7 @@
   <div class="query-pipeline">
     <DomainSelector
       :domains-list="domainsList"
-      :selected-domain="selectedDomain"
+      :selected-domain="stepDomain.domain"
       @selectedDomain="updateDomain"
     />
     <div v-if="isEmpty" class="query-pipeline__empty-container">
@@ -16,9 +16,10 @@
       v-else
       v-for="(step, index) in stepsWithoutDomain"
       :key="index"
-      :isActive="isStepSelected(index)"
-      :isFirst="index === 0"
-      :isLast="index === stepsWithoutDomain.length - 1"
+      :is-active="index === selectedIndex"
+      :is-disabled="isDisabled(index)"
+      :is-first="index === 0"
+      :is-last="index === stepsWithoutDomain.length - 1"
       :step="step"
       @selectedStep="selectStep(index)"
     />
@@ -40,26 +41,50 @@ export default {
   },
   data() {
     return {
-      selectedStep: this.steps.length - 2,
+      selectedStep: -1,
+      activePipeline: [],
+      disabledPipeline: [],
     };
   },
   computed: {
+    selectedIndex() {
+      if (this.selectedStep < 0) {
+        return this.stepsWithoutDomain.length -1;
+      }
+
+      return this.selectedStep;
+    },
     isEmpty() {
       return this.stepsWithoutDomain.length === 0;
     },
-    selectedDomain() {
-      return this.steps[0].domain;
+    stepDomain() {
+      return this.steps[0];
     },
     stepsWithoutDomain() {
-      return this.steps.slice(1);
+      return this.steps.slice(1).concat(this.disabledPipeline);
     },
   },
   methods: {
-    isStepSelected(index) {
-      return this.selectedStep === index;
+    isDisabled(index) {
+      if (this.selectedStep < 0) {
+        return false;
+      }
+      return index > this.selectedStep;
     },
     selectStep(index) {
+      let pipeline = [];
       this.selectedStep = index;
+
+      this.activePipeline = this.stepsWithoutDomain.slice(0, this.selectedStep + 1);
+
+      // Separate steps that are after the selected one to keep in memory
+      this.disabledPipeline = this.stepsWithoutDomain.slice(this.selectedStep + 1, this.stepsWithoutDomain.length);
+
+      // We emit the active pipeline with the step 0 (select domain) to the parent
+      this.$emit('selectedPipeline', pipeline.concat(this.stepDomain, this.activePipeline));
+    },
+    resetSelectedStep() {
+      this.selectedStep = -1;
     },
     updateDomain(newDomain) {
       return newDomain; // Emit an event

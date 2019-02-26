@@ -7,7 +7,7 @@
       </div>
       <div :class="lastStrokeClass"></div>
     </div>
-    <div class="classStep">
+    <div :class="classStep">
       <span class="query-pipeline-step__name">{{ step.step }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">

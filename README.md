@@ -19,8 +19,15 @@ yarn run build
 
 ### Run your tests
 ```
-yarn run test
+yarn test:unit
 ```
+
+### Run your tests with a watcher
+```
+yarn test:unit --watchAll
+```
+
+
 
 ### Lints and fixes files
 ```
