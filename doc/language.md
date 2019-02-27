@@ -1,5 +1,7 @@
 ## Language definition
 
+Each time a column is refered to, it should accept the notation `domain_name.column_name` or `column_name` when there is only one domain in input.
+
 ### 'domain' step
 
 This step is meant to select a specific domain (using MongoDB terminology).
@@ -37,21 +39,14 @@ the `select` is used, it will only keep selected columns in the output.
 ```javascript
 {
     name: 'select',
-    column: 'my-column'
+    column: 'my-column' -> should accept expressions like "*" and "(my_colmun * my_other_column) / 100"
+    as: 'new-column-name'
 }
 ```
 
 ### 'rename' step
 
-Rename a column.,
-
-```javascript
-{
-    name: 'filter',
-    oldname: 'old-column-name',
-    newname: 'new-column-name'
-}
-```
+I don't think this step is needed with a more "complete" `select`.
 
 ### 'delete' step
 
