@@ -1,4 +1,4 @@
-import { MongoStep, mongoToPipe, PipelineStep, pipeToMongo } from '@/pipebuild';
+import { MongoStep, mongoToPipe, PipelineStep, pipeToMongo } from '@/lib/pipeline';
 
 describe('Pipebuild translator', () => {
   it('generate domain step', () => {
