@@ -41,7 +41,7 @@ the `select` is used, it will only keep selected columns in the output.
 ```javascript
 {
     name: 'select',
-    column: 'my-column'
+    columns: ['my-column', 'some-other-column']
 }
 ```
 
@@ -64,7 +64,7 @@ Delete a column.
 ```javascript
 {
     name: 'delete',
-    column: 'my-column'
+    columns: ['my-column', 'some-other-column']
 }
 ```
 
