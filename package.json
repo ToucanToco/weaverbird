@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --target lib --name VisualQueryBuilder ./src/main.ts",
+    "build-doc": "typedoc --readme README.md --out dist/docs src/",
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
@@ -30,6 +31,8 @@
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "ts-jest": "^23.0.0",
+    "typedoc": "^0.14.2",
+    "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "~3.1.1",
     "vue-template-compiler": "^2.6.8"
   },
