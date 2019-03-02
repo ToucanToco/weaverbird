@@ -4,15 +4,12 @@
  * This module define the mongo → standard pipeline steps implementation.
  */
 
+import { PipelineStep } from './steps';
+
 /**
  * MongoStep interface. For now, it's basically an object with any property.
  */
 export interface MongoStep {
-  [propName: string]: any;
-}
-
-export interface PipelineStep {
-  name: string;
   [propName: string]: any;
 }
 
@@ -46,9 +43,14 @@ function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
  */
 function transformProject(matchStep: MongoStep): Array<PipelineStep> {
   const output: Array<PipelineStep> = [];
-  const needsRenaming = [];
-  const needsDeletion = [];
-  const computedColumns = [];
+  // NOTE: we have to tell typescript that `needsRenaming`, `needsDeletion` and
+  // `computedColumns` are arrays of `PipelineStep` because it can't otherwise
+  // infer the "name" property literal type correctly.
+  // cf.https://github.com/Microsoft/TypeScript/issues/15311 or
+  // https://stackoverflow.com/questions/50762772/typescript-why-cant-this-string-literal-type-be-inferred
+  const needsRenaming: Array<PipelineStep> = [];
+  const needsDeletion: Array<PipelineStep> = [];
+  const computedColumns: Array<PipelineStep> = [];
   const select = [];
   for (let [outcol, incol] of Object.entries(matchStep.$project)) {
     if (typeof incol === 'string') {
