@@ -50,6 +50,15 @@ yarn test:unit tests/unit/pipebuild.spec.ts --bail
 yarn lint
 ```
 
+### Build the documentation
+
+```bash
+yarn build-doc
+```
+
+This will run [typedoc](https://typedoc.org/) on the `src/` directory and
+generate the corresponding documentation in the `dist/docs` directory.
+
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
