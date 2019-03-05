@@ -68,6 +68,18 @@ Delete a column.
 }
 ```
 
+### `newcolumn` step
+
+Compute a new column based on another one or a custom query.
+
+```javascript
+{
+    name: 'newcolumn',
+    column: 'my-new-column',
+    query: { $concat: ['$col1', ' - ', '$col2'] }
+}
+```
+
 ### 'custom' step
 
 This step allows to define a custom query that can't be expressed using the
