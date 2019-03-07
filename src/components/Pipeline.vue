@@ -92,36 +92,6 @@ export default {
   },
 };
 </script>
-<style scoped>
-.query-pipeline {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.query-pipeline__empty-container {
-  width: 60%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-weight: lighter;
-}
-
-.query-pipeline__empty-message {
-  font-size: 24px;
-  color: rgb(154, 154, 154);
-  margin-top: 120px;
-  margin-bottom: 170px;
-  text-align: center;
-}
-
-.fa-code {
-  color: rgba(239, 239, 239);
-}
-
-.fa-magic {
-  color: rgba(239, 239, 239);
-  font-size: 64px;
-}
+<style lang="scss" scoped>
+  @import '../styles/Pipeline';
 </style>
