@@ -16,7 +16,9 @@ export default {
       format: 'esm'
     }
   ],
-  external: ['vue'],
+  external: [
+    'vue'
+  ],
   plugins: [
     resolve(),
     commonjs(),
