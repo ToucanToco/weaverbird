@@ -14,4 +14,28 @@ storiesOf('Step', module)
       }
     },
     template: '<step :step="step"></step>'
+  }))
+
+  .add('first', () => ({
+    components: { Step },
+    data() {
+      return {
+        step: {
+          name: "Sample step"
+        }
+      }
+    },
+    template: '<step isFirst :step="step"></step>'
+  }))
+
+  .add('last', () => ({
+    components: { Step },
+    data() {
+      return {
+        step: {
+          name: "Sample step"
+        }
+      }
+    },
+    template: '<step isLast :step="step"></step>'
   }));
