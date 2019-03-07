@@ -1,17 +1,17 @@
 import Step from '../src/components/Step.vue';
+import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
 import { storiesOf } from '@storybook/vue';
 
-storiesOf('Step', module)
+const stories = storiesOf('Step', module);
 
+stories.addDecorator(withKnobs)
   .add('default', () => ({
     components: { Step },
-    data() {
-      return {
-        step: {
-          name: "Sample step"
-        }
-      }
+    props: {
+      step: { default: {
+        name: text('Step name', 'Default step name')
+      }}
     },
     template: '<step :step="step"></step>'
   }))
