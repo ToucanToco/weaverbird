@@ -1,16 +1,17 @@
-import Vue from 'vue';
+import Step from '../src/components/Step.vue';
 
 import { storiesOf } from '@storybook/vue';
 
-storiesOf('Sample stories', module)
-  .add('story as a template', () => '<div>bouh</div>')
+storiesOf('Step', module)
 
-  .add('story as a component', () => ({
-    components: {  },
+  .add('default', () => ({
+    components: { Step },
     data() {
       return {
-        text: 'vkjdsfjds'
+        step: {
+          name: "Sample step"
+        }
       }
     },
-    template: '<div>{{ text }}</div>'
+    template: '<step :step="step"></step>'
   }));
