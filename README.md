@@ -59,6 +59,19 @@ yarn build-doc
 This will run [typedoc](https://typedoc.org/) on the `src/` directory and
 generate the corresponding documentation in the `dist/docs` directory.
 
+
+### Run the storybook
+
+```bash
+yarn storybook
+```
+
+This will run [storybook](https://storybook.js.org/), displaying the stories
+(use cases) of UI components.
+
+Stories are defined in the `stories/` directory.
+
+
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).

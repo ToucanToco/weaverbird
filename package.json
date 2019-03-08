@@ -8,7 +8,8 @@
     "lint": "vue-cli-service lint",
     "build-bundle": "vue-cli-service build --target lib --name VisualQueryBuilder ./src/main.ts",
     "build-doc": "typedoc --readme README.md --out dist/docs src/",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "storybook": "start-storybook -p 9001 -c .storybook"
   },
   "dependencies": {
     "vue": "^2.6.8",
@@ -16,7 +17,10 @@
     "vue-property-decorator": "^7.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.3.4",
     "@fortawesome/fontawesome-free": "^5.7.2",
+    "@storybook/addon-knobs": "^5.0.0",
+    "@storybook/vue": "^5.0.0",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
@@ -28,12 +32,15 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.5",
+    "babel-preset-vue": "^2.0.2",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "ts-jest": "^23.0.0",
     "typedoc": "^0.14.2",
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "~3.1.1",
+    "vue-loader": "^15.7.0",
     "vue-template-compiler": "^2.6.8"
   },
   "eslintConfig": {
