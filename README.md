@@ -85,8 +85,8 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 <link rel="stylesheet" href="vue-query-builder/dist/vue-query-builder.umd.min.js">
 
 <!-- Import scripts -->
-<script src="vue.js"></src>
-<script src="vue-query-builder/dist/vue-query-builder.umd.min.js"></src>
+<script src="vue.js"></script>
+<script src="vue-query-builder/dist/vue-query-builder.umd.min.js"></script>
 ```
 
 ### With an ES module bundler (typically webpack or rollup)
@@ -103,12 +103,12 @@ If your module bundler can also import CSS (e.g. via `styles-loader`):
 import 'vue-query-builder/dist/vue-query-builder.css'
 ```
 
-If you prefer use Sass, you may import directly the scss:
+If you prefer to use Sass, you may import directly the scss:
 ```scss
 @import '~vue-query-builder/src/styles/main';
 ```
 
-> This example make use of the `~` syntax from webpack's [sass-loader](https://github.com/webpack-contrib/sass-loader)
+ > This example makes use of the `~` syntax from webpack's [sass-loader](https://github.com/webpack-contrib/sass-loader)
   to resolve the imported modules.
 
 
