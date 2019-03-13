@@ -21,7 +21,9 @@
   </div>
 </template>
 <script>
-export default {
+import Vue from 'vue'
+
+export default Vue.extend({
   name: 'step',
   props: {
     isFirst: Boolean,
@@ -75,7 +77,7 @@ export default {
       this.$emit('selectedStep');
     },
   },
-};
+});
 </script>
 <style scoped>
 @keyframes scaler {
