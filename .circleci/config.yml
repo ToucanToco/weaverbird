@@ -10,6 +10,8 @@ jobs:
       - run: yarn build-bundle
   test:
     docker:
+      # use node11.10 image instead of node11.11 until
+      # https://github.com/facebook/jest/issues/8069 is fixed
       - image: circleci/node:11.10
     steps:
       - checkout
