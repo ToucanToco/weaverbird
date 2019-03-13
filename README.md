@@ -8,6 +8,12 @@
 yarn install
 ```
 
+### Start in a local environnement
+
+```bash
+yarn serve
+```
+
 ### Compiles and minifies for production
 
 ```bash
