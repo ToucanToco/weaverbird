@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <Pipeline :steps="steps" :domains-list="domainsList" @selectedPipeline="setSteps" />
+    <Pipeline :steps="steps" :domains-list="domainsList" @selectedPipeline="setSteps" @removeStepPipeline="removeStep" />
   </div>
 </template>
 
@@ -26,7 +26,9 @@ export default class App extends Vue {
     'bubble_chart',
     'cities_data'
   ];
-
+  removeStep(index:number) {
+    this.steps.splice(index + 1, 1);
+  }
   setSteps(pipeline:Array<any>) {
     this.steps = pipeline;
   }

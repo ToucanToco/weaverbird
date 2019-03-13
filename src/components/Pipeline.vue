@@ -21,6 +21,7 @@
       :is-first="index === 0"
       :is-last="index === stepsWithoutDomain.length - 1"
       :step="step"
+      @removedStep="removeStep(index)"
       @selectedStep="selectStep(index)"
     />
   </div>
@@ -70,6 +71,9 @@ export default {
         return false;
       }
       return index > this.selectedStep;
+    },
+    removeStep(index) {
+      this.$emit('removeStepPipeline', index);
     },
     selectStep(index) {
       let pipeline = [];

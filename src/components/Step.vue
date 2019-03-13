@@ -14,7 +14,7 @@
           <i class="fas fa-cog"></i>
         </div>
         <div class="query-pipeline-step__action">
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt" @click="removedStep()"></i>
         </div>
       </div>
     </div>
@@ -71,6 +71,9 @@ export default {
     },
   },
   methods: {
+    removedStep() {
+      this.$emit('removedStep');
+    },
     select() {
       this.$emit('selectedStep');
     },
