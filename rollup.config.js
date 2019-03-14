@@ -1,8 +1,9 @@
 import commonjs from 'rollup-plugin-commonjs'
+import css from 'rollup-plugin-css-only'
 import resolve from 'rollup-plugin-node-resolve'
+import scss from 'rollup-plugin-scss'
 import typescript from 'rollup-plugin-typescript'
 import vue from 'rollup-plugin-vue'
-import css from 'rollup-plugin-css-only'
 
 export default {
   input: 'src/main.ts',
@@ -26,7 +27,12 @@ export default {
       output: 'dist/vue-query-builder.css'
     }),
     vue({
-      css: false
+      css: false,
+      style: {
+        preprocessOptions: {
+          scss: scss()
+        }
+      }
     }),
     typescript({
       module: 'es2015'

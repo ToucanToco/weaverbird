@@ -1,0 +1,48 @@
+@import './_variables';
+
+$syntax-highlighting-string-color: $text-color !default;
+$syntax-highlighting-number-color: #07a !default;
+$syntax-highlighting-boolean-color:#690 !default;
+$syntax-highlighting-keyword-color: #905 !default;
+
+$unformatted-data-font-family: monospace !default;
+$formatted-data-font-family: sans-serif !default;
+
+.dataset-viewer__cell {
+  font-family: $unformatted-data-font-family;
+  white-space: pre;
+
+  &.dataset-viewer__cell--formatted {
+    font-family: $formatted-data-font-family;
+    font-feature-settings: "tnum";
+  }
+
+  &[data-type="Number"],
+  &[data-type="NaN"] {
+    justify-content: flex-end;
+  }
+}
+
+.dataset-viewer__cell--whitespace {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-color: orange;
+}
+
+.dataset-viewer__cell--string {
+  color: $syntax-highlighting-string-color;
+}
+
+.dataset-viewer__cell--nan,
+.dataset-viewer__cell--number {
+  color: $syntax-highlighting-number-color;
+}
+
+.dataset-viewer__cell--boolean {
+  color: $syntax-highlighting-boolean-color;
+}
+
+.dataset-viewer__cell--undefined,
+.dataset-viewer__cell--null {
+  color: $syntax-highlighting-keyword-color;
+}
