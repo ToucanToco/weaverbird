@@ -24,7 +24,10 @@ import { Component, Prop } from 'vue-property-decorator'
   name: 'domain-selector'
 })
 export default class DomainSelector extends Vue {
-  @Prop({ default: () => [] })
+  @Prop({
+    default: () => [],
+    type: Array
+  })
   readonly domainsList!: Array<string>
 
   @Prop()

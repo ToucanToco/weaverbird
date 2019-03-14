@@ -30,16 +30,16 @@ import { PipelineStep } from '@/lib/steps'
   name: 'step'
 })
 export default class Step extends Vue {
-  @Prop({default: false})
+  @Prop(Boolean)
   readonly isFirst!: boolean
 
-  @Prop({default: false})
+  @Prop(Boolean)
   readonly isLast!: boolean
 
-  @Prop({default: false})
+  @Prop(Boolean)
   readonly isActive!: boolean
 
-  @Prop({default: false})
+  @Prop(Boolean)
   readonly isDisabled!: boolean
 
   @Prop()

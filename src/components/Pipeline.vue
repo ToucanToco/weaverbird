@@ -43,10 +43,10 @@ import Step from './Step.vue'
   },
 })
 export default class Pipeline extends Vue {
-  @Prop()
+  @Prop(Array)
   steps!: Array<PipelineStep>
 
-  @Prop()
+  @Prop(Array)
   domainsList!: Array<string>
 
   selectedStep: number = -1
