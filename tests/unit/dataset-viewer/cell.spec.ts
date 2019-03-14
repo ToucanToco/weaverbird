@@ -57,6 +57,8 @@ describe('Cell.vue', () => {
           row: {
             col1: 'val1'
           },
+          displayFormatted: true,
+          formatter: (val: any) => val.toString().toUpperCase(),
           classModifiers: [
             function(val: any) {
               if (val === 'val1') {
@@ -71,6 +73,11 @@ describe('Cell.vue', () => {
                 return 'never-present'
               }
             },
+            function (val: any, row: object, col: string, displayedValue: string) {
+              if (displayedValue === 'VAL1') {
+                return 'all-caps'
+              }
+            },
           ]
         },
       })
@@ -78,6 +85,9 @@ describe('Cell.vue', () => {
 
     it('should add class modifiers', () => {
       expect(wrapper.classes()).toContain('dataset-viewer__cell--always-present')
+      expect(wrapper.classes()).toContain('dataset-viewer__cell--present-on-val1')
+      expect(wrapper.classes()).toContain('dataset-viewer__cell--all-caps')
+      expect(wrapper.classes()).not.toContain('dataset-viewer__cell--never-present')
     })
   })
 })

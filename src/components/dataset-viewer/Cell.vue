@@ -4,10 +4,12 @@ import Vue from 'vue'
 
 import detectType from './detect-type'
 
-const defaultFormatter = (value: any, row: object, column: string) =>
+const defaultFormatter = (value: any, row: object, column: string): string =>
   _.isObject(value) ? JSON.stringify(value) : _.toString(value)
 
 const CSS_CLASS = 'dataset-viewer__cell'
+
+type ClassModifierGenerator = (value: any, row: object, column: string, displayedValue: string) => string | undefined
 
 export default Vue.extend({
   name: 'dataset-viewer-cell',
@@ -36,7 +38,7 @@ export default Vue.extend({
     let classes = [CSS_CLASS]
     let type = detectType(value)
 
-    let displayedValue
+    let displayedValue: string
     if (ctx.props.displayFormatted) {
       classes.push(`${CSS_CLASS}--formatted`)
       displayedValue = ctx.props.formatter(value, ctx.props.row, ctx.props.column)
@@ -46,8 +48,8 @@ export default Vue.extend({
 
     classes = classes.concat(
       ctx.props.classModifiers
-        .map( (generateClassModifier: Function) =>
-          generateClassModifier(value, ctx.props.row, ctx.props.column)
+        .map( (generateClassModifier: ClassModifierGenerator) =>
+          generateClassModifier(value, ctx.props.row, ctx.props.column, displayedValue)
         )
         // Filter out modifiers who generated nothing
         .filter( (modifier: string | undefined) => modifier )
