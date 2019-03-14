@@ -87,6 +87,11 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ## Usage as library
 
+### Peer dependencies
+This library requires some dependencies that are not bundled with it:
+- lodash >4
+- vue >2
+
 ### Without any module bundler
 ```html
 <!-- Import styles -->
@@ -94,6 +99,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 <!-- Import scripts -->
 <script src="vue.js"></script>
+<script src="lodash.js"></script>
 <script src="vue-query-builder/dist/vue-query-builder.umd.min.js"></script>
 ```
 
