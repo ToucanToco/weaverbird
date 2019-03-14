@@ -62,6 +62,14 @@ generate the corresponding documentation in the `dist/docs` directory.
 
 ### Run the storybook
 
+> Storybook uses the bundled lib, so all showcased components must be in the public API.
+
+In one terminal:
+```bash
+yarn storybook:bundle --watch
+```
+
+In another:
 ```bash
 yarn storybook
 ```
