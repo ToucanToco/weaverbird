@@ -23,26 +23,27 @@
 <script lang="ts">
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
-import { PipelineStep } from '../lib/steps'
+
+import { PipelineStep } from '@/lib/steps'
 
 @Component({
   name: 'step'
 })
 export default class Step extends Vue {
-  @Prop()
-  isFirst: boolean = false
+  @Prop({default: false})
+  readonly isFirst!: boolean
+
+  @Prop({default: false})
+  readonly isLast!: boolean
+
+  @Prop({default: false})
+  readonly isActive!: boolean
+
+  @Prop({default: false})
+  readonly isDisabled!: boolean
 
   @Prop()
-  isLast: boolean = false
-
-  @Prop()
-  isActive: boolean = false
-
-  @Prop()
-  isDisabled: boolean = false
-
-  @Prop()
-  step: PipelineStep | undefined
+  step!: PipelineStep
 
   get classDot() {
     return {
