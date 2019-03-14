@@ -1,4 +1,6 @@
-import Step from '../src/components/Step.vue';
+import { Step } from '../dist/storybook/components';
+import '../dist/vue-query-builder.css';
+
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
 
 import { storiesOf } from '@storybook/vue';
@@ -25,7 +27,7 @@ stories.addDecorator(withKnobs)
         }
       }
     },
-    template: '<step isFirst :step="step"></step>'
+    template: '<step is-first :step="step"></step>'
   }))
 
   .add('last', () => ({
@@ -37,5 +39,5 @@ stories.addDecorator(withKnobs)
         }
       }
     },
-    template: '<step isLast :step="step"></step>'
+    template: '<step is-last :step="step"></step>'
   }));

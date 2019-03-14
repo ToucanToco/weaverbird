@@ -16,22 +16,31 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'domain-selector',
-  props: {
-    domainsList: Array,
-    selectedDomain: String,
-  },
-  methods: {
-    isDomainSelected(name) {
-      return this.selectedDomain === name;
-    },
-    select(newDomain) {
-      this.$emit('selectedDomain', newDomain);
-    },
-  },
-};
+<script lang="ts">
+import Vue from 'vue'
+import { Component, Prop } from 'vue-property-decorator'
+
+@Component({
+  name: 'domain-selector'
+})
+export default class DomainSelector extends Vue {
+  @Prop({
+    default: () => [],
+    type: Array
+  })
+  readonly domainsList!: Array<string>
+
+  @Prop()
+  readonly selectedDomain!: string | undefined
+
+  isDomainSelected(name: string) {
+    return this.selectedDomain === name;
+  }
+
+  select(newDomain: string) {
+    this.$emit('selectedDomain', newDomain);
+  }
+}
 </script>
 
 <style lang="scss" scoped>
