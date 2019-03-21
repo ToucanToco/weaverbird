@@ -182,6 +182,54 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can translate aggregation steps', () => {
+    const pipeline: Array<PipelineStep> = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'aggregate',
+        on: ['col_agg1', 'col_agg2'],
+        aggregations: [
+          {
+            name: 'sum',
+            aggfunction: 'sum',
+            column: 'col1',
+          },
+          {
+            name: 'average',
+            aggfunction: 'avg',
+            column: 'col2',
+          },
+          {
+            name: 'minimum',
+            aggfunction: 'min',
+            column: 'col1',
+          },
+        ],
+      },
+    ];
+    const querySteps = pipeToMongo(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $group: {
+          _id: { col_agg1: '$col_agg1', col_agg2: '$col_agg2' },
+          sum: { $sum: '$col1' },
+          average: { $avg: '$col2' },
+          minimum: { $min: '$col1' },
+        },
+      },
+      {
+        $project: {
+          col_agg1: '$_id.col_agg1',
+          col_agg2: '$_id.col_agg2',
+          sum: 1,
+          average: 1,
+          minimum: 1,
+        },
+      },
+    ]);
+  });
+
   it('can simplify complex queries', () => {
     const pipeline: Array<PipelineStep> = [
       { name: 'domain', domain: 'test_cube' },

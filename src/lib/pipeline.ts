@@ -4,7 +4,9 @@
  * This module define the mongo → standard pipeline steps implementation.
  */
 
-import { PipelineStep } from './steps';
+import { PipelineStep, AggregationStep } from './steps';
+
+type PropMap<T> = { [prop: string]: T };
 
 /**
  * MongoStep interface. For now, it's basically an object with any property.
@@ -88,6 +90,32 @@ function transformFallback(step: MongoStep): Array<PipelineStep> {
   ];
 }
 
+/** transform an 'aggregate' step into corresponding mongo steps */
+function transformAggregate(step: AggregationStep) {
+  const idblock: PropMap<string> = {};
+  const group: { [id: string]: {} } = {};
+  const project: PropMap<any> = {};
+  group._id = idblock;
+  for (const colname of step.on) {
+    idblock[colname] = `$${colname}`;
+  }
+  for (const aggf_step of step.aggregations) {
+    group[aggf_step.name] = {
+      [`$${aggf_step.aggfunction}`]: `$${aggf_step.column}`,
+    };
+  }
+  for (const group_key of Object.keys(group)) {
+    if (group_key === '_id') {
+      for (const idkey of Object.keys(group[group_key])) {
+        project[idkey] = `$_id.${idkey}`;
+      }
+    } else {
+      project[group_key] = 1;
+    }
+  }
+  return [{ $group: group }, { $project: project }];
+}
+
 /**
  * Transform a list of mongo steps into a standard pipeline, as understood
  * by the Pipeline vue.
@@ -151,6 +179,8 @@ export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
       }
     } else if (step.name === 'newcolumn') {
       mongoSteps.push({ $project: { [step.column]: step.query } });
+    } else if (step.name === 'aggregate') {
+      mongoSteps.push(...transformAggregate(step));
     } else if (step.name === 'custom') {
       mongoSteps.push(step.query);
     }

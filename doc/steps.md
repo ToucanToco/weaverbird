@@ -80,6 +80,27 @@ Compute a new column based on another one or a custom query.
 }
 ```
 
+### `aggregate` step
+
+Perform aggregations on one or several columns.
+
+An aggreation step has the following strucure:
+
+```javascript
+{
+   name: 'aggregate',
+   on: ['column1', 'column2'],
+   aggregations:  [
+      {
+          name: 'sum_value1'
+          operation: 'sum'
+          column: 'value1',
+      }
+    // ...
+  ]
+}
+```
+
 ### 'custom' step
 
 This step allows to define a custom query that can't be expressed using the
