@@ -61,6 +61,8 @@ export function matchStep<T>(matcher: StepMatcher<T>): (step: PipelineStep) => T
         return matcher.delete(step);
       case 'newcolumn':
         return matcher.newcolumn(step);
+      case 'aggregate':
+        return matcher.aggregate(step);
       case 'custom':
         return matcher.custom(step);
       default:
