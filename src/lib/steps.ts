@@ -49,3 +49,5 @@ export type PipelineStep =
   | DeleteStep
   | NewColumnStep
   | CustomStep;
+
+export type PipelineStepName = PipelineStep['name'];
