@@ -1,5 +1,7 @@
 import { PipelineStep } from '@/lib/steps';
-import { MongoStep, mongoToPipe, pipeToMongo } from '@/lib/pipeline';
+import { MongoStep } from '@/lib/translators/mongo';
+import { mongoToPipe } from '@/lib/pipeline';
+import { getTranslator } from '@/lib/translators/toolchain';
 
 describe('Pipebuild translator', () => {
   it('generate domain step', () => {
@@ -138,9 +140,11 @@ describe('Pipebuild translator', () => {
 });
 
 describe('Pipeline to mongo translator', () => {
+  const mongo36translator = getTranslator('mongo36');
+
   it('can generate domain steps', () => {
     const pipeline: Array<PipelineStep> = [{ name: 'domain', domain: 'test_cube' }];
-    const querySteps = pipeToMongo(pipeline);
+    const querySteps = mongo36translator(pipeline);
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
   });
 
@@ -156,7 +160,7 @@ describe('Pipeline to mongo translator', () => {
         query: { $concat: ['$country', ' - ', '$Region'] },
       },
     ];
-    const querySteps = pipeToMongo(pipeline);
+    const querySteps = mongo36translator(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -176,7 +180,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
     ];
-    const querySteps = pipeToMongo(pipeline);
+    const querySteps = mongo36translator(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: 'Pierre', Region: 'Europe' } },
     ]);
@@ -195,7 +199,7 @@ describe('Pipeline to mongo translator', () => {
         query: { $group: { _id: '$country', population: { $sum: '$population' } } },
       },
     ];
-    const querySteps = pipeToMongo(pipeline);
+    const querySteps = mongo36translator(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: 'Pierre' } },
       {
