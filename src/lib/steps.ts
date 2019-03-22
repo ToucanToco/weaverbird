@@ -36,6 +36,23 @@ export interface NewColumnStep {
   query: object | string;
 }
 
+interface AggFunctionStep {
+  /** name of the agg function step, (typically the name of the output column) */
+  name: string;
+  /** the aggregation operation (e.g. `sum` or `count`) */
+  aggfunction: string;
+  /** the column the aggregation function is working on */
+  column: string;
+}
+
+export interface AggregationStep {
+  name: 'aggregate';
+  /** the list columns we want to aggregate on */
+  on: Array<string>;
+  /** the list of aggregation operations to perform */
+  aggregations: Array<AggFunctionStep>;
+}
+
 export interface CustomStep {
   name: 'custom';
   query: object;
@@ -48,6 +65,7 @@ export type PipelineStep =
   | RenameStep
   | DeleteStep
   | NewColumnStep
+  | AggregationStep
   | CustomStep;
 
 export type PipelineStepName = PipelineStep['name'];
