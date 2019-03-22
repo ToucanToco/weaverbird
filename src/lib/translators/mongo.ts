@@ -1,12 +1,29 @@
 /** This module contains mongo specific translation operations */
 
-import { PipelineStep } from '@/lib/steps';
+import { FilterStep, PipelineStep } from '@/lib/steps';
+import { matchStep } from '@/lib/matcher';
 
 /**
  * MongoStep interface. For now, it's basically an object with any property.
  */
 export interface MongoStep {
   [propName: string]: any;
+}
+
+function fromkeys(keys: Array<string>, value = 0) {
+  const out: { [propname: string]: any } = {};
+  for (const key of keys) {
+    out[key] = value;
+  }
+  return out;
+}
+
+function filterstepToMatchstep(step: FilterStep) {
+  if (step.operator === undefined || step.operator === 'eq') {
+    return { $match: { [step.column]: step.value } };
+  } else {
+    throw new Error(`Operator ${step.operator} is not handled yet.`);
+  }
 }
 
 /**
@@ -22,36 +39,17 @@ export interface MongoStep {
  * @returns the list of corresponding mongo steps
  */
 export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
-  const mongoSteps: Array<MongoStep> = [];
-  for (const step of pipeline) {
-    if (step.name === 'domain') {
-      mongoSteps.push({ $match: { domain: step.domain } });
-    } else if (step.name === 'select') {
-      const projection: { [propName: string]: number } = {};
-      for (const column of step.columns) {
-        projection[column] = 1;
-      }
-      mongoSteps.push({ $project: projection });
-    } else if (step.name === 'rename') {
-      mongoSteps.push({ $project: { [step.newname]: `$${step.oldname}` } });
-    } else if (step.name === 'delete') {
-      const projection: { [propName: string]: number } = {};
-      for (const column of step.columns) {
-        projection[column] = 0;
-      }
-      mongoSteps.push({ $project: projection });
-    } else if (step.name === 'filter') {
-      if (step.operator === undefined || step.operator === 'eq') {
-        mongoSteps.push({ $match: { [step.column]: step.value } });
-      } else {
-        throw new Error(`Operator ${step.operator} is not handled yet.`);
-      }
-    } else if (step.name === 'newcolumn') {
-      mongoSteps.push({ $project: { [step.column]: step.query } });
-    } else if (step.name === 'custom') {
-      mongoSteps.push(step.query);
-    }
-  }
+  const mongoSteps: Array<MongoStep> = pipeline.map(
+    matchStep({
+      domain: step => ({ $match: { domain: step.domain } }),
+      filter: filterstepToMatchstep,
+      select: step => ({ $project: fromkeys(step.columns, 1) }),
+      rename: step => ({ $project: { [step.newname]: `$${step.oldname}` } }),
+      delete: step => ({ $project: fromkeys(step.columns, 0) }),
+      newcolumn: step => ({ $project: { [step.column]: step.query } }),
+      custom: step => step.query,
+    }),
+  );
   return simplifyMongoPipeline(mongoSteps);
 }
 
