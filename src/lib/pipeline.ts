@@ -4,7 +4,7 @@
  * This module define the mongo → standard pipeline steps implementation.
  */
 
-import { PipelineStep } from './steps';
+import { PipelineStep, ReplaceStep } from './steps';
 
 /**
  * MongoStep interface. For now, it's basically an object with any property.
@@ -153,6 +153,8 @@ export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
       mongoSteps.push({ $project: { [step.column]: step.query } });
     } else if (step.name === 'custom') {
       mongoSteps.push(step.query);
+    } else if (step.name === 'replace') {
+      mongoSteps.push(transformReplaceStep(step));
     }
   }
   return simplifyMongoPipeline(mongoSteps);
@@ -187,4 +189,21 @@ function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
     outputSteps.push(lastStep);
   }
   return outputSteps;
+}
+
+function transformReplaceStep(step: ReplaceStep): MongoStep {
+  return {
+    $project: {
+      // <all other columns>: 1
+      [step.new_column || step.search_column]: {
+        $cond: [
+          {
+            $eq: [`$${step.search_column}`, `${step.oldvalue}`]
+          },
+          `${step.newvalue}`,
+          `$${step.search_column}`
+        ]
+      }
+    }
+  }
 }
