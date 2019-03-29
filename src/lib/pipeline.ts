@@ -177,6 +177,14 @@ function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
 
   for (const step of mongoSteps.slice(1)) {
     if (step.$project !== undefined && lastStep.$project !== undefined) {
+      for (const key in step.$project) {
+        // We do not want to merge two $project with common keys
+        if (key in lastStep.$project) {
+          outputSteps.push(step);
+          lastStep = step;
+          continue
+        }
+      }
       // merge $project steps together
       lastStep.$project = { ...lastStep.$project, ...step.$project };
       continue;

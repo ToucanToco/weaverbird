@@ -191,6 +191,18 @@ describe('Pipeline to mongo translator', () => {
       { name: 'delete', columns: ['Manager'] },
       { name: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
       {
+        name: 'replace',
+        search_column: "search_column",
+        oldvalue: 'foo',
+        newvalue: 'bar',
+      },
+      {
+        name: 'replace',
+        search_column: "search_column",
+        oldvalue: 'old',
+        newvalue: 'new',
+      },
+      {
         name: 'custom',
         query: { $group: { _id: '$country', population: { $sum: '$population' } } },
       },
@@ -204,6 +216,30 @@ describe('Pipeline to mongo translator', () => {
           zone: '$Region',
           Manager: 0,
           id: { $concat: ['$country', ' - ', '$Region'] },
+          search_column: {
+            $cond: [
+              {
+                $eq: ['$search_column', 'foo']
+              },
+              'bar',
+              '$search_column'
+            ]
+          }
+        },
+      },
+      {
+        $project: {
+          // We need to generate a distinct $project as the search_column key is
+          // already present in the previous mongo step
+          search_column: {
+            $cond: [
+              {
+                $eq: ['$search_column', 'old']
+              },
+              'new',
+              '$search_column'
+            ]
+          }
         },
       },
       {
