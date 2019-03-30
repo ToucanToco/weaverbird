@@ -5,17 +5,17 @@
  * backend name as input and returns the corresponding translator.
  *
  */
-import { PipelineStep } from '@/lib/steps';
+import { PipelineStepName } from '@/lib/steps';
 import { translators as mongoTranslators } from '@/lib/translators/mongo';
+import { BaseTranslator } from './base';
 
-type TransformerFunc = (pipeline: Array<PipelineStep>) => any;
-export type TranslatorRegistryType = { [backend: string]: TransformerFunc };
+// type TransformerFunc = (pipeline: Array<PipelineStep>) => any;
+export type TranslatorRegistryType = { [backend: string]: BaseTranslator };
 
 const TRANSLATORS: TranslatorRegistryType = {};
 
-// register mongo translators
-for (const [backend, transformer] of Object.entries(mongoTranslators)) {
-  TRANSLATORS[backend] = transformer;
+export function registerTranslator(backend: string, translator: BaseTranslator) {
+  TRANSLATORS[backend] = translator;
 }
 
 /** return a function translating an array of pipeline steps to expected backend
@@ -27,7 +27,7 @@ for (const [backend, transformer] of Object.entries(mongoTranslators)) {
  * const result = translator(myPipeline);
  * ```
  */
-export function getTranslator(backend: string) {
+export function getTranslator(backend: string): BaseTranslator {
   if (TRANSLATORS[backend] === undefined) {
     throw new Error(
       `no translator found for backend ${backend}. Available ones are: ${Object.keys(
@@ -36,4 +36,21 @@ export function getTranslator(backend: string) {
     );
   }
   return TRANSLATORS[backend];
+}
+
+/**
+ * returns the list of backends supporting a given pipeline step.
+ *
+ * @param stepname the name of the step
+ */
+export function backendsSupporting(stepname: PipelineStepName) {
+  return Object.entries(TRANSLATORS)
+    .filter(([_, translator]) => translator.supports(stepname))
+    .map(([backend, _]) => backend)
+    .sort();
+}
+
+// register mongo translators
+for (const [backend, translator] of Object.entries(mongoTranslators)) {
+  registerTranslator(backend, translator);
 }

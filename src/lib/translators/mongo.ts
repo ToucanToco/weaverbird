@@ -1,7 +1,8 @@
 /** This module contains mongo specific translation operations */
 
 import { AggregationStep, FilterStep, PipelineStep } from '@/lib/steps';
-import { matchStep } from '@/lib/matcher';
+import { StepMatcher } from '@/lib/matcher';
+import { BaseTranslator } from '@/lib/translators/base';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -54,35 +55,24 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
   return [{ $group: group }, { $project: project }];
 }
 
-/**
- * Transform a standard pipeline into a list of mongo steps.
- *
- * - 'domain' steps are transformed into `$match` statements,
- * - 'select', 'rename', 'delete' and 'newcolumn' steps are transformed into
- *   `$project` statements,
- * - 'filter' steps are transformed into `match` statements.
- *
- * @param pipeline the input pipeline
- *
- * @returns the list of corresponding mongo steps
- */
-export function pipeToMongo(pipeline: Array<PipelineStep>): Array<MongoStep> {
-  const mongoSteps: Array<MongoStep> = pipeline
-    .map(
-      matchStep({
-        domain: step => ({ $match: { domain: step.domain } }),
-        filter: filterstepToMatchstep,
-        select: step => ({ $project: fromkeys(step.columns, 1) }),
-        rename: step => ({ $project: { [step.newname]: `$${step.oldname}` } }),
-        delete: step => ({ $project: fromkeys(step.columns, 0) }),
-        newcolumn: step => ({ $project: { [step.column]: step.query } }),
-        aggregate: transformAggregate,
-        custom: step => step.query,
-      }),
-    )
-    .flat();
-  return simplifyMongoPipeline(mongoSteps);
+const mapper: StepMatcher<MongoStep> = {
+  domain: step => ({ $match: { domain: step.domain } }),
+  filter: filterstepToMatchstep,
+  select: step => ({ $project: fromkeys(step.columns, 1) }),
+  rename: step => ({ $project: { [step.newname]: `$${step.oldname}` } }),
+  delete: step => ({ $project: fromkeys(step.columns, 0) }),
+  newcolumn: step => ({ $project: { [step.column]: step.query } }),
+  aggregate: transformAggregate,
+  custom: step => step.query,
+};
+
+export class Mongo36Translator extends BaseTranslator {
+  translate(pipeline: Array<PipelineStep>) {
+    const mongoSteps = super.translate(pipeline).flat();
+    return simplifyMongoPipeline(mongoSteps);
+  }
 }
+Object.assign(Mongo36Translator.prototype, mapper);
 
 /**
  * Simplify a list of mongo steps (i.e. merge them whenever possible)
@@ -116,5 +106,5 @@ function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
 }
 
 export const translators = {
-  mongo36: pipeToMongo,
+  mongo36: new Mongo36Translator(),
 };
