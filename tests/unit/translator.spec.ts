@@ -1,19 +1,21 @@
 import * as S from '@/lib/steps';
 import { BaseTranslator, ALL_STEP_NAMES } from '@/lib/translators/base';
+import { backendsSupporting, registerTranslator, getTranslator } from '@/lib/translators/toolchain';
+
+class DummyStringTranslator extends BaseTranslator {
+  domain(step: S.DomainStep) {
+    return 'domain';
+  }
+  filter(step: S.FilterStep) {
+    return 'filter';
+  }
+  rename(step: S.RenameStep) {
+    return 'rename';
+  }
+}
 
 describe('base translator class', () => {
   class NoSupportTranslator extends BaseTranslator {}
-  class DummyStringTranslator extends BaseTranslator {
-    domain(step: S.DomainStep) {
-      return 'domain';
-    }
-    filter(step: S.FilterStep) {
-      return 'filter';
-    }
-    rename(step: S.RenameStep) {
-      return 'rename';
-    }
-  }
 
   it('should be able to get list of supported operations', () => {
     const notrs = new NoSupportTranslator();
@@ -56,5 +58,15 @@ describe('base translator class', () => {
         { name: 'rename', oldname: 'old2', newname: 'new2' },
       ]),
     ).toEqual(['domain', 'rename', 'rename']);
+  });
+});
+
+describe('translator registration', () => {
+  it('should be possible to register backends', () => {
+    const dummytrs = new DummyStringTranslator();
+    registerTranslator('dummy', dummytrs);
+    expect(getTranslator('dummy')).toBe(dummytrs);
+    expect(backendsSupporting('aggregate')).toEqual(['mongo36']);
+    expect(backendsSupporting('domain')).toEqual(['dummy', 'mongo36']);
   });
 });
