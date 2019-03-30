@@ -35,6 +35,17 @@ export type StepByType<A, T> = A extends { name: T } ? A : never;
 export type StepMatcher<T> = { [K in PipelineStepName]: (step: StepByType<PipelineStep, K>) => T };
 
 /**
+ * OutputStep is a base type for all step transformer functions. Since
+ * it doesn't contain any specific property, typescript should be happy with
+ * any object. Still, it's convenient to be able to declare a speciifc return type.
+ *
+ * NOTE: also accept `void` as a valid OutputStep, mostly for the BaseTranslator
+ * class.
+ */
+export type OutputStep = {} | void;
+export type MaybeArray<T> = T | Array<T>;
+
+/**;
  * Helper exception to handle unreachable conditions in a switch statement.
  * This will help the typescript compiler to raise an error if one or several
  * kind of steps are missing in a switch / case statement.
@@ -46,8 +57,10 @@ class Unreachable extends Error {
   }
 }
 
-export function matchStep<T>(matcher: StepMatcher<T>): (step: PipelineStep) => T {
-  return (step: PipelineStep): T => {
+export function matchStep(
+  matcher: StepMatcher<OutputStep>,
+): (step: PipelineStep) => MaybeArray<OutputStep> {
+  return (step: PipelineStep): OutputStep => {
     switch (step.name) {
       case 'domain':
         return matcher.domain(step);
