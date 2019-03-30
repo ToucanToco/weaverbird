@@ -1,12 +1,20 @@
 import { PipelineStep } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators/toolchain';
 
+describe('Mongo translator support tests', () => {
+  const mongo36translator = getTranslator('mongo36');
+
+  it('should support any kind of operation', () => {
+    expect(mongo36translator.unsupportedSteps).toEqual([]);
+  });
+});
+
 describe('Pipeline to mongo translator', () => {
   const mongo36translator = getTranslator('mongo36');
 
   it('can generate domain steps', () => {
     const pipeline: Array<PipelineStep> = [{ name: 'domain', domain: 'test_cube' }];
-    const querySteps = mongo36translator(pipeline);
+    const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
   });
 
@@ -22,7 +30,7 @@ describe('Pipeline to mongo translator', () => {
         query: { $concat: ['$country', ' - ', '$Region'] },
       },
     ];
-    const querySteps = mongo36translator(pipeline);
+    const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -42,7 +50,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
     ];
-    const querySteps = mongo36translator(pipeline);
+    const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: 'Pierre', Region: 'Europe' } },
     ]);
@@ -73,7 +81,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator(pipeline);
+    const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -109,7 +117,7 @@ describe('Pipeline to mongo translator', () => {
         query: { $group: { _id: '$country', population: { $sum: '$population' } } },
       },
     ];
-    const querySteps = mongo36translator(pipeline);
+    const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: 'Pierre' } },
       {
