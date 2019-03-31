@@ -1,6 +1,6 @@
 import * as S from '@/lib/steps';
+import { backendsSupporting, registerTranslator, getTranslator } from '@/lib/translators';
 import { BaseTranslator, ALL_STEP_NAMES } from '@/lib/translators/base';
-import { backendsSupporting, registerTranslator, getTranslator } from '@/lib/translators/toolchain';
 
 class DummyStringTranslator extends BaseTranslator {
   domain(step: S.DomainStep) {
