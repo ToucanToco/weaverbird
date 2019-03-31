@@ -1,5 +1,10 @@
 import * as S from '@/lib/steps';
-import { backendsSupporting, registerTranslator, getTranslator } from '@/lib/translators';
+import {
+  availableTranslators,
+  backendsSupporting,
+  registerTranslator,
+  getTranslator,
+} from '@/lib/translators';
 import { BaseTranslator, ALL_STEP_NAMES } from '@/lib/translators/base';
 
 class DummyStringTranslator extends BaseTranslator {
@@ -68,5 +73,16 @@ describe('translator registration', () => {
     expect(getTranslator('dummy')).toBe(dummytrs);
     expect(backendsSupporting('aggregate')).toEqual(['mongo36']);
     expect(backendsSupporting('domain')).toEqual(['dummy', 'mongo36']);
+  });
+
+  it('should throw an error if backend is not available', () => {
+    expect(() => getTranslator('bla')).toThrow();
+  });
+
+  it('should be possible to get all available translators', () => {
+    const dummytrs = new DummyStringTranslator();
+    registerTranslator('dummy', dummytrs);
+    const translators = availableTranslators();
+    expect(Object.keys(translators).sort()).toEqual(['dummy', 'mongo36']);
   });
 });

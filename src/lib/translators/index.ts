@@ -6,12 +6,10 @@
  *
  */
 import { PipelineStepName } from '@/lib/steps';
-import { translators as mongoTranslators } from '@/lib/translators/mongo';
 import { BaseTranslator } from './base';
+import { Mongo36Translator } from './mongo';
 
-export type TranslatorRegistryType = { [backend: string]: BaseTranslator };
-
-const TRANSLATORS: TranslatorRegistryType = {};
+const TRANSLATORS: { [backend: string]: BaseTranslator } = {};
 
 export function registerTranslator(backend: string, translator: BaseTranslator) {
   TRANSLATORS[backend] = translator;
@@ -26,6 +24,7 @@ export function registerTranslator(backend: string, translator: BaseTranslator) 
  * const result = translator(myPipeline);
  * ```
  */
+
 export function getTranslator(backend: string): BaseTranslator {
   if (TRANSLATORS[backend] === undefined) {
     throw new Error(
@@ -49,7 +48,12 @@ export function backendsSupporting(stepname: PipelineStepName) {
     .sort();
 }
 
-// register mongo translators
-for (const [backend, translator] of Object.entries(mongoTranslators)) {
-  registerTranslator(backend, translator);
+/**
+ * returns and object mapping each available backend to its corresponding translator.
+ */
+export function availableTranslators() {
+  // return a copy of TRANSLATORS to avoid strange mutations
+  return { ...TRANSLATORS };
 }
+
+registerTranslator('mongo36', new Mongo36Translator());
