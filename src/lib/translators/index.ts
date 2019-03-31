@@ -9,7 +9,6 @@ import { PipelineStepName } from '@/lib/steps';
 import { translators as mongoTranslators } from '@/lib/translators/mongo';
 import { BaseTranslator } from './base';
 
-// type TransformerFunc = (pipeline: Array<PipelineStep>) => any;
 export type TranslatorRegistryType = { [backend: string]: BaseTranslator };
 
 const TRANSLATORS: TranslatorRegistryType = {};
