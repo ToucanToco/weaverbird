@@ -9,10 +9,10 @@ import { PipelineStepName } from '@/lib/steps';
 import { BaseTranslator } from './base';
 import { Mongo36Translator } from './mongo';
 
-const TRANSLATORS: { [backend: string]: BaseTranslator } = {};
+const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
 
-export function registerTranslator(backend: string, translator: BaseTranslator) {
-  TRANSLATORS[backend] = translator;
+export function registerTranslator(backend: string, translatorClass: typeof BaseTranslator) {
+  TRANSLATORS[backend] = translatorClass;
 }
 
 /** return a function translating an array of pipeline steps to expected backend
@@ -33,7 +33,7 @@ export function getTranslator(backend: string): BaseTranslator {
       ).join(' | ')}`,
     );
   }
-  return TRANSLATORS[backend];
+  return new TRANSLATORS[backend]();
 }
 
 /**
@@ -43,7 +43,7 @@ export function getTranslator(backend: string): BaseTranslator {
  */
 export function backendsSupporting(stepname: PipelineStepName) {
   return Object.entries(TRANSLATORS)
-    .filter(([_, translator]) => translator.supports(stepname))
+    .filter(([_, translator]) => new translator().supports(stepname))
     .map(([backend, _]) => backend)
     .sort();
 }
@@ -52,8 +52,7 @@ export function backendsSupporting(stepname: PipelineStepName) {
  * returns and object mapping each available backend to its corresponding translator.
  */
 export function availableTranslators() {
-  // return a copy of TRANSLATORS to avoid strange mutations
   return { ...TRANSLATORS };
 }
 
-registerTranslator('mongo36', new Mongo36Translator());
+registerTranslator('mongo36', Mongo36Translator);

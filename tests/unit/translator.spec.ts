@@ -68,9 +68,7 @@ describe('base translator class', () => {
 
 describe('translator registration', () => {
   it('should be possible to register backends', () => {
-    const dummytrs = new DummyStringTranslator();
-    registerTranslator('dummy', dummytrs);
-    expect(getTranslator('dummy')).toBe(dummytrs);
+    registerTranslator('dummy', DummyStringTranslator);
     expect(backendsSupporting('aggregate')).toEqual(['mongo36']);
     expect(backendsSupporting('domain')).toEqual(['dummy', 'mongo36']);
   });
@@ -80,8 +78,7 @@ describe('translator registration', () => {
   });
 
   it('should be possible to get all available translators', () => {
-    const dummytrs = new DummyStringTranslator();
-    registerTranslator('dummy', dummytrs);
+    registerTranslator('dummy', DummyStringTranslator);
     const translators = availableTranslators();
     expect(Object.keys(translators).sort()).toEqual(['dummy', 'mongo36']);
   });
