@@ -104,7 +104,3 @@ function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
   }
   return outputSteps;
 }
-
-export const translators = {
-  mongo36: new Mongo36Translator(),
-};
