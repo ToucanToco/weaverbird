@@ -62,14 +62,14 @@ function transformReplace(step: ReplaceStep): MongoStep {
       [step.new_column || step.search_column]: {
         $cond: [
           {
-            $eq: [`$${step.search_column}`, `${step.oldvalue}`]
+            $eq: [`$${step.search_column}`, `${step.oldvalue}`],
           },
           `${step.newvalue}`,
-          `$${step.search_column}`
-        ]
-      }
-    }
-  }
+          `$${step.search_column}`,
+        ],
+      },
+    },
+  };
 }
 
 const mapper: StepMatcher<MongoStep> = {
@@ -81,7 +81,7 @@ const mapper: StepMatcher<MongoStep> = {
   newcolumn: step => ({ $project: { [step.column]: step.query } }),
   aggregate: transformAggregate,
   custom: step => step.query,
-  replace: transformReplace
+  replace: transformReplace,
 };
 
 export class Mongo36Translator extends BaseTranslator {
