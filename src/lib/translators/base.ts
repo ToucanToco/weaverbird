@@ -33,7 +33,7 @@ export class StepNotSupported extends Error {
  * @param descriptor the method descriptor
  */
 function unsupported(target: BaseTranslator, propertyKey: S.PipelineStepName, descriptor: any) {
-  descriptor.value = function(step: S.PipelineStep) {
+  descriptor.value = function (step: S.PipelineStep) {
     throw new StepNotSupported(step.name);
   };
   descriptor.value.__vqb_step_supported__ = false;
@@ -87,28 +87,31 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   }
 
   @unsupported
-  filter(step: S.FilterStep) {}
+  filter(step: S.FilterStep) { }
 
   @unsupported
-  domain(step: S.DomainStep) {}
+  domain(step: S.DomainStep) { }
 
   @unsupported
-  select(step: S.SelectStep) {}
+  select(step: S.SelectStep) { }
 
   @unsupported
-  rename(step: S.RenameStep) {}
+  rename(step: S.RenameStep) { }
 
   @unsupported
-  newcolumn(step: S.NewColumnStep) {}
+  newcolumn(step: S.NewColumnStep) { }
 
   @unsupported
-  delete(step: S.DeleteStep) {}
+  delete(step: S.DeleteStep) { }
 
   @unsupported
-  aggregate(step: S.AggregationStep) {}
+  aggregate(step: S.AggregationStep) { }
 
   @unsupported
-  custom(step: S.CustomStep) {}
+  custom(step: S.CustomStep) { }
+
+  @unsupported
+  replace(step: S.ReplaceStep) { }
 
   /**
    * translates an input pipeline into a list of steps that makes sense for the
@@ -144,6 +147,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
           break;
         case 'custom':
           result.push(this.custom(step));
+          break;
+        case 'replace':
+          result.push(this.replace(step));
           break;
         default:
           throw new Error(step);

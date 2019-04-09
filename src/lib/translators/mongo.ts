@@ -1,6 +1,6 @@
 /** This module contains mongo specific translation operations */
 
-import { AggregationStep, FilterStep, PipelineStep } from '@/lib/steps';
+import { AggregationStep, FilterStep, PipelineStep, ReplaceStep } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 
@@ -55,6 +55,23 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
   return [{ $group: group }, { $project: project }];
 }
 
+/** transform an 'replace' step into corresponding mongo steps */
+function transformReplace(step: ReplaceStep): MongoStep {
+  return {
+    $addFields: {
+      [step.new_column || step.search_column]: {
+        $cond: [
+          {
+            $eq: [`$${step.search_column}`, `${step.oldvalue}`]
+          },
+          `${step.newvalue}`,
+          `$${step.search_column}`
+        ]
+      }
+    }
+  }
+}
+
 const mapper: StepMatcher<MongoStep> = {
   domain: step => ({ $match: { domain: step.domain } }),
   filter: filterstepToMatchstep,
@@ -64,6 +81,7 @@ const mapper: StepMatcher<MongoStep> = {
   newcolumn: step => ({ $project: { [step.column]: step.query } }),
   aggregate: transformAggregate,
   custom: step => step.query,
+  replace: transformReplace
 };
 
 export class Mongo36Translator extends BaseTranslator {
