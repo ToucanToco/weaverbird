@@ -62,7 +62,7 @@ describe('Pipeline to mongo translator', () => {
       { $match: { domain: 'test_cube' } },
       {
         $addFields: {
-          zone: '$Region'
+          zone: '$Region',
         },
       },
       {
@@ -157,7 +157,7 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         $addFields: {
-          zone: '$Region'
+          zone: '$Region',
         },
       },
       {
