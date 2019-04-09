@@ -59,9 +59,12 @@ const mapper: StepMatcher<MongoStep> = {
   domain: step => ({ $match: { domain: step.domain } }),
   filter: filterstepToMatchstep,
   select: step => ({ $project: fromkeys(step.columns, 1) }),
-  rename: step => ({ $project: { [step.newname]: `$${step.oldname}` } }),
+  rename: step => ([
+    { $addFields: { [step.newname]: `$${step.oldname}` } },
+    { $project: { [step.oldname]: 0 } }
+  ]),
   delete: step => ({ $project: fromkeys(step.columns, 0) }),
-  newcolumn: step => ({ $project: { [step.column]: step.query } }),
+  newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
   aggregate: transformAggregate,
   custom: step => step.query,
 };
