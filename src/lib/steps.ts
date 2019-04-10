@@ -58,6 +58,14 @@ export interface CustomStep {
   query: object;
 }
 
+export interface ReplaceStep {
+  name: 'replace';
+  search_column: string;
+  new_column?: string;
+  oldvalue: string;
+  newvalue: string;
+}
+
 export type PipelineStep =
   | DomainStep
   | FilterStep
@@ -66,6 +74,7 @@ export type PipelineStep =
   | DeleteStep
   | NewColumnStep
   | AggregationStep
+  | ReplaceStep
   | CustomStep;
 
 export type PipelineStepName = PipelineStep['name'];

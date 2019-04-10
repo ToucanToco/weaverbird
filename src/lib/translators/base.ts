@@ -110,6 +110,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   custom(step: S.CustomStep) {}
 
+  @unsupported
+  replace(step: S.ReplaceStep) {}
+
   /**
    * translates an input pipeline into a list of steps that makes sense for the
    * targeted backend.
@@ -144,6 +147,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
           break;
         case 'custom':
           result.push(this.custom(step));
+          break;
+        case 'replace':
+          result.push(this.replace(step));
           break;
         default:
           throw new Error(step);

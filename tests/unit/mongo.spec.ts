@@ -133,4 +133,59 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a basic replace step', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'replace',
+        search_column: 'column_1',
+        oldvalue: 'foo',
+        newvalue: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          column_1: {
+            $cond: [
+              {
+                $eq: ['$column_1', 'foo'],
+              },
+              'bar',
+              '$column_1',
+            ],
+          },
+        },
+      },
+    ]);
+  });
+
+  it('can generate a basic replace step in a new column', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'replace',
+        search_column: 'column_1',
+        new_column: 'column_2',
+        oldvalue: 'foo',
+        newvalue: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          column_2: {
+            $cond: [
+              {
+                $eq: ['$column_1', 'foo'],
+              },
+              'bar',
+              '$column_1',
+            ],
+          },
+        },
+      },
+    ]);
+  });
 });
