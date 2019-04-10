@@ -123,7 +123,7 @@ A replace step has the following strucure:
 {
    name: 'replace',
    search_column: "column_1",
-   new_column: "column_1", # if empty, inplace by default
+   new_column: "column_1", // if empty, inplace by default
    oldvalue: 'foo',
    newvalue: 'bar',
 }
