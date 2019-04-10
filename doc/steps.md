@@ -112,3 +112,19 @@ other existing steps.
     query: '$group: {_id: ...}',
 }
 ```
+
+### `replace` step
+
+Replace value in a column, and write resulting column inplace or in a new column.
+
+A replace step has the following strucure:
+
+```javascript
+{
+   name: 'replace',
+   search_column: "column_1",
+   new_column: "column_1", # if empty, inplace by default
+   oldvalue: 'foo',
+   newvalue: 'bar',
+}
+```
