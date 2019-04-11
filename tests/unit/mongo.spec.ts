@@ -138,12 +138,24 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'delete', columns: ['Manager'] },
-      { name: 'select', columns: ['Region'] },
-      { name: 'rename', oldname: 'Region', newname: 'zone' },
-      { name: 'newcolumn', column: 'id', query: { $concat: ['$country', ' - ', '$Region'] } },
+      { name: 'select', columns: ['Country', 'Region', 'Population'] },
+      { name: 'newcolumn', column: 'id', query: { $concat: ['$Country', ' - ', '$Region'] } },
+      { name: 'rename', oldname: 'id', newname: 'Zone' },
+      {
+        name: 'replace',
+        search_column: 'Zone',
+        oldvalue: 'France - ',
+        newvalue: 'France',
+      },
+      {
+        name: 'replace',
+        search_column: 'Zone',
+        oldvalue: 'Spain - ',
+        newvalue: 'Spain',
+      },
       {
         name: 'custom',
-        query: { $group: { _id: '$country', population: { $sum: '$population' } } },
+        query: { $group: { _id: '$Zone', Population: { $sum: '$Population' } } },
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -152,26 +164,54 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Manager: 0,
+          Country: 1,
           Region: 1,
+          Population: 1,
         },
       },
       {
         $addFields: {
-          zone: '$Region',
+          id: { $concat: ['$Country', ' - ', '$Region'] },
+        },
+      },
+      {
+        $addFields: {
+          Zone: '$id',
         },
       },
       {
         $project: {
-          Region: 0,
+          id: 0,
         },
       },
       {
         $addFields: {
-          id: { $concat: ['$country', ' - ', '$Region'] },
+          Zone: {
+            $cond: [
+              {
+                $eq: ['$Zone', 'France - '],
+              },
+              'France',
+              '$Zone',
+            ],
+          },
         },
       },
       {
-        $group: { _id: '$country', population: { $sum: '$population' } },
+        $addFields: {
+          Zone: {
+            $cond: [
+              {
+                $eq: ['$Zone', 'Spain - '],
+              },
+              'Spain',
+              '$Zone',
+            ],
+          },
+        },
+      },
+      {
+        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
       },
     ]);
   });
