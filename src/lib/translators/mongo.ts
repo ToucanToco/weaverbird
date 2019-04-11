@@ -24,6 +24,8 @@ function fromkeys(keys: Array<string>, value = 0) {
 function filterstepToMatchstep(step: FilterStep): MongoStep {
   if (step.operator === undefined || step.operator === 'eq') {
     return { $match: { [step.column]: step.value } };
+  } else if (step.operator === 'ne') {
+    return { $match: { [step.column]: { $ne: step.value } } };
   } else {
     throw new Error(`Operator ${step.operator} is not handled yet.`);
   }
@@ -112,10 +114,62 @@ function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
 
   for (const step of mongoSteps.slice(1)) {
     if (step.$project !== undefined && lastStep.$project !== undefined) {
+      for (const key in step.$project) {
+        // We do not want to merge two $project with common keys
+        if (lastStep.$project.hasOwnProperty(key)) {
+          outputSteps.push(step);
+          lastStep = step;
+          continue;
+        } else {
+          // We do not want to merge two $project with a `step` key referencing
+          //as value a`lastStep` key
+          const projectString: string = JSON.stringify(step.$project[key]);
+          for (const lastKey in lastStep.$project) {
+            const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
+            if (regex.test(projectString)) {
+              outputSteps.push(step);
+              lastStep = step;
+              continue;
+            }
+          }
+        }
+      }
       // merge $project steps together
       lastStep.$project = { ...lastStep.$project, ...step.$project };
       continue;
+    } else if (step.$addFields !== undefined && lastStep.$addFields !== undefined) {
+      for (const key in step.$addFields) {
+        // We do not want to merge two $addFields with common keys
+        if (lastStep.$addFields.hasOwnProperty(key)) {
+          outputSteps.push(step);
+          lastStep = step;
+          continue;
+        } else {
+          // We do not want to merge two $addFields with a `step` key referencing
+          //as value a`lastStep` key
+          const addFieldsString: string = JSON.stringify(step.$addFields[key]);
+          for (const lastKey in lastStep.$addFields) {
+            const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
+            if (regex.test(addFieldsString)) {
+              outputSteps.push(step);
+              lastStep = step;
+              continue;
+            }
+          }
+        }
+      }
+      // merge $project steps together
+      lastStep.$addFields = { ...lastStep.$addFields, ...step.$addFields };
+      continue;
     } else if (step.$match !== undefined && lastStep.$match !== undefined) {
+      for (const key in step.$match) {
+        // We do not want to merge two $project with common keys
+        if (lastStep.$match.hasOwnProperty(key)) {
+          outputSteps.push(step);
+          lastStep = step;
+          continue;
+        }
+      }
       // merge $match steps together
       lastStep.$match = { ...lastStep.$match, ...step.$match };
       continue;
