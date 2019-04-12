@@ -138,7 +138,6 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Array<PipelineStep> = [
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
-      { name: 'filter', column: 'Manager', value: 'NA', operator: 'ne' },
       { name: 'delete', columns: ['Manager'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
@@ -163,6 +162,140 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube', Manager: 'Pierre' } },
+      {
+        $project: {
+          Manager: 0,
+          Country: 1,
+          Region: 1,
+          Population: 1,
+          Region_bis: 1,
+        },
+      },
+      {
+        // Two steps with common keys should not be merged
+        $project: {
+          Region_bis: 0,
+        },
+      },
+      {
+        $addFields: {
+          id: { $concat: ['$Country', ' - ', '$Region'] },
+        },
+      },
+      {
+        // A step with a key referencing as value any key present in the last
+        // step should not be merged with the latter
+        $addFields: {
+          Zone: '$id',
+        },
+      },
+      {
+        $project: {
+          id: 0,
+        },
+      },
+      {
+        $addFields: {
+          Zone: {
+            $cond: [
+              {
+                $eq: ['$Zone', 'France - '],
+              },
+              'France',
+              '$Zone',
+            ],
+          },
+        },
+      },
+      {
+        // Two steps with common keys should not be merged
+        $addFields: {
+          Zone: {
+            $cond: [
+              {
+                $eq: ['$Zone', 'Spain - '],
+              },
+              'Spain',
+              '$Zone',
+            ],
+          },
+          Population: { $divide: ['$Population', 1000] },
+        },
+      },
+      {
+        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
+      },
+    ]);
+  });
+
+  it('can simplify a mongo pipeline', () => {
+    const mongoPipeline: Array<MongoStep> = [
+      { $match: { domain: 'test_cube' } },
+      { $match: { Manager: 'Pierre' } },
+      { $match: { Manager: { $ne: 'NA' } } },
+      { $project: { Manager: 0 } },
+      {
+        $project: {
+          Country: 1,
+          Region: 1,
+          Population: 1,
+          Region_bis: 1,
+        },
+      },
+      { $project: { Region_bis: 0 } },
+      {
+        $addFields: {
+          id: { $concat: ['$Country', ' - ', '$Region'] },
+        },
+      },
+      {
+        $addFields: {
+          Zone: '$id',
+        },
+      },
+      {
+        $project: {
+          id: 0,
+        },
+      },
+      {
+        $addFields: {
+          Zone: {
+            $cond: [
+              {
+                $eq: ['$Zone', 'France - '],
+              },
+              'France',
+              '$Zone',
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          Zone: {
+            $cond: [
+              {
+                $eq: ['$Zone', 'Spain - '],
+              },
+              'Spain',
+              '$Zone',
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          Population: { $divide: ['$Population', 1000] },
+        },
+      },
+      {
+        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
+      },
+    ];
+    const querySteps = _simplifyMongoPipeline(mongoPipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: 'Pierre' } },
       { $match: { Manager: { $ne: 'NA' } } }, // Two steps with common keys should not be merged

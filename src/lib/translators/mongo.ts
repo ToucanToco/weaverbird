@@ -24,8 +24,6 @@ function fromkeys(keys: Array<string>, value = 0) {
 function filterstepToMatchstep(step: FilterStep): MongoStep {
   if (step.operator === undefined || step.operator === 'eq') {
     return { $match: { [step.column]: step.value } };
-  } else if (step.operator === 'ne') {
-    return { $match: { [step.column]: { $ne: step.value } } };
   } else {
     throw new Error(`Operator ${step.operator} is not handled yet.`);
   }
