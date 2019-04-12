@@ -78,10 +78,30 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
+      { name: 'filter', column: 'Company', value: 'Toucan', operator: 'ne' },
+      { name: 'filter', column: 'Age', value: 10, operator: 'lt' },
+      { name: 'filter', column: 'Height', value: 175, operator: 'le' },
+      { name: 'filter', column: 'Weight', value: 60, operator: 'gt' },
+      { name: 'filter', column: 'Value', value: 100, operator: 'ge' },
+      { name: 'filter', column: 'Category', value: ['Foo', 'Bar'], operator: 'in' },
+      { name: 'filter', column: 'Code', value: [0, 42], operator: 'nin' },
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
-      { $match: { domain: 'test_cube', Manager: 'Pierre', Region: 'Europe' } },
+      {
+        $match: {
+          domain: 'test_cube',
+          Manager: { $eq: 'Pierre' },
+          Region: { $eq: 'Europe' },
+          Company: { $ne: 'Toucan' },
+          Age: { $lt: 10 },
+          Height: { $lte: 175 },
+          Weight: { $gt: 60 },
+          Value: { $gte: 100 },
+          Category: { $in: ['Foo', 'Bar'] },
+          Code: { $nin: [0, 42] },
+        },
+      },
     ]);
   });
 
@@ -148,7 +168,7 @@ describe('Pipeline to mongo translator', () => {
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
-      { $match: { domain: 'test_cube', Manager: 'Pierre' } },
+      { $match: { domain: 'test_cube', Manager: { $eq: 'Pierre' } } },
       {
         $project: {
           Manager: 0,
