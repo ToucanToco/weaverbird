@@ -107,6 +107,16 @@ describe('Pipeline to mongo translator', () => {
             aggfunction: 'min',
             column: 'col1',
           },
+          {
+            name: 'maximum',
+            aggfunction: 'max',
+            column: 'col3',
+          },
+          {
+            name: 'number_rows',
+            aggfunction: 'count',
+            column: 'col3',
+          },
         ],
       },
     ];
@@ -119,6 +129,8 @@ describe('Pipeline to mongo translator', () => {
           sum: { $sum: '$col1' },
           average: { $avg: '$col2' },
           minimum: { $min: '$col1' },
+          maximum: { $max: '$col3' },
+          number_rows: { $sum: 1 },
         },
       },
       {
@@ -128,6 +140,8 @@ describe('Pipeline to mongo translator', () => {
           sum: 1,
           average: 1,
           minimum: 1,
+          maximum: 1,
+          number_rows: 1,
         },
       },
     ]);
