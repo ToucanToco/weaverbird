@@ -294,6 +294,12 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: { _id: '$Zone', Population: { $sum: '$Population' } },
       },
+      {
+        $project: { Zone: '$_id', Population: 1 },
+      },
+      {
+        $project: { Area: '$Zone', Population: 1 },
+      },
     ];
     const querySteps = _simplifyMongoPipeline(mongoPipeline);
     expect(querySteps).toEqual([
@@ -361,6 +367,14 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         $group: { _id: '$Zone', Population: { $sum: '$Population' } },
+      },
+      {
+        $project: { Zone: '$_id', Population: 1 },
+      },
+      // A step with a key referencing as value any key present in the last
+      // step should not be merged with the latter
+      {
+        $project: { Area: '$Zone', Population: 1 },
       },
     ]);
   });

@@ -106,6 +106,7 @@ Object.assign(Mongo36Translator.prototype, mapper);
  * @returns the list of simplified mongo steps
  */
 export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
+  let merge: boolean = true;
   const outputSteps: Array<MongoStep> = [];
   let lastStep: MongoStep = mongoSteps[0];
   outputSteps.push(lastStep);
@@ -115,9 +116,7 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
       for (const key in step.$project) {
         // We do not want to merge two $project with common keys
         if (lastStep.$project.hasOwnProperty(key)) {
-          outputSteps.push(step);
-          lastStep = step;
-          continue;
+          merge = false;
         } else {
           // We do not want to merge two $project with a `step` key referencing
           //as value a`lastStep` key
@@ -125,23 +124,21 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
           for (const lastKey in lastStep.$project) {
             const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
             if (regex.test(projectString)) {
-              outputSteps.push(step);
-              lastStep = step;
-              continue;
+              merge = false;
             }
           }
         }
       }
-      // merge $project steps together
-      lastStep.$project = { ...lastStep.$project, ...step.$project };
-      continue;
+      if (merge) {
+        // merge $project steps together
+        lastStep.$project = { ...lastStep.$project, ...step.$project };
+        continue;
+      }
     } else if (step.$addFields !== undefined && lastStep.$addFields !== undefined) {
       for (const key in step.$addFields) {
         // We do not want to merge two $addFields with common keys
         if (lastStep.$addFields.hasOwnProperty(key)) {
-          outputSteps.push(step);
-          lastStep = step;
-          continue;
+          merge = false;
         } else {
           // We do not want to merge two $addFields with a `step` key referencing
           //as value a`lastStep` key
@@ -149,31 +146,32 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
           for (const lastKey in lastStep.$addFields) {
             const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
             if (regex.test(addFieldsString)) {
-              outputSteps.push(step);
-              lastStep = step;
-              continue;
+              merge = false;
             }
           }
         }
       }
-      // merge $project steps together
-      lastStep.$addFields = { ...lastStep.$addFields, ...step.$addFields };
-      continue;
+      if (merge) {
+        // merge $project steps together
+        lastStep.$addFields = { ...lastStep.$addFields, ...step.$addFields };
+        continue;
+      }
     } else if (step.$match !== undefined && lastStep.$match !== undefined) {
       for (const key in step.$match) {
         // We do not want to merge two $project with common keys
         if (lastStep.$match.hasOwnProperty(key)) {
-          outputSteps.push(step);
-          lastStep = step;
-          continue;
+          merge = false;
         }
       }
-      // merge $match steps together
-      lastStep.$match = { ...lastStep.$match, ...step.$match };
-      continue;
+      if (merge) {
+        // merge $project steps together
+        lastStep.$match = { ...lastStep.$match, ...step.$match };
+        continue;
+      }
     }
     lastStep = step;
     outputSteps.push(lastStep);
+    merge = true;
   }
   return outputSteps;
 }
