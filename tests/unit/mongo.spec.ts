@@ -1,5 +1,6 @@
 import { PipelineStep } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
+import { Mongo36Translator, MongoStep, _simplifyMongoPipeline } from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');

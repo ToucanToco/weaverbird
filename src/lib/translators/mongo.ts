@@ -92,7 +92,7 @@ const mapper: StepMatcher<MongoStep> = {
 export class Mongo36Translator extends BaseTranslator {
   translate(pipeline: Array<PipelineStep>) {
     const mongoSteps = super.translate(pipeline).flat();
-    return simplifyMongoPipeline(mongoSteps);
+    return _simplifyMongoPipeline(mongoSteps);
   }
 }
 Object.assign(Mongo36Translator.prototype, mapper);
@@ -107,7 +107,7 @@ Object.assign(Mongo36Translator.prototype, mapper);
  *
  * @returns the list of simplified mongo steps
  */
-function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
+export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
   const outputSteps: Array<MongoStep> = [];
   let lastStep: MongoStep = mongoSteps[0];
   outputSteps.push(lastStep);
