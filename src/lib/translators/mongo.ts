@@ -106,20 +106,21 @@ Object.assign(Mongo36Translator.prototype, mapper);
  * @returns the list of simplified mongo steps
  */
 export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
-  let merge: boolean = true;
+  let merge = true;
   const outputSteps: Array<MongoStep> = [];
   let lastStep: MongoStep = mongoSteps[0];
   outputSteps.push(lastStep);
 
   for (const step of mongoSteps.slice(1)) {
-    const stepOperator: string = Object.keys(step)[0];
-    const isMergeable: boolean =
+    const [stepOperator] = Object.keys(step);
+    const isMergeable =
       stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
     if (isMergeable && lastStep[stepOperator] !== undefined) {
       for (const key in step[stepOperator]) {
         // We do not want to merge two $project with common keys
         if (lastStep[stepOperator].hasOwnProperty(key)) {
           merge = false;
+          break;
         } else if (stepOperator !== '$match') {
           // We do not want to merge two $project or $addFields with a `step`
           // key referencing as value a`lastStep` key
@@ -128,6 +129,7 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
             const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
             if (regex.test(valueString)) {
               merge = false;
+              break;
             }
           }
         }
