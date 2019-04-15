@@ -22,11 +22,18 @@ function fromkeys(keys: Array<string>, value = 0) {
 }
 
 function filterstepToMatchstep(step: FilterStep): MongoStep {
-  if (step.operator === undefined || step.operator === 'eq') {
-    return { $match: { [step.column]: step.value } };
-  } else {
-    throw new Error(`Operator ${step.operator} is not handled yet.`);
-  }
+  const operatorMapping = {
+    eq: '$eq',
+    ne: '$ne',
+    lt: '$lt',
+    le: '$lte',
+    gt: '$gt',
+    ge: '$gte',
+    in: '$in',
+    nin: '$nin',
+  };
+  step.operator = step.operator || 'eq';
+  return { $match: { [step.column]: { [operatorMapping[step.operator]]: step.value } } };
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
