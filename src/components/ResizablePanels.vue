@@ -1,0 +1,89 @@
+<template>
+  <div class="resizable-panels">
+    <div class="resizable-panels__panel" :style="leftPanelWidth">
+      <slot name="left-panel">Left panel</slot>
+    </div>
+
+    <div class="resizable-panels__resizer"
+      @mousedown="startResize()"
+    >
+      <div class="resizable-panels__line"></div>
+      <div class="resizable-panels__line"></div>
+      <div class="resizable-panels__line"></div>
+    </div>
+
+    <div class="resizable-panels__panel" :style="rightPanelWidth">
+      <slot name="right-panel">Right panel</slot>
+    </div>
+  </div>
+</template>
+<script  lang="ts">
+import Vue from 'vue'
+import { Component } from 'vue-property-decorator'
+
+@Component({
+  name: 'resizable-panels'
+})
+export default class ResizablePanels extends Vue {
+  private isResized: boolean = false;
+  private ratio: number = 0.4;
+
+  get leftPanelWidth() {
+    return {
+      width: `${this.ratio * 100}%`,
+    };
+  }
+
+  get rightPanelWidth() {
+    return {
+      width: `${1 - (this.ratio * 100)}%`,
+    };
+  }
+
+  startResize() {
+    const containerSize = this.$el.getBoundingClientRect();
+    const containerSizeOnAxis = containerSize.width;
+
+    const mousemoveListener = (e: any) => {
+      this.ratio = this.ratio + (e.movementX / containerSizeOnAxis)
+      this.isResized = true
+    }
+
+    const mouseupListener = () => {
+      this.isResized = false
+      window.removeEventListener('mousemove', mousemoveListener);
+      window.removeEventListener('mouseup', mouseupListener);
+      window.removeEventListener('blur', mouseupListener);
+    }
+
+    window.addEventListener('mousemove', mousemoveListener);
+    window.addEventListener('mouseup', mouseupListener);
+    window.addEventListener('blur', mouseupListener);
+  }
+
+}
+</script>
+<style lang="scss" scoped>
+  .resizable-panels {
+    display: flex;
+  }
+
+  .resizable-panels__panel {
+    display: flex;
+    height: 100%;
+  }
+
+  .resizable-panels__resizer {
+    display: flex;
+    justify-content: space-between;
+    width: 5px;
+    height: 100%;
+    cursor: ew-resize;
+  }
+
+  .resizable-panels__line {
+    width: 1px;
+    height: 100%;
+    background-color: rgba(0, 0, 0, .3);
+  }
+</style>
