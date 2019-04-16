@@ -42,7 +42,7 @@ export default class ResizablePanels extends Vue {
     const containerSize = this.$el.getBoundingClientRect();
     const containerSizeOnAxis = containerSize.width;
 
-    const mousemoveListener = (e: any) => {
+    const mousemoveListener = (e: MouseEvent) => {
       this.ratio = this.ratio + e.movementX / containerSizeOnAxis;
       this.isResized = true;
     };
