@@ -5,10 +5,12 @@
 
 import DomainSelector from '../src/components/DomainSelector.vue'
 import Pipeline from '../src/components/Pipeline.vue'
+import ResizablePanels from '../src/components/ResizablePanels.vue'
 import Step from '../src/components/Step.vue'
 
 export {
   DomainSelector,
   Pipeline,
+  ResizablePanels,
   Step,
 }

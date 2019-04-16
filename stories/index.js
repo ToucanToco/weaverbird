@@ -1,4 +1,4 @@
-import { Step } from '../dist/storybook/components';
+import { Step, ResizablePanels } from '../dist/storybook/components';
 import '../dist/vue-query-builder.css';
 
 import { withKnobs, text, boolean } from '@storybook/addon-knobs';
@@ -40,4 +40,13 @@ stories.addDecorator(withKnobs)
       }
     },
     template: '<step is-last :step="step"></step>'
+  }));
+
+
+const storiesResizablePanels = storiesOf('ResizablePanels', module);
+
+storiesResizablePanels
+  .add('default', () => ({
+    components: { ResizablePanels },
+    template: '<resizable-panels style="height: 600px;"></resizable-panels>'
   }));
