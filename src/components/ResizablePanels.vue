@@ -4,9 +4,7 @@
       <slot name="left-panel">Left panel</slot>
     </div>
 
-    <div class="resizable-panels__resizer"
-      @mousedown="startResize()"
-    >
+    <div class="resizable-panels__resizer" @mousedown="startResize()">
       <div class="resizable-panels__line"></div>
       <div class="resizable-panels__line"></div>
       <div class="resizable-panels__line"></div>
@@ -18,11 +16,11 @@
   </div>
 </template>
 <script  lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
 
 @Component({
-  name: 'resizable-panels'
+  name: 'resizable-panels',
 })
 export default class ResizablePanels extends Vue {
   private isResized: boolean = false;
@@ -36,7 +34,7 @@ export default class ResizablePanels extends Vue {
 
   get rightPanelWidth() {
     return {
-      width: `${1 - (this.ratio * 100)}%`,
+      width: `${1 - this.ratio * 100}%`,
     };
   }
 
@@ -45,24 +43,23 @@ export default class ResizablePanels extends Vue {
     const containerSizeOnAxis = containerSize.width;
 
     const mousemoveListener = (e: any) => {
-      this.ratio = this.ratio + (e.movementX / containerSizeOnAxis)
-      this.isResized = true
-    }
+      this.ratio = this.ratio + e.movementX / containerSizeOnAxis;
+      this.isResized = true;
+    };
 
     const mouseupListener = () => {
-      this.isResized = false
+      this.isResized = false;
       window.removeEventListener('mousemove', mousemoveListener);
       window.removeEventListener('mouseup', mouseupListener);
       window.removeEventListener('blur', mouseupListener);
-    }
+    };
 
     window.addEventListener('mousemove', mousemoveListener);
     window.addEventListener('mouseup', mouseupListener);
     window.addEventListener('blur', mouseupListener);
   }
-
 }
 </script>
 <style lang="scss" scoped>
-   @import '../styles/ResizablePanels';
+@import '../styles/ResizablePanels';
 </style>

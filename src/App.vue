@@ -2,7 +2,12 @@
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
     <ResizablePanels>
-      <Pipeline slot="left-panel" :steps="steps" :domains-list="domainsList" @selectedPipeline="setSteps"/>
+      <Pipeline
+        slot="left-panel"
+        :steps="steps"
+        :domains-list="domainsList"
+        @selectedPipeline="setSteps"
+      />
     </ResizablePanels>
   </div>
 </template>
