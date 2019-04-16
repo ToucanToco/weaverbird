@@ -1,11 +1,11 @@
 import { shallowMount, WrapperArray } from '@vue/test-utils';
 import ResizablePanels from '../../src/components/ResizablePanels.vue';
 
-describe.only('Resizable Panels', () => {
+describe('Resizable Panels', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(ResizablePanels);
-    const panels: WrapperArray<ResizablePanels> = wrapper.findAll('.resizable-panels__panel');
+    const panels: WrapperArray<any> = wrapper.findAll('.resizable-panels__panel');
 
 
     expect(wrapper.exists()).toBeTruthy();
