@@ -66,6 +66,12 @@ export interface ReplaceStep {
   newvalue: string;
 }
 
+export interface SortStep {
+  name: 'sort';
+  columns: Array<string>;
+  order?: Array<'asc' | 'desc'>;
+}
+
 export type PipelineStep =
   | DomainStep
   | FilterStep
@@ -75,6 +81,7 @@ export type PipelineStep =
   | NewColumnStep
   | AggregationStep
   | ReplaceStep
+  | SortStep
   | CustomStep;
 
 export type PipelineStepName = PipelineStep['name'];

@@ -467,4 +467,89 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a basic sort step on one column', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'sort',
+        columns: ['foo'],
+        order: ['desc'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    Mongo36Translator;
+    expect(querySteps).toEqual([
+      {
+        $sort: {
+          foo: -1,
+        },
+      },
+    ]);
+  });
+
+  it('can generate a sort step on multiple columns', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'sort',
+        columns: ['foo', 'bar'],
+        order: ['asc', 'desc'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    Mongo36Translator;
+    expect(querySteps).toEqual([
+      {
+        $sort: {
+          foo: 1,
+          bar: -1,
+        },
+      },
+    ]);
+  });
+
+  it('can generate a sort step on multiple columns with default order', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'sort',
+        columns: ['foo', 'bar'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    Mongo36Translator;
+    expect(querySteps).toEqual([
+      {
+        $sort: {
+          foo: 1,
+          bar: 1,
+        },
+      },
+    ]);
+  });
+
+  // it('can generate a basic sort step on one column', () => {
+  //   const pipeline: Array<PipelineStep> = [
+  //     {
+  //       name: 'sort',
+  //       columns: ['foo', 'bar'],
+  //       order: ['asc', 'desc'],
+  //     },
+  //   ];
+  //   const querySteps = mongo36translator.translate(pipeline);
+  //   Mongo36Translator;
+  //   expect(querySteps).toEqual([
+  //     {
+  //       $addFields: {
+  //         column_2: {
+  //           $cond: [
+  //             {
+  //               $eq: ['$column_1', 'foo'],
+  //             },
+  //             'bar',
+  //             '$column_1',
+  //           ],
+  //         },
+  //       },
+  //     },
+  //   ]);
+  // });
 });
