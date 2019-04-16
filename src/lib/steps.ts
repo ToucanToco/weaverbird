@@ -37,10 +37,10 @@ export interface NewColumnStep {
 }
 
 interface AggFunctionStep {
-  /** name of the agg function step, (typically the name of the output column) */
-  name: string;
+  /** Name of the output column */
+  newcolumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
-  aggfunction: string;
+  aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
   /** the column the aggregation function is working on */
   column: string;
 }
