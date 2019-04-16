@@ -23,7 +23,7 @@ import { Component } from 'vue-property-decorator';
   name: 'resizable-panels',
 })
 export default class ResizablePanels extends Vue {
-  private isResized: boolean = false;
+  private isResized = false;
   private ratio: number = 0.4;
 
   get leftPanelWidth() {
