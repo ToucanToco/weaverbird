@@ -92,8 +92,8 @@ An aggreation step has the following strucure:
    on: ['column1', 'column2'],
    aggregations:  [
       {
-          name: 'sum_value1'
-          operation: 'sum'
+          newcolumn: 'sum_value1'
+          aggfunction: 'sum'
           column: 'value1',
       }
     // ...

@@ -42,11 +42,11 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
     if (aggf_step.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
       // an equivalent result
-      group[aggf_step.name] = {
+      group[aggf_step.newcolumn] = {
         $sum: 1,
       };
     } else {
-      group[aggf_step.name] = {
+      group[aggf_step.newcolumn] = {
         [`$${aggf_step.aggfunction}`]: `$${aggf_step.column}`,
       };
     }

@@ -93,27 +93,27 @@ describe('Pipeline to mongo translator', () => {
         on: ['col_agg1', 'col_agg2'],
         aggregations: [
           {
-            name: 'sum',
+            newcolumn: 'sum',
             aggfunction: 'sum',
             column: 'col1',
           },
           {
-            name: 'average',
+            newcolumn: 'average',
             aggfunction: 'avg',
             column: 'col2',
           },
           {
-            name: 'minimum',
+            newcolumn: 'minimum',
             aggfunction: 'min',
             column: 'col1',
           },
           {
-            name: 'maximum',
+            newcolumn: 'maximum',
             aggfunction: 'max',
             column: 'col3',
           },
           {
-            name: 'number_rows',
+            newcolumn: 'number_rows',
             aggfunction: 'count',
             column: 'col3',
           },
