@@ -105,7 +105,7 @@ const mapper: StepMatcher<MongoStep> = {
 export class Mongo36Translator extends BaseTranslator {
   translate(pipeline: Array<PipelineStep>) {
     const mongoSteps = super.translate(pipeline).flat();
-    return simplifyMongoPipeline(mongoSteps);
+    return _simplifyMongoPipeline(mongoSteps);
   }
 }
 Object.assign(Mongo36Translator.prototype, mapper);
@@ -120,23 +120,44 @@ Object.assign(Mongo36Translator.prototype, mapper);
  *
  * @returns the list of simplified mongo steps
  */
-function simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
+export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
+  let merge = true;
   const outputSteps: Array<MongoStep> = [];
   let lastStep: MongoStep = mongoSteps[0];
   outputSteps.push(lastStep);
 
   for (const step of mongoSteps.slice(1)) {
-    if (step.$project !== undefined && lastStep.$project !== undefined) {
-      // merge $project steps together
-      lastStep.$project = { ...lastStep.$project, ...step.$project };
-      continue;
-    } else if (step.$match !== undefined && lastStep.$match !== undefined) {
-      // merge $match steps together
-      lastStep.$match = { ...lastStep.$match, ...step.$match };
-      continue;
+    const [stepOperator] = Object.keys(step);
+    const isMergeable =
+      stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
+    if (isMergeable && lastStep[stepOperator] !== undefined) {
+      for (const key in step[stepOperator]) {
+        // We do not want to merge two $project with common keys
+        if (lastStep[stepOperator].hasOwnProperty(key)) {
+          merge = false;
+          break;
+        } else if (stepOperator !== '$match') {
+          // We do not want to merge two $project or $addFields with a `step`
+          // key referencing as value a`lastStep` key
+          const valueString: string = JSON.stringify(step[stepOperator][key]);
+          for (const lastKey in lastStep[stepOperator]) {
+            const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
+            if (regex.test(valueString)) {
+              merge = false;
+              break;
+            }
+          }
+        }
+      }
+      if (merge) {
+        // merge $project steps together
+        lastStep[stepOperator] = { ...lastStep[stepOperator], ...step[stepOperator] };
+        continue;
+      }
     }
     lastStep = step;
     outputSteps.push(lastStep);
+    merge = true;
   }
   return outputSteps;
 }
