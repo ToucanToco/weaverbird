@@ -1,18 +1,22 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <Pipeline :steps="steps" :domains-list="domainsList" @selectedPipeline="setSteps"/>
+    <ResizablePanels>
+      <Pipeline slot="left-panel" :steps="steps" :domains-list="domainsList" @selectedPipeline="setSteps"/>
+    </ResizablePanels>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import Pipeline from './components/Pipeline.vue';
+import ResizablePanels from './components/ResizablePanels.vue';
 import { PipelineStep } from '@/lib/steps';
 
 @Component({
   components: {
     Pipeline,
+    ResizablePanels,
   },
 })
 export default class App extends Vue {

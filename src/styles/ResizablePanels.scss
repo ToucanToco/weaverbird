@@ -1,0 +1,21 @@
+.resizable-panels {
+  display: flex;
+}
+
+.resizable-panels__panel {
+  display: flex;
+  padding: 10px 15px;
+  height: 100%;
+}
+
+.resizable-panels__resizer {
+  display: flex;
+  justify-content: space-between;
+  width: 5px;
+  cursor: ew-resize;
+}
+
+.resizable-panels__line {
+  width: 1px;
+  background-color: rgba(0, 0, 0, .3);
+}

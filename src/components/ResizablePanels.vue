@@ -64,26 +64,5 @@ export default class ResizablePanels extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-  .resizable-panels {
-    display: flex;
-  }
-
-  .resizable-panels__panel {
-    display: flex;
-    height: 100%;
-  }
-
-  .resizable-panels__resizer {
-    display: flex;
-    justify-content: space-between;
-    width: 5px;
-    height: 100%;
-    cursor: ew-resize;
-  }
-
-  .resizable-panels__line {
-    width: 1px;
-    height: 100%;
-    background-color: rgba(0, 0, 0, .3);
-  }
+   @import '../styles/ResizablePanels';
 </style>
