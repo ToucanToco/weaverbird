@@ -10,7 +10,8 @@
     "build-doc": "typedoc --readme README.md --out dist/docs src/",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "storybook:bundle": "rollup -c .storybook/rollup.config.js",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "tdd": "vue-cli-service test:unit --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.3.4",
@@ -83,5 +84,8 @@
   "peerDependencies": {
     "vue": "2.x"
   },
-  "sideeffects": false
+  "sideeffects": false,
+  "dependencies": {
+    "vue-test-utils": "^1.0.0-beta.11"
+  }
 }
