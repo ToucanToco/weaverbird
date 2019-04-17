@@ -139,7 +139,7 @@ and the `order` parameter must be of same length as `columns`. By default, if
 ```javascript
 {
     name: 'sort',
-    columns: ['foo', 'bar']
+    columns: ['foo', 'bar'],
     order: ['asc', 'desc']
 }
 ```
