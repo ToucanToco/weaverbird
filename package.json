@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e < ./coverage/coverage-final.json",
     "serve": "vue-cli-service serve src/example.ts",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -30,6 +31,7 @@
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.5",
     "babel-preset-vue": "^2.0.2",
+    "codecov": "^3.3.0",
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.11.0",
