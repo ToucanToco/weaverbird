@@ -128,3 +128,18 @@ A replace step has the following strucure:
    newvalue: 'bar',
 }
 ```
+
+### 'sort' step
+
+Sort values in one or several columns. Order can be either 'asc' or 'desc'.
+When sorting on several columns, order of columns specified in `columns` matters,
+and the `order` parameter must be of same length as `columns`. By default, if
+`order` is not specified, it is considered as 'asc'.
+
+```javascript
+{
+    name: 'sort',
+    columns: ['foo', 'bar'],
+    order: ['asc', 'desc']
+}
+```

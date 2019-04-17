@@ -1,6 +1,6 @@
 /** This module contains mongo specific translation operations */
 
-import { AggregationStep, FilterStep, PipelineStep, ReplaceStep } from '@/lib/steps';
+import { AggregationStep, FilterStep, PipelineStep, ReplaceStep, SortStep } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 
@@ -87,6 +87,17 @@ function transformReplace(step: ReplaceStep): MongoStep {
   };
 }
 
+/** transform a 'sort' step into corresponding mongo steps */
+function transformSort(step: SortStep): MongoStep {
+  const sortMongo: PropMap<number> = {};
+  const sortOrders = step.order === undefined ? Array(step.columns.length).fill('asc') : step.order;
+  for (let i = 0; i < step.columns.length; i++) {
+    const order = sortOrders[i] === 'asc' ? 1 : -1;
+    sortMongo[step.columns[i]] = order;
+  }
+  return { $sort: sortMongo };
+}
+
 const mapper: StepMatcher<MongoStep> = {
   domain: step => ({ $match: { domain: step.domain } }),
   filter: filterstepToMatchstep,
@@ -100,6 +111,7 @@ const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
   custom: step => step.query,
   replace: transformReplace,
+  sort: transformSort,
 };
 
 export class Mongo36Translator extends BaseTranslator {

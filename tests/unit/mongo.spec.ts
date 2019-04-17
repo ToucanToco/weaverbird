@@ -1,6 +1,6 @@
 import { PipelineStep } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { Mongo36Translator, MongoStep, _simplifyMongoPipeline } from '@/lib/translators/mongo';
+import { MongoStep, _simplifyMongoPipeline } from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
@@ -463,6 +463,61 @@ describe('Pipeline to mongo translator', () => {
               '$column_1',
             ],
           },
+        },
+      },
+    ]);
+  });
+
+  it('can generate a basic sort step on one column', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'sort',
+        columns: ['foo'],
+        order: ['desc'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $sort: {
+          foo: -1,
+        },
+      },
+    ]);
+  });
+
+  it('can generate a sort step on multiple columns', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'sort',
+        columns: ['foo', 'bar'],
+        order: ['asc', 'desc'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $sort: {
+          foo: 1,
+          bar: -1,
+        },
+      },
+    ]);
+  });
+
+  it('can generate a sort step on multiple columns with default order', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'sort',
+        columns: ['foo', 'bar'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $sort: {
+          foo: 1,
+          bar: 1,
         },
       },
     ]);
