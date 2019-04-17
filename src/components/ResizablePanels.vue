@@ -6,8 +6,6 @@
 
     <div class="resizable-panels__resizer" @mousedown="startResize()">
       <div class="resizable-panels__line"></div>
-      <div class="resizable-panels__line"></div>
-      <div class="resizable-panels__line"></div>
     </div>
 
     <div class="resizable-panels__panel" :style="rightPanelWidth">
@@ -34,16 +32,15 @@ export default class ResizablePanels extends Vue {
 
   get rightPanelWidth() {
     return {
-      width: `${1 - this.ratio * 100}%`,
+      width: `${(1 - this.ratio) * 100}%`,
     };
   }
 
   startResize() {
-    const containerSize = this.$el.getBoundingClientRect();
-    const containerSizeOnAxis = containerSize.width;
+    const containerWith = this.$el.getBoundingClientRect().width;
 
     const mousemoveListener = (e: MouseEvent) => {
-      this.ratio = this.ratio + e.movementX / containerSizeOnAxis;
+      this.ratio = this.ratio + e.movementX / containerWith;
       this.isResized = true;
     };
 
