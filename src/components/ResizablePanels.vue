@@ -21,7 +21,6 @@ import { Component } from 'vue-property-decorator';
   name: 'resizable-panels',
 })
 export default class ResizablePanels extends Vue {
-  private isResized = false;
   private ratio: number = 0.4;
 
   get leftPanelWidth() {
@@ -41,11 +40,9 @@ export default class ResizablePanels extends Vue {
 
     const mousemoveListener = (e: MouseEvent) => {
       this.ratio = this.ratio + e.movementX / containerWith;
-      this.isResized = true;
     };
 
     const mouseupListener = () => {
-      this.isResized = false;
       window.removeEventListener('mousemove', mousemoveListener);
       window.removeEventListener('mouseup', mouseupListener);
       window.removeEventListener('blur', mouseupListener);

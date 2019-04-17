@@ -54,17 +54,6 @@ describe('Resizable Panels', () => {
   });
 
   describe('when resizing', () => {
-    it('should know that is being resized', () => {
-      const wrapper = shallowMount(ResizablePanels, {
-        attachToDocument: true,
-      });
-      const resizerWrapper = wrapper.find('.resizable-panels__resizer');
-
-      resizerWrapper.trigger('mousedown');
-      wrapper.trigger('mousemove', { movementX: 10 });
-      expect(wrapper.vm.$data.isResized).toBeTruthy();
-    });
-
     it('should change the ratio', () => {
       const wrapper = shallowMount(ResizablePanels, {
         attachToDocument: true,
