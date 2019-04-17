@@ -477,7 +477,6 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    Mongo36Translator;
     expect(querySteps).toEqual([
       {
         $sort: {
@@ -496,7 +495,6 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    Mongo36Translator;
     expect(querySteps).toEqual([
       {
         $sort: {
@@ -515,7 +513,6 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    Mongo36Translator;
     expect(querySteps).toEqual([
       {
         $sort: {
@@ -525,31 +522,4 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
-
-  // it('can generate a basic sort step on one column', () => {
-  //   const pipeline: Array<PipelineStep> = [
-  //     {
-  //       name: 'sort',
-  //       columns: ['foo', 'bar'],
-  //       order: ['asc', 'desc'],
-  //     },
-  //   ];
-  //   const querySteps = mongo36translator.translate(pipeline);
-  //   Mongo36Translator;
-  //   expect(querySteps).toEqual([
-  //     {
-  //       $addFields: {
-  //         column_2: {
-  //           $cond: [
-  //             {
-  //               $eq: ['$column_1', 'foo'],
-  //             },
-  //             'bar',
-  //             '$column_1',
-  //           ],
-  //         },
-  //       },
-  //     },
-  //   ]);
-  // });
 });

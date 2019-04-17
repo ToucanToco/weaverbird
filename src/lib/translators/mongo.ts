@@ -89,12 +89,10 @@ function transformReplace(step: ReplaceStep): MongoStep {
 
 /** transform a 'sort' step into corresponding mongo steps */
 function transformSort(step: SortStep): MongoStep {
-  let sortMongo: PropMap<number> = {};
-  if (step.order === undefined) {
-    step.order = Array(step.columns.length).fill('asc');
-  }
+  const sortMongo: PropMap<number> = {};
+  const sortOrders = step.order === undefined ? Array(step.columns.length).fill('asc') : step.order;
   for (let i = 0; i < step.columns.length; i++) {
-    const order = step.order[i] === 'asc' ? 1 : -1;
+    const order = sortOrders[i] === 'asc' ? 1 : -1;
     sortMongo[step.columns[i]] = order;
   }
   return { $sort: sortMongo };
