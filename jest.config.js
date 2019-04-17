@@ -3,7 +3,7 @@ module.exports = {
 
   collectCoverage: true,
   collectCoverageFrom: ['**/*.{ts,vue}', '!**/node_modules/**'],
-  coverageReporters: ['html', 'json'],
+  coverageReporters: ['html', 'lcov', 'json'],
 
   transform: {
     '^.+\\.vue$': 'vue-jest',
