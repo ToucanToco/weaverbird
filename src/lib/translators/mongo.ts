@@ -7,6 +7,7 @@ import {
   ReplaceStep,
   SortStep,
   TopStep,
+  PercentageStep,
 } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
@@ -94,6 +95,42 @@ function transformReplace(step: ReplaceStep): MongoStep {
   };
 }
 
+/** transform an 'percentage' step into corresponding mongo steps */
+function transformPercentage(step: PercentageStep): Array<MongoStep> {
+  const mongoPipeline: Array<MongoStep> = [];
+  const groupMongo: MongoStep = {};
+  let groupCols: PropMap<string> | null = {};
+  const addFieldsMongo: MongoStep = {};
+  const newCol = step.new_column || step.column;
+
+  // Prepare the $group Mongo step
+  if (step.group) {
+    for (const col of step.group) {
+      groupCols[col] = `$${col}`;
+    }
+  } else {
+    groupCols = null;
+  }
+  groupMongo['$group'] = {
+    _id: groupCols,
+    tcAppArray: { $push: '$$ROOT' },
+    tcTotalDenum: { $sum: `$${step.column}` },
+  };
+
+  // Prepare the $addFields Mongo step
+  addFieldsMongo['$addFields'] = {
+    [newCol]: {
+      $cond: [
+        { $eq: ['$tcTotalDenum', 0] },
+        null,
+        { $divide: [`$tcAppArray.${step.column}`, '$tcTotalDenum'] },
+      ],
+    },
+  };
+
+  return [groupMongo, { $unwind: '$tcAppArray' }, addFieldsMongo];
+}
+
 /** transform a 'sort' step into corresponding mongo steps */
 function transformSort(step: SortStep): MongoStep {
   const sortMongo: PropMap<number> = {};
@@ -150,6 +187,7 @@ const mapper: StepMatcher<MongoStep> = {
     },
   }),
   top: transformTop,
+  percentage: transformPercentage,
 };
 
 export class Mongo36Translator extends BaseTranslator {

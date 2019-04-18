@@ -587,4 +587,70 @@ describe('Pipeline to mongo translator', () => {
       { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
     ]);
   });
+
+  it('can generate a percentage step with groups and result in a new column', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'percentage',
+        new_column: 'new_col',
+        column: 'bar',
+        group: ['foo'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: { foo: '$foo' },
+          tcAppArray: { $push: '$$ROOT' },
+          tcTotalDenum: { $sum: '$bar' },
+        },
+      },
+      { $unwind: '$tcAppArray' },
+      {
+        $addFields: {
+          new_col: {
+            // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
+            $cond: [
+              { $eq: ['$tcTotalDenum', 0] },
+              null,
+              { $divide: ['$tcAppArray.bar', '$tcTotalDenum'] },
+            ],
+          },
+        },
+      },
+    ]);
+  });
+
+  it('can generate a percentage step without groups and result inplace', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'percentage',
+        column: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: null,
+          tcAppArray: { $push: '$$ROOT' },
+          tcTotalDenum: { $sum: '$bar' },
+        },
+      },
+      { $unwind: '$tcAppArray' },
+      {
+        $addFields: {
+          bar: {
+            // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
+            $cond: [
+              { $eq: ['$tcTotalDenum', 0] },
+              null,
+              { $divide: ['$tcAppArray.bar', '$tcTotalDenum'] },
+            ],
+          },
+        },
+      },
+    ]);
+  });
 });
