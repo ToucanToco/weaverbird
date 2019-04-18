@@ -112,6 +112,13 @@ const mapper: StepMatcher<MongoStep> = {
   custom: step => step.query,
   replace: transformReplace,
   sort: transformSort,
+  fillna: step => ({
+    $addFields: {
+      [step.column]: {
+        $cond: [{ $eq: [`$${step.column}`, null] }, `${step.value}`, `$${step.column}`],
+      },
+    },
+  }),
 };
 
 export class Mongo36Translator extends BaseTranslator {

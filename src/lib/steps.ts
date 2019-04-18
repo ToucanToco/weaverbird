@@ -72,6 +72,12 @@ export interface SortStep {
   order?: Array<'asc' | 'desc'>;
 }
 
+export interface FillnaStep {
+  name: 'fillna';
+  column: string;
+  value: string | number;
+}
+
 export type PipelineStep =
   | DomainStep
   | FilterStep
@@ -82,6 +88,7 @@ export type PipelineStep =
   | AggregationStep
   | ReplaceStep
   | SortStep
+  | FillnaStep
   | CustomStep;
 
 export type PipelineStepName = PipelineStep['name'];
