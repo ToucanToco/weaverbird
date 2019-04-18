@@ -602,23 +602,26 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: {
           _id: { foo: '$foo' },
-          tcAppArray: { $push: '$$ROOT' },
-          tcTotalDenum: { $sum: '$bar' },
+          _tcAppArray: { $push: '$$ROOT' },
+          _tcTotalDenum: { $sum: '$bar' },
         },
       },
-      { $unwind: '$tcAppArray' },
+      { $unwind: '$_tcAppArray' },
       {
-        $addFields: {
+        $project: {
           new_col: {
             // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
             $cond: [
-              { $eq: ['$tcTotalDenum', 0] },
+              { $eq: ['$_tcTotalDenum', 0] },
               null,
-              { $divide: ['$tcAppArray.bar', '$tcTotalDenum'] },
+              { $divide: ['$_tcAppArray.bar', '$_tcTotalDenum'] },
             ],
           },
+          _tcTotalDenum: 0,
         },
       },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_tcAppArray', '$$ROOT'] } } },
+      { $project: { _tcAppArray: 0 } },
     ]);
   });
 
@@ -634,23 +637,26 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: {
           _id: null,
-          tcAppArray: { $push: '$$ROOT' },
-          tcTotalDenum: { $sum: '$bar' },
+          _tcAppArray: { $push: '$$ROOT' },
+          _tcTotalDenum: { $sum: '$bar' },
         },
       },
-      { $unwind: '$tcAppArray' },
+      { $unwind: '$_tcAppArray' },
       {
-        $addFields: {
+        $project: {
           bar: {
             // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
             $cond: [
-              { $eq: ['$tcTotalDenum', 0] },
+              { $eq: ['$_tcTotalDenum', 0] },
               null,
-              { $divide: ['$tcAppArray.bar', '$tcTotalDenum'] },
+              { $divide: ['$_tcAppArray.bar', '$_tcTotalDenum'] },
             ],
           },
+          _tcTotalDenum: 0,
         },
       },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_tcAppArray', '$$ROOT'] } } },
+      { $project: { _tcAppArray: 0 } },
     ]);
   });
 });
