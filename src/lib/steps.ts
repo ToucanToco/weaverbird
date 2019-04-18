@@ -88,6 +88,13 @@ export interface TopStep {
   limit: number;
 }
 
+export interface PercentageStep {
+  name: 'percentage';
+  new_column?: string;
+  column: string;
+  group?: Array<string>;
+}
+
 export type PipelineStep =
   | DomainStep
   | FilterStep
@@ -100,6 +107,7 @@ export type PipelineStep =
   | SortStep
   | FillnaStep
   | TopStep
+  | PercentageStep
   | CustomStep;
 
 export type PipelineStepName = PipelineStep['name'];
