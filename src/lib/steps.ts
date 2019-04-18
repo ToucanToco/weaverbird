@@ -2,6 +2,8 @@
  * This module defines the supported unit-of-transformation steps.
  */
 
+type primitiveType = number | boolean | string | Date;
+
 export interface DomainStep {
   name: 'domain';
   domain: string;
@@ -75,7 +77,7 @@ export interface SortStep {
 export interface FillnaStep {
   name: 'fillna';
   column: string;
-  value: string | number;
+  value: primitiveType;
 }
 
 export type PipelineStep =
