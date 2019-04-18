@@ -97,10 +97,9 @@ function transformReplace(step: ReplaceStep): MongoStep {
 
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: PercentageStep): Array<MongoStep> {
-  const mongoPipeline: Array<MongoStep> = [];
   const groupMongo: MongoStep = {};
   let groupCols: PropMap<string> | null = {};
-  const addFieldsMongo: MongoStep = {};
+  const projectMongo: MongoStep = {};
   const newCol = step.new_column || step.column;
 
   // Prepare the $group Mongo step
@@ -113,22 +112,30 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
   }
   groupMongo['$group'] = {
     _id: groupCols,
-    tcAppArray: { $push: '$$ROOT' },
-    tcTotalDenum: { $sum: `$${step.column}` },
+    _tcAppArray: { $push: '$$ROOT' },
+    _tcTotalDenum: { $sum: `$${step.column}` },
   };
 
-  // Prepare the $addFields Mongo step
-  addFieldsMongo['$addFields'] = {
+  // Prepare the $project Mongo step
+  projectMongo['$project'] = {
     [newCol]: {
       $cond: [
-        { $eq: ['$tcTotalDenum', 0] },
+        { $eq: ['$_tcTotalDenum', 0] },
         null,
-        { $divide: [`$tcAppArray.${step.column}`, '$tcTotalDenum'] },
+        { $divide: [`$_tcAppArray.${step.column}`, '$_tcTotalDenum'] },
       ],
     },
+    _tcTotalDenum: 0, // We do not want to keep that column at the end
   };
 
-  return [groupMongo, { $unwind: '$tcAppArray' }, addFieldsMongo];
+  return [
+    groupMongo,
+    { $unwind: '$_tcAppArray' },
+    projectMongo,
+    // Line below: Keep all columns that were not used in computation, 'stored' in _tcAppArray
+    { $replaceRoot: { newRoot: { $mergeObjects: ['$_tcAppArray', '$$ROOT'] } } },
+    { $project: { _tcAppArray: 0 } }, // We do not want to keep that column at the end
+  ];
 }
 
 /** transform a 'sort' step into corresponding mongo steps */
