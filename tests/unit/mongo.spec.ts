@@ -522,4 +522,18 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a fillna step', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'fillna',
+        column: 'foo',
+        value: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $cond: [{ $eq: ['$foo', null] }, 'bar', '$foo'] } } },
+    ]);
+  });
 });

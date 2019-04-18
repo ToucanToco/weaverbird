@@ -143,3 +143,15 @@ and the `order` parameter must be of same length as `columns`. By default, if
     order: ['asc', 'desc']
 }
 ```
+
+### 'fillna' step
+
+Replace null values by a given value in a column.
+
+```javascript
+{
+    name: 'fillna',
+    column: "foo",
+    value: "bar"
+}
+```

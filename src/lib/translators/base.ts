@@ -116,6 +116,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   sort(step: S.SortStep) {}
 
+  @unsupported
+  fillna(step: S.FillnaStep) {}
+
   /**
    * translates an input pipeline into a list of steps that makes sense for the
    * targeted backend.
@@ -156,6 +159,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
           break;
         case 'sort':
           result.push(this.sort(step));
+          break;
+        case 'fillna':
+          result.push(this.fillna(step));
           break;
         default:
           throw new Error(step);
