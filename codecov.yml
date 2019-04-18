@@ -1,6 +1,8 @@
 coverage:
   status:
-    patch: off
-    project: off
+    patch:
+      default:
+        enabled: yes
+        target: 100%
   ignore:
     - 'tests/unit/*.spec.ts'
