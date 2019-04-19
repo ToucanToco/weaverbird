@@ -108,6 +108,10 @@ function transformSort(step: SortStep): MongoStep {
 /** transform an 'top' step into corresponding mongo steps */
 function transformTop(step: TopStep): Array<MongoStep> {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
+<<<<<<< HEAD
+=======
+  const groupMongo: MongoStep = {};
+>>>>>>> Add test to support specified groups
   let groupCols: PropMap<string> | null = {};
 
   // Prepare the $group Mongo step
@@ -118,10 +122,21 @@ function transformTop(step: TopStep): Array<MongoStep> {
   } else {
     groupCols = null;
   }
+<<<<<<< HEAD
 
   return [
     { $sort: { [step.rank_on]: sortOrder } },
     { $group: { _id: groupCols, _tcAppArray: { $push: '$$ROOT' } } },
+=======
+  groupMongo['$group'] = {
+    _id: groupCols,
+    _tcAppArray: { $push: '$$ROOT' },
+  };
+
+  return [
+    { $sort: { [step.value]: sortOrder } },
+    groupMongo,
+>>>>>>> Add test to support specified groups
     { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', step.limit] } } },
     { $unwind: '$_tcAppTopElems' },
     { $replaceRoot: { newRoot: '$_tcAppTopElems' } },

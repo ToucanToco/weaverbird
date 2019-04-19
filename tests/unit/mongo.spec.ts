@@ -583,6 +583,16 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', 3] } } },
+      { $sort: { bar: -1 } },
+      {
+        $group: {
+          _id: {
+            foo: '$foo',
+          },
+          _tcAppArray: { $push: '$$ROOT' },
+        },
+      },
+      { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', 10] } } },
       { $unwind: '$_tcAppTopElems' },
       { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
     ]);
