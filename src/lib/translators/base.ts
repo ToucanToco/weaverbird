@@ -128,7 +128,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    */
   translate(pipeline: Array<S.PipelineStep>): Array<OutputStep> {
     const result: Array<OutputStep> = [];
-    for (const step of pipeline) {
+    for (let step of pipeline) {
+      step = Object.freeze(step);
       switch (step.name) {
         case 'domain':
           result.push(this.domain(step));
