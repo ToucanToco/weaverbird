@@ -602,7 +602,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Array<PipelineStep> = [
       {
         name: 'top',
-        value: 'bar',
+        rank_on: 'bar',
         sort: 'asc',
         limit: 3,
       },

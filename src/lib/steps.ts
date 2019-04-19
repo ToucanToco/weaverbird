@@ -88,14 +88,6 @@ export interface TopStep {
   limit: number;
 }
 
-export interface TopStep {
-  name: 'top';
-  groups?: Array<string>;
-  value: string;
-  sort: 'asc' | 'desc';
-  limit: number;
-}
-
 export type PipelineStep =
   | DomainStep
   | FilterStep
