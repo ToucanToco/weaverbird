@@ -10,7 +10,7 @@
  * `lib/matchers/OutputStep` type or an array of this type.
  *
  */
-import { StepMatcher, OutputStep } from '@/lib/matcher';
+import { StepMatcher, OutputStep, TransformStep } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
 /**
@@ -131,48 +131,13 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    */
   translate(pipeline: Array<S.PipelineStep>): Array<OutputStep> {
     const result: Array<OutputStep> = [];
-    for (let step of pipeline) {
-      step = Object.freeze(step);
-      switch (step.name) {
-        case 'domain':
-          result.push(this.domain(step));
-          break;
-        case 'filter':
-          result.push(this.filter(step));
-          break;
-        case 'select':
-          result.push(this.select(step));
-          break;
-        case 'rename':
-          result.push(this.rename(step));
-          break;
-        case 'delete':
-          result.push(this.delete(step));
-          break;
-        case 'newcolumn':
-          result.push(this.newcolumn(step));
-          break;
-        case 'aggregate':
-          result.push(this.aggregate(step));
-          break;
-        case 'custom':
-          result.push(this.custom(step));
-          break;
-        case 'replace':
-          result.push(this.replace(step));
-          break;
-        case 'sort':
-          result.push(this.sort(step));
-          break;
-        case 'fillna':
-          result.push(this.fillna(step));
-          break;
-        case 'top':
-          result.push(this.top(step));
-          break;
-        default:
-          throw new Error(step);
-      }
+    for (const step of pipeline) {
+      // hack: cast `this[step.name]` to TransformStep to please typescript
+      // otherwise it will complain about
+      // `((x: DomainStep) => void)) | ((x: FilterStep) => void) | ((x: ...) => void)`
+      // not being assignable to `((x: DomainStep | FilterStep | ...) => void)`
+      const callback = <TransformStep>this[step.name];
+      result.push(callback(step));
     }
     return result;
   }
