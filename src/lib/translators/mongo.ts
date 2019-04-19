@@ -39,8 +39,8 @@ function filterstepToMatchstep(step: FilterStep): MongoStep {
     in: '$in',
     nin: '$nin',
   };
-  step.operator = step.operator || 'eq';
-  return { $match: { [step.column]: { [operatorMapping[step.operator]]: step.value } } };
+  const operator = step.operator || 'eq';
+  return { $match: { [step.column]: { [operatorMapping[operator]]: step.value } } };
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */

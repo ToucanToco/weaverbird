@@ -4,81 +4,81 @@
 
 type PrimitiveType = number | boolean | string | Date;
 
-export interface DomainStep {
+export type DomainStep = Readonly<{
   name: 'domain';
   domain: string;
-}
+}>;
 
-export interface FilterStep {
+export type FilterStep = Readonly<{
   name: 'filter';
   column: string;
   value: any;
   operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
-}
+}>;
 
-export interface SelectStep {
+export type SelectStep = Readonly<{
   name: 'select';
   columns: Array<string>;
-}
+}>;
 
-export interface RenameStep {
+export type RenameStep = Readonly<{
   name: 'rename';
   oldname: string;
   newname: string;
-}
+}>;
 
-export interface DeleteStep {
+export type DeleteStep = Readonly<{
   name: 'delete';
   columns: Array<string>;
-}
+}>;
 
-export interface NewColumnStep {
+export type NewColumnStep = Readonly<{
   name: 'newcolumn';
   column: string;
   query: object | string;
-}
+}>;
 
-interface AggFunctionStep {
+type AggFunctionStep = Readonly<{
   /** Name of the output column */
   newcolumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
   aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
   /** the column the aggregation function is working on */
   column: string;
-}
+}>;
 
-export interface AggregationStep {
+export type AggregationStep = Readonly<{
   name: 'aggregate';
   /** the list columns we want to aggregate on */
   on: Array<string>;
   /** the list of aggregation operations to perform */
   aggregations: Array<AggFunctionStep>;
-}
+}>;
 
-export interface CustomStep {
+export type CustomStep = Readonly<{
   name: 'custom';
   query: object;
-}
+}>;
 
-export interface ReplaceStep {
+export type ReplaceStep = Readonly<{
   name: 'replace';
   search_column: string;
   new_column?: string;
   oldvalue: string;
   newvalue: string;
-}
+}>;
 
-export interface SortStep {
+export type SortStep = Readonly<{
   name: 'sort';
   columns: Array<string>;
   order?: Array<'asc' | 'desc'>;
-}
+}>;
 
-export interface FillnaStep {
+export type FillnaStep = Readonly<{
   name: 'fillna';
   column: string;
   value: PrimitiveType;
-}
+}>;
 
 export interface TopStep {
   name: 'top';
