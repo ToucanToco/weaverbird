@@ -536,4 +536,45 @@ describe('Pipeline to mongo translator', () => {
       { $addFields: { foo: { $cond: [{ $eq: ['$foo', null] }, 'bar', '$foo'] } } },
     ]);
   });
+
+  it('can generate a fillna step', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'fillna',
+        column: 'foo',
+        value: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $cond: [{ $eq: ['$foo', null] }, 'bar', '$foo'] } } },
+    ]);
+  });
+
+  it('can generate a top step with groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'top',
+        groups: ['foo'],
+        value: 'bar',
+        sort: 'desc',
+        limit: 10,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { bar: -1 } },
+      {
+        $group: {
+          _id: {
+            foo: '$foo',
+          },
+          _tcAppArray: { $push: '$$ROOT' },
+        },
+      },
+      { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', 10] } } },
+      { $unwind: '$_tcAppTopElems' },
+      { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
+    ]);
+  });
 });
