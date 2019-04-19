@@ -119,6 +119,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   fillna(step: S.FillnaStep) {}
 
+  @unsupported
+  top(step: S.TopStep) {}
+
   /**
    * translates an input pipeline into a list of steps that makes sense for the
    * targeted backend.
@@ -162,6 +165,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
           break;
         case 'fillna':
           result.push(this.fillna(step));
+          break;
+        case 'top':
+          result.push(this.top(step));
           break;
         default:
           throw new Error(step);

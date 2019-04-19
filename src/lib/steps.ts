@@ -80,6 +80,14 @@ export interface FillnaStep {
   value: PrimitiveType;
 }
 
+export interface TopStep {
+  name: 'top';
+  groups?: Array<string>;
+  value: string;
+  sort: 'asc' | 'desc';
+  limit: number;
+}
+
 export type PipelineStep =
   | DomainStep
   | FilterStep
@@ -91,6 +99,7 @@ export type PipelineStep =
   | ReplaceStep
   | SortStep
   | FillnaStep
+  | TopStep
   | CustomStep;
 
 export type PipelineStepName = PipelineStep['name'];

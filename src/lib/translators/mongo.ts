@@ -119,6 +119,7 @@ const mapper: StepMatcher<MongoStep> = {
       },
     },
   }),
+  top: step => ({}),
 };
 
 export class Mongo36Translator extends BaseTranslator {
