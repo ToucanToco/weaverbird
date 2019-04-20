@@ -163,7 +163,7 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 ```javascript
 {
   name: 'top',
-  groups: ['foo']
+  groups: ['foo'],
   value: 'bar',
   sort: 'desc' // or 'asc'
   limit: 10
