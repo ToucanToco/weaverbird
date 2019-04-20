@@ -158,7 +158,7 @@ Replace null values by a given value in a column.
 
 ### 'top' step
 
-Return top N rows by group if `groups` is specified, else over full dataset
+Return top N rows by group if `groups` is specified, else over full dataset.
 
 ```javascript
 {
