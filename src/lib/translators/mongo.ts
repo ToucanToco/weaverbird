@@ -1,6 +1,13 @@
 /** This module contains mongo specific translation operations */
 
-import { AggregationStep, FilterStep, PipelineStep, ReplaceStep, SortStep } from '@/lib/steps';
+import {
+  AggregationStep,
+  FilterStep,
+  PipelineStep,
+  ReplaceStep,
+  SortStep,
+  TopStep,
+} from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 
@@ -98,6 +105,29 @@ function transformSort(step: SortStep): MongoStep {
   return { $sort: sortMongo };
 }
 
+/** transform an 'top' step into corresponding mongo steps */
+function transformTop(step: TopStep): Array<MongoStep> {
+  const sortOrder = step.sort === 'asc' ? 1 : -1;
+  let groupCols: PropMap<string> | null = {};
+
+  // Prepare the $group Mongo step
+  if (step.groups) {
+    for (const col of step.groups) {
+      groupCols[col] = `$${col}`;
+    }
+  } else {
+    groupCols = null;
+  }
+
+  return [
+    { $sort: { [step.rank_on]: sortOrder } },
+    { $group: { _id: groupCols, _tcAppArray: { $push: '$$ROOT' } } },
+    { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', step.limit] } } },
+    { $unwind: '$_tcAppTopElems' },
+    { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
+  ];
+}
+
 const mapper: StepMatcher<MongoStep> = {
   domain: step => ({ $match: { domain: step.domain } }),
   filter: filterstepToMatchstep,
@@ -119,6 +149,7 @@ const mapper: StepMatcher<MongoStep> = {
       },
     },
   }),
+  top: transformTop,
 };
 
 export class Mongo36Translator extends BaseTranslator {

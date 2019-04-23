@@ -155,3 +155,17 @@ Replace null values by a given value in a column.
     value: "bar"
 }
 ```
+
+### 'top' step
+
+Return top N rows by group if `groups` is specified, else over full dataset.
+
+```javascript
+{
+  name: 'top',
+  groups: ['foo'],
+  rank_on: 'bar',
+  sort: 'desc', // or 'asc'
+  limit: 10
+}
+```
