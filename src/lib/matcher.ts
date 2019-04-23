@@ -33,6 +33,7 @@ export type StepByType<A, T> = A extends { name: T } ? A : never;
  * translation function at compile time.
  */
 export type StepMatcher<T> = { [K in PipelineStepName]: (step: StepByType<PipelineStep, K>) => T };
+export type TransformStep = (step: PipelineStep) => void;
 
 /**
  * OutputStep is a base type for all step transformer functions. Since
