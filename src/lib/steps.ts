@@ -83,7 +83,7 @@ export interface FillnaStep {
 export interface TopStep {
   name: 'top';
   groups?: Array<string>;
-  value: string;
+  rank_on: string;
   sort: 'asc' | 'desc';
   limit: number;
 }

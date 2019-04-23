@@ -120,7 +120,7 @@ function transformTop(step: TopStep): Array<MongoStep> {
   }
 
   return [
-    { $sort: { [step.value]: sortOrder } },
+    { $sort: { [step.rank_on]: sortOrder } },
     { $group: { _id: groupCols, _tcAppArray: { $push: '$$ROOT' } } },
     { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', step.limit] } } },
     { $unwind: '$_tcAppTopElems' },

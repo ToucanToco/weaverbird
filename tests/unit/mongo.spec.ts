@@ -542,7 +542,7 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'top',
         groups: ['foo'],
-        value: 'bar',
+        rank_on: 'bar',
         sort: 'desc',
         limit: 10,
       },
@@ -568,7 +568,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Array<PipelineStep> = [
       {
         name: 'top',
-        value: 'bar',
+        rank_on: 'bar',
         sort: 'asc',
         limit: 3,
       },
