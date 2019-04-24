@@ -92,8 +92,8 @@ An aggreation step has the following strucure:
    on: ['column1', 'column2'],
    aggregations:  [
       {
-          name: 'sum_value1'
-          operation: 'sum'
+          newcolumn: 'sum_value1'
+          aggfunction: 'sum'
           column: 'value1',
       }
     // ...
@@ -126,5 +126,46 @@ A replace step has the following strucure:
    new_column: "column_1", // if empty, inplace by default
    oldvalue: 'foo',
    newvalue: 'bar',
+}
+```
+
+### 'sort' step
+
+Sort values in one or several columns. Order can be either 'asc' or 'desc'.
+When sorting on several columns, order of columns specified in `columns` matters,
+and the `order` parameter must be of same length as `columns`. By default, if
+`order` is not specified, it is considered as 'asc'.
+
+```javascript
+{
+    name: 'sort',
+    columns: ['foo', 'bar'],
+    order: ['asc', 'desc']
+}
+```
+
+### 'fillna' step
+
+Replace null values by a given value in a column.
+
+```javascript
+{
+    name: 'fillna',
+    column: "foo",
+    value: "bar"
+}
+```
+
+### 'top' step
+
+Return top N rows by group if `groups` is specified, else over full dataset.
+
+```javascript
+{
+  name: 'top',
+  groups: ['foo'],
+  rank_on: 'bar',
+  sort: 'desc', // or 'asc'
+  limit: 10
 }
 ```

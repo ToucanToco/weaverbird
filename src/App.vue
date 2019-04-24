@@ -17,6 +17,7 @@ import _ from 'lodash';
 import { Component, Vue } from 'vue-property-decorator';
 import DataViewer from './components/DataViewer.vue';
 import Pipeline from './components/Pipeline.vue';
+import ResizablePanels from './components/ResizablePanels.vue';
 import { PipelineStep } from '@/lib/steps';
 
 import fakeDataset from './fake_dataset.json';
@@ -25,6 +26,7 @@ import fakeDataset from './fake_dataset.json';
   components: {
     DataViewer,
     Pipeline,
+    ResizablePanels,
   },
 })
 export default class App extends Vue {

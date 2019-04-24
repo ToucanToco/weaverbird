@@ -17,6 +17,7 @@ jobs:
       - checkout
       - run: yarn
       - run: yarn test:unit
+      - run: yarn codecov
 
 workflows:
   version: 2

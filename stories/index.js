@@ -1,7 +1,7 @@
 import { Step } from '../dist/storybook/components';
 import '../dist/vue-query-builder.css';
 
-import { withKnobs, text, boolean } from '@storybook/addon-knobs';
+import { withKnobs, text } from '@storybook/addon-knobs';
 
 import { storiesOf } from '@storybook/vue';
 
