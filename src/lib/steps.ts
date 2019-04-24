@@ -55,12 +55,12 @@ export type NewColumnStep = Readonly<{
   query: object | string;
 }>;
 
-export interface PercentageStep {
+export type PercentageStep = Readonly<{
   name: 'percentage';
   new_column?: string;
   column: string;
   group?: Array<string>;
-}
+}>;
 
 export type RenameStep = Readonly<{
   name: 'rename';
@@ -87,13 +87,13 @@ export type SortStep = Readonly<{
   order?: Array<'asc' | 'desc'>;
 }>;
 
-export interface TopStep {
+export type TopStep = Readonly<{
   name: 'top';
   groups?: Array<string>;
   rank_on: string;
   sort: 'asc' | 'desc';
   limit: number;
-}
+}>;
 
 export type PipelineStep =
   | AggregationStep
