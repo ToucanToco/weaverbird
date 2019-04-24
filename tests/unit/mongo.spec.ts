@@ -587,28 +587,4 @@ describe('Pipeline to mongo translator', () => {
       { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
     ]);
   });
-
-  it('can generate a top step without groups', () => {
-    const pipeline: Array<PipelineStep> = [
-      {
-        name: 'top',
-        rank_on: 'bar',
-        sort: 'asc',
-        limit: 3,
-      },
-    ];
-    const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $sort: { bar: 1 } },
-      {
-        $group: {
-          _id: null,
-          _tcAppArray: { $push: '$$ROOT' },
-        },
-      },
-      { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', 3] } } },
-      { $unwind: '$_tcAppTopElems' },
-      { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
-    ]);
-  });
 });
