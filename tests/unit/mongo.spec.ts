@@ -689,4 +689,74 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a formula step with complex operations imbrication', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'formula',
+        new_column: 'foo',
+        formula: '(column_1 + column_2) / column_3 - column_4 * 100',
+      },
+      {
+        name: 'formula',
+        new_column: 'bar',
+        formula: '1 / ((column_1 + column_2 + column_3)) * 10',
+      },
+      {
+        name: 'formula',
+        new_column: 'test_precedence',
+        formula: 'column_1 + column_2 + column_3 * 10',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $subtract: [
+              {
+                $divide: [
+                  {
+                    $add: ['$column_1', '$column_2'],
+                  },
+                  '$column_3',
+                ],
+              },
+              {
+                $multiply: ['$column_4', 100],
+              },
+            ],
+          },
+          bar: {
+            $multiply: [
+              {
+                $divide: [
+                  1,
+                  {
+                    $add: [
+                      {
+                        $add: ['$column_1', '$column_2'],
+                      },
+                      '$column_3',
+                    ],
+                  },
+                ],
+              },
+              10,
+            ],
+          },
+          test_precedence: {
+            $add: [
+              {
+                $add: ['$column_1', '$column_2'],
+              },
+              {
+                $multiply: ['$column_3', 10],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+  });
 });
