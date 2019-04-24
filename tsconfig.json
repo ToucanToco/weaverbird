@@ -15,7 +15,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "lib": ["es5", "esnext", "dom", "dom.iterable", "scripthost"]
+    "lib": ["es5", "esnext", "dom", "dom.iterable", "scripthost"],
+    "resolveJsonModule": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue", "tests/**/*.ts", "tests/**/*.tsx"],
   "exclude": ["node_modules"]
