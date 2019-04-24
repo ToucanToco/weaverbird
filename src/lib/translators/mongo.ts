@@ -8,9 +8,11 @@ import {
   SortStep,
   TopStep,
   PercentageStep,
+  FormulaStep,
 } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
+import * as math from 'mathjs';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -20,6 +22,37 @@ type PropMap<T> = { [prop: string]: T };
 export interface MongoStep {
   [propName: string]: any;
 }
+
+/**
+ * Math nodes interfaces to build formula logical trees
+ */
+interface OperatorNode {
+  type: 'OperatorNode';
+  fn: string;
+  op: string;
+  args: Array<MathNode>;
+  [propName: string]: any;
+}
+
+interface ConstantNode {
+  type: 'ConstantNode';
+  value: number;
+  [propName: string]: any;
+}
+
+interface SymbolNode {
+  type: 'SymbolNode';
+  name: string;
+  [propName: string]: any;
+}
+
+interface ParenthesisNode {
+  type: 'ParenthesisNode';
+  content: MathNode;
+  [propName: string]: any;
+}
+
+type MathNode = OperatorNode | ConstantNode | SymbolNode | ParenthesisNode;
 
 function fromkeys(keys: Array<string>, value = 0) {
   const out: { [propname: string]: any } = {};
@@ -172,6 +205,43 @@ function transformTop(step: TopStep): Array<MongoStep> {
   ];
 }
 
+function getOperator(op: string) {
+  const operators: PropMap<string> = {
+    '+': '$add',
+    '-': '$subtract',
+    '*': '$multiply',
+    '/': '$divide',
+  };
+  if (operators[op] === undefined) {
+    throw new Error(`Unsupported operator ${op}`);
+  } else {
+    return operators[op];
+  }
+}
+
+function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
+  // For type checking in `case: 'OperatorNode'` in the`switch`clause below,
+  // do not let`args` and `op` be potentially`undefined`
+  switch (node.type) {
+    case 'OperatorNode':
+      if (node.args.length === 1) {
+        const factor = node.op === '+' ? 1 : -1;
+        return {
+          $multiply: [factor, buildMongoFormulaTree(node.args[0])],
+        };
+      }
+      return {
+        [getOperator(node.op)]: node.args.map(buildMongoFormulaTree),
+      };
+    case 'SymbolNode':
+      return `$${node.name}`;
+    case 'ConstantNode':
+      return node.value;
+    case 'ParenthesisNode':
+      return buildMongoFormulaTree(node.content);
+  }
+}
+
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
   custom: step => step.query,
@@ -185,6 +255,11 @@ const mapper: StepMatcher<MongoStep> = {
     },
   }),
   filter: filterstepToMatchstep,
+  formula: step => ({
+    $addFields: {
+      [step.new_column]: buildMongoFormulaTree(<MathNode>math.parse(step.formula)),
+    },
+  }),
   newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
   percentage: transformPercentage,
   rename: step => [

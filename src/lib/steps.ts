@@ -95,6 +95,12 @@ export type TopStep = Readonly<{
   limit: number;
 }>;
 
+export interface FormulaStep {
+  name: 'formula';
+  new_column: string;
+  formula: string;
+}
+
 export type PipelineStep =
   | AggregationStep
   | CustomStep
@@ -102,6 +108,7 @@ export type PipelineStep =
   | DomainStep
   | FillnaStep
   | FilterStep
+  | FormulaStep
   | NewColumnStep
   | PercentageStep
   | RenameStep

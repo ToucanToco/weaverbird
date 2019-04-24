@@ -659,4 +659,34 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _vqbAppArray: 0 } },
     ]);
   });
+
+  it('can generate a formula step with a single column or constant', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'formula',
+        new_column: 'foo',
+        formula: 'bar',
+      },
+      {
+        name: 'formula',
+        new_column: 'constant',
+        formula: '42',
+      },
+      {
+        name: 'formula',
+        new_column: 'with_parentheses',
+        formula: '(test)',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: '$bar',
+          constant: 42,
+          with_parentheses: '$test',
+        },
+      },
+    ]);
+  });
 });
