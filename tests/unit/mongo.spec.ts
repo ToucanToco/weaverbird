@@ -555,12 +555,12 @@ describe('Pipeline to mongo translator', () => {
           _id: {
             foo: '$foo',
           },
-          _tcAppArray: { $push: '$$ROOT' },
+          _vqbAppArray: { $push: '$$ROOT' },
         },
       },
-      { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', 10] } } },
-      { $unwind: '$_tcAppTopElems' },
-      { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
+      { $project: { _vqbAppTopElems: { $slice: ['$_vqbAppArray', 10] } } },
+      { $unwind: '$_vqbAppTopElems' },
+      { $replaceRoot: { newRoot: '$_vqbAppTopElems' } },
     ]);
   });
 
@@ -579,12 +579,12 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: {
           _id: null,
-          _tcAppArray: { $push: '$$ROOT' },
+          _vqbAppArray: { $push: '$$ROOT' },
         },
       },
-      { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', 3] } } },
-      { $unwind: '$_tcAppTopElems' },
-      { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
+      { $project: { _vqbAppTopElems: { $slice: ['$_vqbAppArray', 3] } } },
+      { $unwind: '$_vqbAppTopElems' },
+      { $replaceRoot: { newRoot: '$_vqbAppTopElems' } },
     ]);
   });
 
@@ -602,26 +602,26 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: {
           _id: { foo: '$foo' },
-          _tcAppArray: { $push: '$$ROOT' },
-          _tcTotalDenum: { $sum: '$bar' },
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbTotalDenum: { $sum: '$bar' },
         },
       },
-      { $unwind: '$_tcAppArray' },
+      { $unwind: '$_vqbAppArray' },
       {
         $project: {
           new_col: {
             // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
             $cond: [
-              { $eq: ['$_tcTotalDenum', 0] },
+              { $eq: ['$_vqbTotalDenum', 0] },
               null,
-              { $divide: ['$_tcAppArray.bar', '$_tcTotalDenum'] },
+              { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _tcTotalDenum: 0,
+          _vqbTotalDenum: 0,
         },
       },
-      { $replaceRoot: { newRoot: { $mergeObjects: ['$_tcAppArray', '$$ROOT'] } } },
-      { $project: { _tcAppArray: 0 } },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
     ]);
   });
 
@@ -637,26 +637,26 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: {
           _id: null,
-          _tcAppArray: { $push: '$$ROOT' },
-          _tcTotalDenum: { $sum: '$bar' },
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbTotalDenum: { $sum: '$bar' },
         },
       },
-      { $unwind: '$_tcAppArray' },
+      { $unwind: '$_vqbAppArray' },
       {
         $project: {
           bar: {
             // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
             $cond: [
-              { $eq: ['$_tcTotalDenum', 0] },
+              { $eq: ['$_vqbTotalDenum', 0] },
               null,
-              { $divide: ['$_tcAppArray.bar', '$_tcTotalDenum'] },
+              { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _tcTotalDenum: 0,
+          _vqbTotalDenum: 0,
         },
       },
-      { $replaceRoot: { newRoot: { $mergeObjects: ['$_tcAppArray', '$$ROOT'] } } },
-      { $project: { _tcAppArray: 0 } },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
     ]);
   });
 });

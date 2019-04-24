@@ -95,29 +95,29 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
   }
   groupMongo['$group'] = {
     _id: groupCols,
-    _tcAppArray: { $push: '$$ROOT' },
-    _tcTotalDenum: { $sum: `$${step.column}` },
+    _vqbAppArray: { $push: '$$ROOT' },
+    _vqbTotalDenum: { $sum: `$${step.column}` },
   };
 
   // Prepare the $project Mongo step
   projectMongo['$project'] = {
     [newCol]: {
       $cond: [
-        { $eq: ['$_tcTotalDenum', 0] },
+        { $eq: ['$_vqbTotalDenum', 0] },
         null,
-        { $divide: [`$_tcAppArray.${step.column}`, '$_tcTotalDenum'] },
+        { $divide: [`$_vqbAppArray.${step.column}`, '$_vqbTotalDenum'] },
       ],
     },
-    _tcTotalDenum: 0, // We do not want to keep that column at the end
+    _vqbTotalDenum: 0, // We do not want to keep that column at the end
   };
 
   return [
     groupMongo,
-    { $unwind: '$_tcAppArray' },
+    { $unwind: '$_vqbAppArray' },
     projectMongo,
-    // Line below: Keep all columns that were not used in computation, 'stored' in _tcAppArray
-    { $replaceRoot: { newRoot: { $mergeObjects: ['$_tcAppArray', '$$ROOT'] } } },
-    { $project: { _tcAppArray: 0 } }, // We do not want to keep that column at the end
+    // Line below: Keep all columns that were not used in computation, 'stored' in _vqbAppArray
+    { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+    { $project: { _vqbAppArray: 0 } }, // We do not want to keep that column at the end
   ];
 }
 
@@ -165,10 +165,10 @@ function transformTop(step: TopStep): Array<MongoStep> {
 
   return [
     { $sort: { [step.rank_on]: sortOrder } },
-    { $group: { _id: groupCols, _tcAppArray: { $push: '$$ROOT' } } },
-    { $project: { _tcAppTopElems: { $slice: ['$_tcAppArray', step.limit] } } },
-    { $unwind: '$_tcAppTopElems' },
-    { $replaceRoot: { newRoot: '$_tcAppTopElems' } },
+    { $group: { _id: groupCols, _vqbAppArray: { $push: '$$ROOT' } } },
+    { $project: { _vqbAppTopElems: { $slice: ['$_vqbAppArray', step.limit] } } },
+    { $unwind: '$_vqbAppTopElems' },
+    { $replaceRoot: { newRoot: '$_vqbAppTopElems' } },
   ];
 }
 
