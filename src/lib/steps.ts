@@ -4,40 +4,6 @@
 
 type PrimitiveType = number | boolean | string | Date;
 
-export type DomainStep = Readonly<{
-  name: 'domain';
-  domain: string;
-}>;
-
-export type FilterStep = Readonly<{
-  name: 'filter';
-  column: string;
-  value: any;
-  operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
-}>;
-
-export type SelectStep = Readonly<{
-  name: 'select';
-  columns: Array<string>;
-}>;
-
-export type RenameStep = Readonly<{
-  name: 'rename';
-  oldname: string;
-  newname: string;
-}>;
-
-export type DeleteStep = Readonly<{
-  name: 'delete';
-  columns: Array<string>;
-}>;
-
-export type NewColumnStep = Readonly<{
-  name: 'newcolumn';
-  column: string;
-  query: object | string;
-}>;
-
 type AggFunctionStep = Readonly<{
   /** Name of the output column */
   newcolumn: string;
@@ -60,6 +26,48 @@ export type CustomStep = Readonly<{
   query: object;
 }>;
 
+export type DeleteStep = Readonly<{
+  name: 'delete';
+  columns: Array<string>;
+}>;
+
+export type DomainStep = Readonly<{
+  name: 'domain';
+  domain: string;
+}>;
+
+export type FillnaStep = Readonly<{
+  name: 'fillna';
+  column: string;
+  value: PrimitiveType;
+}>;
+
+export type FilterStep = Readonly<{
+  name: 'filter';
+  column: string;
+  value: any;
+  operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
+}>;
+
+export type NewColumnStep = Readonly<{
+  name: 'newcolumn';
+  column: string;
+  query: object | string;
+}>;
+
+export interface PercentageStep {
+  name: 'percentage';
+  new_column?: string;
+  column: string;
+  group?: Array<string>;
+}
+
+export type RenameStep = Readonly<{
+  name: 'rename';
+  oldname: string;
+  newname: string;
+}>;
+
 export type ReplaceStep = Readonly<{
   name: 'replace';
   search_column: string;
@@ -68,16 +76,15 @@ export type ReplaceStep = Readonly<{
   newvalue: string;
 }>;
 
+export type SelectStep = Readonly<{
+  name: 'select';
+  columns: Array<string>;
+}>;
+
 export type SortStep = Readonly<{
   name: 'sort';
   columns: Array<string>;
   order?: Array<'asc' | 'desc'>;
-}>;
-
-export type FillnaStep = Readonly<{
-  name: 'fillna';
-  column: string;
-  value: PrimitiveType;
 }>;
 
 export interface TopStep {
@@ -88,26 +95,19 @@ export interface TopStep {
   limit: number;
 }
 
-export interface PercentageStep {
-  name: 'percentage';
-  new_column?: string;
-  column: string;
-  group?: Array<string>;
-}
-
 export type PipelineStep =
-  | DomainStep
-  | FilterStep
-  | SelectStep
-  | RenameStep
-  | DeleteStep
-  | NewColumnStep
   | AggregationStep
-  | ReplaceStep
-  | SortStep
+  | CustomStep
+  | DeleteStep
+  | DomainStep
   | FillnaStep
-  | TopStep
+  | FilterStep
+  | NewColumnStep
   | PercentageStep
-  | CustomStep;
+  | RenameStep
+  | ReplaceStep
+  | SelectStep
+  | SortStep
+  | TopStep;
 
 export type PipelineStepName = PipelineStep['name'];

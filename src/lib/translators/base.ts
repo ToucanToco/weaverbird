@@ -87,43 +87,43 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   }
 
   @unsupported
-  filter(step: S.FilterStep) {}
-
-  @unsupported
-  domain(step: S.DomainStep) {}
-
-  @unsupported
-  select(step: S.SelectStep) {}
-
-  @unsupported
-  rename(step: S.RenameStep) {}
-
-  @unsupported
-  newcolumn(step: S.NewColumnStep) {}
-
-  @unsupported
-  delete(step: S.DeleteStep) {}
-
-  @unsupported
   aggregate(step: S.AggregationStep) {}
 
   @unsupported
   custom(step: S.CustomStep) {}
 
   @unsupported
-  replace(step: S.ReplaceStep) {}
+  domain(step: S.DomainStep) {}
 
   @unsupported
-  sort(step: S.SortStep) {}
+  delete(step: S.DeleteStep) {}
 
   @unsupported
   fillna(step: S.FillnaStep) {}
 
   @unsupported
-  top(step: S.TopStep) {}
+  filter(step: S.FilterStep) {}
+
+  @unsupported
+  newcolumn(step: S.NewColumnStep) {}
 
   @unsupported
   percentage(step: S.PercentageStep) {}
+
+  @unsupported
+  rename(step: S.RenameStep) {}
+
+  @unsupported
+  replace(step: S.ReplaceStep) {}
+
+  @unsupported
+  select(step: S.SelectStep) {}
+
+  @unsupported
+  sort(step: S.SortStep) {}
+
+  @unsupported
+  top(step: S.TopStep) {}
 
   /**
    * translates an input pipeline into a list of steps that makes sense for the

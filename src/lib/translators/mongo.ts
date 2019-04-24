@@ -78,23 +78,6 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
   return [{ $group: group }, { $project: project }];
 }
 
-/** transform an 'replace' step into corresponding mongo steps */
-function transformReplace(step: ReplaceStep): MongoStep {
-  return {
-    $addFields: {
-      [step.new_column || step.search_column]: {
-        $cond: [
-          {
-            $eq: [`$${step.search_column}`, `${step.oldvalue}`],
-          },
-          `${step.newvalue}`,
-          `$${step.search_column}`,
-        ],
-      },
-    },
-  };
-}
-
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: PercentageStep): Array<MongoStep> {
   const groupMongo: MongoStep = {};
@@ -138,6 +121,23 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
   ];
 }
 
+/** transform an 'replace' step into corresponding mongo steps */
+function transformReplace(step: ReplaceStep): MongoStep {
+  return {
+    $addFields: {
+      [step.new_column || step.search_column]: {
+        $cond: [
+          {
+            $eq: [`$${step.search_column}`, `${step.oldvalue}`],
+          },
+          `${step.newvalue}`,
+          `$${step.search_column}`,
+        ],
+      },
+    },
+  };
+}
+
 /** transform a 'sort' step into corresponding mongo steps */
 function transformSort(step: SortStep): MongoStep {
   const sortMongo: PropMap<number> = {};
@@ -173,19 +173,10 @@ function transformTop(step: TopStep): Array<MongoStep> {
 }
 
 const mapper: StepMatcher<MongoStep> = {
-  domain: step => ({ $match: { domain: step.domain } }),
-  filter: filterstepToMatchstep,
-  select: step => ({ $project: fromkeys(step.columns, 1) }),
-  rename: step => [
-    { $addFields: { [step.newname]: `$${step.oldname}` } },
-    { $project: { [step.oldname]: 0 } },
-  ],
-  delete: step => ({ $project: fromkeys(step.columns, 0) }),
-  newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
   aggregate: transformAggregate,
   custom: step => step.query,
-  replace: transformReplace,
-  sort: transformSort,
+  delete: step => ({ $project: fromkeys(step.columns, 0) }),
+  domain: step => ({ $match: { domain: step.domain } }),
   fillna: step => ({
     $addFields: {
       [step.column]: {
@@ -193,8 +184,17 @@ const mapper: StepMatcher<MongoStep> = {
       },
     },
   }),
-  top: transformTop,
+  filter: filterstepToMatchstep,
+  newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
   percentage: transformPercentage,
+  rename: step => [
+    { $addFields: { [step.newname]: `$${step.oldname}` } },
+    { $project: { [step.oldname]: 0 } },
+  ],
+  replace: transformReplace,
+  select: step => ({ $project: fromkeys(step.columns, 1) }),
+  sort: transformSort,
+  top: transformTop,
 };
 
 export class Mongo36Translator extends BaseTranslator {
