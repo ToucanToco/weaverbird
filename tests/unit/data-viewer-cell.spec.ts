@@ -1,7 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import DataViewerCell from '../../src/components/DataViewerCell.vue';
 
-describe.only('Data Viewer Cell', () => {
+describe('Data Viewer Cell', () => {
+  it('should instantiate with no value', () => {
+    const wrapper = shallowMount(DataViewerCell);
+
+    expect(wrapper.exists()).toBeTruthy();
+  });
+
   it('should display the value', () => {
     const wrapper = shallowMount(DataViewerCell, {
       context: {
