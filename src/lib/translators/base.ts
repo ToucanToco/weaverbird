@@ -128,9 +128,6 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   top(step: S.TopStep) {}
 
-  @unsupported
-  percentage(step: S.PercentageStep) {}
-
   /**
    * translates an input pipeline into a list of steps that makes sense for the
    * targeted backend.

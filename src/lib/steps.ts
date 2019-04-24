@@ -95,11 +95,11 @@ export type TopStep = Readonly<{
   limit: number;
 }>;
 
-export interface FormulaStep {
+export type FormulaStep = Readonly<{
   name: 'formula';
   new_column: string;
   formula: string;
-}
+}>;
 
 export type PipelineStep =
   | AggregationStep
