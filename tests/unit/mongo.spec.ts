@@ -759,4 +759,29 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a formula step with a a signed column name', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'formula',
+        new_column: 'test',
+        formula: '-column_1 + 10',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          test: {
+            $add: [
+              {
+                $multiply: [-1, '$column_1'],
+              },
+              10,
+            ],
+          },
+        },
+      },
+    ]);
+  });
 });
