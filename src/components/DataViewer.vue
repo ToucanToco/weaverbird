@@ -55,7 +55,7 @@ export default class DataViewer extends Vue {
   }
 
   get columnNames() {
-    return _.keys(this.dataset[0]);
+    return Object.keys(this.dataset[0]);
   }
 
   get formattedColumns() {
@@ -71,7 +71,7 @@ export default class DataViewer extends Vue {
   }
 
   isSelected(column: string) {
-    return _.includes(this.selectedColumns, column);
+    return this.selectedColumns.includes(column);
   }
 
   getValue(row: DataRow, column: string) {
@@ -79,10 +79,10 @@ export default class DataViewer extends Vue {
   }
 
   toggleColumnSelection(column: string) {
-    if (_.includes(this.selectedColumns, column)) {
+    if (this.selectedColumns.includes(column)) {
       this.selectedColumns = _.without(this.selectedColumns, column);
     } else {
-      this.selectedColumns = _.concat(this.selectedColumns, column);
+      this.selectedColumns = [...this.selectedColumns, column];
     }
   }
 }
