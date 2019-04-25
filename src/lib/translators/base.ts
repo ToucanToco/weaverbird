@@ -108,9 +108,6 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   formula(step: S.FormulaStep) {}
 
   @unsupported
-  newcolumn(step: S.NewColumnStep) {}
-
-  @unsupported
   percentage(step: S.PercentageStep) {}
 
   @unsupported

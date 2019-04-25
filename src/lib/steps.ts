@@ -49,12 +49,6 @@ export type FilterStep = Readonly<{
   operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
 }>;
 
-export type NewColumnStep = Readonly<{
-  name: 'newcolumn';
-  column: string;
-  query: object | string;
-}>;
-
 export type PercentageStep = Readonly<{
   name: 'percentage';
   new_column?: string;
@@ -109,7 +103,6 @@ export type PipelineStep =
   | FillnaStep
   | FilterStep
   | FormulaStep
-  | NewColumnStep
   | PercentageStep
   | RenameStep
   | ReplaceStep

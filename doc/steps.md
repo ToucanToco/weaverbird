@@ -84,18 +84,6 @@ Filter out lines that don't match a filter definition.
 }
 ```
 
-### `newcolumn` step
-
-Compute a new column based on another one or a custom query.
-
-```javascript
-{
-    name: 'newcolumn',
-    column: 'my-new-column',
-    query: { $concat: ['$col1', ' - ', '$col2'] }
-}
-```
-
 ### `percentage` step
 
 Compute the percentage of total, i.e. for every row the value in `column` divided

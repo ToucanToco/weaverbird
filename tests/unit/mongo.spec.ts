@@ -175,24 +175,24 @@ describe('Pipeline to mongo translator', () => {
       { name: 'delete', columns: ['Manager'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
-      { name: 'newcolumn', column: 'id', query: { $concat: ['$Country', ' - ', '$Region'] } },
-      { name: 'rename', oldname: 'id', newname: 'Zone' },
+      { name: 'formula', new_column: 'value', formula: 'value / 1000' },
+      { name: 'rename', oldname: 'value', newname: 'Revenue' },
       {
         name: 'replace',
-        search_column: 'Zone',
+        search_column: 'Country',
         oldvalue: 'France - ',
         newvalue: 'France',
       },
       {
         name: 'replace',
-        search_column: 'Zone',
+        search_column: 'Country',
         oldvalue: 'Spain - ',
         newvalue: 'Spain',
       },
-      { name: 'newcolumn', column: 'Population', query: { $divide: ['$Population', 1000] } },
+      { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
       {
         name: 'custom',
-        query: { $group: { _id: '$Zone', Population: { $sum: '$Population' } } },
+        query: { $group: { _id: '$Country', Population: { $sum: '$Population' } } },
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -215,30 +215,30 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         $addFields: {
-          id: { $concat: ['$Country', ' - ', '$Region'] },
+          value: { $divide: ['$value', 1000] },
         },
       },
       {
         // A step with a key referencing as value any key present in the last
         // step should not be merged with the latter
         $addFields: {
-          Zone: '$id',
+          Revenue: '$value',
         },
       },
       {
         $project: {
-          id: 0,
+          value: 0,
         },
       },
       {
         $addFields: {
-          Zone: {
+          Country: {
             $cond: [
               {
-                $eq: ['$Zone', 'France - '],
+                $eq: ['$Country', 'France - '],
               },
               'France',
-              '$Zone',
+              '$Country',
             ],
           },
         },
@@ -246,20 +246,20 @@ describe('Pipeline to mongo translator', () => {
       {
         // Two steps with common keys should not be merged
         $addFields: {
-          Zone: {
+          Country: {
             $cond: [
               {
-                $eq: ['$Zone', 'Spain - '],
+                $eq: ['$Country', 'Spain - '],
               },
               'Spain',
-              '$Zone',
+              '$Country',
             ],
           },
           Population: { $divide: ['$Population', 1000] },
         },
       },
       {
-        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
+        $group: { _id: '$Country', Population: { $sum: '$Population' } },
       },
     ]);
   });

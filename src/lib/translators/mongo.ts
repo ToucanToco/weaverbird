@@ -219,6 +219,11 @@ function getOperator(op: string) {
   }
 }
 
+/**
+ * Translate a mathjs logical tree describing a formula into a Mongo step
+ * @param node a mathjs node object (usually received after parsing an string expression)
+ * This node is the root node of the logical tree describing the formula
+ */
 function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
   // For type checking in `case: 'OperatorNode'` in the`switch`clause below,
   // do not let`args` and `op` be potentially`undefined`
@@ -260,7 +265,6 @@ const mapper: StepMatcher<MongoStep> = {
       [step.new_column]: buildMongoFormulaTree(<MathNode>math.parse(step.formula)),
     },
   }),
-  newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
   percentage: transformPercentage,
   rename: step => [
     { $addFields: { [step.newname]: `$${step.oldname}` } },
