@@ -617,7 +617,7 @@ describe('Pipeline to mongo translator', () => {
               { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _vqbTotalDenum: 0,
+          _vqbAppArray: 1, // we need to keep track of this key for the next operation
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
@@ -652,7 +652,7 @@ describe('Pipeline to mongo translator', () => {
               { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _vqbTotalDenum: 0,
+          _vqbAppArray: 1, // we need to keep track of this key for the next operation
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },

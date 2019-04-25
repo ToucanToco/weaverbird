@@ -108,7 +108,7 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
         { $divide: [`$_vqbAppArray.${step.column}`, '$_vqbTotalDenum'] },
       ],
     },
-    _vqbTotalDenum: 0, // We do not want to keep that column at the end
+    _vqbAppArray: 1, // we need to keep track of this key for the next operation
   };
 
   return [
