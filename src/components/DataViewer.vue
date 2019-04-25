@@ -26,7 +26,7 @@
   <div v-else>No Data Available</div>
 </template>
 <script lang="ts">
-import _ from 'lodash';
+import without from 'lodash/without';
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
@@ -78,7 +78,7 @@ export default class DataViewer extends Vue {
 
   toggleColumnSelection(column: string) {
     if (this.selectedColumns.includes(column)) {
-      this.selectedColumns = _.without(this.selectedColumns, column);
+      this.selectedColumns = without(this.selectedColumns, column);
     } else {
       this.selectedColumns = [...this.selectedColumns, column];
     }
