@@ -227,11 +227,26 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
       stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
     if (isMergeable && lastStep[stepOperator] !== undefined) {
       for (const key in step[stepOperator]) {
-        // We do not want to merge two $project with common keys
+        /**
+         * In Mongo, exclusions cannot be combined with any inclusion, so if we
+         * have such an exclusion in a $project step, and that the previous one
+         * include any inclusion, we do not want to merge the steps.
+         */
+        if (stepOperator === '$project') {
+          const bool = step[stepOperator][key] === 0;
+          for (const lastKey in lastStep[stepOperator]) {
+            if (lastStep[stepOperator][lastKey] === Number(bool)) {
+              merge = false;
+              break;
+            }
+          }
+        }
         if (lastStep[stepOperator].hasOwnProperty(key)) {
+          // We do not want to merge two $project with common keys
           merge = false;
           break;
-        } else if (stepOperator !== '$match') {
+        }
+        if (stepOperator !== '$match') {
           // We do not want to merge two $project or $addFields with a `step`
           // key referencing as value a`lastStep` key
           const valueString: string = JSON.stringify(step[stepOperator][key]);
