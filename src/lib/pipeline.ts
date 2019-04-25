@@ -62,8 +62,6 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
         // case { $project: { zone: 1 } }
         select.push(outcol);
       }
-    } else if (typeof incol === 'object') {
-      computedColumns.push({ name: 'newcolumn', column: outcol, query: incol });
     }
   }
   if (select.length) {
