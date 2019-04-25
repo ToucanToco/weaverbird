@@ -133,3 +133,29 @@ See the documentation generated in `dist/docs` directory
 ### Styles
 
 TODO: document here sass variables that can be overriden
+
+## Playground
+
+The `/playground` directory hosts a demo application with a small server that
+showcases how to integrate the exported components and API. To run it, just
+run:
+
+```bash
+yarn playground
+```
+
+which is basically a shortcut for the following steps:
+
+```bash
+# build the visual query builder bundle
+yarn build-bundle
+# build the playground app
+yarn playground:build-app
+# build the "backend" server
+yarn playground:build-server
+# run the server and enjoy!
+node playground/server.js
+```
+
+Once the server is started, you should be able to open the
+`http://localhost:3000` in your favorite browser and enjoy!
