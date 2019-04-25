@@ -84,6 +84,47 @@ Filter out lines that don't match a filter definition.
 }
 ```
 
+### `formula` step
+
+Filter out lines that don't match a filter definition.
+
+```javascript
+{
+    name: 'filter',
+    column: 'my-column',
+    value: 42
+    operator: 'ne'
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Label   | Value1 | Value2 | Value3 | Value4 |
+| ------- | ------ | ------ | ------ | ------ |
+| Label 1 | 10     | 2      | 3      | 1      |
+| Label 2 | 1      | 13     | 7      | 3      |
+| Label 3 | 5      | 20     | 5      | 2      |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'formula',
+  new_column: 'result',
+  formula: '(Value1 + Value2) / Value3 - Value4 * 2'
+}
+```
+
+**Output dataset:**
+
+| Label   | Value1 | Value2 | Value3 | Value4 | Result |
+| ------- | ------ | ------ | ------ | ------ | ------ |
+| Label 1 | 10     | 2      | 3      | 1      | 2      |
+| Label 2 | 1      | 13     | 7      | 3      | -4     |
+| Label 3 | 5      | 20     | 5      | 2      | 1      |
+
 ### `percentage` step
 
 Compute the percentage of total, i.e. for every row the value in `column` divided
