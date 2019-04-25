@@ -7,6 +7,12 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
+/**
+ * @name DataViewerCell
+ * @description A cell display in a DataViewer
+ * @param {boolean} isSelected - Wether the cell is selected or is in a selected column
+ * @param {string} value - The cell's value
+ */
 @Component({
   name: 'data-viewer-cell',
 })
