@@ -46,7 +46,7 @@ export default class DataViewer extends Vue {
     default: () => [],
     type: Array,
   })
-  dataset!: Array<object>;
+  dataset!: Array<DataRow>;
 
   selectedColumns: Array<string> = [];
 
