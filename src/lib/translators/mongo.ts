@@ -13,6 +13,7 @@ import {
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
+import { MathNode } from '@/typings/mathjs';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -22,37 +23,6 @@ type PropMap<T> = { [prop: string]: T };
 export interface MongoStep {
   [propName: string]: any;
 }
-
-/**
- * Math nodes interfaces to build formula logical trees
- */
-interface OperatorNode {
-  type: 'OperatorNode';
-  fn: string;
-  op: string;
-  args: Array<MathNode>;
-  [propName: string]: any;
-}
-
-interface ConstantNode {
-  type: 'ConstantNode';
-  value: number;
-  [propName: string]: any;
-}
-
-interface SymbolNode {
-  type: 'SymbolNode';
-  name: string;
-  [propName: string]: any;
-}
-
-interface ParenthesisNode {
-  type: 'ParenthesisNode';
-  content: MathNode;
-  [propName: string]: any;
-}
-
-type MathNode = OperatorNode | ConstantNode | SymbolNode | ParenthesisNode;
 
 function fromkeys(keys: Array<string>, value = 0) {
   const out: { [propname: string]: any } = {};
@@ -262,7 +232,7 @@ const mapper: StepMatcher<MongoStep> = {
   filter: filterstepToMatchstep,
   formula: step => ({
     $addFields: {
-      [step.new_column]: buildMongoFormulaTree(<MathNode>math.parse(step.formula)),
+      [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
     },
   }),
   percentage: transformPercentage,
