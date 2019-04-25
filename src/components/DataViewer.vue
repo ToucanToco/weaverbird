@@ -59,15 +59,13 @@ export default class DataViewer extends Vue {
   }
 
   get formattedColumns() {
-    return _.map(this.columnNames, d => {
-      return {
-        name: d,
-        class: {
-          'data-viewer__header-cell': true,
-          'data-viewer__header-cell--active': this.isSelected(d),
-        },
-      };
-    });
+    return this.columnNames.map(d => ({
+      name: d,
+      class: {
+        'data-viewer__header-cell': true,
+        'data-viewer__header-cell--active': this.isSelected(d),
+      },
+    }));
   }
 
   isSelected(column: string) {
