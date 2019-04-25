@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
-import DataViewerCell from '../../src/components/DataViewerCell.vue';
+import DataViewerCell from '@/components/DataViewerCell.vue';
 
 describe('Data Viewer Cell', () => {
   it('should instantiate with no value', () => {
