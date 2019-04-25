@@ -31,10 +31,19 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
 
+/**
+ * @name DataRow
+ * @description A simple interface that represent a row from a dataset
+ */
 interface DataRow {
   [key: string]: any;
 }
 
+/**
+ * @name DataViewer
+ * @description A Vue Component that displays data into a table
+ * @param {Array<DataRow>} dataset - The dataset that we want to display
+ */
 @Component({
   name: 'data-viewer',
   components: {
@@ -48,16 +57,28 @@ export default class DataViewer extends Vue {
   })
   dataset!: Array<DataRow>;
 
+  /**
+   * Array of column's name selected by the user
+   */
   selectedColumns: Array<string> = [];
 
+  /**
+   * @return {boolean} - Represent the emptiness of the dataset
+   */
   get datasetIsntEmpty() {
     return this.dataset.length !== 0;
   }
 
+  /**
+   * @return {Array<string>} - Displayed columns names
+   */
   get columnNames() {
     return Object.keys(this.dataset[0]);
   }
 
+  /**
+   * @return {Array<object>} - Represent our columns with their names and linked classes
+   */
   get formattedColumns() {
     return this.columnNames.map(d => ({
       name: d,
@@ -68,14 +89,29 @@ export default class DataViewer extends Vue {
     }));
   }
 
+  /**
+   * Tell us if our column is selected or not
+   * @param {string} column - A column name
+   * @return {boolean}
+   */
   isSelected(column: string) {
     return this.selectedColumns.includes(column);
   }
 
+  /**
+   * Return the value from a specific cell
+   * @param {DataRow} row - A row from our dataset
+   * @param {string} column - A column name
+   * @return {any}
+   */
   getValue(row: DataRow, column: string) {
     return row[column];
   }
 
+  /**
+   * Set or unset a column name from selectedColumns
+   * @param {string} column - A column name
+   */
   toggleColumnSelection(column: string) {
     if (this.selectedColumns.includes(column)) {
       this.selectedColumns = without(this.selectedColumns, column);
