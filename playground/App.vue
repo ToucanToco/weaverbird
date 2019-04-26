@@ -34,6 +34,7 @@
         </tbody>
       </table>
     </ResizablePanels>
+    <pre><code>{{ code }}</code></pre>
   </div>
 </template>
 
@@ -42,6 +43,13 @@ import { Component, Vue } from 'vue-property-decorator';
 import { PipelineStep } from '@/lib/steps';
 import { Pipeline, ResizablePanels, getTranslator } from '../dist/vue-query-builder.common.js';
 
+const mongo36translator = getTranslator('mongo36');
+const pipeline: Array<PipelineStep> = [
+  { name: 'domain', domain: 'cities_data' },
+  { name: 'filter', column: 'my-column', value: 42, operator: 'eq' },
+  { name: 'rename', oldname: 'my-column', newname: 'new-name' },
+];
+
 @Component({
   components: {
     Pipeline,
@@ -49,17 +57,13 @@ import { Pipeline, ResizablePanels, getTranslator } from '../dist/vue-query-buil
   },
 })
 export default class App extends Vue {
-  steps: Array<PipelineStep> = [
-    { name: 'domain', domain: 'cities_data' },
-    { name: 'filter', column: 'my-column', value: 42, operator: 'eq' },
-    { name: 'rename', oldname: 'my-column', newname: 'new-name' },
-  ];
+  steps = pipeline;
   domainsList = ['horizontal_barchart', 'bubble_chart', 'cities_data'];
+  code: string = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
 
   setSteps(pipeline: Array<PipelineStep>) {
     this.steps = pipeline;
-    const mongo36translator = getTranslator('mongo36');
-    console.log('query====>', mongo36translator.translate(pipeline));
+    this.code = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
   }
 }
 </script>
