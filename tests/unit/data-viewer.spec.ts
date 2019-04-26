@@ -15,7 +15,7 @@ describe('Data Viewer', () => {
       },
     });
 
-    expect(wrapper.text()).toEqual('No Data Available');
+    expect(wrapper.text()).toEqual('No data available');
   });
 
   describe('header', () => {

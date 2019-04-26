@@ -23,7 +23,7 @@
       </tbody>
     </table>
   </div>
-  <div v-else>No Data Available</div>
+  <div v-else>No data available</div>
 </template>
 <script lang="ts">
 import _ from 'lodash';
