@@ -25,6 +25,156 @@ An aggreation step has the following strucure:
 }
 ```
 
+### `argmax` step
+
+Get row(s) matching the maximum value in a given `column`, by group if `groups`
+is specified.
+
+```javascript
+{
+    name: 'argmax';
+    column: 'value'; // column in which to search for max value
+    groups: Array<string>; // optional
+}
+```
+
+#### Example 1: without `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmax';
+    column: 'Value';
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+
+#### Example 2: with `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmax';
+    column: 'Value';
+    groups: 'Group';
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 5 | Group 2 | 10    |
+
+### `argmin` step
+
+Get row(s) matching the minimum value in a given `column`, by group if `groups`
+is specified.
+
+```javascript
+{
+    name: 'argmin';
+    column: 'value'; // column in which to search for max value
+    groups: Array<string>; // optional
+}
+```
+
+#### Example 1: without `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmin';
+    column: 'Value';
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 2 | Group 1 | 7     |
+
+#### Example 2: with `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmin';
+    column: 'Value';
+    groups: 'Group';
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 2 | Group 1 | 7     |
+| Label 4 | Group 2 | 1     |
+
 ### `custom` step
 
 This step allows to define a custom query that can't be expressed using the
