@@ -75,6 +75,27 @@ describe('Data Viewer', () => {
       expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
     });
 
+    it("should contains column's names even if it's not on every rows", () => {
+      const dataset = [
+        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
+        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
+        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
+        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
+        { columnA: 'value13', columnB: 'value14', columnC: 'value15', columnD: 'value16' },
+      ];
+      const wrapper = shallowMount(DataViewer, {
+        propsData: {
+          dataset: dataset,
+        },
+      });
+
+      const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
+      expect(headerCellsWrapper.at(0).text()).toEqual('columnA');
+      expect(headerCellsWrapper.at(1).text()).toEqual('columnB');
+      expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
+      expect(headerCellsWrapper.at(3).text()).toEqual('columnD');
+    });
+
     describe('when clicking', () => {
       it('should add an active class on the cell', () => {
         const dataset = [
