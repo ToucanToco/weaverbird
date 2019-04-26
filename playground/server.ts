@@ -6,13 +6,14 @@ import { mongodb } from './config';
 const client = new MongoClient(mongodb.url);
 
 function executeQuery(
+  collectionName: string,
   query: Array<object>,
   next: (results: object) => void,
   errback: (err: any) => void,
 ) {
   client.connect(function(err) {
     const db = client.db(mongodb.dbname);
-    const collection = db.collection('reports');
+    const collection = db.collection(collectionName);
     collection.aggregate(query).toArray(function(err, docs) {
       if (err) {
         errback(err);
@@ -27,7 +28,7 @@ function logError(error: any) {
   console.error(error);
 }
 
-var app = express();
+const app = express();
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -35,7 +36,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.post('/query', (req, res) => {
-  executeQuery(req.body.query, res.json.bind(res), logError);
+  executeQuery(req.body.collection, req.body.query, res.json.bind(res), console.error);
 });
 
 app.use(express.static(__dirname + '/dist'));

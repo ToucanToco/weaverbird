@@ -96,15 +96,21 @@ export default class App extends Vue {
 
   setSteps(pipeline: Array<PipelineStep>) {
     this.steps = pipeline;
-    const query = mongo36translator.translate(pipeline.slice(1));
+    if (!pipeline.length || pipeline[0].name !== 'domain') {
+      throw new Error('first step should be a domain step to specify the collection');
+    }
+    const [domainStep, ...subpipeline] = pipeline;
+    const query = mongo36translator.translate(subpipeline);
     this.code = JSON.stringify(query, null, 2);
     fetch('/query', {
       method: 'POST',
-      body: JSON.stringify({ query }),
+      body: JSON.stringify({ query, collection: domainStep.domain }),
       headers: {
         'Content-Type': 'application/json'
       }
-    }).then(res => res.json()).then(dataset => this.dataset = formatDataset(dataset));
+    })
+      .then(res => res.json())
+      .then(dataset => this.dataset = formatDataset(dataset));
   }
 }
 </script>
