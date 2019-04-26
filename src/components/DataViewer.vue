@@ -58,12 +58,13 @@ export default class DataViewer extends Vue {
   dataset!: Array<DataRow>;
 
   /**
-   * Array of column's name selected by the user
+   * @description Array of column's name selected by the user
    */
   selectedColumns: Array<string> = [];
 
   /**
-   * @return {boolean} - Represent the emptiness of the dataset
+   * @description Tell us if the dataset is not empty
+   * @return {boolean}
    */
   get datasetIsntEmpty() {
     return this.dataset.length !== 0;
@@ -73,7 +74,7 @@ export default class DataViewer extends Vue {
    * @description Get columns name by checking all the rows to handle
    * the case when a row has a key that another hasn't
    *
-   * @return {Array<string>} - Displayed columns names
+   * @return {Array<string>}
    */
   get columnNames() {
     return _.chain(this.dataset)
@@ -83,7 +84,9 @@ export default class DataViewer extends Vue {
   }
 
   /**
-   * @return {Array<object>} - Represent our columns with their names and linked classes
+   * @description Get our columns with their names and linked classes
+   *
+   * @return {Array<object>}
    */
   get formattedColumns() {
     return this.columnNames.map(d => ({
@@ -96,7 +99,8 @@ export default class DataViewer extends Vue {
   }
 
   /**
-   * Tell us if our column is selected or not
+   * @description Tell us if our column is selected or not
+   *
    * @param {string} column - A column name
    * @return {boolean}
    */
@@ -105,7 +109,8 @@ export default class DataViewer extends Vue {
   }
 
   /**
-   * Return the value from a specific cell
+   * @description Return the value from a specific cell
+   *
    * @param {DataRow} row - A row from our dataset
    * @param {string} column - A column name
    * @return {any}
@@ -115,7 +120,8 @@ export default class DataViewer extends Vue {
   }
 
   /**
-   * Set or unset a column name from selectedColumns
+   * @description Select or deselect a column by its name
+   *
    * @param {string} column - A column name
    */
   toggleColumnSelection(column: string) {
