@@ -75,7 +75,7 @@ describe('Data Viewer', () => {
       expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
     });
 
-    it("should contains column's names even if it's not on every rows", () => {
+    it("should contains column's names even if not on every rows", () => {
       const dataset = [
         { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
         { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
@@ -96,7 +96,7 @@ describe('Data Viewer', () => {
       expect(headerCellsWrapper.at(3).text()).toEqual('columnD');
     });
 
-    describe('when clicking', () => {
+    describe('selection', () => {
       it('should add an active class on the cell', () => {
         const dataset = [
           { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
@@ -134,7 +134,7 @@ describe('Data Viewer', () => {
         // Select Column
         firstHeaderCellWrapper.trigger('click');
         expect(firstHeaderCellWrapper.classes()).toContain('data-viewer__header-cell--active');
-        // Unselect Column
+        // Deselect Column
         firstHeaderCellWrapper.trigger('click');
         expect(firstHeaderCellWrapper.classes()).not.toContain('data-viewer__header-cell--active');
       });
@@ -181,7 +181,7 @@ describe('Data Viewer', () => {
     });
   });
 
-  describe('when clicking on first head cell', () => {
+  describe('first column selection', () => {
     it('should select all first columns cells', () => {
       const dataset = [
         { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
