@@ -2,6 +2,7 @@
 
 import {
   AggregationStep,
+  ArgmaxStep,
   FilterStep,
   PipelineStep,
   ReplaceStep,
@@ -76,6 +77,51 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
     }
   }
   return [{ $group: group }, { $project: project }];
+}
+
+/** transform an 'argmax' step into corresponding mongo steps */
+function transformArgmax(step: ArgmaxStep): Array<MongoStep> {
+  const groupMongo: MongoStep = {};
+  let groupCols: PropMap<string> | null = {};
+  const projectMongo: MongoStep = {};
+
+  // Prepare the $group Mongo step
+  if (step.groups) {
+    for (const col of step.groups) {
+      groupCols[col] = `$${col}`;
+    }
+  } else {
+    groupCols = null;
+  }
+  groupMongo['$group'] = {
+    _id: groupCols,
+    _vqbAppArray: { $push: '$$ROOT' },
+    _vqbAppValueToCompare: { $max: `$${step.column}` },
+  };
+
+  return [
+    groupMongo,
+    { $unwind: '$_vqbAppArray' },
+    { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+    { $project: { _vqbAppArray: 0 } },
+    {
+      /**
+       * shortcut operator to avoid to firstly create a boolean column via $project
+       * and then filter on 'true' rows via $match.
+       * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+       * not matching) the condition.
+       */
+      $redact: {
+        $cond: [
+          {
+            $eq: [`$${step.column}`, '$_vqbAppValueToCompare'],
+          },
+          '$$KEEP',
+          '$$PRUNE',
+        ],
+      },
+    },
+  ];
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
@@ -174,6 +220,7 @@ function transformTop(step: TopStep): Array<MongoStep> {
 
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
+  argmax: transformArgmax,
   custom: step => step.query,
   delete: step => ({ $project: fromkeys(step.columns, 0) }),
   domain: step => ({ $match: { domain: step.domain } }),

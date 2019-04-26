@@ -21,6 +21,12 @@ export type AggregationStep = Readonly<{
   aggregations: Array<AggFunctionStep>;
 }>;
 
+export type ArgmaxStep = Readonly<{
+  name: 'argmax';
+  column: string; // column in which to search for max value
+  groups?: Array<string>; // if specified, will search for a max in every group
+}>;
+
 export type CustomStep = Readonly<{
   name: 'custom';
   query: object;
@@ -97,6 +103,7 @@ export type TopStep = Readonly<{
 
 export type PipelineStep =
   | AggregationStep
+  | ArgmaxStep
   | CustomStep
   | DeleteStep
   | DomainStep

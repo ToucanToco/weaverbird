@@ -659,4 +659,87 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _vqbAppArray: 0 } },
     ]);
   });
+
+  it('can generate an argmax step without groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'argmax',
+        column: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: null,
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbAppValueToCompare: { $max: '$bar' },
+        },
+      },
+      {
+        $unwind: '$_vqbAppArray',
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
+      {
+        /**
+         * shortcut operator to avoid to firstly create a boolean column via $project
+         * and then filter on 'true' rows via $match.
+         * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+         * not matching) the condition.
+         */
+        $redact: {
+          $cond: [
+            {
+              $eq: ['$bar', '$_vqbAppValueToCompare'],
+            },
+            '$$KEEP',
+            '$$PRUNE',
+          ],
+        },
+      },
+    ]);
+  });
+
+  it('can generate an argmax step with groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'argmax',
+        column: 'bar',
+        groups: ['foo'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: { foo: '$foo' },
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbAppValueToCompare: { $max: '$bar' },
+        },
+      },
+      {
+        $unwind: '$_vqbAppArray',
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
+      {
+        /**
+         * shortcut operator to avoid to firstly create a boolean column via $project
+         * and then filter on 'true' rows via $match.
+         * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+         * not matching) the condition.
+         */
+        $redact: {
+          $cond: [
+            {
+              $eq: ['$bar', '$_vqbAppValueToCompare'],
+            },
+            '$$KEEP',
+            '$$PRUNE',
+          ],
+        },
+      },
+    ]);
+  });
 });
