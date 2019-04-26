@@ -3,6 +3,7 @@
 import {
   AggregationStep,
   ArgmaxStep,
+  ArgminStep,
   FilterStep,
   PipelineStep,
   ReplaceStep,
@@ -79,11 +80,11 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
   return [{ $group: group }, { $project: project }];
 }
 
-/** transform an 'argmax' step into corresponding mongo steps */
-function transformArgmax(step: ArgmaxStep): Array<MongoStep> {
+/** transform an 'argmax' or 'argmin' step into corresponding mongo steps */
+function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> {
   const groupMongo: MongoStep = {};
   let groupCols: PropMap<string> | null = {};
-  const projectMongo: MongoStep = {};
+  const stepMapping = { argmax: '$max', argmin: '$min' };
 
   // Prepare the $group Mongo step
   if (step.groups) {
@@ -96,7 +97,7 @@ function transformArgmax(step: ArgmaxStep): Array<MongoStep> {
   groupMongo['$group'] = {
     _id: groupCols,
     _vqbAppArray: { $push: '$$ROOT' },
-    _vqbAppValueToCompare: { $max: `$${step.column}` },
+    _vqbAppValueToCompare: { [stepMapping[step.name]]: `$${step.column}` },
   };
 
   return [
@@ -220,7 +221,8 @@ function transformTop(step: TopStep): Array<MongoStep> {
 
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
-  argmax: transformArgmax,
+  argmax: transformArgmaxArgmin,
+  argmin: transformArgmaxArgmin,
   custom: step => step.query,
   delete: step => ({ $project: fromkeys(step.columns, 0) }),
   domain: step => ({ $match: { domain: step.domain } }),

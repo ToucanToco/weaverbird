@@ -742,4 +742,46 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate an argmin step with groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'argmin',
+        column: 'value',
+        groups: ['foo', 'bar'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: { foo: '$foo', bar: '$bar' },
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbAppValueToCompare: { $min: '$value' },
+        },
+      },
+      {
+        $unwind: '$_vqbAppArray',
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
+      {
+        /**
+         * shortcut operator to avoid to firstly create a boolean column via $project
+         * and then filter on 'true' rows via $match.
+         * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+         * not matching) the condition.
+         */
+        $redact: {
+          $cond: [
+            {
+              $eq: ['$value', '$_vqbAppValueToCompare'],
+            },
+            '$$KEEP',
+            '$$PRUNE',
+          ],
+        },
+      },
+    ]);
+  });
 });
