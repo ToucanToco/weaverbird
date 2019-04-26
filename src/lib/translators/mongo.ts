@@ -229,17 +229,12 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
       for (const key in step[stepOperator]) {
         /**
          * In Mongo, exclusions cannot be combined with any inclusion, so if we
-         * have such an exclusion in a $project step, and that the previous one
-         * include any inclusion, we do not want to merge the steps.
+         * have an exclusion in a $project step, and that the previous one
+         * includes any inclusion, we do not want to merge those steps.
          */
         if (stepOperator === '$project') {
-          const bool = step[stepOperator][key] === 0;
-          for (const lastKey in lastStep[stepOperator]) {
-            if (lastStep[stepOperator][lastKey] === Number(bool)) {
-              merge = false;
-              break;
-            }
-          }
+          const excluded = Number(step['$project'][key] === 0);
+          merge = !Object.values(lastStep.$project).some(value => value === excluded);
         }
         if (lastStep[stepOperator].hasOwnProperty(key)) {
           // We do not want to merge two $project with common keys
