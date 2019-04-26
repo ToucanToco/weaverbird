@@ -28,7 +28,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { PipelineStep } from '@/lib/steps';
 import { Pipeline, ResizablePanels, getTranslator } from '../dist/vue-query-builder.common.js';
-import { mongodb, pipeline, domains } from './config';
+import { mongodb, pipeline } from './config';
 
 const mongo36translator = getTranslator('mongo36');
 
@@ -83,7 +83,7 @@ function formatDataset(results: Array<{ [k: string]: any }>): DataSet {
 })
 export default class App extends Vue {
   steps = pipeline;
-  domainsList = domains;
+  domainsList = [];
   code: string = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
   dataset: DataSet = {
     columns: [{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }],
@@ -93,6 +93,12 @@ export default class App extends Vue {
       [16, 20, 16],
     ]
   };
+
+  mounted() {
+    fetch('/collections')
+      .then(res => res.json())
+      .then(collections => this.domainsList = collections);
+  }
 
   setSteps(pipeline: Array<PipelineStep>) {
     this.steps = pipeline;

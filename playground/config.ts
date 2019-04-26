@@ -10,5 +10,3 @@ export const pipeline: Array<PipelineStep> = [
   { name: 'filter', column: 'entityName', value: 'Troll face', operator: 'eq' },
   { name: 'filter', column: 'id', value: 'yolo', operator: 'eq' },
 ];
-
-export const domains = ['dashboards', 'reports'];
