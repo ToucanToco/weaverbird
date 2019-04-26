@@ -286,6 +286,8 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $project: { Region_bis: 0 } },
+      { $project: { test: '$test' } },
+      { $project: { exclusion: 0 } },
       {
         $addFields: {
           id: { $concat: ['$Country', ' - ', '$Region'] },
@@ -366,6 +368,8 @@ describe('Pipeline to mongo translator', () => {
           Region_bis: 0,
         },
       },
+      { $project: { test: '$test' } },
+      { $project: { exclusion: 0 } },
       {
         $addFields: {
           id: { $concat: ['$Country', ' - ', '$Region'] },

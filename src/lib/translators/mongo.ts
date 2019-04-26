@@ -233,8 +233,8 @@ export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<Mong
          * includes any inclusion, we do not want to merge those steps.
          */
         if (stepOperator === '$project') {
-          const excluded = Number(step['$project'][key] === 0);
-          merge = !Object.values(lastStep.$project).some(value => value === excluded);
+          const included = Boolean(step['$project'][key]);
+          merge = Object.values(lastStep.$project).every(value => value == included);
         }
         if (lastStep[stepOperator].hasOwnProperty(key)) {
           // We do not want to merge two $project with common keys
