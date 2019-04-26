@@ -1,7 +1,7 @@
 <template functional>
   <td
     :class="{'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }"
-  >{{ props.value }}</td>
+  >{{ $options.methods.getValue(props.value)}}</td>
 </template>
 <script lang="ts">
 import Vue from 'vue';
@@ -14,20 +14,23 @@ import { Component, Prop } from 'vue-property-decorator';
  * @param {boolean} isSelected - Wether the cell is selected or is in a selected column
  * @param {string} value - The cell's value
  */
-@Component({
+export default {
   name: 'data-viewer-cell',
-})
-export default class DataViewerCell extends Vue {
-  @Prop({
-    default: () => false,
-  })
-  isSelected!: boolean;
-
-  @Prop({
-    default: () => '',
-  })
-  value!: string;
-}
+  props: {
+    value: {
+      default: () => '-',
+    },
+    isSelected: {
+      type: Boolean,
+      default: () => false,
+    },
+  },
+  methods: {
+    getValue(value: any) {
+      return typeof value === 'object' ? JSON.stringify(value) : value.toString();
+    },
+  },
+};
 </script>
 <style lang="scss">
 </style>
