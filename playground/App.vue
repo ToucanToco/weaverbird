@@ -10,26 +10,12 @@
       <table slot="right-panel">
         <thead>
           <tr>
-            <th>Column1</th>
-            <th>Column2</th>
-            <th>Column3</th>
+            <th :key="col" v-for="col in dataset.columns">{{ col }}</th>
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td>12</td>
-            <td>13</td>
-            <td>14</td>
-          </tr>
-          <tr>
-            <td>15</td>
-            <td>16</td>
-            <td>17</td>
-          </tr>
-          <tr>
-            <td>18</td>
-            <td>19</td>
-            <td>20</td>
+          <tr :key="rowidx" v-for="(row, rowidx) in dataset.data">
+            <td :key="colidx" v-for="(value, colidx) in row">{{ value }}</td>
           </tr>
         </tbody>
       </table>
@@ -42,13 +28,25 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { PipelineStep } from '@/lib/steps';
 import { Pipeline, ResizablePanels, getTranslator } from '../dist/vue-query-builder.common.js';
+import { mongodb, pipeline, domains } from './config';
 
 const mongo36translator = getTranslator('mongo36');
-const pipeline: Array<PipelineStep> = [
-  { name: 'domain', domain: 'cities_data' },
-  { name: 'filter', column: 'my-column', value: 42, operator: 'eq' },
-  { name: 'rename', oldname: 'my-column', newname: 'new-name' },
-];
+
+type DataSet = {
+  columns: Array<string>;
+  data: Array<Array<any>>;
+}
+
+function formatDataset(results: Array<object>): DataSet {
+  const dataset: DataSet = { columns: [], data: [] };
+  if (results.length) {
+    dataset.columns = Object.keys(results[0]);
+    for (const row of results) {
+      dataset.data.push(dataset.columns.map(colname => row[colname]));
+    }
+  }
+  return dataset;
+}
 
 @Component({
   components: {
@@ -58,12 +56,28 @@ const pipeline: Array<PipelineStep> = [
 })
 export default class App extends Vue {
   steps = pipeline;
-  domainsList = ['horizontal_barchart', 'bubble_chart', 'cities_data'];
+  domainsList = domains;
   code: string = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
+  dataset: DataSet = {
+    columns: ['col1', 'col2', 'col3'],
+    data: [
+      [12, 13, 14],
+      [15, 19, 15],
+      [16, 20, 16],
+    ]
+  };
 
   setSteps(pipeline: Array<PipelineStep>) {
     this.steps = pipeline;
-    this.code = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
+    const query = mongo36translator.translate(pipeline.slice(1));
+    this.code = JSON.stringify(query, null, 2);
+    fetch('/query', {
+      method: 'POST',
+      body: JSON.stringify({ query }),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json()).then(dataset => this.dataset = formatDataset(dataset));
   }
 }
 </script>
