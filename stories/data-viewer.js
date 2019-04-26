@@ -7,10 +7,8 @@ const stories = storiesOf('DataViewer', module);
 stories.add('empty', () => ({
   components: { DataViewer },
   template: `
-    <div style="width: 800px; height: 800px">
-      <data-viewer>
-      </data-viewer>
-    </div>
+    <data-viewer>
+    </data-viewer>
   `,
 }));
 
