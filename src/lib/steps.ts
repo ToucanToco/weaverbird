@@ -76,10 +76,9 @@ export type PercentageStep = Readonly<{
 
 export type PivotStep = Readonly<{
   name: 'pivot';
-  index: ['column_1', 'column_2']; // fixed column(s) around which to pivot data
+  index: ['column_1', 'column_2'];
   column_to_pivot: 'column_3';
-  value_column: 'column_4'; // value column to be used to populate pivoted column
-  // function used to aggregate data when several rows are found by index group
+  value_column: 'column_4';
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
 }>;
 

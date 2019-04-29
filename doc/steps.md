@@ -266,6 +266,58 @@ group: ['foo'] // optional
 
 `value` can be an arbitrary value (e.g a list when used with the `in` operator)
 
+### `pivot` step
+
+Pivot rows into columns around a given `index` (expressed as a combination of column(s)).
+Values to be used as new column names are found in the column `column_to_pivot`.
+Values to populate new columns are found in the column `value_column`.
+The function used to aggregate data (when several rows are found by index group) must be
+among `sum`, `avg`, `count`, `min` or `max`.
+
+```javascript
+{
+  name: 'pivot',
+  index: ['column_1', 'column_2'],
+  column_to_pivot: 'column_3',
+  value_column: 'column_4',
+  agg_function: 'sum',
+}
+```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Country  | Value |
+| ------- | -------- | ----- |
+| Label 1 | Country1 | 13    |
+| Label 2 | Country1 | 7     |
+| Label 3 | Country1 | 20    |
+| Label 1 | Country2 | 1     |
+| Label 2 | Country2 | 10    |
+| Label 3 | Country2 | 5     |
+| label 3 | Country2 | 1     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'pivot',
+  index: ['Label'],
+  column_to_pivot: 'Country',
+  value_column: 'Value',
+  agg_function: 'sum',
+}
+```
+
+**Output dataset:**
+
+| Label   | Country1 | Country2 |
+| ------- | -------- | -------- |
+| Label 1 | 13       | 1        |
+| Label 2 | 7        | 10       |
+| Label 3 | 20       | 6        |
+
 ### `rename` step
 
 Rename a column.,
