@@ -16,14 +16,164 @@ An aggreation step has the following strucure:
    on: ['column1', 'column2'],
    aggregations:  [
       {
-          newcolumn: 'sum_value1'
-          aggfunction: 'sum'
-          column: 'value1',
+          newcolumn: 'sum_value1',
+          aggfunction: 'sum',
+          column: 'value1'
       }
     // ...
   ]
 }
 ```
+
+### `argmax` step
+
+Get row(s) matching the maximum value in a given `column`, by group if `groups`
+is specified.
+
+```javascript
+{
+    name: 'argmax',
+    column: 'value', // column in which to search for max value
+    groups: ['group1', 'group2']
+}
+```
+
+#### Example 1: without `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmax',
+    column: 'Value'
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+
+#### Example 2: with `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmax',
+    column: 'Value',
+    groups: ['Group']
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 5 | Group 2 | 10    |
+
+### `argmin` step
+
+Get row(s) matching the minimum value in a given `column`, by group if `groups`
+is specified.
+
+```javascript
+{
+  name: 'argmin',
+  column: 'value', // column in which to search for max value
+  groups: ['group1', 'group2'] // optional
+}
+```
+
+#### Example 1: without `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmin',
+    column: 'Value'
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 2 | Group 1 | 7     |
+
+#### Example 2: with `groups`
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'argmin',
+    column: 'Value',
+    groups: ['Groups']
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 2 | Group 1 | 7     |
+| Label 4 | Group 2 | 1     |
 
 ### `custom` step
 
@@ -33,7 +183,7 @@ other existing steps.
 ```javascript
 {
     name: 'custom',
-    query: '$group: {_id: ...}',
+    query: '$group: {_id: ...}'
 }
 ```
 
@@ -79,7 +229,7 @@ Filter out lines that don't match a filter definition.
 {
     name: 'filter',
     column: 'my-column',
-    value: 42
+    value: 42,
     operator: 'ne'
 }
 ```
@@ -169,7 +319,7 @@ A replace step has the following strucure:
    search_column: "column_1",
    new_column: "column_1", // if empty, inplace by default
    oldvalue: 'foo',
-   newvalue: 'bar',
+   newvalue: 'bar'
 }
 ```
 

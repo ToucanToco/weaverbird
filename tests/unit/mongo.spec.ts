@@ -173,6 +173,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'delete', columns: ['Manager'] },
+      { name: 'delete', columns: ['Random'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
       { name: 'formula', new_column: 'value', formula: 'value / 1000' },
@@ -201,6 +202,11 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Manager: 0,
+          Random: 0,
+        },
+      },
+      {
+        $project: {
           Country: 1,
           Region: 1,
           Population: 1,
@@ -270,6 +276,7 @@ describe('Pipeline to mongo translator', () => {
       { $match: { Manager: 'Pierre' } },
       { $match: { Manager: { $ne: 'NA' } } },
       { $project: { Manager: 0 } },
+      { $project: { Random: 0 } },
       {
         $project: {
           Country: 1,
@@ -279,6 +286,9 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $project: { Region_bis: 0 } },
+      { $project: { test: '$test' } },
+      { $project: { test: 2 } },
+      { $project: { exclusion: 0 } },
       {
         $addFields: {
           id: { $concat: ['$Country', ' - ', '$Region'] },
@@ -342,6 +352,11 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Manager: 0,
+          Random: 0,
+        },
+      },
+      {
+        $project: {
           Country: 1,
           Region: 1,
           Population: 1,
@@ -354,6 +369,9 @@ describe('Pipeline to mongo translator', () => {
           Region_bis: 0,
         },
       },
+      { $project: { test: '$test' } },
+      { $project: { test: 2 } },
+      { $project: { exclusion: 0 } },
       {
         $addFields: {
           id: { $concat: ['$Country', ' - ', '$Region'] },
@@ -617,7 +635,7 @@ describe('Pipeline to mongo translator', () => {
               { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _vqbTotalDenum: 0,
+          _vqbAppArray: 1, // we need to keep track of this key for the next operation
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
@@ -652,11 +670,136 @@ describe('Pipeline to mongo translator', () => {
               { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _vqbTotalDenum: 0,
+          _vqbAppArray: 1, // we need to keep track of this key for the next operation
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
       { $project: { _vqbAppArray: 0 } },
+    ]);
+  });
+
+  it('can generate an argmax step without groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'argmax',
+        column: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: null,
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbAppValueToCompare: { $max: '$bar' },
+        },
+      },
+      {
+        $unwind: '$_vqbAppArray',
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
+      {
+        /**
+         * shortcut operator to avoid to firstly create a boolean column via $project
+         * and then filter on 'true' rows via $match.
+         * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+         * not matching) the condition.
+         */
+        $redact: {
+          $cond: [
+            {
+              $eq: ['$bar', '$_vqbAppValueToCompare'],
+            },
+            '$$KEEP',
+            '$$PRUNE',
+          ],
+        },
+      },
+    ]);
+  });
+
+  it('can generate an argmax step with groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'argmax',
+        column: 'bar',
+        groups: ['foo'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: { foo: '$foo' },
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbAppValueToCompare: { $max: '$bar' },
+        },
+      },
+      {
+        $unwind: '$_vqbAppArray',
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
+      {
+        /**
+         * shortcut operator to avoid to firstly create a boolean column via $project
+         * and then filter on 'true' rows via $match.
+         * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+         * not matching) the condition.
+         */
+        $redact: {
+          $cond: [
+            {
+              $eq: ['$bar', '$_vqbAppValueToCompare'],
+            },
+            '$$KEEP',
+            '$$PRUNE',
+          ],
+        },
+      },
+    ]);
+  });
+
+  it('can generate an argmin step with groups', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'argmin',
+        column: 'value',
+        groups: ['foo', 'bar'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: { foo: '$foo', bar: '$bar' },
+          _vqbAppArray: { $push: '$$ROOT' },
+          _vqbAppValueToCompare: { $min: '$value' },
+        },
+      },
+      {
+        $unwind: '$_vqbAppArray',
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+      { $project: { _vqbAppArray: 0 } },
+      {
+        /**
+         * shortcut operator to avoid to firstly create a boolean column via $project
+         * and then filter on 'true' rows via $match.
+         * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+         * not matching) the condition.
+         */
+        $redact: {
+          $cond: [
+            {
+              $eq: ['$value', '$_vqbAppValueToCompare'],
+            },
+            '$$KEEP',
+            '$$PRUNE',
+          ],
+        },
+      },
     ]);
   });
 

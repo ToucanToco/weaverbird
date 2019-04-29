@@ -17,8 +17,8 @@
   "devDependencies": {
     "@babel/core": "^7.3.4",
     "@fortawesome/fontawesome-free": "^5.7.2",
-    "@storybook/addon-knobs": "^5.0.0",
-    "@storybook/vue": "^5.0.0",
+    "@storybook/addon-knobs": "^5.0.10",
+    "@storybook/vue": "^5.0.10",
     "@types/jest": "^23.1.4",
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
@@ -88,6 +88,7 @@
   },
   "sideeffects": false,
   "dependencies": {
+    "lodash": "^4.17.11",
     "mathjs": "^5.9.0",
     "vue-test-utils": "^1.0.0-beta.11"
   }
