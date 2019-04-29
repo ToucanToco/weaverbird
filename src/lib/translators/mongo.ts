@@ -6,6 +6,7 @@ import {
   ArgminStep,
   FilterStep,
   PipelineStep,
+  PivotStep,
   ReplaceStep,
   SortStep,
   TopStep,
@@ -168,6 +169,75 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
   ];
 }
 
+/** transform an 'pivot' step into corresponding mongo steps */
+function transformPivot(step: PivotStep): Array<MongoStep> {
+  let groupCols1: PropMap<string> = {};
+  let groupCols2: PropMap<string> = {};
+  let addFieldsStep: PropMap<string> = {};
+
+  // Prepare groupCols to populate the `_id` field sof Mongo `$group` steps and addFields step
+  for (const col of step.index) {
+    groupCols1[col] = `$${col}`;
+    groupCols2[col] = `$_id.${col}`;
+    addFieldsStep[`_vqbAppTmpObj.${col}`] = `$_id.${col}`;
+  }
+
+  return [
+    /**
+     * First we perform the aggregation with the _id including the column to pivot
+     */
+    {
+      $group: {
+        _id: { ...groupCols1, [step.column_to_pivot]: `$${step.column_to_pivot}` },
+        [step.value_column]: { [`$${step.agg_function}`]: `$${step.value_column}` },
+      },
+    },
+    /**
+     * Then we group with with index columns as _id and we push documents as an array of sets
+     * including a column for the column to pivot and a column for the corresponding value
+     */
+    {
+      $group: {
+        _id: groupCols2,
+        _vqbAppArray: {
+          $addToSet: {
+            [step.column_to_pivot]: `$_id.${step.column_to_pivot}`,
+            [step.value_column]: `$${step.value_column}`,
+          },
+        },
+      },
+    },
+    /**
+     * Then we project a tmp key to get an object from the array of couples [column_to_pivot, corresponding_value]
+     * including a column for the column to pivot and a column for the corresponding value
+     */
+    {
+      $project: {
+        _vqbAppTmpObj: {
+          $arrayToObject: {
+            $zip: {
+              inputs: [
+                `$_vqbAppArray.${step.column_to_pivot}`,
+                `$_vqbAppArray.${step.value_column}`,
+              ],
+            },
+          },
+        },
+      },
+    },
+    /**
+     * Then we include back in every document created in the previous step the index columns
+     * (still accessible in the _id object)
+     */
+    { $addFields: addFieldsStep },
+    /**
+     * Then we replace the root of the documents tree to get our columns ready for
+     * our needed table-like, unnested format
+     */
+    { $replaceRoot: { newRoot: '$_vqbAppTmpObj' } },
+  ];
+}
+
 /** transform an 'replace' step into corresponding mongo steps */
 function transformReplace(step: ReplaceStep): MongoStep {
   return {
@@ -236,6 +306,7 @@ const mapper: StepMatcher<MongoStep> = {
   filter: filterstepToMatchstep,
   newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
   percentage: transformPercentage,
+  pivot: transformPivot,
   rename: step => [
     { $addFields: { [step.newname]: `$${step.oldname}` } },
     { $project: { [step.oldname]: 0 } },

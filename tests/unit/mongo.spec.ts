@@ -802,4 +802,59 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a pivot step', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'pivot',
+        index: ['column_1', 'column_2'],
+        column_to_pivot: 'column_3',
+        value_column: 'column_4',
+        agg_function: 'sum',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: {
+            column_1: '$column_1',
+            column_2: '$column_2',
+            column_3: '$column_3',
+          },
+          column_4: { $sum: '$column_4' },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            column_1: '$_id.column_1',
+            column_2: '$_id.column_2',
+          },
+          _vqbAppArray: {
+            $addToSet: {
+              column_3: '$_id.column_3',
+              column_4: '$column_4',
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _vqbAppTmpObj: {
+            $arrayToObject: {
+              $zip: { inputs: ['$_vqbAppArray.column_3', '$_vqbAppArray.column_4'] },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          '_vqbAppTmpObj.column_1': '$_id.column_1',
+          '_vqbAppTmpObj.column_2': '$_id.column_2',
+        },
+      },
+      { $replaceRoot: { newRoot: '$_vqbAppTmpObj' } },
+    ]);
+  });
 });
