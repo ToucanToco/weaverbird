@@ -2,6 +2,8 @@
 
 import {
   AggregationStep,
+  ArgmaxStep,
+  ArgminStep,
   FilterStep,
   PipelineStep,
   ReplaceStep,
@@ -76,6 +78,51 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
     }
   }
   return [{ $group: group }, { $project: project }];
+}
+
+/** transform an 'argmax' or 'argmin' step into corresponding mongo steps */
+function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> {
+  const groupMongo: MongoStep = {};
+  let groupCols: PropMap<string> | null = {};
+  const stepMapping = { argmax: '$max', argmin: '$min' };
+
+  // Prepare the $group Mongo step
+  if (step.groups) {
+    for (const col of step.groups) {
+      groupCols[col] = `$${col}`;
+    }
+  } else {
+    groupCols = null;
+  }
+  groupMongo.$group = {
+    _id: groupCols,
+    _vqbAppArray: { $push: '$$ROOT' },
+    _vqbAppValueToCompare: { [stepMapping[step.name]]: `$${step.column}` },
+  };
+
+  return [
+    groupMongo,
+    { $unwind: '$_vqbAppArray' },
+    { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
+    { $project: { _vqbAppArray: 0 } },
+    {
+      /**
+       * shortcut operator to avoid to firstly create a boolean column via $project
+       * and then filter on 'true' rows via $match.
+       * "$$KEEP" (resp. $$PRUNE") keeps (resp. exlcludes) rows matching (resp.
+       * not matching) the condition.
+       */
+      $redact: {
+        $cond: [
+          {
+            $eq: [`$${step.column}`, '$_vqbAppValueToCompare'],
+          },
+          '$$KEEP',
+          '$$PRUNE',
+        ],
+      },
+    },
+  ];
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
@@ -174,6 +221,8 @@ function transformTop(step: TopStep): Array<MongoStep> {
 
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
+  argmax: transformArgmaxArgmin,
+  argmin: transformArgmaxArgmin,
   custom: step => step.query,
   delete: step => ({ $project: fromkeys(step.columns, 0) }),
   domain: step => ({ $match: { domain: step.domain } }),
