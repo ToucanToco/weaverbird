@@ -10,9 +10,12 @@ import {
   SortStep,
   TopStep,
   PercentageStep,
+  FormulaStep,
 } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
+import * as math from 'mathjs';
+import { MathNode } from '@/typings/mathjs';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -219,6 +222,48 @@ function transformTop(step: TopStep): Array<MongoStep> {
   ];
 }
 
+function getOperator(op: string) {
+  const operators: PropMap<string> = {
+    '+': '$add',
+    '-': '$subtract',
+    '*': '$multiply',
+    '/': '$divide',
+  };
+  if (operators[op] === undefined) {
+    throw new Error(`Unsupported operator ${op}`);
+  } else {
+    return operators[op];
+  }
+}
+
+/**
+ * Translate a mathjs logical tree describing a formula into a Mongo step
+ * @param node a mathjs node object (usually received after parsing an string expression)
+ * This node is the root node of the logical tree describing the formula
+ */
+function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
+  // For type checking in `case: 'OperatorNode'` in the`switch`clause below,
+  // do not let`args` and `op` be potentially`undefined`
+  switch (node.type) {
+    case 'OperatorNode':
+      if (node.args.length === 1) {
+        const factor = node.op === '+' ? 1 : -1;
+        return {
+          $multiply: [factor, buildMongoFormulaTree(node.args[0])],
+        };
+      }
+      return {
+        [getOperator(node.op)]: node.args.map(buildMongoFormulaTree),
+      };
+    case 'SymbolNode':
+      return `$${node.name}`;
+    case 'ConstantNode':
+      return node.value;
+    case 'ParenthesisNode':
+      return buildMongoFormulaTree(node.content);
+  }
+}
+
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
@@ -234,7 +279,11 @@ const mapper: StepMatcher<MongoStep> = {
     },
   }),
   filter: filterstepToMatchstep,
-  newcolumn: step => ({ $addFields: { [step.column]: step.query } }),
+  formula: step => ({
+    $addFields: {
+      [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
+    },
+  }),
   percentage: transformPercentage,
   rename: step => [
     { $addFields: { [step.newname]: `$${step.oldname}` } },
