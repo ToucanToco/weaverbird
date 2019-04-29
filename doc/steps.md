@@ -16,9 +16,9 @@ An aggreation step has the following strucure:
    on: ['column1', 'column2'],
    aggregations:  [
       {
-          newcolumn: 'sum_value1'
-          aggfunction: 'sum'
-          column: 'value1',
+          newcolumn: 'sum_value1',
+          aggfunction: 'sum',
+          column: 'value1'
       }
     // ...
   ]
@@ -32,9 +32,9 @@ is specified.
 
 ```javascript
 {
-    name: 'argmax';
-    column: 'value'; // column in which to search for max value
-    groups: Array<string>; // optional
+    name: 'argmax',
+    column: 'value', // column in which to search for max value
+    groups: ['group1', 'group2']
 }
 ```
 
@@ -56,8 +56,8 @@ is specified.
 ```javascript
 {
   {
-    name: 'argmax';
-    column: 'Value';
+    name: 'argmax',
+    column: 'Value'
   }
 }
 ```
@@ -86,9 +86,9 @@ is specified.
 ```javascript
 {
   {
-    name: 'argmax';
-    column: 'Value';
-    groups: 'Group';
+    name: 'argmax',
+    column: 'Value',
+    groups: ['Group']
   }
 }
 ```
@@ -107,9 +107,9 @@ is specified.
 
 ```javascript
 {
-    name: 'argmin';
-    column: 'value'; // column in which to search for max value
-    groups: Array<string>; // optional
+  name: 'argmin',
+  column: 'value', // column in which to search for max value
+  groups: ['group1', 'group2'] // optional
 }
 ```
 
@@ -131,8 +131,8 @@ is specified.
 ```javascript
 {
   {
-    name: 'argmin';
-    column: 'Value';
+    name: 'argmin',
+    column: 'Value'
   }
 }
 ```
@@ -161,9 +161,9 @@ is specified.
 ```javascript
 {
   {
-    name: 'argmin';
-    column: 'Value';
-    groups: 'Group';
+    name: 'argmin',
+    column: 'Value',
+    groups: ['Groups']
   }
 }
 ```
@@ -183,7 +183,7 @@ other existing steps.
 ```javascript
 {
     name: 'custom',
-    query: '$group: {_id: ...}',
+    query: '$group: {_id: ...}'
 }
 ```
 
@@ -229,7 +229,7 @@ Filter out lines that don't match a filter definition.
 {
     name: 'filter',
     column: 'my-column',
-    value: 42
+    value: 42,
     operator: 'ne'
 }
 ```
@@ -290,7 +290,7 @@ A replace step has the following strucure:
    search_column: "column_1",
    new_column: "column_1", // if empty, inplace by default
    oldvalue: 'foo',
-   newvalue: 'bar',
+   newvalue: 'bar'
 }
 ```
 

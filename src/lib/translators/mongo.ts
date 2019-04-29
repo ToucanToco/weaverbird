@@ -94,7 +94,7 @@ function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> 
   } else {
     groupCols = null;
   }
-  groupMongo['$group'] = {
+  groupMongo.$group = {
     _id: groupCols,
     _vqbAppArray: { $push: '$$ROOT' },
     _vqbAppValueToCompare: { [stepMapping[step.name]]: `$${step.column}` },
