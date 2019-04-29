@@ -287,6 +287,7 @@ describe('Pipeline to mongo translator', () => {
       },
       { $project: { Region_bis: 0 } },
       { $project: { test: '$test' } },
+      { $project: { test: 2 } },
       { $project: { exclusion: 0 } },
       {
         $addFields: {
@@ -369,6 +370,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $project: { test: '$test' } },
+      { $project: { test: 2 } },
       { $project: { exclusion: 0 } },
       {
         $addFields: {
