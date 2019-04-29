@@ -176,24 +176,24 @@ describe('Pipeline to mongo translator', () => {
       { name: 'delete', columns: ['Random'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
-      { name: 'newcolumn', column: 'id', query: { $concat: ['$Country', ' - ', '$Region'] } },
-      { name: 'rename', oldname: 'id', newname: 'Zone' },
+      { name: 'formula', new_column: 'value', formula: 'value / 1000' },
+      { name: 'rename', oldname: 'value', newname: 'Revenue' },
       {
         name: 'replace',
-        search_column: 'Zone',
+        search_column: 'Country',
         oldvalue: 'France - ',
         newvalue: 'France',
       },
       {
         name: 'replace',
-        search_column: 'Zone',
+        search_column: 'Country',
         oldvalue: 'Spain - ',
         newvalue: 'Spain',
       },
-      { name: 'newcolumn', column: 'Population', query: { $divide: ['$Population', 1000] } },
+      { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
       {
         name: 'custom',
-        query: { $group: { _id: '$Zone', Population: { $sum: '$Population' } } },
+        query: { $group: { _id: '$Country', Population: { $sum: '$Population' } } },
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -221,30 +221,30 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         $addFields: {
-          id: { $concat: ['$Country', ' - ', '$Region'] },
+          value: { $divide: ['$value', 1000] },
         },
       },
       {
         // A step with a key referencing as value any key present in the last
         // step should not be merged with the latter
         $addFields: {
-          Zone: '$id',
+          Revenue: '$value',
         },
       },
       {
         $project: {
-          id: 0,
+          value: 0,
         },
       },
       {
         $addFields: {
-          Zone: {
+          Country: {
             $cond: [
               {
-                $eq: ['$Zone', 'France - '],
+                $eq: ['$Country', 'France - '],
               },
               'France',
-              '$Zone',
+              '$Country',
             ],
           },
         },
@@ -252,20 +252,20 @@ describe('Pipeline to mongo translator', () => {
       {
         // Two steps with common keys should not be merged
         $addFields: {
-          Zone: {
+          Country: {
             $cond: [
               {
-                $eq: ['$Zone', 'Spain - '],
+                $eq: ['$Country', 'Spain - '],
               },
               'Spain',
-              '$Zone',
+              '$Country',
             ],
           },
           Population: { $divide: ['$Population', 1000] },
         },
       },
       {
-        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
+        $group: { _id: '$Country', Population: { $sum: '$Population' } },
       },
     ]);
   });
@@ -798,6 +798,131 @@ describe('Pipeline to mongo translator', () => {
             '$$KEEP',
             '$$PRUNE',
           ],
+        },
+      },
+    ]);
+  });
+
+  it('can generate a formula step with a single column or constant', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'formula',
+        new_column: 'foo',
+        formula: 'bar',
+      },
+      {
+        name: 'formula',
+        new_column: 'constant',
+        formula: '42',
+      },
+      {
+        name: 'formula',
+        new_column: 'with_parentheses',
+        formula: '(test)',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: '$bar',
+          constant: 42,
+          with_parentheses: '$test',
+        },
+      },
+    ]);
+  });
+
+  it('can generate a formula step with complex operations imbrication', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'formula',
+        new_column: 'foo',
+        formula: '(column_1 + column_2) / column_3 - column_4 * 100',
+      },
+      {
+        name: 'formula',
+        new_column: 'bar',
+        formula: '1 / ((column_1 + column_2 + column_3)) * 10',
+      },
+      {
+        name: 'formula',
+        new_column: 'test_precedence',
+        formula: 'column_1 + column_2 + column_3 * 10',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $subtract: [
+              {
+                $divide: [
+                  {
+                    $add: ['$column_1', '$column_2'],
+                  },
+                  '$column_3',
+                ],
+              },
+              {
+                $multiply: ['$column_4', 100],
+              },
+            ],
+          },
+          bar: {
+            $multiply: [
+              {
+                $divide: [
+                  1,
+                  {
+                    $add: [
+                      {
+                        $add: ['$column_1', '$column_2'],
+                      },
+                      '$column_3',
+                    ],
+                  },
+                ],
+              },
+              10,
+            ],
+          },
+          test_precedence: {
+            $add: [
+              {
+                $add: ['$column_1', '$column_2'],
+              },
+              {
+                $multiply: ['$column_3', 10],
+              },
+            ],
+          },
+        },
+      },
+    ]);
+  });
+
+  it('can generate a formula step with a a signed column name', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'formula',
+        new_column: 'test',
+        formula: '-column_1 + 10',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          test: {
+            $add: [
+              {
+                $multiply: [-1, '$column_1'],
+              },
+              10,
+            ],
+          },
         },
       },
     ]);

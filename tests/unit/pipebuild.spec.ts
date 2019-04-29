@@ -101,7 +101,6 @@ describe('Pipebuild translator', () => {
           zone: '$Region',
           Region: '$Region',
           Manager: 0,
-          id: { $concat: ['$country', ' - ', '$Region'] },
         },
       },
     ];
@@ -111,11 +110,6 @@ describe('Pipebuild translator', () => {
       { name: 'select', columns: ['Region'] },
       { name: 'rename', oldname: 'Region', newname: 'zone' },
       { name: 'delete', columns: ['Manager'] },
-      {
-        name: 'newcolumn',
-        column: 'id',
-        query: { $concat: ['$country', ' - ', '$Region'] },
-      },
     ]);
   });
 

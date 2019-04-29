@@ -23,8 +23,8 @@
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
     "@vue/cli-plugin-typescript": "^3.3.0",
-    "@vue/cli-plugin-unit-jest": "^3.3.0",
-    "@vue/cli-service": "^3.3.0",
+    "@vue/cli-plugin-unit-jest": "^3.6.3",
+    "@vue/cli-service": "^3.6.0",
     "@vue/eslint-config-typescript": "^3.2.0",
     "@vue/test-utils": "^1.0.0-beta.20",
     "babel-core": "7.0.0-bridge.0",
@@ -89,6 +89,7 @@
   "sideeffects": false,
   "dependencies": {
     "lodash": "^4.17.11",
+    "mathjs": "^5.9.0",
     "vue-test-utils": "^1.0.0-beta.11"
   }
 }
