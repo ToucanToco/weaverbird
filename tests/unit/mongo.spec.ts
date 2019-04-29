@@ -173,6 +173,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'delete', columns: ['Manager'] },
+      { name: 'delete', columns: ['Random'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
       { name: 'newcolumn', column: 'id', query: { $concat: ['$Country', ' - ', '$Region'] } },
@@ -201,6 +202,11 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Manager: 0,
+          Random: 0,
+        },
+      },
+      {
+        $project: {
           Country: 1,
           Region: 1,
           Population: 1,
@@ -270,6 +276,7 @@ describe('Pipeline to mongo translator', () => {
       { $match: { Manager: 'Pierre' } },
       { $match: { Manager: { $ne: 'NA' } } },
       { $project: { Manager: 0 } },
+      { $project: { Random: 0 } },
       {
         $project: {
           Country: 1,
@@ -279,6 +286,9 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $project: { Region_bis: 0 } },
+      { $project: { test: '$test' } },
+      { $project: { test: 2 } },
+      { $project: { exclusion: 0 } },
       {
         $addFields: {
           id: { $concat: ['$Country', ' - ', '$Region'] },
@@ -342,6 +352,11 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Manager: 0,
+          Random: 0,
+        },
+      },
+      {
+        $project: {
           Country: 1,
           Region: 1,
           Population: 1,
@@ -354,6 +369,9 @@ describe('Pipeline to mongo translator', () => {
           Region_bis: 0,
         },
       },
+      { $project: { test: '$test' } },
+      { $project: { test: 2 } },
+      { $project: { exclusion: 0 } },
       {
         $addFields: {
           id: { $concat: ['$Country', ' - ', '$Region'] },
