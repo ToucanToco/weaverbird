@@ -1,0 +1,5 @@
+{
+  "httpPort": 3000,
+  "dburi": "mongodb://localhost:27017",
+  "dbname": "playground-db"
+}

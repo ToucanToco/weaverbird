@@ -28,9 +28,13 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { PipelineStep } from '@/lib/steps';
 import { Pipeline, ResizablePanels, getTranslator } from '../dist/vue-query-builder.common.js';
-import { mongodb, pipeline } from './config';
 
 const mongo36translator = getTranslator('mongo36');
+const pipeline: Array<PipelineStep> = [
+  { name: 'domain', domain: 'reports' },
+  { name: 'filter', column: 'entityName', value: 'Troll face', operator: 'eq' },
+  { name: 'filter', column: 'id', value: 'yolo', operator: 'eq' },
+];
 
 type DataSetColumn = {
   name: string;

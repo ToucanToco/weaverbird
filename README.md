@@ -159,3 +159,12 @@ node playground/server.js
 
 Once the server is started, you should be able to open the
 `http://localhost:3000` in your favorite browser and enjoy!
+
+The `server.js` script reads the `playground/playground.config.json` config file
+to know which database should be queried or which http port should be used. If
+you want to customize these values, either edit this json file or override each
+available option on the commandline, e.g.
+
+```bash
+node playgronud/server.js --dburi mongdb://localhost:27018
+```
