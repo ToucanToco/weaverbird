@@ -134,6 +134,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   top(step: S.TopStep) {}
 
+  @unsupported
+  unpivot(step: S.UnpivotStep) {}
+
   /**
    * translates an input pipeline into a list of steps that makes sense for the
    * targeted backend.
