@@ -3,6 +3,7 @@
  */
 
 type PrimitiveType = number | boolean | string | Date;
+type PropAny = { [prop: string]: any };
 
 type AggFunctionStep = Readonly<{
   /** Name of the output column */
@@ -92,8 +93,7 @@ export type ReplaceStep = Readonly<{
   name: 'replace';
   search_column: string;
   new_column?: string;
-  oldvalue: string;
-  newvalue: string;
+  to_replace: PropAny;
 }>;
 
 export type SelectStep = Readonly<{
