@@ -1,5 +1,6 @@
 /** This module contains mongo specific translation operations */
 
+import _ from 'lodash';
 import {
   AggregationStep,
   ArgmaxStep,
@@ -25,14 +26,6 @@ type PropMap<T> = { [prop: string]: T };
  */
 export interface MongoStep {
   [propName: string]: any;
-}
-
-function fromkeys(keys: Array<string>, value = 0) {
-  const out: { [propname: string]: any } = {};
-  for (const key of keys) {
-    out[key] = value;
-  }
-  return out;
 }
 
 function filterstepToMatchstep(step: FilterStep): MongoStep {
@@ -339,7 +332,7 @@ const mapper: StepMatcher<MongoStep> = {
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   custom: step => step.query,
-  delete: step => ({ $project: fromkeys(step.columns, 0) }),
+  delete: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 0])) }),
   domain: step => ({ $match: { domain: step.domain } }),
   fillna: step => ({
     $addFields: {
@@ -361,7 +354,7 @@ const mapper: StepMatcher<MongoStep> = {
     { $project: { [step.oldname]: 0 } },
   ],
   replace: transformReplace,
-  select: step => ({ $project: fromkeys(step.columns, 1) }),
+  select: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 1])) }),
   sort: transformSort,
   top: transformTop,
 };
