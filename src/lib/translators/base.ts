@@ -117,6 +117,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   percentage(step: S.PercentageStep) {}
 
   @unsupported
+  pivot(step: S.PivotStep) {}
+
+  @unsupported
   rename(step: S.RenameStep) {}
 
   @unsupported
