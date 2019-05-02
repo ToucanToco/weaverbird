@@ -5,7 +5,6 @@ import {
   ArgmaxStep,
   ArgminStep,
   FilterStep,
-  FormulaStep,
   PipelineStep,
   PivotStep,
   PercentageStep,
@@ -304,14 +303,14 @@ function transformUnpivot(step: UnpivotStep): Array<MongoStep> {
 
   mongoPipeline = [
     {
-      $project: { ...projectCols, _vqbToPivot: { $objectToArray: objectToArray } },
+      $project: { ...projectCols, _vqbToUnpivot: { $objectToArray: objectToArray } },
     },
-    { $unwind: '$_vqbToPivot' },
+    { $unwind: '$_vqbToUnpivot' },
     {
       $project: {
         ...projectCols,
-        [step.unpivot_column_name]: '$_vqbToPivot.k',
-        [step.value_column_name]: '$_vqbToPivot.v',
+        [step.unpivot_column_name]: '$_vqbToUnpivot.k',
+        [step.value_column_name]: '$_vqbToUnpivot.v',
       },
     },
   ];

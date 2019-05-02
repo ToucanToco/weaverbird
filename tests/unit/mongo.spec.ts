@@ -1000,7 +1000,7 @@ describe('Pipeline to mongo translator', () => {
         $project: {
           MARCHE: '$MARCHE',
           CANAL: '$CANAL',
-          _vqbToPivot: {
+          _vqbToUnpivot: {
             $objectToArray: {
               NB_CLIENTS_TOTAL: '$NB_CLIENTS_TOTAL',
               NB_ROWS: '$NB_ROWS',
@@ -1009,14 +1009,14 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       {
-        $unwind: '$_vqbToPivot',
+        $unwind: '$_vqbToUnpivot',
       },
       {
         $project: {
           MARCHE: '$MARCHE',
           CANAL: '$CANAL',
-          KPI: '$_vqbToPivot.k',
-          VALUE: '$_vqbToPivot.v',
+          KPI: '$_vqbToUnpivot.k',
+          VALUE: '$_vqbToUnpivot.v',
         },
       },
       {
@@ -1044,7 +1044,7 @@ describe('Pipeline to mongo translator', () => {
         $project: {
           MARCHE: '$MARCHE',
           CANAL: '$CANAL',
-          _vqbToPivot: {
+          _vqbToUnpivot: {
             $objectToArray: {
               NB_CLIENTS_TOTAL: '$NB_CLIENTS_TOTAL',
               NB_ROWS: '$NB_ROWS',
@@ -1053,14 +1053,14 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       {
-        $unwind: '$_vqbToPivot',
+        $unwind: '$_vqbToUnpivot',
       },
       {
         $project: {
           MARCHE: '$MARCHE',
           CANAL: '$CANAL',
-          KPI: '$_vqbToPivot.k',
-          VALUE: '$_vqbToPivot.v',
+          KPI: '$_vqbToUnpivot.k',
+          VALUE: '$_vqbToUnpivot.v',
         },
       },
     ]);
