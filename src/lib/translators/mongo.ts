@@ -18,6 +18,7 @@ import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
+import _ from 'lodash';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -296,18 +297,10 @@ function transformTop(step: TopStep): Array<MongoStep> {
 /** transform an 'unpivot' step into corresponding mongo steps */
 function transformUnpivot(step: UnpivotStep): Array<MongoStep> {
   let mongoPipeline: Array<MongoStep> = [];
-  let projectCols: PropMap<string> = {};
-  let objectToArray: PropMap<string> = {};
-
-  // Prepare the projectCols to be included in Mongo $project steps
-  for (const col of step.keep) {
-    projectCols[col] = `$${col}`;
-  }
-
-  // Prepare the objectToArray object to be included in the first Mongo $project step
-  for (const col of step.unpivot) {
-    objectToArray[col] = `$${col}`;
-  }
+  // projectCols to be included in Mongo $project steps
+  const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
+  // objectToArray to be included in the first Mongo $project step
+  const objectToArray: PropMap<string> = _.fromPairs(step.unpivot.map(col => [col, `$${col}`]));
 
   mongoPipeline = [
     {
