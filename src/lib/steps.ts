@@ -54,6 +54,12 @@ export type FillnaStep = Readonly<{
   value: PrimitiveType;
 }>;
 
+export type FormulaStep = Readonly<{
+  name: 'formula';
+  new_column: string;
+  formula: string;
+}>;
+
 export type FilterStep = Readonly<{
   name: 'filter';
   column: string;
@@ -66,6 +72,14 @@ export type PercentageStep = Readonly<{
   new_column?: string;
   column: string;
   group?: Array<string>;
+}>;
+
+export type PivotStep = Readonly<{
+  name: 'pivot';
+  index: ['column_1', 'column_2'];
+  column_to_pivot: 'column_3';
+  value_column: 'column_4';
+  agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
 }>;
 
 export type RenameStep = Readonly<{
@@ -101,12 +115,6 @@ export type TopStep = Readonly<{
   limit: number;
 }>;
 
-export type FormulaStep = Readonly<{
-  name: 'formula';
-  new_column: string;
-  formula: string;
-}>;
-
 export type PipelineStep =
   | AggregationStep
   | ArgmaxStep
@@ -118,6 +126,7 @@ export type PipelineStep =
   | FilterStep
   | FormulaStep
   | PercentageStep
+  | PivotStep
   | RenameStep
   | ReplaceStep
   | SelectStep
