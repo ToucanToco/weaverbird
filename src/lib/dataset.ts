@@ -37,9 +37,7 @@ export function mongoResultsToDataset(results: MongoResults): DataSet {
     // to loop over all documents and make the union of all keys
     const colnames = results.map(row => new Set(Object.keys(row))).reduce(setUnion, new Set());
     // transform set of names to list of DataSetColumn objects
-    dataset.columns = Array.from(colnames)
-      .sort()
-      .map(name => ({ name }));
+    dataset.columns = Array.from(colnames).map(name => ({ name }));
     for (const row of results) {
       dataset.data.push(dataset.columns.map(coldef => row[coldef.name]));
     }
