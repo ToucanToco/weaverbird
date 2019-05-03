@@ -7,16 +7,17 @@ import {
   FilterStep,
   PipelineStep,
   PivotStep,
+  PercentageStep,
   ReplaceStep,
   SortStep,
   TopStep,
-  PercentageStep,
-  FormulaStep,
+  UnpivotStep,
 } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
+import _ from 'lodash';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -292,6 +293,33 @@ function transformTop(step: TopStep): Array<MongoStep> {
   ];
 }
 
+/** transform an 'unpivot' step into corresponding mongo steps */
+function transformUnpivot(step: UnpivotStep): Array<MongoStep> {
+  // projectCols to be included in Mongo $project steps
+  const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
+  // objectToArray to be included in the first Mongo $project step
+  const objectToArray: PropMap<string> = _.fromPairs(step.unpivot.map(col => [col, `$${col}`]));
+  const mongoPipeline: Array<MongoStep> = [
+    {
+      $project: { ...projectCols, _vqbToUnpivot: { $objectToArray: objectToArray } },
+    },
+    { $unwind: '$_vqbToUnpivot' },
+    {
+      $project: {
+        ...projectCols,
+        [step.unpivot_column_name]: '$_vqbToUnpivot.k',
+        [step.value_column_name]: '$_vqbToUnpivot.v',
+      },
+    },
+  ];
+
+  if (step.dropna) {
+    mongoPipeline.push({ $match: { [step.value_column_name]: { $ne: null } } });
+  }
+
+  return mongoPipeline;
+}
+
 function getOperator(op: string) {
   const operators: PropMap<string> = {
     '+': '$add',
@@ -364,6 +392,7 @@ const mapper: StepMatcher<MongoStep> = {
   select: step => ({ $project: fromkeys(step.columns, 1) }),
   sort: transformSort,
   top: transformTop,
+  unpivot: transformUnpivot,
 };
 
 export class Mongo36Translator extends BaseTranslator {

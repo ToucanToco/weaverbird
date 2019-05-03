@@ -415,3 +415,91 @@ Return top N rows by group if `groups` is specified, else over full dataset.
   limit: 10
 }
 ```
+
+### `unpivot` step
+
+Unpivot a list of columns to rows.
+
+```javascript
+{
+  name: 'unpivot',
+  keep: ['COMPANY', 'COUNTRY'], // columns to keep fixed around which to unpivot columns
+  unpivot: ['NB_CLIENTS', 'REVENUES'], // columns to unpivot
+  unpivot_column_name: 'KPI', // name of the new dimension column created after unpivot
+  value_column_name: 'VALUE', // name of the new value column created after unpivot
+  dropna: true // whether null values have to be kept or the corresponding rows discarded
+}
+```
+
+#### Example 1: with `dropna`parameter to true
+
+**Input dataset:**
+
+| COMPANY   | COUNTRY | NB_CLIENTS | REVENUES |
+| --------- | ------- | ---------- | -------- |
+| Company 1 | France  | 7          | 10       |
+| Company 2 | France  | 2          |          |
+| Company 1 | USA     | 12         | 6        |
+| Company 2 | USA     | 1          | 3        |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'unpivot',
+  keep: ['COMPANY', 'COUNTRY'],
+  unpivot: ['NB_CLIENTS', 'REVENUES'],
+  unpivot_column_name: 'KPI',
+  value_column_name: 'VALUE',
+  dropna: true
+}
+```
+
+**Output dataset:**
+
+| COMPANY   | COUNTRY | KPI        | VALUE |
+| --------- | ------- | ---------- | ----- |
+| Company 1 | France  | NB_CLIENTS | 7     |
+| Company 1 | France  | REVENUES   | 10    |
+| Company 2 | France  | NB_CLIENTS | 2     |
+| Company 1 | USA     | NB_CLIENTS | 12    |
+| Company 1 | USA     | REVENUES   | 6     |
+| Company 2 | USA     | NB_CLIENTS | 1     |
+| Company 2 | USA     | REVENUES   | 3     |
+
+#### Example 1: with `dropna`parameter to false
+
+**Input dataset:**
+
+| COMPANY   | COUNTRY | NB_CLIENTS | REVENUES |
+| --------- | ------- | ---------- | -------- |
+| Company 1 | France  | 7          | 10       |
+| Company 2 | France  | 2          |          |
+| Company 1 | USA     | 12         | 6        |
+| Company 2 | USA     | 1          | 3        |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'unpivot',
+  keep: ['COMPANY', 'COUNTRY'],
+  unpivot: ['NB_CLIENTS', 'REVENUES'],
+  unpivot_column_name: 'KPI',
+  value_column_name: 'VALUE',
+  dropna: false
+}
+```
+
+**Output dataset:**
+
+| COMPANY   | COUNTRY | KPI        | VALUE |
+| --------- | ------- | ---------- | ----- |
+| Company 1 | France  | NB_CLIENTS | 7     |
+| Company 1 | France  | REVENUES   | 10    |
+| Company 2 | France  | NB_CLIENTS | 2     |
+| Company 2 | France  | REVENUES   |       |
+| Company 1 | USA     | NB_CLIENTS | 12    |
+| Company 1 | USA     | REVENUES   | 6     |
+| Company 2 | USA     | NB_CLIENTS | 1     |
+| Company 2 | USA     | REVENUES   | 3     |
