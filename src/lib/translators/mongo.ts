@@ -133,41 +133,29 @@ function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> 
 
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: PercentageStep): Array<MongoStep> {
-  const groupMongo: MongoStep = {};
-  let groupCols: PropMap<string> | null = {};
-  const projectMongo: MongoStep = {};
   const newCol = step.new_column || step.column;
 
-  // Prepare the $group Mongo step
-  if (step.group) {
-    for (const col of step.group) {
-      groupCols[col] = `$${col}`;
-    }
-  } else {
-    groupCols = null;
-  }
-  groupMongo['$group'] = {
-    _id: groupCols,
-    _vqbAppArray: { $push: '$$ROOT' },
-    _vqbTotalDenum: { $sum: `$${step.column}` },
-  };
-
-  // Prepare the $project Mongo step
-  projectMongo['$project'] = {
-    [newCol]: {
-      $cond: [
-        { $eq: ['$_vqbTotalDenum', 0] },
-        null,
-        { $divide: [`$_vqbAppArray.${step.column}`, '$_vqbTotalDenum'] },
-      ],
-    },
-    _vqbAppArray: 1, // we need to keep track of this key for the next operation
-  };
-
   return [
-    groupMongo,
+    {
+      $group: {
+        _id: step.group ? columnMap(step.group) : null,
+        _vqbAppArray: { $push: '$$ROOT' },
+        _vqbTotalDenum: { $sum: $$(step.column) },
+      },
+    },
     { $unwind: '$_vqbAppArray' },
-    projectMongo,
+    {
+      $project: {
+        [newCol]: {
+          $cond: [
+            { $eq: ['$_vqbTotalDenum', 0] },
+            null,
+            { $divide: [`$_vqbAppArray.${step.column}`, '$_vqbTotalDenum'] },
+          ],
+        },
+        _vqbAppArray: 1, // we need to keep track of this key for the next operation
+      },
+    },
     // Line below: Keep all columns that were not used in computation, 'stored' in _vqbAppArray
     { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
     { $project: { _vqbAppArray: 0 } }, // We do not want to keep that column at the end
