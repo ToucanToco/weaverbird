@@ -1,4 +1,5 @@
-import { mongoResultsToDataset, MongoResults, DataSet } from '@/lib/dataset';
+import { DataSet } from '@/lib/dataset';
+import { mongoResultsToDataset, MongoResults } from '@/lib/dataset/mongo';
 
 /**
  * helper functions to sort a dataset so that we can test output in a predictible way.

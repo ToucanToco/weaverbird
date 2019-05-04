@@ -1,18 +1,10 @@
 /**
- * This module contains helpers and definitions related to datasets.
+ * mongo specific helpers for dataset manipulation.
  */
 
-export type DataSetColumn = {
-  name: string;
-  type?: 'integer' | 'float' | 'boolean' | 'string' | 'date' | 'object';
-};
+import { DataSet } from '@/lib/dataset';
 
-export type DataSet = {
-  headers: Array<DataSetColumn>;
-  data: Array<Array<any>>;
-};
-
-export type MongoDocument = { [k: string]: any };
+type MongoDocument = { [k: string]: any };
 export type MongoResults = Array<MongoDocument>;
 
 /**
