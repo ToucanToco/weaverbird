@@ -79,6 +79,6 @@ describe('Dataset helper tests', () => {
       { name: 'col3' },
       { name: 'col4' },
     ]);
-    expect(dataset.data).toEqual([['foo', undefined, true, undefined], ['bar', 7, undefined, '?']]);
+    expect(dataset.data).toEqual([['foo', null, true, null], ['bar', 7, null, '?']]);
   });
 });

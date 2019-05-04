@@ -18,9 +18,11 @@ export type DataSetColumn = {
  *     ],
  *     data: [
  *         [ 'ab', 12, true ],
- *         [ 'cd', 13, false ]
+ *         [ 'cd', 13, null ]
  *     ]
  * }
+ *
+ * NOTE that we use `null` to represent empty values.
  * ```
  */
 export type DataSet = {

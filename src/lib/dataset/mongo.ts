@@ -31,7 +31,9 @@ export function mongoResultsToDataset(results: MongoResults): DataSet {
     // transform set of names to list of DataSetColumn objects
     dataset.headers = Array.from(colnames).map(name => ({ name }));
     for (const row of results) {
-      dataset.data.push(dataset.headers.map(coldef => row[coldef.name]));
+      dataset.data.push(
+        dataset.headers.map(coldef => (row.hasOwnProperty(coldef.name) ? row[coldef.name] : null)),
+      );
     }
   }
   return dataset;
