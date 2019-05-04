@@ -8,28 +8,21 @@ type MongoDocument = { [k: string]: any };
 export type MongoResults = Array<MongoDocument>;
 
 /**
- * implement set union
- * > setUnion(new Set([1, 2, 3]), new Set([2, 4, 6]))
- * Set([1, 2, 3, 4, 6])
- */
-function setUnion<T>(set1: Set<T>, set2: Set<T>): Set<T> {
-  const result = new Set(set1);
-  set2.forEach(val => result.add(val));
-  return result;
-}
-
-/**
  * transform a mongo resultset (i.e. a list of json documents) into
  * a `DataSet` structure
  */
 export function mongoResultsToDataset(results: MongoResults): DataSet {
   const dataset: DataSet = { headers: [], data: [] };
   if (results.length) {
-    // each document migh have a different set of keys therefore we need
-    // to loop over all documents and make the union of all keys
-    const colnames = results.map(row => new Set(Object.keys(row))).reduce(setUnion, new Set());
+    const colnames = results
+      // get list of list of key
+      .map(row => Object.keys(row))
+      // then flatten them
+      .flat()
+      // and remove duplicates by keeping the _first_ occurence
+      .filter((col, colidx, array) => array.indexOf(col) === colidx);
     // transform set of names to list of DataSetColumn objects
-    dataset.headers = Array.from(colnames).map(name => ({ name }));
+    dataset.headers = colnames.map(name => ({ name }));
     for (const row of results) {
       dataset.data.push(
         dataset.headers.map(coldef => (row.hasOwnProperty(coldef.name) ? row[coldef.name] : null)),
