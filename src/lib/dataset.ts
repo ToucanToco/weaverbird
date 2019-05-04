@@ -8,7 +8,7 @@ export type DataSetColumn = {
 };
 
 export type DataSet = {
-  columns: Array<DataSetColumn>;
+  headers: Array<DataSetColumn>;
   data: Array<Array<any>>;
 };
 
@@ -31,15 +31,15 @@ function setUnion<T>(set1: Set<T>, set2: Set<T>): Set<T> {
  * a `DataSet` structure
  */
 export function mongoResultsToDataset(results: MongoResults): DataSet {
-  const dataset: DataSet = { columns: [], data: [] };
+  const dataset: DataSet = { headers: [], data: [] };
   if (results.length) {
     // each document migh have a different set of keys therefore we need
     // to loop over all documents and make the union of all keys
     const colnames = results.map(row => new Set(Object.keys(row))).reduce(setUnion, new Set());
     // transform set of names to list of DataSetColumn objects
-    dataset.columns = Array.from(colnames).map(name => ({ name }));
+    dataset.headers = Array.from(colnames).map(name => ({ name }));
     for (const row of results) {
-      dataset.data.push(dataset.columns.map(coldef => row[coldef.name]));
+      dataset.data.push(dataset.headers.map(coldef => row[coldef.name]));
     }
   }
   return dataset;

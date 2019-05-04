@@ -13,32 +13,32 @@ stories.add('empty', () => ({
                      }));
 
 stories.add('simple', () => ({
-  components: {DataViewer},
-  props: {
-    dataset: {
-      default() {
-        return {
-          columns:
-              [
-                {name: 'columnA'},
-                {name: 'columnB'},
-                {name: 'columnC'},
-              ],
-              data: [
-                ['value1', 'value2', 'value3'],
-                ['value4', 'value5', 'value6'],
-                ['value7', 'value8', 'value9'],
-                ['value10', 'value11', 'value12'],
-                ['value10', {obj: 'value14'}, undefined],
-              ]
-        }
-      },
-    },
-  },
-  template: `
+                        components: {DataViewer},
+                        props: {
+                          dataset: {
+                            default() {
+                              return {
+                                headers:
+                                    [
+                                      {name: 'columnA'},
+                                      {name: 'columnB'},
+                                      {name: 'columnC'},
+                                    ],
+                                    data: [
+                                      ['value1', 'value2', 'value3'],
+                                      ['value4', 'value5', 'value6'],
+                                      ['value7', 'value8', 'value9'],
+                                      ['value10', 'value11', 'value12'],
+                                      ['value10', {obj: 'value14'}, null],
+                                    ]
+                              }
+                            },
+                          },
+                        },
+                        template: `
       <data-viewer
         :dataset="dataset"
       >
       </data-viewer>
     `,
-}));
+                      }));

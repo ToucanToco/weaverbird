@@ -12,7 +12,7 @@ describe('Data Viewer', () => {
     const wrapper = shallowMount(DataViewer, {
       propsData: {
         dataset: {
-          columns: [],
+          headers: [],
           data: [],
         },
       },
@@ -24,7 +24,7 @@ describe('Data Viewer', () => {
   describe('header', () => {
     it('should have one row', () => {
       const dataset = {
-        columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
@@ -45,7 +45,7 @@ describe('Data Viewer', () => {
 
     it('should have three cells', () => {
       const dataset = {
-        columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
@@ -66,7 +66,7 @@ describe('Data Viewer', () => {
 
     it("should contains column's names", () => {
       const dataset = {
-        columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
@@ -89,7 +89,7 @@ describe('Data Viewer', () => {
 
     it("should contains column's names even if not on every rows", () => {
       const dataset = {
-        columns: [
+        headers: [
           { name: 'columnA' },
           { name: 'columnB' },
           { name: 'columnC' },
@@ -119,7 +119,7 @@ describe('Data Viewer', () => {
     describe('selection', () => {
       it('should add an active class on the cell', () => {
         const dataset = {
-          columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
             ['value1', 'value2', 'value3'],
             ['value4', 'value5', 'value6'],
@@ -141,7 +141,7 @@ describe('Data Viewer', () => {
 
       it('should remove selection on an active column', () => {
         const dataset = {
-          columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
             ['value1', 'value2', 'value3'],
             ['value4', 'value5', 'value6'],
@@ -170,7 +170,7 @@ describe('Data Viewer', () => {
   describe('body', () => {
     it('should have 5 rows', () => {
       const dataset = {
-        columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
@@ -191,7 +191,7 @@ describe('Data Viewer', () => {
 
     it('should pass down the right value to DataViewerCell', () => {
       const dataset = {
-        columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],
@@ -216,7 +216,7 @@ describe('Data Viewer', () => {
   describe('first column selection', () => {
     it('should select all first columns cells', () => {
       const dataset = {
-        columns: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
           ['value1', 'value2', 'value3'],
           ['value4', 'value5', 'value6'],

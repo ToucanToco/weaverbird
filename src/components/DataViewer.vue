@@ -47,7 +47,7 @@ import DataViewerCell from './DataViewerCell.vue';
 })
 export default class DataViewer extends Vue {
   @Prop({
-    default: () => ({ columns: [], data: [] }),
+    default: () => ({ headers: [], data: [] }),
     type: Object,
   })
   dataset!: DataSet;
@@ -72,7 +72,7 @@ export default class DataViewer extends Vue {
    * @return {Array<string>}
    */
   get columnNames() {
-    return this.dataset.columns.map(col => col.name);
+    return this.dataset.headers.map(col => col.name);
   }
 
   /**
