@@ -11,7 +11,10 @@ describe('Data Viewer', () => {
   it('should display a message when no data', () => {
     const wrapper = shallowMount(DataViewer, {
       propsData: {
-        dataset: [],
+        dataset: {
+          headers: [],
+          data: [],
+        },
       },
     });
 
@@ -20,13 +23,16 @@ describe('Data Viewer', () => {
 
   describe('header', () => {
     it('should have one row', () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-      ];
+      const dataset = {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -38,13 +44,16 @@ describe('Data Viewer', () => {
     });
 
     it('should have three cells', () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-      ];
+      const dataset = {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -56,13 +65,16 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names", () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-      ];
+      const dataset = {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -76,13 +88,21 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names even if not on every rows", () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15', columnD: 'value16' },
-      ];
+      const dataset = {
+        headers: [
+          { name: 'columnA' },
+          { name: 'columnB' },
+          { name: 'columnC' },
+          { name: 'columnD' },
+        ],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15', 'value16'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -98,13 +118,16 @@ describe('Data Viewer', () => {
 
     describe('selection', () => {
       it('should add an active class on the cell', () => {
-        const dataset = [
-          { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-          { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-          { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-          { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-          { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-        ];
+        const dataset = {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [
+            ['value1', 'value2', 'value3'],
+            ['value4', 'value5', 'value6'],
+            ['value7', 'value8', 'value9'],
+            ['value10', 'value11', 'value12'],
+            ['value13', 'value14', 'value15'],
+          ],
+        };
         const wrapper = shallowMount(DataViewer, {
           propsData: {
             dataset: dataset,
@@ -117,13 +140,16 @@ describe('Data Viewer', () => {
       });
 
       it('should remove selection on an active column', () => {
-        const dataset = [
-          { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-          { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-          { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-          { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-          { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-        ];
+        const dataset = {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [
+            ['value1', 'value2', 'value3'],
+            ['value4', 'value5', 'value6'],
+            ['value7', 'value8', 'value9'],
+            ['value10', 'value11', 'value12'],
+            ['value13', 'value14', 'value15'],
+          ],
+        };
         const wrapper = shallowMount(DataViewer, {
           propsData: {
             dataset: dataset,
@@ -143,13 +169,16 @@ describe('Data Viewer', () => {
 
   describe('body', () => {
     it('should have 5 rows', () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-      ];
+      const dataset = {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -161,13 +190,16 @@ describe('Data Viewer', () => {
     });
 
     it('should pass down the right value to DataViewerCell', () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-      ];
+      const dataset = {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -183,13 +215,16 @@ describe('Data Viewer', () => {
 
   describe('first column selection', () => {
     it('should select all first columns cells', () => {
-      const dataset = [
-        { columnA: 'value1', columnB: 'value2', columnC: 'value3' },
-        { columnA: 'value4', columnB: 'value5', columnC: 'value6' },
-        { columnA: 'value7', columnB: 'value8', columnC: 'value9' },
-        { columnA: 'value10', columnB: 'value11', columnC: 'value12' },
-        { columnA: 'value13', columnB: 'value14', columnC: 'value15' },
-      ];
+      const dataset = {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [
+          ['value1', 'value2', 'value3'],
+          ['value4', 'value5', 'value6'],
+          ['value7', 'value8', 'value9'],
+          ['value10', 'value11', 'value12'],
+          ['value13', 'value14', 'value15'],
+        ],
+      };
       const wrapper = shallowMount(DataViewer, {
         propsData: {
           dataset: dataset,
@@ -199,7 +234,7 @@ describe('Data Viewer', () => {
       firstHeadCellWrapper.trigger('click');
 
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
-      dataset.forEach((d, i) => {
+      dataset.data.forEach((d, i) => {
         expect(
           rowsWrapper
             .at(i)

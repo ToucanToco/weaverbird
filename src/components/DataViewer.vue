@@ -12,12 +12,12 @@
         </tr>
       </thead>
       <tbody class="data-viewer__body">
-        <tr class="data-viewer__row" v-for="(row, index) in dataset" :key="index">
+        <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
           <DataViewerCell
-            v-for="columnName in columnNames"
-            :key="columnName"
-            :isSelected="isSelected(columnName)"
-            :value="getValue(row, columnName)"
+            v-for="(cell, cellidx) in row"
+            :key="cellidx"
+            :isSelected="isSelected(columnNames[cellidx])"
+            :value="cell"
           />
         </tr>
       </tbody>
@@ -28,21 +28,16 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
+
+import { DataSet } from '@/lib/dataset';
 import { Component, Prop } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
 
-/**
- * @name DataRow
- * @description A simple interface that represent a row from a dataset
- */
-interface DataRow {
-  [key: string]: any;
-}
 
 /**
  * @name DataViewer
  * @description A Vue Component that displays data into a table
- * @param {Array<DataRow>} dataset - The dataset that we want to display
+ * @param {DataSet} dataset - The dataset that we want to display
  */
 @Component({
   name: 'data-viewer',
@@ -52,10 +47,10 @@ interface DataRow {
 })
 export default class DataViewer extends Vue {
   @Prop({
-    default: () => [],
-    type: Array,
+    default: () => ({ headers: [], data: [] }),
+    type: Object,
   })
-  dataset!: Array<DataRow>;
+  dataset!: DataSet;
 
   /**
    * @description Array of column's name selected by the user
@@ -67,7 +62,7 @@ export default class DataViewer extends Vue {
    * @return {boolean}
    */
   get datasetIsntEmpty() {
-    return this.dataset.length !== 0;
+    return this.dataset.data.length !== 0;
   }
 
   /**
@@ -77,10 +72,7 @@ export default class DataViewer extends Vue {
    * @return {Array<string>}
    */
   get columnNames() {
-    return _.chain(this.dataset)
-      .flatMap(row => _.keys(row))
-      .uniq()
-      .value();
+    return this.dataset.headers.map(col => col.name);
   }
 
   /**
@@ -106,17 +98,6 @@ export default class DataViewer extends Vue {
    */
   isSelected(column: string) {
     return this.selectedColumns.includes(column);
-  }
-
-  /**
-   * @description Return the value from a specific cell
-   *
-   * @param {DataRow} row - A row from our dataset
-   * @param {string} column - A column name
-   * @return {any}
-   */
-  getValue(row: DataRow, column: string) {
-    return row[column];
   }
 
   /**
