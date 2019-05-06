@@ -18,7 +18,6 @@ import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
-import _ from 'lodash';
 
 type PropMap<T> = { [prop: string]: T };
 
