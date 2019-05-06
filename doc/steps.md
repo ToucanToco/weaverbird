@@ -25,6 +25,42 @@ An aggreation step has the following strucure:
 }
 ```
 
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'aggregate',
+   on: ['Group'],
+   aggregations:  [
+    {
+      newcolumn: 'Total',
+      aggfunction: 'sum',
+      column: 'Value'
+    }
+  ]
+}
+```
+
+**Output dataset:**
+
+| Group   | Total |
+| ------- | ----- |
+| Group 1 | 30    |
+| Group 2 | 16    |
+
 ### `argmax` step
 
 Get row(s) matching the maximum value in a given `column`, by group if `groups`
@@ -187,6 +223,39 @@ other existing steps.
 }
 ```
 
+#### Example: using Mongo query language
+
+**Input dataset:**
+
+| Company   | Group   | Value |
+| --------- | ------- | ----- |
+| Company 1 | Group 1 | 13    |
+| Company 2 | Group 1 | 7     |
+| Company 3 | Group 1 | 20    |
+| Company 4 | Group 2 | 1     |
+| Company 5 | Group 2 | 10    |
+| Company 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'custom',
+  query: '$addFields: { Label: { $concat: [ "$Label", " - ", "$Group" ] ] } }'
+}
+```
+
+**Output dataset:**
+
+| Company   | Group   | Value | Label               |
+| --------- | ------- | ----- | ------------------- |
+| Company 1 | Group 1 | 13    | Company 1 - Group 1 |
+| Company 2 | Group 1 | 7     | Company 2 - Group 1 |
+| Company 3 | Group 1 | 20    | Company 3 - Group 1 |
+| Company 4 | Group 2 | 1     | Company 4 - Group 2 |
+| Company 5 | Group 2 | 10    | Company 5 - Group 2 |
+| Company 6 | Group 2 | 5     | Company 6 - Group 2 |
+
 ### `delete` step
 
 Delete a column.
@@ -197,6 +266,39 @@ Delete a column.
     columns: ['my-column', 'some-other-column']
 }
 ```
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Group   | Value | Label               |
+| --------- | ------- | ----- | ------------------- |
+| Company 1 | Group 1 | 13    | Company 1 - Group 1 |
+| Company 2 | Group 1 | 7     | Company 2 - Group 1 |
+| Company 3 | Group 1 | 20    | Company 3 - Group 1 |
+| Company 4 | Group 2 | 1     | Company 4 - Group 2 |
+| Company 5 | Group 2 | 10    | Company 5 - Group 2 |
+| Company 6 | Group 2 | 5     | Company 6 - Group 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'delete',
+  columns: ['Company', 'Group']
+}
+```
+
+**Output dataset:**
+
+| Value | Label               |
+| ----- | ------------------- |
+| 13    | Company 1 - Group 1 |
+| 7     | Company 2 - Group 1 |
+| 20    | Company 3 - Group 1 |
+| 1     | Company 4 - Group 2 |
+| 10    | Company 5 - Group 2 |
+| 5     | Company 6 - Group 2 |
 
 ### `domain` step
 
@@ -221,6 +323,40 @@ Replace null values by a given value in a column.
 }
 ```
 
+#### Example
+
+**Input dataset:**
+
+| Company   | Group   | Value |
+| --------- | ------- | ----- |
+| Company 1 | Group 1 | 13    |
+| Company 2 | Group 1 |       |
+| Company 3 | Group 1 | 20    |
+| Company 4 | Group 2 | 1     |
+| Company 5 | Group 2 |       |
+| Company 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'fillna',
+  column: "Value",
+  value: 0
+}
+```
+
+**Output dataset:**
+
+| Company   | Group   | Value |
+| --------- | ------- | ----- |
+| Company 1 | Group 1 | 13    |
+| Company 2 | Group 1 | 0     |
+| Company 3 | Group 1 | 20    |
+| Company 4 | Group 2 | 1     |
+| Company 5 | Group 2 | 0     |
+| Company 6 | Group 2 | 5     |
+
 ### `filter` step
 
 Filter out lines that don't match a filter definition.
@@ -241,14 +377,16 @@ Filter out lines that don't match a filter definition.
 
 ### `formula` step
 
-Filter out lines that don't match a filter definition.
+Add a computation based on other columns or on values.
+Column names must not be escaped. Strings have to be escaped with quotes.
 
 ```javascript
 {
-    name: 'filter',
-    column: 'my-column',
-    value: 42
-    operator: 'ne'
+  {
+    name: 'formula',
+    new_column: 'result', // if the column already exists, overwrites it
+    formula: '(Value1 + Value2) / Value3 - Value4 * 2'
+  }
 }
 ```
 
@@ -267,7 +405,7 @@ Filter out lines that don't match a filter definition.
 ```javascript
 {
   name: 'formula',
-  new_column: 'result',
+  new_column: 'Result',
   formula: '(Value1 + Value2) / Value3 - Value4 * 2'
 }
 ```
@@ -288,12 +426,47 @@ by `group` if specified. The result can be either ouput inplace or in a `new_col
 
 ```javascript
 {
-name: 'percentage',
-new_column: 'new_col', // optional
-column: 'bar',
-group: ['foo'] // optional
+  name: 'percentage',
+  new_column: 'new_col', // optional
+  column: 'bar',
+  group: ['foo'] // optional
 }
 ```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 5     |
+| Label 2 | Group 1 | 10    |
+| Label 3 | Group 1 | 15    |
+| Label 4 | Group 2 | 2     |
+| Label 5 | Group 2 | 7     |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+
+  name: 'percentage',
+  new_column: 'Percentage_of_total',
+  column: 'Value',
+  group: ['Group']
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 0.167 |
+| Label 2 | Group 1 | 0.333 |
+| Label 3 | Group 1 | 0.5   |
+| Label 4 | Group 2 | 0.143 |
+| Label 5 | Group 2 | 0.5   |
+| Label 6 | Group 2 | 0.357 |
 
 ### `pivot` step
 
@@ -353,11 +526,45 @@ Rename a column.,
 
 ```javascript
 {
-    name: 'filter',
+    name: 'rename',
     oldname: 'old-column-name',
     newname: 'new-column-name'
 }
 ```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'rename',
+  oldname: 'Label',
+  newname: 'Company'
+}
+```
+
+**Output dataset:**
+
+| Company | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
 
 ### `replace` step
 
@@ -387,6 +594,41 @@ the `select` is used, it will only keep selected columns in the output.
 }
 ```
 
+#### Example
+
+**Input dataset:**
+
+| Company   | Group   | Value | Label               |
+| --------- | ------- | ----- | ------------------- |
+| Company 1 | Group 1 | 13    | Company 1 - Group 1 |
+| Company 2 | Group 1 | 7     | Company 2 - Group 1 |
+| Company 3 | Group 1 | 20    | Company 3 - Group 1 |
+| Company 4 | Group 2 | 1     | Company 4 - Group 2 |
+| Company 5 | Group 2 | 10    | Company 5 - Group 2 |
+| Company 6 | Group 2 | 5     | Company 6 - Group 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'select',
+    columns: ['Value', 'Label']
+}
+}
+```
+
+**Output dataset:**
+
+| Value | Label               |
+| ----- | ------------------- |
+| 13    | Company 1 - Group 1 |
+| 7     | Company 2 - Group 1 |
+| 20    | Company 3 - Group 1 |
+| 1     | Company 4 - Group 2 |
+| 10    | Company 5 - Group 2 |
+| 5     | Company 6 - Group 2 |
+
 ### `sort` step
 
 Sort values in one or several columns. Order can be either 'asc' or 'desc'.
@@ -402,6 +644,73 @@ and the `order` parameter must be of same length as `columns`. By default, if
 }
 ```
 
+#### Example 1: sort on one column with default ordering
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'sort',
+    columns: ['Value'],
+}
+```
+
+**Output dataset:**
+
+| Company | Group   | Value |
+| ------- | ------- | ----- |
+| Label 4 | Group 2 | 1     |
+| Label 6 | Group 2 | 5     |
+| Label 2 | Group 1 | 7     |
+| Label 5 | Group 2 | 10    |
+| Label 1 | Group 1 | 13    |
+| Label 3 | Group 1 | 20    |
+
+#### Example 2: sort on one column with default ordering
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'sort',
+    columns: ['Group', 'Value'],
+    order: ['asc', 'desc'],
+}
+```
+
+**Output dataset:**
+
+| Company | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+| Label 4 | Group 2 | 1     |
+
 ### `top` step
 
 Return top N rows by group if `groups` is specified, else over full dataset.
@@ -415,6 +724,70 @@ Return top N rows by group if `groups` is specified, else over full dataset.
   limit: 10
 }
 ```
+
+#### Example 1: top without `groups`, ascending order
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'top',
+  rank_on: 'Value',
+  sort: 'asc',
+  limit: 3
+}
+```
+
+**Output dataset:**
+
+| Company | Group   | Value |
+| ------- | ------- | ----- |
+| Label 4 | Group 2 | 1     |
+| Label 6 | Group 2 | 5     |
+| Label 2 | Group 1 | 7     |
+
+#### Example 2: top with `groups`, descending order
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'top',
+  groups: ['Group'],
+  rank_on: 'Value',
+  sort: 'desc',
+  limit: 1
+}
+```
+
+**Output dataset:**
+
+| Company | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 5 | Group 2 | 10    |
 
 ### `unpivot` step
 
