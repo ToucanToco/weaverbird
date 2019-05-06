@@ -233,12 +233,12 @@ function transformPivot(step: PivotStep): Array<MongoStep> {
 function transformReplace(step: ReplaceStep): MongoStep {
   const branches: Array<MongoStep> = [];
   for (const rep of step.to_replace) {
-    branches.push({ case: { $eq: [`$${step.search_column}`, rep[0]] }, then: rep[1] });
+    branches.push({ case: { $eq: [$$(step.search_column), rep[0]] }, then: rep[1] });
   }
   return {
     $addFields: {
       [step.new_column || step.search_column]: {
-        $switch: { branches: branches, default: `$${step.search_column}` },
+        $switch: { branches: branches, default: $$(step.search_column) },
       },
     },
   };
