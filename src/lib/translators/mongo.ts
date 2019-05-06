@@ -1,5 +1,6 @@
 /** This module contains mongo specific translation operations */
 
+import _ from 'lodash';
 import {
   AggregationStep,
   ArgmaxStep,
@@ -28,12 +29,25 @@ export interface MongoStep {
   [propName: string]: any;
 }
 
-function fromkeys(keys: Array<string>, value = 0) {
-  const out: { [propname: string]: any } = {};
-  for (const key of keys) {
-    out[key] = value;
-  }
-  return out;
+/**
+ * small helper / shortcut for `$${mycol}`
+ *
+ * @param colname the column name
+ */
+function $$(colname: string) {
+  return `$${colname}`;
+}
+
+/**
+ * Transform a list of column names into a mongo map `colname` -> `$colname`
+ *
+ * This kind of construction is very frequent in mongo steps (e.g. in `$group` or
+ * `$project` steps).
+ *
+ * @param colnames list of column names
+ */
+function columnMap(colnames: Array<string>) {
+  return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
 function filterstepToMatchstep(step: FilterStep): MongoStep {
@@ -53,13 +67,10 @@ function filterstepToMatchstep(step: FilterStep): MongoStep {
 
 /** transform an 'aggregate' step into corresponding mongo steps */
 function transformAggregate(step: AggregationStep): Array<MongoStep> {
-  const idblock: PropMap<string> = {};
+  const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};
   group._id = idblock;
-  for (const colname of step.on) {
-    idblock[colname] = `$${colname}`;
-  }
   for (const aggf_step of step.aggregations) {
     if (aggf_step.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
@@ -69,7 +80,7 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
       };
     } else {
       group[aggf_step.newcolumn] = {
-        [`$${aggf_step.aggfunction}`]: `$${aggf_step.column}`,
+        [$$(aggf_step.aggfunction)]: $$(aggf_step.column),
       };
     }
   }
@@ -88,21 +99,12 @@ function transformAggregate(step: AggregationStep): Array<MongoStep> {
 /** transform an 'argmax' or 'argmin' step into corresponding mongo steps */
 function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> {
   const groupMongo: MongoStep = {};
-  let groupCols: PropMap<string> | null = {};
   const stepMapping = { argmax: '$max', argmin: '$min' };
 
-  // Prepare the $group Mongo step
-  if (step.groups) {
-    for (const col of step.groups) {
-      groupCols[col] = `$${col}`;
-    }
-  } else {
-    groupCols = null;
-  }
   groupMongo.$group = {
-    _id: groupCols,
+    _id: step.groups ? columnMap(step.groups) : null,
     _vqbAppArray: { $push: '$$ROOT' },
-    _vqbAppValueToCompare: { [stepMapping[step.name]]: `$${step.column}` },
+    _vqbAppValueToCompare: { [stepMapping[step.name]]: $$(step.column) },
   };
 
   return [
@@ -120,7 +122,7 @@ function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> 
       $redact: {
         $cond: [
           {
-            $eq: [`$${step.column}`, '$_vqbAppValueToCompare'],
+            $eq: [$$(step.column), '$_vqbAppValueToCompare'],
           },
           '$$KEEP',
           '$$PRUNE',
@@ -132,41 +134,29 @@ function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> 
 
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: PercentageStep): Array<MongoStep> {
-  const groupMongo: MongoStep = {};
-  let groupCols: PropMap<string> | null = {};
-  const projectMongo: MongoStep = {};
   const newCol = step.new_column || step.column;
 
-  // Prepare the $group Mongo step
-  if (step.group) {
-    for (const col of step.group) {
-      groupCols[col] = `$${col}`;
-    }
-  } else {
-    groupCols = null;
-  }
-  groupMongo['$group'] = {
-    _id: groupCols,
-    _vqbAppArray: { $push: '$$ROOT' },
-    _vqbTotalDenum: { $sum: `$${step.column}` },
-  };
-
-  // Prepare the $project Mongo step
-  projectMongo['$project'] = {
-    [newCol]: {
-      $cond: [
-        { $eq: ['$_vqbTotalDenum', 0] },
-        null,
-        { $divide: [`$_vqbAppArray.${step.column}`, '$_vqbTotalDenum'] },
-      ],
-    },
-    _vqbAppArray: 1, // we need to keep track of this key for the next operation
-  };
-
   return [
-    groupMongo,
+    {
+      $group: {
+        _id: step.group ? columnMap(step.group) : null,
+        _vqbAppArray: { $push: '$$ROOT' },
+        _vqbTotalDenum: { $sum: $$(step.column) },
+      },
+    },
     { $unwind: '$_vqbAppArray' },
-    projectMongo,
+    {
+      $project: {
+        [newCol]: {
+          $cond: [
+            { $eq: ['$_vqbTotalDenum', 0] },
+            null,
+            { $divide: [`$_vqbAppArray.${step.column}`, '$_vqbTotalDenum'] },
+          ],
+        },
+        _vqbAppArray: 1, // we need to keep track of this key for the next operation
+      },
+    },
     // Line below: Keep all columns that were not used in computation, 'stored' in _vqbAppArray
     { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
     { $project: { _vqbAppArray: 0 } }, // We do not want to keep that column at the end
@@ -175,13 +165,11 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
 
 /** transform an 'pivot' step into corresponding mongo steps */
 function transformPivot(step: PivotStep): Array<MongoStep> {
-  let groupCols1: PropMap<string> = {};
   let groupCols2: PropMap<string> = {};
   let addFieldsStep: PropMap<string> = {};
 
   // Prepare groupCols to populate the `_id` field sof Mongo `$group` steps and addFields step
   for (const col of step.index) {
-    groupCols1[col] = `$${col}`;
     groupCols2[col] = `$_id.${col}`;
     addFieldsStep[`_vqbAppTmpObj.${col}`] = `$_id.${col}`;
   }
@@ -192,8 +180,8 @@ function transformPivot(step: PivotStep): Array<MongoStep> {
      */
     {
       $group: {
-        _id: { ...groupCols1, [step.column_to_pivot]: `$${step.column_to_pivot}` },
-        [step.value_column]: { [`$${step.agg_function}`]: `$${step.value_column}` },
+        _id: { ...columnMap(step.index), [step.column_to_pivot]: $$(step.column_to_pivot) },
+        [step.value_column]: { [$$(step.agg_function)]: $$(step.value_column) },
       },
     },
     /**
@@ -206,7 +194,7 @@ function transformPivot(step: PivotStep): Array<MongoStep> {
         _vqbAppArray: {
           $addToSet: {
             [step.column_to_pivot]: `$_id.${step.column_to_pivot}`,
-            [step.value_column]: `$${step.value_column}`,
+            [step.value_column]: $$(step.value_column),
           },
         },
       },
@@ -249,10 +237,10 @@ function transformReplace(step: ReplaceStep): MongoStep {
       [step.new_column || step.search_column]: {
         $cond: [
           {
-            $eq: [`$${step.search_column}`, `${step.oldvalue}`],
+            $eq: [$$(step.search_column), step.oldvalue],
           },
-          `${step.newvalue}`,
-          `$${step.search_column}`,
+          step.newvalue,
+          $$(step.search_column),
         ],
       },
     },
@@ -273,16 +261,7 @@ function transformSort(step: SortStep): MongoStep {
 /** transform an 'top' step into corresponding mongo steps */
 function transformTop(step: TopStep): Array<MongoStep> {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
-  let groupCols: PropMap<string> | null = {};
-
-  // Prepare the $group Mongo step
-  if (step.groups) {
-    for (const col of step.groups) {
-      groupCols[col] = `$${col}`;
-    }
-  } else {
-    groupCols = null;
-  }
+  const groupCols = step.groups ? columnMap(step.groups) : null;
 
   return [
     { $sort: { [step.rank_on]: sortOrder } },
@@ -354,7 +333,7 @@ function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
         [getOperator(node.op)]: node.args.map(buildMongoFormulaTree),
       };
     case 'SymbolNode':
-      return `$${node.name}`;
+      return $$(node.name);
     case 'ConstantNode':
       return node.value;
     case 'ParenthesisNode':
@@ -367,12 +346,12 @@ const mapper: StepMatcher<MongoStep> = {
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   custom: step => step.query,
-  delete: step => ({ $project: fromkeys(step.columns, 0) }),
+  delete: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 0])) }),
   domain: step => ({ $match: { domain: step.domain } }),
   fillna: step => ({
     $addFields: {
       [step.column]: {
-        $cond: [{ $eq: [`$${step.column}`, null] }, `${step.value}`, `$${step.column}`],
+        $cond: [{ $eq: [$$(step.column), null] }, step.value, $$(step.column)],
       },
     },
   }),
@@ -385,11 +364,11 @@ const mapper: StepMatcher<MongoStep> = {
   percentage: transformPercentage,
   pivot: transformPivot,
   rename: step => [
-    { $addFields: { [step.newname]: `$${step.oldname}` } },
+    { $addFields: { [step.newname]: $$(step.oldname) } },
     { $project: { [step.oldname]: 0 } },
   ],
   replace: transformReplace,
-  select: step => ({ $project: fromkeys(step.columns, 1) }),
+  select: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 1])) }),
   sort: transformSort,
   top: transformTop,
   unpivot: transformUnpivot,
