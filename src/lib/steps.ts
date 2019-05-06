@@ -93,7 +93,7 @@ export type ReplaceStep = Readonly<{
   name: 'replace';
   search_column: string;
   new_column?: string;
-  to_replace: PropAny;
+  to_replace: Array<Array<any>>;
 }>;
 
 export type SelectStep = Readonly<{

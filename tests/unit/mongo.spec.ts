@@ -181,12 +181,12 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'replace',
         search_column: 'Country',
-        to_replace: { 'France - ': 'France' },
+        to_replace: [['France - ', 'France']],
       },
       {
         name: 'replace',
         search_column: 'Country',
-        to_replace: { 'Spain - ': 'Spain' },
+        to_replace: [['Spain - ', 'Spain']],
       },
       { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
       {
@@ -416,7 +416,7 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'replace',
         search_column: 'column_1',
-        to_replace: { foo: 'bar' },
+        to_replace: [['foo', 'bar']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -440,7 +440,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'replace',
         search_column: 'column_1',
         new_column: 'column_2',
-        to_replace: { foo: 'bar', old: 'new' },
+        to_replace: [['foo', 'bar'], ['old', 'new']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
