@@ -1,5 +1,5 @@
 module.exports = {
-  moduleFileExtensions: ['js', 'jsx', 'json', 'vue', 'ts', 'tsx'],
+  moduleFileExtensions: ['js', 'jsx', 'json', 'vue', 'd.ts', 'ts', 'tsx'],
 
   collectCoverage: true,
   collectCoverageFrom: ['**/*.{ts,vue}', '!**/node_modules/**'],
