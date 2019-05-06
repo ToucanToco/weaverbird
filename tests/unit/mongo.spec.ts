@@ -982,4 +982,87 @@ describe('Pipeline to mongo translator', () => {
       { $replaceRoot: { newRoot: '$_vqbAppTmpObj' } },
     ]);
   });
+
+  it('can generate an unpivot step with fillna parameter to true', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'unpivot',
+        keep: ['MARCHE', 'CANAL'],
+        unpivot: ['NB_CLIENTS_TOTAL', 'NB_ROWS'],
+        unpivot_column_name: 'KPI',
+        value_column_name: 'VALUE',
+        dropna: true,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $project: {
+          MARCHE: '$MARCHE',
+          CANAL: '$CANAL',
+          _vqbToUnpivot: {
+            $objectToArray: {
+              NB_CLIENTS_TOTAL: '$NB_CLIENTS_TOTAL',
+              NB_ROWS: '$NB_ROWS',
+            },
+          },
+        },
+      },
+      {
+        $unwind: '$_vqbToUnpivot',
+      },
+      {
+        $project: {
+          MARCHE: '$MARCHE',
+          CANAL: '$CANAL',
+          KPI: '$_vqbToUnpivot.k',
+          VALUE: '$_vqbToUnpivot.v',
+        },
+      },
+      {
+        $match: {
+          VALUE: { $ne: null },
+        },
+      },
+    ]);
+  });
+
+  it('can generate an unpivot step with fillna parameter to false', () => {
+    const pipeline: Array<PipelineStep> = [
+      {
+        name: 'unpivot',
+        keep: ['MARCHE', 'CANAL'],
+        unpivot: ['NB_CLIENTS_TOTAL', 'NB_ROWS'],
+        unpivot_column_name: 'KPI',
+        value_column_name: 'VALUE',
+        dropna: false,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $project: {
+          MARCHE: '$MARCHE',
+          CANAL: '$CANAL',
+          _vqbToUnpivot: {
+            $objectToArray: {
+              NB_CLIENTS_TOTAL: '$NB_CLIENTS_TOTAL',
+              NB_ROWS: '$NB_ROWS',
+            },
+          },
+        },
+      },
+      {
+        $unwind: '$_vqbToUnpivot',
+      },
+      {
+        $project: {
+          MARCHE: '$MARCHE',
+          CANAL: '$CANAL',
+          KPI: '$_vqbToUnpivot.k',
+          VALUE: '$_vqbToUnpivot.v',
+        },
+      },
+    ]);
+  });
 });
