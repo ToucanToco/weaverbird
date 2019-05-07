@@ -369,7 +369,7 @@ A replace step has the following strucure:
 {
    name: 'replace',
    search_column: "column_1",
-   new_column: "column_1", // if empty, replace values directly in `search_column` by default
+   new_column: "column_2", // if empty, replace values directly in `search_column` by default
    to_replace: [
      ['foo', 'bar'], // The first value is the one to be replace, the second is the new value
      [42, 0]
