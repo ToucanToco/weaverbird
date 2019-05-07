@@ -231,10 +231,10 @@ function transformPivot(step: PivotStep): Array<MongoStep> {
 
 /** transform an 'replace' step into corresponding mongo steps */
 function transformReplace(step: ReplaceStep): MongoStep {
-  const branches: Array<MongoStep> = [];
-  for (const rep of step.to_replace) {
-    branches.push({ case: { $eq: [$$(step.search_column), rep[0]] }, then: rep[1] });
-  }
+  const branches: Array<MongoStep> = step.to_replace.map(([oldval, newval]) => ({
+    case: { $eq: [$$(step.search_column), oldval] },
+    then: newval,
+  }));
   return {
     $addFields: {
       [step.new_column || step.search_column]: {
