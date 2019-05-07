@@ -3,7 +3,6 @@
  */
 
 type PrimitiveType = number | boolean | string | Date;
-type PropAny = { [prop: string]: any };
 
 type AggFunctionStep = Readonly<{
   /** Name of the output column */
