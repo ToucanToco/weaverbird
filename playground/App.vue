@@ -51,10 +51,10 @@ export default class App extends Vue {
     fetch('/collections')
       .then(res => res.json())
       .then(collections => this.domainsList = collections);
+    this.updateData(this.steps);
   }
 
-  setSteps(pipeline: Array<PipelineStep>) {
-    this.steps = pipeline;
+  updateData(pipeline: Array<PipelineStep>) {
     if (!pipeline.length || pipeline[0].name !== 'domain') {
       throw new Error('first step should be a domain step to specify the collection');
     }
@@ -70,6 +70,12 @@ export default class App extends Vue {
     })
       .then(res => res.json())
       .then(dataset => this.dataset = mongoResultsToDataset(dataset));
+  }
+
+  setSteps(pipeline: Array<PipelineStep>) {
+    console.log('setting steps', pipeline);
+    this.steps = pipeline;
+    this.updateData(pipeline);
   }
 }
 </script>
