@@ -92,8 +92,7 @@ export type ReplaceStep = Readonly<{
   name: 'replace';
   search_column: string;
   new_column?: string;
-  oldvalue: string;
-  newvalue: string;
+  to_replace: Array<Array<any>>;
 }>;
 
 export type SelectStep = Readonly<{

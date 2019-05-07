@@ -181,14 +181,12 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'replace',
         search_column: 'Country',
-        oldvalue: 'France - ',
-        newvalue: 'France',
+        to_replace: [['France - ', 'France']],
       },
       {
         name: 'replace',
         search_column: 'Country',
-        oldvalue: 'Spain - ',
-        newvalue: 'Spain',
+        to_replace: [['Spain - ', 'Spain']],
       },
       { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
       {
@@ -239,13 +237,10 @@ describe('Pipeline to mongo translator', () => {
       {
         $addFields: {
           Country: {
-            $cond: [
-              {
-                $eq: ['$Country', 'France - '],
-              },
-              'France',
-              '$Country',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$Country', 'France - '] }, then: 'France' }],
+              default: '$Country',
+            },
           },
         },
       },
@@ -253,13 +248,10 @@ describe('Pipeline to mongo translator', () => {
         // Two steps with common keys should not be merged
         $addFields: {
           Country: {
-            $cond: [
-              {
-                $eq: ['$Country', 'Spain - '],
-              },
-              'Spain',
-              '$Country',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$Country', 'Spain - '] }, then: 'Spain' }],
+              default: '$Country',
+            },
           },
           Population: { $divide: ['$Population', 1000] },
         },
@@ -307,26 +299,20 @@ describe('Pipeline to mongo translator', () => {
       {
         $addFields: {
           Zone: {
-            $cond: [
-              {
-                $eq: ['$Zone', 'France - '],
-              },
-              'France',
-              '$Zone',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$Zone', 'France - '] }, then: 'France' }],
+              default: '$Zone',
+            },
           },
         },
       },
       {
         $addFields: {
           Zone: {
-            $cond: [
-              {
-                $eq: ['$Zone', 'Spain - '],
-              },
-              'Spain',
-              '$Zone',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$Zone', 'Spain - '] }, then: 'Spain' }],
+              default: '$Zone',
+            },
           },
         },
       },
@@ -392,13 +378,10 @@ describe('Pipeline to mongo translator', () => {
       {
         $addFields: {
           Zone: {
-            $cond: [
-              {
-                $eq: ['$Zone', 'France - '],
-              },
-              'France',
-              '$Zone',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$Zone', 'France - '] }, then: 'France' }],
+              default: '$Zone',
+            },
           },
         },
       },
@@ -406,13 +389,10 @@ describe('Pipeline to mongo translator', () => {
         // Two steps with common keys should not be merged
         $addFields: {
           Zone: {
-            $cond: [
-              {
-                $eq: ['$Zone', 'Spain - '],
-              },
-              'Spain',
-              '$Zone',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$Zone', 'Spain - '] }, then: 'Spain' }],
+              default: '$Zone',
+            },
           },
           Population: { $divide: ['$Population', 1000] },
         },
@@ -431,13 +411,12 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a basic replace step', () => {
+  it('can generate a replace step with a single value to replace inplace', () => {
     const pipeline: Array<PipelineStep> = [
       {
         name: 'replace',
         search_column: 'column_1',
-        oldvalue: 'foo',
-        newvalue: 'bar',
+        to_replace: [['foo', 'bar']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -445,27 +424,23 @@ describe('Pipeline to mongo translator', () => {
       {
         $addFields: {
           column_1: {
-            $cond: [
-              {
-                $eq: ['$column_1', 'foo'],
-              },
-              'bar',
-              '$column_1',
-            ],
+            $switch: {
+              branches: [{ case: { $eq: ['$column_1', 'foo'] }, then: 'bar' }],
+              default: '$column_1',
+            },
           },
         },
       },
     ]);
   });
 
-  it('can generate a basic replace step in a new column', () => {
+  it('can generate a replace step with a several values to replace in a new column', () => {
     const pipeline: Array<PipelineStep> = [
       {
         name: 'replace',
         search_column: 'column_1',
         new_column: 'column_2',
-        oldvalue: 'foo',
-        newvalue: 'bar',
+        to_replace: [['foo', 'bar'], ['old', 'new']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -473,13 +448,13 @@ describe('Pipeline to mongo translator', () => {
       {
         $addFields: {
           column_2: {
-            $cond: [
-              {
-                $eq: ['$column_1', 'foo'],
-              },
-              'bar',
-              '$column_1',
-            ],
+            $switch: {
+              branches: [
+                { case: { $eq: ['$column_1', 'foo'] }, then: 'bar' },
+                { case: { $eq: ['$column_1', 'old'] }, then: 'new' },
+              ],
+              default: '$column_1',
+            },
           },
         },
       },
