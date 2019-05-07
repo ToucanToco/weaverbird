@@ -2,6 +2,7 @@ import { readFileSync, readFile } from 'fs';
 import express = require('express');
 import { MongoClient, MongoError } from 'mongodb';
 import bodyParser from 'body-parser';
+import csv from 'csvtojson';
 
 import meow from 'meow';
 
@@ -9,7 +10,57 @@ type ServerConfig = {
   dburi: string;
   dbname: string;
   port: number;
+  defaultCollection: string;
+  reset: boolean;
+  defaultDataset: string;
 };
+
+function _loadData(
+  data: Array<object>,
+  config: ServerConfig,
+  client: MongoClient,
+  onsuccess: () => void,
+  onerror: (err: any) => void = () => {},
+) {
+  client.connect(function(err) {
+    assertIsConnected(client, err);
+    const db = client.db(config.dbname);
+    const collection = db.collection(config.defaultCollection);
+    collection.deleteMany({}, function(err) {
+      if (err) {
+        onerror(err);
+      } else {
+        collection.insertMany(data, function(err) {
+          if (err) {
+            onerror(err);
+          } else {
+            onsuccess();
+          }
+        });
+      }
+    });
+  });
+}
+
+/**
+ *
+ * @param filepath path to CSV file
+ * @param config database config
+ * @param client mongo client
+ * @param onsuccess callback to call on success
+ * @param onerror callback to call on error
+ */
+function loadCSVInDatabase(
+  filepath: string,
+  config: ServerConfig,
+  client: MongoClient,
+  onsuccess: () => void,
+  onerror: (err: any) => void = () => {},
+) {
+  csv({ checkType: true })
+    .fromFile(filepath)
+    .then(data => _loadData(data, config, client, onsuccess, onerror));
+}
 
 /**
  * assert client is actually connected to a mongo backend and crash otherwise.
@@ -35,7 +86,7 @@ function assertIsConnected(client: MongoClient, err: MongoError) {
  * @param collectionName the name of the collection to query
  * @param query the mongo query
  * @param onsuccess callback to call on success with results
- * @param onerrror callback to call on error
+ * @param onerror callback to call on error
  */
 function executeQuery(
   config: ServerConfig,
@@ -43,7 +94,7 @@ function executeQuery(
   collectionName: string,
   query: Array<object>,
   onsuccess: (results: object) => void,
-  onerrror: (err: any) => void,
+  onerror: (err: any) => void,
 ) {
   client.connect(function(err) {
     assertIsConnected(client, err);
@@ -51,7 +102,7 @@ function executeQuery(
     const collection = db.collection(collectionName);
     collection.aggregate(query).toArray(function(err, docs) {
       if (err) {
-        onerrror(err);
+        onerror(err);
       } else {
         onsuccess(docs);
       }
@@ -65,20 +116,20 @@ function executeQuery(
  * @param config database config
  * @param client mongo client
  * @param onsuccess callback to call on success with the list of collections
- * @param onerrror callback to call on error
+ * @param onerror callback to call on error
  */
 function listCollections(
   config: ServerConfig,
   client: MongoClient,
   onsuccess: (results: Array<string>) => void,
-  onerrror: (err: any) => void,
+  onerror: (err: any) => void,
 ) {
   client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     db.listCollections().toArray((err, results) => {
       if (err) {
-        onerrror(err);
+        onerror(err);
       } else {
         onsuccess(results.map(collectionInfos => collectionInfos.name).sort());
       }
@@ -93,6 +144,9 @@ function _testConnection(client: MongoClient) {
 function setupApp(config: ServerConfig) {
   const client = new MongoClient(config.dburi, { useNewUrlParser: true });
   _testConnection(client);
+  if (config.reset) {
+    loadCSVInDatabase(config.defaultDataset, config, client, console.error);
+  }
   const app = express();
 
   // parse application/x-www-form-urlencoded
@@ -126,17 +180,26 @@ function parseCommandLine() {
     $ node server.js [options]
 
   where options are:
-    --configfile      path to configuration file,
-                      default is ${__dirname}/playground.config.json
+    --configfile         path to configuration file,
+                         default is ${__dirname}/playground.config.json
 
-    --dburi           override "dburi" option from config file,
-                      default is "mongodb://localhost:27107"
+    --dburi               override "dburi" option from config file,
+                          default is "mongodb://localhost:27107"
 
-    --dbname          override "dbname" option from config file,
-                      default is "playground-db"
+    --dbname              override "dbname" option from config file,
+                          default is "playground-db"
 
-    --httpPort / -p   override "httpPort" option from config file,
-                      default is 3000
+    --defaultCollection   override "defaultCollection" option from config file,
+                          default is "test-collection"
+
+    --reset               reset default collection, override "reset" option from config file,
+                          default is false
+
+    --defaultDataset      path to dataset to load in database
+                          default is ${__dirname}/default-dataset.csv
+
+    --httpPort / -p       override "httpPort" option from config file,
+                          default is 3000
   `,
     {
       flags: {
@@ -158,13 +221,35 @@ function parseCommandLine() {
           alias: 'p',
           default: null,
         },
+        defaultCollection: {
+          type: 'string',
+          alias: 'C',
+          default: null,
+        },
+        reset: {
+          type: 'boolean',
+          default: false,
+        },
+        defaultDataset: {
+          type: 'string',
+          alias: 'D',
+          default: `${__dirname}/default-dataset.csv`,
+        },
       },
     },
   );
   const config = {
     ...JSON.parse(readFileSync(cli.flags.configfile).toString()),
   };
-  for (const opt of ['dburi', 'dbname', 'httpPort']) {
+  for (const opt of [
+    'dburi',
+    'dbname',
+    'httpPort',
+    'dburi',
+    'defaultCollection',
+    'reset',
+    'defaultDataset',
+  ]) {
     if (cli.flags[opt]) {
       config[opt] = cli.flags[opt];
     }

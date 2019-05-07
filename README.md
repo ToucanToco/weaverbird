@@ -166,5 +166,17 @@ you want to customize these values, either edit this json file or override each
 available option on the commandline, e.g.
 
 ```bash
-node playgronud/server.js --dburi mongdb://localhost:27018
+node playground/server.js --dburi mongdb://localhost:27018
+```
+
+You can use the default test dataset by loading the `playground/default-dataset.csv` file. To do that, use the following command line:
+
+```bash
+node playground/server.js --reset
+```
+
+If you want to use a custom CSV file, use the `defaultDataset` command line option:
+
+```bash
+node playground/server.js --defaultDataset my-dataset.csv --reset
 ```

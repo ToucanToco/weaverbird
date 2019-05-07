@@ -1539,6 +1539,13 @@
   dependencies:
     "@types/node" "*"
 
+"@types/csvtojson@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@types/csvtojson/-/csvtojson-1.1.5.tgz#b1500849bd0a1ef58d93b03a61d889e2d40a912b"
+  integrity sha512-REZcfXN1h2JLoSc066GAdUKP2OpNiG3mIpgyjZWB5RKhBOZc5xmAZwavbP6O7vKMZ+jYTqbwUNucMBl7dw68JA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/estree@0.0.39":
   version "0.0.39"
   resolved "https://registry.yarnpkg.com/@types/estree/-/estree-0.0.39.tgz#e177e699ee1b8c22d23174caaa7422644389509f"
@@ -4737,6 +4744,15 @@ csstype@^2.5.2, csstype@^2.5.7:
   version "2.6.3"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.3.tgz#b701e5968245bf9b08d54ac83d00b624e622a9fa"
   integrity sha512-rINUZXOkcBmoHWEyu7JdHu5JMzkGRoMX4ov9830WNgxf5UYxcBUO0QTKAqeJ5EZfSdlrcJYkC8WwfVW7JYi4yg==
+
+csvtojson@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/csvtojson/-/csvtojson-2.0.8.tgz#d889f19576b2b33ead235490d2e5c9791481e8d3"
+  integrity sha512-DC6YFtsJiA7t/Yz+KjzT6GXuKtU/5gRbbl7HJqvDVVir+dxdw2/1EgwfgJdnsvUT7lOnON5DvGftKuYWX1nMOQ==
+  dependencies:
+    bluebird "^3.5.1"
+    lodash "^4.17.3"
+    strip-bom "^2.0.0"
 
 current-script-polyfill@^1.0.0:
   version "1.0.0"
