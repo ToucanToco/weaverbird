@@ -22,9 +22,18 @@ import { DataViewer, Pipeline, ResizablePanels, getTranslator } from '../dist/vu
 
 const mongo36translator = getTranslator('mongo36');
 const pipeline: Array<PipelineStep> = [
-  { name: 'domain', domain: 'reports' },
-  { name: 'filter', column: 'entityName', value: 'Troll face', operator: 'eq' },
-  { name: 'filter', column: 'id', value: 'yolo', operator: 'eq' },
+  { name: 'domain', domain: 'test-collection' },
+  { name: 'filter', column: 'Value4', value: 1, operator: 'gt' },
+  { name: 'replace', search_column: 'Value2', to_replace: [[2, 20], [13, 24]] },
+  { name: 'top', rank_on: 'Value2', sort: 'asc', limit: 3 },
+  {
+    name: 'pivot',
+    index: ['Groups'],
+    column_to_pivot: 'Label',
+    value_column: 'Value2',
+    agg_function: 'sum',
+  }
+  // { name: 'formula', new_column: "result", formula: "Value1 * Value2 + 10 * Value3" },
 ];
 
 @Component({
@@ -35,9 +44,6 @@ const pipeline: Array<PipelineStep> = [
   },
 })
 export default class App extends Vue {
-  steps = pipeline;
-  domainsList = [];
-  code: string = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
   dataset: DataSet = {
     headers: [{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }],
     data: [
@@ -46,6 +52,10 @@ export default class App extends Vue {
       [16, 20, 16],
     ]
   };
+
+  steps = pipeline;
+  domainsList = [];
+  code: string = JSON.stringify(mongo36translator.translate(pipeline), null, 2);
 
   mounted() {
     fetch('/collections')
