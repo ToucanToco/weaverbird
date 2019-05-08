@@ -21,7 +21,9 @@ export default {
   ],
   plugins: [
     resolve(),
-    commonjs(),
+    commonjs({
+      namedExports: { 'node_modules/mathjs/index.js': ['parse'] },
+    }),
     css({
       output: 'dist/vue-query-builder.css'
     }),
