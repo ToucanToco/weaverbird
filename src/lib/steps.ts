@@ -76,9 +76,9 @@ export type PercentageStep = Readonly<{
 
 export type PivotStep = Readonly<{
   name: 'pivot';
-  index: ['column_1', 'column_2'];
-  column_to_pivot: 'column_3';
-  value_column: 'column_4';
+  index: Array<string>;
+  column_to_pivot: string;
+  value_column: string;
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
 }>;
 
