@@ -164,8 +164,8 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
 
 /** transform an 'pivot' step into corresponding mongo steps */
 function transformPivot(step: PivotStep): Array<MongoStep> {
-  let groupCols2: PropMap<string> = {};
-  let addFieldsStep: PropMap<string> = {};
+  const groupCols2: PropMap<string> = {};
+  const addFieldsStep: PropMap<string> = {};
 
   // Prepare groupCols to populate the `_id` field sof Mongo `$group` steps and addFields step
   for (const col of step.index) {
