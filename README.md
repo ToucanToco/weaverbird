@@ -133,3 +133,50 @@ See the documentation generated in `dist/docs` directory
 ### Styles
 
 TODO: document here sass variables that can be overriden
+
+## Playground
+
+The `/playground` directory hosts a demo application with a small server that
+showcases how to integrate the exported components and API. To run it, just
+run:
+
+```bash
+yarn playground
+```
+
+which is basically a shortcut for the following steps:
+
+```bash
+# build the visual query builder bundle
+yarn build-bundle
+# build the playground app
+yarn playground:build-app
+# build the "backend" server
+yarn playground:build-server
+# run the server and enjoy!
+node playground/server.js
+```
+
+Once the server is started, you should be able to open the
+`http://localhost:3000` in your favorite browser and enjoy!
+
+The `server.js` script reads the `playground/playground.config.json` config file
+to know which database should be queried or which http port should be used. If
+you want to customize these values, either edit this json file or override each
+available option on the commandline, e.g.
+
+```bash
+node playground/server.js --dburi mongdb://localhost:27018
+```
+
+You can use the default test dataset by loading the `playground/default-dataset.csv` file. To do that, use the following command line:
+
+```bash
+node playground/server.js --reset
+```
+
+If you want to use a custom CSV file, use the `defaultDataset` command line option:
+
+```bash
+node playground/server.js --defaultDataset my-dataset.csv --reset
+```

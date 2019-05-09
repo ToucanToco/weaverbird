@@ -1,0 +1,6 @@
+Label,Value1,Value2,Value3,Value4,Groups
+"Label 1",10,2,2,1,"Group 1"
+"Label 2",1,13,7,3,"Group 1"
+"Label 3",5,20,5,2,"Group 2"
+"Label 4",7,12,3,4,"Group 3"
+"Label 5",,25,4,30,"Group 1"
