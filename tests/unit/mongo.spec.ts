@@ -1,4 +1,4 @@
-import { PipelineStep } from '@/lib/steps';
+import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { MongoStep, _simplifyMongoPipeline } from '@/lib/translators/mongo';
 
@@ -14,13 +14,13 @@ describe('Pipeline to mongo translator', () => {
   const mongo36translator = getTranslator('mongo36');
 
   it('can generate domain steps', () => {
-    const pipeline: Array<PipelineStep> = [{ name: 'domain', domain: 'test_cube' }];
+    const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
   });
 
   it('can generate select steps', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       { name: 'select', columns: ['Manager', 'Region'] },
     ];
@@ -37,7 +37,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate delete steps', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       { name: 'delete', columns: ['Manager', 'Region'] },
     ];
@@ -54,7 +54,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate rename steps', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       { name: 'rename', oldname: 'Region', newname: 'zone' },
     ];
@@ -75,7 +75,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate filter steps', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
@@ -107,7 +107,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can translate aggregation steps', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       {
         name: 'aggregate',
@@ -169,7 +169,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can simplify complex queries', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'delete', columns: ['Manager'] },
@@ -412,7 +412,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a replace step with a single value to replace inplace', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'replace',
         search_column: 'column_1',
@@ -435,7 +435,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a replace step with a several values to replace in a new column', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'replace',
         search_column: 'column_1',
@@ -462,7 +462,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a basic sort step on one column', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'sort',
         columns: ['foo'],
@@ -480,7 +480,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a sort step on multiple columns', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'sort',
         columns: ['foo', 'bar'],
@@ -499,7 +499,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a sort step on multiple columns with default order', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'sort',
         columns: ['foo', 'bar'],
@@ -517,7 +517,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a fillna step', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'fillna',
         column: 'foo',
@@ -531,7 +531,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a top step with groups', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'top',
         groups: ['foo'],
@@ -558,7 +558,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a top step without groups', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'top',
         rank_on: 'bar',
@@ -582,7 +582,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a percentage step with groups and result in a new column', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'percentage',
         new_column: 'new_col',
@@ -619,7 +619,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a percentage step without groups and result inplace', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'percentage',
         column: 'bar',
@@ -654,7 +654,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate an argmax step without groups', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'argmax',
         column: 'bar',
@@ -695,7 +695,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate an argmax step with groups', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'argmax',
         column: 'bar',
@@ -737,7 +737,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate an argmin step with groups', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'argmin',
         column: 'value',
@@ -779,7 +779,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a formula step with a single column or constant', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'formula',
         new_column: 'foo',
@@ -809,7 +809,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a formula step with complex operations imbrication', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'formula',
         new_column: 'foo',
@@ -879,7 +879,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a formula step with a a signed column name', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'formula',
         new_column: 'test',
@@ -904,7 +904,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a pivot step', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'pivot',
         index: ['column_1', 'column_2'],
@@ -959,7 +959,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate an unpivot step with fillna parameter to true', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'unpivot',
         keep: ['MARCHE', 'CANAL'],
@@ -1003,7 +1003,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate an unpivot step with fillna parameter to false', () => {
-    const pipeline: Array<PipelineStep> = [
+    const pipeline: Pipeline = [
       {
         name: 'unpivot',
         keep: ['MARCHE', 'CANAL'],

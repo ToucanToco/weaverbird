@@ -6,7 +6,7 @@ import {
   ArgmaxStep,
   ArgminStep,
   FilterStep,
-  PipelineStep,
+  Pipeline,
   PivotStep,
   PercentageStep,
   ReplaceStep,
@@ -372,7 +372,7 @@ const mapper: StepMatcher<MongoStep> = {
 };
 
 export class Mongo36Translator extends BaseTranslator {
-  translate(pipeline: Array<PipelineStep>) {
+  translate(pipeline: Pipeline) {
     const mongoSteps = super.translate(pipeline).flat();
     return _simplifyMongoPipeline(mongoSteps);
   }

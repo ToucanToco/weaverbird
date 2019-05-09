@@ -4,7 +4,7 @@
  * This module define the mongo → standard pipeline steps implementation.
  */
 
-import { PipelineStep } from './steps';
+import { Pipeline } from './steps';
 import { MongoStep } from '@/lib/translators/mongo';
 
 /**
@@ -16,8 +16,8 @@ import { MongoStep } from '@/lib/translators/mongo';
  * @param matchStep the match mongo step
  * @returns the corresponding pipeline steps
  */
-function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
-  const output: Array<PipelineStep> = [];
+function transformMatch(matchStep: MongoStep): Pipeline {
+  const output: Pipeline = [];
   if (matchStep.$match.domain !== undefined) {
     output.push({ name: 'domain', domain: matchStep.$match.domain });
   }
@@ -35,16 +35,16 @@ function transformMatch(matchStep: MongoStep): Array<PipelineStep> {
  * @param matchStep the match mongo step
  * @returns the corresponding pipeline steps
  */
-function transformProject(matchStep: MongoStep): Array<PipelineStep> {
-  const output: Array<PipelineStep> = [];
+function transformProject(matchStep: MongoStep): Pipeline {
+  const output: Pipeline = [];
   // NOTE: we have to tell typescript that `needsRenaming`, `needsDeletion` and
   // `computedColumns` are arrays of `PipelineStep` because it can't otherwise
   // infer the "name" property literal type correctly.
   // cf.https://github.com/Microsoft/TypeScript/issues/15311 or
   // https://stackoverflow.com/questions/50762772/typescript-why-cant-this-string-literal-type-be-inferred
-  const needsRenaming: Array<PipelineStep> = [];
-  const needsDeletion: Array<PipelineStep> = [];
-  const computedColumns: Array<PipelineStep> = [];
+  const needsRenaming: Pipeline = [];
+  const needsDeletion: Pipeline = [];
+  const computedColumns: Pipeline = [];
   const select = [];
   for (let [outcol, incol] of Object.entries(matchStep.$project)) {
     if (typeof incol === 'string') {
@@ -71,7 +71,7 @@ function transformProject(matchStep: MongoStep): Array<PipelineStep> {
   return output;
 }
 
-function transformFallback(step: MongoStep): Array<PipelineStep> {
+function transformFallback(step: MongoStep): Pipeline {
   return [
     {
       name: 'custom',
@@ -88,8 +88,8 @@ function transformFallback(step: MongoStep): Array<PipelineStep> {
  *
  * @returns the standard pipeline
  */
-export function mongoToPipe(mongoSteps: Array<MongoStep>): Array<PipelineStep> {
-  const listOfSteps: Array<PipelineStep> = [];
+export function mongoToPipe(mongoSteps: Array<MongoStep>): Pipeline {
+  const listOfSteps: Pipeline = [];
   for (const step of mongoSteps) {
     let transformer;
     if (step.$match !== undefined) {
