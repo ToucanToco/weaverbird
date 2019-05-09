@@ -143,3 +143,4 @@ export type PipelineStep =
   | UnpivotStep;
 
 export type PipelineStepName = PipelineStep['name'];
+export type Pipeline = Array<PipelineStep>;

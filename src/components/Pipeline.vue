@@ -31,7 +31,7 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 
-import { PipelineStep } from '@/lib/steps'
+import { Pipeline } from '@/lib/steps'
 import DomainSelector from './DomainSelector.vue'
 import Step from './Step.vue'
 
@@ -42,20 +42,20 @@ import Step from './Step.vue'
     Step,
   },
 })
-export default class Pipeline extends Vue {
+export default class PipelineComponent extends Vue {
   @Prop(Array)
-  steps!: Array<PipelineStep>
+  steps!: Pipeline
 
   @Prop(Array)
   domainsList!: Array<string>
 
   selectedStep: number = -1
-  activePipeline: Array<PipelineStep> = []
-  disabledPipeline: Array<PipelineStep> = []
+  activePipeline: Pipeline = []
+  disabledPipeline: Pipeline = []
 
   get selectedIndex() {
     if (this.selectedStep < 0) {
-      return this.stepsWithoutDomain.length -1
+      return this.stepsWithoutDomain.length - 1
     }
 
     return this.selectedStep
@@ -81,7 +81,7 @@ export default class Pipeline extends Vue {
   }
 
   selectStep(index: number) {
-    let pipeline: Array<PipelineStep> = []
+    let pipeline: Pipeline = []
     this.selectedStep = index
 
     this.activePipeline = this.stepsWithoutDomain.slice(0, this.selectedStep + 1)

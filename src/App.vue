@@ -16,21 +16,21 @@
 import _ from 'lodash';
 import { Component, Vue } from 'vue-property-decorator';
 import DataViewer from './components/DataViewer.vue';
-import Pipeline from './components/Pipeline.vue';
+import PipelineComponent from './components/Pipeline.vue';
 import ResizablePanels from './components/ResizablePanels.vue';
-import { PipelineStep } from '@/lib/steps';
+import { Pipeline } from '@/lib/steps';
 
 import fakeDataset from './fake_dataset.json';
 
 @Component({
   components: {
     DataViewer,
-    Pipeline,
+    PipelineComponent,
     ResizablePanels,
   },
 })
 export default class App extends Vue {
-  steps: Array<PipelineStep> = [
+  steps: Pipeline = [
     { name: 'domain', domain: 'cities_data' },
     { name: 'filter', column: 'my-column', value: 42, operator: 'eq' },
     { name: 'rename', oldname: 'my-column', newname: 'new-name' },
@@ -40,7 +40,7 @@ export default class App extends Vue {
 
   dataset = fakeDataset;
 
-  setSteps(pipeline: Array<PipelineStep>) {
+  setSteps(pipeline: Pipeline) {
     this.steps = pipeline;
   }
 }
