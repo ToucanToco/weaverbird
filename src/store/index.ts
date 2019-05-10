@@ -37,7 +37,7 @@ const emptyState: VQBState = {
   pipeline: [],
 };
 
-export function setupStore(initialState: Partial<VQBState> = {}) {
+export function setupStore(initialState: Partial<VQBState> = {}, plugins: Array<any> = []) {
   const store: StoreOptions<VQBState> = {
     state: { ...emptyState, ...initialState },
     getters: {
@@ -69,6 +69,7 @@ export function setupStore(initialState: Partial<VQBState> = {}) {
         state.dataset = dataset;
       },
     },
+    plugins,
   };
   return new Store<VQBState>(store);
 }
