@@ -8,6 +8,31 @@ import { Pipeline } from './steps';
 import { MongoStep } from '@/lib/translators/mongo';
 
 /**
+ * extract the requested domain from the first step and return the rest of the
+ * pipeline unchanged. This is useful in the GUI where the domain steps is
+ * handled differently from the rest of the pipeline. It's also useful in
+ * backends such as mongo where the first step corresponds to the collection
+ * that has to be queried.
+ *
+ * @param pipeline the complete pipeline
+ * @return an object with 2 keys: `domain` for the domain of the first step and
+ * `pipeline` for the rest of the pieline.
+ */
+export function filterOutDomain(pipeline: Pipeline) {
+  if (pipeline.length === 0) {
+    throw new Error('pipeline should like [DomainStep, ...otherSteps]');
+  }
+  const [domainStep, ...subpipeline] = pipeline;
+  if (domainStep.name !== 'domain') {
+    throw new Error('pipeline should like [DomainStep, ...otherSteps]');
+  }
+  return {
+    domain: domainStep.domain,
+    pipeline: subpipeline,
+  };
+}
+
+/**
  * Transform a mongo `$match` step into a list of pipeline steps.
  * If a `domain` key is found in the `$match` step, generate a `Domain`
  * pipeline step. After that, generate a `Filter` step with all the remaining
