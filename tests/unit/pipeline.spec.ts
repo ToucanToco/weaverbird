@@ -16,7 +16,7 @@ describe('Pipeline.vue', () => {
     const [step1, step2] = steps.wrappers.map(stub => stub.props());
     expect(step1).toEqual({
       step: { name: 'rename' },
-      isActive: false,
+      isActive: true,
       isDisabled: false,
       isFirst: true,
       isLast: false,

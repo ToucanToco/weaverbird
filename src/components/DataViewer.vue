@@ -1,5 +1,5 @@
 <template>
-  <div v-if="datasetIsntEmpty" class="data-viewer-container">
+  <div v-if="!isEmpty" class="data-viewer-container">
     <table class="data-viewer-table">
       <thead class="data-viewer__header">
         <tr>
@@ -28,6 +28,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
+import { Getter, State } from 'vuex-class';
 
 import { DataSet } from '@/lib/dataset';
 import { Component, Prop } from 'vue-property-decorator';
@@ -46,40 +47,20 @@ import DataViewerCell from './DataViewerCell.vue';
   },
 })
 export default class DataViewer extends Vue {
-  @Prop({
-    default: () => ({ headers: [], data: [] }),
-    type: Object,
-  })
-  dataset!: DataSet;
+  @State('dataset') dataset!: DataSet;
+  @Getter('isDatasetEmpty') isEmpty!: boolean;
 
+  @Getter columnNames!: Array<string>;
   /**
    * @description Array of column's name selected by the user
    */
   selectedColumns: Array<string> = [];
 
   /**
-   * @description Tell us if the dataset is not empty
-   * @return {boolean}
-   */
-  get datasetIsntEmpty() {
-    return this.dataset.data.length !== 0;
-  }
-
-  /**
-   * @description Get columns name by checking all the rows to handle
-   * the case when a row has a key that another hasn't
-   *
-   * @return {Array<string>}
-   */
-  get columnNames() {
-    return this.dataset.headers.map(col => col.name);
-  }
-
-  /**
-   * @description Get our columns with their names and linked classes
-   *
-   * @return {Array<object>}
-   */
+     * @description Get our columns with their names and linked classes
+     *
+     * @return {Array<object>}
+     */
   get formattedColumns() {
     return this.columnNames.map(d => ({
       name: d,
