@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
 import { setupStore } from '@/store';
 import App from './App.vue';
+import { mongoServicePlugin } from './dbservice';
 
 Vue.use(Vuex);
 Vue.config.productionTip = false;
@@ -24,6 +25,6 @@ const initialPipeline: Pipeline = [
 ];
 
 new Vue({
-  store: setupStore({ pipeline: initialPipeline }),
+  store: setupStore({ pipeline: initialPipeline }, [mongoServicePlugin]),
   render: h => h(App),
 }).$mount('#app');
