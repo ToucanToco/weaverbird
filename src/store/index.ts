@@ -11,12 +11,20 @@ export interface VQBState {
   pipeline: Pipeline;
 }
 
-function firstNonSelectedIndex(state: VQBState) {
+export function firstNonSelectedIndex(state: VQBState) {
   const { pipeline, selectedStepIndex } = state;
   if (selectedStepIndex < 0) {
     return pipeline.length;
   }
   return selectedStepIndex + 1;
+}
+
+export function activePipeline(state: VQBState) {
+  return state.pipeline.slice(0, firstNonSelectedIndex(state));
+}
+
+export function disabledPipeline(state: VQBState) {
+  return state.pipeline.slice(firstNonSelectedIndex(state));
 }
 
 const emptyState: VQBState = {
@@ -34,9 +42,9 @@ export function setupStore(initialState: Partial<VQBState> = {}) {
     state: { ...emptyState, ...initialState },
     getters: {
       domainStep: state => state.pipeline[0],
-      stepsWithoutDomain: (_, getters) => getters.activePipeline.slice(1),
-      activePipeline: state => state.pipeline.slice(0, firstNonSelectedIndex(state)),
-      disabledPipeline: state => state.pipeline.slice(firstNonSelectedIndex(state)),
+      stepsWithoutDomain: state => state.pipeline.slice(1),
+      activePipeline,
+      disabledPipeline,
       isPipelineEmpty: state => state.pipeline.length === 1,
       isDatasetEmpty: state => state.dataset.data.length === 1,
       isStepDisabled: state => (index: number) =>
