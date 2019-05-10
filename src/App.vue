@@ -15,33 +15,43 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Vue } from 'vue-property-decorator';
+import { Mutation, State } from 'vuex-class';
+import { VQBState } from '@/store';
 import DataViewer from './components/DataViewer.vue';
 import PipelineComponent from './components/Pipeline.vue';
 import ResizablePanels from './components/ResizablePanels.vue';
 import { Pipeline } from '@/lib/steps';
+import { mongoResultsToDataset } from '@/lib/dataset/mongo';
 
 import fakeDataset from './fake_dataset.json';
 
 @Component({
   components: {
     DataViewer,
-    PipelineComponent,
+    Pipeline: PipelineComponent,
     ResizablePanels,
   },
 })
 export default class App extends Vue {
-  steps: Pipeline = [
-    { name: 'domain', domain: 'cities_data' },
-    { name: 'filter', column: 'my-column', value: 42, operator: 'eq' },
-    { name: 'rename', oldname: 'my-column', newname: 'new-name' },
-  ];
+  @State('pipeline') steps!: Pipeline;
+  @State domains!: Array<string>;
 
-  domainsList = ['horizontal_barchart', 'bubble_chart', 'cities_data'];
+  @Mutation setDomains!: (domains: Pick<VQBState, 'domains'>) => void;
+  @Mutation setPipeline!: (pipeline: Pick<VQBState, 'pipeline'>) => void;
+  @Mutation setDataset!: (dataset: Pick<VQBState, 'dataset'>) => void;
 
-  dataset = fakeDataset;
-
-  setSteps(pipeline: Pipeline) {
-    this.steps = pipeline;
+  mounted() {
+    this.setPipeline({
+      pipeline: [
+        { name: 'domain', domain: 'cities_data' },
+        { name: 'filter', column: 'my-column', value: 42, operator: 'eq' },
+        { name: 'rename', oldname: 'my-column', newname: 'new-name' },
+      ]
+    });
+    this.setDomains({
+      domains: ['horizontal_barchart', 'bubble_chart', 'cities_data']
+    });
+    this.setDataset({ dataset: mongoResultsToDataset(fakeDataset) });
   }
 }
 </script>

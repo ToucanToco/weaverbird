@@ -10,6 +10,9 @@ export default {
     {
       file: 'playground/dist/app.js',
       format: 'iife',
+      globals: {
+        vue: 'Vue',
+      },
     },
   ],
   // NOTE: make sure css() is included before mainConfig's plugins which also
