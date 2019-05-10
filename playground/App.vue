@@ -14,7 +14,7 @@ import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState, activePipeline } from '@/store/state';
 import { Pipeline } from '@/lib/steps';
 import { DataSet } from '@/lib/dataset';
-import { mongoResultsToDataset } from '@/lib/dataset/mongo';
+import { MongoResults, mongoResultsToDataset } from '@/lib/dataset/mongo';
 import { DataViewer, Pipeline as PipelineComponent, ResizablePanels, getTranslator } from '../dist/vue-query-builder.common.js';
 
 const mongo36translator = getTranslator('mongo36');
@@ -41,29 +41,29 @@ export default class App extends Vue {
     return JSON.stringify(query, null, 2);
   }
 
-  mounted() {
-    fetch('/collections')
-      .then(res => res.json())
-      .then(collections => this.setDomains({ domains: collections }));
-    this.updateData(this.pipeline);
+  async mounted() {
+    const response = await fetch('/collections');
+    const collections = await response.json();
+    this.setDomains({ domains: collections });
+    await this.updateData(this.pipeline);
   }
 
-  updateData(pipeline: Pipeline) {
+  async updateData(pipeline: Pipeline) {
     this.setPipeline({ pipeline });
     if (!pipeline.length || pipeline[0].name !== 'domain') {
       throw new Error('first step should be a domain step to specify the collection');
     }
     const [domainStep, ...subpipeline] = pipeline;
     const query = mongo36translator.translate(subpipeline);
-    fetch('/query', {
+    const response = await fetch('/query', {
       method: 'POST',
       body: JSON.stringify({ query, collection: domainStep.domain }),
       headers: {
         'Content-Type': 'application/json'
       }
-    })
-      .then(res => res.json())
-      .then(dataset => this.setDataset({ dataset: mongoResultsToDataset(dataset) }));
+    });
+    const mongorset = await response.json();
+    this.setDataset({ dataset: mongoResultsToDataset(mongorset as MongoResults) });
   }
 
 }
