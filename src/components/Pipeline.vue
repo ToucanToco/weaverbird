@@ -45,9 +45,9 @@ export default class PipelineComponent extends Vue {
   @State('pipeline') steps!: Pipeline;
   @State domains!: Array<string>;
   @State('isPipelineEmpty') isEmpty!: boolean;
-  @State selectedStepIndex!: number;
 
   @Getter activePipeline!: Pipeline;
+  @Getter('computedActiveStepIndex') activeStepIndex!: number;
   @Getter domainStep!: DomainStep;
   @Getter stepsWithoutDomain!: Pipeline;
   @Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
