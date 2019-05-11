@@ -29,7 +29,7 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 import { Getter, Mutation, State } from 'vuex-class';
-import { VQBState } from '@/store';
+import { VQBState } from '@/store/state';
 import { DomainStep, Pipeline } from '@/lib/steps'
 import DomainSelector from './DomainSelector.vue'
 import Step from './Step.vue'
