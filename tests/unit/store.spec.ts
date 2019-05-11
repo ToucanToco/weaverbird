@@ -1,6 +1,7 @@
 import { Pipeline } from '@/lib/steps';
 import { VQBState, emptyState } from '@/store/state';
 import getters from '@/store/getters';
+import mutations from '@/store/mutations';
 
 function buildState(customState: Partial<VQBState>) {
   return {
@@ -179,5 +180,51 @@ describe('getter tests', () => {
       expect(getters.isStepDisabled(state)(2)).toBeTruthy();
       expect(getters.isStepDisabled(state)(3)).toBeTruthy();
     });
+  });
+});
+
+describe('mutation tests', () => {
+  it('selects step', () => {
+    const state = buildState({});
+    expect(state.selectedStepIndex).toEqual(-1);
+    mutations.selectStep(state, { index: 2 });
+    expect(state.selectedStepIndex).toEqual(2);
+  });
+
+  it('sets current domain', () => {
+    const state = buildState({ currentDomain: 'foo' });
+    expect(state.currentDomain).toEqual('foo');
+    mutations.setCurrentDomain(state, { currentDomain: 'bar' });
+    expect(state.currentDomain).toEqual('bar');
+  });
+
+  it('sets domain list', () => {
+    const state = buildState({});
+    expect(state.domains).toEqual([]);
+    mutations.setDomains(state, { domains: ['foo', 'bar'] });
+    expect(state.domains).toEqual(['foo', 'bar']);
+  });
+
+  it('sets pipeline', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+    ];
+    const state = buildState({});
+    expect(state.pipeline).toEqual([]);
+    mutations.setPipeline(state, { pipeline });
+    expect(state.pipeline).toEqual(pipeline);
+  });
+
+  it('sets dataset', () => {
+    const dataset = {
+      headers: [{ name: 'col1' }, { name: 'col2' }],
+      data: [[0, 0]],
+    };
+    const state = buildState({});
+    expect(state.dataset).toEqual({ headers: [], data: [] });
+    mutations.setDataset(state, { dataset });
+    expect(state.dataset).toEqual(dataset);
   });
 });
