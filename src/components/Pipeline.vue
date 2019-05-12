@@ -1,6 +1,6 @@
 <template>
   <div class="query-pipeline">
-    <DomainSelector/>
+    <DomainSelector :selectedDomain="domainStep.domain"/>
     <div v-if="isEmpty" class="query-pipeline__empty-container">
       <div class="query-pipeline__empty-message">
         Start playing with data right from the table opposite or switch to Code View with

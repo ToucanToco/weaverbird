@@ -2,7 +2,7 @@
   <div class="domain-selector">
     <label class="domain-selector__label" for="domain">DOMAIN</label>
     <div class="domain-selector__select-container">
-      <select id="domain" @input="updateDomain()">
+      <select id="domain" @input="updateDomain($event.target.value)">
         <option
           v-for="(domain, index) in domainsList"
           :key="index"
