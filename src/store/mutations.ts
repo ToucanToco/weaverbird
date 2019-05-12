@@ -1,3 +1,8 @@
+/**
+ * exports the list of store mutations.
+ */
+
+import { DomainStep } from '@/lib/steps';
 import { VQBState } from './state';
 
 // provide types for each possible mutations' payloads
@@ -45,6 +50,15 @@ export default {
    */
   setCurrentDomain(state: VQBState, { currentDomain }: Pick<VQBState, 'currentDomain'>) {
     state.currentDomain = currentDomain;
+    if (currentDomain) {
+      const pipeline = state.pipeline;
+      const domainStep: DomainStep = { name: 'domain', domain: currentDomain };
+      if (pipeline.length) {
+        state.pipeline = [domainStep, ...pipeline.slice(1)];
+      } else {
+        state.pipeline = [domainStep];
+      }
+    }
   },
   /**
    * set the list of available domains.

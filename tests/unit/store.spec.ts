@@ -191,11 +191,29 @@ describe('mutation tests', () => {
     expect(state.selectedStepIndex).toEqual(2);
   });
 
-  it('sets current domain', () => {
+  it('sets current domain on empty pipeline', () => {
     const state = buildState({ currentDomain: 'foo' });
     expect(state.currentDomain).toEqual('foo');
     mutations.setCurrentDomain(state, { currentDomain: 'bar' });
     expect(state.currentDomain).toEqual('bar');
+    expect(state.pipeline).toEqual([{ name: 'domain', domain: 'bar' }]);
+  });
+
+  it('sets current domain on non empty pipeline', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+    ];
+    const state = buildState({ currentDomain: 'foo', pipeline });
+    expect(state.currentDomain).toEqual('foo');
+    mutations.setCurrentDomain(state, { currentDomain: 'bar' });
+    expect(state.currentDomain).toEqual('bar');
+    expect(state.pipeline).toEqual([
+      { name: 'domain', domain: 'bar' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+    ]);
   });
 
   it('sets domain list', () => {

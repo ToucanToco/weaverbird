@@ -57,6 +57,8 @@ export function servicePluginFactory<O>(service: BackendService<O>) {
         _updateDataset(store, service, mutation.payload.pipeline);
       } else if (mutation.type === 'selectStep') {
         _updateDataset(store, service, activePipeline(state));
+      } else if (mutation.type === 'setCurrentDomain') {
+        _updateDataset(store, service, activePipeline(state));
       }
     });
   };
