@@ -46,6 +46,7 @@
     "eslint": "^5.8.0",
     "eslint-plugin-vue": "^5.0.0",
     "express": "^4.16.4",
+    "flush-promises": "^1.0.2",
     "meow": "^5.0.0",
     "mongodb": "^3.2.3",
     "node-sass": "^4.11.0",
