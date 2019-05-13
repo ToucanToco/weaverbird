@@ -77,7 +77,20 @@
       "eslint:recommended",
       "@vue/typescript"
     ],
-    "rules": {},
+    "rules": {
+      "prefer-const": [
+        "error"
+      ],
+      "no-console": [
+        "error",
+        {
+          "allow": [
+            "warn",
+            "error"
+          ]
+        }
+      ]
+    },
     "parserOptions": {
       "parser": "typescript-eslint-parser"
     }
