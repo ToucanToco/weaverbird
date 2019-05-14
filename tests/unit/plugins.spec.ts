@@ -3,26 +3,23 @@ import Vuex from 'vuex';
 import flushPromises from 'flush-promises';
 
 import { Pipeline } from '@/lib/steps';
-import { MongoResults, mongoResultsToDataset } from '@/lib/dataset/mongo';
 import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import PipelineComponent from '@/components/Pipeline.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-class DummyService implements BackendService<MongoResults> {
+class DummyService implements BackendService {
   listCollections() {
     return Promise.resolve(['foo', 'bar']);
   }
 
   executePipeline(pipeline: Pipeline) {
-    return Promise.resolve([{ x: 1, y: 2 }, { x: 3, y: 4 }]);
-  }
-
-  formatDataset(results: MongoResults) {
-    return mongoResultsToDataset(results);
+    return Promise.resolve({
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [[1, 2], [3, 4]],
+    });
   }
 }
 

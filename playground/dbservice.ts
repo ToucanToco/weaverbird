@@ -7,7 +7,7 @@ import { MongoResults, mongoResultsToDataset } from '@/lib/dataset/mongo';
 import { BackendService } from '@/store/backend-plugin';
 import { DataSet } from '@/lib/dataset';
 
-export class MongoService implements BackendService<MongoResults> {
+export class MongoService implements BackendService {
   readonly translator!: Mongo36Translator;
 
   constructor() {
@@ -19,9 +19,10 @@ export class MongoService implements BackendService<MongoResults> {
     return response.json();
   }
 
-  async executePipeline(pipeline: Pipeline): Promise<MongoResults> {
+  async executePipeline(pipeline: Pipeline): Promise<DataSet> {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    return this.executeQuery(this.translator.translate(subpipeline), domain);
+    const rset = await this.executeQuery(this.translator.translate(subpipeline), domain);
+    return mongoResultsToDataset(rset);
   }
 
   async executeQuery(query: Array<MongoStep>, collection: string): Promise<MongoResults> {
@@ -33,9 +34,5 @@ export class MongoService implements BackendService<MongoResults> {
       },
     });
     return response.json();
-  }
-
-  formatDataset(resultset: MongoResults): DataSet {
-    return mongoResultsToDataset(resultset);
   }
 }

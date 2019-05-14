@@ -15,32 +15,22 @@ import { Pipeline } from '@/lib/steps';
 import { StateMutation } from './mutations';
 import { VQBState, activePipeline } from '@/store/state';
 
-export interface BackendService<Output> {
+export interface BackendService {
   /**
    * @return a promise that holds the list of available collections
    */
   listCollections(): Promise<Array<string>>;
   /**
    * @param pipeline the pipeline to translate and execute on the backend
-   * @return a promise that holds the result of the pipeline execution
+   * @return a promise that holds the result of the pipeline execution,
+   * formatted as as `DataSet`
    */
-  executePipeline(pipeline: Pipeline): Promise<Output>;
-  /**
-   * transforms a raw backend result into a `DataSet` object.
-   *
-   * @param resultset the result of the pipeline execution
-   * @return the input resultset, transformed as a `DataSet` object.
-   */
-  formatDataset(resultset: Output): DataSet;
+  executePipeline(pipeline: Pipeline): Promise<DataSet>;
 }
 
-async function _updateDataset<O>(
-  store: Store<VQBState>,
-  service: BackendService<O>,
-  pipeline: Pipeline,
-) {
-  const results = await service.executePipeline(pipeline);
-  store.commit('setDataset', { dataset: service.formatDataset(results) });
+async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
+  const dataset = await service.executePipeline(pipeline);
+  store.commit('setDataset', { dataset });
 }
 
 /**
@@ -50,7 +40,7 @@ async function _updateDataset<O>(
  * @param service the actual database backend service instance
  * @return a plugin function usable in the `plugins` field of the store.
  */
-export function servicePluginFactory<O>(service: BackendService<O>) {
+export function servicePluginFactory(service: BackendService) {
   return (store: Store<VQBState>) => {
     store.subscribe(async (mutation: StateMutation, state: VQBState) => {
       if (mutation.type === 'setPipeline') {
