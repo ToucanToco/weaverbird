@@ -3,8 +3,9 @@ import Vuex from 'vuex';
 
 import { Pipeline } from '@/lib/steps';
 import { setupStore } from '@/store';
+import { servicePluginFactory } from '@/store/backend-plugin';
 import App from './App.vue';
-import { mongoServicePlugin } from './dbservice';
+import { MongoService } from './dbservice';
 
 Vue.use(Vuex);
 Vue.config.productionTip = false;
@@ -24,7 +25,8 @@ const initialPipeline: Pipeline = [
   // { name: 'formula', new_column: "result", formula: "Value1 * Value2 + 10 * Value3" },
 ];
 
+const mongoBackendPlugin = servicePluginFactory(new MongoService());
 new Vue({
-  store: setupStore({ pipeline: initialPipeline }, [mongoServicePlugin]),
+  store: setupStore({ pipeline: initialPipeline }, [mongoBackendPlugin]),
   render: h => h(App),
 }).$mount('#app');
