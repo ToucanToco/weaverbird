@@ -1,6 +1,9 @@
 /**
  * store application main module
  */
+import Vue from 'vue';
+import Vuex from 'vuex';
+
 import { Store, StoreOptions } from 'vuex';
 import { VQBState, emptyState } from './state';
 import getters from './getters';
@@ -15,7 +18,14 @@ import mutations from './mutations';
  * @param initialState the parts of the state we want not to be empty at creation time.
  * @param plugins an optional list of store plugins (e.g. a backend database plugin)
  */
-export function setupStore(initialState: Partial<VQBState> = {}, plugins: Array<any> = []) {
+export function setupStore(
+  initialState: Partial<VQBState> = {},
+  plugins: Array<any> = [],
+  autobind = false,
+) {
+  if (autobind) {
+    Vue.use(Vuex);
+  }
   const store: StoreOptions<VQBState> = {
     state: { ...emptyState, ...initialState },
     getters,
