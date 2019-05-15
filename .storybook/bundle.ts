@@ -10,3 +10,4 @@ import ResizablePanels from '../src/components/ResizablePanels.vue';
 import Step from '../src/components/Step.vue';
 
 export { DataViewer, DomainSelector, Pipeline, ResizablePanels, Step };
+export { setupStore } from '../src/store';
