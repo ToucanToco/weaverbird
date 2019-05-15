@@ -2,7 +2,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'json', 'vue', 'd.ts', 'ts', 'tsx'],
 
   collectCoverage: true,
-  collectCoverageFrom: ['**/*.{ts,vue}', '!**/node_modules/**'],
+  collectCoverageFrom: ['src/**/*.{ts,vue}', '!**/node_modules/**'],
   coverageReporters: ['html', 'lcov', 'json'],
 
   transform: {
