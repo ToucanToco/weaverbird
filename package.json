@@ -27,6 +27,8 @@
     "@types/jest": "^23.1.4",
     "@types/meow": "^5.0.0",
     "@types/mongodb": "^3.1.25",
+    "@typescript-eslint/eslint-plugin": "^1.9.0",
+    "@typescript-eslint/parser": "^1.9.0",
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
     "@vue/cli-plugin-typescript": "^3.3.0",
@@ -68,17 +70,46 @@
     "vue-property-decorator": "^8.0.0",
     "vue-template-compiler": "^2.6.8"
   },
+  "eslintIgnore": [
+    "**/*.d.ts"
+  ],
   "eslintConfig": {
     "root": true,
     "env": {
       "node": true
     },
     "extends": [
+      "plugin:@typescript-eslint/recommended",
       "plugin:vue/essential",
       "eslint:recommended",
       "@vue/typescript"
     ],
     "rules": {
+      "@typescript-eslint/explicit-function-return-type": "allow",
+      "@typescript-eslint/no-explicit-any": "allow",
+      "@typescript-eslint/explicit-member-accessibility": "no-public",
+      "@typescript-eslint/indent": [
+        "error",
+        2
+      ],
+      "@typescript-eslint/camelcase": [
+        "error",
+        {
+          "properties": "never"
+        }
+      ],
+      "no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
       "prefer-const": [
         "error"
       ],

@@ -45,7 +45,7 @@ function $$(colname: string) {
  *
  * @param colnames list of column names
  */
-function columnMap(colnames: Array<string>) {
+function columnMap(colnames: string[]) {
   return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
@@ -65,38 +65,38 @@ function filterstepToMatchstep(step: FilterStep): MongoStep {
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
-function transformAggregate(step: AggregationStep): Array<MongoStep> {
+function transformAggregate(step: AggregationStep): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};
   group._id = idblock;
-  for (const aggf_step of step.aggregations) {
-    if (aggf_step.aggfunction === 'count') {
+  for (const aggfStep of step.aggregations) {
+    if (aggfStep.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
       // an equivalent result
-      group[aggf_step.newcolumn] = {
+      group[aggfStep.newcolumn] = {
         $sum: 1,
       };
     } else {
-      group[aggf_step.newcolumn] = {
-        [$$(aggf_step.aggfunction)]: $$(aggf_step.column),
+      group[aggfStep.newcolumn] = {
+        [$$(aggfStep.aggfunction)]: $$(aggfStep.column),
       };
     }
   }
-  for (const group_key of Object.keys(group)) {
-    if (group_key === '_id') {
-      for (const idkey of Object.keys(group[group_key])) {
+  for (const groupKey of Object.keys(group)) {
+    if (groupKey === '_id') {
+      for (const idkey of Object.keys(group[groupKey])) {
         project[idkey] = `$_id.${idkey}`;
       }
     } else {
-      project[group_key] = 1;
+      project[groupKey] = 1;
     }
   }
   return [{ $group: group }, { $project: project }];
 }
 
 /** transform an 'argmax' or 'argmin' step into corresponding mongo steps */
-function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> {
+function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): MongoStep[] {
   const groupMongo: MongoStep = {};
   const stepMapping = { argmax: '$max', argmin: '$min' };
 
@@ -132,7 +132,7 @@ function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): Array<MongoStep> 
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
-function transformPercentage(step: PercentageStep): Array<MongoStep> {
+function transformPercentage(step: PercentageStep): MongoStep[] {
   const newCol = step.new_column || step.column;
 
   return [
@@ -163,7 +163,7 @@ function transformPercentage(step: PercentageStep): Array<MongoStep> {
 }
 
 /** transform an 'pivot' step into corresponding mongo steps */
-function transformPivot(step: PivotStep): Array<MongoStep> {
+function transformPivot(step: PivotStep): MongoStep[] {
   const groupCols2: PropMap<string> = {};
   const addFieldsStep: PropMap<string> = {};
 
@@ -231,7 +231,7 @@ function transformPivot(step: PivotStep): Array<MongoStep> {
 
 /** transform an 'replace' step into corresponding mongo steps */
 function transformReplace(step: ReplaceStep): MongoStep {
-  const branches: Array<MongoStep> = step.to_replace.map(([oldval, newval]) => ({
+  const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
     case: { $eq: [$$(step.search_column), oldval] },
     then: newval,
   }));
@@ -256,7 +256,7 @@ function transformSort(step: SortStep): MongoStep {
 }
 
 /** transform an 'top' step into corresponding mongo steps */
-function transformTop(step: TopStep): Array<MongoStep> {
+function transformTop(step: TopStep): MongoStep[] {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
   const groupCols = step.groups ? columnMap(step.groups) : null;
 
@@ -270,12 +270,12 @@ function transformTop(step: TopStep): Array<MongoStep> {
 }
 
 /** transform an 'unpivot' step into corresponding mongo steps */
-function transformUnpivot(step: UnpivotStep): Array<MongoStep> {
+function transformUnpivot(step: UnpivotStep): MongoStep[] {
   // projectCols to be included in Mongo $project steps
   const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
   // objectToArray to be included in the first Mongo $project step
   const objectToArray: PropMap<string> = _.fromPairs(step.unpivot.map(col => [col, `$${col}`]));
-  const mongoPipeline: Array<MongoStep> = [
+  const mongoPipeline: MongoStep[] = [
     {
       $project: { ...projectCols, _vqbToUnpivot: { $objectToArray: objectToArray } },
     },
@@ -338,6 +338,68 @@ function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
   }
 }
 
+/**
+ * Simplify a list of mongo steps (i.e. merge them whenever possible)
+ *
+ * - if multiple `$match` steps are chained, merge them,
+ * - if multiple `$project` steps are chained, merge them.
+ *
+ * @param mongoSteps the input pipeline
+ *
+ * @returns the list of simplified mongo steps
+ */
+export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
+  let merge = true;
+  const outputSteps: MongoStep[] = [];
+  let lastStep: MongoStep = mongoSteps[0];
+  outputSteps.push(lastStep);
+
+  for (const step of mongoSteps.slice(1)) {
+    const [stepOperator] = Object.keys(step);
+    const isMergeable =
+      stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
+    if (isMergeable && lastStep[stepOperator] !== undefined) {
+      for (const key in step[stepOperator]) {
+        /**
+         * In Mongo, exclusions cannot be combined with any inclusion, so if we
+         * have an exclusion in a $project step, and that the previous one
+         * includes any inclusion, we do not want to merge those steps.
+         */
+        if (stepOperator === '$project') {
+          const included = Boolean(step.$project[key]);
+          merge = Object.values(lastStep.$project).every(value => Boolean(value) === included);
+        }
+        if (lastStep[stepOperator].hasOwnProperty(key)) {
+          // We do not want to merge two $project with common keys
+          merge = false;
+          break;
+        }
+        if (stepOperator !== '$match') {
+          // We do not want to merge two $project or $addFields with a `step`
+          // key referencing as value a`lastStep` key
+          const valueString: string = JSON.stringify(step[stepOperator][key]);
+          for (const lastKey in lastStep[stepOperator]) {
+            const regex = new RegExp(`.*['"]\\$${lastKey}['"].*`);
+            if (regex.test(valueString)) {
+              merge = false;
+              break;
+            }
+          }
+        }
+      }
+      if (merge) {
+        // merge $project steps together
+        lastStep[stepOperator] = { ...lastStep[stepOperator], ...step[stepOperator] };
+        continue;
+      }
+    }
+    lastStep = step;
+    outputSteps.push(lastStep);
+    merge = true;
+  }
+  return outputSteps;
+}
+
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
@@ -378,65 +440,3 @@ export class Mongo36Translator extends BaseTranslator {
   }
 }
 Object.assign(Mongo36Translator.prototype, mapper);
-
-/**
- * Simplify a list of mongo steps (i.e. merge them whenever possible)
- *
- * - if multiple `$match` steps are chained, merge them,
- * - if multiple `$project` steps are chained, merge them.
- *
- * @param mongoSteps the input pipeline
- *
- * @returns the list of simplified mongo steps
- */
-export function _simplifyMongoPipeline(mongoSteps: Array<MongoStep>): Array<MongoStep> {
-  let merge = true;
-  const outputSteps: Array<MongoStep> = [];
-  let lastStep: MongoStep = mongoSteps[0];
-  outputSteps.push(lastStep);
-
-  for (const step of mongoSteps.slice(1)) {
-    const [stepOperator] = Object.keys(step);
-    const isMergeable =
-      stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
-    if (isMergeable && lastStep[stepOperator] !== undefined) {
-      for (const key in step[stepOperator]) {
-        /**
-         * In Mongo, exclusions cannot be combined with any inclusion, so if we
-         * have an exclusion in a $project step, and that the previous one
-         * includes any inclusion, we do not want to merge those steps.
-         */
-        if (stepOperator === '$project') {
-          const included = Boolean(step.$project[key]);
-          merge = Object.values(lastStep.$project).every(value => Boolean(value) === included);
-        }
-        if (lastStep[stepOperator].hasOwnProperty(key)) {
-          // We do not want to merge two $project with common keys
-          merge = false;
-          break;
-        }
-        if (stepOperator !== '$match') {
-          // We do not want to merge two $project or $addFields with a `step`
-          // key referencing as value a`lastStep` key
-          const valueString: string = JSON.stringify(step[stepOperator][key]);
-          for (const lastKey in lastStep[stepOperator]) {
-            const regex: RegExp = new RegExp(`.*['"]\\$${lastKey}['"].*`);
-            if (regex.test(valueString)) {
-              merge = false;
-              break;
-            }
-          }
-        }
-      }
-      if (merge) {
-        // merge $project steps together
-        lastStep[stepOperator] = { ...lastStep[stepOperator], ...step[stepOperator] };
-        continue;
-      }
-    }
-    lastStep = step;
-    outputSteps.push(lastStep);
-    merge = true;
-  }
-  return outputSteps;
-}

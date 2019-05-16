@@ -12,7 +12,7 @@ export interface VQBState {
   /**
    * the current list of domains available.
    */
-  domains: Array<string>;
+  domains: string[];
   /**
    * the domain currently selected.
    */

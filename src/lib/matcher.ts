@@ -44,4 +44,4 @@ export type TransformStep = (step: PipelineStep) => void;
  * class.
  */
 export type OutputStep = {} | void;
-export type MaybeArray<T> = T | Array<T>;
+export type MaybeArray<T> = T | T[];

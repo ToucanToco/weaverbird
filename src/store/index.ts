@@ -20,7 +20,7 @@ import mutations from './mutations';
  */
 export function setupStore(
   initialState: Partial<VQBState> = {},
-  plugins: Array<any> = [],
+  plugins: any[] = [],
   autobind = false,
 ) {
   if (autobind) {

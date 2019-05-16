@@ -31,7 +31,7 @@ import Vue from 'vue';
 import { Getter, State } from 'vuex-class';
 
 import { DataSet } from '@/lib/dataset';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
 
 
@@ -50,11 +50,11 @@ export default class DataViewer extends Vue {
   @State('dataset') dataset!: DataSet;
   @Getter('isDatasetEmpty') isEmpty!: boolean;
 
-  @Getter columnNames!: Array<string>;
+  @Getter columnNames!: string[];
   /**
    * @description Array of column's name selected by the user
    */
-  selectedColumns: Array<string> = [];
+  selectedColumns: string[] = [];
 
   /**
      * @description Get our columns with their names and linked classes

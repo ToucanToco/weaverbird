@@ -263,7 +263,7 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can simplify a mongo pipeline', () => {
-    const mongoPipeline: Array<MongoStep> = [
+    const mongoPipeline: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $match: { Manager: 'Pierre' } },
       { $match: { Manager: { $ne: 'NA' } } },

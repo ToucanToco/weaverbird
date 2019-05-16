@@ -4,13 +4,13 @@ import { filterOutDomain, mongoToPipe } from '@/lib/pipeline';
 
 describe('Pipebuild translator', () => {
   it('generate domain step', () => {
-    const query: Array<MongoStep> = [{ $match: { domain: 'test_cube' } }];
+    const query: MongoStep[] = [{ $match: { domain: 'test_cube' } }];
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([{ name: 'domain', domain: 'test_cube' }]);
   });
 
   it('generate domain and filter steps from one match', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube', Region: 'Europe', Manager: 'Pierre' } },
     ];
     const pipeline = mongoToPipe(query);
@@ -22,7 +22,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain and filter steps', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $match: { Region: 'Europe' } },
     ];
@@ -34,7 +34,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain step and filter several columns step', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $match: { Region: 'Europe', Manager: 'Pierre' } },
     ];
@@ -47,7 +47,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain and rename steps', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $project: { zone: '$Region' } },
     ];
@@ -59,7 +59,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain and be clever if key and column are the same', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $project: { Region: '$Region' } },
     ];
@@ -71,7 +71,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain and delete steps', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $project: { Manager: 0 } },
     ];
@@ -83,7 +83,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain and custom steps from project :1', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $project: { Manager: 1 } },
     ];
@@ -95,7 +95,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate steps from heterogeneous project', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       {
         $project: {
@@ -115,7 +115,7 @@ describe('Pipebuild translator', () => {
   });
 
   it('generate domain and custom steps from unknown operator', () => {
-    const query: Array<MongoStep> = [
+    const query: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
       { $group: { _id: '$Manager', Value: { $sum: '$Value' } } },
     ];

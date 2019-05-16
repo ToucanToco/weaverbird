@@ -10,6 +10,7 @@
  * `lib/matchers/OutputStep` type or an array of this type.
  *
  */
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { StepMatcher, OutputStep, TransformStep } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
@@ -18,7 +19,7 @@ import * as S from '@/lib/steps';
  * that is not supported by the translator.
  */
 export class StepNotSupported extends Error {
-  constructor(public stepname: S.PipelineStepName) {
+  constructor(stepname: S.PipelineStepName) {
     super(`Unsupported step <${stepname}>`);
   }
 }
@@ -62,7 +63,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   /**
    * `supportedSteps` returns the list of steps supported by this translator class.
    */
-  get supportedSteps(): Array<S.PipelineStepName> {
+  get supportedSteps(): S.PipelineStepName[] {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return transformerSteps()
       .filter(stepname => this.constructor.prototype[stepname].__vqb_step_supported__ !== false)
       .sort();
@@ -71,7 +73,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   /**
    * `unsupportedSteps` returns the list of steps _not_ supported by this translator class.
    */
-  get unsupportedSteps(): Array<S.PipelineStepName> {
+  get unsupportedSteps(): S.PipelineStepName[] {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return transformerSteps()
       .filter(stepname => this.constructor.prototype[stepname].__vqb_step_supported__ === false)
       .sort();
@@ -86,6 +89,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
     return !this.unsupportedSteps.includes(stepname);
   }
 
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
   @unsupported
   aggregate(step: S.AggregationStep) {}
 
@@ -137,6 +141,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   unpivot(step: S.UnpivotStep) {}
 
+  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
+
   /**
    * translates an input pipeline into a list of steps that makes sense for the
    * targeted backend.
@@ -144,8 +150,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * @param pipeline the array of input steps.
    * @returns the list of translated output steps.
    */
-  translate(pipeline: Array<S.PipelineStep>): Array<OutputStep> {
-    const result: Array<OutputStep> = [];
+  translate(pipeline: S.PipelineStep[]): OutputStep[] {
+    const result: OutputStep[] = [];
     for (const step of pipeline) {
       // hack: cast `this[step.name]` to TransformStep to please typescript
       // otherwise it will complain about
@@ -182,7 +188,7 @@ function isStepFunction(propname: string): propname is S.PipelineStepName {
  * helper to iterate on all available step names.
  */
 function transformerSteps() {
-  const stepnames: Array<S.PipelineStepName> = [];
+  const stepnames: S.PipelineStepName[] = [];
   for (const propname of Object.getOwnPropertyNames(BaseTranslator.prototype)) {
     if (isStepFunction(propname)) {
       stepnames.push(propname);

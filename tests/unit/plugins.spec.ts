@@ -4,6 +4,7 @@ import flushPromises from 'flush-promises';
 
 import { Pipeline } from '@/lib/steps';
 import { setupStore } from '@/store';
+// eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import PipelineComponent from '@/components/Pipeline.vue';
 
@@ -15,6 +16,7 @@ class DummyService implements BackendService {
     return Promise.resolve(['foo', 'bar']);
   }
 
+  // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   executePipeline(pipeline: Pipeline) {
     return Promise.resolve({
       headers: [{ name: 'x' }, { name: 'y' }],

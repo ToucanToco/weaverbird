@@ -76,11 +76,11 @@ export default class Step extends Vue {
   }
 
   get lastStrokeClass() {
-      return {
-        'query-pipeline-queue__stroke': true,
-        'query-pipeline-queue__stroke--hidden': this.isLast,
-      };
-    }
+    return {
+      'query-pipeline-queue__stroke': true,
+      'query-pipeline-queue__stroke--hidden': this.isLast,
+    };
+  }
 
 
   select() {
