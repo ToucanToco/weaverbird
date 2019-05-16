@@ -43,7 +43,7 @@ import Step from './Step.vue'
 })
 export default class PipelineComponent extends Vue {
   @State('pipeline') steps!: Pipeline;
-  @State domains!: Array<string>;
+  @State domains!: string[];
   @State('isPipelineEmpty') isEmpty!: boolean;
 
   @Getter activePipeline!: Pipeline;

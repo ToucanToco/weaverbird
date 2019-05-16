@@ -7,7 +7,7 @@
  */
 export = mathjs;
 
-declare module mathjs {
+declare namespace mathjs {
   /**
    * Math nodes interfaces to build formula logical trees
    */
@@ -15,7 +15,7 @@ declare module mathjs {
     type: 'OperatorNode';
     fn: string;
     op: string;
-    args: Array<MathNode>;
+    args: MathNode[];
   }
 
   interface ConstantNode {

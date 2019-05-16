@@ -71,7 +71,7 @@ function transformProject(matchStep: MongoStep): Pipeline {
   const needsDeletion: Pipeline = [];
   const computedColumns: Pipeline = [];
   const select = [];
-  for (let [outcol, incol] of Object.entries(matchStep.$project)) {
+  for (const [outcol, incol] of Object.entries(matchStep.$project)) {
     if (typeof incol === 'string') {
       if (incol[0] === '$' && incol.slice(1) !== outcol) {
         // case { $project: { zone: '$Region' } }
@@ -113,7 +113,7 @@ function transformFallback(step: MongoStep): Pipeline {
  *
  * @returns the standard pipeline
  */
-export function mongoToPipe(mongoSteps: Array<MongoStep>): Pipeline {
+export function mongoToPipe(mongoSteps: MongoStep[]): Pipeline {
   const listOfSteps: Pipeline = [];
   for (const step of mongoSteps) {
     let transformer;

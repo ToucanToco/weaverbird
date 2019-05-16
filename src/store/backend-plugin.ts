@@ -19,7 +19,7 @@ export interface BackendService {
   /**
    * @return a promise that holds the list of available collections
    */
-  listCollections(): Promise<Array<string>>;
+  listCollections(): Promise<string[]>;
   /**
    * @param pipeline the pipeline to translate and execute on the backend
    * @return a promise that holds the result of the pipeline execution,

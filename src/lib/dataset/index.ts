@@ -26,6 +26,6 @@ export type DataSetColumn = {
  * ```
  */
 export type DataSet = {
-  headers: Array<DataSetColumn>;
-  data: Array<Array<any>>;
+  headers: DataSetColumn[];
+  data: any[][];
 };

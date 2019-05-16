@@ -16,21 +16,21 @@ type AggFunctionStep = Readonly<{
 export type AggregationStep = Readonly<{
   name: 'aggregate';
   /** the list columns we want to aggregate on */
-  on: Array<string>;
+  on: string[];
   /** the list of aggregation operations to perform */
-  aggregations: Array<AggFunctionStep>;
+  aggregations: AggFunctionStep[];
 }>;
 
 export type ArgmaxStep = Readonly<{
   name: 'argmax';
   column: string; // column in which to search for max value
-  groups?: Array<string>; // if specified, will search for a max in every group
+  groups?: string[]; // if specified, will search for a max in every group
 }>;
 
 export type ArgminStep = Readonly<{
   name: 'argmin';
   column: string; // column in which to search for max value
-  groups?: Array<string>; // if specified, will search for a max in every group
+  groups?: string[]; // if specified, will search for a max in every group
 }>;
 
 export type CustomStep = Readonly<{
@@ -40,7 +40,7 @@ export type CustomStep = Readonly<{
 
 export type DeleteStep = Readonly<{
   name: 'delete';
-  columns: Array<string>;
+  columns: string[];
 }>;
 
 export type DomainStep = Readonly<{
@@ -71,12 +71,12 @@ export type PercentageStep = Readonly<{
   name: 'percentage';
   new_column?: string;
   column: string;
-  group?: Array<string>;
+  group?: string[];
 }>;
 
 export type PivotStep = Readonly<{
   name: 'pivot';
-  index: Array<string>;
+  index: string[];
   column_to_pivot: string;
   value_column: string;
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
@@ -92,23 +92,23 @@ export type ReplaceStep = Readonly<{
   name: 'replace';
   search_column: string;
   new_column?: string;
-  to_replace: Array<Array<any>>;
+  to_replace: any[][];
 }>;
 
 export type SelectStep = Readonly<{
   name: 'select';
-  columns: Array<string>;
+  columns: string[];
 }>;
 
 export type SortStep = Readonly<{
   name: 'sort';
-  columns: Array<string>;
-  order?: Array<'asc' | 'desc'>;
+  columns: string[];
+  order?: ('asc' | 'desc')[];
 }>;
 
 export type TopStep = Readonly<{
   name: 'top';
-  groups?: Array<string>;
+  groups?: string[];
   rank_on: string;
   sort: 'asc' | 'desc';
   limit: number;
@@ -116,8 +116,8 @@ export type TopStep = Readonly<{
 
 export type UnpivotStep = Readonly<{
   name: 'unpivot';
-  keep: Array<string>;
-  unpivot: Array<string>;
+  keep: string[];
+  unpivot: string[];
   unpivot_column_name: string;
   value_column_name: string;
   dropna: boolean;
@@ -143,4 +143,4 @@ export type PipelineStep =
   | UnpivotStep;
 
 export type PipelineStepName = PipelineStep['name'];
-export type Pipeline = Array<PipelineStep>;
+export type Pipeline = PipelineStep[];

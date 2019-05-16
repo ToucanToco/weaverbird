@@ -24,7 +24,7 @@ import { VQBState } from '@/store/state';
   name: 'domain-selector'
 })
 export default class DomainSelector extends Vue {
-  @State('domains') domainsList!: Array<String>;
+  @State('domains') domainsList!: string[];
 
   @Prop()
   readonly selectedDomain!: string | undefined

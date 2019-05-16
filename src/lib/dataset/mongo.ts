@@ -5,7 +5,7 @@
 import { DataSet } from '@/lib/dataset';
 
 type MongoDocument = { [k: string]: any };
-export type MongoResults = Array<MongoDocument>;
+export type MongoResults = MongoDocument[];
 
 /**
  * transform a mongo resultset (i.e. a list of json documents) into
@@ -15,11 +15,11 @@ export function mongoResultsToDataset(results: MongoResults): DataSet {
   const dataset: DataSet = { headers: [], data: [] };
   if (results.length) {
     const colnames = results
-      // get list of list of key
+    // get list of list of key
       .map(row => Object.keys(row))
-      // then flatten them
+    // then flatten them
       .flat()
-      // and remove duplicates by keeping the _first_ occurence
+    // and remove duplicates by keeping the _first_ occurence
       .filter((col, colidx, array) => array.indexOf(col) === colidx);
     // transform set of names to list of DataSetColumn objects
     dataset.headers = colnames.map(name => ({ name }));
