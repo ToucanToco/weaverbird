@@ -250,8 +250,11 @@ function parseCommandLine() {
     'reset',
     'defaultDataset',
   ]) {
+    const envVar = `VQB_PLAYGROUND_{opt.toUpperCase()}`;
     if (cli.flags[opt]) {
       config[opt] = cli.flags[opt];
+    } else if (process.env[envVar]) {
+      config[opt] = process.env[envVar];
     }
   }
   return config;

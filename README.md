@@ -169,6 +169,13 @@ available option on the commandline, e.g.
 node playground/server.js --dburi mongdb://localhost:27018
 ```
 
+You can also customize options through environment variables with the following
+naming pattern `VQB_PLAYGROUND_{OPTION}`, e.g.
+
+```bash
+VQB_PLAYGROUND_DBURI=mongdb://localhost:27018 node playground/server.js
+```
+
 You can use the default test dataset by loading the `playground/default-dataset.csv` file. To do that, use the following command line:
 
 ```bash
