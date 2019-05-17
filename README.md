@@ -183,3 +183,9 @@ If you want to use a custom CSV file, use the `defaultDataset` command line opti
 ```bash
 node playground/server.js --defaultDataset my-dataset.csv --reset
 ```
+
+If you don't have mongodb installed, you can use the `--automongo` flag from the
+command line. It will use
+[mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) to download
+(the first time) and run mongo `3.6.12` and then listen on the port guessed from
+the `--dburi` flag.
