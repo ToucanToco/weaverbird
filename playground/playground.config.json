@@ -4,5 +4,6 @@
   "dbname": "playground-db",
   "defaultCollection": "test-collection",
   "reset": false,
+  "automongo": false,
   "defaultDataset": "playground/default-dataset.csv"
 }
