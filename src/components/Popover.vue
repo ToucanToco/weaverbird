@@ -222,8 +222,6 @@ export default class Popover extends Vue {
 
         const bodyBounds = document.body.getBoundingClientRect();
         const parentBounds = this.parent.getBoundingClientRect();
-        console.log('bodyBounds =>', bodyBounds);
-        console.log('parentBounds =>', parentBounds);
 
         // Set alignment
         const elementStyle: ElementPosition = this.alignMethod(bodyBounds, parentBounds);
@@ -252,7 +250,6 @@ export default class Popover extends Vue {
         elementStyle.top = `${top}px`;
 
         this.elementStyle = elementStyle;
-        console.log('called');
       },
       // 60fps
       16,

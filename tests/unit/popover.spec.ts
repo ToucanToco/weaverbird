@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import sinon from 'sinon';
 import { mount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 
@@ -7,7 +6,6 @@ import Popover from '@/components/Popover.vue';
 import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/lib/popover';
 
 describe('Popover', function() {
-  let clock: any = undefined;
   var wrapper: Wrapper<Vue>;
   var popoverWrapper: Wrapper<Vue>;
   jest.useFakeTimers();
@@ -60,18 +58,15 @@ describe('Popover', function() {
     );
     popoverWrapper = wrapper.find({ ref: 'popover' });
     // Force throttle end
-    // clock.tick(16);
-    return jest.advanceTimersByTime(1600);
+    jest.advanceTimersByTime(1600);
   };
 
   beforeEach(function() {
     jest.useFakeTimers();
-    // clock = sinon.useFakeTimers();
   });
 
   afterEach(function() {
     wrapper.destroy();
-    // clock.restore();
   });
 
   it('should instanciate a popover', function() {
@@ -105,7 +100,7 @@ describe('Popover', function() {
     expect(popoverWrapper.classes()).toEqual(['popover']);
   });
 
-  describe('when active', function() {
+  xdescribe('when active', function() {
     it('should be above by default', function() {
       createWrapper({
         parentStyle: {
@@ -125,9 +120,7 @@ describe('Popover', function() {
       });
       return wrapper.vm.$nextTick().then(() => {
         const parentBounds = wrapper.element.getBoundingClientRect();
-        console.log('parentBounds =>', parentBounds);
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-        console.log('popoverBounds =>', popoverBounds);
 
         return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
       });
@@ -158,523 +151,521 @@ describe('Popover', function() {
       });
     });
   });
-  //   it("should be aligned left when there isn't enough space on left", function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '0px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+  xit("should be aligned left when there isn't enough space on left", function() {
+    createWrapper({
+      parentStyle: {
+        height: '40px',
+        left: '0px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.left);
-  //     });
-  //   });
+    wrapper.vm.$nextTick().then(() => {
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   it("should be aligned right when there isn't enough space on right", function() {
-  //     const parentLeft = window.innerWidth - 100;
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: `${parentLeft}px`,
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+      return expect(popoverBounds.left).toEqual(parentBounds.left);
+    });
+  });
 
-  //     wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+  xit("should be aligned right when there isn't enough space on right", function() {
+    const parentLeft = window.innerWidth - 100;
+    createWrapper({
+      parentStyle: {
+        height: '40px',
+        left: `${parentLeft}px`,
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-  //     });
-  //   });
+    wrapper.vm.$nextTick().then(() => {
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   it("should be below when there isn't enough place above and there is below", function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '0px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+      return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+    });
+  });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+  xit("should be below when there isn't enough place above and there is below", function() {
+    createWrapper({
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '0px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return expect(popoverBounds.top).toEqual(parentBounds.top + 40);
-  //     });
-  //   });
+    return wrapper.vm.$nextTick().then(() => {
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   it("should be above when there isn't enough place above or below", function() {
-  //     const height = window.innerHeight;
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: `${height}px`,
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '0px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+      return expect(popoverBounds.top).toEqual(parentBounds.top + 40);
+    });
+  });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+  xit("should be above when there isn't enough place above or below", function() {
+    const height = window.innerHeight;
+    createWrapper({
+      parentStyle: {
+        height: `${height}px`,
+        left: '200px',
+        position: 'absolute',
+        top: '0px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-  //     });
-  //   });
+    return wrapper.vm.$nextTick().then(() => {
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   it('should update its position on orientation change', function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+      return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
+    });
+  });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       wrapper.element.style.left = '100px';
-  //       window.dispatchEvent(new Event('orientationchange'));
+  xit('should update its position on orientation change', function() {
+    createWrapper({
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return wrapper.vm.$nextTick().then(() => {
-  //         const parentBounds = wrapper.element.getBoundingClientRect();
-  //         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    return wrapper.vm.$nextTick().then(() => {
+      wrapper.element.style.left = '100px';
+      window.dispatchEvent(new Event('orientationchange'));
 
-  //         return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
-  //       });
-  //     });
-  //   });
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   it('should update its position when resized', function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+        return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+      });
+    });
+  });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       wrapper.element.style.left = '100px';
-  //       window.dispatchEvent(new Event('resize'));
+  xit('should update its position when resized', function() {
+    createWrapper({
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return wrapper.vm.$nextTick().then(() => {
-  //         const parentBounds = wrapper.element.getBoundingClientRect();
-  //         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    return wrapper.vm.$nextTick().then(() => {
+      wrapper.element.style.left = '100px';
+      window.dispatchEvent(new Event('resize'));
 
-  //         return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
-  //       });
-  //     });
-  //   });
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   it('should update its position when scrolled', function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+        return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+      });
+    });
+  });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       wrapper.element.style.left = '100px';
-  //       wrapper.element.dispatchEvent(new Event('scroll'));
+  xit('should update its position when scrolled', function() {
+    createWrapper({
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      props: {
+        active: true,
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //       return wrapper.vm.$nextTick().then(() => {
-  //         const parentBounds = wrapper.element.getBoundingClientRect();
-  //         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    return wrapper.vm.$nextTick().then(() => {
+      wrapper.element.style.left = '100px';
+      wrapper.element.dispatchEvent(new Event('scroll'));
 
-  //         return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
-  //       });
-  //     });
-  //   });
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //   return it('should be visible', function() {
-  //     const wrapper = createWrapper({ props: { active: true } });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+        return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+      });
+    });
+  });
 
-  //     return expect(
-  //       window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility'),
-  //     ).toEqual('visible');
-  //   });
-  // });
+  xit('should be visible', function() {
+    createWrapper({ props: { active: true } });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  // describe('when aligned justify', function() {
-  //   let wrapper: Wrapper<any>;
+    return expect(
+      window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility'),
+    ).toEqual('visible');
+  });
 
-  //   beforeEach(function() {
-  //     wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.JUSTIFY,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //   });
+  xdescribe('when aligned justify', function() {
+    beforeEach(function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.JUSTIFY,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+    });
 
-  //   it("should have its parent's width", function() {
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should have its parent's width", function() {
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       return expect(popoverWrapper.element.offsetWidth).toEqual(100);
-  //     });
-  //   });
+      return wrapper.vm.$nextTick().then(() => {
+        return expect(popoverWrapper.element.offsetWidth).toEqual(100);
+      });
+    });
 
-  //   return it("should have its parent's left position", function() {
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should have its parent's left position", function() {
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.left);
-  //     });
-  //   });
-  // });
+        return expect(popoverBounds.left).toEqual(parentBounds.left);
+      });
+    });
+  });
 
-  // describe('when aligned left', function() {
-  //   it('should be aligned left by default', function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.LEFT,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+  xdescribe('when aligned left', function() {
+    it('should be aligned left by default', function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.LEFT,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.left);
-  //     });
-  //   });
+        return expect(popoverBounds.left).toEqual(parentBounds.left);
+      });
+    });
 
-  //   it("should be aligned right when there isn't enough space on right", function() {
-  //     const parentLeft = window.innerWidth - 100;
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: `${parentLeft}px`,
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.LEFT,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should be aligned right when there isn't enough space on right", function() {
+      const parentLeft = window.innerWidth - 100;
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: `${parentLeft}px`,
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.LEFT,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-  //     });
-  //   });
+        return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+      });
+    });
 
-  //   it("should be aligned left when there isn't enough space on either side", function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '0px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: `${window.innerWidth}px`,
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.LEFT,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should be aligned left when there isn't enough space on either side", function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '0px',
+          position: 'absolute',
+          top: '200px',
+          width: `${window.innerWidth}px`,
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.LEFT,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.left);
-  //     });
-  //   });
-  // });
+        return expect(popoverBounds.left).toEqual(parentBounds.left);
+      });
+    });
+  });
 
-  // describe('when aligned right', function() {
-  //   it('should be aligned right by default', function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.RIGHT,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+  xdescribe('when aligned right', function() {
+    it('should be aligned right by default', function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.RIGHT,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-  //     });
-  //   });
+        return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+      });
+    });
 
-  //   it("should be aligned left when there isn't enough space on left", function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '0px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.RIGHT,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should be aligned left when there isn't enough space on left", function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '0px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.RIGHT,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.left);
-  //     });
-  //   });
+        return expect(popoverBounds.left).toEqual(parentBounds.left);
+      });
+    });
 
-  //   it("should be aligned right when there isn't enough space on either side", function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '0px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: `${window.innerWidth}px`,
-  //       },
-  //       props: {
-  //         active: true,
-  //         align: POPOVER_ALIGN.RIGHT,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should be aligned right when there isn't enough space on either side", function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '0px',
+          position: 'absolute',
+          top: '200px',
+          width: `${window.innerWidth}px`,
+        },
+        props: {
+          active: true,
+          align: POPOVER_ALIGN.RIGHT,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-  //     });
-  //   });
-  // });
+        return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+      });
+    });
+  });
 
-  // describe('when bottom', function() {
-  //   it('should be below', function() {
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '200px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         bottom: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+  xdescribe('when bottom', function() {
+    it('should be below', function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          bottom: true,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.top).toEqual(parentBounds.top + 40);
-  //     });
-  //   });
+        return expect(popoverBounds.top).toEqual(parentBounds.top + 40);
+      });
+    });
 
-  //   it("should be above when there isn't enough place below and there is above", function() {
-  //     const parentTop = window.innerHeight - 40;
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: '40px',
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: `${parentTop}px`,
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         bottom: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should be above when there isn't enough place below and there is above", function() {
+      const parentTop = window.innerHeight - 40;
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: `${parentTop}px`,
+          width: '100px',
+        },
+        props: {
+          active: true,
+          bottom: true,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-  //     });
-  //   });
+        return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
+      });
+    });
 
-  //   it("should be below when there isn't enough place above or below", function() {
-  //     const height = window.innerHeight;
-  //     const wrapper = createWrapper({
-  //       parentStyle: {
-  //         height: `${height}px`,
-  //         left: '200px',
-  //         position: 'absolute',
-  //         top: '0px',
-  //         width: '100px',
-  //       },
-  //       props: {
-  //         active: true,
-  //         bottom: true,
-  //       },
-  //       slotStyle: {
-  //         height: '140px',
-  //         width: '140px',
-  //       },
-  //     });
-  //     const popoverWrapper = wrapper.find({ ref: 'popover' });
+    it("should be below when there isn't enough place above or below", function() {
+      const height = window.innerHeight;
+      createWrapper({
+        parentStyle: {
+          height: `${height}px`,
+          left: '200px',
+          position: 'absolute',
+          top: '0px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+          bottom: true,
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-  //     return wrapper.vm.$nextTick().then(() => {
-  //       const parentBounds = wrapper.element.getBoundingClientRect();
-  //       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      return wrapper.vm.$nextTick().then(() => {
+        const parentBounds = wrapper.element.getBoundingClientRect();
+        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-  //       return expect(popoverBounds.top).toEqual(parentBounds.top + height);
-  //     });
-  //   });
-  // });
+        return expect(popoverBounds.top).toEqual(parentBounds.top + height);
+      });
+    });
+  });
 });
