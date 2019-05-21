@@ -9,12 +9,6 @@
 yarn install
 ```
 
-### Compiles and minifies for production
-
-```bash
-yarn build
-```
-
 ### Compiles target library
 
 ```bash
@@ -38,12 +32,7 @@ on a change:
 yarn test:unit --watchAll
 ```
 
-`yarn test:unit` is just a shortcut for `vue-cli-service test:unit` so you
-can pass command line options to `jest` directly. For instance:
-
-```bash
-yarn test:unit tests/unit/pipebuild.spec.ts --bail
-```
+`yarn test:unit` executes concurrently rollup compilatino and karma.
 
 ### Lints and fixes files
 

@@ -1,4 +1,6 @@
+import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
 import DataViewer from '../../src/components/DataViewer.vue';
@@ -10,13 +12,13 @@ describe('Data Viewer', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(DataViewer, { store: setupStore(), localVue });
 
-    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.exists()).to.be.true;
   });
 
   it('should display a message when no data', () => {
     const wrapper = shallowMount(DataViewer, { store: setupStore(), localVue });
 
-    expect(wrapper.text()).toEqual('No data available');
+    expect(wrapper.text()).to.equal('No data available');
   });
 
   describe('header', () => {
@@ -36,7 +38,7 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerWrapper = wrapper.find('.data-viewer__header');
-      expect(headerWrapper.findAll('tr').length).toEqual(1);
+      expect(headerWrapper.findAll('tr').length).to.equal(1);
     });
 
     it('should have three cells', () => {
@@ -55,7 +57,7 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
-      expect(headerCellsWrapper.length).toEqual(3);
+      expect(headerCellsWrapper.length).to.equal(3);
     });
 
     it("should contains column's names", () => {
@@ -74,9 +76,9 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
-      expect(headerCellsWrapper.at(0).text()).toEqual('columnA');
-      expect(headerCellsWrapper.at(1).text()).toEqual('columnB');
-      expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
+      expect(headerCellsWrapper.at(0).text()).to.equal('columnA');
+      expect(headerCellsWrapper.at(1).text()).to.equal('columnB');
+      expect(headerCellsWrapper.at(2).text()).to.equal('columnC');
     });
 
     it("should contains column's names even if not on every rows", () => {
@@ -100,14 +102,14 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
-      expect(headerCellsWrapper.at(0).text()).toEqual('columnA');
-      expect(headerCellsWrapper.at(1).text()).toEqual('columnB');
-      expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
-      expect(headerCellsWrapper.at(3).text()).toEqual('columnD');
+      expect(headerCellsWrapper.at(0).text()).to.equal('columnA');
+      expect(headerCellsWrapper.at(1).text()).to.equal('columnB');
+      expect(headerCellsWrapper.at(2).text()).to.equal('columnC');
+      expect(headerCellsWrapper.at(3).text()).to.equal('columnD');
     });
 
     describe('selection', () => {
-      it('should add an active class on the cell', () => {
+      it('should add an active class on the cell', async () => {
         const store = setupStore({
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -124,7 +126,9 @@ describe('Data Viewer', () => {
 
         const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
         firstHeaderCellWrapper.trigger('click');
-        expect(firstHeaderCellWrapper.classes()).toContain('data-viewer__header-cell--active');
+        await Vue.nextTick();
+        expect(firstHeaderCellWrapper.classes()).to.include('data-viewer__header-cell--active');
+
       });
     });
   });
@@ -146,7 +150,7 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
-      expect(rowsWrapper.length).toEqual(5);
+      expect(rowsWrapper.length).to.equal(5);
     });
 
     it('should pass down the right value to DataViewerCell', () => {
@@ -167,12 +171,11 @@ describe('Data Viewer', () => {
       const firstRowWrapper = wrapper.find('.data-viewer__row');
       const firstCellWrapper = firstRowWrapper.find('dataviewercell-stub');
       // Syntax specific to stubbed functional Vue Component
-      expect(firstCellWrapper.attributes('value')).toEqual('value1');
+      expect(firstCellWrapper.attributes('value')).to.equal('value1');
     });
   });
-
   describe('first column selection', () => {
-    it('should select all first columns cells', () => {
+    it('should select all first columns cells', async () => {
       const dataset = {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [
@@ -187,7 +190,7 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
       const firstHeadCellWrapper = wrapper.find('.data-viewer__header-cell');
       firstHeadCellWrapper.trigger('click');
-
+      await Vue.nextTick();
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
       dataset.data.forEach((d, i) => {
         expect(
@@ -195,7 +198,7 @@ describe('Data Viewer', () => {
             .at(i)
             .find('dataviewercell-stub')
             .attributes('isselected'),
-        ).toBeTruthy();
+        ).to.equal('true');
       });
     });
   });

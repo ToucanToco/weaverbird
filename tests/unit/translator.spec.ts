@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import * as S from '@/lib/steps';
 import {
   availableTranslators,
@@ -28,18 +29,18 @@ describe('base translator class', () => {
     const notrs = new NoSupportTranslator();
     const dummytrs = new DummyStringTranslator();
 
-    expect(notrs.unsupportedSteps).toEqual(ALL_STEP_NAMES);
-    expect(notrs.supportedSteps).toEqual([]);
-    expect(dummytrs.supportedSteps).toEqual(['domain', 'filter', 'rename']);
-    expect(dummytrs.supports('domain')).toBeTruthy();
-    expect(dummytrs.supports('filter')).toBeTruthy();
-    expect(dummytrs.supports('rename')).toBeTruthy();
-    expect(dummytrs.supports('aggregate')).toBeFalsy();
+    expect(notrs.unsupportedSteps).to.eql(ALL_STEP_NAMES);
+    expect(notrs.supportedSteps).to.eql([]);
+    expect(dummytrs.supportedSteps).to.eql(['domain', 'filter', 'rename']);
+    expect(dummytrs.supports('domain')).to.be.true;
+    expect(dummytrs.supports('filter')).to.be.true;
+    expect(dummytrs.supports('rename')).to.be.true;
+    expect(dummytrs.supports('aggregate')).to.be.false;
   });
 
   it('should raise a NotSupported error', () => {
     const notrs = new NoSupportTranslator();
-    expect(() => notrs.translate([{ name: 'domain', domain: 'my-domain' }])).toThrow(
+    expect(() => notrs.translate([{ name: 'domain', domain: 'my-domain' }])).to.throw(
       'Unsupported step <domain>',
     );
   });
@@ -53,7 +54,7 @@ describe('base translator class', () => {
         { name: 'delete', columns: ['col1'] },
         { name: 'rename', oldname: 'old2', newname: 'new2' },
       ]),
-    ).toThrow('Unsupported step <delete>');
+    ).to.throw('Unsupported step <delete>');
   });
 
   it('should be possible to call translate on a translator', () => {
@@ -64,24 +65,24 @@ describe('base translator class', () => {
         { name: 'rename', oldname: 'old', newname: 'new' },
         { name: 'rename', oldname: 'old2', newname: 'new2' },
       ]),
-    ).toEqual(['domain', 'rename', 'rename']);
+    ).to.eql(['domain', 'rename', 'rename']);
   });
 });
 
 describe('translator registration', () => {
   it('should be possible to register backends', () => {
     registerTranslator('dummy', DummyStringTranslator);
-    expect(backendsSupporting('aggregate')).toEqual(['mongo36']);
-    expect(backendsSupporting('domain')).toEqual(['dummy', 'mongo36']);
+    expect(backendsSupporting('aggregate')).to.eql(['mongo36']);
+    expect(backendsSupporting('domain')).to.eql(['dummy', 'mongo36']);
   });
 
   it('should throw an error if backend is not available', () => {
-    expect(() => getTranslator('bla')).toThrow();
+    expect(() => getTranslator('bla')).to.throw();
   });
 
   it('should be possible to get all available translators', () => {
     registerTranslator('dummy', DummyStringTranslator);
     const translators = availableTranslators();
-    expect(Object.keys(translators).sort()).toEqual(['dummy', 'mongo36']);
+    expect(Object.keys(translators).sort()).to.eql(['dummy', 'mongo36']);
   });
 });
