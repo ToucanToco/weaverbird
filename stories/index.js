@@ -47,3 +47,4 @@ stories
 
 import './data-viewer';
 import './resizable-panel';
+import './action-toolbar';
