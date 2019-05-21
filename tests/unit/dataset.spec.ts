@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { DataSet } from '@/lib/dataset';
 import { mongoResultsToDataset, MongoResults } from '@/lib/dataset/mongo';
 
@@ -29,8 +30,8 @@ describe('_sortDataset tests', () => {
       data: [[1, 2, 3], [4, 5, 6]],
     };
     const sorted = _sortDataset(dataset);
-    expect(sorted.headers).toEqual([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
-    expect(sorted.data).toEqual([[1, 2, 3], [4, 5, 6]]);
+    expect(sorted.headers).to.eql([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
+    expect(sorted.data).to.eql([[1, 2, 3], [4, 5, 6]]);
   });
 
   it('should be able to sort results', () => {
@@ -39,13 +40,13 @@ describe('_sortDataset tests', () => {
       data: [[1, 2, 3, 4], [5, 6, 7, 8]],
     };
     const sorted = _sortDataset(dataset);
-    expect(sorted.headers).toEqual([
+    expect(sorted.headers).to.eql([
       { name: 'col1' },
       { name: 'col2' },
       { name: 'col3' },
       { name: 'col4' },
     ]);
-    expect(sorted.data).toEqual([[2, 4, 1, 3], [6, 8, 5, 7]]);
+    expect(sorted.data).to.eql([[2, 4, 1, 3], [6, 8, 5, 7]]);
   });
 });
 
@@ -53,8 +54,8 @@ describe('Dataset helper tests', () => {
   it('should be able to handle empty mongo results', () => {
     const mongoResults: MongoResults = [];
     const dataset = mongoResultsToDataset(mongoResults);
-    expect(dataset.headers).toEqual([]);
-    expect(dataset.data).toEqual([]);
+    expect(dataset.headers).to.eql([]);
+    expect(dataset.data).to.eql([]);
   });
 
   it('should be able to convert homegeneous mongo results', () => {
@@ -63,8 +64,8 @@ describe('Dataset helper tests', () => {
       { col1: 'bar', col2: 7, col3: false },
     ];
     const dataset = _sortDataset(mongoResultsToDataset(mongoResults));
-    expect(dataset.headers).toEqual([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
-    expect(dataset.data).toEqual([['foo', 42, true], ['bar', 7, false]]);
+    expect(dataset.headers).to.eql([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
+    expect(dataset.data).to.eql([['foo', 42, true], ['bar', 7, false]]);
   });
 
   it('should be able to convert heterogeneous mongo results', () => {
@@ -73,12 +74,12 @@ describe('Dataset helper tests', () => {
       { col1: 'bar', col2: 7, col4: '?' },
     ];
     const dataset = _sortDataset(mongoResultsToDataset(mongoResults));
-    expect(dataset.headers).toEqual([
+    expect(dataset.headers).to.eql([
       { name: 'col1' },
       { name: 'col2' },
       { name: 'col3' },
       { name: 'col4' },
     ]);
-    expect(dataset.data).toEqual([['foo', null, true, null], ['bar', 7, null, '?']]);
+    expect(dataset.data).to.eql([['foo', null, true, null], ['bar', 7, null, '?']]);
   });
 });

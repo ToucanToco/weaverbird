@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
@@ -20,9 +21,9 @@ describe('Pipeline.vue', () => {
     // first step is the domain step and is processed separately by the
     // Pipeline component. There should only be the 2 generated <Step>
     // components.
-    expect(steps.length).toBe(2);
+    expect(steps.length).to.equal(2);
     const [step1, step2] = steps.wrappers.map(stub => stub.props());
-    expect(step1).toEqual({
+    expect(step1).to.eql({
       step: pipeline[1],
       isActive: true,
       isLastActive: false,
@@ -31,7 +32,7 @@ describe('Pipeline.vue', () => {
       isLast: false,
       indexInPipeline: 1,
     });
-    expect(step2).toEqual({
+    expect(step2).to.eql({
       step: pipeline[2],
       isActive: false,
       isLastActive: true,

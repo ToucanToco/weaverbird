@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { Pipeline } from '@/lib/steps';
 import { MongoStep } from '@/lib/translators/mongo';
 import { filterOutDomain, mongoToPipe } from '@/lib/pipeline';
@@ -6,7 +7,7 @@ describe('Pipebuild translator', () => {
   it('generate domain step', () => {
     const query: MongoStep[] = [{ $match: { domain: 'test_cube' } }];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([{ name: 'domain', domain: 'test_cube' }]);
+    expect(pipeline).to.eql([{ name: 'domain', domain: 'test_cube' }]);
   });
 
   it('generate domain and filter steps from one match', () => {
@@ -14,7 +15,7 @@ describe('Pipebuild translator', () => {
       { $match: { domain: 'test_cube', Region: 'Europe', Manager: 'Pierre' } },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'filter', column: 'Region', value: 'Europe' },
@@ -27,7 +28,7 @@ describe('Pipebuild translator', () => {
       { $match: { Region: 'Europe' } },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Region', value: 'Europe' },
     ]);
@@ -39,7 +40,7 @@ describe('Pipebuild translator', () => {
       { $match: { Region: 'Europe', Manager: 'Pierre' } },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'filter', column: 'Manager', value: 'Pierre' },
       { name: 'filter', column: 'Region', value: 'Europe' },
@@ -52,7 +53,7 @@ describe('Pipebuild translator', () => {
       { $project: { zone: '$Region' } },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'rename', oldname: 'Region', newname: 'zone' },
     ]);
@@ -64,31 +65,25 @@ describe('Pipebuild translator', () => {
       { $project: { Region: '$Region' } },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'select', columns: ['Region'] },
     ]);
   });
 
   it('generate domain and delete steps', () => {
-    const query: MongoStep[] = [
-      { $match: { domain: 'test_cube' } },
-      { $project: { Manager: 0 } },
-    ];
+    const query: MongoStep[] = [{ $match: { domain: 'test_cube' } }, { $project: { Manager: 0 } }];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'delete', columns: ['Manager'] },
     ]);
   });
 
   it('generate domain and custom steps from project :1', () => {
-    const query: MongoStep[] = [
-      { $match: { domain: 'test_cube' } },
-      { $project: { Manager: 1 } },
-    ];
+    const query: MongoStep[] = [{ $match: { domain: 'test_cube' } }, { $project: { Manager: 1 } }];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'select', columns: ['Manager'] },
     ]);
@@ -106,7 +101,7 @@ describe('Pipebuild translator', () => {
       },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       { name: 'select', columns: ['Region'] },
       { name: 'rename', oldname: 'Region', newname: 'zone' },
@@ -120,7 +115,7 @@ describe('Pipebuild translator', () => {
       { $group: { _id: '$Manager', Value: { $sum: '$Value' } } },
     ];
     const pipeline = mongoToPipe(query);
-    expect(pipeline).toEqual([
+    expect(pipeline).to.eql([
       { name: 'domain', domain: 'test_cube' },
       {
         name: 'custom',
@@ -139,16 +134,16 @@ describe('helpers tests', () => {
       { name: 'select', columns: ['Region'] },
     ];
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    expect(domain).toEqual('test_cube');
-    expect(subpipeline).toEqual([{ name: 'select', columns: ['Region'] }]);
+    expect(domain).to.equal('test_cube');
+    expect(subpipeline).to.eql([{ name: 'select', columns: ['Region'] }]);
   });
 
   it('should raise an error if pipeline is empty', () => {
-    expect(() => filterOutDomain([])).toThrow();
+    expect(() => filterOutDomain([])).to.throw();
   });
 
   it('should raise an error if first step is not a domain step', () => {
     const pipeline: Pipeline = [{ name: 'select', columns: ['Region'] }];
-    expect(() => filterOutDomain(pipeline)).toThrow();
+    expect(() => filterOutDomain(pipeline)).to.throw();
   });
 });
