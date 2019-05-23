@@ -14,36 +14,42 @@
           <i class="fas fa-cog"></i>
         </div>
         <div class="query-pipeline-step__action">
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt" @click="deleteStep({ index: indexInPipeline })"></i>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import Vue from 'vue'
-import { Component, Prop } from 'vue-property-decorator'
-
-import { PipelineStep } from '@/lib/steps'
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
+import { Mutation } from 'vuex-class';
+import { PipelineStep } from '@/lib/steps';
+import { VQBState } from '@/store/state';
 
 @Component({
-  name: 'step'
+  name: 'step',
 })
 export default class Step extends Vue {
   @Prop(Boolean)
-  readonly isFirst!: boolean
+  readonly isFirst!: boolean;
 
   @Prop(Boolean)
-  readonly isLast!: boolean
+  readonly isLast!: boolean;
 
   @Prop(Boolean)
-  readonly isActive!: boolean
+  readonly isActive!: boolean;
 
   @Prop(Boolean)
-  readonly isDisabled!: boolean
+  readonly isDisabled!: boolean;
 
   @Prop()
-  step!: PipelineStep
+  step!: PipelineStep;
+
+  @Prop()
+  readonly indexInPipeline!: number;
+
+  @Mutation deleteStep!: (payload: { index: number }) => void;
 
   get classDot() {
     return {
@@ -65,7 +71,7 @@ export default class Step extends Vue {
     return {
       'query-pipeline-step': true,
       'query-pipeline-step--disabled': this.isDisabled,
-    }
+    };
   }
 
   get firstStrokeClass() {
@@ -82,12 +88,11 @@ export default class Step extends Vue {
     };
   }
 
-
   select() {
     this.$emit('selectedStep');
   }
 }
 </script>
 <style lang="scss" scoped>
-  @import '../styles/Steps';
+@import '../styles/Steps';
 </style>

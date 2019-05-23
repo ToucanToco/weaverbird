@@ -34,7 +34,6 @@ import { DataSet } from '@/lib/dataset';
 import { Component } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
 
-
 /**
  * @name DataViewer
  * @description A Vue Component that displays data into a table
@@ -51,16 +50,17 @@ export default class DataViewer extends Vue {
   @Getter('isDatasetEmpty') isEmpty!: boolean;
 
   @Getter columnNames!: string[];
+
   /**
    * @description Array of column's name selected by the user
    */
   selectedColumns: string[] = [];
 
   /**
-     * @description Get our columns with their names and linked classes
-     *
-     * @return {Array<object>}
-     */
+   * @description Get our columns with their names and linked classes
+   *
+   * @return {Array<object>}
+   */
   get formattedColumns() {
     return this.columnNames.map(d => ({
       name: d,

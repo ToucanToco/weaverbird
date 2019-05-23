@@ -49,6 +49,8 @@ export function servicePluginFactory(service: BackendService) {
         _updateDataset(store, service, activePipeline(state));
       } else if (mutation.type === 'setCurrentDomain') {
         _updateDataset(store, service, activePipeline(state));
+      } else if (mutation.type === 'deleteStep') {
+        _updateDataset(store, service, activePipeline(state));
       }
     });
   };

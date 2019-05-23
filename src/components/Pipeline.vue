@@ -19,6 +19,7 @@
       :is-first="index === 0"
       :is-last="index === stepsWithoutDomain.length - 1"
       :step="step"
+      :indexInPipeline="index + 1"
       @selectedStep="selectStep({ index: index + 1  })"
     />
   </div>
@@ -26,13 +27,13 @@
 
 
 <script lang="ts">
-import Vue from 'vue'
-import { Component } from 'vue-property-decorator'
+import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
-import { DomainStep, Pipeline } from '@/lib/steps'
-import DomainSelector from './DomainSelector.vue'
-import Step from './Step.vue'
+import { DomainStep, Pipeline } from '@/lib/steps';
+import DomainSelector from './DomainSelector.vue';
+import Step from './Step.vue';
 
 @Component({
   name: 'pipeline',
@@ -57,7 +58,6 @@ export default class PipelineComponent extends Vue {
   resetSelectedStep() {
     this.selectStep({ selectedStepIndex: -1 });
   }
-
 }
 </script>
 

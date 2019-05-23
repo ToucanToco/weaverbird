@@ -11,6 +11,11 @@ type DatasetMutation = {
   payload: Pick<VQBState, 'dataset'>;
 };
 
+type DeleteStepMutation = {
+  type: 'deleteStep';
+  payload: { index: number };
+};
+
 type DomainsMutation = {
   type: 'setDomains';
   payload: Pick<VQBState, 'domains'>;
@@ -34,6 +39,7 @@ type SelectedStepMutation = {
 export type StateMutation =
   | DatasetMutation
   | DomainsMutation
+  | DeleteStepMutation
   | PipelineMutation
   | SelectDomainMutation
   | SelectedStepMutation;
@@ -44,6 +50,12 @@ export default {
    */
   selectStep(state: VQBState, { index }: { index: number }) {
     state.selectedStepIndex = index;
+  },
+  /**
+   * Delete the step of index `index` in pipeline.
+   */
+  deleteStep(state: VQBState, { index }: { index: number }) {
+    state.pipeline.splice(index, 1);
   },
   /**
    * change current selected domain and reset pipeline accordingly.
