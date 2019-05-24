@@ -20,9 +20,10 @@ module.exports = function (config) {
       'karma-sourcemap-loader',
 
       // Reporters
-      'karma-spec-reporter'
+      'karma-spec-reporter',
+      'karma-coverage-istanbul-reporter',
     ],
-    reporters: ['spec'],
+    reporters: ['spec', 'coverage-istanbul'],
     browsers: ['ChromeHeadless'],
     customLaunchers: {
       'ChromeHeadless': {
@@ -31,6 +32,12 @@ module.exports = function (config) {
           '--disable-setuid-sandbox',
         ],
       }
+    },
+    coverageIstanbulReporter: {
+      reports: ['html', 'json', 'text-summary'],
+      dir: require('path').join(__dirname, 'coverage'),
+      combineBrowserReports: true,
+      fixWebpackSourcePaths: true,
     },
   })
 }
