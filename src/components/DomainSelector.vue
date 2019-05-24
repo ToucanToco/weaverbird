@@ -18,7 +18,7 @@
 import Vue from 'vue'
 import { Component, Prop } from 'vue-property-decorator'
 import { Mutation, State } from 'vuex-class';
-import { VQBState } from '@/store/state';
+import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
   name: 'domain-selector'
@@ -29,7 +29,7 @@ export default class DomainSelector extends Vue {
   @Prop()
   readonly selectedDomain!: string | undefined
 
-  @Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
+  @Mutation setCurrentDomain!: MutationCallbacks['setCurrentDomain'];
 
   isDomainSelected(name: string) {
     return this.selectedDomain === name;

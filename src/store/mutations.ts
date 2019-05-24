@@ -38,11 +38,16 @@ type SelectedStepMutation = {
 
 export type StateMutation =
   | DatasetMutation
-  | DomainsMutation
   | DeleteStepMutation
+  | DomainsMutation
   | PipelineMutation
   | SelectDomainMutation
   | SelectedStepMutation;
+
+type MutationByType<M, MT> = M extends { type: MT } ? M : never;
+export type MutationCallbacks = {
+  [K in StateMutation['type']]: (payload: MutationByType<StateMutation, K>['payload']) => void
+};
 
 export default {
   /**
