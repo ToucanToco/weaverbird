@@ -25,10 +25,6 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
-<<<<<<< HEAD
-import { VQBState } from '@/store/state';
-=======
->>>>>>> [wip] Initial commit
 
 @Component({
   name: 'step',
@@ -45,7 +41,6 @@ export default class Step extends Vue {
 
   @Prop(Boolean)
   readonly isDisabled!: boolean;
-<<<<<<< HEAD
 
   @Prop()
   step!: PipelineStep;
@@ -54,13 +49,8 @@ export default class Step extends Vue {
   readonly indexInPipeline!: number;
 
   @Mutation deleteStep!: (payload: { index: number }) => void;
-=======
-
-  @Prop()
-  step!: PipelineStep;
 
   @Mutation toggleStepEdition!: () => void;
->>>>>>> [wip] Initial commit
 
   get classDot() {
     return {
