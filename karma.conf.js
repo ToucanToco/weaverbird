@@ -23,6 +23,14 @@ module.exports = function (config) {
       'karma-spec-reporter'
     ],
     reporters: ['spec'],
-    browsers: ['ChromeHeadless']
+    browsers: ['ChromeHeadless'],
+    customLaunchers: {
+      'ChromeHeadless': {
+        flags: [
+          '--no-sandbox',
+          '--disable-setuid-sandbox',
+        ],
+      }
+    },
   })
 }
