@@ -1,5 +1,6 @@
 <template>
   <div v-if="!isEmpty" class="data-viewer-container">
+    <ActionToolbar></ActionToolbar>
     <table class="data-viewer-table">
       <thead class="data-viewer__header">
         <tr>
@@ -33,6 +34,7 @@ import { Getter, State } from 'vuex-class';
 import { DataSet } from '@/lib/dataset';
 import { Component } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
+import ActionToolbar from './ActionToolbar.vue';
 
 /**
  * @name DataViewer
@@ -43,6 +45,7 @@ import DataViewerCell from './DataViewerCell.vue';
   name: 'data-viewer',
   components: {
     DataViewerCell,
+    ActionToolbar
   },
 })
 export default class DataViewer extends Vue {
