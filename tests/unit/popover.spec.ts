@@ -3,7 +3,7 @@ import { mount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 
 import Popover from '@/components/Popover.vue';
-import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/lib/popover';
+import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/components/constants';
 
 describe('Popover', function() {
   var wrapper: Wrapper<Vue>;

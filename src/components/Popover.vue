@@ -7,7 +7,7 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/lib/popover';
+import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/components/constants';
 
 /**
  * We use weak typing as it is used to define CSS rules
@@ -45,13 +45,13 @@ export default class Popover extends Vue {
 
   @Prop({
     type: Boolean,
-    default: () => false,
+    default: false,
   })
   active!: boolean;
 
   @Prop({
     default: () => POPOVER_ALIGN.CENTER,
-    validator: value => _.includes(POPOVER_ALIGN, value),
+    validator: value => Object.values(POPOVER_ALIGN).includes(value),
   })
   align!: string;
 
@@ -63,7 +63,7 @@ export default class Popover extends Vue {
 
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
-  parents: Array<HTMLElement> = [];
+  parents: HTMLElement[] = [];
 
   get alignMethod() {
     switch (this.align) {
@@ -100,7 +100,7 @@ export default class Popover extends Vue {
     const parents = [];
     let { parent } = this;
 
-    while (parent !== document.body && !_.isNull(parent)) {
+    while (parent !== document.body && parent !== null) {
       parents.push(parent);
       parent = parent.parentElement;
     }
@@ -110,9 +110,9 @@ export default class Popover extends Vue {
     // Attach listeners
     window.addEventListener('orientationchange', this.orientationchangeListener);
     window.addEventListener('resize', this.resizeListener);
-    _.forEach(this.parents, parent => {
-      return parent.addEventListener('scroll', this.scrollListener);
-    });
+    for (const p of parents) {
+      p.addEventListener('scroll', this.scrollListener);
+    }
 
     this.updatePosition();
   }
@@ -267,11 +267,11 @@ export default class Popover extends Vue {
     // Cleanup listeners
     window.removeEventListener('orientationchange', this.orientationchangeListener);
     window.removeEventListener('resize', this.resizeListener);
-    _.forEach(this.parents, parent => {
-      return parent.removeEventListener('scroll', this.scrollListener);
-    });
+    for (const parent of this.parents) {
+      parent.removeEventListener('scroll', this.scrollListener);
+    }
     // Cleanup DOM
-    if (!_.isNull(this.$el.parentElement)) {
+    if (this.$el.parentElement !== null) {
       return this.$el.parentElement.removeChild(this.$el);
     }
   }
