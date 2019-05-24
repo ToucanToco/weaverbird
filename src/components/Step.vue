@@ -11,7 +11,7 @@
       <span class="query-pipeline-step__name">{{ step.name }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
-          <i class="fas fa-cog" @click="toggleStepEdition()"></i>
+          <i class="fas fa-cog" @click="editStep()"></i>
         </div>
         <div class="query-pipeline-step__action">
           <i class="fas fa-trash-alt" @click="deleteStep({ index: indexInPipeline })"></i>
@@ -23,7 +23,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
-import { Mutation } from 'vuex-class';
+import { Getter, Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
 
 @Component({
@@ -50,7 +50,7 @@ export default class Step extends Vue {
 
   @Mutation deleteStep!: (payload: { index: number }) => void;
 
-  @Mutation toggleStepEdition!: () => void;
+  @Getter stepConfig!: (index: number) => PipelineStep;
 
   get classDot() {
     return {
@@ -91,6 +91,10 @@ export default class Step extends Vue {
 
   select() {
     this.$emit('selectedStep');
+  }
+
+  editStep() {
+    this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
   }
 }
 </script>

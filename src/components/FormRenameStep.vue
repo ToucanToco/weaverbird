@@ -20,11 +20,11 @@
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
-        v-on:click="validateStep"
+        @click="validateStep"
       >OK</button>
       <button
         class="widget-form-action__button widget-form-action__button--cancel"
-        v-on:click="cancelEdition"
+        @click="cancelEdition"
       >Cancel</button>
     </div>
     <div v-if="errors" class="errors">
@@ -66,7 +66,11 @@ export default class FormRenameStep extends Mixins(FormMixin) {
   })
   initialValue!: RenameStepConf;
 
+  // @Prop(Number)
+  // readonly editedStepIndex!: number;
+
   step: RenameStepConf = this.initialValue;
+  // index = this.editedStepIndex;
 
   @Mutation toggleColumnSelection!: (column: string) => void;
 
@@ -90,6 +94,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
       this.errors = this.validator.errors;
     } else {
       this.errors = null;
+      // this.$emit('formSaved', { name: 'rename', ...this.step }, this.editedStepIndex);
       this.$emit('formSaved', { name: 'rename', ...this.step });
     }
   }
