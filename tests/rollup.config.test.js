@@ -15,7 +15,7 @@ module.exports = {
     file: 'tests/unit/karma-test-bundle.js',
     format: "iife",
     name: "vqbtests",
-    // sourcemap: "inline"
+    sourcemap: "inline",
   },
   plugins:
     [
