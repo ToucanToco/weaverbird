@@ -1,8 +1,15 @@
 <template>
   <div id="app">
     <ResizablePanels>
-      <Pipeline slot="left-panel"/>
-      <DataViewer slot="right-panel"/>
+      <FormRenameStep
+        v-if="isEditingStep"
+        :initialValue="initialValue"
+        slot="left-panel"
+        @cancel="cancelStepEdition"
+        @formSaved="saveStep"
+      />
+      <Pipeline v-else slot="left-panel"/>
+      <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
     </ResizablePanels>
     <pre><code>{{ code }}</code></pre>
   </div>
@@ -12,17 +19,25 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState, activePipeline } from '@/store/state';
-import { Pipeline } from '@/lib/steps';
+import { Pipeline, PipelineStep } from '@/lib/steps';
 import { DataSet } from '@/lib/dataset';
 import { MongoResults, mongoResultsToDataset } from '@/lib/dataset/mongo';
-import { DataViewer, Pipeline as PipelineComponent, ResizablePanels, getTranslator } from '../dist/vue-query-builder.common.js';
+import {
+  DataViewer,
+  FormRenameStep,
+  Pipeline as PipelineComponent,
+  ResizablePanels,
+  getTranslator,
+} from '../dist/vue-query-builder.common.js';
+import _ from 'lodash';
 
 const mongo36translator = getTranslator('mongo36');
 
 @Component({
   components: {
     DataViewer,
-    'Pipeline': PipelineComponent,
+    FormRenameStep,
+    Pipeline: PipelineComponent,
     ResizablePanels,
   },
 })
@@ -36,6 +51,9 @@ export default class App extends Vue {
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
   @Mutation setDataset!: (payload: Pick<VQBState, 'dataset'>) => void;
 
+  isEditingStep: boolean = false;
+  initialValue: any = undefined;
+
   get code() {
     const query = mongo36translator.translate(this.activePipeline);
     return JSON.stringify(query, null, 2);
@@ -46,6 +64,24 @@ export default class App extends Vue {
     const collections = await response.json();
     this.setDomains({ domains: collections });
     await this.updateData(this.pipeline);
+  }
+
+  cancelStepEdition() {
+    this.isEditingStep = false;
+  }
+
+  openStepForm(params: any) {
+    // params.name will be used to choose the right form
+    // after that, we delete from params to pass down the others keys to initialValue
+    this.initialValue = _.omit(params, 'name');
+    this.isEditingStep = true;
+  }
+
+  saveStep(step: PipelineStep) {
+    // Reset value from DataViewer
+    this.initialValue = undefined;
+    this.updateData([...this.pipeline, step]);
+    this.isEditingStep = false;
   }
 
   async updateData(pipeline: Pipeline) {
@@ -59,12 +95,11 @@ export default class App extends Vue {
       method: 'POST',
       body: JSON.stringify({ query, collection: domainStep.domain }),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
     const mongorset = await response.json();
     this.setDataset({ dataset: mongoResultsToDataset(mongorset as MongoResults) });
   }
-
 }
 </script>

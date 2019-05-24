@@ -49,9 +49,6 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
-  @Prop(Boolean)
-  readonly isFocused!: boolean;
-
   @Mutation deleteStep!: (payload: { index: number }) => void;
 
   get classDot() {
@@ -59,7 +56,6 @@ export default class Step extends Vue {
       'query-pipeline-queue__dot': true,
       'query-pipeline-queue__dot--active': this.isActive,
       'query-pipeline-queue__dot--disabled': this.isDisabled,
-      'query-pipeline-queue__dot--focus': this.isFocused,
     };
   }
 

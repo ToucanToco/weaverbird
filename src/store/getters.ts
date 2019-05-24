@@ -41,6 +41,10 @@ export default {
   isStepDisabled: (state: VQBState) => (index: number) =>
     state.selectedStepIndex >= 0 && index > state.selectedStepIndex,
   /**
+   * selected columns in the dataviewer (materialized by a styled focus)
+   */
+  selectedColumns: (state: VQBState) => state.selectedColumns,
+  /**
    * the whole pipeline except the first (domain) step.
    */
   stepsWithoutDomain: (state: VQBState) => state.pipeline.slice(1),

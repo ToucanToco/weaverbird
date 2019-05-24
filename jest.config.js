@@ -1,3 +1,5 @@
+const esModules = ['@formschema/native'].join('|');
+
 module.exports = {
   moduleFileExtensions: ['js', 'jsx', 'json', 'vue', 'd.ts', 'ts', 'tsx'],
 
@@ -15,6 +17,8 @@ module.exports = {
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
+
+  transformIgnorePatterns: [`<rootDir>/node_modules/(?!${esModules})`],
 
   snapshotSerializers: ['jest-serializer-vue'],
 
