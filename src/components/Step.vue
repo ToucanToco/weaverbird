@@ -11,7 +11,7 @@
       <span class="query-pipeline-step__name">{{ step.name }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
-          <i class="fas fa-cog"></i>
+          <i class="fas fa-cog" @click="toggleStepEdition()"></i>
         </div>
         <div class="query-pipeline-step__action">
           <i class="fas fa-trash-alt" @click="deleteStep({ index: indexInPipeline })"></i>
@@ -25,7 +25,10 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
+<<<<<<< HEAD
 import { VQBState } from '@/store/state';
+=======
+>>>>>>> [wip] Initial commit
 
 @Component({
   name: 'step',
@@ -42,6 +45,7 @@ export default class Step extends Vue {
 
   @Prop(Boolean)
   readonly isDisabled!: boolean;
+<<<<<<< HEAD
 
   @Prop()
   step!: PipelineStep;
@@ -50,6 +54,13 @@ export default class Step extends Vue {
   readonly indexInPipeline!: number;
 
   @Mutation deleteStep!: (payload: { index: number }) => void;
+=======
+
+  @Prop()
+  step!: PipelineStep;
+
+  @Mutation toggleStepEdition!: () => void;
+>>>>>>> [wip] Initial commit
 
   get classDot() {
     return {
