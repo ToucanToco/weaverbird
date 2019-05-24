@@ -23,9 +23,14 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+<<<<<<< Updated upstream
 import { Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
 import { VQBState } from '@/store/state';
+=======
+
+import { PipelineStep } from '@/lib/steps';
+>>>>>>> Stashed changes
 
 @Component({
   name: 'step',
@@ -49,6 +54,9 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
+  @Prop(Boolean)
+  readonly isFocused!: boolean;
+
   @Mutation deleteStep!: (payload: { index: number }) => void;
 
   get classDot() {
@@ -56,6 +64,7 @@ export default class Step extends Vue {
       'query-pipeline-queue__dot': true,
       'query-pipeline-queue__dot--active': this.isActive,
       'query-pipeline-queue__dot--disabled': this.isDisabled,
+      'query-pipeline-queue__dot--focus': this.isFocused,
     };
   }
 
