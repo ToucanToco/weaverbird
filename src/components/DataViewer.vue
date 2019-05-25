@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isEmpty" class="data-viewer-container">
-    <ActionToolbar></ActionToolbar>
+    <ActionToolbar :buttons="buttons"></ActionToolbar>
     <table class="data-viewer-table">
       <thead class="data-viewer__header">
         <tr>
@@ -35,6 +35,7 @@ import { DataSet } from '@/lib/dataset';
 import { Component } from 'vue-property-decorator';
 import DataViewerCell from './DataViewerCell.vue';
 import ActionToolbar from './ActionToolbar.vue';
+import { CATEGORY_BUTTONS } from './constants';
 
 /**
  * @name DataViewer
@@ -72,6 +73,10 @@ export default class DataViewer extends Vue {
         'data-viewer__header-cell--active': this.isSelected(d),
       },
     }));
+  }
+
+  get buttons() {
+    return CATEGORY_BUTTONS;
   }
 
   /**
