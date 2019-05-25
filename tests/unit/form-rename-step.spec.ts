@@ -8,6 +8,11 @@ localVue.use(Vuex);
 
 const emptyStore = setupStore({});
 
+interface ValidationError {
+  dataPath: string;
+  keyword: string;
+}
+
 describe('Form Rename Step', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
@@ -46,5 +51,55 @@ describe('Form Rename Step', () => {
     const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
+  });
+
+  it('should report errors when submitted data is not valid', () => {
+    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    const errors = wrapper.vm.$data.errors
+      .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
+      .sort((err1: ValidationError, err2: ValidationError) =>
+        err1.dataPath.localeCompare(err2.dataPath),
+      );
+    expect(errors).toEqual([
+      { keyword: 'minLength', dataPath: '.newname' },
+      { keyword: 'minLength', dataPath: '.oldname' },
+    ]);
+  });
+
+  it('should validate and emit "formSavaed" when submitted data is valid', () => {
+    const wrapper = shallowMount(FormRenameStep, {
+      store: emptyStore,
+      localVue,
+      propsData: {
+        initialValue: { oldname: 'foo', newname: 'bar' },
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [[{ name: 'rename', newname: 'bar', oldname: 'foo' }]],
+    });
+  });
+
+  it('should emit "cancel" event when edition is cancelled', () => {
+    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    expect(wrapper.emitted()).toEqual({
+      cancel: [[]],
+    });
+  });
+
+  it('should update step when selectedColumn is changed', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+    });
+    const wrapper = shallowMount(FormRenameStep, { store, localVue });
+    expect(wrapper.vm.$data.step.oldname).toEqual('');
+    store.commit('toggleColumnSelection', 'columnB');
+    expect(wrapper.vm.$data.step.oldname).toEqual('columnB');
   });
 });

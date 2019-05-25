@@ -80,4 +80,25 @@ describe('Widget Input Text', () => {
 
     expect(inputWrapper.classes()).toContain('widget-input-text--focused');
   });
+
+  it('should emit "input" event on update', () => {
+    const wrapper = shallowMount(WidgetInputText, {
+      propsData: {
+        value: 'Star',
+      },
+    });
+    const inputWrapper = wrapper.find('input[type="text"]');
+    (<HTMLInputElement>inputWrapper.element).value = 'Stark';
+    inputWrapper.trigger('input', { value: 'k' });
+    expect(wrapper.emitted()).toEqual({ input: [['Stark']] });
+  });
+
+  it('should set / unset "isFocused" on focus / blur events', () => {
+    const wrapper = shallowMount(WidgetInputText);
+    const inputWrapper = wrapper.find('input[type="text"]');
+    inputWrapper.trigger('focus');
+    expect(wrapper.vm.$data.isFocused).toBeTruthy();
+    inputWrapper.trigger('blur');
+    expect(wrapper.vm.$data.isFocused).toBeFalsy();
+  });
 });

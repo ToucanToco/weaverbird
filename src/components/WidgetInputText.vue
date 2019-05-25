@@ -48,7 +48,7 @@ export default class WidgetInputText extends Vue {
   focus() {
     this.isFocused = true;
   }
-  
+
   updateValue(newValue: string) {
     this.$emit('input', newValue);
   }
