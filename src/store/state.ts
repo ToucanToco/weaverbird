@@ -30,6 +30,11 @@ export interface VQBState {
    * the seclected columns (materialized by a styled focus in the dataviewer)
    */
   selectedColumns: string[];
+
+  /**
+   * whether the left panel slot is in step edition mode
+   */
+  isEditingStep: boolean;
 }
 
 /**
@@ -45,6 +50,7 @@ export const emptyState: VQBState = {
   selectedStepIndex: -1,
   pipeline: [],
   selectedColumns: [],
+  isEditingStep: false,
 };
 
 /**
