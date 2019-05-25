@@ -20,7 +20,8 @@
       :is-last="index === stepsWithoutDomain.length - 1"
       :step="step"
       :indexInPipeline="index + 1"
-      @selectedStep="selectStep({ index: index + 1  })"
+      @selectedStep="selectStep({ index: index + 1 })"
+      @editStep="editStep"
     />
   </div>
 </template>
@@ -31,7 +32,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
-import { DomainStep, Pipeline } from '@/lib/steps';
+import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 import DomainSelector from './DomainSelector.vue';
 import Step from './Step.vue';
 
@@ -57,6 +58,10 @@ export default class PipelineComponent extends Vue {
 
   resetSelectedStep() {
     this.selectStep({ index: -1 });
+  }
+
+  editStep(step: PipelineStep, index: number) {
+    this.$emit('editStep', step, index);
   }
 }
 </script>
