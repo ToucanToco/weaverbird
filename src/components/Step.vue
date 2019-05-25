@@ -11,7 +11,7 @@
       <span class="query-pipeline-step__name">{{ step.name }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
-          <i class="fas fa-cog"></i>
+          <i class="fas fa-cog" @click="editStep()"></i>
         </div>
         <div class="query-pipeline-step__action">
           <i class="fas fa-trash-alt" @click="toggleDeleteConfirmationModal"></i>
@@ -28,7 +28,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
-import { Mutation } from 'vuex-class';
+import { Getter, Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
@@ -61,6 +61,8 @@ export default class Step extends Vue {
   deleteConfirmationModalIsOpened: boolean = false;
 
   @Mutation deleteStep!: MutationCallbacks['deleteStep'];
+
+  @Getter stepConfig!: (index: number) => PipelineStep;
 
   get classDot() {
     return {
@@ -102,6 +104,10 @@ export default class Step extends Vue {
   deleteThisStep() {
     this.toggleDeleteConfirmationModal();
     this.deleteStep({ index: this.indexInPipeline });
+  }
+
+  editStep() {
+    this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
   }
 
   select() {

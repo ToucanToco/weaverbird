@@ -103,4 +103,11 @@ export default {
   toggleColumnSelection(state: VQBState, column: string) {
     state.selectedColumns = [column];
   },
+
+  /**
+   * toggle column selection
+   */
+  toggleStepEdition(state: VQBState) {
+    state.isEditingStep = !state.isEditingStep;
+  },
 };
