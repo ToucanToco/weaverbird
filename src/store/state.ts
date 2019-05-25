@@ -25,6 +25,11 @@ export interface VQBState {
    * the current pipeline (including inactive steps).
    */
   pipeline: Pipeline;
+
+  /**
+   * the seclected columns (materialized by a styled focus in the dataviewer)
+   */
+  selectedColumns: string[];
 }
 
 /**
@@ -39,6 +44,7 @@ export const emptyState: VQBState = {
   domains: [],
   selectedStepIndex: -1,
   pipeline: [],
+  selectedColumns: [],
 };
 
 /**

@@ -8,7 +8,10 @@
             :class="column.class"
             :key="column.name"
             @click="toggleColumnSelection(column.name)"
-          >{{ column.name }}</td>
+          >
+            <span class="data-viewer__header-label">{{ column.name }}</span>
+            <i class="data-viewer__header-action fas fa-angle-down" @click="openStep(column.name)"></i>
+          </td>
         </tr>
       </thead>
       <tbody class="data-viewer__body">
@@ -28,7 +31,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import { Getter, State } from 'vuex-class';
+import { Getter, Mutation, State } from 'vuex-class';
 
 import { DataSet } from '@/lib/dataset';
 import { Component } from 'vue-property-decorator';
@@ -46,15 +49,13 @@ import DataViewerCell from './DataViewerCell.vue';
   },
 })
 export default class DataViewer extends Vue {
-  @State('dataset') dataset!: DataSet;
-  @Getter('isDatasetEmpty') isEmpty!: boolean;
+  @State dataset!: DataSet;
+  @State selectedColumns!: string[];
 
+  @Getter('isDatasetEmpty') isEmpty!: boolean;
   @Getter columnNames!: string[];
 
-  /**
-   * @description Array of column's name selected by the user
-   */
-  selectedColumns: string[] = [];
+  @Mutation toggleColumnSelection!: (column: string) => void;
 
   /**
    * @description Get our columns with their names and linked classes
@@ -81,17 +82,14 @@ export default class DataViewer extends Vue {
     return this.selectedColumns.includes(column);
   }
 
+  // FIXME: for now it send only 'rename' step
   /**
-   * @description Select or deselect a column by its name
+   * @description Launch a step
    *
-   * @param {string} column - A column name
+   * @param {string} columnName - A column name
    */
-  toggleColumnSelection(column: string) {
-    if (this.selectedColumns.includes(column)) {
-      this.selectedColumns = _.without(this.selectedColumns, column);
-    } else {
-      this.selectedColumns = [...this.selectedColumns, column];
-    }
+  openStep(columnName: string) {
+    this.$emit('stepCreated', { name: 'rename', oldname: columnName });
   }
 }
 </script>

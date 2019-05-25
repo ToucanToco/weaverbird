@@ -1,5 +1,81 @@
+//FONT - Temporary declaration for montserrat google font.
+// => we have to decide if we will use the same font as used in Tucana
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,600&display=swap');
+
 // COLOR VARIABLES
+$base-color: #404040 !default;
 $active-color: rgb(38, 101, 163) !default;
 $active-color-faded: rgba($active-color, 0.1) !default;
 $active-color-faded-2: rgba($active-color, 0.05) !default;
 $data-viewer-border-color: #e0e0e0 !default;
+$blue: #2665a3;
+$grey: #eeeeee;
+
+//GLOBAL STYLE
+*,
+::after,
+::before {
+  box-sizing: border-box;
+}
+
+body {
+  color: $base-color;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0;
+}
+
+// FORMS STYLES PLACEHOLDER
+%form-widget__container {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  width: 100%;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+%form-widget__label {
+  color: grey;
+  font-size: 12px;
+  line-height: 20px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+
+%form-widget__field {
+  align-items: center;
+  background-color: #f8f8f8;
+  box-shadow: 0 0 0 1px #f1f1f1 inset;
+  border: none;
+  display: flex;
+  flex-direction: row;
+  transition: box-shadow 0.25s;
+  color: #4c4c4c;
+  font-size: 16px;
+  line-height: 24px;
+  max-height: 40px;
+  width: 100%;
+  padding: 8px;
+  outline: none;
+
+  box-size &::placeholder {
+    color: #a7a7a7;
+  }
+}
+
+%form-widget__field--focused {
+  box-shadow: 0 0 0 1px $active-color inset;
+}
+
+%button-default {
+  background: #4b4b4b;
+  border: 0;
+  color: #fff;
+  cursor: pointer;
+  font-size: 15px;
+  padding: 8px 15px;
+  text-decoration: none;
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}

@@ -1,16 +1,25 @@
-import { Step } from '../dist/storybook/components';
+import {
+  Step
+} from '../dist/storybook/components';
 import '../dist/vue-query-builder.css';
 
-import { withKnobs, text } from '@storybook/addon-knobs';
+import {
+  withKnobs,
+  text
+} from '@storybook/addon-knobs';
 
-import { storiesOf } from '@storybook/vue';
+import {
+  storiesOf
+} from '@storybook/vue';
 
 const stories = storiesOf('Step', module);
 
 stories
   .addDecorator(withKnobs)
   .add('default', () => ({
-    components: { Step },
+    components: {
+      Step
+    },
     props: {
       step: {
         default: {
@@ -22,7 +31,9 @@ stories
   }))
 
   .add('first', () => ({
-    components: { Step },
+    components: {
+      Step
+    },
     data() {
       return {
         step: {
@@ -34,7 +45,9 @@ stories
   }))
 
   .add('last', () => ({
-    components: { Step },
+    components: {
+      Step
+    },
     data() {
       return {
         step: {
@@ -46,4 +59,5 @@ stories
   }));
 
 import './data-viewer';
+import './form-rename-step';
 import './resizable-panel';

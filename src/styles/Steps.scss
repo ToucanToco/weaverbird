@@ -38,21 +38,17 @@
   cursor: pointer;
   transform: scale(1);
   transition: transform 0.2s;
-  opacity: 0.5;
 }
 
 .query-pipeline-queue__dot--active {
   background-color: $active-color-faded;
   animation: scaler 0.3s;
 }
-.query-pipeline-queue__dot--focus {
-  opacity: 1;
-}
 
 .query-pipeline-queue__dot--disabled,
 .query-pipeline-queue__dot-ink--disabled,
 .query-pipeline-step--disabled {
-  opacity: .5;
+  opacity: 0.5;
 }
 
 .query-pipeline-queue__dot-ink {
@@ -89,9 +85,9 @@
 }
 
 .query-pipeline-step__name {
-  font-weight: bold;
+  font-size: 15px;
+  font-weight: 500;
   text-transform: capitalize;
-  color: rgb(154, 154, 154);
 }
 
 .query-pipeline-step__actions {

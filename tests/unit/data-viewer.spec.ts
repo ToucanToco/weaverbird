@@ -126,30 +126,6 @@ describe('Data Viewer', () => {
         firstHeaderCellWrapper.trigger('click');
         expect(firstHeaderCellWrapper.classes()).toContain('data-viewer__header-cell--active');
       });
-
-      it('should remove selection on an active column', () => {
-        const store = setupStore({
-          dataset: {
-            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-            data: [
-              ['value1', 'value2', 'value3'],
-              ['value4', 'value5', 'value6'],
-              ['value7', 'value8', 'value9'],
-              ['value10', 'value11', 'value12'],
-              ['value13', 'value14', 'value15'],
-            ],
-          },
-        });
-        const wrapper = shallowMount(DataViewer, { store, localVue });
-
-        const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
-        // Select Column
-        firstHeaderCellWrapper.trigger('click');
-        expect(firstHeaderCellWrapper.classes()).toContain('data-viewer__header-cell--active');
-        // Deselect Column
-        firstHeaderCellWrapper.trigger('click');
-        expect(firstHeaderCellWrapper.classes()).not.toContain('data-viewer__header-cell--active');
-      });
     });
   });
 

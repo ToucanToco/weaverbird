@@ -91,4 +91,11 @@ export default {
   setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
     state.dataset = dataset;
   },
+
+  /**
+   * toggle column selection
+   */
+  toggleColumnSelection(state: VQBState, column: string) {
+    state.selectedColumns = [column];
+  },
 };
