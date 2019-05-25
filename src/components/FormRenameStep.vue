@@ -36,6 +36,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
@@ -74,7 +75,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (val != oldVal) {
+    if (!_.isEqual(val, oldVal)) {
       this.step.oldname = val[0];
     }
   }
