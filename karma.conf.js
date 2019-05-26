@@ -1,11 +1,16 @@
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
-    frameworks: ['mocha'],
-    files: ["tests/unit/karma-test-bundle.js"],
+    frameworks: ['mocha', 'chai'],
+    files: [
+      {
+        pattern: 'tests/unit/karma-test-suite.ts',
+        type: 'js',
+      },
+    ],
     preprocessors: {
-      'tests/unit/*.spec.ts': ['rollup', 'sourcemap']
+      'tests/unit/karma-test-suite.ts': ['rollup', 'sourcemap'],
     },
     rollupPreprocessor: require('./tests/rollup.config.test'),
     plugins: [
@@ -14,6 +19,7 @@ module.exports = function (config) {
 
       // Test Libraries
       'karma-mocha',
+      'karma-chai',
 
       // Preprocessors
       'karma-rollup-preprocessor',
@@ -23,15 +29,18 @@ module.exports = function (config) {
       'karma-spec-reporter',
       'karma-coverage-istanbul-reporter',
     ],
+    // required for typescript files to be loaded in karma, otherwise `.ts`
+    // files might be interpreted as `mpeg2` files.
+    mime: {
+      'text/x-typescript': ['ts'],
+    },
     reporters: ['spec', 'coverage-istanbul'],
     browsers: ['ChromeHeadless'],
     customLaunchers: {
-      'ChromeHeadless': {
-        flags: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-        ],
-      }
+      ChromeHeadless: {
+        base: 'Chrome',
+        flags: ['--no-sandbox', '--disable-setuid-sandbox'],
+      },
     },
     coverageIstanbulReporter: {
       reports: ['html', 'json', 'text-summary'],
@@ -39,5 +48,5 @@ module.exports = function (config) {
       combineBrowserReports: true,
       fixWebpackSourcePaths: true,
     },
-  })
-}
+  });
+};

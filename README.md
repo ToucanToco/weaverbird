@@ -32,7 +32,7 @@ on a change:
 yarn test:unit --watchAll
 ```
 
-`yarn test:unit` executes concurrently rollup compilatino and karma.
+`yarn test:unit` executes karma with rollup preprocessors for transpilation and bundling.
 
 ### Lints and fixes files
 
