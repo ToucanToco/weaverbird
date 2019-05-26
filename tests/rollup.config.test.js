@@ -7,41 +7,57 @@ const typescript = require('rollup-plugin-typescript');
 const vue = require('rollup-plugin-vue');
 const json = require('rollup-plugin-json');
 const replace = require('rollup-plugin-replace');
+const istanbul = require('rollup-plugin-istanbul');
 
-module.exports = {
+const baseConfig = {
   input: 'tests/unit/karma-test-suite.ts',
   output: {
     file: 'tests/unit/karma-test-suite.js',
-    format: "iife",
-    name: "vqbtests",
-    sourcemap: "inline",
+    format: 'iife',
+    name: 'vqbtests',
+    sourcemap: 'inline',
   },
-  plugins:
-    [
-      json(),
-      resolve(),
-      typescript({ module: 'es2015' }),
-      alias({
-        resolve: ['.vue', '.json'],
-        '@': __dirname + '/../src',
-      }),
-      commonjs({
-        namedExports: {
-          'node_modules/mathjs/index.js': ['parse'],
-          'node_modules/@vue/test-utils/dist/vue-test-utils.js': ['createLocalVue', 'mount', 'shallowMount'],
-          'node_modules/chai/index.js': ['expect'],
-        }
-      }),
-      css({ output: 'dist/vue-query-builder.css' }),
-      replace({
-        "process.env.NODE_ENV": JSON.stringify("production")
-      }),
-      vue({
-        css: false,
-        compileTemplate: true,
-        template: {
-          isProduction: true
-        }
-      }),
-    ]
+  plugins: [
+    json(),
+    resolve(),
+    typescript({ module: 'es2015' }),
+    alias({
+      resolve: ['.vue', '.json'],
+      '@': __dirname + '/../src',
+    }),
+    commonjs({
+      namedExports: {
+        mathjs: ['parse'],
+        '@vue/test-utils': ['createLocalVue', 'mount', 'shallowMount'],
+        chai: ['expect'],
+      },
+    }),
+    css({ output: 'dist/vue-query-builder.css' }),
+    replace({
+      'process.env.NODE_ENV': JSON.stringify('production'),
+    }),
+    vue({
+      css: false,
+      compileTemplate: true,
+      template: {
+        isProduction: true,
+      },
+    }),
+    istanbul({
+      exclude: ['test/**/*.ts', 'node_modules/**/*'],
+    }),
+  ],
 };
+
+baseConfig.onwarn = warning => {
+  if (warning.code === 'THIS_IS_UNDEFINED') {
+    // This error happens frequently due to TypeScript emitting `this` at the
+    // top-level of a module. In this case its fine if it gets rewritten to
+    // undefined, so ignore this error.
+    return;
+  }
+
+  console.error(`(!) ${warning.message}`);
+};
+
+module.exports = baseConfig;
