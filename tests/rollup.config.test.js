@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const alias = require('rollup-plugin-alias');
-const multi = require('rollup-plugin-multi-entry');
 const commonjs = require('rollup-plugin-commonjs');
 const css = require('rollup-plugin-css-only');
 const resolve = require('rollup-plugin-node-resolve');
@@ -10,16 +9,15 @@ const json = require('rollup-plugin-json');
 const replace = require('rollup-plugin-replace');
 
 module.exports = {
-  input: 'tests/unit/*.spec.ts',
+  input: 'tests/unit/karma-test-suite.ts',
   output: {
-    file: 'tests/unit/karma-test-bundle.js',
+    file: 'tests/unit/karma-test-suite.js',
     format: "iife",
     name: "vqbtests",
     sourcemap: "inline",
   },
   plugins:
     [
-      multi(),
       json(),
       resolve(),
       typescript({ module: 'es2015' }),

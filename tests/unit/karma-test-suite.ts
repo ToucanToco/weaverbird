@@ -1,0 +1,11 @@
+import './dataset.spec';
+import './data-viewer-cell.spec';
+import './data-viewer.spec';
+import './mongo.spec';
+import './pipebuild.spec';
+import './pipeline.spec';
+import './plugins.spec';
+import './resizable-panels.spec';
+import './step.spec';
+import './store.spec';
+import './translator.spec';
