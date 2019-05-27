@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig",
-  "include": ["*.ts"],
-  "exclude": ["main.ts"],
+  "include": ["server.ts"],
   "compilerOptions": {
     "module": "commonjs"
   }
