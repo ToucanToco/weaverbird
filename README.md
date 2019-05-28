@@ -85,6 +85,14 @@ Stories are defined in the `stories/` directory.
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
 
+### Develop in a docker container
+
+Sometimes it's easier to start from a new environment: 
+
+```bash
+$ docker run --rm -it --name vqb -v $PWD:/home/vqb -w /home/vqb -u node node:latest /bin/bash
+```
+
 ## Usage as library
 
 ### Without any module bundler
