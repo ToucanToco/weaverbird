@@ -18,7 +18,8 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
-import { VQBState, activePipeline } from '@/store/state';
+import { activePipeline } from '@/store/state';
+import { MutationCallbacks } from '@/store/mutations';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 import { DataSet } from '@/lib/dataset';
 import { MongoResults, mongoResultsToDataset } from '@/lib/dataset/mongo';
@@ -47,9 +48,9 @@ export default class App extends Vue {
 
   @Getter activePipeline!: Pipeline;
 
-  @Mutation setDomains!: (payload: Pick<VQBState, 'domains'>) => void;
-  @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
-  @Mutation setDataset!: (payload: Pick<VQBState, 'dataset'>) => void;
+  @Mutation setDomains!: MutationCallbacks['setDomains'];
+  @Mutation setPipeline!: MutationCallbacks['setPipeline'];
+  @Mutation setDataset!: MutationCallbacks['setDataset'];
 
   isEditingStep: boolean = false;
   initialValue: any = undefined;

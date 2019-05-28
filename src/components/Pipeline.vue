@@ -30,7 +30,7 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
-import { VQBState } from '@/store/state';
+import { MutationCallbacks } from '@/store/mutations';
 import { DomainStep, Pipeline } from '@/lib/steps';
 import DomainSelector from './DomainSelector.vue';
 import Step from './Step.vue';
@@ -53,10 +53,10 @@ export default class PipelineComponent extends Vue {
   @Getter stepsWithoutDomain!: Pipeline;
   @Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
-  @Mutation selectStep!: (payload: Pick<VQBState, 'selectedStepIndex'>) => void;
+  @Mutation selectStep!: MutationCallbacks['selectStep'];
 
   resetSelectedStep() {
-    this.selectStep({ selectedStepIndex: -1 });
+    this.selectStep({ index: -1 });
   }
 }
 </script>

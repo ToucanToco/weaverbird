@@ -25,7 +25,7 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
-import { VQBState } from '@/store/state';
+import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
   name: 'step',
@@ -49,7 +49,7 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
-  @Mutation deleteStep!: (payload: { index: number }) => void;
+  @Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
   get classDot() {
     return {
