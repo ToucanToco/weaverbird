@@ -4,6 +4,7 @@
       <FormRenameStep
         v-if="isEditingStep"
         :initialValue="initialValue"
+        :isStepCreation="isStepCreation"
         slot="left-panel"
         @cancel="toggleStepEdition()"
         @formSaved="saveStep"
@@ -45,9 +46,11 @@ export default class App extends Vue {
   @State pipeline!: Pipeline;
   @State domains!: string[];
   @State isEditingStep!: boolean;
+  @State selectedStepIndex!: number;
 
   @Getter activePipeline!: Pipeline;
 
+  @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setDomains!: (payload: Pick<VQBState, 'domains'>) => void;
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
   @Mutation setDataset!: (payload: Pick<VQBState, 'dataset'>) => void;
@@ -68,11 +71,20 @@ export default class App extends Vue {
     await this.updateData(this.pipeline);
   }
 
+  get isStepCreation() {
+    return this.editedStepIndex === -1;
+  }
+
   openStepForm(params: any, index: number) {
     // params.name will be used to choose the right form
     // after that, we delete from params to pass down the others keys to initialValue
     this.initialValue = _.omit(params, 'name');
-    this.editedStepIndex = index === undefined ? -1 : index;
+    if (index !== undefined) {
+      this.editedStepIndex = index;
+      this.selectStep({ index: index - 1 });
+    } else {
+      this.editedStepIndex = -1;
+    }
     this.toggleStepEdition();
   }
 
@@ -80,15 +92,19 @@ export default class App extends Vue {
     // Reset value from DataViewer
     this.initialValue = undefined;
     let newPipeline: Pipeline = this.pipeline;
-    if (this.editedStepIndex === -1) {
+    if (this.isStepCreation && this.selectedStepIndex === -1) {
       newPipeline = newPipeline.concat(step);
+      this.selectStep({ index: this.selectedStepIndex });
+    } else if (this.isStepCreation) {
+      newPipeline.splice(this.selectedStepIndex + 1, 0, step);
+      this.selectStep({ index: this.selectedStepIndex + 1 });
     } else {
       newPipeline.splice(this.editedStepIndex, 1, step);
+      this.selectStep({ index: this.editedStepIndex });
     }
-    this.updateData(newPipeline);
+    this.setPipeline({ pipeline: newPipeline });
     this.toggleStepEdition();
-    // Reset editedStepIndex
-    this.editedStepIndex = -1;
+    this.editedStepIndex = -1; // Reset editedStepIndex
   }
 
   async updateData(pipeline: Pipeline) {
