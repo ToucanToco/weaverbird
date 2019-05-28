@@ -56,10 +56,6 @@ export default class PipelineComponent extends Vue {
 
   @Mutation selectStep!: MutationCallbacks['selectStep'];
 
-  resetSelectedStep() {
-    this.selectStep({ index: -1 });
-  }
-
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);
   }

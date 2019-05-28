@@ -61,6 +61,7 @@ export default {
    */
   deleteStep(state: VQBState, { index }: { index: number }) {
     state.pipeline.splice(index, 1);
+    state.selectedStepIndex = index - 1;
   },
   /**
    * change current selected domain and reset pipeline accordingly.
