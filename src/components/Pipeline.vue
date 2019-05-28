@@ -56,10 +56,6 @@ export default class PipelineComponent extends Vue {
 
   @Mutation selectStep!: (payload: Pick<VQBState, 'selectedStepIndex'>) => void;
 
-  resetSelectedStep() {
-    this.selectStep({ selectedStepIndex: -1 });
-  }
-
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);
   }

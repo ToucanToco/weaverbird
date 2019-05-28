@@ -39,10 +39,11 @@
 import _ from 'lodash';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
+import { Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
-import { Getter, Mutation } from 'vuex-class';
+import { Getter, Mutation, State } from 'vuex-class';
 
 interface RenameStepConf {
   oldname: string;
@@ -66,12 +67,18 @@ export default class FormRenameStep extends Mixins(FormMixin) {
   })
   initialValue!: RenameStepConf;
 
-  // @Prop(Number)
-  // readonly editedStepIndex!: number;
+  @Prop({
+    type: Boolean,
+    default: () => true,
+  })
+  isStepCreation!: boolean;
 
   step: RenameStepConf = this.initialValue;
-  // index = this.editedStepIndex;
 
+  @State pipeline!: Pipeline;
+  @State selectedStepIndex!: number;
+
+  @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation toggleColumnSelection!: (column: string) => void;
 
   @Getter selectedColumns!: string[];
@@ -86,6 +93,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 
   created() {
     this.schema = renameSchema;
+    this.toggleColumnSelection(this.initialValue.oldname);
   }
 
   validateStep() {
@@ -94,13 +102,21 @@ export default class FormRenameStep extends Mixins(FormMixin) {
       this.errors = this.validator.errors;
     } else {
       this.errors = null;
-      // this.$emit('formSaved', { name: 'rename', ...this.step }, this.editedStepIndex);
       this.$emit('formSaved', { name: 'rename', ...this.step });
     }
   }
 
   cancelEdition() {
     this.$emit('cancel');
+    let idx = this.pipeline.length;
+    if (!this.isStepCreation) {
+      // When a edition is for modification of an existing step, the selected step
+      // is the one just above, and we want to get back to the existing step when canceling
+      idx = this.selectedStepIndex + 1;
+    } else {
+      idx = this.selectedStepIndex !== -1 ? this.selectedStepIndex : idx;
+    }
+    this.selectStep({ index: idx });
   }
 }
 </script>
