@@ -49,6 +49,7 @@ export default class App extends Vue {
   @State selectedStepIndex!: number;
 
   @Getter activePipeline!: Pipeline;
+  @Getter computedActiveStepIndex!: number;
 
   @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setDomains!: (payload: Pick<VQBState, 'domains'>) => void;
@@ -92,19 +93,14 @@ export default class App extends Vue {
     // Reset value from DataViewer
     this.initialValue = undefined;
     let newPipeline: Pipeline = this.pipeline;
-    if (this.isStepCreation && this.selectedStepIndex === -1) {
-      newPipeline = newPipeline.concat(step);
-      this.selectStep({ index: this.selectedStepIndex });
-    } else if (this.isStepCreation) {
-      newPipeline.splice(this.selectedStepIndex + 1, 0, step);
-      this.selectStep({ index: this.selectedStepIndex + 1 });
+    if (this.isStepCreation) {
+      newPipeline.splice(this.computedActiveStepIndex + 1, 0, step);
     } else {
-      newPipeline.splice(this.editedStepIndex, 1, step);
-      this.selectStep({ index: this.editedStepIndex });
+      newPipeline.splice(this.computedActiveStepIndex + 1, 1, step);
     }
+    this.selectStep({ index: this.computedActiveStepIndex + 1 });
     this.setPipeline({ pipeline: newPipeline });
     this.toggleStepEdition();
-    this.editedStepIndex = -1; // Reset editedStepIndex
   }
 
   async updateData(pipeline: Pipeline) {
