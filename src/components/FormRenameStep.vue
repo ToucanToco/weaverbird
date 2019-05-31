@@ -83,6 +83,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
+  @Getter computedActiveStepIndex!: number;
 
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
@@ -108,14 +109,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 
   cancelEdition() {
     this.$emit('cancel');
-    let idx = this.pipeline.length;
-    if (!this.isStepCreation) {
-      // When a edition is for modification of an existing step, the selected step
-      // is the one just above, and we want to get back to the existing step when canceling
-      idx = this.selectedStepIndex + 1;
-    } else {
-      idx = this.selectedStepIndex !== -1 ? this.selectedStepIndex : idx;
-    }
+    const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
     this.selectStep({ index: idx });
   }
 }
