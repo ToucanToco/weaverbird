@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
 import { setupStore } from '@/store';
@@ -19,5 +19,37 @@ describe('Pipeline.vue', () => {
     const step = wrapper.find(Step);
     step.find('i[class="fas fa-trash-alt"]').trigger('click');
     expect(store.state.pipeline.length).toEqual(1);
+  });
+
+  it('emit selectedStep when clicking on a step "time travel" dot', () => {
+    const wrapper = shallowMount(Step, {
+      propsData: {
+        key: 0,
+        isActive: true,
+        isDisabled: false,
+        isFirst: false,
+        isLast: true,
+        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        indexInPipeline: 2,
+      },
+    });
+    wrapper.find('.query-pipeline-queue__dot').trigger('click');
+    expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
+  });
+
+  it('emit selectedStep when clicking on the step itself', () => {
+    const wrapper = shallowMount(Step, {
+      propsData: {
+        key: 0,
+        isActive: true,
+        isDisabled: false,
+        isFirst: false,
+        isLast: true,
+        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        indexInPipeline: 2,
+      },
+    });
+    wrapper.find('.query-pipeline-step').trigger('click');
+    expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
   });
 });

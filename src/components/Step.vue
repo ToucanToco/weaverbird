@@ -1,8 +1,8 @@
 <template>
-  <div class="query-pipeline-step__container">
+  <div class="query-pipeline-step__container" @click="select()">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass"></div>
-      <div :class="classDot" @click="select()">
+      <div :class="classDot">
         <div :class="classDotInk"></div>
       </div>
       <div :class="lastStrokeClass"></div>
