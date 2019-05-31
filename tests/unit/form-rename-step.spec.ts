@@ -1,5 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FormRenameStep from '@/components/FormRenameStep.vue';
+import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
 
@@ -101,5 +102,32 @@ describe('Form Rename Step', () => {
     expect(wrapper.vm.$data.step.oldname).toEqual('');
     store.commit('toggleColumnSelection', 'columnB');
     expect(wrapper.vm.$data.step.oldname).toEqual('columnB');
+  });
+
+  it('should update selectedColumn when oldname is changed', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    const wrapper = mount(FormRenameStep, { store, localVue });
+    wrapper.setData({ step: { oldname: 'columnB', new_name: '' } });
+    wrapper.find(WidgetAutocomplete).trigger('input');
+    expect(store.state.selectedColumns).toEqual(['columnB']);
+  });
+
+  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
+    const store = setupStore({
+      selectedStepIndex: 2,
+    });
+    const wrapper = mount(FormRenameStep, { store, localVue });
+    wrapper.setProps({ isStepCreation: true });
+    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    expect(store.state.selectedStepIndex).toEqual(2);
+    wrapper.setProps({ isStepCreation: false });
+    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

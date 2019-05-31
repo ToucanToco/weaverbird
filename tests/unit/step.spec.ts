@@ -36,7 +36,5 @@ describe('Step.vue', () => {
     expect(renameStep.emitted()).toEqual({
       editStep: [[{ name: 'rename', oldname: 'region', newname: 'kingdom' }, 2]],
     });
-    // expect(store.state.isEditingStep).toBeTruthy();
-    // expect(store.state.selectedStepIndex).toEqual(0);
   });
 });
