@@ -245,4 +245,12 @@ describe('mutation tests', () => {
     mutations.setDataset(state, { dataset });
     expect(state.dataset).toEqual(dataset);
   });
+
+  it('toggles step edition mode', () => {
+    const state = buildState({ isEditingStep: true });
+    mutations.toggleStepEdition(state);
+    expect(state.isEditingStep).toEqual(false);
+    mutations.toggleStepEdition(state);
+    expect(state.isEditingStep).toEqual(true);
+  });
 });
