@@ -30,7 +30,6 @@
   <div v-else>No data available</div>
 </template>
 <script lang="ts">
-import _ from 'lodash';
 import Vue from 'vue';
 import { Getter, Mutation, State } from 'vuex-class';
 
