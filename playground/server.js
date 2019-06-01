@@ -1,36 +1,27 @@
-import { readFileSync, readFile } from 'fs';
-import express = require('express');
-import { MongoClient, MongoError } from 'mongodb';
-import bodyParser from 'body-parser';
-import csv from 'csvtojson';
+const { readFileSync } = require('fs');
+const express = require('express');
+const { MongoClient } = require('mongodb');
+const bodyParser = require('body-parser');
+const csv = require('csvtojson');
 
-import meow from 'meow';
-
-type ServerConfig = {
-  dburi: string;
-  dbname: string;
-  port: number;
-  defaultCollection: string;
-  reset: boolean;
-  defaultDataset: string;
-};
+const meow = require('meow');
 
 function _loadData(
-  data: Array<object>,
-  config: ServerConfig,
-  client: MongoClient,
-  onsuccess: () => void,
-  onerror: (err: any) => void = () => {},
+  data,
+  config,
+  client,
+  onsuccess,
+  onerror,
 ) {
-  client.connect(function(err) {
+  client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(config.defaultCollection);
-    collection.deleteMany({}, function(err) {
+    collection.deleteMany({}, function (err) {
       if (err) {
         onerror(err);
       } else {
-        collection.insertMany(data, function(err) {
+        collection.insertMany(data, function (err) {
           if (err) {
             onerror(err);
           } else {
@@ -51,11 +42,11 @@ function _loadData(
  * @param onerror callback to call on error
  */
 function loadCSVInDatabase(
-  filepath: string,
-  config: ServerConfig,
-  client: MongoClient,
-  onsuccess: () => void,
-  onerror: (err: any) => void = () => {},
+  filepath,
+  config,
+  client,
+  onsuccess,
+  onerror,
 ) {
   csv({ checkType: true })
     .fromFile(filepath)
@@ -68,7 +59,7 @@ function loadCSVInDatabase(
  * @param client mongo client
  * @param err mongo error, if any
  */
-function assertIsConnected(client: MongoClient, err: MongoError) {
+function assertIsConnected(client, err) {
   if (err || !client.isConnected()) {
     let msg = 'Failed to connect to database';
     if (err) {
@@ -89,18 +80,18 @@ function assertIsConnected(client: MongoClient, err: MongoError) {
  * @param onerror callback to call on error
  */
 function executeQuery(
-  config: ServerConfig,
-  client: MongoClient,
-  collectionName: string,
-  query: Array<object>,
-  onsuccess: (results: object) => void,
-  onerror: (err: any) => void,
+  config,
+  client,
+  collectionName,
+  query,
+  onsuccess,
+  onerror,
 ) {
-  client.connect(function(err) {
+  client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
-    collection.aggregate(query).toArray(function(err, docs) {
+    collection.aggregate(query).toArray(function (err, docs) {
       if (err) {
         onerror(err);
       } else {
@@ -119,12 +110,12 @@ function executeQuery(
  * @param onerror callback to call on error
  */
 function listCollections(
-  config: ServerConfig,
-  client: MongoClient,
-  onsuccess: (results: Array<string>) => void,
-  onerror: (err: any) => void,
+  config,
+  client,
+  onsuccess,
+  onerror,
 ) {
-  client.connect(function(err) {
+  client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     db.listCollections().toArray((err, results) => {
@@ -137,11 +128,11 @@ function listCollections(
   });
 }
 
-function _testConnection(client: MongoClient) {
-  client.connect(function(err) {});
+function _testConnection(client) {
+  client.connect(function () { });
 }
 
-function setupApp(config: ServerConfig) {
+function setupApp(config) {
   const client = new MongoClient(config.dburi, { useNewUrlParser: true });
   _testConnection(client);
   if (config.reset) {
@@ -261,6 +252,6 @@ function parseCommandLine() {
 }
 
 const config = parseCommandLine();
-setupApp(config).listen(config.httpPort, function() {
+setupApp(config).listen(config.httpPort, function () {
   console.log(`VQB playground app listening on port ${config.httpPort}!`);
 });

@@ -1,7 +1,0 @@
-{
-  "extends": "../tsconfig",
-  "include": ["server.ts"],
-  "compilerOptions": {
-    "module": "commonjs"
-  }
-}
