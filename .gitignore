@@ -2,9 +2,7 @@
 node_modules
 /dist
 coverage
-playground/*.js
 playground/*.map
-playground/dist/*.js
 
 # local env files
 .env.local

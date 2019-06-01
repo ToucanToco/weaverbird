@@ -13,19 +13,17 @@
     />
     <link rel="stylesheet" href="/playground.css" />
     <title>vue-query-builder</title>
-    <link href="/app.js" rel="preload" as="script" />
   </head>
 
   <body>
-    <noscript>
-      <strong
-        >We're sorry but vue-query-builder doesn't work properly without JavaScript enabled. Please
-        enable it to continue.</strong
-      >
-    </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <vqb></vqb>
+      <pre><code>{{ code }}</code></pre>
+    </div>
     <!-- built files will be auto injected -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script type="text/javascript" src="/app.js"></script>
+    <script src="https://unpkg.com/vuex@3.1.1/dist/vuex.js"></script>
+    <script type="module" src="/vue-query-builder.browser.js"></script>
+    <script type="module" src="/app.js"></script>
   </body>
 </html>
