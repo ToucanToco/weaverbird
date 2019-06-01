@@ -149,8 +149,6 @@ which is basically a shortcut for the following steps:
 ```bash
 # build the visual query builder bundle
 yarn build-bundle --watch
-# build the playground app
-yarn playground:build-app --watch
 # build the "backend" server
 yarn playground:build-server --watch
 # run the server and enjoy!
