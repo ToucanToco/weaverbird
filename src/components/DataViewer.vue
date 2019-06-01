@@ -22,6 +22,7 @@
             :key="cellidx"
             :isSelected="isSelected(columnNames[cellidx])"
             :value="cell"
+            @click="toggleColumnSelection(columnNames[cellidx])"
           />
         </tr>
       </tbody>
@@ -30,7 +31,6 @@
   <div v-else>No data available</div>
 </template>
 <script lang="ts">
-import _ from 'lodash';
 import Vue from 'vue';
 import { Getter, Mutation, State } from 'vuex-class';
 
@@ -49,7 +49,7 @@ import { CATEGORY_BUTTONS } from './constants';
   name: 'data-viewer',
   components: {
     DataViewerCell,
-    ActionToolbar
+    ActionToolbar,
   },
 })
 export default class DataViewer extends Vue {

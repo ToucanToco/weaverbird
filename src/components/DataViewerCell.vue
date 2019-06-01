@@ -1,10 +1,10 @@
 <template functional>
   <td
     :class="{'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }"
+    @click="listeners.click"
   >{{ $options.methods.getValue(props.value)}}</td>
 </template>
 <script lang="ts">
-
 /**
  * @name DataViewerCell
  * @description A table cell displayed in a DataViewer
