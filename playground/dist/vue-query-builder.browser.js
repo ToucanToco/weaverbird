@@ -1,0 +1,1 @@
+../../dist/vue-query-builder.browser.js
