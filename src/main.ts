@@ -1,6 +1,7 @@
 // export lib entrypoints
-export { mongoToPipe } from './lib/pipeline';
+export { filterOutDomain, mongoToPipe } from './lib/pipeline';
 export { getTranslator } from './lib/translators';
+export { mongoResultsToDataset } from './lib/dataset/mongo';
 
 // export store entrypoints
 export { servicePluginFactory } from '@/store/backend-plugin';
