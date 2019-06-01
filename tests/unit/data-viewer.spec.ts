@@ -1,7 +1,8 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
 import DataViewer from '../../src/components/DataViewer.vue';
+import DataViewerCell from '../../src/components/DataViewerCell.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -125,6 +126,27 @@ describe('Data Viewer', () => {
         const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
         firstHeaderCellWrapper.trigger('click');
         expect(firstHeaderCellWrapper.classes()).toContain('data-viewer__header-cell--active');
+      });
+
+      it('should select a column when clicking on any of its cells', () => {
+        const store = setupStore({
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+          },
+          selectedColumns: ['columnA'],
+        });
+        const wrapper = mount(DataViewer, { store, localVue });
+        const row = wrapper.find('.data-viewer__row');
+        const cells = row.findAll(DataViewerCell);
+        cells.at(2).trigger('click');
+        expect(store.state.selectedColumns).toEqual(['columnC']);
       });
     });
   });
