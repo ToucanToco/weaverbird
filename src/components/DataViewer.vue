@@ -5,13 +5,24 @@
       <thead class="data-viewer__header">
         <tr>
           <td
-            v-for="column in formattedColumns"
+            v-for="(column, index) in formattedColumns"
             :class="column.class"
             :key="column.name"
-            @click="toggleColumnSelection(column.name)"
+            @click="toggleColumnSelection({ column: column.name})"
           >
             <span class="data-viewer__header-label">{{ column.name }}</span>
-            <i class="data-viewer__header-action fas fa-angle-down" @click="openStep(column.name)"></i>
+            <i
+              class="data-viewer__header-action fas fa-angle-down"
+              :class="{'data-viewer__header-action--visible': column.isActionMenuOpened}"
+              @click.stop="openMenu(index)"
+            >
+              <ActionMenu
+                :column-name="column.name"
+                :is-active="column.isActionMenuOpened"
+                @closed="closeMenu"
+                @actionClicked="createStep"
+              />
+            </i>
           </td>
         </tr>
       </thead>
@@ -30,14 +41,15 @@
   <div v-else>No data available</div>
 </template>
 <script lang="ts">
-import _ from 'lodash';
 import Vue from 'vue';
 import { Getter, Mutation, State } from 'vuex-class';
 
 import { DataSet } from '@/lib/dataset';
+import { PipelineStep } from '@/lib/steps';
 import { Component } from 'vue-property-decorator';
-import DataViewerCell from './DataViewerCell.vue';
+import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
+import DataViewerCell from './DataViewerCell.vue';
 import { CATEGORY_BUTTONS } from './constants';
 
 /**
@@ -48,8 +60,9 @@ import { CATEGORY_BUTTONS } from './constants';
 @Component({
   name: 'data-viewer',
   components: {
+    ActionMenu,
+    ActionToolbar,
     DataViewerCell,
-    ActionToolbar
   },
 })
 export default class DataViewer extends Vue {
@@ -59,7 +72,10 @@ export default class DataViewer extends Vue {
   @Getter('isDatasetEmpty') isEmpty!: boolean;
   @Getter columnNames!: string[];
 
-  @Mutation toggleColumnSelection!: (column: string) => void;
+  @Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
+  @Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
+
+  indexActiveActionMenu: number = -1;
 
   /**
    * @description Get our columns with their names and linked classes
@@ -67,13 +83,22 @@ export default class DataViewer extends Vue {
    * @return {Array<object>}
    */
   get formattedColumns() {
-    return this.columnNames.map(d => ({
-      name: d,
-      class: {
-        'data-viewer__header-cell': true,
-        'data-viewer__header-cell--active': this.isSelected(d),
-      },
-    }));
+    return this.columnNames.map((d, index) => {
+      let isActive = false;
+
+      if (index === this.indexActiveActionMenu) {
+        isActive = true;
+      }
+
+      return {
+        name: d,
+        isActionMenuOpened: isActive,
+        class: {
+          'data-viewer__header-cell': true,
+          'data-viewer__header-cell--active': this.isSelected(d),
+        },
+      };
+    });
   }
 
   get buttons() {
@@ -90,14 +115,22 @@ export default class DataViewer extends Vue {
     return this.selectedColumns.includes(column);
   }
 
-  // FIXME: for now it send only 'rename' step
+  openMenu(index: number) {
+    this.indexActiveActionMenu = index;
+    this.setSelectedColumns({ column: this.formattedColumns[index].name });
+  }
+
+  closeMenu() {
+    this.indexActiveActionMenu = -1;
+  }
+
   /**
-   * @description Launch a step
+   * @description Emit an event in order to open the form to create a step
    *
-   * @param {string} columnName - A column name
+   * @param {PipelineStep} step - The step we want to create
    */
-  openStep(columnName: string) {
-    this.$emit('stepCreated', { name: 'rename', oldname: columnName });
+  createStep(step: PipelineStep) {
+    this.$emit('stepCreated', step);
   }
 }
 </script>

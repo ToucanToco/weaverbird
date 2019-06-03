@@ -104,15 +104,24 @@ export default {
   },
 
   /**
-   * toggle column selection
+   *
+   * set selected columns
    */
-  toggleColumnSelection(state: VQBState, column: string) {
+  setSelectedColumns(state: VQBState, { column }: { column: string }) {
     state.selectedColumns = [column];
   },
 
   /**
    * toggle column selection
    */
+  toggleColumnSelection(state: VQBState, { column }: { column: string }) {
+    if (state.selectedColumns.includes(column)) {
+      state.selectedColumns = [];
+    } else {
+      state.selectedColumns = [column];
+    }
+  },
+
   toggleStepEdition(state: VQBState) {
     state.isEditingStep = !state.isEditingStep;
   },
