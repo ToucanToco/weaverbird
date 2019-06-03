@@ -26,6 +26,7 @@
   flex-grow: 1;
   flex-shrink: 0;
   justify-content: space-between;
+  align-items: center;
 }
 
 .data-viewer-cell {
@@ -59,6 +60,10 @@
   border-top-color: $active-color;
   border-left-color: $active-color;
   border-right-color: $active-color;
+
+  .data-viewer__header-action:hover {
+    background-color: $active-color-faded;
+  }
 }
 
 .data-viewer__header-label {
@@ -73,9 +78,26 @@
   opacity: 0;
   visibility: hidden;
   position: absolute;
+  font-size: 18px;
   right: 10px;
   top: 8px;
   transition: opacity 300ms ease;
+  display: flex;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.data-viewer__header-action:hover {
+  background-color: $data-viewer-border-color;
+}
+
+.data-viewer__header-action--visible {
+  opacity: 1;
+  visibility: visible;
+  background-color: $active-color-faded;
 }
 
 .data-viewer__header-cell:hover {
