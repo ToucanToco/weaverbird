@@ -9,7 +9,6 @@
       name="Old name"
       :options="columnNames"
       placeholder="Enter the old column name"
-      @input="toggleColumnSelection(step.oldname)"
     ></WidgetAutocomplete>
     <WidgetInputText
       id="newnameInput"
@@ -79,7 +78,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
   @State selectedStepIndex!: number;
 
   @Mutation selectStep!: (payload: { index: number }) => void;
-  @Mutation toggleColumnSelection!: (column: string) => void;
+  @Mutation toggleColumnSelection!: (payload: { column: string }) => void;
 
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
@@ -92,9 +91,16 @@ export default class FormRenameStep extends Mixins(FormMixin) {
     }
   }
 
+  @Watch('step.oldname')
+  onOldNameChanged(val: string, oldVal: string) {
+    if (val !== oldVal && !_.isEqual(this.selectedColumns, [val])) {
+      this.toggleColumnSelection({ column: val });
+    }
+  }
+
   created() {
     this.schema = renameSchema;
-    this.toggleColumnSelection(this.initialValue.oldname);
+    this.toggleColumnSelection({ column: this.initialValue.oldname });
   }
 
   validateStep() {
