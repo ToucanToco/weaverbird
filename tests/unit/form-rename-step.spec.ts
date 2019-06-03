@@ -1,14 +1,15 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FormRenameStep from '@/components/FormRenameStep.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
+import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-const emptyStore = setupStore({});
+// const emptyStore = setupStore({});
 
 interface ValidationError {
   dataPath: string;
@@ -16,6 +17,11 @@ interface ValidationError {
 }
 
 describe('Form Rename Step', () => {
+  let emptyStore: Store<VQBState>;
+  beforeEach(() => {
+    emptyStore = setupStore({});
+  });
+
   it('should instantiate', () => {
     const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
 
@@ -69,7 +75,7 @@ describe('Form Rename Step', () => {
     ]);
   });
 
-  it('should validate and emit "formSavaed" when submitted data is valid', () => {
+  it('should validate and emit "formSaved" when submitted data is valid', () => {
     const wrapper = shallowMount(FormRenameStep, {
       store: emptyStore,
       localVue,
@@ -101,7 +107,7 @@ describe('Form Rename Step', () => {
     });
     const wrapper = shallowMount(FormRenameStep, { store, localVue });
     expect(wrapper.vm.$data.step.oldname).toEqual('');
-    store.commit('toggleColumnSelection', 'columnB');
+    store.commit('toggleColumnSelection', { column: 'columnB' });
     expect(wrapper.vm.$data.step.oldname).toEqual('columnB');
   });
 
