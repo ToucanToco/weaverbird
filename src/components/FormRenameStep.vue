@@ -122,7 +122,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 }
 
 .widget-form-action__button--validate {
-  background: $blue;
+  background-color: $active-color;
 }
 
 .step-edit-form {
