@@ -3,7 +3,7 @@
     <div class="vqb-modal__backdrop"></div>
     <div class="vqb-modal__container">
       <div class="vqb-modal__body" style="width: 500px;">
-        <i class="vqb-modal__close"></i>
+        <i class="vqb-modal__close fas fa-times" @click="listeners['cancelDelete']"></i>
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Delete this step?</div>
         </div>
@@ -15,8 +15,14 @@
           </strong>
         </div>
         <div class="vqb-modal__footer">
-          <div class="vqb-modal__action vqb-modal__action--secondary">cancel</div>
-          <div class="vqb-modal__action vqb-modal__action--primary">confirm</div>
+          <div
+            class="vqb-modal__action vqb-modal__action--secondary"
+            @click="listeners['cancelDelete']"
+          >cancel</div>
+          <div
+            class="vqb-modal__action vqb-modal__action--primary"
+            @click="listeners['validateDelete']"
+          >confirm</div>
         </div>
       </div>
     </div>
