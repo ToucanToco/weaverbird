@@ -8,7 +8,6 @@ $active-color: rgb(38, 101, 163) !default;
 $active-color-faded: rgba($active-color, 0.1) !default;
 $active-color-faded-2: rgba($active-color, 0.05) !default;
 $data-viewer-border-color: #e0e0e0 !default;
-$blue: #2665a3;
 $grey: #eeeeee;
 
 //GLOBAL STYLE
@@ -22,6 +21,10 @@ body {
   color: $base-color;
   font-family: 'Montserrat', sans-serif;
   margin: 0;
+}
+
+button {
+  outline: none;
 }
 
 // FORMS STYLES PLACEHOLDER
