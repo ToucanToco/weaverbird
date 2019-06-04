@@ -6,7 +6,7 @@ describe('Action Menu', () => {
     const wrapper = mount(ActionMenu);
 
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).toContain('popover');
+    expect(wrapper.classes()).not.toContain('popover--active');
   });
 
   it('should instantiate with the popover active', () => {
