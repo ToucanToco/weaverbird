@@ -8,6 +8,7 @@
       v-model="step.oldname"
       name="Old name"
       :options="columnNames"
+      @input="setSelectedColumns({ column: step.oldname })"
       placeholder="Enter the old column name"
     ></WidgetAutocomplete>
     <WidgetInputText
@@ -72,13 +73,13 @@ export default class FormRenameStep extends Mixins(FormMixin) {
   })
   isStepCreation!: boolean;
 
-  step: RenameStepConf = this.initialValue;
+  step: RenameStepConf = { ...this.initialValue };
 
   @State pipeline!: Pipeline;
   @State selectedStepIndex!: number;
 
   @Mutation selectStep!: (payload: { index: number }) => void;
-  @Mutation toggleColumnSelection!: (payload: { column: string }) => void;
+  @Mutation setSelectedColumns!: (payload: { column: string }) => void;
 
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
@@ -90,17 +91,10 @@ export default class FormRenameStep extends Mixins(FormMixin) {
       this.step.oldname = val[0];
     }
   }
-
-  @Watch('step.oldname')
-  onOldNameChanged(val: string, oldVal: string) {
-    if (val !== oldVal && !_.isEqual(this.selectedColumns, [val])) {
-      this.toggleColumnSelection({ column: val });
-    }
-  }
-
+  
   created() {
     this.schema = renameSchema;
-    this.toggleColumnSelection({ column: this.initialValue.oldname });
+    this.setSelectedColumns({ column: this.initialValue.oldname });
   }
 
   validateStep() {
