@@ -104,7 +104,7 @@ describe('Form Rename Step', () => {
     expect(wrapper.vm.$data.step.oldname).toEqual('columnB');
   });
 
-  it('should update selectedColumn when oldname is changed', () => {
+  it('should update selectedColumn when oldname is changed', async () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -112,9 +112,17 @@ describe('Form Rename Step', () => {
       },
       selectedColumns: ['columnA'],
     });
-    const wrapper = mount(FormRenameStep, { store, localVue });
+    const wrapper = mount(FormRenameStep, {
+      propsData: {
+        initialValue: {
+          oldname: 'columnA',
+        },
+      },
+      store,
+      localVue,
+    });
     wrapper.setData({ step: { oldname: 'columnB', new_name: '' } });
-    wrapper.find(WidgetAutocomplete).trigger('input');
+    await wrapper.find(WidgetAutocomplete).trigger('input');
     expect(store.state.selectedColumns).toEqual(['columnB']);
   });
 
@@ -122,7 +130,7 @@ describe('Form Rename Step', () => {
     const store = setupStore({
       selectedStepIndex: 2,
     });
-    const wrapper = mount(FormRenameStep, { store, localVue });
+    const wrapper = shallowMount(FormRenameStep, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).toEqual(2);
