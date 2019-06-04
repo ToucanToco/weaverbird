@@ -43,7 +43,19 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline when a selectStep mutation is committed', async () => {
-    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ];
+    const store = setupStore(
+      {
+        pipeline,
+        selectedStepIndex: 1,
+      },
+      [servicePluginFactory(new DummyService())],
+    );
     store.commit('selectStep', { index: 2 });
     await flushPromises();
     expect(store.state.dataset).toEqual({

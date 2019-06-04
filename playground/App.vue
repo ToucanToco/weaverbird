@@ -98,8 +98,8 @@ export default class App extends Vue {
     } else {
       newPipeline.splice(this.computedActiveStepIndex + 1, 1, step);
     }
-    this.selectStep({ index: this.computedActiveStepIndex + 1 });
     this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index: this.computedActiveStepIndex + 1 });
     this.toggleStepEdition();
   }
 

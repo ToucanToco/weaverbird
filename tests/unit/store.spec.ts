@@ -185,10 +185,20 @@ describe('getter tests', () => {
 
 describe('mutation tests', () => {
   it('selects step', () => {
-    const state = buildState({});
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+    ];
+    const state = buildState({ pipeline });
     expect(state.selectedStepIndex).toEqual(-1);
     mutations.selectStep(state, { index: 2 });
     expect(state.selectedStepIndex).toEqual(2);
+
+    console.error = jest.fn();
+    mutations.selectStep(state, { index: 5 });
+    expect(console.error).toHaveBeenCalled();
+    expect(state.selectedStepIndex).toEqual(-1);
   });
 
   it('sets current domain on empty pipeline', () => {

@@ -3,6 +3,7 @@ import FormRenameStep from '@/components/FormRenameStep.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
+import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -127,7 +128,14 @@ describe('Form Rename Step', () => {
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ];
     const store = setupStore({
+      pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = shallowMount(FormRenameStep, { store, localVue });
