@@ -14,13 +14,13 @@
           <i class="fas fa-cog"></i>
         </div>
         <div class="query-pipeline-step__action">
-          <i class="fas fa-trash-alt" @click="toggleDeleteConfirmation()"></i>
+          <i class="fas fa-trash-alt" @click="toggleDeleteConfirmationModal"></i>
         </div>
       </div>
     </div>
     <DeleteConfirmationModal
-      v-if="deleteConfirmation"
-      @cancelDelete="toggleDeleteConfirmation"
+      v-if="deleteConfirmationModalIsOpened"
+      @cancelDelete="toggleDeleteConfirmationModal"
       @validateDelete="deleteThisStep"
     />
   </div>
@@ -58,7 +58,7 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
-  deleteConfirmation: boolean = false;
+  deleteConfirmationModalIsOpened: boolean = false;
 
   @Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
@@ -100,7 +100,7 @@ export default class Step extends Vue {
   }
 
   deleteThisStep() {
-    this.toggleDeleteConfirmation();
+    this.toggleDeleteConfirmationModal();
     this.deleteStep({ index: this.indexInPipeline });
   }
 
@@ -108,8 +108,8 @@ export default class Step extends Vue {
     this.$emit('selectedStep');
   }
 
-  toggleDeleteConfirmation() {
-    this.deleteConfirmation = !this.deleteConfirmation;
+  toggleDeleteConfirmationModal() {
+    this.deleteConfirmationModalIsOpened = !this.deleteConfirmationModalIsOpened;
   }
 }
 </script>
