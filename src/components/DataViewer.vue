@@ -84,15 +84,15 @@ export default class DataViewer extends Vue {
    */
   get formattedColumns() {
     return this.columnNames.map((d, index) => {
-      let isActive = false;
+      let isActionMenuOpened = false;
 
       if (index === this.indexActiveActionMenu) {
-        isActive = true;
+        isActionMenuOpened = true;
       }
 
       return {
         name: d,
-        isActionMenuOpened: isActive,
+        isActionMenuOpened,
         class: {
           'data-viewer__header-cell': true,
           'data-viewer__header-cell--active': this.isSelected(d),
