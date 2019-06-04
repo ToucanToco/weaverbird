@@ -19,14 +19,12 @@ describe('Action Menu', () => {
     expect(wrapper.classes()).toContain('popover--active');
   });
 
+  it('should have an "Rename column" action', () => {
+    const wrapper = mount(ActionMenu);
+    expect(wrapper.html()).toContain('Rename column');
+  });
+
   describe('when click on "Rename column"', () => {
-    it('should have an "Rename column" action', () => {
-      const wrapper = mount(ActionMenu);
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-
-      expect(actionsWrapper.at(1).text()).toEqual('Rename column');
-    });
-
     it('should emit an "actionClicked" event', () => {
       const wrapper = mount(ActionMenu);
       const actionsWrapper = wrapper.findAll('.action-menu__option');
