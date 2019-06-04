@@ -92,7 +92,7 @@ export default class App extends Vue {
   saveStep(step: PipelineStep) {
     // Reset value from DataViewer
     this.initialValue = undefined;
-    let newPipeline: Pipeline = this.pipeline;
+    let newPipeline: Pipeline = [...this.pipeline];
     if (this.isStepCreation) {
       newPipeline.splice(this.computedActiveStepIndex + 1, 0, step);
     } else {
