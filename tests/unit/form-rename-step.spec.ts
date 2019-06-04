@@ -9,8 +9,6 @@ import { VQBState } from '@/store/state';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-// const emptyStore = setupStore({});
-
 interface ValidationError {
   dataPath: string;
   keyword: string;
