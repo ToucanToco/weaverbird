@@ -25,6 +25,7 @@ describe('Pipeline.vue', () => {
     expect(step1).toEqual({
       step: pipeline[1],
       isActive: true,
+      isLastActive: false,
       isDisabled: false,
       isFirst: true,
       isLast: false,
@@ -32,7 +33,8 @@ describe('Pipeline.vue', () => {
     });
     expect(step2).toEqual({
       step: pipeline[2],
-      isActive: true,
+      isActive: false,
+      isLastActive: true,
       isDisabled: false,
       isFirst: false,
       isLast: true,
