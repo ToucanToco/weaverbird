@@ -526,9 +526,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
-      { $addFields: { foo: { $cond: [{ $eq: ['$foo', null] }, 'bar', '$foo'] } } },
-    ]);
+    expect(querySteps).to.eql([{ $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } }]);
   });
 
   it('can generate a top step with groups', () => {

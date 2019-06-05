@@ -410,7 +410,7 @@ const mapper: StepMatcher<MongoStep> = {
   fillna: step => ({
     $addFields: {
       [step.column]: {
-        $cond: [{ $eq: [$$(step.column), null] }, step.value, $$(step.column)],
+        $ifNull: [$$(step.column), step.value],
       },
     },
   }),
