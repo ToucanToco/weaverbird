@@ -17,7 +17,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
-import { Mutation, State } from 'vuex-class';
+import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
@@ -37,31 +37,46 @@ import _ from 'lodash';
 })
 export default class Vqb extends Vue {
   @State pipeline!: Pipeline;
-  @State domains!: string[];
+  @State isEditingStep!: boolean;
 
-  @Mutation setDomains!: (payload: Pick<VQBState, 'domains'>) => void;
+  @Getter computedActiveStepIndex!: number;
+
+  @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
-  @Mutation setDataset!: (payload: Pick<VQBState, 'dataset'>) => void;
+  @Mutation toggleStepEdition!: () => void;
 
-  isEditingStep: boolean = false;
   initialValue: any = undefined;
+  editedStepIndex: number = -1;
 
-  cancelStepEdition() {
-    this.isEditingStep = false;
+  get isStepCreation() {
+    return this.editedStepIndex === -1;
   }
 
-  openStepForm(params: any) {
+  openStepForm(params: any, index: number) {
     // params.name will be used to choose the right form
     // after that, we delete from params to pass down the others keys to initialValue
     this.initialValue = _.omit(params, 'name');
-    this.isEditingStep = true;
+    if (index !== undefined) {
+      this.editedStepIndex = index;
+      this.selectStep({ index: index - 1 });
+    } else {
+      this.editedStepIndex = -1;
+    }
+    this.toggleStepEdition();
   }
 
   saveStep(step: PipelineStep) {
     // Reset value from DataViewer
     this.initialValue = undefined;
-    this.setPipeline({ pipeline: [...this.pipeline, step] });
-    this.isEditingStep = false;
+    const newPipeline: Pipeline = [...this.pipeline];
+    if (this.isStepCreation) {
+      newPipeline.splice(this.computedActiveStepIndex + 1, 0, step);
+    } else {
+      newPipeline.splice(this.computedActiveStepIndex + 1, 1, step);
+    }
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index: this.computedActiveStepIndex + 1 });
+    this.toggleStepEdition();
   }
 }
 </script>

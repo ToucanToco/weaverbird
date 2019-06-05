@@ -43,13 +43,12 @@ async function _updateDataset(store: Store<VQBState>, service: BackendService, p
 export function servicePluginFactory(service: BackendService) {
   return (store: Store<VQBState>) => {
     store.subscribe(async (mutation: StateMutation, state: VQBState) => {
-      if (mutation.type === 'setPipeline') {
-        _updateDataset(store, service, mutation.payload.pipeline);
-      } else if (mutation.type === 'selectStep') {
-        _updateDataset(store, service, activePipeline(state));
-      } else if (mutation.type === 'setCurrentDomain') {
-        _updateDataset(store, service, activePipeline(state));
-      } else if (mutation.type === 'deleteStep') {
+      if (
+        mutation.type === 'setPipeline' ||
+        mutation.type === 'selectStep' ||
+        mutation.type === 'setCurrentDomain' ||
+        mutation.type === 'deleteStep'
+      ) {
         _updateDataset(store, service, activePipeline(state));
       }
     });

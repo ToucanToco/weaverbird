@@ -45,6 +45,10 @@ export default {
    */
   selectedColumns: (state: VQBState) => state.selectedColumns,
   /**
+   * Get the step config of the pipeline based on its index
+   */
+  stepConfig: (state: VQBState) => (index: number) => state.pipeline[index],
+  /**
    * the whole pipeline except the first (domain) step.
    */
   stepsWithoutDomain: (state: VQBState) => state.pipeline.slice(1),
