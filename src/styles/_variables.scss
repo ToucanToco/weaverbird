@@ -4,6 +4,7 @@
 
 // COLOR VARIABLES
 $base-color: #404040 !default;
+$base-color-light: #4c4c4c !default;
 $active-color: rgb(38, 101, 163) !default;
 $active-color-faded: rgba($active-color, 0.5) !default;
 $active-color-faded-2: rgba($active-color, 0.1) !default;
@@ -53,15 +54,15 @@ button {
   border: none;
   display: flex;
   flex-direction: row;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
   transition: box-shadow 0.25s;
   color: #4c4c4c;
-  font-size: 16px;
   line-height: 24px;
   max-height: 40px;
   width: 100%;
   padding: 8px;
   outline: none;
-
   box-size &::placeholder {
     color: #a7a7a7;
   }

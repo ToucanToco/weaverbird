@@ -1,7 +1,7 @@
 <template>
   <div class="widget-autocomplete__container">
     <label class="widget-autocomplete__label" :for="id">{{ name }}</label>
-    <multiselect v-model="editedValue" :options="options" :placeholder="placeholder"></multiselect>
+    <multiselect v-model="editedValue" :options="options" :placeholder="placeholder" :allow-empty="false"></multiselect>
   </div>
 </template>
 
@@ -54,6 +54,10 @@ export default class WidgetAutocomplete extends Vue {
   position: relative;
 }
 
+.multiselect {
+  color: $base-color-light;
+  font-size: 14px;
+}
 .multiselect__placeholder {
   margin-bottom: 0;
   color: #a7a7a7;
@@ -63,6 +67,7 @@ export default class WidgetAutocomplete extends Vue {
   @extend %form-widget__field;
   border-radius: 0;
   border: none;
+  font-size: 14px;
   & > input {
     background: transparent;
     margin-bottom: 0;
@@ -74,6 +79,8 @@ export default class WidgetAutocomplete extends Vue {
 
 .multiselect__single {
   background-color: transparent;
+  color: $base-color-light;
+  font-size: 14px;
   margin-bottom: 0;
 }
 
@@ -83,15 +90,32 @@ export default class WidgetAutocomplete extends Vue {
   }
 }
 
-.multiselect__option--highlight {
-  background-color: $active-color;
+.multiselect__option {
+  font-size: 14px;
+  box-shadow: inset 0 -1px 0 0 #f1f1f1;
+  &:after {
+    display: none;
+  }
 }
-.multiselect__option--highlight::after {
+
+.multiselect__option--selected {
   background-color: $active-color;
+  color: $base-color-light;
+  font-weight: normal;
+  color: #fff;
+}
+
+.multiselect__option--selected.multiselect__option--highlight {
+  background-color: $active-color;
+  color: #fff;
+}
+
+.multiselect__option--highlight {
+  background-color: #f8f8f8;
+  color: $base-color-light;
 }
 
 .widget-autocomplete__label {
   @extend %form-widget__label;
 }
-
 </style>
