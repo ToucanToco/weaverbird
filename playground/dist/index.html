@@ -13,12 +13,42 @@
     />
     <link rel="stylesheet" href="/playground.css" />
     <title>vue-query-builder</title>
+    <style>
+      html,
+      body {
+        height: 100%;
+      }
+      pre {
+        height: 100%;
+        display: flex;
+      }
+      #app {
+        position: relative;
+        background: url('./pattern-blueprints.png');
+        background-color: rgb(38, 101, 163);
+        flex: 1;
+        height: 100%;
+        padding: 60px 40px 0 40px;
+      }
+      .open-code__button {
+        position: absolute;
+        bottom: 0;
+        height: 40px;
+        font-size: 20px;
+      }
+    </style>
   </head>
 
   <body>
     <div id="app">
       <vqb></vqb>
-      <pre><code>{{ code }}</code></pre>
+      <button class="open-code__button" v-show="!isCodeOpened" @click="openCode">
+        Open code to debug
+      </button>
+      <button class="open-code__button" v-show="isCodeOpened" @click="hideCode">
+        Hide code
+      </button>
+      <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
     </div>
     <!-- built files will be auto injected -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

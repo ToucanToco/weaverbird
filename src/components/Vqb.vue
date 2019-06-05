@@ -1,19 +1,20 @@
 <template>
-  <ResizablePanels>
-    <FormRenameStep
-      v-if="isEditingStep"
-      :initialValue="initialValue"
-      slot="left-panel"
-      @cancel="cancelStepEdition"
-      @formSaved="saveStep"
-    />
-    <Pipeline v-else slot="left-panel"/>
-    <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
-  </ResizablePanels>
+  <div class="visual-query-builder">
+    <ResizablePanels>
+      <FormRenameStep
+        v-if="isEditingStep"
+        :initialValue="initialValue"
+        slot="left-panel"
+        @cancel="cancelStepEdition"
+        @formSaved="saveStep"
+      />
+      <Pipeline v-else slot="left-panel"/>
+      <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
+    </ResizablePanels>
+  </div>
 </template>
 
 <script lang="ts">
-
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
@@ -25,7 +26,6 @@ import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
 
 import _ from 'lodash';
-
 
 @Component({
   components: {
@@ -64,5 +64,12 @@ export default class Vqb extends Vue {
     this.isEditingStep = false;
   }
 }
-
 </script>
+<style lang="scss" scoped>
+.visual-query-builder {
+  flex: 1;
+  height: 100%;
+  background-color: white;
+}
+</style>
+

@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { Vqb, filterOutDomain, getTranslator, mongoResultsToDataset, servicePluginFactory, setupStore } = vqb;
+const {
+  Vqb,
+  filterOutDomain,
+  getTranslator,
+  mongoResultsToDataset,
+  servicePluginFactory,
+  setupStore,
+} = vqb;
 
 const mongo36translator = getTranslator('mongo36');
-
 
 class MongoService {
   constructor() {
@@ -48,7 +54,6 @@ const initialPipeline = [
   },
 ];
 
-
 async function buildVueApp() {
   Vue.use(Vuex);
   // Vue.config.productionTip = false;
@@ -60,12 +65,25 @@ async function buildVueApp() {
     el: '#app',
     components: { Vqb },
     store,
+    data: function() {
+      return {
+        isCodeOpened: false,
+      };
+    },
     computed: {
-      code: function () {
+      code: function() {
         const query = mongo36translator.translate(this.$store.getters.activePipeline);
         return JSON.stringify(query, null, 2);
-      }
-    }
+      },
+    },
+    methods: {
+      hideCode: function() {
+        this.isCodeOpened = false;
+      },
+      openCode: function() {
+        this.isCodeOpened = true;
+      },
+    },
   });
   const collections = await mongoservice.listCollections();
   store.commit('setDomains', { domains: collections });
