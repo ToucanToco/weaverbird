@@ -1,14 +1,15 @@
 <template>
   <div class="visual-query-builder">
     <ResizablePanels>
-      <FormRenameStep
+      <component
         v-if="isEditingStep"
+        :is="formToInstantiate"
         :initialValue="initialValue"
         :isStepCreation="isStepCreation"
         slot="left-panel"
         @cancel="toggleStepEdition"
         @formSaved="saveStep"
-      />
+      ></component>
       <Pipeline v-else slot="left-panel" @editStep="openStepForm"/>
       <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
     </ResizablePanels>
@@ -48,6 +49,7 @@ export default class Vqb extends Vue {
 
   initialValue: any = undefined;
   editedStepIndex: number = -1;
+  formToInstantiate: string = 'FormRenameStep';
 
   get isStepCreation() {
     return this.editedStepIndex === -1;
