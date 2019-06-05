@@ -145,8 +145,9 @@ describe('Step.vue', () => {
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(1);
     renameStep.find('.fa-cog').trigger('click');
-    expect(renameStep.emitted()).toEqual({
-      editStep: [[{ name: 'rename', oldname: 'region', newname: 'kingdom' }, 2]],
-    });
+    expect(renameStep.emitted().editStep).toBeDefined();
+    expect(renameStep.emitted().editStep).toEqual([
+      [{ name: 'rename', newname: 'kingdom', oldname: 'region' }, 2],
+    ]);
   });
 });

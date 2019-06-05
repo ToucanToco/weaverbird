@@ -54,7 +54,7 @@ export default {
    * set currently last selected step index.
    */
   selectStep(state: VQBState, { index }: { index: number }) {
-    if (index > state.pipeline.length - 1) {
+    if (index > state.pipeline.length) {
       console.error('In selectStep: index out of bounds. Falling back to last selectable index.');
       state.selectedStepIndex = -1;
     } else {
