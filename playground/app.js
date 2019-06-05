@@ -21,7 +21,10 @@ class MongoService {
   }
 
   async executePipeline(pipeline) {
-    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
+    const {
+      domain,
+      pipeline: subpipeline
+    } = filterOutDomain(pipeline);
     const rset = await this.executeQuery(this.translator.translate(subpipeline), domain);
     return mongoResultsToDataset(rset);
   }
@@ -29,7 +32,10 @@ class MongoService {
   async executeQuery(query, collection) {
     const response = await fetch('/query', {
       method: 'POST',
-      body: JSON.stringify({ query, collection }),
+      body: JSON.stringify({
+        query,
+        collection
+      }),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -40,55 +46,82 @@ class MongoService {
 
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
-const initialPipeline = [
-  { name: 'domain', domain: 'test-collection' },
-  { name: 'filter', column: 'Value4', value: 1, operator: 'gt' },
-  { name: 'replace', search_column: 'Value2', to_replace: [[2, 20], [13, 24]] },
-  { name: 'top', rank_on: 'Value2', sort: 'asc', limit: 3 },
-  {
-    name: 'pivot',
-    index: ['Groups'],
-    column_to_pivot: 'Label',
-    value_column: 'Value2',
-    agg_function: 'sum',
-  },
+const initialPipeline = [{
+  name: 'domain',
+  domain: 'test-collection'
+},
+{
+  name: 'filter',
+  column: 'Value4',
+  value: 1,
+  operator: 'gt'
+},
+{
+  name: 'replace',
+  search_column: 'Value2',
+  to_replace: [
+    [2, 20],
+    [13, 24]
+  ]
+},
+{
+  name: 'top',
+  rank_on: 'Value2',
+  sort: 'asc',
+  limit: 3
+},
+{
+  name: 'pivot',
+  index: ['Groups'],
+  column_to_pivot: 'Label',
+  value_column: 'Value2',
+  agg_function: 'sum',
+},
 ];
 
 async function buildVueApp() {
   Vue.use(Vuex);
-  // Vue.config.productionTip = false;
-  const store = setupStore({ pipeline: initialPipeline, currentDomain: 'test-collection' }, [
+  const store = setupStore({
+    pipeline: initialPipeline,
+    currentDomain: 'test-collection'
+  }, [
     mongoBackendPlugin,
   ]);
 
   new Vue({
     el: '#app',
-    components: { Vqb },
+    components: {
+      Vqb
+    },
     store,
-    data: function() {
+    data: function () {
       return {
         isCodeOpened: false,
       };
     },
     computed: {
-      code: function() {
+      code: function () {
         const query = mongo36translator.translate(this.$store.getters.activePipeline);
         return JSON.stringify(query, null, 2);
       },
     },
     methods: {
-      hideCode: function() {
+      hideCode: function () {
         this.isCodeOpened = false;
       },
-      openCode: function() {
+      openCode: function () {
         this.isCodeOpened = true;
       },
     },
   });
   const collections = await mongoservice.listCollections();
-  store.commit('setDomains', { domains: collections });
+  store.commit('setDomains', {
+    domains: collections
+  });
   const dataset = await mongoservice.executePipeline(initialPipeline);
-  store.commit('setDataset', { dataset });
+  store.commit('setDataset', {
+    dataset
+  });
 }
 
 document.addEventListener('DOMContentLoaded', () => buildVueApp());

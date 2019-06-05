@@ -4,8 +4,9 @@
       <FormRenameStep
         v-if="isEditingStep"
         :initialValue="initialValue"
+        :isStepCreation="isStepCreation"
         slot="left-panel"
-        @cancel="cancelStepEdition"
+        @cancel="toggleStepEdition"
         @formSaved="saveStep"
       />
       <Pipeline v-else slot="left-panel"/>
