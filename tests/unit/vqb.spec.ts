@@ -1,4 +1,6 @@
+import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
 import DataViewer from '@/components/DataViewer.vue';
@@ -10,44 +12,40 @@ localVue.use(Vuex);
 
 describe('Vqb', () => {
   it('should instantiate', () => {
-    const store = setupStore();
-    const wrapper = shallowMount(Vqb, { store, localVue });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(store.state.isEditingStep).toBeFalsy();
+    const wrapper = shallowMount(Vqb, { store: setupStore(), localVue });
+    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.isEditingStep).to.be.false;
   });
 
   it('should set editingMode on when step is created', () => {
     const store = setupStore();
     const wrapper = shallowMount(Vqb, { store, localVue });
-    expect(store.state.isEditingStep).toBeFalsy();
+    expect(wrapper.vm.$data.isEditingStep).to.be.false;
     wrapper.find(DataViewer).vm.$emit('stepCreated');
-    expect(store.state.isEditingStep).toBeTruthy();
+    expect(wrapper.vm.$data.isEditingStep).to.be.true;
   });
 
-  it('should set pipeline when form is saved', () => {
-    const store = setupStore({
-      pipeline: [{ name: 'domain', domain: 'foo' }],
-      isEditingStep: true,
-    });
+  it('should set pipeline when form is saved', async () => {
+    const store = setupStore();
     const wrapper = shallowMount(Vqb, { store, localVue });
+    wrapper.setData({ isEditingStep: true });
+    await Vue.nextTick();
     wrapper
       .find(FormRenameStep)
       .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
-    expect(store.state.isEditingStep).toBeFalsy();
-    expect(store.state.pipeline).toEqual([
-      { name: 'domain', domain: 'foo' },
+    expect(wrapper.vm.$data.isEditingStep).to.be.false;
+    expect(store.state.pipeline).to.eql([
       { name: 'rename', oldname: 'columnA', newname: 'columnAA' },
     ]);
   });
 
-  it('should cancel edition', () => {
-    const store = setupStore({
-      pipeline: [{ name: 'domain', domain: 'foo' }],
-      isEditingStep: true,
-    });
+  it('should cancel edition', async () => {
+    const store = setupStore({ pipeline: [{ name: 'domain', domain: 'foo' }] });
     const wrapper = shallowMount(Vqb, { store, localVue });
+    wrapper.setData({ isEditingStep: true });
+    await Vue.nextTick();
     wrapper.find(FormRenameStep).vm.$emit('cancel');
-    expect(store.state.isEditingStep).toBeFalsy();
-    expect(store.state.pipeline).toEqual([{ name: 'domain', domain: 'foo' }]);
+    expect(wrapper.vm.$data.isEditingStep).to.be.false;
+    expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'foo' }]);
   });
 });

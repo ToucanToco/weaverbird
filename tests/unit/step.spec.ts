@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
 import { setupStore } from '@/store';
@@ -11,7 +12,7 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Step.vue', () => {
-  it('emit selectedStep when clicking on a step "time travel" dot', () => {
+  it('emit selectedStep when clicking on a step "time travel" dot', async () => {
     const wrapper = shallowMount(Step, {
       propsData: {
         key: 0,
@@ -24,10 +25,11 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
+    await Vue.nextTick();
     expect(wrapper.emitted()).to.eql({ selectedStep: [[]] });
   });
 
-  it('emit selectedStep when clicking on the step itself', () => {
+  it('emit selectedStep when clicking on the step itself', async () => {
     const wrapper = shallowMount(Step, {
       propsData: {
         key: 0,
@@ -40,6 +42,7 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.query-pipeline-step').trigger('click');
+    await Vue.nextTick();
     expect(wrapper.emitted()).to.eql({ selectedStep: [[]] });
   });
 
@@ -59,7 +62,7 @@ describe('Step.vue', () => {
     expect(modal.exists()).to.be.false;
   });
 
-  it('renders a delete confirmation modal when clicking on the trash icon', () => {
+  it('renders a delete confirmation modal when clicking on the trash icon', async () => {
     const wrapper = shallowMount(Step, {
       propsData: {
         key: 0,
@@ -72,11 +75,12 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.fa-trash-alt').trigger('click');
+    await Vue.nextTick();
     const modal = wrapper.find('deleteconfirmationmodal-stub');
     expect(modal.exists()).to.be.true;
   });
 
-  it('renders a delete confirmation modal when clicking on the trash icon', () => {
+  it('renders a delete confirmation modal when clicking on the trash icon', async () => {
     const wrapper = shallowMount(Step, {
       propsData: {
         key: 0,
@@ -89,26 +93,15 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.fa-trash-alt').trigger('click');
+    await Vue.nextTick();
     const modal = wrapper.find('deleteconfirmationmodal-stub');
     expect(modal.exists()).to.be.true;
-  });
-
-  it('deletes steps', () => {
-    const pipeline: Pipeline = [
-      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-      { name: 'sort', columns: ['death'] },
-    ];
-    const store = setupStore({ pipeline });
-    const wrapper = mount(PipelineComponent, { store, localVue });
-    expect(wrapper.findAll(Step).length).to.equal(1);
-    const step = wrapper.find(Step);
-    step.find('i[class="fas fa-trash-alt"]').trigger('click');
-    expect(store.state.pipeline.length).to.equal(1);
   });
 
   describe('Delete confirmation modal', () => {
-    it('does not delete a step when clicking on cancel on the delete confirmation modal', () => {
+    it('does not delete a step when clicking on cancel on the delete confirmation modal', async () => {
       const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: ['death'] },
       ];
@@ -118,21 +111,26 @@ describe('Step.vue', () => {
 
       // Test for clicking on the top-right cross
       step.find('.fa-trash-alt').trigger('click');
+      await Vue.nextTick();
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.fa-times').trigger('click');
-      expect(store.state.pipeline.length).to.equal(2);
+      await Vue.nextTick();
+      expect(store.state.pipeline.length).to.equal(3);
       expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
 
       // Test for clicking on the bottom-left cancel button
       step.find('.fa-trash-alt').trigger('click');
+      await Vue.nextTick();
       const modalBis = step.find(DeleteConfirmationModal);
       modalBis.find('.vqb-modal__action--secondary').trigger('click');
-      expect(store.state.pipeline.length).to.equal(2);
+      await Vue.nextTick();
+      expect(store.state.pipeline.length).to.equal(3);
       expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
     });
 
-    it('deletes a step when clicking on validate on the delete confirmation modal', () => {
+    it('deletes a step when clicking on validate on the delete confirmation modal', async () => {
       const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: ['death'] },
       ];
@@ -140,9 +138,11 @@ describe('Step.vue', () => {
       const wrapper = mount(PipelineComponent, { store, localVue });
       const step = wrapper.find(Step);
       step.find('.fa-trash-alt').trigger('click');
+      await Vue.nextTick();
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.vqb-modal__action--primary').trigger('click');
-      expect(store.state.pipeline.length).to.equal(1);
+      await Vue.nextTick();
+      expect(store.state.pipeline.length).to.equal(2);
       expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
     });
   });

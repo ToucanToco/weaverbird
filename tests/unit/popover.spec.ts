@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import { expect } from 'chai';
+import sinon from 'sinon';
 import { mount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 
@@ -8,7 +10,7 @@ import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/components/constants';
 describe('Popover', function() {
   var wrapper: Wrapper<Vue>;
   var popoverWrapper: Wrapper<Vue>;
-  jest.useFakeTimers();
+  sinon.useFakeTimers();
 
   const createWrapper = (...args: any) => {
     const val = args[0],
@@ -58,11 +60,11 @@ describe('Popover', function() {
     );
     popoverWrapper = wrapper.find({ ref: 'popover' });
     // Force throttle end
-    jest.advanceTimersByTime(1600);
+    sinon.clock.tick(1600);
   };
 
   beforeEach(function() {
-    jest.useFakeTimers();
+    sinon.useFakeTimers();
   });
 
   afterEach(function() {
@@ -71,33 +73,33 @@ describe('Popover', function() {
 
   it('should instanciate a popover', function() {
     createWrapper();
-    expect(_.isElement(popoverWrapper.element)).toBeTruthy();
+    expect(_.isElement(popoverWrapper.element)).to.be.true;
   });
 
   it('should include the passed slot content', function() {
     createWrapper({ slotText: 'Lorem ipsum' });
     const slotContentWrapper = popoverWrapper.find('.slot-content');
 
-    expect(slotContentWrapper.exists()).toBeTruthy();
-    expect(slotContentWrapper.text()).toEqual('Lorem ipsum');
+    expect(slotContentWrapper.exists()).to.be.true;
+    expect(slotContentWrapper.text()).to.equal('Lorem ipsum');
   });
 
   it('should append itself to the document body', function() {
     createWrapper();
 
-    expect(popoverWrapper.element.parentElement).toEqual(document.body);
+    expect(popoverWrapper.element.parentElement).to.eql(document.body);
   });
 
   it('should remove its DOM upon destruction', function() {
     createWrapper();
     popoverWrapper.destroy();
 
-    expect(document.body.querySelector('.tc-popover')).toBeNull();
+    expect(document.body.querySelector('.tc-popover')).to.be.null;
   });
 
   it('should be hidden by default', function() {
     createWrapper();
-    expect(popoverWrapper.classes()).toEqual(['popover']);
+    expect(popoverWrapper.classes()).to.eql(['popover']);
   });
 
   xdescribe('when active', function() {
@@ -122,7 +124,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
+        return expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
       });
     });
 
@@ -147,7 +149,7 @@ describe('Popover', function() {
       return wrapper.vm.$nextTick().then(() => {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-        expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+        expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
       });
     });
   });
@@ -175,7 +177,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.left).toEqual(parentBounds.left);
+      return expect(popoverBounds.left).to.equal(parentBounds.left);
     });
   });
 
@@ -203,7 +205,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+      return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
     });
   });
 
@@ -230,7 +232,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.top).toEqual(parentBounds.top + 40);
+      return expect(popoverBounds.top).to.equal(parentBounds.top + 40);
     });
   });
 
@@ -258,7 +260,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
+      return expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
     });
   });
 
@@ -289,7 +291,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+        return expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
       });
     });
   });
@@ -321,7 +323,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+        return expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
       });
     });
   });
@@ -353,7 +355,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+        return expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
       });
     });
   });
@@ -364,7 +366,7 @@ describe('Popover', function() {
 
     return expect(
       window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility'),
-    ).toEqual('visible');
+    ).to.equal('visible');
   });
 
   xdescribe('when aligned justify', function() {
@@ -392,7 +394,7 @@ describe('Popover', function() {
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
       return wrapper.vm.$nextTick().then(() => {
-        return expect(popoverWrapper.element.offsetWidth).toEqual(100);
+        return expect(popoverWrapper.element.offsetWidth).to.equal(100);
       });
     });
 
@@ -403,7 +405,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left);
+        return expect(popoverBounds.left).to.equal(parentBounds.left);
       });
     });
   });
@@ -433,7 +435,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left);
+        return expect(popoverBounds.left).to.equal(parentBounds.left);
       });
     });
 
@@ -462,7 +464,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+        return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
       });
     });
 
@@ -490,7 +492,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left);
+        return expect(popoverBounds.left).to.equal(parentBounds.left);
       });
     });
   });
@@ -520,7 +522,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+        return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
       });
     });
 
@@ -548,7 +550,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.left);
+        return expect(popoverBounds.left).to.equal(parentBounds.left);
       });
     });
 
@@ -576,7 +578,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+        return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
       });
     });
   });
@@ -606,7 +608,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).toEqual(parentBounds.top + 40);
+        return expect(popoverBounds.top).to.equal(parentBounds.top + 40);
       });
     });
 
@@ -635,7 +637,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
+        return expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
       });
     });
 
@@ -664,7 +666,7 @@ describe('Popover', function() {
         const parentBounds = wrapper.element.getBoundingClientRect();
         const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).toEqual(parentBounds.top + height);
+        return expect(popoverBounds.top).to.equal(parentBounds.top + height);
       });
     });
   });

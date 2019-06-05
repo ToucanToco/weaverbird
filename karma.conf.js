@@ -1,6 +1,6 @@
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     frameworks: ['mocha', 'chai'],
     files: [
@@ -38,7 +38,7 @@ module.exports = function(config) {
     browsers: ['ChromeHeadless'],
     customLaunchers: {
       ChromeHeadless: {
-        base: 'Chrome',
+        // base: 'Chrome',
         flags: ['--no-sandbox', '--disable-setuid-sandbox'],
       },
     },

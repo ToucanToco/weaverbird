@@ -1,24 +1,26 @@
+import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 import WidgetInputText from '@/components/WidgetInputText.vue';
 
 describe('Widget Input Text', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(WidgetInputText);
 
-    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.exists()).to.be.true;
   });
 
   it('should have a text input', () => {
     const wrapper = shallowMount(WidgetInputText);
 
-    expect(wrapper.find("input[type='text']").exists()).toBeTruthy();
+    expect(wrapper.find("input[type='text']").exists()).to.be.true;
   });
 
   it('should have an empty label', () => {
     const wrapper = shallowMount(WidgetInputText);
     const labelWrapper = wrapper.find('label');
 
-    expect(labelWrapper.text()).toEqual('');
+    expect(labelWrapper.text()).to.equal('');
   });
 
   it('should have a label', () => {
@@ -29,7 +31,7 @@ describe('Widget Input Text', () => {
     });
     const labelWrapper = wrapper.find('label');
 
-    expect(labelWrapper.text()).toEqual('Stark');
+    expect(labelWrapper.text()).to.equal('Stark');
   });
 
   it('should have an empty placeholder', () => {
@@ -40,7 +42,7 @@ describe('Widget Input Text', () => {
     });
     const el = wrapper.find("input[type='text']").element as HTMLInputElement;
 
-    expect(el.placeholder).toEqual('');
+    expect(el.placeholder).to.equal('');
   });
 
   it('should have a placeholder', () => {
@@ -52,14 +54,14 @@ describe('Widget Input Text', () => {
     });
     const el = wrapper.find("input[type='text']").element as HTMLInputElement;
 
-    expect(el.placeholder).toEqual('I m a placeholder');
+    expect(el.placeholder).to.equal('I m a placeholder');
   });
 
   it('should have an empty input', () => {
     const wrapper = shallowMount(WidgetInputText);
     const el = wrapper.find("input[type='text']").element as HTMLInputElement;
 
-    expect(el.value).toEqual('');
+    expect(el.value).to.equal('');
   });
 
   it('should have a non empty input', () => {
@@ -68,17 +70,18 @@ describe('Widget Input Text', () => {
     });
     const el = wrapper.find("input[type='text']").element as HTMLInputElement;
 
-    expect(el.value).toEqual('foo');
+    expect(el.value).to.equal('foo');
   });
 
-  it('should add the right class on focus', () => {
+  it('should add the right class on focus', async () => {
     const wrapper = shallowMount(WidgetInputText, {
       propsData: { value: 'foo' },
     });
     const inputWrapper = wrapper.find("input[type='text']");
     inputWrapper.trigger('focus');
+    await Vue.nextTick();
 
-    expect(inputWrapper.classes()).toContain('widget-input-text--focused');
+    expect(inputWrapper.classes()).to.contain('widget-input-text--focused');
   });
 
   it('should emit "input" event on update', () => {
@@ -90,15 +93,15 @@ describe('Widget Input Text', () => {
     const inputWrapper = wrapper.find('input[type="text"]');
     (<HTMLInputElement>inputWrapper.element).value = 'Stark';
     inputWrapper.trigger('input', { value: 'k' });
-    expect(wrapper.emitted()).toEqual({ input: [['Stark']] });
+    expect(wrapper.emitted()).to.eql({ input: [['Stark']] });
   });
 
   it('should set / unset "isFocused" on focus / blur events', () => {
     const wrapper = shallowMount(WidgetInputText);
     const inputWrapper = wrapper.find('input[type="text"]');
     inputWrapper.trigger('focus');
-    expect(wrapper.vm.$data.isFocused).toBeTruthy();
+    expect(wrapper.vm.$data.isFocused).to.be.true;
     inputWrapper.trigger('blur');
-    expect(wrapper.vm.$data.isFocused).toBeFalsy();
+    expect(wrapper.vm.$data.isFocused).to.be.false;
   });
 });
