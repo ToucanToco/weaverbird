@@ -5,6 +5,7 @@
         <div class="action-menu__option">Duplicate column</div>
         <div class="action-menu__option" @click="createRenameStep">Rename column</div>
         <div class="action-menu__option">Delete column</div>
+        <div class="action-menu__option" @click="createFillnaStep">Fill null values</div>
       </div>
     </div>
   </popover>
@@ -48,6 +49,11 @@ export default class ActionMenu extends Vue {
 
   close() {
     this.$emit('closed');
+  }
+
+  createFillnaStep() {
+    this.$emit('actionClicked', { name: 'fillna', column: this.columnName });
+    this.close();
   }
 
   createRenameStep() {
