@@ -70,13 +70,14 @@ export default class Vqb extends Vue {
     // Reset value from DataViewer
     this.initialValue = undefined;
     const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
     if (this.isStepCreation) {
-      newPipeline.splice(this.computedActiveStepIndex + 1, 0, step);
+      newPipeline.splice(index, 0, step);
     } else {
-      newPipeline.splice(this.computedActiveStepIndex + 1, 1, step);
+      newPipeline.splice(index, 1, step);
     }
     this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index: this.computedActiveStepIndex + 1 });
+    this.selectStep({ index });
     this.toggleStepEdition();
   }
 }
