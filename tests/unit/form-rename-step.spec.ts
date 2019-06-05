@@ -150,4 +150,17 @@ describe('Form Rename Step', () => {
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).toEqual(3);
   });
+
+  it('should make the focus on the column modified after rename validation', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+    });
+    const wrapper = mount(FormRenameStep, { store, localVue });
+    wrapper.setData({ step: { oldname: 'columnA', newname: 'toto' } });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(store.state.selectedColumns).toEqual(['toto']);
+  });
 });
