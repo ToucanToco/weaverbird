@@ -7,10 +7,13 @@
       </button>
 
       <action-toolbar-button
-        v-for="button in buttons"
+        v-for="(button, index) in formattedButtons"
         :icon="button.icon"
         :label="button.label"
         :key="button.icon"
+        :is-active="button.isActionToolbarMenuOpened"
+        @click.native="openPopover(index)"
+        @closed="closePopover()"
       />
       <div class="action-toolbar__search">
         <i class="action-toolbar__search-icon fas fa-search"></i>
@@ -25,15 +28,41 @@ import { Component, Prop } from 'vue-property-decorator';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
 
-
 @Component({
   name: 'action-toolbar',
   components: {
     ActionToolbarButton,
-  }
+  },
 })
 export default class ActionToolbar extends Vue {
   @Prop(Array) readonly buttons!: ButtonDef[];
+
+  isActiveActionToolbarButton: number = -1;
+
+  get formattedButtons() {
+    return this.buttons.map((d, index) => {
+      let isActionToolbarMenuOpened = false;
+
+      if (index === this.isActiveActionToolbarButton) {
+        isActionToolbarMenuOpened = true;
+      }
+
+      return {
+        label: d.label,
+        icon: d.icon,
+        isActionToolbarMenuOpened,
+      };
+    });
+  }
+
+  openPopover(index: number) {
+    this.isActiveActionToolbarButton = index;
+  }
+
+  closePopover() {
+    console.log('test closed');
+    this.isActiveActionToolbarButton = -1;
+  }
 }
 </script>
 <style lang="scss">
