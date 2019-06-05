@@ -42,8 +42,20 @@ describe('backend service plugin tests', () => {
     });
   });
 
-  it('should call execute pipeline when pipeline is set', async () => {
-    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
+  it('should call execute pipeline when a selectStep mutation is committed', async () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ];
+    const store = setupStore(
+      {
+        pipeline,
+        selectedStepIndex: 1,
+      },
+      [servicePluginFactory(new DummyService())],
+    );
     store.commit('selectStep', { index: 2 });
     await flushPromises();
     expect(store.state.dataset).toEqual({
@@ -52,7 +64,7 @@ describe('backend service plugin tests', () => {
     });
   });
 
-  it('should call execute pipeline when pipeline is set', async () => {
+  it('should call execute pipeline when a setPipeline mutation is committed', async () => {
     const store = setupStore({}, [servicePluginFactory(new DummyService())]);
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
@@ -60,6 +72,26 @@ describe('backend service plugin tests', () => {
       { name: 'sort', columns: ['death'] },
     ];
     store.commit('setPipeline', { pipeline });
+    await flushPromises();
+    expect(store.state.dataset).toEqual({
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [[1, 2], [3, 4]],
+    });
+  });
+
+  it('should call execute pipeline when a setCurrentDomain mutation is committed', async () => {
+    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
+    store.commit('setCurrentDomain', { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(store.state.dataset).toEqual({
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [[1, 2], [3, 4]],
+    });
+  });
+
+  it('should call execute pipeline when a deleteStep mutation is committed', async () => {
+    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
+    store.commit('deleteStep', { index: 2 });
     await flushPromises();
     expect(store.state.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],

@@ -54,13 +54,19 @@ export default {
    * set currently last selected step index.
    */
   selectStep(state: VQBState, { index }: { index: number }) {
-    state.selectedStepIndex = index;
+    if (index > state.pipeline.length) {
+      console.error('In selectStep: index out of bounds. Falling back to last selectable index.');
+      state.selectedStepIndex = -1;
+    } else {
+      state.selectedStepIndex = index;
+    }
   },
   /**
    * Delete the step of index `index` in pipeline.
    */
   deleteStep(state: VQBState, { index }: { index: number }) {
     state.pipeline.splice(index, 1);
+    state.selectedStepIndex = index - 1;
   },
   /**
    * change current selected domain and reset pipeline accordingly.
@@ -98,9 +104,25 @@ export default {
   },
 
   /**
+   *
+   * set selected columns
+   */
+  setSelectedColumns(state: VQBState, { column }: { column: string }) {
+    state.selectedColumns = [column];
+  },
+
+  /**
    * toggle column selection
    */
-  toggleColumnSelection(state: VQBState, column: string) {
-    state.selectedColumns = [column];
+  toggleColumnSelection(state: VQBState, { column }: { column: string }) {
+    if (state.selectedColumns.includes(column)) {
+      state.selectedColumns = [];
+    } else {
+      state.selectedColumns = [column];
+    }
+  },
+
+  toggleStepEdition(state: VQBState) {
+    state.isEditingStep = !state.isEditingStep;
   },
 };

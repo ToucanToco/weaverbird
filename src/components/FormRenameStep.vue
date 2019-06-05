@@ -8,8 +8,8 @@
       v-model="step.oldname"
       name="Old name"
       :options="columnNames"
+      @input="setSelectedColumns({ column: step.oldname })"
       placeholder="Enter the old column name"
-      @input="toggleColumnSelection(step.oldname)"
     ></WidgetAutocomplete>
     <WidgetInputText
       id="newnameInput"
@@ -20,11 +20,11 @@
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
-        v-on:click="validateStep"
+        @click="validateStep"
       >OK</button>
       <button
         class="widget-form-action__button widget-form-action__button--cancel"
-        v-on:click="cancelEdition"
+        @click="cancelEdition"
       >Cancel</button>
     </div>
     <div v-if="errors" class="errors">
@@ -39,10 +39,11 @@
 import _ from 'lodash';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
+import { Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
-import { Getter, Mutation } from 'vuex-class';
+import { Getter, Mutation, State } from 'vuex-class';
 
 interface RenameStepConf {
   oldname: string;
@@ -66,12 +67,23 @@ export default class FormRenameStep extends Mixins(FormMixin) {
   })
   initialValue!: RenameStepConf;
 
-  step: RenameStepConf = this.initialValue;
+  @Prop({
+    type: Boolean,
+    default: () => true,
+  })
+  isStepCreation!: boolean;
 
-  @Mutation toggleColumnSelection!: (column: string) => void;
+  step: RenameStepConf = { ...this.initialValue };
+
+  @State pipeline!: Pipeline;
+  @State selectedStepIndex!: number;
+
+  @Mutation selectStep!: (payload: { index: number }) => void;
+  @Mutation setSelectedColumns!: (payload: { column: string }) => void;
 
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
+  @Getter computedActiveStepIndex!: number;
 
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
@@ -82,6 +94,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 
   created() {
     this.schema = renameSchema;
+    this.setSelectedColumns({ column: this.initialValue.oldname });
   }
 
   validateStep() {
@@ -91,11 +104,14 @@ export default class FormRenameStep extends Mixins(FormMixin) {
     } else {
       this.errors = null;
       this.$emit('formSaved', { name: 'rename', ...this.step });
+      this.setSelectedColumns({ column: this.step.newname });
     }
   }
 
   cancelEdition() {
     this.$emit('cancel');
+    const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
+    this.selectStep({ index: idx });
   }
 }
 </script>
@@ -107,7 +123,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 }
 
 .widget-form-action__button--validate {
-  background: $blue;
+  background-color: $active-color;
 }
 
 .step-edit-form {

@@ -1,12 +1,13 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FormRenameStep from '@/components/FormRenameStep.vue';
-import Vuex from 'vuex';
+import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
+import { Pipeline } from '@/lib/steps';
+import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-const emptyStore = setupStore({});
 
 interface ValidationError {
   dataPath: string;
@@ -14,6 +15,11 @@ interface ValidationError {
 }
 
 describe('Form Rename Step', () => {
+  let emptyStore: Store<VQBState>;
+  beforeEach(() => {
+    emptyStore = setupStore({});
+  });
+
   it('should instantiate', () => {
     const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
 
@@ -67,7 +73,7 @@ describe('Form Rename Step', () => {
     ]);
   });
 
-  it('should validate and emit "formSavaed" when submitted data is valid', () => {
+  it('should validate and emit "formSaved" when submitted data is valid', () => {
     const wrapper = shallowMount(FormRenameStep, {
       store: emptyStore,
       localVue,
@@ -99,7 +105,62 @@ describe('Form Rename Step', () => {
     });
     const wrapper = shallowMount(FormRenameStep, { store, localVue });
     expect(wrapper.vm.$data.step.oldname).toEqual('');
-    store.commit('toggleColumnSelection', 'columnB');
+    store.commit('toggleColumnSelection', { column: 'columnB' });
     expect(wrapper.vm.$data.step.oldname).toEqual('columnB');
+  });
+
+  it('should update selectedColumn when oldname is changed', async () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    const wrapper = mount(FormRenameStep, {
+      propsData: {
+        initialValue: {
+          oldname: 'columnA',
+        },
+      },
+      store,
+      localVue,
+    });
+    wrapper.setData({ step: { oldname: 'columnB', new_name: '' } });
+    await wrapper.find(WidgetAutocomplete).trigger('input');
+    expect(store.state.selectedColumns).toEqual(['columnB']);
+  });
+
+  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ];
+    const store = setupStore({
+      pipeline,
+      selectedStepIndex: 2,
+    });
+    const wrapper = shallowMount(FormRenameStep, { store, localVue });
+    wrapper.setProps({ isStepCreation: true });
+    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    expect(store.state.selectedStepIndex).toEqual(2);
+    wrapper.setProps({ isStepCreation: false });
+    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    expect(store.state.selectedStepIndex).toEqual(3);
+  });
+
+  it('should make the focus on the column modified after rename validation', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+    });
+    const wrapper = mount(FormRenameStep, { store, localVue });
+    wrapper.setData({ step: { oldname: 'columnA', newname: 'toto' } });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(store.state.selectedColumns).toEqual(['toto']);
   });
 });
