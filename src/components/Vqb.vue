@@ -1,16 +1,18 @@
 <template>
-  <ResizablePanels>
-    <FormRenameStep
-      v-if="isEditingStep"
-      :initialValue="initialValue"
-      :isStepCreation="isStepCreation"
-      slot="left-panel"
-      @cancel="toggleStepEdition"
-      @formSaved="saveStep"
-    />
-    <Pipeline v-else slot="left-panel" @editStep="openStepForm"/>
-    <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
-  </ResizablePanels>
+  <div class="visual-query-builder">
+    <ResizablePanels>
+      <FormRenameStep
+        v-if="isEditingStep"
+        :initialValue="initialValue"
+        :isStepCreation="isStepCreation"
+        slot="left-panel"
+        @cancel="toggleStepEdition"
+        @formSaved="saveStep"
+      />
+      <Pipeline v-else slot="left-panel"/>
+      <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
+    </ResizablePanels>
+  </div>
 </template>
 
 <script lang="ts">
@@ -79,3 +81,11 @@ export default class Vqb extends Vue {
   }
 }
 </script>
+<style lang="scss" scoped>
+.visual-query-builder {
+  flex: 1;
+  height: 100%;
+  background-color: white;
+}
+</style>
+
