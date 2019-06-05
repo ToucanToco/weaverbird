@@ -35,7 +35,7 @@
 .data-viewer-cell--active {
   // It's trick to have its left side colored cause of border-collapse
   border-left: 1px double;
-  background-color: $active-color-faded-2;
+  background-color: $active-color-faded-3;
   border-right-color: $active-color;
   border-left-color: $active-color;
 }
@@ -55,7 +55,7 @@
   // It's trick to have its left side colored cause of border-collapse
   border-left: 1px double;
   color: $active-color;
-  background-color: $active-color-faded-2;
+  background-color: $active-color-faded-3;
   border-top-color: $active-color;
   border-left-color: $active-color;
   border-right-color: $active-color;

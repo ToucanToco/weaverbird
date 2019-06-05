@@ -1,13 +1,13 @@
 <template>
-  <div class="query-pipeline-step__container" @click="select()">
+  <div :class="classContainer" @click="select()">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass"></div>
-      <div :class="classDot">
-        <div :class="classDotInk"></div>
+      <div class="query-pipeline-queue__dot">
+        <div class="query-pipeline-queue__dot-ink"></div>
       </div>
       <div :class="lastStrokeClass"></div>
     </div>
-    <div :class="classStep">
+    <div class="query-pipeline-step">
       <span class="query-pipeline-step__name">{{ step.name }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
@@ -50,6 +50,9 @@ export default class Step extends Vue {
   readonly isActive!: boolean;
 
   @Prop(Boolean)
+  readonly isLastActive!: boolean;
+
+  @Prop(Boolean)
   readonly isDisabled!: boolean;
 
   @Prop()
@@ -62,26 +65,12 @@ export default class Step extends Vue {
 
   @Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
-  get classDot() {
+  get classContainer() {
     return {
-      'query-pipeline-queue__dot': true,
-      'query-pipeline-queue__dot--active': this.isActive,
-      'query-pipeline-queue__dot--disabled': this.isDisabled,
-    };
-  }
-
-  get classDotInk() {
-    return {
-      'query-pipeline-queue__dot-ink': true,
-      'query-pipeline-queue__dot-ink--active': this.isActive,
-      'query-pipeline-queue__dot-ink--disabled': this.isDisabled,
-    };
-  }
-
-  get classStep() {
-    return {
-      'query-pipeline-step': true,
-      'query-pipeline-step--disabled': this.isDisabled,
+      'query-pipeline-step__container': true,
+      'query-pipeline-step__container--active': this.isActive,
+      'query-pipeline-step__container--last-active': this.isLastActive,
+      'query-pipeline-step__container--disabled': this.isDisabled,
     };
   }
 
