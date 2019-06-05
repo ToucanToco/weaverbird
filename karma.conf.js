@@ -1,6 +1,6 @@
 process.env.CHROME_BIN = require('puppeteer').executablePath();
 
-module.exports = function (config) {
+module.exports = function(config) {
   config.set({
     frameworks: ['mocha', 'chai'],
     files: [
@@ -9,6 +9,7 @@ module.exports = function (config) {
         type: 'js',
       },
     ],
+    customContextFile: './tests/context.html',
     preprocessors: {
       'tests/unit/karma-test-suite.ts': ['rollup', 'sourcemap'],
     },
@@ -35,10 +36,10 @@ module.exports = function (config) {
       'text/x-typescript': ['ts'],
     },
     reporters: ['spec', 'coverage-istanbul'],
-    browsers: ['ChromeHeadless'],
+    browsers: ['Chrome'],
     customLaunchers: {
-      ChromeHeadless: {
-        // base: 'Chrome',
+      Chrome: {
+        base: 'ChromeHeadless',
         flags: ['--no-sandbox', '--disable-setuid-sandbox'],
       },
     },
