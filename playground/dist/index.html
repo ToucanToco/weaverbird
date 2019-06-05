@@ -1,59 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-    <link rel="icon" href="/favicon.ico" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
-      integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="/playground.css" />
-    <title>vue-query-builder</title>
-    <style>
-      html,
-      body {
-        height: 100%;
-      }
-      pre {
-        height: 100%;
-        display: flex;
-      }
-      #app {
-        position: relative;
-        background: url('./pattern-blueprints.png');
-        background-color: rgb(38, 101, 163);
-        flex: 1;
-        height: 100%;
-        padding: 60px 40px 0 40px;
-      }
-      .open-code__button {
-        position: absolute;
-        bottom: 0;
-        height: 40px;
-        font-size: 20px;
-      }
-    </style>
-  </head>
 
-  <body>
-    <div id="app">
-      <vqb></vqb>
-      <button class="open-code__button" v-show="!isCodeOpened" @click="openCode">
-        Open code to debug
-      </button>
-      <button class="open-code__button" v-show="isCodeOpened" @click="hideCode">
-        Hide code
-      </button>
-      <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
-    </div>
-    <!-- built files will be auto injected -->
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script src="https://unpkg.com/vuex@3.1.1/dist/vuex.js"></script>
-    <script type="module" src="/vue-query-builder.browser.js"></script>
-    <script type="module" src="/app.js"></script>
-  </body>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <link rel="icon" href="/favicon.ico" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css"
+    integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/playground.css" />
+  <title>vue-query-builder</title>
+  <style>
+    html,
+    body {
+      height: 100%;
+    }
+
+    pre {
+      height: 100%;
+      display: flex;
+    }
+
+    #app {
+      position: relative;
+      background: url('./pattern-blueprints.png');
+      background-color: rgb(38, 101, 163);
+      flex: 1;
+      height: 100%;
+      padding: 60px 40px 0 40px;
+    }
+
+    #app .visual-query-builder {
+      box-shadow: 0px 0px 10px #1119;
+      border-radius: 0px;
+      padding: 10px 15px;
+    }
+
+    .open-code__button {
+      position: absolute;
+      bottom: 0;
+      height: 40px;
+      font-size: 20px;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="app">
+    <vqb></vqb>
+    <button class="open-code__button" v-show="!isCodeOpened" @click="openCode">
+      Open code to debug
+    </button>
+    <button class="open-code__button" v-show="isCodeOpened" @click="hideCode">
+      Hide code
+    </button>
+    <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
+  </div>
+  <!-- built files will be auto injected -->
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/vuex@3.1.1/dist/vuex.js"></script>
+  <script type="module" src="/vue-query-builder.browser.js"></script>
+  <script type="module" src="/app.js"></script>
+</body>
+
 </html>
