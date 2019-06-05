@@ -6,11 +6,13 @@
         <span class="action-toolbar__btn-txt">Column</span>
       </button>
       <action-toolbar-button
-        v-for="(button, index) in buttons"
+        v-for="(button, index) in formattedButtons"
         :icon="button.icon"
         :label="button.label"
         :key="button.icon"
-        @click.native="openForm(index)"
+        :is-active="button.isActionToolbarMenuOpened"
+        @click.native="openPopover(index)"
+        @closed="closePopover()"
       />
       <div class="action-toolbar__search">
         <i class="action-toolbar__search-icon fas fa-search"></i>
@@ -36,15 +38,39 @@ export default class ActionToolbar extends Vue {
   @Prop(Array) readonly buttons!: ButtonDef[];
   @State selectedColumns!: string[];
 
-  openForm(index: number) {
+  isActiveActionToolbarButton: number = -1;
+
+  openPopover(index: number) {
     const buttondef = this.buttons[index];
     if (buttondef.label === 'Aggregate') {
       this.createAggregateStep();
+    } else {
+      this.isActiveActionToolbarButton = index;
     }
   }
 
   createAggregateStep() {
     this.$emit('actionClicked', { name: 'aggregate', on: this.selectedColumns, aggregations: [] });
+  }
+
+  get formattedButtons() {
+    return this.buttons.map((d, index) => {
+      let isActionToolbarMenuOpened = false;
+
+      if (index === this.isActiveActionToolbarButton) {
+        isActionToolbarMenuOpened = true;
+      }
+
+      return {
+        label: d.label,
+        icon: d.icon,
+        isActionToolbarMenuOpened,
+      };
+    });
+  }
+
+  closePopover() {
+    this.isActiveActionToolbarButton = -1;
   }
 }
 </script>

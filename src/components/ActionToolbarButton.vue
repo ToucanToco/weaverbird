@@ -2,21 +2,67 @@
   <button type="button" class="action-toolbar__btn">
     <i :class="`action-toolbar__btn-icon fas fa-${icon}`"></i>
     <span class="action-toolbar__btn-txt">{{ label }}</span>
+    <popover :active="isActive" :align="alignLeft" bottom>
+      <div class="action-menu__body">
+        <div class="action-menu__section">
+          <div class="action-menu__option">test item 1</div>
+          <div class="action-menu__option">test item 2</div>
+          <div class="action-menu__option">test item 3</div>
+        </div>
+      </div>
+    </popover>
   </button>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import { POPOVER_ALIGN } from '@/components/constants';
+import Popover from './Popover.vue';
 
 @Component({
   name: 'action-toolbar-button',
+  components: {
+    Popover,
+  },
   props: {
     label: String,
     icon: String,
-  }
+  },
 })
-export default class ActionToolbarButton extends Vue {}
+export default class ActionToolbarButton extends Vue {
+  @Prop({
+    type: Boolean,
+    default: () => false,
+  })
+  isActive!: boolean;
+
+  alignLeft: string = POPOVER_ALIGN.LEFT;
+
+  /**
+   * @description Close the popover when clicking outside
+   */
+  clickListener(e: Event) {
+    const hasClickOnItSelf = e.target === this.$el || this.$el.contains(e.target as HTMLElement);
+
+    if (!hasClickOnItSelf) {
+      this.close();
+    }
+  }
+
+  close() {
+    this.$emit('closed');
+  }
+
+  @Watch('isActive')
+  onIsActiveChanged(val: boolean, oldval: boolean) {
+    if (val) {
+      window.addEventListener('click', this.clickListener);
+    } else {
+      window.removeEventListener('click', this.clickListener);
+    }
+  }
+}
 </script>
 <style lang="scss">
 .action-toolbar__btn {
