@@ -9,7 +9,7 @@
         @cancel="toggleStepEdition"
         @formSaved="saveStep"
       />
-      <Pipeline v-else slot="left-panel"/>
+      <Pipeline v-else slot="left-panel" @editStep="openStepForm"/>
       <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
     </ResizablePanels>
   </div>
