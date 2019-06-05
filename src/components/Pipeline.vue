@@ -14,7 +14,8 @@
       v-else
       v-for="(step, index) in stepsWithoutDomain"
       :key="index"
-      :is-active="index < activeStepIndex"
+      :is-active="index < activeStepIndex - 1"
+      :is-last-active="index === activeStepIndex - 1"
       :is-disabled="isDisabled(index + 1)"
       :is-first="index === 0"
       :is-last="index === stepsWithoutDomain.length - 1"
