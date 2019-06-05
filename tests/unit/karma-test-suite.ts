@@ -1,11 +1,17 @@
 import './dataset.spec';
 import './data-viewer-cell.spec';
 import './data-viewer.spec';
+import './form-rename-step.spec';
 import './mongo.spec';
 import './pipebuild.spec';
 import './pipeline.spec';
 import './plugins.spec';
+import './popover.spec';
 import './resizable-panels.spec';
+import './step-editor.spec';
 import './step.spec';
 import './store.spec';
 import './translator.spec';
+import './vqb.spec';
+import './widget-autocomplete.spec';
+import './widget-input-text.spec';
