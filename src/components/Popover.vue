@@ -141,7 +141,6 @@ export default class Popover extends Vue {
 
   alignJustify(bodyBounds: DOMRect | ClientRect, parentBounds: DOMRect | ClientRect) {
     const parentLeft = parentBounds.left - bodyBounds.left;
-    const parentRight = parentLeft + parentBounds.width;
 
     return {
       // Align left
@@ -212,49 +211,47 @@ export default class Popover extends Vue {
 
   // Set the absolute position
   // Checks available space on screen for vertical positioning and alignment
-  updatePosition() {
-    _.throttle(
-      () => {
-        let top;
-        if (!this.isActive || this.parent === null) {
-          return;
-        }
+  updatePosition = _.throttle(
+    function() {
+      let top;
+      if (!this.isActive || this.parent === null) {
+        return;
+      }
 
-        const bodyBounds = document.body.getBoundingClientRect();
-        const parentBounds = this.parent.getBoundingClientRect();
+      const bodyBounds = document.body.getBoundingClientRect();
+      const parentBounds = this.parent.getBoundingClientRect();
 
-        // Set alignment
-        const elementStyle: ElementPosition = this.alignMethod(bodyBounds, parentBounds);
+      // Set alignment
+      const elementStyle: ElementPosition = this.alignMethod(bodyBounds, parentBounds);
 
-        const parentTop = parentBounds.top - bodyBounds.top;
-        const topAbove = parentTop - POPOVER_SHADOW_GAP - this.$el.offsetHeight;
-        const topBelow = parentTop + parentBounds.height;
+      const parentTop = parentBounds.top - bodyBounds.top;
+      const topAbove = parentTop - POPOVER_SHADOW_GAP - this.$el.offsetHeight;
+      const topBelow = parentTop + parentBounds.height;
 
-        // Position above or below
-        if (this.isBottom) {
-          top = topBelow;
+      // Position above or below
+      if (this.isBottom) {
+        top = topBelow;
 
-          // Not enough space below and enough space above
-          if (topBelow + this.$el.offsetHeight > window.innerHeight && topAbove >= 0) {
-            top = topAbove;
-          }
-        } else {
+        // Not enough space below and enough space above
+        if (topBelow + this.$el.offsetHeight > window.innerHeight && topAbove >= 0) {
           top = topAbove;
-
-          // Not enough space above and enough space below
-          if (topAbove < 0 && topBelow + this.$el.offsetHeight <= window.innerHeight) {
-            top = topBelow;
-          }
         }
+      } else {
+        top = topAbove;
 
-        elementStyle.top = `${top}px`;
+        // Not enough space above and enough space below
+        if (topAbove < 0 && topBelow + this.$el.offsetHeight <= window.innerHeight) {
+          top = topBelow;
+        }
+      }
 
-        this.elementStyle = elementStyle;
-      },
-      // 60fps
-      16,
-    )();
-  }
+      elementStyle.top = `${top}px`;
+
+      this.elementStyle = elementStyle;
+    },
+    // 60fps
+    16,
+  );
 
   @Watch('isActive')
   onisActiveChange(isActive: boolean) {

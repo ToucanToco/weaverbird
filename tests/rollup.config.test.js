@@ -32,12 +32,11 @@ const baseConfig = {
         chai: ['expect'],
       },
     }),
-    css({ output: 'dist/vue-query-builder.css' }),
+    // css({ output: 'dist/vue-query-builder.css' }),
     replace({
       'process.env.NODE_ENV': JSON.stringify('production'),
     }),
     vue({
-      css: false,
       compileTemplate: true,
       template: {
         isProduction: true,
@@ -54,6 +53,12 @@ baseConfig.onwarn = warning => {
     // This error happens frequently due to TypeScript emitting `this` at the
     // top-level of a module. In this case its fine if it gets rewritten to
     // undefined, so ignore this error.
+    return;
+  } else if (
+    warning.code === 'CIRCULAR_DEPENDENCY' &&
+    warning.message.indexOf('node_modules/chai/lib/chai.js') !== -1
+  ) {
+    // ignore chai circular dependency error
     return;
   }
 

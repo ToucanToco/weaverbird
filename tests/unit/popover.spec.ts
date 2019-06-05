@@ -10,7 +10,7 @@ import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/components/constants';
 describe('Popover', function() {
   var wrapper: Wrapper<Vue>;
   var popoverWrapper: Wrapper<Vue>;
-  sinon.useFakeTimers();
+  var clock = sinon.useFakeTimers();
 
   const createWrapper = (...args: any) => {
     const val = args[0],
@@ -60,15 +60,16 @@ describe('Popover', function() {
     );
     popoverWrapper = wrapper.find({ ref: 'popover' });
     // Force throttle end
-    sinon.clock.tick(1600);
+    clock.tick(16);
   };
 
   beforeEach(function() {
-    sinon.useFakeTimers();
+    clock = sinon.useFakeTimers();
   });
 
   afterEach(function() {
     wrapper.destroy();
+    clock.restore();
   });
 
   it('should instanciate a popover', function() {
@@ -102,8 +103,8 @@ describe('Popover', function() {
     expect(popoverWrapper.classes()).to.eql(['popover']);
   });
 
-  xdescribe('when active', function() {
-    it('should be above by default', function() {
+  describe('when active', function() {
+    it('should be above by default', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -120,15 +121,14 @@ describe('Popover', function() {
           width: '140px',
         },
       });
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-      });
+      expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
     });
 
-    it('should be centered by default', function() {
+    it('should be centered by default', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -146,15 +146,14 @@ describe('Popover', function() {
         },
       });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-        expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
-      });
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
     });
   });
 
-  xit("should be aligned left when there isn't enough space on left", function() {
+  it("should be aligned left when there isn't enough space on left", async function() {
     createWrapper({
       parentStyle: {
         height: '40px',
@@ -173,15 +172,14 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    wrapper.vm.$nextTick().then(() => {
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.left).to.equal(parentBounds.left);
-    });
+    expect(popoverBounds.left).to.equal(parentBounds.left);
   });
 
-  xit("should be aligned right when there isn't enough space on right", function() {
+  it("should be aligned right when there isn't enough space on right", async function() {
     const parentLeft = window.innerWidth - 100;
     createWrapper({
       parentStyle: {
@@ -201,15 +199,14 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    wrapper.vm.$nextTick().then(() => {
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
-    });
+    expect(popoverBounds.left).to.equal(parentBounds.right - 140);
   });
 
-  xit("should be below when there isn't enough place above and there is below", function() {
+  it("should be below when there isn't enough place above and there is below", async function() {
     createWrapper({
       parentStyle: {
         height: '40px',
@@ -228,15 +225,14 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    return wrapper.vm.$nextTick().then(() => {
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.top).to.equal(parentBounds.top + 40);
-    });
+    expect(popoverBounds.top).to.equal(parentBounds.top + 40);
   });
 
-  xit("should be above when there isn't enough place above or below", function() {
+  xit("should be above when there isn't enough place above or below", async function() {
     const height = window.innerHeight;
     createWrapper({
       parentStyle: {
@@ -256,15 +252,14 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    return wrapper.vm.$nextTick().then(() => {
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-      return expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-    });
+    expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
   });
 
-  xit('should update its position on orientation change', function() {
+  it('should update its position on orientation change', async function() {
     createWrapper({
       parentStyle: {
         height: '40px',
@@ -283,20 +278,18 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    return wrapper.vm.$nextTick().then(() => {
-      wrapper.element.style.left = '100px';
-      window.dispatchEvent(new Event('orientationchange'));
+    await wrapper.vm.$nextTick();
+    wrapper.element.style.left = '100px';
+    window.dispatchEvent(new Event('orientationchange'));
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
-      });
-    });
+    expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
   });
 
-  xit('should update its position when resized', function() {
+  it('should update its position when resized', async function() {
     createWrapper({
       parentStyle: {
         height: '40px',
@@ -315,20 +308,18 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    return wrapper.vm.$nextTick().then(() => {
-      wrapper.element.style.left = '100px';
-      window.dispatchEvent(new Event('resize'));
+    await wrapper.vm.$nextTick();
+    wrapper.element.style.left = '100px';
+    window.dispatchEvent(new Event('resize'));
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
-      });
-    });
+    expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
   });
 
-  xit('should update its position when scrolled', function() {
+  it('should update its position when scrolled', async function() {
     createWrapper({
       parentStyle: {
         height: '40px',
@@ -347,29 +338,27 @@ describe('Popover', function() {
     });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    return wrapper.vm.$nextTick().then(() => {
-      wrapper.element.style.left = '100px';
-      wrapper.element.dispatchEvent(new Event('scroll'));
+    await wrapper.vm.$nextTick();
+    wrapper.element.style.left = '100px';
+    wrapper.element.dispatchEvent(new Event('scroll'));
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
-      });
-    });
+    expect(popoverBounds.left).to.equal(parentBounds.left + (100 - 140) / 2);
   });
 
-  xit('should be visible', function() {
+  it('should be visible', function() {
     createWrapper({ props: { active: true } });
     const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    return expect(
-      window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility'),
-    ).to.equal('visible');
+    expect(window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility')).to.equal(
+      'visible',
+    );
   });
 
-  xdescribe('when aligned justify', function() {
+  describe('when aligned justify', function() {
     beforeEach(function() {
       createWrapper({
         parentStyle: {
@@ -390,28 +379,26 @@ describe('Popover', function() {
       });
     });
 
-    it("should have its parent's width", function() {
+    it("should have its parent's width", async function() {
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        return expect(popoverWrapper.element.offsetWidth).to.equal(100);
-      });
+      await wrapper.vm.$nextTick();
+      expect(popoverWrapper.element.offsetWidth).to.equal(100);
     });
 
-    it("should have its parent's left position", function() {
+    it("should have its parent's left position", async function() {
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.left);
     });
   });
 
-  xdescribe('when aligned left', function() {
-    it('should be aligned left by default', function() {
+  describe('when aligned left', function() {
+    it('should be aligned left by default', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -431,15 +418,14 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.left);
     });
 
-    it("should be aligned right when there isn't enough space on right", function() {
+    it("should be aligned right when there isn't enough space on right", async function() {
       const parentLeft = window.innerWidth - 100;
       createWrapper({
         parentStyle: {
@@ -460,15 +446,14 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.right - 140);
     });
 
-    it("should be aligned left when there isn't enough space on either side", function() {
+    it("should be aligned left when there isn't enough space on either side", async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -488,17 +473,16 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.left);
     });
   });
 
-  xdescribe('when aligned right', function() {
-    it('should be aligned right by default', function() {
+  describe('when aligned right', function() {
+    it('should be aligned right by default', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -518,15 +502,14 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.right - 140);
     });
 
-    it("should be aligned left when there isn't enough space on left", function() {
+    it("should be aligned left when there isn't enough space on left", async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -546,15 +529,14 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.left);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.left);
     });
 
-    it("should be aligned right when there isn't enough space on either side", function() {
+    it("should be aligned right when there isn't enough space on either side", async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -574,17 +556,16 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.left).to.equal(parentBounds.right - 140);
-      });
+      expect(popoverBounds.left).to.equal(parentBounds.right - 140);
     });
   });
 
-  xdescribe('when bottom', function() {
-    it('should be below', function() {
+  describe('when bottom', function() {
+    it('should be below', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -604,15 +585,14 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).to.equal(parentBounds.top + 40);
-      });
+      expect(popoverBounds.top).to.equal(parentBounds.top + 40);
     });
 
-    it("should be above when there isn't enough place below and there is above", function() {
+    it("should be above when there isn't enough place below and there is above", async function() {
       const parentTop = window.innerHeight - 40;
       createWrapper({
         parentStyle: {
@@ -633,15 +613,14 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-      });
+      expect(popoverBounds.top).to.equal(parentBounds.top - POPOVER_SHADOW_GAP - 140);
     });
 
-    it("should be below when there isn't enough place above or below", function() {
+    it("should be below when there isn't enough place above or below", async function() {
       const height = window.innerHeight;
       createWrapper({
         parentStyle: {
@@ -662,12 +641,11 @@ describe('Popover', function() {
       });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      return wrapper.vm.$nextTick().then(() => {
-        const parentBounds = wrapper.element.getBoundingClientRect();
-        const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
 
-        return expect(popoverBounds.top).to.equal(parentBounds.top + height);
-      });
+      expect(popoverBounds.top).to.equal(parentBounds.top + height);
     });
   });
 });
