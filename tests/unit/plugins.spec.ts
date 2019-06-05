@@ -64,21 +64,6 @@ describe('backend service plugin tests', () => {
     });
   });
 
-  it('should call execute pipeline when a setPipeline mutation is committed', async () => {
-    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'GoT' },
-      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-      { name: 'sort', columns: ['death'] },
-    ];
-    store.commit('setPipeline', { pipeline });
-    await flushPromises();
-    expect(store.state.dataset).toEqual({
-      headers: [{ name: 'x' }, { name: 'y' }],
-      data: [[1, 2], [3, 4]],
-    });
-  });
-
   it('should call execute pipeline when a setCurrentDomain mutation is committed', async () => {
     const store = setupStore({}, [servicePluginFactory(new DummyService())]);
     store.commit('setCurrentDomain', { currentDomain: 'GoT' });

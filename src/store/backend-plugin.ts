@@ -44,7 +44,6 @@ export function servicePluginFactory(service: BackendService) {
   return (store: Store<VQBState>) => {
     store.subscribe(async (mutation: StateMutation, state: VQBState) => {
       if (
-        mutation.type === 'setPipeline' ||
         mutation.type === 'selectStep' ||
         mutation.type === 'setCurrentDomain' ||
         mutation.type === 'deleteStep'
