@@ -91,7 +91,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
       this.step.oldname = val[0];
     }
   }
-  
+
   created() {
     this.schema = renameSchema;
     this.setSelectedColumns({ column: this.initialValue.oldname });
@@ -104,6 +104,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
     } else {
       this.errors = null;
       this.$emit('formSaved', { name: 'rename', ...this.step });
+      this.setSelectedColumns({ column: this.step.newname });
     }
   }
 
