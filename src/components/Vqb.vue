@@ -21,16 +21,15 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
-import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import { Pipeline, PipelineStep } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
 import FormFillnaStep from '@/components/FormFillnaStep.vue';
 import FormRenameStep from '@/components/FormRenameStep.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
+import { STEP_MAPPER } from './constants';
 
 import _ from 'lodash';
-
-type StepMapper = { [K in PipelineStepName]?: string };
 
 @Component({
   components: {
@@ -51,8 +50,6 @@ export default class Vqb extends Vue {
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
   @Mutation toggleStepEdition!: () => void;
 
-  STEP_MAPPER: StepMapper = { fillna: 'FormFillnaStep', rename: 'FormRenameStep' };
-
   formToInstantiate?: string = '';
   initialValue: any = undefined;
   editedStepIndex: number = -1;
@@ -64,7 +61,7 @@ export default class Vqb extends Vue {
 
   openStepForm(params: PipelineStep, index: number) {
     // after that, we delete from params to pass down the others keys to initialValue
-    this.formToInstantiate = this.STEP_MAPPER[params.name];
+    this.formToInstantiate = STEP_MAPPER[params.name];
     if (this.formToInstantiate === undefined) {
       console.error('No corresponding form for this step');
       return;

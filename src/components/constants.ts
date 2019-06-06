@@ -1,11 +1,4 @@
-export const POPOVER_ALIGN = {
-  CENTER: 'center',
-  JUSTIFY: 'justify',
-  LEFT: 'left',
-  RIGHT: 'right',
-};
-
-export const POPOVER_SHADOW_GAP = 8;
+import { PipelineStepName } from '@/lib/steps';
 
 export type ButtonDef = Readonly<{
   icon: string;
@@ -20,3 +13,19 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
   { icon: 'code-branch', label: 'Aggregate' },
   { icon: 'draw-polygon', label: 'Reshape' },
 ];
+
+export const POPOVER_ALIGN = {
+  CENTER: 'center',
+  JUSTIFY: 'justify',
+  LEFT: 'left',
+  RIGHT: 'right',
+};
+
+export const POPOVER_SHADOW_GAP = 8;
+
+type StepMapper = { [K in PipelineStepName]?: string };
+
+export const STEP_MAPPER: StepMapper = {
+  fillna: 'FormFillnaStep',
+  rename: 'FormRenameStep',
+};
