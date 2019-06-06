@@ -59,18 +59,37 @@ describe('Form Rename Step', () => {
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
-  it('should report errors when submitted data is not valid', () => {
-    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    const errors = wrapper.vm.$data.errors
-      .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-      .sort((err1: ValidationError, err2: ValidationError) =>
-        err1.dataPath.localeCompare(err2.dataPath),
-      );
-    expect(errors).toEqual([
-      { keyword: 'minLength', dataPath: '.newname' },
-      { keyword: 'minLength', dataPath: '.oldname' },
-    ]);
+  describe('Errors', () => {
+    it('should report errors when oldname or newname is empty', () => {
+      const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+      wrapper.find('.widget-form-action__button--validate').trigger('click');
+      const errors = wrapper.vm.$data.errors
+        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
+        .sort((err1: ValidationError, err2: ValidationError) =>
+          err1.dataPath.localeCompare(err2.dataPath),
+        );
+      expect(errors).toEqual([
+        { keyword: 'minLength', dataPath: '.newname' },
+        { keyword: 'minLength', dataPath: '.oldname' },
+      ]);
+    });
+
+    it('should report errors when newname is an already existing column name', () => {
+      const store = setupStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [],
+        },
+      });
+      const wrapper = shallowMount(FormRenameStep, { store, localVue });
+      wrapper.setData({ step: { oldname: 'columnA', newname: 'columnB' } });
+      wrapper.find('.widget-form-action__button--validate').trigger('click');
+      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
+        keyword: err.keyword,
+        dataPath: err.dataPath,
+      }));
+      expect(errors).toEqual([{ keyword: 'nameAlreadyUsed', dataPath: '.newname' }]);
+    });
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
