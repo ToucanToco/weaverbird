@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
@@ -27,7 +27,7 @@ import FormFillnaStep from '@/components/FormFillnaStep.vue';
 import FormRenameStep from '@/components/FormRenameStep.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
-import { STEP_MAPPER } from './constants';
+import { STEPFORM_REGISTRY } from './formlib';
 
 import _ from 'lodash';
 
@@ -50,7 +50,7 @@ export default class Vqb extends Vue {
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
   @Mutation toggleStepEdition!: () => void;
 
-  formToInstantiate?: string = '';
+  formToInstantiate?: VueConstructor<Vue>;
   initialValue: any = undefined;
   editedStepIndex: number = -1;
   stepName!: string;
@@ -61,7 +61,7 @@ export default class Vqb extends Vue {
 
   openStepForm(params: PipelineStep, index: number) {
     // after that, we delete from params to pass down the others keys to initialValue
-    this.formToInstantiate = STEP_MAPPER[params.name];
+    this.formToInstantiate = STEPFORM_REGISTRY[params.name];
     if (this.formToInstantiate === undefined) {
       console.error('No corresponding form for this step');
       return;
