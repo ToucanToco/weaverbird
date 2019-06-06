@@ -53,7 +53,7 @@ export default class Vqb extends Vue {
 
   STEP_MAPPER: StepMapper = { fillna: 'FormFillnaStep', rename: 'FormRenameStep' };
 
-  formToInstantiate?: string;
+  formToInstantiate?: string = '';
   initialValue: any = undefined;
   editedStepIndex: number = -1;
   stepName!: string;
