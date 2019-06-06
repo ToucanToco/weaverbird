@@ -69,7 +69,7 @@ export default class FormRenameStep extends Mixins(FormMixin) {
 
   @Prop({
     type: Boolean,
-    default: () => true,
+    default: true,
   })
   isStepCreation!: boolean;
 
