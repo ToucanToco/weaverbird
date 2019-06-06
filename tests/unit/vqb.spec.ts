@@ -15,16 +15,16 @@ describe('Vqb', () => {
     expect(wrapper.vm.$store.state.isEditingStep).to.be.false;
   });
 
-  it('should instantiate a ForRenameStep component', () => {
+  it('should instantiate a FormRenameStep component', () => {
     const store = setupStore({ isEditingStep: true });
     const wrapper = shallowMount(Vqb, {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'FormRenameStep' };
+        return { formToInstantiate: 'RenameStepForm' };
       },
     });
-    const form = wrapper.find('formrenamestep-stub');
+    const form = wrapper.find('renamestepform-stub');
     expect(form.exists()).to.be.true;
   });
 
@@ -34,10 +34,10 @@ describe('Vqb', () => {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'FormRenameStep' };
+        return { formToInstantiate: 'FillnaStepForm' };
       },
     });
-    const form = wrapper.find('formrenamestep-stub');
+    const form = wrapper.find('fillnastepform-stub');
     expect(form.exists()).to.be.true;
   });
 
@@ -60,12 +60,12 @@ describe('Vqb', () => {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'FormRenameStep' };
+        return { formToInstantiate: 'RenameStepForm' };
       },
     });
     await Vue.nextTick();
     wrapper
-      .find('formrenamestep-stub')
+      .find('renamestepform-stub')
       .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
     expect(store.state.isEditingStep).to.be.false;
     expect(store.state.pipeline).to.eql([
@@ -82,11 +82,11 @@ describe('Vqb', () => {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'FormRenameStep' };
+        return { formToInstantiate: 'RenameStepForm' };
       },
     });
     await Vue.nextTick();
-    wrapper.find('formrenamestep-stub').vm.$emit('cancel');
+    wrapper.find('renamestepform-stub').vm.$emit('cancel');
     expect(store.state.isEditingStep).to.be.false;
     expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'foo' }]);
   });

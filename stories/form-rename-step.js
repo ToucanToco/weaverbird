@@ -3,15 +3,15 @@ import {
 } from '@storybook/vue';
 
 import {
-  FormRenameStep,
+  RenameStepForm,
   setupStore
 } from '../dist/storybook/components';
 
-const stories = storiesOf('FormRenameStep', module);
+const stories = storiesOf('RenameStepForm', module);
 
 stories.add('simple', () => ({
   components: {
-    FormRenameStep
+    RenameStepForm
   },
   store: setupStore({
     dataset: {
@@ -32,7 +32,7 @@ stories.add('simple', () => ({
     },
   }, [], true),
   template: `
-      <FormRenameStep>
-      </FormRenameStep>
+      <RenameStepForm>
+      </RenameStepForm>
     `,
 }));

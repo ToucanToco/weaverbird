@@ -1,5 +1,5 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import FormFillnaStep from '@/components/FormFillnaStep.vue';
+import FillnaStepForm from '@/components/FillnaStepForm.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
@@ -14,53 +14,53 @@ interface ValidationError {
   keyword: string;
 }
 
-describe('Form Rename Step', () => {
+describe('Fillna Step Form', () => {
   let emptyStore: Store<VQBState>;
   beforeEach(() => {
     emptyStore = setupStore({});
   });
 
   it('should instantiate', () => {
-    const wrapper = shallowMount(FormFillnaStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly one widgetinputtext component', () => {
-    const wrapper = shallowMount(FormFillnaStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     const inputWrappers = wrapper.findAll('widgetinputtext-stub');
 
     expect(inputWrappers.length).toEqual(1);
   });
 
   it('should pass down the value prop to widget value prop', () => {
-    const wrapper = shallowMount(FormFillnaStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.setData({ step: { column: '', value: 'foo' } });
 
     expect(wrapper.find('widgetinputtext-stub').props('value')).toEqual('foo');
   });
 
   it('should have a widget autocomplete', () => {
-    const wrapper = shallowMount(FormFillnaStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.find('widgetautocomplete-stub').exists()).toBeTruthy();
   });
 
-  it('should instantiate an autocomplet widget with proper options from the store', () => {
+  it('should instantiate an autocomplete widget with proper options from the store', () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
     });
-    const wrapper = shallowMount(FormFillnaStep, { store, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store, localVue });
     const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should report errors when submitted data is not valid', () => {
-    const wrapper = shallowMount(FormFillnaStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
       keyword: err.keyword,
@@ -70,7 +70,7 @@ describe('Form Rename Step', () => {
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
-    const wrapper = shallowMount(FormFillnaStep, {
+    const wrapper = shallowMount(FillnaStepForm, {
       store: emptyStore,
       localVue,
       propsData: {
@@ -85,7 +85,7 @@ describe('Form Rename Step', () => {
   });
 
   it('should emit "cancel" event when edition is cancelled', () => {
-    const wrapper = shallowMount(FormFillnaStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
@@ -99,7 +99,7 @@ describe('Form Rename Step', () => {
         data: [],
       },
     });
-    const wrapper = shallowMount(FormFillnaStep, { store, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store, localVue });
     expect(wrapper.vm.$data.step.column).toEqual('');
     store.commit('toggleColumnSelection', { column: 'columnB' });
     expect(wrapper.vm.$data.step.column).toEqual('columnB');
@@ -113,7 +113,7 @@ describe('Form Rename Step', () => {
       },
       selectedColumns: ['columnA'],
     });
-    const wrapper = mount(FormFillnaStep, {
+    const wrapper = mount(FillnaStepForm, {
       propsData: {
         initialValue: {
           column: 'columnA',
@@ -138,7 +138,7 @@ describe('Form Rename Step', () => {
       pipeline,
       selectedStepIndex: 2,
     });
-    const wrapper = shallowMount(FormFillnaStep, { store, localVue });
+    const wrapper = shallowMount(FillnaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).toEqual(2);
@@ -154,7 +154,7 @@ describe('Form Rename Step', () => {
         data: [],
       },
     });
-    const wrapper = mount(FormFillnaStep, { store, localVue });
+    const wrapper = mount(FillnaStepForm, { store, localVue });
     wrapper.setData({ step: { column: 'columnA', value: 'toto' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(store.state.selectedColumns).toEqual(['columnA']);
