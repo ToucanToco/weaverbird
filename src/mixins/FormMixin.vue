@@ -6,7 +6,6 @@ type VqbError = Partial<ErrorObject>;
 
 @Component
 export default class FormMixin extends Vue {
-  // errors?: ErrorObject[] | null = null;
   errors?: VqbError[] | null = null;
   validator: ValidateFunction = () => false;
   schema: object = {};
