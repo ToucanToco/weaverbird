@@ -37,6 +37,7 @@ module.exports = function(config) {
     },
     reporters: ['spec', 'coverage-istanbul'],
     browsers: ['Chrome'],
+    browserNoActivityTimeout: 60000,
     customLaunchers: {
       Chrome: {
         base: 'ChromeHeadless',
