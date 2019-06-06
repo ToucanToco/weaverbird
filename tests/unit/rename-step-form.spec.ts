@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vue from 'vue';
+import RenameStepForm from '@/components/RenameStepForm.vue';
+import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
 import { VQBState } from '@/store/state';
-import FormRenameStep from '@/components/FormRenameStep.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -16,34 +16,34 @@ interface ValidationError {
   keyword: string;
 }
 
-describe('Form Rename Step', () => {
+describe('Rename Step Form', () => {
   let emptyStore: Store<VQBState>;
   beforeEach(() => {
     emptyStore = setupStore({});
   });
 
   it('should instantiate', () => {
-    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.exists()).to.be.true;
   });
 
   it('should have exactly one widgetinputtext component', () => {
-    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
     const inputWrappers = wrapper.findAll('widgetinputtext-stub');
 
     expect(inputWrappers.length).to.equal(1);
   });
 
   it('should pass down the newname prop to widget value prop', async () => {
-    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
     wrapper.setData({ step: { oldname: '', newname: 'foo' } });
     await Vue.nextTick();
     expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
   });
 
   it('should have a widget autocomplete', () => {
-    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.find('widgetautocomplete-stub').exists()).to.be.true;
   });
@@ -55,7 +55,7 @@ describe('Form Rename Step', () => {
         data: [],
       },
     });
-    const wrapper = shallowMount(FormRenameStep, { store, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store, localVue });
     const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
 
     expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
@@ -63,7 +63,7 @@ describe('Form Rename Step', () => {
 
   describe('Errors', () => {
     it('should report errors when oldname or newname is empty', async () => {
-      const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+      const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       await Vue.nextTick();
       const errors = wrapper.vm.$data.errors
@@ -84,7 +84,7 @@ describe('Form Rename Step', () => {
           data: [],
         },
       });
-      const wrapper = shallowMount(FormRenameStep, { store, localVue });
+      const wrapper = shallowMount(RenameStepForm, { store, localVue });
       wrapper.setData({ step: { oldname: 'columnA', newname: 'columnB' } });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       await Vue.nextTick();
@@ -97,7 +97,7 @@ describe('Form Rename Step', () => {
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const wrapper = shallowMount(FormRenameStep, {
+    const wrapper = shallowMount(RenameStepForm, {
       store: emptyStore,
       localVue,
       propsData: {
@@ -113,7 +113,7 @@ describe('Form Rename Step', () => {
   });
 
   it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = shallowMount(FormRenameStep, { store: emptyStore, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await Vue.nextTick();
     expect(wrapper.emitted()).to.eql({
@@ -128,7 +128,7 @@ describe('Form Rename Step', () => {
         data: [],
       },
     });
-    const wrapper = shallowMount(FormRenameStep, { store, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store, localVue });
     expect(wrapper.vm.$data.step.oldname).to.equal('');
     store.commit('toggleColumnSelection', { column: 'columnB' });
     await Vue.nextTick();
@@ -143,7 +143,7 @@ describe('Form Rename Step', () => {
       },
       selectedColumns: ['columnA'],
     });
-    const wrapper = mount(FormRenameStep, {
+    const wrapper = mount(RenameStepForm, {
       propsData: {
         initialValue: {
           oldname: 'columnA',
@@ -168,7 +168,7 @@ describe('Form Rename Step', () => {
       pipeline,
       selectedStepIndex: 2,
     });
-    const wrapper = shallowMount(FormRenameStep, { store, localVue });
+    const wrapper = shallowMount(RenameStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).to.equal(2);
@@ -184,7 +184,7 @@ describe('Form Rename Step', () => {
         data: [],
       },
     });
-    const wrapper = mount(FormRenameStep, { store, localVue });
+    const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setData({ step: { oldname: 'columnA', newname: 'toto' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(store.state.selectedColumns).to.eql(['toto']);

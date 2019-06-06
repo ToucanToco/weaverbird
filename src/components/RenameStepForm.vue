@@ -1,18 +1,22 @@
-
 <template>
   <div>
     <div class="step-edit-form">
-      <h1 class="step-edit-form__title">FILL NULL VALUES STEP</h1>
+      <h1 class="step-edit-form__title">EDIT RENAME STEP</h1>
     </div>
     <WidgetAutocomplete
-      id="columnInput"
-      v-model="step.column"
-      name="Fill null values in:"
+      id="oldnameInput"
+      v-model="step.oldname"
+      name="Old name"
       :options="columnNames"
-      @input="setSelectedColumns({ column: step.column })"
-      placeholder="Enter a column"
+      @input="setSelectedColumns({ column: step.oldname })"
+      placeholder="Enter the old column name"
     ></WidgetAutocomplete>
-    <WidgetInputText id="valueInput" v-model="step.value" name="With:" placeholder="Enter a value"></WidgetInputText>
+    <WidgetInputText
+      id="newnameInput"
+      v-model="step.newname"
+      name="New name"
+      placeholder="Enter a new column name"
+    ></WidgetInputText>
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
@@ -34,36 +38,36 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Mixins, Prop, Watch } from 'vue-property-decorator';
-import FormMixin from '@/mixins/FormMixin.vue';
+import FormMixin, { VqbError } from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
-import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
+import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 
-interface FillnaStepConf {
-  column: string;
-  value: string;
+interface RenameStepConf {
+  oldname: string;
+  newname: string;
 }
 
 @StepFormComponent({
-  vqbstep: 'fillna',
-  name: 'form-fillna-step',
+  vqbstep: 'rename',
+  name: 'rename-step-form',
   components: {
     WidgetAutocomplete,
     WidgetInputText,
   },
 })
-export default class FillnaStepForm extends Mixins(FormMixin) {
+export default class RenameStepForm extends Mixins(FormMixin) {
   @Prop({
     type: Object,
     default: () => ({
-      column: '',
-      value: '',
+      oldname: '',
+      newname: '',
     }),
   })
-  initialValue!: FillnaStepConf;
+  initialValue!: RenameStepConf;
 
   @Prop({
     type: Boolean,
@@ -71,7 +75,7 @@ export default class FillnaStepForm extends Mixins(FormMixin) {
   })
   isStepCreation!: boolean;
 
-  step: FillnaStepConf = { ...this.initialValue };
+  step: RenameStepConf = { ...this.initialValue };
 
   @State pipeline!: Pipeline;
   @State selectedStepIndex!: number;
@@ -86,22 +90,30 @@ export default class FillnaStepForm extends Mixins(FormMixin) {
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
     if (!_.isEqual(val, oldVal)) {
-      this.step.column = val[0];
+      this.step.oldname = val[0];
     }
   }
 
   created() {
-    this.schema = fillnaSchema;
-    this.setSelectedColumns({ column: this.initialValue.column });
+    this.schema = renameSchema;
+    this.setSelectedColumns({ column: this.initialValue.oldname });
   }
 
   validateStep() {
     const ret = this.validator(this.step);
     if (ret === false) {
       this.errors = this.validator.errors;
+    } else if (this.columnNames.includes(this.step.newname)) {
+      const err: VqbError = {
+        keyword: 'nameAlreadyUsed',
+        dataPath: '.newname',
+        message: 'This column name is already used.',
+      };
+      this.errors = [err];
     } else {
       this.errors = null;
-      this.$emit('formSaved', { name: 'fillna', ...this.step });
+      this.$emit('formSaved', { name: 'rename', ...this.step });
+      this.setSelectedColumns({ column: this.step.newname });
     }
   }
 

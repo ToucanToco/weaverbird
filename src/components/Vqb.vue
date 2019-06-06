@@ -23,8 +23,8 @@ import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
-import FormFillnaStep from '@/components/FormFillnaStep.vue';
-import FormRenameStep from '@/components/FormRenameStep.vue';
+import FillnaStepForm from '@/components/FillnaStepForm.vue';
+import RenameStepForm from '@/components/RenameStepForm.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
 import { STEPFORM_REGISTRY } from './formlib';
@@ -34,8 +34,8 @@ import _ from 'lodash';
 @Component({
   components: {
     DataViewer,
-    FormFillnaStep,
-    FormRenameStep,
+    FillnaStepForm,
+    RenameStepForm,
     Pipeline: PipelineComponent,
     ResizablePanels,
   },
