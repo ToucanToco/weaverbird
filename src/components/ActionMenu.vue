@@ -52,12 +52,12 @@ export default class ActionMenu extends Vue {
   }
 
   createFillnaStep() {
-    this.$emit('actionClicked', { name: 'fillna', column: this.columnName });
+    this.$emit('actionClicked', { name: 'fillna', column: this.columnName, value: '' });
     this.close();
   }
 
   createRenameStep() {
-    this.$emit('actionClicked', { name: 'rename', oldname: this.columnName });
+    this.$emit('actionClicked', { name: 'rename', oldname: this.columnName, newname: '' });
     this.close();
   }
 
