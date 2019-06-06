@@ -37,27 +37,29 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin, { VqbError } from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
+import { StepFormComponent } from '@/components/formlib';
 
 interface RenameStepConf {
   oldname: string;
   newname: string;
 }
 
-@Component({
+@StepFormComponent({
+  vqbstep: 'rename',
   name: 'form-rename-step',
   components: {
     WidgetAutocomplete,
     WidgetInputText,
   },
 })
-export default class FormRenameStep extends Mixins(FormMixin) {
+export default class RenameStepForm extends Mixins(FormMixin) {
   @Prop({
     type: Object,
     default: () => ({

@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <div class="step-edit-form">
@@ -32,27 +33,29 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
 import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
+import { StepFormComponent } from '@/components/formlib';
 
 interface FillnaStepConf {
   column: string;
   value: string;
 }
 
-@Component({
+@StepFormComponent({
+  vqbstep: 'fillna',
   name: 'form-fillna-step',
   components: {
     WidgetAutocomplete,
     WidgetInputText,
   },
 })
-export default class FormRenameStep extends Mixins(FormMixin) {
+export default class FillnaStepForm extends Mixins(FormMixin) {
   @Prop({
     type: Object,
     default: () => ({

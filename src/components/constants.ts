@@ -1,5 +1,3 @@
-import { PipelineStepName } from '@/lib/steps';
-
 export type ButtonDef = Readonly<{
   icon: string;
   label: string;
@@ -22,10 +20,3 @@ export const POPOVER_ALIGN = {
 };
 
 export const POPOVER_SHADOW_GAP = 8;
-
-type StepMapper = { [K in PipelineStepName]?: string };
-
-export const STEP_MAPPER: StepMapper = {
-  fillna: 'FormFillnaStep',
-  rename: 'FormRenameStep',
-};
