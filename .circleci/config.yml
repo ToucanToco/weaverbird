@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - run: yarn
-      - run: yarn test:unit
+      - run: yarn test:unit --runInBand
       - run: yarn codecov
 
 workflows:
