@@ -96,7 +96,7 @@ describe('Form Rename Step', () => {
     });
   });
 
-  it('should validate and emit "formSaved" when submitted data is valid', () => {
+  it('should validate and emit "formSaved" when submitted data is valid', async () => {
     const wrapper = shallowMount(FormRenameStep, {
       store: emptyStore,
       localVue,
@@ -130,7 +130,7 @@ describe('Form Rename Step', () => {
     });
     const wrapper = shallowMount(FormRenameStep, { store, localVue });
     expect(wrapper.vm.$data.step.oldname).to.equal('');
-    store.commit('toggleColumnSelection', 'columnB');
+    store.commit('toggleColumnSelection', { column: 'columnB' });
     await Vue.nextTick();
     expect(wrapper.vm.$data.step.oldname).to.equal('columnB');
   });
@@ -154,7 +154,7 @@ describe('Form Rename Step', () => {
     });
     wrapper.setData({ step: { oldname: 'columnB', new_name: '' } });
     await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).toEqual(['columnB']);
+    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
@@ -171,10 +171,10 @@ describe('Form Rename Step', () => {
     const wrapper = shallowMount(FormRenameStep, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.selectedStepIndex).to.equal(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.selectedStepIndex).to.equal(3);
   });
 
   it('should make the focus on the column modified after rename validation', () => {
@@ -187,6 +187,6 @@ describe('Form Rename Step', () => {
     const wrapper = mount(FormRenameStep, { store, localVue });
     wrapper.setData({ step: { oldname: 'columnA', newname: 'toto' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).toEqual(['toto']);
+    expect(store.state.selectedColumns).to.eql(['toto']);
   });
 });

@@ -1,5 +1,4 @@
 import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
 import { expect } from 'chai';
 import { Pipeline } from '@/lib/steps';
 import { VQBState, emptyState } from '@/store/state';
@@ -12,9 +11,6 @@ function buildState(customState: Partial<VQBState>) {
     ...customState,
   };
 }
-
-chai.should();
-chai.use(sinonChai);
 
 describe('getter tests', () => {
   describe('(in)active pipeline steps', () => {
@@ -203,8 +199,8 @@ describe('mutation tests', () => {
 
     const spy = sinon.spy(console, 'error');
     mutations.selectStep(state, { index: 5 });
-    expect(spy).to.have.been.called;
-    expect(state.selectedStepIndex).toEqual(-1);
+    sinon.assert.called(spy);
+    expect(state.selectedStepIndex).to.equal(-1);
   });
 
   it('sets current domain on empty pipeline', () => {
