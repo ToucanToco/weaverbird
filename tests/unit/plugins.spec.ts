@@ -69,7 +69,7 @@ describe('backend service plugin tests', () => {
     const store = setupStore({}, [servicePluginFactory(new DummyService())]);
     store.commit('setCurrentDomain', { currentDomain: 'GoT' });
     await flushPromises();
-    expect(store.state.dataset).toEqual({
+    expect(store.state.dataset).to.eql({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2], [3, 4]],
     });
