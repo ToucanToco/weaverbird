@@ -2,9 +2,11 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 
-@Component    
+type VqbError = Partial<ErrorObject>;
+
+@Component
 export default class FormMixin extends Vue {
-  errors?: ErrorObject[] | null = null;
+  errors?: VqbError[] | null = null;
   validator: ValidateFunction = () => false;
   schema: object = {};
 

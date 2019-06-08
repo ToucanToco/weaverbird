@@ -38,7 +38,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
-import FormMixin from '@/mixins/FormMixin.vue';
+import FormMixin, { VqbError } from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import WidgetInputText from './WidgetInputText.vue';
@@ -101,6 +101,13 @@ export default class FormRenameStep extends Mixins(FormMixin) {
     const ret = this.validator(this.step);
     if (ret === false) {
       this.errors = this.validator.errors;
+    } else if (this.columnNames.includes(this.step.newname)) {
+      const err: VqbError = {
+        keyword: 'nameAlreadyUsed',
+        dataPath: '.newname',
+        message: 'This column name is already used.',
+      };
+      this.errors = [err];
     } else {
       this.errors = null;
       this.$emit('formSaved', { name: 'rename', ...this.step });
