@@ -1,3 +1,4 @@
+import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FillnaStepForm from '@/components/FillnaStepForm.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
@@ -23,27 +24,27 @@ describe('Fillna Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.exists()).to.be.true;
   });
 
   it('should have exactly one widgetinputtext component', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     const inputWrappers = wrapper.findAll('widgetinputtext-stub');
 
-    expect(inputWrappers.length).toEqual(1);
+    expect(inputWrappers.length).to.equal(1);
   });
 
-  it('should pass down the value prop to widget value prop', () => {
+  it('should pass down the value prop to widget value prop', async () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.setData({ step: { column: '', value: 'foo' } });
-
-    expect(wrapper.find('widgetinputtext-stub').props('value')).toEqual('foo');
+    await localVue.nextTick();
+    expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
   });
 
   it('should have a widget autocomplete', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.find('widgetautocomplete-stub').exists()).toBeTruthy();
+    expect(wrapper.find('widgetautocomplete-stub').exists()).to.be.true;
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
@@ -56,7 +57,7 @@ describe('Fillna Step Form', () => {
     const wrapper = shallowMount(FillnaStepForm, { store, localVue });
     const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
 
-    expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
+    expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
   });
 
   it('should report errors when submitted data is not valid', () => {
@@ -66,7 +67,7 @@ describe('Fillna Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.column' }]);
+    expect(errors).to.eql([{ keyword: 'minLength', dataPath: '.column' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
@@ -78,8 +79,8 @@ describe('Fillna Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
+    expect(wrapper.vm.$data.errors).to.be.null;
+    expect(wrapper.emitted()).to.eql({
       formSaved: [[{ name: 'fillna', column: 'foo', value: 'bar' }]],
     });
   });
@@ -87,12 +88,12 @@ describe('Fillna Step Form', () => {
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(wrapper.emitted()).toEqual({
+    expect(wrapper.emitted()).to.eql({
       cancel: [[]],
     });
   });
 
-  it('should update step when selectedColumn is changed', () => {
+  it('should update step when selectedColumn is changed', async () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -100,9 +101,10 @@ describe('Fillna Step Form', () => {
       },
     });
     const wrapper = shallowMount(FillnaStepForm, { store, localVue });
-    expect(wrapper.vm.$data.step.column).toEqual('');
+    expect(wrapper.vm.$data.step.column).to.equal('');
     store.commit('toggleColumnSelection', { column: 'columnB' });
-    expect(wrapper.vm.$data.step.column).toEqual('columnB');
+    await localVue.nextTick();
+    expect(wrapper.vm.$data.step.column).to.equal('columnB');
   });
 
   it('should update selectedColumn when column is changed', async () => {
@@ -124,7 +126,7 @@ describe('Fillna Step Form', () => {
     });
     wrapper.setData({ step: { column: 'columnB', value: '' } });
     await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).toEqual(['columnB']);
+    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
@@ -141,22 +143,30 @@ describe('Fillna Step Form', () => {
     const wrapper = shallowMount(FillnaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.selectedStepIndex).to.equal(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.selectedStepIndex).to.equal(3);
   });
 
-  it('should keep the focus on the column modified after rename validation', () => {
+  it('should keep the focus on the column modified after rename validation', async () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
     });
-    const wrapper = mount(FillnaStepForm, { store, localVue });
-    wrapper.setData({ step: { column: 'columnA', value: 'toto' } });
+    const wrapper = mount(FillnaStepForm, {
+      propsData: {
+        initialValue: {
+          column: 'columnA',
+        },
+      },
+      store,
+      localVue
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).toEqual(['columnA']);
+    await localVue.nextTick();
+    expect(store.state.selectedColumns).to.eql(['columnA']);
   });
 });
