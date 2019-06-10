@@ -27,7 +27,7 @@ describe('Action Menu', () => {
 
   it('should have an "Fill null values" action', () => {
     const wrapper = mount(ActionMenu);
-    expect(wrapper.html()).toContain('Fill null values');
+    expect(wrapper.html()).to.contain('Fill null values');
   });
 
   describe('when click on "Rename column"', () => {
@@ -40,7 +40,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(1).trigger('click');
 
-      expect(wrapper.emitted().actionClicked).to.be.true;
+      expect(wrapper.emitted().actionClicked).not.to.be.empty;
       expect(wrapper.emitted().actionClicked[0]).to.eql([
         { name: 'rename', oldname: 'dreamfall', newname: '' },
       ]);
