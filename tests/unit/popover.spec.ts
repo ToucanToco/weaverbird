@@ -232,7 +232,7 @@ describe('Popover', function() {
     expect(popoverBounds.top).to.equal(parentBounds.top + 40);
   });
 
-  xit("should be above when there isn't enough place above or below", async function() {
+  it("should be above when there isn't enough place above or below", async function() {
     const height = window.innerHeight;
     createWrapper({
       parentStyle: {
