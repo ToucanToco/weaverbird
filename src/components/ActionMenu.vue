@@ -4,7 +4,7 @@
       <div class="action-menu__section">
         <div class="action-menu__option">Duplicate column</div>
         <div class="action-menu__option" @click="createRenameStep">Rename column</div>
-        <div class="action-menu__option">Delete column</div>
+        <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
         <div class="action-menu__option" @click="createFillnaStep">Fill null values</div>
       </div>
     </div>
@@ -12,8 +12,11 @@
 </template>
 <script lang="ts">
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Getter, Mutation, State } from 'vuex-class';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
+import { Pipeline, PipelineStep } from '@/lib/steps';
+import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
   name: 'action-menu',
@@ -34,6 +37,13 @@ export default class ActionMenu extends Vue {
   })
   columnName!: string;
 
+  @State pipeline!: Pipeline;
+
+  @Getter computedActiveStepIndex!: number;
+
+  @Mutation selectStep!: MutationCallbacks['selectStep'];
+  @Mutation setPipeline!: MutationCallbacks['setPipeline'];
+
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
   /**
@@ -50,6 +60,16 @@ export default class ActionMenu extends Vue {
 
   close() {
     this.$emit('closed');
+  }
+
+  createDeleteColumnStep() {
+    const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
+    const deletecolumnStep: PipelineStep = { name: 'delete', columns: [this.columnName] };
+    newPipeline.splice(index, 0, deletecolumnStep);
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
+    this.close();
   }
 
   createFillnaStep() {
