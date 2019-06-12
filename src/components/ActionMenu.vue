@@ -40,7 +40,8 @@ export default class ActionMenu extends Vue {
    * @description Close the popover when clicking outside
    */
   clickListener(e: Event) {
-    const hasClickOnItSelf = e.target === this.$el || this.$el.contains(e.target as HTMLElement);
+    const target = e.target as HTMLElement;
+    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
 
     if (!hasClickOnItSelf) {
       this.close();
@@ -62,7 +63,7 @@ export default class ActionMenu extends Vue {
   }
 
   @Watch('isActive')
-  onIsActiveChanged(val: boolean, oldval: boolean) {
+  onIsActiveChanged(val: boolean) {
     if (val) {
       window.addEventListener('click', this.clickListener);
     } else {

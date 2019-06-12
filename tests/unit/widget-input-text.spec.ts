@@ -91,7 +91,7 @@ describe('Widget Input Text', () => {
       },
     });
     const inputWrapper = wrapper.find('input[type="text"]');
-    (<HTMLInputElement>inputWrapper.element).value = 'Stark';
+    (inputWrapper.element as HTMLInputElement).value = 'Stark';
     inputWrapper.trigger('input', { value: 'k' });
     expect(wrapper.emitted()).to.eql({ input: [['Stark']] });
   });
