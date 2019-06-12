@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import FillnaStepForm from '@/components/FillnaStepForm.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
+import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -163,7 +163,7 @@ describe('Fillna Step Form', () => {
         },
       },
       store,
-      localVue
+      localVue,
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();

@@ -56,7 +56,7 @@ export default class WidgetInputText extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
 .widget-input-text__container {
   @extend %form-widget__container;
@@ -73,5 +73,4 @@ export default class WidgetInputText extends Vue {
 .widget-input-text__container label {
   @extend %form-widget__label;
 }
-
 </style>
