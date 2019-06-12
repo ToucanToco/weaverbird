@@ -1,3 +1,6 @@
+import fs from 'fs';
+import path from 'path';
+
 import alias from 'rollup-plugin-alias';
 import commonjs from 'rollup-plugin-commonjs';
 import css from 'rollup-plugin-css-only';
@@ -6,6 +9,23 @@ import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
+
+
+/**
+ * small helper to get package root dir since we can't
+ * rely on __dirname within the rollup bundling package
+ * (it is fixed to the entrypoint's dir name)
+ */
+function packageDir() {
+  let currentDir = __dirname;
+  while (!fs.existsSync(path.join(currentDir, 'package.json'))) {
+    currentDir = path.dirname(currentDir);
+    if (currentDir === '/') {
+      throw new Error('could not find package rootdir');
+    }
+  }
+  return currentDir;
+}
 
 export default {
   input: 'src/main.ts',
@@ -20,7 +40,7 @@ export default {
     resolve(),
     alias({
       resolve: ['.vue', '.json'],
-      '@': __dirname + '/src',
+      '@': path.join(packageDir(), '/src'),
     }),
     commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'] } }),
     css({ output: 'dist/vue-query-builder.css' }),
