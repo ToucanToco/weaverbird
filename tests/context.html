@@ -27,11 +27,11 @@ Reloaded before every execution run.
     <script src="context.js"></script>
     <script type="text/javascript">
       // Configure our Karma and set up bindings
-      % CLIENT_CONFIG %
+      %CLIENT_CONFIG%
         window.__karma__.setupContext(window);
 
       // All served files with the latest timestamps
-      % MAPPINGS %
+      %MAPPINGS%
     </script>
     <!-- Dynamically replaced with <script> tags -->
     %SCRIPTS%
