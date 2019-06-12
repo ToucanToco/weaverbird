@@ -5,9 +5,11 @@
     <popover :active="isActive" :align="alignLeft" bottom>
       <div class="action-menu__body">
         <div class="action-menu__section">
-          <div class="action-menu__option">test item 1</div>
-          <div class="action-menu__option">test item 2</div>
-          <div class="action-menu__option">test item 3</div>
+          <div
+            v-for="(item, index) in items"
+            :key="index"
+            class="action-menu__option"
+          >{{ item.label }}</div>
         </div>
       </div>
     </popover>
@@ -17,8 +19,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { POPOVER_ALIGN } from '@/components/constants';
+import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
+import { Object } from 'lodash';
 
 @Component({
   name: 'action-toolbar-button',
@@ -39,6 +42,11 @@ export default class ActionToolbarButton extends Vue {
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
+  @Prop({
+    type: String,
+  })
+  category!: string;
+
   /**
    * @description Close the popover when clicking outside
    */
@@ -48,6 +56,10 @@ export default class ActionToolbarButton extends Vue {
     if (!hasClickOnItSelf) {
       this.close();
     }
+  }
+
+  get items() {
+    return ACTION_CATEGORIES[this.category];
   }
 
   close() {
@@ -74,8 +86,31 @@ export default class ActionToolbarButton extends Vue {
   text-align: center;
   margin-left: 5px;
   width: 75px;
+  transition: all ease-in-out 100ms;
+  cursor: pointer;
   &:focus {
     outline: none;
+  }
+  &:hover {
+    background: #f4f7fa;
+  }
+}
+
+.action-toolbar__btn--active {
+  background: #2a66a1;
+  color: #fff;
+  &:hover {
+    background: #2a66a1;
+    color: #fff;
+  }
+}
+
+.action-toolbar__btn--disable {
+  color: #d5d5d5;
+  cursor: default;
+  &:hover {
+    background: #fafafa;
+    color: #d5d5d5;
   }
 }
 
@@ -84,6 +119,9 @@ export default class ActionToolbarButton extends Vue {
   border: 1px dashed #999999;
   color: #999999;
   margin-left: 0;
+  &:hover {
+    border-color: transparent;
+  }
 }
 
 .action-toolbar__btn-icon {
