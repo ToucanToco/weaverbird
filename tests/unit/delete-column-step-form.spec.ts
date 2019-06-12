@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import DeleteColumnStepForm from '@/components/DeleteColumnStepForm.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
+import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';

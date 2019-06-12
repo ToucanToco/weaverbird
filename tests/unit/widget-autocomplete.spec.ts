@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 
 describe('Widget Autocomplete', () => {
   it('should instantiate', () => {
