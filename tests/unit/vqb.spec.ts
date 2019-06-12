@@ -28,6 +28,19 @@ describe('Vqb', () => {
     expect(form.exists()).to.be.true;
   });
 
+  it('should instantiate a DeleteColumnStep component', () => {
+    const store = setupStore({ isEditingStep: true });
+    const wrapper = shallowMount(Vqb, {
+      store,
+      localVue,
+      data: () => {
+        return { formToInstantiate: 'DeleteColumnStepForm' };
+      },
+    });
+    const form = wrapper.find('DeleteColumnStepForm-stub');
+    expect(form.exists()).to.be.true;
+  });
+
   it('should instantiate a FillnaStep component', () => {
     const store = setupStore({ isEditingStep: true });
     const wrapper = shallowMount(Vqb, {
@@ -76,7 +89,7 @@ describe('Vqb', () => {
   it('should cancel edition', async () => {
     const store = setupStore({
       pipeline: [{ name: 'domain', domain: 'foo' }],
-      isEditingStep: true
+      isEditingStep: true,
     });
     const wrapper = shallowMount(Vqb, {
       store,

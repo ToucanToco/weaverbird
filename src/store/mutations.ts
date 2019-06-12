@@ -36,13 +36,25 @@ type SelectedStepMutation = {
   payload: { index: number };
 };
 
+type SelectedColumnsMutation = {
+  type: 'setSelectedColumns';
+  payload: { column: string };
+};
+
+type ToggleColumnSelectionMutation = {
+  type: 'toggleColumnSelection';
+  payload: { column: string };
+};
+
 export type StateMutation =
   | DatasetMutation
   | DeleteStepMutation
   | DomainsMutation
   | PipelineMutation
+  | SelectedColumnsMutation
   | SelectDomainMutation
-  | SelectedStepMutation;
+  | SelectedStepMutation
+  | ToggleColumnSelectionMutation;
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
 export type MutationCallbacks = {

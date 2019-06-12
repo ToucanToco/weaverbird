@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Delete column step",
+  "type": "object",
+  "properties": {
+    "column": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Column to delete",
+      "description": "Column to delete",
+      "attrs": {
+        "placeholder": "Enter a column"
+      }
+    }
+  },
+  "required": ["column"],
+  "additionalProperties": false
+}
