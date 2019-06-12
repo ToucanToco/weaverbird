@@ -14,10 +14,10 @@ export type StepMapper = { [K in PipelineStepName]?: VueConstructor<Vue> };
  */
 export const STEPFORM_REGISTRY: StepMapper = {};
 
-type StepFormConfig = {
+interface StepFormConfig {
   vqbstep: PipelineStepName;
   [prop: string]: any;
-};
+}
 
 /**
  * `StepFormComponent` is a thin wrapper around `vue-property-decorator.Component`
