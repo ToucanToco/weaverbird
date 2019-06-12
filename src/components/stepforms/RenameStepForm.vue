@@ -41,8 +41,8 @@ import { Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
-import WidgetInputText from './WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 
@@ -125,7 +125,7 @@ export default class RenameStepForm extends Mixins(FormMixin) {
 }
 </script>
 <style lang="scss" scoped>
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
 .widget-form-action__button {
   @extend %button-default;

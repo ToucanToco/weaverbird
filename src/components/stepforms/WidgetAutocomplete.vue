@@ -1,7 +1,12 @@
 <template>
   <div class="widget-autocomplete__container">
     <label class="widget-autocomplete__label" :for="id">{{ name }}</label>
-    <multiselect v-model="editedValue" :options="options" :placeholder="placeholder" :allow-empty="false"></multiselect>
+    <multiselect
+      v-model="editedValue"
+      :options="options"
+      :placeholder="placeholder"
+      :allow-empty="false"
+    ></multiselect>
   </div>
 </template>
 
@@ -47,7 +52,7 @@ export default class WidgetAutocomplete extends Vue {
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
 .widget-autocomplete__container {
   @extend %form-widget__container;

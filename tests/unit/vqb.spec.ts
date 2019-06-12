@@ -21,10 +21,10 @@ describe('Vqb', () => {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'RenameStepForm' };
+        return { formToInstantiate: 'rename-step-form' };
       },
     });
-    const form = wrapper.find('renamestepform-stub');
+    const form = wrapper.find('rename-step-form-stub');
     expect(form.exists()).to.be.true;
   });
 
@@ -34,10 +34,10 @@ describe('Vqb', () => {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'DeleteColumnStepForm' };
+        return { formToInstantiate: 'delete-step-form' };
       },
     });
-    const form = wrapper.find('DeleteColumnStepForm-stub');
+    const form = wrapper.find('delete-step-form-stub');
     expect(form.exists()).to.be.true;
   });
 
@@ -47,10 +47,10 @@ describe('Vqb', () => {
       store,
       localVue,
       data: () => {
-        return { formToInstantiate: 'FillnaStepForm' };
+        return { formToInstantiate: 'fillna-step-form' };
       },
     });
-    const form = wrapper.find('fillnastepform-stub');
+    const form = wrapper.find('fillna-step-form-stub');
     expect(form.exists()).to.be.true;
   });
 
@@ -72,13 +72,16 @@ describe('Vqb', () => {
     const wrapper = shallowMount(Vqb, {
       store,
       localVue,
+      stubs: {
+        transition: false,
+      },
       data: () => {
-        return { formToInstantiate: 'RenameStepForm' };
+        return { formToInstantiate: 'rename-step-form' };
       },
     });
     await Vue.nextTick();
     wrapper
-      .find('renamestepform-stub')
+      .find('rename-step-form-stub')
       .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
     expect(store.state.isEditingStep).to.be.false;
     expect(store.state.pipeline).to.eql([
@@ -94,12 +97,15 @@ describe('Vqb', () => {
     const wrapper = shallowMount(Vqb, {
       store,
       localVue,
+      stubs: {
+        transition: false,
+      },
       data: () => {
-        return { formToInstantiate: 'RenameStepForm' };
+        return { formToInstantiate: 'rename-step-form' };
       },
     });
     await Vue.nextTick();
-    wrapper.find('renamestepform-stub').vm.$emit('cancel');
+    wrapper.find('rename-step-form-stub').vm.$emit('cancel');
     expect(store.state.isEditingStep).to.be.false;
     expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'foo' }]);
   });
