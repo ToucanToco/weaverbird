@@ -11,7 +11,9 @@
         :icon="button.icon"
         :label="button.label"
         :key="button.icon"
+        :category="button.category"
         :is-active="button.isActionToolbarMenuOpened"
+        :class="{ 'action-toolbar__btn--active': button.isActionToolbarMenuOpened, 'action-toolbar__btn--disable': !button.enable }"
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
@@ -48,8 +50,7 @@ export default class ActionToolbar extends Vue {
       }
 
       return {
-        label: d.label,
-        icon: d.icon,
+        ...d,
         isActionToolbarMenuOpened,
       };
     });
@@ -60,7 +61,6 @@ export default class ActionToolbar extends Vue {
   }
 
   closePopover() {
-    console.log('test closed');
     this.isActiveActionToolbarButton = -1;
   }
 }
