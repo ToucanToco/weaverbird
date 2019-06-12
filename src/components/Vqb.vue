@@ -23,6 +23,7 @@ import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
+import DeleteColumnStepForm from '@/components/DeleteColumnStepForm.vue';
 import FillnaStepForm from '@/components/FillnaStepForm.vue';
 import RenameStepForm from '@/components/RenameStepForm.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
@@ -34,6 +35,7 @@ import _ from 'lodash';
 @Component({
   components: {
     DataViewer,
+    DeleteColumnStepForm,
     FillnaStepForm,
     RenameStepForm,
     Pipeline: PipelineComponent,

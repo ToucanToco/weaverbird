@@ -2,6 +2,7 @@ import './action-menu.spec';
 import './dataset.spec';
 import './data-viewer-cell.spec';
 import './data-viewer.spec';
+import './delete-column-step-form.spec';
 import './fillna-step-form.spec';
 import './formlib.spec';
 import './mongo.spec';
