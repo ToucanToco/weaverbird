@@ -29,6 +29,10 @@ button {
   outline: none;
 }
 
+fieldset {
+  border: none;
+}
+
 // FORMS STYLES PLACEHOLDER
 %form-widget__container {
   display: flex;
@@ -65,6 +69,12 @@ button {
   outline: none;
   box-size &::placeholder {
     color: #a7a7a7;
+  }
+}
+
+.widget-list__container {
+  %form-widget__field {
+    background-color: white;
   }
 }
 

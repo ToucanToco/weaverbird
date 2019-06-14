@@ -2,7 +2,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 
-type VqbError = Partial<ErrorObject>;
+export type VqbError = Partial<ErrorObject>;
 
 @Component
 export default class FormMixin extends Vue {

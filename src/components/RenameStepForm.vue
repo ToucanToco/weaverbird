@@ -17,6 +17,7 @@
       name="New name"
       placeholder="Enter a new column name"
     ></WidgetInputText>
+    <WidgetList id="toremove" name="Aggregation" v-model="test"></WidgetList>
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
@@ -41,6 +42,7 @@ import { Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin, { VqbError } from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
+import WidgetList from './WidgetList.vue';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
@@ -57,6 +59,7 @@ interface RenameStepConf {
   components: {
     WidgetAutocomplete,
     WidgetInputText,
+    WidgetList,
   },
 })
 export default class RenameStepForm extends Mixins(FormMixin) {
@@ -86,6 +89,8 @@ export default class RenameStepForm extends Mixins(FormMixin) {
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
   @Getter computedActiveStepIndex!: number;
+
+  test: any[] = [];
 
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
