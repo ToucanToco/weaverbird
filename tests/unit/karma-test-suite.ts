@@ -19,3 +19,4 @@ import './translator.spec';
 import './vqb.spec';
 import './widget-autocomplete.spec';
 import './widget-input-text.spec';
+import './widget-list.spec';

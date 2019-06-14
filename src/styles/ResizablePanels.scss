@@ -7,12 +7,13 @@
 .resizable-panels__panel {
   padding: 10px 15px;
   max-height: 100%;
+  overflow: auto;
 }
 
 .resizable-panels__resizer {
   display: flex;
   justify-content: space-around;
-  width: 3px;
+  width: 5px;
   border-left: 1px solid rgba(0, 0, 0, 0.3);
   border-right: 1px solid rgba(0, 0, 0, 0.3);
   cursor: ew-resize;
