@@ -3,6 +3,7 @@ export type ButtonDef = Readonly<{
   label: string;
   category: string;
   enable: boolean;
+  popover: boolean;
 }>;
 
 export const ACTION_CATEGORIES: { [category: string]: object } = {
@@ -22,36 +23,42 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     label: 'Filter',
     category: 'filter',
     enable: true,
+    popover: true,
   },
   {
     icon: 'calculator',
     label: 'Compute',
     category: 'compute',
     enable: true,
+    popover: true,
   },
   {
     icon: 'font',
     label: 'Text',
     category: 'text',
     enable: false,
+    popover: true,
   },
   {
     icon: 'calendar',
     label: 'Date',
     category: 'date',
     enable: false,
+    popover: true,
   },
   {
     icon: 'code-branch',
     label: 'Aggregate',
     category: 'aggregate',
     enable: true,
+    popover: false,
   },
   {
     icon: 'draw-polygon',
     label: 'Reshape',
     category: 'reshape',
     enable: true,
+    popover: true,
   },
 ];
 

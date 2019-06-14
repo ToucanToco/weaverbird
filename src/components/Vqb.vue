@@ -24,6 +24,7 @@ import { VQBState } from '@/store/state';
 import { Pipeline, PipelineStep } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
 import DeleteColumnStepForm from '@/components/DeleteColumnStepForm.vue';
+import AggregateStepForm from '@/components/AggregateStepForm.vue';
 import FillnaStepForm from '@/components/FillnaStepForm.vue';
 import RenameStepForm from '@/components/RenameStepForm.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
@@ -36,6 +37,7 @@ import _ from 'lodash';
   components: {
     DataViewer,
     DeleteColumnStepForm,
+    AggregateStepForm,
     FillnaStepForm,
     RenameStepForm,
     Pipeline: PipelineComponent,

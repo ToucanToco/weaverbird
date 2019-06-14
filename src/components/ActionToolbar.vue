@@ -5,7 +5,6 @@
         <i class="action-toolbar__btn-icon fas fa-plus"></i>
         <span class="action-toolbar__btn-txt">Column</span>
       </button>
-
       <action-toolbar-button
         v-for="(button, index) in formattedButtons"
         :icon="button.icon"
@@ -17,6 +16,7 @@
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
+      <!-- @click.native="createAggregateStep" -->
       <div class="action-toolbar__search">
         <i class="action-toolbar__search-icon fas fa-search"></i>
         <input class="action-toolbar__search-input" type="text" placeholder="Search">
@@ -27,6 +27,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { State } from 'vuex-class';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
 
@@ -38,6 +39,7 @@ import { ButtonDef } from './constants';
 })
 export default class ActionToolbar extends Vue {
   @Prop(Array) readonly buttons!: ButtonDef[];
+  @State selectedColumns!: string[];
 
   isActiveActionToolbarButton: number = -1;
 
@@ -57,11 +59,22 @@ export default class ActionToolbar extends Vue {
   }
 
   openPopover(index: number) {
-    this.isActiveActionToolbarButton = index;
+    const buttondef = this.buttons[index];
+    if (buttondef.popover) {
+      this.isActiveActionToolbarButton = index;
+    } else {
+      this.isActiveActionToolbarButton = index;
+      this.createAggregateStep();
+    }
   }
 
   closePopover() {
     this.isActiveActionToolbarButton = -1;
+  }
+  // columns: string[] = this.selectedColumns.length === 0 ? [''] : [...this.selectedColumns];
+
+  createAggregateStep() {
+    this.$emit('actionClicked', { name: 'aggregate', on: this.selectedColumns, aggregations: [] });
   }
 }
 </script>

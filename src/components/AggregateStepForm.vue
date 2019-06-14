@@ -1,22 +1,22 @@
 <template>
   <div>
     <div class="step-edit-form">
-      <h1 class="step-edit-form__title">EDIT RENAME STEP</h1>
+      <h1 class="step-edit-form__title">AGGREGATE STEP</h1>
     </div>
-    <WidgetAutocomplete
-      id="oldnameInput"
-      v-model="step.oldname"
-      name="Old name"
+    <WidgetMultiselect
+      id="groupbyColumnsInput"
+      v-model="step.on"
+      name="Group by:"
       :options="columnNames"
-      @input="setSelectedColumns({ column: step.oldname })"
-      placeholder="Enter the old column name"
-    ></WidgetAutocomplete>
-    <WidgetInputText
-      id="newnameInput"
-      v-model="step.newname"
-      name="New name"
-      placeholder="Enter a new column name"
-    ></WidgetInputText>
+      @input="setSelectedColumns({ column: step.on[0] })"
+      placeholder="Add columns"
+    ></WidgetMultiselect>
+    <WidgetList
+      id="toremove"
+      name="Aggregation"
+      :widget="'widget-aggregation'"
+      :automatic-new-field="false"
+    ></WidgetList>
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
@@ -36,38 +36,35 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
-import { Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Mixins, Prop } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
-import { Pipeline } from '@/lib/steps';
+import { AggregationStep, Pipeline } from '@/lib/steps';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
-import WidgetInputText from './WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import WidgetMultiselect from '@/components/WidgetMultiselect.vue';
+import WidgetList from './WidgetList.vue';
 import { Getter, Mutation, State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 
-interface RenameStepConf {
-  oldname: string;
-  newname: string;
-}
+type Omit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;
+type AggregateStepConf = Omit<AggregationStep, 'name'>;
 
 @StepFormComponent({
-  vqbstep: 'rename',
-  name: 'rename-step-form',
+  vqbstep: 'aggregate',
+  name: 'aggregate-step-form',
   components: {
-    WidgetAutocomplete,
-    WidgetInputText,
+    WidgetList,
+    WidgetMultiselect,
   },
 })
-export default class RenameStepForm extends Mixins(FormMixin) {
+export default class AggregateStepForm extends Mixins(FormMixin) {
   @Prop({
     type: Object,
     default: () => ({
-      oldname: '',
-      newname: '',
+      on: [],
+      aggregations: [],
     }),
   })
-  initialValue!: RenameStepConf;
+  initialValue!: AggregateStepConf;
 
   @Prop({
     type: Boolean,
@@ -75,7 +72,7 @@ export default class RenameStepForm extends Mixins(FormMixin) {
   })
   isStepCreation!: boolean;
 
-  step: RenameStepConf = { ...this.initialValue };
+  step: AggregateStepConf = { ...this.initialValue };
 
   @State pipeline!: Pipeline;
   @State selectedStepIndex!: number;
@@ -83,40 +80,31 @@ export default class RenameStepForm extends Mixins(FormMixin) {
   @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setSelectedColumns!: (payload: { column: string }) => void;
 
-  @Getter selectedColumns!: string[];
+  // @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
   @Getter computedActiveStepIndex!: number;
 
-  test: any[] = [];
-
-  @Watch('selectedColumns')
-  onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal)) {
-      this.step.oldname = val[0];
-    }
-  }
-
   created() {
     this.schema = renameSchema;
-    this.setSelectedColumns({ column: this.initialValue.oldname });
+    this.setSelectedColumns({ column: this.initialValue.on[0] });
   }
 
   validateStep() {
-    const ret = this.validator(this.step);
-    if (ret === false) {
-      this.errors = this.validator.errors;
-    } else if (this.columnNames.includes(this.step.newname)) {
-      const err = {
-        keyword: 'nameAlreadyUsed',
-        dataPath: '.newname',
-        message: 'This column name is already used.',
-      };
-      this.errors = [err];
-    } else {
-      this.errors = null;
-      this.$emit('formSaved', { name: 'rename', ...this.step });
-      this.setSelectedColumns({ column: this.step.newname });
-    }
+    // const ret = this.validator(this.step);
+    // if (ret === false) {
+    //   this.errors = this.validator.errors;
+    // } else if (this.columnNames.includes(this.step.newname)) {
+    //   const err = {
+    //     keyword: 'nameAlreadyUsed',
+    //     dataPath: '.newname',
+    //     message: 'This column name is already used.',
+    //   };
+    //   this.errors = [err];
+    // } else {
+    //   this.errors = null;
+    //   this.$emit('formSaved', { name: 'rename', ...this.step });
+    //   this.setSelectedColumns({ column: this.step.newname });
+    // }
   }
 
   cancelEdition() {
