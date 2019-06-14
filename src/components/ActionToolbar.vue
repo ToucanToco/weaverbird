@@ -5,12 +5,12 @@
         <i class="action-toolbar__btn-icon fas fa-plus"></i>
         <span class="action-toolbar__btn-txt">Column</span>
       </button>
-
       <action-toolbar-button
         v-for="button in buttons"
         :icon="button.icon"
         :label="button.label"
         :key="button.icon"
+        @click.native="createAggregateStep"
       />
       <div class="action-toolbar__search">
         <i class="action-toolbar__search-icon fas fa-search"></i>
@@ -22,18 +22,26 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+import { State } from 'vuex-class';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
-
 
 @Component({
   name: 'action-toolbar',
   components: {
     ActionToolbarButton,
-  }
+  },
 })
 export default class ActionToolbar extends Vue {
   @Prop(Array) readonly buttons!: ButtonDef[];
+
+  @State selectedColumns!: string[];
+
+  // columns: string[] = this.selectedColumns.length === 0 ? [''] : [...this.selectedColumns];
+
+  createAggregateStep() {
+    this.$emit('actionClicked', { name: 'aggregate', on: this.selectedColumns, aggregations: [] });
+  }
 }
 </script>
 <style lang="scss">

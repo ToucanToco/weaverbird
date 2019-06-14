@@ -14,7 +14,7 @@ import { Component } from 'vue-property-decorator';
   props: {
     label: String,
     icon: String,
-  }
+  },
 })
 export default class ActionToolbarButton extends Vue {}
 </script>
