@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "title": "Rename step",
+  "title": "Aggregate step",
   "type": "object",
   "properties": {
     "on": {
@@ -17,6 +17,8 @@
       }
     }
   },
-  "required": ["oldname", "newname"],
-  "additionalProperties": false
+  "required": [
+    "on"
+  ],
+  "additionalProperties": true
 }

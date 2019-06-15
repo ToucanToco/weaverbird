@@ -62,7 +62,7 @@ export default class WidgetAggregation extends Vue {
 
   @Watch('aggregation', { immediate: true, deep: true })
   onAggregationChanged(newval: object, oldval: object) {
-    if (_.isEqual(newval, oldval)) {
+    if (!_.isEqual(newval, oldval)) {
       this.$emit('input', this.aggregation);
     }
   }

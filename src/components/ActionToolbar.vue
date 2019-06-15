@@ -16,7 +16,6 @@
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
-      <!-- @click.native="createAggregateStep" -->
       <div class="action-toolbar__search">
         <i class="action-toolbar__search-icon fas fa-search"></i>
         <input class="action-toolbar__search-input" type="text" placeholder="Search">

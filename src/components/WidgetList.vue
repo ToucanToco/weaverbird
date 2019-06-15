@@ -22,6 +22,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetAggregation from './WidgetAggregation.vue';
 
+type Field = {
+  name: string;
+  label?: string;
+  value: any;
+};
+
+type RepeatableField = Field[];
+
 @Component({
   name: 'widget-list',
   components: {
@@ -48,17 +56,16 @@ export default class WidgetList extends Vue {
   @Prop({ type: Boolean, default: true })
   automaticNewField!: boolean;
 
+  @Prop({ default: null })
+  defaultItem!: string | RepeatableField;
+
   get children() {
     const children: object[] = [];
     const lastIndex: number = this.value.length;
     const valueCopy = [...this.value];
 
     if (this.automaticNewField) {
-      if (this.childType === 'string') {
-        valueCopy.push('');
-      } else {
-        valueCopy.push({});
-      }
+      valueCopy.push(this.defaultChildValue);
     }
 
     for (const [index, value] of valueCopy.entries()) {
@@ -71,16 +78,19 @@ export default class WidgetList extends Vue {
     return children;
   }
 
-  get childType() {
+  get defaultChildValue() {
+    if (this.defaultItem) {
+      return this.defaultItem;
+    }
     if (this.widget === 'widget-input-text') {
-      return 'string';
+      return '';
     } else {
-      return 'object';
+      return [];
     }
   }
 
   addFieldSet() {
-    this.updateValue([...this.value, {}])
+    this.updateValue([...this.value, this.defaultChildValue])
   }
 
   removeChild(index: number) {

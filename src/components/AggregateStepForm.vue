@@ -14,6 +14,8 @@
     <WidgetList
       id="toremove"
       name="Aggregation"
+      v-model="aggregations"
+      :defaultItem="defaultAggregation"
       :widget="'widget-aggregation'"
       :automatic-new-field="false"
     ></WidgetList>
@@ -39,7 +41,7 @@
 import { Mixins, Prop } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
 import { AggregationStep, Pipeline } from '@/lib/steps';
-import renameSchema from '@/assets/schemas/rename-step__schema.json';
+import aggregateSchema from '@/assets/schemas/aggregate-step__schema.json';
 import WidgetMultiselect from '@/components/WidgetMultiselect.vue';
 import WidgetList from './WidgetList.vue';
 import { Getter, Mutation, State } from 'vuex-class';
@@ -85,26 +87,52 @@ export default class AggregateStepForm extends Mixins(FormMixin) {
   @Getter computedActiveStepIndex!: number;
 
   created() {
-    this.schema = renameSchema;
+    this.schema = aggregateSchema;
     this.setSelectedColumns({ column: this.initialValue.on[0] });
   }
 
+  get defaultAggregation() {
+    return {
+      column: '',
+      newcolumn: `newcolumn-${this.step.aggregations.length + 1}`,
+      aggfunction: 'sum',
+    }
+    // return [
+    //   { name: 'column', value: '', label: 'column' },
+    //   { name: 'newcolumn', value: `newcolumn-${this.step.aggregations.length + 1}`, label: 'new column name' },
+    //   { name: 'aggfunction', value: 'sum', label: 'aggregation function' },
+    // ]
+  }
+
+  get aggregations() {
+    if (this.step.aggregations.length) {
+      // return [
+      //   ...this.step.aggregations.map(agg => [
+      //     { name: 'column', value: agg.column, label: 'column' },
+      //     { name: 'newcolumn', value: agg.newcolumn, label: 'new column name' },
+      //     { name: 'aggfunction', value: agg.aggfunction, label: 'aggregation function' },
+      //   ])
+      // ];
+      return this.step.aggregations;
+    } else {
+      return [
+        this.defaultAggregation
+      ];
+    }
+  }
+
+  set aggregations(newval) {
+    this.step.aggregations = newval;
+  }
+
   validateStep() {
-    // const ret = this.validator(this.step);
-    // if (ret === false) {
-    //   this.errors = this.validator.errors;
-    // } else if (this.columnNames.includes(this.step.newname)) {
-    //   const err = {
-    //     keyword: 'nameAlreadyUsed',
-    //     dataPath: '.newname',
-    //     message: 'This column name is already used.',
-    //   };
-    //   this.errors = [err];
-    // } else {
-    //   this.errors = null;
-    //   this.$emit('formSaved', { name: 'rename', ...this.step });
-    //   this.setSelectedColumns({ column: this.step.newname });
-    // }
+    const ret = true || this.validator(this.step);
+    if (ret === false) {
+      this.errors = this.validator.errors;
+    } else {
+      this.errors = null;
+      this.$emit('formSaved', { name: 'aggregate', ...this.step });
+    }
   }
 
   cancelEdition() {
