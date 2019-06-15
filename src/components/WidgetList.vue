@@ -51,28 +51,28 @@ export default class WidgetList extends Vue {
   get children() {
     const children: object[] = [];
     const lastIndex: number = this.value.length;
-    let valueCopy = [...this.value];
+    const valueCopy = [...this.value];
 
     if (this.automaticNewField) {
       if (this.childType === 'string') {
-        valueCopy = valueCopy.concat('');
+        valueCopy.push('');
       } else {
-        valueCopy = valueCopy.concat({});
+        valueCopy.push({});
       }
     }
 
-    valueCopy.forEach((value: any, index: number) => {
+    for (const [index, value] of valueCopy.entries()) {
       children.push({
         isRemovable: index !== lastIndex,
         value,
       });
-    });
+    }
 
     return children;
   }
 
   get childType() {
-    if (this.widget == 'widget-input-text') {
+    if (this.widget === 'widget-input-text') {
       return 'string';
     } else {
       return 'object';
@@ -80,7 +80,7 @@ export default class WidgetList extends Vue {
   }
 
   addFieldSet() {
-    this.updateValue([...this.value].concat({}));
+    this.updateValue([...this.value, {}])
   }
 
   removeChild(index: number) {

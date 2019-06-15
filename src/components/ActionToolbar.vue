@@ -45,15 +45,9 @@ export default class ActionToolbar extends Vue {
 
   get formattedButtons() {
     return this.buttons.map((d, index) => {
-      let isActionToolbarMenuOpened = false;
-
-      if (index === this.isActiveActionToolbarButton) {
-        isActionToolbarMenuOpened = true;
-      }
-
       return {
         ...d,
-        isActionToolbarMenuOpened,
+        isActionToolbarMenuOpened: index === this.isActiveActionToolbarButton,
       };
     });
   }
