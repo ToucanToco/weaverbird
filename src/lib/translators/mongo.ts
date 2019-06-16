@@ -349,6 +349,9 @@ function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
  * @returns the list of simplified mongo steps
  */
 export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
+  if (!mongoSteps.length) {
+    return mongoSteps;
+  }
   let merge = true;
   const outputSteps: MongoStep[] = [];
   let lastStep: MongoStep = mongoSteps[0];

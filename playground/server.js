@@ -10,20 +10,23 @@ const { startMongo } = require('./mongodb');
 const meow = require('meow');
 const upload = multer();
 
-function _loadData(data, config, client, onsuccess, onerror) {
-  client.connect(function(err) {
+function _loadData(data, config, client, onsuccess, onerror, collname = null) {
+  client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
-    const collection = db.collection(config.defaultCollection);
-    collection.deleteMany({}, function(err) {
+    collname = collname || config.defaultCollection;
+    const collection = db.collection(collname);
+    collection.deleteMany({}, function (err) {
       if (err) {
         onerror(err);
       } else {
-        collection.insertMany(data, function(err) {
+        collection.insertMany(data, function (err) {
           if (err) {
             onerror(err);
           } else {
-            onsuccess();
+            onsuccess({
+              collection: collname,
+            });
           }
         });
       }
@@ -42,16 +45,20 @@ function _loadData(data, config, client, onsuccess, onerror) {
 function loadCSVInDatabaseFromFile(filepath, config, client, onsuccess, onerror) {
   csv({ checkType: true })
     .fromFile(filepath)
-    .then(data => _loadData(data, config, client, onsuccess, onerror));
+    .then(
+      data => _loadData(data, config, client, onsuccess, onerror)
+    );
 }
 
-function loadCSVInDatabase(data, config, client, onsuccess, onerror) {
+function loadCSVInDatabase(data, collname, config, client, onsuccess, onerror) {
   csv({
-    noheader: true,
+    // noheader: true,
     output: 'json',
   })
     .fromString(data)
-    .then(data => _loadData(data, config, client, onsuccess, onerror));
+    .then(
+      data => _loadData(data, config, client, onsuccess, onerror, collname)
+    );
 }
 
 /**
@@ -81,17 +88,21 @@ function assertIsConnected(client, err) {
  * @param onerror callback to call on error
  */
 function executeQuery(config, client, collectionName, query, onsuccess, onerror) {
-  client.connect(function(err) {
+  client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
-    collection.aggregate(query).toArray(function(err, docs) {
-      if (err) {
-        onerror(err);
-      } else {
-        onsuccess(docs);
-      }
-    });
+    try {
+      collection.aggregate(query).toArray(function (err, docs) {
+        if (err) {
+          onerror(err);
+        } else {
+          onsuccess(docs);
+        }
+      });
+    } catch (err) {
+      onerror(err);
+    }
   });
 }
 
@@ -104,7 +115,7 @@ function executeQuery(config, client, collectionName, query, onsuccess, onerror)
  * @param onerror callback to call on error
  */
 function listCollections(config, client, onsuccess, onerror) {
-  client.connect(function(err) {
+  client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     db.listCollections().toArray((err, results) => {
@@ -118,7 +129,7 @@ function listCollections(config, client, onsuccess, onerror) {
 }
 
 function _testConnection(client) {
-  client.connect(function() {});
+  client.connect(function () { });
 }
 
 function setupApp(config) {
@@ -145,12 +156,14 @@ function setupApp(config) {
     );
   });
 
-  app.post('/load', upload.single('file'), req => {
+  app.post('/load', upload.single('file'), (req, res) => {
     const csvString = req.file.buffer.toString('utf8');
     const newConfig = { ...config };
-    newConfig.defaultCollection = req.file.filename;
-
-    loadCSVInDatabase(csvString, newConfig, client, console.error);
+    loadCSVInDatabase(
+      csvString,
+      req.file.filename || req.file.originalname,
+      newConfig, client, res.json.bind(res), console.error
+    );
   });
 
   app.get('/collections', (req, res) => {
@@ -257,7 +270,7 @@ function parseCommandLine() {
 }
 
 function start(config) {
-  setupApp(config).listen(config.httpPort, function() {
+  setupApp(config).listen(config.httpPort, function () {
     console.log(`VQB playground app listening on port ${config.httpPort}!`);
   });
 }
