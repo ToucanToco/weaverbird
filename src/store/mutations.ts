@@ -86,13 +86,14 @@ export default {
   setCurrentDomain(state: VQBState, { currentDomain }: Pick<VQBState, 'currentDomain'>) {
     state.currentDomain = currentDomain;
     if (currentDomain) {
-      const pipeline = state.pipeline;
+      // const pipeline = state.pipeline;
       const domainStep: DomainStep = { name: 'domain', domain: currentDomain };
-      if (pipeline.length) {
-        state.pipeline = [domainStep, ...pipeline.slice(1)];
-      } else {
-        state.pipeline = [domainStep];
-      }
+      state.pipeline = [domainStep];
+      // if (pipeline.length) {
+      //   state.pipeline = [domainStep, ...pipeline.slice(1)];
+      // } else {
+      //   state.pipeline = [domainStep];
+      // }
     }
   },
   /**

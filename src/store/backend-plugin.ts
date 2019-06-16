@@ -48,6 +48,8 @@ export function servicePluginFactory(service: BackendService) {
         mutation.type === 'setCurrentDomain' ||
         mutation.type === 'deleteStep'
       ) {
+        console.log(mutation.type);
+        console.log(state);
         _updateDataset(store, service, activePipeline(state));
       }
     });
