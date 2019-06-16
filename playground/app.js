@@ -60,6 +60,11 @@ const initialPipeline = [
     name: 'domain',
     domain: 'test-collection',
   },
+  {
+    name: 'rename',
+    oldname: 'foo',
+    newname: 'bar',
+  },
   // {
   //   name: 'filter',
   //   column: 'Value4',
@@ -70,6 +75,11 @@ const initialPipeline = [
   //   name: 'replace',
   //   search_column: 'Value2',
   //   to_replace: [[2, 20], [13, 24]],
+  // },
+  // {
+  //   name: 'replace',
+  //   search_column: 'Age',
+  //   to_replace: [['', 20]],
   // },
   // {
   //   name: 'top',

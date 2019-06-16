@@ -9,6 +9,7 @@ import {
   Pipeline,
   PivotStep,
   PercentageStep,
+  PrimitiveType,
   ReplaceStep,
   SortStep,
   TopStep,
@@ -403,6 +404,17 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
   return outputSteps;
 }
 
+function autocast(value: PrimitiveType) {
+  if (typeof value === 'string') {
+    const asnum = Number(value);
+    if (isNaN(asnum)) {
+      return value;
+    }
+    return asnum;
+  }
+  return value;
+}
+
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
@@ -413,7 +425,7 @@ const mapper: StepMatcher<MongoStep> = {
   fillna: step => ({
     $addFields: {
       [step.column]: {
-        $ifNull: [$$(step.column), step.value],
+        $ifNull: [$$(step.column), autocast(step.value)],
       },
     },
   }),

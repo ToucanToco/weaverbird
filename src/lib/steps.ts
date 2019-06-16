@@ -2,7 +2,7 @@
  * This module defines the supported unit-of-transformation steps.
  */
 
-type PrimitiveType = number | boolean | string | Date;
+export type PrimitiveType = number | boolean | string | Date;
 
 export type AggFunctionStep = Readonly<{
   /** Name of the output column */

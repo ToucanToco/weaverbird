@@ -103,12 +103,13 @@ export default class FillnaStepForm extends Mixins(FormMixin) {
       this.$emit('formSaved', { name: 'fillna', ...this.step });
     }
   }
+}
 
-  cancelEdition() {
-    this.$emit('cancel');
-    const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
-    this.selectStep({ index: idx });
-  }
+cancelEdition() {
+  this.$emit('cancel');
+  const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
+  this.selectStep({ index: idx });
+}
 }
 </script>
 <style lang="scss" scoped>

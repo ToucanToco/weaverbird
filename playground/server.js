@@ -52,6 +52,8 @@ function loadCSVInDatabaseFromFile(filepath, config, client, onsuccess, onerror)
 
 function loadCSVInDatabase(data, collname, config, client, onsuccess, onerror) {
   csv({
+    checkType: true,
+    ignoreEmpty: true,
     // noheader: true,
     output: 'json',
   })
@@ -77,6 +79,21 @@ function assertIsConnected(client, err) {
   }
 }
 
+
+function autocastQuery(query) {
+  const query2 = [];
+  for (const step of query) {
+    console.log('step ?', step, step.$addFields);
+    if (step.$addFields && step.$addFields.Age && step.$addFields.Age.$ifNull) {
+      console.log('YEAH !', step)
+      step.$addFields.Age.$ifNull[1] = Number(step.$addFields.Age.$ifNull[1]);
+      console.log('now', step);
+    }
+    query2.push(step);
+  }
+  return query2;
+}
+
 /**
  * execute `query` on `collectionName` inside the mongodatabase
  *
@@ -93,7 +110,7 @@ function executeQuery(config, client, collectionName, query, onsuccess, onerror)
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
     try {
-      collection.aggregate(query).toArray(function (err, docs) {
+      collection.aggregate(autocastQuery(query)).toArray(function (err, docs) {
         if (err) {
           onerror(err);
         } else {
