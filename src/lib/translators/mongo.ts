@@ -16,8 +16,15 @@ import {
 } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
-import * as math from 'mathjs';
-import { MathNode } from '@/typings/mathjs';
+// import * as math from 'mathjs';
+// import { MathNode } from '@/typings/mathjs';
+// const mathjsParse = math.parse;
+import { MathNode, parse as mathjsParse } from '@/mathjs_bundle';
+
+// type MathNode = any;
+// function mathjsParse(s: string): MathNode {
+//   return s;
+// }
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -417,7 +424,7 @@ const mapper: StepMatcher<MongoStep> = {
   filter: filterstepToMatchstep,
   formula: step => ({
     $addFields: {
-      [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
+      [step.new_column]: buildMongoFormulaTree(mathjsParse(step.formula)),
     },
   }),
   percentage: transformPercentage,

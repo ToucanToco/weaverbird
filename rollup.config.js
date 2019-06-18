@@ -42,7 +42,10 @@ export default {
       resolve: ['.vue', '.json'],
       '@': path.join(packageDir(), '/src'),
     }),
-    commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'] } }),
+    commonjs({
+      namedExports: { 'node_modules/mathjs/index.js': ['parse'] },
+      exclude: ['src/**/*.js'],
+    }),
     css({ output: 'dist/vue-query-builder.css' }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
