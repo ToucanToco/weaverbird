@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e < ./coverage/coverage-final.json",
+    "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
     "lint": "eslint src/{components,lib,store}/*.{ts,vue} tests/**/*.ts",
     "build-bundle": "rollup -c",
     "build-doc": "typedoc --readme README.md --out dist/docs src/",
