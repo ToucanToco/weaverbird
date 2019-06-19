@@ -3,6 +3,12 @@
   "title": "Rename step",
   "type": "object",
   "properties": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "rename"
+      ]
+    },
     "oldname": {
       "type": "string",
       "minLength": 1,
@@ -22,6 +28,6 @@
       }
     }
   },
-  "required": ["oldname", "newname"],
+  "required": ["name", "oldname", "newname"],
   "additionalProperties": false
 }

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div class="step-edit-form">
-      <h1 class="step-edit-form__title">DELETE COLUMN STEP</h1>
-    </div>
+    <step-form-title :title="title"></step-form-title>
     <WidgetAutocomplete
       id="columnInput"
       v-model="column"
@@ -11,128 +9,61 @@
       @input="setSelectedColumns({ column })"
       placeholder="Enter a column"
     ></WidgetAutocomplete>
-    <div class="widget-form-action">
-      <button
-        class="widget-form-action__button widget-form-action__button--validate"
-        @click="validateStep"
-      >OK</button>
-      <button
-        class="widget-form-action__button widget-form-action__button--cancel"
-        @click="cancelEdition"
-      >Cancel</button>
-    </div>
-    <div v-if="errors" class="errors">
-      <ul>
-        <li v-for="(error, index) in errors" :key="index">{{ error.dataPath }}: {{ error.message }}</li>
-      </ul>
-    </div>
+    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
-import { Mixins, Prop, Watch } from 'vue-property-decorator';
-import FormMixin from '@/mixins/FormMixin.vue';
-import { Pipeline } from '@/lib/steps';
+import { Prop } from 'vue-property-decorator';
 import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
+import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
+import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import { Getter, Mutation, State } from 'vuex-class';
+import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
-import { MutationCallbacks } from '@/store/mutations';
-
-interface DeleteColumnStepConf {
-  columns: string[];
-}
+import BaseStepForm from './StepForm.vue';
+import { Writable, DeleteStep } from '@/lib/steps';
 
 @StepFormComponent({
   vqbstep: 'delete',
   name: 'delete-step-form',
   components: {
     WidgetAutocomplete,
+    StepFormTitle,
+    StepFormButtonbar
   },
 })
-export default class DeletStepForm extends Mixins(FormMixin) {
-  @Prop({
-    type: Object,
-    default: () => ({
-      columns: [''],
-    }),
-  })
-  initialValue!: DeleteColumnStepConf;
+export default class DeletStepForm extends BaseStepForm {
+  @Prop({ type: Object, default: () => ({ name: 'delete', columns: [''] }) })
+  initialStepValue!: DeleteStep;
 
-  @Prop({
-    type: Boolean,
-    default: true,
-  })
-  isStepCreation!: boolean;
+  readonly title: string = 'Delete Column Step';
 
   // Only manage the deletion of 1 column at once at this stage
-  column: string = this.initialValue.columns[0];
+  editedStep: Writable<DeleteStep> = { ...this.initialStepValue };
+  editedStepModel = deleteSchema;
+  column: string = this.editedStep.columns[0];
 
-  @State pipeline!: Pipeline;
-  @State selectedStepIndex!: number;
+  stepToValidate() {
+    return { name: 'delete', column: this.column };
+  }
 
-  @Mutation selectStep!: MutationCallbacks['selectStep'];
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  rebuildStep() {
+    return { name: 'delete', columns: [this.column] };
+  }
 
-  @Getter selectedColumns!: string[];
-  @Getter columnNames!: string[];
-  @Getter computedActiveStepIndex!: number;
+  get stepSelectedColumn() {
+    return this.column;
+  }
 
-  @Watch('selectedColumns')
-  onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal)) {
-      this.column = val[0];
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on delete "column" field');
+    }
+    if (colname !== null) {
+      this.column = colname;
     }
   }
 
-  created() {
-    this.schema = deleteSchema;
-    this.setSelectedColumns({ column: this.initialValue.columns[0] });
-  }
-
-  validateStep() {
-    const ret = this.validator({ column: this.column });
-    if (ret === false) {
-      this.errors = this.validator.errors;
-    } else {
-      this.errors = null;
-      this.$emit('formSaved', { name: 'delete', columns: [this.column] });
-    }
-  }
-
-  cancelEdition() {
-    this.$emit('cancel');
-    const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
-    this.selectStep({ index: idx });
-  }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../styles/_variables';
-
-.widget-form-action__button {
-  @extend %button-default;
-}
-
-.widget-form-action__button--validate {
-  background-color: $active-color;
-}
-
-.step-edit-form {
-  border-bottom: 1px solid $grey;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding-bottom: 20px;
-  margin: 10px 0 15px;
-  width: 100%;
-}
-
-.step-edit-form__title {
-  color: $base-color;
-  font-weight: 600;
-  font-size: 14px;
-  margin: 0;
-}
-</style>

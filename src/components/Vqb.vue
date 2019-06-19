@@ -5,7 +5,7 @@
         <component
           key="stepForm"
           :is="formToInstantiate"
-          :initialValue="initialValue"
+          :initialStepValue="initialValue"
           :isStepCreation="isStepCreation"
           @cancel="toggleStepEdition"
           @formSaved="saveStep"
@@ -69,8 +69,7 @@ export default class Vqb extends Vue {
       console.error('No corresponding form for this step');
       return;
     }
-    // after that, we delete from params to pass down the others keys to initialValue
-    this.initialValue = _.omit(params, 'name');
+    this.initialValue = { ...params }; // make a copy
     if (index !== undefined) {
       this.editedStepIndex = index;
       this.selectStep({ index: index - 1 });

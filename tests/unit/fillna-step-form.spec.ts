@@ -36,7 +36,7 @@ describe('Fillna Step Form', () => {
 
   it('should pass down the value prop to widget value prop', async () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
-    wrapper.setData({ step: { column: '', value: 'foo' } });
+    wrapper.setData({ editedStep: { column: '', value: 'foo' } });
     await localVue.nextTick();
     expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
   });
@@ -61,7 +61,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should report errors when submitted data is not valid', () => {
-    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
+    const wrapper = mount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
       keyword: err.keyword,
@@ -71,11 +71,11 @@ describe('Fillna Step Form', () => {
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
-    const wrapper = shallowMount(FillnaStepForm, {
+    const wrapper = mount(FillnaStepForm, {
       store: emptyStore,
       localVue,
       propsData: {
-        initialValue: { column: 'foo', value: 'bar' },
+        initialStepValue: { name: 'fillna', column: 'foo', value: 'bar' },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -86,7 +86,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should emit "cancel" event when edition is cancelled', () => {
-    const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
+    const wrapper = mount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(wrapper.emitted()).to.eql({
       cancel: [[]],
@@ -101,10 +101,10 @@ describe('Fillna Step Form', () => {
       },
     });
     const wrapper = shallowMount(FillnaStepForm, { store, localVue });
-    expect(wrapper.vm.$data.step.column).to.equal('');
+    expect(wrapper.vm.$data.editedStep.column).to.equal('');
     store.commit('toggleColumnSelection', { column: 'columnB' });
     await localVue.nextTick();
-    expect(wrapper.vm.$data.step.column).to.equal('columnB');
+    expect(wrapper.vm.$data.editedStep.column).to.equal('columnB');
   });
 
   it('should update selectedColumn when column is changed', async () => {
@@ -118,13 +118,15 @@ describe('Fillna Step Form', () => {
     const wrapper = mount(FillnaStepForm, {
       propsData: {
         initialValue: {
+          name: 'fillna',
           column: 'columnA',
+          value: '',
         },
       },
       store,
       localVue,
     });
-    wrapper.setData({ step: { column: 'columnB', value: '' } });
+    wrapper.setData({ editedStep: { column: 'columnB', value: '' } });
     await wrapper.find(WidgetAutocomplete).trigger('input');
     expect(store.state.selectedColumns).to.eql(['columnB']);
   });
@@ -140,7 +142,7 @@ describe('Fillna Step Form', () => {
       pipeline,
       selectedStepIndex: 2,
     });
-    const wrapper = shallowMount(FillnaStepForm, { store, localVue });
+    const wrapper = mount(FillnaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).to.equal(2);
@@ -158,8 +160,10 @@ describe('Fillna Step Form', () => {
     });
     const wrapper = mount(FillnaStepForm, {
       propsData: {
-        initialValue: {
+        initialStepValue: {
+          name: 'fillna',
           column: 'columnA',
+          value: '',
         },
       },
       store,
