@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { mount, createLocalVue } from '@vue/test-utils';
+import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import ActionMenu from '@/components/ActionMenu.vue';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
@@ -26,18 +26,18 @@ describe('Action Menu', () => {
   });
 
   it('should have an "Rename column" action', () => {
-    const wrapper = mount(ActionMenu);
+    const wrapper = shallowMount(ActionMenu);
     expect(wrapper.html()).to.contain('Rename column');
   });
 
   it('should have an "Fill null values" action', () => {
-    const wrapper = mount(ActionMenu);
+    const wrapper = shallowMount(ActionMenu);
     expect(wrapper.html()).to.contain('Fill null values');
   });
 
   describe('when clicking on "Rename column"', () => {
     it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = mount(ActionMenu, {
+      const wrapper = shallowMount(ActionMenu, {
         propsData: {
           columnName: 'dreamfall',
         },
@@ -52,13 +52,9 @@ describe('Action Menu', () => {
     });
 
     it('should emit a close event', () => {
-      const wrapper = mount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
+      const wrapper = shallowMount(ActionMenu);
       const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(3).trigger('click');
+      actionsWrapper.at(1).trigger('click');
 
       expect(wrapper.emitted().closed).to.exist;
     });
@@ -67,7 +63,7 @@ describe('Action Menu', () => {
   describe('when clicking on "Delete column"', () => {
     it('should add a valide delete step in the pipeline', async () => {
       const store = setupStore();
-      const wrapper = mount(ActionMenu, {
+      const wrapper = shallowMount(ActionMenu, {
         store,
         localVue,
         propsData: {
@@ -81,21 +77,26 @@ describe('Action Menu', () => {
     });
 
     it('should emit a close event', () => {
-      const wrapper = mount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
+      const store = setupStore();
+      const wrapper = shallowMount(ActionMenu, { store, localVue });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(3).trigger('click');
+      actionsWrapper.at(2).trigger('click');
 
       expect(wrapper.emitted().closed).to.exist;
+    });
+
+    it('should close any open step form to show the addition of the delete step in the pipeline', () => {
+      const store = setupStore({ isEditingStep: true });
+      const wrapper = shallowMount(ActionMenu, { store, localVue });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(2).trigger('click');
+      expect(store.state.isEditingStep).to.be.false;
     });
   });
 
   describe('when clicking on "Fill null values"', () => {
     it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = mount(ActionMenu, {
+      const wrapper = shallowMount(ActionMenu, {
         propsData: {
           columnName: 'dreamfall',
         },
@@ -110,11 +111,7 @@ describe('Action Menu', () => {
   });
 
   it('should emit a close event', () => {
-    const wrapper = mount(ActionMenu, {
-      propsData: {
-        columnName: 'dreamfall',
-      },
-    });
+    const wrapper = shallowMount(ActionMenu);
     const actionsWrapper = wrapper.findAll('.action-menu__option');
     actionsWrapper.at(3).trigger('click');
 

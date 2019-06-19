@@ -60,12 +60,16 @@ export default class Vqb extends Vue {
   }
 
   openStepForm(params: PipelineStep, index: number) {
-    // after that, we delete from params to pass down the others keys to initialValue
+    // If another step edition form is already open, first close it
+    if (this.isEditingStep) {
+      this.toggleStepEdition();
+    }
     this.formToInstantiate = STEPFORM_REGISTRY[params.name];
     if (this.formToInstantiate === undefined) {
       console.error('No corresponding form for this step');
       return;
     }
+    // after that, we delete from params to pass down the others keys to initialValue
     this.initialValue = _.omit(params, 'name');
     if (index !== undefined) {
       this.editedStepIndex = index;
@@ -73,6 +77,7 @@ export default class Vqb extends Vue {
     } else {
       this.editedStepIndex = -1;
     }
+    // Display step edition form in the left panel
     this.toggleStepEdition();
   }
 

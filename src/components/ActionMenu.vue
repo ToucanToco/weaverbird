@@ -38,11 +38,13 @@ export default class ActionMenu extends Vue {
   columnName!: string;
 
   @State pipeline!: Pipeline;
+  @State isEditingStep!: boolean;
 
   @Getter computedActiveStepIndex!: number;
 
   @Mutation selectStep!: MutationCallbacks['selectStep'];
   @Mutation setPipeline!: MutationCallbacks['setPipeline'];
+  @Mutation toggleStepEdition!: () => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
@@ -66,6 +68,13 @@ export default class ActionMenu extends Vue {
     const newPipeline: Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
     const deletecolumnStep: PipelineStep = { name: 'delete', columns: [this.columnName] };
+    /**
+     * If a step edition form is already open, close it so that the left panel displays
+     * the pipeline with the new delete step inserted
+     */
+    if (this.isEditingStep) {
+      this.toggleStepEdition();
+    }
     newPipeline.splice(index, 0, deletecolumnStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
