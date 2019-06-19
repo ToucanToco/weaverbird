@@ -65,6 +65,16 @@ describe('Vqb', () => {
     expect(store.state.isEditingStep).to.be.true;
   });
 
+  it('should keep editingMode on when trying to creating a step while a form is already open', async () => {
+    const store = setupStore({ isEditingStep: true });
+    const wrapper = shallowMount(Vqb, { store, localVue });
+    wrapper
+      .find('dataviewer-stub')
+      .vm.$emit('stepCreated', { name: 'rename', oldname: 'foo', newname: 'bar' });
+    await wrapper.vm.$nextTick();
+    expect(store.state.isEditingStep).to.be.true;
+  });
+
   it('should set pipeline when form is saved', async () => {
     const store = setupStore({
       isEditingStep: true,
