@@ -47,7 +47,7 @@ describe('Delete Column Step Form', () => {
   });
 
   it('should report errors when submitted data is not valid', () => {
-    const wrapper = shallowMount(DeleteColumnStepForm, { store: emptyStore, localVue });
+    const wrapper = mount(DeleteColumnStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
       keyword: err.keyword,
@@ -57,11 +57,11 @@ describe('Delete Column Step Form', () => {
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
-    const wrapper = shallowMount(DeleteColumnStepForm, {
+    const wrapper = mount(DeleteColumnStepForm, {
       store: emptyStore,
       localVue,
       propsData: {
-        initialValue: { columns: ['foo'] },
+        initialStepValue: { name: 'delete', columns: ['foo'] },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -81,7 +81,7 @@ describe('Delete Column Step Form', () => {
       selectedStepIndex: 1,
     });
 
-    const wrapper = shallowMount(DeleteColumnStepForm, { store, localVue });
+    const wrapper = mount(DeleteColumnStepForm, { store, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(wrapper.emitted()).to.eql({ cancel: [[]] });
     expect(store.state.selectedStepIndex).to.equal(1);
@@ -138,7 +138,7 @@ describe('Delete Column Step Form', () => {
       pipeline,
       selectedStepIndex: 2,
     });
-    const wrapper = shallowMount(DeleteColumnStepForm, { store, localVue });
+    const wrapper = mount(DeleteColumnStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).to.equal(2);

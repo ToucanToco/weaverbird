@@ -3,6 +3,12 @@
   "title": "Delete column step",
   "type": "object",
   "properties": {
+    "name": {
+      "type": "string",
+      "enum": [
+        "delete"
+      ]
+    },
     "column": {
       "type": "string",
       "minLength": 1,
@@ -13,6 +19,6 @@
       }
     }
   },
-  "required": ["column"],
+  "required": ["name", "column"],
   "additionalProperties": false
 }

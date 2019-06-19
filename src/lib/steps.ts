@@ -144,3 +144,4 @@ export type PipelineStep =
 
 export type PipelineStepName = PipelineStep['name'];
 export type Pipeline = PipelineStep[];
+export type Writable<T> = { -readonly [K in keyof T]: T[K] };

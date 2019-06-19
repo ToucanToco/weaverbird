@@ -1,141 +1,68 @@
 <template>
   <div>
-    <div class="step-edit-form">
-      <h1 class="step-edit-form__title">FILL NULL VALUES STEP</h1>
-    </div>
+    <step-form-title :title="title"></step-form-title>
     <WidgetAutocomplete
       id="columnInput"
-      v-model="step.column"
-      name="Fill null values in:"
+      v-model="editedStep.column"
+      name="Fill null valuessss in:"
       :options="columnNames"
-      @input="setSelectedColumns({ column: step.column })"
+      @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column"
     ></WidgetAutocomplete>
-    <WidgetInputText id="valueInput" v-model="step.value" name="With:" placeholder="Enter a value"></WidgetInputText>
-    <div class="widget-form-action">
-      <button
-        class="widget-form-action__button widget-form-action__button--validate"
-        @click="validateStep"
-      >OK</button>
-      <button
-        class="widget-form-action__button widget-form-action__button--cancel"
-        @click="cancelEdition"
-      >Cancel</button>
-    </div>
-    <div v-if="errors" class="errors">
-      <ul>
-        <li v-for="(error, index) in errors" :key="index">{{ error.dataPath }}: {{ error.message }}</li>
-      </ul>
-    </div>
+    <WidgetInputText
+      id="valueInput"
+      v-model="editedStep.value"
+      name="With:"
+      placeholder="Enter a value"
+    ></WidgetInputText>
+    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
-import { Mixins, Prop, Watch } from 'vue-property-decorator';
-import FormMixin from '@/mixins/FormMixin.vue';
-import { Pipeline } from '@/lib/steps';
+import { Prop } from 'vue-property-decorator';
 import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
+import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
+import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import { Getter, Mutation, State } from 'vuex-class';
+import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
-
-interface FillnaStepConf {
-  column: string;
-  value: string;
-}
+import BaseStepForm from './StepForm.vue';
+import { Writable, FillnaStep } from '@/lib/steps';
 
 @StepFormComponent({
   vqbstep: 'fillna',
   name: 'fillna-step-form',
   components: {
+    BaseStepForm,
+    StepFormTitle,
+    StepFormButtonbar,
     WidgetAutocomplete,
     WidgetInputText,
   },
 })
-export default class FillnaStepForm extends Mixins(FormMixin) {
-  @Prop({
-    type: Object,
-    default: () => ({
-      column: '',
-      value: '',
-    }),
-  })
-  initialValue!: FillnaStepConf;
+export default class FillnaStepForm extends BaseStepForm {
+  @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
+  initialStepValue!: FillnaStep;
 
-  @Prop({
-    type: Boolean,
-    default: true,
-  })
-  isStepCreation!: boolean;
+  readonly title: string = 'Fill Null Values Step';
+  editedStep: Writable<FillnaStep> = { ...this.initialStepValue };
+  editedStepModel = fillnaSchema;
 
-  step: FillnaStepConf = { ...this.initialValue };
 
-  @State pipeline!: Pipeline;
-  @State selectedStepIndex!: number;
+  get stepSelectedColumn() {
+    return this.editedStep.column;
+  }
 
-  @Mutation selectStep!: (payload: { index: number }) => void;
-  @Mutation setSelectedColumns!: (payload: { column: string }) => void;
-
-  @Getter selectedColumns!: string[];
-  @Getter columnNames!: string[];
-  @Getter computedActiveStepIndex!: number;
-
-  @Watch('selectedColumns')
-  onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal)) {
-      this.step.column = val[0];
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on fillna "column" field');
+    }
+    if (colname !== null) {
+      this.editedStep.column = colname;
     }
   }
 
-  created() {
-    this.schema = fillnaSchema;
-    this.setSelectedColumns({ column: this.initialValue.column });
-  }
-
-  validateStep() {
-    const ret = this.validator(this.step);
-    if (ret === false) {
-      this.errors = this.validator.errors;
-    } else {
-      this.errors = null;
-      this.$emit('formSaved', { name: 'fillna', ...this.step });
-    }
-  }
-
-  cancelEdition() {
-    this.$emit('cancel');
-    const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
-    this.selectStep({ index: idx });
-  }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../styles/_variables';
-
-.widget-form-action__button {
-  @extend %button-default;
-}
-
-.widget-form-action__button--validate {
-  background-color: $active-color;
-}
-
-.step-edit-form {
-  border-bottom: 1px solid $grey;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding-bottom: 20px;
-  margin: 10px 0 15px;
-  width: 100%;
-}
-
-.step-edit-form__title {
-  color: $base-color;
-  font-weight: 600;
-  font-size: 14px;
-  margin: 0;
-}
-</style>
