@@ -1,16 +1,19 @@
 <template>
   <div class="visual-query-builder">
     <ResizablePanels>
-      <component
-        v-if="isEditingStep"
-        :is="formToInstantiate"
-        :initialValue="initialValue"
-        :isStepCreation="isStepCreation"
-        slot="left-panel"
-        @cancel="toggleStepEdition"
-        @formSaved="saveStep"
-      ></component>
-      <Pipeline v-else slot="left-panel" @editStep="openStepForm"/>
+      <transition slot="left-panel" v-if="isEditingStep" name="slide-right" mode="out-in">
+        <component
+          key="stepForm"
+          :is="formToInstantiate"
+          :initialValue="initialValue"
+          :isStepCreation="isStepCreation"
+          @cancel="toggleStepEdition"
+          @formSaved="saveStep"
+        ></component>
+      </transition>
+      <transition slot="left-panel" v-else name="slide-left" mode="out-in">
+        <Pipeline key="pipeline" @editStep="openStepForm"/>
+      </transition>
       <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
     </ResizablePanels>
   </div>
@@ -25,7 +28,7 @@ import { Pipeline, PipelineStep } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
-import '@/components/stepforms';  // required to load all step forms
+import '@/components/stepforms'; // required to load all step forms
 import { STEPFORM_REGISTRY } from './formlib';
 
 import _ from 'lodash';
@@ -94,6 +97,22 @@ export default class Vqb extends Vue {
   flex: 1;
   height: 100%;
   background-color: white;
+}
+.slide-left-enter,
+.slide-left-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+.slide-left-enter-active {
+  transition: all 0.3s ease;
+}
+.slide-right-enter,
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+.slide-right-enter-active {
+  transition: all 0.3s ease;
 }
 </style>
 
