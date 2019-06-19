@@ -72,6 +72,9 @@ describe('Vqb', () => {
     const wrapper = shallowMount(Vqb, {
       store,
       localVue,
+      stubs: {
+        transition: false,
+      },
       data: () => {
         return { formToInstantiate: 'rename-step-form' };
       },
@@ -94,6 +97,9 @@ describe('Vqb', () => {
     const wrapper = shallowMount(Vqb, {
       store,
       localVue,
+      stubs: {
+        transition: false,
+      },
       data: () => {
         return { formToInstantiate: 'rename-step-form' };
       },
