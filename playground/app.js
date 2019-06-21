@@ -22,7 +22,10 @@ class MongoService {
   }
 
   async executePipeline(pipeline) {
-    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
+    const {
+      domain,
+      pipeline: subpipeline
+    } = filterOutDomain(pipeline);
     const rset = await this.executeQuery(this.translator.translate(subpipeline), domain);
     return mongoResultsToDataset(rset);
   }
@@ -55,16 +58,15 @@ class MongoService {
 
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
-const initialPipeline = [
-  {
-    name: 'domain',
-    domain: 'test-collection',
-  },
-  {
-    name: 'rename',
-    oldname: 'foo',
-    newname: 'bar',
-  },
+const initialPipeline = [{
+  name: 'domain',
+  domain: 'test-collection',
+},
+{
+  name: 'rename',
+  oldname: 'foo',
+  newname: 'bar',
+},
   // {
   //   name: 'filter',
   //   column: 'Value4',
@@ -114,12 +116,11 @@ async function setupInitialData(store, domain = null) {
 
 async function buildVueApp() {
   Vue.use(Vuex);
-  const store = setupStore(
-    {
-      pipeline: initialPipeline,
-      currentDomain: 'test-collection',
-    },
-    [mongoBackendPlugin],
+  const store = setupStore({
+    pipeline: initialPipeline,
+    currentDomain: 'test-collection',
+  },
+  [mongoBackendPlugin],
   );
 
   new Vue({
@@ -172,7 +173,9 @@ async function buildVueApp() {
         this.draggedover = false;
         event.preventDefault();
         // For the moment, only take one file and we should also test event.target
-        const { collection: domain } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
+        const {
+          collection: domain
+        } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
         await setupInitialData(store, domain);
         event.target.value = null;
       },

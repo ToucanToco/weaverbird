@@ -63,7 +63,7 @@ function firstNonSelectedIndex(state: VQBState) {
   if (selectedStepIndex < 0) {
     return pipeline.length;
   }
-  return selectedStepIndex + 1;
+  return selectedStepIndex  + 1;
 }
 
 /**

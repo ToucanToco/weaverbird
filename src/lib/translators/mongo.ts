@@ -350,7 +350,7 @@ function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
  * @returns the list of simplified mongo steps
  */
 export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
-  if (!mongoSteps.length) {
+  if (_.isEmpty(mongoSteps)) {
     return mongoSteps;
   }
   let merge = true;

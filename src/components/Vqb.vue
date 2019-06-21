@@ -46,6 +46,7 @@ export default class Vqb extends Vue {
 
   @Getter computedActiveStepIndex!: number;
 
+  @Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
   @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
   @Mutation toggleStepEdition!: () => void;
@@ -69,7 +70,8 @@ export default class Vqb extends Vue {
     this.initialValue = _.omit(params, 'name');
     if (index !== undefined) {
       this.editedStepIndex = index;
-      this.selectStep({ index: index - 1 });
+      const prevIndex = index === 0 ? index : index - 1;
+      this.selectStep({ index: prevIndex });
     } else {
       this.editedStepIndex = -1;
     }
@@ -80,13 +82,19 @@ export default class Vqb extends Vue {
     // Reset value from DataViewer
     this.initialValue = undefined;
     const newPipeline: Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
+    const index = this.isStepCreation
+      ? this.computedActiveStepIndex + 1
+      : this.computedActiveStepIndex;
     if (this.isStepCreation) {
       newPipeline.splice(index, 0, step);
     } else {
       newPipeline.splice(index, 1, step);
     }
-    this.setPipeline({ pipeline: newPipeline });
+    if (step.name === 'domain') {
+      this.setCurrentDomain({ currentDomain: step.domain });
+    } else {
+      this.setPipeline({ pipeline: newPipeline });
+    }
     this.selectStep({ index });
     this.toggleStepEdition();
   }
@@ -114,7 +122,6 @@ export default class Vqb extends Vue {
   transform: translateX(100%);
   opacity: 0;
 }
-
 .slide-right-enter-active {
   transition: all 0.3s ease;
 }

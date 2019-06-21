@@ -39,6 +39,10 @@ export function StepFormComponent(
     }
     const decorated = Component(_.omit(config, 'vqbstep'))(target);
     registry[config.vqbstep] = decorated;
+    // register component globally. This is OK, we know that this component has
+    // to be available and used at some point. Furthermore, we won't have to import
+    // manually each step form in the hosting component.
+    Vue.component(`${config.vqbstep}-step-form`, decorated);
     return decorated;
   };
 }

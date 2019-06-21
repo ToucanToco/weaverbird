@@ -1,11 +1,17 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-const { readFileSync } = require('fs');
+const {
+  readFileSync
+} = require('fs');
 const express = require('express');
-const { MongoClient } = require('mongodb');
+const {
+  MongoClient
+} = require('mongodb');
 const bodyParser = require('body-parser');
 const csv = require('csvtojson');
 const multer = require('multer');
-const { startMongo } = require('./mongodb');
+const {
+  startMongo
+} = require('./mongodb');
 
 const meow = require('meow');
 const upload = multer();
@@ -43,7 +49,9 @@ function _loadData(data, config, client, onsuccess, onerror, collname = null) {
  * @param onerror callback to call on error
  */
 function loadCSVInDatabaseFromFile(filepath, config, client, onsuccess, onerror) {
-  csv({ checkType: true })
+  csv({
+    checkType: true
+  })
     .fromFile(filepath)
     .then(
       data => _loadData(data, config, client, onsuccess, onerror)
@@ -146,11 +154,13 @@ function listCollections(config, client, onsuccess, onerror) {
 }
 
 function _testConnection(client) {
-  client.connect(function () { });
+  client.connect(function () {});
 }
 
 function setupApp(config) {
-  const client = new MongoClient(config.dburi, { useNewUrlParser: true });
+  const client = new MongoClient(config.dburi, {
+    useNewUrlParser: true
+  });
   _testConnection(client);
   if (config.reset) {
     loadCSVInDatabaseFromFile(config.defaultDataset, config, client, console.error);
@@ -158,7 +168,9 @@ function setupApp(config) {
   const app = express();
 
   // parse application/x-www-form-urlencoded
-  app.use(bodyParser.urlencoded({ extended: false }));
+  app.use(bodyParser.urlencoded({
+    extended: false
+  }));
   // parse application/json
   app.use(bodyParser.json());
 
@@ -175,7 +187,9 @@ function setupApp(config) {
 
   app.post('/load', upload.single('file'), (req, res) => {
     const csvString = req.file.buffer.toString('utf8');
-    const newConfig = { ...config };
+    const newConfig = {
+      ...config
+    };
     loadCSVInDatabase(
       csvString,
       req.file.filename || req.file.originalname,
@@ -221,8 +235,7 @@ function parseCommandLine() {
 
     --httpPort / -p       override "httpPort" option from config file,
                           default is 3000
-  `,
-    {
+  `, {
       flags: {
         configfile: {
           type: 'string',
@@ -294,7 +307,9 @@ function start(config) {
 
 const config = parseCommandLine();
 if (config.automongo) {
-  startMongo(config).then(({ tmpdir }) => {
+  startMongo(config).then(({
+    tmpdir
+  }) => {
     process.on('exit', () => {
       tmpdir.removeCallback();
     });

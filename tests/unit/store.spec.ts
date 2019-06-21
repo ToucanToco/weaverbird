@@ -109,16 +109,6 @@ describe('getter tests', () => {
       const state = buildState({ pipeline });
       expect(getters.domainStep(state)).to.eql(pipeline[0]);
     });
-
-    it('should return all the steps except the domain step', () => {
-      const pipeline: Pipeline = [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
-      ];
-      const state = buildState({ pipeline });
-      expect(getters.stepsWithoutDomain(state)).to.eql(pipeline.slice(1));
-    });
   });
 
   describe('dataset empty tests', () => {

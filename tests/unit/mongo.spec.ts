@@ -263,153 +263,160 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can simplify a mongo pipeline', () => {
-    const mongoPipeline: MongoStep[] = [
-      { $match: { domain: 'test_cube' } },
-      { $match: { Manager: 'Pierre' } },
-      { $match: { Manager: { $ne: 'NA' } } },
-      { $project: { Manager: 0 } },
-      { $project: { Random: 0 } },
-      {
-        $project: {
-          Country: 1,
-          Region: 1,
-          Population: 1,
-          Region_bis: 1,
+  describe('_simplifyMongoPipeline', () => {
+    it('can simplify a mongo pipeline', () => {
+      const mongoPipeline: MongoStep[] = [
+        { $match: { domain: 'test_cube' } },
+        { $match: { Manager: 'Pierre' } },
+        { $match: { Manager: { $ne: 'NA' } } },
+        { $project: { Manager: 0 } },
+        { $project: { Random: 0 } },
+        {
+          $project: {
+            Country: 1,
+            Region: 1,
+            Population: 1,
+            Region_bis: 1,
+          },
         },
-      },
-      { $project: { Region_bis: 0 } },
-      { $project: { test: '$test' } },
-      { $project: { test: 2 } },
-      { $project: { exclusion: 0 } },
-      {
-        $addFields: {
-          id: { $concat: ['$Country', ' - ', '$Region'] },
+        { $project: { Region_bis: 0 } },
+        { $project: { test: '$test' } },
+        { $project: { test: 2 } },
+        { $project: { exclusion: 0 } },
+        {
+          $addFields: {
+            id: { $concat: ['$Country', ' - ', '$Region'] },
+          },
         },
-      },
-      {
-        $addFields: {
-          Zone: '$id',
+        {
+          $addFields: {
+            Zone: '$id',
+          },
         },
-      },
-      {
-        $project: {
-          id: 0,
+        {
+          $project: {
+            id: 0,
+          },
         },
-      },
-      {
-        $addFields: {
-          Zone: {
-            $switch: {
-              branches: [{ case: { $eq: ['$Zone', 'France - '] }, then: 'France' }],
-              default: '$Zone',
+        {
+          $addFields: {
+            Zone: {
+              $switch: {
+                branches: [{ case: { $eq: ['$Zone', 'France - '] }, then: 'France' }],
+                default: '$Zone',
+              },
             },
           },
         },
-      },
-      {
-        $addFields: {
-          Zone: {
-            $switch: {
-              branches: [{ case: { $eq: ['$Zone', 'Spain - '] }, then: 'Spain' }],
-              default: '$Zone',
+        {
+          $addFields: {
+            Zone: {
+              $switch: {
+                branches: [{ case: { $eq: ['$Zone', 'Spain - '] }, then: 'Spain' }],
+                default: '$Zone',
+              },
             },
           },
         },
-      },
-      {
-        $addFields: {
-          Population: { $divide: ['$Population', 1000] },
+        {
+          $addFields: {
+            Population: { $divide: ['$Population', 1000] },
+          },
         },
-      },
-      {
-        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
-      },
-      {
-        $project: { Zone: '$_id', Population: 1 },
-      },
-      {
-        $project: { Area: '$Zone', Population: 1 },
-      },
-    ];
-    const querySteps = _simplifyMongoPipeline(mongoPipeline);
-    expect(querySteps).to.eql([
-      { $match: { domain: 'test_cube', Manager: 'Pierre' } },
-      { $match: { Manager: { $ne: 'NA' } } }, // Two steps with common keys should not be merged
-      {
-        $project: {
-          Manager: 0,
-          Random: 0,
+        {
+          $group: { _id: '$Zone', Population: { $sum: '$Population' } },
         },
-      },
-      {
-        $project: {
-          Country: 1,
-          Region: 1,
-          Population: 1,
-          Region_bis: 1,
+        {
+          $project: { Zone: '$_id', Population: 1 },
         },
-      },
-      {
-        // Two steps with common keys should not be merged
-        $project: {
-          Region_bis: 0,
+        {
+          $project: { Area: '$Zone', Population: 1 },
         },
-      },
-      { $project: { test: '$test' } },
-      { $project: { test: 2 } },
-      { $project: { exclusion: 0 } },
-      {
-        $addFields: {
-          id: { $concat: ['$Country', ' - ', '$Region'] },
+      ];
+      const querySteps = _simplifyMongoPipeline(mongoPipeline);
+      expect(querySteps).to.eql([
+        { $match: { domain: 'test_cube', Manager: 'Pierre' } },
+        { $match: { Manager: { $ne: 'NA' } } }, // Two steps with common keys should not be merged
+        {
+          $project: {
+            Manager: 0,
+            Random: 0,
+          },
         },
-      },
-      {
+        {
+          $project: {
+            Country: 1,
+            Region: 1,
+            Population: 1,
+            Region_bis: 1,
+          },
+        },
+        {
+          // Two steps with common keys should not be merged
+          $project: {
+            Region_bis: 0,
+          },
+        },
+        { $project: { test: '$test' } },
+        { $project: { test: 2 } },
+        { $project: { exclusion: 0 } },
+        {
+          $addFields: {
+            id: { $concat: ['$Country', ' - ', '$Region'] },
+          },
+        },
+        {
+          // A step with a key referencing as value any key present in the last
+          // step should not be merged with the latter
+          $addFields: {
+            Zone: '$id',
+          },
+        },
+        {
+          $project: {
+            id: 0,
+          },
+        },
+        {
+          $addFields: {
+            Zone: {
+              $switch: {
+                branches: [{ case: { $eq: ['$Zone', 'France - '] }, then: 'France' }],
+                default: '$Zone',
+              },
+            },
+          },
+        },
+        {
+          // Two steps with common keys should not be merged
+          $addFields: {
+            Zone: {
+              $switch: {
+                branches: [{ case: { $eq: ['$Zone', 'Spain - '] }, then: 'Spain' }],
+                default: '$Zone',
+              },
+            },
+            Population: { $divide: ['$Population', 1000] },
+          },
+        },
+        {
+          $group: { _id: '$Zone', Population: { $sum: '$Population' } },
+        },
+        {
+          $project: { Zone: '$_id', Population: 1 },
+        },
         // A step with a key referencing as value any key present in the last
         // step should not be merged with the latter
-        $addFields: {
-          Zone: '$id',
+        {
+          $project: { Area: '$Zone', Population: 1 },
         },
-      },
-      {
-        $project: {
-          id: 0,
-        },
-      },
-      {
-        $addFields: {
-          Zone: {
-            $switch: {
-              branches: [{ case: { $eq: ['$Zone', 'France - '] }, then: 'France' }],
-              default: '$Zone',
-            },
-          },
-        },
-      },
-      {
-        // Two steps with common keys should not be merged
-        $addFields: {
-          Zone: {
-            $switch: {
-              branches: [{ case: { $eq: ['$Zone', 'Spain - '] }, then: 'Spain' }],
-              default: '$Zone',
-            },
-          },
-          Population: { $divide: ['$Population', 1000] },
-        },
-      },
-      {
-        $group: { _id: '$Zone', Population: { $sum: '$Population' } },
-      },
-      {
-        $project: { Zone: '$_id', Population: 1 },
-      },
-      // A step with a key referencing as value any key present in the last
-      // step should not be merged with the latter
-      {
-        $project: { Area: '$Zone', Population: 1 },
-      },
-    ]);
+      ]);
+    });
+
+    it("should return mongoSteps if it's empty ", () => {
+      const querySteps = _simplifyMongoPipeline([]);
+      querySteps.should.eql([]);
+    });
   });
 
   it('can generate a replace step with a single value to replace inplace', () => {
