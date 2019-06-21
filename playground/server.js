@@ -8,22 +8,16 @@ const { startMongo } = require('./mongodb');
 
 const meow = require('meow');
 
-function _loadData(
-  data,
-  config,
-  client,
-  onsuccess,
-  onerror,
-) {
-  client.connect(function (err) {
+function _loadData(data, config, client, onsuccess, onerror) {
+  client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(config.defaultCollection);
-    collection.deleteMany({}, function (err) {
+    collection.deleteMany({}, function(err) {
       if (err) {
         onerror(err);
       } else {
-        collection.insertMany(data, function (err) {
+        collection.insertMany(data, function(err) {
           if (err) {
             onerror(err);
           } else {
@@ -43,13 +37,7 @@ function _loadData(
  * @param onsuccess callback to call on success
  * @param onerror callback to call on error
  */
-function loadCSVInDatabase(
-  filepath,
-  config,
-  client,
-  onsuccess,
-  onerror,
-) {
+function loadCSVInDatabase(filepath, config, client, onsuccess, onerror) {
   csv({ checkType: true })
     .fromFile(filepath)
     .then(data => _loadData(data, config, client, onsuccess, onerror));
@@ -81,19 +69,12 @@ function assertIsConnected(client, err) {
  * @param onsuccess callback to call on success with results
  * @param onerror callback to call on error
  */
-function executeQuery(
-  config,
-  client,
-  collectionName,
-  query,
-  onsuccess,
-  onerror,
-) {
-  client.connect(function (err) {
+function executeQuery(config, client, collectionName, query, onsuccess, onerror) {
+  client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
-    collection.aggregate(query).toArray(function (err, docs) {
+    collection.aggregate(query).toArray(function(err, docs) {
       if (err) {
         onerror(err);
       } else {
@@ -111,13 +92,8 @@ function executeQuery(
  * @param onsuccess callback to call on success with the list of collections
  * @param onerror callback to call on error
  */
-function listCollections(
-  config,
-  client,
-  onsuccess,
-  onerror,
-) {
-  client.connect(function (err) {
+function listCollections(config, client, onsuccess, onerror) {
+  client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     db.listCollections().toArray((err, results) => {
@@ -131,7 +107,7 @@ function listCollections(
 }
 
 function _testConnection(client) {
-  client.connect(function () { });
+  client.connect(function() {});
 }
 
 function setupApp(config) {
@@ -262,7 +238,7 @@ function parseCommandLine() {
 }
 
 function start(config) {
-  setupApp(config).listen(config.httpPort, function () {
+  setupApp(config).listen(config.httpPort, function() {
     console.log(`VQB playground app listening on port ${config.httpPort}!`);
   });
 }

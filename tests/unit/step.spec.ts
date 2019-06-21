@@ -157,7 +157,7 @@ describe('Step.vue', () => {
     const store = setupStore({ pipeline, isEditingStep: false });
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
-    const renameStep = stepsArray.at(1);
+    const renameStep = stepsArray.at(2);
     renameStep.find('.fa-cog').trigger('click');
     expect(renameStep.emitted().editStep).to.exist;
     expect(renameStep.emitted().editStep).to.eql([

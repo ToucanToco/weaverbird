@@ -93,6 +93,7 @@
 
 .query-pipeline-step {
   cursor: pointer;
+  transition: color 0.3s ease;
   width: 100%;
   height: 50px;
   display: flex;
@@ -100,7 +101,8 @@
   padding-left: 12px;
   justify-content: space-between;
   align-items: center;
-  background-color: rgb(245, 245, 245);
+  background-color: white;
+  border: 1px solid rgb(245, 245, 245);
 }
 
 .query-pipeline-step__name {
