@@ -66,7 +66,7 @@ function filterstepToMatchstep(step: FilterStep): MongoStep {
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
-function transformAggregate(step: AggregationStep): MongoStep[] {
+function transformAggregate(step: Readonly<AggregationStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};

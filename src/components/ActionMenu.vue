@@ -93,7 +93,7 @@ export default class ActionMenu extends Vue {
 }
 </script>
 <style lang="scss">
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
 .action-menu__body {
   display: flex;

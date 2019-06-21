@@ -1,22 +1,16 @@
 <template>
   <div>
     <div class="step-edit-form">
-      <h1 class="step-edit-form__title">EDIT RENAME STEP</h1>
+      <h1 class="step-edit-form__title">DELETE COLUMN STEP</h1>
     </div>
     <WidgetAutocomplete
-      id="oldnameInput"
-      v-model="step.oldname"
-      name="Old name"
+      id="columnInput"
+      v-model="column"
+      name="Delete column:"
       :options="columnNames"
-      @input="setSelectedColumns({ column: step.oldname })"
-      placeholder="Enter the old column name"
+      @input="setSelectedColumns({ column })"
+      placeholder="Enter a column"
     ></WidgetAutocomplete>
-    <WidgetInputText
-      id="newnameInput"
-      v-model="step.newname"
-      name="New name"
-      placeholder="Enter a new column name"
-    ></WidgetInputText>
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
@@ -40,34 +34,31 @@ import _ from 'lodash';
 import { Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
-import renameSchema from '@/assets/schemas/rename-step__schema.json';
-import WidgetInputText from './WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
+import WidgetAutocomplete from './WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
+import { MutationCallbacks } from '@/store/mutations';
 
-interface RenameStepConf {
-  oldname: string;
-  newname: string;
+interface DeleteColumnStepConf {
+  columns: string[];
 }
 
 @StepFormComponent({
-  vqbstep: 'rename',
-  name: 'rename-step-form',
+  vqbstep: 'delete',
+  name: 'delete-step-form',
   components: {
     WidgetAutocomplete,
-    WidgetInputText,
   },
 })
-export default class RenameStepForm extends Mixins(FormMixin) {
+export default class DeletStepForm extends Mixins(FormMixin) {
   @Prop({
     type: Object,
     default: () => ({
-      oldname: '',
-      newname: '',
+      columns: [''],
     }),
   })
-  initialValue!: RenameStepConf;
+  initialValue!: DeleteColumnStepConf;
 
   @Prop({
     type: Boolean,
@@ -75,47 +66,38 @@ export default class RenameStepForm extends Mixins(FormMixin) {
   })
   isStepCreation!: boolean;
 
-  step: RenameStepConf = { ...this.initialValue };
+  // Only manage the deletion of 1 column at once at this stage
+  column: string = this.initialValue.columns[0];
 
   @State pipeline!: Pipeline;
   @State selectedStepIndex!: number;
 
-  @Mutation selectStep!: (payload: { index: number }) => void;
-  @Mutation setSelectedColumns!: (payload: { column: string }) => void;
+  @Mutation selectStep!: MutationCallbacks['selectStep'];
+  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
   @Getter computedActiveStepIndex!: number;
 
-  test: any[] = [];
-
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
     if (!_.isEqual(val, oldVal)) {
-      this.step.oldname = val[0];
+      this.column = val[0];
     }
   }
 
   created() {
-    this.schema = renameSchema;
-    this.setSelectedColumns({ column: this.initialValue.oldname });
+    this.schema = deleteSchema;
+    this.setSelectedColumns({ column: this.initialValue.columns[0] });
   }
 
   validateStep() {
-    const ret = this.validator(this.step);
+    const ret = this.validator({ column: this.column });
     if (ret === false) {
       this.errors = this.validator.errors;
-    } else if (this.columnNames.includes(this.step.newname)) {
-      const err = {
-        keyword: 'nameAlreadyUsed',
-        dataPath: '.newname',
-        message: 'This column name is already used.',
-      };
-      this.errors = [err];
     } else {
       this.errors = null;
-      this.$emit('formSaved', { name: 'rename', ...this.step });
-      this.setSelectedColumns({ column: this.step.newname });
+      this.$emit('formSaved', { name: 'delete', columns: [this.column] });
     }
   }
 
@@ -127,7 +109,7 @@ export default class RenameStepForm extends Mixins(FormMixin) {
 }
 </script>
 <style lang="scss" scoped>
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
 .widget-form-action__button {
   @extend %button-default;

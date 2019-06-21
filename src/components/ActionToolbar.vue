@@ -53,18 +53,18 @@ export default class ActionToolbar extends Vue {
 
   openPopover(index: number) {
     const buttondef = this.buttons[index];
-    if (buttondef.popover) {
+    if (buttondef.label === 'Aggregate') {
+      this.createAggregateStep();
+    } else if (buttondef.popover) {
       this.isActiveActionToolbarButton = index;
     } else {
       this.isActiveActionToolbarButton = index;
-      this.createAggregateStep();
     }
   }
 
   closePopover() {
     this.isActiveActionToolbarButton = -1;
   }
-  // columns: string[] = this.selectedColumns.length === 0 ? [''] : [...this.selectedColumns];
 
   createAggregateStep() {
     this.$emit('actionClicked', { name: 'aggregate', on: this.selectedColumns, aggregations: [] });

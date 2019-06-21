@@ -4,22 +4,22 @@
 
 export type PrimitiveType = number | boolean | string | Date;
 
-export type AggFunctionStep = Readonly<{
+export type AggFunctionStep = {
   /** Name of the output column */
   newcolumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
   aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
   /** the column the aggregation function is working on */
   column: string;
-}>;
+};
 
-export type AggregationStep = Readonly<{
+export type AggregationStep = {
   name: 'aggregate';
   /** the list columns we want to aggregate on */
   on: string[];
   /** the list of aggregation operations to perform */
   aggregations: AggFunctionStep[];
-}>;
+};
 
 export type ArgmaxStep = Readonly<{
   name: 'argmax';

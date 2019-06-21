@@ -5,21 +5,15 @@
       :options="columnNames"
       v-model="aggregation.column"
       name="Column"
-      placeholder="Enter the old column name"
+      placeholder="Enter a column"
     ></WidgetAutocomplete>
     <WidgetAutocomplete
       id="aggregationFunctionInput"
       v-model="aggregation.aggfunction"
-      name="Aggregation function"
+      name="Function"
       :options="aggregationFunctions"
-      placeholder="Choose your aggregation function"
+      placeholder="Aggregation function"
     ></WidgetAutocomplete>
-    <WidgetInputText
-      id="newcolumnInput"
-      v-model="aggregation.newcolumn"
-      name="New Column"
-      placeholder="Enter a newcolumn name"
-    ></WidgetInputText>
   </fieldset>
 </template>
 <script lang="ts">
@@ -27,7 +21,6 @@ import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { AggFunctionStep } from '@/lib/steps';
-import WidgetInputText from './WidgetInputText.vue';
 import WidgetAutocomplete from './WidgetAutocomplete.vue';
 
 const defaultValues: AggFunctionStep = {
@@ -39,7 +32,6 @@ const defaultValues: AggFunctionStep = {
 @Component({
   name: 'widget-aggregation',
   components: {
-    WidgetInputText,
     WidgetAutocomplete,
   },
 })
@@ -69,10 +61,24 @@ export default class WidgetAggregation extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import '../styles/_variables';
-
+@import '../../styles/_variables';
 .widget-aggregation__container {
   @extend %form-widget__container;
   margin-bottom: 0;
+  padding-top: 12px;
+  padding-bottom: 4px;
+}
+
+.widget-autocomplete__container {
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 8px;
+}
+</style>
+
+<style lang="scss">
+.widget-aggregation__container .widget-autocomplete__label {
+  margin-bottom: 0px;
+  width: 40%;
 }
 </style>

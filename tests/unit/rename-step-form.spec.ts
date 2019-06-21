@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vue from 'vue';
-import RenameStepForm from '@/components/RenameStepForm.vue';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
+import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';

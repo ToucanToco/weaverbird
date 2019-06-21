@@ -1,16 +1,17 @@
 <template>
   <div>
     <div class="step-edit-form">
-      <h1 class="step-edit-form__title">DELETE COLUMN STEP</h1>
+      <h1 class="step-edit-form__title">FILL NULL VALUES STEP</h1>
     </div>
     <WidgetAutocomplete
       id="columnInput"
-      v-model="column"
-      name="Delete column:"
+      v-model="step.column"
+      name="Fill null values in:"
       :options="columnNames"
-      @input="setSelectedColumns({ column })"
+      @input="setSelectedColumns({ column: step.column })"
       placeholder="Enter a column"
     ></WidgetAutocomplete>
+    <WidgetInputText id="valueInput" v-model="step.value" name="With:" placeholder="Enter a value"></WidgetInputText>
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
@@ -34,31 +35,34 @@ import _ from 'lodash';
 import { Mixins, Prop, Watch } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
 import { Pipeline } from '@/lib/steps';
-import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
-import WidgetAutocomplete from '@/components/WidgetAutocomplete.vue';
+import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
+import WidgetInputText from './WidgetInputText.vue';
+import WidgetAutocomplete from './WidgetAutocomplete.vue';
 import { Getter, Mutation, State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
-import { MutationCallbacks } from '@/store/mutations';
 
-interface DeleteColumnStepConf {
-  columns: string[];
+interface FillnaStepConf {
+  column: string;
+  value: string;
 }
 
 @StepFormComponent({
-  vqbstep: 'delete',
-  name: 'delete-step-form',
+  vqbstep: 'fillna',
+  name: 'fillna-step-form',
   components: {
     WidgetAutocomplete,
+    WidgetInputText,
   },
 })
-export default class DeletStepForm extends Mixins(FormMixin) {
+export default class FillnaStepForm extends Mixins(FormMixin) {
   @Prop({
     type: Object,
     default: () => ({
-      columns: [''],
+      column: '',
+      value: '',
     }),
   })
-  initialValue!: DeleteColumnStepConf;
+  initialValue!: FillnaStepConf;
 
   @Prop({
     type: Boolean,
@@ -66,14 +70,13 @@ export default class DeletStepForm extends Mixins(FormMixin) {
   })
   isStepCreation!: boolean;
 
-  // Only manage the deletion of 1 column at once at this stage
-  column: string = this.initialValue.columns[0];
+  step: FillnaStepConf = { ...this.initialValue };
 
   @State pipeline!: Pipeline;
   @State selectedStepIndex!: number;
 
-  @Mutation selectStep!: MutationCallbacks['selectStep'];
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @Mutation selectStep!: (payload: { index: number }) => void;
+  @Mutation setSelectedColumns!: (payload: { column: string }) => void;
 
   @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
@@ -82,22 +85,22 @@ export default class DeletStepForm extends Mixins(FormMixin) {
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
     if (!_.isEqual(val, oldVal)) {
-      this.column = val[0];
+      this.step.column = val[0];
     }
   }
 
   created() {
-    this.schema = deleteSchema;
-    this.setSelectedColumns({ column: this.initialValue.columns[0] });
+    this.schema = fillnaSchema;
+    this.setSelectedColumns({ column: this.initialValue.column });
   }
 
   validateStep() {
-    const ret = this.validator({ column: this.column });
+    const ret = this.validator(this.step);
     if (ret === false) {
       this.errors = this.validator.errors;
     } else {
       this.errors = null;
-      this.$emit('formSaved', { name: 'delete', columns: [this.column] });
+      this.$emit('formSaved', { name: 'fillna', ...this.step });
     }
   }
 
@@ -109,7 +112,7 @@ export default class DeletStepForm extends Mixins(FormMixin) {
 }
 </script>
 <style lang="scss" scoped>
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
 .widget-form-action__button {
   @extend %button-default;

@@ -78,7 +78,7 @@ export default {
    */
   deleteStep(state: VQBState, { index }: { index: number }) {
     state.pipeline.splice(index, 1);
-    state.selectedStepIndex = index - 1;
+    state.selectedStepIndex = Math.max(index - 1, 1);
   },
   /**
    * change current selected domain and reset pipeline accordingly.
@@ -120,8 +120,10 @@ export default {
    *
    * set selected columns
    */
-  setSelectedColumns(state: VQBState, { column }: { column: string }) {
-    state.selectedColumns = [column];
+  setSelectedColumns(state: VQBState, { column }: { column: string | undefined }) {
+    if (column !== undefined) {
+      state.selectedColumns = [column];
+    }
   },
 
   /**

@@ -1,13 +1,11 @@
 <template>
-  <div class="widget-multiselect__container">
-    <label class="widget-multiselect__label" :for="id">{{ name }}</label>
+  <div class="widget-autocomplete__container">
+    <label class="widget-autocomplete__label" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
       :placeholder="placeholder"
-      :multiple="true"
-      :taggable="true"
-      :close-on-select="false"
+      :allow-empty="false"
     ></multiselect>
   </div>
 </template>
@@ -17,12 +15,12 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
 
 @Component({
-  name: 'widget-multiselect',
+  name: 'widget-autocomplete',
   components: {
     Multiselect,
   },
 })
-export default class WidgetMultiselect extends Vue {
+export default class WidgetAutocomplete extends Vue {
   @Prop({ type: String, default: null })
   id!: string;
 
@@ -32,21 +30,21 @@ export default class WidgetMultiselect extends Vue {
   @Prop({ type: String, default: '' })
   placeholder!: string;
 
-  @Prop({ type: Array, default: () => [] })
-  value!: string[];
+  @Prop({ type: String, default: '' })
+  value!: string;
 
   @Prop({ type: Array, default: () => [] })
   options!: string[];
 
-  editedValue: string[] = [];
+  editedValue: string = '';
 
   @Watch('value', { immediate: true })
-  updateEditedValue(newValue: string[]) {
+  updateEditedValue(newValue: string) {
     this.editedValue = newValue;
   }
 
   @Watch('editedValue')
-  updateValue(newValue: string[]) {
+  updateValue(newValue: string) {
     this.$emit('input', newValue);
   }
 }
@@ -54,9 +52,9 @@ export default class WidgetMultiselect extends Vue {
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
-@import '../styles/_variables';
+@import '../../styles/_variables';
 
-.widget-multiselect__container {
+.widget-autocomplete__container {
   @extend %form-widget__container;
   position: relative;
 }
@@ -75,9 +73,6 @@ export default class WidgetMultiselect extends Vue {
   border-radius: 0;
   border: none;
   font-size: 14px;
-  max-height: none;
-  display: block;
-  padding-right: 30px;
   & > input {
     background: transparent;
     margin-bottom: 0;
@@ -125,7 +120,7 @@ export default class WidgetMultiselect extends Vue {
   color: $base-color-light;
 }
 
-.widget-multiselect__label {
+.widget-autocomplete__label {
   @extend %form-widget__label;
 }
 </style>

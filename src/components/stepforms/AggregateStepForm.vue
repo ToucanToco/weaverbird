@@ -12,8 +12,9 @@
       placeholder="Add columns"
     ></WidgetMultiselect>
     <WidgetList
+      addFieldName="Add aggregation"
       id="toremove"
-      name="Aggregation"
+      name="Aggregations:"
       v-model="aggregations"
       :defaultItem="defaultAggregation"
       :widget="'widget-aggregation'"
@@ -40,9 +41,9 @@
 <script lang="ts">
 import { Mixins, Prop } from 'vue-property-decorator';
 import FormMixin from '@/mixins/FormMixin.vue';
-import { AggregationStep, Pipeline } from '@/lib/steps';
+import { AggFunctionStep, AggregationStep, Pipeline } from '@/lib/steps';
 import aggregateSchema from '@/assets/schemas/aggregate-step__schema.json';
-import WidgetMultiselect from '@/components/WidgetMultiselect.vue';
+import WidgetMultiselect from './WidgetMultiselect.vue';
 import WidgetList from './WidgetList.vue';
 import { Getter, Mutation, State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
@@ -82,7 +83,6 @@ export default class AggregateStepForm extends Mixins(FormMixin) {
   @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setSelectedColumns!: (payload: { column: string }) => void;
 
-  // @Getter selectedColumns!: string[];
   @Getter columnNames!: string[];
   @Getter computedActiveStepIndex!: number;
 
@@ -92,32 +92,19 @@ export default class AggregateStepForm extends Mixins(FormMixin) {
   }
 
   get defaultAggregation() {
-    return {
+    const agg = {
       column: '',
-      newcolumn: `newcolumn-${this.step.aggregations.length + 1}`,
+      newcolumn: '',
       aggfunction: 'sum',
-    }
-    // return [
-    //   { name: 'column', value: '', label: 'column' },
-    //   { name: 'newcolumn', value: `newcolumn-${this.step.aggregations.length + 1}`, label: 'new column name' },
-    //   { name: 'aggfunction', value: 'sum', label: 'aggregation function' },
-    // ]
+    };
+    return agg as AggFunctionStep;
   }
 
   get aggregations() {
     if (this.step.aggregations.length) {
-      // return [
-      //   ...this.step.aggregations.map(agg => [
-      //     { name: 'column', value: agg.column, label: 'column' },
-      //     { name: 'newcolumn', value: agg.newcolumn, label: 'new column name' },
-      //     { name: 'aggfunction', value: agg.aggfunction, label: 'aggregation function' },
-      //   ])
-      // ];
       return this.step.aggregations;
     } else {
-      return [
-        this.defaultAggregation
-      ];
+      return [this.defaultAggregation];
     }
   }
 
@@ -126,7 +113,21 @@ export default class AggregateStepForm extends Mixins(FormMixin) {
   }
 
   validateStep() {
-    const ret = true || this.validator(this.step);
+    /**
+     * If different aggregations have to be performed on the same column, add a suffix
+     * to the automatically generated newcolumn name
+     */
+    const newcolumnOccurences: { [prop: string]: number } = {};
+    this.step.aggregations.forEach(agg => {
+      agg['newcolumn'] = agg['column'];
+      newcolumnOccurences[agg.newcolumn] = (newcolumnOccurences[agg.newcolumn] || 0) + 1;
+    });
+    this.step.aggregations.map(agg => {
+      if (newcolumnOccurences[agg.newcolumn] > 1) {
+        agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
+      }
+    });
+    const ret = this.validator(this.step);
     if (ret === false) {
       this.errors = this.validator.errors;
     } else {
@@ -143,8 +144,7 @@ export default class AggregateStepForm extends Mixins(FormMixin) {
 }
 </script>
 <style lang="scss" scoped>
-@import '../styles/_variables';
-
+@import '../../styles/_variables';
 .widget-form-action__button {
   @extend %button-default;
 }

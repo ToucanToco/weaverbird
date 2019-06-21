@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
-import WidgetInputText from '@/components/WidgetInputText.vue';
+import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 
 describe('Widget Input Text', () => {
   it('should instantiate', () => {

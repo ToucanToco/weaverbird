@@ -9,16 +9,44 @@
         "type": "string",
         "minLength": 1
       },
-      "minLength": 1,
       "title": "Group by",
       "description": "The columns used to group the data for aggregation",
       "attrs": {
         "placeholder": "Add columns"
       }
+    },
+    "aggregations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "column": {
+            "type": "string",
+            "minLength": 1
+          },
+          "aggfunction": {
+            "type": "string",
+            "enum": [
+              "sum",
+              "avg",
+              "count",
+              "min",
+              "max"
+            ]
+          },
+          "newcolumn": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["column", "aggfunction", "newcolumn"],
+        "additionalProperties": false
+      },
+      "minLength": 1,
+      "title": "Aggregations",
+      "description": "The aggregations to be performed"
     }
   },
-  "required": [
-    "on"
-  ],
-  "additionalProperties": true
+  "required": ["on", "aggregations"],
+  "additionalProperties": false
 }

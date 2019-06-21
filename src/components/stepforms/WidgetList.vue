@@ -12,7 +12,7 @@
       </div>
       <button v-if="!automaticNewField" class="widget-list__add-fieldset" @click="addFieldSet">
         <i class="fas fa-plus-circle"></i>
-        Add {{ name }}
+        {{ addFieldName }}
       </button>
     </div>
   </div>
@@ -38,6 +38,9 @@ type RepeatableField = Field[];
   },
 })
 export default class WidgetList extends Vue {
+  @Prop({ type: String, default: '' })
+  addFieldName!: string;
+
   @Prop({ type: String, default: null })
   id!: string;
 
@@ -61,20 +64,16 @@ export default class WidgetList extends Vue {
 
   get children() {
     const children: object[] = [];
-    const lastIndex: number = this.value.length;
     const valueCopy = [...this.value];
-
     if (this.automaticNewField) {
       valueCopy.push(this.defaultChildValue);
     }
-
-    for (const [index, value] of valueCopy.entries()) {
+    valueCopy.forEach(value => {
       children.push({
-        isRemovable: index !== lastIndex,
+        isRemovable: valueCopy.length !== 1,
         value,
       });
-    }
-
+    });
     return children;
   }
 
@@ -90,19 +89,17 @@ export default class WidgetList extends Vue {
   }
 
   addFieldSet() {
-    this.updateValue([...this.value, this.defaultChildValue])
+    this.updateValue([...this.value, this.defaultChildValue]);
   }
 
   removeChild(index: number) {
     const newValue = [...this.value];
-
     newValue.splice(index, 1);
     this.updateValue(newValue);
   }
 
   updateChildValue(childValue: any, index: number) {
     const newValue = [...this.value];
-
     if (this.value.length < index) {
       newValue.push(childValue);
     } else {
@@ -117,8 +114,10 @@ export default class WidgetList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import '../styles/_variables';
-
+@import '../../styles/_variables';
+.fa-plus-circle {
+  color: $active-color;
+}
 .widget-list__container {
   @extend %form-widget__container;
 }
@@ -149,7 +148,11 @@ export default class WidgetList extends Vue {
 
 .widget-list__add-fieldset {
   @extend %button-default;
-  background-color: $active-color;
+  align-self: center;
+  background-color: #f8f8f8;
+  border: 1px dashed $active-color;
+  color: $active-color;
+  font-weight: 500;
   width: 250px;
 }
 
