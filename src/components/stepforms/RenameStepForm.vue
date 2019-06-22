@@ -21,13 +21,13 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+import { Getter, Mutation } from 'vuex-class';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
+import { StepFormComponent } from '@/components/formlib';
 import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import { Getter, Mutation } from 'vuex-class';
-import { StepFormComponent } from '@/components/formlib';
 import BaseStepForm from './StepForm.vue';
 import { Writable, RenameStep } from '@/lib/steps';
 
