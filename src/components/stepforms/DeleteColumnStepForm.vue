@@ -15,12 +15,12 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
 import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
+import { StepFormComponent } from '@/components/formlib';
 import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import { Getter } from 'vuex-class';
-import { StepFormComponent } from '@/components/formlib';
 import BaseStepForm from './StepForm.vue';
 import { Writable, DeleteStep } from '@/lib/steps';
 
