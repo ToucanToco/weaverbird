@@ -5,6 +5,8 @@ import { Prop, Component, Watch } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 import { MutationCallbacks } from '@/store/mutations';
+import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
+import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import { Pipeline } from '@/lib/steps';
 import { PipelineStep } from '@/lib/steps';
 
@@ -60,7 +62,12 @@ function componentProxyBoundOn(self: Vue) {
  * `@Component` decorator will flatten options properties of parent and child
  * classes in a single dict.
  */
-@Component
+@Component({
+  components: {
+    StepFormTitle,
+    StepFormButtonbar,
+  }
+})
 export default class BaseStepForm extends Vue {
 
   @Prop({ type: Boolean, default: true })

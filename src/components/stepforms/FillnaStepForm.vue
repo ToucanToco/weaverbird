@@ -24,8 +24,6 @@ import { Prop } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
-import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
-import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
@@ -36,8 +34,6 @@ import { Writable, FillnaStep } from '@/lib/steps';
   name: 'fillna-step-form',
   components: {
     BaseStepForm,
-    StepFormTitle,
-    StepFormButtonbar,
     WidgetAutocomplete,
     WidgetInputText,
   },
