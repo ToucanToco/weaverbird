@@ -1,14 +1,12 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
-      id="oldnameInput"
+    <ColumnPicker
       v-model="editedStep.oldname"
-      name="Replace..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.oldname })"
+      id="oldnameInput"
+      name="Old name"
       placeholder="Enter the old column name"
-    ></WidgetAutocomplete>
+    ></ColumnPicker>
     <WidgetInputText
       id="newnameInput"
       v-model="editedStep.newname"
@@ -22,8 +20,8 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
 import { RenameStep } from '@/lib/steps';
 
@@ -31,7 +29,7 @@ import { RenameStep } from '@/lib/steps';
   vqbstep: 'rename',
   name: 'rename-step-form',
   components: {
-    WidgetAutocomplete,
+    ColumnPicker,
     WidgetInputText,
   },
 })
