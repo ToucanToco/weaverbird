@@ -49,7 +49,7 @@ function columnMap(colnames: string[]) {
   return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
-function filterstepToMatchstep(step: FilterStep): MongoStep {
+function filterstepToMatchstep(step: Readonly<FilterStep>): MongoStep {
   const operatorMapping = {
     eq: '$eq',
     ne: '$ne',
@@ -65,7 +65,7 @@ function filterstepToMatchstep(step: FilterStep): MongoStep {
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
-function transformAggregate(step: AggregationStep): MongoStep[] {
+function transformAggregate(step: Readonly<AggregationStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};
@@ -96,7 +96,7 @@ function transformAggregate(step: AggregationStep): MongoStep[] {
 }
 
 /** transform an 'argmax' or 'argmin' step into corresponding mongo steps */
-function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): MongoStep[] {
+function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>): MongoStep[] {
   const groupMongo: MongoStep = {};
   const stepMapping = { argmax: '$max', argmin: '$min' };
 
@@ -132,7 +132,7 @@ function transformArgmaxArgmin(step: ArgmaxStep | ArgminStep): MongoStep[] {
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
-function transformPercentage(step: PercentageStep): MongoStep[] {
+function transformPercentage(step: Readonly<PercentageStep>): MongoStep[] {
   const newCol = step.new_column || step.column;
 
   return [
@@ -163,7 +163,7 @@ function transformPercentage(step: PercentageStep): MongoStep[] {
 }
 
 /** transform an 'pivot' step into corresponding mongo steps */
-function transformPivot(step: PivotStep): MongoStep[] {
+function transformPivot(step: Readonly<PivotStep>): MongoStep[] {
   const groupCols2: PropMap<string> = {};
   const addFieldsStep: PropMap<string> = {};
 
@@ -230,7 +230,7 @@ function transformPivot(step: PivotStep): MongoStep[] {
 }
 
 /** transform an 'replace' step into corresponding mongo steps */
-function transformReplace(step: ReplaceStep): MongoStep {
+function transformReplace(step: Readonly<ReplaceStep>): MongoStep {
   const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
     case: { $eq: [$$(step.search_column), oldval] },
     then: newval,
@@ -245,7 +245,7 @@ function transformReplace(step: ReplaceStep): MongoStep {
 }
 
 /** transform a 'sort' step into corresponding mongo steps */
-function transformSort(step: SortStep): MongoStep {
+function transformSort(step: Readonly<SortStep>): MongoStep {
   const sortMongo: PropMap<number> = {};
   const sortOrders = step.order === undefined ? Array(step.columns.length).fill('asc') : step.order;
   for (let i = 0; i < step.columns.length; i++) {
@@ -256,7 +256,7 @@ function transformSort(step: SortStep): MongoStep {
 }
 
 /** transform an 'top' step into corresponding mongo steps */
-function transformTop(step: TopStep): MongoStep[] {
+function transformTop(step: Readonly<TopStep>): MongoStep[] {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
   const groupCols = step.groups ? columnMap(step.groups) : null;
 
@@ -270,7 +270,7 @@ function transformTop(step: TopStep): MongoStep[] {
 }
 
 /** transform an 'unpivot' step into corresponding mongo steps */
-function transformUnpivot(step: UnpivotStep): MongoStep[] {
+function transformUnpivot(step: Readonly<UnpivotStep>): MongoStep[] {
   // projectCols to be included in Mongo $project steps
   const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
   // objectToArray to be included in the first Mongo $project step
