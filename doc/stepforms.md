@@ -40,7 +40,7 @@ import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import { StepFormComponent } from '@/components/formlib';
 import BaseStepForm from './StepForm.vue';
-import { Writable, FillnaStep } from '@/lib/steps';
+import { FillnaStep } from '@/lib/steps';
 
 @StepFormComponent({
   vqbstep: 'fillna',
@@ -51,14 +51,12 @@ import { Writable, FillnaStep } from '@/lib/steps';
     WidgetInputText,
   },
 })
-export default class FillnaStepForm extends BaseStepForm {
+export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
   initialStepValue!: FillnaStep;
 
   // custom step form title
   readonly title: string = 'Fill Null Values Step';
-  // initialize (and type) edited step
-  editedStep: Writable<FillnaStep> = { ...this.initialStepValue };
   // initialize corresponding json schema
   editedStepModel = fillnaSchema;
 

@@ -8,7 +8,7 @@ import { MutationCallbacks } from '@/store/mutations';
 import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import { Pipeline } from '@/lib/steps';
-import { PipelineStep } from '@/lib/steps';
+import { Writable } from '@/lib/steps';
 
 type VqbError = Partial<ErrorObject>;
 
@@ -68,13 +68,13 @@ function componentProxyBoundOn(self: Vue) {
     StepFormButtonbar,
   }
 })
-export default class BaseStepForm extends Vue {
+export default class BaseStepForm<StepType> extends Vue {
 
   @Prop({ type: Boolean, default: true })
   isStepCreation!: boolean;
 
   @Prop({ type: Object, default: null })
-  initialStepValue!: PipelineStep | null;
+  initialStepValue!: StepType;
 
   @State pipeline!: Pipeline;
   @State selectedStepIndex!: number;
@@ -88,7 +88,7 @@ export default class BaseStepForm extends Vue {
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';
-  editedStep: PipelineStep | null = null;
+  editedStep: Writable<StepType> = { ... this.initialStepValue };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
   validator: ValidateFunction = () => false;
@@ -98,6 +98,7 @@ export default class BaseStepForm extends Vue {
   }
 
   created() {
+    // this.editedStep = { ...this.initialStepValue };
     const column = this.stepSelectedColumn;
     if (column) {
       this.setSelectedColumns({ column });
@@ -160,7 +161,7 @@ export default class BaseStepForm extends Vue {
    * but a concrete subclass might decide something else. In that case, rather
    * than overriding the whole `submit` method, it can just redefine `rebuildStep`
    */
-  rebuildStep() {
+  rebuildStep(): StepType {
     return { ... this.editedStep };
   }
 
@@ -169,7 +170,7 @@ export default class BaseStepForm extends Vue {
    * The default behaviour is to send the edited step but a concrete subclass
    * might decide otherwise.
    */
-  stepToValidate() {
+  stepToValidate(): object {
     return { ...this.editedStep };
   }
 

@@ -27,7 +27,7 @@ import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
-import { Writable, RenameStep } from '@/lib/steps';
+import { RenameStep } from '@/lib/steps';
 
 
 @StepFormComponent({
@@ -38,12 +38,11 @@ import { Writable, RenameStep } from '@/lib/steps';
     WidgetInputText,
   },
 })
-export default class RenameStepForm extends BaseStepForm {
+export default class RenameStepForm extends BaseStepForm<RenameStep> {
   @Prop({ type: Object, default: () => ({ name: 'rename', oldname: '', newname: '' }) })
   initialStepValue!: RenameStep;
 
   readonly title: string = 'Edit Rename Step';
-  editedStep: Writable<RenameStep> = { ...this.initialStepValue };
   editedStepModel = renameSchema;
 
   get stepSelectedColumn() {

@@ -20,7 +20,7 @@ import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
-import { Writable, DeleteStep } from '@/lib/steps';
+import { DeleteStep } from '@/lib/steps';
 
 @StepFormComponent({
   vqbstep: 'delete',
@@ -29,23 +29,25 @@ import { Writable, DeleteStep } from '@/lib/steps';
     WidgetAutocomplete,
   },
 })
-export default class DeletStepForm extends BaseStepForm {
+export default class DeletStepForm extends BaseStepForm<DeleteStep> {
   @Prop({ type: Object, default: () => ({ name: 'delete', columns: [''] }) })
   initialStepValue!: DeleteStep;
 
   readonly title: string = 'Delete Column Step';
 
   // Only manage the deletion of 1 column at once at this stage
-  editedStep: Writable<DeleteStep> = { ...this.initialStepValue };
   editedStepModel = deleteSchema;
-  column: string = this.editedStep.columns[0];
+  column: string = this.initialStepValue.columns[0];
 
   stepToValidate() {
     return { name: 'delete', column: this.column };
   }
 
   rebuildStep() {
-    return { name: 'delete', columns: [this.column] };
+    // HACK: the `as 'delete'` is here to please TypeScript which cannot
+    // assign type "string" of `"delete"` to type "delete".
+    // check https://github.com/microsoft/TypeScript/issues/11465
+    return { name: 'delete' as 'delete', columns: [this.column] };
   }
 
   get stepSelectedColumn() {
