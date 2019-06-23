@@ -1,14 +1,12 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
-      id="columnInput"
+    <ColumnPicker
       v-model="editedStep.column"
+      id="columnInput"
       name="Replace null values in..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column"
-    ></WidgetAutocomplete>
+    ></ColumnPicker>
     <WidgetInputText
       id="valueInput"
       v-model="editedStep.value"
@@ -23,7 +21,7 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
 
@@ -31,7 +29,7 @@ import { FillnaStep } from '@/lib/steps';
   vqbstep: 'fillna',
   name: 'fillna-step-form',
   components: {
-    WidgetAutocomplete,
+    ColumnPicker,
     WidgetInputText,
   },
 })

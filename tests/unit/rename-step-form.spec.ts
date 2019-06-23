@@ -42,23 +42,10 @@ describe('Rename Step Form', () => {
     expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
   });
 
-  it('should have a widget autocomplete', () => {
+  it('should have a columnpicker widget', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.find('widgetautocomplete-stub').exists()).to.be.true;
-  });
-
-  it('should instantiate an autocomplet widget with proper options from the store', () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(RenameStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
-
-    expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
+    expect(wrapper.find('columnpicker-stub').exists()).to.be.true;
   });
 
   describe('Errors', () => {
@@ -154,8 +141,8 @@ describe('Rename Step Form', () => {
       store,
       localVue,
     });
-    wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnB', new_name: '' } });
-    await wrapper.find(WidgetAutocomplete).trigger('input');
+    wrapper.find(WidgetAutocomplete).vm.$emit('input', 'columnB');
+    await localVue.nextTick();
     expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 

@@ -3,6 +3,7 @@ import './action-toolbar.spec';
 import './aggregate-step-form.spec';
 import './argmin-step-form.spec';
 import './argmax-step-form.spec';
+import './column-picker.spec';
 import './dataset.spec';
 import './data-viewer-cell.spec';
 import './data-viewer.spec';
