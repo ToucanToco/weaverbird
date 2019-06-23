@@ -4,6 +4,7 @@ import './data-viewer-cell.spec';
 import './data-viewer.spec';
 import './delete-column-step-form.spec';
 import './fillna-step-form.spec';
+import './filter-step-form.spec';
 import './formlib.spec';
 import './mongo.spec';
 import './pipebuild.spec';

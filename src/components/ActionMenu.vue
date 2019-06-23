@@ -6,6 +6,7 @@
         <div class="action-menu__option" @click="createRenameStep">Rename column</div>
         <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
         <div class="action-menu__option" @click="createFillnaStep">Fill null values</div>
+        <div class="action-menu__option" @click="createFilterStep">Filter values</div>
       </div>
     </div>
   </popover>
@@ -83,6 +84,11 @@ export default class ActionMenu extends Vue {
 
   createFillnaStep() {
     this.$emit('actionClicked', { name: 'fillna', column: this.columnName, value: '' });
+    this.close();
+  }
+
+  createFilterStep() {
+    this.$emit('actionClicked', { name: 'filter', column: this.columnName, value: '', operator: 'eq' });
     this.close();
   }
 
