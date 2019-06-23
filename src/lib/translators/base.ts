@@ -34,7 +34,7 @@ export class StepNotSupported extends Error {
  * @param descriptor the method descriptor
  */
 function unsupported(target: BaseTranslator, propertyKey: S.PipelineStepName, descriptor: any) {
-  descriptor.value = function(step: S.PipelineStep) {
+  descriptor.value = function(step: Readonly<S.PipelineStep>) {
     throw new StepNotSupported(step.name);
   };
   descriptor.value.__vqb_step_supported__ = false;
@@ -91,55 +91,55 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
   @unsupported
-  aggregate(step: S.AggregationStep) {}
+  aggregate(step: Readonly<S.AggregationStep>) {}
 
   @unsupported
-  argmax(step: S.ArgmaxStep) {}
+  argmax(step: Readonly<S.ArgmaxStep>) {}
 
   @unsupported
-  argmin(step: S.ArgminStep) {}
+  argmin(step: Readonly<S.ArgminStep>) {}
 
   @unsupported
-  custom(step: S.CustomStep) {}
+  custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported
-  domain(step: S.DomainStep) {}
+  domain(step: Readonly<S.DomainStep>) {}
 
   @unsupported
-  delete(step: S.DeleteStep) {}
+  delete(step: Readonly<S.DeleteStep>) {}
 
   @unsupported
-  fillna(step: S.FillnaStep) {}
+  fillna(step: Readonly<S.FillnaStep>) {}
 
   @unsupported
-  filter(step: S.FilterStep) {}
+  filter(step: Readonly<S.FilterStep>) {}
 
   @unsupported
-  formula(step: S.FormulaStep) {}
+  formula(step: Readonly<S.FormulaStep>) {}
 
   @unsupported
-  percentage(step: S.PercentageStep) {}
+  percentage(step: Readonly<S.PercentageStep>) {}
 
   @unsupported
-  pivot(step: S.PivotStep) {}
+  pivot(step: Readonly<S.PivotStep>) {}
 
   @unsupported
-  rename(step: S.RenameStep) {}
+  rename(step: Readonly<S.RenameStep>) {}
 
   @unsupported
-  replace(step: S.ReplaceStep) {}
+  replace(step: Readonly<S.ReplaceStep>) {}
 
   @unsupported
-  select(step: S.SelectStep) {}
+  select(step: Readonly<S.SelectStep>) {}
 
   @unsupported
-  sort(step: S.SortStep) {}
+  sort(step: Readonly<S.SortStep>) {}
 
   @unsupported
-  top(step: S.TopStep) {}
+  top(step: Readonly<S.TopStep>) {}
 
   @unsupported
-  unpivot(step: S.UnpivotStep) {}
+  unpivot(step: Readonly<S.UnpivotStep>) {}
 
   /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
 
@@ -157,7 +157,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
       // otherwise it will complain about
       // `((x: DomainStep) => void)) | ((x: FilterStep) => void) | ((x: ...) => void)`
       // not being assignable to `((x: DomainStep | FilterStep | ...) => void)`
-      const callback = <TransformStep>this[step.name];
+      const callback = this[step.name] as TransformStep;
       result.push(callback(step));
     }
     return result;

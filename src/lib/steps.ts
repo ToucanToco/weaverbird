@@ -4,124 +4,124 @@
 
 type PrimitiveType = number | boolean | string | Date;
 
-type AggFunctionStep = Readonly<{
+type AggFunctionStep = {
   /** Name of the output column */
   newcolumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
   aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
   /** the column the aggregation function is working on */
   column: string;
-}>;
+};
 
-export type AggregationStep = Readonly<{
+export type AggregationStep = {
   name: 'aggregate';
   /** the list columns we want to aggregate on */
   on: string[];
   /** the list of aggregation operations to perform */
   aggregations: AggFunctionStep[];
-}>;
+};
 
-export type ArgmaxStep = Readonly<{
+export type ArgmaxStep = {
   name: 'argmax';
   column: string; // column in which to search for max value
   groups?: string[]; // if specified, will search for a max in every group
-}>;
+};
 
-export type ArgminStep = Readonly<{
+export type ArgminStep = {
   name: 'argmin';
   column: string; // column in which to search for max value
   groups?: string[]; // if specified, will search for a max in every group
-}>;
+};
 
-export type CustomStep = Readonly<{
+export type CustomStep = {
   name: 'custom';
   query: object;
-}>;
+};
 
-export type DeleteStep = Readonly<{
+export type DeleteStep = {
   name: 'delete';
   columns: string[];
-}>;
+};
 
-export type DomainStep = Readonly<{
+export type DomainStep = {
   name: 'domain';
   domain: string;
-}>;
+};
 
-export type FillnaStep = Readonly<{
+export type FillnaStep = {
   name: 'fillna';
   column: string;
   value: PrimitiveType;
-}>;
+};
 
-export type FilterStep = Readonly<{
+export type FilterStep = {
   name: 'filter';
   column: string;
   value: any;
   operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
-}>;
+};
 
-export type FormulaStep = Readonly<{
+export type FormulaStep = {
   name: 'formula';
   new_column: string;
   formula: string;
-}>;
+};
 
-export type PercentageStep = Readonly<{
+export type PercentageStep = {
   name: 'percentage';
   new_column?: string;
   column: string;
   group?: string[];
-}>;
+};
 
-export type PivotStep = Readonly<{
+export type PivotStep = {
   name: 'pivot';
   index: string[];
   column_to_pivot: string;
   value_column: string;
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
-}>;
+};
 
-export type RenameStep = Readonly<{
+export type RenameStep = {
   name: 'rename';
   oldname: string;
   newname: string;
-}>;
+};
 
-export type ReplaceStep = Readonly<{
+export type ReplaceStep = {
   name: 'replace';
   search_column: string;
   new_column?: string;
   to_replace: any[][];
-}>;
+};
 
-export type SelectStep = Readonly<{
+export type SelectStep = {
   name: 'select';
   columns: string[];
-}>;
+};
 
-export type SortStep = Readonly<{
+export type SortStep = {
   name: 'sort';
   columns: string[];
   order?: ('asc' | 'desc')[];
-}>;
+};
 
-export type TopStep = Readonly<{
+export type TopStep = {
   name: 'top';
   groups?: string[];
   rank_on: string;
   sort: 'asc' | 'desc';
   limit: number;
-}>;
+};
 
-export type UnpivotStep = Readonly<{
+export type UnpivotStep = {
   name: 'unpivot';
   keep: string[];
   unpivot: string[];
   unpivot_column_name: string;
   value_column_name: string;
   dropna: boolean;
-}>;
+};
 
 export type PipelineStep =
   | AggregationStep
