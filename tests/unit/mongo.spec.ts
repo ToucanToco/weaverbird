@@ -263,6 +263,11 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can simplify empty mongo pipelines', () => {
+    const mongoPipeline: MongoStep[] = [];
+    expect(_simplifyMongoPipeline(mongoPipeline)).to.eql([]);
+  });
+
   it('can simplify a mongo pipeline', () => {
     const mongoPipeline: MongoStep[] = [
       { $match: { domain: 'test_cube' } },
