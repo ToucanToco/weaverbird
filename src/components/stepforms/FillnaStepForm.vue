@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="columnInput"
       v-model="editedStep.column"
-      name="Fill null valuessss in:"
+      name="Fill null values in:"
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column"
@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
 import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
@@ -45,7 +44,6 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   readonly title: string = 'Fill Null Values Step';
   editedStepModel = fillnaSchema;
 
-
   get stepSelectedColumn() {
     return this.editedStep.column;
   }
@@ -58,6 +56,5 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
       this.editedStep.column = colname;
     }
   }
-
 }
 </script>

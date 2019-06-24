@@ -31,8 +31,6 @@ import ResizablePanels from '@/components/ResizablePanels.vue';
 import '@/components/stepforms'; // required to load all step forms
 import { STEPFORM_REGISTRY } from './formlib';
 
-import _ from 'lodash';
-
 @Component({
   components: {
     DataViewer,
