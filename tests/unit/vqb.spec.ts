@@ -1,9 +1,10 @@
 import { expect } from 'chai';
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import Vqb from '../../src/components/Vqb.vue';
+import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -54,6 +55,19 @@ describe('Vqb', () => {
     expect(form.exists()).to.be.true;
   });
 
+  it('should instantiate a DomainStep component', () => {
+    const store = setupStore({ isEditingStep: true });
+    const wrapper = shallowMount(Vqb, {
+      store,
+      localVue,
+      data: () => {
+        return { formToInstantiate: 'domain-step-form' };
+      },
+    });
+    const form = wrapper.find('domain-step-form-stub');
+    expect(form.exists()).to.be.true;
+  });
+
   it('should set editingMode on when step is created', async () => {
     const store = setupStore();
     const wrapper = shallowMount(Vqb, { store, localVue });
@@ -65,6 +79,89 @@ describe('Vqb', () => {
     expect(store.state.isEditingStep).to.be.true;
   });
 
+  describe('save step', () => {
+    let store: Store<VQBState>;
+    let wrapper: Wrapper<Vue>;
+
+    context('when editing domain step', () => {
+      beforeEach(async () => {
+        store = setupStore({
+          pipeline: [{ name: 'domain', domain: 'foo' }],
+          isEditingStep: true,
+        });
+        wrapper = shallowMount(Vqb, {
+          store,
+          localVue,
+          stubs: {
+            transition: false,
+          },
+          data: () => {
+            return { formToInstantiate: 'domain-step-form' };
+          },
+        });
+        await localVue.nextTick();
+      });
+
+      it('should update the pipeline', async () => {
+        wrapper.find('domain-step-form-stub').vm.$emit('formSaved', {
+          name: 'domain',
+          domain: 'bar',
+        });
+        expect(store.state.isEditingStep).to.be.false;
+        expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'bar' }]);
+      });
+
+      it('should compute the right currentDomain', async () => {
+        wrapper.find('domain-step-form-stub').vm.$emit('formSaved', {
+          name: 'domain',
+          domain: 'bar',
+        });
+        expect(store.state.currentDomain).to.eql('bar');
+      });
+    });
+
+    context('when saving other steps', () => {
+      beforeEach(async () => {
+        store = setupStore({
+          pipeline: [{ name: 'domain', domain: 'foo' }],
+          isEditingStep: true,
+        });
+        wrapper = shallowMount(Vqb, {
+          store,
+          localVue,
+          stubs: {
+            transition: false,
+          },
+          data: () => {
+            return { formToInstantiate: 'rename-step-form' };
+          },
+        });
+        await localVue.nextTick();
+      });
+
+      it('should set pipeline when form is saved', async () => {
+        wrapper
+          .find('rename-step-form-stub')
+          .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
+        expect(store.state.isEditingStep).to.be.false;
+        expect(store.state.pipeline).to.eql([
+          { name: 'domain', domain: 'foo' },
+          { name: 'rename', oldname: 'columnA', newname: 'columnAA' },
+        ]);
+      });
+
+      it('should compute the right computedActiveStepIndex', () => {
+        expect(store.getters.computedActiveStepIndex).to.eql(0);
+        wrapper.find('rename-step-form-stub').vm.$emit('formSaved', {
+          name: 'rename',
+          oldname: 'columnA',
+          newname: 'columnAA',
+        });
+        expect(store.getters.computedActiveStepIndex).to.eql(1);
+      });
+    });
+  });
+
   it('should keep editingMode on when trying to creating a step while a form is already open', async () => {
     const store = setupStore({ isEditingStep: true });
     const wrapper = shallowMount(Vqb, { store, localVue });
@@ -73,30 +170,6 @@ describe('Vqb', () => {
       .vm.$emit('stepCreated', { name: 'rename', oldname: 'foo', newname: 'bar' });
     await wrapper.vm.$nextTick();
     expect(store.state.isEditingStep).to.be.true;
-  });
-
-  it('should set pipeline when form is saved', async () => {
-    const store = setupStore({
-      isEditingStep: true,
-    });
-    const wrapper = shallowMount(Vqb, {
-      store,
-      localVue,
-      stubs: {
-        transition: false,
-      },
-      data: () => {
-        return { formToInstantiate: 'rename-step-form' };
-      },
-    });
-    await Vue.nextTick();
-    wrapper
-      .find('rename-step-form-stub')
-      .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
-    expect(store.state.isEditingStep).to.be.false;
-    expect(store.state.pipeline).to.eql([
-      { name: 'rename', oldname: 'columnA', newname: 'columnAA' },
-    ]);
   });
 
   it('should cancel edition', async () => {
