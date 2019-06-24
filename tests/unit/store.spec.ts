@@ -255,4 +255,16 @@ describe('mutation tests', () => {
     mutations.toggleStepEdition(state);
     expect(state.isEditingStep).to.be.true;
   });
+
+  it('sets selected columns', () => {
+    const state = buildState({});
+    mutations.setSelectedColumns(state, { column: 'foo' });
+    expect(state.selectedColumns).to.eql(['foo']);
+  });
+
+  it('does not set selected columns if payload is undefined', () => {
+    const state = buildState({});
+    mutations.setSelectedColumns(state, { column: undefined });
+    expect(state.selectedColumns).to.eql([]);
+  });
 });
