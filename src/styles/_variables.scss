@@ -29,6 +29,10 @@ button {
   outline: none;
 }
 
+fieldset {
+  border: none;
+}
+
 // FORMS STYLES PLACEHOLDER
 %form-widget__container {
   display: flex;
@@ -52,19 +56,23 @@ button {
   background-color: #f8f8f8;
   box-shadow: 0 0 0 1px #f1f1f1 inset;
   border: none;
-  display: flex;
-  flex-direction: row;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;
   transition: box-shadow 0.25s;
   color: #4c4c4c;
   line-height: 24px;
-  max-height: 40px;
   width: 100%;
-  padding: 8px;
+  padding: 8px 30px 8px 8px;
   outline: none;
+
   box-size &::placeholder {
     color: #a7a7a7;
+  }
+}
+
+.widget-list__container {
+  %form-widget__field {
+    background-color: white;
   }
 }
 
