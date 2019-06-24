@@ -18,7 +18,7 @@ type VqbError = Partial<ErrorObject>;
  */
 function componentProxyBoundOn(self: Vue) {
   return {
-    get: function (target: any, prop: string) {
+    get: function(target: any, prop: string) {
       const value = target.options.methods[prop];
       // it should be a function (@Component will put methods in the `options`
       // property), but check it to be sure
@@ -27,8 +27,8 @@ function componentProxyBoundOn(self: Vue) {
         return value.bind(self);
       }
       return value;
-    }
-  }
+    },
+  };
 }
 
 /**
@@ -66,10 +66,9 @@ function componentProxyBoundOn(self: Vue) {
   components: {
     StepFormTitle,
     StepFormButtonbar,
-  }
+  },
 })
 export default class BaseStepForm<StepType> extends Vue {
-
   @Prop({ type: Boolean, default: true })
   isStepCreation!: boolean;
 
@@ -88,7 +87,7 @@ export default class BaseStepForm<StepType> extends Vue {
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';
-  editedStep: Writable<StepType> = { ... this.initialStepValue };
+  editedStep: Writable<StepType> = { ...this.initialStepValue };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
   validator: ValidateFunction = () => false;
@@ -98,7 +97,6 @@ export default class BaseStepForm<StepType> extends Vue {
   }
 
   created() {
-    // this.editedStep = { ...this.initialStepValue };
     const column = this.stepSelectedColumn;
     if (column) {
       this.setSelectedColumns({ column });
@@ -139,8 +137,7 @@ export default class BaseStepForm<StepType> extends Vue {
     return null;
   }
 
-  set stepSelectedColumn(_newval: string | null) {
-  }
+  set stepSelectedColumn(_newval: string | null) {}
 
   /**
    * when selected column is changed, update corresponding field in the step
@@ -153,7 +150,7 @@ export default class BaseStepForm<StepType> extends Vue {
     }
   }
 
-  updateSelectedColumn(_colname: string) { }
+  updateSelectedColumn(_colname: string) {}
 
   /**
    * `rebuildStep` is called when emiting the `formSaved` event to build
@@ -162,7 +159,7 @@ export default class BaseStepForm<StepType> extends Vue {
    * than overriding the whole `submit` method, it can just redefine `rebuildStep`
    */
   rebuildStep(): StepType {
-    return { ... this.editedStep };
+    return { ...this.editedStep };
   }
 
   /**
@@ -210,8 +207,6 @@ export default class BaseStepForm<StepType> extends Vue {
     }
   }
 }
-
-
 </script>
 <style lang="scss" scoped>
 @import '../../styles/_variables';

@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
 import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
@@ -29,7 +28,7 @@ import { DeleteStep } from '@/lib/steps';
     WidgetAutocomplete,
   },
 })
-export default class DeletStepForm extends BaseStepForm<DeleteStep> {
+export default class DeleteStepForm extends BaseStepForm<DeleteStep> {
   @Prop({ type: Object, default: () => ({ name: 'delete', columns: [''] }) })
   initialStepValue!: DeleteStep;
 
@@ -62,6 +61,5 @@ export default class DeletStepForm extends BaseStepForm<DeleteStep> {
       this.column = colname;
     }
   }
-
 }
 </script>

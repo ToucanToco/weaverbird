@@ -21,14 +21,12 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { Getter, Mutation } from 'vuex-class';
 import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
 import { RenameStep } from '@/lib/steps';
-
 
 @StepFormComponent({
   vqbstep: 'rename',
@@ -64,13 +62,15 @@ export default class RenameStepForm extends BaseStepForm<RenameStep> {
       return errors;
     }
     if (this.columnNames.includes(this.editedStep.newname)) {
-      return [{
-        params: [],
-        schemaPath: '.newname',
-        keyword: 'nameAlreadyUsed',
-        dataPath: '.newname',
-        message: 'This column name is already used.',
-      }];
+      return [
+        {
+          params: [],
+          schemaPath: '.newname',
+          keyword: 'nameAlreadyUsed',
+          dataPath: '.newname',
+          message: 'This column name is already used.',
+        },
+      ];
     }
     return null;
   }
