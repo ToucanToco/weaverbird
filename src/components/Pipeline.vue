@@ -1,9 +1,8 @@
 <template>
   <div class="query-pipeline">
-    <DomainSelector :selectedDomain="domainStep.domain"/>
     <div v-if="isEmpty" class="query-pipeline__empty-container">
       <div class="query-pipeline__empty-message">
-        Start playing with data right from the table opposite or switch to Code View with
+        Start playing with data right from the table or switch to Code View with
         <i
           class="fas fa-code"
         ></i> !
@@ -12,16 +11,16 @@
     </div>
     <Step
       v-else
-      v-for="(step, index) in stepsWithoutDomain"
+      v-for="(step, index) in steps"
       :key="index"
-      :is-active="index < activeStepIndex - 1"
-      :is-last-active="index === activeStepIndex - 1"
-      :is-disabled="isDisabled(index + 1)"
+      :is-active="index < activeStepIndex"
+      :is-last-active="index === activeStepIndex"
+      :is-disabled="isDisabled(index)"
       :is-first="index === 0"
-      :is-last="index === stepsWithoutDomain.length - 1"
+      :is-last="index === steps.length - 1"
       :step="step"
-      :indexInPipeline="index + 1"
-      @selectedStep="selectStep({ index: index + 1 })"
+      :indexInPipeline="index"
+      @selectedStep="selectStep({ index: index })"
       @editStep="editStep"
     />
   </div>
@@ -52,7 +51,6 @@ export default class PipelineComponent extends Vue {
   @Getter activePipeline!: Pipeline;
   @Getter('computedActiveStepIndex') activeStepIndex!: number;
   @Getter domainStep!: DomainStep;
-  @Getter stepsWithoutDomain!: Pipeline;
   @Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
   @Mutation selectStep!: MutationCallbacks['selectStep'];

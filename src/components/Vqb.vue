@@ -44,6 +44,7 @@ export default class Vqb extends Vue {
 
   @Getter computedActiveStepIndex!: number;
 
+  @Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
   @Mutation selectStep!: (payload: { index: number }) => void;
   @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
   @Mutation toggleStepEdition!: () => void;

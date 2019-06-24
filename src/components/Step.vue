@@ -13,7 +13,7 @@
         <div class="query-pipeline-step__action">
           <i class="fas fa-cog" @click="editStep()"></i>
         </div>
-        <div class="query-pipeline-step__action">
+        <div class="query-pipeline-step__action" v-if="!isFirst">
           <i class="fas fa-trash-alt" @click="toggleDeleteConfirmationModal"></i>
         </div>
       </div>
@@ -66,7 +66,7 @@ export default class Step extends Vue {
   @Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
   @Getter stepConfig!: (index: number) => PipelineStep;
-  
+
   get classContainer() {
     return {
       'query-pipeline-step__container': true,
