@@ -18,21 +18,27 @@ describe('Pipeline.vue', () => {
     const store = setupStore({ pipeline });
     const wrapper = shallowMount(PipelineComponent, { store, localVue });
     const steps = wrapper.findAll('step-stub');
-    // first step is the domain step and is processed separately by the
-    // Pipeline component. There should only be the 2 generated <Step>
-    // components.
-    expect(steps.length).to.equal(2);
-    const [step1, step2] = steps.wrappers.map(stub => stub.props());
+    expect(steps.length).to.equal(3);
+    const [step1, step2, step3] = steps.wrappers.map(stub => stub.props());
     expect(step1).to.eql({
-      step: pipeline[1],
+      step: pipeline[0],
       isActive: true,
       isLastActive: false,
       isDisabled: false,
       isFirst: true,
       isLast: false,
-      indexInPipeline: 1,
+      indexInPipeline: 0,
     });
     expect(step2).to.eql({
+      step: pipeline[1],
+      isActive: true,
+      isLastActive: false,
+      isDisabled: false,
+      isFirst: false,
+      isLast: false,
+      indexInPipeline: 1,
+    });
+    expect(step3).to.eql({
       step: pipeline[2],
       isActive: false,
       isLastActive: true,

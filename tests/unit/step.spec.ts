@@ -98,6 +98,22 @@ describe('Step.vue', () => {
     expect(modal.exists()).to.be.true;
   });
 
+  it('should not render a trash icon on domain step', () => {
+    const wrapper = shallowMount(Step, {
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: true,
+        isLast: true,
+        step: { name: 'domain', domain: 'test' },
+        indexInPipeline: 0,
+      },
+    });
+    expect(wrapper.find('.fa-trash-alt').exists()).to.be.false;
+  });
+
   describe('Delete confirmation modal', () => {
     it('does not delete a step when clicking on cancel on the delete confirmation modal', async () => {
       const pipeline: Pipeline = [
@@ -107,7 +123,7 @@ describe('Step.vue', () => {
       ];
       const store = setupStore({ pipeline });
       const wrapper = mount(PipelineComponent, { store, localVue });
-      const step = wrapper.find(Step);
+      const step = wrapper.findAll(Step).at(1);
 
       // Test for clicking on the top-right cross
       step.find('.fa-trash-alt').trigger('click');
@@ -136,7 +152,7 @@ describe('Step.vue', () => {
       ];
       const store = setupStore({ pipeline });
       const wrapper = mount(PipelineComponent, { store, localVue });
-      const step = wrapper.find(Step);
+      const step = wrapper.findAll(Step).at(1);
       step.find('.fa-trash-alt').trigger('click');
       await Vue.nextTick();
       const modal = step.find(DeleteConfirmationModal);
@@ -157,7 +173,7 @@ describe('Step.vue', () => {
     const store = setupStore({ pipeline, isEditingStep: false });
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
-    const renameStep = stepsArray.at(1);
+    const renameStep = stepsArray.at(2);
     renameStep.find('.fa-cog').trigger('click');
     expect(renameStep.emitted().editStep).to.exist;
     expect(renameStep.emitted().editStep).to.eql([
