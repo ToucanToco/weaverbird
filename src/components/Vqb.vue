@@ -71,7 +71,8 @@ export default class Vqb extends Vue {
     this.initialValue = { ...params }; // make a copy
     if (index !== undefined) {
       this.editedStepIndex = index;
-      this.selectStep({ index: index - 1 });
+      const prevIndex = Math.max(index - 1, 0);
+      this.selectStep({ index: prevIndex });
     } else {
       this.editedStepIndex = -1;
     }
@@ -83,13 +84,18 @@ export default class Vqb extends Vue {
     // Reset value from DataViewer
     this.initialValue = undefined;
     const newPipeline: Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
+    // FIXME: not sure about that specific implem to handle `domain` step
+    const index = step.name === 'domain' ? 0 : this.computedActiveStepIndex + 1;
     if (this.isStepCreation) {
       newPipeline.splice(index, 0, step);
     } else {
       newPipeline.splice(index, 1, step);
     }
-    this.setPipeline({ pipeline: newPipeline });
+    if (step.name === 'domain') {
+      this.setCurrentDomain({ currentDomain: step.domain });
+    } else {
+      this.setPipeline({ pipeline: newPipeline });
+    }
     this.selectStep({ index });
     this.toggleStepEdition();
   }
