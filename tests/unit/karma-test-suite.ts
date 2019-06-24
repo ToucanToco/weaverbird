@@ -1,4 +1,5 @@
 import './action-menu.spec';
+import './aggregate-step-form.spec';
 import './dataset.spec';
 import './data-viewer-cell.spec';
 import './data-viewer.spec';

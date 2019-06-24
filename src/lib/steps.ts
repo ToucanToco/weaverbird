@@ -4,7 +4,7 @@
 
 type PrimitiveType = number | boolean | string | Date;
 
-type AggFunctionStep = {
+export type AggFunctionStep = {
   /** Name of the output column */
   newcolumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
