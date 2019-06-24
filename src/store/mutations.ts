@@ -119,8 +119,10 @@ export default {
    *
    * set selected columns
    */
-  setSelectedColumns(state: VQBState, { column }: { column: string }) {
-    state.selectedColumns = [column];
+  setSelectedColumns(state: VQBState, { column }: { column: string | undefined }) {
+    if (column !== undefined) {
+      state.selectedColumns = [column];
+    }
   },
 
   /**
