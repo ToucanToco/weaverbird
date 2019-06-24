@@ -100,19 +100,23 @@ export default class Vqb extends Vue {
   height: 100%;
   background-color: white;
 }
+
 .slide-left-enter,
 .slide-left-leave-to {
   transform: translateX(-100%);
   opacity: 0;
 }
+
 .slide-left-enter-active {
   transition: all 0.3s ease;
 }
+
 .slide-right-enter,
 .slide-right-leave-to {
   transform: translateX(100%);
   opacity: 0;
 }
+
 .slide-right-enter-active {
   transition: all 0.3s ease;
 }

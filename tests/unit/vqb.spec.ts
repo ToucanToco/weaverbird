@@ -15,6 +15,19 @@ describe('Vqb', () => {
     expect(wrapper.vm.$store.state.isEditingStep).to.be.false;
   });
 
+  it('should instantiate a AggregateStepForm component', () => {
+    const store = setupStore({ isEditingStep: true });
+    const wrapper = shallowMount(Vqb, {
+      store,
+      localVue,
+      data: () => {
+        return { formToInstantiate: 'aggregate-step-form' };
+      },
+    });
+    const form = wrapper.find('aggregate-step-form-stub');
+    expect(form.exists()).to.be.true;
+  });
+
   it('should instantiate a FormRenameStep component', () => {
     const store = setupStore({ isEditingStep: true });
     const wrapper = shallowMount(Vqb, {
