@@ -1,6 +1,6 @@
 <template>
   <div v-if="!isEmpty" class="data-viewer-container">
-    <ActionToolbar :buttons="buttons"></ActionToolbar>
+    <ActionToolbar :buttons="buttons" @actionClicked="createStep"></ActionToolbar>
     <table class="data-viewer-table">
       <thead class="data-viewer__header">
         <tr>
