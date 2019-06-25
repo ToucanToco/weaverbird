@@ -10,3 +10,4 @@ import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
 import './RenameStepForm.vue';
 import './UnpivotStepForm.vue';
+import './SortStepForm.vue';

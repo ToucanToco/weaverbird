@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Sort column step",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "enum": ["delete"]
+    },
+    "column": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Column to sort",
+      "description": "Column to sort",
+      "attrs": {
+        "placeholder": "Enter a column"
+      }
+    }
+  },
+  "required": ["name", "column"],
+  "additionalProperties": false
+}
