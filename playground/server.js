@@ -50,7 +50,8 @@ function loadCSVInDatabaseFromFile(filepath, config, client, onsuccess, onerror)
 
 function loadCSVInDatabase(data, collname, config, client, onsuccess, onerror) {
   csv({
-    // noheader: true,
+    checkType: true,
+    ignoreEmpty: true,
     output: 'json',
   })
     .fromString(data)
