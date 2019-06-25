@@ -1,5 +1,6 @@
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/vue-query-builder.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/vue-query-builder/)
 [![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/vue-query-builder.svg)](https://circleci.com/gh/ToucanToco/vue-query-builder)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/46a127a4e4b34c17a13810192c5c65a6)](https://www.codacy.com/app/adimascio/vue-query-builder?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ToucanToco/vue-query-builder&amp;utm_campaign=Badge_Grade)
 
 # vue-query-builder
 
