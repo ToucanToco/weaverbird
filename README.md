@@ -119,7 +119,7 @@ If you prefer to use Sass, you may import directly the scss:
 
 See the documentation generated in `dist/docs` directory
 
-### Styles
+### SASS Variables
 
 TODO: document here sass variables that can be overriden
 
