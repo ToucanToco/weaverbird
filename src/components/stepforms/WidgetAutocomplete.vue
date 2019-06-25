@@ -65,7 +65,7 @@ export default class WidgetAutocomplete extends Vue {
 }
 .multiselect__placeholder {
   margin-bottom: 0;
-  color: #a7a7a7;
+  color: $base-color;
 }
 
 .multiselect__tags {
@@ -77,7 +77,8 @@ export default class WidgetAutocomplete extends Vue {
     background: transparent;
     margin-bottom: 0;
     &::placeholder {
-      color: #a7a7a7;
+      font-size: 14px;
+      color: $base-color;
     }
   }
 }
@@ -87,6 +88,11 @@ export default class WidgetAutocomplete extends Vue {
   color: $base-color-light;
   font-size: 14px;
   margin-bottom: 0;
+}
+.multiselect__single,
+.multiselect__input {
+  padding-left: 0;
+  line-height: 24px;
 }
 
 .multiselect--active {

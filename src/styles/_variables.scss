@@ -44,7 +44,7 @@ fieldset {
 }
 
 %form-widget__label {
-  color: grey;
+  color: $base-color;
   font-size: 12px;
   line-height: 20px;
   text-transform: uppercase;
@@ -53,7 +53,7 @@ fieldset {
 
 %form-widget__field {
   align-items: center;
-  background-color: #f8f8f8;
+  background-color: transparent;
   box-shadow: 0 0 0 1px #f1f1f1 inset;
   border: none;
   font-family: 'Montserrat', sans-serif;
