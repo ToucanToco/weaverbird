@@ -16,10 +16,21 @@ jobs:
       - run: yarn
       - run: yarn test:unit
       - run: yarn codecov
-
+  eslint:
+    docker:
+      - image: circleci/node:latest-browsers
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn lint --format junit --output-file ci-reports/eslint.xml
+      - store_test_results:
+          path: ci-reports
+      - store_artifacts:
+          path: ci-reports
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
       - test
+      - eslint
