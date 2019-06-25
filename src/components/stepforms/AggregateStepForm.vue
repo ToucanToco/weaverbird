@@ -43,7 +43,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   @Prop({ type: Object, default: () => ({ name: 'aggregate', on: [], aggregations: [] }) })
   initialStepValue!: AggregationStep;
 
-  readonly title: string = 'Aggregate Step';
+  readonly title: string = 'Edit Aggregate Step';
 
   editedStepModel = aggregateSchema;
 
