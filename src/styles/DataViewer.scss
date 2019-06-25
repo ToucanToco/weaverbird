@@ -62,7 +62,7 @@
   border-right-color: $active-color;
 
   .data-viewer__header-action:hover {
-    background-color: $active-color-faded;
+    background-color: $active-color-faded-2;
   }
 }
 
@@ -80,7 +80,7 @@
   position: absolute;
   font-size: 18px;
   right: 10px;
-  top: 8px;
+  top: 6px;
   transition: opacity 300ms ease;
   display: flex;
   width: 18px;
@@ -97,7 +97,7 @@
 .data-viewer__header-action--visible {
   opacity: 1;
   visibility: visible;
-  background-color: $active-color-faded;
+  background-color: $active-color-faded-2;
 }
 
 .data-viewer__header-cell:hover {
