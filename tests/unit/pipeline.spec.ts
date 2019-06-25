@@ -48,4 +48,16 @@ describe('Pipeline.vue', () => {
       indexInPipeline: 2,
     });
   });
+
+  describe('when only domain step', () => {
+    it('should render a container with message', () => {
+      const pipeline: Pipeline = [{ name: 'domain', domain: 'GoT' }];
+      const store = setupStore({ pipeline });
+      const wrapper = shallowMount(PipelineComponent, { store, localVue });
+      expect(wrapper.find('.query-pipeline__empty-message').text()).to.equal(
+        'Start playing with data directly from the right table',
+      );
+      expect(wrapper.find('.fa-magic').exists()).to.be.true;
+    });
+  });
 });
