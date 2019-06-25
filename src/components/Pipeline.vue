@@ -1,16 +1,6 @@
 <template>
   <div class="query-pipeline">
-    <div v-if="isEmpty" class="query-pipeline__empty-container">
-      <div class="query-pipeline__empty-message">
-        Start playing with data right from the table or switch to Code View with
-        <i
-          class="fas fa-code"
-        ></i> !
-      </div>
-      <i class="fas fa-magic"></i>
-    </div>
     <Step
-      v-else
       v-for="(step, index) in steps"
       :key="index"
       :is-active="index < activeStepIndex"
@@ -23,6 +13,12 @@
       @selectedStep="selectStep({ index: index })"
       @editStep="editStep"
     />
+    <div v-if="onlyDomainStepIsPresent" class="query-pipeline__empty-container">
+      <div
+        class="query-pipeline__empty-message"
+      >Start playing with data directly from the right table</div>
+      <i class="fas fa-magic"></i>
+    </div>
   </div>
 </template>
 
@@ -44,11 +40,11 @@ import Step from './Step.vue';
 export default class PipelineComponent extends Vue {
   @State('pipeline') steps!: Pipeline;
   @State domains!: string[];
-  @State('isPipelineEmpty') isEmpty!: boolean;
 
   @Getter activePipeline!: Pipeline;
   @Getter('computedActiveStepIndex') activeStepIndex!: number;
   @Getter domainStep!: DomainStep;
+  @Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
   @Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
   @Mutation selectStep!: MutationCallbacks['selectStep'];

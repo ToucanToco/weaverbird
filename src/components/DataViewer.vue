@@ -1,44 +1,46 @@
 <template>
-  <div v-if="!isEmpty" class="data-viewer-container">
+  <div>
     <ActionToolbar :buttons="buttons" @actionClicked="createStep"></ActionToolbar>
-    <table class="data-viewer-table">
-      <thead class="data-viewer__header">
-        <tr>
-          <td
-            v-for="(column, index) in formattedColumns"
-            :class="column.class"
-            :key="column.name"
-            @click="toggleColumnSelection({ column: column.name})"
-          >
-            <span class="data-viewer__header-label">{{ column.name }}</span>
-            <i
-              class="data-viewer__header-action fas fa-angle-down"
-              :class="{'data-viewer__header-action--visible': column.isActionMenuOpened}"
-              @click.stop="openMenu(index)"
+    <div v-if="!isEmpty" class="data-viewer-container">
+      <table class="data-viewer-table">
+        <thead class="data-viewer__header">
+          <tr>
+            <td
+              v-for="(column, index) in formattedColumns"
+              :class="column.class"
+              :key="column.name"
+              @click="toggleColumnSelection({ column: column.name})"
             >
-              <ActionMenu
-                :column-name="column.name"
-                :is-active="column.isActionMenuOpened"
-                @closed="closeMenu"
-                @actionClicked="createStep"
-              />
-            </i>
-          </td>
-        </tr>
-      </thead>
-      <tbody class="data-viewer__body">
-        <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
-          <DataViewerCell
-            v-for="(cell, cellidx) in row"
-            :key="cellidx"
-            :isSelected="isSelected(columnNames[cellidx])"
-            :value="cell"
-          />
-        </tr>
-      </tbody>
-    </table>
+              <span class="data-viewer__header-label">{{ column.name }}</span>
+              <i
+                class="data-viewer__header-action fas fa-angle-down"
+                :class="{'data-viewer__header-action--visible': column.isActionMenuOpened}"
+                @click.stop="openMenu(index)"
+              >
+                <ActionMenu
+                  :column-name="column.name"
+                  :is-active="column.isActionMenuOpened"
+                  @closed="closeMenu"
+                  @actionClicked="createStep"
+                />
+              </i>
+            </td>
+          </tr>
+        </thead>
+        <tbody class="data-viewer__body">
+          <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
+            <DataViewerCell
+              v-for="(cell, cellidx) in row"
+              :key="cellidx"
+              :isSelected="isSelected(columnNames[cellidx])"
+              :value="cell"
+            />
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div v-else>No data available</div>
   </div>
-  <div v-else>No data available</div>
 </template>
 <script lang="ts">
 import Vue from 'vue';
