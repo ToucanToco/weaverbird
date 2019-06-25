@@ -11,16 +11,16 @@ const meow = require('meow');
 const upload = multer();
 
 function _loadData(data, config, client, onsuccess, onerror, collname = null) {
-  client.connect(function (err) {
+  client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     collname = collname || config.defaultCollection;
     const collection = db.collection(collname);
-    collection.deleteMany({}, function (err) {
+    collection.deleteMany({}, function(err) {
       if (err) {
         onerror(err);
       } else {
-        collection.insertMany(data, function (err) {
+        collection.insertMany(data, function(err) {
           if (err) {
             onerror(err);
           } else {
@@ -45,20 +45,17 @@ function _loadData(data, config, client, onsuccess, onerror, collname = null) {
 function loadCSVInDatabaseFromFile(filepath, config, client, onsuccess, onerror) {
   csv({ checkType: true })
     .fromFile(filepath)
-    .then(
-      data => _loadData(data, config, client, onsuccess, onerror)
-    );
+    .then(data => _loadData(data, config, client, onsuccess, onerror));
 }
 
 function loadCSVInDatabase(data, collname, config, client, onsuccess, onerror) {
   csv({
-    // noheader: true,
+    checkType: true,
+    ignoreEmpty: true,
     output: 'json',
   })
     .fromString(data)
-    .then(
-      data => _loadData(data, config, client, onsuccess, onerror, collname)
-    );
+    .then(data => _loadData(data, config, client, onsuccess, onerror, collname));
 }
 
 /**
@@ -88,12 +85,12 @@ function assertIsConnected(client, err) {
  * @param onerror callback to call on error
  */
 function executeQuery(config, client, collectionName, query, onsuccess, onerror) {
-  client.connect(function (err) {
+  client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
     try {
-      collection.aggregate(query).toArray(function (err, docs) {
+      collection.aggregate(query).toArray(function(err, docs) {
         if (err) {
           onerror(err);
         } else {
@@ -115,7 +112,7 @@ function executeQuery(config, client, collectionName, query, onsuccess, onerror)
  * @param onerror callback to call on error
  */
 function listCollections(config, client, onsuccess, onerror) {
-  client.connect(function (err) {
+  client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     db.listCollections().toArray((err, results) => {
@@ -129,7 +126,7 @@ function listCollections(config, client, onsuccess, onerror) {
 }
 
 function _testConnection(client) {
-  client.connect(function () { });
+  client.connect(function() {});
 }
 
 function setupApp(config) {
@@ -162,7 +159,10 @@ function setupApp(config) {
     loadCSVInDatabase(
       csvString,
       req.file.filename || req.file.originalname,
-      newConfig, client, res.json.bind(res), console.error
+      newConfig,
+      client,
+      res.json.bind(res),
+      console.error,
     );
   });
 
@@ -270,7 +270,7 @@ function parseCommandLine() {
 }
 
 function start(config) {
-  setupApp(config).listen(config.httpPort, function () {
+  setupApp(config).listen(config.httpPort, function() {
     console.log(`VQB playground app listening on port ${config.httpPort}!`);
   });
 }
