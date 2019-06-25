@@ -13,7 +13,7 @@ interface ValidationError {
   keyword: string;
 }
 
-describe.only('Domain Step Form', () => {
+describe('Domain Step Form', () => {
   let emptyStore: Store<VQBState>;
   beforeEach(() => {
     emptyStore = setupStore({});
