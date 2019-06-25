@@ -33,13 +33,11 @@ import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
-import DomainSelector from './DomainSelector.vue';
 import Step from './Step.vue';
 
 @Component({
   name: 'pipeline',
   components: {
-    DomainSelector,
     Step,
   },
 })
