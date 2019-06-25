@@ -4,21 +4,18 @@ const express = require('express');
 const { MongoClient } = require('mongodb');
 const bodyParser = require('body-parser');
 const csv = require('csvtojson');
+const multer = require('multer');
 const { startMongo } = require('./mongodb');
 
 const meow = require('meow');
+const upload = multer();
 
-function _loadData(
-  data,
-  config,
-  client,
-  onsuccess,
-  onerror,
-) {
+function _loadData(data, config, client, onsuccess, onerror, collname = null) {
   client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
-    const collection = db.collection(config.defaultCollection);
+    collname = collname || config.defaultCollection;
+    const collection = db.collection(collname);
     collection.deleteMany({}, function (err) {
       if (err) {
         onerror(err);
@@ -27,7 +24,9 @@ function _loadData(
           if (err) {
             onerror(err);
           } else {
-            onsuccess();
+            onsuccess({
+              collection: collname,
+            });
           }
         });
       }
@@ -43,16 +42,23 @@ function _loadData(
  * @param onsuccess callback to call on success
  * @param onerror callback to call on error
  */
-function loadCSVInDatabase(
-  filepath,
-  config,
-  client,
-  onsuccess,
-  onerror,
-) {
+function loadCSVInDatabaseFromFile(filepath, config, client, onsuccess, onerror) {
   csv({ checkType: true })
     .fromFile(filepath)
-    .then(data => _loadData(data, config, client, onsuccess, onerror));
+    .then(
+      data => _loadData(data, config, client, onsuccess, onerror)
+    );
+}
+
+function loadCSVInDatabase(data, collname, config, client, onsuccess, onerror) {
+  csv({
+    // noheader: true,
+    output: 'json',
+  })
+    .fromString(data)
+    .then(
+      data => _loadData(data, config, client, onsuccess, onerror, collname)
+    );
 }
 
 /**
@@ -81,25 +87,22 @@ function assertIsConnected(client, err) {
  * @param onsuccess callback to call on success with results
  * @param onerror callback to call on error
  */
-function executeQuery(
-  config,
-  client,
-  collectionName,
-  query,
-  onsuccess,
-  onerror,
-) {
+function executeQuery(config, client, collectionName, query, onsuccess, onerror) {
   client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
-    collection.aggregate(query).toArray(function (err, docs) {
-      if (err) {
-        onerror(err);
-      } else {
-        onsuccess(docs);
-      }
-    });
+    try {
+      collection.aggregate(query).toArray(function (err, docs) {
+        if (err) {
+          onerror(err);
+        } else {
+          onsuccess(docs);
+        }
+      });
+    } catch (err) {
+      onerror(err);
+    }
   });
 }
 
@@ -111,12 +114,7 @@ function executeQuery(
  * @param onsuccess callback to call on success with the list of collections
  * @param onerror callback to call on error
  */
-function listCollections(
-  config,
-  client,
-  onsuccess,
-  onerror,
-) {
+function listCollections(config, client, onsuccess, onerror) {
   client.connect(function (err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
@@ -138,7 +136,7 @@ function setupApp(config) {
   const client = new MongoClient(config.dburi, { useNewUrlParser: true });
   _testConnection(client);
   if (config.reset) {
-    loadCSVInDatabase(config.defaultDataset, config, client, console.error);
+    loadCSVInDatabaseFromFile(config.defaultDataset, config, client, console.error);
   }
   const app = express();
 
@@ -155,6 +153,16 @@ function setupApp(config) {
       req.body.query,
       res.json.bind(res),
       console.error,
+    );
+  });
+
+  app.post('/load', upload.single('file'), (req, res) => {
+    const csvString = req.file.buffer.toString('utf8');
+    const newConfig = { ...config };
+    loadCSVInDatabase(
+      csvString,
+      req.file.filename || req.file.originalname,
+      newConfig, client, res.json.bind(res), console.error
     );
   });
 
