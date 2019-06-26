@@ -27,7 +27,7 @@ module.exports = function(config) {
       'karma-sourcemap-loader',
 
       // Reporters
-      'karma-spec-reporter',
+      'karma-mocha-reporter',
       'karma-coverage-istanbul-reporter',
     ],
     // required for typescript files to be loaded in karma, otherwise `.ts`
@@ -35,7 +35,10 @@ module.exports = function(config) {
     mime: {
       'text/x-typescript': ['ts'],
     },
-    reporters: ['spec', 'coverage-istanbul'],
+    reporters: ['mocha', 'coverage-istanbul'],
+    mochaReporter: {
+      showDiff: true
+    },
     browsers: ['Chrome'],
     browserNoActivityTimeout: 60000,
     customLaunchers: {
