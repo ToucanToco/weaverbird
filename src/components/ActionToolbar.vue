@@ -13,8 +13,8 @@
         :category="button.category"
         :is-active="button.isActionToolbarMenuOpened"
         :class="button.class"
-        @click.native="openPopover(index)"
         @actionClicked="actionClicked"
+        @click.native="openPopover(index)"
         @closed="closePopover()"
       />
       <div class="action-toolbar__search">
@@ -50,10 +50,9 @@ export default class ActionToolbar extends Vue {
 
   openPopover(index: number) {
     const buttondef = this.buttons[index];
+    this.isActiveActionToolbarButton = index;
     if (buttondef.label === 'Aggregate') {
       this.actionClicked('aggregate');
-    } else {
-      this.isActiveActionToolbarButton = index;
     }
   }
 

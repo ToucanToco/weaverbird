@@ -78,7 +78,7 @@ describe('Unpivot Step Form', () => {
     it('should report errors when fields are missing', async () => {
       const wrapper = mount(UnpivotStepForm, { store: emptyStore, localVue });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const errors = wrapper.vm.$data.errors
         .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
         .sort((err1: ValidationError, err2: ValidationError) =>
@@ -111,7 +111,7 @@ describe('Unpivot Step Form', () => {
         },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
         keyword: err.keyword,
         dataPath: err.dataPath,
@@ -145,7 +145,7 @@ describe('Unpivot Step Form', () => {
         },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
         keyword: err.keyword,
         dataPath: err.dataPath,
@@ -180,7 +180,7 @@ describe('Unpivot Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
       keyword: err.keyword,
       dataPath: err.dataPath,
@@ -211,7 +211,7 @@ describe('Unpivot Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.vm.$data.errors).to.be.null;
     expect(wrapper.emitted()).to.eql({
       formSaved: [
@@ -232,7 +232,7 @@ describe('Unpivot Step Form', () => {
   it('should emit "cancel" event when edition is cancelled', async () => {
     const wrapper = mount(UnpivotStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.emitted()).to.eql({
       cancel: [[]],
     });
