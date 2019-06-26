@@ -4,3 +4,4 @@ import './DomainStepForm.vue';
 import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
 import './RenameStepForm.vue';
+import './UnpivotStepForm.vue';
