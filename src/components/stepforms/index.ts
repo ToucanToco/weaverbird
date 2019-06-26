@@ -7,3 +7,4 @@ import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
 import './PercentageStepForm.vue';
 import './RenameStepForm.vue';
+import './UnpivotStepForm.vue';

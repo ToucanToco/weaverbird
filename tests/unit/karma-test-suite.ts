@@ -22,6 +22,7 @@ import './step-editor.spec';
 import './step.spec';
 import './store.spec';
 import './translator.spec';
+import './unpivot-step-form.spec';
 import './vqb.spec';
 import './widget-aggregation.spec';
 import './widget-autocomplete.spec';
