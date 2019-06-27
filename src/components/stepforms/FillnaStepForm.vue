@@ -32,7 +32,6 @@ import { FillnaStep } from '@/lib/steps';
   vqbstep: 'fillna',
   name: 'fillna-step-form',
   components: {
-    BaseStepForm,
     WidgetAutocomplete,
     WidgetInputText,
   },
