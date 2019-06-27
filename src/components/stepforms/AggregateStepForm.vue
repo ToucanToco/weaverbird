@@ -6,7 +6,7 @@
       v-model="editedStep.on"
       name="Group by:"
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.on[0] })"
+      @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length-1] })"
       placeholder="Add columns"
     ></WidgetMultiselect>
     <WidgetList
@@ -70,7 +70,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   }
 
   get stepSelectedColumn() {
-    return this.editedStep.on[0];
+    return this.editedStep.on[this.editedStep.on.length - 1];
   }
 
   set stepSelectedColumn(colname: string | null) {
