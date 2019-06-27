@@ -77,11 +77,13 @@ export default class ActionToolbarButton extends Vue {
 }
 </script>
 <style lang="scss">
+@import '../styles/_variables';
+
 .action-toolbar__btn {
   background: #fafafa;
   border-radius: 5px;
   border: 1px solid #fafafa;
-  color: #2a66a1;
+  color: $active-color;
   padding: 10px 0;
   text-align: center;
   margin-left: 5px;
@@ -97,10 +99,10 @@ export default class ActionToolbarButton extends Vue {
 }
 
 .action-toolbar__btn--active {
-  background: #2a66a1;
+  background: $active-color;
   color: #fff;
   &:hover {
-    background: #2a66a1;
+    background: $active-color;
     color: #fff;
   }
 }
