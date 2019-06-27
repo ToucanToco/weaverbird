@@ -4,7 +4,7 @@
       <div class="action-menu__section">
         <div class="action-menu__option">Duplicate column</div>
         <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
-        <div class="action-menu__option" @click="createStep('delete')">Delete column</div>
+        <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
         <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
         <div class="action-menu__option" @click="createStep('filter')">Filter values</div>
       </div>

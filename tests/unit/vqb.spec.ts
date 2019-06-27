@@ -85,9 +85,7 @@ describe('Vqb', () => {
     const store = setupStore();
     const wrapper = shallowMount(Vqb, { store, localVue });
     expect(store.state.isEditingStep).to.be.false;
-    wrapper
-      .find('dataviewer-stub')
-      .vm.$emit('stepCreated', { name: 'rename', oldname: 'foo', newname: 'bar' });
+    wrapper.find('dataviewer-stub').vm.$emit('stepCreated', 'rename');
     await wrapper.vm.$nextTick();
     expect(store.state.isEditingStep).to.be.true;
   });
@@ -178,9 +176,7 @@ describe('Vqb', () => {
   it('should keep editingMode on when trying to creating a step while a form is already open', async () => {
     const store = setupStore({ isEditingStep: true });
     const wrapper = shallowMount(Vqb, { store, localVue });
-    wrapper
-      .find('dataviewer-stub')
-      .vm.$emit('stepCreated', { name: 'rename', oldname: 'foo', newname: 'bar' });
+    wrapper.find('dataviewer-stub').vm.$emit('stepCreated', 'rename');
     await wrapper.vm.$nextTick();
     expect(store.state.isEditingStep).to.be.true;
   });
