@@ -14,7 +14,7 @@
       <transition slot="left-panel" v-else name="slide-left" mode="out-in">
         <Pipeline key="pipeline" @editStep="openStepForm"/>
       </transition>
-      <DataViewer slot="right-panel" @stepCreated="openStepForm"/>
+      <DataViewer slot="right-panel" @stepCreated="createStepForm"/>
     </ResizablePanels>
   </div>
 </template>
@@ -24,7 +24,7 @@ import Vue, { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
-import { Pipeline, PipelineStep } from '@/lib/steps';
+import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
@@ -52,10 +52,24 @@ export default class Vqb extends Vue {
   formToInstantiate?: VueConstructor<Vue>;
   initialValue: any = undefined;
   editedStepIndex: number = -1;
-  stepName!: string;
 
   get isStepCreation() {
     return this.editedStepIndex === -1;
+  }
+
+  createStepForm(stepName: PipelineStepName) {
+    if (this.isEditingStep) {
+      this.toggleStepEdition();
+    }
+    this.formToInstantiate = STEPFORM_REGISTRY[stepName];
+    this.initialValue = undefined;
+    if (this.formToInstantiate === undefined) {
+      console.error('No corresponding form for this step');
+      return;
+    }
+    this.editedStepIndex = -1;
+    // Display step edition form in the left panel
+    this.toggleStepEdition();
   }
 
   openStepForm(params: PipelineStep, index: number) {
@@ -69,13 +83,9 @@ export default class Vqb extends Vue {
       return;
     }
     this.initialValue = { ...params }; // make a copy
-    if (index !== undefined) {
-      this.editedStepIndex = index;
-      const prevIndex = Math.max(index - 1, 0);
-      this.selectStep({ index: prevIndex });
-    } else {
-      this.editedStepIndex = -1;
-    }
+    this.editedStepIndex = index;
+    const prevIndex = Math.max(index - 1, 0);
+    this.selectStep({ index: prevIndex });
     // Display step edition form in the left panel
     this.toggleStepEdition();
   }
