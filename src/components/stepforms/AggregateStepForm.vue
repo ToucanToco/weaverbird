@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Prop } from 'vue-property-decorator';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
 import aggregateSchema from '@/assets/schemas/aggregate-step__schema.json';
@@ -66,6 +67,19 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
 
   set aggregations(newval) {
     this.editedStep.aggregations = [...newval];
+  }
+
+  get stepSelectedColumn() {
+    return this.editedStep.on[0];
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on filter "column" field');
+    }
+    if (!_.isNil(colname) && !this.editedStep.on.includes(colname)) {
+      this.editedStep.on.push(colname);
+    }
   }
 
   submit() {
