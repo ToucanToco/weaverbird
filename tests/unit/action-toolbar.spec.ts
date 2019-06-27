@@ -103,8 +103,6 @@ describe('ActionToolbar', () => {
     buttons.at(0).trigger('click');
     expect(wrapper.emitted().actionClicked).not.to.exist;
     buttons.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).to.eql([
-      { name: 'aggregate', on: [], aggregations: [] },
-    ]);
+    expect(wrapper.emitted().actionClicked[0]).to.eql(['aggregate']);
   });
 });

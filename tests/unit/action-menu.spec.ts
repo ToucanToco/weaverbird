@@ -46,9 +46,7 @@ describe('Action Menu', () => {
       actionsWrapper.at(1).trigger('click');
 
       expect(wrapper.emitted().actionClicked).not.to.be.empty;
-      expect(wrapper.emitted().actionClicked[0]).to.eql([
-        { name: 'rename', oldname: 'dreamfall', newname: '' },
-      ]);
+      expect(wrapper.emitted().actionClicked[0]).to.eql(['rename']);
     });
 
     it('should emit a close event', () => {
@@ -104,9 +102,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(3).trigger('click');
 
-      expect(wrapper.emitted().actionClicked[0]).to.eql([
-        { name: 'fillna', column: 'dreamfall', value: '' },
-      ]);
+      expect(wrapper.emitted().actionClicked[0]).to.eql(['fillna']);
     });
   });
 

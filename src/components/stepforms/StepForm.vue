@@ -143,9 +143,9 @@ export default class BaseStepForm<StepType> extends Vue {
    * when selected column is changed, update corresponding field in the step
    * with the `stepSelectedColumn` property.
    */
-  @Watch('selectedColumns')
+  @Watch('selectedColumns', { immediate: true })
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal)) {
+    if (!_.isEmpty(val) && !_.isEqual(val, oldVal)) {
       this.stepSelectedColumn = val[0];
     }
   }
