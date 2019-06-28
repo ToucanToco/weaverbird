@@ -35,6 +35,30 @@ describe('Action Menu', () => {
     expect(wrapper.html()).to.contain('Fill null values');
   });
 
+  describe('when clicking on "Duplicate column"', () => {
+    it('should emit an "actionClicked" event with proper options', () => {
+      const wrapper = shallowMount(ActionMenu, {
+        propsData: {
+          columnName: 'dreamfall',
+        },
+      });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(0).trigger('click');
+
+      expect(wrapper.emitted().actionClicked).not.to.be.empty;
+      expect(wrapper.emitted().actionClicked[0]).to.eql(['duplicate']);
+    });
+
+    it('should emit a close event', () => {
+      const store = setupStore();
+      const wrapper = shallowMount(ActionMenu, { store, localVue });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(0).trigger('click');
+
+      expect(wrapper.emitted().closed).to.exist;
+    });
+  });
+
   describe('when clicking on "Rename column"', () => {
     it('should emit an "actionClicked" event with proper options', () => {
       const wrapper = shallowMount(ActionMenu, {

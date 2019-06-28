@@ -2,6 +2,7 @@ import './AggregateStepForm.vue';
 import './ArgminStepForm.vue';
 import './ArgmaxStepForm.vue';
 import './DeleteColumnStepForm.vue';
+import './DuplicateColumnStepForm.vue';
 import './DomainStepForm.vue';
 import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
