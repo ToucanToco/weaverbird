@@ -1047,4 +1047,16 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a duplicate step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'duplicate',
+        column: 'foo',
+        new_column_name: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).to.eql([{ $addFields: { bar: '$foo' } }]);
+  });
 });
