@@ -29,8 +29,7 @@
       name="Value column name"
       placeholder="Enter a column name"
     ></WidgetInputText>
-    <input type="checkbox" id="dropna" v-model="editedStep.dropna">
-    <label for="dropna">Drop null values</label>
+    <WidgetCheckbox id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna"></WidgetCheckbox>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -39,6 +38,7 @@
 import { Prop } from 'vue-property-decorator';
 import unpivotSchema from '@/assets/schemas/unpivot-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
+import WidgetCheckbox from '@/components/stepforms/WidgetCheckbox.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
@@ -48,6 +48,7 @@ import { UnpivotStep } from '@/lib/steps';
   vqbstep: 'unpivot',
   name: 'unpivot-step-form',
   components: {
+    WidgetCheckbox,
     WidgetInputText,
     WidgetMultiselect,
   },

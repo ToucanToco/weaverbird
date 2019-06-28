@@ -1,11 +1,11 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vue from 'vue';
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
 import { VQBState } from '@/store/state';
+import WidgetCheckbox from '@/components/stepforms/WidgetCheckbox.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -33,29 +33,33 @@ describe('Unpivot Step Form', () => {
     expect(autocompleteWrappers.length).to.equal(2);
     const inputWrappers = wrapper.findAll('widgetinputtext-stub');
     expect(inputWrappers.length).to.equal(2);
-    const checkboxWrappers = wrapper.findAll('input');
+    const checkboxWrappers = wrapper.findAll('widgetcheckbox-stub');
     expect(checkboxWrappers.length).to.equal(1);
   });
 
-  it('should pass down props to widgets', async () => {
-    const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
-    wrapper.setData({
-      editedStep: {
-        name: 'unpivot',
-        keep: ['foo', 'bar'],
-        unpivot: ['baz'],
-        unpivot_column_name: 'spam',
-        value_column_name: 'eggs',
-        dropna: false,
+  it('should pass down props to widgets', () => {
+    const wrapper = shallowMount(UnpivotStepForm, {
+      store: emptyStore,
+      localVue,
+      data: () => {
+        return {
+          editedStep: {
+            name: 'unpivot',
+            keep: ['foo', 'bar'],
+            unpivot: ['baz'],
+            unpivot_column_name: 'spam',
+            value_column_name: 'eggs',
+            dropna: false,
+          },
+        };
       },
     });
-    await Vue.nextTick();
     expect(wrapper.find('#keepColumnInput').props('value')).to.eql(['foo', 'bar']);
     expect(wrapper.find('#unpivotColumnInput').props('value')).to.eql(['baz']);
     expect(wrapper.find('#unpivotColumnNameInput').props('value')).to.equal('spam');
     expect(wrapper.find('#valueColumnNameInput').props('value')).to.equal('eggs');
-    const input: HTMLInputElement = wrapper.find('#dropna').element as HTMLInputElement;
-    expect(input.value).to.equal('on');
+    const widgetCheckbox = wrapper.find(WidgetCheckbox);
+    expect(widgetCheckbox.classes()).not.to.contain('widget-checkbox--checked');
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
