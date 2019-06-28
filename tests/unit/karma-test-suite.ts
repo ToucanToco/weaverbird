@@ -24,6 +24,7 @@ import './unpivot-step-form.spec';
 import './vqb.spec';
 import './widget-aggregation.spec';
 import './widget-autocomplete.spec';
+import './widget-checkbox.spec';
 import './widget-input-text.spec';
 import './widget-list.spec';
 import './widget-multiselect.spec.ts';
