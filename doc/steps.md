@@ -734,19 +734,16 @@ the `select` is used, it will only keep selected columns in the output.
 ### `sort` step
 
 Sort values in one or several columns. Order can be either 'asc' or 'desc'.
-When sorting on several columns, order of columns specified in `columns` matters,
-and the `order` parameter must be of same length as `columns`. By default, if
-`order` is not specified, it is considered as 'asc'.
+When sorting on several columns, order of columns specified in `columns` matters.
 
 ```javascript
 {
     name: 'sort',
-    columns: ['foo', 'bar'],
-    order: ['asc', 'desc']
+    columns: [{column: 'foo', order: 'asc'}, {column: 'bar', order: 'desc'}],
 }
 ```
 
-#### Example 1: sort on one column with default ordering
+#### Example
 
 **Input dataset:**
 
@@ -764,41 +761,7 @@ and the `order` parameter must be of same length as `columns`. By default, if
 ```javascript
 {
     name: 'sort',
-    columns: ['Value'],
-}
-```
-
-**Output dataset:**
-
-| Company | Group   | Value |
-| ------- | ------- | ----- |
-| Label 4 | Group 2 | 1     |
-| Label 6 | Group 2 | 5     |
-| Label 2 | Group 1 | 7     |
-| Label 5 | Group 2 | 10    |
-| Label 1 | Group 1 | 13    |
-| Label 3 | Group 1 | 20    |
-
-#### Example 2: sort on one column with default ordering
-
-**Input dataset:**
-
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| Label 1 | Group 1 | 13    |
-| Label 2 | Group 1 | 7     |
-| Label 3 | Group 1 | 20    |
-| Label 4 | Group 2 | 1     |
-| Label 5 | Group 2 | 10    |
-| Label 6 | Group 2 | 5     |
-
-**Step configuration:**
-
-```javascript
-{
-    name: 'sort',
-    columns: ['Group', 'Value'],
-    order: ['asc', 'desc'],
+    columns: [{ column: 'Group', order: 'asc'}, {column: 'Value', order: 'desc' }]
 }
 ```
 

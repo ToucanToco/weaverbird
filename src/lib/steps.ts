@@ -106,10 +106,14 @@ export type SelectStep = {
   columns: string[];
 };
 
+export type SortColumnType = {
+  column: string;
+  order: 'asc' | 'desc';
+};
+
 export type SortStep = {
   name: 'sort';
-  columns: string[];
-  order?: ('asc' | 'desc')[];
+  columns: SortColumnType[];
 };
 
 export type TopStep = {

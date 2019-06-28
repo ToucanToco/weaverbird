@@ -471,8 +471,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
-        columns: ['foo'],
-        order: ['desc'],
+        columns: [{ column: 'foo', order: 'desc' }],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -489,8 +488,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
-        columns: ['foo', 'bar'],
-        order: ['asc', 'desc'],
+        columns: [{ column: 'foo', order: 'asc' }, { column: 'bar', order: 'desc' }],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -499,24 +497,6 @@ describe('Pipeline to mongo translator', () => {
         $sort: {
           foo: 1,
           bar: -1,
-        },
-      },
-    ]);
-  });
-
-  it('can generate a sort step on multiple columns with default order', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'sort',
-        columns: ['foo', 'bar'],
-      },
-    ];
-    const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
-      {
-        $sort: {
-          foo: 1,
-          bar: 1,
         },
       },
     ]);
