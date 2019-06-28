@@ -2,7 +2,7 @@
   <popover :active="isActive" :align="alignLeft" bottom>
     <div class="action-menu__body">
       <div class="action-menu__section">
-        <div class="action-menu__option">Duplicate column</div>
+        <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
         <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
         <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
         <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
