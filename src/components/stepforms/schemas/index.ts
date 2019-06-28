@@ -6,6 +6,7 @@ import domainSchema from './domain';
 import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import percentageBuildSchema from './percentage';
+import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
 import unpivotSchema from './unpivot';
 
@@ -20,6 +21,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   fillna: fillnaSchema,
   filter: filterSchema,
   percentage: percentageBuildSchema,
+  pivot: pivotSchema,
   rename: renameBuildSchema,
   unpivot: unpivotSchema,
 };
