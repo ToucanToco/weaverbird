@@ -695,6 +695,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
+      { $project: { _vqbAppValueToCompare: 0 } },
     ]);
   });
 
@@ -737,6 +738,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
+      { $project: { _vqbAppValueToCompare: 0 } },
     ]);
   });
 
@@ -779,6 +781,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
+      { $project: { _vqbAppValueToCompare: 0 } },
     ]);
   });
 

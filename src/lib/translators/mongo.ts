@@ -128,6 +128,7 @@ function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>
         ],
       },
     },
+    { $project: { _vqbAppValueToCompare: 0 } },
   ];
 }
 
