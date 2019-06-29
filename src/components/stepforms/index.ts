@@ -1,4 +1,5 @@
 import './AggregateStepForm.vue';
+import './ArgminStepForm.vue';
 import './DeleteColumnStepForm.vue';
 import './DomainStepForm.vue';
 import './FillnaStepForm.vue';
