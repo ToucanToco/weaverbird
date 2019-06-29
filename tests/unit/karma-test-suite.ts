@@ -11,6 +11,7 @@ import './fillna-step-form.spec';
 import './filter-step-form.spec';
 import './formlib.spec';
 import './mongo.spec';
+import './percentage-step-form.spec';
 import './pipebuild.spec';
 import './pipeline.spec';
 import './plugins.spec';
