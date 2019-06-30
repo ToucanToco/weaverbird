@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
@@ -41,7 +40,6 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   initialStepValue!: FillnaStep;
 
   readonly title: string = 'Fill null values';
-  editedStepModel = fillnaSchema;
 
   get stepSelectedColumn() {
     return this.editedStep.column;

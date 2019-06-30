@@ -14,7 +14,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import domainSchema from '@/assets/schemas/domain-step__schema.json';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import { State } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
@@ -42,6 +41,5 @@ export default class DomainStepForm extends BaseStepForm<DomainStep> {
 
   readonly title: string = 'Select a domain';
 
-  editedStepModel = domainSchema;
 }
 </script>

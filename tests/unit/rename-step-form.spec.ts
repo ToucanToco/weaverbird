@@ -92,7 +92,7 @@ describe('Rename Step Form', () => {
         keyword: err.keyword,
         dataPath: err.dataPath,
       }));
-      expect(errors).to.eql([{ keyword: 'nameAlreadyUsed', dataPath: '.newname' }]);
+      expect(errors).to.eql([{ keyword: 'columnNameAlreadyUsed', dataPath: '.newname' }]);
     });
   });
 

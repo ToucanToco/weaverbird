@@ -90,7 +90,7 @@ describe('Percentage Step Form', () => {
         keyword: err.keyword,
         dataPath: err.dataPath,
       }));
-      expect(errors).to.eql([{ keyword: 'nameAlreadyUsed', dataPath: '.new_column' }]);
+      expect(errors).to.eql([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
     });
   });
 

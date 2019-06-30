@@ -15,7 +15,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import deleteSchema from '@/assets/schemas/delete-column-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
@@ -35,7 +34,6 @@ export default class DeleteStepForm extends BaseStepForm<DeleteStep> {
   readonly title: string = 'Delete Column';
 
   // Only manage the deletion of 1 column at once at this stage
-  editedStepModel = deleteSchema;
   column: string = this.initialStepValue.columns[0];
 
   stepToValidate() {

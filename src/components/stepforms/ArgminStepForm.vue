@@ -24,7 +24,6 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { ArgminStep } from '@/lib/steps';
-import argminSchema from '@/assets/schemas/argmin-step__schema.json';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
@@ -43,6 +42,5 @@ export default class ArgminStepForm extends BaseStepForm<ArgminStep> {
   initialStepValue!: ArgminStep;
 
   readonly title: string = 'Argmin';
-  editedStepModel = argminSchema;
 }
 </script>
