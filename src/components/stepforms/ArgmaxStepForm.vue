@@ -26,7 +26,6 @@ import { Prop } from 'vue-property-decorator';
 import { ArgmaxStep } from '@/lib/steps';
 import argmaxSchema from '@/assets/schemas/argmax-step__schema.json';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import WidgetInputText from './WidgetInputText.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
@@ -36,7 +35,6 @@ import { StepFormComponent } from '@/components/formlib';
   name: 'argmax-step-form',
   components: {
     WidgetAutocomplete,
-    WidgetInputText,
     WidgetMultiselect,
   },
 })
