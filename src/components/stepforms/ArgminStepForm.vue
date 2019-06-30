@@ -26,7 +26,6 @@ import { Prop } from 'vue-property-decorator';
 import { ArgminStep } from '@/lib/steps';
 import argminSchema from '@/assets/schemas/argmin-step__schema.json';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import WidgetInputText from './WidgetInputText.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
@@ -36,7 +35,6 @@ import { StepFormComponent } from '@/components/formlib';
   name: 'argmin-step-form',
   components: {
     WidgetAutocomplete,
-    WidgetInputText,
     WidgetMultiselect,
   },
 })
