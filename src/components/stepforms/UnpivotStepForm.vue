@@ -36,7 +36,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import unpivotSchema from '@/assets/schemas/unpivot-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetCheckbox from '@/components/stepforms/WidgetCheckbox.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
@@ -69,7 +68,6 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
 
   readonly title: string = 'Unpivot columns';
   readonly checkboxLabel: string = 'Drop null values';
-  editedStepModel = unpivotSchema;
 
   validate() {
     const errors = this.$$super.validate();

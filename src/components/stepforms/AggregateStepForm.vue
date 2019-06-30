@@ -25,7 +25,6 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
-import aggregateSchema from '@/assets/schemas/aggregate-step__schema.json';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import WidgetList from './WidgetList.vue';
 import BaseStepForm from './StepForm.vue';
@@ -44,8 +43,6 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   initialStepValue!: AggregationStep;
 
   readonly title: string = 'Aggregate';
-
-  editedStepModel = aggregateSchema;
 
   get defaultAggregation() {
     const agg: AggFunctionStep = {

@@ -24,7 +24,6 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { ArgmaxStep } from '@/lib/steps';
-import argmaxSchema from '@/assets/schemas/argmax-step__schema.json';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
@@ -43,6 +42,5 @@ export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
   initialStepValue!: ArgmaxStep;
 
   readonly title: string = 'Argmax';
-  editedStepModel = argmaxSchema;
 }
 </script>

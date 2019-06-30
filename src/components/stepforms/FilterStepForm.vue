@@ -28,7 +28,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import filterSchema from '@/assets/schemas/filter-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
@@ -51,7 +50,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   initialStepValue!: FilterStep;
 
   readonly title: string = 'Filter';
-  editedStepModel = filterSchema;
   operators: FilterStep['operator'][] = ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin'];
 
   get stepSelectedColumn() {

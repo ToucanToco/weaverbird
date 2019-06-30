@@ -21,7 +21,6 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import renameSchema from '@/assets/schemas/rename-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
@@ -41,7 +40,6 @@ export default class RenameStepForm extends BaseStepForm<RenameStep> {
   initialStepValue!: RenameStep;
 
   readonly title: string = 'Rename Column';
-  editedStepModel = renameSchema;
 
   get stepSelectedColumn() {
     return this.editedStep.oldname;
@@ -54,25 +52,6 @@ export default class RenameStepForm extends BaseStepForm<RenameStep> {
     if (colname !== null) {
       this.editedStep.oldname = colname;
     }
-  }
-
-  validate() {
-    const errors = this.$$super.validate();
-    if (errors !== null) {
-      return errors;
-    }
-    if (this.columnNames.includes(this.editedStep.newname)) {
-      return [
-        {
-          params: [],
-          schemaPath: '.newname',
-          keyword: 'nameAlreadyUsed',
-          dataPath: '.newname',
-          message: 'This column name is already used.',
-        },
-      ];
-    }
-    return null;
   }
 
   submit() {

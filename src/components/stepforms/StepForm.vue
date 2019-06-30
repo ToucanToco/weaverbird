@@ -5,8 +5,10 @@ import { Prop, Component, Watch } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 import { MutationCallbacks } from '@/store/mutations';
-import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
+import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
+import schemaFactory from '@/components/stepforms/schemas';
+import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
 import { Pipeline } from '@/lib/steps';
 import { Writable } from '@/lib/steps';
 
@@ -94,16 +96,22 @@ export default class BaseStepForm<StepType> extends Vue {
   validator: ValidateFunction = () => false;
 
   mounted() {
-    this.validator = Ajv({ schemaId: 'auto', allErrors: true }).compile(this.editedStepModel);
   }
 
   created() {
+    this.initialize();
+  }
+
+  initialize() {
     const column = this.stepSelectedColumn;
     if (column) {
       this.setSelectedColumns({ column });
     }
+    this.editedStepModel = schemaFactory(this.stepname, this);
+    const ajv = Ajv({ schemaId: 'auto', allErrors: true });
+    addAjvKeywords(ajv);
+    this.validator = ajv.compile(this.editedStepModel);
   }
-
   /**
    * The `$$super` property will return a javascript proxy that should bind
    * the current `this` instance on the method implentation found on the baseclass.
@@ -138,7 +146,7 @@ export default class BaseStepForm<StepType> extends Vue {
     return null;
   }
 
-  set stepSelectedColumn(_newval: string | null) {}
+  set stepSelectedColumn(_newval: string | null) { }
 
   /**
    * when selected column is changed, update corresponding field in the step
@@ -151,7 +159,7 @@ export default class BaseStepForm<StepType> extends Vue {
     }
   }
 
-  updateSelectedColumn(_colname: string) {}
+  updateSelectedColumn(_colname: string) { }
 
   /**
    * `rebuildStep` is called when emiting the `formSaved` event to build
