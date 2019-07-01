@@ -12,7 +12,7 @@ export default {};
 .step-edit-form {
   border-bottom: 1px solid $grey;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   padding-bottom: 20px;
   margin: 10px 0 15px;
@@ -22,7 +22,7 @@ export default {};
 .step-edit-form__title {
   color: $base-color;
   font-weight: 600;
-  font-size: 14px;
+  font-size: 17px;
   margin: 0;
 }
 </style>
