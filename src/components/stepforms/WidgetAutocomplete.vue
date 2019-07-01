@@ -64,8 +64,9 @@ export default class WidgetAutocomplete extends Vue {
   font-size: 14px;
 }
 .multiselect__placeholder {
+  color: $grey-dark;
+  font-size: 12px;
   margin-bottom: 0;
-  color: $base-color;
 }
 
 .multiselect__tags {
@@ -77,18 +78,19 @@ export default class WidgetAutocomplete extends Vue {
     background: transparent;
     margin-bottom: 0;
     &::placeholder {
-      font-size: 14px;
-      color: $base-color;
+      font-size: 12px;
+      color: $grey-dark;
     }
   }
 }
 
-.multiselect__single {
+.widget-autocomplete__container .multiselect__single {
   background-color: transparent;
   color: $base-color-light;
   font-size: 14px;
   margin-bottom: 0;
 }
+
 .multiselect__single,
 .multiselect__input {
   padding-left: 0;
@@ -109,21 +111,20 @@ export default class WidgetAutocomplete extends Vue {
   }
 }
 
-.multiselect__option--selected {
-  background-color: $active-color;
-  color: $base-color-light;
+.multiselect__element .multiselect__option--selected {
+  background: $active-color;
+  color: #fff;
   font-weight: normal;
+}
+
+.multiselect__element .multiselect__option--selected.multiselect__option--highlight {
+  background: $active-color;
   color: #fff;
 }
 
-.multiselect__option--selected.multiselect__option--highlight {
-  background-color: $active-color;
-  color: #fff;
-}
-
-.multiselect__option--highlight {
-  background-color: #f8f8f8;
-  color: $base-color-light;
+.multiselect__element .multiselect__option--highlight {
+  background: $active-color-faded-2;
+  color: $active-color;
 }
 
 .widget-autocomplete__label {

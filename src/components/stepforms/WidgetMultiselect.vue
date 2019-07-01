@@ -67,7 +67,7 @@ export default class WidgetMultiselect extends Vue {
 
 .multiselect__placeholder {
   margin-bottom: 0;
-  color: $base-color;
+  color: $grey-dark;
 }
 
 .multiselect__single {
@@ -124,7 +124,7 @@ export default class WidgetMultiselect extends Vue {
     background: transparent;
     margin-bottom: 0;
     &::placeholder {
-      color: #a7a7a7;
+      color: $grey-dark;
     }
   }
 }
