@@ -23,8 +23,8 @@ describe('Filter Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('filter');
   });
 
   it('should have exactly one widgetinputtext and two autocomplete components', () => {

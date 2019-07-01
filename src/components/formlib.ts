@@ -37,6 +37,7 @@ export function StepFormComponent(
     if (config.vqbstep in registry) {
       throw new Error(`a form is already resgistered for step ${config.vqbstep}`);
     }
+    target.prototype.stepname = config.vqbstep;
     const decorated = Component(_.omit(config, 'vqbstep'))(target);
     registry[config.vqbstep] = decorated;
     // register component globally. This is OK, we know that this component has

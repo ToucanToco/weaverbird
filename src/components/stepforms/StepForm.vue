@@ -90,6 +90,7 @@ export default class BaseStepForm<StepType> extends Vue {
   editedStep: Writable<StepType> = { ...this.initialStepValue };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
+  stepname!: string; // fed by @StepFormComponent
   validator: ValidateFunction = () => false;
 
   mounted() {

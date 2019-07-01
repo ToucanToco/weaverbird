@@ -21,8 +21,8 @@ describe('Domain Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(DomainStepForm, { store: emptyStore, localVue });
-
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('domain');
   });
 
   it('should have exactly one widgetautocomplete component', () => {
