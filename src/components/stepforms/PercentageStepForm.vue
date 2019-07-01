@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="valueColumnInput"
       v-model="editedStep.column"
-      name="Value column"
+      name="Value column..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column name"
@@ -12,7 +12,7 @@
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.group"
-      name="Group by:"
+      name="(Optional) Group by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.group[editedStep.group.length-1] })"
       placeholder="Add columns"
@@ -20,7 +20,7 @@
     <WidgetInputText
       id="newColumnNameInput"
       v-model="editedStep.new_column"
-      name="New column name"
+      name="(Optional) New column name..."
       placeholder="Enter a new column name"
     ></WidgetInputText>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
@@ -50,7 +50,7 @@ export default class PercentageStepForm extends BaseStepForm<PercentageStep> {
   @Prop({ type: Object, default: () => ({ name: 'percentage', column: '' }) })
   initialStepValue!: PercentageStep;
 
-  readonly title: string = 'Edit Percentage Step';
+  readonly title: string = 'Percentage of total';
 
   editedStepModel = percentageSchema;
 

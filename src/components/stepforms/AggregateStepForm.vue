@@ -4,7 +4,7 @@
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.on"
-      name="Group by:"
+      name="Group rows by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length-1] })"
       placeholder="Add columns"
@@ -12,7 +12,7 @@
     <WidgetList
       addFieldName="Add aggregation"
       id="toremove"
-      name="Aggregations:"
+      name="And aggregate..."
       v-model="aggregations"
       :defaultItem="defaultAggregation"
       :widget="'widget-aggregation'"
@@ -44,7 +44,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   @Prop({ type: Object, default: () => ({ name: 'aggregate', on: [], aggregations: [] }) })
   initialStepValue!: AggregationStep;
 
-  readonly title: string = 'Edit Aggregate Step';
+  readonly title: string = 'Aggregate';
 
   editedStepModel = aggregateSchema;
 

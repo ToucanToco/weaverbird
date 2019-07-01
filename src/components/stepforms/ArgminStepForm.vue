@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="valueColumnInput"
       v-model="editedStep.column"
-      name="Search min value in:"
+      name="Search min value in..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column name"
@@ -12,7 +12,7 @@
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
-      name="Group by:"
+      name="(Optional) Group by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Add columns"
@@ -42,7 +42,7 @@ export default class ArgminStepForm extends BaseStepForm<ArgminStep> {
   @Prop({ type: Object, default: () => ({ name: 'argmin', column: '' }) })
   initialStepValue!: ArgminStep;
 
-  readonly title: string = 'Edit Argmin Step';
+  readonly title: string = 'Argmin';
   editedStepModel = argminSchema;
 }
 </script>

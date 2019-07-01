@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="oldnameInput"
       v-model="editedStep.oldname"
-      name="Old name"
+      name="Replace..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.oldname })"
       placeholder="Enter the old column name"
@@ -12,7 +12,7 @@
     <WidgetInputText
       id="newnameInput"
       v-model="editedStep.newname"
-      name="New name"
+      name="By..."
       placeholder="Enter a new column name"
     ></WidgetInputText>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
@@ -40,7 +40,7 @@ export default class RenameStepForm extends BaseStepForm<RenameStep> {
   @Prop({ type: Object, default: () => ({ name: 'rename', oldname: '', newname: '' }) })
   initialStepValue!: RenameStep;
 
-  readonly title: string = 'Edit Rename Step';
+  readonly title: string = 'Rename Column';
   editedStepModel = renameSchema;
 
   get stepSelectedColumn() {

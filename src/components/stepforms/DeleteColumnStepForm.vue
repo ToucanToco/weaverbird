@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="columnInput"
       v-model="column"
-      name="Delete column:"
+      name="Delete column..."
       :options="columnNames"
       @input="setSelectedColumns({ column })"
       placeholder="Enter a column"
@@ -32,7 +32,7 @@ export default class DeleteStepForm extends BaseStepForm<DeleteStep> {
   @Prop({ type: Object, default: () => ({ name: 'delete', columns: [''] }) })
   initialStepValue!: DeleteStep;
 
-  readonly title: string = 'Delete Column Step';
+  readonly title: string = 'Delete Column';
 
   // Only manage the deletion of 1 column at once at this stage
   editedStepModel = deleteSchema;
