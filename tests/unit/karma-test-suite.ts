@@ -19,7 +19,6 @@ import './plugins.spec';
 import './popover.spec';
 import './rename-step-form.spec';
 import './resizable-panels.spec';
-import './step-editor.spec';
 import './step.spec';
 import './store.spec';
 import './translator.spec';
