@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="domainInput"
       v-model="editedStep.domain"
-      name="Change your domain:"
+      name="Select domain..."
       :options="domains"
       placeholder="Choose a domain"
     ></WidgetAutocomplete>
@@ -40,7 +40,7 @@ export default class DomainStepForm extends BaseStepForm<DomainStep> {
 
   @State domains!: string[];
 
-  readonly title: string = 'Change your domain';
+  readonly title: string = 'Select a domain';
 
   editedStepModel = domainSchema;
 }

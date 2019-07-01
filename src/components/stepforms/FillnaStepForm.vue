@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="columnInput"
       v-model="editedStep.column"
-      name="Fill null values in:"
+      name="Replace null values in..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column"
@@ -12,7 +12,7 @@
     <WidgetInputText
       id="valueInput"
       v-model="editedStep.value"
-      name="With:"
+      name="With..."
       placeholder="Enter a value"
     ></WidgetInputText>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
@@ -40,7 +40,7 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
   initialStepValue!: FillnaStep;
 
-  readonly title: string = 'Fill Null Values Step';
+  readonly title: string = 'Fill null values';
   editedStepModel = fillnaSchema;
 
   get stepSelectedColumn() {

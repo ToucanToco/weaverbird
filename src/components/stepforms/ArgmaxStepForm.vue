@@ -4,7 +4,7 @@
     <WidgetAutocomplete
       id="valueColumnInput"
       v-model="editedStep.column"
-      name="Search max value in:"
+      name="Search max value in..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column name"
@@ -12,7 +12,7 @@
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
-      name="Group by:"
+      name="(Optional) Group by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Add columns"
@@ -42,7 +42,7 @@ export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
   @Prop({ type: Object, default: () => ({ name: 'argmax', column: '' }) })
   initialStepValue!: ArgmaxStep;
 
-  readonly title: string = 'Edit Argmax Step';
+  readonly title: string = 'Argmax';
   editedStepModel = argmaxSchema;
 }
 </script>
