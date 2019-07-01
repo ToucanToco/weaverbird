@@ -23,8 +23,8 @@ describe('Fillna Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
-
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('fillna');
   });
 
   it('should have exactly one widgetinputtext component', () => {

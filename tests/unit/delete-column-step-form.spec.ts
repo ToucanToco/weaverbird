@@ -23,8 +23,8 @@ describe('Delete Column Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(DeleteColumnStepForm, { store: emptyStore, localVue });
-
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('delete');
   });
 
   it('should have a widget autocomplete', () => {

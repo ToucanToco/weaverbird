@@ -25,6 +25,7 @@ describe('Rename Step Form', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('rename');
   });
 
   it('should have exactly one widgetinputtext component', () => {

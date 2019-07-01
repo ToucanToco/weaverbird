@@ -24,6 +24,7 @@ describe('Argmin Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(ArgminStepForm, { store: emptyStore, localVue });
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('argmin');
   });
 
   it('should have exactly 2 input components', () => {

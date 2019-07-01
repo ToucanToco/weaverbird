@@ -24,6 +24,7 @@ describe('Percentage Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('percentage');
   });
 
   it('should have exactly 3 input components', () => {

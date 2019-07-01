@@ -25,6 +25,7 @@ describe('Aggregate Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue });
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('aggregate');
   });
 
   describe('WidgetMultiselect', () => {

@@ -24,6 +24,7 @@ describe('Argmax Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(ArgmaxStepForm, { store: emptyStore, localVue });
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('argmax');
   });
 
   it('should have exactly 2 input components', () => {
