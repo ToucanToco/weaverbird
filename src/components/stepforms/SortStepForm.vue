@@ -1,11 +1,10 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <!-- <WidgetList addFieldName="Sort by" id="sortby" name="Sort" :automatic-new-field="false"></WidgetList> -->
 
     <WidgetList
       addFieldName="Add Column"
-      id="toremove"
+      id="sortColumn"
       name="Sort:"
       v-model="sortColumns"
       :defaultItem="defaultSortColumn"
@@ -61,7 +60,11 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   }
 
   get stepSelectedColumn() {
-    return this.editedStep.columns[this.editedStep.columns.length - 1]['column'];
+    if (this.editedStep.columns.length === 0) {
+      return null;
+    } else {
+      return this.editedStep.columns[this.editedStep.columns.length - 1]['column'];
+    }
   }
 
   set stepSelectedColumn(colname: string | null) {
