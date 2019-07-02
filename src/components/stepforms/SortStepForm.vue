@@ -21,7 +21,6 @@ import { Prop } from 'vue-property-decorator';
 import { SortStep } from '@/lib/steps';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
-import SortSchema from '@/assets/schemas/sort-step__schema.json';
 import WidgetList from './WidgetList.vue';
 import { SortColumnType } from '@/lib/steps';
 
@@ -37,7 +36,6 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   initialStepValue!: SortStep;
 
   readonly title: string = 'Edit Sort Step';
-  editedStepModel = SortSchema;
 
   get defaultSortColumn() {
     const sortColumn: SortColumnType = {

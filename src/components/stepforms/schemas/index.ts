@@ -10,6 +10,7 @@ import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
 import unpivotSchema from './unpivot';
+import sortSchema from './sort';
 
 type buildSchemaType = ((form: any) => object) | object;
 
@@ -26,6 +27,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   pivot: pivotSchema,
   rename: renameBuildSchema,
   unpivot: unpivotSchema,
+  sort: sortSchema,
 };
 
 /**
