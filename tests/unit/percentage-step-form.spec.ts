@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vue from 'vue';
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';

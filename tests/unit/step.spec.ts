@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
 import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
 import { setupStore } from '@/store';
@@ -25,7 +24,7 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.emitted()).to.eql({ selectedStep: [[]] });
   });
 
@@ -42,7 +41,7 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.query-pipeline-step').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.emitted()).to.eql({ selectedStep: [[]] });
   });
 
@@ -75,7 +74,7 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.fa-trash-alt').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     const modal = wrapper.find('deleteconfirmationmodal-stub');
     expect(modal.exists()).to.be.true;
   });
@@ -93,7 +92,7 @@ describe('Step.vue', () => {
       },
     });
     wrapper.find('.fa-trash-alt').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     const modal = wrapper.find('deleteconfirmationmodal-stub');
     expect(modal.exists()).to.be.true;
   });
@@ -127,19 +126,19 @@ describe('Step.vue', () => {
 
       // Test for clicking on the top-right cross
       step.find('.fa-trash-alt').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.fa-times').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       expect(store.state.pipeline.length).to.equal(3);
       expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
 
       // Test for clicking on the bottom-left cancel button
       step.find('.fa-trash-alt').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const modalBis = step.find(DeleteConfirmationModal);
       modalBis.find('.vqb-modal__action--secondary').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       expect(store.state.pipeline.length).to.equal(3);
       expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
     });
@@ -154,10 +153,10 @@ describe('Step.vue', () => {
       const wrapper = mount(PipelineComponent, { store, localVue });
       const step = wrapper.findAll(Step).at(1);
       step.find('.fa-trash-alt').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.vqb-modal__action--primary').trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       expect(store.state.pipeline.length).to.equal(2);
       expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
     });

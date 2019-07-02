@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vue from 'vue';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
 import DataViewer from '../../src/components/DataViewer.vue';
@@ -126,9 +125,8 @@ describe('Data Viewer', () => {
 
         const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
         firstHeaderCellWrapper.trigger('click');
-        await Vue.nextTick();
+        await localVue.nextTick();
         expect(firstHeaderCellWrapper.classes()).to.include('data-viewer__header-cell--active');
-
       });
     });
   });
@@ -190,7 +188,7 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
       const firstHeadCellWrapper = wrapper.find('.data-viewer__header-cell');
       firstHeadCellWrapper.trigger('click');
-      await Vue.nextTick();
+      await localVue.nextTick();
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
       dataset.data.forEach((d, i) => {
         expect(

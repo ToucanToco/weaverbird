@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vue from 'vue';
 import ArgmaxStepForm from '@/components/stepforms/ArgmaxStepForm.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
@@ -40,7 +39,7 @@ describe('Argmax Step Form', () => {
     wrapper.setData({
       editedStep: { name: 'argmax', column: 'foo', groups: ['bar'] },
     });
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.find('widgetautocomplete-stub').props('value')).to.equal('foo');
     expect(wrapper.find('widgetmultiselect-stub').props('value')).to.eql(['bar']);
   });
@@ -60,7 +59,7 @@ describe('Argmax Step Form', () => {
   it('should report errors if column is empty', async () => {
     const wrapper = mount(ArgmaxStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     const errors = wrapper.vm.$data.errors
       .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
       .sort((err1: ValidationError, err2: ValidationError) =>
@@ -78,7 +77,7 @@ describe('Argmax Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.vm.$data.errors).to.be.null;
     expect(wrapper.emitted()).to.eql({
       formSaved: [[{ name: 'argmax', column: 'foo', groups: ['bar'] }]],
@@ -88,7 +87,7 @@ describe('Argmax Step Form', () => {
   it('should emit "cancel" event when edition is cancelled', async () => {
     const wrapper = mount(ArgmaxStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(wrapper.emitted()).to.eql({
       cancel: [[]],
     });

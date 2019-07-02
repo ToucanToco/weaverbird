@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import Vue from 'vue';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ActionToolbar from '@/components/ActionToolbar.vue';
 import Vuex from 'vuex';
@@ -58,7 +57,7 @@ describe('ActionToolbar', () => {
     const button = actionButtons.at(0);
     expect(button.props('isActive')).to.be.false;
     button.trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(button.props('isActive')).to.be.true;
   });
 
@@ -83,10 +82,10 @@ describe('ActionToolbar', () => {
     const button1 = actionButtons.at(0);
     const button2 = actionButtons.at(1);
     button1.trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(button1.props('isActive')).to.be.true;
     button2.trigger('click');
-    await Vue.nextTick();
+    await localVue.nextTick();
     expect(button1.props('isActive')).to.be.false;
   });
 

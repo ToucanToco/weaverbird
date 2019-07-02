@@ -196,7 +196,7 @@ describe('Vqb', () => {
         return { formToInstantiate: 'rename-step-form' };
       },
     });
-    await Vue.nextTick();
+    await localVue.nextTick();
     wrapper.find('rename-step-form-stub').vm.$emit('cancel');
     expect(store.state.isEditingStep).to.be.false;
     expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'foo' }]);
