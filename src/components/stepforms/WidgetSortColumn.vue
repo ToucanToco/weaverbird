@@ -81,7 +81,7 @@ export default class WidgetSortColumn extends Vue {
 </style>
 
 <style lang="scss">
-.widget-aggregation__container .widget-autocomplete__label {
+.widget-sort__container .widget-autocomplete__label {
   margin-bottom: 0px;
   width: 40%;
 }
