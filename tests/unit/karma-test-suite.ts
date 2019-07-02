@@ -33,3 +33,4 @@ import './widget-checkbox.spec';
 import './widget-input-text.spec';
 import './widget-list.spec';
 import './widget-multiselect.spec.ts';
+import './widget-sort-column.spec.ts';
