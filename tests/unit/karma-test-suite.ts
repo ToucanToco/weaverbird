@@ -20,6 +20,7 @@ import './pipeline.spec';
 import './plugins.spec';
 import './popover.spec';
 import './rename-step-form.spec';
+import './sort-step-form.spec';
 import './resizable-panels.spec';
 import './step.spec';
 import './store.spec';
