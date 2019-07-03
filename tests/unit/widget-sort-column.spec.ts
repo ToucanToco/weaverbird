@@ -61,6 +61,6 @@ describe('Widget sort column', () => {
     wrapper.setProps({ value: { column: 'bar', order: 'desc' } });
     await localVue.nextTick();
     expect(wrapper.emitted().input).to.exist;
-    expect(wrapper.emitted().input[0]).to.eql([{ column: 'bar', order: 'desc' }]);
+    expect(wrapper.emitted().input[1]).to.eql([{ column: 'bar', order: 'desc' }]);
   });
 });

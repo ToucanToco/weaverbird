@@ -12,7 +12,7 @@
       id="sortOrderInput"
       v-model="sort.order"
       name="Order"
-      :options="sortOrder"
+      :options="['asc', 'desc']"
       placeholder="Order by"
     ></WidgetAutocomplete>
   </fieldset>
@@ -39,6 +39,10 @@ const defaultValues: SortColumnType = {
 export default class WidgetSortColumn extends Vue {
   @Prop({
     type: Object,
+    default: () => ({
+      column: '',
+      order: 'asc',
+    }),
   })
   value!: SortColumnType;
 
@@ -47,13 +51,6 @@ export default class WidgetSortColumn extends Vue {
   @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   sort: SortColumnType = { ...this.value };
-  sortOrder: SortColumnType['order'][] = ['asc', 'desc'];
-
-  created() {
-    if (_.isEmpty(this.value)) {
-      this.value = { ...defaultValues };
-    }
-  }
 
   @Watch('value', { immediate: true, deep: true })
   onSortChanged(newval: SortColumnType, oldval: SortColumnType) {
@@ -66,7 +63,7 @@ export default class WidgetSortColumn extends Vue {
 </script>
 <style lang="scss" scoped>
 @import '../../styles/_variables';
-.widget-aggregation__container {
+.widget-sort__container {
   @extend %form-widget__container;
   margin-bottom: 0;
   padding-top: 12px;
@@ -78,9 +75,6 @@ export default class WidgetSortColumn extends Vue {
   flex-direction: row;
   margin-bottom: 8px;
 }
-</style>
-
-<style lang="scss">
 .widget-sort__container .widget-autocomplete__label {
   margin-bottom: 0px;
   width: 40%;
