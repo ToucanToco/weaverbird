@@ -8,7 +8,7 @@
       name="Sort:"
       v-model="sortColumns"
       :defaultItem="defaultSortColumn"
-      :widget="'widget-sort-column'"
+      :widget="widgetSortColumn"
       :automatic-new-field="false"
     ></WidgetList>
 
@@ -23,12 +23,14 @@ import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetList from './WidgetList.vue';
 import { SortColumnType } from '@/lib/steps';
+import WidgetSortColumn from './WidgetSortColumn.vue';
 
 @StepFormComponent({
   vqbstep: 'sort',
   name: 'sort-step-form',
   components: {
     WidgetList,
+    WidgetSortColumn,
   },
 })
 export default class SortStepForm extends BaseStepForm<SortStep> {
@@ -36,6 +38,7 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   initialStepValue!: SortStep;
 
   readonly title: string = 'Sort';
+  widgetSortColumn = WidgetSortColumn;
 
   get defaultSortColumn() {
     const sortColumn: SortColumnType = {
