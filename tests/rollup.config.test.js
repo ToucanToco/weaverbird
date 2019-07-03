@@ -43,7 +43,7 @@ const baseConfig = {
       },
     }),
     istanbul({
-      exclude: ['test/**/*.ts', 'node_modules/**/*'],
+      exclude: ['tests/**/*.ts', 'node_modules/**/*'],
     }),
   ],
 };
