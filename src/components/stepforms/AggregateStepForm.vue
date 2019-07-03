@@ -15,7 +15,7 @@
       name="And aggregate..."
       v-model="aggregations"
       :defaultItem="defaultAggregation"
-      :widget="'widget-aggregation'"
+      :widget="widgetAggregation"
       :automatic-new-field="false"
     ></WidgetList>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
@@ -25,6 +25,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
+import WidgetAggregation from './WidgetAggregation.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import WidgetList from './WidgetList.vue';
 import BaseStepForm from './StepForm.vue';
@@ -43,6 +44,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   initialStepValue!: AggregationStep;
 
   readonly title: string = 'Aggregate';
+  widgetAggregation = WidgetAggregation;
 
   get defaultAggregation() {
     const agg: AggFunctionStep = {

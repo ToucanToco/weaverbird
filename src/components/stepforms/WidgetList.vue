@@ -20,9 +20,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { AggFunctionStep } from '@/lib/steps';
-import WidgetInputText from './WidgetInputText.vue';
-import WidgetAggregation from './WidgetAggregation.vue';
+import { VueConstructor } from 'vue';
+import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 
 type Field = {
   name: string;
@@ -34,10 +33,6 @@ type RepeatableField = Field[];
 
 @Component({
   name: 'widget-list',
-  components: {
-    WidgetAggregation,
-    WidgetInputText,
-  },
 })
 export default class WidgetList extends Vue {
   @Prop({ type: String, default: '' })
@@ -52,8 +47,11 @@ export default class WidgetList extends Vue {
   @Prop({ type: Array, default: () => [] })
   value!: any[];
 
-  @Prop({ type: String, default: 'widget-input-text' })
-  widget!: string;
+  @Prop({
+    type: Function,
+    default: WidgetInputText,
+  })
+  widget!: VueConstructor<Vue>;
 
   @Prop({ type: Boolean, default: true })
   automaticNewField!: boolean;
@@ -76,7 +74,7 @@ export default class WidgetList extends Vue {
     if (this.defaultItem) {
       return this.defaultItem;
     }
-    if (this.widget === 'widget-input-text') {
+    if (this.widget === WidgetInputText) {
       return '';
     } else {
       return [];
@@ -103,7 +101,7 @@ export default class WidgetList extends Vue {
     this.updateValue(newValue);
   }
 
-  updateValue(newValue: AggFunctionStep[]) {
+  updateValue(newValue: Record<string, any>[]) {
     this.$emit('input', newValue);
   }
 }

@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
 import WidgetList from '@/components/stepforms/WidgetList.vue';
+import WidgetAggregation from '@/components/stepforms/WidgetAggregation.vue';
 
 describe('Widget List', () => {
   describe('automatic new field', () => {
@@ -22,7 +23,7 @@ describe('Widget List', () => {
 
     it('should instantiate a widget-input text', () => {
       const wrapper = shallowMount(WidgetList);
-      const widgetInputWrapper = wrapper.find('widget-input-text-stub');
+      const widgetInputWrapper = wrapper.find('widgetinputtext-stub');
 
       expect(widgetInputWrapper.exists()).to.be.true;
     });
@@ -30,11 +31,11 @@ describe('Widget List', () => {
     it('should instantiate a widget aggregation', () => {
       const wrapper = shallowMount(WidgetList, {
         propsData: {
-          widget: 'widget-aggregation',
+          widget: WidgetAggregation,
         },
       });
 
-      const widgetAggregationtWrapper = wrapper.find('widget-aggregation-stub');
+      const widgetAggregationtWrapper = wrapper.find('widgetaggregation-stub');
       expect(widgetAggregationtWrapper.exists()).to.be.true;
     });
 
@@ -43,7 +44,7 @@ describe('Widget List', () => {
       wrapper.setProps({ value: ['columnName'] });
 
       await wrapper.vm.$nextTick();
-      expect(wrapper.findAll('widget-input-text-stub').length).to.equal(2);
+      expect(wrapper.findAll('widgetinputtext-stub').length).to.equal(2);
     });
 
     it('should add trash icons after first input', async () => {
