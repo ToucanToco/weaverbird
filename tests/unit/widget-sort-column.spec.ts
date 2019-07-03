@@ -22,7 +22,7 @@ describe('Widget sort column', () => {
   it('should have exactly two WidgetAutocomplete components', () => {
     const wrapper = shallowMount(WidgetSortColumn, { store: emptyStore, localVue });
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(widgetWrappers.length).to.eql(2);
+    expect(widgetWrappers.length).to.equal(2);
   });
 
   it('should instantiate an widgetAutocomplete with proper options from the store', () => {
@@ -42,7 +42,7 @@ describe('Widget sort column', () => {
     wrapper.setProps({ value: { column: 'foo', order: 'asc' } });
     await localVue.nextTick();
     const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
-    expect(widgetWrappers.at(0).props().value).to.eql('foo');
+    expect(widgetWrappers.at(0).props().value).to.equal('foo');
   });
 
   it('should pass down the "order" prop to the second WidgetAutocomplete value prop', async () => {
@@ -50,7 +50,7 @@ describe('Widget sort column', () => {
     wrapper.setProps({ value: { column: 'foo', order: 'desc' } });
     await localVue.nextTick();
     const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
-    expect(widgetWrappers.at(1).props().value).to.eql('desc');
+    expect(widgetWrappers.at(1).props().value).to.equal('desc');
   });
 
   it('should emit "input" event on "value" update', async () => {
