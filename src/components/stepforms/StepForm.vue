@@ -166,30 +166,11 @@ export default class BaseStepForm<StepType> extends Vue {
   updateSelectedColumn(_colname: string) {}
 
   /**
-   * `rebuildStep` is called when emiting the `formSaved` event to build
-   * the step to emit. The default behaviour is just to copy the edited step
-   * but a concrete subclass might decide something else. In that case, rather
-   * than overriding the whole `submit` method, it can just redefine `rebuildStep`
-   */
-  rebuildStep(): StepType {
-    return { ...this.editedStep };
-  }
-
-  /**
-   * `stepToValidate` is called to build the step to send to the `Ajv` validator.
-   * The default behaviour is to send the edited step but a concrete subclass
-   * might decide otherwise.
-   */
-  stepToValidate(): object {
-    return { ...this.editedStep };
-  }
-
-  /**
    * `validate` calls `Ajv`. If there are some errors, return them, otherwise
    * return `null`.
    */
   validate() {
-    const ret = this.validator(this.stepToValidate());
+    const ret = this.validator({ ...this.editedStep });
     if (ret === false) {
       return this.validator.errors;
     }
@@ -216,7 +197,7 @@ export default class BaseStepForm<StepType> extends Vue {
     const errors = this.validate();
     this.errors = errors;
     if (errors === null) {
-      this.$emit('formSaved', this.rebuildStep());
+      this.$emit('formSaved', { ...this.editedStep });
     }
   }
 }
