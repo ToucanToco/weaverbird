@@ -35,7 +35,7 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   @Prop({ type: Object, default: () => ({ name: 'sort', columns: [] }) })
   initialStepValue!: SortStep;
 
-  readonly title: string = 'Edit Sort Step';
+  readonly title: string = 'Sort';
 
   get defaultSortColumn() {
     const sortColumn: SortColumnType = {
@@ -79,6 +79,3 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../styles/_variables';
-</style>
