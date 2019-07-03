@@ -7,6 +7,7 @@ import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import percentageBuildSchema from './percentage';
 import renameBuildSchema from './rename';
+import topBuildSchema from './top';
 import unpivotSchema from './unpivot';
 
 type buildSchemaType = ((form: any) => object) | object;
@@ -21,6 +22,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   filter: filterSchema,
   percentage: percentageBuildSchema,
   rename: renameBuildSchema,
+  top: topBuildSchema,
   unpivot: unpivotSchema,
 };
 

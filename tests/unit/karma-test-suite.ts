@@ -21,6 +21,7 @@ import './rename-step-form.spec';
 import './resizable-panels.spec';
 import './step.spec';
 import './store.spec';
+import './top-step-form.spec';
 import './translator.spec';
 import './unpivot-step-form.spec';
 import './vqb.spec';
