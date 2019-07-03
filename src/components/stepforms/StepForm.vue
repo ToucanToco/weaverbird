@@ -95,9 +95,6 @@ export default class BaseStepForm<StepType> extends Vue {
   stepname!: string; // fed by @StepFormComponent
   validator: ValidateFunction = () => false;
 
-  mounted() {
-  }
-
   created() {
     this.initialize();
   }
@@ -112,6 +109,13 @@ export default class BaseStepForm<StepType> extends Vue {
     addAjvKeywords(ajv);
     this.validator = ajv.compile(this.editedStepModel);
   }
+
+  mounted() {
+    if (this.isStepCreation && this.selectedColumns.length > 0) {
+      this.stepSelectedColumn = this.selectedColumns[0];
+    }
+  }
+
   /**
    * The `$$super` property will return a javascript proxy that should bind
    * the current `this` instance on the method implentation found on the baseclass.
@@ -146,20 +150,20 @@ export default class BaseStepForm<StepType> extends Vue {
     return null;
   }
 
-  set stepSelectedColumn(_newval: string | null) { }
+  set stepSelectedColumn(_newval: string | null) {}
 
   /**
    * when selected column is changed, update corresponding field in the step
    * with the `stepSelectedColumn` property.
    */
-  @Watch('selectedColumns', { immediate: true })
+  @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEmpty(val) && !_.isEqual(val, oldVal)) {
+    if (val.length > 0 && !_.isEqual(val, oldVal)) {
       this.stepSelectedColumn = val[0];
     }
   }
 
-  updateSelectedColumn(_colname: string) { }
+  updateSelectedColumn(_colname: string) {}
 
   /**
    * `rebuildStep` is called when emiting the `formSaved` event to build
