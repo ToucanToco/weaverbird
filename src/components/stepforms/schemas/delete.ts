@@ -7,16 +7,20 @@ export default {
       type: 'string',
       enum: ['delete'],
     },
-    column: {
-      type: 'string',
-      minLength: 1,
-      title: 'Column to delete',
-      description: 'Column to delete',
+    columns: {
+      type: 'array',
+      minItems: 1,
+      items: {
+        type: 'string',
+        minLength: 1,
+      },
+      title: 'Delete columns',
+      description: 'Columns to delete',
       attrs: {
-        placeholder: 'Enter a column',
+        placeholder: 'Select columns to delete',
       },
     },
   },
-  required: ['name', 'column'],
+  required: ['name', 'columns'],
   additionalProperties: false,
 };
