@@ -3,20 +3,22 @@
     <step-form-title :title="title"></step-form-title>
     <ColumnPicker
       id="columnInput"
-      v-model="editedStep.column"
+      v-model="editedStep.condition.column"
       name="Values in column..."
+      :options="columnNames"
+      @input="setSelectedColumns({ column: editedStep.condition.column })"
       placeholder="Enter a column name"
     ></ColumnPicker>
     <WidgetAutocomplete
       id="filterOperator"
-      v-model="editedStep.operator"
+      v-model="editedStep.condition.operator"
       name="Must..."
-      :options="operators"
+      :options="['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin']"
       placeholder="Filter operator"
     ></WidgetAutocomplete>
     <WidgetInputText
       id="valueInput"
-      v-model="editedStep.value"
+      v-model="editedStep.condition.value"
       name="This value:"
       placeholder="Enter the filter value here"
     ></WidgetInputText>
@@ -45,24 +47,10 @@ import { FilterStep } from '@/lib/steps';
 export default class FilterStepForm extends BaseStepForm<FilterStep> {
   @Prop({
     type: Object,
-    default: () => ({ name: 'filter', column: '', value: '', operator: 'eq' }),
+    default: () => ({ name: 'filter', condition: { column: '', value: '', operator: 'eq' } }),
   })
   initialStepValue!: FilterStep;
 
   readonly title: string = 'Filter';
-  operators: FilterStep['operator'][] = ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin'];
-
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on filter "column" field');
-    }
-    if (colname !== null) {
-      this.editedStep.column = colname;
-    }
-  }
 }
 </script>

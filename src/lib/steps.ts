@@ -60,11 +60,47 @@ export type FillnaStep = {
   value: PrimitiveType;
 };
 
-export type FilterStep = {
-  name: 'filter';
+// export type FilterStep = {
+//   name: 'filter';
+//   column: string;
+//   value: any;
+//   operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
+// };
+
+export type FilterComboAnd = {
+  and: (FilterSimpleCondition | FilterComboAnd | FilterComboOr)[];
+};
+
+export type FilterComboOr = {
+  or: (FilterSimpleCondition | FilterComboAnd | FilterComboOr)[];
+};
+
+export type FilterSimpleCondition =
+  | FilterConditionComparison
+  | FilterConditionEquality
+  | FilterConditionInclusion;
+
+type FilterConditionComparison = {
+  column: string;
+  value: number;
+  operator: 'gt' | 'ge' | 'lt' | 'le';
+};
+
+type FilterConditionEquality = {
   column: string;
   value: any;
-  operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
+  operator: 'eq' | 'ne';
+};
+
+type FilterConditionInclusion = {
+  column: string;
+  value: any[];
+  operator: 'in' | 'nin';
+};
+
+export type FilterStep = {
+  name: 'filter';
+  condition: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
 };
 
 export type FormulaStep = {
