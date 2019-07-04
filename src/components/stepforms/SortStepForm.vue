@@ -5,7 +5,6 @@
     <WidgetList
       addFieldName="Add Column"
       id="sortColumn"
-      name="Sort:"
       v-model="sortColumns"
       :defaultItem="defaultSortColumn"
       :widget="widgetSortColumn"
@@ -41,8 +40,9 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   widgetSortColumn = WidgetSortColumn;
 
   get defaultSortColumn() {
+    const column = this.selectedColumns.length === 0 ? '' : this.selectedColumns[0];
     const sortColumn: SortColumnType = {
-      column: '',
+      column,
       order: 'asc',
     };
     return sortColumn;
@@ -58,27 +58,6 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
 
   set sortColumns(newval) {
     this.editedStep.columns = [...newval];
-  }
-
-  get stepSelectedColumn() {
-    if (this.editedStep.columns.length === 0) {
-      return null;
-    } else {
-      return this.editedStep.columns[this.editedStep.columns.length - 1]['column'];
-    }
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on filter "column" field');
-    }
-    const sortColNames = [];
-    for (const column of this.editedStep.columns) {
-      sortColNames.push(column.column);
-    }
-    if (colname !== null && !sortColNames.includes(colname)) {
-      this.editedStep.columns.push({ column: colname, order: 'asc' });
-    }
   }
 }
 </script>
