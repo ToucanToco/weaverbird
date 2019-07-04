@@ -35,7 +35,7 @@ describe('Filter Step Form', () => {
 
   it('should pass down the value prop to widget value prop', async () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-    wrapper.setData({ editedStep: { column: '', value: 'foo', operator: 'nin' } });
+    wrapper.setData({ editedStep: { condition: { column: '', value: 'foo', operator: 'nin' } } });
     await localVue.nextTick();
     expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
     const operatorWrapper = wrapper.find('#filterOperator');
@@ -61,24 +61,69 @@ describe('Filter Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).to.eql([
-      { keyword: 'minLength', dataPath: '.column' },
-      { keyword: 'minLength', dataPath: '.value' },
-    ]);
+    expect(errors).to.deep.include.members([{ dataPath: '.condition', keyword: 'oneOf' }]);
   });
 
-  it('should validate and emit "formSaved" when submitted data is valid', () => {
+  it('should validate and emit "formSaved" when submitted a valid simple condition', () => {
     const wrapper = mount(FilterStepForm, {
       store: emptyStore,
       localVue,
       propsData: {
-        initialStepValue: { name: 'filter', column: 'foo', value: 'bar', operator: 'gt' },
+        initialStepValue: {
+          name: 'filter',
+          condition: { column: 'foo', value: 'bar', operator: 'gt' },
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).to.be.null;
     expect(wrapper.emitted()).to.eql({
-      formSaved: [[{ name: 'filter', column: 'foo', value: 'bar', operator: 'gt' }]],
+      formSaved: [[{ name: 'filter', condition: { column: 'foo', value: 'bar', operator: 'gt' } }]],
+    });
+  });
+
+  it('should validate and emit "formSaved" when submitted a valide complex condition', () => {
+    const wrapper = mount(FilterStepForm, {
+      store: emptyStore,
+      localVue,
+      propsData: {
+        initialStepValue: {
+          name: 'filter',
+          condition: {
+            and: [
+              { column: 'foo', value: 'bar', operator: 'gt' },
+              {
+                or: [
+                  { column: 'foo', value: 'bar', operator: 'gt' },
+                  { column: 'foo', value: 'bar', operator: 'gt' },
+                ],
+              },
+            ],
+          },
+        },
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).to.be.null;
+    expect(wrapper.emitted()).to.eql({
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'foo', value: 'bar', operator: 'gt' },
+                {
+                  or: [
+                    { column: 'foo', value: 'bar', operator: 'gt' },
+                    { column: 'foo', value: 'bar', operator: 'gt' },
+                  ],
+                },
+              ],
+            },
+          },
+        ],
+      ],
     });
   });
 
@@ -108,29 +153,5 @@ describe('Filter Step Form', () => {
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).to.equal(3);
-  });
-
-  it('should keep the focus on the column modified after filter validation', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = mount(FilterStepForm, {
-      propsData: {
-        initialStepValue: {
-          name: 'filter',
-          column: 'columnA',
-          value: '',
-          operator: 'eq',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    expect(store.state.selectedColumns).to.eql(['columnA']);
   });
 });
