@@ -9,6 +9,7 @@ import filterSchema from './filter';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
+import selectSchema from './select';
 import topBuildSchema from './top';
 import unpivotSchema from './unpivot';
 
@@ -26,6 +27,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
   rename: renameBuildSchema,
+  select: selectSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,
 };

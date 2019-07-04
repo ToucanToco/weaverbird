@@ -21,6 +21,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   compute: [{ name: 'percentage', label: 'Percentage of total' }],
   filter: [
     { name: 'delete', label: 'Delete columns' },
+    { name: 'select', label: 'Keep columns' },
     { name: 'filter', label: 'Filter based on conditions' },
     { name: 'top', label: 'Top N rows' },
     { name: 'argmax', label: 'Argmax' },
