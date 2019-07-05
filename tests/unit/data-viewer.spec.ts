@@ -107,6 +107,42 @@ describe('Data Viewer', () => {
       expect(headerCellsWrapper.at(3).text()).to.equal('columnD');
     });
 
+    it('should display the right icon for each types', () => {
+      const date = new Date();
+      const store = setupStore({
+        dataset: {
+          headers: [
+            { name: 'columnA', type: 'string' },
+            { name: 'columnB', type: 'integer' },
+            { name: 'columnC', type: 'float' },
+            { name: 'columnD', type: 'date' },
+            { name: 'columnE', type: 'object' },
+            { name: 'columnF', type: 'boolean' },
+          ],
+          data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
+        },
+      });
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+
+      const headerIconsWrapper = wrapper.findAll('.data-viewer__header-icon');
+      expect(headerIconsWrapper.at(0).text()).to.equal('ABC');
+      expect(headerIconsWrapper.at(1).text()).to.equal('123');
+      expect(headerIconsWrapper.at(2).text()).to.equal('1.2');
+      expect(
+        headerIconsWrapper
+          .at(3)
+          .find('i')
+          .classes(),
+      ).to.eql(['fas', 'fa-calendar-alt']);
+      expect(headerIconsWrapper.at(4).text()).to.equal('{ }');
+      expect(
+        headerIconsWrapper
+          .at(5)
+          .find('i')
+          .classes(),
+      ).to.eql(['fas', 'fa-check']);
+    });
+
     describe('selection', () => {
       it('should add an active class on the cell', async () => {
         const store = setupStore({
