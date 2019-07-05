@@ -2,9 +2,11 @@
  * This module contains helpers and definitions related to datasets.
  */
 
+export type DataSetColumnType = 'integer' | 'float' | 'boolean' | 'string' | 'date' | 'object';
+
 export type DataSetColumn = {
   name: string;
-  type?: 'integer' | 'float' | 'boolean' | 'string' | 'date' | 'object';
+  type?: DataSetColumnType;
 };
 
 /**

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { DataSet } from '@/lib/dataset';
-import { mongoResultsToDataset, MongoResults } from '@/lib/dataset/mongo';
+import { mongoResultsToDataset, MongoResults, _guessType } from '@/lib/dataset/mongo';
 
 /**
  * helper functions to sort a dataset so that we can test output in a predictible way.
@@ -81,5 +81,57 @@ describe('Dataset helper tests', () => {
       { name: 'col4' },
     ]);
     expect(dataset.data).to.eql([['foo', null, true, null], ['bar', 7, null, '?']]);
+  });
+});
+
+describe('_guessType', () => {
+  it('should return float', () => {
+    const val = _guessType(42.34);
+    expect(val).to.equal('float');
+  });
+
+  it('should return integer', () => {
+    const val = _guessType(42);
+    expect(val).to.equal('integer');
+  });
+
+  it('should return string', () => {
+    const val = _guessType('value');
+    expect(val).to.equal('string');
+  });
+
+  it('should return boolean', () => {
+    const val = _guessType(false);
+    expect(val).to.equal('boolean');
+  });
+
+  it('should return date', () => {
+    const val = _guessType(new Date());
+    expect(val).to.equal('date');
+  });
+
+  it('should return object', () => {
+    const val = _guessType({ value: 'my_value' });
+    expect(val).to.equal('object');
+  });
+
+  it('should return null when value is null', () => {
+    const val = _guessType(null);
+    expect(val).to.eql(null);
+  });
+
+  it('should return null when value is undefined', () => {
+    const val = _guessType(undefined);
+    expect(val).to.eql(null);
+  });
+
+  it('should return null when value is Symbol', () => {
+    const val = _guessType(Symbol());
+    expect(val).to.eql(null);
+  });
+
+  it('should return null when value is function', () => {
+    const val = _guessType(() => {});
+    expect(val).to.eql(null);
   });
 });
