@@ -11,6 +11,11 @@
               :key="column.name"
               @click="toggleColumnSelection({ column: column.name})"
             >
+              <span
+                v-if="column.type"
+                v-html="getIconType(column.type)"
+                class="data-viewer__header-icon"
+              ></span>
               <span class="data-viewer__header-label">{{ column.name }}</span>
               <i
                 class="data-viewer__header-action fas fa-angle-down"
@@ -32,7 +37,7 @@
             <DataViewerCell
               v-for="(cell, cellidx) in row"
               :key="cellidx"
-              :isSelected="isSelected(columnNames[cellidx])"
+              :isSelected="isSelected(columnHeaders[cellidx].name)"
               :value="cell"
             />
           </tr>
@@ -46,7 +51,7 @@
 import Vue from 'vue';
 import { Getter, Mutation, State } from 'vuex-class';
 
-import { DataSet } from '@/lib/dataset';
+import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import { PipelineStepName } from '@/lib/steps';
 import { Component } from 'vue-property-decorator';
 import ActionMenu from './ActionMenu.vue';
@@ -72,7 +77,7 @@ export default class DataViewer extends Vue {
   @State selectedColumns!: string[];
 
   @Getter('isDatasetEmpty') isEmpty!: boolean;
-  @Getter columnNames!: string[];
+  @Getter columnHeaders!: DataSetColumn[];
 
   @Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
@@ -85,7 +90,7 @@ export default class DataViewer extends Vue {
    * @return {Array<object>}
    */
   get formattedColumns() {
-    return this.columnNames.map((d, index) => {
+    return this.columnHeaders.map((d, index) => {
       let isActionMenuOpened = false;
 
       if (index === this.indexActiveActionMenu) {
@@ -93,11 +98,12 @@ export default class DataViewer extends Vue {
       }
 
       return {
-        name: d,
+        name: d.name,
+        type: d.type || undefined,
         isActionMenuOpened,
         class: {
           'data-viewer__header-cell': true,
-          'data-viewer__header-cell--active': this.isSelected(d),
+          'data-viewer__header-cell--active': this.isSelected(d.name),
         },
       };
     });
@@ -115,6 +121,23 @@ export default class DataViewer extends Vue {
    */
   isSelected(column: string) {
     return this.selectedColumns.includes(column);
+  }
+
+  getIconType(type: DataSetColumnType) {
+    switch (type) {
+      case 'string':
+        return 'ABC';
+      case 'integer':
+        return '123';
+      case 'float':
+        return '1.2';
+      case 'date':
+        return '<i class="fas fa-calendar-alt"></i>';
+      case 'boolean':
+        return '<i class="fas fa-check"></i>';
+      case 'object':
+        return '{ }';
+    }
   }
 
   openMenu(index: number) {

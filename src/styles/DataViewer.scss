@@ -49,7 +49,7 @@
 
 .data-viewer__header-cell {
   font-weight: bold;
-  padding: 6px 8px 3px;
+  padding: 6px 8px;
 }
 
 .data-viewer__header-cell--active {
@@ -64,14 +64,23 @@
   .data-viewer__header-action:hover {
     background-color: $active-color-faded-2;
   }
+
+  .data-viewer__header-icon {
+    color: $active-color-faded;
+  }
 }
 
 .data-viewer__header-label {
-  display: inline-block;
   text-overflow: ellipsis;
   max-width: 200px;
   overflow: hidden;
-  padding-right: 15px;
+  padding-right: 23px;
+}
+
+.data-viewer__header-icon {
+  font-family: 'Roboto Slab', serif;
+  color: #aaaaaa;
+  margin-right: 6px;
 }
 
 .data-viewer__header-action {
