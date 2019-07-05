@@ -67,3 +67,41 @@ export function _guessType(val: any, prevType: any = null): DataSetColumnType | 
 
   return null;
 }
+
+/**
+ * @descritpion extend a `DataSet` headers with inferred types, base on value of columns
+ * @param {DataSet} dataset - The dataset that we want to extend headers with inferred types
+ * @param {number} [maxRows=50] - Determine on how many rows we're goind to do our guess
+ *
+ */
+export function inferTypeFromDataset(dataset: DataSet, maxRows: number = 50): DataSet {
+  // For the moment, we infer arbitrarily column's types on maximum the 50 first rows
+  maxRows = Math.min(dataset.data.length, maxRows);
+  const newHeaders: DataSetColumn[] = [];
+
+  for (const [colidx, header] of dataset.headers.entries()) {
+    let prevType = null;
+
+    for (let j = 0; j < maxRows; j++) {
+      const currentValue = dataset.data[j][colidx];
+      const guessedType = _guessType(currentValue, prevType);
+
+      if (prevType === null) {
+        prevType = guessedType;
+      } else if (prevType !== guessedType) {
+        prevType = null;
+        break;
+      }
+    }
+
+    // We pass here if we find 2 different types in the same column
+    if (prevType === null) {
+      newHeaders.push(header);
+    } else {
+      newHeaders.push({ ...header, type: prevType as DataSetColumnType });
+    }
+  }
+
+  // We return a new `DataSet` with the updated headers
+  return { ...dataset, headers: newHeaders };
+}
