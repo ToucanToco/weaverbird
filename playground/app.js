@@ -2,6 +2,7 @@
 const {
   Vqb,
   filterOutDomain,
+  inferTypeFromDataset,
   getTranslator,
   mongoResultsToDataset,
   servicePluginFactory,
@@ -21,12 +22,11 @@ class MongoService {
   }
 
   async executePipeline(pipeline) {
-    const {
-      domain,
-      pipeline: subpipeline
-    } = filterOutDomain(pipeline);
+    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
     const rset = await this.executeQuery(this.translator.translate(subpipeline), domain);
-    return mongoResultsToDataset(rset);
+    const dataset = mongoResultsToDataset(rset);
+    const datasetWithInferedType = inferTypeFromDataset(dataset);
+    return datasetWithInferedType;
   }
 
   async executeQuery(query, collection) {
@@ -57,10 +57,12 @@ class MongoService {
 
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
-const initialPipeline = [{
-  name: 'domain',
-  domain: 'test-collection',
-}];
+const initialPipeline = [
+  {
+    name: 'domain',
+    domain: 'test-collection',
+  },
+];
 
 async function setupInitialData(store, domain = null) {
   const collections = await mongoservice.listCollections();
@@ -80,11 +82,12 @@ async function setupInitialData(store, domain = null) {
 
 async function buildVueApp() {
   Vue.use(Vuex);
-  const store = setupStore({
-    pipeline: initialPipeline,
-    currentDomain: 'test-collection',
-  },
-  [mongoBackendPlugin],
+  const store = setupStore(
+    {
+      pipeline: initialPipeline,
+      currentDomain: 'test-collection',
+    },
+    [mongoBackendPlugin],
   );
 
   new Vue({
@@ -93,7 +96,7 @@ async function buildVueApp() {
       Vqb,
     },
     store,
-    data: function () {
+    data: function() {
       return {
         isCodeOpened: false,
         draggedOverFirst: false,
@@ -102,7 +105,7 @@ async function buildVueApp() {
       };
     },
     computed: {
-      code: function () {
+      code: function() {
         const query = mongo36translator.translate(this.$store.getters.activePipeline);
         return JSON.stringify(query, null, 2);
       },
@@ -110,7 +113,7 @@ async function buildVueApp() {
     methods: {
       // both methods below help to detect correctly dragover child element and
       // out on parent element
-      dragEnter: function (event) {
+      dragEnter: function(event) {
         event.preventDefault();
         if (this.draggedOverFirst) {
           this.draggedOverSecond = true;
@@ -119,7 +122,7 @@ async function buildVueApp() {
         }
         this.draggedover = true;
       },
-      dragLeave: function () {
+      dragLeave: function() {
         if (this.draggedOverSecond) {
           this.draggedOverSecond = false;
         } else if (this.draggedOverFirst) {
@@ -129,24 +132,22 @@ async function buildVueApp() {
           this.draggedover = false;
         }
       },
-      dragOver: function (event) {
+      dragOver: function(event) {
         // Prevent to open file when drop the file
         event.preventDefault();
       },
-      drop: async function (event) {
+      drop: async function(event) {
         this.draggedover = false;
         event.preventDefault();
         // For the moment, only take one file and we should also test event.target
-        const {
-          collection: domain
-        } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
+        const { collection: domain } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
         await setupInitialData(store, domain);
         event.target.value = null;
       },
-      hideCode: function () {
+      hideCode: function() {
         this.isCodeOpened = false;
       },
-      openCode: function () {
+      openCode: function() {
         this.isCodeOpened = true;
       },
     },
