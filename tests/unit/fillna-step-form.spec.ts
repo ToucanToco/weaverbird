@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -92,30 +91,6 @@ describe('Fillna Step Form', () => {
     store.commit('toggleColumnSelection', { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.editedStep.column).to.equal('columnB');
-  });
-
-  it('should update selectedColumn when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(FillnaStepForm, {
-      propsData: {
-        initialValue: {
-          name: 'fillna',
-          column: 'columnA',
-          value: '',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.find(WidgetAutocomplete).vm.$emit('input', 'columnB');
-    await localVue.nextTick();
-    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {

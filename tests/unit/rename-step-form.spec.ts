@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -120,30 +119,6 @@ describe('Rename Step Form', () => {
     store.commit('toggleColumnSelection', { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.editedStep.oldname).to.equal('columnB');
-  });
-
-  it('should update selectedColumn when oldname is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(RenameStepForm, {
-      propsData: {
-        initialStepValue: {
-          name: 'rename',
-          oldname: 'columnA',
-          newname: '',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.find(WidgetAutocomplete).vm.$emit('input', 'columnB');
-    await localVue.nextTick();
-    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
