@@ -76,6 +76,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
     for (const agg of this.editedStep.aggregations) {
       agg.newcolumn = agg.column;
       newcolumnOccurences[agg.newcolumn] = (newcolumnOccurences[agg.newcolumn] || 0) + 1;
+      throw new Error('bam');
     }
     for (const agg of this.editedStep.aggregations) {
       if (newcolumnOccurences[agg.newcolumn] > 1) {

@@ -8,6 +8,7 @@ const vue = require('rollup-plugin-vue');
 const json = require('rollup-plugin-json');
 const replace = require('rollup-plugin-replace');
 const istanbul = require('rollup-plugin-istanbul');
+const padcomments = require('./rollup-plugin-padcomments');
 
 const baseConfig = {
   input: 'tests/unit/karma-test-suite.ts',
@@ -20,6 +21,7 @@ const baseConfig = {
   plugins: [
     json(),
     resolve(),
+    padcomments(),
     typescript({ module: 'es2015' }),
     alias({
       resolve: ['.vue', '.json'],
