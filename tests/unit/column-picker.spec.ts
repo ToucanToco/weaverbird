@@ -59,14 +59,16 @@ describe('Column Picker', () => {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
+      selectedColumns: ['columnA'],
     });
     const wrapper = shallowMount(ColumnPicker, {
       store,
       localVue,
     });
-    expect(wrapper.vm.$data.column).to.be.null;
+    expect(wrapper.vm.$data.column).to.equal('columnA');
     store.commit('setSelectedColumns', { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.column).to.equal('columnB');
+    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 });
