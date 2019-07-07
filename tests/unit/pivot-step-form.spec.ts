@@ -28,9 +28,11 @@ describe('Pivot Step Form', () => {
   it('should have 4 input components', () => {
     const wrapper = shallowMount(PivotStepForm, { store: emptyStore, localVue });
     const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
+    const columnpickerWrappers = wrapper.findAll('columnpicker-stub');
     const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
     expect(multiselectWrappers.length).to.equal(1);
-    expect(autocompleteWrappers.length).to.equal(3);
+    expect(columnpickerWrappers.length).to.equal(1);
+    expect(autocompleteWrappers.length).to.equal(2);
   });
 
   it('should pass down props to widgets', () => {
@@ -50,7 +52,6 @@ describe('Pivot Step Form', () => {
       },
     });
     expect(wrapper.find('#indexInput').props('value')).to.eql(['label']);
-    expect(wrapper.find('#columnToPivotInput').props('value')).to.equal('country');
     expect(wrapper.find('#valueColumnInput').props('value')).to.equal('value');
     expect(wrapper.find('#aggregationFunctionInput').props('value')).to.equal('sum');
   });
@@ -66,7 +67,7 @@ describe('Pivot Step Form', () => {
     expect(wrapper.find('#indexInput').attributes('options')).to.equal('columnA,columnB,columnC');
   });
 
-  it('should instantiate columnToPivotInput and valueColumnInput widget autocomplete with column names', () => {
+  it('should instantiate valueColumnInput widget autocomplete with column names', () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -74,15 +75,12 @@ describe('Pivot Step Form', () => {
       },
     });
     const wrapper = shallowMount(PivotStepForm, { store, localVue });
-    expect(wrapper.find('#columnToPivotInput').attributes('options')).to.equal(
-      'columnA,columnB,columnC',
-    );
     expect(wrapper.find('#valueColumnInput').attributes('options')).to.equal(
       'columnA,columnB,columnC',
     );
   });
 
-  it('should instantiate aggregationFunctionInput widget autocmplete with the right aggregation function names', () => {
+  it('should instantiate aggregationFunctionInput widget autocomplete with the right aggregation function names', () => {
     const wrapper = shallowMount(PivotStepForm, { store: emptyStore, localVue });
     expect(wrapper.find('#aggregationFunctionInput').attributes('options')).to.equal(
       'sum,avg,count,min,max',

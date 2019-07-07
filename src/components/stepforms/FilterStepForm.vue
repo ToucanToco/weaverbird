@@ -1,14 +1,12 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
+    <ColumnPicker
       id="columnInput"
       v-model="editedStep.column"
       name="Values in column..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column name"
-    ></WidgetAutocomplete>
+    ></ColumnPicker>
     <WidgetAutocomplete
       id="filterOperator"
       v-model="editedStep.operator"
@@ -29,6 +27,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import BaseStepForm from './StepForm.vue';
@@ -38,6 +37,7 @@ import { FilterStep } from '@/lib/steps';
   vqbstep: 'filter',
   name: 'filter-step-form',
   components: {
+    ColumnPicker,
     WidgetAutocomplete,
     WidgetInputText,
   },

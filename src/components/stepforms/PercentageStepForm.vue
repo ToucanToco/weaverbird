@@ -1,14 +1,12 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
+    <ColumnPicker
       id="valueColumnInput"
       v-model="editedStep.column"
       name="Value column..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.column })"
-      placeholder="Enter a column name"
-    ></WidgetAutocomplete>
+      placeholder="Enter a column"
+    ></ColumnPicker>
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.group"
@@ -30,7 +28,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { PercentageStep } from '@/lib/steps';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetInputText from './WidgetInputText.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
@@ -40,7 +38,7 @@ import { StepFormComponent } from '@/components/formlib';
   vqbstep: 'percentage',
   name: 'percentage-step-form',
   components: {
-    WidgetAutocomplete,
+    ColumnPicker,
     WidgetInputText,
     WidgetMultiselect,
   },

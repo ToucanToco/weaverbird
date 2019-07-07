@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -30,21 +29,8 @@ describe('Duplicate Column Step Form', () => {
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(DuplicateColumnStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.findAll('widgetautocomplete-stub').length).to.equal(1);
-    expect(wrapper.findAll('widgetautocomplete-stub').length).to.equal(1);
-  });
-
-  it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(DuplicateColumnStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
-
-    expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
+    expect(wrapper.findAll('columnpicker-stub').length).to.equal(1);
+    expect(wrapper.findAll('widgetinputtext-stub').length).to.equal(1);
   });
 
   describe('Errors', () => {
@@ -121,46 +107,6 @@ describe('Duplicate Column Step Form', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ]);
-  });
-
-  it('should update step when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(DuplicateColumnStepForm, { store, localVue });
-    expect(wrapper.vm.$data.editedStep.column).to.equal('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.editedStep.column).to.equal('columnB');
-  });
-
-  it('should update selectedColumn when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(DuplicateColumnStepForm, {
-      propsData: {
-        initialValue: {
-          name: 'duplicate',
-          column: 'columnA',
-          new_column_name: 'whatever',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.setData({
-      editedStep: { name: 'duplicate', column: 'columnB', new_column_name: 'whatever' },
-    });
-    await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
