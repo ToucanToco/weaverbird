@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -29,7 +28,7 @@ describe('Argmin Step Form', () => {
 
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(ArgminStepForm, { store: emptyStore, localVue });
-    const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
+    const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
     const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
     expect(autocompleteWrappers.length).to.equal(1);
     expect(multiselectWrappers.length).to.equal(1);
@@ -41,20 +40,7 @@ describe('Argmin Step Form', () => {
       editedStep: { name: 'argmin', column: 'foo', groups: ['bar'] },
     });
     await localVue.nextTick();
-    expect(wrapper.find('widgetautocomplete-stub').props('value')).to.equal('foo');
     expect(wrapper.find('widgetmultiselect-stub').props('value')).to.eql(['bar']);
-  });
-
-  it('should instantiate an autocomplet widget with proper options from the store', () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(ArgminStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
-    expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
   });
 
   it('should report errors if column is empty', async () => {
@@ -92,29 +78,6 @@ describe('Argmin Step Form', () => {
     expect(wrapper.emitted()).to.eql({
       cancel: [[]],
     });
-  });
-
-  it('should update selectedColumn when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(ArgminStepForm, {
-      propsData: {
-        initialStepValue: {
-          name: 'argmin',
-          column: 'columnA',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.setData({ editedStep: { name: 'argmin', column: 'columnB' } });
-    await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {

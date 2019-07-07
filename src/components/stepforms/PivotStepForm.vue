@@ -8,13 +8,12 @@
       :options="columnNames"
       placeholder="Add columns"
     ></WidgetMultiselect>
-    <WidgetAutocomplete
+    <ColumnPicker
       id="columnToPivotInput"
       v-model="editedStep.column_to_pivot"
       name="Pivot column..."
-      :options="columnNames"
-      placeholder="Select a column"
-    ></WidgetAutocomplete>
+      placeholder="Enter a column"
+    ></ColumnPicker>
     <WidgetAutocomplete
       id="valueColumnInput"
       v-model="editedStep.value_column"
@@ -35,6 +34,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
@@ -44,6 +44,7 @@ import { PivotStep } from '@/lib/steps';
   vqbstep: 'pivot',
   name: 'pivot-step-form',
   components: {
+    ColumnPicker,
     WidgetAutocomplete,
     WidgetMultiselect,
   },

@@ -8,14 +8,12 @@
       name="Get top..."
       placeholder="Enter a number of rows"
     ></WidgetInputText>
-    <WidgetAutocomplete
+    <ColumnPicker
       id="rankOnInput"
       v-model="editedStep.rank_on"
       name="Sort column..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.rank_on })"
-      placeholder="Select a column"
-    ></WidgetAutocomplete>
+      placeholder="Enter a column"
+    ></ColumnPicker>
     <WidgetAutocomplete
       id="sortOrderInput"
       v-model="editedStep.sort"
@@ -38,6 +36,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { TopStep } from '@/lib/steps';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
@@ -48,6 +47,7 @@ import { StepFormComponent } from '@/components/formlib';
   vqbstep: 'top',
   name: 'top-step-form',
   components: {
+    ColumnPicker,
     WidgetAutocomplete,
     WidgetInputText,
     WidgetMultiselect,

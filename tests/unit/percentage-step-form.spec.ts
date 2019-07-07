@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -29,7 +28,7 @@ describe('Percentage Step Form', () => {
 
   it('should have exactly 3 input components', () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
-    const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
+    const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
     const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
     const textInputWrappers = wrapper.findAll('widgetinputtext-stub');
     expect(autocompleteWrappers.length).to.equal(1);
@@ -43,21 +42,8 @@ describe('Percentage Step Form', () => {
       editedStep: { name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' },
     });
     await localVue.nextTick();
-    expect(wrapper.find('widgetautocomplete-stub').props('value')).to.equal('foo');
     expect(wrapper.find('widgetmultiselect-stub').props('value')).to.eql(['test']);
     expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('bar');
-  });
-
-  it('should instantiate an autocomplet widget with proper options from the store', () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(PercentageStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
-    expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
   });
 
   describe('Errors', () => {
@@ -117,29 +103,6 @@ describe('Percentage Step Form', () => {
     expect(wrapper.emitted()).to.eql({
       cancel: [[]],
     });
-  });
-
-  it('should update selectedColumn when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(PercentageStepForm, {
-      propsData: {
-        initialStepValue: {
-          name: 'percentage',
-          column: 'columnA',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.setData({ editedStep: { name: 'percentage', column: 'columnB' } });
-    await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {

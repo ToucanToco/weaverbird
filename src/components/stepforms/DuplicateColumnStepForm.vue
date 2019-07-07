@@ -1,14 +1,12 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
+    <ColumnPicker
       id="columnInput"
       v-model="editedStep.column"
       name="Duplicate column..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: stepSelectedColumn })"
       placeholder="Enter a column"
-    ></WidgetAutocomplete>
+    ></ColumnPicker>
     <WidgetInputText
       id="newColumnNameInput"
       v-model="editedStep.new_column_name"
@@ -22,7 +20,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import BaseStepForm from './StepForm.vue';
 import { DuplicateColumnStep } from '@/lib/steps';
@@ -31,7 +29,7 @@ import { DuplicateColumnStep } from '@/lib/steps';
   vqbstep: 'duplicate',
   name: 'duplicate-step-form',
   components: {
-    WidgetAutocomplete,
+    ColumnPicker,
     WidgetInputText,
   },
 })

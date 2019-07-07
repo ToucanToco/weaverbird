@@ -1,14 +1,12 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
+    <ColumnPicker
       id="valueColumnInput"
       v-model="editedStep.column"
       name="Search min value in..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.column })"
       placeholder="Enter a column name"
-    ></WidgetAutocomplete>
+    ></ColumnPicker>
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
@@ -24,7 +22,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { ArgminStep } from '@/lib/steps';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
@@ -33,7 +31,7 @@ import { StepFormComponent } from '@/components/formlib';
   vqbstep: 'argmin',
   name: 'argmin-step-form',
   components: {
-    WidgetAutocomplete,
+    ColumnPicker,
     WidgetMultiselect,
   },
 })
