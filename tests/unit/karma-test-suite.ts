@@ -32,6 +32,7 @@ import './vqb.spec';
 import './widget-aggregation.spec';
 import './widget-autocomplete.spec';
 import './widget-checkbox.spec';
+import './widget-filter-simple-condition.spec';
 import './widget-input-text.spec';
 import './widget-list.spec';
 import './widget-multiselect.spec';

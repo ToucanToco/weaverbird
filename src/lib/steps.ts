@@ -60,13 +60,6 @@ export type FillnaStep = {
   value: PrimitiveType;
 };
 
-// export type FilterStep = {
-//   name: 'filter';
-//   column: string;
-//   value: any;
-//   operator?: 'eq' | 'ne' | 'gt' | 'ge' | 'lt' | 'le' | 'in' | 'nin';
-// };
-
 export type FilterComboAnd = {
   and: (FilterSimpleCondition | FilterComboAnd | FilterComboOr)[];
 };
