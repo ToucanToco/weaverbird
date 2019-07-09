@@ -18,7 +18,7 @@ import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({ components: { WidgetAutocomplete } })
-export default class DeletStepForm extends Vue {
+export default class ColumnPicker extends Vue {
   @Prop({ type: String, default: 'columnInput' })
   id!: string;
 
