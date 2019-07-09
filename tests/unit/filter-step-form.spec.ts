@@ -26,32 +26,21 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.stepname).equal('filter');
   });
 
-  it('should have exactly 3 input components', () => {
+  it('should have exactly one WidgetFilterSimplecondition component', () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-    expect(wrapper.findAll('widgetinputtext-stub').length).to.equal(1);
-    expect(wrapper.findAll('widgetautocomplete-stub').length).to.equal(1);
-    expect(wrapper.findAll('columnpicker-stub').length).to.equal(1);
+    const connditionWrappers = wrapper.findAll('widgetfiltersimplecondition-stub');
+    expect(connditionWrappers.length).to.equal(1);
   });
 
-  it('should pass down the value prop to widget value prop', async () => {
+  it('should pass down a valid prop to WidgetFilterSimplecondition', async () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
     wrapper.setData({ editedStep: { condition: { column: '', value: 'foo', operator: 'nin' } } });
     await localVue.nextTick();
-    expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
-    const operatorWrapper = wrapper.find('#filterOperator');
-    expect(operatorWrapper.props('value')).to.equal('nin');
-  });
-
-  it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
+    expect(wrapper.find('widgetfiltersimplecondition-stub').props('value')).to.eql({
+      column: '',
+      value: 'foo',
+      operator: 'nin',
     });
-    const wrapper = shallowMount(FilterStepForm, { store, localVue });
-    const filterWrapper = wrapper.find('#filterOperator');
-    expect(filterWrapper.attributes('options')).to.equal('eq,ne,gt,ge,lt,le,in,nin');
   });
 
   it('should report errors when submitted data is not valid', () => {
