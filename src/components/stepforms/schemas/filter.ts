@@ -1,3 +1,26 @@
+const singleValueConditionSchema = {
+  type: ['string', 'integer', 'boolean', 'null'],
+  minLength: 1,
+  title: 'Value',
+  description: 'The value to compare',
+  attrs: {
+    placeholder: 'Enter a value',
+  },
+};
+
+const multipleValueConditionSchema = {
+  type: 'array',
+  minItems: 1,
+  items: {
+    type: ['string', 'integer', 'boolean', 'null'],
+  },
+  title: 'Value',
+  description: 'The value(s) to compare',
+  attrs: {
+    placeholder: 'Enter a value',
+  },
+};
+
 const simpleConditionSchema = {
   type: 'object',
   properties: {
@@ -11,13 +34,7 @@ const simpleConditionSchema = {
       },
     },
     value: {
-      type: ['string', 'integer', 'boolean', 'null'],
-      minLength: 1,
-      title: 'Value',
-      description: 'The values to compare',
-      attrs: {
-        placeholder: 'Enter a value',
-      },
+      oneOf: [singleValueConditionSchema, multipleValueConditionSchema],
     },
     operator: {
       type: 'string',
