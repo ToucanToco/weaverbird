@@ -36,4 +36,5 @@ import './widget-filter-simple-condition.spec';
 import './widget-input-text.spec';
 import './widget-list.spec';
 import './widget-multiselect.spec';
+import './widget-multi-input-text.spec';
 import './widget-sort-column.spec';

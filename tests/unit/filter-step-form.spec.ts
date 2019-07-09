@@ -53,7 +53,7 @@ describe('Filter Step Form', () => {
     expect(errors).to.deep.include.members([{ dataPath: '.condition', keyword: 'oneOf' }]);
   });
 
-  it('should validate and emit "formSaved" when submitted a valid simple condition', () => {
+  it('should validate and emit "formSaved" when submitting a valid condition', () => {
     const wrapper = mount(FilterStepForm, {
       store: emptyStore,
       localVue,
@@ -68,51 +68,6 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.errors).to.be.null;
     expect(wrapper.emitted()).to.eql({
       formSaved: [[{ name: 'filter', condition: { column: 'foo', value: 'bar', operator: 'gt' } }]],
-    });
-  });
-
-  it('should validate and emit "formSaved" when submitted a valide complex condition', () => {
-    const wrapper = mount(FilterStepForm, {
-      store: emptyStore,
-      localVue,
-      propsData: {
-        initialStepValue: {
-          name: 'filter',
-          condition: {
-            and: [
-              { column: 'foo', value: 'bar', operator: 'gt' },
-              {
-                or: [
-                  { column: 'foo', value: 'bar', operator: 'gt' },
-                  { column: 'foo', value: 'bar', operator: 'gt' },
-                ],
-              },
-            ],
-          },
-        },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
-      formSaved: [
-        [
-          {
-            name: 'filter',
-            condition: {
-              and: [
-                { column: 'foo', value: 'bar', operator: 'gt' },
-                {
-                  or: [
-                    { column: 'foo', value: 'bar', operator: 'gt' },
-                    { column: 'foo', value: 'bar', operator: 'gt' },
-                  ],
-                },
-              ],
-            },
-          },
-        ],
-      ],
     });
   });
 

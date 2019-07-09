@@ -10,13 +10,14 @@
     ></WidgetAutocomplete>
     <WidgetAutocomplete
       id="filterOperator"
-      :value="getShortOperator(editedValue.operator)"
+      :value="operator"
       @input="updateStepOperator"
-      name="Must..."
       :options="operators"
       placeholder="Filter operator"
+      :trackBy="`operator`"
+      :label="`label`"
     ></WidgetAutocomplete>
-    <WidgetInputText id="valueInput" v-model="editedValue.value" placeholder="Value"></WidgetInputText>
+    <component :is="inputWidget" v-model="editedValue.value" :placeholder="placeholder"></component>
   </div>
 </template>
 
@@ -26,7 +27,9 @@ import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import WidgetMultiInputText from './WidgetMultiInputText.vue';
 import { FilterSimpleCondition } from '@/lib/steps';
+import { VueConstructor } from 'vue';
 
 type LiteralOperator =
   | 'equal'
@@ -40,26 +43,10 @@ type LiteralOperator =
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
-const OPERATORS = {
-  equal: 'eq',
-  'not equal': 'ne',
-  'be greater than': 'gt',
-  'be greater than or equal to': 'ge',
-  'be less than': 'lt',
-  'be less than or equal to': 'le',
-  'be among': 'in',
-  'not be among': 'nin',
-};
-
-const OPERATORS_REV = {
-  eq: 'equal',
-  ne: 'not equal',
-  gt: 'be greater than',
-  ge: 'be greater than or equal to',
-  lt: 'be less than',
-  le: 'be less than or equal to',
-  in: 'be among',
-  nin: 'not be among',
+type OperatorOption = {
+  operator: ShortOperator;
+  label: LiteralOperator;
+  inputWidget: VueConstructor<Vue>;
 };
 
 @Component({
@@ -82,23 +69,34 @@ export default class WidgetFilterSimpleCondition extends Vue {
 
   editedValue: FilterSimpleCondition = { ...this.value };
 
-  readonly operators = [
-    'equal',
-    'not equal',
-    'be greater than',
-    'be greater than or equal to',
-    'be less than',
-    'be less than or equal to',
-    'be among',
-    'not be among',
+  readonly operators: OperatorOption[] = [
+    { operator: 'eq', label: 'equal', inputWidget: WidgetInputText },
+    { operator: 'ne', label: 'not equal', inputWidget: WidgetInputText },
+    { operator: 'gt', label: 'be greater than', inputWidget: WidgetInputText },
+    { operator: 'ge', label: 'be greater than or equal to', inputWidget: WidgetInputText },
+    { operator: 'lt', label: 'be less than', inputWidget: WidgetInputText },
+    { operator: 'le', label: 'be less than or equal to', inputWidget: WidgetInputText },
+    { operator: 'in', label: 'be among', inputWidget: WidgetMultiInputText },
+    { operator: 'nin', label: 'not be among', inputWidget: WidgetMultiInputText },
   ];
 
-  getShortOperator(op: ShortOperator) {
-    return OPERATORS_REV[op];
+  readonly placeholder = 'Enter a value';
+
+  get operator(): OperatorOption {
+    return this.operators.filter(d => d.operator === this.editedValue.operator)[0];
   }
 
-  updateStepOperator(op: LiteralOperator) {
-    this.editedValue.operator = OPERATORS[op] as ShortOperator;
+  get inputWidget(): VueConstructor<Vue> {
+    return this.operators.filter(d => d.operator === this.editedValue.operator)[0].inputWidget;
+  }
+
+  updateStepOperator(op: OperatorOption) {
+    this.editedValue.operator = op.operator;
+    if (this.editedValue.operator === 'in' || this.editedValue.operator === 'nin') {
+      this.editedValue.value = [];
+    } else {
+      this.editedValue.value = '';
+    }
   }
 
   @Watch('editedValue', { deep: true })
@@ -118,6 +116,10 @@ export default class WidgetFilterSimpleCondition extends Vue {
 }
 
 .filter-form-single-condition__container .widget-input-text__container {
+  margin-top: 20px;
+}
+
+.filter-form-single-condition__container .widget-multiinnputtext__container {
   margin-top: 20px;
 }
 </style>

@@ -6,6 +6,8 @@
       :options="options"
       :placeholder="placeholder"
       :allow-empty="false"
+      :track-by="trackBy"
+      :label="label"
     ></multiselect>
   </div>
 </template>
@@ -30,11 +32,17 @@ export default class WidgetAutocomplete extends Vue {
   @Prop({ type: String, default: '' })
   placeholder!: string;
 
-  @Prop({ type: String, default: '' })
-  value!: string;
+  @Prop({ default: '' })
+  value!: string | object;
 
   @Prop({ type: Array, default: () => [] })
   options!: string[];
+
+  @Prop({ type: String, default: undefined })
+  trackBy!: string;
+
+  @Prop({ type: String, default: undefined })
+  label!: string;
 
   editedValue: string = '';
 
