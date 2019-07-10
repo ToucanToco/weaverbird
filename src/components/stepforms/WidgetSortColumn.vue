@@ -61,22 +61,4 @@ export default class WidgetSortColumn extends Vue {
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../styles/_variables';
-.widget-sort__container {
-  @extend %form-widget__container;
-  margin-bottom: 0;
-  padding-top: 12px;
-  padding-bottom: 4px;
-}
 
-.widget-autocomplete__container {
-  align-items: center;
-  flex-direction: row;
-  margin-bottom: 8px;
-}
-.widget-sort__container .widget-autocomplete__label {
-  margin-bottom: 0px;
-  width: 40%;
-}
-</style>

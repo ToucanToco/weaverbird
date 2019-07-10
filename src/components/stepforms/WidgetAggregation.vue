@@ -76,10 +76,3 @@ export default class WidgetAggregation extends Vue {
   margin-bottom: 8px;
 }
 </style>
-
-<style lang="scss">
-.widget-aggregation__container .widget-autocomplete__label {
-  margin-bottom: 0px;
-  width: 40%;
-}
-</style>
