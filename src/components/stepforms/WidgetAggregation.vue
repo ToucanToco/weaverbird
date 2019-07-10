@@ -4,13 +4,13 @@
       id="columnInput"
       :options="columnNames"
       v-model="aggregation.column"
-      name="Column"
+      name="Column:"
       placeholder="Enter a column"
     ></WidgetAutocomplete>
     <WidgetAutocomplete
       id="aggregationFunctionInput"
       v-model="aggregation.aggfunction"
-      name="Function"
+      name="Function:"
       :options="aggregationFunctions"
       placeholder="Aggregation function"
     ></WidgetAutocomplete>

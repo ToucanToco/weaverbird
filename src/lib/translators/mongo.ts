@@ -128,6 +128,7 @@ function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>
         ],
       },
     },
+    { $project: { _vqbAppValueToCompare: 0 } },
   ];
 }
 
@@ -410,6 +411,7 @@ const mapper: StepMatcher<MongoStep> = {
   custom: step => step.query,
   delete: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 0])) }),
   domain: step => ({ $match: { domain: step.domain } }),
+  duplicate: step => ({ $addFields: { [step.new_column_name]: $$(step.column) } }),
   fillna: step => ({
     $addFields: {
       [step.column]: {

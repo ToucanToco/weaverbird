@@ -2,11 +2,11 @@
   <popover :active="isActive" :align="alignLeft" bottom>
     <div class="action-menu__body">
       <div class="action-menu__section">
-        <div class="action-menu__option">Duplicate column</div>
-        <div class="action-menu__option" @click="createRenameStep">Rename column</div>
+        <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
+        <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
         <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
-        <div class="action-menu__option" @click="createFillnaStep">Fill null values</div>
-        <div class="action-menu__option" @click="createFilterStep">Filter values</div>
+        <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
+        <div class="action-menu__option" @click="createStep('filter')">Filter values</div>
       </div>
     </div>
   </popover>
@@ -16,7 +16,7 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
-import { Pipeline, PipelineStep } from '@/lib/steps';
+import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
@@ -82,18 +82,8 @@ export default class ActionMenu extends Vue {
     this.close();
   }
 
-  createFillnaStep() {
-    this.$emit('actionClicked', { name: 'fillna', column: this.columnName, value: '' });
-    this.close();
-  }
-
-  createFilterStep() {
-    this.$emit('actionClicked', { name: 'filter', column: this.columnName, value: '', operator: 'eq' });
-    this.close();
-  }
-
-  createRenameStep() {
-    this.$emit('actionClicked', { name: 'rename', oldname: this.columnName, newname: '' });
+  createStep(stepName: PipelineStepName) {
+    this.$emit('actionClicked', stepName);
     this.close();
   }
 

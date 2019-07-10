@@ -311,6 +311,46 @@ This step is meant to select a specific domain (using MongoDB terminology).
 }
 ```
 
+### `duplicate` step
+
+This step is meant to duplicate a column.
+
+```javascript
+{
+    name: 'duplicate',
+    column: 'my-column'
+    new_column_name: 'my-duplicate'
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Value |
+| --------- | ----- |
+| Company 1 | 13    |
+| Company 2 | 0     |
+| Company 3 | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'duplicate',
+  column: "Company",
+  new_column_name: "Company-copy",
+}
+```
+
+**Output dataset:**
+
+| Company   | Value | Company-copy |
+| --------- | ----- | ------------ |
+| Company 1 | 13    | Company 1    |
+| Company 2 | 0     | Company 2    |
+| Company 3 | 20    | Company 3    |
+
 ### `fillna` step
 
 Replace null values by a given value in a column.

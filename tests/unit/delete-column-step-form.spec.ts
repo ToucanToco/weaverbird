@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -23,17 +23,17 @@ describe('Delete Column Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(DeleteColumnStepForm, { store: emptyStore, localVue });
-
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('delete');
   });
 
-  it('should have a widget autocomplete', () => {
+  it('should have a widget multiselect', () => {
     const wrapper = shallowMount(DeleteColumnStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.find('widgetautocomplete-stub').exists()).to.be.true;
+    expect(wrapper.find('widgetmultiselect-stub').exists()).to.be.true;
   });
 
-  it('should instantiate an autocomplete widget with proper options from the store', () => {
+  it('should instantiate a multiselect widget with proper options from the store', () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -41,7 +41,7 @@ describe('Delete Column Step Form', () => {
       },
     });
     const wrapper = shallowMount(DeleteColumnStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
+    const widgetAutocomplete = wrapper.find('widgetmultiselect-stub');
 
     expect(widgetAutocomplete.attributes('options')).to.equal('columnA,columnB,columnC');
   });
@@ -53,7 +53,7 @@ describe('Delete Column Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).to.eql([{ keyword: 'minLength', dataPath: '.column' }]);
+    expect(errors).to.eql([{ keyword: 'minItems', dataPath: '.columns' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
@@ -91,20 +91,6 @@ describe('Delete Column Step Form', () => {
     ]);
   });
 
-  it('should update step when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(DeleteColumnStepForm, { store, localVue });
-    expect(wrapper.vm.$data.column).to.equal('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.column).to.equal('columnB');
-  });
-
   it('should update selectedColumn when column is changed', async () => {
     const store = setupStore({
       dataset: {
@@ -122,8 +108,8 @@ describe('Delete Column Step Form', () => {
       store,
       localVue,
     });
-    wrapper.setData({ column: 'columnB' });
-    await wrapper.find(WidgetAutocomplete).trigger('input');
+    wrapper.setData({ editedStep: { columns: ['columnB'] } });
+    await wrapper.find(WidgetMultiselect).trigger('input');
     expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 

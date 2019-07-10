@@ -48,6 +48,12 @@ export type DomainStep = {
   domain: string;
 };
 
+export type DuplicateColumnStep = {
+  name: 'duplicate';
+  column: string;
+  new_column_name: string;
+};
+
 export type FillnaStep = {
   name: 'fillna';
   column: string;
@@ -129,6 +135,7 @@ export type PipelineStep =
   | ArgminStep
   | CustomStep
   | DeleteStep
+  | DuplicateColumnStep
   | DomainStep
   | FillnaStep
   | FilterStep

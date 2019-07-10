@@ -1,18 +1,16 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetAutocomplete
-      id="columnInput"
+    <ColumnPicker
       v-model="editedStep.column"
-      name="Fill null values in:"
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.column })"
+      id="columnInput"
+      name="Replace null values in..."
       placeholder="Enter a column"
-    ></WidgetAutocomplete>
+    ></ColumnPicker>
     <WidgetInputText
       id="valueInput"
       v-model="editedStep.value"
-      name="With:"
+      name="With..."
       placeholder="Enter a value"
     ></WidgetInputText>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
@@ -21,10 +19,9 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import fillnaSchema from '@/assets/schemas/fillna-step__schema.json';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
 
@@ -32,8 +29,7 @@ import { FillnaStep } from '@/lib/steps';
   vqbstep: 'fillna',
   name: 'fillna-step-form',
   components: {
-    BaseStepForm,
-    WidgetAutocomplete,
+    ColumnPicker,
     WidgetInputText,
   },
 })
@@ -41,8 +37,7 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
   initialStepValue!: FillnaStep;
 
-  readonly title: string = 'Fill Null Values Step';
-  editedStepModel = fillnaSchema;
+  readonly title: string = 'Fill null values';
 
   get stepSelectedColumn() {
     return this.editedStep.column;

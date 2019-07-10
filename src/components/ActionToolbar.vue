@@ -13,6 +13,7 @@
         :category="button.category"
         :is-active="button.isActionToolbarMenuOpened"
         :class="button.class"
+        @actionClicked="actionClicked"
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
@@ -29,6 +30,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { State } from 'vuex-class';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
+import { PipelineStepName } from '@/lib/steps';
 
 @Component({
   name: 'action-toolbar',
@@ -42,17 +44,16 @@ export default class ActionToolbar extends Vue {
 
   isActiveActionToolbarButton: number = -1;
 
-  openPopover(index: number) {
-    const buttondef = this.buttons[index];
-    if (buttondef.label === 'Aggregate') {
-      this.createAggregateStep();
-    } else {
-      this.isActiveActionToolbarButton = index;
-    }
+  actionClicked(stepName: PipelineStepName) {
+    this.$emit('actionClicked', stepName);
   }
 
-  createAggregateStep() {
-    this.$emit('actionClicked', { name: 'aggregate', on: this.selectedColumns, aggregations: [] });
+  openPopover(index: number) {
+    const buttondef = this.buttons[index];
+    this.isActiveActionToolbarButton = index;
+    if (buttondef.label === 'Aggregate') {
+      this.actionClicked('aggregate');
+    }
   }
 
   get formattedButtons() {

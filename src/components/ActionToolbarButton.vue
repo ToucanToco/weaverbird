@@ -9,6 +9,7 @@
             v-for="(item, index) in items"
             :key="index"
             class="action-menu__option"
+            @click="actionClicked(item.name)"
           >{{ item.label }}</div>
         </div>
       </div>
@@ -19,9 +20,9 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
+import { PipelineStepName } from '@/lib/steps';
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
-import { Object } from 'lodash';
 
 @Component({
   name: 'action-toolbar-button',
@@ -57,6 +58,12 @@ export default class ActionToolbarButton extends Vue {
       this.close();
     }
   }
+  /**
+   * @description Emit an event with a PipelineStepName in order to open its form
+   */
+  actionClicked(stepName: PipelineStepName) {
+    this.$emit('actionClicked', stepName);
+  }
 
   get items() {
     return ACTION_CATEGORIES[this.category];
@@ -67,7 +74,7 @@ export default class ActionToolbarButton extends Vue {
   }
 
   @Watch('isActive')
-  onIsActiveChanged(val: boolean, oldval: boolean) {
+  onIsActiveChanged(val: boolean) {
     if (val) {
       window.addEventListener('click', this.clickListener);
     } else {
@@ -77,11 +84,13 @@ export default class ActionToolbarButton extends Vue {
 }
 </script>
 <style lang="scss">
+@import '../styles/_variables';
+
 .action-toolbar__btn {
   background: #fafafa;
   border-radius: 5px;
   border: 1px solid #fafafa;
-  color: #2a66a1;
+  color: $active-color;
   padding: 10px 0;
   text-align: center;
   margin-left: 5px;
@@ -97,10 +106,10 @@ export default class ActionToolbarButton extends Vue {
 }
 
 .action-toolbar__btn--active {
-  background: #2a66a1;
+  background: $active-color;
   color: #fff;
   &:hover {
-    background: #2a66a1;
+    background: $active-color;
     color: #fff;
   }
 }

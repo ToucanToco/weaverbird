@@ -47,7 +47,7 @@ import Vue from 'vue';
 import { Getter, Mutation, State } from 'vuex-class';
 
 import { DataSet } from '@/lib/dataset';
-import { PipelineStep } from '@/lib/steps';
+import { PipelineStepName } from '@/lib/steps';
 import { Component } from 'vue-property-decorator';
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
@@ -129,10 +129,10 @@ export default class DataViewer extends Vue {
   /**
    * @description Emit an event in order to open the form to create a step
    *
-   * @param {PipelineStep} step - The step we want to create
+   * @param {PipelineStepName} stepName - The name of the step we want to create
    */
-  createStep(step: PipelineStep) {
-    this.$emit('stepCreated', step);
+  createStep(stepName: PipelineStepName) {
+    this.$emit('stepCreated', stepName);
   }
 }
 </script>

@@ -11,6 +11,7 @@ $active-color-faded-2: rgba($active-color, 0.1) !default;
 $active-color-faded-3: rgba($active-color, 0.05) !default;
 $data-viewer-border-color: #e0e0e0 !default;
 $grey: #eeeeee;
+$grey-dark: #585858;
 
 //GLOBAL STYLE
 *,
@@ -45,9 +46,8 @@ fieldset {
 
 %form-widget__label {
   color: $base-color;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 20px;
-  text-transform: uppercase;
   margin-bottom: 5px;
 }
 
@@ -65,8 +65,13 @@ fieldset {
   padding: 8px 30px 8px 8px;
   outline: none;
 
+  &::placeholder {
+    font-size: 12px;
+    color: $grey-dark;
+  }
+
   box-size &::placeholder {
-    color: #a7a7a7;
+    color: $grey-dark;
   }
 }
 
@@ -86,7 +91,7 @@ fieldset {
   color: #fff;
   cursor: pointer;
   font-family: 'Montserrat', sans-serif;
-  font-size: 15px;
+  font-size: 12px;
   padding: 12px 0;
   text-decoration: none;
   font-weight: 500;

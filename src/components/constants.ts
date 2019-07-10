@@ -5,9 +5,23 @@ export type ButtonDef = Readonly<{
   enable: boolean;
 }>;
 
-export const ACTION_CATEGORIES: { [category: string]: object } = {
+type ActionCategories = {
+  compute: ActionCategory[];
+  filter: ActionCategory[];
+  reshape: ActionCategory[];
+  [key: string]: ActionCategory[];
+};
+
+export type ActionCategory = {
+  name: string;
+  label: string;
+};
+
+export const ACTION_CATEGORIES: ActionCategories = {
   compute: [{ name: 'percentage', label: 'Percentage of total' }],
   filter: [
+    { name: 'delete', label: 'Delete columns' },
+    { name: 'select', label: 'Keep columns' },
     { name: 'filter', label: 'Filter based on conditions' },
     { name: 'top', label: 'Top N rows' },
     { name: 'argmax', label: 'Argmax' },

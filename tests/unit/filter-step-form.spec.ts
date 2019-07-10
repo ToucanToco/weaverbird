@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -23,16 +22,15 @@ describe('Filter Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-
     expect(wrapper.exists()).to.be.true;
+    expect(wrapper.vm.$data.stepname).equal('filter');
   });
 
-  it('should have exactly one widgetinputtext and two autocomplete components', () => {
+  it('should have exactly 3 input components', () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
-    expect(inputWrappers.length).to.equal(1);
-    const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(autocompleteWrappers.length).to.equal(2);
+    expect(wrapper.findAll('widgetinputtext-stub').length).to.equal(1);
+    expect(wrapper.findAll('widgetautocomplete-stub').length).to.equal(1);
+    expect(wrapper.findAll('columnpicker-stub').length).to.equal(1);
   });
 
   it('should pass down the value prop to widget value prop', async () => {
@@ -40,7 +38,7 @@ describe('Filter Step Form', () => {
     wrapper.setData({ editedStep: { column: '', value: 'foo', operator: 'nin' } });
     await localVue.nextTick();
     expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
-    const operatorWrapper = wrapper.findAll('widgetautocomplete-stub').at(1);
+    const operatorWrapper = wrapper.find('#filterOperator');
     expect(operatorWrapper.props('value')).to.equal('nin');
   });
 
@@ -52,10 +50,8 @@ describe('Filter Step Form', () => {
       },
     });
     const wrapper = shallowMount(FilterStepForm, { store, localVue });
-    const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
-
-    expect(autocompleteWrappers.at(0).attributes('options')).to.equal('columnA,columnB,columnC');
-    expect(autocompleteWrappers.at(1).attributes('options')).to.equal('eq,ne,gt,ge,lt,le,in,nin');
+    const filterWrapper = wrapper.find('#filterOperator');
+    expect(filterWrapper.attributes('options')).to.equal('eq,ne,gt,ge,lt,le,in,nin');
   });
 
   it('should report errors when submitted data is not valid', () => {
@@ -92,45 +88,6 @@ describe('Filter Step Form', () => {
     expect(wrapper.emitted()).to.eql({
       cancel: [[]],
     });
-  });
-
-  it('should update step when selectedColumn is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = shallowMount(FilterStepForm, { store, localVue });
-    expect(wrapper.vm.$data.editedStep.column).to.equal('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.editedStep.column).to.equal('columnB');
-  });
-
-  it('should update selectedColumn when column is changed', async () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(FilterStepForm, {
-      propsData: {
-        initialValue: {
-          name: 'filter',
-          column: 'columnA',
-          value: '',
-          operator: 'eq',
-        },
-      },
-      store,
-      localVue,
-    });
-    wrapper.setData({ editedStep: { column: 'columnB', value: '' } });
-    await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).to.eql(['columnB']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {

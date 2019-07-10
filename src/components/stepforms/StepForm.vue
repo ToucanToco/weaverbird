@@ -5,8 +5,10 @@ import { Prop, Component, Watch } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 import { MutationCallbacks } from '@/store/mutations';
-import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
+import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
+import schemaFactory from '@/components/stepforms/schemas';
+import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
 import { Pipeline } from '@/lib/steps';
 import { Writable } from '@/lib/steps';
 
@@ -90,16 +92,27 @@ export default class BaseStepForm<StepType> extends Vue {
   editedStep: Writable<StepType> = { ...this.initialStepValue };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
+  stepname!: string; // fed by @StepFormComponent
   validator: ValidateFunction = () => false;
 
-  mounted() {
-    this.validator = Ajv({ schemaId: 'auto', allErrors: true }).compile(this.editedStepModel);
+  created() {
+    this.initialize();
   }
 
-  created() {
+  initialize() {
     const column = this.stepSelectedColumn;
     if (column) {
       this.setSelectedColumns({ column });
+    }
+    this.editedStepModel = schemaFactory(this.stepname, this);
+    const ajv = Ajv({ schemaId: 'auto', allErrors: true });
+    addAjvKeywords(ajv);
+    this.validator = ajv.compile(this.editedStepModel);
+  }
+
+  mounted() {
+    if (this.isStepCreation && this.selectedColumns.length > 0) {
+      this.stepSelectedColumn = this.selectedColumns[0];
     }
   }
 
@@ -145,7 +158,7 @@ export default class BaseStepForm<StepType> extends Vue {
    */
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal)) {
+    if (val.length > 0 && !_.isEqual(val, oldVal)) {
       this.stepSelectedColumn = val[0];
     }
   }
@@ -153,30 +166,11 @@ export default class BaseStepForm<StepType> extends Vue {
   updateSelectedColumn(_colname: string) {}
 
   /**
-   * `rebuildStep` is called when emiting the `formSaved` event to build
-   * the step to emit. The default behaviour is just to copy the edited step
-   * but a concrete subclass might decide something else. In that case, rather
-   * than overriding the whole `submit` method, it can just redefine `rebuildStep`
-   */
-  rebuildStep(): StepType {
-    return { ...this.editedStep };
-  }
-
-  /**
-   * `stepToValidate` is called to build the step to send to the `Ajv` validator.
-   * The default behaviour is to send the edited step but a concrete subclass
-   * might decide otherwise.
-   */
-  stepToValidate(): object {
-    return { ...this.editedStep };
-  }
-
-  /**
    * `validate` calls `Ajv`. If there are some errors, return them, otherwise
    * return `null`.
    */
   validate() {
-    const ret = this.validator(this.stepToValidate());
+    const ret = this.validator({ ...this.editedStep });
     if (ret === false) {
       return this.validator.errors;
     }
@@ -203,36 +197,8 @@ export default class BaseStepForm<StepType> extends Vue {
     const errors = this.validate();
     this.errors = errors;
     if (errors === null) {
-      this.$emit('formSaved', this.rebuildStep());
+      this.$emit('formSaved', { ...this.editedStep });
     }
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../styles/_variables';
-
-.widget-form-action__button {
-  @extend %button-default;
-}
-
-.widget-form-action__button--validate {
-  background-color: $active-color;
-}
-
-.step-edit-form {
-  border-bottom: 1px solid $grey;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding-bottom: 20px;
-  margin: 10px 0 15px;
-  width: 100%;
-}
-
-.step-edit-form__title {
-  color: $base-color;
-  font-weight: 600;
-  font-size: 14px;
-  margin: 0;
-}
-</style>

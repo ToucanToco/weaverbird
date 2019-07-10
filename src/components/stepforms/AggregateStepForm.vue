@@ -4,18 +4,18 @@
     <WidgetMultiselect
       id="groupbyColumnsInput"
       v-model="editedStep.on"
-      name="Group by:"
+      name="Group rows by..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.on[0] })"
+      @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length-1] })"
       placeholder="Add columns"
     ></WidgetMultiselect>
     <WidgetList
       addFieldName="Add aggregation"
       id="toremove"
-      name="Aggregations:"
+      name="And aggregate..."
       v-model="aggregations"
       :defaultItem="defaultAggregation"
-      :widget="'widget-aggregation'"
+      :widget="widgetAggregation"
       :automatic-new-field="false"
     ></WidgetList>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
@@ -25,7 +25,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
-import aggregateSchema from '@/assets/schemas/aggregate-step__schema.json';
+import WidgetAggregation from './WidgetAggregation.vue';
 import WidgetMultiselect from './WidgetMultiselect.vue';
 import WidgetList from './WidgetList.vue';
 import BaseStepForm from './StepForm.vue';
@@ -43,9 +43,8 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   @Prop({ type: Object, default: () => ({ name: 'aggregate', on: [], aggregations: [] }) })
   initialStepValue!: AggregationStep;
 
-  readonly title: string = 'Edit Aggregate Step';
-
-  editedStepModel = aggregateSchema;
+  readonly title: string = 'Aggregate';
+  widgetAggregation = WidgetAggregation;
 
   get defaultAggregation() {
     const agg: AggFunctionStep = {
@@ -87,30 +86,3 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   }
 }
 </script>
-<style lang="scss" scoped>
-@import '../../styles/_variables';
-.widget-form-action__button {
-  @extend %button-default;
-}
-
-.widget-form-action__button--validate {
-  background-color: $active-color;
-}
-
-.step-edit-form {
-  border-bottom: 1px solid $grey;
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  padding-bottom: 20px;
-  margin: 10px 0 15px;
-  width: 100%;
-}
-
-.step-edit-form__title {
-  color: $base-color;
-  font-weight: 600;
-  font-size: 14px;
-  margin: 0;
-}
-</style>
