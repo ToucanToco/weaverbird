@@ -21,10 +21,7 @@
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
-      <div class="action-toolbar__search">
-        <i class="action-toolbar__search-icon fas fa-search"></i>
-        <input class="action-toolbar__search-input" type="text" placeholder="Search">
-      </div>
+      <search-bar @actionClicked="actionClicked"></search-bar>
     </div>
   </div>
 </template>
@@ -35,11 +32,13 @@ import { State } from 'vuex-class';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
 import { PipelineStepName } from '@/lib/steps';
+import SearchBar from './SearchBar.vue';
 
 @Component({
   name: 'action-toolbar',
   components: {
     ActionToolbarButton,
+    SearchBar,
   },
 })
 export default class ActionToolbar extends Vue {
