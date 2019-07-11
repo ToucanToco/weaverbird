@@ -54,7 +54,9 @@ export default class RenameStepForm extends BaseStepForm<RenameStep> {
 
   submit() {
     this.$$super.submit();
-    this.setSelectedColumns({ column: this.editedStep.newname });
+    if (this.errors === null) {
+      this.setSelectedColumns({ column: this.editedStep.newname });
+    }
   }
 }
 </script>
