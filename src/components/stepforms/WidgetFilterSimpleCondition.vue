@@ -1,22 +1,25 @@
 <template>
-  <div class="filter-form-single-condition__container">
-    <WidgetAutocomplete
-      id="columnInput"
-      v-model="editedValue.column"
-      name="Values in..."
-      :options="columnNames"
-      @input="setSelectedColumns({ column: editedValue.column })"
-      placeholder="Column"
-    ></WidgetAutocomplete>
-    <WidgetAutocomplete
-      id="filterOperator"
-      :value="operator"
-      @input="updateStepOperator"
-      :options="operators"
-      placeholder="Filter operator"
-      :trackBy="`operator`"
-      :label="`label`"
-    ></WidgetAutocomplete>
+  <div class="filter-form-simple-condition__container">
+    <div class="filter-form-simple-condition-column-input">
+      <WidgetAutocomplete
+        id="columnInput"
+        v-model="editedValue.column"
+        :options="columnNames"
+        @input="setSelectedColumns({ column: editedValue.column })"
+        placeholder="Column"
+      ></WidgetAutocomplete>
+    </div>
+    <div class="filter-form-simple-condition-operator-input">
+      <WidgetAutocomplete
+        id="filterOperator"
+        :value="operator"
+        @input="updateStepOperator"
+        :options="operators"
+        placeholder="Filter operator"
+        :trackBy="`operator`"
+        :label="`label`"
+      ></WidgetAutocomplete>
+    </div>
     <component :is="inputWidget" v-model="editedValue.value" :placeholder="placeholder"></component>
   </div>
 </template>
@@ -106,21 +109,34 @@ export default class WidgetFilterSimpleCondition extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.filter-form-single-condition__container {
+.filter-form-simple-condition__container {
+  background-color: white;
   display: flex;
+  min-height: 45px;
   width: 100%;
 }
 
-.filter-form-single-condition__container .widget-autocomplete__container {
+.filter-form-simple-condition-column-input {
+  margin-left: 10px;
   margin-right: 10px;
+  width: 33%;
 }
 
-.filter-form-single-condition__container .widget-input-text__container {
-  margin-top: 20px;
+.filter-form-simple-condition-operator-input {
+  margin-right: 10px;
+  width: 33%;
 }
 
-.filter-form-single-condition__container .widget-multiinnputtext__container {
-  margin-top: 20px;
+.filter-form-simple-condition__container .widget-input-text__container {
+  margin-bottom: 0px;
+  margin-right: 10px;
+  width: 33%;
+}
+
+.filter-form-simple-condition__container .widget-multiinputtext__container {
+  margin-bottom: 0px;
+  margin-right: 10px;
+  width: 33%;
 }
 </style>
 

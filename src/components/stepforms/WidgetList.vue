@@ -150,6 +150,7 @@ export default class WidgetList extends Vue {
 }
 
 .widget-list__icon {
+  margin-top: 8px;
   position: absolute;
   right: 0;
   top: calc(50% - 16px);

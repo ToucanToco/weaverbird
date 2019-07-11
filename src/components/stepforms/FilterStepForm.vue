@@ -1,13 +1,18 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <div class="filter-step-form-body__container">
-      <WidgetFilterSimpleCondition
-        id="columnInput"
-        v-model="editedStep.condition"
-        @input="updateEditedStep"
-      ></WidgetFilterSimpleCondition>
+    <div class="filter-form-headers__container">
+      <div class="filter-form-header">Values in...</div>
+      <div class="filter-form-header">Must...</div>
     </div>
+    <WidgetList
+      addFieldName="Add condition"
+      id="filterConditions"
+      v-model="conditions"
+      :defaultItem="defaultCondition"
+      :widget="widgetFilterSimpleCondition"
+      :automatic-new-field="false"
+    ></WidgetList>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -16,8 +21,9 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetFilterSimpleCondition from '@/components/stepforms/WidgetFilterSimpleCondition.vue';
+import WidgetList from './WidgetList.vue';
 import BaseStepForm from './StepForm.vue';
-import { FilterStep } from '@/lib/steps';
+import { FilterStep, FilterComboAnd } from '@/lib/steps';
 import { FilterSimpleCondition } from '@/lib/steps';
 
 @StepFormComponent({
@@ -25,33 +31,51 @@ import { FilterSimpleCondition } from '@/lib/steps';
   name: 'filter-step-form',
   components: {
     WidgetFilterSimpleCondition,
+    WidgetList,
   },
 })
 export default class FilterStepForm extends BaseStepForm<FilterStep> {
   @Prop({
     type: Object,
-    default: () => ({ name: 'filter', condition: { column: '', value: '', operator: 'eq' } }),
+    default: () => ({
+      name: 'filter',
+      condition: { and: [{ column: '', value: '', operator: 'eq' }] },
+    }),
   })
   initialStepValue!: FilterStep;
 
   readonly title: string = 'Filter';
+  condition = this.initialStepValue.condition as FilterComboAnd;
+  editedStep = { name: 'filter' as 'filter', condition: { ...this.condition } };
+  widgetFilterSimpleCondition = WidgetFilterSimpleCondition;
 
-  updateEditedStep(newStepCondition: FilterSimpleCondition) {
-    this.editedStep = { name: 'filter', condition: { ...newStepCondition } };
+  get defaultCondition() {
+    const cond: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };
+    return cond;
+  }
+
+  get conditions() {
+    if (this.editedStep.condition.and.length) {
+      return this.editedStep.condition.and;
+    } else {
+      return [this.defaultCondition];
+    }
+  }
+
+  set conditions(newval) {
+    this.editedStep.condition.and = [...newval];
   }
 }
 </script>
 <style lang="scss" scoped>
-.filter-step-form-body__container {
+.filter-form-headers__container {
   display: flex;
+  width: 66%;
 }
 
-.filter-step-form-body__container .widget-autocomplete__container {
-  margin-right: 10px;
-}
-
-.filter-step-form-body__container .widget-input-text__container {
-  margin-top: 20px;
+.filter-form-header {
+  font-size: 14px;
+  margin-left: 10px;
+  width: 50%;
 }
 </style>
-
