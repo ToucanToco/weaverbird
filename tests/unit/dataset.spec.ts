@@ -1,6 +1,11 @@
 import { expect } from 'chai';
 import { DataSet } from '@/lib/dataset';
-import { mongoResultsToDataset, MongoResults } from '@/lib/dataset/mongo';
+import {
+  mongoResultsToDataset,
+  MongoResults,
+  _guessType,
+  inferTypeFromDataset,
+} from '@/lib/dataset/mongo';
 
 /**
  * helper functions to sort a dataset so that we can test output in a predictible way.
@@ -81,5 +86,195 @@ describe('Dataset helper tests', () => {
       { name: 'col4' },
     ]);
     expect(dataset.data).to.eql([['foo', null, true, null], ['bar', 7, null, '?']]);
+  });
+});
+
+describe('_guessType', () => {
+  it('should return float', () => {
+    const val = _guessType(42.34);
+    expect(val).to.equal('float');
+  });
+
+  it('should return integer', () => {
+    const val = _guessType(42);
+    expect(val).to.equal('integer');
+  });
+
+  it('should return string', () => {
+    const val = _guessType('value');
+    expect(val).to.equal('string');
+  });
+
+  it('should return boolean', () => {
+    const val = _guessType(false);
+    expect(val).to.equal('boolean');
+  });
+
+  it('should return date', () => {
+    const val = _guessType(new Date());
+    expect(val).to.equal('date');
+  });
+
+  it('should return object', () => {
+    const val = _guessType({ value: 'my_value' });
+    expect(val).to.equal('object');
+  });
+
+  it('should return null when value is null', () => {
+    const val = _guessType(null);
+    expect(val).to.eql(null);
+  });
+
+  it('should return null when value is undefined', () => {
+    const val = _guessType(undefined);
+    expect(val).to.eql(null);
+  });
+
+  it('should return null when value is Symbol', () => {
+    const val = _guessType(Symbol());
+    expect(val).to.eql(null);
+  });
+
+  it('should return null when value is function', () => {
+    const val = _guessType(() => {});
+    expect(val).to.eql(null);
+  });
+});
+
+describe('inferTypeFromDataset', () => {
+  it('should guess the right type of the columns', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [
+        ['Paris', 10000000, true],
+        ['Marseille', 3000000, false],
+        ['Berlin', 1300000, true],
+        ['Avignon', 100000, false],
+        ['La Souterraine', 0, false],
+        ['New York City', 10000000, false],
+        ['Rio de Janeiro', 4000000, false],
+      ],
+    };
+    const datasetWithInferredType = inferTypeFromDataset(dataset);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity', type: 'boolean' },
+    ]);
+  });
+
+  it('should infer type even with mixed values if we set maxRows low enough', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [
+        ['Paris', 10000000, true],
+        ['Marseille', 3000000, false],
+        ['Berlin', 1300000, true],
+        ['Avignon', 100000, false],
+        ['La Souterraine', 0, false],
+        ['New York City', 10000000, false],
+        ['Rio de Janeiro', 4000000, false],
+        [undefined, null, 10],
+      ],
+    };
+    const datasetWithInferredType = inferTypeFromDataset(dataset, 7);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity', type: 'boolean' },
+    ]);
+  });
+
+  it('should not infer type with mixed values', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [
+        ['Paris', 10000000, true],
+        ['Marseille', 3000000, false],
+        ['Berlin', 1300000, true],
+        ['Avignon', 100000, false],
+        ['La Souterraine', 0, false],
+        ['New York City', 10000000, false],
+        ['Rio de Janeiro', 4000000, false],
+        [undefined, false, 10],
+      ],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city' },
+      { name: 'population' },
+      { name: 'isCapitalCity' },
+    ]);
+  });
+
+  it('should not infer type on column with undefined values', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [['Paris', 10000000, undefined]],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity' },
+    ]);
+  });
+
+  it('should not infer type on column with null values', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [['Paris', 10000000, null]],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity' },
+    ]);
+  });
+
+  it("should infer type on column with null values if there's other values in the column", () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [['Paris', 10000000, null], ['Paris', 10000000, false]],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity', type: 'boolean' },
+    ]);
+  });
+
+  it('should not infer type on column with symbol values', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [['Paris', 10000000, Symbol()]],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity' },
+    ]);
+  });
+
+  it('should not infer type on column with function values', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+      data: [['Paris', 10000000, () => {}]],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'population', type: 'integer' },
+      { name: 'isCapitalCity' },
+    ]);
   });
 });

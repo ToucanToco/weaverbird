@@ -14,6 +14,10 @@ export default {
    **/
   columnNames: (state: VQBState) => state.dataset.headers.map(col => col.name),
   /**
+   * the list of dataset's column headers.
+   */
+  columnHeaders: (state: VQBState) => state.dataset.headers,
+  /**
    * a direct "usable" index (i.e. convert "-1" to a positive one) of last active step.
    */
   computedActiveStepIndex: (state: VQBState) =>
