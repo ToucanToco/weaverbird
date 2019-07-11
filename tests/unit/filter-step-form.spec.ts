@@ -26,20 +26,25 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.stepname).equal('filter');
   });
 
-  it('should have exactly one WidgetFilterSimplecondition component', () => {
-    const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-    const connditionWrappers = wrapper.findAll('widgetfiltersimplecondition-stub');
-    expect(connditionWrappers.length).to.equal(1);
-  });
+  describe('WidgetList', () => {
+    it('should have exactly on WidgetList component', () => {
+      const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
+      const widgetWrappers = wrapper.findAll('widgetlist-stub');
+      expect(widgetWrappers.length).to.equal(1);
+    });
 
-  it('should pass down a valid prop to WidgetFilterSimplecondition', async () => {
-    const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-    wrapper.setData({ editedStep: { condition: { column: '', value: 'foo', operator: 'nin' } } });
-    await localVue.nextTick();
-    expect(wrapper.find('widgetfiltersimplecondition-stub').props('value')).to.eql({
-      column: '',
-      value: 'foo',
-      operator: 'nin',
+    it('should pass down the "condition" prop to the WidgetList value prop', async () => {
+      const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
+      wrapper.setData({
+        editedStep: {
+          name: 'filter',
+          condition: { and: [{ column: 'foo', value: 'bar', operator: 'gt' }] },
+        },
+      });
+      await localVue.nextTick();
+      expect(wrapper.find('widgetlist-stub').props().value).to.eql([
+        { column: 'foo', value: 'bar', operator: 'gt' },
+      ]);
     });
   });
 
@@ -60,14 +65,31 @@ describe('Filter Step Form', () => {
       propsData: {
         initialStepValue: {
           name: 'filter',
-          condition: { column: 'foo', value: 'bar', operator: 'gt' },
+          condition: {
+            and: [
+              { column: 'foo', value: 'bar', operator: 'gt' },
+              { column: 'foo', value: ['bar', 'toto'], operator: 'nin' },
+            ],
+          },
         },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).to.be.null;
     expect(wrapper.emitted()).to.eql({
-      formSaved: [[{ name: 'filter', condition: { column: 'foo', value: 'bar', operator: 'gt' } }]],
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'foo', value: 'bar', operator: 'gt' },
+                { column: 'foo', value: ['bar', 'toto'], operator: 'nin' },
+              ],
+            },
+          },
+        ],
+      ],
     });
   });
 

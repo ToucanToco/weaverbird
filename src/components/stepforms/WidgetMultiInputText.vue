@@ -1,6 +1,6 @@
 <template>
-  <div class="widget-multiinnputtext__container">
-    <label class="widget-multiinnputtext__label" :for="id">{{ name }}</label>
+  <div class="widget-multiinputtext__container">
+    <label class="widget-multiinputtext__label" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
@@ -67,7 +67,7 @@ export default class WidgetMultiInputText extends Vue {
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
 @import '../../styles/_variables';
-.widget-multiinnputtext__container {
+.widget-multiinputtext__container {
   @extend %form-widget__container;
   position: relative;
 }
@@ -120,7 +120,7 @@ export default class WidgetMultiInputText extends Vue {
   color: $base-color-light;
 }
 
-.widget-multiinnputtext__label {
+.widget-multiinputtext__label {
   @extend %form-widget__label;
 }
 
@@ -148,8 +148,6 @@ export default class WidgetMultiInputText extends Vue {
 .multiselect__tags .multiselect__tag-icon {
   background: $active-color;
   &:after {
-    // color: #fff;
-    // color: $grey;
     color: rgba(255, 255, 255, 0.75);
   }
   &:hover {

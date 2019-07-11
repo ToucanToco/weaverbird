@@ -58,7 +58,7 @@ function columnMap(colnames: string[]) {
   return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
-function isFilterComboAnd(
+export function isFilterComboAnd(
   cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
 ): cond is FilterComboAnd {
   if ((cond as FilterComboAnd).and) {
