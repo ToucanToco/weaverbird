@@ -153,4 +153,18 @@ describe('Rename Step Form', () => {
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(store.state.selectedColumns).to.eql(['toto']);
   });
+
+  it('should not change the column focus if validation fails', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    const wrapper = mount(RenameStepForm, { store, localVue });
+    wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(store.state.selectedColumns).to.eql(['columnA']);
+  });
 });
