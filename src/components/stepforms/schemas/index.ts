@@ -6,6 +6,7 @@ import duplicateSchema from './duplicate';
 import domainSchema from './domain';
 import fillnaSchema from './fillna';
 import filterSchema from './filter';
+import formulaSchema from './formula';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
@@ -25,6 +26,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   domain: domainSchema,
   fillna: fillnaSchema,
   filter: filterSchema,
+  formula: formulaSchema,
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
   rename: renameBuildSchema,
