@@ -1,59 +1,43 @@
 <template>
   <div class="action-toolbar__search">
-    <i class="action-toolbar__search-icon fas fa-search"></i>
-    <input
-      @keyup="openSearch($event.target.value)"
-      class="action-toolbar__search-input"
-      type="text"
-      placeholder="Search"
-    />
-    <popover :active="isActive" bottom>
-      <div class="action-menu__body">
-        <div class="action-menu__section">
-          <div
-            v-for="(item, index) in actionItems"
-            :key="index"
-            class="action-menu__option"
-            @click="actionClicked(item.name)"
-          >{{ item.label }}</div>
-        </div>
-      </div>
-    </popover>
+    <multiselect
+      v-model="editedValue"
+      :options="actionOptions"
+      label="label"
+      track-by="label"
+      :placeholder="'Search'"
+      :reset-after="true"
+      @select="actionClicked"
+    ></multiselect>
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ActionCategory, SEARCH_ACTION } from './constants';
-import { PipelineStepName } from '@/lib/steps';
-import Popover from './Popover.vue';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { ActionCategory, SEARCH_ACTION, ACTION_CATEGORIES } from './constants';
+import Multiselect from 'vue-multiselect';
 
 @Component({
   name: 'search-bar',
   components: {
-    Popover,
+    Multiselect,
   },
 })
 export default class SearchBar extends Vue {
-  isActive: boolean = false;
-  filteredItems: ActionCategory[] = [];
+  actionOptions: ActionCategory[] = SEARCH_ACTION;
+  editedValue: string[] = [];
 
-  get actionItems() {
-    return this.filteredItems.sort(function(a, b) {
-      return a.label.localeCompare(b.label);
-    });
+  @Watch('value', { immediate: true })
+  updateEditedValue(newValue: string[]) {
+    this.editedValue = newValue;
   }
 
-  actionClicked(stepName: PipelineStepName) {
-    this.$emit('actionClicked', stepName);
+  @Watch('editedValue')
+  updateValue(newValue: string[]) {
+    this.$emit('input', newValue);
   }
 
-  openSearch(value: string) {
-    if (value.length > 1) {
-      this.isActive = true;
-      this.filteredItems = SEARCH_ACTION.filter(d => {
-        return d.label.toLowerCase().indexOf(value.toLowerCase()) > -1;
-      });
-    }
+  actionClicked(actionName: { name: string }) {
+    this.$emit('actionClicked', actionName.name);
   }
 }
 </script>
