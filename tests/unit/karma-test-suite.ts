@@ -23,6 +23,7 @@ import './plugins.spec';
 import './popover.spec';
 import './rename-step-form.spec';
 import './resizable-panels.spec';
+import './search-bar.spec';
 import './sort-step-form.spec';
 import './step.spec';
 import './store.spec';
