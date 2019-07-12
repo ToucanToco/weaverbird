@@ -12,3 +12,4 @@ import './RenameStepForm.vue';
 import './SelectColumnStepForm.vue';
 import './TopStepForm.vue';
 import './UnpivotStepForm.vue';
+import './SortStepForm.vue';

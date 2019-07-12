@@ -156,3 +156,14 @@ export default class WidgetList extends Vue {
   cursor: pointer;
 }
 </style>
+<style lang="scss">
+.widget-list__container .widget-autocomplete__container {
+  align-items: center;
+  flex-direction: row;
+  margin-bottom: 8px;
+}
+.widget-list__container .widget-autocomplete__label {
+  margin-bottom: 0px;
+  width: 40%;
+}
+</style>

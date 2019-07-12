@@ -7,6 +7,7 @@
         <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
         <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
         <div class="action-menu__option" @click="createStep('filter')">Filter values</div>
+        <div class="action-menu__option" @click="createStep('sort')">Sort values</div>
       </div>
     </div>
   </popover>

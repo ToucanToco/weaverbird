@@ -12,6 +12,7 @@ import renameBuildSchema from './rename';
 import selectSchema from './select';
 import topBuildSchema from './top';
 import unpivotSchema from './unpivot';
+import sortSchema from './sort';
 
 type buildSchemaType = ((form: any) => object) | object;
 
@@ -30,6 +31,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   select: selectSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,
+  sort: sortSchema,
 };
 
 /**
