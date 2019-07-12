@@ -90,29 +90,4 @@ export default class ActionToolbar extends Vue {
   margin-right: 15px;
   justify-content: space-between;
 }
-
-.action-toolbar__search {
-  background: #fafafa;
-  border-radius: 5px;
-  border: 1px solid #f0f0f0;
-  color: #999999;
-  padding-left: 5px;
-  align-self: center;
-  margin-left: 10px;
-}
-
-.action-toolbar__search-icon {
-  vertical-align: middle;
-}
-
-.action-toolbar__search-input {
-  background: none;
-  border: 0;
-  color: #999999;
-  line-height: 25px;
-  margin: 3px 0 3px 5px;
-  &:focus {
-    outline: none;
-  }
-}
 </style>
