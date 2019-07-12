@@ -13,6 +13,7 @@ import './duplicate-column-step-form.spec';
 import './fillna-step-form.spec';
 import './filter-step-form.spec';
 import './formlib.spec';
+import './formula-step-form.spec';
 import './mongo.spec';
 import './percentage-step-form.spec';
 import './pivot-step-form.spec';
