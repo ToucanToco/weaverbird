@@ -248,10 +248,8 @@ function transformReplace(step: Readonly<ReplaceStep>): MongoStep {
 /** transform a 'sort' step into corresponding mongo steps */
 function transformSort(step: Readonly<SortStep>): MongoStep {
   const sortMongo: PropMap<number> = {};
-  const sortOrders = step.order === undefined ? Array(step.columns.length).fill('asc') : step.order;
-  for (let i = 0; i < step.columns.length; i++) {
-    const order = sortOrders[i] === 'asc' ? 1 : -1;
-    sortMongo[step.columns[i]] = order;
+  for (const sortColumn of step.columns) {
+    sortMongo[sortColumn.column] = sortColumn.order === 'asc' ? 1 : -1;
   }
   return { $sort: sortMongo };
 }
