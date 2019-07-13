@@ -118,7 +118,7 @@ describe('Step.vue', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-        { name: 'sort', columns: ['death'] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupStore({ pipeline });
       const wrapper = mount(PipelineComponent, { store, localVue });
@@ -147,7 +147,7 @@ describe('Step.vue', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-        { name: 'sort', columns: ['death'] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupStore({ pipeline });
       const wrapper = mount(PipelineComponent, { store, localVue });
@@ -167,7 +167,7 @@ describe('Step.vue', () => {
       { name: 'domain', domain: 'GoT' },
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'rename', oldname: 'region', newname: 'kingdom' },
-      { name: 'sort', columns: ['death'] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupStore({ pipeline, isEditingStep: false });
     const wrapper = mount(PipelineComponent, { store, localVue });
