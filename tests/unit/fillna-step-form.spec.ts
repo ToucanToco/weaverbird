@@ -47,27 +47,123 @@ describe('Fillna Step Form', () => {
   });
 
   it('should report errors when submitted data is not valid', () => {
-    const wrapper = mount(FillnaStepForm, { store: emptyStore, localVue });
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FillnaStepForm, {
+      store,
+      localVue,
+      data: () => {
+        return {
+          editedStep: { name: 'fillna', column: 'columnA', value: { foo: 'bar' } },
+        };
+      },
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).to.eql([{ keyword: 'minLength', dataPath: '.column' }]);
+    expect(errors).to.eql([{ keyword: 'type', dataPath: '.value' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'foo' }],
+        data: [[null]],
+      },
+    });
     const wrapper = mount(FillnaStepForm, {
-      store: emptyStore,
+      store,
       localVue,
-      propsData: {
-        initialStepValue: { name: 'fillna', column: 'foo', value: 'bar' },
+      data: () => {
+        return {
+          editedStep: { name: 'fillna', column: 'foo', value: 'bar' },
+        };
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).to.be.null;
     expect(wrapper.emitted()).to.eql({
       formSaved: [[{ name: 'fillna', column: 'foo', value: 'bar' }]],
+    });
+  });
+
+  it('should convert input value to integer when the column data type is integer', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'integer' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FillnaStepForm, {
+      store,
+      localVue,
+      data: () => {
+        return {
+          editedStep: { name: 'fillna', column: 'columnA', value: '42' },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).to.be.null;
+    expect(wrapper.emitted()).to.eql({
+      formSaved: [[{ name: 'fillna', column: 'columnA', value: 42 }]],
+    });
+  });
+
+  it('should convert input value to float when the column data type is float', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'float' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FillnaStepForm, {
+      store,
+      localVue,
+      data: () => {
+        return {
+          editedStep: { name: 'fillna', column: 'columnA', value: '42.3' },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).to.be.null;
+    expect(wrapper.emitted()).to.eql({
+      formSaved: [[{ name: 'fillna', column: 'columnA', value: 42.3 }]],
+    });
+  });
+
+  it('should convert input value to boolean when the column data type is boolean', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'boolean' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FillnaStepForm, {
+      store,
+      localVue,
+      data: () => {
+        return {
+          editedStep: { name: 'fillna', column: 'columnA', value: 'true' },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    wrapper.setData({ editedStep: { name: 'fillna', column: 'columnA', value: 'false' } });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).to.be.null;
+    expect(wrapper.emitted()).to.eql({
+      formSaved: [
+        [{ name: 'fillna', column: 'columnA', value: true }],
+        [{ name: 'fillna', column: 'columnA', value: false }],
+      ],
     });
   });
 
