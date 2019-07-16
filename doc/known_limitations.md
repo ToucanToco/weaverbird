@@ -1,6 +1,6 @@
 # Known limitations
 
-This doc section is to aimed to identify a non exhaustive list of limitations
+This doc section is here to identify a non exhaustive list of limitations
 that we have in mind, and that we want to tackle in further developments.
 
 ## Supported languages
