@@ -10,7 +10,7 @@
       @blur="blur()"
       @focus="focus()"
       @input="updateValue($event.target.value)"
-    >
+    />
   </div>
 </template>
 
@@ -29,8 +29,8 @@ export default class WidgetInputText extends Vue {
   @Prop({ type: String, default: '' })
   placeholder!: string;
 
-  @Prop({ type: String, default: '' })
-  value!: string;
+  @Prop({ default: '' })
+  value!: string | number | boolean;
 
   isFocused: boolean = false;
 
