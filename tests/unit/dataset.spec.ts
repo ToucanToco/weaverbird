@@ -277,4 +277,18 @@ describe('inferTypeFromDataset', () => {
       { name: 'isCapitalCity' },
     ]);
   });
+
+  it('should not infer a float type for mixed integer and float values', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'density' }, { name: 'isCapitalCity' }],
+      data: [['Paris', 61.7, true], ['Marseille', 40, false], ['Berlin', 41.5, true]],
+    };
+
+    const datasetWithInferredType = inferTypeFromDataset(dataset);
+    expect(datasetWithInferredType.headers).to.eql([
+      { name: 'city', type: 'string' },
+      { name: 'density', type: 'float' },
+      { name: 'isCapitalCity', type: 'boolean' },
+    ]);
+  });
 });
