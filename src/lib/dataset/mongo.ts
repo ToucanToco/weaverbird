@@ -89,8 +89,14 @@ export function inferTypeFromDataset(dataset: DataSet, maxRows: number = 50): Da
       if (prevType === null) {
         prevType = guessedType;
       } else if (prevType !== guessedType) {
-        prevType = null;
-        break;
+        // if integers and floats are mixed, guessed type should be 'float'
+        const typeSet = new Set([prevType, guessedType]);
+        if (typeSet.has('integer') && typeSet.has('float')) {
+          prevType = 'float';
+        } else {
+          prevType = null;
+          break;
+        }
       }
     }
 
