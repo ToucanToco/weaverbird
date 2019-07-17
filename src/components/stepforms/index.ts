@@ -10,6 +10,7 @@ import './FormulaStepForm.vue';
 import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
 import './RenameStepForm.vue';
+import './ReplaceStepForm.vue';
 import './SelectColumnStepForm.vue';
 import './TopStepForm.vue';
 import './UnpivotStepForm.vue';
