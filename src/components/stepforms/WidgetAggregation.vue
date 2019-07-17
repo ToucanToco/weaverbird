@@ -23,12 +23,6 @@ import { Getter } from 'vuex-class';
 import { AggFunctionStep } from '@/lib/steps';
 import WidgetAutocomplete from './WidgetAutocomplete.vue';
 
-const defaultValues: AggFunctionStep = {
-  column: '',
-  aggfunction: 'sum',
-  newcolumn: '',
-};
-
 @Component({
   name: 'widget-aggregation',
   components: {
@@ -36,9 +30,7 @@ const defaultValues: AggFunctionStep = {
   },
 })
 export default class WidgetAggregation extends Vue {
-  @Prop({
-    type: Object,
-  })
+  @Prop({ type: Object, default: { column: '', aggfunction: 'sum', newcolumn: '' } })
   value!: AggFunctionStep;
 
   @Getter columnNames!: string[];
@@ -46,16 +38,9 @@ export default class WidgetAggregation extends Vue {
   aggregation: AggFunctionStep = { ...this.value };
   aggregationFunctions: AggFunctionStep['aggfunction'][] = ['sum', 'avg', 'count', 'min', 'max'];
 
-  created() {
-    if (_.isEmpty(this.value)) {
-      this.value = { ...defaultValues };
-    }
-  }
-
-  @Watch('value', { immediate: true, deep: true })
+  @Watch('aggregation', { immediate: true, deep: true })
   onAggregationChanged(newval: AggFunctionStep, oldval: AggFunctionStep) {
     if (!_.isEqual(newval, oldval)) {
-      this.aggregation = { ...newval };
       this.$emit('input', this.aggregation);
     }
   }
