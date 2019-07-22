@@ -1,7 +1,6 @@
 <template>
   <div class="search-bar">
     <multiselect
-      v-model="editedValue"
       :options="actionOptions"
       label="label"
       track-by="label"
@@ -24,17 +23,6 @@ import Multiselect from 'vue-multiselect';
 })
 export default class SearchBar extends Vue {
   actionOptions: ActionCategory[] = SEARCH_ACTION;
-  editedValue: string[] = [];
-
-  @Watch('value', { immediate: true })
-  updateEditedValue(newValue: string[]) {
-    this.editedValue = newValue;
-  }
-
-  @Watch('editedValue')
-  updateValue(newValue: string[]) {
-    this.$emit('input', newValue);
-  }
 
   actionClicked(actionName: { name: string }) {
     this.$emit('actionClicked', actionName.name);
@@ -45,9 +33,6 @@ export default class SearchBar extends Vue {
 @import '../styles/_variables';
 
 .search-bar {
-  background: #fafafa;
-  border-radius: 5px;
-  border: 1px solid #f0f0f0;
   color: #999999;
   align-self: center;
   margin-left: 10px;
@@ -61,13 +46,15 @@ export default class SearchBar extends Vue {
   box-sizing: border-box;
   border: 0;
   color: #999999;
-  // line-height: 25px;
-  min-height: 25px;
-  margin: 3px 0;
+  margin: 0;
 }
 .search-bar .multiselect__tags {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 5px;
   box-shadow: none;
   padding-left: 35px;
+  min-height: 43px;
   &:before {
     font-family: 'Font Awesome 5 Free';
     content: '\f002';
@@ -88,8 +75,21 @@ export default class SearchBar extends Vue {
     height: 16px;
   }
 }
+.search-bar .multiselect--active .multiselect__tags {
+  box-shadow: none;
+  border-color: #2665a3;
+}
+.search-bar .multiselect__placeholder {
+  padding: 0;
+}
 .search-bar .multiselect__select {
   display: none;
+}
+.search-bar .multiselect__input {
+  font-size: 12px;
+  line-height: 25px;
+  padding: 0px;
+  position: absolute;
 }
 .search-bar .multiselect__content-wrapper {
   border-radius: 5px;
@@ -99,13 +99,11 @@ export default class SearchBar extends Vue {
   border: 0;
   box-shadow: 0px 1px 20px 0px rgba(0, 0, 0, 0.2);
 }
-
-.multiselect__option {
+.search-bar .multiselect__option {
   color: $base-color;
   font-size: 12px;
-}
-
-.search-bar-input:focus {
-  outline: none;
+  &:focus {
+    outline: none;
+  }
 }
 </style>
