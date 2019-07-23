@@ -16,8 +16,8 @@ describe('Pipebuild translator', () => {
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
       { name: 'domain', domain: 'test_cube' },
-      { name: 'filter', column: 'Manager', value: 'Pierre' },
-      { name: 'filter', column: 'Region', value: 'Europe' },
+      { name: 'filter', condition: { column: 'Manager', value: 'Pierre', operator: 'eq' } },
+      { name: 'filter', condition: { column: 'Region', value: 'Europe', operator: 'eq' } },
     ]);
   });
 
@@ -29,7 +29,7 @@ describe('Pipebuild translator', () => {
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
       { name: 'domain', domain: 'test_cube' },
-      { name: 'filter', column: 'Region', value: 'Europe' },
+      { name: 'filter', condition: { column: 'Region', value: 'Europe', operator: 'eq' } },
     ]);
   });
 
@@ -41,8 +41,8 @@ describe('Pipebuild translator', () => {
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
       { name: 'domain', domain: 'test_cube' },
-      { name: 'filter', column: 'Manager', value: 'Pierre' },
-      { name: 'filter', column: 'Region', value: 'Europe' },
+      { name: 'filter', condition: { column: 'Manager', value: 'Pierre', operator: 'eq' } },
+      { name: 'filter', condition: { column: 'Region', value: 'Europe', operator: 'eq' } },
     ]);
   });
 
