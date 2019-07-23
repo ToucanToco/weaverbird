@@ -48,7 +48,10 @@ function transformMatch(matchStep: MongoStep): Pipeline {
   }
   for (const column of Object.keys(matchStep.$match).sort()) {
     if (column !== 'domain') {
-      output.push({ name: 'filter', column, value: matchStep.$match[column] });
+      output.push({
+        name: 'filter',
+        condition: { column, value: matchStep.$match[column], operator: 'eq' },
+      });
     }
   }
   return output;
