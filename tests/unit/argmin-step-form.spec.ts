@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,16 +21,16 @@ describe('Argmin Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(ArgminStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('argmin');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('argmin');
   });
 
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(ArgminStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
     const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
-    expect(autocompleteWrappers.length).to.equal(1);
-    expect(multiselectWrappers.length).to.equal(1);
+    expect(autocompleteWrappers.length).toEqual(1);
+    expect(multiselectWrappers.length).toEqual(1);
   });
 
   it('should pass down the properties to the input components', async () => {
@@ -40,7 +39,7 @@ describe('Argmin Step Form', () => {
       editedStep: { name: 'argmin', column: 'foo', groups: ['bar'] },
     });
     await localVue.nextTick();
-    expect(wrapper.find('widgetmultiselect-stub').props('value')).to.eql(['bar']);
+    expect(wrapper.find('widgetmultiselect-stub').props('value')).toEqual(['bar']);
   });
 
   it('should report errors if column is empty', async () => {
@@ -52,7 +51,7 @@ describe('Argmin Step Form', () => {
       .sort((err1: ValidationError, err2: ValidationError) =>
         err1.dataPath.localeCompare(err2.dataPath),
       );
-    expect(errors).to.eql([{ keyword: 'minLength', dataPath: '.column' }]);
+    expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.column' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
@@ -65,8 +64,8 @@ describe('Argmin Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'argmin', column: 'foo', groups: ['bar'] }]],
     });
   });
@@ -75,7 +74,7 @@ describe('Argmin Step Form', () => {
     const wrapper = mount(ArgminStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -94,9 +93,9 @@ describe('Argmin Step Form', () => {
     const wrapper = mount(ArgminStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
@@ -23,16 +22,16 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should instantiate', () => {
-    const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('aggregate');
+    const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('aggregate');
   });
 
   describe('WidgetMultiselect', () => {
     it('should have exactly one WidgetMultiselect component', () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue });
+      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       const widgetWrappers = wrapper.findAll('widgetmultiselect-stub');
-      expect(widgetWrappers.length).to.equal(1);
+      expect(widgetWrappers.length).toEqual(1);
     });
 
     it('should instantiate an WidgetMultiselect widget with proper options from the store', () => {
@@ -42,36 +41,36 @@ describe('Aggregate Step Form', () => {
           data: [],
         },
       });
-      const wrapper = shallowMount(AggregateStepForm, { store, localVue });
+      const wrapper = shallowMount(AggregateStepForm, { store, localVue, sync: false });
       const widgetMultiselect = wrapper.find('widgetmultiselect-stub');
-      expect(widgetMultiselect.attributes('options')).to.equal('columnA,columnB,columnC');
+      expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('should pass down the "on" prop to the WidgetMultiselect value prop', async () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue });
+      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] } });
-      await localVue.nextTick();
-      expect(wrapper.find('widgetmultiselect-stub').props().value).to.eql(['foo', 'bar']);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('widgetmultiselect-stub').props().value).toEqual(['foo', 'bar']);
     });
 
     it('should call the setColumnMutation on input', async () => {
       const store = emptyStore;
-      const wrapper = mount(AggregateStepForm, { store, localVue });
+      const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
       wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
       await wrapper.find(WidgetMultiselect).trigger('input');
-      expect(store.state.selectedColumns).to.eql(['foo']);
+      expect(store.state.selectedColumns).toEqual(['foo']);
     });
   });
 
   describe('WidgetList', () => {
     it('should have exactly on WidgetList component', () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue });
+      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       const widgetWrappers = wrapper.findAll('widgetlist-stub');
-      expect(widgetWrappers.length).to.equal(1);
+      expect(widgetWrappers.length).toEqual(1);
     });
 
     it('should pass down the "aggregations" prop to the WidgetList value prop', async () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue });
+      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       wrapper.setData({
         editedStep: {
           name: 'aggregate',
@@ -79,22 +78,22 @@ describe('Aggregate Step Form', () => {
           aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
         },
       });
-      await localVue.nextTick();
-      expect(wrapper.find('widgetlist-stub').props().value).to.eql([
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('widgetlist-stub').props().value).toEqual([
         { column: 'foo', newcolumn: 'bar', aggfunction: 'sum' },
       ]);
     });
 
     it('should have expected default aggregation parameters', () => {
-      const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue });
+      const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       const widgetWrappers = wrapper.findAll(WidgetAutocomplete);
-      expect(widgetWrappers.at(0).props().value).to.equal('');
-      expect(widgetWrappers.at(1).props().value).to.equal('sum');
+      expect(widgetWrappers.at(0).props().value).toEqual('');
+      expect(widgetWrappers.at(1).props().value).toEqual('sum');
     });
   });
 
   describe('Validation', () => {
-    it('should report errors when the "on" parameter is an empty string', async () => {
+    it('should report errors when the "on" parameter is an empty string', () => {
       const wrapper = mount(AggregateStepForm, {
         store: emptyStore,
         localVue,
@@ -107,18 +106,18 @@ describe('Aggregate Step Form', () => {
             },
           };
         },
+        sync: false,
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
       const errors = wrapper.vm.$data.errors
         .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([{ keyword: 'minLength', dataPath: '.on[0]' }]);
+      expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.on[0]' }]);
     });
 
-    it('should report errors when the "column" parameter is an empty string', async () => {
+    it('should report errors when the "column" parameter is an empty string', () => {
       const wrapper = mount(AggregateStepForm, {
         store: emptyStore,
         localVue,
@@ -131,22 +130,22 @@ describe('Aggregate Step Form', () => {
             },
           };
         },
+        sync: false,
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
       const errors = wrapper.vm.$data.errors
         .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         { keyword: 'minLength', dataPath: '.aggregations[0].column' },
         // newcolumn is computed based on column so an error is also returned for this parameter
         { keyword: 'minLength', dataPath: '.aggregations[0].newcolumn' },
       ]);
     });
 
-    it('should report errors when the "aggfunction" parameter is not allowed', async () => {
+    it('should report errors when the "aggfunction" parameter is not allowed', () => {
       const wrapper = mount(AggregateStepForm, {
         store: emptyStore,
         localVue,
@@ -159,18 +158,18 @@ describe('Aggregate Step Form', () => {
             },
           };
         },
+        sync: false,
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
       const errors = wrapper.vm.$data.errors
         .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }]);
+      expect(errors).toEqual([{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }]);
     });
 
-    it('should keep the same column name as newcolumn if only one aggregation is performed', async () => {
+    it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
       const wrapper = mount(AggregateStepForm, {
         store: emptyStore,
         localVue,
@@ -183,14 +182,14 @@ describe('Aggregate Step Form', () => {
             },
           };
         },
+        sync: false,
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      expect(wrapper.vm.$data.errors).to.be.null;
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).to.equal('bar');
+      expect(wrapper.vm.$data.errors).toBeNull();
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar');
     });
 
-    it('should set newcolumn cleverly if several aggregations are performed o, the same column', async () => {
+    it('should set newcolumn cleverly if several aggregations are performed o, the same column', () => {
       const wrapper = mount(AggregateStepForm, {
         store: emptyStore,
         localVue,
@@ -206,15 +205,15 @@ describe('Aggregate Step Form', () => {
             },
           };
         },
+        sync: false,
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      expect(wrapper.vm.$data.errors).to.be.null;
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).to.equal('bar-sum');
-      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).to.equal('bar-avg');
+      expect(wrapper.vm.$data.errors).toBeNull();
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
+      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).toEqual('bar-avg');
     });
 
-    it('should validate and emit "formSaved" when submitted data is valid', async () => {
+    it('should validate and emit "formSaved" when submitted data is valid', () => {
       const wrapper = mount(AggregateStepForm, {
         store: emptyStore,
         localVue,
@@ -227,11 +226,11 @@ describe('Aggregate Step Form', () => {
             },
           };
         },
+        sync: false,
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      expect(wrapper.vm.$data.errors).to.be.null;
-      expect(wrapper.emitted()).to.eql({
+      expect(wrapper.vm.$data.errors).toBeNull();
+      expect(wrapper.emitted()).toEqual({
         formSaved: [
           [
             {
@@ -245,25 +244,24 @@ describe('Aggregate Step Form', () => {
     });
   });
 
-  it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue });
+  it('should emit "cancel" event when edition is cancelled', () => {
+    const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
 
   it('should change the column focus after input in multiselect', async () => {
     const store = setupStore({ selectedColumns: [] });
-    const wrapper = mount(AggregateStepForm, { store, localVue });
+    const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
     wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
     wrapper.find(WidgetMultiselect).trigger('input');
-    await localVue.nextTick();
-    expect(store.state.selectedColumns).to.eql(['foo']);
+    await wrapper.vm.$nextTick();
+    expect(store.state.selectedColumns).toEqual(['foo']);
   });
 
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
+  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', async () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
@@ -278,11 +276,12 @@ describe('Aggregate Step Form', () => {
       store,
       localVue,
       propsData: { isStepCreation: true },
+      sync: false,
     });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    await wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

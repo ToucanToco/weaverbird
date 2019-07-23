@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -23,14 +22,14 @@ describe('Duplicate Column Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(DuplicateColumnStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(DuplicateColumnStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.findAll('columnpicker-stub').length).to.equal(1);
-    expect(wrapper.findAll('widgetinputtext-stub').length).to.equal(1);
+    expect(wrapper.findAll('columnpicker-stub').length).toEqual(1);
+    expect(wrapper.findAll('widgetinputtext-stub').length).toEqual(1);
   });
 
   describe('Errors', () => {
@@ -47,7 +46,7 @@ describe('Duplicate Column Step Form', () => {
         keyword: err.keyword,
         dataPath: err.dataPath,
       }));
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         { keyword: 'minLength', dataPath: '.column' },
         { keyword: 'minLength', dataPath: '.new_column_name' },
       ]);
@@ -71,7 +70,7 @@ describe('Duplicate Column Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).to.eql([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column_name' }]);
+    expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column_name' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
@@ -83,8 +82,8 @@ describe('Duplicate Column Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'duplicate', column: 'foo', new_column_name: 'bar' }]],
     });
   });
@@ -101,9 +100,9 @@ describe('Duplicate Column Step Form', () => {
 
     const wrapper = mount(DuplicateColumnStepForm, { store, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(wrapper.emitted()).to.eql({ cancel: [[]] });
-    expect(store.state.selectedStepIndex).to.equal(1);
-    expect(store.state.pipeline).to.eql([
+    expect(wrapper.emitted()).toEqual({ cancel: [[]] });
+    expect(store.state.selectedStepIndex).toEqual(1);
+    expect(store.state.pipeline).toEqual([
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ]);
@@ -123,9 +122,9 @@ describe('Duplicate Column Step Form', () => {
     const wrapper = mount(DuplicateColumnStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

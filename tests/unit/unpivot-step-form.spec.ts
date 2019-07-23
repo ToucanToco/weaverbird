@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -24,17 +23,17 @@ describe('Unpivot Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have 5 input components', () => {
     const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('widgetmultiselect-stub');
-    expect(autocompleteWrappers.length).to.equal(2);
+    expect(autocompleteWrappers.length).toEqual(2);
     const inputWrappers = wrapper.findAll('widgetinputtext-stub');
-    expect(inputWrappers.length).to.equal(2);
+    expect(inputWrappers.length).toEqual(2);
     const checkboxWrappers = wrapper.findAll('widgetcheckbox-stub');
-    expect(checkboxWrappers.length).to.equal(1);
+    expect(checkboxWrappers.length).toEqual(1);
   });
 
   it('should pass down props to widgets', () => {
@@ -54,12 +53,12 @@ describe('Unpivot Step Form', () => {
         };
       },
     });
-    expect(wrapper.find('#keepColumnInput').props('value')).to.eql(['foo', 'bar']);
-    expect(wrapper.find('#unpivotColumnInput').props('value')).to.eql(['baz']);
-    expect(wrapper.find('#unpivotColumnNameInput').props('value')).to.equal('spam');
-    expect(wrapper.find('#valueColumnNameInput').props('value')).to.equal('eggs');
+    expect(wrapper.find('#keepColumnInput').props('value')).toEqual(['foo', 'bar']);
+    expect(wrapper.find('#unpivotColumnInput').props('value')).toEqual(['baz']);
+    expect(wrapper.find('#unpivotColumnNameInput').props('value')).toEqual('spam');
+    expect(wrapper.find('#valueColumnNameInput').props('value')).toEqual('eggs');
     const widgetCheckbox = wrapper.find(WidgetCheckbox);
-    expect(widgetCheckbox.classes()).not.to.contain('widget-checkbox--checked');
+    expect(widgetCheckbox.classes()).not.toContain('widget-checkbox--checked');
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
@@ -70,10 +69,10 @@ describe('Unpivot Step Form', () => {
       },
     });
     const wrapper = shallowMount(UnpivotStepForm, { store, localVue });
-    expect(wrapper.find('#keepColumnInput').attributes('options')).to.equal(
+    expect(wrapper.find('#keepColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
-    expect(wrapper.find('#unpivotColumnInput').attributes('options')).to.equal(
+    expect(wrapper.find('#unpivotColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
   });
@@ -88,7 +87,7 @@ describe('Unpivot Step Form', () => {
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         { keyword: 'minItems', dataPath: '.keep' },
         { keyword: 'minItems', dataPath: '.unpivot' },
         { keyword: 'minLength', dataPath: '.unpivot_column_name' },
@@ -121,7 +120,7 @@ describe('Unpivot Step Form', () => {
         dataPath: err.dataPath,
         message: err.message,
       }));
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           keyword: 'columnNameConflict',
           dataPath: '.unpivot',
@@ -155,7 +154,7 @@ describe('Unpivot Step Form', () => {
         dataPath: err.dataPath,
         message: err.message,
       }));
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           keyword: 'columnNameConflict',
           dataPath: '.unpivot_column_name',
@@ -190,7 +189,7 @@ describe('Unpivot Step Form', () => {
       dataPath: err.dataPath,
       message: err.message,
     }));
-    expect(errors).to.eql([
+    expect(errors).toEqual([
       {
         keyword: 'columnNameConflict',
         dataPath: '.value_column_name',
@@ -216,8 +215,8 @@ describe('Unpivot Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [
         [
           {
@@ -237,7 +236,7 @@ describe('Unpivot Step Form', () => {
     const wrapper = mount(UnpivotStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -256,9 +255,9 @@ describe('Unpivot Step Form', () => {
     const wrapper = mount(UnpivotStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

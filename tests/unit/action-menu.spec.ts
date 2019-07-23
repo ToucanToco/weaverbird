@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import ActionMenu from '@/components/ActionMenu.vue';
 import Vuex from 'vuex';
@@ -11,8 +10,8 @@ describe('Action Menu', () => {
   it('should instantiate with its popover hidden', () => {
     const wrapper = mount(ActionMenu);
 
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.classes()).not.to.contain('popover--active');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.classes()).not.toContain('popover--active');
   });
 
   it('should instantiate with the popover active', () => {
@@ -22,17 +21,17 @@ describe('Action Menu', () => {
       },
     });
 
-    expect(wrapper.classes()).to.contain('popover--active');
+    expect(wrapper.classes()).toContain('popover--active');
   });
 
   it('should have an "Rename column" action', () => {
     const wrapper = shallowMount(ActionMenu);
-    expect(wrapper.html()).to.contain('Rename column');
+    expect(wrapper.html()).toContain('Rename column');
   });
 
   it('should have an "Fill null values" action', () => {
     const wrapper = shallowMount(ActionMenu);
-    expect(wrapper.html()).to.contain('Fill null values');
+    expect(wrapper.html()).toContain('Fill null values');
   });
 
   describe('when clicking on "Duplicate column"', () => {
@@ -45,8 +44,8 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(0).trigger('click');
 
-      expect(wrapper.emitted().actionClicked).not.to.be.empty;
-      expect(wrapper.emitted().actionClicked[0]).to.eql(['duplicate']);
+      expect(wrapper.emitted().actionClicked.length).toBeGreaterThan(0);
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['duplicate']);
     });
 
     it('should emit a close event', () => {
@@ -55,7 +54,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(0).trigger('click');
 
-      expect(wrapper.emitted().closed).to.exist;
+      expect(wrapper.emitted().closed).toBeTruthy();
     });
   });
 
@@ -69,8 +68,8 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(1).trigger('click');
 
-      expect(wrapper.emitted().actionClicked).not.to.be.empty;
-      expect(wrapper.emitted().actionClicked[0]).to.eql(['rename']);
+      expect(wrapper.emitted().actionClicked.length).toBeGreaterThan(0);
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['rename']);
     });
 
     it('should emit a close event', () => {
@@ -78,7 +77,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(1).trigger('click');
 
-      expect(wrapper.emitted().closed).to.exist;
+      expect(wrapper.emitted().closed).toBeTruthy();
     });
   });
 
@@ -95,7 +94,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
       await localVue.nextTick();
-      expect(store.state.pipeline).to.eql([{ name: 'delete', columns: ['columnA'] }]);
+      expect(store.state.pipeline).toEqual([{ name: 'delete', columns: ['columnA'] }]);
     });
 
     it('should emit a close event', () => {
@@ -104,7 +103,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
 
-      expect(wrapper.emitted().closed).to.exist;
+      expect(wrapper.emitted().closed).toBeTruthy();
     });
 
     it('should close any open step form to show the addition of the delete step in the pipeline', () => {
@@ -112,7 +111,7 @@ describe('Action Menu', () => {
       const wrapper = shallowMount(ActionMenu, { store, localVue });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
-      expect(store.state.isEditingStep).to.be.false;
+      expect(store.state.isEditingStep).toBeFalsy();
     });
   });
 
@@ -126,7 +125,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(3).trigger('click');
 
-      expect(wrapper.emitted().actionClicked[0]).to.eql(['fillna']);
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['fillna']);
     });
   });
 
@@ -135,6 +134,6 @@ describe('Action Menu', () => {
     const actionsWrapper = wrapper.findAll('.action-menu__option');
     actionsWrapper.at(3).trigger('click');
 
-    expect(wrapper.emitted().closed).to.exist;
+    expect(wrapper.emitted().closed).toBeTruthy();
   });
 });

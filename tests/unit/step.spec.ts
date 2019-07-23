@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
@@ -25,7 +24,7 @@ describe('Step.vue', () => {
     });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({ selectedStep: [[]] });
+    expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
   });
 
   it('emit selectedStep when clicking on the step itself', async () => {
@@ -42,7 +41,7 @@ describe('Step.vue', () => {
     });
     wrapper.find('.query-pipeline-step').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({ selectedStep: [[]] });
+    expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
   });
 
   it('does not render a delete confirmation modal by default', () => {
@@ -58,7 +57,7 @@ describe('Step.vue', () => {
       },
     });
     const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).to.be.false;
+    expect(modal.exists()).toBeFalsy();
   });
 
   it('renders a delete confirmation modal when clicking on the trash icon', async () => {
@@ -76,7 +75,7 @@ describe('Step.vue', () => {
     wrapper.find('.fa-trash-alt').trigger('click');
     await localVue.nextTick();
     const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).to.be.true;
+    expect(modal.exists()).toBeTruthy();
   });
 
   it('renders a delete confirmation modal when clicking on the trash icon', async () => {
@@ -94,7 +93,7 @@ describe('Step.vue', () => {
     wrapper.find('.fa-trash-alt').trigger('click');
     await localVue.nextTick();
     const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).to.be.true;
+    expect(modal.exists()).toBeTruthy();
   });
 
   it('should not render a trash icon on domain step', () => {
@@ -110,7 +109,7 @@ describe('Step.vue', () => {
         indexInPipeline: 0,
       },
     });
-    expect(wrapper.find('.fa-trash-alt').exists()).to.be.false;
+    expect(wrapper.find('.fa-trash-alt').exists()).toBeFalsy();
   });
 
   describe('Delete confirmation modal', () => {
@@ -130,8 +129,8 @@ describe('Step.vue', () => {
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.fa-times').trigger('click');
       await localVue.nextTick();
-      expect(store.state.pipeline.length).to.equal(3);
-      expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
+      expect(store.state.pipeline.length).toEqual(3);
+      expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
 
       // Test for clicking on the bottom-left cancel button
       step.find('.fa-trash-alt').trigger('click');
@@ -139,8 +138,8 @@ describe('Step.vue', () => {
       const modalBis = step.find(DeleteConfirmationModal);
       modalBis.find('.vqb-modal__action--secondary').trigger('click');
       await localVue.nextTick();
-      expect(store.state.pipeline.length).to.equal(3);
-      expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
+      expect(store.state.pipeline.length).toEqual(3);
+      expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
     });
 
     it('deletes a step when clicking on validate on the delete confirmation modal', async () => {
@@ -157,8 +156,8 @@ describe('Step.vue', () => {
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.vqb-modal__action--primary').trigger('click');
       await localVue.nextTick();
-      expect(store.state.pipeline.length).to.equal(2);
-      expect(step.find(DeleteConfirmationModal).exists()).to.be.false;
+      expect(store.state.pipeline.length).toEqual(2);
+      expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
     });
   });
 
@@ -174,8 +173,8 @@ describe('Step.vue', () => {
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
     renameStep.find('.fa-cog').trigger('click');
-    expect(renameStep.emitted().editStep).to.exist;
-    expect(renameStep.emitted().editStep).to.eql([
+    expect(renameStep.emitted().editStep).toBeDefined();
+    expect(renameStep.emitted().editStep).toEqual([
       [{ name: 'rename', newname: 'kingdom', oldname: 'region' }, 2],
     ]);
   });
