@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,28 +21,28 @@ describe('Fillna Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('fillna');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('fillna');
   });
 
   it('should have exactly one widgetinputtext component', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     const inputWrappers = wrapper.findAll('widgetinputtext-stub');
 
-    expect(inputWrappers.length).to.equal(1);
+    expect(inputWrappers.length).toEqual(1);
   });
 
   it('should pass down the value prop to widget value prop', async () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.setData({ editedStep: { column: '', value: 'foo' } });
     await localVue.nextTick();
-    expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
+    expect(wrapper.find('widgetinputtext-stub').props('value')).toEqual('foo');
   });
 
   it('should have a columnpicker widget', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.find('columnpicker-stub').exists()).to.be.true;
+    expect(wrapper.find('columnpicker-stub').exists()).toBeTruthy();
   });
 
   it('should report errors when submitted data is not valid', () => {
@@ -67,7 +66,7 @@ describe('Fillna Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).to.eql([{ keyword: 'type', dataPath: '.value' }]);
+    expect(errors).toEqual([{ keyword: 'type', dataPath: '.value' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
@@ -87,8 +86,8 @@ describe('Fillna Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'fillna', column: 'foo', value: 'bar' }]],
     });
   });
@@ -110,8 +109,8 @@ describe('Fillna Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'fillna', column: 'columnA', value: 42 }]],
     });
   });
@@ -133,8 +132,8 @@ describe('Fillna Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'fillna', column: 'columnA', value: 42.3 }]],
     });
   });
@@ -158,8 +157,8 @@ describe('Fillna Step Form', () => {
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     wrapper.setData({ editedStep: { name: 'fillna', column: 'columnA', value: 'false' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [
         [{ name: 'fillna', column: 'columnA', value: true }],
         [{ name: 'fillna', column: 'columnA', value: false }],
@@ -170,7 +169,7 @@ describe('Fillna Step Form', () => {
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = mount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -183,10 +182,10 @@ describe('Fillna Step Form', () => {
       },
     });
     const wrapper = shallowMount(FillnaStepForm, { store, localVue });
-    expect(wrapper.vm.$data.editedStep.column).to.equal('');
+    expect(wrapper.vm.$data.editedStep.column).toEqual('');
     store.commit('toggleColumnSelection', { column: 'columnB' });
     await localVue.nextTick();
-    expect(wrapper.vm.$data.editedStep.column).to.equal('columnB');
+    expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
@@ -203,10 +202,10 @@ describe('Fillna Step Form', () => {
     const wrapper = mount(FillnaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 
   it('should keep the focus on the column modified after rename validation', async () => {
@@ -229,6 +228,6 @@ describe('Fillna Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(store.state.selectedColumns).to.eql(['columnA']);
+    expect(store.state.selectedColumns).toEqual(['columnA']);
   });
 });

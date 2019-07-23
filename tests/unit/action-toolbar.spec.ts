@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ActionToolbar from '@/components/ActionToolbar.vue';
 import Vuex from 'vuex';
@@ -21,7 +20,7 @@ describe('ActionToolbar', () => {
       },
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
-    expect(actionButtons.exists()).to.be.true;
+    expect(actionButtons.exists()).toBeTruthy();
   });
 
   it('should instantiate with its hidden popover', () => {
@@ -38,7 +37,7 @@ describe('ActionToolbar', () => {
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button = actionButtons.at(0);
-    expect(button.props('isActive')).to.be.false;
+    expect(button.props('isActive')).toBeFalsy();
   });
 
   it('should open a popover on action toolbar click', async () => {
@@ -55,10 +54,10 @@ describe('ActionToolbar', () => {
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button = actionButtons.at(0);
-    expect(button.props('isActive')).to.be.false;
+    expect(button.props('isActive')).toBeFalsy();
     button.trigger('click');
     await localVue.nextTick();
-    expect(button.props('isActive')).to.be.true;
+    expect(button.props('isActive')).toBeTruthy();
   });
 
   it('should close the current popover when an other button is clicked', async () => {
@@ -83,10 +82,10 @@ describe('ActionToolbar', () => {
     const button2 = actionButtons.at(1);
     button1.trigger('click');
     await localVue.nextTick();
-    expect(button1.props('isActive')).to.be.true;
+    expect(button1.props('isActive')).toBeTruthy();
     button2.trigger('click');
     await localVue.nextTick();
-    expect(button1.props('isActive')).to.be.false;
+    expect(button1.props('isActive')).toBeFalsy();
   });
 
   it('should emit an actionClicked event only on an aggregate button', () => {
@@ -100,9 +99,9 @@ describe('ActionToolbar', () => {
     });
     const buttons = wrapper.findAll('action-toolbar-button-stub');
     buttons.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked).not.to.exist;
+    expect(wrapper.emitted().actionClicked).toBeUndefined();
     buttons.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).to.eql(['aggregate']);
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['aggregate']);
   });
 
   it('should instantiate the search bar', () => {
@@ -118,6 +117,6 @@ describe('ActionToolbar', () => {
       },
     });
     const searchBar = wrapper.findAll('search-bar-stub');
-    expect(searchBar.exists()).to.be.true;
+    expect(searchBar.exists()).toBeTruthy();
   });
 });

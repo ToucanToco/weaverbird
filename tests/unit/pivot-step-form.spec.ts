@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,7 +21,7 @@ describe('Pivot Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(PivotStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have 4 input components', () => {
@@ -30,9 +29,9 @@ describe('Pivot Step Form', () => {
     const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
     const columnpickerWrappers = wrapper.findAll('columnpicker-stub');
     const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(multiselectWrappers.length).to.equal(1);
-    expect(columnpickerWrappers.length).to.equal(1);
-    expect(autocompleteWrappers.length).to.equal(2);
+    expect(multiselectWrappers.length).toEqual(1);
+    expect(columnpickerWrappers.length).toEqual(1);
+    expect(autocompleteWrappers.length).toEqual(2);
   });
 
   it('should pass down props to widgets', () => {
@@ -51,9 +50,9 @@ describe('Pivot Step Form', () => {
         };
       },
     });
-    expect(wrapper.find('#indexInput').props('value')).to.eql(['label']);
-    expect(wrapper.find('#valueColumnInput').props('value')).to.equal('value');
-    expect(wrapper.find('#aggregationFunctionInput').props('value')).to.equal('sum');
+    expect(wrapper.find('#indexInput').props('value')).toEqual(['label']);
+    expect(wrapper.find('#valueColumnInput').props('value')).toEqual('value');
+    expect(wrapper.find('#aggregationFunctionInput').props('value')).toEqual('sum');
   });
 
   it('should instantiate indexInput widget multiselect with column names', () => {
@@ -64,7 +63,7 @@ describe('Pivot Step Form', () => {
       },
     });
     const wrapper = shallowMount(PivotStepForm, { store, localVue });
-    expect(wrapper.find('#indexInput').attributes('options')).to.equal('columnA,columnB,columnC');
+    expect(wrapper.find('#indexInput').attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should instantiate valueColumnInput widget autocomplete with column names', () => {
@@ -75,14 +74,14 @@ describe('Pivot Step Form', () => {
       },
     });
     const wrapper = shallowMount(PivotStepForm, { store, localVue });
-    expect(wrapper.find('#valueColumnInput').attributes('options')).to.equal(
+    expect(wrapper.find('#valueColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
   });
 
   it('should instantiate aggregationFunctionInput widget autocomplete with the right aggregation function names', () => {
     const wrapper = shallowMount(PivotStepForm, { store: emptyStore, localVue });
-    expect(wrapper.find('#aggregationFunctionInput').attributes('options')).to.equal(
+    expect(wrapper.find('#aggregationFunctionInput').attributes('options')).toEqual(
       'sum,avg,count,min,max',
     );
   });
@@ -103,8 +102,8 @@ describe('Pivot Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [
         [
           {
@@ -130,7 +129,7 @@ describe('Pivot Step Form', () => {
           err1.dataPath.localeCompare(err2.dataPath),
         );
 
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         { keyword: 'minLength', dataPath: '.column_to_pivot' },
         { keyword: 'minItems', dataPath: '.index' },
         { keyword: 'minLength', dataPath: '.value_column' },
@@ -161,7 +160,7 @@ describe('Pivot Step Form', () => {
         dataPath: err.dataPath,
         message: err.message,
       }));
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           keyword: 'columnNameConflict',
           dataPath: '.column_to_pivot',
@@ -194,7 +193,7 @@ describe('Pivot Step Form', () => {
         dataPath: err.dataPath,
         message: err.message,
       }));
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           keyword: 'columnNameConflict',
           dataPath: '.value_column',
@@ -227,7 +226,7 @@ describe('Pivot Step Form', () => {
         dataPath: err.dataPath,
         message: err.message,
       }));
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         {
           keyword: 'columnNameConflict',
           dataPath: '.column_to_pivot',

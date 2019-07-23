@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import SearchBar from '@/components/SearchBar.vue';
 import Vuex from 'vuex';
@@ -10,7 +9,7 @@ describe('SearchBar', () => {
   it('should instantiate Multiselect', () => {
     const wrapper = shallowMount(SearchBar);
     const multiselect = wrapper.findAll('multiselect-stub');
-    expect(multiselect.exists()).to.be.true;
+    expect(multiselect.exists()).toBeTruthy();
   });
 
   it('should display the right option into multiselect', () => {
@@ -28,13 +27,13 @@ describe('SearchBar', () => {
         .at(0)
         .find('span span')
         .text(),
-    ).to.equal('Aggregate');
+    ).toEqual('Aggregate');
   });
 
   it('should emit "actionClicked" when an option multiselect is clicked', () => {
     const wrapper = mount(SearchBar);
     const multiselectOption = wrapper.findAll('.multiselect__option');
     multiselectOption.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).to.be.eql(['percentage']);
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['percentage']);
   });
 });

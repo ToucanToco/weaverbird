@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import WidgetAggregation from '@/components/stepforms/WidgetAggregation.vue';
 import Vuex, { Store } from 'vuex';
@@ -16,13 +15,13 @@ describe('Widget WidgetAggregation', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(WidgetAggregation, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly two WidgetAutocomplete components', () => {
     const wrapper = shallowMount(WidgetAggregation, { store: emptyStore, localVue });
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(widgetWrappers.length).to.eql(2);
+    expect(widgetWrappers.length).toEqual(2);
   });
 
   it('should instantiate an widgetAutocomplete widget with proper options from the store', () => {
@@ -34,7 +33,7 @@ describe('Widget WidgetAggregation', () => {
     });
     const wrapper = shallowMount(WidgetAggregation, { store, localVue });
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(widgetWrappers.at(0).attributes('options')).to.equal('columnA,columnB,columnC');
+    expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should pass down the "column" prop to the first WidgetAutocomplete value prop', () => {
@@ -44,7 +43,7 @@ describe('Widget WidgetAggregation', () => {
       propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
     });
     const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
-    expect(widgetWrappers.at(0).props().value).to.eql('foo');
+    expect(widgetWrappers.at(0).props().value).toEqual('foo');
   });
 
   it('should pass down the "aggfunction" prop to the second WidgetAutocomplete value prop', () => {
@@ -54,7 +53,7 @@ describe('Widget WidgetAggregation', () => {
       propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'avg' } },
     });
     const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
-    expect(widgetWrappers.at(1).props().value).to.eql('avg');
+    expect(widgetWrappers.at(1).props().value).toEqual('avg');
   });
 
   it('should emit "input" event on "aggregation" update', async () => {
@@ -64,8 +63,8 @@ describe('Widget WidgetAggregation', () => {
     });
     wrapper.setData({ aggregation: { column: 'bar', newcolumn: '', aggfunction: 'avg' } });
     await localVue.nextTick();
-    expect(wrapper.emitted().input).to.exist;
-    expect(wrapper.emitted().input[0]).to.eql([
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([
       { column: 'bar', newcolumn: '', aggfunction: 'avg' },
     ]);
   });

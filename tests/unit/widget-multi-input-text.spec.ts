@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import WidgetMultiInputText from '@/components/stepforms/WidgetMultiInputText.vue';
 import Vuex from 'vuex';
@@ -9,7 +8,7 @@ localVue.use(Vuex);
 describe('Widget MultisInputText', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(WidgetMultiInputText);
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have a label', () => {
@@ -19,7 +18,7 @@ describe('Widget MultisInputText', () => {
       },
     });
     const labelWrapper = wrapper.find('label');
-    expect(labelWrapper.text()).to.equal('Stark');
+    expect(labelWrapper.text()).toEqual('Stark');
   });
 
   it('should have an empty placeholder', () => {
@@ -29,7 +28,7 @@ describe('Widget MultisInputText', () => {
       },
     });
     const multiselect = wrapper.find('multiselect-stub');
-    expect(multiselect.attributes().placeholder).to.equal('');
+    expect(multiselect.attributes().placeholder).toEqual('');
   });
 
   it('should have a placeholder', () => {
@@ -40,13 +39,13 @@ describe('Widget MultisInputText', () => {
       },
     });
     const multiselect = wrapper.find('multiselect-stub');
-    expect(multiselect.attributes().placeholder).to.equal('I m a placeholder');
+    expect(multiselect.attributes().placeholder).toEqual('I m a placeholder');
   });
 
   it('should have an empty input', () => {
     const wrapper = shallowMount(WidgetMultiInputText);
     const multiselect = wrapper.find('multiselect-stub');
-    expect(multiselect.attributes().value).to.equal('');
+    expect(multiselect.attributes().value).toEqual('');
   });
 
   it('should have a non empty input', () => {
@@ -54,33 +53,32 @@ describe('Widget MultisInputText', () => {
       propsData: { value: 'foo' },
     });
     const multiselect = wrapper.find('multiselect-stub');
-    expect(multiselect.attributes().value).to.equal('foo');
+    expect(multiselect.attributes().value).toEqual('foo');
   });
 
   it('should update "options" on search-change event', () => {
     const wrapper = shallowMount(WidgetMultiInputText);
     const multiselect = wrapper.find('multiselect-stub');
     multiselect.vm.$emit('search-change', 'Foo');
-    expect(wrapper.vm.$data.options).to.eql(['Foo']);
+    expect(wrapper.vm.$data.options).toEqual(['Foo']);
   });
 
   it('should emit "input" event on editedValue update', async () => {
     const wrapper = shallowMount(WidgetMultiInputText);
     await wrapper.setData({ editedValue: ['Foo'] });
-    expect(wrapper.emitted()).to.eql({ input: [[['Foo']]] });
+    expect(wrapper.emitted()).toEqual({ input: [[['Foo']]] });
   });
 
   it('should clear "options" on input', () => {
     const wrapper = shallowMount(WidgetMultiInputText);
     wrapper.setData({ options: ['Foo'] });
-    expect(wrapper.vm.$data.options).to.eql(['Foo']);
+    expect(wrapper.vm.$data.options).toEqual(['Foo']);
     wrapper.find('multiselect-stub').vm.$emit('input');
-    expect(wrapper.vm.$data.options).to.eql([]);
+    expect(wrapper.vm.$data.options).toEqual([]);
   });
 
-  it('should update "editedValue" when "value is change"', async () => {
-    const wrapper = shallowMount(WidgetMultiInputText);
-    await wrapper.setData({ value: ['Foo'] });
-    expect(wrapper.vm.$data.editedValue).to.eql(['Foo']);
+  it('should set "editedValue" initially"', async () => {
+    const wrapper = shallowMount(WidgetMultiInputText, { propsData: { value: ['Foo'] } });
+    expect(wrapper.vm.$data.editedValue).toEqual(['Foo']);
   });
 });

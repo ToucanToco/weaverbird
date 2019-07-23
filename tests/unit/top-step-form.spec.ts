@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,16 +21,16 @@ describe('Top Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(TopStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('top');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('top');
   });
 
   it('should have exactly 4 input components', () => {
     const wrapper = shallowMount(TopStepForm, { store: emptyStore, localVue });
-    expect(wrapper.find('#limitInput').exists()).to.be.true;
-    expect(wrapper.find('#rankOnInput').exists()).to.be.true;
-    expect(wrapper.find('#sortOrderInput').exists()).to.be.true;
-    expect(wrapper.find('#groupbyColumnsInput').exists()).to.be.true;
+    expect(wrapper.find('#limitInput').exists()).toBeTruthy();
+    expect(wrapper.find('#rankOnInput').exists()).toBeTruthy();
+    expect(wrapper.find('#sortOrderInput').exists()).toBeTruthy();
+    expect(wrapper.find('#groupbyColumnsInput').exists()).toBeTruthy();
   });
 
   it('should pass down the properties to the input components', async () => {
@@ -40,9 +39,9 @@ describe('Top Step Form', () => {
       editedStep: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
     });
     await localVue.nextTick();
-    expect(wrapper.find('#limitInput').props('value')).to.equal(10);
-    expect(wrapper.find('#sortOrderInput').props('value')).to.equal('asc');
-    expect(wrapper.find('#groupbyColumnsInput').props('value')).to.eql(['test']);
+    expect(wrapper.find('#limitInput').props('value')).toEqual(10);
+    expect(wrapper.find('#sortOrderInput').props('value')).toEqual('asc');
+    expect(wrapper.find('#groupbyColumnsInput').props('value')).toEqual(['test']);
   });
 
   it('should report errors when column is empty', async () => {
@@ -54,7 +53,7 @@ describe('Top Step Form', () => {
       .sort((err1: ValidationError, err2: ValidationError) =>
         err1.dataPath.localeCompare(err2.dataPath),
       );
-    expect(errors).to.eql([
+    expect(errors).toEqual([
       { keyword: 'required', dataPath: '' },
       { keyword: 'minLength', dataPath: '.rank_on' },
     ]);
@@ -70,8 +69,8 @@ describe('Top Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] }]],
     });
   });
@@ -80,7 +79,7 @@ describe('Top Step Form', () => {
     const wrapper = mount(TopStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -99,9 +98,9 @@ describe('Top Step Form', () => {
     const wrapper = mount(TopStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

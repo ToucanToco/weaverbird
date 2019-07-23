@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
 import WidgetList from '@/components/stepforms/WidgetList.vue';
 import WidgetAggregation from '@/components/stepforms/WidgetAggregation.vue';
@@ -8,7 +7,7 @@ describe('Widget List', () => {
     it('it should instantiate', () => {
       const wrapper = shallowMount(WidgetList);
 
-      expect(wrapper.exists()).to.be.true;
+      expect(wrapper.exists()).toBeTruthy();
     });
 
     it('should have a label', () => {
@@ -18,14 +17,14 @@ describe('Widget List', () => {
         },
       });
 
-      expect(wrapper.find('label').text()).to.equal('Label');
+      expect(wrapper.find('label').text()).toEqual('Label');
     });
 
     it('should instantiate a widget-input text', () => {
       const wrapper = shallowMount(WidgetList);
       const widgetInputWrapper = wrapper.find('widgetinputtext-stub');
 
-      expect(widgetInputWrapper.exists()).to.be.true;
+      expect(widgetInputWrapper.exists()).toBeTruthy();
     });
 
     it('should instantiate a widget aggregation', () => {
@@ -36,7 +35,7 @@ describe('Widget List', () => {
       });
 
       const widgetAggregationtWrapper = wrapper.find('widgetaggregation-stub');
-      expect(widgetAggregationtWrapper.exists()).to.be.true;
+      expect(widgetAggregationtWrapper.exists()).toBeTruthy();
     });
 
     it('should automatically add an input when filling the first one', async () => {
@@ -44,15 +43,15 @@ describe('Widget List', () => {
       wrapper.setProps({ value: ['columnName'] });
 
       await wrapper.vm.$nextTick();
-      expect(wrapper.findAll('widgetinputtext-stub').length).to.equal(2);
+      expect(wrapper.findAll('widgetinputtext-stub').length).toEqual(2);
     });
 
     it('should add trash icons after first input', async () => {
       const wrapper = shallowMount(WidgetList);
-      expect(wrapper.findAll('.widget-list__icon').length).to.eql(0);
-      wrapper.setProps({ value: ['columnName'] });
+      expect(wrapper.findAll('.widget-list__icon').length).toEqual(0);
+      wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }] });
       await wrapper.vm.$nextTick();
-      expect(wrapper.findAll('.widget-list__icon').length).to.eql(2);
+      expect(wrapper.findAll('.widget-list__icon').length).toEqual(2);
     });
 
     it('should remove first input when clickng on trash', async () => {
@@ -63,7 +62,7 @@ describe('Widget List', () => {
       });
       const trashWrapper = wrapper.find('.widget-list__icon');
       trashWrapper.trigger('click');
-      expect(wrapper.emitted()['input']).to.exist;
+      expect(wrapper.emitted()['input']).toBeDefined();
     });
   });
 
@@ -78,8 +77,8 @@ describe('Widget List', () => {
       });
       const addButtonWrapper = wrapper.find('button');
 
-      expect(addButtonWrapper.exists()).to.be.true;
-      expect(addButtonWrapper.text()).to.equal('Add aggregation');
+      expect(addButtonWrapper.exists()).toBeTruthy();
+      expect(addButtonWrapper.text()).toEqual('Add aggregation');
     });
 
     it('should add a new field when clicking on the button "Add Aggregation"', () => {
@@ -92,8 +91,8 @@ describe('Widget List', () => {
       const addButtonWrapper = wrapper.find('button');
       addButtonWrapper.trigger('click');
 
-      expect(wrapper.emitted()['input']).to.exist;
-      expect(wrapper.emitted()['input'][0][0][0]).to.equal('');
+      expect(wrapper.emitted()['input']).toBeDefined();
+      expect(wrapper.emitted()['input'][0][0][0]).toEqual('');
     });
   });
 });

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import WidgetFilterSimpleCondition from '@/components/stepforms/WidgetFilterSimpleCondition.vue';
 import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
@@ -18,15 +17,15 @@ describe('Widget WidgetAggregation', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(WidgetFilterSimpleCondition, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have exactly 3 input components', () => {
     const wrapper = shallowMount(WidgetFilterSimpleCondition, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(autocompleteWrappers.length).to.equal(2);
+    expect(autocompleteWrappers.length).toEqual(2);
     const inputtextWrappers = wrapper.findAll('widgetinputtext-stub');
-    expect(inputtextWrappers.length).to.equal(1);
+    expect(inputtextWrappers.length).toEqual(1);
   });
 
   it('should have exactly have a WidgetMultiInputText if operator is "in" or "nin"', async () => {
@@ -34,7 +33,7 @@ describe('Widget WidgetAggregation', () => {
     wrapper.setData({ editedValue: { column: 'foo', value: [], operator: 'in' } });
     await localVue.nextTick();
     const autocompleteWrappers = wrapper.findAll('widgetmultiinputtext-stub');
-    expect(autocompleteWrappers.length).to.equal(1);
+    expect(autocompleteWrappers.length).toEqual(1);
   });
 
   it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
@@ -46,7 +45,7 @@ describe('Widget WidgetAggregation', () => {
     });
     const wrapper = shallowMount(WidgetFilterSimpleCondition, { store, localVue });
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(widgetWrappers.at(0).attributes('options')).to.equal('columnA,columnB,columnC');
+    expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should pass down the "column" prop to the first WidgetAutocomplete value prop', async () => {
@@ -54,7 +53,7 @@ describe('Widget WidgetAggregation', () => {
     wrapper.setData({ editedValue: { column: 'foo', value: '', operator: 'eq' } });
     await localVue.nextTick();
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(widgetWrappers.at(0).props().value).to.equal('foo');
+    expect(widgetWrappers.at(0).props().value).toEqual('foo');
   });
 
   it('should pass down the "operator" prop to the second WidgetAutocomplete value prop', async () => {
@@ -62,7 +61,7 @@ describe('Widget WidgetAggregation', () => {
     wrapper.setData({ editedValue: { column: 'foo', value: '', operator: 'nin' } });
     await localVue.nextTick();
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
-    expect(widgetWrappers.at(1).props().value).to.eql({
+    expect(widgetWrappers.at(1).props().value).toEqual({
       operator: 'nin',
       label: 'not be among',
       inputWidget: WidgetMultiInputText,
@@ -85,8 +84,8 @@ describe('Widget WidgetAggregation', () => {
     });
     wrapper.setData({ editedValue: { column: 'foo', value: 'bar', operator: 'gt' } });
     await localVue.nextTick();
-    expect(wrapper.emitted().input).to.exist;
-    expect(wrapper.emitted().input[0]).to.eql([{ column: 'foo', value: 'bar', operator: 'gt' }]);
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([{ column: 'foo', value: 'bar', operator: 'gt' }]);
   });
 
   it('should update selectedColumn when column is changed', async () => {
@@ -106,6 +105,6 @@ describe('Widget WidgetAggregation', () => {
     });
     wrapper.setData({ editedValue: { column: 'columnB', value: 'bar', operator: 'eq' } });
     await wrapper.find(WidgetAutocomplete).trigger('input');
-    expect(store.state.selectedColumns).to.eql(['columnB']);
+    expect(store.state.selectedColumns).toEqual(['columnB']);
   });
 });

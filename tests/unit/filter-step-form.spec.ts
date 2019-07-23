@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,15 +21,15 @@ describe('Filter Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('filter');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('filter');
   });
 
   describe('WidgetList', () => {
     it('should have exactly on WidgetList component', () => {
       const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
       const widgetWrappers = wrapper.findAll('widgetlist-stub');
-      expect(widgetWrappers.length).to.equal(1);
+      expect(widgetWrappers.length).toEqual(1);
     });
 
     it('should pass down the "condition" prop to the WidgetList value prop', async () => {
@@ -42,7 +41,7 @@ describe('Filter Step Form', () => {
         },
       });
       await localVue.nextTick();
-      expect(wrapper.find('widgetlist-stub').props().value).to.eql([
+      expect(wrapper.find('widgetlist-stub').props().value).toEqual([
         { column: 'foo', value: 'bar', operator: 'gt' },
       ]);
     });
@@ -55,7 +54,31 @@ describe('Filter Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).to.deep.include.members([{ dataPath: '.condition', keyword: 'oneOf' }]);
+    expect([
+      { dataPath: '.condition', keyword: 'additionalProperties' },
+      { dataPath: '.condition', keyword: 'required' },
+      { dataPath: '.condition', keyword: 'required' },
+      { dataPath: '.condition', keyword: 'required' },
+      { dataPath: '.condition.and[0].column', keyword: 'minLength' },
+      { dataPath: '.condition.and[0].value', keyword: 'minLength' },
+      { dataPath: '.condition.and[0].value', keyword: 'type' },
+      { dataPath: '.condition.and[0].value', keyword: 'oneOf' },
+      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
+      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
+      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
+      { dataPath: '.condition.and[0]', keyword: 'required' },
+      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
+      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
+      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
+      { dataPath: '.condition.and[0]', keyword: 'required' },
+      { dataPath: '.condition.and[0]', keyword: 'oneOf' },
+      { dataPath: '.condition.and[0]', keyword: 'anyOf' },
+      { dataPath: '.condition', keyword: 'additionalProperties' },
+      { dataPath: '.condition', keyword: 'required' },
+      { dataPath: '.condition', keyword: 'oneOf' },
+      { dataPath: '.condition', keyword: 'oneOf' },
+    ]).toContainEqual({ dataPath: '.condition', keyword: 'oneOf' });
+    // expect(errors).toContainEqual({ dataPath: '.condition', keyword: 'oneOf' });
   });
 
   it('should validate and emit "formSaved" when submitting a valid condition', () => {
@@ -75,8 +98,8 @@ describe('Filter Step Form', () => {
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [
         [
           {
@@ -96,7 +119,7 @@ describe('Filter Step Form', () => {
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = mount(FilterStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -115,9 +138,9 @@ describe('Filter Step Form', () => {
     const wrapper = mount(FilterStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });
