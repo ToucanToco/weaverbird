@@ -30,7 +30,7 @@ import WidgetAutocomplete from './WidgetAutocomplete.vue';
   },
 })
 export default class WidgetAggregation extends Vue {
-  @Prop({ type: Object, default: { column: '', aggfunction: 'sum', newcolumn: '' } })
+  @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newcolumn: '' }) })
   value!: AggFunctionStep;
 
   @Getter columnNames!: string[];

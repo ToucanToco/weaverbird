@@ -31,6 +31,7 @@ describe('Widget List', () => {
       const wrapper = shallowMount(WidgetList, {
         propsData: {
           widget: WidgetAggregation,
+          defaultItem: { name: 'foo', value: 'bar' },
         },
       });
 
@@ -40,7 +41,7 @@ describe('Widget List', () => {
 
     it('should automatically add an input when filling the first one', async () => {
       const wrapper = shallowMount(WidgetList);
-      wrapper.setProps({ value: ['columnName'] });
+      wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }] });
 
       await wrapper.vm.$nextTick();
       expect(wrapper.findAll('widgetinputtext-stub').length).toEqual(2);
@@ -57,7 +58,7 @@ describe('Widget List', () => {
     it('should remove first input when clickng on trash', async () => {
       const wrapper = shallowMount(WidgetList, {
         propsData: {
-          value: ['columnName'],
+          value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }],
         },
       });
       const trashWrapper = wrapper.find('.widget-list__icon');
