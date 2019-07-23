@@ -93,4 +93,11 @@ export const POPOVER_ALIGN = {
   RIGHT: 'right',
 };
 
+export enum Alignment {
+  Center = 'center',
+  Justify = 'justify',
+  Left = 'left',
+  Right = 'right',
+}
+
 export const POPOVER_SHADOW_GAP = 8;

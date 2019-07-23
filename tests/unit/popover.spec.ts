@@ -4,9 +4,151 @@ import { mount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 
 import Popover from '@/components/Popover.vue';
-import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/components/constants';
+import { POPOVER_SHADOW_GAP, Alignment } from '@/components/constants';
+import * as DOMUtil from '@/components/domutil';
 
-xdescribe('Popover', function() {
+type Dict<T> = { [key: string]: T };
+
+function mockBoundingRect(this: HTMLElement): DOMRect | ClientRect {
+  const defaultRect: ClientRect = {
+    width: 0,
+    height: 0,
+    top: 0,
+    left: 0,
+    bottom: 0,
+    right: 0,
+  };
+  const elementStyle: Dict<number> = {};
+  for (const prop of Object.keys(defaultRect)) {
+    const style: Dict<string> = (this.style as unknown) as Dict<string>;
+    elementStyle[prop] = style[prop] ? Number(style[prop].slice(0, -2)) : 0;
+  }
+  return { ...defaultRect, ...elementStyle };
+}
+
+describe('DOM Position Tests', () => {
+  it('should compute top based on parent top and offset height if enough space', () => {
+    const top = DOMUtil.computeTop(false, {
+      body: { top: 100 },
+      parent: { top: 150, height: 500 },
+      element: { offsetHeight: 20 },
+      window: { innerHeight: 30 },
+    });
+    expect(top).toEqual(22);
+  });
+
+  it('should compute top as topBelow if not isBottom and not enough space', () => {
+    const top = DOMUtil.computeTop(false, {
+      body: { top: 100 },
+      parent: { top: 150, height: 500 },
+      element: { offsetHeight: 100 },
+      window: { innerHeight: 3000 },
+    });
+    expect(top).toEqual(550);
+  });
+
+  it('should compute top / isBottom based on parent top and offset height if enough space', () => {
+    const top = DOMUtil.computeTop(true, {
+      body: { top: 100 },
+      parent: { top: 150, height: 500 },
+      element: { offsetHeight: 20 },
+      window: { innerHeight: 3000 },
+    });
+    expect(top).toEqual(550);
+  });
+
+  it('should compute top as topAbove if isBottom and not enough space', () => {
+    const top = DOMUtil.computeTop(true, {
+      body: { top: 100 },
+      parent: { top: 150, height: 500 },
+      element: { offsetHeight: 20 },
+      window: { innerHeight: 30 },
+    });
+    expect(top).toEqual(22);
+  });
+
+  it('should align center if enough space in window', () => {
+    const position = DOMUtil.align(Alignment.Center, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 1800 },
+    });
+    expect(position).toEqual({ left: 130 });
+  });
+
+  it('should align center if not enough space in window', () => {
+    const position = DOMUtil.align(Alignment.Center, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 100 },
+    });
+    expect(position).toEqual({ left: 220 });
+  });
+
+  it('should align center if negative left', () => {
+    const position = DOMUtil.align(Alignment.Center, {
+      body: { left: 1000 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 100 },
+    });
+    expect(position).toEqual({ left: -950 });
+  });
+
+  it('should align justify', () => {
+    const position = DOMUtil.align(Alignment.Justify, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 100 },
+    });
+    expect(position).toEqual({ left: 40, width: 200 });
+  });
+
+  it('should align left if enough space in window', () => {
+    const position = DOMUtil.align(Alignment.Left, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 1800 },
+    });
+    expect(position).toEqual({ left: 40 });
+  });
+
+  it('should align left if not enough space in window', () => {
+    const position = DOMUtil.align(Alignment.Left, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 10 },
+    });
+    expect(position).toEqual({ left: 220 });
+  });
+
+  it('should align right if enough space in window', () => {
+    const position = DOMUtil.align(Alignment.Right, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 20 },
+      window: { innerWidth: 1800 },
+    });
+    expect(position).toEqual({ left: 220 });
+  });
+
+  it('should align right if not enough space', () => {
+    const position = DOMUtil.align(Alignment.Right, {
+      body: { left: 10 },
+      parent: { left: 50, width: 200 },
+      element: { offsetWidth: 300 },
+      window: { innerWidth: 10000 },
+    });
+    expect(position).toEqual({ left: 40 });
+  });
+});
+
+describe('Popover', function() {
   var wrapper: Wrapper<Vue>;
   var popoverWrapper: Wrapper<Vue>;
   var clock = sinon.useFakeTimers();
@@ -103,6 +245,18 @@ xdescribe('Popover', function() {
   });
 
   describe('when active', function() {
+    let boundingRectSpy: jest.SpyInstance<ClientRect>;
+
+    beforeEach(() => {
+      boundingRectSpy = jest
+        .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+        .mockImplementation(mockBoundingRect);
+    });
+
+    afterEach(() => {
+      boundingRectSpy.mockRestore();
+    });
+
     it('should be above by default', async function() {
       createWrapper({
         parentStyle: {
@@ -115,19 +269,43 @@ xdescribe('Popover', function() {
         props: {
           active: true,
         },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
       });
+
       await wrapper.vm.$nextTick();
       const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
+      expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP);
+      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
     });
 
-    it('should be centered by default', async function() {
+    it('should update its position on orientation change', async function() {
+      createWrapper({
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        props: {
+          active: true,
+        },
+      });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
+
+      await wrapper.vm.$nextTick();
+      wrapper.element.style.left = '100px';
+      window.dispatchEvent(new Event('orientationchange'));
+
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+
+      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
+    });
+
+    it('should update its position when resized', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -144,221 +322,20 @@ xdescribe('Popover', function() {
           width: '140px',
         },
       });
+      const popoverWrapper = wrapper.find({ ref: 'popover' });
+
+      await wrapper.vm.$nextTick();
+      wrapper.element.style.left = '100px';
+      window.dispatchEvent(new Event('resize'));
 
       await wrapper.vm.$nextTick();
       const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-      expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+
+      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
     });
-  });
 
-  it("should be aligned left when there isn't enough space on left", async function() {
-    createWrapper({
-      parentStyle: {
-        height: '40px',
-        left: '0px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.left).toEqual(parentBounds.left);
-  });
-
-  it("should be aligned right when there isn't enough space on right", async function() {
-    const parentLeft = window.innerWidth - 100;
-    createWrapper({
-      parentStyle: {
-        height: '40px',
-        left: `${parentLeft}px`,
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-  });
-
-  it("should be below when there isn't enough place above and there is below", async function() {
-    createWrapper({
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '0px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.top).toEqual(parentBounds.top + 40);
-  });
-
-  it("should be above when there isn't enough place above or below", async function() {
-    const height = window.innerHeight;
-    createWrapper({
-      parentStyle: {
-        height: `${height}px`,
-        left: '200px',
-        position: 'absolute',
-        top: '0px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-  });
-
-  it('should update its position on orientation change', async function() {
-    createWrapper({
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    wrapper.element.style.left = '100px';
-    window.dispatchEvent(new Event('orientationchange'));
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
-  });
-
-  it('should update its position when resized', async function() {
-    createWrapper({
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    wrapper.element.style.left = '100px';
-    window.dispatchEvent(new Event('resize'));
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
-  });
-
-  it('should update its position when scrolled', async function() {
-    createWrapper({
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      props: {
-        active: true,
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    wrapper.element.style.left = '100px';
-    wrapper.element.dispatchEvent(new Event('scroll'));
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-    expect(popoverBounds.left).toEqual(parentBounds.left + (100 - 140) / 2);
-  });
-
-  it('should be visible', function() {
-    createWrapper({ props: { active: true } });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    expect(window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility')).toEqual(
-      'visible',
-    );
-  });
-
-  describe('when aligned justify', function() {
-    beforeEach(function() {
+    it('should update its position when scrolled', async function() {
       createWrapper({
         parentStyle: {
           height: '40px',
@@ -369,46 +346,6 @@ xdescribe('Popover', function() {
         },
         props: {
           active: true,
-          align: POPOVER_ALIGN.JUSTIFY,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-    });
-
-    it("should have its parent's width", async function() {
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      expect(popoverWrapper.element.offsetWidth).toEqual(100);
-    });
-
-    it("should have its parent's left position", async function() {
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.left).toEqual(parentBounds.left);
-    });
-  });
-
-  describe('when aligned left', function() {
-    it('should be aligned left by default', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-          align: POPOVER_ALIGN.LEFT,
         },
         slotStyle: {
           height: '140px',
@@ -418,233 +355,23 @@ xdescribe('Popover', function() {
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
       await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.left).toEqual(parentBounds.left);
-    });
-
-    it("should be aligned right when there isn't enough space on right", async function() {
-      const parentLeft = window.innerWidth - 100;
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: `${parentLeft}px`,
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-          align: POPOVER_ALIGN.LEFT,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
+      wrapper.element.style.left = '100px';
+      wrapper.element.dispatchEvent(new Event('scroll'));
 
       await wrapper.vm.$nextTick();
       const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.left).toEqual(parentBounds.right - 140);
+      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
     });
 
-    it("should be aligned left when there isn't enough space on either side", async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '0px',
-          position: 'absolute',
-          top: '200px',
-          width: `${window.innerWidth}px`,
-        },
-        props: {
-          active: true,
-          align: POPOVER_ALIGN.LEFT,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
+    it.skip('should be visible', function() {
+      createWrapper({ props: { active: true } });
       const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.left).toEqual(parentBounds.left);
-    });
-  });
-
-  describe('when aligned right', function() {
-    it('should be aligned right by default', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-          align: POPOVER_ALIGN.RIGHT,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-    });
-
-    it("should be aligned left when there isn't enough space on left", async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '0px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-          align: POPOVER_ALIGN.RIGHT,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.left).toEqual(parentBounds.left);
-    });
-
-    it("should be aligned right when there isn't enough space on either side", async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '0px',
-          position: 'absolute',
-          top: '200px',
-          width: `${window.innerWidth}px`,
-        },
-        props: {
-          active: true,
-          align: POPOVER_ALIGN.RIGHT,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.left).toEqual(parentBounds.right - 140);
-    });
-  });
-
-  describe('when bottom', function() {
-    it('should be below', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-          bottom: true,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.top).toEqual(parentBounds.top + 40);
-    });
-
-    it("should be above when there isn't enough place below and there is above", async function() {
-      const parentTop = window.innerHeight - 40;
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: `${parentTop}px`,
-          width: '100px',
-        },
-        props: {
-          active: true,
-          bottom: true,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP - 140);
-    });
-
-    it("should be below when there isn't enough place above or below", async function() {
-      const height = window.innerHeight;
-      createWrapper({
-        parentStyle: {
-          height: `${height}px`,
-          left: '200px',
-          position: 'absolute',
-          top: '0px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-          bottom: true,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.element.getBoundingClientRect();
-
-      expect(popoverBounds.top).toEqual(parentBounds.top + height);
+      expect(
+        window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility'),
+      ).toEqual('visible');
     });
   });
 });
