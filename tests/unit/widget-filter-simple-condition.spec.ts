@@ -58,7 +58,7 @@ describe('Widget WidgetAggregation', () => {
 
   it('should pass down the "operator" prop to the second WidgetAutocomplete value prop', async () => {
     const wrapper = shallowMount(WidgetFilterSimpleCondition, { store: emptyStore, localVue });
-    wrapper.setData({ editedValue: { column: 'foo', value: '', operator: 'nin' } });
+    wrapper.setData({ editedValue: { column: 'foo', value: [], operator: 'nin' } });
     await localVue.nextTick();
     const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
     expect(widgetWrappers.at(1).props().value).toEqual({
@@ -71,7 +71,7 @@ describe('Widget WidgetAggregation', () => {
   it('should change the type of value accordingly when switching the "operator"', async () => {
     const wrapper = shallowMount(WidgetFilterSimpleCondition, { store: emptyStore, localVue });
     expect((wrapper.vm.$data.editedValue.value = ''));
-    wrapper.setData({ editedValue: { column: 'foo', value: '', operator: 'in' } });
+    wrapper.setData({ editedValue: { column: 'foo', value: [], operator: 'in' } });
     const operatorWrapper = wrapper.findAll('widgetautocomplete-stub').at(1);
     await operatorWrapper.trigger('input', { value: 'be among' });
     expect((wrapper.vm.$data.editedValue.value = []));

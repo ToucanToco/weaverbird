@@ -24,7 +24,7 @@ describe('Widget MultisInputText', () => {
   it('should have an empty placeholder', () => {
     const wrapper = shallowMount(WidgetMultiInputText, {
       propsData: {
-        value: 'foo',
+        value: ['foo'],
       },
     });
     const multiselect = wrapper.find('multiselect-stub');
@@ -35,7 +35,7 @@ describe('Widget MultisInputText', () => {
     const wrapper = shallowMount(WidgetMultiInputText, {
       propsData: {
         placeholder: 'I m a placeholder',
-        value: 'foo',
+        value: ['foo'],
       },
     });
     const multiselect = wrapper.find('multiselect-stub');
@@ -50,7 +50,7 @@ describe('Widget MultisInputText', () => {
 
   it('should have a non empty input', () => {
     const wrapper = shallowMount(WidgetMultiInputText, {
-      propsData: { value: 'foo' },
+      propsData: { value: ['foo'] },
     });
     const multiselect = wrapper.find('multiselect-stub');
     expect(multiselect.attributes().value).toEqual('foo');
