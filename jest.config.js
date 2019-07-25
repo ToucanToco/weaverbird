@@ -8,7 +8,7 @@ module.exports = {
   },
   transform: {
     '^.+\\.vue$': 'vue-jest',
-    '^.+\\.ts$': 'babel-jest',
+    '^.+\\.ts$': 'ts-jest',
   },
   transformIgnorePatterns: ['/node_modules/', 'tests/*.js', 'playground/*'],
   collectCoverage: true,
