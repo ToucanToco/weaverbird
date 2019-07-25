@@ -32,7 +32,15 @@ on a change:
 yarn test:unit --watchAll
 ```
 
-`yarn test:unit` executes karma with rollup preprocessors for transpilation and bundling.
+Finally, you can deactivate typescript checks to run tests quicker:
+
+```bash
+yarn test:quick
+```
+
+This can be useful to accelerate your development cycle temporarily when
+developing a new feature or fixing a bug. Under the hood, this will use the
+`babel-jest` transformer on typescript files instead of `ts-jest`.
 
 ### Lints and fixes files
 

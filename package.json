@@ -10,6 +10,7 @@
     "playground": "concurrently \"yarn:build-bundle --watch\" \"node playground/server.js\"",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "storybook:bundle": "rollup -c .storybook/rollup.config.js",
+    "test:quick": "VQB_QUICKTEST=1 jest",
     "test:unit": "jest",
     "tdd": "jest --watchAll"
   },
