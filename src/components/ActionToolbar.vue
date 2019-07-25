@@ -1,7 +1,11 @@
 <template>
   <div class="action-toolbar__container">
     <div class="action-toolbar">
-      <button type="button" class="action-toolbar__btn action-toolbar__btn--special">
+      <button
+        type="button"
+        class="action-toolbar__btn action-toolbar__btn--special"
+        @click="actionClicked('formula')"
+      >
         <i class="action-toolbar__btn-icon fas fa-plus"></i>
         <span class="action-toolbar__btn-txt">Column</span>
       </button>

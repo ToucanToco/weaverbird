@@ -6,6 +6,7 @@ import './DuplicateColumnStepForm.vue';
 import './DomainStepForm.vue';
 import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
+import './FormulaStepForm.vue';
 import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
 import './RenameStepForm.vue';

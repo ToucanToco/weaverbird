@@ -37,28 +37,32 @@ describe('Widget WidgetAggregation', () => {
     expect(widgetWrappers.at(0).attributes('options')).to.equal('columnA,columnB,columnC');
   });
 
-  it('should pass down the "column" prop to the first WidgetAutocomplete value prop', async () => {
-    const wrapper = shallowMount(WidgetAggregation, { store: emptyStore, localVue });
-    wrapper.setProps({ value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } });
-    await localVue.nextTick();
+  it('should pass down the "column" prop to the first WidgetAutocomplete value prop', () => {
+    const wrapper = shallowMount(WidgetAggregation, {
+      store: emptyStore,
+      localVue,
+      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+    });
     const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
     expect(widgetWrappers.at(0).props().value).to.eql('foo');
   });
 
-  it('should pass down the "aggfunction" prop to the second WidgetAutocomplete value prop', async () => {
-    const wrapper = shallowMount(WidgetAggregation, { store: emptyStore, localVue });
-    wrapper.setProps({ value: { column: 'foo', newcolumn: '', aggfunction: 'avg' } });
-    await localVue.nextTick();
+  it('should pass down the "aggfunction" prop to the second WidgetAutocomplete value prop', () => {
+    const wrapper = shallowMount(WidgetAggregation, {
+      store: emptyStore,
+      localVue,
+      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'avg' } },
+    });
     const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
     expect(widgetWrappers.at(1).props().value).to.eql('avg');
   });
 
-  it('should emit "input" event on "value" update', async () => {
+  it('should emit "input" event on "aggregation" update', async () => {
     const wrapper = shallowMount(WidgetAggregation, {
       store: emptyStore,
       localVue,
     });
-    wrapper.setProps({ value: { column: 'bar', newcolumn: '', aggfunction: 'avg' } });
+    wrapper.setData({ aggregation: { column: 'bar', newcolumn: '', aggfunction: 'avg' } });
     await localVue.nextTick();
     expect(wrapper.emitted().input).to.exist;
     expect(wrapper.emitted().input[0]).to.eql([

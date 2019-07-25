@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { MongoStep, _simplifyMongoPipeline } from '@/lib/translators/mongo';
+import { MongoStep, _simplifyAndCondition, _simplifyMongoPipeline } from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
@@ -75,18 +75,39 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can simplify "and" block', () => {
+    const andBlock = {
+      $and: [
+        { Manager: 'Pierre' },
+        { Region: 'Europe' },
+        { Revenue: { $lte: 1000 } },
+        { Revenue: { $gt: 100 } },
+        {
+          $or: [{ Company: { $ne: 'Toucan' } }, { Age: { lt: 10 } }],
+        },
+      ],
+    };
+    const simplifiedAndBlock = _simplifyAndCondition(andBlock);
+    expect(simplifiedAndBlock).to.eql({
+      Manager: 'Pierre',
+      Region: 'Europe',
+      $and: [{ Revenue: { $lte: 1000 } }, { Revenue: { $gt: 100 } }],
+      $or: [{ Company: { $ne: 'Toucan' } }, { Age: { lt: 10 } }],
+    });
+  });
+
   it('can generate filter steps', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
-      { name: 'filter', column: 'Manager', value: 'Pierre' },
-      { name: 'filter', column: 'Region', value: 'Europe', operator: 'eq' },
-      { name: 'filter', column: 'Company', value: 'Toucan', operator: 'ne' },
-      { name: 'filter', column: 'Age', value: 10, operator: 'lt' },
-      { name: 'filter', column: 'Height', value: 175, operator: 'le' },
-      { name: 'filter', column: 'Weight', value: 60, operator: 'gt' },
-      { name: 'filter', column: 'Value', value: 100, operator: 'ge' },
-      { name: 'filter', column: 'Category', value: ['Foo', 'Bar'], operator: 'in' },
-      { name: 'filter', column: 'Code', value: [0, 42], operator: 'nin' },
+      { name: 'filter', condition: { column: 'Manager', value: 'Pierre', operator: 'eq' } },
+      { name: 'filter', condition: { column: 'Region', value: 'Europe', operator: 'eq' } },
+      { name: 'filter', condition: { column: 'Company', value: 'Toucan', operator: 'ne' } },
+      { name: 'filter', condition: { column: 'Age', value: 10, operator: 'lt' } },
+      { name: 'filter', condition: { column: 'Height', value: 175, operator: 'le' } },
+      { name: 'filter', condition: { column: 'Weight', value: 60, operator: 'gt' } },
+      { name: 'filter', condition: { column: 'Value', value: 100, operator: 'ge' } },
+      { name: 'filter', condition: { column: 'Category', value: ['Foo', 'Bar'], operator: 'in' } },
+      { name: 'filter', condition: { column: 'Code', value: [0, 42], operator: 'nin' } },
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).to.eql([
@@ -102,6 +123,180 @@ describe('Pipeline to mongo translator', () => {
           Value: { $gte: 100 },
           Category: { $in: ['Foo', 'Bar'] },
           Code: { $nin: [0, 42] },
+        },
+      },
+    ]);
+  });
+
+  it('can generate a complex filter step with "and" as root', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'filter',
+        condition: {
+          and: [
+            {
+              column: 'column_1',
+              value: ['foo', 'bar'],
+              operator: 'in',
+            },
+            {
+              column: 'column_2',
+              value: ['toucan', 'toco'],
+              operator: 'nin',
+            },
+            {
+              or: [
+                {
+                  column: 'column_3',
+                  value: 'toto',
+                  operator: 'eq',
+                },
+                {
+                  and: [
+                    {
+                      column: 'column_4',
+                      value: 42,
+                      operator: 'le',
+                    },
+                    {
+                      column: 'column_4',
+                      value: 0,
+                      operator: 'gt',
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).to.eql([
+      {
+        $match: {
+          domain: 'test_cube',
+          column_1: { $in: ['foo', 'bar'] },
+          column_2: { $nin: ['toucan', 'toco'] },
+          $or: [
+            {
+              column_3: { $eq: 'toto' },
+            },
+            {
+              $and: [
+                {
+                  column_4: { $lte: 42 },
+                },
+                {
+                  column_4: { $gt: 0 },
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ]);
+  });
+
+  it('can generate a complex filter step with "or" as root', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'filter',
+        condition: {
+          or: [
+            {
+              column: 'column_1',
+              value: ['foo', 'bar'],
+              operator: 'in',
+            },
+            {
+              column: 'column_2',
+              value: ['toucan', 'toco'],
+              operator: 'nin',
+            },
+            {
+              and: [
+                {
+                  column: 'column_3',
+                  value: 'toto',
+                  operator: 'eq',
+                },
+                {
+                  column: 'column_4',
+                  value: 42,
+                  operator: 'le',
+                },
+              ],
+            },
+          ],
+        },
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).to.eql([
+      {
+        $match: {
+          domain: 'test_cube',
+          $or: [
+            { column_1: { $in: ['foo', 'bar'] } },
+            { column_2: { $nin: ['toucan', 'toco'] } },
+            {
+              $and: [{ column_3: { $eq: 'toto' } }, { column_4: { $lte: 42 } }],
+            },
+          ],
+        },
+      },
+    ]);
+  });
+
+  it('can generate a filter step with an "and" condition including common keys', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'filter',
+        condition: {
+          and: [
+            {
+              column: 'column_1',
+              value: ['foo', 'bar'],
+              operator: 'in',
+            },
+            {
+              column: 'column_2',
+              value: ['toucan', 'toco'],
+              operator: 'nin',
+            },
+            {
+              column: 'column_4',
+              value: 42,
+              operator: 'le',
+            },
+            {
+              column: 'column_4',
+              value: 0,
+              operator: 'gt',
+            },
+          ],
+        },
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).to.eql([
+      {
+        $match: {
+          domain: 'test_cube',
+          column_1: { $in: ['foo', 'bar'] },
+          column_2: { $nin: ['toucan', 'toco'] },
+          $and: [
+            {
+              column_4: { $lte: 42 },
+            },
+            {
+              column_4: { $gt: 0 },
+            },
+          ],
         },
       },
     ]);
@@ -172,7 +367,7 @@ describe('Pipeline to mongo translator', () => {
   it('can simplify complex queries', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
-      { name: 'filter', column: 'Manager', value: 'Pierre' },
+      { name: 'filter', condition: { column: 'Manager', value: 'Pierre', operator: 'eq' } },
       { name: 'delete', columns: ['Manager'] },
       { name: 'delete', columns: ['Random'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },

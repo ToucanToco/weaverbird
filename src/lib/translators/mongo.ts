@@ -5,6 +5,9 @@ import {
   AggregationStep,
   ArgmaxStep,
   ArgminStep,
+  FilterComboAnd,
+  FilterComboOr,
+  FilterSimpleCondition,
   FilterStep,
   Pipeline,
   PivotStep,
@@ -28,6 +31,12 @@ export interface MongoStep {
   [propName: string]: any;
 }
 
+type ComboOperator = 'and' | 'or';
+
+type FilterComboAndMongo = {
+  $and: MongoStep[];
+};
+
 /**
  * small helper / shortcut for `$${mycol}`
  *
@@ -49,7 +58,56 @@ function columnMap(colnames: string[]) {
   return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
-function filterstepToMatchstep(step: Readonly<FilterStep>): MongoStep {
+export function isFilterComboAnd(
+  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+): cond is FilterComboAnd {
+  if ((cond as FilterComboAnd).and) {
+    return true;
+  }
+  return false;
+}
+
+function isFilterComboOr(
+  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+): cond is FilterComboOr {
+  if ((cond as FilterComboOr).or) {
+    return true;
+  }
+  return false;
+}
+
+export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): MongoStep {
+  let simplifiedBlock: MongoStep = {};
+  const andList: MongoStep[] = [];
+  const counter: PropMap<number> = {};
+
+  for (const cond of filterAndCond.$and) {
+    for (const key in cond) {
+      counter[key] = counter.hasOwnProperty(key) ? counter[key] + 1 : 1;
+    }
+  }
+
+  for (const cond of filterAndCond.$and) {
+    for (const key in cond) {
+      if (counter[key] > 1 && key !== '$or') {
+        andList.push({ [key]: cond[key] });
+      } else {
+        simplifiedBlock = { ...simplifiedBlock, [key]: cond[key] };
+      }
+    }
+  }
+
+  if (andList.length > 0) {
+    simplifiedBlock = { ...simplifiedBlock, $and: andList };
+  }
+
+  return simplifiedBlock;
+}
+
+function buildMatchTree(
+  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+  parentComboOp: ComboOperator = 'and',
+): MongoStep {
   const operatorMapping = {
     eq: '$eq',
     ne: '$ne',
@@ -60,8 +118,21 @@ function filterstepToMatchstep(step: Readonly<FilterStep>): MongoStep {
     in: '$in',
     nin: '$nin',
   };
-  const operator = step.operator || 'eq';
-  return { $match: { [step.column]: { [operatorMapping[operator]]: step.value } } };
+  if (isFilterComboAnd(cond) && parentComboOp !== 'or') {
+    return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });
+  }
+  if (isFilterComboAnd(cond)) {
+    return { $and: cond.and.map(elem => buildMatchTree(elem, 'and')) };
+  }
+  if (isFilterComboOr(cond)) {
+    return { $or: cond.or.map(elem => buildMatchTree(elem, 'or')) };
+  }
+  return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
+}
+
+function filterstepToMatchstep(step: Readonly<FilterStep>): MongoStep {
+  const condition = step.condition;
+  return { $match: buildMatchTree(condition) };
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */

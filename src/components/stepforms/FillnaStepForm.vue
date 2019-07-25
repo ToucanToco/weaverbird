@@ -19,11 +19,13 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
+import { DataSetColumn } from '@/lib/dataset';
 
 @StepFormComponent({
   vqbstep: 'fillna',
@@ -36,6 +38,8 @@ import { FillnaStep } from '@/lib/steps';
 export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
   initialStepValue!: FillnaStep;
+
+  @Getter columnHeaders!: DataSetColumn[];
 
   readonly title: string = 'Fill null values';
 
@@ -50,6 +54,16 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
     if (colname !== null) {
       this.editedStep.column = colname;
     }
+  }
+
+  submit() {
+    const type = this.columnHeaders.filter(h => h.name === this.editedStep.column)[0].type;
+    if ((type === 'integer' || type === 'float') && !isNaN(Number(this.editedStep.value))) {
+      this.editedStep.value = Number(this.editedStep.value);
+    } else if (type === 'boolean') {
+      this.editedStep.value = this.editedStep.value === 'true';
+    }
+    this.$$super.submit();
   }
 }
 </script>

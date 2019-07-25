@@ -1,25 +1,18 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <ColumnPicker
-      id="columnInput"
-      v-model="editedStep.column"
-      name="Values in column..."
-      placeholder="Enter a column name"
-    ></ColumnPicker>
-    <WidgetAutocomplete
-      id="filterOperator"
-      v-model="editedStep.operator"
-      name="Must..."
-      :options="operators"
-      placeholder="Filter operator"
-    ></WidgetAutocomplete>
-    <WidgetInputText
-      id="valueInput"
-      v-model="editedStep.value"
-      name="This value:"
-      placeholder="Enter the filter value here"
-    ></WidgetInputText>
+    <div class="filter-form-headers__container">
+      <div class="filter-form-header">Values in...</div>
+      <div class="filter-form-header">Must...</div>
+    </div>
+    <WidgetList
+      addFieldName="Add condition"
+      id="filterConditions"
+      v-model="conditions"
+      :defaultItem="defaultCondition"
+      :widget="widgetFilterSimpleCondition"
+      :automatic-new-field="false"
+    ></WidgetList>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -27,42 +20,62 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import WidgetFilterSimpleCondition from '@/components/stepforms/WidgetFilterSimpleCondition.vue';
+import WidgetList from './WidgetList.vue';
 import BaseStepForm from './StepForm.vue';
-import { FilterStep } from '@/lib/steps';
+import { FilterStep, FilterComboAnd } from '@/lib/steps';
+import { FilterSimpleCondition } from '@/lib/steps';
 
 @StepFormComponent({
   vqbstep: 'filter',
   name: 'filter-step-form',
   components: {
-    ColumnPicker,
-    WidgetAutocomplete,
-    WidgetInputText,
+    WidgetFilterSimpleCondition,
+    WidgetList,
   },
 })
 export default class FilterStepForm extends BaseStepForm<FilterStep> {
   @Prop({
     type: Object,
-    default: () => ({ name: 'filter', column: '', value: '', operator: 'eq' }),
+    default: () => ({
+      name: 'filter',
+      condition: { and: [{ column: '', value: '', operator: 'eq' }] },
+    }),
   })
   initialStepValue!: FilterStep;
 
   readonly title: string = 'Filter';
-  operators: FilterStep['operator'][] = ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin'];
+  condition = this.initialStepValue.condition as FilterComboAnd;
+  editedStep = { name: 'filter' as 'filter', condition: { ...this.condition } };
+  widgetFilterSimpleCondition = WidgetFilterSimpleCondition;
 
-  get stepSelectedColumn() {
-    return this.editedStep.column;
+  get defaultCondition() {
+    const cond: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };
+    return cond;
   }
 
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on filter "column" field');
+  get conditions() {
+    if (this.editedStep.condition.and.length) {
+      return this.editedStep.condition.and;
+    } else {
+      return [this.defaultCondition];
     }
-    if (colname !== null) {
-      this.editedStep.column = colname;
-    }
+  }
+
+  set conditions(newval) {
+    this.editedStep.condition.and = [...newval];
   }
 }
 </script>
+<style lang="scss" scoped>
+.filter-form-headers__container {
+  display: flex;
+  width: 66%;
+}
+
+.filter-form-header {
+  font-size: 14px;
+  margin-left: 10px;
+  width: 50%;
+}
+</style>

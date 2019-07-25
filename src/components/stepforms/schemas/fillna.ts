@@ -17,7 +17,7 @@ export default {
       },
     },
     value: {
-      type: 'string',
+      type: ['string', 'number', 'boolean'],
       minLength: 0,
       title: 'The value used to fill nulls',
       description: 'The value used to fill nulls',

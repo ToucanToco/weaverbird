@@ -31,7 +31,7 @@ describe('backend service plugin tests', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-      { name: 'sort', columns: ['death'] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupStore({ pipeline }, [servicePluginFactory(new DummyService())]);
     const wrapper = mount(PipelineComponent, { store, localVue });

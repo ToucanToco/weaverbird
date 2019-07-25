@@ -104,7 +104,7 @@ describe('Vqb', () => {
           store,
           localVue,
           stubs: {
-            transition: false,
+            transition: true,
           },
           data: () => {
             return { formToInstantiate: 'domain-step-form' };
@@ -141,7 +141,7 @@ describe('Vqb', () => {
           store,
           localVue,
           stubs: {
-            transition: false,
+            transition: true,
           },
           data: () => {
             return { formToInstantiate: 'rename-step-form' };
@@ -190,7 +190,7 @@ describe('Vqb', () => {
       store,
       localVue,
       stubs: {
-        transition: false,
+        transition: true,
       },
       data: () => {
         return { formToInstantiate: 'rename-step-form' };
