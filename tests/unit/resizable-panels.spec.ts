@@ -53,8 +53,22 @@ describe('Resizable Panels', () => {
     });
   });
 
-  xdescribe('when resizing', () => {
+  describe('when resizing', () => {
     it('should change the ratio', () => {
+      const boundingRectSpy = jest
+        .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+        .mockImplementation(() => ({
+          x: 0,
+          y: 0,
+          top: 0,
+          bottom: 0,
+          left: 0,
+          right: 0,
+          // set width to 1000px so that moving mouse from 100px will change the global
+          // ratio of 10%
+          width: 1000,
+          height: 1000,
+        }));
       const wrapper = shallowMount(ResizablePanels, {
         attachToDocument: true,
       });
@@ -66,6 +80,7 @@ describe('Resizable Panels', () => {
       // If I move my mouse of 100px - that is 1/10 compare to its width - then I increase my ratio by 0.1
       // expect(wrapper.vm.$data.ratio).to.be.closeTo(0.5, 0.05);
       expect(wrapper.vm.$data.ratio).toBeCloseTo(0.5, 2);
+      boundingRectSpy.mockRestore();
     });
   });
 });
