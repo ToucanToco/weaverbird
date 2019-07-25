@@ -31,20 +31,44 @@ export const ACTION_CATEGORIES: ActionCategories = {
 };
 
 export const SEARCH_ACTION: ActionCategory[] = [
+  {
+    type: 'compute',
+    actions: [{ name: 'percentage', label: 'Percentage of total' }],
+  },
+  {
+    type: 'filter',
+    actions: [
+      { name: 'delete', label: 'Delete columns' },
+      { name: 'select', label: 'Keep columns' },
+      { name: 'filter', label: 'Filter based on conditions' },
+      { name: 'top', label: 'Top N rows' },
+      { name: 'argmax', label: 'Argmax' },
+      { name: 'argmin', label: 'Argmin' },
+    ],
+  },
+  {
+    type: 'head Column action',
+    actions: [
+      { name: 'duplicate', label: 'Duplicate column' },
+      { name: 'rename', label: 'Rename column' },
+      { name: 'fillna', label: 'Fill null values' },
+      { name: 'filter', label: 'Filter values' },
+    ],
+  },
   { name: 'aggregate', label: 'Aggregate' },
-  { name: 'percentage', label: 'Percentage of total' },
-  { name: 'delete', label: 'Delete columns' },
-  { name: 'select', label: 'Keep columns' },
-  { name: 'filter', label: 'Filter based on conditions' },
-  { name: 'top', label: 'Top N rows' },
-  { name: 'argmax', label: 'Argmax' },
-  { name: 'argmin', label: 'Argmin' },
-  { name: 'pivot', label: 'Pivot' },
-  { name: 'unpivot', label: 'Unpivot' },
-  { name: 'duplicate', label: 'Duplicate column' },
-  { name: 'rename', label: 'Rename column' },
-  { name: 'fillna', label: 'Fill null values' },
-  { name: 'filter', label: 'Filter values' },
+  {
+    type: 'aggregate',
+    actions: [
+      {
+        name: 'aggregate',
+        label: 'Aggregate',
+      },
+    ],
+  },
+  {
+    type: 'reshape',
+    actions: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
+  },
 ];
 
 export const CATEGORY_BUTTONS: ButtonDef[] = [

@@ -15,19 +15,17 @@ describe('SearchBar', () => {
   it('should display the right option into multiselect', () => {
     const wrapper = mount(SearchBar, {
       propsData: {
-        actionOptions: [
-          { name: 'aggregate', label: 'Aggregate' },
-          { name: 'select', label: 'Keep columns' },
-        ],
+        type: 'compute',
+        actions: [{ name: 'percentage', label: 'Percentage of total' }],
       },
     });
     const multiselect = wrapper.findAll('.multiselect__option');
     expect(
       multiselect
-        .at(0)
+        .at(1)
         .find('span span')
         .text(),
-    ).toEqual('Aggregate');
+    ).to.equal('Percentage of total');
   });
 
   it('should emit "actionClicked" when an option multiselect is clicked', () => {

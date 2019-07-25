@@ -6,6 +6,9 @@
       track-by="label"
       :placeholder="'Search'"
       :reset-after="true"
+      group-label="type"
+      group-values="actions"
+      :group-select="false"
       @select="actionClicked"
     ></multiselect>
   </div>
@@ -105,5 +108,14 @@ export default class SearchBar extends Vue {
   &:focus {
     outline: none;
   }
+}
+.search-bar .multiselect__option--group {
+  background: none !important;
+  color: $base-color !important;
+  font-weight: bold;
+  box-shadow: none;
+  min-height: 35px;
+  padding-bottom: 0;
+  text-transform: capitalize;
 }
 </style>
