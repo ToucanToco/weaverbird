@@ -21,10 +21,7 @@
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
-      <div class="action-toolbar__search">
-        <i class="action-toolbar__search-icon fas fa-search"></i>
-        <input class="action-toolbar__search-input" type="text" placeholder="Search">
-      </div>
+      <search-bar @actionClicked="actionClicked"></search-bar>
     </div>
   </div>
 </template>
@@ -35,11 +32,13 @@ import { State } from 'vuex-class';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
 import { PipelineStepName } from '@/lib/steps';
+import SearchBar from './SearchBar.vue';
 
 @Component({
   name: 'action-toolbar',
   components: {
     ActionToolbarButton,
+    SearchBar,
   },
 })
 export default class ActionToolbar extends Vue {
@@ -90,30 +89,5 @@ export default class ActionToolbar extends Vue {
   margin-bottom: 15px;
   margin-right: 15px;
   justify-content: space-between;
-}
-
-.action-toolbar__search {
-  background: #fafafa;
-  border-radius: 5px;
-  border: 1px solid #f0f0f0;
-  color: #999999;
-  padding-left: 5px;
-  align-self: center;
-  margin-left: 10px;
-}
-
-.action-toolbar__search-icon {
-  vertical-align: middle;
-}
-
-.action-toolbar__search-input {
-  background: none;
-  border: 0;
-  color: #999999;
-  line-height: 25px;
-  margin: 3px 0 3px 5px;
-  &:focus {
-    outline: none;
-  }
 }
 </style>

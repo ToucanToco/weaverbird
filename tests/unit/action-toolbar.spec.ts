@@ -104,4 +104,20 @@ describe('ActionToolbar', () => {
     buttons.at(1).trigger('click');
     expect(wrapper.emitted().actionClicked[0]).to.eql(['aggregate']);
   });
+
+  it('should instantiate the search bar', () => {
+    const wrapper = shallowMount(ActionToolbar, {
+      propsData: {
+        buttons: [
+          {
+            category: 'filter',
+            icon: 'filter',
+            label: 'Filter',
+          },
+        ],
+      },
+    });
+    const searchBar = wrapper.findAll('search-bar-stub');
+    expect(searchBar.exists()).to.be.true;
+  });
 });
