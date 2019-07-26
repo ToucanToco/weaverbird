@@ -275,8 +275,8 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.top).toEqual(parentBounds.top - POPOVER_SHADOW_GAP);
-      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
+      expect(popoverBounds.top).toEqual(`${parentBounds.top - POPOVER_SHADOW_GAP}px`);
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
     it('should update its position on orientation change', async function() {
@@ -302,7 +302,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
     it('should update its position when resized', async function() {
@@ -332,7 +332,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
     it('should update its position when scrolled', async function() {
@@ -362,7 +362,7 @@ describe('Popover', function() {
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.left).toEqual(parentBounds.left + 100 / 2);
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
 
     it.skip('should be visible', function() {

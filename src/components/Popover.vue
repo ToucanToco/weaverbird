@@ -99,7 +99,6 @@ export default class Popover extends Vue {
     for (const p of parents) {
       p.addEventListener('scroll', this.scrollListener);
     }
-
     this.updatePosition();
   }
 
@@ -135,7 +134,8 @@ export default class Popover extends Vue {
       // Set alignment
       const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
       elementStyle.top = DOMUtil.computeTop(this.isBottom, positionContext);
-      this.elementStyle = elementStyle;
+      // make sure to use `px` unit explicitly
+      this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));
     },
     // 60fps
     16,
