@@ -26,6 +26,7 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
 import { DataSetColumn } from '@/lib/dataset';
+import { castFromString } from '@/lib/helpers';
 
 @StepFormComponent({
   vqbstep: 'fillna',
@@ -58,10 +59,8 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
 
   submit() {
     const type = this.columnHeaders.filter(h => h.name === this.editedStep.column)[0].type;
-    if ((type === 'integer' || type === 'float') && !isNaN(Number(this.editedStep.value))) {
-      this.editedStep.value = Number(this.editedStep.value);
-    } else if (type === 'boolean') {
-      this.editedStep.value = this.editedStep.value === 'true';
+    if (type !== undefined) {
+      this.editedStep.value = castFromString(this.editedStep.value as string, type);
     }
     this.$$super.submit();
   }

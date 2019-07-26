@@ -37,6 +37,7 @@ import WidgetToReplace from '@/components/stepforms/WidgetToReplace.vue';
 import BaseStepForm from './StepForm.vue';
 import { ReplaceStep } from '@/lib/steps';
 import { DataSetColumn } from '@/lib/dataset';
+import { castFromString } from '@/lib/helpers';
 
 @StepFormComponent({
   vqbstep: 'replace',
@@ -81,19 +82,10 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
 
   submit() {
     const type = this.columnHeaders.filter(h => h.name === this.editedStep.search_column)[0].type;
-    if (type === 'integer' || type === 'float') {
-      for (const tuple of this.editedStep.to_replace) {
-        if (!isNaN(Number(tuple[0]))) {
-          tuple[0] = Number(tuple[0]);
-        }
-        if (!isNaN(Number(tuple[1]))) {
-          tuple[1] = Number(tuple[1]);
-        }
-      }
-    } else if (type === 'boolean') {
-      for (const tuple of this.editedStep.to_replace) {
-        tuple[0] = tuple[0] === 'true';
-        tuple[1] = tuple[1] === 'true';
+    for (const tuple of this.editedStep.to_replace) {
+      if (type !== undefined) {
+        tuple[0] = castFromString(tuple[0], type);
+        tuple[1] = castFromString(tuple[1], type);
       }
     }
     this.$$super.submit();
