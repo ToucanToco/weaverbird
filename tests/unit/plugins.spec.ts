@@ -17,10 +17,14 @@ class DummyService implements BackendService {
   }
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  executePipeline(pipeline: Pipeline) {
+  executePipeline(pipeline: Pipeline, limit: number) {
+    let rset = [[1, 2], [3, 4]];
+    if (limit) {
+      rset = rset.slice(0, limit);
+    }
     return Promise.resolve({
       headers: [{ name: 'x' }, { name: 'y' }],
-      data: [[1, 2], [3, 4]],
+      data: rset,
     });
   }
 }
@@ -81,6 +85,16 @@ describe('backend service plugin tests', () => {
     expect(store.state.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2], [3, 4]],
+    });
+  });
+
+  it('should call execute pipeline with correct pagesize', async () => {
+    const store = setupStore({ pagesize: 1 }, [servicePluginFactory(new DummyService())]);
+    store.commit('setCurrentDomain', { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(store.state.dataset).toEqual({
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [[1, 2]],
     });
   });
 });

@@ -22,14 +22,18 @@ export interface BackendService {
   listCollections(): Promise<string[]>;
   /**
    * @param pipeline the pipeline to translate and execute on the backend
+   * @param limit if specified, a limit to be applied on the results. How is limit
+   * is applied is up to the concrete implementor (either in the toolchain, the query
+   * or afterwareds on the resultset)
+   *
    * @return a promise that holds the result of the pipeline execution,
    * formatted as as `DataSet`
    */
-  executePipeline(pipeline: Pipeline): Promise<DataSet>;
+  executePipeline(pipeline: Pipeline, limit: number): Promise<DataSet>;
 }
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
-  const dataset = await service.executePipeline(pipeline);
+  const dataset = await service.executePipeline(pipeline, store.state.pagesize);
   store.commit('setDataset', { dataset });
 }
 
