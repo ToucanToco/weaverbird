@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import sinon from 'sinon';
 import { mount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 
@@ -149,9 +148,9 @@ describe('DOM Position Tests', () => {
 });
 
 describe('Popover', function() {
-  var wrapper: Wrapper<Vue>;
-  var popoverWrapper: Wrapper<Vue>;
-  var clock = sinon.useFakeTimers();
+  let wrapper: Wrapper<Vue>;
+  let popoverWrapper: Wrapper<Vue>;
+  let throttleSpy: jest.SpyInstance<Function>;
 
   const createWrapper = (...args: any) => {
     const val = args[0],
@@ -200,17 +199,15 @@ describe('Popover', function() {
       },
     );
     popoverWrapper = wrapper.find({ ref: 'popover' });
-    // Force throttle end
-    clock.tick(16);
   };
 
   beforeEach(function() {
-    clock = sinon.useFakeTimers();
+    throttleSpy = jest.spyOn(_, 'throttle').mockImplementation((fn: any) => fn);
   });
 
   afterEach(function() {
     wrapper.destroy();
-    clock.restore();
+    throttleSpy.mockRestore();
   });
 
   it('should instanciate a popover', function() {
