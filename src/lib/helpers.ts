@@ -1,6 +1,6 @@
 import { DataSetColumnType } from './dataset';
 
-function issStringBoolean(string: string): boolean {
+function isBooleanString(string: string): boolean {
   return (
     string === 'true' ||
     string === 'false' ||
@@ -22,7 +22,7 @@ function issStringBoolean(string: string): boolean {
 export function castFromString(value: string, type: DataSetColumnType) {
   if ((type === 'integer' || type === 'float') && !isNaN(Number(value))) {
     return Number(value);
-  } else if (type === 'boolean' && issStringBoolean(value)) {
+  } else if (type === 'boolean' && isBooleanString(value)) {
     return value === 'true' || value === 'True' || value === 'TRUE' || value === '1';
   }
   return value;
