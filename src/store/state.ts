@@ -50,6 +50,11 @@ export const emptyState: VQBState = {
   dataset: {
     headers: [],
     data: [],
+    paginationContext: {
+      pagesize: 50,
+      pageno: 1,
+      totalCount: 0,
+    },
   },
   domains: [],
   selectedStepIndex: -1,

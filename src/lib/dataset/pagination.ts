@@ -2,7 +2,14 @@
  * This module contains pagination helpers.
  */
 
-import { PaginationContext } from '@/store/state';
+export interface PaginationContext {
+  /**
+   * pagination context (i.e. number of results displayed per page and current page number)
+   */
+  pagesize: number;
+  pageno: number;
+  totalCount?: number;
+}
 
 /**
  * Get number of total pages
@@ -14,6 +21,6 @@ export function numberOfPages(paginationContext: PaginationContext) {
 /**
  * Get page offset
  */
-export function pageOffset(paginationContext: PaginationContext, pageno: number) {
-  return pageno * paginationContext.pagesize;
+export function pageOffset(pagesize: number, pageno: number) {
+  return Math.max(pageno - 1, 0) * pagesize;
 }

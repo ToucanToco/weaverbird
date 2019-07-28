@@ -52,4 +52,9 @@ export default {
    * Get the step config of the pipeline based on its index
    */
   stepConfig: (state: VQBState) => (index: number) => state.pipeline[index],
+  /**
+   * Return current page number
+   */
+  pageno: (state: VQBState) =>
+    state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
 };

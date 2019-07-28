@@ -24,6 +24,7 @@ function _sortDataset(dataset: DataSet): DataSet {
   return {
     headers: sortedColumns,
     data: sortedData,
+    paginationContext: dataset.paginationContext,
   };
 }
 
@@ -32,6 +33,7 @@ describe('_sortDataset tests', () => {
     const dataset: DataSet = {
       headers: [{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }],
       data: [[1, 2, 3], [4, 5, 6]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
     };
     const sorted = _sortDataset(dataset);
     expect(sorted.headers).toEqual([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
@@ -42,6 +44,7 @@ describe('_sortDataset tests', () => {
     const dataset: DataSet = {
       headers: [{ name: 'col3' }, { name: 'col1' }, { name: 'col4' }, { name: 'col2' }],
       data: [[1, 2, 3, 4], [5, 6, 7, 8]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
     };
     const sorted = _sortDataset(dataset);
     expect(sorted.headers).toEqual([
@@ -153,6 +156,7 @@ describe('inferTypeFromDataset', () => {
         ['New York City', 10000000, false],
         ['Rio de Janeiro', 4000000, false],
       ],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 7 },
     };
     const datasetWithInferredType = inferTypeFromDataset(dataset);
     expect(datasetWithInferredType.headers).toEqual([
@@ -175,6 +179,7 @@ describe('inferTypeFromDataset', () => {
         ['Rio de Janeiro', 4000000, false],
         [undefined, null, 10],
       ],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 7 },
     };
     const datasetWithInferredType = inferTypeFromDataset(dataset, 7);
     expect(datasetWithInferredType.headers).toEqual([
@@ -197,6 +202,7 @@ describe('inferTypeFromDataset', () => {
         ['Rio de Janeiro', 4000000, false],
         [undefined, false, 10],
       ],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 8 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset);
@@ -211,6 +217,7 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, undefined]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -225,6 +232,7 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, null]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -239,6 +247,7 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, null], ['Paris', 10000000, false]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset);
@@ -253,6 +262,7 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, Symbol()]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -267,6 +277,7 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
       data: [['Paris', 10000000, () => {}]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset, 1);
@@ -281,6 +292,7 @@ describe('inferTypeFromDataset', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'density' }, { name: 'isCapitalCity' }],
       data: [['Paris', 61.7, true], ['Marseille', 40, false], ['Berlin', 41.5, true]],
+      paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
     };
 
     const datasetWithInferredType = inferTypeFromDataset(dataset);
