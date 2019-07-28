@@ -99,7 +99,7 @@ async function buildVueApp() {
     {
       pipeline: initialPipeline,
       currentDomain: 'test-collection',
-      pagesize: 2,
+
     },
     [mongoBackendPlugin],
   );

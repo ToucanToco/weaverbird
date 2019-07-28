@@ -41,6 +41,11 @@ type SelectedColumnsMutation = {
   payload: { column: string };
 };
 
+type SetCurrentPage = {
+  type: 'setCurrentPage';
+  payload: { pageno: number };
+};
+
 type ToggleColumnSelectionMutation = {
   type: 'toggleColumnSelection';
   payload: { column: string };
@@ -54,6 +59,7 @@ export type StateMutation =
   | SelectedColumnsMutation
   | SelectDomainMutation
   | SelectedStepMutation
+  | SetCurrentPage
   | ToggleColumnSelectionMutation;
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
@@ -138,5 +144,17 @@ export default {
 
   toggleStepEdition(state: VQBState) {
     state.isEditingStep = !state.isEditingStep;
+  },
+
+  /**
+   * change current pagination context's page
+   */
+  setCurrentPage(state: VQBState, { pageno }: { pageno: number }) {
+    if (state.dataset.paginationContext) {
+      state.dataset.paginationContext.pageno = pageno;
+    } else {
+      const length = state.dataset.data.length;
+      state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
+    }
   },
 };

@@ -56,7 +56,8 @@ export function servicePluginFactory(service: BackendService) {
       if (
         mutation.type === 'selectStep' ||
         mutation.type === 'setCurrentDomain' ||
-        mutation.type === 'deleteStep'
+        mutation.type === 'deleteStep' ||
+        mutation.type === 'setCurrentPage'
       ) {
         _updateDataset(store, service, activePipeline(state));
       }
