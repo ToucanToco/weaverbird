@@ -7,21 +7,21 @@
       name="Search in column..."
       placeholder="Enter a column"
     ></ColumnPicker>
-    <WidgetInputText
+    <InputTextWidget
       id="newColumnInput"
       v-model="editedStep.new_column"
       name="(Optional) Write output in..."
       placeholder="Enter a new column name"
-    ></WidgetInputText>
-    <WidgetList
+    ></InputTextWidget>
+    <ListWidget
       addFieldName="Add a value to replace"
       id="toReplace"
       name="Values to replace:"
       v-model="toReplace"
       :defaultItem="[]"
-      :widget="widgetToReplace"
+      :widget="replaceWidget"
       :automatic-new-field="false"
-    ></WidgetList>
+    ></ListWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -31,9 +31,9 @@ import { Prop } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetList from '@/components/stepforms/WidgetList.vue';
-import WidgetToReplace from '@/components/stepforms/WidgetToReplace.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import ListWidget from '@/components/stepforms/widgets/List.vue';
+import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import BaseStepForm from './StepForm.vue';
 import { ReplaceStep } from '@/lib/steps';
 import { DataSetColumn } from '@/lib/dataset';
@@ -44,8 +44,8 @@ import { castFromString } from '@/lib/helpers';
   name: 'replace-step-form',
   components: {
     ColumnPicker,
-    WidgetInputText,
-    WidgetList,
+    InputTextWidget,
+    ListWidget,
   },
 })
 export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
@@ -55,7 +55,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   @Getter columnHeaders!: DataSetColumn[];
 
   readonly title: string = 'Replace values';
-  widgetToReplace = WidgetToReplace;
+  replaceWidget = ReplaceWidget;
 
   get stepSelectedColumn() {
     return this.editedStep.search_column;

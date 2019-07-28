@@ -25,14 +25,14 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.stepname).toEqual('filter');
   });
 
-  describe('WidgetList', () => {
-    it('should have exactly on WidgetList component', () => {
+  describe('ListWidget', () => {
+    it('should have exactly on ListWidget component', () => {
       const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
-      const widgetWrappers = wrapper.findAll('widgetlist-stub');
+      const widgetWrappers = wrapper.findAll('listwidget-stub');
       expect(widgetWrappers.length).toEqual(1);
     });
 
-    it('should pass down the "condition" prop to the WidgetList value prop', async () => {
+    it('should pass down the "condition" prop to the ListWidget value prop', async () => {
       const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
       wrapper.setData({
         editedStep: {
@@ -41,7 +41,7 @@ describe('Filter Step Form', () => {
         },
       });
       await localVue.nextTick();
-      expect(wrapper.find('widgetlist-stub').props().value).toEqual([
+      expect(wrapper.find('listwidget-stub').props().value).toEqual([
         { column: 'foo', value: 'bar', operator: 'gt' },
       ]);
     });

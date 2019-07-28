@@ -5,14 +5,14 @@
       <div class="filter-form-header">Values in...</div>
       <div class="filter-form-header">Must...</div>
     </div>
-    <WidgetList
+    <ListWidget
       addFieldName="Add condition"
       id="filterConditions"
       v-model="conditions"
       :defaultItem="defaultCondition"
       :widget="widgetFilterSimpleCondition"
       :automatic-new-field="false"
-    ></WidgetList>
+    ></ListWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -20,8 +20,8 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetFilterSimpleCondition from '@/components/stepforms/WidgetFilterSimpleCondition.vue';
-import WidgetList from './WidgetList.vue';
+import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
+import ListWidget from './widgets/List.vue';
 import BaseStepForm from './StepForm.vue';
 import { FilterStep, FilterComboAnd } from '@/lib/steps';
 import { FilterSimpleCondition } from '@/lib/steps';
@@ -30,8 +30,8 @@ import { FilterSimpleCondition } from '@/lib/steps';
   vqbstep: 'filter',
   name: 'filter-step-form',
   components: {
-    WidgetFilterSimpleCondition,
-    WidgetList,
+    FilterSimpleConditionWidget,
+    ListWidget,
   },
 })
 export default class FilterStepForm extends BaseStepForm<FilterStep> {
@@ -47,7 +47,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   readonly title: string = 'Filter';
   condition = this.initialStepValue.condition as FilterComboAnd;
   editedStep = { name: 'filter' as 'filter', condition: { ...this.condition } };
-  widgetFilterSimpleCondition = WidgetFilterSimpleCondition;
+  widgetFilterSimpleCondition = FilterSimpleConditionWidget;
 
   get defaultCondition() {
     const cond: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };

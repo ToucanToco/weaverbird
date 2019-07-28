@@ -17,9 +17,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 @Component({
-  name: 'widget-input-text',
+  name: 'input-text-widget',
 })
-export default class WidgetInputText extends Vue {
+export default class InputTextWidget extends Vue {
   @Prop({ type: String, default: null })
   id!: string;
 
@@ -56,7 +56,7 @@ export default class WidgetInputText extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/_variables';
+@import '../../../styles/_variables';
 
 .widget-input-text__container {
   @extend %form-widget__container;

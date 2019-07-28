@@ -27,7 +27,7 @@ describe('Fillna Step Form', () => {
 
   it('should have exactly one widgetinputtext component', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
+    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
 
     expect(inputWrappers.length).toEqual(1);
   });
@@ -36,7 +36,7 @@ describe('Fillna Step Form', () => {
     const wrapper = shallowMount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.setData({ editedStep: { column: '', value: 'foo' } });
     await localVue.nextTick();
-    expect(wrapper.find('widgetinputtext-stub').props('value')).toEqual('foo');
+    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('foo');
   });
 
   it('should have a columnpicker widget', () => {

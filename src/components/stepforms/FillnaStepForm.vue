@@ -7,12 +7,12 @@
       name="Replace null values in..."
       placeholder="Enter a column"
     ></ColumnPicker>
-    <WidgetInputText
+    <InputTextWidget
       id="valueInput"
       v-model="editedStep.value"
       name="With..."
       placeholder="Enter a value"
-    ></WidgetInputText>
+    ></InputTextWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -21,7 +21,7 @@
 import { Prop } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
@@ -33,7 +33,7 @@ import { castFromString } from '@/lib/helpers';
   name: 'fillna-step-form',
   components: {
     ColumnPicker,
-    WidgetInputText,
+    InputTextWidget,
   },
 })
 export default class FillnaStepForm extends BaseStepForm<FillnaStep> {

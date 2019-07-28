@@ -1,14 +1,14 @@
 import { shallowMount } from '@vue/test-utils';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 
 describe('Widget Autocomplete', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(WidgetAutocomplete);
+    const wrapper = shallowMount(AutocompleteWidget);
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have an instantiated Multiselect autocomplete', () => {
-    const wrapper = shallowMount(WidgetAutocomplete);
+    const wrapper = shallowMount(AutocompleteWidget);
     expect(wrapper.find('multiselect-stub').exists()).toBeTruthy();
   });
 });

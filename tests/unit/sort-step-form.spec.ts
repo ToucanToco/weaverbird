@@ -24,17 +24,17 @@ describe('Sort Step Form', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  describe('WidgetList', () => {
+  describe('ListWidget', () => {
     it('should have one widgetList component', () => {
       const wrapper = shallowMount(SortStepForm, { store: emptyStore, localVue, sync: false });
-      const widgetListWrapper = wrapper.findAll('widgetlist-stub');
+      const widgetListWrapper = wrapper.findAll('listwidget-stub');
       expect(widgetListWrapper.length).toEqual(1);
     });
 
     it('should pass the defaultSortColumn props to widgetList', async () => {
       const wrapper = shallowMount(SortStepForm, { store: emptyStore, localVue, sync: false });
       await localVue.nextTick();
-      expect(wrapper.find('widgetlist-stub').props().value).toEqual([{ column: '', order: 'asc' }]);
+      expect(wrapper.find('listwidget-stub').props().value).toEqual([{ column: '', order: 'asc' }]);
     });
 
     it('should pass right sort props to widgetList sort column', async () => {
@@ -46,7 +46,7 @@ describe('Sort Step Form', () => {
         },
       });
       await localVue.nextTick();
-      expect(wrapper.find('widgetlist-stub').props().value).toEqual([
+      expect(wrapper.find('listwidget-stub').props().value).toEqual([
         { column: 'amazing', order: 'desc' },
       ]);
     });

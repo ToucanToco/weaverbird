@@ -7,12 +7,12 @@
       name="Duplicate column..."
       placeholder="Enter a column"
     ></ColumnPicker>
-    <WidgetInputText
+    <InputTextWidget
       id="newColumnNameInput"
       v-model="editedStep.new_column_name"
       name="New column name:"
       placeholder="Enter a column name"
-    ></WidgetInputText>
+    ></InputTextWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -21,7 +21,7 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import { DuplicateColumnStep } from '@/lib/steps';
 
@@ -30,7 +30,7 @@ import { DuplicateColumnStep } from '@/lib/steps';
   name: 'duplicate-step-form',
   components: {
     ColumnPicker,
-    WidgetInputText,
+    InputTextWidget,
   },
 })
 export default class DuplicateColumnForm extends BaseStepForm<DuplicateColumnStep> {

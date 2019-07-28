@@ -1,5 +1,5 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import WidgetMultiInputText from '@/components/stepforms/WidgetMultiInputText.vue';
+import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import Vuex from 'vuex';
 
 const localVue = createLocalVue();
@@ -7,12 +7,12 @@ localVue.use(Vuex);
 
 describe('Widget MultisInputText', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(WidgetMultiInputText);
+    const wrapper = shallowMount(MultiInputTextWidget);
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have a label', () => {
-    const wrapper = shallowMount(WidgetMultiInputText, {
+    const wrapper = shallowMount(MultiInputTextWidget, {
       propsData: {
         name: 'Stark',
       },
@@ -22,7 +22,7 @@ describe('Widget MultisInputText', () => {
   });
 
   it('should have an empty placeholder', () => {
-    const wrapper = shallowMount(WidgetMultiInputText, {
+    const wrapper = shallowMount(MultiInputTextWidget, {
       propsData: {
         value: ['foo'],
       },
@@ -32,7 +32,7 @@ describe('Widget MultisInputText', () => {
   });
 
   it('should have a placeholder', () => {
-    const wrapper = shallowMount(WidgetMultiInputText, {
+    const wrapper = shallowMount(MultiInputTextWidget, {
       propsData: {
         placeholder: 'I m a placeholder',
         value: ['foo'],
@@ -43,13 +43,13 @@ describe('Widget MultisInputText', () => {
   });
 
   it('should have an empty input', () => {
-    const wrapper = shallowMount(WidgetMultiInputText);
+    const wrapper = shallowMount(MultiInputTextWidget);
     const multiselect = wrapper.find('multiselect-stub');
     expect(multiselect.attributes().value).toEqual('');
   });
 
   it('should have a non empty input', () => {
-    const wrapper = shallowMount(WidgetMultiInputText, {
+    const wrapper = shallowMount(MultiInputTextWidget, {
       propsData: { value: ['foo'] },
     });
     const multiselect = wrapper.find('multiselect-stub');
@@ -57,20 +57,20 @@ describe('Widget MultisInputText', () => {
   });
 
   it('should update "options" on search-change event', () => {
-    const wrapper = shallowMount(WidgetMultiInputText);
+    const wrapper = shallowMount(MultiInputTextWidget);
     const multiselect = wrapper.find('multiselect-stub');
     multiselect.vm.$emit('search-change', 'Foo');
     expect(wrapper.vm.$data.options).toEqual(['Foo']);
   });
 
   it('should emit "input" event on editedValue update', async () => {
-    const wrapper = shallowMount(WidgetMultiInputText);
+    const wrapper = shallowMount(MultiInputTextWidget);
     await wrapper.setData({ editedValue: ['Foo'] });
     expect(wrapper.emitted()).toEqual({ input: [[['Foo']]] });
   });
 
   it('should clear "options" on input', () => {
-    const wrapper = shallowMount(WidgetMultiInputText);
+    const wrapper = shallowMount(MultiInputTextWidget);
     wrapper.setData({ options: ['Foo'] });
     expect(wrapper.vm.$data.options).toEqual(['Foo']);
     wrapper.find('multiselect-stub').vm.$emit('input');
@@ -78,7 +78,7 @@ describe('Widget MultisInputText', () => {
   });
 
   it('should set "editedValue" initially"', async () => {
-    const wrapper = shallowMount(WidgetMultiInputText, { propsData: { value: ['Foo'] } });
+    const wrapper = shallowMount(MultiInputTextWidget, { propsData: { value: ['Foo'] } });
     expect(wrapper.vm.$data.editedValue).toEqual(['Foo']);
   });
 });

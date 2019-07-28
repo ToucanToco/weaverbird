@@ -1,14 +1,14 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetMultiselect
+    <MultiselectWidget
       id="columnsInput"
       v-model="editedStep.columns"
       name="Keep columns..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.columns[editedStep.columns.length-1] })"
       placeholder="Add columns"
-    ></WidgetMultiselect>
+    ></MultiselectWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -16,7 +16,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { SelectStep } from '@/lib/steps';
 
@@ -24,7 +24,7 @@ import { SelectStep } from '@/lib/steps';
   vqbstep: 'select',
   name: 'select-step-form',
   components: {
-    WidgetMultiselect,
+    MultiselectWidget,
   },
 })
 export default class SelectStepForm extends BaseStepForm<SelectStep> {

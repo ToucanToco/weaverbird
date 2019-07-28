@@ -1,5 +1,5 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import WidgetSortColumn from '@/components/stepforms/WidgetSortColumn.vue';
+import SortColumnWidget from '@/components/stepforms/widgets/SortColumn.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { VQBState } from '@/store/state';
@@ -14,13 +14,13 @@ describe('Widget sort column', () => {
   });
 
   it('should instantiate', () => {
-    const wrapper = shallowMount(WidgetSortColumn, { store: emptyStore, localVue });
+    const wrapper = shallowMount(SortColumnWidget, { store: emptyStore, localVue });
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it('should have exactly two WidgetAutocomplete components', () => {
-    const wrapper = shallowMount(WidgetSortColumn, { store: emptyStore, localVue });
-    const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
+  it('should have exactly two AutocompleteWidget components', () => {
+    const wrapper = shallowMount(SortColumnWidget, { store: emptyStore, localVue });
+    const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(widgetWrappers.length).toEqual(2);
   });
 
@@ -31,29 +31,29 @@ describe('Widget sort column', () => {
         data: [],
       },
     });
-    const wrapper = shallowMount(WidgetSortColumn, { store, localVue });
-    const widgetWrappers = wrapper.findAll('widgetautocomplete-stub');
+    const wrapper = shallowMount(SortColumnWidget, { store, localVue });
+    const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
-  it('should pass down the "column" prop to the first WidgetAutocomplete value prop', async () => {
-    const wrapper = shallowMount(WidgetSortColumn, { store: emptyStore, localVue });
+  it('should pass down the "column" prop to the first AutocompleteWidget value prop', async () => {
+    const wrapper = shallowMount(SortColumnWidget, { store: emptyStore, localVue });
     wrapper.setProps({ value: { column: 'foo', order: 'asc' } });
     await localVue.nextTick();
-    const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
+    const widgetWrappers = wrapper.findAll('AutocompleteWidget-stub');
     expect(widgetWrappers.at(0).props().value).toEqual('foo');
   });
 
-  it('should pass down the "order" prop to the second WidgetAutocomplete value prop', async () => {
-    const wrapper = shallowMount(WidgetSortColumn, { store: emptyStore, localVue });
+  it('should pass down the "order" prop to the second AutocompleteWidget value prop', async () => {
+    const wrapper = shallowMount(SortColumnWidget, { store: emptyStore, localVue });
     wrapper.setProps({ value: { column: 'foo', order: 'desc' } });
     await localVue.nextTick();
-    const widgetWrappers = wrapper.findAll('WidgetAutocomplete-stub');
+    const widgetWrappers = wrapper.findAll('AutocompleteWidget-stub');
     expect(widgetWrappers.at(1).props().value).toEqual('desc');
   });
 
   it('should emit "input" event on "value" update', async () => {
-    const wrapper = shallowMount(WidgetSortColumn, {
+    const wrapper = shallowMount(SortColumnWidget, {
       store: emptyStore,
       localVue,
     });

@@ -1,21 +1,21 @@
 <template>
   <div class="widget-to-replace__container">
-    <WidgetInputText id="valueToReplace" v-model="toReplace[0]" placeholder="Value to replace"></WidgetInputText>
-    <WidgetInputText id="newValue" v-model="toReplace[1]" placeholder="New value"></WidgetInputText>
+    <InputTextWidget id="valueToReplace" v-model="toReplace[0]" placeholder="Value to replace"></InputTextWidget>
+    <InputTextWidget id="newValue" v-model="toReplace[1]" placeholder="New value"></InputTextWidget>
   </div>
 </template>
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import WidgetInputText from './WidgetInputText.vue';
+import InputTextWidget from './InputText.vue';
 
 @Component({
-  name: 'widget-to-replace',
+  name: 'replace-widget',
   components: {
-    WidgetInputText,
+    InputTextWidget,
   },
 })
-export default class WidgetToReplace extends Vue {
+export default class ReplaceWidget extends Vue {
   @Prop({
     type: Array,
     default: () => ['', ''],

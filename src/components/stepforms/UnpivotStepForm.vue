@@ -1,35 +1,35 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetMultiselect
+    <MultiselectWidget
       id="keepColumnInput"
       v-model="editedStep.keep"
       name="Keep columnns..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.keep[0] })"
       placeholder="Add columns to keep"
-    ></WidgetMultiselect>
-    <WidgetMultiselect
+    ></MultiselectWidget>
+    <MultiselectWidget
       id="unpivotColumnInput"
       v-model="editedStep.unpivot"
       name="Unpivot columns..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.unpivot[0] })"
       placeholder="Add columns to unpivot"
-    ></WidgetMultiselect>
-    <WidgetInputText
+    ></MultiselectWidget>
+    <InputTextWidget
       id="unpivotColumnNameInput"
       v-model="editedStep.unpivot_column_name"
       name="Category column name"
       placeholder="Enter a column name"
-    ></WidgetInputText>
-    <WidgetInputText
+    ></InputTextWidget>
+    <InputTextWidget
       id="valueColumnNameInput"
       v-model="editedStep.value_column_name"
       name="Value column name"
       placeholder="Enter a column name"
-    ></WidgetInputText>
-    <WidgetCheckbox id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna"></WidgetCheckbox>
+    ></InputTextWidget>
+    <CheckboxWidget id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna"></CheckboxWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -37,9 +37,9 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetCheckbox from '@/components/stepforms/WidgetCheckbox.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
+import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { UnpivotStep } from '@/lib/steps';
 
@@ -47,9 +47,9 @@ import { UnpivotStep } from '@/lib/steps';
   vqbstep: 'unpivot',
   name: 'unpivot-step-form',
   components: {
-    WidgetCheckbox,
-    WidgetInputText,
-    WidgetMultiselect,
+    CheckboxWidget,
+    InputTextWidget,
+    MultiselectWidget,
   },
 })
 export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {

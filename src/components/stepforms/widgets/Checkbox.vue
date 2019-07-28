@@ -8,9 +8,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
-  name: 'widget-checkbox',
+  name: 'checkbox-widget',
 })
-export default class WidgetCheckobx extends Vue {
+export default class CheckboxWidget extends Vue {
   @Prop({ type: String, default: null })
   label!: string;
 
@@ -31,7 +31,7 @@ export default class WidgetCheckobx extends Vue {
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/_variables';
+@import '../../../styles/_variables';
 .widget-checkbox {
   align-items: center;
   display: flex;

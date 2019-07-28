@@ -1,34 +1,34 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetInputText
+    <InputTextWidget
       id="limitInput"
       v-model.number="editedStep.limit"
       type="number"
       name="Get top..."
       placeholder="Enter a number of rows"
-    ></WidgetInputText>
+    ></InputTextWidget>
     <ColumnPicker
       id="rankOnInput"
       v-model="editedStep.rank_on"
       name="Sort column..."
       placeholder="Enter a column"
     ></ColumnPicker>
-    <WidgetAutocomplete
+    <AutocompleteWidget
       id="sortOrderInput"
       v-model="editedStep.sort"
       name="Sort order:"
       :options="['asc', 'desc']"
       placeholder="Select an order"
-    ></WidgetAutocomplete>
-    <WidgetMultiselect
+    ></AutocompleteWidget>
+    <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Select columns"
-    ></WidgetMultiselect>
+    ></MultiselectWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -37,9 +37,9 @@
 import { Prop } from 'vue-property-decorator';
 import { TopStep } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetMultiselect from './WidgetMultiselect.vue';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
 
@@ -48,9 +48,9 @@ import { StepFormComponent } from '@/components/formlib';
   name: 'top-step-form',
   components: {
     ColumnPicker,
-    WidgetAutocomplete,
-    WidgetInputText,
-    WidgetMultiselect,
+    AutocompleteWidget,
+    InputTextWidget,
+    MultiselectWidget,
   },
 })
 export default class TopStepForm extends BaseStepForm<TopStep> {

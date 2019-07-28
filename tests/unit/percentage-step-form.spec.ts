@@ -28,8 +28,8 @@ describe('Percentage Step Form', () => {
   it('should have exactly 3 input components', () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
-    const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
-    const textInputWrappers = wrapper.findAll('widgetinputtext-stub');
+    const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
+    const textInputWrappers = wrapper.findAll('inputtextwidget-stub');
     expect(autocompleteWrappers.length).toEqual(1);
     expect(multiselectWrappers.length).toEqual(1);
     expect(textInputWrappers.length).toEqual(1);
@@ -41,8 +41,8 @@ describe('Percentage Step Form', () => {
       editedStep: { name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' },
     });
     await localVue.nextTick();
-    expect(wrapper.find('widgetmultiselect-stub').props('value')).toEqual(['test']);
-    expect(wrapper.find('widgetinputtext-stub').props('value')).toEqual('bar');
+    expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['test']);
+    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('bar');
   });
 
   describe('Errors', () => {

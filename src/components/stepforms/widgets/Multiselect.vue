@@ -1,18 +1,14 @@
 <template>
-  <div class="widget-multiinputtext__container">
-    <label class="widget-multiinputtext__label" :for="id">{{ name }}</label>
+  <div class="widget-multiselect__container">
+    <label class="widget-multiselect__label" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
+      :placeholder="placeholder"
       :multiple="true"
       :taggable="true"
       :close-on-select="false"
-      :placeholder="placeholder"
-      @input="clearOptions"
-      @search-change="updateOptions"
-    >
-      <template slot="noOptions">{{ placeholder }}</template>
-    </multiselect>
+    ></multiselect>
   </div>
 </template>
 
@@ -21,12 +17,12 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
 
 @Component({
-  name: 'widget-multi-input-text',
+  name: 'multiselect-widget',
   components: {
     Multiselect,
   },
 })
-export default class WidgetMultiInputText extends Vue {
+export default class MultiselectWidget extends Vue {
   @Prop({ type: String, default: null })
   id!: string;
 
@@ -39,18 +35,10 @@ export default class WidgetMultiInputText extends Vue {
   @Prop({ type: Array, default: () => [] })
   value!: string[];
 
+  @Prop({ type: Array, default: () => [] })
+  options!: string[];
+
   editedValue: string[] = [];
-  options: string[] = [];
-
-  clearOptions() {
-    this.options = [];
-  }
-
-  updateOptions(newVal: string) {
-    if (newVal.length > 0) {
-      this.options = [newVal];
-    }
-  }
 
   @Watch('value', { immediate: true })
   updateEditedValue(newValue: string[]) {
@@ -66,8 +54,8 @@ export default class WidgetMultiInputText extends Vue {
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
-@import '../../styles/_variables';
-.widget-multiinputtext__container {
+@import '../../../styles/_variables';
+.widget-multiselect__container {
   @extend %form-widget__container;
   position: relative;
 }
@@ -120,7 +108,7 @@ export default class WidgetMultiInputText extends Vue {
   color: $base-color-light;
 }
 
-.widget-multiinputtext__label {
+.widget-multiselect__label {
   @extend %form-widget__label;
 }
 
@@ -148,6 +136,8 @@ export default class WidgetMultiInputText extends Vue {
 .multiselect__tags .multiselect__tag-icon {
   background: $active-color;
   &:after {
+    // color: #fff;
+    // color: $grey;
     color: rgba(255, 255, 255, 0.75);
   }
   &:hover {

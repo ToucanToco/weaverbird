@@ -1,17 +1,17 @@
 import { shallowMount } from '@vue/test-utils';
-import WidgetList from '@/components/stepforms/WidgetList.vue';
-import WidgetAggregation from '@/components/stepforms/WidgetAggregation.vue';
+import ListWidget from '@/components/stepforms/widgets/List.vue';
+import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 
 describe('Widget List', () => {
   describe('automatic new field', () => {
     it('it should instantiate', () => {
-      const wrapper = shallowMount(WidgetList);
+      const wrapper = shallowMount(ListWidget);
 
       expect(wrapper.exists()).toBeTruthy();
     });
 
     it('should have a label', () => {
-      const wrapper = shallowMount(WidgetList, {
+      const wrapper = shallowMount(ListWidget, {
         propsData: {
           name: 'Label',
         },
@@ -21,34 +21,33 @@ describe('Widget List', () => {
     });
 
     it('should instantiate a widget-input text', () => {
-      const wrapper = shallowMount(WidgetList);
-      const widgetInputWrapper = wrapper.find('widgetinputtext-stub');
-
+      const wrapper = shallowMount(ListWidget);
+      const widgetInputWrapper = wrapper.find('inputtextwidget-stub');
       expect(widgetInputWrapper.exists()).toBeTruthy();
     });
 
     it('should instantiate a widget aggregation', () => {
-      const wrapper = shallowMount(WidgetList, {
+      const wrapper = shallowMount(ListWidget, {
         propsData: {
-          widget: WidgetAggregation,
+          widget: AggregationWidget,
           defaultItem: { name: 'foo', value: 'bar' },
         },
       });
 
-      const widgetAggregationtWrapper = wrapper.find('widgetaggregation-stub');
+      const widgetAggregationtWrapper = wrapper.find('aggregationwidget-stub');
       expect(widgetAggregationtWrapper.exists()).toBeTruthy();
     });
 
     it('should automatically add an input when filling the first one', async () => {
-      const wrapper = shallowMount(WidgetList);
+      const wrapper = shallowMount(ListWidget);
       wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }] });
 
       await wrapper.vm.$nextTick();
-      expect(wrapper.findAll('widgetinputtext-stub').length).toEqual(2);
+      expect(wrapper.findAll('inputtextwidget-stub').length).toEqual(2);
     });
 
     it('should add trash icons after first input', async () => {
-      const wrapper = shallowMount(WidgetList);
+      const wrapper = shallowMount(ListWidget);
       expect(wrapper.findAll('.widget-list__icon').length).toEqual(0);
       wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }] });
       await wrapper.vm.$nextTick();
@@ -56,7 +55,7 @@ describe('Widget List', () => {
     });
 
     it('should remove first input when clickng on trash', async () => {
-      const wrapper = shallowMount(WidgetList, {
+      const wrapper = shallowMount(ListWidget, {
         propsData: {
           value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }],
         },
@@ -69,7 +68,7 @@ describe('Widget List', () => {
 
   describe('not automatic new field', () => {
     it('should have a button to add a new field', () => {
-      const wrapper = shallowMount(WidgetList, {
+      const wrapper = shallowMount(ListWidget, {
         propsData: {
           automaticNewField: false,
           name: 'Aggregation',
@@ -83,7 +82,7 @@ describe('Widget List', () => {
     });
 
     it('should add a new field when clicking on the button "Add Aggregation"', () => {
-      const wrapper = shallowMount(WidgetList, {
+      const wrapper = shallowMount(ListWidget, {
         propsData: {
           automaticNewField: false,
           name: 'Aggregation',
