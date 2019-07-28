@@ -29,7 +29,7 @@ describe('Duplicate Column Step Form', () => {
     const wrapper = shallowMount(DuplicateColumnStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.findAll('columnpicker-stub').length).toEqual(1);
-    expect(wrapper.findAll('widgetinputtext-stub').length).toEqual(1);
+    expect(wrapper.findAll('inputtextwidget-stub').length).toEqual(1);
   });
 
   describe('Errors', () => {

@@ -26,7 +26,7 @@ describe('Domain Step Form', () => {
 
   it('should have exactly one widgetautocomplete component', () => {
     const wrapper = shallowMount(DomainStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetautocomplete-stub');
+    const inputWrappers = wrapper.findAll('autocompletewidget-stub');
 
     expect(inputWrappers.length).toEqual(1);
   });
@@ -36,7 +36,7 @@ describe('Domain Step Form', () => {
       domains: ['foo', 'bar'],
     });
     const wrapper = shallowMount(DomainStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetautocomplete-stub');
+    const widgetAutocomplete = wrapper.find('autocompletewidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('foo,bar');
   });

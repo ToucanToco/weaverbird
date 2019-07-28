@@ -26,9 +26,9 @@ describe('Pivot Step Form', () => {
 
   it('should have 4 input components', () => {
     const wrapper = shallowMount(PivotStepForm, { store: emptyStore, localVue });
-    const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
+    const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
     const columnpickerWrappers = wrapper.findAll('columnpicker-stub');
-    const autocompleteWrappers = wrapper.findAll('widgetautocomplete-stub');
+    const autocompleteWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(multiselectWrappers.length).toEqual(1);
     expect(columnpickerWrappers.length).toEqual(1);
     expect(autocompleteWrappers.length).toEqual(2);

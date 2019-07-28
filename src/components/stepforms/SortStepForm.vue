@@ -2,14 +2,14 @@
   <div>
     <step-form-title :title="title"></step-form-title>
 
-    <WidgetList
+    <ListWidget
       addFieldName="Add Column"
       id="sortColumn"
       v-model="sortColumns"
       :defaultItem="defaultSortColumn"
       :widget="widgetSortColumn"
       :automatic-new-field="false"
-    ></WidgetList>
+    ></ListWidget>
 
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
@@ -20,16 +20,16 @@ import { Prop } from 'vue-property-decorator';
 import { SortStep } from '@/lib/steps';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetList from './WidgetList.vue';
+import ListWidget from './widgets/List.vue';
 import { SortColumnType } from '@/lib/steps';
-import WidgetSortColumn from './WidgetSortColumn.vue';
+import SortColumnWidget from './widgets/SortColumn.vue';
 
 @StepFormComponent({
   vqbstep: 'sort',
   name: 'sort-step-form',
   components: {
-    WidgetList,
-    WidgetSortColumn,
+    ListWidget,
+    SortColumnWidget,
   },
 })
 export default class SortStepForm extends BaseStepForm<SortStep> {
@@ -37,7 +37,7 @@ export default class SortStepForm extends BaseStepForm<SortStep> {
   initialStepValue!: SortStep;
 
   readonly title: string = 'Sort';
-  widgetSortColumn = WidgetSortColumn;
+  widgetSortColumn = SortColumnWidget;
 
   get defaultSortColumn() {
     const column = this.selectedColumns.length === 0 ? '' : this.selectedColumns[0];

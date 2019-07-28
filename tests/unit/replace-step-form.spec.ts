@@ -28,8 +28,8 @@ describe('Replace Step Form', () => {
   it('should have exactly 3 input components', () => {
     const wrapper = shallowMount(ReplaceStepForm, { store: emptyStore, localVue, sync: false });
     const columnPickerWrappers = wrapper.findAll('columnpicker-stub');
-    const inputTextWrappers = wrapper.findAll('widgetinputtext-stub');
-    const widgetListWrappers = wrapper.findAll('widgetlist-stub');
+    const inputTextWrappers = wrapper.findAll('inputtextwidget-stub');
+    const widgetListWrappers = wrapper.findAll('listwidget-stub');
     expect(columnPickerWrappers.length).toEqual(1);
     expect(inputTextWrappers.length).toEqual(1);
     expect(widgetListWrappers.length).toEqual(1);
@@ -53,7 +53,7 @@ describe('Replace Step Form', () => {
     expect(wrapper.find('columnpicker-stub').attributes().value).toEqual('test');
   });
 
-  it('should pass down "new_column" to WidgetInputText', () => {
+  it('should pass down "new_column" to InputTextWidget', () => {
     const wrapper = shallowMount(ReplaceStepForm, {
       store: emptyStore,
       localVue,
@@ -69,10 +69,10 @@ describe('Replace Step Form', () => {
         };
       },
     });
-    expect(wrapper.find('widgetinputtext-stub').props().value).toEqual('newTest');
+    expect(wrapper.find('inputtextwidget-stub').props().value).toEqual('newTest');
   });
 
-  it('should pass down "to_replace" to WidgetList', () => {
+  it('should pass down "to_replace" to ListWidget', () => {
     const wrapper = shallowMount(ReplaceStepForm, {
       store: emptyStore,
       localVue,
@@ -88,10 +88,10 @@ describe('Replace Step Form', () => {
         };
       },
     });
-    expect(wrapper.find('widgetlist-stub').props().value).toEqual([['foo', 'bar']]);
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
   });
 
-  it('should pass down the default "to_replace" to WidgetList', () => {
+  it('should pass down the default "to_replace" to ListWidget', () => {
     const wrapper = shallowMount(ReplaceStepForm, {
       store: emptyStore,
       localVue,
@@ -107,7 +107,7 @@ describe('Replace Step Form', () => {
         };
       },
     });
-    expect(wrapper.find('widgetlist-stub').props().value).toEqual([[]]);
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([[]]);
   });
 
   it('should report errors when the data is not valid', async () => {

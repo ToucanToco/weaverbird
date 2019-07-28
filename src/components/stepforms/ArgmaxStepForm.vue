@@ -7,14 +7,14 @@
       name="Search min value in..."
       placeholder="Enter a column name"
     ></ColumnPicker>
-    <WidgetMultiselect
+    <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Add columns"
-    ></WidgetMultiselect>
+    ></MultiselectWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -23,7 +23,7 @@
 import { Prop } from 'vue-property-decorator';
 import { ArgmaxStep } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetMultiselect from './WidgetMultiselect.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
 
@@ -32,7 +32,7 @@ import { StepFormComponent } from '@/components/formlib';
   name: 'argmax-step-form',
   components: {
     ColumnPicker,
-    WidgetMultiselect,
+    MultiselectWidget,
   },
 })
 export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {

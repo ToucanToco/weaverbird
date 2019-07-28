@@ -20,7 +20,7 @@ describe('Column Picker', () => {
 
   it('should have a widget autocomplete', () => {
     const wrapper = shallowMount(ColumnPicker, { store: emptyStore, localVue });
-    expect(wrapper.find('widgetautocomplete-stub').exists()).toBeTruthy();
+    expect(wrapper.find('autocompletewidget-stub').exists()).toBeTruthy();
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
@@ -31,7 +31,7 @@ describe('Column Picker', () => {
       },
     });
     const wrapper = shallowMount(ColumnPicker, { store, localVue });
-    const selectWrapper = wrapper.find('widgetautocomplete-stub');
+    const selectWrapper = wrapper.find('autocompletewidget-stub');
     expect(selectWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 

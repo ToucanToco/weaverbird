@@ -28,7 +28,7 @@ describe('Argmax Step Form', () => {
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(ArgmaxStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
-    const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
+    const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
     expect(autocompleteWrappers.length).toEqual(1);
     expect(multiselectWrappers.length).toEqual(1);
   });
@@ -39,7 +39,7 @@ describe('Argmax Step Form', () => {
       editedStep: { name: 'argmax', column: 'foo', groups: ['bar'] },
     });
     await localVue.nextTick();
-    expect(wrapper.find('widgetmultiselect-stub').props('value')).toEqual(['bar']);
+    expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['bar']);
   });
 
   it('should report errors if column is empty', async () => {

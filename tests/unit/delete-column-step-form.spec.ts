@@ -1,6 +1,6 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
-import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -29,7 +29,7 @@ describe('Delete Column Step Form', () => {
   it('should have a widget multiselect', () => {
     const wrapper = shallowMount(DeleteColumnStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.find('widgetmultiselect-stub').exists()).toBeTruthy();
+    expect(wrapper.find('multiselectwidget-stub').exists()).toBeTruthy();
   });
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
@@ -40,7 +40,7 @@ describe('Delete Column Step Form', () => {
       },
     });
     const wrapper = shallowMount(DeleteColumnStepForm, { store, localVue });
-    const widgetAutocomplete = wrapper.find('widgetmultiselect-stub');
+    const widgetAutocomplete = wrapper.find('multiselectwidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
   });
@@ -108,7 +108,7 @@ describe('Delete Column Step Form', () => {
       localVue,
     });
     wrapper.setData({ editedStep: { columns: ['columnB'] } });
-    await wrapper.find(WidgetMultiselect).trigger('input');
+    await wrapper.find(MultiselectWidget).trigger('input');
     expect(store.state.selectedColumns).toEqual(['columnB']);
   });
 

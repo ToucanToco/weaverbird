@@ -1,23 +1,23 @@
 <template>
-  <WidgetAutocomplete
+  <AutocompleteWidget
     id=":id"
     v-model="column"
     :name="name"
     :options="columnNames"
     @input="valueChanged"
     :placeholder="placeholder"
-  ></WidgetAutocomplete>
+  ></AutocompleteWidget>
 </template>
 
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 
-@Component({ components: { WidgetAutocomplete } })
+@Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {
   @Prop({ type: String, default: 'columnInput' })
   id!: string;

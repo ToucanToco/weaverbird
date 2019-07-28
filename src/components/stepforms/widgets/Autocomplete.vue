@@ -17,12 +17,12 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
 
 @Component({
-  name: 'widget-autocomplete',
+  name: 'autocomplete-widget',
   components: {
     Multiselect,
   },
 })
-export default class WidgetAutocomplete extends Vue {
+export default class AutocompleteWidget extends Vue {
   @Prop({ type: String, default: null })
   id!: string;
 
@@ -60,7 +60,7 @@ export default class WidgetAutocomplete extends Vue {
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
-@import '../../styles/_variables';
+@import '../../../styles/_variables';
 
 .widget-autocomplete__container {
   @extend %form-widget__container;

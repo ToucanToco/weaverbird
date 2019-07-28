@@ -1,7 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
@@ -27,14 +27,14 @@ describe('Aggregate Step Form', () => {
     expect(wrapper.vm.$data.stepname).toEqual('aggregate');
   });
 
-  describe('WidgetMultiselect', () => {
-    it('should have exactly one WidgetMultiselect component', () => {
+  describe('MultiselectWidget', () => {
+    it('should have exactly one MultiselectWidget component', () => {
       const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-      const widgetWrappers = wrapper.findAll('widgetmultiselect-stub');
+      const widgetWrappers = wrapper.findAll('multiselectwidget-stub');
       expect(widgetWrappers.length).toEqual(1);
     });
 
-    it('should instantiate an WidgetMultiselect widget with proper options from the store', () => {
+    it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
       const store = setupStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -42,34 +42,34 @@ describe('Aggregate Step Form', () => {
         },
       });
       const wrapper = shallowMount(AggregateStepForm, { store, localVue, sync: false });
-      const widgetMultiselect = wrapper.find('widgetmultiselect-stub');
+      const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
-    it('should pass down the "on" prop to the WidgetMultiselect value prop', async () => {
+    it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
       const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] } });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('widgetmultiselect-stub').props().value).toEqual(['foo', 'bar']);
+      expect(wrapper.find('multiselectwidget-stub').props().value).toEqual(['foo', 'bar']);
     });
 
     it('should call the setColumnMutation on input', async () => {
       const store = emptyStore;
       const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
       wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
-      await wrapper.find(WidgetMultiselect).trigger('input');
+      await wrapper.find(MultiselectWidget).trigger('input');
       expect(store.state.selectedColumns).toEqual(['foo']);
     });
   });
 
-  describe('WidgetList', () => {
-    it('should have exactly on WidgetList component', () => {
+  describe('ListWidget', () => {
+    it('should have exactly on ListWidget component', () => {
       const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-      const widgetWrappers = wrapper.findAll('widgetlist-stub');
+      const widgetWrappers = wrapper.findAll('listwidget-stub');
       expect(widgetWrappers.length).toEqual(1);
     });
 
-    it('should pass down the "aggregations" prop to the WidgetList value prop', async () => {
+    it('should pass down the "aggregations" prop to the ListWidget value prop', async () => {
       const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
       wrapper.setData({
         editedStep: {
@@ -79,14 +79,14 @@ describe('Aggregate Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('widgetlist-stub').props().value).toEqual([
+      expect(wrapper.find('listwidget-stub').props().value).toEqual([
         { column: 'foo', newcolumn: 'bar', aggfunction: 'sum' },
       ]);
     });
 
     it('should have expected default aggregation parameters', () => {
       const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-      const widgetWrappers = wrapper.findAll(WidgetAutocomplete);
+      const widgetWrappers = wrapper.findAll(AutocompleteWidget);
       expect(widgetWrappers.at(0).props().value).toEqual('');
       expect(widgetWrappers.at(1).props().value).toEqual('sum');
     });
@@ -256,7 +256,7 @@ describe('Aggregate Step Form', () => {
     const store = setupStore({ selectedColumns: [] });
     const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
     wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
-    wrapper.find(WidgetMultiselect).trigger('input');
+    wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
     expect(store.state.selectedColumns).toEqual(['foo']);
   });

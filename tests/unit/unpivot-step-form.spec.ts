@@ -4,7 +4,7 @@ import Vuex, { Store } from 'vuex';
 import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
 import { VQBState } from '@/store/state';
-import WidgetCheckbox from '@/components/stepforms/WidgetCheckbox.vue';
+import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -28,11 +28,11 @@ describe('Unpivot Step Form', () => {
 
   it('should have 5 input components', () => {
     const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
-    const autocompleteWrappers = wrapper.findAll('widgetmultiselect-stub');
+    const autocompleteWrappers = wrapper.findAll('multiselectwidget-stub');
     expect(autocompleteWrappers.length).toEqual(2);
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
+    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
     expect(inputWrappers.length).toEqual(2);
-    const checkboxWrappers = wrapper.findAll('widgetcheckbox-stub');
+    const checkboxWrappers = wrapper.findAll('checkboxwidget-stub');
     expect(checkboxWrappers.length).toEqual(1);
   });
 
@@ -57,7 +57,7 @@ describe('Unpivot Step Form', () => {
     expect(wrapper.find('#unpivotColumnInput').props('value')).toEqual(['baz']);
     expect(wrapper.find('#unpivotColumnNameInput').props('value')).toEqual('spam');
     expect(wrapper.find('#valueColumnNameInput').props('value')).toEqual('eggs');
-    const widgetCheckbox = wrapper.find(WidgetCheckbox);
+    const widgetCheckbox = wrapper.find(CheckboxWidget);
     expect(widgetCheckbox.classes()).not.toContain('widget-checkbox--checked');
   });
 

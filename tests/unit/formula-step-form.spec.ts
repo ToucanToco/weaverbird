@@ -27,7 +27,7 @@ describe('Rename Step Form', () => {
 
   it('should have exactly 2 widgetinputtext component', () => {
     const wrapper = shallowMount(FormulaStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
+    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
     expect(inputWrappers.length).toEqual(2);
   });
 
@@ -37,13 +37,13 @@ describe('Rename Step Form', () => {
     await localVue.nextTick();
     expect(
       wrapper
-        .findAll('widgetinputtext-stub')
+        .findAll('inputtextwidget-stub')
         .at(0)
         .props('value'),
     ).toEqual('ColumnA * 2');
     expect(
       wrapper
-        .findAll('widgetinputtext-stub')
+        .findAll('inputtextwidget-stub')
         .at(1)
         .props('value'),
     ).toEqual('foo');

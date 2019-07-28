@@ -28,7 +28,7 @@ describe('Rename Step Form', () => {
 
   it('should have exactly one widgetinputtext component', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
+    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
 
     expect(inputWrappers.length).toEqual(1);
   });
@@ -37,7 +37,7 @@ describe('Rename Step Form', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
     wrapper.setData({ editedStep: { name: 'rename', oldname: '', newname: 'foo' } });
     await localVue.nextTick();
-    expect(wrapper.find('widgetinputtext-stub').props('value')).toEqual('foo');
+    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('foo');
   });
 
   it('should have a columnpicker widget', () => {
