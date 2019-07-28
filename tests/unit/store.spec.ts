@@ -240,9 +240,18 @@ describe('mutation tests', () => {
     const dataset = {
       headers: [{ name: 'col1' }, { name: 'col2' }],
       data: [[0, 0]],
+      paginationContext: {
+        totalCount: 0,
+        pagesize: 50,
+        pageno: 1,
+      },
     };
     const state = buildState({});
-    expect(state.dataset).toEqual({ headers: [], data: [] });
+    expect(state.dataset).toEqual({
+      headers: [],
+      data: [],
+      paginationContext: emptyState.dataset.paginationContext,
+    });
     mutations.setDataset(state, { dataset });
     expect(state.dataset).toEqual(dataset);
   });

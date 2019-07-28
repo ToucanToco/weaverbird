@@ -17,7 +17,7 @@ class DummyService implements BackendService {
   }
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  executePipeline(pipeline: Pipeline, limit: number) {
+  executePipeline(pipeline: Pipeline, limit: number, _offset: number) {
     let rset = [[1, 2], [3, 4]];
     if (limit) {
       rset = rset.slice(0, limit);
