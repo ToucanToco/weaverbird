@@ -54,31 +54,7 @@ describe('Filter Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect([
-      { dataPath: '.condition', keyword: 'additionalProperties' },
-      { dataPath: '.condition', keyword: 'required' },
-      { dataPath: '.condition', keyword: 'required' },
-      { dataPath: '.condition', keyword: 'required' },
-      { dataPath: '.condition.and[0].column', keyword: 'minLength' },
-      { dataPath: '.condition.and[0].value', keyword: 'minLength' },
-      { dataPath: '.condition.and[0].value', keyword: 'type' },
-      { dataPath: '.condition.and[0].value', keyword: 'oneOf' },
-      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
-      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
-      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
-      { dataPath: '.condition.and[0]', keyword: 'required' },
-      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
-      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
-      { dataPath: '.condition.and[0]', keyword: 'additionalProperties' },
-      { dataPath: '.condition.and[0]', keyword: 'required' },
-      { dataPath: '.condition.and[0]', keyword: 'oneOf' },
-      { dataPath: '.condition.and[0]', keyword: 'anyOf' },
-      { dataPath: '.condition', keyword: 'additionalProperties' },
-      { dataPath: '.condition', keyword: 'required' },
-      { dataPath: '.condition', keyword: 'oneOf' },
-      { dataPath: '.condition', keyword: 'oneOf' },
-    ]).toContainEqual({ dataPath: '.condition', keyword: 'oneOf' });
-    // expect(errors).toContainEqual({ dataPath: '.condition', keyword: 'oneOf' });
+    expect(errors).toContainEqual({ dataPath: '.condition', keyword: 'oneOf' });
   });
 
   it('should validate and emit "formSaved" when submitting a valid condition', () => {
