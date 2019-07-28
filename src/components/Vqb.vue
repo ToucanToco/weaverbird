@@ -12,9 +12,12 @@
         ></component>
       </transition>
       <transition slot="left-panel" v-else name="slide-left" mode="out-in">
-        <Pipeline key="pipeline" @editStep="openStepForm"/>
+        <Pipeline key="pipeline" @editStep="openStepForm" />
       </transition>
-      <DataViewer slot="right-panel" @stepCreated="createStepForm"/>
+      <div slot="right-panel">
+        <DataViewer @stepCreated="createStepForm" />
+        <Pagination />
+      </div>
     </ResizablePanels>
   </div>
 </template>
@@ -26,6 +29,7 @@ import { Getter, Mutation, State } from 'vuex-class';
 import { VQBState } from '@/store/state';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
+import Pagination from '@/components/Pagination.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
 import '@/components/stepforms'; // required to load all step forms
@@ -35,6 +39,7 @@ import { STEPFORM_REGISTRY } from './formlib';
   components: {
     DataViewer,
     Pipeline: PipelineComponent,
+    Pagination,
     ResizablePanels,
   },
 })
