@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,18 +21,18 @@ describe('Percentage Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('percentage');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('percentage');
   });
 
   it('should have exactly 3 input components', () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
-    const multiselectWrappers = wrapper.findAll('widgetmultiselect-stub');
-    const textInputWrappers = wrapper.findAll('widgetinputtext-stub');
-    expect(autocompleteWrappers.length).to.equal(1);
-    expect(multiselectWrappers.length).to.equal(1);
-    expect(textInputWrappers.length).to.equal(1);
+    const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
+    const textInputWrappers = wrapper.findAll('inputtextwidget-stub');
+    expect(autocompleteWrappers.length).toEqual(1);
+    expect(multiselectWrappers.length).toEqual(1);
+    expect(textInputWrappers.length).toEqual(1);
   });
 
   it('should pass down the properties to the input components', async () => {
@@ -42,8 +41,8 @@ describe('Percentage Step Form', () => {
       editedStep: { name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' },
     });
     await localVue.nextTick();
-    expect(wrapper.find('widgetmultiselect-stub').props('value')).to.eql(['test']);
-    expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('bar');
+    expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['test']);
+    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('bar');
   });
 
   describe('Errors', () => {
@@ -56,7 +55,7 @@ describe('Percentage Step Form', () => {
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([{ keyword: 'minLength', dataPath: '.column' }]);
+      expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.column' }]);
     });
 
     it('should report errors when newn_column is an already existing column name', async () => {
@@ -76,7 +75,7 @@ describe('Percentage Step Form', () => {
         keyword: err.keyword,
         dataPath: err.dataPath,
       }));
-      expect(errors).to.eql([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
+      expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
     });
   });
 
@@ -90,8 +89,8 @@ describe('Percentage Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' }]],
     });
   });
@@ -100,7 +99,7 @@ describe('Percentage Step Form', () => {
     const wrapper = mount(PercentageStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -119,9 +118,9 @@ describe('Percentage Step Form', () => {
     const wrapper = mount(PercentageStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 });

@@ -1,19 +1,19 @@
 <template>
   <fieldset class="widget-aggregation__container">
-    <WidgetAutocomplete
+    <AutocompleteWidget
       id="columnInput"
       :options="columnNames"
       v-model="aggregation.column"
       name="Column:"
       placeholder="Enter a column"
-    ></WidgetAutocomplete>
-    <WidgetAutocomplete
+    ></AutocompleteWidget>
+    <AutocompleteWidget
       id="aggregationFunctionInput"
       v-model="aggregation.aggfunction"
       name="Function:"
       :options="aggregationFunctions"
       placeholder="Aggregation function"
-    ></WidgetAutocomplete>
+    ></AutocompleteWidget>
   </fieldset>
 </template>
 <script lang="ts">
@@ -21,16 +21,16 @@ import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { AggFunctionStep } from '@/lib/steps';
-import WidgetAutocomplete from './WidgetAutocomplete.vue';
+import AutocompleteWidget from './Autocomplete.vue';
 
 @Component({
-  name: 'widget-aggregation',
+  name: 'aggregation-widget',
   components: {
-    WidgetAutocomplete,
+    AutocompleteWidget,
   },
 })
-export default class WidgetAggregation extends Vue {
-  @Prop({ type: Object, default: { column: '', aggfunction: 'sum', newcolumn: '' } })
+export default class AggregationWidget extends Vue {
+  @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newcolumn: '' }) })
   value!: AggFunctionStep;
 
   @Getter columnNames!: string[];
@@ -47,7 +47,7 @@ export default class WidgetAggregation extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../styles/_variables';
+@import '../../../styles/_variables';
 .widget-aggregation__container {
   @extend %form-widget__container;
   margin-bottom: 0;

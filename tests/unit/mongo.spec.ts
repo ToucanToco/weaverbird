@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { MongoStep, _simplifyAndCondition, _simplifyMongoPipeline } from '@/lib/translators/mongo';
@@ -7,7 +6,7 @@ describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
 
   it('should support any kind of operation', () => {
-    expect(mongo36translator.unsupportedSteps).to.eql([]);
+    expect(mongo36translator.unsupportedSteps).toEqual([]);
   });
 });
 
@@ -17,7 +16,7 @@ describe('Pipeline to mongo translator', () => {
   it('can generate domain steps', () => {
     const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([{ $match: { domain: 'test_cube' } }]);
+    expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
   });
 
   it('can generate select steps', () => {
@@ -26,7 +25,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'select', columns: ['Manager', 'Region'] },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
         $project: {
@@ -43,7 +42,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'delete', columns: ['Manager', 'Region'] },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
         $project: {
@@ -60,7 +59,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'rename', oldname: 'Region', newname: 'zone' },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
         $addFields: {
@@ -88,7 +87,7 @@ describe('Pipeline to mongo translator', () => {
       ],
     };
     const simplifiedAndBlock = _simplifyAndCondition(andBlock);
-    expect(simplifiedAndBlock).to.eql({
+    expect(simplifiedAndBlock).toEqual({
       Manager: 'Pierre',
       Region: 'Europe',
       $and: [{ Revenue: { $lte: 1000 } }, { Revenue: { $gt: 100 } }],
@@ -110,7 +109,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'filter', condition: { column: 'Code', value: [0, 42], operator: 'nin' } },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $match: {
           domain: 'test_cube',
@@ -173,7 +172,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $match: {
           domain: 'test_cube',
@@ -235,7 +234,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $match: {
           domain: 'test_cube',
@@ -283,7 +282,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $match: {
           domain: 'test_cube',
@@ -338,7 +337,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
         $group: {
@@ -391,7 +390,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: { $eq: 'Pierre' } } },
       {
         $project: {
@@ -460,7 +459,7 @@ describe('Pipeline to mongo translator', () => {
 
   it('can simplify empty mongo pipelines', () => {
     const mongoPipeline: MongoStep[] = [];
-    expect(_simplifyMongoPipeline(mongoPipeline)).to.eql([]);
+    expect(_simplifyMongoPipeline(mongoPipeline)).toEqual([]);
   });
 
   it('can simplify a mongo pipeline', () => {
@@ -533,7 +532,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = _simplifyMongoPipeline(mongoPipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: 'Pierre' } },
       { $match: { Manager: { $ne: 'NA' } } }, // Two steps with common keys should not be merged
       {
@@ -621,7 +620,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $addFields: {
           column_1: {
@@ -645,7 +644,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $addFields: {
           column_2: {
@@ -670,7 +669,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $sort: {
           foo: -1,
@@ -687,7 +686,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $sort: {
           foo: 1,
@@ -706,7 +705,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([{ $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } }]);
+    expect(querySteps).toEqual([{ $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } }]);
   });
 
   it('can generate a top step with groups', () => {
@@ -720,7 +719,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $sort: { bar: -1 } },
       {
         $group: {
@@ -746,7 +745,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       { $sort: { bar: 1 } },
       {
         $group: {
@@ -770,7 +769,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $group: {
           _id: { foo: '$foo' },
@@ -805,7 +804,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $group: {
           _id: null,
@@ -840,7 +839,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $group: {
           _id: null,
@@ -883,7 +882,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $group: {
           _id: { foo: '$foo' },
@@ -926,7 +925,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $group: {
           _id: { foo: '$foo', bar: '$bar' },
@@ -979,7 +978,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $addFields: {
           foo: '$bar',
@@ -1009,7 +1008,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $addFields: {
           foo: {
@@ -1069,7 +1068,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $addFields: {
           test: {
@@ -1096,7 +1095,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $group: {
           _id: {
@@ -1152,7 +1151,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $project: {
           MARCHE: '$MARCHE',
@@ -1196,7 +1195,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([
+    expect(querySteps).toEqual([
       {
         $project: {
           MARCHE: '$MARCHE',
@@ -1232,6 +1231,6 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).to.eql([{ $addFields: { bar: '$foo' } }]);
+    expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }]);
   });
 });

@@ -1,16 +1,16 @@
 <template>
   <div class="filter-form-simple-condition__container">
     <div class="filter-form-simple-condition-column-input">
-      <WidgetAutocomplete
+      <AutocompleteWidget
         id="columnInput"
         v-model="editedValue.column"
         :options="columnNames"
         @input="setSelectedColumns({ column: editedValue.column })"
         placeholder="Column"
-      ></WidgetAutocomplete>
+      ></AutocompleteWidget>
     </div>
     <div class="filter-form-simple-condition-operator-input">
-      <WidgetAutocomplete
+      <AutocompleteWidget
         id="filterOperator"
         :value="operator"
         @input="updateStepOperator"
@@ -18,7 +18,7 @@
         placeholder="Filter operator"
         :trackBy="`operator`"
         :label="`label`"
-      ></WidgetAutocomplete>
+      ></AutocompleteWidget>
     </div>
     <component :is="inputWidget" v-model="editedValue.value" :placeholder="placeholder"></component>
   </div>
@@ -28,9 +28,9 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
-import WidgetMultiInputText from './WidgetMultiInputText.vue';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import MultiInputTextWidget from './MultiInputText.vue';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VueConstructor } from 'vue';
 
@@ -53,13 +53,13 @@ type OperatorOption = {
 };
 
 @Component({
-  name: 'widget-filter-simple-condition',
+  name: 'filter-simple-condition-widget',
   components: {
-    WidgetAutocomplete,
-    WidgetInputText,
+    AutocompleteWidget,
+    InputTextWidget,
   },
 })
-export default class WidgetFilterSimpleCondition extends Vue {
+export default class FilterSimpleConditionWidget extends Vue {
   @Prop({
     type: Object,
     default: () => ({ column: '', value: '', operator: 'eq' }),
@@ -73,14 +73,14 @@ export default class WidgetFilterSimpleCondition extends Vue {
   editedValue: FilterSimpleCondition = { ...this.value };
 
   readonly operators: OperatorOption[] = [
-    { operator: 'eq', label: 'equal', inputWidget: WidgetInputText },
-    { operator: 'ne', label: 'not equal', inputWidget: WidgetInputText },
-    { operator: 'gt', label: 'be greater than', inputWidget: WidgetInputText },
-    { operator: 'ge', label: 'be greater than or equal to', inputWidget: WidgetInputText },
-    { operator: 'lt', label: 'be less than', inputWidget: WidgetInputText },
-    { operator: 'le', label: 'be less than or equal to', inputWidget: WidgetInputText },
-    { operator: 'in', label: 'be among', inputWidget: WidgetMultiInputText },
-    { operator: 'nin', label: 'not be among', inputWidget: WidgetMultiInputText },
+    { operator: 'eq', label: 'equal', inputWidget: InputTextWidget },
+    { operator: 'ne', label: 'not equal', inputWidget: InputTextWidget },
+    { operator: 'gt', label: 'be greater than', inputWidget: InputTextWidget },
+    { operator: 'ge', label: 'be greater than or equal to', inputWidget: InputTextWidget },
+    { operator: 'lt', label: 'be less than', inputWidget: InputTextWidget },
+    { operator: 'le', label: 'be less than or equal to', inputWidget: InputTextWidget },
+    { operator: 'in', label: 'be among', inputWidget: MultiInputTextWidget },
+    { operator: 'nin', label: 'not be among', inputWidget: MultiInputTextWidget },
   ];
 
   readonly placeholder = 'Enter a value';

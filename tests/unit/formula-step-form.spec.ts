@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FormulaStepForm from '@/components/stepforms/FormulaStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -22,14 +21,14 @@ describe('Rename Step Form', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(FormulaStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('formula');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('formula');
   });
 
   it('should have exactly 2 widgetinputtext component', () => {
     const wrapper = shallowMount(FormulaStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
-    expect(inputWrappers.length).to.equal(2);
+    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
+    expect(inputWrappers.length).toEqual(2);
   });
 
   it('should pass down properties', async () => {
@@ -38,16 +37,16 @@ describe('Rename Step Form', () => {
     await localVue.nextTick();
     expect(
       wrapper
-        .findAll('widgetinputtext-stub')
+        .findAll('inputtextwidget-stub')
         .at(0)
         .props('value'),
-    ).to.equal('ColumnA * 2');
+    ).toEqual('ColumnA * 2');
     expect(
       wrapper
-        .findAll('widgetinputtext-stub')
+        .findAll('inputtextwidget-stub')
         .at(1)
         .props('value'),
-    ).to.equal('foo');
+    ).toEqual('foo');
   });
 
   describe('Errors', () => {
@@ -60,7 +59,7 @@ describe('Rename Step Form', () => {
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         { keyword: 'minLength', dataPath: '.formula' },
         { keyword: 'minLength', dataPath: '.new_column' },
       ]);
@@ -83,7 +82,7 @@ describe('Rename Step Form', () => {
         keyword: err.keyword,
         dataPath: err.dataPath,
       }));
-      expect(errors).to.eql([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
+      expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
     });
   });
 
@@ -97,8 +96,8 @@ describe('Rename Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' }]],
     });
   });
@@ -107,7 +106,7 @@ describe('Rename Step Form', () => {
     const wrapper = mount(FormulaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -126,10 +125,10 @@ describe('Rename Step Form', () => {
     const wrapper = mount(FormulaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 
   it('should make the focus on the column modified after validation', () => {
@@ -142,7 +141,7 @@ describe('Rename Step Form', () => {
     const wrapper = mount(FormulaStepForm, { store, localVue });
     wrapper.setData({ editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).to.eql(['foo']);
+    expect(store.state.selectedColumns).toEqual(['foo']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -158,6 +157,6 @@ describe('Rename Step Form', () => {
       editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'columnB' },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).to.eql(['columnA']);
+    expect(store.state.selectedColumns).toEqual(['columnA']);
   });
 });

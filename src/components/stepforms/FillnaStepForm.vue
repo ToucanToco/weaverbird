@@ -7,12 +7,12 @@
       name="Replace null values in..."
       placeholder="Enter a column"
     ></ColumnPicker>
-    <WidgetInputText
+    <InputTextWidget
       id="valueInput"
       v-model="editedStep.value"
       name="With..."
       placeholder="Enter a value"
-    ></WidgetInputText>
+    ></InputTextWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -21,18 +21,19 @@
 import { Prop } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
 import { DataSetColumn } from '@/lib/dataset';
+import { castFromString } from '@/lib/helpers';
 
 @StepFormComponent({
   vqbstep: 'fillna',
   name: 'fillna-step-form',
   components: {
     ColumnPicker,
-    WidgetInputText,
+    InputTextWidget,
   },
 })
 export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
@@ -58,10 +59,8 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
 
   submit() {
     const type = this.columnHeaders.filter(h => h.name === this.editedStep.column)[0].type;
-    if ((type === 'integer' || type === 'float') && !isNaN(Number(this.editedStep.value))) {
-      this.editedStep.value = Number(this.editedStep.value);
-    } else if (type === 'boolean') {
-      this.editedStep.value = this.editedStep.value === 'true';
+    if (type !== undefined) {
+      this.editedStep.value = castFromString(this.editedStep.value as string, type);
     }
     this.$$super.submit();
   }

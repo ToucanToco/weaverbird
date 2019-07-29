@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
@@ -12,8 +11,8 @@ localVue.use(Vuex);
 describe('Vqb', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(Vqb, { store: setupStore(), localVue });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$store.state.isEditingStep).to.be.false;
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$store.state.isEditingStep).toBeFalsy();
   });
 
   it('should instantiate a AggregateStepForm component', () => {
@@ -26,7 +25,7 @@ describe('Vqb', () => {
       },
     });
     const form = wrapper.find('aggregate-step-form-stub');
-    expect(form.exists()).to.be.true;
+    expect(form.exists()).toBeTruthy();
   });
 
   it('should instantiate a FormRenameStep component', () => {
@@ -39,7 +38,7 @@ describe('Vqb', () => {
       },
     });
     const form = wrapper.find('rename-step-form-stub');
-    expect(form.exists()).to.be.true;
+    expect(form.exists()).toBeTruthy();
   });
 
   it('should instantiate a DeleteColumnStep component', () => {
@@ -52,7 +51,7 @@ describe('Vqb', () => {
       },
     });
     const form = wrapper.find('delete-step-form-stub');
-    expect(form.exists()).to.be.true;
+    expect(form.exists()).toBeTruthy();
   });
 
   it('should instantiate a FillnaStep component', () => {
@@ -65,7 +64,7 @@ describe('Vqb', () => {
       },
     });
     const form = wrapper.find('fillna-step-form-stub');
-    expect(form.exists()).to.be.true;
+    expect(form.exists()).toBeTruthy();
   });
 
   it('should instantiate a DomainStep component', () => {
@@ -78,23 +77,23 @@ describe('Vqb', () => {
       },
     });
     const form = wrapper.find('domain-step-form-stub');
-    expect(form.exists()).to.be.true;
+    expect(form.exists()).toBeTruthy();
   });
 
   it('should set editingMode on when step is created', async () => {
     const store = setupStore();
     const wrapper = shallowMount(Vqb, { store, localVue });
-    expect(store.state.isEditingStep).to.be.false;
+    expect(store.state.isEditingStep).toBeFalsy();
     wrapper.find('dataviewer-stub').vm.$emit('stepCreated', 'rename');
     await wrapper.vm.$nextTick();
-    expect(store.state.isEditingStep).to.be.true;
+    expect(store.state.isEditingStep).toBeTruthy();
   });
 
   describe('save step', () => {
     let store: Store<VQBState>;
     let wrapper: Wrapper<Vue>;
 
-    context('when editing domain step', () => {
+    describe('when editing domain step', () => {
       beforeEach(async () => {
         store = setupStore({
           pipeline: [{ name: 'domain', domain: 'foo' }],
@@ -118,8 +117,8 @@ describe('Vqb', () => {
           name: 'domain',
           domain: 'bar',
         });
-        expect(store.state.isEditingStep).to.be.false;
-        expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'bar' }]);
+        expect(store.state.isEditingStep).toBeFalsy();
+        expect(store.state.pipeline).toEqual([{ name: 'domain', domain: 'bar' }]);
       });
 
       it('should compute the right currentDomain', async () => {
@@ -127,11 +126,11 @@ describe('Vqb', () => {
           name: 'domain',
           domain: 'bar',
         });
-        expect(store.state.currentDomain).to.eql('bar');
+        expect(store.state.currentDomain).toEqual('bar');
       });
     });
 
-    context('when saving other steps', () => {
+    describe('when saving other steps', () => {
       beforeEach(async () => {
         store = setupStore({
           pipeline: [{ name: 'domain', domain: 'foo' }],
@@ -154,21 +153,21 @@ describe('Vqb', () => {
         wrapper
           .find('rename-step-form-stub')
           .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
-        expect(store.state.isEditingStep).to.be.false;
-        expect(store.state.pipeline).to.eql([
+        expect(store.state.isEditingStep).toBeFalsy();
+        expect(store.state.pipeline).toEqual([
           { name: 'domain', domain: 'foo' },
           { name: 'rename', oldname: 'columnA', newname: 'columnAA' },
         ]);
       });
 
       it('should compute the right computedActiveStepIndex', () => {
-        expect(store.getters.computedActiveStepIndex).to.eql(0);
+        expect(store.getters.computedActiveStepIndex).toEqual(0);
         wrapper.find('rename-step-form-stub').vm.$emit('formSaved', {
           name: 'rename',
           oldname: 'columnA',
           newname: 'columnAA',
         });
-        expect(store.getters.computedActiveStepIndex).to.eql(1);
+        expect(store.getters.computedActiveStepIndex).toEqual(1);
       });
     });
   });
@@ -178,7 +177,7 @@ describe('Vqb', () => {
     const wrapper = shallowMount(Vqb, { store, localVue });
     wrapper.find('dataviewer-stub').vm.$emit('stepCreated', 'rename');
     await wrapper.vm.$nextTick();
-    expect(store.state.isEditingStep).to.be.true;
+    expect(store.state.isEditingStep).toBeTruthy();
   });
 
   it('should cancel edition', async () => {
@@ -198,7 +197,7 @@ describe('Vqb', () => {
     });
     await localVue.nextTick();
     wrapper.find('rename-step-form-stub').vm.$emit('cancel');
-    expect(store.state.isEditingStep).to.be.false;
-    expect(store.state.pipeline).to.eql([{ name: 'domain', domain: 'foo' }]);
+    expect(store.state.isEditingStep).toBeFalsy();
+    expect(store.state.pipeline).toEqual([{ name: 'domain', domain: 'foo' }]);
   });
 });

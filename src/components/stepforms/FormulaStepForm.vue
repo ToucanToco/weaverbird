@@ -1,13 +1,13 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetInputText id="formulaInput" v-model="editedStep.formula" name="Formula:" placeholder></WidgetInputText>
-    <WidgetInputText
+    <InputTextWidget id="formulaInput" v-model="editedStep.formula" name="Formula:" placeholder></InputTextWidget>
+    <InputTextWidget
       id="newColumnInput"
       v-model="editedStep.new_column"
       name="New colum:"
       placeholder="Enter a new column name"
-    ></WidgetInputText>
+    ></InputTextWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -15,7 +15,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import { FormulaStep } from '@/lib/steps';
 import { parse } from 'mathjs';
@@ -27,7 +27,7 @@ type VqbError = Partial<ErrorObject>;
   vqbstep: 'formula',
   name: 'formula-step-form',
   components: {
-    WidgetInputText,
+    InputTextWidget,
   },
 })
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {

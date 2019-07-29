@@ -7,7 +7,8 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { POPOVER_ALIGN, POPOVER_SHADOW_GAP } from '@/components/constants';
+import { Alignment } from '@/components/constants';
+import * as DOMUtil from '@/components/domutil';
 
 /**
  * We use weak typing as it is used to define CSS rules
@@ -50,8 +51,8 @@ export default class Popover extends Vue {
   active!: boolean;
 
   @Prop({
-    default: () => POPOVER_ALIGN.CENTER,
-    validator: value => Object.values(POPOVER_ALIGN).includes(value),
+    default: () => Alignment.Center,
+    validator: value => Object.values(Alignment).includes(value),
   })
   align!: string;
 
@@ -64,21 +65,6 @@ export default class Popover extends Vue {
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
   parents: HTMLElement[] = [];
-
-  get alignMethod() {
-    switch (this.align) {
-      case POPOVER_ALIGN.CENTER:
-        return this.alignCenter;
-      case POPOVER_ALIGN.JUSTIFY:
-        return this.alignJustify;
-      case POPOVER_ALIGN.LEFT:
-        return this.alignLeft;
-      case POPOVER_ALIGN.RIGHT:
-        return this.alignRight;
-      default:
-        return () => ({});
-    }
-  }
 
   get isActive() {
     return this.active;
@@ -113,85 +99,7 @@ export default class Popover extends Vue {
     for (const p of parents) {
       p.addEventListener('scroll', this.scrollListener);
     }
-
     this.updatePosition();
-  }
-
-  alignCenter(bodyBounds: DOMRect | ClientRect, parentBounds: DOMRect | ClientRect) {
-    const parentLeft = parentBounds.left - bodyBounds.left;
-    const parentRight = parentLeft + parentBounds.width;
-
-    // Align center
-    let left = parentLeft + (parentBounds.width - this.$el.offsetWidth) / 2;
-
-    // Overflows on left
-    if (left < 0) {
-      // Align left
-      left = parentLeft;
-      // Overflows on right
-    } else if (left + this.$el.offsetWidth > window.innerWidth) {
-      // Align right
-      left = parentRight - this.$el.offsetWidth;
-    }
-
-    return {
-      left: `${left}px`,
-    };
-  }
-
-  alignJustify(bodyBounds: DOMRect | ClientRect, parentBounds: DOMRect | ClientRect) {
-    const parentLeft = parentBounds.left - bodyBounds.left;
-
-    return {
-      // Align left
-      left: `${parentLeft}px`,
-      // Use parent width
-      width: `${parentBounds.width}px`,
-    };
-  }
-
-  alignLeft(bodyBounds: DOMRect | ClientRect, parentBounds: DOMRect | ClientRect) {
-    const parentLeft = parentBounds.left - bodyBounds.left;
-    const parentRight = parentLeft + parentBounds.width;
-
-    // Align left
-    let left = parentLeft;
-
-    if (
-      // Overflows on right
-      left + this.$el.offsetWidth > window.innerWidth &&
-      // If aligned right, will not overflow on left
-      parentRight - this.$el.offsetWidth >= 0
-    ) {
-      // Align right
-      left = parentRight - this.$el.offsetWidth;
-    }
-
-    return {
-      left: `${left}px`,
-    };
-  }
-
-  alignRight(bodyBounds: DOMRect | ClientRect, parentBounds: DOMRect | ClientRect) {
-    const parentLeft = parentBounds.left - bodyBounds.left;
-    const parentRight = parentLeft + parentBounds.width;
-
-    // Align right
-    let left = parentRight - this.$el.offsetWidth;
-
-    if (
-      // Overflows on left
-      left < 0 &&
-      // If aligned left, will not overflow on right
-      parentLeft + this.$el.offsetWidth <= window.innerWidth
-    ) {
-      // Align left
-      left = parentLeft;
-    }
-
-    return {
-      left: `${left}px`,
-    };
   }
 
   // Update position on orientation change
@@ -213,41 +121,21 @@ export default class Popover extends Vue {
   // Checks available space on screen for vertical positioning and alignment
   updatePosition = _.throttle(
     function() {
-      let top;
       if (!this.isActive || this.parent === null) {
         return;
       }
 
-      const bodyBounds = document.body.getBoundingClientRect();
-      const parentBounds = this.parent.getBoundingClientRect();
-
-      // Set alignment
-      const elementStyle: ElementPosition = this.alignMethod(bodyBounds, parentBounds);
-
-      const parentTop = parentBounds.top - bodyBounds.top;
-      const topAbove = parentTop - POPOVER_SHADOW_GAP - this.$el.offsetHeight;
-      const topBelow = parentTop + parentBounds.height;
-
-      // Position above or below
-      if (this.isBottom) {
-        top = topBelow;
-
-        // Not enough space below and enough space above
-        if (topBelow + this.$el.offsetHeight > window.innerHeight && topAbove >= 0) {
-          top = topAbove;
-        }
-      } else {
-        top = topAbove;
-
-        // Not enough space above and enough space below
-        if (topAbove < 0 && topBelow + this.$el.offsetHeight <= window.innerHeight) {
-          top = topBelow;
-        }
+      const positionContext = {
+        body: document.body.getBoundingClientRect(),
+        parent: this.parent.getBoundingClientRect(),
+        element: this.$el,
+        window,
       }
-
-      elementStyle.top = `${top}px`;
-
-      this.elementStyle = elementStyle;
+      // Set alignment
+      const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
+      elementStyle.top = DOMUtil.computeTop(this.isBottom, positionContext);
+      // make sure to use `px` unit explicitly
+      this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));
     },
     // 60fps
     16,

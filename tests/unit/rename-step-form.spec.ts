@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 import Vuex, { Store } from 'vuex';
@@ -23,28 +22,28 @@ describe('Rename Step Form', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.vm.$data.stepname).equal('rename');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.vm.$data.stepname).toEqual('rename');
   });
 
   it('should have exactly one widgetinputtext component', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('widgetinputtext-stub');
+    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
 
-    expect(inputWrappers.length).to.equal(1);
+    expect(inputWrappers.length).toEqual(1);
   });
 
   it('should pass down the newname prop to widget value prop', async () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
     wrapper.setData({ editedStep: { name: 'rename', oldname: '', newname: 'foo' } });
     await localVue.nextTick();
-    expect(wrapper.find('widgetinputtext-stub').props('value')).to.equal('foo');
+    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('foo');
   });
 
   it('should have a columnpicker widget', () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
 
-    expect(wrapper.find('columnpicker-stub').exists()).to.be.true;
+    expect(wrapper.find('columnpicker-stub').exists()).toBeTruthy();
   });
 
   describe('Errors', () => {
@@ -57,7 +56,7 @@ describe('Rename Step Form', () => {
         .sort((err1: ValidationError, err2: ValidationError) =>
           err1.dataPath.localeCompare(err2.dataPath),
         );
-      expect(errors).to.eql([
+      expect(errors).toEqual([
         { keyword: 'minLength', dataPath: '.newname' },
         { keyword: 'minLength', dataPath: '.oldname' },
       ]);
@@ -78,7 +77,7 @@ describe('Rename Step Form', () => {
         keyword: err.keyword,
         dataPath: err.dataPath,
       }));
-      expect(errors).to.eql([{ keyword: 'columnNameAlreadyUsed', dataPath: '.newname' }]);
+      expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.newname' }]);
     });
   });
 
@@ -92,8 +91,8 @@ describe('Rename Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).to.be.null;
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'rename', newname: 'bar', oldname: 'foo' }]],
     });
   });
@@ -102,7 +101,7 @@ describe('Rename Step Form', () => {
     const wrapper = mount(RenameStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).to.eql({
+    expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
   });
@@ -115,10 +114,10 @@ describe('Rename Step Form', () => {
       },
     });
     const wrapper = shallowMount(RenameStepForm, { store, localVue });
-    expect(wrapper.vm.$data.editedStep.oldname).to.equal('');
+    expect(wrapper.vm.$data.editedStep.oldname).toEqual('');
     store.commit('toggleColumnSelection', { column: 'columnB' });
     await localVue.nextTick();
-    expect(wrapper.vm.$data.editedStep.oldname).to.equal('columnB');
+    expect(wrapper.vm.$data.editedStep.oldname).toEqual('columnB');
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
@@ -135,10 +134,10 @@ describe('Rename Step Form', () => {
     const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(2);
+    expect(store.state.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).to.equal(3);
+    expect(store.state.selectedStepIndex).toEqual(3);
   });
 
   it('should make the focus on the column modified after rename validation', () => {
@@ -151,7 +150,7 @@ describe('Rename Step Form', () => {
     const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnA', newname: 'toto' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).to.eql(['toto']);
+    expect(store.state.selectedColumns).toEqual(['toto']);
   });
 
   it('should not change the column focus if validation fails', () => {
@@ -165,6 +164,6 @@ describe('Rename Step Form', () => {
     const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).to.eql(['columnA']);
+    expect(store.state.selectedColumns).toEqual(['columnA']);
   });
 });

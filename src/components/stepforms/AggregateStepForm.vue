@@ -1,15 +1,15 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetMultiselect
+    <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.on"
       name="Group rows by..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length-1] })"
       placeholder="Add columns"
-    ></WidgetMultiselect>
-    <WidgetList
+    ></MultiselectWidget>
+    <ListWidget
       addFieldName="Add aggregation"
       id="toremove"
       name="And aggregate..."
@@ -17,7 +17,7 @@
       :defaultItem="defaultAggregation"
       :widget="widgetAggregation"
       :automatic-new-field="false"
-    ></WidgetList>
+    ></ListWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -25,9 +25,9 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
-import WidgetAggregation from './WidgetAggregation.vue';
-import WidgetMultiselect from './WidgetMultiselect.vue';
-import WidgetList from './WidgetList.vue';
+import AggregationWidget from './widgets/Aggregation.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
+import ListWidget from './widgets/List.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
 
@@ -35,8 +35,8 @@ import { StepFormComponent } from '@/components/formlib';
   vqbstep: 'aggregate',
   name: 'aggregate-step-form',
   components: {
-    WidgetList,
-    WidgetMultiselect,
+    ListWidget,
+    MultiselectWidget,
   },
 })
 export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
@@ -44,7 +44,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   initialStepValue!: AggregationStep;
 
   readonly title: string = 'Aggregate';
-  widgetAggregation = WidgetAggregation;
+  widgetAggregation = AggregationWidget;
 
   get defaultAggregation() {
     const agg: AggFunctionStep = {

@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { VueConstructor } from 'vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 
 type Field = {
   name: string;
@@ -32,9 +32,9 @@ type Field = {
 type RepeatableField = Field[];
 
 @Component({
-  name: 'widget-list',
+  name: 'list-widget',
 })
-export default class WidgetList extends Vue {
+export default class ListWidget extends Vue {
   @Prop({ type: String, default: '' })
   addFieldName!: string;
 
@@ -49,7 +49,7 @@ export default class WidgetList extends Vue {
 
   @Prop({
     type: Function,
-    default: WidgetInputText,
+    default: InputTextWidget,
   })
   widget!: VueConstructor<Vue>;
 
@@ -74,7 +74,7 @@ export default class WidgetList extends Vue {
     if (this.defaultItem) {
       return this.defaultItem;
     }
-    if (this.widget === WidgetInputText) {
+    if (this.widget === InputTextWidget) {
       return '';
     } else {
       return [];
@@ -107,7 +107,7 @@ export default class WidgetList extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../styles/_variables';
+@import '../../../styles/_variables';
 .fa-plus-circle {
   color: $active-color;
 }

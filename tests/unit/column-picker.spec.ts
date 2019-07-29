@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import Vuex, { Store } from 'vuex';
@@ -16,12 +15,12 @@ describe('Column Picker', () => {
 
   it('should instantiate', () => {
     const wrapper = shallowMount(ColumnPicker, { store: emptyStore, localVue });
-    expect(wrapper.exists()).to.be.true;
+    expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should have a widget autocomplete', () => {
     const wrapper = shallowMount(ColumnPicker, { store: emptyStore, localVue });
-    expect(wrapper.find('widgetautocomplete-stub').exists()).to.be.true;
+    expect(wrapper.find('autocompletewidget-stub').exists()).toBeTruthy();
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
@@ -32,8 +31,8 @@ describe('Column Picker', () => {
       },
     });
     const wrapper = shallowMount(ColumnPicker, { store, localVue });
-    const selectWrapper = wrapper.find('widgetautocomplete-stub');
-    expect(selectWrapper.attributes('options')).to.equal('columnA,columnB,columnC');
+    const selectWrapper = wrapper.find('autocompletewidget-stub');
+    expect(selectWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should set column when initialColumn is set', () => {
@@ -50,7 +49,7 @@ describe('Column Picker', () => {
         initialColumn: 'columnA',
       },
     });
-    expect(wrapper.vm.$data.column).to.equal('columnA');
+    expect(wrapper.vm.$data.column).toEqual('columnA');
   });
 
   it('should update step when selectedColumn is changed', async () => {
@@ -65,10 +64,10 @@ describe('Column Picker', () => {
       store,
       localVue,
     });
-    expect(wrapper.vm.$data.column).to.equal('columnA');
+    expect(wrapper.vm.$data.column).toEqual('columnA');
     store.commit('setSelectedColumns', { column: 'columnB' });
     await localVue.nextTick();
-    expect(wrapper.vm.$data.column).to.equal('columnB');
-    expect(store.state.selectedColumns).to.eql(['columnB']);
+    expect(wrapper.vm.$data.column).toEqual('columnB');
+    expect(store.state.selectedColumns).toEqual(['columnB']);
   });
 });

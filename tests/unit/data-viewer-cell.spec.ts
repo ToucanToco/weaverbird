@@ -1,12 +1,11 @@
-import { expect } from 'chai';
 import { shallowMount } from '@vue/test-utils';
 import DataViewerCell from '@/components/DataViewerCell.vue';
 
 describe('Data Viewer Cell', () => {
   it('should instantiate with no value', () => {
     const wrapper = shallowMount(DataViewerCell);
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.text()).to.equal('-');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.text()).toEqual('-');
   });
   it('should instantiate with value undefined', () => {
     const wrapper = shallowMount(DataViewerCell, {
@@ -16,8 +15,8 @@ describe('Data Viewer Cell', () => {
         },
       },
     });
-    expect(wrapper.exists()).to.be.true;
-    expect(wrapper.text()).to.equal('-');
+    expect(wrapper.exists()).toBeTruthy();
+    expect(wrapper.text()).toEqual('-');
   });
   describe('value is a string', () => {
     it('should display the value', () => {
@@ -28,7 +27,7 @@ describe('Data Viewer Cell', () => {
           },
         },
       });
-      expect(wrapper.text()).to.equal('my_value');
+      expect(wrapper.text()).toEqual('my_value');
     });
   });
   describe('value is a number', () => {
@@ -40,7 +39,7 @@ describe('Data Viewer Cell', () => {
           },
         },
       });
-      expect(wrapper.text()).to.equal('12');
+      expect(wrapper.text()).toEqual('12');
     });
   });
   describe('value is an object', () => {
@@ -52,7 +51,7 @@ describe('Data Viewer Cell', () => {
           },
         },
       });
-      expect(wrapper.text()).to.eql('{"my_column":"my_value"}');
+      expect(wrapper.text()).toEqual('{"my_column":"my_value"}');
     });
   });
   it('should have specific class when selected', () => {
@@ -64,6 +63,6 @@ describe('Data Viewer Cell', () => {
         },
       },
     });
-    expect(wrapper.classes()).to.include('data-viewer-cell--active');
+    expect(wrapper.classes()).toContain('data-viewer-cell--active');
   });
 });

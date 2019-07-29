@@ -35,6 +35,11 @@ export interface VQBState {
    * whether the left panel slot is in step edition mode
    */
   isEditingStep: boolean;
+
+  /**
+   * pagination size (i.e. number of results displayed)
+   */
+  pagesize: number;
 }
 
 /**
@@ -51,6 +56,7 @@ export const emptyState: VQBState = {
   pipeline: [],
   selectedColumns: [],
   isEditingStep: false,
+  pagesize: 50,
 };
 
 /**

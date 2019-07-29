@@ -21,9 +21,13 @@ class MongoService {
     return response.json();
   }
 
-  async executePipeline(pipeline) {
+  async executePipeline(pipeline, limit) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const rset = await this.executeQuery(this.translator.translate(subpipeline), domain);
+    const query = this.translator.translate(subpipeline);
+    if (limit) {
+      query.push({ '$limit': limit })
+    }
+    const rset = await this.executeQuery(query, domain);
     const dataset = mongoResultsToDataset(rset);
     const datasetWithInferedType = inferTypeFromDataset(dataset);
     return datasetWithInferedType;
@@ -73,11 +77,10 @@ async function setupInitialData(store, domain = null) {
     store.commit('setCurrentDomain', {
       currentDomain: domain,
     });
+  } else {
+    const dataset = await mongoservice.executePipeline(store.state.pipeline, store.state.pagesize);
+    store.commit('setDataset', { dataset });
   }
-  const dataset = await mongoservice.executePipeline(store.state.pipeline);
-  store.commit('setDataset', {
-    dataset,
-  });
 }
 
 async function buildVueApp() {

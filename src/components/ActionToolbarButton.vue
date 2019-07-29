@@ -2,7 +2,7 @@
   <button type="button" class="action-toolbar__btn">
     <i :class="`action-toolbar__btn-icon fas fa-${icon}`"></i>
     <span class="action-toolbar__btn-txt">{{ label }}</span>
-    <popover :active="isActive" :align="alignLeft" bottom>
+    <popover :active="isActive" :align="'left'" bottom>
       <div class="action-menu__body">
         <div class="action-menu__section">
           <div

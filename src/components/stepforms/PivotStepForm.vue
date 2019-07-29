@@ -1,33 +1,33 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <WidgetMultiselect
+    <MultiselectWidget
       id="indexInput"
       v-model="editedStep.index"
       name="Keep columns..."
       :options="columnNames"
       placeholder="Add columns"
-    ></WidgetMultiselect>
+    ></MultiselectWidget>
     <ColumnPicker
       id="columnToPivotInput"
       v-model="editedStep.column_to_pivot"
       name="Pivot column..."
       placeholder="Enter a column"
     ></ColumnPicker>
-    <WidgetAutocomplete
+    <AutocompleteWidget
       id="valueColumnInput"
       v-model="editedStep.value_column"
       name="Use values in..."
       :options="columnNames"
       placeholder="Select a column"
-    ></WidgetAutocomplete>
-    <WidgetAutocomplete
+    ></AutocompleteWidget>
+    <AutocompleteWidget
       id="aggregationFunctionInput"
       v-model="editedStep.agg_function"
       name="Aggregate values using..."
       :options="aggregationFunctions"
       placeholder="Aggregation function"
-    ></WidgetAutocomplete>
+    ></AutocompleteWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -35,8 +35,8 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetAutocomplete from '@/components/stepforms/WidgetAutocomplete.vue';
-import WidgetMultiselect from '@/components/stepforms/WidgetMultiselect.vue';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { PivotStep } from '@/lib/steps';
 
@@ -45,8 +45,8 @@ import { PivotStep } from '@/lib/steps';
   name: 'pivot-step-form',
   components: {
     ColumnPicker,
-    WidgetAutocomplete,
-    WidgetMultiselect,
+    AutocompleteWidget,
+    MultiselectWidget,
   },
 })
 export default class PivotStepForm extends BaseStepForm<PivotStep> {

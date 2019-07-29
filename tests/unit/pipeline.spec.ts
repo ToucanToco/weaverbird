@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
@@ -18,9 +17,9 @@ describe('Pipeline.vue', () => {
     const store = setupStore({ pipeline });
     const wrapper = shallowMount(PipelineComponent, { store, localVue });
     const steps = wrapper.findAll('step-stub');
-    expect(steps.length).to.equal(3);
+    expect(steps.length).toEqual(3);
     const [step1, step2, step3] = steps.wrappers.map(stub => stub.props());
-    expect(step1).to.eql({
+    expect(step1).toEqual({
       step: pipeline[0],
       isActive: true,
       isLastActive: false,
@@ -29,7 +28,7 @@ describe('Pipeline.vue', () => {
       isLast: false,
       indexInPipeline: 0,
     });
-    expect(step2).to.eql({
+    expect(step2).toEqual({
       step: pipeline[1],
       isActive: true,
       isLastActive: false,
@@ -38,7 +37,7 @@ describe('Pipeline.vue', () => {
       isLast: false,
       indexInPipeline: 1,
     });
-    expect(step3).to.eql({
+    expect(step3).toEqual({
       step: pipeline[2],
       isActive: false,
       isLastActive: true,
@@ -54,10 +53,10 @@ describe('Pipeline.vue', () => {
       const pipeline: Pipeline = [{ name: 'domain', domain: 'GoT' }];
       const store = setupStore({ pipeline });
       const wrapper = shallowMount(PipelineComponent, { store, localVue });
-      expect(wrapper.find('.query-pipeline__empty-message').text()).to.equal(
+      expect(wrapper.find('.query-pipeline__empty-message').text()).toEqual(
         'Start playing with data directly from the right table',
       );
-      expect(wrapper.find('.fa-magic').exists()).to.be.true;
+      expect(wrapper.find('.fa-magic').exists()).toBeTruthy();
     });
   });
 });

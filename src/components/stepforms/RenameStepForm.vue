@@ -7,12 +7,12 @@
       name="Old name"
       placeholder="Enter the old column name"
     ></ColumnPicker>
-    <WidgetInputText
+    <InputTextWidget
       id="newnameInput"
       v-model="editedStep.newname"
       name="By..."
       placeholder="Enter a new column name"
-    ></WidgetInputText>
+    ></InputTextWidget>
     <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -21,7 +21,7 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import WidgetInputText from '@/components/stepforms/WidgetInputText.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import { RenameStep } from '@/lib/steps';
 
@@ -30,7 +30,7 @@ import { RenameStep } from '@/lib/steps';
   name: 'rename-step-form',
   components: {
     ColumnPicker,
-    WidgetInputText,
+    InputTextWidget,
   },
 })
 export default class RenameStepForm extends BaseStepForm<RenameStep> {
