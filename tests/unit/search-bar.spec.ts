@@ -25,7 +25,7 @@ describe('SearchBar', () => {
         .at(1)
         .find('span span')
         .text(),
-    ).to.equal('Percentage of total');
+    ).toEqual('Percentage of total');
   });
 
   it('should emit "actionClicked" when an option multiselect is clicked', () => {
