@@ -49,5 +49,17 @@ export default class PercentageStepForm extends BaseStepForm<PercentageStep> {
 
   readonly title: string = 'Percentage of total';
 
+  get stepSelectedColumn() {
+    return this.editedStep.column;
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on percentage "value column" field');
+    }
+    if (colname !== null) {
+      this.editedStep.column = colname;
+    }
+  }
 }
 </script>
