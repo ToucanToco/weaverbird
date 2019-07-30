@@ -17,6 +17,11 @@ export type ActionCategory = {
   label: string;
 };
 
+export type groupActions = {
+  type: string;
+  actions: ActionCategory[];
+};
+
 export const ACTION_CATEGORIES: ActionCategories = {
   compute: [{ name: 'percentage', label: 'Percentage of total' }],
   filter: [
@@ -30,7 +35,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   reshape: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
 };
 
-export const SEARCH_ACTION: ActionCategory[] = [
+export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'compute',
     actions: [{ name: 'percentage', label: 'Percentage of total' }],
@@ -55,7 +60,6 @@ export const SEARCH_ACTION: ActionCategory[] = [
       { name: 'filter', label: 'Filter values' },
     ],
   },
-  { name: 'aggregate', label: 'Aggregate' },
   {
     type: 'aggregate',
     actions: [
