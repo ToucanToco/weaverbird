@@ -123,4 +123,18 @@ describe('Percentage Step Form', () => {
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.selectedStepIndex).toEqual(3);
   });
+
+  it('should update step when selectedColumn is changed', async () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+    });
+    const wrapper = shallowMount(PercentageStepForm, { store, localVue });
+    expect(wrapper.vm.$data.editedStep.column).toEqual('');
+    store.commit('toggleColumnSelection', { column: 'columnB' });
+    await localVue.nextTick();
+    expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
+  });
 });
