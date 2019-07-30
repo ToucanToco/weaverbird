@@ -48,7 +48,25 @@ describe('Filter Step Form', () => {
   });
 
   it('should report errors when submitted data is not valid', () => {
-    const wrapper = mount(FilterStepForm, { store: emptyStore, localVue });
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'foo', type: 'string' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+      data: () => {
+        return {
+          editedStep: {
+            name: 'filter',
+            condition: { and: [] },
+          },
+        };
+      },
+    });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
       keyword: err.keyword,
@@ -58,9 +76,16 @@ describe('Filter Step Form', () => {
   });
 
   it('should validate and emit "formSaved" when submitting a valid condition', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'foo', type: 'string' }],
+        data: [[null]],
+      },
+    });
     const wrapper = mount(FilterStepForm, {
-      store: emptyStore,
+      store,
       localVue,
+      sync: false,
       propsData: {
         initialStepValue: {
           name: 'filter',
@@ -84,6 +109,138 @@ describe('Filter Step Form', () => {
               and: [
                 { column: 'foo', value: 'bar', operator: 'gt' },
                 { column: 'foo', value: ['bar', 'toto'], operator: 'nin' },
+              ],
+            },
+          },
+        ],
+      ],
+    });
+  });
+
+  it('should convert input value to integer when the column data type is integer', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'integer' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+      data: () => {
+        return {
+          editedStep: {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'columnA', operator: 'gt', value: '10' },
+                { column: 'columnA', operator: 'in', value: ['0', '42'] },
+              ],
+            },
+          },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'columnA', operator: 'gt', value: 10 },
+                { column: 'columnA', operator: 'in', value: [0, 42] },
+              ],
+            },
+          },
+        ],
+      ],
+    });
+  });
+
+  it('should convert input value to float when the column data type is float', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'float' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+      data: () => {
+        return {
+          editedStep: {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'columnA', operator: 'gt', value: '10.3' },
+                { column: 'columnA', operator: 'in', value: ['0', '42.1'] },
+              ],
+            },
+          },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'columnA', operator: 'gt', value: 10.3 },
+                { column: 'columnA', operator: 'in', value: [0, 42.1] },
+              ],
+            },
+          },
+        ],
+      ],
+    });
+  });
+
+  it('should convert input value to boolean when the column data type is boolean', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'boolean' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+      data: () => {
+        return {
+          editedStep: {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'columnA', operator: 'eq', value: 'true' },
+                { column: 'columnA', operator: 'in', value: ['True', 'False'] },
+              ],
+            },
+          },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: {
+              and: [
+                { column: 'columnA', operator: 'eq', value: true },
+                { column: 'columnA', operator: 'in', value: [true, false] },
               ],
             },
           },
