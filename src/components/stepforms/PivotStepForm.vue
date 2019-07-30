@@ -65,6 +65,19 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
   readonly title: string = 'Pivot column';
   aggregationFunctions: PivotStep['agg_function'][] = ['sum', 'avg', 'count', 'min', 'max'];
 
+  get stepSelectedColumn() {
+    return this.editedStep.column_to_pivot;
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on percentage "value column" field');
+    }
+    if (colname !== null) {
+      this.editedStep.column_to_pivot = colname;
+    }
+  }
+
   validate() {
     const errors = this.$$super.validate();
     if (errors !== null) {
@@ -80,9 +93,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
           schemaPath: '.column_to_pivot',
           keyword: 'columnNameConflict',
           dataPath: '.column_to_pivot',
-          message: `Column name ${
-            this.editedStep.column_to_pivot
-          } is used at least twice but should be unique`,
+          message: `Column name ${this.editedStep.column_to_pivot} is used at least twice but should be unique`,
         },
       ];
     } else if (this.editedStep.index.includes(this.editedStep.value_column)) {
@@ -92,9 +103,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
           schemaPath: '.value_column',
           keyword: 'columnNameConflict',
           dataPath: '.value_column',
-          message: `Column name ${
-            this.editedStep.value_column
-          } is used at least twice but should be unique`,
+          message: `Column name ${this.editedStep.value_column} is used at least twice but should be unique`,
         },
       ];
     }
