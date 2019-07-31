@@ -5,6 +5,9 @@
 import { PaginationContext } from './pagination';
 
 export type DataSetColumnType = 'integer' | 'float' | 'boolean' | 'string' | 'date' | 'object';
+export type ColumnTypeMapping = {
+  [col: string]: DataSetColumnType | undefined;
+};
 
 export type DataSetColumn = {
   name: string;
