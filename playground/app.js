@@ -12,9 +12,6 @@ const {
 const mongo36translator = getTranslator('mongo36');
 
 class MongoService {
-  constructor() {
-    this.translator = getTranslator('mongo36');
-  }
 
   async listCollections() {
     const response = await fetch('/collections');
@@ -23,7 +20,7 @@ class MongoService {
 
   async executePipeline(pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const query = this.translator.translate(subpipeline);
+    const query = mong36translator.translate(subpipeline);
     // first offset
     if (offset) {
       query.push({ $skip: offset });
