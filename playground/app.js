@@ -34,7 +34,7 @@ class MongoService {
     dataset.paginationContext = {
       totalCount: count,
       pagesize: limit,
-      pageno: Math.floor(offset / limit),
+      pageno: Math.floor(offset / limit) + 1,
     }
     const datasetWithInferedType = inferTypeFromDataset(dataset);
     return datasetWithInferedType;

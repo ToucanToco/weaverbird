@@ -81,4 +81,22 @@ describe('Pagination Component', () => {
     // click on "page 3" ⇒ offset = 4, limit = 2
     expect(executePipelineMock).toHaveBeenCalledWith(pagesize, pagesize * 2);
   });
+
+  it('should instantiate the counter', () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+        data: [['Paris', 10000000, true], ['Marseille', 3000000, false]],
+        paginationContext: {
+          totalCount: 7,
+          pageno: 1,
+          pagesize: 2,
+        },
+      },
+      pagesize: 2,
+    });
+    const wrapper = mount(Pagination, { localVue, store });
+    const wrapperCounter = wrapper.find('.pagination-counter');
+    expect(wrapperCounter.exists()).toBeTruthy();
+  });
 });
