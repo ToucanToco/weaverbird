@@ -7,6 +7,11 @@
       next-class="prevnext"
       :clickHandler="pageClicked"
     />
+    <div class="pagination-counter">
+      <span class="pagination-counter__current-min">{{ pageRows.min }}</span>
+      <span class="pagination-counter__current-max">&nbsp;- {{ pageRows.max }}</span>
+      <span class="pagination-counter__total-count">&nbsp;of {{ totalCount }} rows</span>
+    </div>
   </div>
 </template>
 
@@ -15,7 +20,7 @@ import Paginate from 'vuejs-paginate';
 import { Vue, Component } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 import { DataSet } from '@/lib/dataset';
-import { numberOfPages } from '@/lib/dataset/pagination';
+import { numberOfPages, pageOffset, pageMinMax } from '@/lib/dataset/pagination';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
@@ -34,6 +39,19 @@ export default class Pagination extends Vue {
       return numberOfPages(this.dataset.paginationContext);
     }
     return 1;
+  }
+
+  get totalCount() {
+    if (this.dataset.paginationContext) {
+      return this.dataset.paginationContext.totalCount;
+    }
+  }
+
+  get pageRows() {
+    if (this.dataset.paginationContext) {
+      return pageMinMax(this.dataset.paginationContext);
+    }
+    return 0;
   }
 
   pageClicked(pageno: number) {
@@ -82,5 +100,13 @@ export default class Pagination extends Vue {
   background-color: #2665a3;
   color: #fff;
   cursor: not-allowed;
+}
+.pagination-counter {
+  background: #999;
+  bottom: 0;
+  color: #fff;
+  display: flex;
+  padding: 4px 10px;
+  position: absolute;
 }
 </style>

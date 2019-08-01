@@ -24,3 +24,24 @@ export function numberOfPages(paginationContext: PaginationContext) {
 export function pageOffset(pagesize: number, pageno: number) {
   return Math.max(pageno - 1, 0) * pagesize;
 }
+
+/**
+ * Get page min/max row
+ */
+export function pageMinMax(paginationContext: PaginationContext) {
+  const pageRowMin = pageOffset(
+    paginationContext.pagesize,
+    paginationContext.pageno,
+  );
+  let pageRowMax;
+  if (paginationContext.pageno === numberOfPages(paginationContext)) {
+    pageRowMax = paginationContext.totalCount
+  } else {
+    pageRowMax = pageRowMin + paginationContext.pagesize;
+  }
+  const pageRows = {
+    min: pageRowMin + 1,
+    max: pageRowMax,
+  }
+  return pageRows;
+}
