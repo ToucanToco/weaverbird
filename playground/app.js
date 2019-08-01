@@ -20,7 +20,7 @@ class MongoService {
 
   async executePipeline(pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const query = mong36translator.translate(subpipeline);
+    const query = mongo36translator.translate(subpipeline);
     // first offset
     if (offset) {
       query.push({ $skip: offset });
