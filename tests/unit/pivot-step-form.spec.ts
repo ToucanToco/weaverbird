@@ -118,6 +118,20 @@ describe('Pivot Step Form', () => {
     });
   });
 
+  it('should update step when selectedColumn is changed', async () => {
+    const store = setupStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+    });
+    const wrapper = shallowMount(PivotStepForm, { store, localVue });
+    expect(wrapper.vm.$data.editedStep.column_to_pivot).toEqual('');
+    store.commit('toggleColumnSelection', { column: 'columnB' });
+    await localVue.nextTick();
+    expect(wrapper.vm.$data.editedStep.column_to_pivot).toEqual('columnB');
+  });
+
   describe('Errors', () => {
     it('should fire errors when fields are missing', () => {
       const wrapper = mount(PivotStepForm, { store: emptyStore, localVue });

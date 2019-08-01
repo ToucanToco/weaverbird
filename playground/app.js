@@ -12,23 +12,30 @@ const {
 const mongo36translator = getTranslator('mongo36');
 
 class MongoService {
-  constructor() {
-    this.translator = getTranslator('mongo36');
-  }
 
   async listCollections() {
     const response = await fetch('/collections');
     return response.json();
   }
 
-  async executePipeline(pipeline, limit) {
+  async executePipeline(pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const query = this.translator.translate(subpipeline);
-    if (limit) {
-      query.push({ '$limit': limit })
+    const query = mongo36translator.translate(subpipeline);
+    // first offset
+    if (offset) {
+      query.push({ $skip: offset });
     }
-    const rset = await this.executeQuery(query, domain);
+    // then limit
+    if (limit) {
+      query.push({ $limit: limit });
+    }
+    const [{ count, data: rset }] = await this.executeQuery(query, domain);
     const dataset = mongoResultsToDataset(rset);
+    dataset.paginationContext = {
+      totalCount: count,
+      pagesize: limit,
+      pageno: Math.floor(offset / limit),
+    }
     const datasetWithInferedType = inferTypeFromDataset(dataset);
     return datasetWithInferedType;
   }
@@ -89,6 +96,7 @@ async function buildVueApp() {
     {
       pipeline: initialPipeline,
       currentDomain: 'test-collection',
+
     },
     [mongoBackendPlugin],
   );

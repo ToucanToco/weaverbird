@@ -97,6 +97,27 @@ describe('getter tests', () => {
     });
   });
 
+  describe('column types tests', () => {
+    it('should return column types', () => {
+      const state = buildState({
+        dataset: {
+          headers: [
+            { name: 'col1', type: 'integer' },
+            { name: 'col2', type: 'boolean' },
+            { name: 'col3' },
+          ],
+          data: [],
+        },
+      });
+      const columnTypes = getters.columnTypes(state);
+      expect(columnTypes).toEqual({
+        col1: 'integer',
+        col2: 'boolean',
+        col3: undefined,
+      });
+    });
+  });
+
   describe('domain extraction tests', () => {
     it('should return the domain step', () => {
       const pipeline: Pipeline = [
@@ -240,9 +261,18 @@ describe('mutation tests', () => {
     const dataset = {
       headers: [{ name: 'col1' }, { name: 'col2' }],
       data: [[0, 0]],
+      paginationContext: {
+        totalCount: 0,
+        pagesize: 50,
+        pageno: 1,
+      },
     };
     const state = buildState({});
-    expect(state.dataset).toEqual({ headers: [], data: [] });
+    expect(state.dataset).toEqual({
+      headers: [],
+      data: [],
+      paginationContext: emptyState.dataset.paginationContext,
+    });
     mutations.setDataset(state, { dataset });
     expect(state.dataset).toEqual(dataset);
   });

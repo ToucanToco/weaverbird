@@ -14,6 +14,7 @@ import { Pipeline } from '@/lib/steps';
 
 import { StateMutation } from './mutations';
 import { VQBState, activePipeline } from '@/store/state';
+import { pageOffset } from '@/lib/dataset/pagination';
 
 export interface BackendService {
   /**
@@ -25,15 +26,20 @@ export interface BackendService {
    * @param limit if specified, a limit to be applied on the results. How is limit
    * is applied is up to the concrete implementor (either in the toolchain, the query
    * or afterwareds on the resultset)
+   * @param offset if specified, an offset to apply to resultset
    *
    * @return a promise that holds the result of the pipeline execution,
    * formatted as as `DataSet`
    */
-  executePipeline(pipeline: Pipeline, limit: number): Promise<DataSet>;
+  executePipeline(pipeline: Pipeline, limit: number, offset: number): Promise<DataSet>;
 }
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
-  const dataset = await service.executePipeline(pipeline, store.state.pagesize);
+  const dataset = await service.executePipeline(
+    pipeline,
+    store.state.pagesize,
+    pageOffset(store.state.pagesize, store.getters.pageno),
+  );
   store.commit('setDataset', { dataset });
 }
 
@@ -50,7 +56,8 @@ export function servicePluginFactory(service: BackendService) {
       if (
         mutation.type === 'selectStep' ||
         mutation.type === 'setCurrentDomain' ||
-        mutation.type === 'deleteStep'
+        mutation.type === 'deleteStep' ||
+        mutation.type === 'setCurrentPage'
       ) {
         _updateDataset(store, service, activePipeline(state));
       }

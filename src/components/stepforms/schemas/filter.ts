@@ -1,5 +1,5 @@
 const singleValueConditionSchema = {
-  type: ['string', 'integer', 'boolean', 'null'],
+  type: ['string', 'number', 'boolean', 'null'],
   minLength: 1,
   title: 'Value',
   description: 'The value to compare',
@@ -12,7 +12,7 @@ const multipleValueConditionSchema = {
   type: 'array',
   minItems: 1,
   items: {
-    type: ['string', 'integer', 'boolean', 'null'],
+    type: ['string', 'number', 'boolean', 'null'],
   },
   title: 'Value',
   description: 'The value(s) to compare',

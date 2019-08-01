@@ -2,7 +2,12 @@
  * This module contains helpers and definitions related to datasets.
  */
 
+import { PaginationContext } from './pagination';
+
 export type DataSetColumnType = 'integer' | 'float' | 'boolean' | 'string' | 'date' | 'object';
+export type ColumnTypeMapping = {
+  [col: string]: DataSetColumnType | undefined;
+};
 
 export type DataSetColumn = {
   name: string;
@@ -30,4 +35,8 @@ export type DataSetColumn = {
 export type DataSet = {
   headers: DataSetColumn[];
   data: any[][];
+  /**
+   * pagination context (i.e. number of results displayed per page and current page number)
+   */
+  paginationContext?: PaginationContext;
 };

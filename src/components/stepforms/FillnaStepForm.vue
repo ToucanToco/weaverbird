@@ -25,7 +25,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
-import { DataSetColumn } from '@/lib/dataset';
+import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 
 @StepFormComponent({
@@ -40,7 +40,7 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
   initialStepValue!: FillnaStep;
 
-  @Getter columnHeaders!: DataSetColumn[];
+  @Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Fill null values';
 
@@ -58,7 +58,7 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   }
 
   submit() {
-    const type = this.columnHeaders.filter(h => h.name === this.editedStep.column)[0].type;
+    const type = this.columnTypes[this.editedStep.column];
     if (type !== undefined) {
       this.editedStep.value = castFromString(this.editedStep.value as string, type);
     }

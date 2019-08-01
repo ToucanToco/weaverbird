@@ -19,12 +19,15 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import ListWidget from './widgets/List.vue';
 import BaseStepForm from './StepForm.vue';
 import { FilterStep, FilterComboAnd } from '@/lib/steps';
 import { FilterSimpleCondition } from '@/lib/steps';
+import { ColumnTypeMapping } from '@/lib/dataset';
+import { castFromString } from '@/lib/helpers';
 
 @StepFormComponent({
   vqbstep: 'filter',
@@ -43,6 +46,8 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }),
   })
   initialStepValue!: FilterStep;
+
+  @Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
   condition = this.initialStepValue.condition as FilterComboAnd;
@@ -64,6 +69,20 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
 
   set conditions(newval) {
     this.editedStep.condition.and = [...newval];
+  }
+
+  submit() {
+    for (const cond of this.editedStep.condition.and as FilterSimpleCondition[]) {
+      const type = this.columnTypes[cond.column];
+      if (type !== undefined) {
+        if (Array.isArray(cond.value)) {
+          cond.value = cond.value.map(v => castFromString(v, type));
+        } else {
+          cond.value = castFromString(cond.value, type);
+        }
+      }
+    }
+    this.$$super.submit();
   }
 }
 </script>

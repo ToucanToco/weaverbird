@@ -1,6 +1,7 @@
 /**
  * exports the list of store getters.
  */
+import _ from 'lodash';
 
 import { VQBState, activePipeline, inactivePipeline } from './state';
 
@@ -17,6 +18,11 @@ export default {
    * the list of dataset's column headers.
    */
   columnHeaders: (state: VQBState) => state.dataset.headers,
+  /**
+   * return a mapping { columnName → columnType }
+   */
+  columnTypes: (state: VQBState) =>
+    _.fromPairs(state.dataset.headers.map(col => [col.name, col.type])),
   /**
    * a direct "usable" index (i.e. convert "-1" to a positive one) of last active step.
    */
@@ -52,4 +58,9 @@ export default {
    * Get the step config of the pipeline based on its index
    */
   stepConfig: (state: VQBState) => (index: number) => state.pipeline[index],
+  /**
+   * Return current page number
+   */
+  pageno: (state: VQBState) =>
+    state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
 };

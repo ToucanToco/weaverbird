@@ -36,7 +36,7 @@ import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import BaseStepForm from './StepForm.vue';
 import { ReplaceStep } from '@/lib/steps';
-import { DataSetColumn } from '@/lib/dataset';
+import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 
 @StepFormComponent({
@@ -52,7 +52,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   @Prop({ type: Object, default: () => ({ name: 'replace', search_column: '', to_replace: [[]] }) })
   initialStepValue!: ReplaceStep;
 
-  @Getter columnHeaders!: DataSetColumn[];
+  @Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Replace values';
   replaceWidget = ReplaceWidget;
@@ -81,7 +81,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   }
 
   submit() {
-    const type = this.columnHeaders.filter(h => h.name === this.editedStep.search_column)[0].type;
+    const type = this.columnTypes[this.editedStep.search_column];
     for (const tuple of this.editedStep.to_replace) {
       if (type !== undefined) {
         tuple[0] = castFromString(tuple[0], type);

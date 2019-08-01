@@ -75,6 +75,42 @@ function assertIsConnected(client, err) {
 }
 
 /**
+ * Transform an aggregation query into a `$facet` one so that we can get in a single
+ * query both total query conut (independently of `$limit` or `$skip` operators) and
+ * the query results.
+ *
+ * @param {Array} query the initial aggregation query
+ * @return the transformed `$facet` query
+ */
+function facetize(query) {
+  if (!query.length) {
+    query.push({ $match: {} })
+  }
+  return [
+    {
+      $facet: {
+        stage1: [{
+          $group: {
+            _id: null, count: { $sum: 1 }
+          }
+        }],
+        stage2: query,
+      }
+    },
+
+    { $unwind: '$stage1' },
+
+    //output projection
+    {
+      $project: {
+        count: '$stage1.count',
+        data: '$stage2'
+      }
+    }
+  ];
+}
+
+/**
  * execute `query` on `collectionName` inside the mongodatabase
  *
  * @param config database config
@@ -90,7 +126,7 @@ function executeQuery(config, client, collectionName, query, onsuccess, onerror)
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
     try {
-      collection.aggregate(query).toArray(function(err, docs) {
+      collection.aggregate(facetize(query)).toArray(function(err, docs) {
         if (err) {
           onerror(err);
         } else {
