@@ -7,6 +7,13 @@
       next-class="prevnext"
       :clickHandler="pageClicked"
     />
+    <div class="pagination-counter">
+      <div class="pagination-counter__total">
+        {{ pageCurrentMinRow }}
+        <span v-if="isCurrentMaxRow">- {{ pageCurrentMaxRow }}</span>
+        of {{ totalCount }} rows
+      </div>
+    </div>
   </div>
 </template>
 
@@ -15,7 +22,7 @@ import Paginate from 'vuejs-paginate';
 import { Vue, Component } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 import { DataSet } from '@/lib/dataset';
-import { numberOfPages } from '@/lib/dataset/pagination';
+import { numberOfPages, pageOffset } from '@/lib/dataset/pagination';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
@@ -29,6 +36,9 @@ export default class Pagination extends Vue {
 
   @Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
 
+  valueCurrentRow: number = 0;
+  isCurrentMaxRow: boolean = true;
+
   get pageCount() {
     if (this.dataset.paginationContext) {
       return numberOfPages(this.dataset.paginationContext);
@@ -36,8 +46,38 @@ export default class Pagination extends Vue {
     return 1;
   }
 
+  get pageCurrentMinRow() {
+    if (this.dataset.paginationContext) {
+      this.valueCurrentRow =
+        pageOffset(
+          this.dataset.paginationContext.pagesize,
+          this.dataset.paginationContext.pageno + 1,
+        ) + 1;
+      return this.valueCurrentRow;
+    }
+  }
+
+  get pageCurrentMaxRow() {
+    if (this.dataset.paginationContext) {
+      return this.valueCurrentRow + this.dataset.paginationContext.pagesize - 1;
+    }
+  }
+
+  get totalCount() {
+    if (this.dataset.paginationContext) {
+      return this.dataset.paginationContext.totalCount;
+    }
+  }
+
   pageClicked(pageno: number) {
     this.setCurrentPage({ pageno });
+    if (this.dataset.paginationContext) {
+      if (pageno === this.pageCount) {
+        this.isCurrentMaxRow = false;
+      } else {
+        this.isCurrentMaxRow = true;
+      }
+    }
   }
 }
 </script>
@@ -82,5 +122,13 @@ export default class Pagination extends Vue {
   background-color: #2665a3;
   color: #fff;
   cursor: not-allowed;
+}
+.pagination-counter {
+  background: #999;
+  bottom: 0;
+  color: #fff;
+  display: flex;
+  padding: 4px 10px;
+  position: absolute;
 }
 </style>
