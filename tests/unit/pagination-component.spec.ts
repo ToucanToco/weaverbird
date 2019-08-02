@@ -83,13 +83,6 @@ describe('Pagination Component', () => {
   });
 
   it('should instantiate the counter', () => {
-    const store = setupStore();
-    const wrapper = shallowMount(Pagination, { localVue, store });
-    const wrapperCounter = wrapper.find('.pagination-counter');
-    expect(wrapperCounter.exists()).toBeTruthy();
-  });
-
-  it('should display counter with right rows informations depending on page context', () => {
     const store = setupStore({
       dataset: {
         headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
@@ -102,34 +95,8 @@ describe('Pagination Component', () => {
       },
       pagesize: 2,
     });
-    const wrapper = shallowMount(Pagination, { localVue, store });
-    const wrapperCounterCurrentMin = wrapper.find('.pagination-counter__current-min');
-    const wrapperCounterCurrentMax = wrapper.find('.pagination-counter__current-max');
-    const wrapperCounterTotalRows = wrapper.find('.pagination-counter__total-count');
-    expect(wrapperCounterCurrentMin.text()).toEqual('3');
-    expect(wrapperCounterCurrentMax.text()).toEqual('- 4');
-    expect(wrapperCounterTotalRows.text()).toEqual('of 7 rows');
-  });
-
-  it('should hide "page current row max" when clicked on the last page', () => {
-    const store = setupStore({
-      dataset: {
-        headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-        data: [['Paris', 10000000, true], ['Marseille', 3000000, false]],
-        paginationContext: {
-          totalCount: 7,
-          pageno: 3,
-          pagesize: 2,
-        },
-      },
-      pagesize: 2,
-    });
     const wrapper = mount(Pagination, { localVue, store });
-    wrapper
-      .findAll('.pagination__list li a')
-      .at(4)
-      .trigger('click');
-    const wrapperCounterCurrentMax = wrapper.find('.pagination-counter__current-max');
-    expect(wrapperCounterCurrentMax.exists()).toBeFalsy();
+    const wrapperCounter = wrapper.find('.pagination-counter');
+    expect(wrapperCounter.exists()).toBeTruthy();
   });
 });

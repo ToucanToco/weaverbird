@@ -24,4 +24,13 @@ describe('pagination tests', () => {
     expect(P.pageOffset(20, 1)).toEqual(0);
     expect(P.pageOffset(20, 2)).toEqual(20);
   });
+
+  it('should return corerctly the min and max row of a page offset', () => {
+    const context: P.PaginationContext = {
+      pageno: 1,
+      pagesize: 20,
+      totalCount: 208,
+    };
+    expect(P.pageMinMax(context)).toEqual({ max: 40, min: 21 });
+  });
 });
