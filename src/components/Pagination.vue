@@ -51,6 +51,7 @@ export default class Pagination extends Vue {
     if (this.dataset.paginationContext) {
       return pageMinMax(this.dataset.paginationContext);
     }
+    return 0;
   }
 
   pageClicked(pageno: number) {
