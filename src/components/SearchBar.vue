@@ -14,8 +14,8 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
-import { ActionCategory, SEARCH_ACTION } from './constants';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { groupActions, SEARCH_ACTION } from './constants';
 import Multiselect from 'vue-multiselect';
 
 @Component({
@@ -25,7 +25,7 @@ import Multiselect from 'vue-multiselect';
   },
 })
 export default class SearchBar extends Vue {
-  actionOptions: ActionCategory[] = SEARCH_ACTION;
+  actionOptions: groupActions[] = SEARCH_ACTION;
 
   actionClicked(actionName: { name: string }) {
     this.$emit('actionClicked', actionName.name);
@@ -105,6 +105,9 @@ export default class SearchBar extends Vue {
 .search-bar .multiselect__option {
   color: $base-color;
   font-size: 12px;
+  padding: 10px 10px 10px 15px;
+  box-shadow: none;
+  min-height: 0;
   &:focus {
     outline: none;
   }
@@ -112,10 +115,15 @@ export default class SearchBar extends Vue {
 .search-bar .multiselect__option--group {
   background: none !important;
   color: $base-color !important;
+  border-top: 1px solid #e0e0e0;
   font-weight: bold;
   box-shadow: none;
-  min-height: 35px;
+  min-height: 30px;
   padding-bottom: 0;
+  padding-left: 12px;
   text-transform: capitalize;
+}
+.search-bar .multiselect__element:first-child .multiselect__option--group {
+  border: 0;
 }
 </style>
