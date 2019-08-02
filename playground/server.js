@@ -84,18 +84,21 @@ function assertIsConnected(client, err) {
  */
 function facetize(query) {
   if (!query.length) {
-    query.push({ $match: {} })
+    query.push({ $match: {} });
   }
   return [
     {
       $facet: {
-        stage1: [{
-          $group: {
-            _id: null, count: { $sum: 1 }
-          }
-        }],
+        stage1: [
+          {
+            $group: {
+              _id: null,
+              count: { $sum: 1 },
+            },
+          },
+        ],
         stage2: query,
-      }
+      },
     },
 
     { $unwind: '$stage1' },
@@ -104,9 +107,9 @@ function facetize(query) {
     {
       $project: {
         count: '$stage1.count',
-        data: '$stage2'
-      }
-    }
+        data: '$stage2',
+      },
+    },
   ];
 }
 
@@ -179,14 +182,12 @@ function setupApp(config) {
   app.use(bodyParser.json());
 
   app.post('/query', (req, res) => {
-    executeQuery(
-      config,
-      client,
-      req.body.collection,
-      req.body.query,
-      res.json.bind(res),
-      console.error,
-    );
+    executeQuery(config, client, req.body.collection, req.body.query, res.json.bind(res), function(
+      err,
+    ) {
+      res.status(400).send(err);
+      console.error(err);
+    });
   });
 
   app.post('/load', upload.single('file'), (req, res) => {
