@@ -8,11 +8,12 @@
       :clickHandler="pageClicked"
     />
     <div class="pagination-counter">
-      <div class="pagination-counter__total">
-        {{ pageCurrentMinRow }}
-        <span v-if="isCurrentMaxRow">- {{ pageCurrentMaxRow }}</span>
-        of {{ totalCount }} rows
-      </div>
+      <span class="pagination-counter__current-min">{{ pageCurrentMinRow }}</span>
+      <span
+        class="pagination-counter__current-max"
+        v-if="isCurrentMaxRow"
+      >&nbsp;- {{ pageCurrentMaxRow }}</span>
+      <span class="pagination-counter__total-count">&nbsp;of {{ totalCount }} rows</span>
     </div>
   </div>
 </template>
