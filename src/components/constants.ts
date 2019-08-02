@@ -52,15 +52,6 @@ export const SEARCH_ACTION: groupActions[] = [
     ],
   },
   {
-    type: 'head Column action',
-    actions: [
-      { name: 'duplicate', label: 'Duplicate column' },
-      { name: 'rename', label: 'Rename column' },
-      { name: 'fillna', label: 'Fill null values' },
-      { name: 'filter', label: 'Filter values' },
-    ],
-  },
-  {
     type: 'aggregate',
     actions: [
       {
@@ -72,6 +63,15 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'reshape',
     actions: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
+  },
+  {
+    type: 'Others action',
+    actions: [
+      { name: 'duplicate', label: 'Duplicate column' },
+      { name: 'rename', label: 'Rename column' },
+      { name: 'fillna', label: 'Fill null values' },
+      { name: 'filter', label: 'Filter values' },
+    ],
   },
 ];
 
