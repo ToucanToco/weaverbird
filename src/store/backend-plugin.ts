@@ -37,21 +37,21 @@ export interface BackendService {
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
   try {
-    const reponse = await service.executePipeline(
+    const response = await service.executePipeline(
       pipeline,
       store.state.pagesize,
       pageOffset(store.state.pagesize, store.getters.pageno),
     );
-    if (reponse.error) {
-      store.commit('setBackendErrorMessage', { backendErrorMessage: reponse.error });
+    if (response.error) {
+      store.commit('setBackendError', { backendError: { type: 'error', message: response.error } });
     } else {
-      store.commit('setDataset', { dataset: reponse.data });
-      // restore message error to null:
-      store.commit('setBackendErrorMessage', { backendErrorMessage: null });
+      store.commit('setDataset', { dataset: response.data });
+      // reset backend error to undefined:
+      store.commit('setBackendError', { backendError: undefined });
     }
   } catch (error) {
-    store.commit('setBackendErrorMessage', {
-      backendErrorMessage: { type: 'error', message: error },
+    store.commit('setBackendError', {
+      backendError: { type: 'error', message: error },
     });
   }
 }

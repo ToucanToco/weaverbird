@@ -194,13 +194,13 @@ describe('getter tests', () => {
   });
 
   describe('message error related test', () => {
-    it('should return false if backendErrorMessage is null', () => {
-      const state = buildState({ backendErrorMessage: null });
+    it('should return false if backendError is undefined', () => {
+      const state = buildState({ backendError: undefined });
       expect(getters.thereIsABackendError(state)).toBeFalsy();
     });
 
-    it('should return true if backendErrorMessage is not null', () => {
-      const state = buildState({ backendErrorMessage: { type: 'error', message: 'error msg' } });
+    it('should return true if backendError is not undefined', () => {
+      const state = buildState({ backendError: { type: 'error', message: 'error msg' } });
       expect(getters.thereIsABackendError(state)).toBeTruthy();
     });
   });
@@ -309,11 +309,11 @@ describe('mutation tests', () => {
     expect(state.selectedColumns).toEqual([]);
   });
 
-  it('set a backend error message', () => {
+  it('set a backend error', () => {
     const state = buildState({});
-    mutations.setBackendErrorMessage(state, {
-      backendErrorMessage: { type: 'error', message: 'error msg' },
+    mutations.setBackendError(state, {
+      backendError: { type: 'error', message: 'error msg' },
     });
-    expect(state.backendErrorMessage).toEqual({ type: 'error', message: 'error msg' });
+    expect(state.backendError).toEqual({ type: 'error', message: 'error msg' });
   });
 });

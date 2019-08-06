@@ -99,7 +99,7 @@ async function setupInitialData(store, domain = null) {
   } else {
     const response = await mongoservice.executePipeline(store.state.pipeline, store.state.pagesize);
     if (response.error) {
-      store.commit('setBackendErrorMessage', { backendErrorMessage: response.error });
+      store.commit('setBackendError', { backendError: { type: 'error', error: response.error } });
     } else {
       store.commit('setDataset', { dataset: response.data });
     }
@@ -135,6 +135,12 @@ async function buildVueApp() {
       code: function() {
         const query = mongo36translator.translate(this.$store.getters.activePipeline);
         return JSON.stringify(query, null, 2);
+      },
+      thereIsABackendError: function() {
+        return this.$store.getters.thereIsABackendError;
+      },
+      backendErrorMessage: function() {
+        return this.$store.getters.backendErrorMessage;
       },
     },
     methods: {

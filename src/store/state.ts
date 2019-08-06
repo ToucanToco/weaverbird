@@ -43,9 +43,9 @@ export interface VQBState {
   pagesize: number;
 
   /**
-   * error message send by backend or catch from its interface
+   * error send by backend or catch from its interface
    */
-  backendErrorMessage: BackendError | null;
+  backendError?: BackendError;
 }
 
 /**
@@ -68,7 +68,7 @@ export const emptyState: VQBState = {
   selectedColumns: [],
   isEditingStep: false,
   pagesize: 50,
-  backendErrorMessage: null,
+  backendError: undefined,
 };
 
 /**
