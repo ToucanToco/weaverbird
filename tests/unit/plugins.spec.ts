@@ -13,7 +13,7 @@ localVue.use(Vuex);
 
 class DummyService implements BackendService {
   listCollections() {
-    return Promise.resolve(['foo', 'bar']);
+    return Promise.resolve({ data: ['foo', 'bar'] });
   }
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -23,8 +23,10 @@ class DummyService implements BackendService {
       rset = rset.slice(0, limit);
     }
     return Promise.resolve({
-      headers: [{ name: 'x' }, { name: 'y' }],
-      data: rset,
+      data: {
+        headers: [{ name: 'x' }, { name: 'y' }],
+        data: rset,
+      },
     });
   }
 }

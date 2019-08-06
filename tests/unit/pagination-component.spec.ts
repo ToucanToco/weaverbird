@@ -13,12 +13,12 @@ const executePipelineMock = jest.fn();
 
 class DummyService implements BackendService {
   listCollections() {
-    return Promise.resolve(['foo', 'bar']);
+    return Promise.resolve({ data: ['foo', 'bar'] });
   }
 
   executePipeline(_pipeline: Pipeline, limit: number, offset: number) {
     executePipelineMock(limit, offset);
-    return Promise.resolve({ headers: [], data: [] });
+    return Promise.resolve({ data: { headers: [], data: [] } });
   }
 }
 
