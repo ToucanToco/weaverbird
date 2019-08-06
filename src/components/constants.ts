@@ -23,7 +23,10 @@ export type groupActions = {
 };
 
 export const ACTION_CATEGORIES: ActionCategories = {
-  compute: [{ name: 'percentage', label: 'Percentage of total' }],
+  compute: [
+    { name: 'formula', label: 'Formula' },
+    { name: 'percentage', label: 'Percentage of total' },
+  ],
   filter: [
     { name: 'delete', label: 'Delete columns' },
     { name: 'select', label: 'Keep columns' },
@@ -37,19 +40,12 @@ export const ACTION_CATEGORIES: ActionCategories = {
 
 export const SEARCH_ACTION: groupActions[] = [
   {
-    type: 'compute',
-    actions: [{ name: 'percentage', label: 'Percentage of total' }],
+    type: 'filter',
+    actions: [...ACTION_CATEGORIES.filter],
   },
   {
-    type: 'filter',
-    actions: [
-      { name: 'delete', label: 'Delete columns' },
-      { name: 'select', label: 'Keep columns' },
-      { name: 'filter', label: 'Filter based on conditions' },
-      { name: 'top', label: 'Top N rows' },
-      { name: 'argmax', label: 'Argmax' },
-      { name: 'argmin', label: 'Argmin' },
-    ],
+    type: 'compute',
+    actions: [...ACTION_CATEGORIES.compute],
   },
   {
     type: 'aggregate',
@@ -62,7 +58,7 @@ export const SEARCH_ACTION: groupActions[] = [
   },
   {
     type: 'reshape',
-    actions: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
+    actions: [...ACTION_CATEGORIES.reshape],
   },
   {
     type: 'Others action',
@@ -70,7 +66,8 @@ export const SEARCH_ACTION: groupActions[] = [
       { name: 'duplicate', label: 'Duplicate column' },
       { name: 'rename', label: 'Rename column' },
       { name: 'fillna', label: 'Fill null values' },
-      { name: 'filter', label: 'Filter values' },
+      { name: 'replace', label: 'Replace values' },
+      { name: 'sort', label: 'Sort values' },
     ],
   },
 ];

@@ -16,7 +16,7 @@ describe('SearchBar', () => {
     const wrapper = mount(SearchBar, {
       propsData: {
         type: 'compute',
-        actions: [{ name: 'percentage', label: 'Percentage of total' }],
+        actions: [{ name: 'delete', label: 'Delete columns' }],
       },
     });
     const multiselect = wrapper.findAll('.multiselect__option');
@@ -25,13 +25,13 @@ describe('SearchBar', () => {
         .at(1)
         .find('span span')
         .text(),
-    ).toEqual('Percentage of total');
+    ).toEqual('Delete columns');
   });
 
   it('should emit "actionClicked" when an option multiselect is clicked', () => {
     const wrapper = mount(SearchBar);
     const multiselectOption = wrapper.findAll('.multiselect__option');
     multiselectOption.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['percentage']);
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['delete']);
   });
 });
