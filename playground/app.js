@@ -12,7 +12,6 @@ const {
 const mongo36translator = getTranslator('mongo36');
 
 class MongoService {
-
   async listCollections() {
     const response = await fetch('/collections');
     return response.json();
@@ -29,15 +28,25 @@ class MongoService {
     if (limit) {
       query.push({ $limit: limit });
     }
-    const [{ count, data: rset }] = await this.executeQuery(query, domain);
-    const dataset = mongoResultsToDataset(rset);
-    dataset.paginationContext = {
-      totalCount: count,
-      pagesize: limit,
-      pageno: Math.floor(offset / limit) + 1,
+    const { isResponseOk, responseContent } = await this.executeQuery(query, domain);
+
+    if (isResponseOk) {
+      const [{ count, data: rset }] = responseContent;
+      const dataset = mongoResultsToDataset(rset);
+      dataset.paginationContext = {
+        totalCount: count,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      const datasetWithInferedType = inferTypeFromDataset(dataset);
+      return {
+        data: datasetWithInferedType,
+      };
+    } else {
+      return {
+        error: responseContent.errmsg,
+      };
     }
-    const datasetWithInferedType = inferTypeFromDataset(dataset);
-    return datasetWithInferedType;
   }
 
   async executeQuery(query, collection) {
@@ -51,7 +60,10 @@ class MongoService {
         'Content-Type': 'application/json',
       },
     });
-    return response.json();
+    return {
+      isResponseOk: response.ok,
+      responseContent: await response.json(),
+    };
   }
 
   async loadCSV(file) {
@@ -85,9 +97,14 @@ async function setupInitialData(store, domain = null) {
       currentDomain: domain,
     });
   } else {
-    const dataset = await mongoservice.executePipeline(store.state.pipeline, store.state.pagesize);
-    store.commit('setDataset', { dataset });
+    const response = await mongoservice.executePipeline(store.state.pipeline, store.state.pagesize);
+    if (response.error) {
+      store.commit('setBackendErrorMessage', { backendErrorMessage: response.error });
+    } else {
+      store.commit('setDataset', { dataset: response.data });
+    }
   }
+  store.commit('setDataset', { dataset: response.data });
 }
 
 async function buildVueApp() {
@@ -96,7 +113,6 @@ async function buildVueApp() {
     {
       pipeline: initialPipeline,
       currentDomain: 'test-collection',
-
     },
     [mongoBackendPlugin],
   );
