@@ -9,7 +9,8 @@
  */
 import { Store } from 'vuex';
 
-import { DataSet } from '@/lib/dataset';
+import { BackendResponse } from '@/lib/backend-response';
+import { DataSet } from '@/lib/dataset'
 import { Pipeline } from '@/lib/steps';
 
 import { StateMutation } from './mutations';
@@ -20,7 +21,7 @@ export interface BackendService {
   /**
    * @return a promise that holds the list of available collections
    */
-  listCollections(): Promise<string[]>;
+  listCollections(): BackendResponse<string[]>;
   /**
    * @param pipeline the pipeline to translate and execute on the backend
    * @param limit if specified, a limit to be applied on the results. How is limit
@@ -31,7 +32,7 @@ export interface BackendService {
    * @return a promise that holds the result of the pipeline execution,
    * formatted as as `DataSet`
    */
-  executePipeline(pipeline: Pipeline, limit: number, offset: number): Promise<DataSet>;
+  executePipeline(pipeline: Pipeline, limit: number, offset: number): BackendResponse<DataSet>;
 }
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
