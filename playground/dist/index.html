@@ -69,6 +69,15 @@
         height: 40px;
         font-size: 20px;
       }
+
+      .error-message {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: red;
+        color: white;
+        padding: 10px;
+      }
     </style>
   </head>
 
@@ -87,6 +96,9 @@
         Hide code
       </button>
       <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
+      <div class="error-message" v-if="thereIsABackendError">
+        <i class="fas fa-exclamation-triangle"></i> {{ backendErrorMessage }}
+      </div>
     </div>
     <!-- built files will be auto injected -->
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

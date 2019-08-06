@@ -7,8 +7,8 @@ import { VQBState } from './state';
 
 // provide types for each possible mutations' payloads
 type BackendErrorMutation = {
-  type: 'setBackendErrorMessage';
-  payload: Pick<VQBState, 'backendErrorMessage'>;
+  type: 'setBackendError';
+  payload: Pick<VQBState, 'backendError'>;
 };
 
 type DatasetMutation = {
@@ -167,7 +167,7 @@ export default {
   /**
    * update backendErrorMessage.
    */
-  setBackendErrorMessage(state: VQBState, { backendErrorMessage }: Pick<VQBState, 'backendErrorMessage'>) {
-    state.backendErrorMessage = backendErrorMessage;
+  setBackendError(state: VQBState, { backendError }: Pick<VQBState, 'backendError'>) {
+    state.backendError = backendError;
   },
 };

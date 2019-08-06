@@ -10,6 +10,12 @@ export default {
    * the part of the pipeline that is currently selected.
    */
   activePipeline,
+
+  /**
+   * current backend's error message
+   */
+  backendErrorMessage: (state: VQBState) =>
+    state.backendError ? state.backendError.message : null,
   /**
    * the list of current dataset's colum names.
    **/
@@ -66,5 +72,5 @@ export default {
   /**
    * Return true if an error occured in the backend
    */
-  thereIsABackendError: (state: VQBState) => state.backendErrorMessage !== null,
+  thereIsABackendError: (state: VQBState) => state.backendError !== undefined,
 };
