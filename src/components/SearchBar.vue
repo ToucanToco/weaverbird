@@ -14,7 +14,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import { groupActions, SEARCH_ACTION } from './constants';
 import Multiselect from 'vue-multiselect';
 
