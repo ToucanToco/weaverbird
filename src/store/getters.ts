@@ -63,4 +63,8 @@ export default {
    */
   pageno: (state: VQBState) =>
     state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
+  /**
+   * Return true if an error occured in the backend
+   */
+  thereIsABackendError: (state: VQBState) => state.backendErrorMessage !== null,
 };

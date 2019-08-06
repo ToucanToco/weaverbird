@@ -6,6 +6,11 @@ import { DomainStep } from '@/lib/steps';
 import { VQBState } from './state';
 
 // provide types for each possible mutations' payloads
+type BackendErrorMutation = {
+  type: 'setBackendErrorMessage';
+  payload: Pick<VQBState, 'backendErrorMessage'>;
+};
+
 type DatasetMutation = {
   type: 'setDataset';
   payload: Pick<VQBState, 'dataset'>;
@@ -52,6 +57,7 @@ type ToggleColumnSelectionMutation = {
 };
 
 export type StateMutation =
+  | BackendErrorMutation
   | DatasetMutation
   | DeleteStepMutation
   | DomainsMutation
@@ -156,5 +162,12 @@ export default {
       const length = state.dataset.data.length;
       state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
     }
+  },
+
+  /**
+   * update backendErrorMessage.
+   */
+  setBackendErrorMessage(state: VQBState, { backendErrorMessage }: Pick<VQBState, 'backendErrorMessage'>) {
+    state.backendErrorMessage = backendErrorMessage;
   },
 };
