@@ -10,7 +10,7 @@
 import { Store } from 'vuex';
 
 import { BackendResponse } from '@/lib/backend-response';
-import { DataSet } from '@/lib/dataset'
+import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 
 import { StateMutation } from './mutations';
@@ -36,12 +36,24 @@ export interface BackendService {
 }
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
-  const dataset = await service.executePipeline(
-    pipeline,
-    store.state.pagesize,
-    pageOffset(store.state.pagesize, store.getters.pageno),
-  );
-  store.commit('setDataset', { dataset });
+  try {
+    const reponse = await service.executePipeline(
+      pipeline,
+      store.state.pagesize,
+      pageOffset(store.state.pagesize, store.getters.pageno),
+    );
+    if (reponse.error) {
+      store.commit('setBackendErrorMessage', { backendErrorMessage: reponse.error });
+    } else {
+      store.commit('setDataset', { dataset: reponse.data });
+      // restore message error to null:
+      store.commit('setBackendErrorMessage', { backendErrorMessage: null });
+    }
+  } catch (error) {
+    store.commit('setBackendErrorMessage', {
+      backendErrorMessage: { type: 'error', message: error },
+    });
+  }
 }
 
 /**

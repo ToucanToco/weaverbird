@@ -3,6 +3,7 @@
  */
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
+import { BackendError } from '@/lib/backend-response';
 
 export interface VQBState {
   /**
@@ -40,6 +41,11 @@ export interface VQBState {
    * pagination size (i.e. number of results displayed)
    */
   pagesize: number;
+
+  /**
+   * error message send by backend or catch from its interface
+   */
+  backendErrorMessage: BackendError | null;
 }
 
 /**
@@ -62,6 +68,7 @@ export const emptyState: VQBState = {
   selectedColumns: [],
   isEditingStep: false,
   pagesize: 50,
+  backendErrorMessage: null,
 };
 
 /**

@@ -192,6 +192,18 @@ describe('getter tests', () => {
       expect(getters.isStepDisabled(state)(3)).toBeTruthy();
     });
   });
+
+  describe('message error related test', () => {
+    it('should return false if backendErrorMessage is null', () => {
+      const state = buildState({ backendErrorMessage: null });
+      expect(getters.thereIsABackendError(state)).toBeFalsy();
+    });
+
+    it('should return true if backendErrorMessage is not null', () => {
+      const state = buildState({ backendErrorMessage: { type: 'error', message: 'error msg' } });
+      expect(getters.thereIsABackendError(state)).toBeTruthy();
+    });
+  });
 });
 
 describe('mutation tests', () => {
@@ -295,5 +307,13 @@ describe('mutation tests', () => {
     const state = buildState({});
     mutations.setSelectedColumns(state, { column: undefined });
     expect(state.selectedColumns).toEqual([]);
+  });
+
+  it('set a backend error message', () => {
+    const state = buildState({});
+    mutations.setBackendErrorMessage(state, {
+      backendErrorMessage: { type: 'error', message: 'error msg' },
+    });
+    expect(state.backendErrorMessage).toEqual({ type: 'error', message: 'error msg' });
   });
 });
