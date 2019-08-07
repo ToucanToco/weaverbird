@@ -76,12 +76,12 @@
     "typedoc": "^0.14.2",
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^3.5.1",
-    "vue": "^2.6.8",
     "vue-class-component": "^6.0.0",
     "vue-jest": "^3.0.4",
     "vue-loader": "^15.7.0",
     "vue-property-decorator": "^8.0.0",
-    "vue-template-compiler": "^2.6.8"
+    "vue-test-utils": "^1.0.0-beta.11",
+    "vuex-class": "^0.3.2"
   },
   "eslintIgnore": [
     "**/*.d.ts"
@@ -167,7 +167,9 @@
   "main": "dist/vue-query-builder.common.js",
   "module": "dist/vue-query-builder.esm.js",
   "peerDependencies": {
-    "vue": "2.x"
+    "vue": "2.x",
+    "vue-template-compiler": "2.x",
+    "vuex": "^3.1.1"
   },
   "sideeffects": false,
   "dependencies": {
@@ -177,10 +179,9 @@
     "lodash": "^4.17.11",
     "mathjs": "^5.9.0",
     "ts-jest": "^24.0.2",
+    "vue": "^2.6.10",
     "vue-multiselect": "^2.1.6",
-    "vue-test-utils": "^1.0.0-beta.11",
-    "vuejs-paginate": "^2.1.0",
-    "vuex": "^3.1.1",
-    "vuex-class": "^0.3.2"
+    "vue-template-compiler": "^2.6.10",
+    "vuejs-paginate": "^2.1.0"
   }
 }
