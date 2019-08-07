@@ -4,7 +4,6 @@
   "private": true,
   "scripts": {
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
-    "lint": "eslint src/{components,lib,store}/*.{ts,vue} tests/**/*.ts",
     "build-bundle": "rollup -c",
     "build-doc": "typedoc --readme README.md --out dist/docs src/",
     "playground": "concurrently \"yarn:build-bundle --watch\" \"node playground/server.js\"",
@@ -86,71 +85,6 @@
   "eslintIgnore": [
     "**/*.d.ts"
   ],
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/typescript"
-    ],
-    "rules": {
-      "@typescript-eslint/explicit-function-return-type": "allow",
-      "@typescript-eslint/no-explicit-any": "allow",
-      "@typescript-eslint/explicit-member-accessibility": "no-public",
-      "@typescript-eslint/indent": [
-        "error",
-        2
-      ],
-      "@typescript-eslint/camelcase": [
-        "error",
-        {
-          "properties": "never"
-        }
-      ],
-      "@typescript-eslint/prefer-interface": [
-        "allow"
-      ],
-      "no-unused-vars": [
-        "error",
-        {
-          "argsIgnorePattern": "^_"
-        }
-      ],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          "argsIgnorePattern": "^_"
-        }
-      ],
-      "space-before-function-paren": [
-        "error",
-        {
-          "anonymous": "never",
-          "named": "never",
-          "asyncArrow": "always"
-        }
-      ],
-      "prefer-const": [
-        "error"
-      ],
-      "no-console": [
-        "error",
-        {
-          "allow": [
-            "warn",
-            "error"
-          ]
-        }
-      ]
-    },
-    "parserOptions": {
-      "parser": "@typescript-eslint/parser"
-    }
-  },
   "postcss": {
     "plugins": {
       "autoprefixer": {}
