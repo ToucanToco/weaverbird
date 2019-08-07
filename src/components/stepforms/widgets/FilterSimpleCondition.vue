@@ -41,8 +41,8 @@ type LiteralOperator =
   | 'be greater than or equal to'
   | 'be less than'
   | 'be less than or equal to'
-  | 'be among'
-  | 'not be among';
+  | 'be one of'
+  | 'not be one of';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
@@ -79,8 +79,8 @@ export default class FilterSimpleConditionWidget extends Vue {
     { operator: 'ge', label: 'be greater than or equal to', inputWidget: InputTextWidget },
     { operator: 'lt', label: 'be less than', inputWidget: InputTextWidget },
     { operator: 'le', label: 'be less than or equal to', inputWidget: InputTextWidget },
-    { operator: 'in', label: 'be among', inputWidget: MultiInputTextWidget },
-    { operator: 'nin', label: 'not be among', inputWidget: MultiInputTextWidget },
+    { operator: 'in', label: 'be one of', inputWidget: MultiInputTextWidget },
+    { operator: 'nin', label: 'not be one of', inputWidget: MultiInputTextWidget },
   ];
 
   readonly placeholder = 'Enter a value';

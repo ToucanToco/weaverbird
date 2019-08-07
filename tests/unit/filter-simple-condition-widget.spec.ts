@@ -63,7 +63,7 @@ describe('Widget AggregationWidget', () => {
     const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(widgetWrappers.at(1).props().value).toEqual({
       operator: 'nin',
-      label: 'not be among',
+      label: 'not be one of',
       inputWidget: MultiInputTextWidget,
     });
   });
@@ -73,7 +73,7 @@ describe('Widget AggregationWidget', () => {
     expect((wrapper.vm.$data.editedValue.value = ''));
     wrapper.setData({ editedValue: { column: 'foo', value: [], operator: 'in' } });
     const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-    await operatorWrapper.trigger('input', { value: 'be among' });
+    await operatorWrapper.trigger('input', { value: 'be one of' });
     expect((wrapper.vm.$data.editedValue.value = []));
   });
 
