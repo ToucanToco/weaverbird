@@ -26,6 +26,7 @@
 import Vue, { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
+import { VQBModule } from '@/store';
 import { VQBState } from '@/store/state';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
@@ -45,17 +46,17 @@ import { STEPFORM_REGISTRY } from './formlib';
   },
 })
 export default class Vqb extends Vue {
-  @State pipeline!: Pipeline;
-  @State isEditingStep!: boolean;
-  @State pagesize!: number;
-  @State dataset!: DataSet;
+  @VQBModule.State pipeline!: Pipeline;
+  @VQBModule.State isEditingStep!: boolean;
+  @VQBModule.State pagesize!: number;
+  @VQBModule.State dataset!: DataSet;
 
-  @Getter computedActiveStepIndex!: number;
+  @VQBModule.Getter computedActiveStepIndex!: number;
 
-  @Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
-  @Mutation selectStep!: (payload: { index: number }) => void;
-  @Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
-  @Mutation toggleStepEdition!: () => void;
+  @VQBModule.Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
+  @VQBModule.Mutation selectStep!: (payload: { index: number }) => void;
+  @VQBModule.Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
+  @VQBModule.Mutation toggleStepEdition!: () => void;
 
   formToInstantiate?: VueConstructor<Vue>;
   initialValue: any = undefined;

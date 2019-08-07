@@ -5,7 +5,7 @@ export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo
 
 // export store entrypoints
 export { servicePluginFactory } from '@/store/backend-plugin';
-export { setupStore } from '@/store';
+export { VQBModule, setupStore, buildStoreModule, registerModule } from '@/store';
 
 // export Vue components
 import DataViewer from './components/DataViewer.vue';

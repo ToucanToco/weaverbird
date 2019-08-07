@@ -14,11 +14,12 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { State } from 'vuex-class';
+import { DomainStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { StepFormComponent } from '@/components/formlib';
 import BaseStepForm from './StepForm.vue';
-import { DomainStep } from '@/lib/steps';
 
 @StepFormComponent({
   vqbstep: 'domain',
@@ -37,7 +38,7 @@ export default class DomainStepForm extends BaseStepForm<DomainStep> {
   })
   initialStepValue!: DomainStep;
 
-  @State domains!: string[];
+  @VQBModule.State domains!: string[];
 
   readonly title: string = 'Select a domain';
 

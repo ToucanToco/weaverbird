@@ -80,16 +80,16 @@ const initialPipeline = [
 
 async function setupInitialData(store, domain = null) {
   const collections = await mongoservice.listCollections();
-  store.commit('setDomains', {
+  store.commit('__vqb__/setDomains', {
     domains: collections,
   });
   if (domain !== null) {
-    store.commit('setCurrentDomain', {
+    store.commit('__vqb__/setCurrentDomain', {
       currentDomain: domain,
     });
   } else {
-    const dataset = await mongoservice.executePipeline(store.state.pipeline, store.state.pagesize);
-    store.commit('setDataset', { dataset });
+    const dataset = await mongoservice.executePipeline(store.state.__vqb__.pipeline, store.state.pagesize);
+    store.commit('__vqb__/setDataset', { dataset });
   }
 }
 
@@ -120,7 +120,7 @@ async function buildVueApp() {
     },
     computed: {
       code: function() {
-        const query = mongo36translator.translate(this.$store.getters.activePipeline);
+        const query = mongo36translator.translate(this.$store.getters['__vqb__/activePipeline']);
         return JSON.stringify(query, null, 2);
       },
     },

@@ -16,6 +16,7 @@ import { Vue, Component } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 import { DataSet } from '@/lib/dataset';
 import { numberOfPages } from '@/lib/dataset/pagination';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
@@ -25,9 +26,9 @@ import { MutationCallbacks } from '@/store/mutations';
   },
 })
 export default class Pagination extends Vue {
-  @State dataset!: DataSet;
+  @VQBModule.State dataset!: DataSet;
 
-  @Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
+  @VQBModule.Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
 
   get pageCount() {
     if (this.dataset.paginationContext) {

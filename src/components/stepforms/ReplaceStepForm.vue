@@ -29,6 +29,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
+import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -52,7 +53,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
   @Prop({ type: Object, default: () => ({ name: 'replace', search_column: '', to_replace: [[]] }) })
   initialStepValue!: ReplaceStep;
 
-  @Getter columnHeaders!: DataSetColumn[];
+  @VQBModule.Getter columnHeaders!: DataSetColumn[];
 
   readonly title: string = 'Replace values';
   replaceWidget = ReplaceWidget;

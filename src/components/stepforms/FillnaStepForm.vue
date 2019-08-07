@@ -20,6 +20,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
+import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
@@ -40,7 +41,7 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
   initialStepValue!: FillnaStep;
 
-  @Getter columnHeaders!: DataSetColumn[];
+  @VQBModule.Getter columnHeaders!: DataSetColumn[];
 
   readonly title: string = 'Fill null values';
 

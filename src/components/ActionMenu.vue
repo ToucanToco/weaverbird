@@ -19,6 +19,7 @@ import { Getter, Mutation, State } from 'vuex-class';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
@@ -40,14 +41,14 @@ export default class ActionMenu extends Vue {
   })
   columnName!: string;
 
-  @State pipeline!: Pipeline;
-  @State isEditingStep!: boolean;
+  @VQBModule.State pipeline!: Pipeline;
+  @VQBModule.State isEditingStep!: boolean;
 
-  @Getter computedActiveStepIndex!: number;
+  @VQBModule.Getter computedActiveStepIndex!: number;
 
-  @Mutation selectStep!: MutationCallbacks['selectStep'];
-  @Mutation setPipeline!: MutationCallbacks['setPipeline'];
-  @Mutation toggleStepEdition!: () => void;
+  @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
+  @VQBModule.Mutation toggleStepEdition!: () => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 

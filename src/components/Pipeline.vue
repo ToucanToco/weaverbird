@@ -27,6 +27,7 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import { Getter, Mutation, State } from 'vuex-class';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 import Step from './Step.vue';
@@ -38,16 +39,16 @@ import Step from './Step.vue';
   },
 })
 export default class PipelineComponent extends Vue {
-  @State('pipeline') steps!: Pipeline;
-  @State domains!: string[];
+  @VQBModule.State('pipeline') steps!: Pipeline;
+  @VQBModule.State domains!: string[];
 
-  @Getter activePipeline!: Pipeline;
-  @Getter('computedActiveStepIndex') activeStepIndex!: number;
-  @Getter domainStep!: DomainStep;
-  @Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
-  @Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
+  @VQBModule.Getter activePipeline!: Pipeline;
+  @VQBModule.Getter('computedActiveStepIndex') activeStepIndex!: number;
+  @VQBModule.Getter domainStep!: DomainStep;
+  @VQBModule.Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
+  @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
-  @Mutation selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
 
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);

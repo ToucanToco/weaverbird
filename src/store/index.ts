@@ -5,9 +5,31 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import { Store, StoreOptions } from 'vuex';
+import { namespace } from 'vuex-class';
 import { VQBState, emptyState } from './state';
 import getters from './getters';
 import mutations from './mutations';
+
+const VQB_MODULE_NAME = '__vqb__';
+
+export function namespaced(prop: string) {
+  return `${VQB_MODULE_NAME}/${prop}`;
+}
+
+export function buildStoreModule(initialState: Partial<VQBState> = {}) {
+  return {
+    namespaced: true,
+    state: { ...emptyState, ...initialState },
+    getters,
+    mutations,
+  };
+}
+
+export function registerModule(rootStore: Store<any>, initialState: Partial<VQBState> = {}) {
+  rootStore.registerModule(VQB_MODULE_NAME, buildStoreModule(initialState));
+}
+
+export const VQBModule = namespace(VQB_MODULE_NAME);
 
 /**
  * Vuex store factory
@@ -27,9 +49,9 @@ export function setupStore(
     Vue.use(Vuex);
   }
   const store: StoreOptions<VQBState> = {
-    state: { ...emptyState, ...initialState },
-    getters,
-    mutations,
+    modules: {
+      [VQB_MODULE_NAME]: buildStoreModule(initialState),
+    },
     plugins,
   };
   return new Store<VQBState>(store);

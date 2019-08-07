@@ -13,6 +13,7 @@ import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 
 import { StateMutation } from './mutations';
+import { namespaced } from '@/store';
 import { VQBState, activePipeline } from '@/store/state';
 import { pageOffset } from '@/lib/dataset/pagination';
 
@@ -40,7 +41,7 @@ async function _updateDataset(store: Store<VQBState>, service: BackendService, p
     store.state.pagesize,
     pageOffset(store.state.pagesize, store.getters.pageno),
   );
-  store.commit('setDataset', { dataset });
+  store.commit(namespaced('setDataset'), { dataset });
 }
 
 /**
@@ -52,14 +53,15 @@ async function _updateDataset(store: Store<VQBState>, service: BackendService, p
  */
 export function servicePluginFactory(service: BackendService) {
   return (store: Store<VQBState>) => {
-    store.subscribe(async (mutation: StateMutation, state: VQBState) => {
+    store.subscribe(async (mutation: StateMutation, state: any) => {
       if (
-        mutation.type === 'selectStep' ||
-        mutation.type === 'setCurrentDomain' ||
-        mutation.type === 'deleteStep' ||
-        mutation.type === 'setCurrentPage'
+        mutation.type === namespaced('selectStep') ||
+        mutation.type === namespaced('setCurrentDomain') ||
+        mutation.type === namespaced('deleteStep') ||
+        mutation.type === namespaced('setCurrentPage')
       ) {
-        _updateDataset(store, service, activePipeline(state));
+        // XXX hardcoded `state.__vqb__`
+        _updateDataset(store, service, activePipeline(state.__vqb__));
       }
     });
   };

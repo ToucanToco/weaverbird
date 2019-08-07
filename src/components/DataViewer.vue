@@ -54,6 +54,7 @@ import { Getter, Mutation, State } from 'vuex-class';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import { PipelineStepName } from '@/lib/steps';
 import { Component } from 'vue-property-decorator';
+import { VQBModule } from '@/store';
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
 import DataViewerCell from './DataViewerCell.vue';
@@ -73,14 +74,14 @@ import { CATEGORY_BUTTONS } from './constants';
   },
 })
 export default class DataViewer extends Vue {
-  @State dataset!: DataSet;
-  @State selectedColumns!: string[];
+  @VQBModule.State dataset!: DataSet;
+  @VQBModule.State selectedColumns!: string[];
 
-  @Getter('isDatasetEmpty') isEmpty!: boolean;
-  @Getter columnHeaders!: DataSetColumn[];
+  @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
+  @VQBModule.Getter columnHeaders!: DataSetColumn[];
 
-  @Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
-  @Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
+  @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
+  @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
   indexActiveActionMenu: number = -1;
 

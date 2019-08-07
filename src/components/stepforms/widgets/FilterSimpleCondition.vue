@@ -27,6 +27,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -66,9 +67,9 @@ export default class FilterSimpleConditionWidget extends Vue {
   })
   value!: FilterSimpleCondition;
 
-  @Getter columnNames!: string[];
+  @VQBModule.Getter columnNames!: string[];
 
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   editedValue: FilterSimpleCondition = { ...this.value };
 

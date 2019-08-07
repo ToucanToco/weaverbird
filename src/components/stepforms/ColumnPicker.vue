@@ -13,8 +13,9 @@
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { Getter, Mutation } from 'vuex-class';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({ components: { AutocompleteWidget } })
@@ -34,9 +35,9 @@ export default class ColumnPicker extends Vue {
   // Only manage the deletion of 1 column at once at this stage
   column: string | null = null;
 
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
-  @Getter selectedColumns!: string[];
-  @Getter columnNames!: string[];
+  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @VQBModule.Getter selectedColumns!: string[];
+  @VQBModule.Getter columnNames!: string[];
 
   created() {
     if (this.initialColumn === null) {

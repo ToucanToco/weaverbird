@@ -30,6 +30,7 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 
@@ -63,9 +64,9 @@ export default class Step extends Vue {
 
   deleteConfirmationModalIsOpened: boolean = false;
 
-  @Mutation deleteStep!: MutationCallbacks['deleteStep'];
+  @VQBModule.Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
-  @Getter stepConfig!: (index: number) => PipelineStep;
+  @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
   get classContainer() {
     return {

@@ -21,6 +21,7 @@ import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { AggFunctionStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
 import AutocompleteWidget from './Autocomplete.vue';
 
 @Component({
@@ -33,7 +34,7 @@ export default class AggregationWidget extends Vue {
   @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newcolumn: '' }) })
   value!: AggFunctionStep;
 
-  @Getter columnNames!: string[];
+  @VQBModule.Getter columnNames!: string[];
 
   aggregation: AggFunctionStep = { ...this.value };
   aggregationFunctions: AggFunctionStep['aggfunction'][] = ['sum', 'avg', 'count', 'min', 'max'];

@@ -21,6 +21,7 @@
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import AutocompleteWidget from './Autocomplete.vue';
 import { SortColumnType } from '@/lib/steps';
@@ -41,9 +42,9 @@ export default class SortColumnWidget extends Vue {
   })
   value!: SortColumnType;
 
-  @Getter columnNames!: string[];
+  @VQBModule.Getter columnNames!: string[];
 
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   sort: SortColumnType = { ...this.value };
 
