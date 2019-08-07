@@ -99,6 +99,12 @@ export default class AutocompleteWidget extends Vue {
   font-size: 14px;
   margin-bottom: 0;
 }
+
+.widget-autocomplete__container .multiselect__content-wrapper {
+  min-width: 100%;
+  width: auto;
+}
+
 .multiselect__single,
 .multiselect__input {
   padding-left: 0;
