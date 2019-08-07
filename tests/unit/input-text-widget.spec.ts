@@ -15,21 +15,14 @@ describe('Widget Input Text', () => {
     expect(wrapper.find("input[type='text']").exists()).toBeTruthy();
   });
 
-  it('should have an empty label', () => {
+  it('should not have a label if prop "name" is undefined', () => {
     const wrapper = shallowMount(InputTextWidget);
-    const labelWrapper = wrapper.find('label');
-
-    expect(labelWrapper.text()).toEqual('');
+    expect(wrapper.find('label').exists()).toBeFalsy();
   });
 
-  it('should have a label', () => {
-    const wrapper = shallowMount(InputTextWidget, {
-      propsData: {
-        name: 'Stark',
-      },
-    });
+  it('should have a label if prop "name" is defined', () => {
+    const wrapper = shallowMount(InputTextWidget, { propsData: { name: 'Stark' } });
     const labelWrapper = wrapper.find('label');
-
     expect(labelWrapper.text()).toEqual('Stark');
   });
 

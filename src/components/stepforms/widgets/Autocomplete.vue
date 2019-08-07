@@ -1,6 +1,6 @@
 <template>
   <div class="widget-autocomplete__container">
-    <label class="widget-autocomplete__label" :for="id">{{ name }}</label>
+    <label class="widget-autocomplete__label" v-if="name" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
