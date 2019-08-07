@@ -1,6 +1,6 @@
 <template>
   <div class="widget-input-text__container">
-    <label :for="id">{{name}}</label>
+    <label v-if="name" :for="id">{{name}}</label>
     <input
       :id="id"
       :class="elementClass"

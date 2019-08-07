@@ -1,6 +1,6 @@
 <template>
   <div class="widget-autocomplete__container">
-    <label class="widget-autocomplete__label" :for="id">{{ name }}</label>
+    <label class="widget-autocomplete__label" v-if="name" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
@@ -99,6 +99,12 @@ export default class AutocompleteWidget extends Vue {
   font-size: 14px;
   margin-bottom: 0;
 }
+
+.widget-autocomplete__container .multiselect__content-wrapper {
+  min-width: 100%;
+  width: auto;
+}
+
 .multiselect__single,
 .multiselect__input {
   padding-left: 0;
