@@ -9,6 +9,8 @@
 yarn install
 ```
 
+**Requirement: node > v11**
+
 ### Compiles target library
 
 ```bash
@@ -30,6 +32,12 @@ on a change:
 
 ```bash
 yarn test:unit --watchAll
+```
+
+To run a single test file:
+
+```bash
+yarn test:unit path/to/yourfile.ts
 ```
 
 Finally, you can deactivate typescript checks to run tests quicker:
