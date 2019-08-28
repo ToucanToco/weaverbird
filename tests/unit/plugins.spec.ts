@@ -1,5 +1,5 @@
 import { createLocalVue, mount } from '@vue/test-utils';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import flushPromises from 'flush-promises';
 
 import { Pipeline } from '@/lib/steps';
@@ -13,12 +13,12 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 class DummyService implements BackendService {
-  listCollections() {
+  listCollections(_store: Store<any>) {
     return Promise.resolve({ data: ['foo', 'bar'] });
   }
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-  executePipeline(pipeline: Pipeline, limit: number, _offset: number) {
+  executePipeline(_store: Store<any>, pipeline: Pipeline, limit: number, _offset: number) {
     let rset = [[1, 2], [3, 4]];
     if (limit) {
       rset = rset.slice(0, limit);

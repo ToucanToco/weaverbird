@@ -14,12 +14,12 @@ const {
 const mongo36translator = getTranslator('mongo36');
 
 class MongoService {
-  async listCollections() {
+  async listCollections(_store) {
     const response = await fetch('/collections');
     return response.json();
   }
 
-  async executePipeline(pipeline, limit, offset = 0) {
+  async executePipeline(_store, pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
     const query = mongo36translator.translate(subpipeline);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
