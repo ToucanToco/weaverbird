@@ -20,10 +20,13 @@ import { pageOffset } from '@/lib/dataset/pagination';
 
 export interface BackendService {
   /**
+   * @param store the Vuex store hosted by the application
+   *
    * @return a promise that holds the list of available collections
    */
-  listCollections(): BackendResponse<string[]>;
+  listCollections(store: Store<any>): BackendResponse<string[]>;
   /**
+   * @param store the Vuex store hosted by the application
    * @param pipeline the pipeline to translate and execute on the backend
    * @param limit if specified, a limit to be applied on the results. How is limit
    * is applied is up to the concrete implementor (either in the toolchain, the query
@@ -33,13 +36,19 @@ export interface BackendService {
    * @return a promise that holds the result of the pipeline execution,
    * formatted as as `DataSet`
    */
-  executePipeline(pipeline: Pipeline, limit: number, offset: number): BackendResponse<DataSet>;
+  executePipeline(
+    store: Store<any>,
+    pipeline: Pipeline,
+    limit: number,
+    offset: number,
+  ): BackendResponse<DataSet>;
 }
 
 async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
   try {
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
     const response = await service.executePipeline(
+      store,
       pipeline,
       store.state[VQB_MODULE_NAME].pagesize,
       pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),

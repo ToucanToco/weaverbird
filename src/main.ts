@@ -15,8 +15,7 @@ export {
 } from '@/store';
 
 // export Vue components
-import Vqb from './components/Vqb.vue';
-export { Vqb };
-import QueryBuilder from '@/components/QueryBuilder.vue';
 import DataViewer from '@/components/DataViewer.vue';
-export { QueryBuilder, DataViewer };
+import QueryBuilder from '@/components/QueryBuilder.vue';
+import Vqb from '@/components/Vqb.vue';
+export { DataViewer, QueryBuilder, Vqb };

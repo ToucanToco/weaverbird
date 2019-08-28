@@ -1,5 +1,5 @@
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
 import { Pipeline } from '@/lib/steps';
 import { setupMockStore } from './utils';
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
@@ -12,11 +12,11 @@ localVue.use(Vuex);
 const executePipelineMock = jest.fn();
 
 class DummyService implements BackendService {
-  listCollections() {
+  listCollections(_store: Store<any>) {
     return Promise.resolve({ data: ['foo', 'bar'] });
   }
 
-  executePipeline(_pipeline: Pipeline, limit: number, offset: number) {
+  executePipeline(_store: Store<any>, _pipeline: Pipeline, limit: number, offset: number) {
     executePipelineMock(limit, offset);
     return Promise.resolve({ data: { headers: [], data: [] } });
   }
