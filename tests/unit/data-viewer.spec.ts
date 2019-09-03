@@ -1,7 +1,6 @@
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { setupStore } from '@/store';
 import { setupMockStore } from './utils';
 import DataViewer from '../../src/components/DataViewer.vue';
 
