@@ -2,7 +2,7 @@
  * define what the application state looks like.
  */
 import { DataSet } from '@/lib/dataset';
-import { Pipeline } from '@/lib/steps';
+import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { BackendError } from '@/lib/backend-response';
 
 export interface VQBState {
@@ -19,6 +19,10 @@ export interface VQBState {
    */
   currentDomain?: string;
   /**
+   * the current step form displayed
+   */
+  currentStepFormName?: PipelineStepName;
+  /**
    * the last step currently active.
    */
   selectedStepIndex: number;
@@ -28,14 +32,14 @@ export interface VQBState {
   pipeline: Pipeline;
 
   /**
-   * the seclected columns (materialized by a styled focus in the dataviewer)
+   * object used to fill an edit step form
    */
-  selectedColumns: string[];
+  stepFormInitialValue?: object;
 
   /**
-   * whether the left panel slot is in step edition mode
+   * the seclected columns (materialized by a styled focus on the DataViewer)
    */
-  isEditingStep: boolean;
+  selectedColumns: string[];
 
   /**
    * pagination size (i.e. number of results displayed)
@@ -68,10 +72,11 @@ export const emptyState: VQBState = {
     },
   },
   domains: [],
+  currentStepFormName: undefined,
+  stepFormInitialValue: undefined,
   selectedStepIndex: -1,
   pipeline: [],
   selectedColumns: [],
-  isEditingStep: false,
   pagesize: 50,
   backendError: undefined,
   isLoading: false,

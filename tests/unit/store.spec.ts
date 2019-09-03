@@ -289,12 +289,38 @@ describe('mutation tests', () => {
     expect(state.dataset).toEqual(dataset);
   });
 
-  it('toggles step edition mode', () => {
-    const state = buildState({ isEditingStep: true });
-    mutations.toggleStepEdition(state);
-    expect(state.isEditingStep).toBeFalsy();
-    mutations.toggleStepEdition(state);
-    expect(state.isEditingStep).toBeTruthy();
+  it('should create a step form', () => {
+    const state = buildState({});
+    mutations.createStepForm(state, { stepName: 'filter' });
+    expect(getters.isEditingStep(state)).toBeTruthy();
+    expect(state.currentStepFormName).toEqual('filter');
+    expect(state.stepFormInitialValue).toBeUndefined();
+  });
+
+  it('should open a form for an existing step', () => {
+    const state = buildState({});
+    mutations.openStepForm(state, {
+      stepName: 'rename',
+      initialValue: { oldname: 'oldcolumn', newname: 'newcolumn' },
+    });
+    expect(getters.isEditingStep(state)).toBeTruthy();
+    expect(state.currentStepFormName).toEqual('rename');
+    expect(state.stepFormInitialValue).toEqual({ oldname: 'oldcolumn', newname: 'newcolumn' });
+  });
+
+  it('should close an opened form', () => {
+    const state = buildState({ currentStepFormName: 'rename' });
+    mutations.closeStepForm(state);
+    expect(getters.isEditingStep(state)).toBeFalsy();
+    expect(state.currentStepFormName).toBeUndefined();
+  });
+
+  it('should reset step form initial value', () => {
+    const state = buildState({
+      stepFormInitialValue: { oldname: 'oldcolumn', newname: 'newcolumn' },
+    });
+    mutations.resetStepFormInitialValue(state);
+    expect(state.stepFormInitialValue).toBeUndefined();
   });
 
   it('sets selected columns', () => {

@@ -2,7 +2,7 @@
  * exports the list of store mutations.
  */
 
-import { DomainStep } from '@/lib/steps';
+import { DomainStep, PipelineStepName } from '@/lib/steps';
 import { VQBState } from './state';
 
 // provide types for each possible mutations' payloads
@@ -75,6 +75,37 @@ export type MutationCallbacks = {
 
 export default {
   /**
+   * unset currentStepFormName in order to close step form
+   */
+  closeStepForm(state: VQBState) {
+    state.currentStepFormName = undefined;
+  },
+  /**
+   * open step form when creating a step
+   */
+  createStepForm(state: VQBState, { stepName }: { stepName: PipelineStepName }) {
+    state.currentStepFormName = stepName;
+    state.stepFormInitialValue = undefined;
+  },
+  /**
+   * open step form when editing a step
+   */
+  openStepForm(
+    state: VQBState,
+    { stepName, initialValue }: { stepName: PipelineStepName; initialValue: object },
+  ) {
+    state.stepFormInitialValue = { ...initialValue };
+    state.currentStepFormName = stepName;
+  },
+
+  /**
+   * reset step form initial value
+   */
+  resetStepFormInitialValue(state: VQBState) {
+    state.stepFormInitialValue = undefined;
+  },
+
+  /**
    * set currently last selected step index.
    */
   selectStep(state: VQBState, { index }: { index: number }) {
@@ -146,10 +177,6 @@ export default {
     } else {
       state.selectedColumns = [column];
     }
-  },
-
-  toggleStepEdition(state: VQBState) {
-    state.isEditingStep = !state.isEditingStep;
   },
 
   /**
