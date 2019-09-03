@@ -48,6 +48,10 @@ export default {
    */
   isDatasetEmpty: (state: VQBState) => state.dataset.data.length === 0,
   /**
+   * helper that tell us if we are editing a step
+   */
+  isEditingStep: (state: VQBState) => state.currentStepFormName !== undefined,
+  /**
    * helper that is True if pipeline is empty or only contain a domain step.
    */
   isPipelineEmpty: (state: VQBState) => state.pipeline.length <= 1,

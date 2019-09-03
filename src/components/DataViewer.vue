@@ -1,6 +1,6 @@
 <template>
   <div>
-    <ActionToolbar :buttons="buttons" @actionClicked="createStep"></ActionToolbar>
+    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm"></ActionToolbar>
     <div v-if="isLoading" class="data-viewer-loader-spinner"></div>
     <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
       <table class="data-viewer-table">
@@ -23,7 +23,7 @@
                   :column-name="column.name"
                   :is-active="column.isActionMenuOpened"
                   @closed="closeMenu"
-                  @actionClicked="createStep"
+                  @actionClicked="openStepForm"
                 />
               </i>
             </td>
@@ -79,6 +79,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
 
+  @VQBModule.Mutation createStepForm!: ({ stepName }: { stepName: PipelineStepName }) => void;
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
@@ -116,6 +117,15 @@ export default class DataViewer extends Vue {
   }
 
   /**
+   * @description Open the form to create a step
+   *
+   * @param {PipelineStepName} stepName - The name of the step we want to create
+   */
+  openStepForm(stepName: PipelineStepName) {
+    this.createStepForm({ stepName });
+  }
+
+  /**
    * @description Tell us if our column is selected or not
    *
    * @param {string} column - A column name
@@ -149,15 +159,6 @@ export default class DataViewer extends Vue {
 
   closeMenu() {
     this.indexActiveActionMenu = -1;
-  }
-
-  /**
-   * @description Emit an event in order to open the form to create a step
-   *
-   * @param {PipelineStepName} stepName - The name of the step we want to create
-   */
-  createStep(stepName: PipelineStepName) {
-    this.$emit('stepCreated', stepName);
   }
 }
 </script>

@@ -47,7 +47,7 @@ export default class ActionMenu extends Vue {
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
-  @VQBModule.Mutation toggleStepEdition!: () => void;
+  @VQBModule.Mutation closeStepForm!: () => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
@@ -76,7 +76,7 @@ export default class ActionMenu extends Vue {
      * the pipeline with the new delete step inserted
      */
     if (this.isEditingStep) {
-      this.toggleStepEdition();
+      this.closeStepForm();
     }
     newPipeline.splice(index, 0, deletecolumnStep);
     this.setPipeline({ pipeline: newPipeline });

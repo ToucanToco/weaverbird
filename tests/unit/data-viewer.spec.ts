@@ -1,6 +1,6 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
-import { setupStore } from '@/store';
 import { setupMockStore } from './utils';
 import DataViewer from '../../src/components/DataViewer.vue';
 
@@ -42,6 +42,9 @@ describe('Data Viewer', () => {
             ['value10', 'value11', 'value12'],
             ['value13', 'value14', 'value15'],
           ],
+          paginationContext: {
+            totalCount: 5,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -61,6 +64,9 @@ describe('Data Viewer', () => {
             ['value10', 'value11', 'value12'],
             ['value13', 'value14', 'value15'],
           ],
+          paginationContext: {
+            totalCount: 5,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -80,6 +86,9 @@ describe('Data Viewer', () => {
             ['value10', 'value11', 'value12'],
             ['value13', 'value14', 'value15'],
           ],
+          paginationContext: {
+            totalCount: 5,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -106,6 +115,9 @@ describe('Data Viewer', () => {
             ['value10', 'value11', 'value12'],
             ['value13', 'value14', 'value15', 'value16'],
           ],
+          paginationContext: {
+            totalCount: 5,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -130,6 +142,9 @@ describe('Data Viewer', () => {
             { name: 'columnF', type: 'boolean' },
           ],
           data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
+          paginationContext: {
+            totalCount: 1,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -165,6 +180,9 @@ describe('Data Viewer', () => {
               ['value10', 'value11', 'value12'],
               ['value13', 'value14', 'value15'],
             ],
+            paginationContext: {
+              totalCount: 5,
+            },
           },
         });
         const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -189,6 +207,9 @@ describe('Data Viewer', () => {
             ['value10', 'value11', 'value12'],
             ['value13', 'value14', 'value15'],
           ],
+          paginationContext: {
+            totalCount: 5,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -208,6 +229,9 @@ describe('Data Viewer', () => {
             ['value10', 'value11', 'value12'],
             ['value13', 'value14', 'value15'],
           ],
+          paginationContext: {
+            totalCount: 5,
+          },
         },
       });
       const wrapper = shallowMount(DataViewer, { store, localVue });
@@ -229,6 +253,9 @@ describe('Data Viewer', () => {
           ['value10', 'value11', 'value12'],
           ['value13', 'value14', 'value15'],
         ],
+        paginationContext: {
+          totalCount: 5,
+        },
       };
       const store = setupMockStore({ dataset });
       const wrapper = shallowMount(DataViewer, { store, localVue });
