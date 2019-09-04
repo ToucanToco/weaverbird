@@ -16,6 +16,7 @@
   align-items: center;
   height: 70px;
   width: 100%;
+  flex-shrink: 0;
 }
 
 .query-pipeline-step__container--last-active,
