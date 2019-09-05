@@ -185,3 +185,29 @@ export type PipelineStep =
 export type PipelineStepName = PipelineStep['name'];
 export type Pipeline = PipelineStep[];
 export type Writable<T> = { -readonly [K in keyof T]: T[K] };
+
+/**
+ * Type guard for `FilterComboAnd` type
+ * @param cond the condition to test
+ */
+export function isFilterComboAnd(
+  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+): cond is FilterComboAnd {
+  if ((cond as FilterComboAnd).and) {
+    return true;
+  }
+  return false;
+}
+
+/**
+ * Type guard for `FilterComboOr` type
+ * @param cond the condition to test
+ */
+export function isFilterComboOr(
+  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+): cond is FilterComboOr {
+  if ((cond as FilterComboOr).or) {
+    return true;
+  }
+  return false;
+}

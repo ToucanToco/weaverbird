@@ -16,6 +16,8 @@ import {
   SortStep,
   TopStep,
   UnpivotStep,
+  isFilterComboAnd,
+  isFilterComboOr,
 } from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
@@ -56,24 +58,6 @@ function $$(colname: string) {
  */
 function columnMap(colnames: string[]) {
   return _.fromPairs(colnames.map(col => [col, $$(col)]));
-}
-
-export function isFilterComboAnd(
-  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
-): cond is FilterComboAnd {
-  if ((cond as FilterComboAnd).and) {
-    return true;
-  }
-  return false;
-}
-
-function isFilterComboOr(
-  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
-): cond is FilterComboOr {
-  if ((cond as FilterComboOr).or) {
-    return true;
-  }
-  return false;
 }
 
 export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): MongoStep {
