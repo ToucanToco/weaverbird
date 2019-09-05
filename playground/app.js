@@ -98,7 +98,6 @@ async function setupInitialData(store, domain = null) {
       store.commit('setDataset', { dataset: response.data });
     }
   }
-  store.commit('setDataset', { dataset: response.data });
 }
 
 async function buildVueApp() {
