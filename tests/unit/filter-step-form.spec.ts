@@ -72,7 +72,7 @@ describe('Filter Step Form', () => {
       keyword: err.keyword,
       dataPath: err.dataPath,
     }));
-    expect(errors).toContainEqual({ dataPath: '.condition', keyword: 'oneOf' });
+    expect(errors).toContainEqual({ dataPath: '.condition.and', keyword: 'minItems' });
   });
 
   it('should validate and emit "formSaved" when submitting a valid condition', () => {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="filter-form">
     <step-form-title :title="title"></step-form-title>
     <div class="filter-form-headers__container">
       <div class="filter-form-header">Values in...</div>
@@ -12,8 +12,10 @@
       :defaultItem="defaultCondition"
       :widget="widgetFilterSimpleCondition"
       :automatic-new-field="false"
+      data-path=".condition.and"
+      :errors="errors"
     ></ListWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 
@@ -96,5 +98,10 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   font-size: 14px;
   margin-left: 10px;
   width: 50%;
+}
+</style>
+<style lang="scss">
+.filter-form .widget-list__body .widget-list__icon {
+  top: 5px;
 }
 </style>

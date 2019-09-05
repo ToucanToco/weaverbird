@@ -7,6 +7,8 @@
         :options="columnNames"
         @input="setSelectedColumns({ column: editedValue.column })"
         placeholder="Column"
+        :data-path="`${dataPath}.column`"
+        :errors="errors"
       ></AutocompleteWidget>
     </div>
     <div class="filter-form-simple-condition-operator-input">
@@ -20,7 +22,13 @@
         :label="`label`"
       ></AutocompleteWidget>
     </div>
-    <component :is="inputWidget" v-model="editedValue.value" :placeholder="placeholder"></component>
+    <component
+      :is="inputWidget"
+      v-model="editedValue.value"
+      :placeholder="placeholder"
+      :data-path="`${dataPath}.value`"
+      :errors="errors"
+    ></component>
   </div>
 </template>
 
@@ -33,6 +41,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiInputTextWidget from './MultiInputText.vue';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VueConstructor } from 'vue';
+import { ErrorObject } from 'ajv';
 
 type LiteralOperator =
   | 'equal'
@@ -65,6 +74,12 @@ export default class FilterSimpleConditionWidget extends Vue {
     default: () => ({ column: '', value: '', operator: 'eq' }),
   })
   value!: FilterSimpleCondition;
+
+  @Prop({ type: String, default: null })
+  dataPath!: string;
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
 
   @Getter columnNames!: string[];
 
@@ -121,7 +136,6 @@ export default class FilterSimpleConditionWidget extends Vue {
   margin-right: 10px;
   width: 33%;
 }
-
 .filter-form-simple-condition-operator-input {
   margin-right: 10px;
   width: 33%;
@@ -137,6 +151,12 @@ export default class FilterSimpleConditionWidget extends Vue {
   margin-bottom: 0px;
   margin-right: 10px;
   width: 33%;
+}
+</style>
+
+<style lang="scss">
+.filter-form-simple-condition__container .multiselect {
+  width: 100%;
 }
 </style>
 
