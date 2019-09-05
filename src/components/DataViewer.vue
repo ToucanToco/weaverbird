@@ -73,6 +73,7 @@ import { CATEGORY_BUTTONS } from './constants';
 })
 export default class DataViewer extends Vue {
   @VQBModule.State dataset!: DataSet;
+  @VQBModule.State isLoading!: boolean;
   @VQBModule.State pagesize!: number;
   @VQBModule.State selectedColumns!: string[];
 
@@ -84,8 +85,6 @@ export default class DataViewer extends Vue {
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
   indexActiveActionMenu: number = -1;
-
-  @State isLoading!: boolean;
 
   /**
    * @description Get our columns with their names and linked classes

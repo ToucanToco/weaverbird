@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex from 'vuex';
+import { setupStore } from '@/store';
 import { setupMockStore } from './utils';
 import DataViewer from '../../src/components/DataViewer.vue';
 
@@ -21,9 +22,12 @@ describe('Data Viewer', () => {
   });
 
   it('should display a loader spinner when data is loading and hide data viewer container', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupStore({
-      isLoading: true
-    }), localVue });
+    const wrapper = shallowMount(DataViewer, {
+      store: setupMockStore({
+        isLoading: true,
+      }),
+      localVue,
+    });
     const wrapperLoaderSpinner = wrapper.find('.data-viewer-loader-spinner');
     const wrapperDataViewerContainer = wrapper.find('.data-viewer-container');
     expect(wrapperLoaderSpinner.exists()).toBeTruthy();
