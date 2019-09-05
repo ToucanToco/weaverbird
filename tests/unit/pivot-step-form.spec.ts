@@ -1,8 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
+import { VQBnamespace } from '@/store';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +14,9 @@ interface ValidationError {
 }
 
 describe('Pivot Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -56,7 +56,7 @@ describe('Pivot Step Form', () => {
   });
 
   it('should instantiate indexInput widget multiselect with column names', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -67,7 +67,7 @@ describe('Pivot Step Form', () => {
   });
 
   it('should instantiate valueColumnInput widget autocomplete with column names', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -119,7 +119,7 @@ describe('Pivot Step Form', () => {
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -127,7 +127,7 @@ describe('Pivot Step Form', () => {
     });
     const wrapper = shallowMount(PivotStepForm, { store, localVue });
     expect(wrapper.vm.$data.editedStep.column_to_pivot).toEqual('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
+    store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.editedStep.column_to_pivot).toEqual('columnB');
   });
@@ -151,7 +151,7 @@ describe('Pivot Step Form', () => {
     });
 
     it('should fire errors when index and column_to_pivot column names overlap', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -184,7 +184,7 @@ describe('Pivot Step Form', () => {
     });
 
     it('should fire errors when index and value_column column names overlap', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -217,7 +217,7 @@ describe('Pivot Step Form', () => {
     });
 
     it('should fire errors when column_to_pivot and value_column are equal', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],

@@ -3,16 +3,15 @@ import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSi
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Widget AggregationWidget', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -37,7 +36,7 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -89,7 +88,7 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -105,6 +104,6 @@ describe('Widget AggregationWidget', () => {
     });
     wrapper.setData({ editedValue: { column: 'columnB', value: 'bar', operator: 'eq' } });
     await wrapper.find(AutocompleteWidget).trigger('input');
-    expect(store.state.selectedColumns).toEqual(['columnB']);
+    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
   });
 });

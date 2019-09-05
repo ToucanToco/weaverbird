@@ -5,7 +5,14 @@ export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo
 
 // export store entrypoints
 export { servicePluginFactory } from '@/store/backend-plugin';
-export { setupStore } from '@/store';
+export {
+  setupStore,
+  registerModule,
+  unregisterModule,
+  VQBModule,
+  VQBnamespace,
+  VQB_MODULE_NAME,
+} from '@/store';
 
 // export Vue components
 import Vqb from './components/Vqb.vue';

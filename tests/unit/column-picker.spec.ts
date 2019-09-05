@@ -1,16 +1,16 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
+import { setupMockStore } from './utils';
+import { VQBnamespace } from '@/store';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Column Picker', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -24,7 +24,7 @@ describe('Column Picker', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -36,7 +36,7 @@ describe('Column Picker', () => {
   });
 
   it('should set column when initialColumn is set', () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -53,7 +53,7 @@ describe('Column Picker', () => {
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -65,9 +65,9 @@ describe('Column Picker', () => {
       localVue,
     });
     expect(wrapper.vm.$data.column).toEqual('columnA');
-    store.commit('setSelectedColumns', { column: 'columnB' });
+    store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.column).toEqual('columnB');
-    expect(store.state.selectedColumns).toEqual(['columnB']);
+    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
   });
 });

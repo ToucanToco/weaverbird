@@ -20,8 +20,8 @@
 </template>
 
 <script lang="ts">
+import { VQBModule } from '@/store';
 import { Prop } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
 import { StepFormComponent } from '@/components/formlib';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import ListWidget from './widgets/List.vue';
@@ -49,7 +49,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   })
   initialStepValue!: FilterStep;
 
-  @Getter columnTypes!: ColumnTypeMapping;
+  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
   condition = this.initialStepValue.condition as FilterComboAnd;

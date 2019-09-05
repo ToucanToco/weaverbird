@@ -1,9 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +13,9 @@ interface ValidationError {
 }
 
 describe('Duplicate Column Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -54,7 +53,7 @@ describe('Duplicate Column Step Form', () => {
   });
 
   it('should report errors when new_column_name is an already existing column name', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -93,7 +92,7 @@ describe('Duplicate Column Step Form', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 1,
     });
@@ -101,8 +100,8 @@ describe('Duplicate Column Step Form', () => {
     const wrapper = mount(DuplicateColumnStepForm, { store, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(wrapper.emitted()).toEqual({ cancel: [[]] });
-    expect(store.state.selectedStepIndex).toEqual(1);
-    expect(store.state.pipeline).toEqual([
+    expect(store.state.vqb.selectedStepIndex).toEqual(1);
+    expect(store.state.vqb.pipeline).toEqual([
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ]);
@@ -115,16 +114,16 @@ describe('Duplicate Column Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = mount(DuplicateColumnStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

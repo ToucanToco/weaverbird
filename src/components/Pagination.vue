@@ -16,9 +16,9 @@
 </template>
 
 <script lang="ts">
+import { VQBModule } from '@/store';
 import Paginate from 'vuejs-paginate';
 import { Vue, Component } from 'vue-property-decorator';
-import { Mutation, State } from 'vuex-class';
 import { DataSet } from '@/lib/dataset';
 import { numberOfPages, pageOffset, pageMinMax } from '@/lib/dataset/pagination';
 import { MutationCallbacks } from '@/store/mutations';
@@ -30,9 +30,9 @@ import { MutationCallbacks } from '@/store/mutations';
   },
 })
 export default class Pagination extends Vue {
-  @State dataset!: DataSet;
+  @VQBModule.State dataset!: DataSet;
 
-  @Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
+  @VQBModule.Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
 
   get pageCount() {
     if (this.dataset.paginationContext) {

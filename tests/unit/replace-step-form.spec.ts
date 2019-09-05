@@ -1,9 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +13,9 @@ interface ValidationError {
 }
 
 describe('Replace Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -111,7 +110,7 @@ describe('Replace Step Form', () => {
   });
 
   it('should report errors when the data is not valid', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
         data: [],
@@ -143,7 +142,7 @@ describe('Replace Step Form', () => {
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
         data: [],
@@ -180,7 +179,7 @@ describe('Replace Step Form', () => {
   });
 
   it('should convert input value to integer when the column data type is integer', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
         data: [[null]],
@@ -208,7 +207,7 @@ describe('Replace Step Form', () => {
   });
 
   it('should convert input value to float when the column data type is float', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'float' }],
         data: [[null]],
@@ -236,7 +235,7 @@ describe('Replace Step Form', () => {
   });
 
   it('should convert input value to boolean when the column data type is boolean', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'boolean' }],
         data: [[null]],
@@ -279,7 +278,7 @@ describe('Replace Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
@@ -290,9 +289,9 @@ describe('Replace Step Form', () => {
       propsData: { isStepCreation: true },
     });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

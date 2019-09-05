@@ -22,8 +22,8 @@
 </template>
 <script lang="ts">
 import _ from 'lodash';
+import { VQBModule } from '@/store';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
 import { AggFunctionStep } from '@/lib/steps';
 import AutocompleteWidget from './Autocomplete.vue';
 import { ErrorObject } from 'ajv';
@@ -44,7 +44,7 @@ export default class AggregationWidget extends Vue {
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
-  @Getter columnNames!: string[];
+  @VQBModule.Getter columnNames!: string[];
 
   aggregation: AggFunctionStep = { ...this.value };
   aggregationFunctions: AggFunctionStep['aggfunction'][] = ['sum', 'avg', 'count', 'min', 'max'];

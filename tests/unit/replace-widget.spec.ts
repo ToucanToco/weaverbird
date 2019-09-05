@@ -1,16 +1,15 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Widget ReplaceWidget', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {

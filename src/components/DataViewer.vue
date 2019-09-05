@@ -46,8 +46,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Getter, Mutation, State } from 'vuex-class';
-
+import { VQBModule } from '@/store';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import { PipelineStepName } from '@/lib/steps';
 import { Component } from 'vue-property-decorator';
@@ -70,14 +69,14 @@ import { CATEGORY_BUTTONS } from './constants';
   },
 })
 export default class DataViewer extends Vue {
-  @State dataset!: DataSet;
-  @State selectedColumns!: string[];
+  @VQBModule.State dataset!: DataSet;
+  @VQBModule.State selectedColumns!: string[];
 
-  @Getter('isDatasetEmpty') isEmpty!: boolean;
-  @Getter columnHeaders!: DataSetColumn[];
+  @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
+  @VQBModule.Getter columnHeaders!: DataSetColumn[];
 
-  @Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
-  @Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
+  @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
+  @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
   indexActiveActionMenu: number = -1;
 

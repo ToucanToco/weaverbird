@@ -23,8 +23,8 @@
 </template>
 <script lang="ts">
 import _ from 'lodash';
+import { VQBModule } from '@/store';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 import AutocompleteWidget from './Autocomplete.vue';
 import { SortColumnType } from '@/lib/steps';
@@ -52,9 +52,9 @@ export default class SortColumnWidget extends Vue {
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
-  @Getter columnNames!: string[];
+  @VQBModule.Getter columnNames!: string[];
 
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   sort: SortColumnType = { ...this.value };
 

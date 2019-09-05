@@ -1,9 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import SortStepForm from '@/components/stepforms/SortStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +13,9 @@ interface ValidationError {
 }
 
 describe('Sort Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -115,7 +114,7 @@ describe('Sort Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
@@ -126,9 +125,9 @@ describe('Sort Step Form', () => {
       sync: false,
     });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

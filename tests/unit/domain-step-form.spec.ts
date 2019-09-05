@@ -1,8 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DomainStepForm from '@/components/stepforms/DomainStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -13,9 +12,9 @@ interface ValidationError {
 }
 
 describe('Domain Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -32,7 +31,7 @@ describe('Domain Step Form', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       domains: ['foo', 'bar'],
     });
     const wrapper = shallowMount(DomainStepForm, { store, localVue });

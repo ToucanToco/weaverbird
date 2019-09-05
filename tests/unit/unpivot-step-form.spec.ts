@@ -1,9 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
 const localVue = createLocalVue();
@@ -16,9 +15,9 @@ interface ValidationError {
 }
 
 describe('Unpivot Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -62,7 +61,7 @@ describe('Unpivot Step Form', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -96,7 +95,7 @@ describe('Unpivot Step Form', () => {
     });
 
     it('should report errors when keep and unpivot column names overlap', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -130,7 +129,7 @@ describe('Unpivot Step Form', () => {
     });
 
     it('should report errors when the unpivot_column_name value is already used', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -165,7 +164,7 @@ describe('Unpivot Step Form', () => {
   });
 
   it('should report errors when the value_column_name value is already used', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -248,16 +247,16 @@ describe('Unpivot Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = mount(UnpivotStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

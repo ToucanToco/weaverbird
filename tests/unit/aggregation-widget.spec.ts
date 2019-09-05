@@ -1,16 +1,15 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
-import { VQBState } from '@/store/state';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Widget AggregationWidget', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -25,7 +24,7 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should instantiate an widgetAutocomplete widget with proper options from the store', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
