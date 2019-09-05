@@ -16,7 +16,7 @@ describe('Pipeline to mongo translator', () => {
   it('can generate domain steps', () => {
     const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }]);
+    expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }, { $project: { _id: 0 } }]);
   });
 
   it('can generate select steps', () => {
@@ -33,6 +33,7 @@ describe('Pipeline to mongo translator', () => {
           Region: 1,
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -48,6 +49,7 @@ describe('Pipeline to mongo translator', () => {
         $project: {
           Manager: 0,
           Region: 0,
+          _id: 0,
         },
       },
     ]);
@@ -69,6 +71,7 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Region: 0,
+          _id: 0,
         },
       },
     ]);
@@ -124,6 +127,7 @@ describe('Pipeline to mongo translator', () => {
           Code: { $nin: [0, 42] },
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -195,6 +199,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -247,6 +252,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -298,6 +304,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -360,6 +367,7 @@ describe('Pipeline to mongo translator', () => {
           number_rows: 1,
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -454,6 +462,7 @@ describe('Pipeline to mongo translator', () => {
       {
         $group: { _id: '$Country', Population: { $sum: '$Population' } },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -631,6 +640,7 @@ describe('Pipeline to mongo translator', () => {
           },
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -658,6 +668,7 @@ describe('Pipeline to mongo translator', () => {
           },
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -675,6 +686,7 @@ describe('Pipeline to mongo translator', () => {
           foo: -1,
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -693,6 +705,7 @@ describe('Pipeline to mongo translator', () => {
           bar: -1,
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -705,7 +718,10 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([{ $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } }]);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } },
+      { $project: { _id: 0 } },
+    ]);
   });
 
   it('can generate a top step with groups', () => {
@@ -732,6 +748,7 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _vqbAppTopElems: { $slice: ['$_vqbAppArray', 10] } } },
       { $unwind: '$_vqbAppTopElems' },
       { $replaceRoot: { newRoot: '$_vqbAppTopElems' } },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -756,6 +773,7 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _vqbAppTopElems: { $slice: ['$_vqbAppArray', 3] } } },
       { $unwind: '$_vqbAppTopElems' },
       { $replaceRoot: { newRoot: '$_vqbAppTopElems' } },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -792,7 +810,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
-      { $project: { _vqbAppArray: 0 } },
+      { $project: { _vqbAppArray: 0, _id: 0 } },
     ]);
   });
 
@@ -827,7 +845,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
-      { $project: { _vqbAppArray: 0 } },
+      { $project: { _vqbAppArray: 0, _id: 0 } },
     ]);
   });
 
@@ -869,7 +887,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
-      { $project: { _vqbAppValueToCompare: 0 } },
+      { $project: { _vqbAppValueToCompare: 0, _id: 0 } },
     ]);
   });
 
@@ -912,7 +930,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
-      { $project: { _vqbAppValueToCompare: 0 } },
+      { $project: { _vqbAppValueToCompare: 0, _id: 0 } },
     ]);
   });
 
@@ -955,7 +973,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       },
-      { $project: { _vqbAppValueToCompare: 0 } },
+      { $project: { _vqbAppValueToCompare: 0, _id: 0 } },
     ]);
   });
 
@@ -986,6 +1004,7 @@ describe('Pipeline to mongo translator', () => {
           with_parentheses: '$test',
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1056,6 +1075,7 @@ describe('Pipeline to mongo translator', () => {
           },
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1081,6 +1101,7 @@ describe('Pipeline to mongo translator', () => {
           },
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1136,6 +1157,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $replaceRoot: { newRoot: '$_vqbAppTmpObj' } },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1180,6 +1202,7 @@ describe('Pipeline to mongo translator', () => {
           VALUE: { $ne: null },
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1219,6 +1242,7 @@ describe('Pipeline to mongo translator', () => {
           VALUE: '$_vqbToUnpivot.v',
         },
       },
+      { $project: { _id: 0 } },
     ]);
   });
 
@@ -1231,6 +1255,6 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }]);
+    expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }, { $project: { _id: 0 } }]);
   });
 });
