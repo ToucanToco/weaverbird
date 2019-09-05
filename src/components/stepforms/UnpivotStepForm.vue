@@ -8,6 +8,8 @@
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.keep[0] })"
       placeholder="Add columns to keep"
+      data-path=".keep"
+      :errors="errors"
     ></MultiselectWidget>
     <MultiselectWidget
       id="unpivotColumnInput"
@@ -16,21 +18,27 @@
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.unpivot[0] })"
       placeholder="Add columns to unpivot"
+      data-path=".unpivot"
+      :errors="errors"
     ></MultiselectWidget>
     <InputTextWidget
       id="unpivotColumnNameInput"
       v-model="editedStep.unpivot_column_name"
       name="Category column name"
       placeholder="Enter a column name"
+      data-path=".unpivot_column_name"
+      :errors="errors"
     ></InputTextWidget>
     <InputTextWidget
       id="valueColumnNameInput"
       v-model="editedStep.value_column_name"
       name="Value column name"
       placeholder="Enter a column name"
+      data-path=".value_column_name"
+      :errors="errors"
     ></InputTextWidget>
     <CheckboxWidget id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna"></CheckboxWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

@@ -8,8 +8,10 @@
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.columns[editedStep.columns.length-1] })"
       placeholder="Add columns"
+      data-path=".columns"
+      :errors="errors"
     ></MultiselectWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

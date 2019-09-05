@@ -6,12 +6,16 @@
       v-model="editedStep.search_column"
       name="Search in column..."
       placeholder="Enter a column"
+      data-path=".search_column"
+      :errors="errors"
     ></ColumnPicker>
     <InputTextWidget
       id="newColumnInput"
       v-model="editedStep.new_column"
       name="(Optional) Write output in..."
       placeholder="Enter a new column name"
+      data-path=".new_column"
+      :errors="errors"
     ></InputTextWidget>
     <ListWidget
       addFieldName="Add a value to replace"
@@ -21,8 +25,10 @@
       :defaultItem="[]"
       :widget="replaceWidget"
       :automatic-new-field="false"
+      data-path=".to_replace"
+      :errors="errors"
     ></ListWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

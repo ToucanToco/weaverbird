@@ -6,14 +6,18 @@
       id="columnInput"
       name="Replace null values in..."
       placeholder="Enter a column"
+      data-path=".column"
+      :errors="errors"
     ></ColumnPicker>
     <InputTextWidget
       id="valueInput"
       v-model="editedStep.value"
       name="With..."
       placeholder="Enter a value"
+      data-path=".value"
+      :errors="errors"
     ></InputTextWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

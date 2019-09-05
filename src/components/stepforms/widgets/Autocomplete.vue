@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-autocomplete__container">
+  <div class="widget-autocomplete__container" :class="toggleClassError">
     <label class="widget-autocomplete__label" v-if="name" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
@@ -9,12 +9,14 @@
       :track-by="trackBy"
       :label="label"
     ></multiselect>
+    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"></span>{{ messageError }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
+import FormWidget from './FormWidget.vue';
 
 @Component({
   name: 'autocomplete-widget',
@@ -22,7 +24,7 @@ import Multiselect from 'vue-multiselect';
     Multiselect,
   },
 })
-export default class AutocompleteWidget extends Vue {
+export default class AutocompleteWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: null })
   id!: string;
 

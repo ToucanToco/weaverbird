@@ -6,14 +6,18 @@
       id="oldnameInput"
       name="Old name"
       placeholder="Enter the old column name"
+      data-path=".oldname"
+      :errors="errors"
     ></ColumnPicker>
     <InputTextWidget
       id="newnameInput"
       v-model="editedStep.newname"
       name="By..."
       placeholder="Enter a new column name"
+      data-path=".newname"
+      :errors="errors"
     ></InputTextWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

@@ -6,14 +6,18 @@
       v-model="editedStep.column"
       name="Duplicate column..."
       placeholder="Enter a column"
+      data-path=".column"
+      :errors="errors"
     ></ColumnPicker>
     <InputTextWidget
       id="newColumnNameInput"
       v-model="editedStep.new_column_name"
       name="New column name:"
       placeholder="Enter a column name"
+      data-path=".new_column_name"
+      :errors="errors"
     ></InputTextWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

@@ -7,12 +7,16 @@
       type="number"
       name="Get top..."
       placeholder="Enter a number of rows"
+      data-path=".limit"
+      :errors="errors"
     ></InputTextWidget>
     <ColumnPicker
       id="rankOnInput"
       v-model="editedStep.rank_on"
       name="Sort column..."
       placeholder="Enter a column"
+      data-path=".rank_on"
+      :errors="errors"
     ></ColumnPicker>
     <AutocompleteWidget
       id="sortOrderInput"
@@ -20,6 +24,8 @@
       name="Sort order:"
       :options="['asc', 'desc']"
       placeholder="Select an order"
+      data-path=".sort"
+      :errors="errors"
     ></AutocompleteWidget>
     <MultiselectWidget
       id="groupbyColumnsInput"
@@ -28,8 +34,10 @@
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Select columns"
+      data-path=".groups"
+      :errors="errors"
     ></MultiselectWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

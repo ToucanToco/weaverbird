@@ -8,6 +8,8 @@
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length-1] })"
       placeholder="Add columns"
+      data-path=".on"
+      :errors="errors"
     ></MultiselectWidget>
     <ListWidget
       addFieldName="Add aggregation"
@@ -17,8 +19,10 @@
       :defaultItem="defaultAggregation"
       :widget="widgetAggregation"
       :automatic-new-field="false"
+      data-path=".aggregations"
+      :errors="errors"
     ></ListWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

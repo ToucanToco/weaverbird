@@ -6,6 +6,8 @@
     :options="columnNames"
     @input="valueChanged"
     :placeholder="placeholder"
+    :data-path="dataPath"
+    :errors="errors"
   ></AutocompleteWidget>
 </template>
 
@@ -16,6 +18,7 @@ import { Component, Prop, Watch } from 'vue-property-decorator';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
+import { ErrorObject } from 'ajv';
 
 @Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {
@@ -30,6 +33,12 @@ export default class ColumnPicker extends Vue {
 
   @Prop({ type: String, default: null })
   initialColumn!: string | null;
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
+
+  @Prop({ default: null })
+  dataPath!: string;
 
   // Only manage the deletion of 1 column at once at this stage
   column: string | null = null;

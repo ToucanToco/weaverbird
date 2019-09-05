@@ -6,6 +6,8 @@
       v-model="editedStep.column"
       name="Value column..."
       placeholder="Enter a column"
+      data-path=".column"
+      :errors="errors"
     ></ColumnPicker>
     <MultiselectWidget
       id="groupbyColumnsInput"
@@ -13,14 +15,18 @@
       name="(Optional) Group by..."
       :options="columnNames"
       placeholder="Add columns"
+      data-path=".group"
+      :errors="errors"
     ></MultiselectWidget>
     <InputTextWidget
       id="newColumnNameInput"
       v-model="editedStep.new_column"
       name="(Optional) New column name..."
       placeholder="Enter a new column name"
+      data-path=".new_column"
+      :errors="errors"
     ></InputTextWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 
