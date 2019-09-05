@@ -8,7 +8,7 @@
       <div :class="lastStrokeClass"></div>
     </div>
     <div class="query-pipeline-step">
-      <span class="query-pipeline-step__name">{{ step.name }}</span>
+      <span class="query-pipeline-step__name">{{ stepLabel() }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
           <i class="fas fa-cog" @click="editStep()"></i>
@@ -31,6 +31,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { Getter, Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
+import { humanReadableLabel } from '@/lib/labeller';
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 
 @Component({
@@ -66,6 +67,10 @@ export default class Step extends Vue {
   @Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
   @Getter stepConfig!: (index: number) => PipelineStep;
+
+  stepLabel() {
+    return humanReadableLabel(this.step);
+  }
 
   get classContainer() {
     return {
