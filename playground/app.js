@@ -1,12 +1,14 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
   Vqb,
+  VQBnamespace,
+  VQB_MODULE_NAME,
   filterOutDomain,
   inferTypeFromDataset,
   getTranslator,
   mongoResultsToDataset,
   servicePluginFactory,
-  setupStore,
+  registerModule,
 } = vqb;
 
 const mongo36translator = getTranslator('mongo36');
@@ -83,32 +85,33 @@ const initialPipeline = [
 
 async function setupInitialData(store, domain = null) {
   const collections = await mongoservice.listCollections();
-  store.commit('setDomains', {
+  store.commit(VQBnamespace('setDomains'), {
     domains: collections,
   });
   if (domain !== null) {
-    store.commit('setCurrentDomain', {
+    store.commit(VQBnamespace('setCurrentDomain'), {
       currentDomain: domain,
     });
   } else {
-    const response = await mongoservice.executePipeline(store.state.pipeline, store.state.pagesize);
+    const response = await mongoservice.executePipeline(
+      store.state[VQB_MODULE_NAME].pipeline,
+      store.state[VQB_MODULE_NAME].pagesize,
+    );
     if (response.error) {
-      store.commit('setBackendError', { backendError: { type: 'error', error: response.error } });
+      store.commit(VQBnamespace('setBackendError'), {
+        backendError: { type: 'error', error: response.error },
+      });
     } else {
-      store.commit('setDataset', { dataset: response.data });
+      store.commit(VQBnamespace('setDataset'), { dataset: response.data });
     }
   }
 }
 
 async function buildVueApp() {
   Vue.use(Vuex);
-  const store = setupStore(
-    {
-      pipeline: initialPipeline,
-      currentDomain: 'test-collection',
-    },
-    [mongoBackendPlugin],
-  );
+  const store = new Vuex.Store({
+    plugins: [mongoBackendPlugin],
+  });
 
   new Vue({
     el: '#app',
@@ -124,16 +127,22 @@ async function buildVueApp() {
         draggedover: false,
       };
     },
+    created: function() {
+      registerModule(this.$store, { pipeline: initialPipeline, currentDomain: 'test-collection' });
+      setupInitialData(this.$store);
+    },
     computed: {
       code: function() {
-        const query = mongo36translator.translate(this.$store.getters.activePipeline);
+        const query = mongo36translator.translate(
+          this.$store.getters[VQBnamespace('activePipeline')],
+        );
         return JSON.stringify(query, null, 2);
       },
       thereIsABackendError: function() {
-        return this.$store.getters.thereIsABackendError;
+        return this.$store.getters[VQBnamespace('thereIsABackendError')];
       },
       backendErrorMessage: function() {
-        return this.$store.getters.backendErrorMessage;
+        return this.$store.getters[VQBnamespace('backendErrorMessage')];
       },
     },
     methods: {
@@ -178,7 +187,6 @@ async function buildVueApp() {
       },
     },
   });
-  setupInitialData(store);
 }
 
 document.addEventListener('DOMContentLoaded', () => buildVueApp());

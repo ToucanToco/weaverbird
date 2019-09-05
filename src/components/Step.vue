@@ -31,8 +31,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import { VQBModule } from '@/store';
 import { Component, Prop } from 'vue-property-decorator';
-import { Getter, Mutation } from 'vuex-class';
 import { PipelineStep } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
 import { humanReadableLabel } from '@/lib/labeller';
@@ -68,9 +68,9 @@ export default class Step extends Vue {
 
   deleteConfirmationModalIsOpened: boolean = false;
 
-  @Mutation deleteStep!: MutationCallbacks['deleteStep'];
+  @VQBModule.Mutation deleteStep!: MutationCallbacks['deleteStep'];
 
-  @Getter stepConfig!: (index: number) => PipelineStep;
+  @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
   stepLabel() {
     return humanReadableLabel(this.step);

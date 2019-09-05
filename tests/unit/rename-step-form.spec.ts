@@ -1,9 +1,9 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { VQBnamespace } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +14,9 @@ interface ValidationError {
 }
 
 describe('Rename Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -63,7 +63,7 @@ describe('Rename Step Form', () => {
     });
 
     it('should report errors when newname is an already existing column name', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -107,7 +107,7 @@ describe('Rename Step Form', () => {
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -115,7 +115,7 @@ describe('Rename Step Form', () => {
     });
     const wrapper = shallowMount(RenameStepForm, { store, localVue });
     expect(wrapper.vm.$data.editedStep.oldname).toEqual('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
+    store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.editedStep.oldname).toEqual('columnB');
   });
@@ -127,21 +127,21 @@ describe('Rename Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 
   it('should make the focus on the column modified after rename validation', () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -150,11 +150,11 @@ describe('Rename Step Form', () => {
     const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnA', newname: 'toto' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).toEqual(['toto']);
+    expect(store.state.vqb.selectedColumns).toEqual(['toto']);
   });
 
   it('should not change the column focus if validation fails', () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -164,6 +164,6 @@ describe('Rename Step Form', () => {
     const wrapper = mount(RenameStepForm, { store, localVue });
     wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).toEqual(['columnA']);
+    expect(store.state.vqb.selectedColumns).toEqual(['columnA']);
   });
 });

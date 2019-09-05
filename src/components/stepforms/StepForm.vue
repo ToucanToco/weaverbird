@@ -1,8 +1,8 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
+import { VQBModule } from '@/store';
 import { Prop, Component, Watch } from 'vue-property-decorator';
-import { Getter, Mutation, State } from 'vuex-class';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 import { MutationCallbacks } from '@/store/mutations';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
@@ -38,10 +38,10 @@ function componentProxyBoundOn(self: Vue) {
  * default basic 'submit' / 'cancel' event callbacks and map some of the props /
  * getters / state and mutations from the store that you'll most of the time
  * need in your concrete step form implementation:
- * - `@State pipeline`
- * - `@State selectedStepIndex`
- * - `@Mutation selectStep`
- * - `@Mutation setSelectedColumns`.
+ * - `@VQBModule.State pipeline`
+ * - `@VQBModule.State selectedStepIndex`
+ * - `@VQBModule.Mutation selectStep`
+ * - `@VQBModule.Mutation setSelectedColumns`.
  *
  * This class provides a default `mounted()` hook that is used to bind the `Ajv`
  * validator that will be used on submit. It provides 2 default callbacks:
@@ -77,15 +77,15 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: Object, default: null })
   initialStepValue!: StepType;
 
-  @State pipeline!: Pipeline;
-  @State selectedStepIndex!: number;
+  @VQBModule.State pipeline!: Pipeline;
+  @VQBModule.State selectedStepIndex!: number;
 
-  @Mutation selectStep!: (payload: { index: number }) => void;
-  @Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+  @VQBModule.Mutation selectStep!: (payload: { index: number }) => void;
+  @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
-  @Getter columnNames!: string[];
-  @Getter computedActiveStepIndex!: number;
-  @Getter selectedColumns!: string[];
+  @VQBModule.Getter columnNames!: string[];
+  @VQBModule.Getter computedActiveStepIndex!: number;
+  @VQBModule.Getter selectedColumns!: string[];
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';

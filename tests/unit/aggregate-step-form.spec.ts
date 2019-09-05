@@ -3,9 +3,8 @@ import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -16,9 +15,9 @@ interface ValidationError {
 }
 
 describe('Aggregate Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore();
   });
 
   it('should instantiate', () => {
@@ -35,7 +34,7 @@ describe('Aggregate Step Form', () => {
     });
 
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -58,7 +57,7 @@ describe('Aggregate Step Form', () => {
       const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
       wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
       await wrapper.find(MultiselectWidget).trigger('input');
-      expect(store.state.selectedColumns).toEqual(['foo']);
+      expect(store.state.vqb.selectedColumns).toEqual(['foo']);
     });
   });
 
@@ -253,12 +252,12 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should change the column focus after input in multiselect', async () => {
-    const store = setupStore({ selectedColumns: [] });
+    const store: Store<any> = setupMockStore({ selectedColumns: [] });
     const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
     wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(store.state.selectedColumns).toEqual(['foo']);
+    expect(store.state.vqb.selectedColumns).toEqual(['foo']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', async () => {
@@ -268,7 +267,7 @@ describe('Aggregate Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
@@ -279,9 +278,9 @@ describe('Aggregate Step Form', () => {
       sync: false,
     });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     await wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

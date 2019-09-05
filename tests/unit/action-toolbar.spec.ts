@@ -1,7 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ActionToolbar from '@/components/ActionToolbar.vue';
 import Vuex from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -89,7 +89,7 @@ describe('ActionToolbar', () => {
   });
 
   it('should emit an actionClicked event only on an aggregate button', () => {
-    const store = setupStore();
+    const store = setupMockStore();
     const wrapper = shallowMount(ActionToolbar, {
       store,
       localVue,

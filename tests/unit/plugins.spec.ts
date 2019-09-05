@@ -3,7 +3,8 @@ import Vuex from 'vuex';
 import flushPromises from 'flush-promises';
 
 import { Pipeline } from '@/lib/steps';
-import { setupStore } from '@/store';
+import { VQBnamespace } from '@/store';
+import { setupMockStore } from './utils';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import PipelineComponent from '@/components/Pipeline.vue';
@@ -38,11 +39,13 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupStore({ pipeline }, [servicePluginFactory(new DummyService())]);
+    const store: Store<any> = setupMockStore({ pipeline }, [
+      servicePluginFactory(new DummyService()),
+    ]);
     const wrapper = mount(PipelineComponent, { store, localVue });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await flushPromises();
-    expect(store.state.dataset).toEqual({
+    expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2], [3, 4]],
     });
@@ -55,46 +58,48 @@ describe('backend service plugin tests', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore(
+    const store: Store<any> = setupMockStore(
       {
         pipeline,
         selectedStepIndex: 1,
       },
       [servicePluginFactory(new DummyService())],
     );
-    store.commit('selectStep', { index: 2 });
+    store.commit(VQBnamespace('selectStep'), { index: 2 });
     await flushPromises();
-    expect(store.state.dataset).toEqual({
+    expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2], [3, 4]],
     });
   });
 
   it('should call execute pipeline when a setCurrentDomain mutation is committed', async () => {
-    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
-    store.commit('setCurrentDomain', { currentDomain: 'GoT' });
+    const store: Store<any> = setupMockStore({}, [servicePluginFactory(new DummyService())]);
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
-    expect(store.state.dataset).toEqual({
+    expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2], [3, 4]],
     });
   });
 
   it('should call execute pipeline when a deleteStep mutation is committed', async () => {
-    const store = setupStore({}, [servicePluginFactory(new DummyService())]);
-    store.commit('deleteStep', { index: 2 });
+    const store: Store<any> = setupMockStore({}, [servicePluginFactory(new DummyService())]);
+    store.commit(VQBnamespace('deleteStep'), { index: 2 });
     await flushPromises();
-    expect(store.state.dataset).toEqual({
+    expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2], [3, 4]],
     });
   });
 
   it('should call execute pipeline with correct pagesize', async () => {
-    const store = setupStore({ pagesize: 1 }, [servicePluginFactory(new DummyService())]);
-    store.commit('setCurrentDomain', { currentDomain: 'GoT' });
+    const store: Store<any> = setupMockStore({ pagesize: 1 }, [
+      servicePluginFactory(new DummyService()),
+    ]);
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
-    expect(store.state.dataset).toEqual({
+    expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2]],
     });

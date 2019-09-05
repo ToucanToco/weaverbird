@@ -1,9 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FormulaStepForm from '@/components/stepforms/FormulaStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +13,9 @@ interface ValidationError {
 }
 
 describe('Rename Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -66,7 +65,7 @@ describe('Rename Step Form', () => {
     });
 
     it('should report errors when newname is an already existing column name', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -118,21 +117,21 @@ describe('Rename Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = mount(FormulaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 
   it('should make the focus on the column modified after validation', () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -141,11 +140,11 @@ describe('Rename Step Form', () => {
     const wrapper = mount(FormulaStepForm, { store, localVue });
     wrapper.setData({ editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).toEqual(['foo']);
+    expect(store.state.vqb.selectedColumns).toEqual(['foo']);
   });
 
   it('should not change the column focus if validation fails', () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -157,6 +156,6 @@ describe('Rename Step Form', () => {
       editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'columnB' },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.selectedColumns).toEqual(['columnA']);
+    expect(store.state.vqb.selectedColumns).toEqual(['columnA']);
   });
 });

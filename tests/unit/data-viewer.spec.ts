@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex from 'vuex';
 import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import DataViewer from '../../src/components/DataViewer.vue';
 
 const localVue = createLocalVue();
@@ -8,13 +9,13 @@ localVue.use(Vuex);
 
 describe('Data Viewer', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupStore(), localVue });
+    const wrapper = shallowMount(DataViewer, { store: setupMockStore(), localVue });
 
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should display a message when no data', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupStore(), localVue });
+    const wrapper = shallowMount(DataViewer, { store: setupMockStore(), localVue });
 
     expect(wrapper.text()).toEqual('No data available');
   });
@@ -31,7 +32,7 @@ describe('Data Viewer', () => {
 
   describe('header', () => {
     it('should have one row', () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
@@ -50,7 +51,7 @@ describe('Data Viewer', () => {
     });
 
     it('should have three cells', () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
@@ -69,7 +70,7 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names", () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
@@ -90,7 +91,7 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names even if not on every rows", () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [
             { name: 'columnA' },
@@ -118,7 +119,7 @@ describe('Data Viewer', () => {
 
     it('should display the right icon for each types', () => {
       const date = new Date();
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [
             { name: 'columnA', type: 'string' },
@@ -154,7 +155,7 @@ describe('Data Viewer', () => {
 
     describe('selection', () => {
       it('should add an active class on the cell', async () => {
-        const store = setupStore({
+        const store = setupMockStore({
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
             data: [
@@ -178,7 +179,7 @@ describe('Data Viewer', () => {
 
   describe('body', () => {
     it('should have 5 rows', () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
@@ -197,7 +198,7 @@ describe('Data Viewer', () => {
     });
 
     it('should pass down the right value to DataViewerCell', () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [
@@ -229,7 +230,7 @@ describe('Data Viewer', () => {
           ['value13', 'value14', 'value15'],
         ],
       };
-      const store = setupStore({ dataset });
+      const store = setupMockStore({ dataset });
       const wrapper = shallowMount(DataViewer, { store, localVue });
       const firstHeadCellWrapper = wrapper.find('.data-viewer__header-cell');
       firstHeadCellWrapper.trigger('click');
@@ -243,6 +244,42 @@ describe('Data Viewer', () => {
             .attributes('isselected'),
         ).toEqual('true');
       });
+    });
+  });
+
+  describe('action clicked in ActionToolbar', () => {
+    let wrapper: Wrapper<Vue>;
+    const openStepFormStub = jest.fn();
+
+    beforeEach(() => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [
+            ['value1', 'value2', 'value3'],
+            ['value4', 'value5', 'value6'],
+            ['value7', 'value8', 'value9'],
+            ['value10', 'value11', 'value12'],
+            ['value13', 'value14', 'value15'],
+          ],
+          paginationContext: {
+            totalCount: 5,
+          },
+        },
+      });
+      wrapper = shallowMount(DataViewer, { store, localVue });
+      wrapper.setMethods({ openStepForm: openStepFormStub });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
+    it('should open step form when click in toolbar', () => {
+      const actionMenuWrapper = wrapper.find('actiontoolbar-stub');
+
+      actionMenuWrapper.vm.$emit('actionClicked', { stepName: 'rename' });
+      expect(openStepFormStub).toBeCalledWith({ stepName: 'rename' });
     });
   });
 });

@@ -1,7 +1,8 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import ActionMenu from '@/components/ActionMenu.vue';
-import Vuex from 'vuex';
-import { setupStore } from '@/store';
+import Vuex, { Store } from 'vuex';
+import { VQBnamespace } from '@/store';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -49,7 +50,7 @@ describe('Action Menu', () => {
     });
 
     it('should emit a close event', () => {
-      const store = setupStore();
+      const store = setupMockStore();
       const wrapper = shallowMount(ActionMenu, { store, localVue });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(0).trigger('click');
@@ -83,7 +84,7 @@ describe('Action Menu', () => {
 
   describe('when clicking on "Delete column"', () => {
     it('should add a valide delete step in the pipeline', async () => {
-      const store = setupStore();
+      const store: Store<any> = setupMockStore();
       const wrapper = shallowMount(ActionMenu, {
         store,
         localVue,
@@ -94,11 +95,11 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
       await localVue.nextTick();
-      expect(store.state.pipeline).toEqual([{ name: 'delete', columns: ['columnA'] }]);
+      expect(store.state.vqb.pipeline).toEqual([{ name: 'delete', columns: ['columnA'] }]);
     });
 
     it('should emit a close event', () => {
-      const store = setupStore();
+      const store = setupMockStore();
       const wrapper = shallowMount(ActionMenu, { store, localVue });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
@@ -107,11 +108,11 @@ describe('Action Menu', () => {
     });
 
     it('should close any open step form to show the addition of the delete step in the pipeline', () => {
-      const store = setupStore({ isEditingStep: true });
+      const store = setupMockStore({ currentStepFormName: 'fillna' });
       const wrapper = shallowMount(ActionMenu, { store, localVue });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
-      expect(store.state.isEditingStep).toBeFalsy();
+      expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
     });
   });
 

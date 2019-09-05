@@ -19,8 +19,8 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
+import { VQBModule } from '@/store';
 import { Component, Prop } from 'vue-property-decorator';
-import { State } from 'vuex-class';
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
 import { PipelineStepName } from '@/lib/steps';
@@ -35,7 +35,7 @@ import SearchBar from './SearchBar.vue';
 })
 export default class ActionToolbar extends Vue {
   @Prop(Array) readonly buttons!: ButtonDef[];
-  @State selectedColumns!: string[];
+  @VQBModule.State selectedColumns!: string[];
 
   isActiveActionToolbarButton: number = -1;
 

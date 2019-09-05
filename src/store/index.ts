@@ -1,13 +1,67 @@
 /**
- * store application main module
+ * Store application main module
+ *
+ * It exposes everything needed to embed the VQB store in a host store,
+ * e.g. `registerModule(hostStore, initialState)` to register a VQB store
+ * and `unregisterModule()` for the dual operation.
+ *
+ * A `vuex-class`'s namesapce is exported as the '`VQBModule` symbol. It can therefore
+ * be used as a decorator inside a `Vue` component, .e.g.:
+ *
+ * ```typescript
+ * @Component
+ * class MyComponent extends Vue {
+ *    @VQBModule.State pipeline!: Pipeline;
+ *    // ...
+ * }
+ * ```
  */
 import Vue from 'vue';
-import Vuex from 'vuex';
 
-import { Store, StoreOptions } from 'vuex';
+import Vuex, { Store, StoreOptions } from 'vuex';
+import { namespace } from 'vuex-class';
 import { VQBState, emptyState } from './state';
 import getters from './getters';
 import mutations from './mutations';
+
+/**
+ * the default VQB namespace name
+ */
+export const VQB_MODULE_NAME = 'vqb';
+
+/**
+ * helper to compute the fully qualified property name.
+ * e.g. `vqb/pipeline`, `vqb/selecedIndex`
+ */
+export const VQBnamespace = function(prop: string) {
+  return `${VQB_MODULE_NAME}/${prop}`;
+};
+
+export const VQBModule = namespace(VQB_MODULE_NAME);
+
+export function buildStoreModule(initialState: Partial<VQBState> = {}) {
+  const store = {
+    namespaced: true,
+    state: { ...emptyState, ...initialState },
+    getters,
+    mutations,
+  };
+  return store;
+}
+
+/**
+ * register a VQBModule inside a host Vuex store using `VQB_MODULE_NAME` as key.
+ */
+export function registerModule(rootStore: Store<any>, initialState: Partial<VQBState> = {}) {
+  rootStore.registerModule(VQB_MODULE_NAME, buildStoreModule(initialState));
+}
+
+/**
+ * unregister a VQBModule from a host inside a host Vuex store using `VQB_MODULE_NAME` as key.
+ */
+export function unregisterModule(rootStore: Store<any>) {
+  rootStore.unregisterModule(VQB_MODULE_NAME);
+}
 
 /**
  * Vuex store factory

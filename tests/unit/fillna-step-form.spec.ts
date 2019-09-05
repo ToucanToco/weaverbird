@@ -1,9 +1,9 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
+import { VQBnamespace } from '@/store';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +14,9 @@ interface ValidationError {
 }
 
 describe('Fillna Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -46,7 +46,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should report errors when submitted data is not valid', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }],
         data: [[null]],
@@ -70,7 +70,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'foo' }],
         data: [[null]],
@@ -93,7 +93,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should convert input value to integer when the column data type is integer', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
         data: [[null]],
@@ -116,7 +116,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should convert input value to float when the column data type is float', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'float' }],
         data: [[null]],
@@ -139,7 +139,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should convert input value to boolean when the column data type is boolean', () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'boolean' }],
         data: [[null]],
@@ -175,7 +175,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -183,7 +183,7 @@ describe('Fillna Step Form', () => {
     });
     const wrapper = shallowMount(FillnaStepForm, { store, localVue });
     expect(wrapper.vm.$data.editedStep.column).toEqual('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
+    store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
   });
@@ -195,21 +195,21 @@ describe('Fillna Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = mount(FillnaStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 
   it('should keep the focus on the column modified after rename validation', async () => {
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -228,6 +228,6 @@ describe('Fillna Step Form', () => {
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
-    expect(store.state.selectedColumns).toEqual(['columnA']);
+    expect(store.state.vqb.selectedColumns).toEqual(['columnA']);
   });
 });

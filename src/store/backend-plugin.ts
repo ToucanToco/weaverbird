@@ -14,6 +14,7 @@ import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 
 import { StateMutation } from './mutations';
+import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
 import { VQBState, activePipeline } from '@/store/state';
 import { pageOffset } from '@/lib/dataset/pagination';
 
@@ -37,25 +38,27 @@ export interface BackendService {
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
   try {
-    store.commit('setLoading', { isLoading: true });
+    store.commit(VQBnamespace('setLoading'), { isLoading: true });
     const response = await service.executePipeline(
       pipeline,
-      store.state.pagesize,
-      pageOffset(store.state.pagesize, store.getters.pageno),
+      store.state[VQB_MODULE_NAME].pagesize,
+      pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
     );
     if (response.error) {
-      store.commit('setBackendError', { backendError: { type: 'error', message: response.error } });
+      store.commit(VQBnamespace('setBackendError'), {
+        backendError: { type: 'error', message: response.error },
+      });
     } else {
-      store.commit('setDataset', { dataset: response.data });
+      store.commit(VQBnamespace('setDataset'), { dataset: response.data });
       // reset backend error to undefined:
-      store.commit('setBackendError', { backendError: undefined });
+      store.commit(VQBnamespace('setBackendError'), { backendError: undefined });
     }
   } catch (error) {
-    store.commit('setBackendError', {
+    store.commit(VQBnamespace('setBackendError'), {
       backendError: { type: 'error', message: error },
     });
   }
-  store.commit('setLoading', { isLoading: false });
+  store.commit(VQBnamespace('setLoading'), { isLoading: false });
 }
 
 /**
@@ -66,15 +69,15 @@ async function _updateDataset(store: Store<VQBState>, service: BackendService, p
  * @return a plugin function usable in the `plugins` field of the store.
  */
 export function servicePluginFactory(service: BackendService) {
-  return (store: Store<VQBState>) => {
-    store.subscribe(async (mutation: StateMutation, state: VQBState) => {
+  return (store: Store<any>) => {
+    store.subscribe(async (mutation: StateMutation, state: any) => {
       if (
-        mutation.type === 'selectStep' ||
-        mutation.type === 'setCurrentDomain' ||
-        mutation.type === 'deleteStep' ||
-        mutation.type === 'setCurrentPage'
+        mutation.type === VQBnamespace('selectStep') ||
+        mutation.type === VQBnamespace('setCurrentDomain') ||
+        mutation.type === VQBnamespace('deleteStep') ||
+        mutation.type === VQBnamespace('setCurrentPage')
       ) {
-        _updateDataset(store, service, activePipeline(state));
+        _updateDataset(store, service, activePipeline(state[VQB_MODULE_NAME]));
       }
     });
   };

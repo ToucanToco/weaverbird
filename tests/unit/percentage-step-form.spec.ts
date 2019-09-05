@@ -1,9 +1,9 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupStore } from '@/store';
+import { VQBnamespace } from '@/store';
+import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
-import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,9 +14,9 @@ interface ValidationError {
 }
 
 describe('Percentage Step Form', () => {
-  let emptyStore: Store<VQBState>;
+  let emptyStore: Store<any>;
   beforeEach(() => {
-    emptyStore = setupStore({});
+    emptyStore = setupMockStore({});
   });
 
   it('should instantiate', () => {
@@ -59,7 +59,7 @@ describe('Percentage Step Form', () => {
     });
 
     it('should report errors when newn_column is an already existing column name', async () => {
-      const store = setupStore({
+      const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
@@ -111,21 +111,21 @@ describe('Percentage Step Form', () => {
       { name: 'percentage', column: 'baz' },
       { name: 'percentage', column: 'tic' },
     ];
-    const store = setupStore({
+    const store: Store<any> = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
     const wrapper = mount(PercentageStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(2);
+    expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
-    expect(store.state.selectedStepIndex).toEqual(3);
+    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 
   it('should update step when selectedColumn is changed', async () => {
-    const store = setupStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -133,7 +133,7 @@ describe('Percentage Step Form', () => {
     });
     const wrapper = shallowMount(PercentageStepForm, { store, localVue });
     expect(wrapper.vm.$data.editedStep.column).toEqual('');
-    store.commit('toggleColumnSelection', { column: 'columnB' });
+    store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
   });
