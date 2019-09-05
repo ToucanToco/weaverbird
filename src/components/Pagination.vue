@@ -20,7 +20,7 @@ import { VQBModule } from '@/store';
 import Paginate from 'vuejs-paginate';
 import { Vue, Component } from 'vue-property-decorator';
 import { DataSet } from '@/lib/dataset';
-import { numberOfPages, pageOffset, pageMinMax } from '@/lib/dataset/pagination';
+import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
@@ -45,6 +45,7 @@ export default class Pagination extends Vue {
     if (this.dataset.paginationContext) {
       return this.dataset.paginationContext.totalCount;
     }
+    return null;
   }
 
   get pageRows() {
