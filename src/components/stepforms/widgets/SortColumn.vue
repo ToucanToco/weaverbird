@@ -7,6 +7,8 @@
       name="Column"
       placeholder="Enter a column"
       @input="setSelectedColumns({ column: sort.column })"
+      :data-path="`${dataPath}[0]`"
+      :errors="errors"
     ></AutocompleteWidget>
     <AutocompleteWidget
       id="sortOrderInput"
@@ -14,6 +16,8 @@
       name="Order"
       :options="['asc', 'desc']"
       placeholder="Order by"
+      :data-path="`${dataPath}[1]`"
+      :errors="errors"
     ></AutocompleteWidget>
   </fieldset>
 </template>
@@ -24,6 +28,7 @@ import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 import AutocompleteWidget from './Autocomplete.vue';
 import { SortColumnType } from '@/lib/steps';
+import { ErrorObject } from 'ajv';
 
 @Component({
   name: 'sort-column-widget',
@@ -40,6 +45,12 @@ export default class SortColumnWidget extends Vue {
     }),
   })
   value!: SortColumnType;
+
+  @Prop({ type: String, default: null })
+  dataPath!: string;
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
 
   @Getter columnNames!: string[];
 

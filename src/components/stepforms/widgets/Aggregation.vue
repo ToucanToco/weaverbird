@@ -6,6 +6,8 @@
       v-model="aggregation.column"
       name="Column:"
       placeholder="Enter a column"
+      :data-path="`${dataPath}.column`"
+      :errors="errors"
     ></AutocompleteWidget>
     <AutocompleteWidget
       id="aggregationFunctionInput"
@@ -13,6 +15,8 @@
       name="Function:"
       :options="aggregationFunctions"
       placeholder="Aggregation function"
+      :data-path="`${dataPath}.aggfunction`"
+      :errors="errors"
     ></AutocompleteWidget>
   </fieldset>
 </template>
@@ -22,6 +26,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { AggFunctionStep } from '@/lib/steps';
 import AutocompleteWidget from './Autocomplete.vue';
+import { ErrorObject } from 'ajv';
 
 @Component({
   name: 'aggregation-widget',
@@ -30,8 +35,14 @@ import AutocompleteWidget from './Autocomplete.vue';
   },
 })
 export default class AggregationWidget extends Vue {
+  @Prop({ type: String, default: null })
+  dataPath!: string;
+
   @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newcolumn: '' }) })
   value!: AggFunctionStep;
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
 
   @Getter columnNames!: string[];
 

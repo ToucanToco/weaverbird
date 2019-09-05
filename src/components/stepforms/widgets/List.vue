@@ -1,15 +1,22 @@
 <template>
-  <div class="widget-list__container">
+  <div class="widget-list__container" :class="toggleClassError">
     <label :for="id">{{name}}</label>
     <div class="widget-list__body">
       <div class="widget-list__child" v-for="(child, index) in children" :key="index">
         <div class="widget-list__component">
-          <component :is="widget" :value="child.value" @input="updateChildValue($event, index)"></component>
+          <component
+            :is="widget"
+            :value="child.value"
+            @input="updateChildValue($event, index)"
+            :data-path="`${dataPath}[${index}]`"
+            :errors="errors">
+          </component>
         </div>
         <div class="widget-list__icon" v-if="child.isRemovable" @click="removeChild(index)">
           <i class="far fa-trash-alt"></i>
         </div>
       </div>
+      <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"></span>{{ messageError }}</div>
       <button v-if="!automaticNewField" class="widget-list__add-fieldset" @click="addFieldSet">
         <i class="fas fa-plus-circle"></i>
         {{ addFieldName }}
@@ -19,9 +26,11 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { VueConstructor } from 'vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import FormWidget from './FormWidget.vue';
+import { ErrorObject } from 'ajv';
 
 type Field = {
   name: string;
@@ -34,7 +43,7 @@ type RepeatableField = Field[];
 @Component({
   name: 'list-widget',
 })
-export default class ListWidget extends Vue {
+export default class ListWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
   addFieldName!: string;
 
@@ -58,6 +67,12 @@ export default class ListWidget extends Vue {
 
   @Prop({ default: null })
   defaultItem!: string | RepeatableField;
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
+
+  @Prop({ default: null })
+  dataPath!: string;
 
   get children() {
     const valueCopy = [...this.value];
@@ -162,9 +177,13 @@ export default class ListWidget extends Vue {
   align-items: center;
   flex-direction: row;
   margin-bottom: 8px;
+  flex-wrap: wrap;
 }
 .widget-list__container .widget-autocomplete__label {
   margin-bottom: 0px;
   width: 40%;
+}
+.widget-list__component .multiselect {
+  width: 60%;
 }
 </style>

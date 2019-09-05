@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-multiselect__container">
+  <div class="widget-multiselect__container" :class="toggleClassError">
     <label class="widget-multiselect__label" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
@@ -9,12 +9,14 @@
       :taggable="true"
       :close-on-select="false"
     ></multiselect>
+    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"></span>{{ messageError }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch, Mixins } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
+import FormWidget from './FormWidget.vue';
 
 @Component({
   name: 'multiselect-widget',
@@ -22,7 +24,7 @@ import Multiselect from 'vue-multiselect';
     Multiselect,
   },
 })
-export default class MultiselectWidget extends Vue {
+export default class MultiselectWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: null })
   id!: string;
 

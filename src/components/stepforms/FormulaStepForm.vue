@@ -1,14 +1,23 @@
 <template>
   <div>
     <step-form-title :title="title"></step-form-title>
-    <InputTextWidget id="formulaInput" v-model="editedStep.formula" name="Formula:" placeholder></InputTextWidget>
+    <InputTextWidget
+      id="formulaInput"
+      v-model="editedStep.formula"
+      name="Formula:"
+      placeholder
+      data-path=".formula"
+      :errors="errors">
+    </InputTextWidget>
     <InputTextWidget
       id="newColumnInput"
       v-model="editedStep.new_column"
       name="New colum:"
       placeholder="Enter a new column name"
-    ></InputTextWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+      data-path=".new_column"
+      :errors="errors">
+    </InputTextWidget>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 

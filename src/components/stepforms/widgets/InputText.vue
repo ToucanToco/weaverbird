@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-input-text__container">
+  <div class="widget-input-text__container" :class="toggleClassError">
     <label v-if="name" :for="id">{{name}}</label>
     <input
       :id="id"
@@ -11,15 +11,18 @@
       @focus="focus()"
       @input="updateValue($event.target.value)"
     />
+    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"></span>{{ messageError }}</div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
+import FormWidget from './FormWidget.vue';
+
 @Component({
   name: 'input-text-widget',
 })
-export default class InputTextWidget extends Vue {
+export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: null })
   id!: string;
 

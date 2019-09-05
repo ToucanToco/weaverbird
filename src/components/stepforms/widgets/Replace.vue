@@ -1,13 +1,26 @@
 <template>
   <div class="widget-to-replace__container">
-    <InputTextWidget id="valueToReplace" v-model="toReplace[0]" placeholder="Value to replace"></InputTextWidget>
-    <InputTextWidget id="newValue" v-model="toReplace[1]" placeholder="New value"></InputTextWidget>
+    <InputTextWidget
+      id="valueToReplace"
+      v-model="toReplace[0]"
+      placeholder="Value to replace"
+      :data-path="`${dataPath}[0]`"
+      :errors="errors"
+    ></InputTextWidget>
+    <InputTextWidget
+      id="newValue"
+      v-model="toReplace[1]"
+      placeholder="New value"
+      :data-path="`${dataPath}[1]`"
+      :errors="errors"
+    ></InputTextWidget>
   </div>
 </template>
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import InputTextWidget from './InputText.vue';
+import { ErrorObject } from 'ajv';
 
 @Component({
   name: 'replace-widget',
@@ -21,6 +34,12 @@ export default class ReplaceWidget extends Vue {
     default: () => ['', ''],
   })
   value!: any[];
+
+  @Prop({ type: String, default: null })
+  dataPath!: string;
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
 
   toReplace: any[] = [...this.value];
 

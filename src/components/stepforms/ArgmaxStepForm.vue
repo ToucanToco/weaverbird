@@ -6,6 +6,8 @@
       v-model="editedStep.column"
       name="Search min value in..."
       placeholder="Enter a column name"
+      data-path=".column"
+      :errors="errors"
     ></ColumnPicker>
     <MultiselectWidget
       id="groupbyColumnsInput"
@@ -14,8 +16,10 @@
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Add columns"
+      data-path=".groups"
+      :errors="errors"
     ></MultiselectWidget>
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
 
