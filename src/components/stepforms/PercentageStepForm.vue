@@ -12,7 +12,6 @@
       v-model="editedStep.group"
       name="(Optional) Group by..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.group[editedStep.group.length-1] })"
       placeholder="Add columns"
     ></MultiselectWidget>
     <InputTextWidget
