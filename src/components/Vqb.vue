@@ -22,7 +22,7 @@ import ResizablePanels from '@/components/ResizablePanels.vue';
     ResizablePanels,
   },
 })
-export default class Vqb extends Vue {}
+export default class Vqb extends Vue { }
 </script>
 <style lang="scss" scoped>
 .visual-query-builder {
