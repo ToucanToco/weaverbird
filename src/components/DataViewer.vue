@@ -40,6 +40,7 @@
           </tr>
         </tbody>
       </table>
+      <Pagination v-if="dataset.paginationContext.totalCount > pagesize" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
@@ -53,6 +54,7 @@ import { Component } from 'vue-property-decorator';
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
 import DataViewerCell from './DataViewerCell.vue';
+import Pagination from '@/components/Pagination.vue';
 import { CATEGORY_BUTTONS } from './constants';
 
 /**
@@ -66,10 +68,12 @@ import { CATEGORY_BUTTONS } from './constants';
     ActionMenu,
     ActionToolbar,
     DataViewerCell,
+    Pagination,
   },
 })
 export default class DataViewer extends Vue {
   @VQBModule.State dataset!: DataSet;
+  @VQBModule.State pagesize!: number;
   @VQBModule.State selectedColumns!: string[];
 
   @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;

@@ -16,7 +16,6 @@
       </transition>
       <div slot="right-panel">
         <DataViewer @stepCreated="createStepForm" />
-        <Pagination v-if="dataset.paginationContext.totalCount > pagesize" />
       </div>
     </ResizablePanels>
   </div>
@@ -30,7 +29,6 @@ import { VQBState } from '@/store/state';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import DataViewer from '@/components/DataViewer.vue';
-import Pagination from '@/components/Pagination.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
 import '@/components/stepforms'; // required to load all step forms
@@ -41,14 +39,12 @@ import { STEPFORM_REGISTRY } from './formlib';
   components: {
     DataViewer,
     Pipeline: PipelineComponent,
-    Pagination,
     ResizablePanels,
   },
 })
 export default class Vqb extends Vue {
   @VQBModule.State pipeline!: Pipeline;
   @VQBModule.State isEditingStep!: boolean;
-  @VQBModule.State pagesize!: number;
   @VQBModule.State dataset!: DataSet;
 
   @VQBModule.Getter computedActiveStepIndex!: number;

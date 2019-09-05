@@ -15,7 +15,7 @@ import { Pipeline } from '@/lib/steps';
 
 import { StateMutation } from './mutations';
 import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
-import { VQBState, activePipeline } from '@/store/state';
+import { activePipeline } from '@/store/state';
 import { pageOffset } from '@/lib/dataset/pagination';
 
 export interface BackendService {
@@ -36,7 +36,7 @@ export interface BackendService {
   executePipeline(pipeline: Pipeline, limit: number, offset: number): BackendResponse<DataSet>;
 }
 
-async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
+async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
   try {
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
     const response = await service.executePipeline(
