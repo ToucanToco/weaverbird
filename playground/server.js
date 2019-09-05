@@ -76,17 +76,18 @@ function assertIsConnected(client, err) {
 
 /**
  * Transform an aggregation query into a `$facet` one so that we can get in a single
- * query both total query conut (independently of `$limit` or `$skip` operators) and
+ * query both total query count (independently of `$limit` or `$skip` operators) and
  * the query results.
  *
  * @param {Array} query the initial aggregation query
  * @return the transformed `$facet` query
  */
-function facetize(query) {
+function facetize(query, limit, skip) {
   if (!query.length) {
     query.push({ $match: {} });
   }
   return [
+    ...query,
     {
       $facet: {
         stage1: [
@@ -97,7 +98,14 @@ function facetize(query) {
             },
           },
         ],
-        stage2: query,
+        stage2: [
+          {
+            $skip: skip,
+          },
+          {
+            $limit: limit,
+          },
+        ],
       },
     },
 
@@ -123,13 +131,13 @@ function facetize(query) {
  * @param onsuccess callback to call on success with results
  * @param onerror callback to call on error
  */
-function executeQuery(config, client, collectionName, query, onsuccess, onerror) {
+function executeQuery(config, client, collectionName, query, limit, skip, onsuccess, onerror) {
   client.connect(function(err) {
     assertIsConnected(client, err);
     const db = client.db(config.dbname);
     const collection = db.collection(collectionName);
     try {
-      collection.aggregate(facetize(query)).toArray(function(err, docs) {
+      collection.aggregate(facetize(query, limit, skip)).toArray(function(err, docs) {
         if (err) {
           onerror(err);
         } else {
@@ -182,12 +190,19 @@ function setupApp(config) {
   app.use(bodyParser.json());
 
   app.post('/query', (req, res) => {
-    executeQuery(config, client, req.body.collection, req.body.query, res.json.bind(res), function(
-      err,
-    ) {
-      res.status(400).send(err);
-      console.error(err);
-    });
+    executeQuery(
+      config,
+      client,
+      req.body.collection,
+      req.body.query,
+      req.body.limit,
+      req.body.skip,
+      res.json.bind(res),
+      function(err) {
+        res.status(400).send(err);
+        console.error(err);
+      },
+    );
   });
 
   app.post('/load', upload.single('file'), (req, res) => {

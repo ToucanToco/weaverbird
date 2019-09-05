@@ -20,15 +20,7 @@ class MongoService {
   async executePipeline(pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
     const query = mongo36translator.translate(subpipeline);
-    // first offset
-    if (offset) {
-      query.push({ $skip: offset });
-    }
-    // then limit
-    if (limit) {
-      query.push({ $limit: limit });
-    }
-    const { isResponseOk, responseContent } = await this.executeQuery(query, domain);
+    const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
       const [{ count, data: rset }] = responseContent;
@@ -49,12 +41,14 @@ class MongoService {
     }
   }
 
-  async executeQuery(query, collection) {
+  async executeQuery(query, collection, limit, skip) {
     const response = await fetch('/query', {
       method: 'POST',
       body: JSON.stringify({
         query,
         collection,
+        limit,
+        skip,
       }),
       headers: {
         'Content-Type': 'application/json',
