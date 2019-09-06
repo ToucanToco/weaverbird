@@ -143,13 +143,21 @@ export default {
    */
   setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
     state.domains = domains;
-    state.currentDomain = domains.length ? domains[0] : undefined;
+    if (!state.currentDomain || (domains.length && !domains.includes(state.currentDomain))) {
+      state.currentDomain = domains[0];
+    }
   },
   /**
    * update pipeline.
    */
   setPipeline(state: VQBState, { pipeline }: Pick<VQBState, 'pipeline'>) {
     state.pipeline = pipeline;
+    if (pipeline.length) {
+      const firstStep = pipeline[0];
+      if (firstStep.name === 'domain') {
+        state.currentDomain = firstStep.domain;
+      }
+    }
   },
   /**
    * update dataset.
@@ -204,5 +212,4 @@ export default {
   setLoading(state: VQBState, { isLoading }: { isLoading: boolean }) {
     state.isLoading = isLoading;
   },
-
 };
