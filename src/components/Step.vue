@@ -8,7 +8,7 @@
       <div :class="lastStrokeClass"></div>
     </div>
     <div class="query-pipeline-step">
-      <span class="query-pipeline-step__name">{{ stepLabel() }}</span>
+      <span class="query-pipeline-step__name" :title="stepLabel()">{{ stepLabel() }}</span>
       <div class="query-pipeline-step__actions">
         <div class="query-pipeline-step__action">
           <i class="fas fa-cog" @click="editStep()"></i>
