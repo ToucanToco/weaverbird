@@ -75,7 +75,7 @@ export type FilterSimpleCondition =
 
 type FilterConditionComparison = {
   column: string;
-  value: number;
+  value: number | string;
   operator: 'gt' | 'ge' | 'lt' | 'le';
 };
 
