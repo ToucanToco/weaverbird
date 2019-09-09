@@ -4,6 +4,7 @@
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { BackendError } from '@/lib/backend-response';
+import { ScopeContext } from '@/lib/templating';
 
 export interface VQBState {
   /**
@@ -55,6 +56,11 @@ export interface VQBState {
    * whether the data is loading
    */
   isLoading: boolean;
+
+  /**
+   * variables scope, if any.
+   */
+  variables?: ScopeContext;
 }
 
 /**
