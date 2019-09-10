@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
 import Vuex, { Store } from 'vuex';
 import { setupMockStore } from './utils';
 import { Pipeline } from '@/lib/steps';
+import { ScopeContext } from '@/lib/templating';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -71,6 +73,39 @@ describe('Top Step Form', () => {
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] }]],
+    });
+  });
+
+  it('should accept templatable values', async () => {
+    function interpolate(s: string, context: ScopeContext) {
+      const compiled = _.template(s);
+      return compiled(context);
+    }
+    const wrapper = mount(TopStepForm, {
+      store: setupMockStore({
+        variables: {
+          leemeat: 42,
+        },
+        interpolator: interpolate,
+      }),
+      localVue,
+      propsData: {
+        initialStepValue: {
+          name: 'top',
+          rank_on: 'foo',
+          sort: 'asc',
+          limit: '<%= leemeat %>',
+          groups: ['test'],
+        },
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    await localVue.nextTick();
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [
+        [{ name: 'top', rank_on: 'foo', sort: 'asc', limit: '<%= leemeat %>', groups: ['test'] }],
+      ],
     });
   });
 

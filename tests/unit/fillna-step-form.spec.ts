@@ -166,6 +166,32 @@ describe('Fillna Step Form', () => {
     });
   });
 
+  it('should accept templatable values', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'foo', type: 'integer' }],
+        data: [[null]],
+      },
+      variables: {
+        foo: 'bla',
+      },
+    });
+    const wrapper = mount(FillnaStepForm, {
+      store,
+      localVue,
+      data: () => {
+        return {
+          editedStep: { name: 'fillna', column: 'foo', value: '<%= foo %>' },
+        };
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [[{ name: 'fillna', column: 'foo', value: '<%= foo %>' }]],
+    });
+  });
+
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = mount(FillnaStepForm, { store: emptyStore, localVue });
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
