@@ -150,11 +150,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   interpolate(pipeline: S.Pipeline): S.Pipeline {
-    const result: S.Pipeline = [];
-    for (const step of pipeline) {
-      const callback = this[step.name] as StepInterpolator;
-      result.push(callback.bind(this)(step));
-    }
-    return result;
+    return pipeline.map(this.interpolateStep.bind(this));
+  }
+
+  interpolateStep(step: S.PipelineStep): S.PipelineStep {
+    const callback = this[step.name] as StepInterpolator;
+    return callback.bind(this)(step);
   }
 }
