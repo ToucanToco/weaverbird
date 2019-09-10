@@ -53,7 +53,7 @@ describe('Top Step Form', () => {
         err1.dataPath.localeCompare(err2.dataPath),
       );
     expect(errors).toEqual([
-      { keyword: 'required', dataPath: '' },
+      { keyword: 'type', dataPath: '.limit' },
       { keyword: 'minLength', dataPath: '.rank_on' },
     ]);
   });
