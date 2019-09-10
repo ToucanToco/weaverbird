@@ -3,6 +3,7 @@
  */
 
 type PrimitiveType = number | boolean | string | Date;
+type Templatable<T> = T | string;
 
 export type AggFunctionStep = {
   /** Name of the output column */
@@ -149,7 +150,7 @@ export type TopStep = {
   groups?: string[];
   rank_on: string;
   sort: 'asc' | 'desc';
-  limit: number;
+  limit: Templatable<number>;
 };
 
 export type UnpivotStep = {

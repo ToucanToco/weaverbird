@@ -527,7 +527,7 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave top steps untouched', () => {
+  it('should leave top steps untouched if no variable is found', () => {
     const pipeline: Pipeline = [
       {
         name: 'top',
@@ -537,6 +537,25 @@ describe('Pipeline interpolator', () => {
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should interpolate top steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'top',
+        rank_on: '<%= foo %>',
+        sort: 'asc',
+        limit: '<%= age %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'top',
+        rank_on: '<%= foo %>',
+        sort: 'asc',
+        limit: 42,
+      },
+    ]);
   });
 
   it('should leave unpivot steps untouched', () => {

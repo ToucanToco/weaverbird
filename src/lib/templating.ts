@@ -142,7 +142,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   top(step: Readonly<S.TopStep>) {
-    return { ...step };
+    return { ...step, limit: Number(_interpolate(this.interpolator, step.limit, this.context)) };
   }
 
   unpivot(step: Readonly<S.UnpivotStep>) {
