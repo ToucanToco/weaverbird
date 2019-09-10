@@ -9,7 +9,7 @@ export type ScopeContext = {
   [varname: string]: any;
 };
 
-type Interpolator = (template: string, context: ScopeContext) => any;
+export type Interpolator = (template: string, context: ScopeContext) => any;
 type StepInterpolator = (step: S.PipelineStep) => S.PipelineStep;
 type ConditionType = S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr;
 

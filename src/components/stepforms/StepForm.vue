@@ -9,10 +9,19 @@ import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import schemaFactory from '@/components/stepforms/schemas';
 import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
-import { Pipeline } from '@/lib/steps';
-import { Writable } from '@/lib/steps';
+import { Pipeline, Writable, PipelineStep } from '@/lib/steps';
+import { ScopeContext, PipelineInterpolator, Interpolator } from '@/lib/templating';
 
 type VqbError = Partial<ErrorObject>;
+/**
+ * ValidatorProxy emulates the interpolate + ajv-validation combo.
+ * It is essentially a validation function that can have an `errors`
+ * attribute (just as the `Ajv.ValidationFunc`).
+ */
+type ValidatorProxy = {
+  (step: PipelineStep): boolean | PromiseLike<any>;
+  errors?: ErrorObject[] | null;
+}
 
 /**
  * build a proxy on a Vue component instance that will automatically
@@ -77,8 +86,10 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: Object, default: null })
   initialStepValue!: StepType;
 
+  @VQBModule.State('interpolator') interpolationFunc!: Interpolator;
   @VQBModule.State pipeline!: Pipeline;
   @VQBModule.State selectedStepIndex!: number;
+  @VQBModule.State variables!: ScopeContext;
 
   @VQBModule.Mutation selectStep!: (payload: { index: number }) => void;
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
@@ -107,7 +118,17 @@ export default class BaseStepForm<StepType> extends Vue {
     this.editedStepModel = schemaFactory(this.stepname, this);
     const ajv = Ajv({ schemaId: 'auto', allErrors: true });
     addAjvKeywords(ajv);
-    this.validator = ajv.compile(this.editedStepModel);
+    const ajvValidator = ajv.compile(this.editedStepModel);
+    const interpolator = new PipelineInterpolator(
+      this.interpolationFunc,
+      this.variables);
+
+    const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
+      const ret = ajvValidator(interpolator.interpolateStep(step));
+      interpolateAndValidate.errors = ajvValidator.errors;
+      return ret;
+    }
+    this.validator = interpolateAndValidate;
   }
 
   mounted() {
