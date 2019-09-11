@@ -1,7 +1,14 @@
 {
-  "name": "vue-query-builder",
+  "name": "visual-query-builder",
   "version": "0.1.0",
-  "private": true,
+  "description": "A generic Visual Query Builder built in Vue.js",
+  "keywords": [
+    "query builder",
+    "vue"
+  ],
+  "license": "BSD-3-Clause",
+  "repository": "github:ToucanToco/vue-query-builder",
+  "prepublish": "rollup -c",
   "scripts": {
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
     "lint": "eslint src/{components,lib,store}/*.{ts,vue} tests/**/*.ts",
