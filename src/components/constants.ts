@@ -30,7 +30,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   filter: [
     { name: 'delete', label: 'Delete columns' },
     { name: 'select', label: 'Keep columns' },
-    { name: 'filter', label: 'Filter based on conditions' },
+    { name: 'filter', label: 'Filter rows' },
     { name: 'top', label: 'Top N rows' },
     { name: 'argmax', label: 'Argmax' },
     { name: 'argmin', label: 'Argmin' },
