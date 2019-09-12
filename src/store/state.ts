@@ -46,6 +46,11 @@ export interface VQBState {
    * error send by backend or catch from its interface
    */
   backendError?: BackendError;
+
+  /**
+   * whether the data is loading
+   */
+  isLoading: boolean;
 }
 
 /**
@@ -69,6 +74,7 @@ export const emptyState: VQBState = {
   isEditingStep: false,
   pagesize: 50,
   backendError: undefined,
+  isLoading: false,
 };
 
 /**

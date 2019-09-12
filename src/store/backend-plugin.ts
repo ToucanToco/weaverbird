@@ -37,6 +37,7 @@ export interface BackendService {
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
   try {
+    store.commit('setLoading', { isLoading: true });
     const response = await service.executePipeline(
       pipeline,
       store.state.pagesize,
@@ -44,15 +45,18 @@ async function _updateDataset(store: Store<VQBState>, service: BackendService, p
     );
     if (response.error) {
       store.commit('setBackendError', { backendError: { type: 'error', message: response.error } });
+      store.commit('setLoading', { isLoading: false });
     } else {
       store.commit('setDataset', { dataset: response.data });
       // reset backend error to undefined:
       store.commit('setBackendError', { backendError: undefined });
+      store.commit('setLoading', { isLoading: false });
     }
   } catch (error) {
     store.commit('setBackendError', {
       backendError: { type: 'error', message: error },
     });
+    store.commit('setLoading', { isLoading: false });
   }
 }
 
