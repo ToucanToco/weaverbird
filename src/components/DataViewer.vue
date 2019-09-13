@@ -86,7 +86,6 @@ export default class DataViewer extends Vue {
   indexActiveActionMenu: number = -1;
 
   @State isLoading!: boolean;
-  @Mutation toggleIsLoading!: () => void;
 
   /**
    * @description Get our columns with their names and linked classes
@@ -151,7 +150,6 @@ export default class DataViewer extends Vue {
 
   closeMenu() {
     this.indexActiveActionMenu = -1;
-
   }
 
   /**
@@ -178,8 +176,8 @@ export default class DataViewer extends Vue {
   margin: 50px auto;
 }
 
-@keyframes spin{
-  to{
+@keyframes spin  {
+  to {
       transform:rotate(1turn);
     }
 }

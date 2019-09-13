@@ -175,7 +175,7 @@ export default {
    * toggle loading
    */
   setLoading(state: VQBState, { isLoading }: { isLoading: boolean }) {
-    state.isLoading = !state.isLoading;
+    state.isLoading = isLoading;
   },
 
 };

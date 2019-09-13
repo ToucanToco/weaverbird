@@ -19,19 +19,13 @@ describe('Data Viewer', () => {
     expect(wrapper.text()).toEqual('No data available');
   });
 
-  it('should display a loader spinner when data is loading', () => {
+  it('should display a loader spinner when data is loading and hide data viewer container', () => {
     const wrapper = shallowMount(DataViewer, { store: setupStore({
       isLoading: true
     }), localVue });
     const wrapperLoaderSpinner = wrapper.find('.data-viewer-loader-spinner');
-    expect(wrapperLoaderSpinner.exists()).toBeTruthy();
-  });
-
-  it('should not display data viewer table container while data is loading', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupStore({
-      isLoading: true
-    }), localVue });
     const wrapperDataViewerContainer = wrapper.find('.data-viewer-container');
+    expect(wrapperLoaderSpinner.exists()).toBeTruthy();
     expect(wrapperDataViewerContainer.exists()).toBeFalsy();
   });
 
