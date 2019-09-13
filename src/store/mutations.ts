@@ -170,4 +170,12 @@ export default {
   setBackendError(state: VQBState, { backendError }: Pick<VQBState, 'backendError'>) {
     state.backendError = backendError;
   },
+
+  /**
+   * toggle loading
+   */
+  setLoading(state: VQBState, { isLoading }: { isLoading: boolean }) {
+    state.isLoading = isLoading;
+  },
+
 };

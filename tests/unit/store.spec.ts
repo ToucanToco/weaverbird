@@ -316,4 +316,12 @@ describe('mutation tests', () => {
     });
     expect(state.backendError).toEqual({ type: 'error', message: 'error msg' });
   });
+
+  it('set loading to true', () => {
+    const state = buildState({});
+    mutations.setLoading(state, {
+      isLoading: true,
+    });
+    expect(state.isLoading).toEqual(true);
+  });
 });

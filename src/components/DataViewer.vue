@@ -1,7 +1,8 @@
 <template>
   <div>
     <ActionToolbar :buttons="buttons" @actionClicked="createStep"></ActionToolbar>
-    <div v-if="!isEmpty" class="data-viewer-container">
+    <div v-if="isLoading" class="data-viewer-loader-spinner"></div>
+    <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
       <table class="data-viewer-table">
         <thead class="data-viewer__header">
           <tr>
@@ -44,7 +45,7 @@
         </tbody>
       </table>
     </div>
-    <div v-else>No data available</div>
+    <div v-else-if="isEmpty">No data available</div>
   </div>
 </template>
 <script lang="ts">
@@ -83,6 +84,8 @@ export default class DataViewer extends Vue {
   @Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
   indexActiveActionMenu: number = -1;
+
+  @State isLoading!: boolean;
 
   /**
    * @description Get our columns with their names and linked classes
@@ -160,5 +163,22 @@ export default class DataViewer extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+@import '../styles/_variables';
 @import '../styles/DataViewer';
+
+.data-viewer-loader-spinner {
+  border-radius: 50%;
+  border: 4px solid #efefef;
+  border-top-color: $active-color;
+  width: 50px;
+  height: 50px;
+  animation: spin 1500ms ease-in-out infinite;
+  margin: 50px auto;
+}
+
+@keyframes spin  {
+  to {
+      transform:rotate(1turn);
+    }
+}
 </style>

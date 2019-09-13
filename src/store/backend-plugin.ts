@@ -37,6 +37,7 @@ export interface BackendService {
 
 async function _updateDataset(store: Store<VQBState>, service: BackendService, pipeline: Pipeline) {
   try {
+    store.commit('setLoading', { isLoading: true });
     const response = await service.executePipeline(
       pipeline,
       store.state.pagesize,
@@ -54,6 +55,7 @@ async function _updateDataset(store: Store<VQBState>, service: BackendService, p
       backendError: { type: 'error', message: error },
     });
   }
+  store.commit('setLoading', { isLoading: false });
 }
 
 /**
