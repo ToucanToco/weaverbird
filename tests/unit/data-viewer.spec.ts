@@ -20,9 +20,12 @@ describe('Data Viewer', () => {
   });
 
   it('should display a loader spinner when data is loading and hide data viewer container', () => {
-    const wrapper = shallowMount(DataViewer, { store: setupStore({
-      isLoading: true
-    }), localVue });
+    const wrapper = shallowMount(DataViewer, {
+      store: setupStore({
+        isLoading: true,
+      }),
+      localVue,
+    });
     const wrapperLoaderSpinner = wrapper.find('.data-viewer-loader-spinner');
     const wrapperDataViewerContainer = wrapper.find('.data-viewer-container');
     expect(wrapperLoaderSpinner.exists()).toBeTruthy();
@@ -172,6 +175,27 @@ describe('Data Viewer', () => {
         firstHeaderCellWrapper.trigger('click');
         await localVue.nextTick();
         expect(firstHeaderCellWrapper.classes()).toContain('data-viewer__header-cell--active');
+      });
+
+      it('should open the action menu', async () => {
+        const store = setupStore({
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+          },
+        });
+        const wrapper = shallowMount(DataViewer, { store, localVue });
+
+        const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
+        firstHeaderCellWrapper.trigger('click');
+        await localVue.nextTick();
+        expect(wrapper.find('actionmenu-stub').exists()).toBeTruthy();
       });
     });
   });

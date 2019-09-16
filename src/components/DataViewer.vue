@@ -10,7 +10,7 @@
               v-for="(column, index) in formattedColumns"
               :class="column.class"
               :key="column.name"
-              @click="toggleColumnSelection({ column: column.name})"
+              @click.stop="openMenu(index)"
             >
               <span
                 v-if="column.type"
@@ -21,7 +21,6 @@
               <i
                 class="data-viewer__header-action fas fa-angle-down"
                 :class="{'data-viewer__header-action--visible': column.isActionMenuOpened}"
-                @click.stop="openMenu(index)"
               >
                 <ActionMenu
                   :column-name="column.name"
@@ -176,9 +175,9 @@ export default class DataViewer extends Vue {
   margin: 50px auto;
 }
 
-@keyframes spin  {
+@keyframes spin {
   to {
-      transform:rotate(1turn);
-    }
+    transform: rotate(1turn);
+  }
 }
 </style>
