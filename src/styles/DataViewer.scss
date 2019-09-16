@@ -84,8 +84,6 @@
 }
 
 .data-viewer__header-action {
-  opacity: 0;
-  visibility: hidden;
   position: absolute;
   font-size: 18px;
   right: 10px;
@@ -101,12 +99,6 @@
 
 .data-viewer__header-action:hover {
   background-color: $data-viewer-border-color;
-}
-
-.data-viewer__header-action--visible {
-  opacity: 1;
-  visibility: visible;
-  background-color: $active-color-faded-2;
 }
 
 .data-viewer__header-cell:hover {

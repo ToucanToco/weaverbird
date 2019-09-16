@@ -18,11 +18,7 @@
                 class="data-viewer__header-icon"
               ></span>
               <span class="data-viewer__header-label">{{ column.name }}</span>
-              <i
-                class="data-viewer__header-action fas fa-angle-down"
-                :class="{'data-viewer__header-action--visible': column.isActionMenuOpened}"
-                @click.stop="openMenu(index)"
-              >
+              <i class="data-viewer__header-action fas fa-angle-down" @click.stop="openMenu(index)">
                 <ActionMenu
                   :column-name="column.name"
                   :is-active="column.isActionMenuOpened"
@@ -176,9 +172,9 @@ export default class DataViewer extends Vue {
   margin: 50px auto;
 }
 
-@keyframes spin  {
+@keyframes spin {
   to {
-      transform:rotate(1turn);
-    }
+    transform: rotate(1turn);
+  }
 }
 </style>
