@@ -82,10 +82,10 @@ function completeClientRect(customRect: Partial<ClientRect> = {}): ClientRect {
  */
 function completeOffset(customOffset: Partial<ElementOffset> = {}): ElementOffset {
   const defaultOffset = {
-    offsetWidth: 0,
-    offsetHeight: 0,
+    offsetWidth: customOffset.offsetWidth || 0,
+    offsetHeight: customOffset.offsetHeight || 0,
   };
-  return { ...defaultOffset, ...customOffset };
+  return defaultOffset;
 }
 
 /**
