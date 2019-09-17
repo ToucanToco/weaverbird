@@ -10,11 +10,15 @@
     <div class="query-pipeline-step">
       <span class="query-pipeline-step__name" :title="stepLabel()">{{ stepLabel() }}</span>
       <div class="query-pipeline-step__actions">
-        <div class="query-pipeline-step__action">
-          <i class="fas fa-cog" @click="editStep()"></i>
+        <div class="query-pipeline-step__action" @click="editStep()">
+          <i class="fas fa-cog"></i>
         </div>
-        <div class="query-pipeline-step__action" v-if="!isFirst">
-          <i class="fas fa-trash-alt" @click="toggleDeleteConfirmationModal"></i>
+        <div
+          v-if="!isFirst"
+          class="query-pipeline-step__action"
+          @click="toggleDeleteConfirmationModal"
+        >
+          <i class="fas fa-trash-alt"></i>
         </div>
       </div>
     </div>
