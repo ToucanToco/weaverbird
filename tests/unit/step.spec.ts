@@ -96,6 +96,27 @@ describe('Step.vue', () => {
     expect(modal.exists()).toBeTruthy();
   });
 
+  it('should render a delete confirmation modal when clicking on the button with the trash icon', async () => {
+    const wrapper = shallowMount(Step, {
+      propsData: {
+        key: 0,
+        isActive: true,
+        isDisabled: false,
+        isFirst: false,
+        isLast: true,
+        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        indexInPipeline: 2,
+      },
+    });
+    wrapper
+      .findAll('.query-pipeline-step__action')
+      .at(1)
+      .trigger('click');
+    await localVue.nextTick();
+    const modal = wrapper.find('deleteconfirmationmodal-stub');
+    expect(modal.exists()).toBeTruthy();
+  });
+
   it('should not render a trash icon on domain step', () => {
     const wrapper = shallowMount(Step, {
       propsData: {
@@ -173,6 +194,27 @@ describe('Step.vue', () => {
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
     renameStep.find('.fa-cog').trigger('click');
+    expect(renameStep.emitted().editStep).toBeDefined();
+    expect(renameStep.emitted().editStep).toEqual([
+      [{ name: 'rename', newname: 'kingdom', oldname: 'region' }, 2],
+    ]);
+  });
+
+  it('should toggle the edit mode when clicking on button with the edit icon and emit editStep', async () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'rename', oldname: 'region', newname: 'kingdom' },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const store = setupStore({ pipeline, isEditingStep: false });
+    const wrapper = mount(PipelineComponent, { store, localVue });
+    const stepsArray = wrapper.findAll(Step);
+    const renameStep = stepsArray.at(2);
+    renameStep
+      .findAll('.query-pipeline-step__action')
+      .at(0)
+      .trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
       [{ name: 'rename', newname: 'kingdom', oldname: 'region' }, 2],
