@@ -78,24 +78,6 @@ describe('Step.vue', () => {
     expect(modal.exists()).toBeTruthy();
   });
 
-  it('renders a delete confirmation modal when clicking on the trash icon', async () => {
-    const wrapper = shallowMount(Step, {
-      propsData: {
-        key: 0,
-        isActive: true,
-        isDisabled: false,
-        isFirst: false,
-        isLast: true,
-        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
-        indexInPipeline: 2,
-      },
-    });
-    wrapper.find('.fa-trash-alt').trigger('click');
-    await localVue.nextTick();
-    const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).toBeTruthy();
-  });
-
   it('should render a delete confirmation modal when clicking on the button with the trash icon', async () => {
     const wrapper = shallowMount(Step, {
       propsData: {
