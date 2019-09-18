@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="data-viewer">
     <ActionToolbar :buttons="buttons" @actionClicked="openStepForm"></ActionToolbar>
     <div v-if="isLoading" class="data-viewer-loader-spinner"></div>
     <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
