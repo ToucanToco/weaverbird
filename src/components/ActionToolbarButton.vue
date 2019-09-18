@@ -138,13 +138,6 @@ export default class ActionToolbarButton extends Vue {
   margin-bottom: 6px;
 }
 
-.action-toolbar__btn-icon--reshape {
-  background: url(../assets/reshape-icon.png) no-repeat;
-  display: inline-block;
-  width: 16px;
-  height: 15px;
-}
-
 .action-toolbar__btn-txt {
   display: block;
   font-size: 10px;
