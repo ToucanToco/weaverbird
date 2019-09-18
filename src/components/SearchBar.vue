@@ -59,7 +59,7 @@ export default class SearchBar extends Vue {
   padding-left: 35px;
   min-height: 43px;
   &:before {
-    font-family: 'Font Awesome 5 Free';
+    font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
     content: '\f002';
     -webkit-font-smoothing: antialiased;
     display: inline-block;
