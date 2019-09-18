@@ -494,7 +494,10 @@ const mapper: StepMatcher<MongoStep> = {
 export class Mongo36Translator extends BaseTranslator {
   translate(pipeline: Pipeline) {
     const mongoSteps = super.translate(pipeline).flat();
-    return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
+    if (mongoSteps.length) {
+      return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
+    }
+    return _simplifyMongoPipeline(mongoSteps);
   }
 }
 Object.assign(Mongo36Translator.prototype, mapper);

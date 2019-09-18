@@ -45,6 +45,7 @@ export interface BackendService {
 }
 
 async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
+  if (!store.state[VQB_MODULE_NAME].pipeline.length) return;
   try {
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
     const response = await service.executePipeline(

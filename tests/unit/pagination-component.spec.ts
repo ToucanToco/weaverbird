@@ -60,6 +60,7 @@ describe('Pagination Component', () => {
     const pagesize = 2;
     const store = setupMockStore(
       {
+        pipeline: [{ name: 'domain', domain: 'foo' }],
         dataset: {
           headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
           data: [['Paris', 10000000, true], ['Marseille', 3000000, false]],
