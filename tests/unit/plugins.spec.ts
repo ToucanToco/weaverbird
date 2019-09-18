@@ -84,7 +84,14 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline when a deleteStep mutation is committed', async () => {
-    const store: Store<any> = setupMockStore({}, [servicePluginFactory(new DummyService())]);
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const store: Store<any> = setupMockStore({ pipeline }, [
+      servicePluginFactory(new DummyService()),
+    ]);
     store.commit(VQBnamespace('deleteStep'), { index: 2 });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
