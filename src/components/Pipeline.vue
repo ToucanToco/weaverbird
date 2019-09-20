@@ -13,10 +13,10 @@
       @selectedStep="selectStep({ index: index })"
       @editStep="editStep"
     />
-    <div v-if="onlyDomainStepIsPresent" class="query-pipeline__empty-container">
+    <div class="query-pipeline__tips-container">
       <div
-        class="query-pipeline__empty-message"
-      >Start playing with data directly from the right table</div>
+        class="query-pipeline__tips"
+      >Interact with the widgets and table on the right to add steps</div>
       <i class="fas fa-magic"></i>
     </div>
   </div>

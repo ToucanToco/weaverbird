@@ -48,15 +48,13 @@ describe('Pipeline.vue', () => {
     });
   });
 
-  describe('when only domain step', () => {
-    it('should render a container with message', () => {
-      const pipeline: Pipeline = [{ name: 'domain', domain: 'GoT' }];
-      const store = setupMockStore({ pipeline });
-      const wrapper = shallowMount(PipelineComponent, { store, localVue });
-      expect(wrapper.find('.query-pipeline__empty-message').text()).toEqual(
-        'Start playing with data directly from the right table',
-      );
-      expect(wrapper.find('.fa-magic').exists()).toBeTruthy();
-    });
+  it('should render a container with tips', () => {
+    const pipeline: Pipeline = [{ name: 'domain', domain: 'GoT' }];
+    const store = setupMockStore({ pipeline });
+    const wrapper = shallowMount(PipelineComponent, { store, localVue });
+    expect(wrapper.find('.query-pipeline__tips').text()).toEqual(
+      'Interact with the widgets and table on the right to add steps',
+    );
+    expect(wrapper.find('.fa-magic').exists()).toBeTruthy();
   });
 });
