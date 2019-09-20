@@ -46,6 +46,65 @@ describe('Filter Step Form', () => {
     });
   });
 
+  it('should use selected column at creation', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        data: [[null]],
+      },
+      selectedColumns: ['bar'],
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+    });
+    expect(wrapper.vm.$data.editedStep.condition.and[0].column).toEqual('bar');
+  });
+
+  it('should have no default column if no selected column', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        data: [[null]],
+      },
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+    });
+    expect(wrapper.vm.$data.editedStep.condition.and[0].column).toEqual('');
+  });
+
+  it('should not use selected column on edition', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        data: [[null]],
+      },
+      selectedColumns: ['bar'],
+    });
+    const wrapper = mount(FilterStepForm, {
+      store,
+      localVue,
+      sync: false,
+      propsData: {
+        isStepCreation: false,
+        initialStepValue: {
+          name: 'filter',
+          condition: {
+            and: [{ column: 'foo', value: 'bar', operator: 'gt' }],
+          },
+        },
+      },
+    });
+    // we're editing an existing step with column `foo`, therefore even if the
+    // column `bar` is selected in the interface, the step column should remain
+    // `foo`.
+    expect(wrapper.vm.$data.editedStep.condition.and[0].column).toEqual('foo');
+  });
+
   it('should report errors when submitted data is not valid', () => {
     const store = setupMockStore({
       dataset: {
@@ -57,13 +116,11 @@ describe('Filter Step Form', () => {
       store,
       localVue,
       sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'filter',
-            condition: { and: [] },
-          },
-        };
+    });
+    wrapper.setData({
+      editedStep: {
+        name: 'filter',
+        condition: { and: [] },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -127,18 +184,16 @@ describe('Filter Step Form', () => {
       store,
       localVue,
       sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'filter',
-            condition: {
-              and: [
-                { column: 'columnA', operator: 'gt', value: '10' },
-                { column: 'columnA', operator: 'in', value: ['0', '42'] },
-              ],
-            },
-          },
-        };
+    });
+    wrapper.setData({
+      editedStep: {
+        name: 'filter',
+        condition: {
+          and: [
+            { column: 'columnA', operator: 'gt', value: '10' },
+            { column: 'columnA', operator: 'in', value: ['0', '42'] },
+          ],
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -171,18 +226,16 @@ describe('Filter Step Form', () => {
       store,
       localVue,
       sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'filter',
-            condition: {
-              and: [
-                { column: 'columnA', operator: 'gt', value: '10.3' },
-                { column: 'columnA', operator: 'in', value: ['0', '42.1'] },
-              ],
-            },
-          },
-        };
+    });
+    wrapper.setData({
+      editedStep: {
+        name: 'filter',
+        condition: {
+          and: [
+            { column: 'columnA', operator: 'gt', value: '10.3' },
+            { column: 'columnA', operator: 'in', value: ['0', '42.1'] },
+          ],
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -215,18 +268,16 @@ describe('Filter Step Form', () => {
       store,
       localVue,
       sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'filter',
-            condition: {
-              and: [
-                { column: 'columnA', operator: 'eq', value: 'true' },
-                { column: 'columnA', operator: 'in', value: ['True', 'False'] },
-              ],
-            },
-          },
-        };
+    });
+    wrapper.setData({
+      editedStep: {
+        name: 'filter',
+        condition: {
+          and: [
+            { column: 'columnA', operator: 'eq', value: 'true' },
+            { column: 'columnA', operator: 'in', value: ['True', 'False'] },
+          ],
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
