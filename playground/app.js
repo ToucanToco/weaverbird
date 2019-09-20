@@ -94,6 +94,7 @@ async function setupInitialData(store, domain = null) {
     });
   } else {
     const response = await mongoservice.executePipeline(
+      store,
       store.state[VQB_MODULE_NAME].pipeline,
       store.state[VQB_MODULE_NAME].pagesize,
     );
