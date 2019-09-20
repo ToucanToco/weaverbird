@@ -117,6 +117,11 @@ export default class FilterSimpleConditionWidget extends Vue {
     }
   }
 
+  @Watch('value', { immediate: true })
+  updateEditedValue(newValue: FilterSimpleCondition) {
+    this.editedValue = newValue;
+  }
+
   @Watch('editedValue', { deep: true })
   updateValue(newValue: FilterSimpleCondition) {
     this.$emit('input', newValue);

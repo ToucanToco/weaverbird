@@ -26,7 +26,7 @@ import { StepFormComponent } from '@/components/formlib';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import ListWidget from './widgets/List.vue';
 import BaseStepForm from './StepForm.vue';
-import { FilterStep, FilterComboAnd } from '@/lib/steps';
+import { FilterStep, FilterComboAnd, isFilterComboAnd } from '@/lib/steps';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
@@ -52,9 +52,25 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
-  condition = this.initialStepValue.condition as FilterComboAnd;
-  editedStep = { name: 'filter' as 'filter', condition: { ...this.condition } };
   widgetFilterSimpleCondition = FilterSimpleConditionWidget;
+
+  mounted() {
+    // On creation, if a column is selected, use it to set "column" property of
+    // the filter step
+    if (this.isStepCreation && this.selectedColumns[0]) {
+      const condition = { and: [{ column: this.selectedColumns[0], value: '', operator: 'eq' }] };
+      this.editedStep = {
+        name: 'filter' as 'filter',
+        condition: condition as FilterComboAnd,
+      };
+    } else {
+      // Otherwise, fallback on the default initial value
+      this.editedStep = {
+        name: 'filter' as 'filter',
+        condition: { ...this.initialStepValue.condition },
+      };
+    }
+  }
 
   get defaultCondition() {
     const cond: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };
@@ -62,7 +78,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   }
 
   get conditions() {
-    if (this.editedStep.condition.and.length) {
+    if (isFilterComboAnd(this.editedStep.condition) && this.editedStep.condition.and.length) {
       return this.editedStep.condition.and;
     } else {
       return [this.defaultCondition];
@@ -70,17 +86,21 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   }
 
   set conditions(newval) {
-    this.editedStep.condition.and = [...newval];
+    if (isFilterComboAnd(this.editedStep.condition)) {
+      this.editedStep.condition.and = [...newval];
+    }
   }
 
   submit() {
-    for (const cond of this.editedStep.condition.and as FilterSimpleCondition[]) {
-      const type = this.columnTypes[cond.column];
-      if (type !== undefined) {
-        if (Array.isArray(cond.value)) {
-          cond.value = cond.value.map(v => castFromString(v, type));
-        } else {
-          cond.value = castFromString(cond.value, type);
+    if (isFilterComboAnd(this.editedStep.condition)) {
+      for (const cond of this.editedStep.condition.and as FilterSimpleCondition[]) {
+        const type = this.columnTypes[cond.column];
+        if (type !== undefined) {
+          if (Array.isArray(cond.value)) {
+            cond.value = cond.value.map(v => castFromString(v, type));
+          } else {
+            cond.value = castFromString(cond.value, type);
+          }
         }
       }
     }
