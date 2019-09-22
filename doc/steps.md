@@ -458,6 +458,44 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 | Label 2 | 1      | 13     | 7      | 3      | -4     |
 | Label 3 | 5      | 20     | 5      | 2      | 1      |
 
+### `lowercase` step
+
+Converts a string `column` to lowercase.
+
+```javascript
+{
+  name: 'lowercase',
+  column: 'foo',
+}
+```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'lowercase',
+  column: 'Label',
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| label 1 | Group 1 | 13    |
+| label 2 | Group 1 | 7     |
+| label 3 | Group 1 | 20    |
+
 ### `percentage` step
 
 Compute the percentage of total, i.e. for every row the value in `column` divided
@@ -745,44 +783,6 @@ When sorting on several columns, order of columns specified in `columns` matters
 | Label 6 | Group 2 | 5     |
 | Label 4 | Group 2 | 1     |
 
-### `lowercase` step
-
-Converts a string `column` to lowercase.
-
-```javascript
-{
-  name: 'lowercase',
-  column: 'foo',
-}
-```
-
-#### Example:
-
-**Input dataset:**
-
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| Label 1 | Group 1 | 13    |
-| Label 2 | Group 1 | 7     |
-| Label 3 | Group 1 | 20    |
-
-**Step configuration:**
-
-```javascript
-{
-  name: 'lowercase',
-  column: 'Label',
-}
-```
-
-**Output dataset:**
-
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| label 1 | Group 1 | 13    |
-| label 2 | Group 1 | 7     |
-| label 3 | Group 1 | 20    |
-
 ### `top` step
 
 Return top N rows by group if `groups` is specified, else over full dataset.
@@ -860,44 +860,6 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 | ------- | ------- | ----- |
 | Label 3 | Group 1 | 20    |
 | Label 5 | Group 2 | 10    |
-
-### `uppercase` step
-
-Converts a string `column` to uppercase.
-
-```javascript
-{
-  name: 'uppercase',
-  column: 'foo',
-}
-```
-
-#### Example:
-
-**Input dataset:**
-
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| Label 1 | Group 1 | 13    |
-| Label 2 | Group 1 | 7     |
-| Label 3 | Group 1 | 20    |
-
-**Step configuration:**
-
-```javascript
-{
-  name: 'uppercase',
-  column: 'Label',
-}
-```
-
-**Output dataset:**
-
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| LABEL 1 | Group 1 | 13    |
-| LABEL 2 | Group 1 | 7     |
-| LABEL 3 | Group 1 | 20    |
 
 ### `unpivot` step
 
@@ -986,3 +948,41 @@ Unpivot a list of columns to rows.
 | Company 1 | USA     | REVENUES   | 6     |
 | Company 2 | USA     | NB_CLIENTS | 1     |
 | Company 2 | USA     | REVENUES   | 3     |
+
+### `uppercase` step
+
+Converts a string `column` to uppercase.
+
+```javascript
+{
+  name: 'uppercase',
+  column: 'foo',
+}
+```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'uppercase',
+  column: 'Label',
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| LABEL 1 | Group 1 | 13    |
+| LABEL 2 | Group 1 | 7     |
+| LABEL 3 | Group 1 | 20    |
