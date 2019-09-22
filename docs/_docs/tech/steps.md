@@ -835,6 +835,7 @@ When sorting on several columns, order of columns specified in `columns` matters
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
 | Label 4 | Group 2 | 1     |
+
 ### `split` step
 
 Split a string `column` into several columns based on a `delimiter`.
@@ -919,6 +920,126 @@ Split a string `column` into several columns based on a `delimiter`.
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
 
+### `substring` step
+
+Extract a substring in a string `column`. The substring begins at index
+`start_index` (beginning at `1`) and stops at `end_index`.
+You can specify negative indexes, in such a case the index search will start
+from the end of the string (with `-1` being the last index of the string).
+Please refer to the examples below for illustration.
+Neither `start_index` nor `end_index` can be equal to 0.
+
+```javascript
+{
+  name: 'substring',
+  column: 'foo',
+  start_index: 1, // 1 = fisrt character
+  end_index: -1, // -1 = last character
+}
+```
+
+#### Example 1: positive `start_index` and `end_index`
+
+**Input dataset:**
+
+| Group     | Value |
+| --------- | ----- |
+| foo       | 13    |
+| overflow  | 7     |
+| some_text | 20    |
+| a_word    | 1     |
+| toucan    | 10    |
+| toco      | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  column: 'Label',
+  name: 'substring',
+  start_index: 1,
+  end_index: 4,
+}
+```
+
+| Label | Value |
+| ----- | ----- |
+| foo   | 13    |
+| over  | 7     |
+| some  | 20    |
+| a_wo  | 1     |
+| touc  | 10    |
+| toco  | 5     |
+
+#### Example 2: `start_index` is positive and `end_index` is negative
+
+**Input dataset:**
+
+| Label     | Value |
+| --------- | ----- |
+| foo       | 13    |
+| overflow  | 7     |
+| some_text | 20    |
+| a_word    | 1     |
+| toucan    | 10    |
+| toco      | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'substring',
+  column: 'Label',
+  start_index: 2,
+  end_index: -2,
+}
+```
+
+**Output dataset:**
+
+| Label   | Value |
+| ------- | ----- |
+| o       | 13    |
+| verflo  | 7     |
+| ome_tex | 20    |
+| \_wor   | 1     |
+| ouca    | 10    |
+| oc      | 5     |
+
+#### Example 3: `start_index` and `end_index` are negative
+
+**Input dataset:**
+
+| Label     | Value |
+| --------- | ----- |
+| foo       | 13    |
+| overflow  | 7     |
+| some_text | 20    |
+| a_word    | 1     |
+| toucan    | 10    |
+| toco      | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'substring',
+  column: 'Label',
+  start_index: -3,
+  end_index: -1,
+}
+```
+
+**Output dataset:**
+
+| Label | Value |
+| ----- | ----- |
+| foo   | 13    |
+| low   | 7     |
+| ext   | 20    |
+| ord   | 1     |
+| can   | 10    |
+| oco   | 5     |
 
 ### `top` step
 

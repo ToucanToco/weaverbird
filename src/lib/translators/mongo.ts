@@ -16,6 +16,7 @@ import {
   ReplaceStep,
   SortStep,
   SplitStep,
+  SubstringStep,
   TopStep,
   UnpivotStep,
   isFilterComboAnd,
@@ -331,6 +332,46 @@ function transformSplit(step: Readonly<SplitStep>): MongoStep {
   ];
 }
 
+/** transform a 'substring' step into corresponding mongo steps */
+function transformSubstring(step: Readonly<SubstringStep>): MongoStep {
+  const posStartIndex: number | PropMap<any> =
+    step.start_index > 0
+      ? step.start_index - 1
+      : {
+        $add: [
+          {
+            $strLenCP: $$(step.column),
+          },
+          step.start_index,
+        ],
+      };
+
+  const posEndIndex: number | PropMap<any> =
+    step.end_index > 0
+      ? step.end_index - 1
+      : {
+        $add: [
+          {
+            $strLenCP: $$(step.column),
+          },
+          step.end_index,
+        ],
+      };
+
+  const lengthToKeep = {
+    $add: [
+      {
+        $subtract: [posEndIndex, posStartIndex],
+      },
+      1,
+    ],
+  };
+
+  const substrMongo = { $substrCP: [$$(step.column), posStartIndex, lengthToKeep] };
+
+  return { $addFields: { [step.column]: substrMongo } };
+}
+
 /** transform an 'top' step into corresponding mongo steps */
 function transformTop(step: Readonly<TopStep>): MongoStep[] {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
@@ -512,6 +553,7 @@ const mapper: StepMatcher<MongoStep> = {
   select: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 1])) }),
   split: transformSplit,
   sort: transformSort,
+  substring: transformSubstring,
   top: transformTop,
   unpivot: transformUnpivot,
   uppercase: step => ({ $addFields: { [step.column]: { $toUpper: $$(step.column) } } }),

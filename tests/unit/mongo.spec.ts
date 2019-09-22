@@ -1291,4 +1291,94 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate a substring step with positive start and end index', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'substring',
+        column: 'foo',
+        start_index: 1,
+        end_index: 6,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $substrCP: [
+              '$foo',
+              0,
+              {
+                $add: [
+                  {
+                    $subtract: [5, 0],
+                  },
+                  1,
+                ],
+              },
+            ],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a substring step with negative start and end index', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'substring',
+        column: 'foo',
+        start_index: -5,
+        end_index: -1,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $substrCP: [
+              '$foo',
+              {
+                $add: [
+                  {
+                    $strLenCP: '$foo',
+                  },
+                  -5,
+                ],
+              },
+              {
+                $add: [
+                  {
+                    $subtract: [
+                      {
+                        $add: [
+                          {
+                            $strLenCP: '$foo',
+                          },
+                          -1,
+                        ],
+                      },
+                      {
+                        $add: [
+                          {
+                            $strLenCP: '$foo',
+                          },
+                          -5,
+                        ],
+                      },
+                    ],
+                  },
+                  1,
+                ],
+              },
+            ],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });

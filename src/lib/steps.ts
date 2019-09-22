@@ -158,6 +158,13 @@ export type SplitStep = {
   number_cols_to_keep: number;
 };
 
+export type SubstringStep = {
+  name: 'substring';
+  column: string;
+  start_index: number;
+  end_index: number;
+};
+
 export type ToLowerStep = {
   name: 'lowercase';
   column: string;
@@ -204,6 +211,7 @@ export type PipelineStep =
   | SelectStep
   | SplitStep
   | SortStep
+  | SubstringStep
   | ToLowerStep
   | TopStep
   | ToUpperStep
