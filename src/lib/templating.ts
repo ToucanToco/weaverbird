@@ -114,6 +114,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, formula: _interpolate(this.interpolateFunc, step.formula, this.context) };
   }
 
+  lowercase(step: Readonly<S.ToLowerStep>) {
+    return { ...step };
+  }
+
   percentage(step: Readonly<S.PercentageStep>) {
     return { ...step };
   }
@@ -147,6 +151,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   unpivot(step: Readonly<S.UnpivotStep>) {
+    return { ...step };
+  }
+
+  uppercase(step: Readonly<S.ToUpperStep>) {
     return { ...step };
   }
 

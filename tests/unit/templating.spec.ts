@@ -453,6 +453,16 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
+  it('should leave lowercase steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'lowercase',
+        column: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave percentage steps untouched', () => {
     const pipeline: Pipeline = [
       {
@@ -547,6 +557,16 @@ describe('Pipeline interpolator', () => {
         unpivot_column_name: 'column5',
         value_column_name: 'column6',
         dropna: true,
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should leave uppercase steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'uppercase',
+        column: '<%= foo %>',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);

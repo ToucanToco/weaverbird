@@ -476,6 +476,7 @@ const mapper: StepMatcher<MongoStep> = {
       [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
     },
   }),
+  lowercase: step => ({ $addFields: { [step.column]: { $toLower: $$(step.column) } } }),
   percentage: transformPercentage,
   pivot: transformPivot,
   rename: step => [
@@ -487,6 +488,7 @@ const mapper: StepMatcher<MongoStep> = {
   sort: transformSort,
   top: transformTop,
   unpivot: transformUnpivot,
+  uppercase: step => ({ $addFields: { [step.column]: { $toUpper: $$(step.column) } } }),
 };
 
 export class Mongo36Translator extends BaseTranslator {
