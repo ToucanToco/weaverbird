@@ -5,6 +5,7 @@ import {
   AggregationStep,
   ArgmaxStep,
   ArgminStep,
+  ConcatenateStep,
   FilterComboAnd,
   FilterComboOr,
   FilterSimpleCondition,
@@ -185,6 +186,15 @@ function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>
     },
     { $project: { _vqbAppValueToCompare: 0 } },
   ];
+}
+
+/** transform a 'concatenate' step into corresponding mongo steps */
+function transformConcatenate(step: Readonly<ConcatenateStep>): MongoStep {
+  const concatArr: string[] = [$$(step.columns[0])];
+  for (const colname of step.columns.slice(1)) {
+    concatArr.push(step.separator, $$(colname));
+  }
+  return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
@@ -459,6 +469,7 @@ const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
+  concatenate: transformConcatenate,
   custom: step => step.query,
   delete: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 0])) }),
   domain: step => ({ $match: { domain: step.domain } }),

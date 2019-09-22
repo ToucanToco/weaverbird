@@ -1259,4 +1259,36 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate a concatenate step with only one column', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'concatenate',
+        columns: ['foo'],
+        separator: ' - ',
+        new_column_name: 'concat',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { concat: { $concat: ['$foo'] } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a concatenate step with at least two columns', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'concatenate',
+        columns: ['foo', 'bar', 'again'],
+        separator: ' - ',
+        new_column_name: 'concat',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { concat: { $concat: ['$foo', ' - ', '$bar', ' - ', '$again'] } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });

@@ -100,6 +100,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   argmin(step: Readonly<S.ArgminStep>) {}
 
   @unsupported
+  concatenate(step: Readonly<S.ConcatenateStep>) {}
+
+  @unsupported
   custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported

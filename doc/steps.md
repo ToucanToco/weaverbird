@@ -211,6 +211,54 @@ is specified.
 | Label 2 | Group 1 | 7     |
 | Label 4 | Group 2 | 1     |
 
+### `concatenate` step
+
+This step allows to concatenate several `columns` using a `separator`.
+
+```javascript
+{
+  name: 'concatenate',
+  columns: ['Company', 'Group']
+  separator: ' - ' // can be a string of any length
+  new_column_name: 'Label' // The new column in which to write the concatenation
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Group   | Value |
+| --------- | ------- | ----- |
+| Company 1 | Group 1 | 13    |
+| Company 2 | Group 1 | 7     |
+| Company 3 | Group 1 | 20    |
+| Company 4 | Group 2 | 1     |
+| Company 5 | Group 2 | 10    |
+| Company 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'concatenate',
+  columns: ['Company', 'Group']
+  separator: ' - '
+  new_column_name: 'Label'
+}
+```
+
+**Output dataset:**
+
+| Company   | Group   | Value | Label               |
+| --------- | ------- | ----- | ------------------- |
+| Company 1 | Group 1 | 13    | Company 1 - Group 1 |
+| Company 2 | Group 1 | 7     | Company 2 - Group 1 |
+| Company 3 | Group 1 | 20    | Company 3 - Group 1 |
+| Company 4 | Group 2 | 1     | Company 4 - Group 2 |
+| Company 5 | Group 2 | 10    | Company 5 - Group 2 |
+| Company 6 | Group 2 | 5     | Company 6 - Group 2 |
+
 ### `custom` step
 
 This step allows to define a custom query that can't be expressed using the
