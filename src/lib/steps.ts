@@ -144,12 +144,22 @@ export type SortStep = {
   columns: SortColumnType[];
 };
 
+export type ToLowerStep = {
+  name: 'lowercase';
+  column: string;
+};
+
 export type TopStep = {
   name: 'top';
   groups?: string[];
   rank_on: string;
   sort: 'asc' | 'desc';
   limit: Templatable<number>;
+};
+
+export type ToUpperStep = {
+  name: 'uppercase';
+  column: string;
 };
 
 export type UnpivotStep = {
@@ -178,7 +188,9 @@ export type PipelineStep =
   | ReplaceStep
   | SelectStep
   | SortStep
+  | ToLowerStep
   | TopStep
+  | ToUpperStep
   | UnpivotStep;
 
 export type PipelineStepName = PipelineStep['name'];

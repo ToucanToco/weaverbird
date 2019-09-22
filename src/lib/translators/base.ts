@@ -121,6 +121,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   formula(step: Readonly<S.FormulaStep>) {}
 
   @unsupported
+  lowercase(step: Readonly<S.ToLowerStep>) {}
+
+  @unsupported
   percentage(step: Readonly<S.PercentageStep>) {}
 
   @unsupported
@@ -143,6 +146,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   @unsupported
   unpivot(step: Readonly<S.UnpivotStep>) {}
+
+  @unsupported
+  uppercase(step: Readonly<S.ToUpperStep>) {}
 
   /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
 

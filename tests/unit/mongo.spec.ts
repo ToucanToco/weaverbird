@@ -1231,4 +1231,32 @@ describe('Pipeline to mongo translator', () => {
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }, { $project: { _id: 0 } }]);
   });
+
+  it('can generate an tolower', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'lowercase',
+        column: 'foo',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $toLower: '$foo' } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate an toupper', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'uppercase',
+        column: 'foo',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $toUpper: '$foo' } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });
