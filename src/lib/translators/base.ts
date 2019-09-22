@@ -148,6 +148,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   split(step: Readonly<S.SplitStep>) {}
 
   @unsupported
+  substring(step: Readonly<S.SubstringStep>) {}
+
+  @unsupported
   top(step: Readonly<S.TopStep>) {}
 
   @unsupported
