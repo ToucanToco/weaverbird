@@ -835,7 +835,6 @@ When sorting on several columns, order of columns specified in `columns` matters
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
 | Label 4 | Group 2 | 1     |
-
 ### `split` step
 
 Split a string `column` into several columns based on a `delimiter`.
@@ -878,12 +877,12 @@ Split a string `column` into several columns based on a `delimiter`.
 
 | Label_1 | Label_2 | Label_3 | Value |
 | ------- | ------- | ------- | ----- |
-| Label 3 | Group 1 | France  | 20    |
 | Label 1 | Group 1 | Spain   | 13    |
 | Label 2 | Group 1 | USA     | 7     |
+| Label 3 | Group 1 | France  | 20    |
+| Label 4 | Group 2 | USA     | 1     |
 | Label 5 | Group 2 | France  | 10    |
 | Label 6 | Group 2 | Spain   | 5     |
-| Label 4 | Group 2 | USA     | 1     |
 
 #### Example 2: keeping less columns
 
@@ -913,12 +912,13 @@ Split a string `column` into several columns based on a `delimiter`.
 
 | Label_1 | Label_2 | Value |
 | ------- | ------- | ----- |
-| Label 3 | Group 1 | 20    |
 | Label 1 | Group 1 | 13    |
 | Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
-| Label 4 | Group 2 | 1     |
+
 
 ### `top` step
 
