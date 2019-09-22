@@ -34,6 +34,13 @@ export type ArgminStep = {
   groups?: string[]; // if specified, will search for a max in every group
 };
 
+export type ConcatenateStep = {
+  name: 'concatenate';
+  columns: string[];
+  separator: string;
+  new_column_name: string;
+};
+
 export type CustomStep = {
   name: 'custom';
   query: object;
@@ -175,6 +182,7 @@ export type PipelineStep =
   | AggregationStep
   | ArgmaxStep
   | ArgminStep
+  | ConcatenateStep
   | CustomStep
   | DeleteStep
   | DuplicateColumnStep
