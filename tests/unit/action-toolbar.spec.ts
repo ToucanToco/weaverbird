@@ -1,5 +1,7 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import ActionToolbar from '@/components/ActionToolbar.vue';
+import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
+import { CATEGORY_BUTTONS } from '@/components/constants';
 import Vuex from 'vuex';
 import { setupMockStore } from './utils';
 
@@ -21,6 +23,28 @@ describe('ActionToolbar', () => {
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     expect(actionButtons.exists()).toBeTruthy();
+  });
+
+  it('should instantiate action toolbar buttons with right classes', () => {
+    const wrapper = mount(ActionToolbar, {
+      propsData: {
+        buttons: CATEGORY_BUTTONS,
+      },
+    });
+    const actionButtons = wrapper.findAll(ActionToolbarButton);
+    expect(actionButtons.length).toEqual(6);
+    expect(actionButtons.at(0).props().category).toEqual('filter');
+    expect(actionButtons.at(0).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(1).props().category).toEqual('compute');
+    expect(actionButtons.at(1).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(2).props().category).toEqual('text');
+    expect(actionButtons.at(2).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(3).props().category).toEqual('date');
+    expect(actionButtons.at(3).classes()).toContain('action-toolbar__btn--disable');
+    expect(actionButtons.at(4).props().category).toEqual('aggregate');
+    expect(actionButtons.at(4).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(5).props().category).toEqual('reshape');
+    expect(actionButtons.at(5).classes()).toContain('action-toolbar__btn');
   });
 
   it('should instantiate with its hidden popover', () => {

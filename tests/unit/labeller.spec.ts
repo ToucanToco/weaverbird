@@ -314,6 +314,14 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Sort columns "column1", "column2"');
   });
 
+  it('generates label for lowercase steps', () => {
+    const step: S.ToLowerStep = {
+      name: 'lowercase',
+      column: 'test',
+    };
+    expect(hrl(step)).toEqual('Convert column "test" to lowercase');
+  });
+
   it('generates label for top steps', () => {
     const step: S.TopStep = {
       name: 'top',
@@ -322,6 +330,14 @@ describe('Labeller', () => {
       limit: 42,
     };
     expect(hrl(step)).toEqual('Keep top 42 values in column "column1"');
+  });
+
+  it('generates label for uppercase steps', () => {
+    const step: S.ToUpperStep = {
+      name: 'uppercase',
+      column: 'test',
+    };
+    expect(hrl(step)).toEqual('Convert column "test" to uppercase');
   });
 
   it('generates label for unpivot steps', () => {

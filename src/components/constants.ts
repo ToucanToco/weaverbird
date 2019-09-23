@@ -9,6 +9,7 @@ type ActionCategories = {
   compute: ActionCategory[];
   filter: ActionCategory[];
   reshape: ActionCategory[];
+  text: ActionCategory[];
   [key: string]: ActionCategory[];
 };
 
@@ -36,6 +37,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'argmin', label: 'Argmin' },
   ],
   reshape: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
+  text: [
+    { name: 'lowercase', label: 'To lowercase' },
+    { name: 'uppercase', label: 'To uppercase' },
+  ],
 };
 
 export const SEARCH_ACTION: groupActions[] = [
@@ -59,6 +64,10 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'reshape',
     actions: [...ACTION_CATEGORIES.reshape],
+  },
+  {
+    type: 'text',
+    actions: [...ACTION_CATEGORIES.text],
   },
   {
     type: 'Others action',
@@ -87,7 +96,7 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
   },
   {
     category: 'text',
-    enable: false,
+    enable: true,
     icon: 'font',
     label: 'Text',
   },

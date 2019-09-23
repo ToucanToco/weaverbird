@@ -12,6 +12,8 @@ import './PivotStepForm.vue';
 import './RenameStepForm.vue';
 import './ReplaceStepForm.vue';
 import './SelectColumnStepForm.vue';
+import './ToLowerStepForm.vue';
 import './TopStepForm.vue';
+import './ToUpperStepForm.vue';
 import './UnpivotStepForm.vue';
 import './SortStepForm.vue';
