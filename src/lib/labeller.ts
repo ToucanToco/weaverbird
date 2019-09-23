@@ -133,6 +133,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Compute "${step.formula}" in "${step.new_column}"`;
   }
 
+  lowercase(step: Readonly<S.ToLowerStep>) {
+    return `Convert column "${step.column}" to lowercase`;
+  }
+
   percentage(step: Readonly<S.PercentageStep>) {
     return `Compute the row-level percentage of "${step.column}"`;
   }
@@ -170,6 +174,10 @@ class StepLabeller implements StepMatcher<string> {
 
   unpivot(step: Readonly<S.UnpivotStep>) {
     return `Unpivot columns ${formatMulticol(step.unpivot)}`;
+  }
+
+  uppercase(step: Readonly<S.ToUpperStep>) {
+    return `Convert column "${step.column}" to uppercase`;
   }
 }
 

@@ -12,9 +12,11 @@ import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
 import replaceSchema from './replace';
 import selectSchema from './select';
-import topBuildSchema from './top';
-import unpivotSchema from './unpivot';
 import sortSchema from './sort';
+import toLowerSchema from './tolower';
+import topBuildSchema from './top';
+import toUpperSchema from './toupper';
+import unpivotSchema from './unpivot';
 
 type buildSchemaType = ((form: any) => object) | object;
 
@@ -28,14 +30,16 @@ const factories: { [stepname: string]: buildSchemaType } = {
   fillna: fillnaSchema,
   filter: filterSchema,
   formula: formulaSchema,
+  lowercase: toLowerSchema,
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
   rename: renameBuildSchema,
   replace: replaceSchema,
   select: selectSchema,
+  sort: sortSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,
-  sort: sortSchema,
+  uppercase: toUpperSchema,
 };
 
 /**
