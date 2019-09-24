@@ -40,6 +40,11 @@ export default class ColumnPicker extends Vue {
   @Prop({ default: null })
   dataPath!: string;
 
+  // Whether the column data of ColumnPicker should react to a change of
+  // selected column
+  @Prop({ default: true })
+  syncWithSelectedColumn!: boolean;
+
   // Only manage the deletion of 1 column at once at this stage
   column: string | null = null;
 
@@ -69,7 +74,7 @@ export default class ColumnPicker extends Vue {
 
   @Watch('selectedColumns')
   onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal)) {
+    if (!_.isEqual(val, oldVal) && this.syncWithSelectedColumn) {
       this.column = val[0];
     }
   }

@@ -1,6 +1,7 @@
 import './AggregateStepForm.vue';
 import './ArgminStepForm.vue';
 import './ArgmaxStepForm.vue';
+import './ConcatenateStepForm.vue';
 import './DeleteColumnStepForm.vue';
 import './DuplicateColumnStepForm.vue';
 import './DomainStepForm.vue';

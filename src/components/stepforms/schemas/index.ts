@@ -1,6 +1,7 @@
 import aggregateBuildSchema from './aggregate';
 import argmaxSchema from './argmax';
 import argminSchema from './argmin';
+import concatenateBuildSchema from './concatenate';
 import deleteSchema from './delete';
 import duplicateSchema from './duplicate';
 import domainSchema from './domain';
@@ -24,6 +25,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   aggregate: aggregateBuildSchema,
   argmax: argmaxSchema,
   argmin: argminSchema,
+  concatenate: concatenateBuildSchema,
   delete: deleteSchema,
   duplicate: duplicateSchema,
   domain: domainSchema,

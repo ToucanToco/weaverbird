@@ -105,6 +105,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Keep row with minimum in column "${step.column}"`;
   }
 
+  concatenate(step: Readonly<S.ConcatenateStep>) {
+    return `Concatenate columns ${formatMulticol(step.columns)}`;
+  }
+
   custom(_step: Readonly<S.CustomStep>) {
     return 'Custom step';
   }

@@ -36,11 +36,12 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'argmax', label: 'Argmax' },
     { name: 'argmin', label: 'Argmin' },
   ],
-  reshape: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
   text: [
+    { name: 'concatenate', label: 'Concatenate' },
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
   ],
+  reshape: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
 };
 
 export const SEARCH_ACTION: groupActions[] = [

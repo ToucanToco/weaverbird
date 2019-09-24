@@ -55,6 +55,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Keep row with minimum in column "column1"');
   });
 
+  it('generates label for concatenate steps', () => {
+    const step: S.ConcatenateStep = {
+      name: 'concatenate',
+      columns: ['Foo', 'Bar'],
+      separator: '',
+      new_column_name: 'whatever',
+    };
+    expect(hrl(step)).toEqual('Concatenate columns "Foo", "Bar"');
+  });
+
   it('generates label for custom steps', () => {
     const step: S.CustomStep = {
       name: 'custom',
