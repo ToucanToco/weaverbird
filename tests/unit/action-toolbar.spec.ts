@@ -9,22 +9,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('ActionToolbar', () => {
-  it('should instantiate action toolbar button', () => {
-    const wrapper = shallowMount(ActionToolbar, {
-      propsData: {
-        buttons: [
-          {
-            category: 'filter',
-            icon: 'filter',
-            label: 'Filter',
-          },
-        ],
-      },
-    });
-    const actionButtons = wrapper.findAll('action-toolbar-button-stub');
-    expect(actionButtons.exists()).toBeTruthy();
-  });
-
   it('should instantiate action toolbar buttons with right classes', () => {
     const wrapper = mount(ActionToolbar, {
       propsData: {

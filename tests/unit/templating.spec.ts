@@ -63,6 +63,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave concatenate steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'concatenate',
+        columns: ['<%= foo %>', '<%= bar %>'],
+        separator: '',
+        new_column_name: 'new',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave custom steps untouched', () => {
     const pipeline: Pipeline = [
       {

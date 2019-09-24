@@ -121,6 +121,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  concatenate(step: Readonly<S.ConcatenateStep>) {
+    return { ...step };
+  }
+
   custom(step: Readonly<S.CustomStep>) {
     return { ...step };
   }

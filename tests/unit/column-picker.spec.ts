@@ -52,7 +52,7 @@ describe('Column Picker', () => {
     expect(wrapper.vm.$data.column).toEqual('columnA');
   });
 
-  it('should update step when selectedColumn is changed', async () => {
+  it('should update step when selectedColumn is changed by default', async () => {
     const store: Store<any> = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -68,6 +68,28 @@ describe('Column Picker', () => {
     store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
     await localVue.nextTick();
     expect(wrapper.vm.$data.column).toEqual('columnB');
+    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+  });
+
+  it('should not update step when selectedColumn is changed if prop "sync" is false', async () => {
+    const store: Store<any> = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    const wrapper = shallowMount(ColumnPicker, {
+      store,
+      localVue,
+      propsData: {
+        syncWithSelectedColumn: false,
+      },
+    });
+    expect(wrapper.vm.$data.column).toEqual('columnA');
+    store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
+    await localVue.nextTick();
+    expect(wrapper.vm.$data.column).toEqual('columnA');
     expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
   });
 });
