@@ -130,7 +130,7 @@ export default class Popover extends Vue {
         parent: this.parent.getBoundingClientRect(),
         element: this.$el,
         window,
-      }
+      };
       // Set alignment
       const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
       elementStyle.top = DOMUtil.computeTop(this.isBottom, positionContext);
@@ -164,6 +164,7 @@ export default class Popover extends Vue {
 </script>
 <style lang="scss" scoped>
 .popover {
+  font-family: 'Montserrat', sans-serif;
   position: absolute;
   visibility: hidden;
 }
