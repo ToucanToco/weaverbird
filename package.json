@@ -1,6 +1,6 @@
 {
   "name": "visual-query-builder",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A generic Visual Query Builder built in Vue.js",
   "keywords": [
     "query builder",
