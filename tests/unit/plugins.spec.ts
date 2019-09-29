@@ -1,8 +1,10 @@
+import _ from 'lodash';
 import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 import flushPromises from 'flush-promises';
 
 import { Pipeline } from '@/lib/steps';
+import { ScopeContext } from '@/lib/templating';
 import { VQBnamespace } from '@/store';
 import { setupMockStore } from './utils';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
@@ -11,6 +13,11 @@ import PipelineComponent from '@/components/Pipeline.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
+
+function lodashInterpolate(value: string, context: ScopeContext) {
+  const compiled = _.template(value);
+  return compiled(context);
+}
 
 class DummyService implements BackendService {
   listCollections(_store: Store<any>) {
@@ -110,5 +117,72 @@ describe('backend service plugin tests', () => {
       headers: [{ name: 'x' }, { name: 'y' }],
       data: [[1, 2]],
     });
+  });
+
+  it('should call execute pipeline with interpolated pipeline', async () => {
+    const service = new DummyService();
+    const executeSpy = jest.spyOn(service, 'executePipeline');
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      {
+        name: 'replace',
+        search_column: 'characters',
+        to_replace: [['<%= who %>', '<%= what %>']],
+      },
+    ];
+    const store: Store<any> = setupMockStore(
+      {
+        pipeline,
+        variables: {
+          who: 'john',
+          what: 'king',
+        },
+        interpolator: lodashInterpolate,
+      },
+      [servicePluginFactory(service)],
+    );
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+    expect(executeSpy.mock.calls[0][1]).toEqual([
+      { domain: 'GoT', name: 'domain' },
+      {
+        name: 'replace',
+        search_column: 'characters',
+        to_replace: [['john', 'king']],
+      },
+    ]);
+  });
+
+  it('should call execute pipeline with uninterpolated pipeline if no variables', async () => {
+    const service = new DummyService();
+    const executeSpy = jest.spyOn(service, 'executePipeline');
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      {
+        name: 'replace',
+        search_column: 'characters',
+        to_replace: [['<%= who %>', '<%= what %>']],
+      },
+    ];
+    const store: Store<any> = setupMockStore(
+      {
+        pipeline,
+        variables: {},
+        interpolator: lodashInterpolate,
+      },
+      [servicePluginFactory(service)],
+    );
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+    expect(executeSpy.mock.calls[0][1]).toEqual([
+      { domain: 'GoT', name: 'domain' },
+      {
+        name: 'replace',
+        search_column: 'characters',
+        to_replace: [['<%= who %>', '<%= what %>']],
+      },
+    ]);
   });
 });
