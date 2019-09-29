@@ -12,6 +12,7 @@ import { Store } from 'vuex';
 import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
+import { PipelineInterpolator } from '@/lib/templating';
 
 import { StateMutation } from './mutations';
 import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
@@ -48,6 +49,11 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
   if (!store.state[VQB_MODULE_NAME].pipeline.length) return;
   try {
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
+    const { interpolator: interpolateFunc, variables } = store.state[VQB_MODULE_NAME];
+    if (variables && Object.keys(variables).length) {
+      const interpolator = new PipelineInterpolator(interpolateFunc, variables);
+      pipeline = interpolator.interpolate(pipeline);
+    }
     const response = await service.executePipeline(
       store,
       pipeline,
