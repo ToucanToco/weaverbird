@@ -137,7 +137,7 @@ describe('backend service plugin tests', () => {
           who: 'john',
           what: 'king',
         },
-        interpolator: lodashInterpolate,
+        interpolateFunc: lodashInterpolate,
       },
       [servicePluginFactory(service)],
     );
@@ -169,7 +169,7 @@ describe('backend service plugin tests', () => {
       {
         pipeline,
         variables: {},
-        interpolator: lodashInterpolate,
+        interpolateFunc: lodashInterpolate,
       },
       [servicePluginFactory(service)],
     );

@@ -86,7 +86,7 @@ describe('Top Step Form', () => {
         variables: {
           leemeat: 42,
         },
-        interpolator: interpolate,
+        interpolateFunc: interpolate,
       }),
       localVue,
       propsData: {

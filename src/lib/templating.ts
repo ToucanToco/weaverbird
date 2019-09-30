@@ -9,29 +9,29 @@ export type ScopeContext = {
   [varname: string]: any;
 };
 
-export type Interpolator = (template: string, context: ScopeContext) => any;
+export type InterpolateFunction = (template: string, context: ScopeContext) => any;
 type StepInterpolator = (step: S.PipelineStep) => S.PipelineStep;
 type ConditionType = S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr;
 
-function _interpolate(interpolator: Interpolator, value: any, context: ScopeContext) {
+function _interpolate(interpolate: InterpolateFunction, value: any, context: ScopeContext) {
   if (typeof value === 'string') {
-    return interpolator(value, context);
+    return interpolate(value, context);
   }
   return value;
 }
 
 function interpolateFilterCondition(
   condition: ConditionType,
-  interpolator: Interpolator,
+  interpolate: InterpolateFunction,
   context: ScopeContext,
 ): ConditionType {
   if (S.isFilterComboAnd(condition)) {
     return {
-      and: condition.and.map(cond => interpolateFilterCondition(cond, interpolator, context)),
+      and: condition.and.map(cond => interpolateFilterCondition(cond, interpolate, context)),
     };
   } else if (S.isFilterComboOr(condition)) {
     return {
-      or: condition.or.map(cond => interpolateFilterCondition(cond, interpolator, context)),
+      or: condition.or.map(cond => interpolateFilterCondition(cond, interpolate, context)),
     };
   } else {
     switch (condition.operator) {
@@ -41,32 +41,33 @@ function interpolateFilterCondition(
       case 'ge':
       case 'lt':
       case 'le':
-        return { ...condition, value: _interpolate(interpolator, condition.value, context) };
+        return { ...condition, value: _interpolate(interpolate, condition.value, context) };
       case 'in':
       case 'nin':
       default:
         // only for typescript to be happy and see we always have a return value
         return {
           ...condition,
-          value: condition.value.map(v => _interpolate(interpolator, v, context)),
+          value: condition.value.map(v => _interpolate(interpolate, v, context)),
         };
     }
   }
 }
 
 /**
- * The `Interpolator` class provides a "step interpolator" implementation
- * for each possible step in a pipeline.
+ * The `PipelineInterpolator` class provides a "step interpolator"
+ * implementation for each possible step in a pipeline.
+ *
  * A step interpolator is a function that takes a step in parameter and returns
- * the "interpolated" version of a step, given a specific interpolate function (e.g.
- * `_.template`).
+ * the "interpolated" version of a step, given a specific interpolate function
+ * (e.g. `_.template`).
  */
 export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
-  interpolator: Interpolator;
+  interpolateFunc: InterpolateFunction;
   context: ScopeContext;
 
-  constructor(interpolator: Interpolator, context: ScopeContext) {
-    this.interpolator = interpolator;
+  constructor(interpolateFunc: InterpolateFunction, context: ScopeContext) {
+    this.interpolateFunc = interpolateFunc;
     this.context = context;
   }
 
@@ -99,18 +100,18 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   fillna(step: Readonly<S.FillnaStep>) {
-    return { ...step, value: _interpolate(this.interpolator, step.value, this.context) };
+    return { ...step, value: _interpolate(this.interpolateFunc, step.value, this.context) };
   }
 
   filter(step: Readonly<S.FilterStep>) {
     return {
       ...step,
-      condition: interpolateFilterCondition(step.condition, this.interpolator, this.context),
+      condition: interpolateFilterCondition(step.condition, this.interpolateFunc, this.context),
     };
   }
 
   formula(step: Readonly<S.FormulaStep>) {
-    return { ...step, formula: _interpolate(this.interpolator, step.formula, this.context) };
+    return { ...step, formula: _interpolate(this.interpolateFunc, step.formula, this.context) };
   }
 
   percentage(step: Readonly<S.PercentageStep>) {
@@ -127,8 +128,8 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   replace(step: Readonly<S.ReplaceStep>) {
     const toReplace = step.to_replace.map(([oldvalue, newvalue]) => [
-      _interpolate(this.interpolator, oldvalue, this.context),
-      _interpolate(this.interpolator, newvalue, this.context),
+      _interpolate(this.interpolateFunc, oldvalue, this.context),
+      _interpolate(this.interpolateFunc, newvalue, this.context),
     ]);
     return { ...step, to_replace: toReplace };
   }
@@ -142,7 +143,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   top(step: Readonly<S.TopStep>) {
-    return { ...step, limit: Number(_interpolate(this.interpolator, step.limit, this.context)) };
+    return { ...step, limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)) };
   }
 
   unpivot(step: Readonly<S.UnpivotStep>) {

@@ -4,7 +4,7 @@
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { BackendError } from '@/lib/backend-response';
-import { ScopeContext, Interpolator } from '@/lib/templating';
+import { ScopeContext, InterpolateFunction } from '@/lib/templating';
 
 export interface VQBState {
   /**
@@ -63,9 +63,9 @@ export interface VQBState {
   variables?: ScopeContext;
 
   /**
-   * interpolator function
+   * interpolation function
    */
-  interpolator?: Interpolator;
+  interpolateFunc?: InterpolateFunction;
 }
 
 /**
@@ -92,7 +92,7 @@ export const emptyState: VQBState = {
   backendError: undefined,
   isLoading: false,
   variables: {},
-  interpolator: (x: string, _context: ScopeContext) => x,
+  interpolateFunc: (x: string, _context: ScopeContext) => x,
 };
 
 /**
