@@ -36,17 +36,21 @@ describe('Action Menu', () => {
   });
 
   describe('when clicking on "Duplicate column"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
+    it('should add a valide duplicate step in the pipeline', async () => {
+      const store: Store<any> = setupMockStore();
       const wrapper = shallowMount(ActionMenu, {
+        store,
+        localVue,
         propsData: {
-          columnName: 'dreamfall',
+          columnName: 'columnA',
         },
       });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(0).trigger('click');
-
-      expect(wrapper.emitted().actionClicked.length).toBeGreaterThan(0);
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['duplicate']);
+      await localVue.nextTick();
+      expect(store.state.vqb.pipeline).toEqual([
+        { name: 'duplicate', column: 'columnA', new_column_name: 'columnA_copy' },
+      ]);
     });
 
     it('should emit a close event', () => {
@@ -56,6 +60,14 @@ describe('Action Menu', () => {
       actionsWrapper.at(0).trigger('click');
 
       expect(wrapper.emitted().closed).toBeTruthy();
+    });
+
+    it('should close any open step form to show the addition of the duplicate step in the pipeline', () => {
+      const store = setupMockStore({ currentStepFormName: 'fillna' });
+      const wrapper = shallowMount(ActionMenu, { store, localVue });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(0).trigger('click');
+      expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
     });
   });
 

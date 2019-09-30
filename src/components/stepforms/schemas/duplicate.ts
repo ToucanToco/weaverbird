@@ -1,6 +1,4 @@
-import { StepFormType, addNotInColumnNamesConstraint } from './utils';
-
-const schema = {
+export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Duplicate column step',
   type: 'object',
@@ -31,7 +29,3 @@ const schema = {
   required: ['name', 'column', 'new_column_name'],
   additionalProperties: false,
 };
-
-export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'new_column_name', form.columnNames);
-}

@@ -9,14 +9,6 @@
       data-path=".column"
       :errors="errors"
     ></ColumnPicker>
-    <InputTextWidget
-      id="newColumnNameInput"
-      v-model="editedStep.new_column_name"
-      name="New column name:"
-      placeholder="Enter a column name"
-      data-path=".new_column_name"
-      :errors="errors"
-    ></InputTextWidget>
     <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -25,16 +17,15 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import { DuplicateColumnStep } from '@/lib/steps';
+import { newColumnName } from '@/lib/helpers';
 
 @StepFormComponent({
   vqbstep: 'duplicate',
   name: 'duplicate-step-form',
   components: {
     ColumnPicker,
-    InputTextWidget,
   },
 })
 export default class DuplicateColumnForm extends BaseStepForm<DuplicateColumnStep> {
@@ -52,6 +43,14 @@ export default class DuplicateColumnForm extends BaseStepForm<DuplicateColumnSte
       throw new Error('should not try to set null on duplicate "column" field');
     }
     this.editedStep.column = colname;
+  }
+
+  submit() {
+    this.editedStep.new_column_name = newColumnName(
+      `${this.editedStep.column}_copy`,
+      this.columnNames,
+    );
+    this.$$super.submit();
   }
 }
 </script>

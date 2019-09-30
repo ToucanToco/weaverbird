@@ -24,52 +24,10 @@ describe('Duplicate Column Step Form', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it('should have exactly 2 input components', () => {
+  it('should have exactly 1 input components', () => {
     const wrapper = shallowMount(DuplicateColumnStepForm, { store: emptyStore, localVue });
 
     expect(wrapper.findAll('columnpicker-stub').length).toEqual(1);
-    expect(wrapper.findAll('inputtextwidget-stub').length).toEqual(1);
-  });
-
-  describe('Errors', () => {
-    it('should report errors when submitted data is not valid', () => {
-      const wrapper = mount(DuplicateColumnStepForm, {
-        store: emptyStore,
-        localVue,
-        propsData: {
-          initialStepValue: { name: 'duplicate', column: '', new_column_name: '' },
-        },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-        keyword: err.keyword,
-        dataPath: err.dataPath,
-      }));
-      expect(errors).toEqual([
-        { keyword: 'minLength', dataPath: '.column' },
-        { keyword: 'minLength', dataPath: '.new_column_name' },
-      ]);
-    });
-  });
-
-  it('should report errors when new_column_name is an already existing column name', async () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = mount(DuplicateColumnStepForm, { store, localVue });
-    wrapper.setData({
-      editedStep: { name: 'duplicate', column: 'foo', new_column_name: 'columnA' },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-      keyword: err.keyword,
-      dataPath: err.dataPath,
-    }));
-    expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column_name' }]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', () => {
@@ -77,13 +35,13 @@ describe('Duplicate Column Step Form', () => {
       store: emptyStore,
       localVue,
       propsData: {
-        initialStepValue: { name: 'duplicate', column: 'foo', new_column_name: 'bar' },
+        initialStepValue: { name: 'duplicate', column: 'foo', new_column_name: '' },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'duplicate', column: 'foo', new_column_name: 'bar' }]],
+      formSaved: [[{ name: 'duplicate', column: 'foo', new_column_name: 'foo_copy' }]],
     });
   });
 

@@ -114,7 +114,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
-    return `Duplicate "${step.column}" in "${step.new_column_name}"`;
+    return `Duplicate "${step.column}"`;
   }
 
   delete(step: Readonly<S.DeleteStep>) {

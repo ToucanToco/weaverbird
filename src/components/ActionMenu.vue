@@ -2,7 +2,7 @@
   <popover :active="isActive" :align="alignLeft" bottom>
     <div class="action-menu__body">
       <div class="action-menu__section">
-        <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
+        <div class="action-menu__option" @click="createDuplicateColumnStep">Duplicate column</div>
         <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
         <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
         <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
@@ -20,6 +20,7 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
+import { newColumnName } from '@/lib/helpers';
 
 @Component({
   name: 'action-menu',
@@ -44,6 +45,7 @@ export default class ActionMenu extends Vue {
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
+  @VQBModule.Getter columnNames!: string[];
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
@@ -70,7 +72,7 @@ export default class ActionMenu extends Vue {
   createDeleteColumnStep() {
     const newPipeline: Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
-    const deletecolumnStep: PipelineStep = { name: 'delete', columns: [this.columnName] };
+    const deleteColumnStep: PipelineStep = { name: 'delete', columns: [this.columnName] };
     /**
      * If a step edition form is already open, close it so that the left panel displays
      * the pipeline with the new delete step inserted
@@ -78,7 +80,28 @@ export default class ActionMenu extends Vue {
     if (this.isEditingStep) {
       this.closeStepForm();
     }
-    newPipeline.splice(index, 0, deletecolumnStep);
+    newPipeline.splice(index, 0, deleteColumnStep);
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
+    this.close();
+  }
+
+  createDuplicateColumnStep() {
+    const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
+    const duplicateColumnStep: PipelineStep = {
+      name: 'duplicate',
+      column: this.columnName,
+      new_column_name: newColumnName(`${this.columnName}_copy`, this.columnNames),
+    };
+    /**
+     * If a step edition form is already open, close it so that the left panel displays
+     * the pipeline with the new delete step inserted
+     */
+    if (this.isEditingStep) {
+      this.closeStepForm();
+    }
+    newPipeline.splice(index, 0, duplicateColumnStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
     this.close();

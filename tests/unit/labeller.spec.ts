@@ -77,7 +77,7 @@ describe('Labeller', () => {
       column: 'column1',
       new_column_name: 'column2',
     };
-    expect(hrl(step)).toEqual('Duplicate "column1" in "column2"');
+    expect(hrl(step)).toEqual('Duplicate "column1"');
   });
 
   it('generates label for delete steps', () => {
