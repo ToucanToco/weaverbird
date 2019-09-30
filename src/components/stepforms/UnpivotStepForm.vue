@@ -4,7 +4,7 @@
     <MultiselectWidget
       id="keepColumnInput"
       v-model="editedStep.keep"
-      name="Keep columnns..."
+      name="Keep columns..."
       :options="columnNames"
       @input="setSelectedColumns({ column: editedStep.keep[0] })"
       placeholder="Add columns to keep"

@@ -4,7 +4,7 @@
     <ColumnPicker
       v-model="editedStep.oldname"
       id="oldnameInput"
-      name="Old name"
+      name="Old name:"
       placeholder="Enter the old column name"
       data-path=".oldname"
       :errors="errors"
@@ -12,7 +12,7 @@
     <InputTextWidget
       id="newnameInput"
       v-model="editedStep.newname"
-      name="By..."
+      name="New name:"
       placeholder="Enter a new column name"
       data-path=".newname"
       :errors="errors"
