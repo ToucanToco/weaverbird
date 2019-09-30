@@ -10,7 +10,7 @@ import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import schemaFactory from '@/components/stepforms/schemas';
 import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
 import { Pipeline, Writable, PipelineStep } from '@/lib/steps';
-import { ScopeContext, PipelineInterpolator, Interpolator } from '@/lib/templating';
+import { ScopeContext, PipelineInterpolator, InterpolateFunction } from '@/lib/templating';
 
 type VqbError = Partial<ErrorObject>;
 /**
@@ -86,7 +86,7 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: Object, default: null })
   initialStepValue!: StepType;
 
-  @VQBModule.State('interpolator') interpolationFunc!: Interpolator;
+  @VQBModule.State interpolateFunc!: InterpolateFunction;
   @VQBModule.State pipeline!: Pipeline;
   @VQBModule.State selectedStepIndex!: number;
   @VQBModule.State variables!: ScopeContext;
@@ -120,7 +120,7 @@ export default class BaseStepForm<StepType> extends Vue {
     addAjvKeywords(ajv);
     const ajvValidator = ajv.compile(this.editedStepModel);
     const interpolator = new PipelineInterpolator(
-      this.interpolationFunc,
+      this.interpolateFunc,
       this.variables);
 
     const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
