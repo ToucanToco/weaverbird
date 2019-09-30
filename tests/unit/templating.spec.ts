@@ -488,25 +488,6 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('interpolates rename steps', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'replace',
-        search_column: 'column1',
-        new_column: '<%= foo %>',
-        to_replace: [['<%= egg %>', '<%= age %>'], [5, '<%= foo %>']],
-      },
-    ];
-    expect(translate(pipeline)).toEqual([
-      {
-        name: 'replace',
-        search_column: 'column1',
-        new_column: '<%= foo %>',
-        to_replace: [['spam', '42'], [5, 'bar']],
-      },
-    ]);
-  });
-
   it('should leave select steps untouched', () => {
     const pipeline: Pipeline = [
       {
