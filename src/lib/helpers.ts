@@ -27,3 +27,21 @@ export function castFromString(value: string, type: DataSetColumnType) {
   }
   return value;
 }
+
+/**
+ * Takes a proposed new column name and returns a valid name that does not erase
+ * an existing column name. So if the proposed new name already exists in
+ * existing columns names, it appends an integer that increments until the new
+ * name becomes unique.
+ *
+ * @param newName the proposed new column name
+ * @param existingNames the existing columns names
+ */
+export function generateNewColumnName(newName: string, existingNames: string[]): string {
+  let i = 1;
+  let validNewName = newName;
+  while (existingNames.includes(validNewName)) {
+    validNewName = `${newName}${i++}`;
+  }
+  return validNewName;
+}

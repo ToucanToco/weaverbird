@@ -25,12 +25,10 @@ describe('Unpivot Step Form', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it('should have 5 input components', () => {
+  it('should have 3 input components', () => {
     const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('multiselectwidget-stub');
     expect(autocompleteWrappers.length).toEqual(2);
-    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
-    expect(inputWrappers.length).toEqual(2);
     const checkboxWrappers = wrapper.findAll('checkboxwidget-stub');
     expect(checkboxWrappers.length).toEqual(1);
   });
@@ -54,8 +52,6 @@ describe('Unpivot Step Form', () => {
     });
     expect(wrapper.find('#keepColumnInput').props('value')).toEqual(['foo', 'bar']);
     expect(wrapper.find('#unpivotColumnInput').props('value')).toEqual(['baz']);
-    expect(wrapper.find('#unpivotColumnNameInput').props('value')).toEqual('spam');
-    expect(wrapper.find('#valueColumnNameInput').props('value')).toEqual('eggs');
     const widgetCheckbox = wrapper.find(CheckboxWidget);
     expect(widgetCheckbox.classes()).not.toContain('widget-checkbox--checked');
   });
@@ -89,112 +85,8 @@ describe('Unpivot Step Form', () => {
       expect(errors).toEqual([
         { keyword: 'minItems', dataPath: '.keep' },
         { keyword: 'minItems', dataPath: '.unpivot' },
-        { keyword: 'minLength', dataPath: '.unpivot_column_name' },
-        { keyword: 'minLength', dataPath: '.value_column_name' },
       ]);
     });
-
-    it('should report errors when keep and unpivot column names overlap', async () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      });
-      const wrapper = mount(UnpivotStepForm, { store, localVue });
-      wrapper.setData({
-        editedStep: {
-          name: 'unpivot',
-          keep: ['columnA', 'columnC'],
-          unpivot: ['columnA', 'columnB', 'columnC'],
-          unpivot_column_name: 'foo',
-          value_column_name: 'bar',
-          dropna: true,
-        },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-        keyword: err.keyword,
-        dataPath: err.dataPath,
-        message: err.message,
-      }));
-      expect(errors).toEqual([
-        {
-          keyword: 'columnNameConflict',
-          dataPath: '.unpivot',
-          message: 'Column names columnA,columnC were used for both "keep" and "unpivot" fields',
-        },
-      ]);
-    });
-
-    it('should report errors when the unpivot_column_name value is already used', async () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      });
-      const wrapper = mount(UnpivotStepForm, { store, localVue });
-      wrapper.setData({
-        editedStep: {
-          name: 'unpivot',
-          keep: ['columnA'],
-          unpivot: ['columnB', 'columnC'],
-          unpivot_column_name: 'columnA',
-          value_column_name: 'bar',
-          dropna: true,
-        },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-        keyword: err.keyword,
-        dataPath: err.dataPath,
-        message: err.message,
-      }));
-      expect(errors).toEqual([
-        {
-          keyword: 'columnNameConflict',
-          dataPath: '.unpivot_column_name',
-          message: 'Column name columnA is used at least twice but should be unique',
-        },
-      ]);
-    });
-  });
-
-  it('should report errors when the value_column_name value is already used', async () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    const wrapper = mount(UnpivotStepForm, { store, localVue });
-    wrapper.setData({
-      editedStep: {
-        name: 'unpivot',
-        keep: ['columnA'],
-        unpivot: ['columnB', 'columnC'],
-        unpivot_column_name: 'foo',
-        value_column_name: 'columnB',
-        dropna: true,
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-      keyword: err.keyword,
-      dataPath: err.dataPath,
-      message: err.message,
-    }));
-    expect(errors).toEqual([
-      {
-        keyword: 'columnNameConflict',
-        dataPath: '.value_column_name',
-        message: 'Column name columnB is used at least twice but should be unique',
-      },
-    ]);
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
@@ -206,8 +98,6 @@ describe('Unpivot Step Form', () => {
           name: 'unpivot',
           keep: ['columnA', 'columnB'],
           unpivot: ['columnC'],
-          unpivot_column_name: 'foo',
-          value_column_name: 'bar',
           dropna: true,
         },
       },
@@ -222,8 +112,8 @@ describe('Unpivot Step Form', () => {
             name: 'unpivot',
             keep: ['columnA', 'columnB'],
             unpivot: ['columnC'],
-            unpivot_column_name: 'foo',
-            value_column_name: 'bar',
+            unpivot_column_name: 'variable',
+            value_column_name: 'value',
             dropna: true,
           },
         ],
