@@ -6,6 +6,12 @@
 
 - Added variable interpolation handling
 
+### Changed
+
+- Simplify `unpivot` step UX by enforcing automatic column names for
+  `unpivot_column_name` and `value_column_name` (not requiring for a user input
+  anymore)
+
 ## [0.2.0] - 2010-09-26
 
 ### Added
