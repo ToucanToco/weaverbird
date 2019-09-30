@@ -126,7 +126,6 @@ export type RenameStep = {
 export type ReplaceStep = {
   name: 'replace';
   search_column: string;
-  new_column?: string;
   to_replace: any[][];
 };
 

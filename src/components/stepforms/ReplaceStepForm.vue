@@ -9,14 +9,6 @@
       data-path=".search_column"
       :errors="errors"
     ></ColumnPicker>
-    <InputTextWidget
-      id="newColumnInput"
-      v-model="editedStep.new_column"
-      name="(Optional) Write output in..."
-      placeholder="Enter a new column name"
-      data-path=".new_column"
-      :errors="errors"
-    ></InputTextWidget>
     <ListWidget
       addFieldName="Add a value to replace"
       id="toReplace"
@@ -37,7 +29,6 @@ import { VQBModule } from '@/store';
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import BaseStepForm from './StepForm.vue';
@@ -50,7 +41,6 @@ import { castFromString } from '@/lib/helpers';
   name: 'replace-step-form',
   components: {
     ColumnPicker,
-    InputTextWidget,
     ListWidget,
   },
 })

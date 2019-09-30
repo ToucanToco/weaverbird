@@ -293,7 +293,7 @@ function transformReplace(step: Readonly<ReplaceStep>): MongoStep {
   }));
   return {
     $addFields: {
-      [step.new_column || step.search_column]: {
+      [step.search_column]: {
         $switch: { branches: branches, default: $$(step.search_column) },
       },
     },
