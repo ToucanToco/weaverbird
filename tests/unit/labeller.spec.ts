@@ -285,7 +285,6 @@ describe('Labeller', () => {
     const step: S.ReplaceStep = {
       name: 'replace',
       search_column: 'column1',
-      new_column: 'column2',
       to_replace: [[4, 2]],
     };
     expect(hrl(step)).toEqual('Replace 4 with 2 in column "column1"');
@@ -295,7 +294,6 @@ describe('Labeller', () => {
     const step: S.ReplaceStep = {
       name: 'replace',
       search_column: 'column1',
-      new_column: 'column2',
       to_replace: [[4, 2], [5, 3]],
     };
     expect(hrl(step)).toEqual('Replace values in column "column1"');

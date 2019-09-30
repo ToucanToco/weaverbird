@@ -620,36 +620,11 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a replace step with a single value to replace inplace', () => {
+  it('can generate a replace step', () => {
     const pipeline: Pipeline = [
       {
         name: 'replace',
         search_column: 'column_1',
-        to_replace: [['foo', 'bar']],
-      },
-    ];
-    const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      {
-        $addFields: {
-          column_1: {
-            $switch: {
-              branches: [{ case: { $eq: ['$column_1', 'foo'] }, then: 'bar' }],
-              default: '$column_1',
-            },
-          },
-        },
-      },
-      { $project: { _id: 0 } },
-    ]);
-  });
-
-  it('can generate a replace step with a several values to replace in a new column', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'replace',
-        search_column: 'column_1',
-        new_column: 'column_2',
         to_replace: [['foo', 'bar'], ['old', 'new']],
       },
     ];
@@ -657,7 +632,7 @@ describe('Pipeline to mongo translator', () => {
     expect(querySteps).toEqual([
       {
         $addFields: {
-          column_2: {
+          column_1: {
             $switch: {
               branches: [
                 { case: { $eq: ['$column_1', 'foo'] }, then: 'bar' },

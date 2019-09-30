@@ -608,7 +608,7 @@ Rename a column.,
 
 ### `replace` step
 
-Replace one or several values in a column, and write resulting column inplace or in a new column.
+Replace one or several values in a column.
 
 A replace step has the following strucure:
 
@@ -616,7 +616,6 @@ A replace step has the following strucure:
 {
    name: 'replace',
    search_column: "column_1",
-   new_column: "column_2", // if empty, replace values directly in `search_column` by default
    to_replace: [
      ['foo', 'bar'], // The first value is the one to be replace, the second is the new value
      [42, 0]
@@ -626,14 +625,14 @@ A replace step has the following strucure:
 }
 ```
 
-### Example 1: Replace a single value inplace
+### Example
 
 **Input dataset:**
 
 | COMPANY   | COUNTRY |
 | --------- | ------- |
 | Company 1 | Fr      |
-| Company 2 | USA     |
+| Company 2 | UK      |
 
 **Step configuration:**
 
@@ -643,46 +642,17 @@ A replace step has the following strucure:
    search_column: "COUNTRY",
    to_replace: [
      ['Fr', 'France']
+     ['UK', 'United Kingdom']
    ]
 }
 ```
 
 **Output dataset:**
 
-| COMPANY   | COUNTRY |
-| --------- | ------- |
-| Company 1 | France  |
-| Company 2 | USA     |
-
-### Example 2: Replace several values at once in a new column
-
-**Input dataset:**
-
-| COMPANY   | COUNTRY |
-| --------- | ------- |
-| Company 1 | France  |
-| Company 2 | USA     |
-
-**Step configuration:**
-
-```javascript
-{
-   name: 'replace',
-   search_column: "COUNTRY",
-   new_column: "REGION"
-   to_replace: [
-     ['France', 'Europe']
-     ['USA': 'North America']
-   ]
-}
-```
-
-**Output dataset:**
-
-| COMPANY   | COUNTRY | REGION        |
-| --------- | ------- | ------------- |
-| Company 1 | France  | Europe        |
-| Company 2 | USA     | North America |
+| COMPANY   | COUNTRY        |
+| --------- | -------------- |
+| Company 1 | France         |
+| Company 2 | United Kingdom |
 
 ### `select` step
 
