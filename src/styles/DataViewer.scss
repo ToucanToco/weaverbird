@@ -11,8 +11,7 @@
 }
 
 .data-viewer-table {
-  border-right: 1px solid $data-viewer-border-color;
-  border-spacing: 0;
+  border-collapse: collapse;
   width: 100%;
 }
 
@@ -23,13 +22,13 @@
   background-color: white;
   cursor: pointer;
   border: 1px solid $data-viewer-border-color;
-  border-bottom-color: transparent;
-  border-right-color: transparent;
   font-size: 13px;
   text-align: left;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: pre;
+  //firefox hack for border-collapse issue
+  background-clip: padding-box;
 }
 
 .data-viewer-cell {
@@ -38,15 +37,14 @@
 
 .data-viewer__header-cell--active,
 .data-viewer-cell--active {
+  // It's trick to have its left side colored cause of border-collapse
+  border-left: 1px double;
   background-color: $active-color-faded-3;
   border-right-color: $active-color;
   border-left-color: $active-color;
 }
 
 .data-viewer__row:last-child {
-  .data-viewer-cell {
-    border-bottom-color: $data-viewer-border-color;
-  }
   .data-viewer-cell--active {
     border-bottom-color: $active-color;
   }
@@ -59,6 +57,7 @@
 
 .data-viewer__header-cell--active {
   border-top-color: $active-color;
+  border-left: 1px double;
   color: $active-color;
   .data-viewer__header-action:hover {
     background-color: $active-color-faded-2;
