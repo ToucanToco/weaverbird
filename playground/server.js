@@ -141,7 +141,11 @@ function executeQuery(config, client, collectionName, query, limit, skip, onsucc
         if (err) {
           onerror(err);
         } else {
-          onsuccess(docs);
+          if (docs.length) {
+            onsuccess(docs);
+          } else {
+            onsuccess([{ count: 0, data: 0 }])
+          }
         }
       });
     } catch (err) {
