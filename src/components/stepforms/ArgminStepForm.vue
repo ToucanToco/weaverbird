@@ -14,7 +14,6 @@
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Add columns"
       data-path=".groups"
       :errors="errors"
@@ -44,5 +43,16 @@ export default class ArgminStepForm extends BaseStepForm<ArgminStep> {
   initialStepValue!: ArgminStep;
 
   readonly title: string = 'Argmin';
+
+  get stepSelectedColumn() {
+    return this.editedStep.column;
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on "column" field');
+    }
+    this.editedStep.column = colname;
+  }
 }
 </script>
