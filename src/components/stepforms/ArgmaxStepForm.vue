@@ -4,7 +4,7 @@
     <ColumnPicker
       id="valueColumnInput"
       v-model="editedStep.column"
-      name="Search min value in..."
+      name="Search max value in..."
       placeholder="Enter a column name"
       data-path=".column"
       :errors="errors"
@@ -14,7 +14,6 @@
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
       placeholder="Add columns"
       data-path=".groups"
       :errors="errors"
@@ -44,5 +43,16 @@ export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
   initialStepValue!: ArgmaxStep;
 
   readonly title: string = 'Argmax';
+
+  get stepSelectedColumn() {
+    return this.editedStep.column;
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on "column" field');
+    }
+    this.editedStep.column = colname;
+  }
 }
 </script>
