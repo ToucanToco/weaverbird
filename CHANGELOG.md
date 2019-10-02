@@ -12,6 +12,10 @@
   `unpivot_column_name` and `value_column_name` (not requiring for a user input
   anymore)
 
+### Fixed
+
+- Fixed `top` step initialization (`rank_on` parameter)
+
 ## [0.2.0] - 2010-09-26
 
 ### Added
