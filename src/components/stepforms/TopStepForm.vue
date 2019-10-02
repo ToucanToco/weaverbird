@@ -66,5 +66,16 @@ export default class TopStepForm extends BaseStepForm<TopStep> {
   initialStepValue!: TopStep;
 
   readonly title: string = 'Top N rows';
+
+  get stepSelectedColumn() {
+    return this.editedStep.rank_on;
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on top "rank_on" field');
+    }
+    this.editedStep.rank_on = colname;
+  }
 }
 </script>
