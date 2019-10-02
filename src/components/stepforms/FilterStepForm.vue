@@ -7,6 +7,7 @@
     </div>
     <ListWidget
       addFieldName="Add condition"
+      separatorLabel="And"
       id="filterConditions"
       v-model="conditions"
       :defaultItem="defaultCondition"
