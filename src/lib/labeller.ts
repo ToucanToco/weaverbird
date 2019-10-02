@@ -134,11 +134,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   percentage(step: Readonly<S.PercentageStep>) {
-    let label = `Compute the row-level percentage of "${step.column}"`;
-    if (step.new_column) {
-      label += ` in "${step.new_column}"`;
-    }
-    return label;
+    return `Compute the row-level percentage of "${step.column}"`;
   }
 
   pivot(step: Readonly<S.PivotStep>) {

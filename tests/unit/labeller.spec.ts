@@ -256,9 +256,8 @@ describe('Labeller', () => {
     const step: S.PercentageStep = {
       name: 'percentage',
       column: 'column1',
-      new_column: 'column2',
     };
-    expect(hrl(step)).toEqual('Compute the row-level percentage of "column1" in "column2"');
+    expect(hrl(step)).toEqual('Compute the row-level percentage of "column1"');
   });
 
   it('generates label for pivot steps', () => {

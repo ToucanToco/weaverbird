@@ -29,20 +29,17 @@ describe('Percentage Step Form', () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
     const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
-    const textInputWrappers = wrapper.findAll('inputtextwidget-stub');
     expect(autocompleteWrappers.length).toEqual(1);
     expect(multiselectWrappers.length).toEqual(1);
-    expect(textInputWrappers.length).toEqual(1);
   });
 
   it('should pass down the properties to the input components', async () => {
     const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
     wrapper.setData({
-      editedStep: { name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' },
+      editedStep: { name: 'percentage', column: 'foo', group: ['test'] },
     });
     await localVue.nextTick();
     expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['test']);
-    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('bar');
   });
 
   describe('Errors', () => {
@@ -57,26 +54,6 @@ describe('Percentage Step Form', () => {
         );
       expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.column' }]);
     });
-
-    it('should report errors when newn_column is an already existing column name', async () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      });
-      const wrapper = mount(PercentageStepForm, { store, localVue });
-      wrapper.setData({
-        editedStep: { name: 'percentage', column: 'columnA', new_column: 'columnB' },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-        keyword: err.keyword,
-        dataPath: err.dataPath,
-      }));
-      expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
-    });
   });
 
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
@@ -84,14 +61,14 @@ describe('Percentage Step Form', () => {
       store: emptyStore,
       localVue,
       propsData: {
-        initialStepValue: { name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' },
+        initialStepValue: { name: 'percentage', column: 'foo', group: ['test'] },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     await localVue.nextTick();
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'percentage', column: 'foo', group: ['test'], new_column: 'bar' }]],
+      formSaved: [[{ name: 'percentage', column: 'foo', group: ['test'] }]],
     });
   });
 

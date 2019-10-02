@@ -18,14 +18,6 @@
       data-path=".group"
       :errors="errors"
     ></MultiselectWidget>
-    <InputTextWidget
-      id="newColumnNameInput"
-      v-model="editedStep.new_column"
-      name="(Optional) New column name..."
-      placeholder="Enter a new column name"
-      data-path=".new_column"
-      :errors="errors"
-    ></InputTextWidget>
     <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
   </div>
 </template>
@@ -34,7 +26,6 @@
 import { Prop } from 'vue-property-decorator';
 import { PercentageStep } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import InputTextWidget from './widgets/InputText.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
@@ -44,7 +35,6 @@ import { StepFormComponent } from '@/components/formlib';
   name: 'percentage-step-form',
   components: {
     ColumnPicker,
-    InputTextWidget,
     MultiselectWidget,
   },
 })

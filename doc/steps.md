@@ -462,12 +462,11 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 
 Compute the percentage of total, i.e. for every row the value in `column` divided
 by the total as the sum of every values in `column`. The computation can be performed
-by `group` if specified. The result can be either ouput inplace or in a `new_column` if specified
+by `group` if specified. The result is written inplace.
 
 ```javascript
 {
   name: 'percentage',
-  new_column: 'new_col', // optional
   column: 'bar',
   group: ['foo'] // optional
 }
