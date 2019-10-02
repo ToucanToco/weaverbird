@@ -11,6 +11,7 @@ import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
 import { terser } from 'rollup-plugin-terser';
 
+const production = process.env.NODE_ENV === 'production' || !process.env.ROLLUP_WATCH;
 /**
  * small helper to get package root dir since we can't
  * rely on __dirname within the rollup bundling package
@@ -47,6 +48,6 @@ export default {
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
     json(),
-    terser(),
+    production && terser(),
   ],
 };
