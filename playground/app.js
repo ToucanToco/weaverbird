@@ -81,6 +81,10 @@ const initialPipeline = [
     name: 'domain',
     domain: 'test-collection',
   },
+  {
+    name: 'filter',
+    condition: { and: [{ column: 'Groups', value: '<%= groupname %>', operator: 'eq' }] },
+  },
 ];
 
 async function setupInitialData(store, domain = null) {
@@ -129,7 +133,17 @@ async function buildVueApp() {
       };
     },
     created: function() {
-      registerModule(this.$store, { pipeline: initialPipeline, currentDomain: 'test-collection' });
+      registerModule(this.$store, {
+        pipeline: initialPipeline,
+        currentDomain: 'test-collection',
+        // use lodash interpolate
+        interpolateFunc: (value, context) => _.template(value)(context),
+        variables: {
+          value1: 2,
+          value2: 13,
+          groupname: 'Group 1',
+        },
+      });
       setupInitialData(this.$store);
     },
     computed: {
