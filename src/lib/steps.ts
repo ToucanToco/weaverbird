@@ -105,7 +105,6 @@ export type FormulaStep = {
 
 export type PercentageStep = {
   name: 'percentage';
-  new_column?: string;
   column: string;
   group?: string[];
 };

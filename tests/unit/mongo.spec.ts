@@ -752,11 +752,10 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a percentage step with groups and result in a new column', () => {
+  it('can generate a percentage step with groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'percentage',
-        new_column: 'new_col',
         column: 'bar',
         group: ['foo'],
       },
@@ -773,7 +772,7 @@ describe('Pipeline to mongo translator', () => {
       { $unwind: '$_vqbAppArray' },
       {
         $project: {
-          new_col: {
+          bar: {
             // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
             $cond: [
               { $eq: ['$_vqbTotalDenum', 0] },
@@ -789,7 +788,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a percentage step without groups and result inplace', () => {
+  it('can generate a percentage step without groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'percentage',

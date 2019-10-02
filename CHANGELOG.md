@@ -8,6 +8,8 @@
 
 ### Changed
 
+- Simplify `percentage` step by removing the optional parameter `new_column`
+
 - Simplify `unpivot` step UX by enforcing automatic column names for
   `unpivot_column_name` and `value_column_name` (not requiring for a user input
   anymore)

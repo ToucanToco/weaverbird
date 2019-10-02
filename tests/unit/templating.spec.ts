@@ -458,7 +458,6 @@ describe('Pipeline interpolator', () => {
       {
         name: 'percentage',
         column: '<%= foo %>',
-        new_column: '<%= age %>',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);

@@ -189,8 +189,6 @@ function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>
 
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: Readonly<PercentageStep>): MongoStep[] {
-  const newCol = step.new_column || step.column;
-
   return [
     {
       $group: {
@@ -202,7 +200,7 @@ function transformPercentage(step: Readonly<PercentageStep>): MongoStep[] {
     { $unwind: '$_vqbAppArray' },
     {
       $project: {
-        [newCol]: {
+        [step.column]: {
           $cond: [
             { $eq: ['$_vqbTotalDenum', 0] },
             null,
