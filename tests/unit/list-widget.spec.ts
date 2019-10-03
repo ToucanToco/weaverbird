@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
+import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 
 describe('Widget List', () => {
   describe('automatic new field', () => {
@@ -93,6 +94,34 @@ describe('Widget List', () => {
 
       expect(wrapper.emitted()['input']).toBeDefined();
       expect(wrapper.emitted()['input'][0][0][0]).toEqual('');
+    });
+
+    it('should not share the same "default item" reference among list items', () => {
+      const wrapper = shallowMount(ListWidget, {
+        propsData: {
+          automaticNewField: false,
+          widget: FilterSimpleConditionWidget,
+          defaultItem: { column: '', value: '', operator: 'eq' },
+          name: 'Aggregation',
+        },
+      });
+      const addButtonWrapper = wrapper.find('button');
+      addButtonWrapper.trigger('click');
+      // 1. get back the emitted object
+      const emitted = wrapper.emitted()['input'][0][0][0];
+      expect(emitted).toEqual({
+        column: '',
+        value: '',
+        operator: 'eq',
+      });
+      // 2. modify it, next clicks should still the original item
+      emitted.value = '1';
+      addButtonWrapper.trigger('click');
+      expect(wrapper.emitted()['input'][1][0][0]).toEqual({
+        column: '',
+        value: '',
+        operator: 'eq',
+      });
     });
   });
 });
