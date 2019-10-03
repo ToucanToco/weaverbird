@@ -26,6 +26,7 @@
 </template>
 
 <script lang="ts">
+import _ from 'lodash';
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { VueConstructor } from 'vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -97,7 +98,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   }
 
   addFieldSet() {
-    this.updateValue([...this.value, this.defaultChildValue]);
+    this.updateValue([...this.value, _.cloneDeep(this.defaultChildValue)]);
   }
 
   removeChild(index: number) {

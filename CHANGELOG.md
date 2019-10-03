@@ -18,6 +18,7 @@
 
 - Fixed `top` step initialization (`rank_on` parameter)
 - Fixed `argmin` and `argmax` labelling, initialization and interactions
+- Fixed shared references between items in List widget.
 
 ## [0.2.0] - 2010-09-26
 
