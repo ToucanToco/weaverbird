@@ -206,6 +206,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  substring(step: Readonly<S.SubstringStep>) {
+    return { ...step };
+  }
+
   top(step: Readonly<S.TopStep>) {
     return { ...step, limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)) };
   }

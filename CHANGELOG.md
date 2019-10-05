@@ -20,6 +20,7 @@
 
 - Added concatenate step
 - Added split step
+- Added substring step
 
 ## [0.3.0] - 2010-10-08
 
