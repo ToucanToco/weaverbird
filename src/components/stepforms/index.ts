@@ -13,6 +13,7 @@ import './PivotStepForm.vue';
 import './RenameStepForm.vue';
 import './ReplaceStepForm.vue';
 import './SelectColumnStepForm.vue';
+import './SplitStepForm.vue';
 import './ToLowerStepForm.vue';
 import './TopStepForm.vue';
 import './ToUpperStepForm.vue';

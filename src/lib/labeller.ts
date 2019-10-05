@@ -172,6 +172,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Sort columns ${formatMulticol(columns)}`;
   }
 
+  split(step: Readonly<S.SplitStep>) {
+    return `Split column "${step.column}"`;
+  }
+
   top(step: Readonly<S.TopStep>) {
     return `Keep top ${step.limit} values in column "${step.rank_on}"`;
   }
