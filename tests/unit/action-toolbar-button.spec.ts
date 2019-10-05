@@ -41,19 +41,22 @@ describe('ActionToolbar', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'text' } });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(4);
+    expect(actionsWrappers.length).toEqual(5);
     actionsWrappers.at(0).trigger('click');
     expect(wrapper.emitted().actionClicked).toHaveLength(1);
     expect(wrapper.emitted().actionClicked[0]).toEqual(['concatenate']);
     actionsWrappers.at(1).trigger('click');
     expect(wrapper.emitted().actionClicked).toHaveLength(2);
     expect(wrapper.emitted().actionClicked[1]).toEqual(['split']);
+    actionsWrappers.at(2).trigger('click');
+    expect(wrapper.emitted().actionClicked).toHaveLength(3);
+    expect(wrapper.emitted().actionClicked[2]).toEqual(['substring']);
     // clicking on "lowercase" ou "uppercase" should not trigger "actionClicked"
     // since we don't use an edit form for these steps.
-    actionsWrappers.at(2).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(2);
     actionsWrappers.at(3).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(2);
+    expect(wrapper.emitted().actionClicked).toHaveLength(3);
+    actionsWrappers.at(4).trigger('click');
+    expect(wrapper.emitted().actionClicked).toHaveLength(3);
   });
 
   it('should instantiate a Date button with the right list of actions', () => {
@@ -93,7 +96,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(2).trigger('click');
+      await actionsWrappers.at(3).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
 
@@ -108,7 +111,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(2).trigger('click');
+      await actionsWrappers.at(3).trigger('click');
       expect(store.state.vqb.pipeline).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'lowercase', column: 'foo' },
@@ -127,7 +130,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(2).trigger('click');
+      await actionsWrappers.at(3).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
   });
@@ -144,7 +147,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(3).trigger('click');
+      await actionsWrappers.at(4).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
 
@@ -159,7 +162,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(3).trigger('click');
+      await actionsWrappers.at(4).trigger('click');
       expect(store.state.vqb.pipeline).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'uppercase', column: 'foo' },
@@ -178,7 +181,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(3).trigger('click');
+      await actionsWrappers.at(4).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
   });

@@ -15,6 +15,7 @@ import replaceSchema from './replace';
 import selectSchema from './select';
 import sortSchema from './sort';
 import splitSchema from './split';
+import substringSchema from './substring';
 import toLowerSchema from './tolower';
 import topBuildSchema from './top';
 import toUpperSchema from './toupper';
@@ -41,6 +42,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   select: selectSchema,
   sort: sortSchema,
   split: splitSchema,
+  substring: substringSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,
   uppercase: toUpperSchema,

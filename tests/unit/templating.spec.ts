@@ -749,6 +749,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave substring steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'substring',
+        column: '<%= column %>',
+        start_index: 1,
+        end_index: 1,
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave top steps untouched if no variable is found', () => {
     const pipeline: Pipeline = [
       {

@@ -342,6 +342,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Convert column "test" to lowercase');
   });
 
+  it('generates label for substring steps', () => {
+    const step: S.SubstringStep = {
+      name: 'substring',
+      column: 'foo',
+      start_index: 0,
+      end_index: -1,
+    };
+    expect(hrl(step)).toEqual('Extract substring from "foo"');
+  });
+
   it('generates label for top steps', () => {
     const step: S.TopStep = {
       name: 'top',

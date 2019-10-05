@@ -176,6 +176,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Split column "${step.column}"`;
   }
 
+  substring(step: Readonly<S.SubstringStep>) {
+    return `Extract substring from "${step.column}"`;
+  }
+
   top(step: Readonly<S.TopStep>) {
     return `Keep top ${step.limit} values in column "${step.rank_on}"`;
   }
