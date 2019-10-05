@@ -151,6 +151,13 @@ export type SortStep = {
   columns: SortColumnType[];
 };
 
+export type SplitStep = {
+  name: 'split';
+  column: string;
+  delimiter: string;
+  number_cols_to_keep: number;
+};
+
 export type ToLowerStep = {
   name: 'lowercase';
   column: string;
@@ -195,6 +202,7 @@ export type PipelineStep =
   | RenameStep
   | ReplaceStep
   | SelectStep
+  | SplitStep
   | SortStep
   | ToLowerStep
   | TopStep

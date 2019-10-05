@@ -831,6 +831,90 @@ When sorting on several columns, order of columns specified in `columns` matters
 | Label 6 | Group 2 | 5     |
 | Label 4 | Group 2 | 1     |
 
+### `split` step
+
+Split a string `column` into several columns based on a `delimiter`.
+
+```javascript
+{
+  name: 'split',
+  column: 'foo', // the columnn to split
+  delimiter: ' - ', // the delimiter can e a strinng of any length
+  number_cols_to_keep: 3, // the numer of columns to keep resulting from the
+                          // split (starting from first chunk)
+}
+```
+
+#### Example 1
+
+**Input dataset:**
+
+| Label                      | Value |
+| -------------------------- | ----- |
+| Label 1 - Group 1 - France | 13    |
+| Label 2 - Group 1 - Spain  | 7     |
+| Label 3 - Group 1 - USA    | 20    |
+| Label 4 - Group 2 - France | 1     |
+| Label 5 - Group 2 - Spain  | 10    |
+| Label 6 - Group 2 - USA    | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'split',
+  column: 'Label',
+  delimiter: ' - ',
+  number_cols_to_keep: 3,
+}
+```
+
+**Output dataset:**
+
+| Label_1 | Label_2 | Label_3 | Value |
+| ------- | ------- | ------- | ----- |
+| Label 3 | Group 1 | France  | 20    |
+| Label 1 | Group 1 | Spain   | 13    |
+| Label 2 | Group 1 | USA     | 7     |
+| Label 5 | Group 2 | France  | 10    |
+| Label 6 | Group 2 | Spain   | 5     |
+| Label 4 | Group 2 | USA     | 1     |
+
+#### Example 2: keeping less columns
+
+**Input dataset:**
+
+| Label                      | Value |
+| -------------------------- | ----- |
+| Label 1 - Group 1 - France | 13    |
+| Label 2 - Group 1 - Spain  | 7     |
+| Label 3 - Group 1 - USA    | 20    |
+| Label 4 - Group 2 - France | 1     |
+| Label 5 - Group 2 - Spain  | 10    |
+| Label 6 - Group 2 - USA    | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'split',
+  column: 'Label',
+  delimiter: ' - ',
+  number_cols_to_keep: 2,
+}
+```
+
+**Output dataset:**
+
+| Label_1 | Label_2 | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+| Label 4 | Group 2 | 1     |
+
 ### `top` step
 
 Return top N rows by group if `groups` is specified, else over full dataset.
