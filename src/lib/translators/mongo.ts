@@ -15,6 +15,7 @@ import {
   PercentageStep,
   ReplaceStep,
   SortStep,
+  SplitStep,
   TopStep,
   UnpivotStep,
   isFilterComboAnd,
@@ -317,6 +318,19 @@ function transformSort(step: Readonly<SortStep>): MongoStep {
   return { $sort: sortMongo };
 }
 
+/** transform a 'split' step into corresponding mongo steps */
+function transformSplit(step: Readonly<SplitStep>): MongoStep {
+  const addFieldsStep: PropMap<object> = {};
+  for (let i = 1; i <= step.number_cols_to_keep; i++) {
+    addFieldsStep[`${step.column}_${i}`] = { $arrayElemAt: ['$_vqbTmp', i - 1] };
+  }
+  return [
+    { $addFields: { _vqbTmp: { $split: [$$(step.column), step.delimiter] } } },
+    { $addFields: addFieldsStep },
+    { $project: { _vqbTmp: 0 } },
+  ];
+}
+
 /** transform an 'top' step into corresponding mongo steps */
 function transformTop(step: Readonly<TopStep>): MongoStep[] {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
@@ -496,6 +510,7 @@ const mapper: StepMatcher<MongoStep> = {
   ],
   replace: transformReplace,
   select: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 1])) }),
+  split: transformSplit,
   sort: transformSort,
   top: transformTop,
   unpivot: transformUnpivot,

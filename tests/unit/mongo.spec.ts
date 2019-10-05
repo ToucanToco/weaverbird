@@ -1232,7 +1232,7 @@ describe('Pipeline to mongo translator', () => {
     expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }, { $project: { _id: 0 } }]);
   });
 
-  it('can generate an tolower', () => {
+  it('can generate a lowercase step', () => {
     const pipeline: Pipeline = [
       {
         name: 'lowercase',
@@ -1246,7 +1246,32 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an toupper', () => {
+  it('can generate a split step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'split',
+        column: 'foo',
+        delimiter: ' - ',
+        number_cols_to_keep: 3,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: { _vqbTmp: { $split: ['$foo', ' - '] } },
+      },
+      {
+        $addFields: {
+          foo_1: { $arrayElemAt: ['$_vqbTmp', 0] },
+          foo_2: { $arrayElemAt: ['$_vqbTmp', 1] },
+          foo_3: { $arrayElemAt: ['$_vqbTmp', 2] },
+        },
+      },
+      { $project: { _id: 0, _vqbTmp: 0 } },
+    ]);
+  });
+
+  it('can generate an uppercase step', () => {
     const pipeline: Pipeline = [
       {
         name: 'uppercase',
