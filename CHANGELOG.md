@@ -14,6 +14,7 @@
 ### Added
 
 - Added concatenate step
+- Added split step
 
 ## [0.3.0] - 2010-10-08
 

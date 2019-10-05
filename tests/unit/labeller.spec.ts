@@ -324,6 +324,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Sort columns "column1", "column2"');
   });
 
+  it('generates label for split steps', () => {
+    const step: S.SplitStep = {
+      name: 'split',
+      column: 'foo',
+      delimiter: '-',
+      number_cols_to_keep: 3,
+    };
+    expect(hrl(step)).toEqual('Split column "foo"');
+  });
+
   it('generates label for lowercase steps', () => {
     const step: S.ToLowerStep = {
       name: 'lowercase',

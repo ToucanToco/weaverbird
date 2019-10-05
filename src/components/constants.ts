@@ -38,6 +38,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   ],
   text: [
     { name: 'concatenate', label: 'Concatenate' },
+    { name: 'split', label: 'Split column' },
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
   ],

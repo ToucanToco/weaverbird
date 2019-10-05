@@ -737,6 +737,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave split steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'split',
+        column: '<%= foo %>',
+        delimiter: '<%= delim %>',
+        number_cols_to_keep: 3,
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave top steps untouched if no variable is found', () => {
     const pipeline: Pipeline = [
       {
