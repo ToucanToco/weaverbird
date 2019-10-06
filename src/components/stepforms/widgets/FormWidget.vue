@@ -14,22 +14,22 @@ export default class FormWidget extends Vue {
   errors!: ErrorObject[];
 
   get error() {
-    if(this.errors === null || this.errors === undefined) {
-      return;
+    if (this.errors === null || this.errors === undefined) {
+      return undefined;
     } else {
       return this.errors.find(d => d.dataPath == this.dataPath);
     }
   }
 
   get messageError() {
-    if(this.error !== undefined) {
+    if (this.error !== undefined) {
       return this.error.message;
     }
     return null;
   }
 
   get toggleClassError() {
-    return { 'field--error': this.messageError !== undefined && this.messageError !== null  };
+    return { 'field--error': this.messageError !== undefined && this.messageError !== null };
   }
 
 }
