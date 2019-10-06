@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { PipelineInterpolator, ScopeContext } from '@/lib/templating';
+import { ColumnTypeMapping } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 
 function interpolate(value: string, context: ScopeContext) {
@@ -14,8 +15,12 @@ describe('Pipeline interpolator', () => {
     age: 42,
   };
 
-  function translate(pipeline: Pipeline, context = defaultContext) {
-    const pipelineInterpolator = new PipelineInterpolator(interpolate, context);
+  function translate(
+    pipeline: Pipeline,
+    context = defaultContext,
+    columnTypes?: ColumnTypeMapping,
+  ) {
+    const pipelineInterpolator = new PipelineInterpolator(interpolate, context, columnTypes);
     return pipelineInterpolator.interpolate(pipeline);
   }
 
@@ -116,6 +121,27 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
+  it('should interpolate and cast fillna steps if required', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fillna',
+        column: 'column1',
+        value: '<%= age %>',
+      },
+    ];
+    expect(
+      translate(pipeline, defaultContext, {
+        column1: 'integer',
+      }),
+    ).toEqual([
+      {
+        name: 'fillna',
+        column: 'column1',
+        value: 42,
+      },
+    ]);
+  });
+
   it('should leave fillna steps if no variable is found', () => {
     const pipeline: Pipeline = [
       {
@@ -150,6 +176,29 @@ describe('Pipeline interpolator', () => {
         condition: {
           column: '<%= foo %>',
           value: '42',
+          operator: 'eq',
+        },
+      },
+    ]);
+  });
+
+  it('interpolates and casts simple filter steps / operator "eq"', () => {
+    const step: Pipeline = [
+      {
+        name: 'filter',
+        condition: {
+          column: 'foo',
+          value: '<%= age %>',
+          operator: 'eq',
+        },
+      },
+    ];
+    expect(translate(step, defaultContext, { foo: 'integer' })).toEqual([
+      {
+        name: 'filter',
+        condition: {
+          column: 'foo',
+          value: 42,
           operator: 'eq',
         },
       },
@@ -368,6 +417,63 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
+  it('interpolates and casts "and" filter steps', () => {
+    const step: Pipeline = [
+      {
+        name: 'filter',
+        condition: {
+          and: [
+            {
+              column: '<%= foo %>',
+              value: [11, '<%= age %>', '<%= egg %>', 'hola'],
+              operator: 'nin',
+            },
+            {
+              column: 'column1',
+              value: '<%= age %>',
+              operator: 'eq',
+            },
+            {
+              column: 'column2',
+              value: '<%= truth %>',
+              operator: 'ne',
+            },
+          ],
+        },
+      },
+    ];
+    expect(
+      translate(
+        step,
+        { ...defaultContext, truth: 'true' },
+        { column1: 'integer', column2: 'boolean' },
+      ),
+    ).toEqual([
+      {
+        name: 'filter',
+        condition: {
+          and: [
+            {
+              column: '<%= foo %>',
+              value: [11, '42', 'spam', 'hola'],
+              operator: 'nin',
+            },
+            {
+              column: 'column1',
+              value: 42,
+              operator: 'eq',
+            },
+            {
+              column: 'column2',
+              value: true,
+              operator: 'ne',
+            },
+          ],
+        },
+      },
+    ]);
+  });
+
   it('interpolates "or" filter steps', () => {
     const step: Pipeline = [
       {
@@ -411,6 +517,63 @@ describe('Pipeline interpolator', () => {
             {
               column: '<%= foo %>',
               value: 'spam',
+              operator: 'ne',
+            },
+          ],
+        },
+      },
+    ]);
+  });
+
+  it('interpolates and casts "or" filter steps', () => {
+    const step: Pipeline = [
+      {
+        name: 'filter',
+        condition: {
+          or: [
+            {
+              column: '<%= foo %>',
+              value: [11, '<%= age %>', '<%= egg %>', 'hola'],
+              operator: 'nin',
+            },
+            {
+              column: 'column1',
+              value: '<%= age %>',
+              operator: 'eq',
+            },
+            {
+              column: 'column2',
+              value: '<%= truth %>',
+              operator: 'ne',
+            },
+          ],
+        },
+      },
+    ];
+    expect(
+      translate(
+        step,
+        { ...defaultContext, truth: 'true' },
+        { column1: 'integer', column2: 'boolean' },
+      ),
+    ).toEqual([
+      {
+        name: 'filter',
+        condition: {
+          or: [
+            {
+              column: '<%= foo %>',
+              value: [11, '42', 'spam', 'hola'],
+              operator: 'nin',
+            },
+            {
+              column: 'column1',
+              value: 42,
+              operator: 'eq',
+            },
+            {
+              column: 'column2',
+              value: true,
               operator: 'ne',
             },
           ],
@@ -495,6 +658,51 @@ describe('Pipeline interpolator', () => {
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should leave replace steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'replace',
+        search_column: '<%= age %>',
+        to_replace: [[12, 22], ['13', '23']],
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should interpolate replace steps if required', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'replace',
+        search_column: '<%= age %>',
+        to_replace: [['<%= age %>', '12'], ['what?', '<%= age %>']],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'replace',
+        search_column: '<%= age %>',
+        to_replace: [['42', '12'], ['what?', '42']],
+      },
+    ]);
+  });
+
+  it('should interpolate and cast replace steps if required', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'replace',
+        search_column: 'column1',
+        to_replace: [['<%= age %>', '12'], ['13', '<%= age %>']],
+      },
+    ];
+    expect(translate(pipeline, defaultContext, { column1: 'integer' })).toEqual([
+      {
+        name: 'replace',
+        search_column: 'column1',
+        to_replace: [[42, 12], [13, 42]],
+      },
+    ]);
   });
 
   it('should leave select steps untouched', () => {

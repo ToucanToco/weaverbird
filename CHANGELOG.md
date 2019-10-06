@@ -4,7 +4,7 @@
 
 ### Added
 
-- Added variable interpolation handling
+- Added variable interpolation + autocast handling
 
 ### Changed
 
