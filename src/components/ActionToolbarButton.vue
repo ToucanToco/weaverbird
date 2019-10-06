@@ -19,8 +19,9 @@
 
 <script lang="ts">
 import Vue from 'vue';
+import { VQBModule } from '@/store';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { PipelineStepName } from '@/lib/steps';
+import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
 
@@ -48,6 +49,16 @@ export default class ActionToolbarButton extends Vue {
   })
   category!: string;
 
+  @VQBModule.State pipeline!: Pipeline;
+
+  @VQBModule.Getter computedActiveStepIndex!: number;
+  @VQBModule.Getter isEditingStep!: boolean;
+  @VQBModule.Getter selectedColumns!: string[];
+
+  @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
+  @VQBModule.Mutation closeStepForm!: () => void;
+
   /**
    * @description Close the popover when clicking outside
    */
@@ -63,7 +74,28 @@ export default class ActionToolbarButton extends Vue {
    * @description Emit an event with a PipelineStepName in order to open its form
    */
   actionClicked(stepName: PipelineStepName) {
-    this.$emit('actionClicked', stepName);
+    if ((stepName === 'lowercase' || stepName === 'uppercase') && this.selectedColumns.length > 0) {
+      this.createToLowerOrToUpperStep(stepName);
+    } else {
+      this.$emit('actionClicked', stepName);
+    }
+  }
+
+  createToLowerOrToUpperStep(stepName: PipelineStepName) {
+    const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
+    const step: PipelineStep = { name: `${stepName}`, column: this.selectedColumns[0] };
+    /**
+     * If a step edition form is already open, close it so that the left panel displays
+     * the pipeline with the new delete step inserted
+     */
+    if (this.isEditingStep) {
+      this.closeStepForm();
+    }
+    newPipeline.splice(index, 0, step);
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
+    this.close();
   }
 
   get items() {

@@ -1,6 +1,7 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
-import Vuex from 'vuex';
+import Vuex, { Store } from 'vuex';
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -41,10 +42,8 @@ describe('ActionToolbar', () => {
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
     expect(actionsWrappers.length).toEqual(2);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['lowercase']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['uppercase']);
+    expect(actionsWrappers.at(0).text()).toEqual('To lowercase');
+    expect(actionsWrappers.at(1).text()).toEqual('To uppercase');
   });
 
   it('should instantiate a Date button with the right list of actions', () => {
@@ -70,5 +69,107 @@ describe('ActionToolbar', () => {
     expect(wrapper.emitted().actionClicked[0]).toEqual(['pivot']);
     actionsWrappers.at(1).trigger('click');
     expect(wrapper.emitted().actionClicked[1]).toEqual(['unpivot']);
+  });
+
+  describe('When clicking on the "To lowercase" operation', () => {
+    it('should close any open step form', async () => {
+      const store: Store<any> = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'text' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(0).trigger('click');
+      expect(store.state.vqb.currentStepFormName).toEqual(undefined);
+    });
+
+    it('should insert a lowercase step in pipeline', async () => {
+      const store: Store<any> = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'text' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(0).trigger('click');
+      expect(store.state.vqb.pipeline).toEqual([
+        { name: 'domain', domain: 'myDomain' },
+        { name: 'lowercase', column: 'foo' },
+      ]);
+      expect(store.state.vqb.selectedStepIndex).toEqual(1);
+    });
+
+    it('should emit a close event', async () => {
+      const store: Store<any> = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'text' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(0).trigger('click');
+      expect(wrapper.emitted().closed).toBeTruthy();
+    });
+  });
+
+  describe('When clicking on the "To uppercase" operation', () => {
+    it('should close any open step form', async () => {
+      const store: Store<any> = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'text' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(1).trigger('click');
+      expect(store.state.vqb.currentStepFormName).toEqual(undefined);
+    });
+
+    it('should insert a lowercase step in pipeline', async () => {
+      const store: Store<any> = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'text' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(1).trigger('click');
+      expect(store.state.vqb.pipeline).toEqual([
+        { name: 'domain', domain: 'myDomain' },
+        { name: 'uppercase', column: 'foo' },
+      ]);
+      expect(store.state.vqb.selectedStepIndex).toEqual(1);
+    });
+
+    it('should emit a close event', async () => {
+      const store: Store<any> = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'text' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(1).trigger('click');
+      expect(wrapper.emitted().closed).toBeTruthy();
+    });
   });
 });
