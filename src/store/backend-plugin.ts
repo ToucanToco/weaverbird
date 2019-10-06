@@ -53,7 +53,8 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
     const { interpolateFunc, variables } = store.state[VQB_MODULE_NAME];
     if (interpolateFunc && variables && Object.keys(variables).length) {
-      const interpolator = new PipelineInterpolator(interpolateFunc, variables);
+      const columnTypes = store.getters[VQBnamespace('columnTypes')];
+      const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
       pipeline = interpolator.interpolate(pipeline);
     }
     const response = await service.executePipeline(
