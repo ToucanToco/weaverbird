@@ -542,6 +542,11 @@ const mapper: StepMatcher<MongoStep> = {
       [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
     },
   }),
+  fromdate: step => ({
+    $addFields: {
+      [step.column]: { $dateToString: { date: $$(step.column), format: `${step.format}` } },
+    },
+  }),
   lowercase: step => ({ $addFields: { [step.column]: { $toLower: $$(step.column) } } }),
   percentage: transformPercentage,
   pivot: transformPivot,
@@ -554,6 +559,9 @@ const mapper: StepMatcher<MongoStep> = {
   split: transformSplit,
   sort: transformSort,
   substring: transformSubstring,
+  todate: step => ({
+    $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
+  }),
   top: transformTop,
   unpivot: transformUnpivot,
   uppercase: step => ({ $addFields: { [step.column]: { $toUpper: $$(step.column) } } }),
