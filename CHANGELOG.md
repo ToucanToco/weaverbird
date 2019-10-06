@@ -5,6 +5,11 @@
 ## Fixed
 - Fixed closing popover on ActionButton when opening one on column header cell
 
+### Changed
+
+- Simplify lowercase and uppercase UI workflow (no need to open form when a
+  column is selected)
+
 ## [0.3.0] - 2010-10-08
 
 ### Added
