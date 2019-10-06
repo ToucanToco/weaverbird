@@ -110,6 +110,12 @@ export type FormulaStep = {
   formula: string;
 };
 
+export type FromDateStep = {
+  name: 'fromdate';
+  column: string;
+  format: string;
+};
+
 export type PercentageStep = {
   name: 'percentage';
   column: string;
@@ -165,6 +171,12 @@ export type SubstringStep = {
   end_index: number;
 };
 
+export type ToDateStep = {
+  name: 'todate';
+  column: string;
+  format?: string;
+};
+
 export type ToLowerStep = {
   name: 'lowercase';
   column: string;
@@ -204,6 +216,7 @@ export type PipelineStep =
   | FillnaStep
   | FilterStep
   | FormulaStep
+  | FromDateStep
   | PercentageStep
   | PivotStep
   | RenameStep
@@ -212,6 +225,7 @@ export type PipelineStep =
   | SplitStep
   | SortStep
   | SubstringStep
+  | ToDateStep
   | ToLowerStep
   | TopStep
   | ToUpperStep

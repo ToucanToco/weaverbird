@@ -511,6 +511,53 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 | Label 2 | 1      | 13     | 7      | 3      | -4     |
 | Label 3 | 5      | 20     | 5      | 2      | 1      |
 
+### `fromdate` step
+
+Converts a date `column` into a string column based on a specified `format`.
+
+```javascript
+{
+    name: 'fromdate',
+    column: 'myDateColumn'
+    format: '%Y-%m-%d' // For further details on supported format specifiers,
+                       // see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Date                     | Value |
+| --------- | ------------------------ | ----- |
+| Company 1 | 2019-10-06T00:00:00.000Z | 13    |
+| Company 1 | 2019-10-07T00:00:00.000Z | 7     |
+| Company 1 | 2019-10-08T00:00:00.000Z | 20    |
+| Company 2 | 2019-10-06T00:00:00.000Z | 1     |
+| Company 2 | 2019-10-07T00:00:00.000Z | 10    |
+| Company 2 | 2019-10-08T00:00:00.000Z | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'fromdate',
+  column: 'Date',
+  format: '%d/%m/%Y'
+}
+```
+
+**Output dataset:**
+
+| Company   | Date       | Value |
+| --------- | ---------- | ----- |
+| Company 1 | 06/10/2019 | 13    |
+| Company 1 | 07/10/2019 | 7     |
+| Company 1 | 08/10/2019 | 20    |
+| Company 2 | 06/10/2019 | 1     |
+| Company 2 | 07/10/2019 | 10    |
+| Company 2 | 08/10/2019 | 5     |
+
 ### `lowercase` step
 
 Converts a string `column` to lowercase.
@@ -528,9 +575,9 @@ Converts a string `column` to lowercase.
 
 | Label   | Group   | Value |
 | ------- | ------- | ----- |
-| Label 1 | Group 1 | 13    |
-| Label 2 | Group 1 | 7     |
-| Label 3 | Group 1 | 20    |
+| LABEL 1 | Group 1 | 13    |
+| LABEL 2 | Group 1 | 7     |
+| LABEL 3 | Group 1 | 20    |
 
 **Step configuration:**
 
@@ -1040,6 +1087,55 @@ Neither `start_index` nor `end_index` can be equal to 0.
 | ord   | 1     |
 | can   | 10    |
 | oco   | 5     |
+
+### `todate` step
+
+Converts a string `column` into a date column based on a specified `format`.
+
+```javascript
+{
+    name: 'todate',
+    column: 'myTextColumn'
+    format: '%Y-%m-%d' // Optional. If not specified, the backend tries to guess
+                        // For further details on supported format specifiers,
+                        // see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers
+                        // Note: format is unsupported in Mongo versions older than 4.0
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Date       | Value |
+| --------- | ---------- | ----- |
+| Company 1 | 06/10/2019 | 13    |
+| Company 1 | 07/10/2019 | 7     |
+| Company 1 | 08/10/2019 | 20    |
+| Company 2 | 06/10/2019 | 1     |
+| Company 2 | 07/10/2019 | 10    |
+| Company 2 | 08/10/2019 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'todate',
+  column: 'Date',
+  format: '%d/%m/%Y'
+}
+```
+
+**Output dataset:**
+
+| Company   | Date                     | Value |
+| --------- | ------------------------ | ----- |
+| Company 1 | 2019-10-06T00:00:00.000Z | 13    |
+| Company 1 | 2019-10-07T00:00:00.000Z | 7     |
+| Company 1 | 2019-10-08T00:00:00.000Z | 20    |
+| Company 2 | 2019-10-06T00:00:00.000Z | 1     |
+| Company 2 | 2019-10-07T00:00:00.000Z | 10    |
+| Company 2 | 2019-10-08T00:00:00.000Z | 5     |
 
 ### `top` step
 

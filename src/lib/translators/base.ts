@@ -124,6 +124,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   formula(step: Readonly<S.FormulaStep>) {}
 
   @unsupported
+  fromdate(step: Readonly<S.FromDateStep>) {}
+
+  @unsupported
   lowercase(step: Readonly<S.ToLowerStep>) {}
 
   @unsupported
@@ -149,6 +152,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   @unsupported
   substring(step: Readonly<S.SubstringStep>) {}
+
+  @unsupported
+  todate(step: Readonly<S.ToDateStep>) {}
 
   @unsupported
   top(step: Readonly<S.TopStep>) {}

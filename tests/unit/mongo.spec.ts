@@ -1325,6 +1325,20 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate a todate step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'todate',
+        column: 'foo',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate a substring step with negative start and end index', () => {
     const pipeline: Pipeline = [
       {
@@ -1378,6 +1392,21 @@ describe('Pipeline to mongo translator', () => {
           },
         },
       },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%Y-%m-%d',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $dateToString: { date: '$foo', format: '%Y-%m-%d' } } } },
       { $project: { _id: 0 } },
     ]);
   });
