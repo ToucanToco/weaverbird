@@ -63,7 +63,9 @@ describe('ActionToolbar', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'date' } });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(0);
+    expect(actionsWrappers.length).toEqual(2);
+    expect(actionsWrappers.at(0).text()).toEqual('Convert text to date');
+    expect(actionsWrappers.at(1).text()).toEqual('Convert date to text');
   });
 
   it('should instantiate an Aggregate button with the right list of actions', () => {
@@ -182,6 +184,57 @@ describe('ActionToolbar', () => {
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
+      expect(wrapper.emitted().closed).toBeTruthy();
+    });
+  });
+
+  describe('When clicking on the "Convert from text to date" operation', () => {
+    it('should close any open step form', async () => {
+      const store = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'date' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(0).trigger('click');
+      expect(store.state.vqb.currentStepFormName).toEqual(undefined);
+    });
+
+    it('should insert a todate step in pipeline', async () => {
+      const store = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'date' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(0).trigger('click');
+      expect(store.state.vqb.pipeline).toEqual([
+        { name: 'domain', domain: 'myDomain' },
+        { name: 'todate', column: 'foo' },
+      ]);
+      expect(store.state.vqb.selectedStepIndex).toEqual(1);
+    });
+
+    it('should emit a close event', async () => {
+      const store = setupMockStore({
+        pipeline: [{ name: 'domain', domain: 'myDomain' }],
+        selectedColumns: ['foo'],
+      });
+      const wrapper = mount(ActionToolbarButton, {
+        propsData: { category: 'date' },
+        store,
+        localVue,
+      });
+      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      await actionsWrappers.at(0).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
   });

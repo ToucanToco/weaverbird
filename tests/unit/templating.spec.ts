@@ -85,6 +85,27 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave todate steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'todate',
+        column: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should leave fromdate steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: '<%= foo %>',
+        format: '<%= bar %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave domain steps untouched', () => {
     const pipeline: Pipeline = [
       {

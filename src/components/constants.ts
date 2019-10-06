@@ -36,6 +36,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'argmax', label: 'Argmax' },
     { name: 'argmin', label: 'Argmin' },
   ],
+  date: [
+    { name: 'todate', label: 'Convert text to date' },
+    { name: 'fromdate', label: 'Convert date to text' },
+  ],
   text: [
     { name: 'concatenate', label: 'Concatenate' },
     { name: 'split', label: 'Split column' },
@@ -63,6 +67,10 @@ export const SEARCH_ACTION: groupActions[] = [
         label: 'Aggregate',
       },
     ],
+  },
+  {
+    type: 'date',
+    actions: [...ACTION_CATEGORIES.date],
   },
   {
     type: 'reshape',
@@ -105,7 +113,7 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
   },
   {
     category: 'date',
-    enable: false,
+    enable: true,
     icon: 'calendar',
     label: 'Date',
   },

@@ -70,18 +70,22 @@ export default class ActionToolbarButton extends Vue {
       this.close();
     }
   }
+
   /**
    * @description Emit an event with a PipelineStepName in order to open its form
    */
   actionClicked(stepName: PipelineStepName) {
-    if ((stepName === 'lowercase' || stepName === 'uppercase') && this.selectedColumns.length > 0) {
-      this.createToLowerOrToUpperStep(stepName);
+    if (
+      (stepName === 'lowercase' || stepName === 'uppercase' || stepName === 'todate') &&
+      this.selectedColumns.length > 0
+    ) {
+      this.createStep(stepName);
     } else {
       this.$emit('actionClicked', stepName);
     }
   }
 
-  createToLowerOrToUpperStep(stepName: PipelineStepName) {
+  createStep(stepName: PipelineStepName) {
     const newPipeline: Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
     const step: PipelineStep = { name: `${stepName}`, column: this.selectedColumns[0] };
