@@ -17,7 +17,6 @@ import { VQBModule } from '@/store';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import { Getter, Mutation } from 'vuex-class';
 import { MutationCallbacks } from '@/store/mutations';
 import { ErrorObject } from 'ajv';
 
