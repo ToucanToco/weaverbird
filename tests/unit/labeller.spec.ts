@@ -254,6 +254,15 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Compute "column1 + column2" in "column3"');
   });
 
+  it('generates label for fromdate steps', () => {
+    const step: S.FromDateStep = {
+      name: 'fromdate',
+      column: 'foo',
+      format: '%Y-%m-%d',
+    };
+    expect(hrl(step)).toEqual('Convert "foo" into text');
+  });
+
   it('generates label for percentage steps without output column', () => {
     const step: S.PercentageStep = {
       name: 'percentage',
@@ -350,6 +359,14 @@ describe('Labeller', () => {
       end_index: -1,
     };
     expect(hrl(step)).toEqual('Extract substring from "foo"');
+  });
+
+  it('generates label for todate steps', () => {
+    const step: S.ToDateStep = {
+      name: 'todate',
+      column: 'foo',
+    };
+    expect(hrl(step)).toEqual('Convert "foo" into date');
   });
 
   it('generates label for top steps', () => {

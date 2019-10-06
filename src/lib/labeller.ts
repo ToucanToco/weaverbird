@@ -137,6 +137,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Compute "${step.formula}" in "${step.new_column}"`;
   }
 
+  fromdate(step: Readonly<S.FromDateStep>) {
+    return `Convert "${step.column}" into text`;
+  }
+
   lowercase(step: Readonly<S.ToLowerStep>) {
     return `Convert column "${step.column}" to lowercase`;
   }
@@ -178,6 +182,10 @@ class StepLabeller implements StepMatcher<string> {
 
   substring(step: Readonly<S.SubstringStep>) {
     return `Extract substring from "${step.column}"`;
+  }
+
+  todate(step: Readonly<S.ToDateStep>) {
+    return `Convert "${step.column}" into date`;
   }
 
   top(step: Readonly<S.TopStep>) {

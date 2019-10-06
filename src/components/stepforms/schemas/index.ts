@@ -8,6 +8,7 @@ import domainSchema from './domain';
 import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import formulaSchema from './formula';
+import fromDateSchema from './fromdate';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
@@ -17,6 +18,7 @@ import sortSchema from './sort';
 import splitSchema from './split';
 import substringSchema from './substring';
 import toLowerSchema from './tolower';
+import toDateSchema from './todate';
 import topBuildSchema from './top';
 import toUpperSchema from './toupper';
 import unpivotSchema from './unpivot';
@@ -34,6 +36,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   fillna: fillnaSchema,
   filter: filterSchema,
   formula: formulaSchema,
+  fromdate: fromDateSchema,
   lowercase: toLowerSchema,
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
@@ -43,6 +46,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   sort: sortSchema,
   split: splitSchema,
   substring: substringSchema,
+  todate: toDateSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,
   uppercase: toUpperSchema,

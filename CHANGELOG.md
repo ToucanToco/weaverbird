@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+### Added
+
+- Added `fromdate` step (converts date into string)
+- Added `todate` step (converts string into date)
+
 ## [0.4.0] - 2019-10-22
 
 ### Changed
@@ -20,9 +25,8 @@
 
 ### Added
 
-- Added concatenate step
-- Added split step
-- Added substring step
+- Added `concatenate` step
+- Added `split` step
 
 ## [0.3.0] - 2019-10-08
 

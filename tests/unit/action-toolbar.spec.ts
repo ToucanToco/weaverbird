@@ -24,7 +24,7 @@ describe('ActionToolbar', () => {
     expect(actionButtons.at(2).props().category).toEqual('text');
     expect(actionButtons.at(2).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(3).props().category).toEqual('date');
-    expect(actionButtons.at(3).classes()).toContain('action-toolbar__btn--disable');
+    expect(actionButtons.at(3).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(4).props().category).toEqual('aggregate');
     expect(actionButtons.at(4).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(5).props().category).toEqual('reshape');

@@ -169,6 +169,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, formula: _interpolate(this.interpolateFunc, step.formula, this.context) };
   }
 
+  fromdate(step: Readonly<S.FromDateStep>) {
+    return { ...step };
+  }
+
   lowercase(step: Readonly<S.ToLowerStep>) {
     return { ...step };
   }
@@ -207,6 +211,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   substring(step: Readonly<S.SubstringStep>) {
+    return { ...step };
+  }
+
+  todate(step: Readonly<S.ToDateStep>) {
     return { ...step };
   }
 
