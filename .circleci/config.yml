@@ -16,6 +16,13 @@ jobs:
       - run: yarn
       - run: yarn test:unit --runInBand
       - run: yarn codecov
+  lint:
+    docker:
+      - image: circleci/node:latest-browsers
+    steps:
+      - checkout
+      - run: yarn
+      - run: yarn lint
 
 workflows:
   version: 2
@@ -23,3 +30,4 @@ workflows:
     jobs:
       - build
       - test
+      - lint
