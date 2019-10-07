@@ -19,7 +19,11 @@ $grey-dark: #585858;
 .query-builder {
   color: $base-color;
   font-family: 'Montserrat', sans-serif;
-  box-sizing: border-box;
+  *,
+  ::after,
+  ::before {
+    box-sizing: border-box;
+  }
 
   button {
     outline: none;
