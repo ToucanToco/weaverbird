@@ -161,6 +161,9 @@ export default class ListWidget extends Mixins(FormWidget) {
   background-color: #f8f8f8;
   width: 98%;
 }
+.widget-list__component-sep {
+  font-size: 14px;
+}
 
 .widget-list__add-fieldset {
   @extend %button-default;
