@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-form">
+  <div class="filter-form" :class="multipleConditionsClass">
     <step-form-title :title="title"></step-form-title>
     <div class="filter-form-headers__container">
       <div class="filter-form-header">Values in...</div>
@@ -7,7 +7,7 @@
     </div>
     <ListWidget
       addFieldName="Add condition"
-      separatorLabel="And"
+      separatorLabel="and"
       id="filterConditions"
       v-model="conditions"
       :defaultItem="defaultCondition"
@@ -86,6 +86,12 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }
   }
 
+  get multipleConditionsClass() {
+    return {
+      'filter-form--multiple-conditions': this.conditions.length > 1,
+    }
+  }
+
   set conditions(newval) {
     if (isFilterComboAnd(this.editedStep.condition)) {
       this.editedStep.condition.and = [...newval];
@@ -122,7 +128,22 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
 }
 </style>
 <style lang="scss">
-.filter-form .widget-list__body .widget-list__icon {
-  top: 5px;
+.filter-form {
+  .widget-list__body .widget-list__icon {
+    top: 5px;
+  }
+  .widget-list__component-sep {
+    left: 0;
+    position: absolute;
+    top: 10px;
+  }
+}
+.filter-form--multiple-conditions {
+  .filter-form-headers__container {
+    margin-left: 30px;
+  }
+  .widget-list__component {
+    margin-left: 30px;
+  }
 }
 </style>

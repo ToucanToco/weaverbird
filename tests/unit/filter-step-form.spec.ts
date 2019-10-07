@@ -24,6 +24,17 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.stepname).toEqual('filter');
   });
 
+  it('should get a specific class when there is more than one condition to filter-form container', () => {
+    const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
+    wrapper.setData({
+      editedStep: {
+        name: 'filter',
+        condition: { and: [{ column: 'foo', value: 'bar', operator: 'gt' }, { column: 'yolo', value: 'carpe diem', operator: 'nin' }] },
+      },
+    });
+    expect(wrapper.classes()).toContain('filter-form--multiple-conditions');
+  });
+
   describe('ListWidget', () => {
     it('should have exactly on ListWidget component', () => {
       const wrapper = shallowMount(FilterStepForm, { store: emptyStore, localVue });
