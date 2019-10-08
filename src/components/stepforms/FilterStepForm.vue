@@ -86,15 +86,15 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }
   }
 
-  get multipleConditionsClass() {
-    return {
-      'filter-form--multiple-conditions': this.conditions.length > 1,
-    }
-  }
-
   set conditions(newval) {
     if (isFilterComboAnd(this.editedStep.condition)) {
       this.editedStep.condition.and = [...newval];
+    }
+  }
+
+  get multipleConditionsClass() {
+    return {
+      'filter-form--multiple-conditions': this.conditions.length > 1,
     }
   }
 
