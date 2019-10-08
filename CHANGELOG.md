@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2010-10-08
+
 ### Added
 
 - Added variable interpolation + autocast handling
@@ -36,4 +38,5 @@
 
 - Initial version, showtime!
 
+[0.3.0]: https://github.com/ToucanToco/vue-query-builder/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/ToucanToco/vue-query-builder/releases/tag/v0.2.0
