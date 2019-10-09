@@ -1,0 +1,14 @@
+- title: Getting Started
+  docs:
+  - steps
+  - stepforms
+  - known_limitations
+  - translators
+  - themes
+  - customization
+
+- title: Examples
+  docs:
+  - cheatsheet
+  - font-awesome
+  - bootstrap

@@ -1,0 +1,57 @@
+# Site settings
+title: Vue Query Builder
+email: your-email@domain.com
+description: >
+  Doc VQB
+lang: en-US
+
+# en prod :
+baseurl: "" # the subpath of your site
+url: "http://zegonz.github.io/circleci" # the base hostname & protocol for your site
+git_address: https://github.com/ToucanToco/vue-query-builder
+git_edit_address: https://github.com/ToucanToco/vue-query-builder/tree/gh-pages/
+
+# theme options from https://bootswatch.com/
+# comment out this to use default Bootstrap
+bootwatch: Flatly
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+gems:
+  - jekyll-feed
+  - jekyll-redirect-from
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - .idea/
+  - .gitignore
+  - README.md
+timezone: Europe/Berlin
+defaults:
+- scope:
+    path: _posts
+    type: posts
+  values:
+    layout: post
+    sectionid: blog
+
+- scope:
+    path: _docs
+    type: docs
+  values:
+    layout: docs
+    sectionid: docs
+    seo:
+      type: "WebPage"
+
+collections:
+  docs:
+    permalink: /:collection/:path/
+    output: true
+  posts:
+    permalink: /blog/:year/:month/:day/:title/
+    output: true
