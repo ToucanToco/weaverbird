@@ -7,6 +7,8 @@
 ### Added
 
 - Added variable interpolation + autocast handling
+- Added `lowercase`step
+- Added `uppercase`step
 
 ### Changed
 
