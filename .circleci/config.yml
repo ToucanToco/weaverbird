@@ -51,7 +51,7 @@ jobs:
             - _site
   doc-deploy:
     docker:
-      - image: node:latest-browsers
+      - image: circleci/node:latest-browsers
     steps:
       - checkout
       - attach_workspace:
