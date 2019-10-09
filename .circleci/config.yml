@@ -86,4 +86,4 @@ workflows:
             - doc-build
           filters:
             branches:
-              only: master
+              only: f/publish-doc
