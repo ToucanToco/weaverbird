@@ -1,8 +1,0 @@
-coverage:
-  status:
-    patch:
-      default:
-        enabled: yes
-        target: 100%
-  ignore:
-    - 'tests/unit/*.spec.ts'
