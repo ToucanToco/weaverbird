@@ -92,9 +92,9 @@ export default class ActionMenu extends Vue {
   @Watch('isActive')
   onIsActiveChanged(val: boolean) {
     if (val) {
-      window.addEventListener('click', this.clickListener);
+      window.addEventListener('click', this.clickListener, { capture: true });
     } else {
-      window.removeEventListener('click', this.clickListener);
+      window.removeEventListener('click', this.clickListener, { capture: true });
     }
   }
 }
