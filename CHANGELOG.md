@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+## Fixed
+- Fixed closing popover on ActionButton when opening one on column header cell
+
 ## [0.3.0] - 2010-10-08
 
 ### Added
