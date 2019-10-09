@@ -24,6 +24,53 @@ jobs:
       - run: yarn
       - run: yarn lint
 
+  doc-build:
+    docker:
+      - image: circleci/ruby:2.5
+    steps:
+      - checkout
+      - run:
+          name: install dependencies
+          command: |
+            cd doc-build
+            gem update --system
+            gem install bundler
+      - run:
+          name: Bundle Install
+          command: |
+            cd doc-build
+            bundle check || bundle install
+      - run:
+          name: Jekyll build
+          command: |
+            cd doc-build
+            bundle exec jekyll build
+      - persist_to_workspace:
+          root: ./doc-build
+          paths:
+            - _site
+  # deploy:
+  #   docker:
+  #     - image: node:latest-browsers
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: ./doc-build/
+  #     - run:
+  #         name: Install and configure dependencies
+  #         command: |
+  #           npm install -g --silent gh-pages@2.0.1
+  #           git config user.email "pierre.gonzalez@toucantoco.com"
+  #           git config user.name "zegonz"
+  #     - add_ssh_keys:
+  #         fingerprints:
+  #           - "e2:ee:7f:20:7a:58:89:c1:80:7f:b0:b1:24:58:96:79"
+  #     - run:
+  #         name: Deploy docs to gh-pages branch
+  #         command: |
+  #           cd doc-build/_site
+  #           gh-pages --dist .
+
 workflows:
   version: 2
   build_and_test:
@@ -31,3 +78,12 @@ workflows:
       - build
       - test
       - lint
+  Doc_build_deploy:
+    jobs:
+      - doc-build
+      # - doc-deploy:
+      #     requires:
+      #       - doc-build
+      #     filters:
+      #       branches:
+      #         only: master
