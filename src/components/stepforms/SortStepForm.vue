@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
 
     <ListWidget
       addFieldName="Add Column"
@@ -11,9 +11,9 @@
       :automatic-new-field="false"
       data-path=".columns"
       :errors="errors"
-    ></ListWidget>
+    />
 
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

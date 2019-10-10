@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.on"
@@ -10,7 +10,7 @@
       placeholder="Add columns"
       data-path=".on"
       :errors="errors"
-    ></MultiselectWidget>
+    />
     <ListWidget
       addFieldName="Add aggregation"
       id="toremove"
@@ -21,8 +21,8 @@
       :automatic-new-field="false"
       data-path=".aggregations"
       :errors="errors"
-    ></ListWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

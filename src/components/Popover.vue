@@ -1,6 +1,6 @@
 <template>
   <div :class="{ 'popover': true, 'popover--active': isActive }" :style="elementStyle">
-    <slot></slot>
+    <slot/>
   </div>
 </template>
 <script lang="ts">

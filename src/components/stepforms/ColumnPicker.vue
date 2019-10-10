@@ -8,7 +8,7 @@
     :placeholder="placeholder"
     :data-path="dataPath"
     :errors="errors"
-  ></AutocompleteWidget>
+  />
 </template>
 
 <script lang="ts">

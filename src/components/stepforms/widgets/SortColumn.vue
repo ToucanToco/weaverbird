@@ -9,7 +9,7 @@
       @input="setSelectedColumns({ column: sort.column })"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
-    ></AutocompleteWidget>
+    />
     <AutocompleteWidget
       id="sortOrderInput"
       v-model="sort.order"
@@ -18,7 +18,7 @@
       placeholder="Order by"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
-    ></AutocompleteWidget>
+    />
   </fieldset>
 </template>
 <script lang="ts">

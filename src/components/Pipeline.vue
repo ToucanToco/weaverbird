@@ -17,7 +17,7 @@
       <div
         class="query-pipeline__tips"
       >Interact with the widgets and table on the right to add steps</div>
-      <i class="fas fa-magic"></i>
+      <i class="fas fa-magic"/>
     </div>
   </div>
 </template>

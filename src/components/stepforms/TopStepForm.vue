@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <InputTextWidget
       id="limitInput"
       v-model.number="editedStep.limit"
@@ -9,7 +9,7 @@
       placeholder="Enter a number of rows"
       data-path=".limit"
       :errors="errors"
-    ></InputTextWidget>
+    />
     <ColumnPicker
       id="rankOnInput"
       v-model="editedStep.rank_on"
@@ -17,7 +17,7 @@
       placeholder="Enter a column"
       data-path=".rank_on"
       :errors="errors"
-    ></ColumnPicker>
+    />
     <AutocompleteWidget
       id="sortOrderInput"
       v-model="editedStep.sort"
@@ -26,7 +26,7 @@
       placeholder="Select an order"
       data-path=".sort"
       :errors="errors"
-    ></AutocompleteWidget>
+    />
     <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
@@ -36,8 +36,8 @@
       placeholder="Select columns"
       data-path=".groups"
       :errors="errors"
-    ></MultiselectWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

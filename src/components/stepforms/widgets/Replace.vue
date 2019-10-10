@@ -6,14 +6,14 @@
       placeholder="Value to replace"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
-    ></InputTextWidget>
+    />
     <InputTextWidget
       id="newValue"
       v-model="toReplace[1]"
       placeholder="New value"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
-    ></InputTextWidget>
+    />
   </div>
 </template>
 <script lang="ts">

@@ -10,8 +10,8 @@
       @blur="blur()"
       @focus="focus()"
       @input="updateValue($event.target.value)"
-    />
-    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"></span>{{ messageError }}</div>
+    >
+    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
   </div>
 </template>
 

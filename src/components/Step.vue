@@ -1,25 +1,25 @@
 <template>
   <div :class="classContainer" @click="select()">
     <div class="query-pipeline-queue">
-      <div :class="firstStrokeClass"></div>
+      <div :class="firstStrokeClass"/>
       <div class="query-pipeline-queue__dot">
-        <div class="query-pipeline-queue__dot-ink"></div>
+        <div class="query-pipeline-queue__dot-ink"/>
       </div>
-      <div :class="lastStrokeClass"></div>
+      <div :class="lastStrokeClass"/>
     </div>
     <div class="query-pipeline-step">
       <span class="query-pipeline-step__name" :title="stepLabel()">{{ stepLabel() }}</span>
       <div class="query-pipeline-step__actions">
         <!-- @click.stop is used to avoid to trigger select event when editing a step -->
         <div class="query-pipeline-step__action" @click.stop="editStep()">
-          <i class="fas fa-cog"></i>
+          <i class="fas fa-cog"/>
         </div>
         <div
           v-if="!isFirst"
           class="query-pipeline-step__action"
           @click="toggleDeleteConfirmationModal"
         >
-          <i class="fas fa-trash-alt"></i>
+          <i class="fas fa-trash-alt"/>
         </div>
       </div>
     </div>

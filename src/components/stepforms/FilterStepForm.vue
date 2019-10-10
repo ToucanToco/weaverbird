@@ -1,6 +1,6 @@
 <template>
   <div class="filter-form" :class="multipleConditionsClass">
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <div class="filter-form-headers__container">
       <div class="filter-form-header">Values in...</div>
       <div class="filter-form-header">Must...</div>
@@ -15,8 +15,8 @@
       :automatic-new-field="false"
       data-path=".condition.and"
       :errors="errors"
-    ></ListWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

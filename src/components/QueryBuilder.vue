@@ -8,7 +8,7 @@
         :isStepCreation="isStepCreation"
         @cancel="closeStepForm"
         @formSaved="saveStep"
-      ></component>
+      />
     </transition>
     <transition v-else name="slide-left" mode="out-in">
       <Pipeline key="pipeline" @editStep="editStep" />
