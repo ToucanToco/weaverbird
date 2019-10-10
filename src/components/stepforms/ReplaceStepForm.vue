@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <ColumnPicker
       id="searchColumnInput"
       v-model="editedStep.search_column"
@@ -8,7 +8,7 @@
       placeholder="Enter a column"
       data-path=".search_column"
       :errors="errors"
-    ></ColumnPicker>
+    />
     <ListWidget
       addFieldName="Add a value to replace"
       id="toReplace"
@@ -19,8 +19,8 @@
       :automatic-new-field="false"
       data-path=".to_replace"
       :errors="errors"
-    ></ListWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

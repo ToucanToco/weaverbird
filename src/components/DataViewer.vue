@@ -1,7 +1,7 @@
 <template>
   <div class="data-viewer">
-    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm"></ActionToolbar>
-    <div v-if="isLoading" class="data-viewer-loader-spinner"></div>
+    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm"/>
+    <div v-if="isLoading" class="data-viewer-loader-spinner"/>
     <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
       <table class="data-viewer-table">
         <thead class="data-viewer__header">
@@ -16,7 +16,7 @@
                 v-if="column.type"
                 v-html="getIconType(column.type)"
                 class="data-viewer__header-icon"
-              ></span>
+              />
               <span class="data-viewer__header-label">{{ column.name }}</span>
               <i class="data-viewer__header-action fas fa-angle-down" @click.stop="openMenu(index)">
                 <ActionMenu

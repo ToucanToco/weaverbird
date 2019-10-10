@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <MultiselectWidget
       id="indexInput"
       v-model="editedStep.index"
@@ -9,7 +9,7 @@
       placeholder="Add columns"
       data-path=".index"
       :errors="errors"
-    ></MultiselectWidget>
+    />
     <ColumnPicker
       id="columnToPivotInput"
       v-model="editedStep.column_to_pivot"
@@ -17,7 +17,7 @@
       placeholder="Enter a column"
       data-path=".column_to_pivot"
       :errors="errors"
-    ></ColumnPicker>
+    />
     <AutocompleteWidget
       id="valueColumnInput"
       v-model="editedStep.value_column"
@@ -26,7 +26,7 @@
       placeholder="Select a column"
       data-path=".value_column"
       :errors="errors"
-    ></AutocompleteWidget>
+    />
     <AutocompleteWidget
       id="aggregationFunctionInput"
       v-model="editedStep.agg_function"
@@ -35,8 +35,8 @@
       placeholder="Aggregation function"
       data-path=".agg_function"
       :errors="errors"
-    ></AutocompleteWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 <script lang="ts">

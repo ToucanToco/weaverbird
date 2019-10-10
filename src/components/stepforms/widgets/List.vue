@@ -13,16 +13,15 @@
             :value="child.value"
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}[${index}]`"
-            :errors="errors">
-          </component>
+            :errors="errors"/>
         </div>
         <div class="widget-list__icon" v-if="child.isRemovable" @click="removeChild(index)">
-          <i class="far fa-trash-alt"></i>
+          <i class="far fa-trash-alt"/>
         </div>
       </div>
-      <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"></span>{{ messageError }}</div>
+      <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
       <button v-if="!automaticNewField" class="widget-list__add-fieldset" @click="addFieldSet">
-        <i class="fas fa-plus-circle"></i>
+        <i class="fas fa-plus-circle"/>
         {{ addFieldName }}
       </button>
     </div>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <ColumnPicker
       id="valueColumnInput"
       v-model="editedStep.column"
@@ -8,7 +8,7 @@
       placeholder="Enter a column name"
       data-path=".column"
       :errors="errors"
-    ></ColumnPicker>
+    />
     <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.groups"
@@ -17,8 +17,8 @@
       placeholder="Add columns"
       data-path=".groups"
       :errors="errors"
-    ></MultiselectWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

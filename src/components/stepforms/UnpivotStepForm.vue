@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <MultiselectWidget
       id="keepColumnInput"
       v-model="editedStep.keep"
@@ -10,7 +10,7 @@
       placeholder="Add columns to keep"
       data-path=".keep"
       :errors="errors"
-    ></MultiselectWidget>
+    />
     <MultiselectWidget
       id="unpivotColumnInput"
       v-model="editedStep.unpivot"
@@ -20,9 +20,9 @@
       placeholder="Add columns to unpivot"
       data-path=".unpivot"
       :errors="errors"
-    ></MultiselectWidget>
-    <CheckboxWidget id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna"></CheckboxWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <CheckboxWidget id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 

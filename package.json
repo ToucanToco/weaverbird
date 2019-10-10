@@ -158,7 +158,16 @@
             "error"
           ]
         }
-      ]
+      ],
+      "vue/html-self-closing": ["error", {
+          "html": {
+            "void": "never",
+            "normal": "always",
+            "component": "always"
+          },
+          "svg": "always",
+          "math": "always"
+      }]
     },
     "parserOptions": {
       "parser": "@typescript-eslint/parser"

@@ -9,7 +9,7 @@
         placeholder="Column"
         :data-path="`${dataPath}.column`"
         :errors="errors"
-      ></AutocompleteWidget>
+      />
     </div>
     <div class="filter-form-simple-condition-operator-input">
       <AutocompleteWidget
@@ -20,7 +20,7 @@
         placeholder="Filter operator"
         :trackBy="`operator`"
         :label="`label`"
-      ></AutocompleteWidget>
+      />
     </div>
     <component
       :is="inputWidget"
@@ -28,7 +28,7 @@
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
-    ></component>
+    />
   </div>
 </template>
 

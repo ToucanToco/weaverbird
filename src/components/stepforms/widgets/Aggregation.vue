@@ -8,7 +8,7 @@
       placeholder="Enter a column"
       :data-path="`${dataPath}.column`"
       :errors="errors"
-    ></AutocompleteWidget>
+    />
     <AutocompleteWidget
       id="aggregationFunctionInput"
       v-model="aggregation.aggfunction"
@@ -17,7 +17,7 @@
       placeholder="Aggregation function"
       :data-path="`${dataPath}.aggfunction`"
       :errors="errors"
-    ></AutocompleteWidget>
+    />
   </fieldset>
 </template>
 <script lang="ts">

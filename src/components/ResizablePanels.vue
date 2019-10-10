@@ -5,7 +5,7 @@
     </div>
 
     <div class="resizable-panels__resizer" @mousedown="startResize()">
-      <div class="resizable-panels__line"></div>
+      <div class="resizable-panels__line"/>
     </div>
 
     <div class="resizable-panels__panel" :style="rightPanelWidth">

@@ -10,7 +10,7 @@
       group-values="actions"
       :group-select="false"
       @select="actionClicked"
-    ></multiselect>
+    />
   </div>
 </template>
 <script lang="ts">

@@ -13,7 +13,7 @@
         @click.native="openPopover(index)"
         @closed="closePopover()"
       />
-      <search-bar @actionClicked="actionClicked"></search-bar>
+      <search-bar @actionClicked="actionClicked"/>
     </div>
   </div>
 </template>
