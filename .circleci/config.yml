@@ -56,13 +56,15 @@ jobs:
       - checkout
       - attach_workspace:
           at: ./doc-build/
+      - add_ssh_keys:
+        fingerprints:
+          - "b4:b8:6e:1b:d7:c0:61:5a:3c:1a:8c:92:6a:d6:6e:4e"
       - run:
           name: Install and configure dependencies
           command: |
             npm install -g --silent gh-pages@2.0.1
-      - add_ssh_keys:
-          fingerprints:
-            - "b4:b8:6e:1b:d7:c0:61:5a:3c:1a:8c:92:6a:d6:6e:4e"
+            git config user.email "$GIT_AUTHOR_EMAIL"
+            git config user.name "$GIT_AUTHOR_NAME"
       - run:
           name: Deploy docs to gh-pages branch
           command: |
