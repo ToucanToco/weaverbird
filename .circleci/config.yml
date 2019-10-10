@@ -60,8 +60,6 @@ jobs:
           name: Install and configure dependencies
           command: |
             npm install -g --silent gh-pages@2.0.1
-            git config user.email "dev+circleci@toucantoco.com"
-            git config user.name "circleci"
       - add_ssh_keys:
           fingerprints:
             - "b4:b8:6e:1b:d7:c0:61:5a:3c:1a:8c:92:6a:d6:6e:4e"
