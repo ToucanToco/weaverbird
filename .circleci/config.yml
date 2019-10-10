@@ -58,18 +58,18 @@ jobs:
           at: ./doc-build/
       - add_ssh_keys:
           fingerprints:
-            - "c4:5e:f3:83:21:03:62:39:23:e0:c6:e4:7c:1f:8e:ac"
+            - "db:49:cb:f3:4b:23:9e:b3:17:b5:ce:95:82:12:b4:24"
       - run:
           name: Install and configure dependencies
           command: |
-            npm install -g --silent gh-pages@2.0.1
-            git config user.email "$GIT_AUTHOR_EMAIL"
-            git config user.name "$GIT_AUTHOR_NAME"
+            npm install --silent gh-pages@2.0.1
+            git config user.email "dev+vqb@toucantoco.com"
+            git config user.name "ToucanToco Dev Team"
       - run:
           name: Deploy docs to gh-pages branch
           command: |
             cd doc-build/_site
-            gh-pages --dist .
+            ../../node_modules/.bin/gh-pages --dist .
 
 workflows:
   version: 2
@@ -81,9 +81,16 @@ workflows:
   Doc_build_deploy:
     jobs:
       - doc-build
+        filters:
+          branches:
+            only:
+              - f/publish-doc
+              - master
       - doc-deploy:
-          requires:
-            - doc-build
-          filters:
-            branches:
-              only: f/publish-doc
+        requires:
+          - doc-build
+        filters:
+          branches:
+            only:
+              - f/publish-doc
+              - master
