@@ -3,7 +3,7 @@ import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -15,7 +15,7 @@ interface ValidationError {
 }
 
 describe('Aggregate Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore();
   });
@@ -252,7 +252,7 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should change the column focus after input in multiselect', async () => {
-    const store: Store<any> = setupMockStore({ selectedColumns: [] });
+    const store = setupMockStore({ selectedColumns: [] });
     const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
     wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
     wrapper.find(MultiselectWidget).trigger('input');
@@ -267,7 +267,7 @@ describe('Aggregate Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

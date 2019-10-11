@@ -1,7 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -13,7 +13,7 @@ interface ValidationError {
 }
 
 describe('Duplicate Column Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -92,7 +92,7 @@ describe('Duplicate Column Step Form', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 1,
     });
@@ -114,7 +114,7 @@ describe('Duplicate Column Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

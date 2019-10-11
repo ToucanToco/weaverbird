@@ -2,7 +2,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 import Vuex, { Store } from 'vuex';
 import { VQBnamespace } from '@/store';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -14,7 +14,7 @@ interface ValidationError {
 }
 
 describe('Rename Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -127,7 +127,7 @@ describe('Rename Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
@@ -141,7 +141,7 @@ describe('Rename Step Form', () => {
   });
 
   it('should make the focus on the column modified after rename validation', () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -154,7 +154,7 @@ describe('Rename Step Form', () => {
   });
 
   it('should not change the column focus if validation fails', () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],

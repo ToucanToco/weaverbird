@@ -1,14 +1,14 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { VQBnamespace } from '@/store';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Column Picker', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -24,7 +24,7 @@ describe('Column Picker', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -36,7 +36,7 @@ describe('Column Picker', () => {
   });
 
   it('should set column when initialColumn is set', () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -53,7 +53,7 @@ describe('Column Picker', () => {
   });
 
   it('should update step when selectedColumn is changed by default', async () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -72,7 +72,7 @@ describe('Column Picker', () => {
   });
 
   it('should not update step when selectedColumn is changed if prop "sync" is false', async () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],

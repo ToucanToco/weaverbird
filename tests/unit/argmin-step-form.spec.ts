@@ -1,7 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -13,7 +13,7 @@ interface ValidationError {
 }
 
 describe('Argmin Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -85,7 +85,7 @@ describe('Argmin Step Form', () => {
       { name: 'argmin', column: 'baz' },
       { name: 'argmin', column: 'tic' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
 
@@ -15,7 +15,7 @@ interface ValidationError {
 }
 
 describe('Top Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -125,7 +125,7 @@ describe('Top Step Form', () => {
       { name: 'top', rank_on: 'bar', sort: 'asc', limit: 5 },
       { name: 'top', rank_on: 'tic', sort: 'desc', limit: 1 },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

@@ -1,6 +1,6 @@
 import { mount, createLocalVue } from '@vue/test-utils';
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
-import Vuex, { Store } from 'vuex';
+import Vuex from 'vuex';
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
@@ -83,7 +83,7 @@ describe('ActionToolbar', () => {
 
   describe('When clicking on the "To lowercase" operation', () => {
     it('should close any open step form', async () => {
-      const store: Store<any> = setupMockStore({
+      const store = setupMockStore({
         pipeline: [{ name: 'domain', domain: 'myDomain' }],
         selectedColumns: ['foo'],
       });
@@ -98,7 +98,7 @@ describe('ActionToolbar', () => {
     });
 
     it('should insert a lowercase step in pipeline', async () => {
-      const store: Store<any> = setupMockStore({
+      const store = setupMockStore({
         pipeline: [{ name: 'domain', domain: 'myDomain' }],
         selectedColumns: ['foo'],
       });
@@ -117,7 +117,7 @@ describe('ActionToolbar', () => {
     });
 
     it('should emit a close event', async () => {
-      const store: Store<any> = setupMockStore({
+      const store = setupMockStore({
         pipeline: [{ name: 'domain', domain: 'myDomain' }],
         selectedColumns: ['foo'],
       });
@@ -134,7 +134,7 @@ describe('ActionToolbar', () => {
 
   describe('When clicking on the "To uppercase" operation', () => {
     it('should close any open step form', async () => {
-      const store: Store<any> = setupMockStore({
+      const store = setupMockStore({
         pipeline: [{ name: 'domain', domain: 'myDomain' }],
         selectedColumns: ['foo'],
       });
@@ -149,7 +149,7 @@ describe('ActionToolbar', () => {
     });
 
     it('should insert a lowercase step in pipeline', async () => {
-      const store: Store<any> = setupMockStore({
+      const store = setupMockStore({
         pipeline: [{ name: 'domain', domain: 'myDomain' }],
         selectedColumns: ['foo'],
       });
@@ -168,7 +168,7 @@ describe('ActionToolbar', () => {
     });
 
     it('should emit a close event', async () => {
-      const store: Store<any> = setupMockStore({
+      const store = setupMockStore({
         pipeline: [{ name: 'domain', domain: 'myDomain' }],
         selectedColumns: ['foo'],
       });

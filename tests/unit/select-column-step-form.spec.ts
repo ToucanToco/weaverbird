@@ -74,7 +74,7 @@ describe('Select Column Step Form', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 1,
     });
@@ -90,7 +90,7 @@ describe('Select Column Step Form', () => {
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -118,7 +118,7 @@ describe('Select Column Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

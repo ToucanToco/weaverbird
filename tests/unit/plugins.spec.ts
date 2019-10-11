@@ -46,7 +46,7 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store: Store<any> = setupMockStore({ pipeline }, [
+    const store = setupMockStore({ pipeline }, [
       servicePluginFactory(new DummyService()),
     ]);
     const wrapper = mount(PipelineComponent, { store, localVue });
@@ -65,7 +65,7 @@ describe('backend service plugin tests', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore(
+    const store = setupMockStore(
       {
         pipeline,
         selectedStepIndex: 1,
@@ -81,7 +81,7 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline when a setCurrentDomain mutation is committed', async () => {
-    const store: Store<any> = setupMockStore({}, [servicePluginFactory(new DummyService())]);
+    const store = setupMockStore({}, [servicePluginFactory(new DummyService())]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
@@ -96,7 +96,7 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store: Store<any> = setupMockStore({ pipeline }, [
+    const store = setupMockStore({ pipeline }, [
       servicePluginFactory(new DummyService()),
     ]);
     store.commit(VQBnamespace('deleteStep'), { index: 2 });
@@ -108,7 +108,7 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline with correct pagesize', async () => {
-    const store: Store<any> = setupMockStore({ pagesize: 1 }, [
+    const store = setupMockStore({ pagesize: 1 }, [
       servicePluginFactory(new DummyService()),
     ]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
@@ -130,7 +130,7 @@ describe('backend service plugin tests', () => {
         to_replace: [['<%= who %>', '<%= what %>']],
       },
     ];
-    const store: Store<any> = setupMockStore(
+    const store = setupMockStore(
       {
         pipeline,
         variables: {
@@ -165,7 +165,7 @@ describe('backend service plugin tests', () => {
         to_replace: [['<%= who %>', '<%= what %>']],
       },
     ];
-    const store: Store<any> = setupMockStore(
+    const store = setupMockStore(
       {
         pipeline,
         variables: {},

@@ -1,6 +1,6 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import ActionMenu from '@/components/ActionMenu.vue';
-import Vuex, { Store } from 'vuex';
+import Vuex from 'vuex';
 import { VQBnamespace } from '@/store';
 import { setupMockStore } from './utils';
 
@@ -84,7 +84,7 @@ describe('Action Menu', () => {
 
   describe('when clicking on "Delete column"', () => {
     it('should add a valide delete step in the pipeline', async () => {
-      const store: Store<any> = setupMockStore();
+      const store = setupMockStore();
       const wrapper = shallowMount(ActionMenu, {
         store,
         localVue,

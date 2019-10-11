@@ -1,7 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
 
@@ -14,7 +14,7 @@ interface ValidationError {
 }
 
 describe('Fillna Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -221,7 +221,7 @@ describe('Fillna Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
@@ -235,7 +235,7 @@ describe('Fillna Step Form', () => {
   });
 
   it('should keep the focus on the column modified after rename validation', async () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
