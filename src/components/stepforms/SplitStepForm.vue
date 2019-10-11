@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title"/>
     <ColumnPicker
       id="columnToSplit"
       v-model="editedStep.column"
@@ -8,7 +8,7 @@
       placeholder="Enter a column"
       data-path=".column"
       :errors="errors"
-    ></ColumnPicker>
+    />
     <InputTextWidget
       id="delimiter"
       v-model="editedStep.delimiter"
@@ -16,7 +16,7 @@
       placeholder="Enter a text delimiter"
       data-path=".delimiter"
       :errors="errors"
-    ></InputTextWidget>
+    />
     <InputTextWidget
       id="numberColsToKeep"
       v-model.number="editedStep.number_cols_to_keep"
@@ -25,8 +25,8 @@
       placeholder="Enter an integer"
       data-path=".number_cols_to_keep"
       :errors="errors"
-    ></InputTextWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
   </div>
 </template>
 
