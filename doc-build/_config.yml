@@ -1,5 +1,5 @@
 # Site settings
-title: Vue Query Builder
+title: Weaverbird
 email: your-email@domain.com
 description: >
   Doc VQB
@@ -7,7 +7,7 @@ lang: en-US
 
 # en prod :
 baseurl: "" # the subpath of your site
-url: "http://zegonz.github.io/circleci" # the base hostname & protocol for your site
+url: "http://toucantoco.com/vue-query-builder/" # the base hostname & protocol for your site
 git_address: https://github.com/ToucanToco/vue-query-builder
 git_edit_address: https://github.com/ToucanToco/vue-query-builder/tree/gh-pages/
 
