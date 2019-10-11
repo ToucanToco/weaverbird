@@ -2,13 +2,13 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
 import Vuex, { Store } from 'vuex';
 import { Pipeline } from '@/lib/steps';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Replace Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -218,7 +218,7 @@ describe('Replace Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

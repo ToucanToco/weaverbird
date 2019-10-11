@@ -2,7 +2,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -14,7 +14,7 @@ interface ValidationError {
 }
 
 describe('Delete Column Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -74,7 +74,7 @@ describe('Delete Column Step Form', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 1,
     });
@@ -90,7 +90,7 @@ describe('Delete Column Step Form', () => {
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
@@ -118,7 +118,7 @@ describe('Delete Column Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

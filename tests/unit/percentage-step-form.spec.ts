@@ -2,7 +2,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import Vuex, { Store } from 'vuex';
 import { VQBnamespace } from '@/store';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -14,7 +14,7 @@ interface ValidationError {
 }
 
 describe('Percentage Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -88,7 +88,7 @@ describe('Percentage Step Form', () => {
       { name: 'percentage', column: 'baz' },
       { name: 'percentage', column: 'tic' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });

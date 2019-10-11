@@ -3,13 +3,13 @@ import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSi
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Widget AggregationWidget', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -88,7 +88,7 @@ describe('Widget AggregationWidget', () => {
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],

@@ -1,5 +1,5 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
+import Vuex from 'vuex';
 import { Pipeline } from '@/lib/steps';
 import { setupMockStore } from './utils';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
@@ -122,7 +122,7 @@ describe('Step.vue', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store: Store<any> = setupMockStore({ pipeline });
+      const store = setupMockStore({ pipeline });
       const wrapper = mount(PipelineComponent, { store, localVue });
       const step = wrapper.findAll(Step).at(1);
 
@@ -151,7 +151,7 @@ describe('Step.vue', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store: Store<any> = setupMockStore({ pipeline });
+      const store = setupMockStore({ pipeline });
       const wrapper = mount(PipelineComponent, { store, localVue });
       const step = wrapper.findAll(Step).at(1);
       step.find('.fa-trash-alt').trigger('click');

@@ -2,7 +2,7 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
 import { VQBnamespace } from '@/store';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -14,7 +14,7 @@ interface ValidationError {
 }
 
 describe('Pivot Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });

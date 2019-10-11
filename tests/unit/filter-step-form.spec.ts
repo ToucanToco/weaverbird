@@ -1,7 +1,7 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore } from './utils';
+import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -13,7 +13,7 @@ interface ValidationError {
 }
 
 describe('Filter Step Form', () => {
-  let emptyStore: Store<any>;
+  let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
@@ -29,7 +29,12 @@ describe('Filter Step Form', () => {
     wrapper.setData({
       editedStep: {
         name: 'filter',
-        condition: { and: [{ column: 'foo', value: 'bar', operator: 'gt' }, { column: 'yolo', value: 'carpe diem', operator: 'nin' }] },
+        condition: {
+          and: [
+            { column: 'foo', value: 'bar', operator: 'gt' },
+            { column: 'yolo', value: 'carpe diem', operator: 'nin' },
+          ],
+        },
       },
     });
     expect(wrapper.classes()).toContain('filter-form--multiple-conditions');
@@ -325,7 +330,7 @@ describe('Filter Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store: Store<any> = setupMockStore({
+    const store = setupMockStore({
       pipeline,
       selectedStepIndex: 2,
     });
