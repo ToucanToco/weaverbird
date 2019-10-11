@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"></step-form-title>
+    <step-form-title :title="title" />
     <ListWidget
       addFieldName="Add columns"
       id="toConcatenate"
@@ -12,7 +12,7 @@
       :automatic-new-field="false"
       data-path=".columns"
       :errors="errors"
-    ></ListWidget>
+    />
     <InputTextWidget
       id="separator"
       v-model="editedStep.separator"
@@ -20,7 +20,7 @@
       placeholder="Enter string of any length"
       data-path=".separator"
       :errors="errors"
-    ></InputTextWidget>
+    />
     <InputTextWidget
       id="newColumnName"
       v-model="editedStep.new_column_name"
@@ -28,8 +28,8 @@
       placeholder="Enter a columnn name"
       data-path=".new_column_name"
       :errors="errors"
-    ></InputTextWidget>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 
