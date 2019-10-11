@@ -84,11 +84,11 @@ workflows:
         filters:
           branches:
             only:
-              - master
+              - f/publish-doc
       - doc-deploy:
         requires:
           - doc-build
         filters:
           branches:
             only:
-              - master
+              - f/publish-doc
