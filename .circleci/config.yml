@@ -82,8 +82,8 @@ workflows:
     jobs:
       - doc-build
       - doc-deploy:
-        requires:
-          - doc-build
-        filters:
-          branches:
-            only: f/publish-doc
+          requires:
+            - doc-build
+          filters:
+            branches:
+              only: f/publish-doc
