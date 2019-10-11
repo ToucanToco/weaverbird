@@ -1,1 +1,1 @@
-Sitemap: http://zegonz.github.io/circleci/sitemap.xml
+Sitemap: http://toucantoco.com/vue-query-builder//sitemap.xml
