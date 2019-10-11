@@ -1,6 +1,6 @@
 <template>
   <button type="button" class="action-toolbar__btn">
-    <i :class="`action-toolbar__btn-icon fas fa-${icon}`"/>
+    <i :class="`action-toolbar__btn-icon fas fa-${icon}`" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
     <popover :active="isActive" :align="'left'" bottom>
       <div class="action-menu__body">
@@ -62,7 +62,7 @@ export default class ActionToolbarButton extends Vue {
   /**
    * @description Close the popover when clicking outside
    */
-  clickListener(e: Event ) {
+  clickListener(e: Event) {
     const target = e.target as HTMLElement;
     const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
 
