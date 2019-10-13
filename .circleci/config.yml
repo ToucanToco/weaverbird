@@ -80,10 +80,17 @@ workflows:
       - lint
   Doc_build_deploy:
     jobs:
-      - doc-build
+      - doc-build:
+          filters:
+            branches:
+              only:
+                - master
+                - f/publish-doc
       - doc-deploy:
           requires:
             - doc-build
           filters:
             branches:
-              only: f/publish-doc
+              only:
+                - master
+                - f/publish-doc
