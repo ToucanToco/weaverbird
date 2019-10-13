@@ -65,6 +65,23 @@ yarn build-doc
 This will run [typedoc](https://typedoc.org/) on the `src/` directory and
 generate the corresponding documentation in the `dist/docs` directory.
 
+### Build and Run documentation (local environnement)
+
+> The web documentation is powered by [Jekyll](https://jekyllrb.com).
+
+> You can find all the sources into the `doc-build` folder.
+
+> To build and locally launch the documentation you need Ruby and gem before starting, then:
+
+```bash
+# install bundler
+gem install bundler
+
+# run jekyll and a local server with dependencies :
+bundle exec jekyll serve
+```
+
+
 ### Run the storybook
 
 > Storybook uses the bundled lib, so all showcased components must be in the public API.
