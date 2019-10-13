@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <link rel="shortcut icon" href="/favicon.ico?1">
+    <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Variables | Weaverbird</title>
+<meta name="generator" content="Jekyll v3.8.4" />
+<meta property="og:title" content="Variables" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Using variables in pipeline" />
+<meta property="og:description" content="Using variables in pipeline" />
+<link rel="canonical" href="http://toucantoco.com/vue-query-builder//docs/variables/" />
+<meta property="og:url" content="http://toucantoco.com/vue-query-builder//docs/variables/" />
+<meta property="og:site_name" content="Weaverbird" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-10-13T22:39:25+02:00" />
+<script type="application/ld+json">
+{"headline":"Variables","dateModified":"2019-10-13T22:39:25+02:00","datePublished":"2019-10-13T22:39:25+02:00","url":"http://toucantoco.com/vue-query-builder//docs/variables/","description":"Using variables in pipeline","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="canonical" href="http://toucantoco.com/vue-query-builder//docs/variables/">
+    <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="http://toucantoco.com/vue-query-builder//feed.xml" />
+</head>
+
+
+<body>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container navbar-container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+            <a class="navbar-brand" href="/">Weaverbird</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li  class="active" ><a href="/docs/steps/">Docs</a></li>
+                <li ><a href="/blog/2019/10/02/v1-VQB/">Blog</a></li>
+                <li ><a href="/about">About</a></li>
+            </ul>
+            <div class="navbar-right">
+                <form class="navbar-form navbar-left">
+                    <div class="form-group has-feedback">
+                        <input id="search-box" type="search" class="form-control" placeholder="Search...">
+                        <i class="fa fa-search form-control-feedback"></i>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://github.com/ToucanToco/vue-query-builder"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="page-content">
+        <div class="wrapper">
+            <div class="container">
+    <div class="row">
+        <div class="col-md-4">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
+            Getting Started
+          </a>
+        </h4>
+      </div>
+      
+      
+      <div class="panel-collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
+        <div class="list-group">
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/steps/">Steps</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/stepforms/">Stepforms</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/known_limitations/">Known limitations</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/translators/">Translators</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item active" href="/docs/variables/">Variables</a>
+            <!--  -->
+          
+        </div>
+      </div>
+    </div>
+  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+            Examples
+          </a>
+        </h4>
+      </div>
+      
+      
+      <div class="panel-collapse collapse" id="collapse-2" role="tabpanel" aria-label="Side Navigation">
+        <div class="list-group">
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/cheatsheet/">Markdown Cheatsheet</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/font-awesome/">Font Awesome Icon List</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/bootstrap/">Bootstrap Features</a>
+            <!--  -->
+          
+        </div>
+      </div>
+    </div>
+  
+</div>
+
+        </div>
+
+        <div class="col-md-8">
+            <div id="markdown-content-container"><h1 id="using-variables-in-pipeline">Using variables in pipeline</h1>
+
+<h2 id="why">Why</h2>
+
+<p>The idea is to be able to build <em>templatable</em> queries with values that
+could be parametrized.</p>
+
+<p>As often, an example is better than a lot of words. Imagine the following
+pipeline that filters out lines where <code class="highlighter-rouge">age &lt;= 20</code>:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domain"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"team_infos"</span><span class="p">,</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"filter"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"condition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gt"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"column"</span><span class="p">:</span><span class="w"> </span><span class="s2">"age"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<p>Now suppose that you include the visual query builder inside a host application
+that lets you enter the age in an input field. You might then want to
+parametrize the “age” value and reuse your pipeline with this specific value.</p>
+
+<p>Using <a href="https://lodash.com/docs/4.17.15#template">lodash template syntax</a>, this
+could look like:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domain"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"domain"</span><span class="p">:</span><span class="w"> </span><span class="s2">"team_infos"</span><span class="p">,</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="s2">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"filter"</span><span class="p">,</span><span class="w">
+    </span><span class="s2">"condition"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="s2">"and"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="s2">"operator"</span><span class="p">:</span><span class="w"> </span><span class="s2">"gt"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"column"</span><span class="p">:</span><span class="w"> </span><span class="s2">"age"</span><span class="p">,</span><span class="w">
+        </span><span class="s2">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"&lt;%= age %&gt;"</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre></div></div>
+
+<h2 id="how">How</h2>
+
+<p>It is possible to define a <em>variable context</em> (i.e. a <em>bag of variables</em>) in the
+store that can later be used and referenced in the pipeline steps. We also need
+to specify an interpolation function that will take a template string and
+replace it with the corresponding value. This function needs to have the
+following signature:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">type</span> <span class="nx">InterpolateFunction</span> <span class="o">=</span> <span class="p">(</span><span class="nx">template</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">context</span><span class="p">:</span> <span class="nx">ScopeContext</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="nx">any</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p><code class="highlighter-rouge">ScopeContext</code> is just a mapping of variable names to values.</p>
+
+<h3 id="example">Example</h3>
+
+<p>Imagine that you want to use the <a href="https://lodash.com/docs/4.17.15#template">lodash template
+syntax</a> to reference your variables,
+you would then need to provide an interpolation function that would take a
+lodash templated string, the variables map and return the interpolated string:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="nx">_</span> <span class="k">from</span> <span class="s1">'lodash'</span><span class="p">;</span>
+
+<span class="kd">function</span> <span class="nx">interpolate</span><span class="p">(</span><span class="nx">value</span><span class="p">:</span> <span class="nx">string</span><span class="p">,</span> <span class="nx">context</span><span class="p">:</span> <span class="nx">ScopeContext</span><span class="p">)</span> <span class="p">{</span>
+  <span class="kd">const</span> <span class="nx">compiled</span> <span class="o">=</span> <span class="nx">_</span><span class="p">.</span><span class="nx">template</span><span class="p">(</span><span class="nx">value</span><span class="p">);</span>
+  <span class="k">return</span> <span class="nx">compiled</span><span class="p">(</span><span class="nx">context</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>and feed your store with all this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="c1">//...</span>
+  <span class="nl">variables</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nl">age</span><span class="p">:</span> <span class="mi">42</span>
+  <span class="p">},</span>
+  <span class="nx">interpolationFunc</span><span class="p">:</span> <span class="nx">interpolate</span><span class="p">,</span>
+  <span class="c1">//...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="steps-concerned">Steps concerned</h2>
+
+<p>For now, only a few steps handle variables interpolation but the support of this
+feature will be improved progressively in the next releases.</p>
+
+<p>So far, the steps concerned are:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">fillna</code>: the <code class="highlighter-rouge">value</code> property can be interpolated,</li>
+  <li><code class="highlighter-rouge">filter</code>: the <code class="highlighter-rouge">value</code> property of each condition type can be interpolated,</li>
+  <li><code class="highlighter-rouge">formula</code>: the <code class="highlighter-rouge">formula</code> property can be interpolated,</li>
+  <li><code class="highlighter-rouge">replace</code>: each value in the <code class="highlighter-rouge">to_replace</code> can be interpolated,</li>
+  <li><code class="highlighter-rouge">top</code>: the <code class="highlighter-rouge">limit</code> property can be interpolated.</li>
+</ul>
+
+<p>Another important limitation <em>for now</em> is that except for the <code class="highlighter-rouge">top.limit</code>, the
+interpolation will insert string values, i.e. an interpolated filtered value
+cannot be an integer.</p>
+</div>
+            
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+    <ul class="pager">
+      
+        
+        
+        <li class="previous">
+          <a href="/docs/translators/">
+            <span aria-hidden="true">&larr;</span> Previous
+          </a>
+        </li>
+      
+
+      
+        
+        
+        <li class="next">
+          <a href="/docs/cheatsheet/">
+            Next <span aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+      
+      </ul>
+    <div class="clear"></div>
+    
+
+        </div>
+
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="container">
+
+        <p class="text-center">
+            Weaverbird 2019 |
+            Powered by <a href="https://github.com/aksakalli/jekyll-doc-theme">Jekyll Doc Theme</a>
+        </p>
+        <!-- <p class="text-muted">Place sticky footer content here.</p> -->
+    </div>
+</footer>
+
+    <script>
+  var baseurl = ''
+</script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="/js/bootstrap.min.js "></script>
+<script src="/js/typeahead.bundle.min.js "></script>
+
+<script src="/js/main.js "></script>
+
+</body>
+
+</html>
