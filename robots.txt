@@ -1,1 +1,1 @@
-Sitemap: http://toucantoco.com/vue-query-builder//sitemap.xml
+Sitemap: https://weaverbird.toucantoco.com/sitemap.xml
