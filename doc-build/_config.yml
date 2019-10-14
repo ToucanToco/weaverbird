@@ -7,9 +7,8 @@ lang: en-US
 
 # en prod :
 baseurl: "" # the subpath of your site
-url: "http://toucantoco.com/vue-query-builder/" # the base hostname & protocol for your site
+url: "https://weaverbird.toucantoco.com" # the base hostname & protocol for your site
 git_address: https://github.com/ToucanToco/vue-query-builder
-git_edit_address: https://github.com/ToucanToco/vue-query-builder/tree/gh-pages/
 
 # theme options from https://bootswatch.com/
 # comment out this to use default Bootstrap
