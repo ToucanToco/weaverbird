@@ -75,11 +75,7 @@ figure {
 
 img {
   vertical-align: middle;
-}
-
-// Responsive images (ensure images don't scale beyond their parents)
-.img-responsive {
-  @include img-responsive;
+  max-width: 100%;
 }
 
 // Rounded corners

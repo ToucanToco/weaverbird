@@ -1,13 +1,29 @@
-- title: Getting Started
+- title: User interface
+  docs:
+  - general-principles
+  - aggregate
+  - argmax
+  - argmin
+  - delete
+  - duplicate
+  - fillnull
+  - filter
+  - formula
+  - keep
+  - percentage
+  - pivot
+  - rename
+  - replace
+  - sort
+  - lowercase
+  - uppercase
+  - topnrows
+  - unpivot
+
+- title: Technical documentation
   docs:
   - steps
   - stepforms
   - known_limitations
   - translators
   - variables
-
-- title: Examples
-  docs:
-  - cheatsheet
-  - font-awesome
-  - bootstrap
