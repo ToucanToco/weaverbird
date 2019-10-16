@@ -4,6 +4,160 @@
     
     
     {
+      "title": "General Principles",
+      "url": "/docs/general-principles/"
+
+    },
+  
+    
+    
+    {
+      "title": "Aggregate",
+      "url": "/docs/aggregate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Argmax",
+      "url": "/docs/argmax/"
+
+    },
+  
+    
+    
+    {
+      "title": "Argmin",
+      "url": "/docs/argmin/"
+
+    },
+  
+    
+    
+    {
+      "title": "Delete",
+      "url": "/docs/delete/"
+
+    },
+  
+    
+    
+    {
+      "title": "Duplicate",
+      "url": "/docs/duplicate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Fill null",
+      "url": "/docs/fillnull/"
+
+    },
+  
+    
+    
+    {
+      "title": "Fill null",
+      "url": "/docs/filter/"
+
+    },
+  
+    
+    
+    {
+      "title": "Formula",
+      "url": "/docs/formula/"
+
+    },
+  
+    
+    
+    {
+      "title": "Keep column",
+      "url": "/docs/keep/"
+
+    },
+  
+    
+    
+    {
+      "title": "Percentage",
+      "url": "/docs/percentage/"
+
+    },
+  
+    
+    
+    {
+      "title": "Pivot",
+      "url": "/docs/pivot/"
+
+    },
+  
+    
+    
+    {
+      "title": "Rename",
+      "url": "/docs/rename/"
+
+    },
+  
+    
+    
+    {
+      "title": "Replace",
+      "url": "/docs/replace/"
+
+    },
+  
+    
+    
+    {
+      "title": "Sort",
+      "url": "/docs/sort/"
+
+    },
+  
+    
+    
+    {
+      "title": "To lowercase",
+      "url": "/docs/lowercase/"
+
+    },
+  
+    
+    
+    {
+      "title": "To uppercase",
+      "url": "/docs/uppercase/"
+
+    },
+  
+    
+    
+    {
+      "title": "Top N rows",
+      "url": "/docs/topnrows/"
+
+    },
+  
+    
+    
+    {
+      "title": "Unpivot",
+      "url": "/docs/unpivot/"
+
+    },
+  
+
+  
+    
+    
+    {
       "title": "Steps",
       "url": "/docs/steps/"
 
@@ -38,32 +192,6 @@
     {
       "title": "Variables",
       "url": "/docs/variables/"
-
-    },
-  
-
-  
-    
-    
-    {
-      "title": "Markdown Cheatsheet",
-      "url": "/docs/cheatsheet/"
-
-    },
-  
-    
-    
-    {
-      "title": "Font Awesome Icon List",
-      "url": "/docs/font-awesome/"
-
-    },
-  
-    
-    
-    {
-      "title": "Bootstrap Features",
-      "url": "/docs/bootstrap/"
 
     },
   

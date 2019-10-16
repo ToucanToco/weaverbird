@@ -1097,12 +1097,8 @@ figure {
   margin: 0; }
 
 img {
-  vertical-align: middle; }
-
-.img-responsive {
-  display: block;
-  max-width: 100%;
-  height: auto; }
+  vertical-align: middle;
+  max-width: 100%; }
 
 .img-rounded {
   border-radius: 6px; }
@@ -4331,9 +4327,6 @@ a.badge:hover, a.badge:focus {
   transition: border 0.2s ease-in-out; }
   .thumbnail > img,
   .thumbnail a > img {
-    display: block;
-    max-width: 100%;
-    height: auto;
     margin-left: auto;
     margin-right: auto; }
   .thumbnail .caption {
@@ -5410,9 +5403,6 @@ button.close {
     transition: 0.6s ease-in-out left; }
     .carousel-inner > .item > img,
     .carousel-inner > .item > a > img {
-      display: block;
-      max-width: 100%;
-      height: auto;
       line-height: 1; }
     @media all and (transform-3d), (-webkit-transform-3d) {
       .carousel-inner > .item {
