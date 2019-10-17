@@ -81,6 +81,29 @@ gem install bundler
 bundle exec jekyll serve
 ```
 
+#### how to add doc to jekyll documentation
+
+> put your `.md` file into the `docs` folder. You can add a folder as well to better organization
+
+> into your `.md` file don't forget to declare this at the beginning of the file :
+
+```
+---
+title: your title doc name
+permalink: /docs/your-page-doc-name/
+---
+```
+
+> to finish to get your page into the doc navigation you have to add it in `_data/docs.yml``
+
+example :
+```
+- title: Technical documentation
+  docs:
+  - steps
+  - stepforms
+  - your-page-doc-name
+```
 
 ### Run the storybook
 
