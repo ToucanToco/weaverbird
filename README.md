@@ -1,7 +1,7 @@
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/vue-query-builder.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/vue-query-builder/)
-[![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/vue-query-builder.svg)](https://circleci.com/gh/ToucanToco/vue-query-builder)
+[![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/weaverbird.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/weaverbird/)
+[![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/weaverbird.svg)](https://circleci.com/gh/ToucanToco/weaverbird)
 
-# vue-query-builder
+# weaverbird
 
 ## Project setup
 
@@ -136,34 +136,34 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ```html
 <!-- Import styles -->
-<link rel="stylesheet" href="vue-query-builder/dist/vue-query-builder.umd.min.js" />
+<link rel="stylesheet" href="weaverbird/dist/weaverbird.umd.min.js" />
 
 <!-- Import scripts -->
 <script src="vue.js"></script>
-<script src="vue-query-builder/dist/vue-query-builder.umd.min.js"></script>
+<script src="weaverbird/dist/weaverbird.umd.min.js"></script>
 ```
 
 ### With an ES module bundler (typically webpack or rollup)
 
 ```js
-import { Pipeline } from 'vue-query-builder';
+import { Pipeline } from 'weaverbird';
 ```
 
 > By default, the CommonJS module is imported. If you prefer the ES module
-> version, import `dist/vue-query-builder.esm.js`.
+> version, import `dist/weaverbird.esm.js`.
 
 ### Styles
 
 If your module bundler can also import CSS (e.g. via `styles-loader`):
 
 ```js
-import 'vue-query-builder/dist/vue-query-builder.css';
+import 'weaverbird/dist/weaverbird.css';
 ```
 
 If you prefer to use Sass, you may import directly the scss:
 
 ```scss
-@import '~vue-query-builder/src/styles/main';
+@import '~weaverbird/src/styles/main';
 ```
 
 > This example makes use of the `~` syntax from webpack's [sass-loader](https://github.com/webpack-contrib/sass-loader)

@@ -2,7 +2,12 @@
 
 ## [Unreleased]
 
-## Fixed
+### Changed
+
+- Revamped documentation and auto-publish it on https://weaverbird.toucantoco.com
+- Renamed project and repository into `weaverbird`
+
+### Fixed
 
 - Fixed closing popover on ActionButton when opening one on column header cell
 
@@ -54,5 +59,5 @@
 
 - Initial version, showtime!
 
-[0.3.0]: https://github.com/ToucanToco/vue-query-builder/compare/v0.2.0...v0.3.0
-[0.2.0]: https://github.com/ToucanToco/vue-query-builder/releases/tag/v0.2.0
+[0.3.0]: https://github.com/ToucanToco/weaverbird/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/ToucanToco/weaverbird/releases/tag/v0.2.0

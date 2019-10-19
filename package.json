@@ -1,5 +1,5 @@
 {
-  "name": "visual-query-builder",
+  "name": "weaverbird",
   "version": "0.3.0",
   "description": "A generic Visual Query Builder built in Vue.js",
   "keywords": [
@@ -7,7 +7,7 @@
     "vue"
   ],
   "license": "BSD-3-Clause",
-  "repository": "github:ToucanToco/vue-query-builder",
+  "repository": "github:ToucanToco/weaverbird",
   "prepublish": "rollup -c",
   "scripts": {
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
@@ -186,8 +186,8 @@
   "files": [
     "dist/*"
   ],
-  "main": "dist/vue-query-builder.common.js",
-  "module": "dist/vue-query-builder.esm.js",
+  "main": "dist/weaverbird.common.js",
+  "module": "dist/weaverbird.esm.js",
   "peerDependencies": {
     "vue": "2.x",
     "vuex": "^3.1.1"

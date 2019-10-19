@@ -1,7 +1,7 @@
 import {
   Step
 } from '../dist/storybook/components';
-import '../dist/vue-query-builder.css';
+import '../dist/weaverbird.css';
 
 import {
   withKnobs,
