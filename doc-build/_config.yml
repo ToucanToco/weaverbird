@@ -1,6 +1,6 @@
 # Site settings
 title: Weaverbird
-email: your-email@domain.com
+email: dev+weaverbird@toucantoco.com
 description: >
   Doc VQB
 lang: en-US
@@ -31,13 +31,6 @@ exclude:
   - README.md
 timezone: Europe/Berlin
 defaults:
-- scope:
-    path: _posts
-    type: posts
-  values:
-    layout: post
-    sectionid: blog
-
 - scope:
     path: _docs
     type: docs
