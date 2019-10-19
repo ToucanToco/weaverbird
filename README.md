@@ -65,6 +65,46 @@ yarn build-doc
 This will run [typedoc](https://typedoc.org/) on the `src/` directory and
 generate the corresponding documentation in the `dist/docs` directory.
 
+### Build and Run documentation (local environnement)
+
+> The web documentation is powered by [Jekyll](https://jekyllrb.com).
+
+> You can find all the sources into the `doc-build` folder.
+
+> To build and locally launch the documentation you need Ruby and gem before starting, then:
+
+```bash
+# install bundler
+gem install bundler
+
+# run jekyll and a local server with dependencies :
+bundle exec jekyll serve
+```
+
+#### how to add doc to jekyll documentation
+
+> put your `.md` file into the `docs` folder. You can add a folder as well to better organization
+
+> into your `.md` file don't forget to declare this at the beginning of the file :
+
+```
+---
+title: your title doc name
+permalink: /docs/your-page-doc-name/
+---
+```
+
+> to finish to get your page into the doc navigation you have to add it in `_data/docs.yml``
+
+example :
+```
+- title: Technical documentation
+  docs:
+  - steps
+  - stepforms
+  - your-page-doc-name
+```
+
 ### Run the storybook
 
 > Storybook uses the bundled lib, so all showcased components must be in the public API.
