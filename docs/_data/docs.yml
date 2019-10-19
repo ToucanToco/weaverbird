@@ -22,6 +22,7 @@
 
 - title: Technical documentation
   docs:
+  - index
   - steps
   - stepforms
   - known_limitations

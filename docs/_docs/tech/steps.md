@@ -216,6 +216,54 @@ is specified.
 | Label 2 | Group 1 | 7     |
 | Label 4 | Group 2 | 1     |
 
+### `concatenate` step
+
+This step allows to concatenate several `columns` using a `separator`.
+
+```javascript
+{
+  name: 'concatenate',
+  columns: ['Company', 'Group']
+  separator: ' - ' // can be a string of any length
+  new_column_name: 'Label' // The new column in which to write the concatenation
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Group   | Value |
+| --------- | ------- | ----- |
+| Company 1 | Group 1 | 13    |
+| Company 2 | Group 1 | 7     |
+| Company 3 | Group 1 | 20    |
+| Company 4 | Group 2 | 1     |
+| Company 5 | Group 2 | 10    |
+| Company 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'concatenate',
+  columns: ['Company', 'Group']
+  separator: ' - '
+  new_column_name: 'Label'
+}
+```
+
+**Output dataset:**
+
+| Company   | Group   | Value | Label               |
+| --------- | ------- | ----- | ------------------- |
+| Company 1 | Group 1 | 13    | Company 1 - Group 1 |
+| Company 2 | Group 1 | 7     | Company 2 - Group 1 |
+| Company 3 | Group 1 | 20    | Company 3 - Group 1 |
+| Company 4 | Group 2 | 1     | Company 4 - Group 2 |
+| Company 5 | Group 2 | 10    | Company 5 - Group 2 |
+| Company 6 | Group 2 | 5     | Company 6 - Group 2 |
+
 ### `custom` step
 
 This step allows to define a custom query that can't be expressed using the
@@ -463,16 +511,53 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 | Label 2 | 1      | 13     | 7      | 3      | -4     |
 | Label 3 | 5      | 20     | 5      | 2      | 1      |
 
+### `lowercase` step
+
+Converts a string `column` to lowercase.
+
+```javascript
+{
+  name: 'lowercase',
+  column: 'foo',
+}
+```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'lowercase',
+  column: 'Label',
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| label 1 | Group 1 | 13    |
+| label 2 | Group 1 | 7     |
+| label 3 | Group 1 | 20    |
+
 ### `percentage` step
 
 Compute the percentage of total, i.e. for every row the value in `column` divided
 by the total as the sum of every values in `column`. The computation can be performed
-by `group` if specified. The result can be either ouput inplace or in a `new_column` if specified
+by `group` if specified. The result is written inplace.
 
 ```javascript
 {
   name: 'percentage',
-  new_column: 'new_col', // optional
   column: 'bar',
   group: ['foo'] // optional
 }
@@ -613,7 +698,7 @@ Rename a column.,
 
 ### `replace` step
 
-Replace one or several values in a column, and write resulting column inplace or in a new column.
+Replace one or several values in a column.
 
 A replace step has the following strucure:
 
@@ -621,7 +706,6 @@ A replace step has the following strucure:
 {
    name: 'replace',
    search_column: "column_1",
-   new_column: "column_2", // if empty, replace values directly in `search_column` by default
    to_replace: [
      ['foo', 'bar'], // The first value is the one to be replace, the second is the new value
      [42, 0]
@@ -631,14 +715,14 @@ A replace step has the following strucure:
 }
 ```
 
-### Example 1: Replace a single value inplace
+### Example
 
 **Input dataset:**
 
 | COMPANY   | COUNTRY |
 | --------- | ------- |
 | Company 1 | Fr      |
-| Company 2 | USA     |
+| Company 2 | UK      |
 
 **Step configuration:**
 
@@ -648,46 +732,17 @@ A replace step has the following strucure:
    search_column: "COUNTRY",
    to_replace: [
      ['Fr', 'France']
+     ['UK', 'United Kingdom']
    ]
 }
 ```
 
 **Output dataset:**
 
-| COMPANY   | COUNTRY |
-| --------- | ------- |
-| Company 1 | France  |
-| Company 2 | USA     |
-
-### Example 2: Replace several values at once in a new column
-
-**Input dataset:**
-
-| COMPANY   | COUNTRY |
-| --------- | ------- |
-| Company 1 | France  |
-| Company 2 | USA     |
-
-**Step configuration:**
-
-```javascript
-{
-   name: 'replace',
-   search_column: "COUNTRY",
-   new_column: "REGION"
-   to_replace: [
-     ['France', 'Europe']
-     ['USA': 'North America']
-   ]
-}
-```
-
-**Output dataset:**
-
-| COMPANY   | COUNTRY | REGION        |
-| --------- | ------- | ------------- |
-| Company 1 | France  | Europe        |
-| Company 2 | USA     | North America |
+| COMPANY   | COUNTRY        |
+| --------- | -------------- |
+| Company 1 | France         |
+| Company 2 | United Kingdom |
 
 ### `select` step
 
@@ -781,6 +836,90 @@ When sorting on several columns, order of columns specified in `columns` matters
 | Label 6 | Group 2 | 5     |
 | Label 4 | Group 2 | 1     |
 
+### `split` step
+
+Split a string `column` into several columns based on a `delimiter`.
+
+```javascript
+{
+  name: 'split',
+  column: 'foo', // the columnn to split
+  delimiter: ' - ', // the delimiter can e a strinng of any length
+  number_cols_to_keep: 3, // the numer of columns to keep resulting from the
+                          // split (starting from first chunk)
+}
+```
+
+#### Example 1
+
+**Input dataset:**
+
+| Label                      | Value |
+| -------------------------- | ----- |
+| Label 1 - Group 1 - France | 13    |
+| Label 2 - Group 1 - Spain  | 7     |
+| Label 3 - Group 1 - USA    | 20    |
+| Label 4 - Group 2 - France | 1     |
+| Label 5 - Group 2 - Spain  | 10    |
+| Label 6 - Group 2 - USA    | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'split',
+  column: 'Label',
+  delimiter: ' - ',
+  number_cols_to_keep: 3,
+}
+```
+
+**Output dataset:**
+
+| Label_1 | Label_2 | Label_3 | Value |
+| ------- | ------- | ------- | ----- |
+| Label 3 | Group 1 | France  | 20    |
+| Label 1 | Group 1 | Spain   | 13    |
+| Label 2 | Group 1 | USA     | 7     |
+| Label 5 | Group 2 | France  | 10    |
+| Label 6 | Group 2 | Spain   | 5     |
+| Label 4 | Group 2 | USA     | 1     |
+
+#### Example 2: keeping less columns
+
+**Input dataset:**
+
+| Label                      | Value |
+| -------------------------- | ----- |
+| Label 1 - Group 1 - France | 13    |
+| Label 2 - Group 1 - Spain  | 7     |
+| Label 3 - Group 1 - USA    | 20    |
+| Label 4 - Group 2 - France | 1     |
+| Label 5 - Group 2 - Spain  | 10    |
+| Label 6 - Group 2 - USA    | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'split',
+  column: 'Label',
+  delimiter: ' - ',
+  number_cols_to_keep: 2,
+}
+```
+
+**Output dataset:**
+
+| Label_1 | Label_2 | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+| Label 4 | Group 2 | 1     |
+
 ### `top` step
 
 Return top N rows by group if `groups` is specified, else over full dataset.
@@ -821,7 +960,7 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 
 **Output dataset:**
 
-| Company | Group   | Value |
+| Label   | Group   | Value |
 | ------- | ------- | ----- |
 | Label 4 | Group 2 | 1     |
 | Label 6 | Group 2 | 5     |
@@ -946,3 +1085,41 @@ Unpivot a list of columns to rows.
 | Company 1 | USA     | REVENUES   | 6     |
 | Company 2 | USA     | NB_CLIENTS | 1     |
 | Company 2 | USA     | REVENUES   | 3     |
+
+### `uppercase` step
+
+Converts a string `column` to uppercase.
+
+```javascript
+{
+  name: 'uppercase',
+  column: 'foo',
+}
+```
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'uppercase',
+  column: 'Label',
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| LABEL 1 | Group 1 | 13    |
+| LABEL 2 | Group 1 | 7     |
+| LABEL 3 | Group 1 | 20    |

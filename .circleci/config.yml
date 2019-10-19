@@ -32,21 +32,21 @@ jobs:
       - run:
           name: install dependencies
           command: |
-            cd doc-build
+            cd docs
             gem update --system
             gem install bundler
       - run:
           name: Bundle Install
           command: |
-            cd doc-build
+            cd docs
             bundle check || bundle install
       - run:
           name: Jekyll build
           command: |
-            cd doc-build
+            cd docs
             bundle exec jekyll build
       - persist_to_workspace:
-          root: ./doc-build
+          root: ./docs
           paths:
             - _site
   doc-deploy:
@@ -55,7 +55,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ./doc-build/
+          at: ./docs/
       - add_ssh_keys:
           fingerprints:
             - "db:49:cb:f3:4b:23:9e:b3:17:b5:ce:95:82:12:b4:24"
@@ -68,7 +68,7 @@ jobs:
       - run:
           name: Deploy docs to gh-pages branch
           command: |
-            cd doc-build/_site
+            cd docs/_site
             ../../node_modules/.bin/gh-pages --dist .
 
 workflows:
