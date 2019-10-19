@@ -1,5 +1,5 @@
 <template>
-  <div class="visual-query-builder">
+  <div class="weaverbird">
     <ResizablePanels>
       <QueryBuilder slot="left-panel" />
       <DataViewer slot="right-panel" />
@@ -25,7 +25,7 @@ import ResizablePanels from '@/components/ResizablePanels.vue';
 export default class Vqb extends Vue { }
 </script>
 <style lang="scss" scoped>
-.visual-query-builder {
+.weaverbird {
   flex: 1;
   height: 100%;
   background-color: white;

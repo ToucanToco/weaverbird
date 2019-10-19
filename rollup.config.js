@@ -31,9 +31,9 @@ function packageDir() {
 export default {
   input: 'src/main.ts',
   output: [
-    { file: 'dist/vue-query-builder.common.js', format: 'cjs' },
-    { file: 'dist/vue-query-builder.esm.js', format: 'esm' },
-    { file: 'dist/vue-query-builder.browser.js', format: 'umd', name: 'vqb' },
+    { file: 'dist/weaverbird.common.js', format: 'cjs' },
+    { file: 'dist/weaverbird.esm.js', format: 'esm' },
+    { file: 'dist/weaverbird.browser.js', format: 'umd', name: 'vqb' },
   ],
   external: ['vue', 'vuex'],
   plugins: [
@@ -44,7 +44,7 @@ export default {
       '@': path.join(packageDir(), '/src'),
     }),
     commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'] } }),
-    css({ output: 'dist/vue-query-builder.css' }),
+    css({ output: 'dist/weaverbird.css' }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
     json(),
