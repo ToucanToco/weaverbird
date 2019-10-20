@@ -116,7 +116,7 @@ describe('Action Menu', () => {
     });
   });
 
-  describe('when clicking on "Fill null values"', () => {
+  describe('when clicking on "Filter values"', () => {
     it('should emit an "actionClicked" event with proper options', () => {
       const wrapper = shallowMount(ActionMenu, {
         propsData: {
@@ -126,7 +126,7 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(3).trigger('click');
 
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['fillna']);
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['filter']);
     });
   });
 
@@ -134,6 +134,72 @@ describe('Action Menu', () => {
     const wrapper = shallowMount(ActionMenu);
     const actionsWrapper = wrapper.findAll('.action-menu__option');
     actionsWrapper.at(3).trigger('click');
+
+    expect(wrapper.emitted().closed).toBeTruthy();
+  });
+
+  describe('when clicking on "Fill null values"', () => {
+    it('should emit an "actionClicked" event with proper options', () => {
+      const wrapper = shallowMount(ActionMenu, {
+        propsData: {
+          columnName: 'dreamfall',
+        },
+      });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(4).trigger('click');
+
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['fillna']);
+    });
+  });
+
+  it('should emit a close event', () => {
+    const wrapper = shallowMount(ActionMenu);
+    const actionsWrapper = wrapper.findAll('.action-menu__option');
+    actionsWrapper.at(4).trigger('click');
+
+    expect(wrapper.emitted().closed).toBeTruthy();
+  });
+
+  describe('when clicking on "Replace values"', () => {
+    it('should emit an "actionClicked" event with proper options', () => {
+      const wrapper = shallowMount(ActionMenu, {
+        propsData: {
+          columnName: 'dreamfall',
+        },
+      });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(5).trigger('click');
+
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['replace']);
+    });
+  });
+
+  it('should emit a close event', () => {
+    const wrapper = shallowMount(ActionMenu);
+    const actionsWrapper = wrapper.findAll('.action-menu__option');
+    actionsWrapper.at(5).trigger('click');
+
+    expect(wrapper.emitted().closed).toBeTruthy();
+  });
+
+  describe('when clicking on "Sort values"', () => {
+    it('should emit an "actionClicked" event with proper options', () => {
+      const wrapper = shallowMount(ActionMenu, {
+        propsData: {
+          columnName: 'dreamfall',
+        },
+      });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(6).trigger('click');
+
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['sort']);
+    });
+  });
+
+  it('should emit a close event', () => {
+    const wrapper = shallowMount(ActionMenu);
+    const actionsWrapper = wrapper.findAll('.action-menu__option');
+    actionsWrapper.at(6).trigger('click');
 
     expect(wrapper.emitted().closed).toBeTruthy();
   });
