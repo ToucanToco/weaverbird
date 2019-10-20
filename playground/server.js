@@ -84,38 +84,109 @@ function assertIsConnected(client, err) {
  */
 function facetize(query, limit, skip) {
   if (!query.length) {
-    query.push({ $match: {} });
+    query.push({
+      $match: {},
+    });
   }
   return [
     ...query,
     {
       $facet: {
-        stage1: [
-          {
-            $group: {
-              _id: null,
-              count: { $sum: 1 },
+        stage1: [{
+          $group: {
+            _id: null,
+            count: {
+              $sum: 1,
             },
           },
+        }, ],
+        stage2: [{
+          $skip: skip,
+        },
+        {
+          $limit: limit,
+        },
         ],
-        stage2: [
-          {
-            $skip: skip,
+        stage3: [{
+          $skip: skip,
+        }, {
+          $limit: limit,
+        },
+        {
+          $group: {
+            _id: null,
+            _vqbAppArray: {
+              $push: '$$ROOT'
+            }
+          }
+        },
+        {
+          $unwind: {
+            path: "$_vqbAppArray",
+            includeArrayIndex: "_vqbAppIndex"
+          }
+        },
+        {
+          $project: {
+            _vqbAppArray: {
+              $objectToArray: '$_vqbAppArray',
+            },
+            _vqbAppIndex: 1
           },
-          {
-            $limit: limit,
+        },
+        {
+          $unwind: '$_vqbAppArray',
+        },
+        {
+          $project: {
+            column: '$_vqbAppArray.k',
+            type: {
+              $type: '$_vqbAppArray.v',
+            },
+            _vqbAppIndex: 1
           },
+        },
+        {
+          $group: {
+            _id: '$_vqbAppIndex',
+            _vqbAppArray: {
+              $addToSet: {
+                column: '$column',
+                type: '$type',
+              },
+            },
+          },
+        },
+        {
+          $project: {
+            _vqbAppTmpObj: {
+              $arrayToObject: {
+                $zip: {
+                  inputs: ['$_vqbAppArray.column', '$_vqbAppArray.type'],
+                },
+              },
+            },
+          },
+        },
+        {
+          $replaceRoot: {
+            newRoot: '$_vqbAppTmpObj',
+          },
+        },
         ],
       },
     },
 
-    { $unwind: '$stage1' },
+    {
+      $unwind: '$stage1',
+    },
 
     //output projection
     {
       $project: {
         count: '$stage1.count',
         data: '$stage2',
+        types: '$stage3',
       },
     },
   ];

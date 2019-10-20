@@ -4,7 +4,6 @@ const {
   VQBnamespace,
   VQB_MODULE_NAME,
   filterOutDomain,
-  inferTypeFromDataset,
   getTranslator,
   mongoResultsToDataset,
   servicePluginFactory,
@@ -12,6 +11,64 @@ const {
 } = vqb;
 
 const mongo36translator = getTranslator('mongo36');
+
+const CASTERS = {
+  date: (val) => new Date(val),
+};
+
+
+function mongoToVQBType(type) {
+  if (type === 'int' || type === 'long') {
+    return 'integer';
+  }
+  if (type === 'double' || type === 'decimal') {
+    return 'float';
+  }
+  if (type === 'bool') {
+    return 'boolean';
+  }
+  if (type === 'date' || type === 'string' || type === 'object') {
+    return type;
+  }
+  return undefined;
+}
+
+
+function annotateDataset(dataset, typeAnnotations) {
+  const typedHeaders = dataset.headers.map((hdr) => ({
+    name: hdr.name,
+    type: typeAnnotations ? mongoToVQBType(typeAnnotations[hdr.name]) : undefined,
+  }));
+  return { ...dataset, headers: typedHeaders };
+}
+
+
+function autocastDataset(dataset) {
+  // inspect column types to find out which ones should be casted, that is which
+  // ones are annotated with registered casters.
+  const columnCasters = [];
+  for (const [idx, hdr] of Object.entries(dataset.headers)) {
+    if (CASTERS[hdr.type]) {
+      columnCasters.push([idx, CASTERS[hdr.type]]);
+    }
+  }
+  // If there's no need to cast anything, let us be lazy and return the original
+  // dataset.
+  if (!columnCasters.length) {
+    return dataset;
+  }
+  // Otherwise, apply cast on each required column
+  const newData = [];
+  for (const row of dataset.data) {
+    const newRow = [...row];
+    for (const [idx, caster] of columnCasters) {
+      newRow[idx] = caster(newRow[idx]);
+    }
+    newData.push(newRow);
+  }
+  return { ...dataset, data: newData, headers: dataset.headers };
+}
+
 
 class MongoService {
   async listCollections(_store) {
@@ -25,16 +82,23 @@ class MongoService {
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
-      const [{ count, data: rset }] = responseContent;
-      const dataset = mongoResultsToDataset(rset);
+      const [{
+        count,
+        data: rset,
+        types
+      }] = responseContent;
+      let dataset = mongoResultsToDataset(rset);
       dataset.paginationContext = {
         totalCount: count,
         pagesize: limit,
         pageno: Math.floor(offset / limit) + 1,
       };
-      const datasetWithInferedType = inferTypeFromDataset(dataset);
+      if (types && types.length) {
+        dataset = annotateDataset(dataset, types[0]);
+        dataset = autocastDataset(dataset);
+      }
       return {
-        data: datasetWithInferedType,
+        data: dataset,
       };
     } else {
       return {
