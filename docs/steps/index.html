@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2019-10-22T14:21:39+02:00" />
+<meta property="article:published_time" content="2019-10-22T16:32:06+02:00" />
 <script type="application/ld+json">
-{"headline":"Steps","dateModified":"2019-10-22T14:21:39+02:00","datePublished":"2019-10-22T14:21:39+02:00","url":"https://weaverbird.toucantoco.com/docs/steps/","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-10-22T16:32:06+02:00","dateModified":"2019-10-22T16:32:06+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -49,7 +49,7 @@
             <ul class="nav navbar-nav">
                 <li  class="active" ><a href="/docs/steps/">Docs</a></li>
                 <!-- remove for the moment
-                  <li ><a href="/blog/2019/10/02/v1-VQB/">Blog</a></li> -->
+                  <li ><a href="">Blog</a></li> -->
                 <li ><a href="/about">About</a></li>
             </ul>
             <div class="navbar-right">
@@ -60,7 +60,7 @@
                     </div>
                 </form>
                 <ul class="nav navbar-nav">
-                    <li><a href="https://github.com/ToucanToco/vue-query-builder"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                    <li><a href="https://github.com/ToucanToco/weaverbird"><i class="fa fa-github" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
         </div>
@@ -218,6 +218,12 @@
       
       <div class="panel-collapse" id="collapse-2" role="tabpanel" aria-label="Side Navigation">
         <div class="list-group">
+          
+            
+            
+            <!-- 
+              <a class="list-group-item " href="https://weaverbird.toucantoco.com">index</a>
+             -->
           
             
             
@@ -702,6 +708,125 @@ is specified.</p>
   </tbody>
 </table>
 
+<h3 id="concatenate-step"><code class="highlighter-rouge">concatenate</code> step</h3>
+
+<p>This step allows to concatenate several <code class="highlighter-rouge">columns</code> using a <code class="highlighter-rouge">separator</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'concatenate'</span><span class="p">,</span>
+  <span class="nx">columns</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Company'</span><span class="p">,</span> <span class="s1">'Group'</span><span class="p">]</span>
+  <span class="nx">separator</span><span class="p">:</span> <span class="s1">' - '</span> <span class="c1">// can be a string of any length</span>
+  <span class="nx">new_column_name</span><span class="p">:</span> <span class="s1">'Label'</span> <span class="c1">// The new column in which to write the concatenation</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-1">Example</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Company</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Company 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Company 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Company 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Company 4</td>
+      <td>Group 2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Company 5</td>
+      <td>Group 2</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Company 6</td>
+      <td>Group 2</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'concatenate'</span><span class="p">,</span>
+  <span class="nx">columns</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Company'</span><span class="p">,</span> <span class="s1">'Group'</span><span class="p">]</span>
+  <span class="nx">separator</span><span class="p">:</span> <span class="s1">' - '</span>
+  <span class="nx">new_column_name</span><span class="p">:</span> <span class="s1">'Label'</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Company</th>
+      <th>Group</th>
+      <th>Value</th>
+      <th>Label</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Company 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+      <td>Company 1 - Group 1</td>
+    </tr>
+    <tr>
+      <td>Company 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+      <td>Company 2 - Group 1</td>
+    </tr>
+    <tr>
+      <td>Company 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+      <td>Company 3 - Group 1</td>
+    </tr>
+    <tr>
+      <td>Company 4</td>
+      <td>Group 2</td>
+      <td>1</td>
+      <td>Company 4 - Group 2</td>
+    </tr>
+    <tr>
+      <td>Company 5</td>
+      <td>Group 2</td>
+      <td>10</td>
+      <td>Company 5 - Group 2</td>
+    </tr>
+    <tr>
+      <td>Company 6</td>
+      <td>Group 2</td>
+      <td>5</td>
+      <td>Company 6 - Group 2</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="custom-step"><code class="highlighter-rouge">custom</code> step</h3>
 
 <p>This step allows to define a custom query that can’t be expressed using the
@@ -828,7 +953,7 @@ other existing steps.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-1">Example</h4>
+<h4 id="example-2">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -947,7 +1072,7 @@ other existing steps.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-2">Example</h4>
+<h4 id="example-3">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1023,7 +1148,7 @@ other existing steps.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-3">Example</h4>
+<h4 id="example-4">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1153,7 +1278,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-4">Example</h4>
+<h4 id="example-5">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1242,21 +1367,98 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
   </tbody>
 </table>
 
+<h3 id="lowercase-step"><code class="highlighter-rouge">lowercase</code> step</h3>
+
+<p>Converts a string <code class="highlighter-rouge">column</code> to lowercase.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'lowercase'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'foo'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-6">Example:</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'lowercase'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>label 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>label 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>label 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="percentage-step"><code class="highlighter-rouge">percentage</code> step</h3>
 
 <p>Compute the percentage of total, i.e. for every row the value in <code class="highlighter-rouge">column</code> divided
 by the total as the sum of every values in <code class="highlighter-rouge">column</code>. The computation can be performed
-by <code class="highlighter-rouge">group</code> if specified. The result can be either ouput inplace or in a <code class="highlighter-rouge">new_column</code> if specified</p>
+by <code class="highlighter-rouge">group</code> if specified. The result is written inplace.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
   <span class="nl">name</span><span class="p">:</span> <span class="s1">'percentage'</span><span class="p">,</span>
-  <span class="nx">new_column</span><span class="p">:</span> <span class="s1">'new_col'</span><span class="p">,</span> <span class="c1">// optional</span>
   <span class="nx">column</span><span class="p">:</span> <span class="s1">'bar'</span><span class="p">,</span>
   <span class="nx">group</span><span class="p">:</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">]</span> <span class="c1">// optional</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-5">Example:</h4>
+<h4 id="example-7">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1373,7 +1575,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-6">Example:</h4>
+<h4 id="example-8">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1475,7 +1677,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-7">Example:</h4>
+<h4 id="example-9">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1576,14 +1778,13 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 
 <h3 id="replace-step"><code class="highlighter-rouge">replace</code> step</h3>
 
-<p>Replace one or several values in a column, and write resulting column inplace or in a new column.</p>
+<p>Replace one or several values in a column.</p>
 
 <p>A replace step has the following strucure:</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
    <span class="nl">name</span><span class="p">:</span> <span class="s1">'replace'</span><span class="p">,</span>
    <span class="nx">search_column</span><span class="p">:</span> <span class="s2">"column_1"</span><span class="p">,</span>
-   <span class="nx">new_column</span><span class="p">:</span> <span class="s2">"column_2"</span><span class="p">,</span> <span class="c1">// if empty, replace values directly in `search_column` by default</span>
    <span class="nx">to_replace</span><span class="p">:</span> <span class="p">[</span>
      <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">],</span> <span class="c1">// The first value is the one to be replace, the second is the new value</span>
      <span class="p">[</span><span class="mi">42</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
@@ -1593,7 +1794,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h3 id="example-1-replace-a-single-value-inplace">Example 1: Replace a single value inplace</h3>
+<h4 id="example-10">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1611,7 +1812,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
     </tr>
     <tr>
       <td>Company 2</td>
-      <td>USA</td>
+      <td>UK</td>
     </tr>
   </tbody>
 </table>
@@ -1623,6 +1824,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
    <span class="nx">search_column</span><span class="p">:</span> <span class="s2">"COUNTRY"</span><span class="p">,</span>
    <span class="nx">to_replace</span><span class="p">:</span> <span class="p">[</span>
      <span class="p">[</span><span class="s1">'Fr'</span><span class="p">,</span> <span class="s1">'France'</span><span class="p">]</span>
+     <span class="p">[</span><span class="s1">'UK'</span><span class="p">,</span> <span class="s1">'United Kingdom'</span><span class="p">]</span>
    <span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -1643,67 +1845,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
     </tr>
     <tr>
       <td>Company 2</td>
-      <td>USA</td>
-    </tr>
-  </tbody>
-</table>
-
-<h3 id="example-2-replace-several-values-at-once-in-a-new-column">Example 2: Replace several values at once in a new column</h3>
-
-<p><strong>Input dataset:</strong></p>
-
-<table>
-  <thead>
-    <tr>
-      <th>COMPANY</th>
-      <th>COUNTRY</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Company 1</td>
-      <td>France</td>
-    </tr>
-    <tr>
-      <td>Company 2</td>
-      <td>USA</td>
-    </tr>
-  </tbody>
-</table>
-
-<p><strong>Step configuration:</strong></p>
-
-<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
-   <span class="nl">name</span><span class="p">:</span> <span class="s1">'replace'</span><span class="p">,</span>
-   <span class="nx">search_column</span><span class="p">:</span> <span class="s2">"COUNTRY"</span><span class="p">,</span>
-   <span class="nx">new_column</span><span class="p">:</span> <span class="s2">"REGION"</span>
-   <span class="nx">to_replace</span><span class="p">:</span> <span class="p">[</span>
-     <span class="p">[</span><span class="s1">'France'</span><span class="p">,</span> <span class="s1">'Europe'</span><span class="p">]</span>
-     <span class="p">[</span><span class="s1">'USA'</span><span class="p">:</span> <span class="s1">'North America'</span><span class="p">]</span>
-   <span class="p">]</span>
-<span class="p">}</span>
-</code></pre></div></div>
-
-<p><strong>Output dataset:</strong></p>
-
-<table>
-  <thead>
-    <tr>
-      <th>COMPANY</th>
-      <th>COUNTRY</th>
-      <th>REGION</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Company 1</td>
-      <td>France</td>
-      <td>Europe</td>
-    </tr>
-    <tr>
-      <td>Company 2</td>
-      <td>USA</td>
-      <td>North America</td>
+      <td>United Kingdom</td>
     </tr>
   </tbody>
 </table>
@@ -1719,7 +1861,7 @@ the <code class="highlighter-rouge">select</code> is used, it will only keep sel
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-8">Example</h4>
+<h4 id="example-11">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1830,7 +1972,7 @@ When sorting on several columns, order of columns specified in <code class="high
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-9">Example</h4>
+<h4 id="example-12">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1928,6 +2070,485 @@ When sorting on several columns, order of columns specified in <code class="high
   </tbody>
 </table>
 
+<h3 id="split-step"><code class="highlighter-rouge">split</code> step</h3>
+
+<p>Split a string <code class="highlighter-rouge">column</code> into several columns based on a <code class="highlighter-rouge">delimiter</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'split'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'foo'</span><span class="p">,</span> <span class="c1">// the columnn to split</span>
+  <span class="nx">delimiter</span><span class="p">:</span> <span class="s1">' - '</span><span class="p">,</span> <span class="c1">// the delimiter can e a strinng of any length</span>
+  <span class="nx">number_cols_to_keep</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="c1">// the numer of columns to keep resulting from the</span>
+                          <span class="c1">// split (starting from first chunk)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-1">Example 1</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1 - Group 1 - France</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2 - Group 1 - Spain</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3 - Group 1 - USA</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Label 4 - Group 2 - France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 5 - Group 2 - Spain</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 6 - Group 2 - USA</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'split'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+  <span class="nx">delimiter</span><span class="p">:</span> <span class="s1">' - '</span><span class="p">,</span>
+  <span class="nx">number_cols_to_keep</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label_1</th>
+      <th>Label_2</th>
+      <th>Label_3</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>Group 1</td>
+      <td>Spain</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>Group 1</td>
+      <td>USA</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>Group 1</td>
+      <td>France</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Label 4</td>
+      <td>Group 2</td>
+      <td>USA</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 5</td>
+      <td>Group 2</td>
+      <td>France</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 6</td>
+      <td>Group 2</td>
+      <td>Spain</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2-keeping-less-columns">Example 2: keeping less columns</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1 - Group 1 - France</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2 - Group 1 - Spain</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3 - Group 1 - USA</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Label 4 - Group 2 - France</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 5 - Group 2 - Spain</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 6 - Group 2 - USA</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'split'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+  <span class="nx">delimiter</span><span class="p">:</span> <span class="s1">' - '</span><span class="p">,</span>
+  <span class="nx">number_cols_to_keep</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label_1</th>
+      <th>Label_2</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Label 4</td>
+      <td>Group 2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 5</td>
+      <td>Group 2</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 6</td>
+      <td>Group 2</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="substring-step"><code class="highlighter-rouge">substring</code> step</h3>
+
+<p>Extract a substring in a string <code class="highlighter-rouge">column</code>. The substring begins at index
+<code class="highlighter-rouge">start_index</code> (beginning at <code class="highlighter-rouge">1</code>) and stops at <code class="highlighter-rouge">end_index</code>.
+You can specify negative indexes, in such a case the index search will start
+from the end of the string (with <code class="highlighter-rouge">-1</code> being the last index of the string).
+Please refer to the examples below for illustration.
+Neither <code class="highlighter-rouge">start_index</code> nor <code class="highlighter-rouge">end_index</code> can be equal to 0.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'substring'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'foo'</span><span class="p">,</span>
+  <span class="nx">start_index</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="c1">// 1 = fisrt character</span>
+  <span class="nx">end_index</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="c1">// -1 = last character</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-1-positive-start_index-and-end_index">Example 1: positive <code class="highlighter-rouge">start_index</code> and <code class="highlighter-rouge">end_index</code></h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>overflow</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>some_text</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>a_word</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>toucan</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>toco</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+  <span class="nx">name</span><span class="p">:</span> <span class="s1">'substring'</span><span class="p">,</span>
+  <span class="nx">start_index</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+  <span class="nx">end_index</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>over</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>some</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>a_wo</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>touc</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>toco</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2-start_index-is-positive-and-end_index-is-negative">Example 2: <code class="highlighter-rouge">start_index</code> is positive and <code class="highlighter-rouge">end_index</code> is negative</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>overflow</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>some_text</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>a_word</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>toucan</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>toco</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'substring'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+  <span class="nx">start_index</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+  <span class="nx">end_index</span><span class="p">:</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>o</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>verflo</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>ome_tex</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>_wor</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>ouca</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>oc</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-3-start_index-and-end_index-are-negative">Example 3: <code class="highlighter-rouge">start_index</code> and <code class="highlighter-rouge">end_index</code> are negative</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>overflow</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>some_text</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>a_word</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>toucan</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>toco</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'substring'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+  <span class="nx">start_index</span><span class="p">:</span> <span class="o">-</span><span class="mi">3</span><span class="p">,</span>
+  <span class="nx">end_index</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>foo</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>low</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>ext</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>ord</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>can</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>oco</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="top-step"><code class="highlighter-rouge">top</code> step</h3>
 
 <p>Return top N rows by group if <code class="highlighter-rouge">groups</code> is specified, else over full dataset.</p>
@@ -2002,7 +2623,7 @@ When sorting on several columns, order of columns specified in <code class="high
 <table>
   <thead>
     <tr>
-      <th>Company</th>
+      <th>Label</th>
       <th>Group</th>
       <th>Value</th>
     </tr>
@@ -2346,6 +2967,84 @@ When sorting on several columns, order of columns specified in <code class="high
     </tr>
   </tbody>
 </table>
+
+<h3 id="uppercase-step"><code class="highlighter-rouge">uppercase</code> step</h3>
+
+<p>Converts a string <code class="highlighter-rouge">column</code> to uppercase.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'uppercase'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'foo'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-13">Example:</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'uppercase'</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="s1">'Label'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LABEL 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>LABEL 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>LABEL 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
 </div>
             
 
@@ -2412,12 +3111,15 @@ When sorting on several columns, order of columns specified in <code class="high
 
   
   
+
+  
+  
     <ul class="pager">
       
         
         
         <li class="previous">
-          <a href="/docs/unpivot/">
+          <a href="/docs/index/">
             <span aria-hidden="true">&larr;</span> Previous
           </a>
         </li>

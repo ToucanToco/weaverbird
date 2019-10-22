@@ -11,21 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Weavebird documentation | Weaverbird</title>
+<title>Concatenate columns | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Weavebird documentation" />
+<meta property="og:title" content="Concatenate columns" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Doc VQB" />
-<meta property="og:description" content="Doc VQB" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/about.html" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/about.html" />
+<meta name="description" content="Replace values" />
+<meta property="og:description" content="Replace values" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/concatenate/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/concatenate/" />
 <meta property="og:site_name" content="Weaverbird" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2019-10-22T16:32:06+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/about.html","headline":"Weavebird documentation","description":"Doc VQB","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/concatenate/","headline":"Concatenate columns","datePublished":"2019-10-22T16:32:06+02:00","dateModified":"2019-10-22T16:32:06+02:00","description":"Replace values","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/about.html">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/concatenate/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -45,10 +47,10 @@
         </div>
         <div id="navbar" class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-                <li ><a href="/docs/steps/">Docs</a></li>
+                <li  class="active" ><a href="/docs/steps/">Docs</a></li>
                 <!-- remove for the moment
                   <li ><a href="">Blog</a></li> -->
-                <li  class="active" ><a href="/about">About</a></li>
+                <li ><a href="/about">About</a></li>
             </ul>
             <div class="navbar-right">
                 <form class="navbar-form navbar-left">
@@ -68,12 +70,10 @@
 
     <div class="page-content">
         <div class="wrapper">
-            <div class="post">
-
-  <div class="container">
+            <div class="container">
     <div class="row">
-      <div class="col-md-4">
-        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+        <div class="col-md-4">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -261,39 +261,133 @@
   
 </div>
 
-      </div>
-      <div class="col-md-8">
+        </div>
 
-        <header class="post-header">
-          <h1 class="post-title">Weavebird documentation</h1>
-        </header>
-        <article class="post-content">
-          <p>WeaverBird is a visual query builder tool for transforming data.</p>
-<p>
-  Please take a look at the <a href="/docs/general-principles/">user interface documentation</a> for
-  more details.
-</p>
-<p>
-  If you're developer and wish to either embed it in one of your projects or just contribute, you
-  can read the <a href="/docs/tech">technical documentation</a>.
-</p>
-<p>
-  Weaverbird was originally made by Toucan Toco. If you want to get more information about our main
-  product check it <a href="https://toucantoco.com">here</a>
-</p>
+        <div class="col-md-8">
+            <div id="markdown-content-container"><h3 id="replace-values">Replace values</h3>
 
-<p>
-  WeaverBird is a free software project licensed under the
-  <a href="https://opensource.org/licenses/BSD-3-Clause">BSD-3 License</a>. Contributions and
-  suggestions are very welcome! Please, go ahead and clone this
-  <a href="https://github.com/ToucanToco/weaverbird">github repository</a>.
-</p>
+<p>You can use this step to concatenate several text columns.</p>
 
-        </article>
+<h4 id="where-to-find-this-step">Where to find this step?</h4>
 
-      </div>
+<ul>
+  <li>Widget <code class="highlighter-rouge">Text</code></li>
+  <li>Search bar</li>
+</ul>
+
+<h4 id="options-reference">Options reference</h4>
+
+<p><img src="../../img/docs/user-interface/concatenate_step_form.jpg" width="350" /></p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">Columns to concatenate</code>: in this section of the form you can specify one or
+more columns to concatenate.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Separator</code>: a character or a string of characters to be used as a separator
+between concatenated columns. Can be left empty if no separator has to be
+used.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">New column name</code>: the name of the new column where will be written the
+concatenation result</p>
+  </li>
+</ul>
+
+<h4 id="example">Example</h4>
+
+<p><img src="../../img/docs/user-interface/concatenate_example_conf.jpg" width="750" /></p>
+
+<p>This configuration results in:</p>
+
+<p><img src="../../img/docs/user-interface/concatenate_example_result.jpg" width="500" /></p>
+</div>
+            
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+        </div>
+
     </div>
-  </div>
 </div>
 
         </div>
