@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2019-10-22
+
 ### Changed
 
 - Revamped documentation and auto-publish it on https://weaverbird.toucantoco.com
@@ -22,7 +24,7 @@
 - Added split step
 - Added substring step
 
-## [0.3.0] - 2010-10-08
+## [0.3.0] - 2019-10-08
 
 ### Added
 
@@ -44,7 +46,7 @@
 - Fixed `argmin` and `argmax` labelling, initialization and interactions
 - Fixed shared references between items in List widget.
 
-## [0.2.0] - 2010-09-26
+## [0.2.0] - 2019-09-26
 
 ### Added
 
@@ -60,5 +62,6 @@
 
 - Initial version, showtime!
 
+[0.4.0]: https://github.com/ToucanToco/weaverbird/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ToucanToco/weaverbird/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/ToucanToco/weaverbird/releases/tag/v0.2.0
