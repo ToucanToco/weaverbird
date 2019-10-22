@@ -16,7 +16,7 @@ row(s) by group.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/argmax_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/argmax_step_form.jpg" width="350" />
 
 - `Search max value in...`: the column the maximum value will be searched in
 
@@ -28,8 +28,8 @@ row(s) by group.
 
 #### Example
 
-<img src="/img/docs/user-interface/argmax_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/argmax_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/argmax_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/argmax_example_result.jpg" width="500" />

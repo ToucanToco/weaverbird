@@ -2,6 +2,7 @@
 title: Top N rows
 permalink: /docs/topnrows/
 ---
+
 ### Top N rows
 
 Use this step if you need to get the top N rows of your data based on value
@@ -18,7 +19,7 @@ Similar to a `SELECT TOP` clause in SQL.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/top_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/top_step_form.jpg" width="350" />
 
 - `Get top...`: specify the numer of top rows to retain
 
@@ -35,10 +36,10 @@ Similar to a `SELECT TOP` clause in SQL.
 
 #### Example
 
-<img src="/img/docs/user-interface/top_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/top_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/top_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/top_example_result.jpg" width="500" />
 
 We get the top 3 brands by country.

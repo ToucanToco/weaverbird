@@ -15,7 +15,7 @@ choice.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/fillna_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/fillna_step_form.jpg" width="350" />
 
 - `Replace null values in...`: the target column
 
@@ -23,8 +23,8 @@ choice.
 
 #### Example
 
-<img src="/img/docs/user-interface/fillna_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/fillna_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/fillna_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/fillna_example_result.jpg" width="500" />

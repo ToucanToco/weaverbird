@@ -2,6 +2,7 @@
 title: Unpivot
 permalink: /docs/unpivot/
 ---
+
 ### Unpivot column
 
 You can use this step if you need to transform columns into rows. It is the
@@ -23,7 +24,7 @@ Equivalent to the `UNPIVOT` clause in SQL.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/unpivot_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/unpivot_step_form.jpg" width="350" />
 
 - `Keep columns...`: the columns to remain fixed, around which the unpivot will
   occur
@@ -35,8 +36,8 @@ Equivalent to the `UNPIVOT` clause in SQL.
 
 #### Example
 
-<img src="/img/docs/user-interface/unpivot_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/unpivot_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/unpivot_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/unpivot_example_result.jpg" width="500" />

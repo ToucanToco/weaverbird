@@ -17,19 +17,19 @@ The Visual Query Builder interface breaks down into 2 panels:
   Transformations are available from the columns headers, from the widgets or
   can be found via the **search bar**.
 
-<img src="/img/docs/user-interface/general_interface.jpg" width="800" />
+<img src="../../img/docs/user-interface/general_interface.jpg" width="800" />
 <br>
 <br>
-<img src="/img/docs/user-interface/column_header_menu.jpg" height="300" />
+<img src="../../img/docs/user-interface/column_header_menu.jpg" height="300" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="/img/docs/user-interface/widget_menu.jpg" height="300" />
+<img src="../../img/docs/user-interface/widget_menu.jpg" height="300" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<img src="/img/docs/user-interface/search_bar_menu.jpg" height="300" />
+<img src="../../img/docs/user-interface/search_bar_menu.jpg" height="300" />
 <br>
 <br>
-<img src="/img/docs/user-interface/step_edition_mode.jpg" width="800" />
+<img src="../../img/docs/user-interface/step_edition_mode.jpg" width="800" />
 
 Everytime you interact with the table or widgets to transform data, the
 corresponding step is logged in the transformation pipeline. Any step can be
@@ -48,4 +48,4 @@ that a step is added immediately after the selected step in the pipeline. So if
 you want to insert a step in the midlle of the pipeline, just select the step
 after which you need to insert your new step, and apply your transformation.
 
-<img src="/img/docs/user-interface/middle_step_selected.jpg" height="250" />
+<img src="../../img/docs/user-interface/middle_step_selected.jpg" height="250" />

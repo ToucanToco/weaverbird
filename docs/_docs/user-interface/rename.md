@@ -2,6 +2,7 @@
 title: Rename
 permalink: /docs/rename/
 ---
+
 ### Rename column
 
 You can use this step to rename a column.
@@ -13,7 +14,7 @@ You can use this step to rename a column.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/rename_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/rename_step_form.jpg" width="350" />
 
 - `Old name`: the original column name
 
@@ -21,8 +22,8 @@ You can use this step to rename a column.
 
 #### Example
 
-<img src="/img/docs/user-interface/rename_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/rename_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/rename_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/rename_example_result.jpg" width="500" />
