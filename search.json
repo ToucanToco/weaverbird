@@ -158,14 +158,6 @@
     
     
     {
-      "title": "",
-      "url": ""
-
-    },
-  
-    
-    
-    {
       "title": "Steps",
       "url": "/docs/steps/"
 
@@ -205,5 +197,15 @@
   
 
 
+  
+  {
+  "title": "VQB Version 1 release !",
+  "url": "/blog/2019/10/02/v1-VQB/"
+  },
+  
+  {
+  "title": "First news about VQB",
+  "url": "/blog/2019/10/02/test-first-article/"
+  }
   
 ]

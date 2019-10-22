@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Technical overview | Weaverbird</title>
+<title>Getting started | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Technical overview" />
+<meta property="og:title" content="Getting started" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Weaverbird is a graphical user interface built that uses:" />
-<meta property="og:description" content="Weaverbird is a graphical user interface built that uses:" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/tech" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/tech" />
+<meta name="description" content="Getting started" />
+<meta property="og:description" content="Getting started" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/index/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/index/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2019-10-21T22:35:19+02:00" />
+<meta property="article:published_time" content="2019-10-22T14:21:39+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/tech","headline":"Technical overview","datePublished":"2019-10-21T22:35:19+02:00","dateModified":"2019-10-21T22:35:19+02:00","description":"Weaverbird is a graphical user interface built that uses:","@type":"WebPage","@context":"http://schema.org"}</script>
+{"headline":"Getting started","dateModified":"2019-10-22T14:21:39+02:00","datePublished":"2019-10-22T14:21:39+02:00","url":"https://weaverbird.toucantoco.com/docs/index/","description":"Getting started","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/tech">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/index/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -49,7 +49,7 @@
             <ul class="nav navbar-nav">
                 <li  class="active" ><a href="/docs/steps/">Docs</a></li>
                 <!-- remove for the moment
-                  <li ><a href="">Blog</a></li> -->
+                  <li ><a href="/blog/2019/10/02/v1-VQB/">Blog</a></li> -->
                 <li ><a href="/about">About</a></li>
             </ul>
             <div class="navbar-right">
@@ -60,7 +60,7 @@
                     </div>
                 </form>
                 <ul class="nav navbar-nav">
-                    <li><a href="https://github.com/ToucanToco/weaverbird"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                    <li><a href="https://github.com/ToucanToco/vue-query-builder"><i class="fa fa-github" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
         </div>
@@ -221,12 +221,6 @@
           
             
             
-            <!-- 
-              <a class="list-group-item " href="https://weaverbird.toucantoco.com">index</a>
-             -->
-          
-            
-            
             <!--  -->
               <a class="list-group-item " href="/docs/steps/">Steps</a>
             <!--  -->
@@ -264,29 +258,56 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><p>Weaverbird is a graphical user interface built that uses:</p>
+            <div id="markdown-content-container"><h2 id="getting-started">Getting started</h2>
 
-<ul>
-  <li><a href="https://www.typescriptlang.org/">TypeScript</a> as main language,</li>
-  <li><a href="https://vuejs.org/">VueJS</a> for the graphical user interface.</li>
-</ul>
+<p><a href="https://pages.github.com">GitHub Pages</a> can automatically generate and serve the website for you.
+Let’s say you have a username/organisation <code class="highlighter-rouge">my-org</code> and project <code class="highlighter-rouge">my-proj</code>; if you locate Jekyll source under <code class="highlighter-rouge">docs</code> folder of master branch in your repo <code class="highlighter-rouge">github.com/my-org/my-proj</code>, the website will be served on <code class="highlighter-rouge">my-org.github.io/my-proj</code>.
+The good thing about coupling your documentation with the source repo is, whenever you merge features with regarding content to master branch, it will also be published on the webpage instantly.</p>
 
-<p>It doesn’t include any “server-side” code, it aims at being a pure frontend
-tool that will generate transformation queries or pipelines (e.g. MongoDB
-aggregations, SQL queries, Python scripts).</p>
+<ol>
+  <li>Just <a href="https://github.com/aksakalli/jekyll-doc-theme/archive/gh-pages.zip">download the source</a> into your repo under <code class="highlighter-rouge">docs</code> folder.</li>
+  <li>Edit site settings in  <code class="highlighter-rouge">_config.yml</code> file according to your project. !!! <code class="highlighter-rouge">baseurl</code> should be your website’s relative URI like <code class="highlighter-rouge">/my-proj</code> !!!</li>
+  <li>Replace <code class="highlighter-rouge">favicon.ico</code> and <code class="highlighter-rouge">img/logonav.png</code> with your own logo.</li>
+</ol>
 
-<p>The graphical users interface generates a list of <a href="/docs/steps/">transformation
-steps</a> that can be <a href="/docs/translators/">translated</a> afterwards on
-supported backends. For now , it only supports MongoDB.</p>
+<h2 id="writing-content">Writing content</h2>
+
+<h3 id="docs">Docs</h3>
+
+<p>Docs are <a href="https://jekyllrb.com/docs/collections/">collections</a> of pages stored under <code class="highlighter-rouge">_docs</code> folder. To create a new page:</p>
+
+<p><strong>1.</strong> Create a new Markdown as <code class="highlighter-rouge">_docs/my-page.md</code> and write <a href="https://jekyllrb.com/docs/frontmatter/">front matter</a> &amp; content such as:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+title: My Page
+permalink: /docs/my-page/
+---
+
+Hello World!
+</code></pre></div></div>
+
+<p><strong>2.</strong> Add the pagename to <code class="highlighter-rouge">_data/docs.yml</code> file in order to list in docs navigation panel:</p>
+
+<div class="highlighter-rouge"><div class="highlight"><pre class="highlight"><code>- title: My Group Title
+  docs:
+  - my-page
+</code></pre></div></div>
+
+<h3 id="blog-posts">Blog posts</h3>
+
+<p>Add a new Markdown file such as <code class="highlighter-rouge">2017-05-09-my-post.md</code> and write the content similar to other post examples.</p>
+
+<h3 id="pages">Pages</h3>
+
+<p>The homepage is located under <code class="highlighter-rouge">index.html</code> file. You can change the content or design completely different welcome page for your taste. (You can use <a href="http://getbootstrap.com/components/">bootstrap components</a>)</p>
+
+<p>In order to add a new page, create a new <code class="highlighter-rouge">.html</code> or <code class="highlighter-rouge">.md</code> (markdown) file under root directory and link it in <code class="highlighter-rouge">_includes/topnav.html</code>.</p>
 </div>
             
 
 
 
 
-
-  
-  
 
   
   
