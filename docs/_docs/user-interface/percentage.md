@@ -17,7 +17,7 @@ total of its group).
 
 #### Options reference
 
-<img src="/img/docs/user-interface/percentage_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/percentage_step_form.jpg" width="350" />
 
 - `Value column...`: The column that will be used for the computation
 
@@ -29,8 +29,8 @@ total of its group).
 
 #### Example
 
-<img src="/img/docs/user-interface/percentage_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/percentage_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/percentage_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/percentage_example_result.jpg" width="500" />

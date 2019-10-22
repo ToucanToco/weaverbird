@@ -16,7 +16,7 @@ aggregation pipeline.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/aggregate_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/aggregate_step_form.jpg" width="350" />
 
 - `Group rows by...`: you can select one or several columns that will be used
   to constitute unique groups (equivalent to the columns that you would specify
@@ -36,8 +36,8 @@ aggregation pipeline.
 
 #### Example
 
-<img src="/img/docs/user-interface/aggregate_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/aggregate_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/aggregate_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/aggregate_example_result.jpg" width="500" />

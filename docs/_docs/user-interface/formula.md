@@ -23,7 +23,7 @@ text in every row of the new column.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/formula_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/formula_step_form.jpg" width="350" />
 
 - `Formula`: the formula, which can be an algebraic formula composed of numbers,
   maths operators and columns; it can also be a text (escaped by quotes) to
@@ -34,16 +34,16 @@ text in every row of the new column.
 
 #### Example 1: algebric formula
 
-<img src="/img/docs/user-interface/formula_example_conf_1.jpg" width="750" />
+<img src="../../img/docs/user-interface/formula_example_conf_1.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/formula_example_result_1.jpg" width="500" />
+<img src="../../img/docs/user-interface/formula_example_result_1.jpg" width="500" />
 
 #### Example 2: filling a column with a text
 
-<img src="/img/docs/user-interface/formula_example_conf_2.jpg" width="750" />
+<img src="../../img/docs/user-interface/formula_example_conf_2.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/formula_example_result_2.jpg" width="500" />
+<img src="../../img/docs/user-interface/formula_example_result_2.jpg" width="500" />

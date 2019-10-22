@@ -23,7 +23,7 @@ Equivalent to the `PIVOT` clause in SQL.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/pivot_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/pivot_step_form.jpg" width="350" />
 
 - `Keep columns...`: the columns to remain fixed, around which the pivot will
   occur
@@ -38,8 +38,8 @@ Equivalent to the `PIVOT` clause in SQL.
 
 #### Example
 
-<img src="/img/docs/user-interface/pivot_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/pivot_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/pivot_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/pivot_example_result.jpg" width="500" />

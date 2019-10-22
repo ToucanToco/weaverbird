@@ -2,6 +2,7 @@
 title: Sort
 permalink: /docs/sort/
 ---
+
 ### Sort values
 
 You can use this step to sort values based on one or several columns.
@@ -13,7 +14,7 @@ You can use this step to sort values based on one or several columns.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/sort_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/sort_step_form.jpg" width="350" />
 
 - `Column...`: the column where values will be sorted
 
@@ -29,11 +30,11 @@ You can specify if you want to rank rows based on one or several columns.
 
 #### Example
 
-<img src="/img/docs/user-interface/sort_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/sort_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/sort_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/sort_example_result.jpg" width="500" />
 
 First the column country is sorted by ascending order, and then values are
 sorted by descending order.

@@ -20,6 +20,6 @@ what you want to exclude.
 
 You can specify one or several column(s) to keep.
 
-<img src="/img/docs/user-interface/select_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/select_step_form.jpg" width="350" />
 
 - `Keep columns...`: the column(s) to keep

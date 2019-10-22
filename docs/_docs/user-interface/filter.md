@@ -16,7 +16,7 @@ moment, we only support `and` as logical link between conditions.
 
 #### Options reference
 
-<img src="/img/docs/user-interface/filter_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/filter_step_form.jpg" width="350" />
 
 - `Values in ...`: the target column
 
@@ -30,8 +30,8 @@ moment, we only support `and` as logical link between conditions.
 
 #### Example
 
-<img src="/img/docs/user-interface/filter_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/filter_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="/img/docs/user-interface/filter_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/filter_example_result.jpg" width="500" />
