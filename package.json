@@ -1,6 +1,6 @@
 {
   "name": "weaverbird",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "A generic Visual Query Builder built in Vue.js",
   "keywords": [
     "query builder",
