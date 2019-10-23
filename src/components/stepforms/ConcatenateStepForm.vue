@@ -6,7 +6,7 @@
       id="toConcatenate"
       name="Columns to concatenate:"
       v-model="toConcatenate"
-      :defaultItem="[]"
+      :defaultItem="this.selectedColumns.length ? this.selectedColumns[0] : ''"
       :widget="columnPicker"
       :componentProps="{ syncWithSelectedColumn: false }"
       :automatic-new-field="false"
@@ -54,7 +54,7 @@ import { ConcatenateStep } from '@/lib/steps';
 export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
   @Prop({
     type: Object,
-    default: () => ({ name: 'concatenate', columns: [''], separator: '', new_column_name: '' }),
+    default: () => ({ name: 'concatenate', columns: [], separator: '', new_column_name: '' }),
   })
   initialStepValue!: ConcatenateStep;
 
@@ -80,7 +80,7 @@ export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
     if (this.editedStep.columns.length) {
       return this.editedStep.columns;
     } else {
-      return [''];
+      return [this.selectedColumns.length ? this.selectedColumns[0] : ''];
     }
   }
 

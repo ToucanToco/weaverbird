@@ -12,6 +12,7 @@
             :is="widget"
             v-bind="componentProps"
             :value="child.value"
+            :initialColumn="child.value"
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}[${index}]`"
             :errors="errors"
@@ -56,7 +57,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
   addFieldName!: string;
 
-  @Prop({ type: Object, default: () => { } })
+  @Prop({ type: Object, default: () => {} })
   componentProps!: object;
 
   @Prop({ type: String, default: null })
