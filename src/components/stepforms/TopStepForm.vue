@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" />
     <InputTextWidget
       id="limitInput"
       v-model.number="editedStep.limit"
@@ -15,6 +15,7 @@
       v-model="editedStep.rank_on"
       name="Sort column..."
       placeholder="Enter a column"
+      :syncWithSelectedColumn="false"
       data-path=".rank_on"
       :errors="errors"
     />
@@ -37,7 +38,7 @@
       data-path=".groups"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 
