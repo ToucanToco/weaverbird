@@ -3,6 +3,7 @@ import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue'
 import Vuex, { Store } from 'vuex';
 import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -131,4 +132,34 @@ describe('Concatenate Step Form', () => {
     wrapper.find('.widget-form-action__button--cancel').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
+
+  it('should not sync selected columns on edition', async () => {
+    const store = setupMockStore({
+      selectedStepIndex: 1,
+      selectedColumns: ['spam'],
+    });
+    const wrapper = mount(ConcatenateStepForm, {
+      store,
+      localVue,
+      propsData: {
+        initialStepValue: {
+          name: 'concatenate',
+          columns: ['foo', 'bar'],
+          separator: '-',
+          new_column_name: 'baz',
+        },
+        isStepCreation: false,
+      },
+    });
+    await localVue.nextTick();
+    expect(store.state.vqb.selectedStepIndex).toEqual(1);
+    const columnPickers = wrapper.findAll(ColumnPicker);
+    expect(columnPickers.length).toEqual(2);
+    const [picker1, picker2] = columnPickers.wrappers;
+    expect(picker1.props('value')).toEqual('foo');
+    expect(picker1.vm.$data.column).toEqual('foo');
+    expect(picker2.props('value')).toEqual('bar');
+    expect(picker2.vm.$data.column).toEqual('bar');
+  });
+
 });
