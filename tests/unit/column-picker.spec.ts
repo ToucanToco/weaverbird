@@ -35,7 +35,7 @@ describe('Column Picker', () => {
     expect(selectWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
-  it('should set column when initialColumn is set', () => {
+  it('should set column when initial column value is set', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -46,7 +46,7 @@ describe('Column Picker', () => {
       store,
       localVue,
       propsData: {
-        initialColumn: 'columnA',
+        value: 'columnA',
       },
     });
     expect(wrapper.vm.$data.column).toEqual('columnA');

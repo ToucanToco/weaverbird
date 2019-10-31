@@ -31,14 +31,14 @@ export default class ColumnPicker extends Vue {
   @Prop({ type: String, default: 'Enter a column' })
   placeholder!: string;
 
-  @Prop({ type: String, default: null })
-  initialColumn!: string | null;
-
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
   @Prop({ default: null })
   dataPath!: string;
+
+  @Prop({ default: null })
+  value!: string;
 
   // Whether the column data of ColumnPicker should react to a change of
   // selected column
@@ -53,14 +53,13 @@ export default class ColumnPicker extends Vue {
   @VQBModule.Getter columnNames!: string[];
 
   created() {
-    if (this.initialColumn === null) {
+    if (this.value) {
+      this.column = this.value;
+    } else {
       const selected = this.selectedColumns;
       if (selected.length) {
         this.column = selected[0];
       }
-    } else {
-      this.column = this.initialColumn;
-      this.setSelectedColumns({ column: this.initialColumn });
     }
   }
 
