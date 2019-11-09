@@ -7,7 +7,9 @@ import { Component, Mixins } from 'vue-property-decorator';
   name: 'fake-widget',
 })
 export default class FakeWidget extends Mixins(FormWidget) {
-  render(){}
+  render() {
+    // empty render to manager the mixins render issue
+  }
 }
 
 describe('Form widget', () => {
