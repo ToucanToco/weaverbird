@@ -74,7 +74,7 @@ export function _guessType(val: any, prevType: any = null): DataSetColumnType | 
  * @param {number} [maxRows=50] - Determine on how many rows we're goind to do our guess
  *
  */
-export function inferTypeFromDataset(dataset: DataSet, maxRows: number = 50): DataSet {
+export function inferTypeFromDataset(dataset: DataSet, maxRows = 50): DataSet {
   // For the moment, we infer arbitrarily column's types on maximum the 50 first rows
   maxRows = Math.min(dataset.data.length, maxRows);
   const newHeaders: DataSetColumn[] = [];

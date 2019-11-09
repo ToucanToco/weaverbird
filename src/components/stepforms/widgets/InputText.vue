@@ -35,7 +35,7 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop({ default: '' })
   value!: string | number | boolean;
 
-  isFocused: boolean = false;
+  isFocused = false;
 
   get elementClass() {
     return {
