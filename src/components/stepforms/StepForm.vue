@@ -171,7 +171,10 @@ export default class BaseStepForm<StepType> extends Vue {
     return null;
   }
 
-  set stepSelectedColumn(_newval: string | null) {}
+  set stepSelectedColumn(_newval: string | null) {
+    // default implementation is a noop, we would not what to do by default with
+    // the new selected column.
+  }
 
   /**
    * when selected column is changed, update corresponding field in the step
@@ -184,7 +187,10 @@ export default class BaseStepForm<StepType> extends Vue {
     }
   }
 
-  updateSelectedColumn(_colname: string) {}
+  updateSelectedColumn(_colname: string) {
+    // default implementation is a noop, we would not what to do by default with
+    // the new selected column.
+  }
 
   /**
    * `validate` calls `Ajv`. If there are some errors, return them, otherwise

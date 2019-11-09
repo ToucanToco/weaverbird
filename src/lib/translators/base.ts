@@ -89,7 +89,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
     return !this.unsupportedSteps.includes(stepname);
   }
 
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
   @unsupported
   aggregate(step: Readonly<S.AggregationStep>) {}
 
