@@ -8,14 +8,17 @@ import * as DOMUtil from '@/components/domutil';
 
 type Dict<T> = { [key: string]: T };
 
-function mockBoundingRect(this: HTMLElement): DOMRect | ClientRect {
-  const defaultRect: ClientRect = {
+function mockBoundingRect(this: HTMLElement): DOMRect {
+  const defaultRect: DOMRect = {
     width: 0,
     height: 0,
     top: 0,
     left: 0,
     bottom: 0,
     right: 0,
+    x: 0,
+    y: 0,
+    toJSON: () => {},
   };
   const elementStyle: Dict<number> = {};
   for (const prop of Object.keys(defaultRect)) {

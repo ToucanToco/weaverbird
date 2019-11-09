@@ -68,6 +68,7 @@ describe('Resizable Panels', () => {
           // ratio of 10%
           width: 1000,
           height: 1000,
+          toJSON: () => {},
         }));
       const wrapper = shallowMount(ResizablePanels, {
         attachToDocument: true,

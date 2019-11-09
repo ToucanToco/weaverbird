@@ -84,7 +84,8 @@
     "tmp": "^0.1.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
-    "typescript": "^3.5.1",
+    "typescript": "^3.7.0",
+    "vue": "^2.6.10",
     "vue-class-component": "^6.0.0",
     "vue-jest": "^3.0.4",
     "vue-loader": "^15.7.0",
@@ -159,7 +160,9 @@
           ]
         }
       ],
-      "vue/html-self-closing": ["error", {
+      "vue/html-self-closing": [
+        "error",
+        {
           "html": {
             "void": "never",
             "normal": "always",
@@ -167,7 +170,8 @@
           },
           "svg": "always",
           "math": "always"
-      }]
+        }
+      ]
     },
     "parserOptions": {
       "parser": "@typescript-eslint/parser"
