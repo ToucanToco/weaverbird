@@ -20,10 +20,16 @@
 <script lang="ts">
 import Vue from 'vue';
 import { VQBModule } from '@/store';
+import { MutationCallbacks } from '@/store/mutations';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { Pipeline, PipelineStepName } from '@/lib/steps';
+import * as S from '@/lib/steps';
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
+
+/**
+ * all steps that don't require form creation
+ */
+type NoFormStep = S.ToLowerStep | S.ToDateStep | S.ToUpperStep;
 
 @Component({
   name: 'action-toolbar-button',
@@ -49,7 +55,7 @@ export default class ActionToolbarButton extends Vue {
   })
   category!: string;
 
-  @VQBModule.State pipeline!: Pipeline;
+  @VQBModule.State pipeline!: S.Pipeline;
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
@@ -74,7 +80,7 @@ export default class ActionToolbarButton extends Vue {
   /**
    * @description Emit an event with a PipelineStepName in order to open its form
    */
-  actionClicked(stepName: PipelineStepName) {
+  actionClicked(stepName: S.PipelineStepName) {
     if (
       (stepName === 'lowercase' || stepName === 'uppercase' || stepName === 'todate') &&
       this.selectedColumns.length > 0
@@ -85,10 +91,10 @@ export default class ActionToolbarButton extends Vue {
     }
   }
 
-  createStep(stepName: PipelineStepName) {
-    const newPipeline: Pipeline = [...this.pipeline];
+  createStep(stepName: NoFormStep['name']) {
+    const newPipeline: S.Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
-    const step: PipelineStep = { name: `${stepName}`, column: this.selectedColumns[0] };
+    const step: NoFormStep = { name: stepName, column: this.selectedColumns[0] };
     /**
      * If a step edition form is already open, close it so that the left panel displays
      * the pipeline with the new delete step inserted
