@@ -37,7 +37,7 @@ export default class ActionToolbar extends Vue {
   @Prop(Array) readonly buttons!: ButtonDef[];
   @VQBModule.State selectedColumns!: string[];
 
-  isActiveActionToolbarButton: number = -1;
+  isActiveActionToolbarButton = -1;
 
   actionClicked(stepName: PipelineStepName) {
     this.$emit('actionClicked', stepName);

@@ -67,7 +67,7 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
-  deleteConfirmationModalIsOpened: boolean = false;
+  deleteConfirmationModalIsOpened = false;
 
   @VQBModule.Mutation deleteStep!: MutationCallbacks['deleteStep'];
 

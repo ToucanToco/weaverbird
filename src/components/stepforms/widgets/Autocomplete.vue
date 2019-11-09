@@ -46,7 +46,7 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: undefined })
   label!: string;
 
-  editedValue: string = '';
+  editedValue = '';
 
   @Watch('value', { immediate: true })
   updateEditedValue(newValue: string) {

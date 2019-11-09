@@ -84,7 +84,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
-  indexActiveActionMenu: number = -1;
+  indexActiveActionMenu = -1;
 
   /**
    * @description Get our columns with their names and linked classes
