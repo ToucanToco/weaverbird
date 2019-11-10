@@ -2,17 +2,11 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
-
-import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Argmin Step Form', () => {
   let emptyStore: Store<RootState>;

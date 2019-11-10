@@ -8,11 +8,6 @@ import { setupMockStore, RootState } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
-
 describe('Domain Step Form', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {

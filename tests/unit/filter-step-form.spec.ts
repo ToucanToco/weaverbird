@@ -2,17 +2,11 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
-
-import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Filter Step Form', () => {
   let emptyStore: Store<RootState>;

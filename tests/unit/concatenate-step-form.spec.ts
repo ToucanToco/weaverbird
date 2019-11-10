@@ -2,18 +2,12 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 
-import { setupMockStore, RootState } from './utils';
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Concatenate Step Form', () => {
   let emptyStore: Store<RootState>;

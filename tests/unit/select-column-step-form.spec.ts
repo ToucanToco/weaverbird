@@ -5,15 +5,10 @@ import SelectColumnStepForm from '@/components/stepforms/SelectColumnStepForm.vu
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { Pipeline } from '@/lib/steps';
 
-import { setupMockStore } from './utils';
+import { setupMockStore, ValidationError } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Select Column Step Form', () => {
   let emptyStore: Store<any>;

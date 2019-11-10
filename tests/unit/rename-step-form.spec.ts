@@ -3,17 +3,11 @@ import Vuex, { Store } from 'vuex';
 
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 import { VQBnamespace } from '@/store';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
-
-import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Rename Step Form', () => {
   let emptyStore: Store<RootState>;

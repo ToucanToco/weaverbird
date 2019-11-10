@@ -3,18 +3,13 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
 
-import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Top Step Form', () => {
   let emptyStore: Store<RootState>;

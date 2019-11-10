@@ -2,18 +2,12 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
 
-import { setupMockStore, RootState } from './utils';
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Fillna Step Form', () => {
   let emptyStore: Store<RootState>;

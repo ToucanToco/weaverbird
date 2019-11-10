@@ -3,15 +3,10 @@ import Vuex, { Store } from 'vuex';
 
 import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
 
-import { setupMockStore } from './utils';
+import { setupMockStore, ValidationError } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Substring Step Form', () => {
   let emptyStore: Store<any>;

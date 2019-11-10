@@ -4,17 +4,11 @@ import Vuex, { Store } from 'vuex';
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
-
-import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Aggregate Step Form', () => {
   let emptyStore: Store<RootState>;
