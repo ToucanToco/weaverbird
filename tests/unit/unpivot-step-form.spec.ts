@@ -2,19 +2,13 @@ import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
+import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
-import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-  message: string;
-}
 
 describe('Unpivot Step Form', () => {
   let emptyStore: Store<RootState>;

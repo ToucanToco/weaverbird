@@ -4,16 +4,10 @@ import Vuex, { Store } from 'vuex';
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import { VQBnamespace } from '@/store';
 
-import { setupMockStore, RootState } from './utils';
+import { setupMockStore, RootState, ValidationError } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-  message: string;
-}
 
 describe('Pivot Step Form', () => {
   let emptyStore: Store<RootState>;
