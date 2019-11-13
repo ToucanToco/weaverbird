@@ -3,6 +3,11 @@
 
 # weaverbird
 
+## General documentation
+
+The project's technical and user documentation is hosted on https://weaverbird.toucantoco.com
+The documentation's source files can be found in the `docs` directory.
+
 ## Project setup
 
 ```bash
