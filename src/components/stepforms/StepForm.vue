@@ -9,7 +9,7 @@ import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
 import schemaFactory from '@/components/stepforms/schemas';
 import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
-import { Pipeline, Writable, PipelineStep } from '@/lib/steps';
+import { Pipeline, PipelineStep } from '@/lib/steps';
 import { ScopeContext, PipelineInterpolator, InterpolateFunction } from '@/lib/templating';
 
 type VqbError = Partial<ErrorObject>;
@@ -100,7 +100,7 @@ export default class BaseStepForm<StepType> extends Vue {
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';
-  editedStep: Writable<StepType> = { ...this.initialStepValue };
+  editedStep: StepType = { ...this.initialStepValue };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
   stepname!: string; // fed by @StepFormComponent
