@@ -1,11 +1,15 @@
 # Changelog
 
-## [Unreleased]
+## [0.5.0] - 2019-11-13
 
 ### Added
 
 - Added `fromdate` step (converts date into string)
 - Added `todate` step (converts string into date)
+
+### Changed
+
+- Use TypeScript 3.7
 
 ## [0.4.0] - 2019-10-22
 
