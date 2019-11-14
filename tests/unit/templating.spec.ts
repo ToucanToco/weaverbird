@@ -41,6 +41,16 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave append steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'append',
+        pipelines: ['<%= dataset1 %>', 'dataset2'],
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave argmax steps untouched', () => {
     const pipeline: Pipeline = [
       {
@@ -698,7 +708,10 @@ describe('Pipeline interpolator', () => {
       {
         name: 'replace',
         search_column: '<%= age %>',
-        to_replace: [[12, 22], ['13', '23']],
+        to_replace: [
+          [12, 22],
+          ['13', '23'],
+        ],
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -709,14 +722,20 @@ describe('Pipeline interpolator', () => {
       {
         name: 'replace',
         search_column: '<%= age %>',
-        to_replace: [['<%= age %>', '12'], ['what?', '<%= age %>']],
+        to_replace: [
+          ['<%= age %>', '12'],
+          ['what?', '<%= age %>'],
+        ],
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'replace',
         search_column: '<%= age %>',
-        to_replace: [['42', '12'], ['what?', '42']],
+        to_replace: [
+          ['42', '12'],
+          ['what?', '42'],
+        ],
       },
     ]);
   });
@@ -726,14 +745,20 @@ describe('Pipeline interpolator', () => {
       {
         name: 'replace',
         search_column: 'column1',
-        to_replace: [['<%= age %>', '12'], ['13', '<%= age %>']],
+        to_replace: [
+          ['<%= age %>', '12'],
+          ['13', '<%= age %>'],
+        ],
       },
     ];
     expect(translate(pipeline, defaultContext, { column1: 'integer' })).toEqual([
       {
         name: 'replace',
         search_column: 'column1',
-        to_replace: [[42, 12], [13, 42]],
+        to_replace: [
+          [42, 12],
+          [13, 42],
+        ],
       },
     ]);
   });
@@ -752,7 +777,10 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
-        columns: [{ column: '<%= age %>', order: 'asc' }, { column: 'column2', order: 'desc' }],
+        columns: [
+          { column: '<%= age %>', order: 'asc' },
+          { column: 'column2', order: 'desc' },
+        ],
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);

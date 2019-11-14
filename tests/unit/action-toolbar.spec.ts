@@ -16,7 +16,7 @@ describe('ActionToolbar', () => {
       },
     });
     const actionButtons = wrapper.findAll(ActionToolbarButton);
-    expect(actionButtons.length).toEqual(6);
+    expect(actionButtons.length).toEqual(7);
     expect(actionButtons.at(0).props().category).toEqual('filter');
     expect(actionButtons.at(0).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(1).props().category).toEqual('compute');
@@ -29,6 +29,8 @@ describe('ActionToolbar', () => {
     expect(actionButtons.at(4).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(5).props().category).toEqual('reshape');
     expect(actionButtons.at(5).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(6).props().category).toEqual('combine');
+    expect(actionButtons.at(6).classes()).toContain('action-toolbar__btn');
   });
 
   it('should instantiate with its hidden popover', () => {

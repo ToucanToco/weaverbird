@@ -5,6 +5,11 @@
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
 
+export type AppendStep = {
+  name: 'append';
+  pipelines: Pipeline[] | string[];
+};
+
 export type AggFunctionStep = {
   /** Name of the output column */
   newcolumn: string;
@@ -204,8 +209,11 @@ export type UnpivotStep = {
   dropna: boolean;
 };
 
+// interface AppendStep extends AppendStep<Pipeline> {}
+
 export type PipelineStep =
   | AggregationStep
+  | AppendStep
   | ArgmaxStep
   | ArgminStep
   | ConcatenateStep

@@ -94,6 +94,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   aggregate(step: Readonly<S.AggregationStep>) {}
 
   @unsupported
+  append(step: Readonly<S.AppendStep>) {}
+
+  @unsupported
   argmax(step: Readonly<S.ArgmaxStep>) {}
 
   @unsupported
@@ -181,7 +184,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
       // otherwise it will complain about
       // `((x: DomainStep) => void)) | ((x: FilterStep) => void) | ((x: ...) => void)`
       // not being assignable to `((x: DomainStep | FilterStep | ...) => void)`
-      const callback = this[step.name] as TransformStep;
+      let callback = this[step.name] as TransformStep;
+      callback = callback.bind(this);
       result.push(callback(step));
     }
     return result;

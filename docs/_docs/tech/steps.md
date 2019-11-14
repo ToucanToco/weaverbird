@@ -66,6 +66,65 @@ An aggreation step has the following strucure:
 | Group 1 | 30    |
 | Group 2 | 16    |
 
+### `append` step
+
+Appends to the current dataset, one or several datasets resulting from other
+`pipelines`.
+WeaverBird allows you to save `pipelines` referenced by name in the Vuex store
+of the application. You can then call them by their unique names in this step.
+
+```javascript
+{
+  name: 'append',
+  pipelines: ['pipeline1', 'pipeline2'] // the name of the pipelines to append
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+
+**dataset1 (saved in the application Vuex store)**:
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+
+**dataset2 (saved in the application Vuex store)**:
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  {
+    name: 'append',
+    datasets: ['dataset1', 'dataset2']
+  }
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
 ### `argmax` step
 
 Get row(s) matching the maximum value in a given `column`, by group if `groups`

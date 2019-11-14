@@ -41,7 +41,11 @@ describe('ActionToolbar', () => {
     // instantiate a store with at least one column selected so that steps
     // such as 'lowercase' can be triggered without creating a form.
     const store = setupMockStore({ selectedColumns: ['foo'] });
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'text' }, localVue, store });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { category: 'text' },
+      localVue,
+      store,
+    });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
     expect(actionsWrappers.length).toEqual(5);
@@ -87,6 +91,15 @@ describe('ActionToolbar', () => {
     expect(wrapper.emitted().actionClicked[0]).toEqual(['pivot']);
     actionsWrappers.at(1).trigger('click');
     expect(wrapper.emitted().actionClicked[1]).toEqual(['unpivot']);
+  });
+
+  it('should instantiate a Combine button with the right list of actions', () => {
+    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'combine' } });
+    expect(wrapper.exists()).toBeTruthy();
+    const actionsWrappers = wrapper.findAll('.action-menu__option');
+    expect(actionsWrappers.length).toEqual(1);
+    actionsWrappers.at(0).trigger('click');
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['append']);
   });
 
   describe('When clicking on the "To lowercase" operation', () => {

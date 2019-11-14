@@ -4,7 +4,7 @@ export { getTranslator } from './lib/translators';
 export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo';
 
 // export store entrypoints
-export { servicePluginFactory } from '@/store/backend-plugin';
+export { servicePluginFactory, dereferencePipelines } from '@/store/backend-plugin';
 export {
   setupStore,
   registerModule,
