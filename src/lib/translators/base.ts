@@ -94,6 +94,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   aggregate(step: Readonly<S.AggregationStep>) {}
 
   @unsupported
+  append(step: Readonly<S.AppendStep>) {}
+
+  @unsupported
   argmax(step: Readonly<S.ArgmaxStep>) {}
 
   @unsupported

@@ -522,6 +522,7 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
 
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
+  append: _ => ({}),
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   concatenate: transformConcatenate,

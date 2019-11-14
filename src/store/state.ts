@@ -32,6 +32,8 @@ export interface VQBState {
    */
   pipeline: Pipeline;
 
+  pipelines: { [k: string]: Pipeline };
+
   /**
    * object used to fill an edit step form
    */
@@ -87,6 +89,7 @@ export const emptyState: VQBState = {
   stepFormInitialValue: undefined,
   selectedStepIndex: -1,
   pipeline: [],
+  pipelines: {},
   selectedColumns: [],
   pagesize: 50,
   backendError: undefined,

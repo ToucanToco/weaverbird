@@ -39,7 +39,10 @@ function annotateDataset(dataset, typeAnnotations) {
     name: hdr.name,
     type: typeAnnotations ? mongoToVQBType(typeAnnotations[hdr.name]) : undefined,
   }));
-  return { ...dataset, headers: typedHeaders };
+  return {
+    ...dataset,
+    headers: typedHeaders
+  };
 }
 
 
@@ -66,7 +69,11 @@ function autocastDataset(dataset) {
     }
     newData.push(newRow);
   }
-  return { ...dataset, data: newData, headers: dataset.headers };
+  return {
+    ...dataset,
+    data: newData,
+    headers: dataset.headers
+  };
 }
 
 
@@ -77,9 +84,15 @@ class MongoService {
   }
 
   async executePipeline(_store, pipeline, limit, offset = 0) {
-    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
+    const {
+      domain,
+      pipeline: subpipeline
+    } = filterOutDomain(pipeline);
     const query = mongo36translator.translate(subpipeline);
-    const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
+    const {
+      isResponseOk,
+      responseContent
+    } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
       const [{
@@ -140,15 +153,20 @@ class MongoService {
 
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
-const initialPipeline = [
-  {
-    name: 'domain',
-    domain: 'test-collection',
+const initialPipeline = [{
+  name: 'domain',
+  domain: 'test-collection',
+},
+{
+  name: 'filter',
+  condition: {
+    and: [{
+      column: 'Groups',
+      value: '<%= groupname %>',
+      operator: 'eq'
+    }]
   },
-  {
-    name: 'filter',
-    condition: { and: [{ column: 'Groups', value: '<%= groupname %>', operator: 'eq' }] },
-  },
+},
 ];
 
 async function setupInitialData(store, domain = null) {
@@ -168,10 +186,15 @@ async function setupInitialData(store, domain = null) {
     );
     if (response.error) {
       store.commit(VQBnamespace('setBackendError'), {
-        backendError: { type: 'error', error: response.error },
+        backendError: {
+          type: 'error',
+          error: response.error
+        },
       });
     } else {
-      store.commit(VQBnamespace('setDataset'), { dataset: response.data });
+      store.commit(VQBnamespace('setDataset'), {
+        dataset: response.data
+      });
     }
   }
 }
@@ -198,7 +221,19 @@ async function buildVueApp() {
     },
     created: function() {
       registerModule(this.$store, {
-        pipeline: initialPipeline,
+        // pipeline: initialPipeline,
+        pipeline: [{
+          name: 'append',
+          pipelines: ['pipeline1', 'pipeline2']
+        }],
+        pipelines: {
+          pipeline1: {
+            ...initialPipeline
+          },
+          pipeline2: {
+            ...initialPipeline
+          }
+        },
         currentDomain: 'test-collection',
         // use lodash interpolate
         interpolateFunc: (value, context) => _.template(value)(context),
@@ -254,7 +289,9 @@ async function buildVueApp() {
         this.draggedover = false;
         event.preventDefault();
         // For the moment, only take one file and we should also test event.target
-        const { collection: domain } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
+        const {
+          collection: domain
+        } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
         await setupInitialData(store, domain);
         event.target.value = null;
       },
