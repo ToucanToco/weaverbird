@@ -97,6 +97,10 @@ class StepLabeller implements StepMatcher<string> {
     }
   }
 
+  append(step: Readonly<S.AppendStep>) {
+    return `Append ${formatMulticol(step.pipelines as string[])}`;
+  }
+
   argmax(step: Readonly<S.ArgmaxStep>) {
     return `Keep row with maximum in column "${step.column}"`;
   }
@@ -159,9 +163,7 @@ class StepLabeller implements StepMatcher<string> {
 
   replace(step: Readonly<S.ReplaceStep>) {
     if (step.to_replace.length === 1) {
-      return `Replace ${step.to_replace[0][0]} with ${step.to_replace[0][1]} in column "${
-        step.search_column
-      }"`;
+      return `Replace ${step.to_replace[0][0]} with ${step.to_replace[0][1]} in column "${step.search_column}"`;
     } else {
       return `Replace values in column "${step.search_column}"`;
     }

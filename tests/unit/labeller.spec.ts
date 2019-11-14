@@ -37,6 +37,14 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Aggregate "column3", "column4" grouped by "column1", "column2"');
   });
 
+  it('generates label for append steps', () => {
+    const step: S.AppendStep = {
+      name: 'append',
+      pipelines: ['dataset1', 'dataset2'],
+    };
+    expect(hrl(step)).toEqual('Append "dataset1", "dataset2"');
+  });
+
   it('generates label for argmax steps', () => {
     const step: S.ArgmaxStep = {
       name: 'argmax',
@@ -312,7 +320,10 @@ describe('Labeller', () => {
     const step: S.ReplaceStep = {
       name: 'replace',
       search_column: 'column1',
-      to_replace: [[4, 2], [5, 3]],
+      to_replace: [
+        [4, 2],
+        [5, 3],
+      ],
     };
     expect(hrl(step)).toEqual('Replace values in column "column1"');
   });
@@ -328,7 +339,10 @@ describe('Labeller', () => {
   it('generates label for sort steps', () => {
     const step: S.SortStep = {
       name: 'sort',
-      columns: [{ column: 'column1', order: 'asc' }, { column: 'column2', order: 'desc' }],
+      columns: [
+        { column: 'column1', order: 'asc' },
+        { column: 'column2', order: 'desc' },
+      ],
     };
     expect(hrl(step)).toEqual('Sort columns "column1", "column2"');
   });

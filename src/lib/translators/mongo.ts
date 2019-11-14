@@ -1,27 +1,7 @@
 /** This module contains mongo specific translation operations */
 
 import _ from 'lodash';
-import {
-  AggregationStep,
-  ArgmaxStep,
-  ArgminStep,
-  ConcatenateStep,
-  FilterComboAnd,
-  FilterComboOr,
-  FilterSimpleCondition,
-  FilterStep,
-  Pipeline,
-  PivotStep,
-  PercentageStep,
-  ReplaceStep,
-  SortStep,
-  SplitStep,
-  SubstringStep,
-  TopStep,
-  UnpivotStep,
-  isFilterComboAnd,
-  isFilterComboOr,
-} from '@/lib/steps';
+import * as S from '@/lib/steps';
 import { StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
@@ -92,7 +72,7 @@ export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): Mongo
 }
 
 function buildMatchTree(
-  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+  cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
   parentComboOp: ComboOperator = 'and',
 ): MongoStep {
   const operatorMapping = {
@@ -105,25 +85,25 @@ function buildMatchTree(
     in: '$in',
     nin: '$nin',
   };
-  if (isFilterComboAnd(cond) && parentComboOp !== 'or') {
+  if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
     return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });
   }
-  if (isFilterComboAnd(cond)) {
+  if (S.isFilterComboAnd(cond)) {
     return { $and: cond.and.map(elem => buildMatchTree(elem, 'and')) };
   }
-  if (isFilterComboOr(cond)) {
+  if (S.isFilterComboOr(cond)) {
     return { $or: cond.or.map(elem => buildMatchTree(elem, 'or')) };
   }
   return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
 }
 
-function filterstepToMatchstep(step: Readonly<FilterStep>): MongoStep {
+function filterstepToMatchstep(step: Readonly<S.FilterStep>): MongoStep {
   const condition = step.condition;
   return { $match: buildMatchTree(condition) };
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
-function transformAggregate(step: Readonly<AggregationStep>): MongoStep[] {
+function transformAggregate(step: Readonly<S.AggregationStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};
@@ -154,7 +134,7 @@ function transformAggregate(step: Readonly<AggregationStep>): MongoStep[] {
 }
 
 /** transform an 'argmax' or 'argmin' step into corresponding mongo steps */
-function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>): MongoStep[] {
+function transformArgmaxArgmin(step: Readonly<S.ArgmaxStep> | Readonly<S.ArgminStep>): MongoStep[] {
   const groupMongo: MongoStep = {};
   const stepMapping = { argmax: '$max', argmin: '$min' };
 
@@ -191,7 +171,7 @@ function transformArgmaxArgmin(step: Readonly<ArgmaxStep> | Readonly<ArgminStep>
 }
 
 /** transform a 'concatenate' step into corresponding mongo steps */
-function transformConcatenate(step: Readonly<ConcatenateStep>): MongoStep {
+function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
   const concatArr: string[] = [$$(step.columns[0])];
   for (const colname of step.columns.slice(1)) {
     concatArr.push(step.separator, $$(colname));
@@ -200,7 +180,7 @@ function transformConcatenate(step: Readonly<ConcatenateStep>): MongoStep {
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
-function transformPercentage(step: Readonly<PercentageStep>): MongoStep[] {
+function transformPercentage(step: Readonly<S.PercentageStep>): MongoStep[] {
   return [
     {
       $group: {
@@ -229,7 +209,7 @@ function transformPercentage(step: Readonly<PercentageStep>): MongoStep[] {
 }
 
 /** transform an 'pivot' step into corresponding mongo steps */
-function transformPivot(step: Readonly<PivotStep>): MongoStep[] {
+function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
   const groupCols2: PropMap<string> = {};
   const addFieldsStep: PropMap<string> = {};
 
@@ -296,7 +276,7 @@ function transformPivot(step: Readonly<PivotStep>): MongoStep[] {
 }
 
 /** transform an 'replace' step into corresponding mongo steps */
-function transformReplace(step: Readonly<ReplaceStep>): MongoStep {
+function transformReplace(step: Readonly<S.ReplaceStep>): MongoStep {
   const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
     case: { $eq: [$$(step.search_column), oldval] },
     then: newval,
@@ -311,7 +291,7 @@ function transformReplace(step: Readonly<ReplaceStep>): MongoStep {
 }
 
 /** transform a 'sort' step into corresponding mongo steps */
-function transformSort(step: Readonly<SortStep>): MongoStep {
+function transformSort(step: Readonly<S.SortStep>): MongoStep {
   const sortMongo: PropMap<number> = {};
   for (const sortColumn of step.columns) {
     sortMongo[sortColumn.column] = sortColumn.order === 'asc' ? 1 : -1;
@@ -320,7 +300,7 @@ function transformSort(step: Readonly<SortStep>): MongoStep {
 }
 
 /** transform a 'split' step into corresponding mongo steps */
-function transformSplit(step: Readonly<SplitStep>): MongoStep {
+function transformSplit(step: Readonly<S.SplitStep>): MongoStep {
   const addFieldsStep: PropMap<object> = {};
   for (let i = 1; i <= step.number_cols_to_keep; i++) {
     addFieldsStep[`${step.column}_${i}`] = { $arrayElemAt: ['$_vqbTmp', i - 1] };
@@ -333,7 +313,7 @@ function transformSplit(step: Readonly<SplitStep>): MongoStep {
 }
 
 /** transform a 'substring' step into corresponding mongo steps */
-function transformSubstring(step: Readonly<SubstringStep>): MongoStep {
+function transformSubstring(step: Readonly<S.SubstringStep>): MongoStep {
   const posStartIndex: number | PropMap<any> =
     step.start_index > 0
       ? step.start_index - 1
@@ -373,7 +353,7 @@ function transformSubstring(step: Readonly<SubstringStep>): MongoStep {
 }
 
 /** transform an 'top' step into corresponding mongo steps */
-function transformTop(step: Readonly<TopStep>): MongoStep[] {
+function transformTop(step: Readonly<S.TopStep>): MongoStep[] {
   const sortOrder = step.sort === 'asc' ? 1 : -1;
   const groupCols = step.groups ? columnMap(step.groups) : null;
 
@@ -387,7 +367,7 @@ function transformTop(step: Readonly<TopStep>): MongoStep[] {
 }
 
 /** transform an 'unpivot' step into corresponding mongo steps */
-function transformUnpivot(step: Readonly<UnpivotStep>): MongoStep[] {
+function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
   // projectCols to be included in Mongo $project steps
   const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
   // objectToArray to be included in the first Mongo $project step
@@ -522,14 +502,19 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
 
 const mapper: StepMatcher<MongoStep> = {
   aggregate: transformAggregate,
+  append: _ => [],
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   concatenate: transformConcatenate,
   custom: step => step.query,
-  delete: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 0])) }),
-  domain: step => ({ $match: { domain: step.domain } }),
-  duplicate: step => ({ $addFields: { [step.new_column_name]: $$(step.column) } }),
-  fillna: step => ({
+  delete: (step: Readonly<S.DeleteStep>) => ({
+    $project: _.fromPairs(step.columns.map(col => [col, 0])),
+  }),
+  domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
+  duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
+    $addFields: { [step.new_column_name]: $$(step.column) },
+  }),
+  fillna: (step: Readonly<S.FillnaStep>) => ({
     $addFields: {
       [step.column]: {
         $ifNull: [$$(step.column), step.value],
@@ -537,43 +522,76 @@ const mapper: StepMatcher<MongoStep> = {
     },
   }),
   filter: filterstepToMatchstep,
-  formula: step => ({
+  formula: (step: Readonly<S.FormulaStep>) => ({
     $addFields: {
       [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
     },
   }),
-  fromdate: step => ({
+  fromdate: (step: Readonly<S.FromDateStep>) => ({
     $addFields: {
       [step.column]: { $dateToString: { date: $$(step.column), format: `${step.format}` } },
     },
   }),
-  lowercase: step => ({ $addFields: { [step.column]: { $toLower: $$(step.column) } } }),
+  lowercase: (step: Readonly<S.ToLowerStep>) => ({
+    $addFields: { [step.column]: { $toLower: $$(step.column) } },
+  }),
   percentage: transformPercentage,
   pivot: transformPivot,
-  rename: step => [
+  rename: (step: Readonly<S.RenameStep>) => [
     { $addFields: { [step.newname]: $$(step.oldname) } },
     { $project: { [step.oldname]: 0 } },
   ],
   replace: transformReplace,
-  select: step => ({ $project: _.fromPairs(step.columns.map(col => [col, 1])) }),
+  select: (step: Readonly<S.SelectStep>) => ({
+    $project: _.fromPairs(step.columns.map(col => [col, 1])),
+  }),
   split: transformSplit,
   sort: transformSort,
   substring: transformSubstring,
-  todate: step => ({
+  todate: (step: Readonly<S.ToDateStep>) => ({
     $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
   }),
   top: transformTop,
   unpivot: transformUnpivot,
-  uppercase: step => ({ $addFields: { [step.column]: { $toUpper: $$(step.column) } } }),
+  uppercase: (step: Readonly<S.ToUpperStep>) => ({
+    $addFields: { [step.column]: { $toUpper: $$(step.column) } },
+  }),
 };
 
 export class Mongo36Translator extends BaseTranslator {
-  translate(pipeline: Pipeline) {
+  translate(pipeline: S.Pipeline) {
     const mongoSteps = super.translate(pipeline).flat();
     if (mongoSteps.length) {
       return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
     }
     return _simplifyMongoPipeline(mongoSteps);
   }
+
+  /** transform an'append' step into corresponding mongo steps */
+  transformAppend(step: Readonly<S.AppendStep>): MongoStep[] {
+    const pipelines = step.pipelines as S.Pipeline[];
+    const pipelinesNames: string[] = ['$_vqbPipelineInline'];
+    const lookups: MongoStep[] = [];
+    for (let i = 0; i < pipelines.length; i++) {
+      const domainStep = pipelines[i][0] as S.DomainStep;
+      const pipelineWithoutDomain = pipelines[i].slice(1);
+      lookups.push({
+        $lookup: {
+          from: domainStep.domain,
+          pipeline: this.translate(pipelineWithoutDomain),
+          as: `_vqbPipelineToAppend_${i}`,
+        },
+      });
+      pipelinesNames.push(`$_vqbPipelineToAppend_${i}`);
+    }
+    return [
+      { $group: { _id: null, _vqbPipelineInline: { $push: '$$ROOT' } } },
+      ...lookups,
+      { $project: { _vqbPipelinesUnion: { $concatArrays: pipelinesNames } } },
+      { $unwind: '$_vqbPipelinesUnion' },
+      { $replaceRoot: { newRoot: '$_vqbPipelinesUnion' } },
+    ];
+  }
 }
+mapper['append'] = Mongo36Translator.prototype.transformAppend;
 Object.assign(Mongo36Translator.prototype, mapper);

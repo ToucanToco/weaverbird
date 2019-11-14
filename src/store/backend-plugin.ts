@@ -13,6 +13,7 @@ import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
+import { PipelineDereferencer } from '@/lib/dereferencing';
 
 import { StateMutation } from './mutations';
 import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
@@ -51,7 +52,11 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
   }
   try {
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
-    const { interpolateFunc, variables } = store.state[VQB_MODULE_NAME];
+    const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
+    if (pipelines && Object.keys(pipelines).length) {
+      const dereferencer = new PipelineDereferencer(pipelines);
+      pipeline = dereferencer.dereference(pipeline);
+    }
     if (interpolateFunc && variables && Object.keys(variables).length) {
       const columnTypes = store.getters[VQBnamespace('columnTypes')];
       const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);

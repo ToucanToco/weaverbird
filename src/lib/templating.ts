@@ -109,6 +109,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     this.columnTypes = columnTypes;
   }
 
+  append(step: Readonly<S.AppendStep>) {
+    return { ...step };
+  }
+
   aggregate(step: Readonly<S.AggregationStep>) {
     return { ...step };
   }
@@ -166,7 +170,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   formula(step: Readonly<S.FormulaStep>) {
-    return { ...step, formula: _interpolate(this.interpolateFunc, step.formula, this.context) };
+    return {
+      ...step,
+      formula: _interpolate(this.interpolateFunc, step.formula, this.context),
+    };
   }
 
   fromdate(step: Readonly<S.FromDateStep>) {
@@ -219,7 +226,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   top(step: Readonly<S.TopStep>) {
-    return { ...step, limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)) };
+    return {
+      ...step,
+      limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)),
+    };
   }
 
   unpivot(step: Readonly<S.UnpivotStep>) {

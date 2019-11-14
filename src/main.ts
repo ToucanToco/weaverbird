@@ -2,6 +2,7 @@
 export { filterOutDomain, mongoToPipe } from './lib/pipeline';
 export { getTranslator } from './lib/translators';
 export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo';
+export { PipelineDereferencer } from './lib/dereferencing';
 
 // export store entrypoints
 export { servicePluginFactory } from '@/store/backend-plugin';

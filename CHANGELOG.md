@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Added `append` step (to append datasets resulting from multiple pipelines)
+
 ## [0.5.0] - 2019-11-13
 
 ### Added
