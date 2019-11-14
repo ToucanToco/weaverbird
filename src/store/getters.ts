@@ -61,6 +61,19 @@ export default {
   isStepDisabled: (state: VQBState) => (index: number) =>
     state.selectedStepIndex >= 0 && index > state.selectedStepIndex,
   /**
+   * Return current page number
+   */
+  pageno: (state: VQBState) =>
+    state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
+  /**
+   * Return pipelines save in store
+   */
+  pipelines: (state: VQBState) => state.pipelines,
+  /**
+   * Return true if an error occured in the backend
+   */
+  thereIsABackendError: (state: VQBState) => state.backendError !== undefined,
+  /**
    * selected columns in the dataviewer (materialized by a styled focus)
    */
   selectedColumns: (state: VQBState) => state.selectedColumns,
@@ -68,13 +81,4 @@ export default {
    * Get the step config of the pipeline based on its index
    */
   stepConfig: (state: VQBState) => (index: number) => state.pipeline[index],
-  /**
-   * Return current page number
-   */
-  pageno: (state: VQBState) =>
-    state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
-  /**
-   * Return true if an error occured in the backend
-   */
-  thereIsABackendError: (state: VQBState) => state.backendError !== undefined,
 };

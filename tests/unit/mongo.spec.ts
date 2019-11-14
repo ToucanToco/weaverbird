@@ -625,7 +625,10 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'replace',
         search_column: 'column_1',
-        to_replace: [['foo', 'bar'], ['old', 'new']],
+        to_replace: [
+          ['foo', 'bar'],
+          ['old', 'new'],
+        ],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -669,7 +672,10 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
-        columns: [{ column: 'foo', order: 'asc' }, { column: 'bar', order: 'desc' }],
+        columns: [
+          { column: 'foo', order: 'asc' },
+          { column: 'bar', order: 'desc' },
+        ],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1407,6 +1413,79 @@ describe('Pipeline to mongo translator', () => {
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $dateToString: { date: '$foo', format: '%Y-%m-%d' } } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate an append step', () => {
+    const pipelineBis: Pipeline = [
+      { name: 'domain', domain: 'test_bis' },
+      { name: 'delete', columns: ['useless'] },
+    ];
+    const pipelineTer: Pipeline = [
+      { name: 'domain', domain: 'test_ter' },
+      { name: 'select', columns: ['useful'] },
+    ];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'rename',
+        oldname: 'old',
+        newname: 'new',
+      },
+      {
+        name: 'append',
+        pipelines: [pipelineBis, pipelineTer],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'test',
+        },
+      },
+      {
+        $addFields: {
+          new: '$old',
+        },
+      },
+      {
+        $project: {
+          old: 0,
+        },
+      },
+      { $group: { _id: null, _vqbPipelineInline: { $push: '$$ROOT' } } },
+      {
+        $lookup: {
+          from: 'test_bis',
+          pipeline: [{ $project: { useless: 0, _id: 0 } }],
+          as: '_vqbPipelineToAppend_0',
+        },
+      },
+      {
+        $lookup: {
+          from: 'test_ter',
+          pipeline: [{ $project: { useful: 1 } }, { $project: { _id: 0 } }],
+          as: '_vqbPipelineToAppend_1',
+        },
+      },
+      {
+        $project: {
+          _vqbPipelinesUnion: {
+            $concatArrays: [
+              '$_vqbPipelineInline',
+              '$_vqbPipelineToAppend_0',
+              '$_vqbPipelineToAppend_1',
+            ],
+          },
+        },
+      },
+      { $unwind: '$_vqbPipelinesUnion' },
+      { $replaceRoot: { newRoot: '$_vqbPipelinesUnion' } },
       { $project: { _id: 0 } },
     ]);
   });

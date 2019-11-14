@@ -19,6 +19,10 @@ import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
 import { activePipeline } from '@/store/state';
 import { pageOffset } from '@/lib/dataset/pagination';
 
+type PipelinesScopeContext = {
+  [pipelineName: string]: Pipeline;
+};
+
 export interface BackendService {
   /**
    * @param store the Vuex store hosted by the application
@@ -45,13 +49,45 @@ export interface BackendService {
   ): BackendResponse<DataSet>;
 }
 
+/**
+ * Dereference pipelines names in the current pipeline being edited, i.e.
+ * replaces references to pipelines (by their names) to their corresponding
+ * pipelines
+ *
+ * @param pipeline the pipeline to translate and execute on the backend
+ * @param pipelines the pipelines stored in the Vuex store of the app, as an
+ * object with the pipeline name as key and the correspondinng pipeline as value
+ *
+ * @return the dereferenced pipeline
+ */
+export function dereferencePipelines(
+  pipeline: Pipeline,
+  pipelines: PipelinesScopeContext,
+): Pipeline {
+  const dereferencedPipeline: Pipeline = [];
+  for (const step of pipeline) {
+    let newStep;
+    if (step.name === 'append') {
+      const pipelineNames = step.pipelines as string[];
+      newStep = { ...step, pipelines: pipelineNames.map(p => pipelines[p]) };
+    } else {
+      newStep = { ...step };
+    }
+    dereferencedPipeline.push(newStep);
+  }
+  return dereferencedPipeline;
+}
+
 async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
   if (!store.state[VQB_MODULE_NAME].pipeline.length) {
     return;
   }
   try {
     store.commit(VQBnamespace('setLoading'), { isLoading: true });
-    const { interpolateFunc, variables } = store.state[VQB_MODULE_NAME];
+    const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
+    if (pipelines && Object.keys(pipelines).length) {
+      pipeline = dereferencePipelines(pipeline, pipelines);
+    }
     if (interpolateFunc && variables && Object.keys(variables).length) {
       const columnTypes = store.getters[VQBnamespace('columnTypes')];
       const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);

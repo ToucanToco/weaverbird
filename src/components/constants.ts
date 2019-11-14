@@ -8,8 +8,10 @@ export type ButtonDef = Readonly<{
 type ActionCategories = {
   compute: ActionCategory[];
   filter: ActionCategory[];
-  reshape: ActionCategory[];
   text: ActionCategory[];
+  date: ActionCategory[];
+  reshape: ActionCategory[];
+  combine: ActionCategory[];
   [key: string]: ActionCategory[];
 };
 
@@ -24,10 +26,6 @@ export type groupActions = {
 };
 
 export const ACTION_CATEGORIES: ActionCategories = {
-  compute: [
-    { name: 'formula', label: 'Formula' },
-    { name: 'percentage', label: 'Percentage of total' },
-  ],
   filter: [
     { name: 'delete', label: 'Delete columns' },
     { name: 'select', label: 'Keep columns' },
@@ -36,9 +34,9 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'argmax', label: 'Argmax' },
     { name: 'argmin', label: 'Argmin' },
   ],
-  date: [
-    { name: 'todate', label: 'Convert text to date' },
-    { name: 'fromdate', label: 'Convert date to text' },
+  compute: [
+    { name: 'formula', label: 'Formula' },
+    { name: 'percentage', label: 'Percentage of total' },
   ],
   text: [
     { name: 'concatenate', label: 'Concatenate' },
@@ -47,7 +45,15 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
   ],
-  reshape: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
+  date: [
+    { name: 'todate', label: 'Convert text to date' },
+    { name: 'fromdate', label: 'Convert date to text' },
+  ],
+  reshape: [
+    { name: 'pivot', label: 'Pivot' },
+    { name: 'unpivot', label: 'Unpivot' },
+  ],
+  combine: [{ name: 'append', label: 'Append datasets' }],
 };
 
 export const SEARCH_ACTION: groupActions[] = [
@@ -60,6 +66,14 @@ export const SEARCH_ACTION: groupActions[] = [
     actions: [...ACTION_CATEGORIES.compute],
   },
   {
+    type: 'text',
+    actions: [...ACTION_CATEGORIES.text],
+  },
+  {
+    type: 'date',
+    actions: [...ACTION_CATEGORIES.date],
+  },
+  {
     type: 'aggregate',
     actions: [
       {
@@ -69,16 +83,12 @@ export const SEARCH_ACTION: groupActions[] = [
     ],
   },
   {
-    type: 'date',
-    actions: [...ACTION_CATEGORIES.date],
-  },
-  {
     type: 'reshape',
     actions: [...ACTION_CATEGORIES.reshape],
   },
   {
-    type: 'text',
-    actions: [...ACTION_CATEGORIES.text],
+    type: 'combine',
+    actions: [...ACTION_CATEGORIES.combine],
   },
   {
     type: 'Others action',
@@ -128,6 +138,12 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     enable: true,
     icon: 'draw-polygon',
     label: 'Reshape',
+  },
+  {
+    category: 'combine',
+    enable: true,
+    icon: 'object-group',
+    label: 'Combine',
   },
 ];
 

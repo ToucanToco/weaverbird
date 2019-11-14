@@ -6,6 +6,7 @@ const {
   filterOutDomain,
   getTranslator,
   mongoResultsToDataset,
+  dereferencePipelines,
   servicePluginFactory,
   registerModule,
 } = vqb;
@@ -222,6 +223,40 @@ async function buildVueApp() {
     created: function() {
       registerModule(this.$store, {
         pipeline: initialPipeline,
+        pipelines: {
+          pipeline1: [{
+            name: 'domain',
+            domain: 'test-collection',
+          },
+          {
+            name: 'replace',
+            search_column: 'Label',
+            to_replace: [
+              ['Label 1', 'Label 6'],
+              ['Label 2', 'Label 7'],
+              ['Label 3', 'Label 8'],
+              ['Label 4', 'Label 9'],
+              ['Label 5', 'Label 10'],
+            ]
+          },
+          ],
+          pipeline2: [{
+            name: 'domain',
+            domain: 'test-collection',
+          },
+          {
+            name: 'replace',
+            search_column: 'Label',
+            to_replace: [
+              ['Label 1', 'Label 11'],
+              ['Label 2', 'Label 12'],
+              ['Label 3', 'Label 13'],
+              ['Label 4', 'Label 14'],
+              ['Label 5', 'Label 15'],
+            ]
+          },
+          ],
+        },
         currentDomain: 'test-collection',
         // use lodash interpolate
         interpolateFunc: (value, context) => _.template(value)(context),

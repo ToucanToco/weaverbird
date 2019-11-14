@@ -1,4 +1,5 @@
 import aggregateBuildSchema from './aggregate';
+import appendSchema from './append';
 import argmaxSchema from './argmax';
 import argminSchema from './argmin';
 import concatenateBuildSchema from './concatenate';
@@ -27,6 +28,7 @@ type buildSchemaType = ((form: any) => object) | object;
 
 const factories: { [stepname: string]: buildSchemaType } = {
   aggregate: aggregateBuildSchema,
+  append: appendSchema,
   argmax: argmaxSchema,
   argmin: argminSchema,
   concatenate: concatenateBuildSchema,

@@ -26,7 +26,10 @@ class DummyService implements BackendService {
 
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
   executePipeline(_store: Store<any>, pipeline: Pipeline, limit: number, _offset: number) {
-    let rset = [[1, 2], [3, 4]];
+    let rset = [
+      [1, 2],
+      [3, 4],
+    ];
     if (limit) {
       rset = rset.slice(0, limit);
     }
@@ -46,15 +49,16 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore({ pipeline }, [
-      servicePluginFactory(new DummyService()),
-    ]);
+    const store = setupMockStore({ pipeline }, [servicePluginFactory(new DummyService())]);
     const wrapper = mount(PipelineComponent, { store, localVue });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
-      data: [[1, 2], [3, 4]],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
     });
   });
 
@@ -76,7 +80,10 @@ describe('backend service plugin tests', () => {
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
-      data: [[1, 2], [3, 4]],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
     });
   });
 
@@ -86,7 +93,10 @@ describe('backend service plugin tests', () => {
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
-      data: [[1, 2], [3, 4]],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
     });
   });
 
@@ -96,21 +106,20 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore({ pipeline }, [
-      servicePluginFactory(new DummyService()),
-    ]);
+    const store = setupMockStore({ pipeline }, [servicePluginFactory(new DummyService())]);
     store.commit(VQBnamespace('deleteStep'), { index: 2 });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
       headers: [{ name: 'x' }, { name: 'y' }],
-      data: [[1, 2], [3, 4]],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
     });
   });
 
   it('should call execute pipeline with correct pagesize', async () => {
-    const store = setupMockStore({ pagesize: 1 }, [
-      servicePluginFactory(new DummyService()),
-    ]);
+    const store = setupMockStore({ pagesize: 1 }, [servicePluginFactory(new DummyService())]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
@@ -183,6 +192,61 @@ describe('backend service plugin tests', () => {
         search_column: 'characters',
         to_replace: [['<%= who %>', '<%= what %>']],
       },
+    ]);
+  });
+
+  it('should call execute pipeline with dereferenced pipelines', async () => {
+    const service = new DummyService();
+    const executeSpy = jest.spyOn(service, 'executePipeline');
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'append', pipelines: ['dataset1', 'dataset2'] },
+    ];
+    const store = setupMockStore(
+      {
+        pipeline,
+        pipelines: {
+          dataset1: [{ name: 'domain', domain: 'domain1' }],
+          dataset2: [{ name: 'domain', domain: 'domain2' }],
+        },
+      },
+      [servicePluginFactory(service)],
+    );
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+    expect(executeSpy.mock.calls[0][1]).toEqual([
+      { domain: 'GoT', name: 'domain' },
+      {
+        name: 'append',
+        pipelines: [
+          [{ name: 'domain', domain: 'domain1' }],
+          [{ name: 'domain', domain: 'domain2' }],
+        ],
+      },
+    ]);
+  });
+
+  it('should call execute pipeline with references to pipelines if no pipelines', async () => {
+    const service = new DummyService();
+    const executeSpy = jest.spyOn(service, 'executePipeline');
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'append', pipelines: ['dataset1', 'dataset2'] },
+    ];
+    const store = setupMockStore(
+      {
+        pipeline,
+        pipelines: {},
+      },
+      [servicePluginFactory(service)],
+    );
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+    expect(executeSpy.mock.calls[0][1]).toEqual([
+      { domain: 'GoT', name: 'domain' },
+      { name: 'append', pipelines: ['dataset1', 'dataset2'] },
     ]);
   });
 });

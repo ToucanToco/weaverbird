@@ -1,10 +1,10 @@
 # Changelog
 
-
-## NEXT_RELEASE - RELEASE_DATE
+## Unreleased
 
 ### Added
 
+- Added `append` step (to append datasets resulting from multiple pipelines)
 - Mongo4.0 translator scaffold
 
 ### Fixed
