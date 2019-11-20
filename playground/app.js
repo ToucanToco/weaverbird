@@ -222,10 +222,13 @@ async function buildVueApp() {
     created: function() {
       registerModule(this.$store, {
         // pipeline: initialPipeline,
-        pipeline: [{
-          name: 'append',
-          pipelines: ['pipeline1', 'pipeline2']
-        }],
+        pipeline: [
+          ...initialPipeline,
+          {
+            name: 'append',
+            pipelines: ['pipeline1', 'pipeline2']
+          }
+        ],
         pipelines: {
           pipeline1: {
             ...initialPipeline

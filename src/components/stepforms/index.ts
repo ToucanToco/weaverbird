@@ -1,4 +1,5 @@
 import './AggregateStepForm.vue';
+import './AppendStepForm.vue';
 import './ArgminStepForm.vue';
 import './ArgmaxStepForm.vue';
 import './ConcatenateStepForm.vue';

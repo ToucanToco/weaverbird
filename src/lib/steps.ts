@@ -10,6 +10,11 @@ export type AppendStep = {
   pipelines: Pipeline[];
 };
 
+export type AppendStepByRef = {
+  name: 'append';
+  pipelines: string[];
+};
+
 export type AggFunctionStep = {
   /** Name of the output column */
   newcolumn: string;
@@ -208,6 +213,8 @@ export type UnpivotStep = {
   value_column_name: string;
   dropna: boolean;
 };
+
+// interface AppendStep extends AppendStep<Pipeline> {}
 
 export type PipelineStep =
   | AggregationStep

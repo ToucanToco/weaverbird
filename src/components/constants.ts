@@ -27,6 +27,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   compute: [
     { name: 'formula', label: 'Formula' },
     { name: 'percentage', label: 'Percentage of total' },
+    { name: 'append', label: 'Append datasets' },
   ],
   filter: [
     { name: 'delete', label: 'Delete columns' },
@@ -47,7 +48,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
   ],
-  reshape: [{ name: 'pivot', label: 'Pivot' }, { name: 'unpivot', label: 'Unpivot' }],
+  reshape: [
+    { name: 'pivot', label: 'Pivot' },
+    { name: 'unpivot', label: 'Unpivot' },
+  ],
 };
 
 export const SEARCH_ACTION: groupActions[] = [
