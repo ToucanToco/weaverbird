@@ -6,7 +6,7 @@ const {
   filterOutDomain,
   getTranslator,
   mongoResultsToDataset,
-  PipelineDereferencer,
+  dereferencePipelines,
   servicePluginFactory,
   registerModule,
 } = vqb;
@@ -273,8 +273,7 @@ async function buildVueApp() {
         let activePipeline = this.$store.getters[VQBnamespace('activePipeline')]
         const pipelines = this.$store.getters[VQBnamespace('pipelines')]
         if (pipelines) {
-          const dereferencer = new PipelineDereferencer(pipelines);
-          activePipeline = dereferencer.dereference(activePipeline);
+          activePipeline = dereferencePipelines(activePipeline, pipelines);
         }
         const query = mongo36translator.translate(activePipeline);
         return JSON.stringify(query, null, 2);
