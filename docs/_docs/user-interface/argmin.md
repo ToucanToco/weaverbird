@@ -9,6 +9,11 @@ You can use this step to get row(s) matching the minimum value in a given
 column. You can optionally specify to apply the step by group, i.e. get min
 row(s) by group.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Filter`

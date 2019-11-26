@@ -61,7 +61,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'pivot', label: 'Pivot' },
     { name: 'unpivot', label: 'Unpivot' },
   ],
-  combine: [{ name: 'append', label: 'Append datasets' }],
+  combine: [
+    { name: 'append', label: 'Append datasets' },
+    { name: 'join', label: 'Join datasets' },
+  ],
 };
 
 export const SEARCH_ACTION: groupActions[] = [

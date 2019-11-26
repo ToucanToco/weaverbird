@@ -158,7 +158,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   width: 100%;
   padding-right: 15px;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
 }

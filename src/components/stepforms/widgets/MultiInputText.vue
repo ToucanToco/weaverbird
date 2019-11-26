@@ -77,9 +77,13 @@ export default class MultiInputTextWidget extends Vue {
   font-size: 14px;
 }
 
-.multiselect__placeholder {
+.multiselect .multiselect__placeholder {
   margin-bottom: 0;
   color: $grey-dark;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
 }
 
 .multiselect__single {

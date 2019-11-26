@@ -8,6 +8,11 @@ permalink: /docs/text/
 Use this step to add a text column where every value will be equal to the
 specified text.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Add` and `Text`

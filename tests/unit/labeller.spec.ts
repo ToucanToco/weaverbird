@@ -280,6 +280,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Convert "foo" into text');
   });
 
+  it('generates label for join steps', () => {
+    const step: S.JoinStep = {
+      name: 'join',
+      right_pipeline: 'right',
+      type: 'left',
+      on: [['col', 'col']],
+    };
+    expect(hrl(step)).toEqual('Join dataset "right"');
+  });
+
   it('generates label for percentage steps without output column', () => {
     const step: S.PercentageStep = {
       name: 'percentage',

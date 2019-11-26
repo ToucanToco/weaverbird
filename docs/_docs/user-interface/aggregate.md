@@ -9,6 +9,11 @@ You can use this step to perform aggregations on one or several columns.
 Equivalent to a `GROUP BY` clause in SQL, or to the `$group` operator in Mongo
 aggregation pipeline.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Aggregate`

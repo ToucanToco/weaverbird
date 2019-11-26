@@ -68,6 +68,7 @@ export default class SearchBar extends Vue {
   border-radius: 5px;
   box-shadow: none;
   padding-left: 35px;
+  padding-right: 20px;
   min-height: 43px;
   &:before {
     font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';

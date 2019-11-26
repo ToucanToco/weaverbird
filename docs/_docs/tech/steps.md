@@ -32,6 +32,11 @@ An aggreation step has the following strucure:
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example:
 
 **Input dataset:**
@@ -82,6 +87,11 @@ of the application. You can then call them by their unique names in this step.
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example
 
 **Input dataset:**
@@ -109,10 +119,8 @@ of the application. You can then call them by their unique names in this step.
 
 ```javascript
 {
-  {
-    name: 'append',
-    datasets: ['dataset1', 'dataset2']
-  }
+  name: 'append',
+  datasets: ['dataset1', 'dataset2']
 }
 ```
 
@@ -134,11 +142,16 @@ is specified.
 
 ```javascript
 {
-    name: 'argmax',
-    column: 'value', // column in which to search for max value
-    groups: ['group1', 'group2']
+  name: 'argmax',
+  column: 'value', // column in which to search for max value
+  groups: ['group1', 'group2']
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example 1: without `groups`
 
@@ -157,10 +170,8 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmax',
-    column: 'Value'
-  }
+  name: 'argmax',
+  column: 'Value'
 }
 ```
 
@@ -187,11 +198,9 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmax',
-    column: 'Value',
-    groups: ['Group']
-  }
+  name: 'argmax',
+  column: 'Value',
+  groups: ['Group']
 }
 ```
 
@@ -215,6 +224,11 @@ is specified.
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example 1: without `groups`
 
 **Input dataset:**
@@ -232,10 +246,8 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmin',
-    column: 'Value'
-  }
+  name: 'argmin',
+  column: 'Value'
 }
 ```
 
@@ -262,11 +274,9 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmin',
-    column: 'Value',
-    groups: ['Groups']
-  }
+  name: 'argmin',
+  column: 'Value',
+  groups: ['Groups']
 }
 ```
 
@@ -289,6 +299,11 @@ This step allows to concatenate several `columns` using a `separator`.
   new_column_name: 'Label' // The new column in which to write the concatenation
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -325,7 +340,7 @@ This step allows to concatenate several `columns` using a `separator`.
 | Company 5 | Group 2 | 10    | Company 5 - Group 2 |
 | Company 6 | Group 2 | 5     | Company 6 - Group 2 |
 
-### `connvert` step
+### `convert` step
 
 This step allows to `columns` data types.
 
@@ -338,7 +353,7 @@ This step allows to `columns` data types.
 }
 ```
 
-**Supported backends:**
+**This step is supported by the following backends:**
 
 - Mongo 4.0
 
@@ -388,6 +403,11 @@ other existing steps.
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example: using Mongo query language
 
 **Input dataset:**
@@ -431,6 +451,11 @@ Delete a column.
     columns: ['my-column', 'some-other-column']
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -476,6 +501,11 @@ This step is meant to select a specific domain (using MongoDB terminology).
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 ### `duplicate` step
 
 This step is meant to duplicate a column.
@@ -487,6 +517,11 @@ This step is meant to duplicate a column.
     new_column_name: 'my-duplicate'
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -527,6 +562,11 @@ Replace null values by a given value in a column.
     value: "bar"
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -580,6 +620,11 @@ Filter out lines that don't match a filter definition.
 
 `value` can be an arbitrary value (e.g a list when used with the `in` operator)
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 ### `formula` step
 
 Add a computation based on other columns or on values.
@@ -623,6 +668,133 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 | Label 2 | 1      | 13     | 7      | 3      | -4     |
 | Label 3 | 5      | 20     | 5      | 2      | 1      |
 
+### `join` step
+
+Joins a dataset to the current dataset, i.e. brings columns from the former into
+the latter, and matches rows based `on` columns correspondance. It is similar to
+a `JOIN` clause in SQL, or to a `VLOOKUP` in excel. The joined dataset is the
+result from the query of the `right_pipeline`.
+
+The join type can be:
+
+- 'left': will keep every row of the current dataset and fill unmatched rows
+  with `null` values,
+
+- 'inner': will only keep rows that match rows of the joined dataset.
+
+In the `on` parameter, you must specify 1 or more column couple(s) that will be
+compared to determine rows correspondance between the 2 datasets. The first
+element of a couple is for the current dataset column, and the second for the
+corresponding column in the right dataset to be joined. If you specify more than
+1 couple, the matching rows will be those that find a correspondance between the
+2 datasets for every column couple specified (logical 'AND').
+
+Weaverbird allows you to save `pipelines` referenced by name in the Vuex store
+of the application. You can then call them by their unique names in this step.
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'somePipelineReference',
+  type: 'left', // or 'inner'
+  on: [
+    ['currentDatasetColumn1', 'rightDatasetColumn1'],
+    ['currentDatasetColumn2', 'rightDatasetColumn2'],
+  ]
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: Left join with one column couple as `on` parameter
+
+**Input dataset:**
+
+| Label   | Value |
+| ------- | ----- |
+| Label 1 | 13    |
+| Label 2 | 7     |
+| Label 3 | 20    |
+| Label 4 | 1     |
+| Label 5 | 1     |
+| Label 6 | 1     |
+
+**rightDataset (saved in the application Vuex store)**:
+
+| Label   | Group   |
+| ------- | ------- |
+| Label 1 | Group 1 |
+| Label 2 | Group 1 |
+| Label 3 | Group 2 |
+| Label 4 | Group 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'rightDataset',
+  type: 'left',
+  on: [['Label', 'Label']];
+}
+```
+
+**Output dataset:**
+
+| Label   | Value | Group   |
+| ------- | ----- | ------- |
+| Label 1 | 13    | Group 1 |
+| Label 2 | 7     | Group 1 |
+| Label 3 | 20    | Group 2 |
+| Label 4 | 1     | Group 2 |
+| Label 5 | 1     |         |
+| Label 6 | 1     |         |
+
+#### Example 2: inner join with different column names in the `on` parameter
+
+**Input dataset:**
+
+| Label   | Value |
+| ------- | ----- |
+| Label 1 | 13    |
+| Label 2 | 7     |
+| Label 3 | 20    |
+| Label 4 | 1     |
+| Label 5 | 1     |
+| Label 6 | 1     |
+
+**rightDataset (saved in the application Vuex store)**:
+
+| LabelRight | Group   |
+| ---------- | ------- |
+| Label 1    | Group 1 |
+| Label 2    | Group 1 |
+| Label 3    | Group 2 |
+| Label 4    | Group 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'rightDataset',
+  type: 'inner',
+  on: [['Label', 'LabelRight']];
+}
+```
+
+**Output dataset:**
+
+| Label   | Value | LabelRight | Group   |
+| ------- | ----- | ---------- | ------- |
+| Label 1 | 13    | Label 1    | Group 1 |
+| Label 2 | 7     | Label 2    | Group 1 |
+| Label 3 | 20    | Label 3    | Group 2 |
+| Label 4 | 1     | Label 4    | Group 2 |
+
 ### `fromdate` step
 
 Converts a date `column` into a string column based on a specified `format`.
@@ -635,6 +807,11 @@ Converts a date `column` into a string column based on a specified `format`.
                        // see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -681,6 +858,11 @@ Converts a string `column` to lowercase.
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example:
 
 **Input dataset:**
@@ -721,6 +903,11 @@ by `group` if specified. The result is written inplace.
   group: ['foo'] // optional
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example:
 
@@ -775,6 +962,11 @@ among `sum`, `avg`, `count`, `min` or `max`.
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example:
 
 **Input dataset:**
@@ -820,6 +1012,11 @@ Rename a column.,
     newname: 'new-column-name'
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example:
 
@@ -872,6 +1069,11 @@ A replace step has the following strucure:
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example
 
 **Input dataset:**
@@ -912,6 +1114,11 @@ the `select` is used, it will only keep selected columns in the output.
     columns: ['my-column', 'some-other-column']
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -960,6 +1167,11 @@ When sorting on several columns, order of columns specified in `columns` matters
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example
 
 **Input dataset:**
@@ -1006,6 +1218,11 @@ Split a string `column` into several columns based on a `delimiter`.
                           // split (starting from first chunk)
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example 1
 
@@ -1094,6 +1311,11 @@ Neither `start_index` nor `end_index` can be equal to 0.
   end_index: -1, // -1 = last character
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example 1: positive `start_index` and `end_index`
 
@@ -1213,6 +1435,11 @@ specified `text`.
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Example
 
 **Input dataset:**
@@ -1255,6 +1482,11 @@ Converts a string `column` into a date column based on a specified `format`.
                         // Note: format is unsupported in Mongo versions older than 4.0
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example
 
@@ -1303,6 +1535,11 @@ Return top N rows by group if `groups` is specified, else over full dataset.
   limit: 10
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example 1: top without `groups`, ascending order
 
@@ -1382,6 +1619,11 @@ Unpivot a list of columns to rows.
   dropna: true // whether null values have to be kept or the corresponding rows discarded
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example 1: with `dropna`parameter to true
 
@@ -1466,6 +1708,11 @@ Converts a string `column` to uppercase.
   column: 'foo',
 }
 ```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Example:
 

@@ -12,6 +12,7 @@ import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
 import './FormulaStepForm.vue';
 import './FromDateStepForm.vue';
+import './JoinStepForm.vue';
 import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
 import './RenameStepForm.vue';

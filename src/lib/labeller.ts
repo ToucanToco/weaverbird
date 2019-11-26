@@ -149,6 +149,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert "${step.column}" into text`;
   }
 
+  join(step: Readonly<S.JoinStep>) {
+    return `Join dataset "${step.right_pipeline}"`;
+  }
+
   lowercase(step: Readonly<S.ToLowerStep>) {
     return `Convert column "${step.column}" to lowercase`;
   }

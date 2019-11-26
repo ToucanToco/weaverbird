@@ -17,6 +17,11 @@ label.
 
 Equivalent to the `UNPIVOT` clause in SQL.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Reshape`

@@ -8,6 +8,11 @@ permalink: /docs/fillnull/
 You can use this step to fill null values in a column with a value of your
 choice.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Column header menu

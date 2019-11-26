@@ -7,6 +7,11 @@ permalink: /docs/duplicate/
 
 You can use this step to dupicate a column.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Column header menu

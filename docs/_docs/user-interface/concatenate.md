@@ -7,6 +7,11 @@ permalink: /docs/concatenate/
 
 You can use this step to concatenate several text columns.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Text`

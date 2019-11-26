@@ -16,6 +16,11 @@ performed, you can choose the aggregation function (`sum` by default).
 
 Equivalent to the `PIVOT` clause in SQL.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Reshape`

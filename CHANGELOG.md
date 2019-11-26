@@ -5,6 +5,7 @@
 ### Added
 
 - Added `append` step (to append datasets resulting from multiple pipelines)
+- Added `join` step (to perform either *left outer joins* or *inner joins*)
 - Mongo4.0 translator scaffold
 - Add data types conversion operations (with specific UI), only supported by
   the 'mongo40' translator
