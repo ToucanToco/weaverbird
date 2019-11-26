@@ -256,6 +256,43 @@ async function buildVueApp() {
             ]
           },
           ],
+          pipelineRight1: [{
+            name: 'domain',
+            domain: 'test-collection',
+          },
+          {
+            name: 'replace',
+            search_column: 'Label',
+            to_replace: [
+              ['Label 4', 'Label 6'],
+              ['Label 5', 'Label 7'],
+            ]
+          },
+          {
+            name: 'formula',
+            formula: 'Value2 * 10',
+            new_column: 'ValueRight1'
+          },
+          ],
+          pipelineRight2: [{
+            name: 'domain',
+            domain: 'test-collection',
+          },
+          {
+            name: 'replace',
+            search_column: 'Label',
+            to_replace: [
+              ['Label 1', 'Label 8'],
+              ['Label 2', 'Label 9'],
+              ['Label 3', 'Label 10'],
+            ]
+          },
+          {
+            name: 'formula',
+            formula: 'Value3 * 10',
+            new_column: 'ValueRight2'
+          },
+          ],
         },
         currentDomain: 'test-collection',
         // use lodash interpolate

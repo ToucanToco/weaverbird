@@ -9,7 +9,10 @@
       :taggable="true"
       :close-on-select="false"
     />
-    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
+    <div v-if="messageError" class="field__msg-error">
+      <span class="fa fa-exclamation-circle" />
+      {{ messageError }}
+    </div>
   </div>
 </template>
 
@@ -67,9 +70,13 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   font-size: 14px;
 }
 
-.multiselect__placeholder {
+.multiselect .multiselect__placeholder {
   margin-bottom: 0;
   color: $grey-dark;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
 }
 
 .multiselect__single {

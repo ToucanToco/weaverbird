@@ -9,7 +9,10 @@
       :track-by="trackBy"
       :label="label"
     />
-    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
+    <div v-if="messageError" class="field__msg-error">
+      <span class="fa fa-exclamation-circle" />
+      {{ messageError }}
+    </div>
   </div>
 </template>
 
@@ -73,11 +76,16 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
   color: $base-color-light;
   font-size: 14px;
 }
-.multiselect__placeholder {
+
+.multiselect .multiselect__placeholder {
   color: $grey-dark;
   font-size: 12px;
   margin-bottom: 0;
   color: $base-color;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
 }
 
 .multiselect__tags {

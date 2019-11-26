@@ -56,7 +56,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
   addFieldName!: string;
 
-  @Prop({ type: Object, default: () => { } })
+  @Prop({ type: Object, default: () => {} })
   componentProps!: object;
 
   @Prop({ type: String, default: null })
@@ -159,7 +159,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   width: 100%;
   padding-right: 15px;
   position: relative;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   display: flex;
   align-items: center;
 }

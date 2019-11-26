@@ -73,6 +73,12 @@ export function dereferencePipelines(
         ...step,
         pipelines: pipelineNames.map(p => dereferencePipelines(pipelines[p], pipelines)),
       };
+    } else if (step.name === 'join') {
+      const rightPipelineName = step.right_pipeline as string;
+      newStep = {
+        ...step,
+        right_pipeline: dereferencePipelines(pipelines[rightPipelineName], pipelines),
+      };
     } else {
       newStep = { ...step };
     }

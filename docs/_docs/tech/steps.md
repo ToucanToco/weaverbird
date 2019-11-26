@@ -107,10 +107,8 @@ of the application. You can then call them by their unique names in this step.
 
 ```javascript
 {
-  {
-    name: 'append',
-    datasets: ['dataset1', 'dataset2']
-  }
+  name: 'append',
+  datasets: ['dataset1', 'dataset2']
 }
 ```
 
@@ -132,9 +130,9 @@ is specified.
 
 ```javascript
 {
-    name: 'argmax',
-    column: 'value', // column in which to search for max value
-    groups: ['group1', 'group2']
+  name: 'argmax',
+  column: 'value', // column in which to search for max value
+  groups: ['group1', 'group2']
 }
 ```
 
@@ -155,10 +153,8 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmax',
-    column: 'Value'
-  }
+  name: 'argmax',
+  column: 'Value'
 }
 ```
 
@@ -185,11 +181,9 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmax',
-    column: 'Value',
-    groups: ['Group']
-  }
+  name: 'argmax',
+  column: 'Value',
+  groups: ['Group']
 }
 ```
 
@@ -230,10 +224,8 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmin',
-    column: 'Value'
-  }
+  name: 'argmin',
+  column: 'Value'
 }
 ```
 
@@ -260,11 +252,9 @@ is specified.
 
 ```javascript
 {
-  {
-    name: 'argmin',
-    column: 'Value',
-    groups: ['Groups']
-  }
+  name: 'argmin',
+  column: 'Value',
+  groups: ['Groups']
 }
 ```
 
@@ -569,6 +559,169 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 | Label 1 | 10     | 2      | 3      | 1      | 2      |
 | Label 2 | 1      | 13     | 7      | 3      | -4     |
 | Label 3 | 5      | 20     | 5      | 2      | 1      |
+
+### `join` step
+
+Joins a dataset to the current dataset, i.e. brings columns from the former into
+the latter, and matches rows based `on` columns correspondance. It is similar to
+a `JOIN` clause in SQL, or to a `VLOOKUP` in excel. The joined dataset is the
+result from the query of the `right_pipeline`.
+
+The join type can be either 'left' (will keep every row of the current
+dataset), 'inner' (will only keep rows that match rows of the joined dataset) or
+'left outer' (will only keep rows that does not match any row of the joined
+dataset )
+
+In the `on` parameter, you must specify 1 or more columns couple(s) that will be
+compared to determine rows correspondance between the 2 datasets. The first
+element of a couple is for the current dataset column, and the second for the
+corresponding column in the right dataset to be joined. If you specify more than
+1 couple, the matching rows will be those that find a correspondance between the 
+2 datasets for every column couple specified (logical 'AND').
+
+WeaverBird allows you to save `pipelines` referenced by name in the Vuex store
+of the application. You can then call them by their unique names in this step.
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'somePipelineReference',
+  type: 'left', // or 'inner' or 'left outer'
+  on: [
+    ['currentDatasetColumn1', 'rightDatasetColumn1'],
+    ['currentDatasetColumn2', 'rightDatasetColumn2'],
+  ]
+}
+```
+
+#### Example 1: Left join with one columns couple as `on` parameter
+
+**Input dataset:**
+
+| Label   | Value |
+| ------- | ----- |
+| Label 1 | 13    |
+| Label 2 | 7     |
+| Label 3 | 20    |
+| Label 4 | 1     |
+| Label 5 | 1     |
+| Label 6 | 1     |
+
+**rightDataset (saved in the application Vuex store)**:
+
+| Label   | Group   |
+| ------- | ------- |
+| Label 1 | Group 1 |
+| Label 2 | Group 1 |
+| Label 3 | Group 2 |
+| Label 4 | Group 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'rightDataset',
+  type: 'left',
+  on: [['Label', 'Label']];
+}
+```
+
+**Output dataset:**
+
+| Label   | Value | Group   |
+| ------- | ----- | ------- |
+| Label 1 | 13    | Group 1 |
+| Label 2 | 7     | Group 1 |
+| Label 3 | 20    | Group 2 |
+| Label 4 | 1     | Group 2 |
+| Label 5 | 1     |         |
+| Label 6 | 1     |         |
+
+#### Example 2: inner join with different columns names in the `on` parameter
+
+**Input dataset:**
+
+| Label   | Value |
+| ------- | ----- |
+| Label 1 | 13    |
+| Label 2 | 7     |
+| Label 3 | 20    |
+| Label 4 | 1     |
+| Label 5 | 1     |
+| Label 6 | 1     |
+
+**rightDataset (saved in the application Vuex store)**:
+
+| LabelRight | Group   |
+| ---------- | ------- |
+| Label 1    | Group 1 |
+| Label 2    | Group 1 |
+| Label 3    | Group 2 |
+| Label 4    | Group 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'rightDataset',
+  type: 'inner',
+  on: [['Label', 'LabelRight']];
+}
+```
+
+**Output dataset:**
+
+| Label   | Value | LabelRight | Group   |
+| ------- | ----- | ---------- | ------- |
+| Label 1 | 13    | Label 1    | Group 1 |
+| Label 2 | 7     | Label 2    | Group 1 |
+| Label 3 | 20    | Label 3    | Group 2 |
+| Label 4 | 1     | Label 4    | Group 2 |
+
+#### Example 3: left outer join with several columns couples as `on` parameter
+
+Note that a left outer join is useful when you have a dataset specifying rows to
+be excluded from your current dataset example.
+
+**Input dataset:**
+
+| Label   | Value | Country   |
+| ------- | ----- | --------- |
+| Label 1 | 13    | Country 1 |
+| Label 1 | 7     | Country 2 |
+| Label 2 | 20    | Country 1 |
+| Label 2 | 1     | Country 2 |
+| Label 3 | 1     | Country 1 |
+| Label 3 | 1     | Country 2 |
+
+**rightDataset (saved in the application Vuex store)**:
+
+| Label   | Country   |
+| ------- | --------- |
+| Label 1 | Country 1 |
+| Label 1 | Country 2 |
+| Label 2 | Country 1 |
+| Label 3 | Country 2 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'join',
+  right_pipeline: 'rightDataset',
+  type: 'left outer',
+  on: [['Label', 'Label'], ['Country', 'Country']];
+}
+```
+
+**Output dataset:**
+
+| Label   | Value | Country   |
+| ------- | ----- | --------- |
+| Label 2 | 1     | Country 2 |
+| Label 3 | 1     | Country 1 |
 
 ### `fromdate` step
 

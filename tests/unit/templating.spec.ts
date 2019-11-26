@@ -669,6 +669,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave join steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'join',
+        right_pipeline: '<%= right %>',
+        type: 'left',
+        on: [['<%= col %>', '<%= col %>']],
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave percentage steps untouched', () => {
     const pipeline: Pipeline = [
       {

@@ -180,6 +180,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  join(step: Readonly<S.JoinStep>) {
+    return { ...step };
+  }
+
   lowercase(step: Readonly<S.ToLowerStep>) {
     return { ...step };
   }

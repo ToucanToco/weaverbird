@@ -97,9 +97,11 @@ describe('ActionToolbar', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'combine' } });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(1);
+    expect(actionsWrappers.length).toEqual(2);
     actionsWrappers.at(0).trigger('click');
     expect(wrapper.emitted().actionClicked[0]).toEqual(['append']);
+    actionsWrappers.at(1).trigger('click');
+    expect(wrapper.emitted().actionClicked[1]).toEqual(['join']);
   });
 
   describe('When clicking on the "To lowercase" operation', () => {
