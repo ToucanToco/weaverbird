@@ -201,6 +201,12 @@ describe('backend service plugin tests', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'append', pipelines: ['dataset1', 'dataset2'] },
+      {
+        name: 'join',
+        right_pipeline: 'dataset3',
+        type: 'left',
+        on: [['toto', 'tata']],
+      },
     ];
     const store = setupMockStore(
       {
@@ -208,6 +214,7 @@ describe('backend service plugin tests', () => {
         pipelines: {
           dataset1: [{ name: 'domain', domain: 'domain1' }],
           dataset2: [{ name: 'domain', domain: 'domain2' }],
+          dataset3: [{ name: 'domain', domain: 'domain3' }],
         },
       },
       [servicePluginFactory(service)],
@@ -223,6 +230,12 @@ describe('backend service plugin tests', () => {
           [{ name: 'domain', domain: 'domain1' }],
           [{ name: 'domain', domain: 'domain2' }],
         ],
+      },
+      {
+        name: 'join',
+        right_pipeline: [{ name: 'domain', domain: 'domain3' }],
+        type: 'left',
+        on: [['toto', 'tata']],
       },
     ]);
   });
@@ -242,7 +255,16 @@ describe('backend service plugin tests', () => {
             { name: 'domain', domain: 'domain1' },
             { name: 'append', pipelines: ['dataset2'] },
           ],
-          dataset2: [{ name: 'domain', domain: 'domain2' }],
+          dataset2: [
+            { name: 'domain', domain: 'domain2' },
+            {
+              name: 'join',
+              right_pipeline: 'dataset3',
+              type: 'left',
+              on: [['toto', 'tata']],
+            },
+          ],
+          dataset3: [{ name: 'domain', domain: 'domain3' }],
         },
       },
       [servicePluginFactory(service)],
@@ -257,7 +279,20 @@ describe('backend service plugin tests', () => {
         pipelines: [
           [
             { name: 'domain', domain: 'domain1' },
-            { name: 'append', pipelines: [[{ name: 'domain', domain: 'domain2' }]] },
+            {
+              name: 'append',
+              pipelines: [
+                [
+                  { name: 'domain', domain: 'domain2' },
+                  {
+                    name: 'join',
+                    right_pipeline: [{ name: 'domain', domain: 'domain3' }],
+                    type: 'left',
+                    on: [['toto', 'tata']],
+                  },
+                ],
+              ],
+            },
           ],
         ],
       },

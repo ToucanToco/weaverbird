@@ -1489,7 +1489,7 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
-  
+
   it('does not support the convert step', () => {
     const pipeline: Pipeline = [
       {
@@ -1503,5 +1503,194 @@ describe('Pipeline to mongo translator', () => {
     } catch (e) {
       expect(e.message).toBe('Unsupported step <convert>');
     }
+  });
+
+  it('can generate a left join step', () => {
+    const rightPipeline: Pipeline = [
+      { name: 'domain', domain: 'right' },
+      { name: 'delete', columns: ['useless'] },
+    ];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'rename',
+        oldname: 'old',
+        newname: 'new',
+      },
+      {
+        name: 'join',
+        right_pipeline: rightPipeline,
+        type: 'left',
+        on: [['id', 'id']],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'test',
+        },
+      },
+      {
+        $addFields: {
+          new: '$old',
+        },
+      },
+      {
+        $project: {
+          old: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: 'right',
+          let: { vqb_id: '$id' },
+          pipeline: [
+            { $project: { useless: 0, _id: 0 } },
+            { $match: { $expr: { $and: [{ $eq: ['$id', '$$vqb_id'] }] } } },
+          ],
+          as: '_vqbJoinKey',
+        },
+      },
+      { $unwind: { path: '$_vqbJoinKey', preserveNullAndEmptyArrays: true } },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } } },
+      { $project: { _vqbJoinKey: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can generate an inner join step', () => {
+    const rightPipeline: Pipeline = [
+      { name: 'domain', domain: 'right' },
+      { name: 'delete', columns: ['useless'] },
+    ];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'rename',
+        oldname: 'old',
+        newname: 'new',
+      },
+      {
+        name: 'join',
+        right_pipeline: rightPipeline,
+        type: 'inner',
+        on: [
+          ['id', 'id'],
+          ['country', 'country'],
+        ],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'test',
+        },
+      },
+      {
+        $addFields: {
+          new: '$old',
+        },
+      },
+      {
+        $project: {
+          old: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: 'right',
+          let: { vqb_id: '$id', vqb_country: '$country' },
+          pipeline: [
+            { $project: { useless: 0, _id: 0 } },
+            {
+              $match: {
+                $expr: {
+                  $and: [{ $eq: ['$id', '$$vqb_id'] }, { $eq: ['$country', '$$vqb_country'] }],
+                },
+              },
+            },
+          ],
+          as: '_vqbJoinKey',
+        },
+      },
+      { $unwind: '$_vqbJoinKey' },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } } },
+      { $project: { _vqbJoinKey: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can generate a join step with different "left_on" and "right_on" columns', () => {
+    const rightPipeline: Pipeline = [
+      { name: 'domain', domain: 'right' },
+      { name: 'delete', columns: ['useless'] },
+    ];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'rename',
+        oldname: 'old',
+        newname: 'new',
+      },
+      {
+        name: 'join',
+        right_pipeline: rightPipeline,
+        type: 'inner',
+        on: [
+          ['id', 'id_right'],
+          ['country', 'country_right'],
+        ],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'test',
+        },
+      },
+      {
+        $addFields: {
+          new: '$old',
+        },
+      },
+      {
+        $project: {
+          old: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: 'right',
+          let: { vqb_id: '$id', vqb_country: '$country' },
+          pipeline: [
+            { $project: { useless: 0, _id: 0 } },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$id_right', '$$vqb_id'] },
+                    { $eq: ['$country_right', '$$vqb_country'] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: '_vqbJoinKey',
+        },
+      },
+      { $unwind: '$_vqbJoinKey' },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } } },
+      { $project: { _vqbJoinKey: 0, _id: 0 } },
+    ]);
   });
 });

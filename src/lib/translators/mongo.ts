@@ -494,7 +494,6 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
 
 const mapper: Partial<StepMatcher<MongoStep>> = {
   aggregate: transformAggregate,
-  append: _ => [],
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   concatenate: transformConcatenate,
@@ -573,8 +572,8 @@ export class Mongo36Translator extends BaseTranslator {
     return _simplifyMongoPipeline(mongoSteps);
   }
 
-  /** transform an'append' step into corresponding mongo steps */
-  transformAppend(step: Readonly<S.AppendStep>): MongoStep[] {
+  /** transform an 'append' step into corresponding mongo steps */
+  append(step: Readonly<S.AppendStep>): MongoStep[] {
     const pipelines = step.pipelines as S.Pipeline[];
     const pipelinesNames: string[] = ['$_vqbPipelineInline'];
     const lookups: MongoStep[] = [];
@@ -598,6 +597,49 @@ export class Mongo36Translator extends BaseTranslator {
       { $replaceRoot: { newRoot: '$_vqbPipelinesUnion' } },
     ];
   }
+
+  /** transform a 'join' step into corresponding mongo steps */
+  join(step: Readonly<S.JoinStep>): MongoStep[] {
+    const mongoPipeline: MongoStep[] = [];
+    const right = step.right_pipeline as S.Pipeline;
+    const rightDomain = right[0] as S.DomainStep;
+    const rightWithoutDomain = right.slice(1);
+    const mongoLet: { [k: string]: string } = {};
+    const mongoExprAnd: { [k: string]: object }[] = [];
+    for (const [leftOn, rightOn] of step.on) {
+      mongoLet[`vqb_${leftOn}`] = $$(leftOn);
+      mongoExprAnd.push({ $eq: [$$(rightOn), $$($$(`vqb_${leftOn}`))] });
+    }
+    mongoPipeline.push({
+      $lookup: {
+        from: this.domainCollectionMap[rightDomain.domain] || rightDomain.domain,
+        let: mongoLet,
+        pipeline: [
+          ...this.translate(rightWithoutDomain),
+          { $match: { $expr: { $and: mongoExprAnd } } },
+        ],
+        as: '_vqbJoinKey',
+      },
+    });
+    if (step.type === 'inner') {
+      mongoPipeline.push({ $unwind: '$_vqbJoinKey' });
+    } else if (step.type === 'left') {
+      mongoPipeline.push({ $unwind: { path: '$_vqbJoinKey', preserveNullAndEmptyArrays: true } });
+    } else {
+      mongoPipeline.push(
+        { $match: { _vqbJoinKey: { $eq: [] } } },
+        { $unwind: { path: '$_vqbJoinKey', preserveNullAndEmptyArrays: true } },
+      );
+    }
+    mongoPipeline.push(
+      {
+        $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } },
+      },
+      {
+        $project: { _vqbJoinKey: 0 },
+      },
+    );
+    return mongoPipeline;
+  }
 }
-mapper['append'] = Mongo36Translator.prototype.transformAppend;
 Object.assign(Mongo36Translator.prototype, mapper);

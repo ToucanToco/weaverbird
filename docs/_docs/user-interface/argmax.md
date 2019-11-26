@@ -9,6 +9,11 @@ You can use this step to get row(s) matching the maximum value in a given
 column. You can optionally specify to apply the step by group, i.e. get max
 row(s) by group.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Filter`

@@ -133,6 +133,13 @@ export type FromDateStep = {
   format: string;
 };
 
+export type JoinStep = {
+  name: 'join';
+  right_pipeline: Pipeline | string;
+  type: 'left' | 'inner';
+  on: string[][];
+};
+
 export type PercentageStep = {
   name: 'percentage';
   column: string;
@@ -239,6 +246,7 @@ export type PipelineStep =
   | FilterStep
   | FormulaStep
   | FromDateStep
+  | JoinStep
   | PercentageStep
   | PivotStep
   | RenameStep

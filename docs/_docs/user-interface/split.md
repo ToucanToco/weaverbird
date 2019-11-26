@@ -8,6 +8,11 @@ permalink: /docs/split/
 You can use this step to split a text column into several columns, based on a
 delimiter.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Text`

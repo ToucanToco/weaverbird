@@ -7,7 +7,7 @@ permalink: /docs/convert/
 
 You can use this step to cast column data types.
 
-#### Supported backend for translation
+**This step is supported by the following backends:**
 
 - Mongo 4.0
 

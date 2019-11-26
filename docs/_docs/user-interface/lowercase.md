@@ -7,8 +7,10 @@ permalink: /docs/lowercase/
 
 You can use this step to convert a text column to lowercase.
 
-> Hint: you can use this step on a numeric column to convert that numeric
-> column to a text column (i.e. it converts numbers into a numeric text).
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
 
 #### Where to find this step?
 

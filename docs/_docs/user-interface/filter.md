@@ -8,6 +8,11 @@ permalink: /docs/filter/
 You can use this step to filter rows based on one or several conditions. At the
 moment, we only support `and` as logical link between conditions.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Column header menu

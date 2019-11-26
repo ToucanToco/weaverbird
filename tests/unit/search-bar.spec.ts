@@ -50,6 +50,7 @@ describe('SearchBar', () => {
       'replace',
       'sort',
       'append',
+      'join',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -91,6 +92,7 @@ describe('SearchBar', () => {
       'sort',
       'convert',
       'append',
+      'join',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -111,7 +113,6 @@ describe('SearchBar', () => {
         .find('span span')
         .text(),
     ).toEqual('Add text column');
-
   });
 
   it('should emit "actionClicked" when an option multiselect is clicked', () => {

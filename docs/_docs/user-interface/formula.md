@@ -16,6 +16,11 @@ So please apply a rename step beforehand if needed.** (For example rename
 You can also specify a text escaped by quotes. It will then write the specified
 text in every row of the new column.
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Add` and `Compute`

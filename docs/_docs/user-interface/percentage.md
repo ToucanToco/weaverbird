@@ -10,6 +10,11 @@ The computation can be performed by group if specified (i.e. the percentage of
 total will be computed inside every group, as the share of every row in the
 total of its group).
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Compute`

@@ -8,6 +8,11 @@ permalink: /docs/append/
 You can use this step to append on or several registered datasets to the
 current dataset
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 #### Where to find this step?
 
 - Widget `Combine`
