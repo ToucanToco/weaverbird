@@ -69,7 +69,10 @@ export function dereferencePipelines(
     let newStep;
     if (step.name === 'append') {
       const pipelineNames = step.pipelines as string[];
-      newStep = { ...step, pipelines: pipelineNames.map(p => pipelines[p]) };
+      newStep = {
+        ...step,
+        pipelines: pipelineNames.map(p => dereferencePipelines(pipelines[p], pipelines)),
+      };
     } else {
       newStep = { ...step };
     }
