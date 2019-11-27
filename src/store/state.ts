@@ -20,6 +20,10 @@ export interface VQBState {
    */
   currentDomain?: string;
   /**
+   * the current pipeline (being edited) name
+   */
+  currentPipelineName?: string;
+  /**
    * the current step form displayed
    */
   currentStepFormName?: PipelineStepName;
@@ -92,6 +96,7 @@ export const emptyState: VQBState = {
   stepFormInitialValue: undefined,
   selectedStepIndex: -1,
   pipeline: [],
+  currentPipelineName: undefined,
   pipelines: {},
   selectedColumns: [],
   pagesize: 50,

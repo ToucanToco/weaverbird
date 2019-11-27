@@ -274,6 +274,12 @@ describe('mutation tests', () => {
     expect(state.currentDomain).toEqual('bar');
   });
 
+  it('sets currentPipelineName', () => {
+    const state = buildState({});
+    mutations.setCurrentPipelineName(state, { name: 'bar' });
+    expect(state.currentPipelineName).toEqual('bar');
+  });
+
   it('sets pipeline', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
@@ -314,6 +320,12 @@ describe('mutation tests', () => {
     mutations.setPipeline(state, { pipeline });
     expect(state.pipeline).toEqual(pipeline);
     expect(state.currentDomain).toEqual('foo');
+  });
+
+  it('sets pipelines', () => {
+    const state = buildState({});
+    mutations.setPipelines(state, { pipelines: { pipeline1: [], pipeline2: [] } });
+    expect(state.pipelines).toEqual({ pipeline1: [], pipeline2: [] });
   });
 
   it('sets dataset', () => {

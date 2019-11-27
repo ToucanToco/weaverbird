@@ -31,7 +31,9 @@ describe('Append Step Form', () => {
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
     const store = setupMockStore({
+      currentPipelineName: 'my_dataset',
       pipelines: {
+        my_dataset: [{ name: 'domain', domain: 'my_data' }],
         dataset1: [{ name: 'domain', domain: 'domain1' }],
         dataset2: [{ name: 'domain', domain: 'domain2' }],
       },
