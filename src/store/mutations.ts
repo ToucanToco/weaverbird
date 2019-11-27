@@ -70,7 +70,7 @@ export type StateMutation =
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
 export type MutationCallbacks = {
-  [K in StateMutation['type']]: (payload: MutationByType<StateMutation, K>['payload']) => void
+  [K in StateMutation['type']]: (payload: MutationByType<StateMutation, K>['payload']) => void;
 };
 
 export default {
@@ -139,6 +139,12 @@ export default {
     }
   },
   /**
+   * update dataset.
+   */
+  setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
+    state.dataset = dataset;
+  },
+  /**
    * set the list of available domains.
    */
   setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
@@ -160,12 +166,11 @@ export default {
     }
   },
   /**
-   * update dataset.
+   * update pipelines.
    */
-  setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
-    state.dataset = dataset;
+  setPipelines(state: VQBState, { pipelines }: Pick<VQBState, 'pipelines'>) {
+    state.pipelines = pipelines;
   },
-
   /**
    *
    * set selected columns
