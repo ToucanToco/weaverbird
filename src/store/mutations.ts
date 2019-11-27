@@ -139,6 +139,12 @@ export default {
     }
   },
   /**
+   * update currentPipelineName.
+   */
+  setCurrentPipelineName(state: VQBState, { name }: { name: string }) {
+    state.currentPipelineName = name;
+  },
+  /**
    * update dataset.
    */
   setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
