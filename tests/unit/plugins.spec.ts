@@ -195,7 +195,7 @@ describe('backend service plugin tests', () => {
     ]);
   });
 
-  it('should call execute pipeline with dereferenced pipelines', async () => {
+  it('should call execute pipeline after dereferencing pipelines', async () => {
     const service = new DummyService();
     const executeSpy = jest.spyOn(service, 'executePipeline');
     const pipeline: Pipeline = [
@@ -222,6 +222,43 @@ describe('backend service plugin tests', () => {
         pipelines: [
           [{ name: 'domain', domain: 'domain1' }],
           [{ name: 'domain', domain: 'domain2' }],
+        ],
+      },
+    ]);
+  });
+
+  it('should call execute pipeline after dereferencing imbricated pipelines', async () => {
+    const service = new DummyService();
+    const executeSpy = jest.spyOn(service, 'executePipeline');
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'append', pipelines: ['dataset1'] },
+    ];
+    const store = setupMockStore(
+      {
+        pipeline,
+        pipelines: {
+          dataset1: [
+            { name: 'domain', domain: 'domain1' },
+            { name: 'append', pipelines: ['dataset2'] },
+          ],
+          dataset2: [{ name: 'domain', domain: 'domain2' }],
+        },
+      },
+      [servicePluginFactory(service)],
+    );
+    store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
+    await flushPromises();
+    expect(executeSpy).toHaveBeenCalledTimes(1);
+    expect(executeSpy.mock.calls[0][1]).toEqual([
+      { domain: 'GoT', name: 'domain' },
+      {
+        name: 'append',
+        pipelines: [
+          [
+            { name: 'domain', domain: 'domain1' },
+            { name: 'append', pipelines: [[{ name: 'domain', domain: 'domain2' }]] },
+          ],
         ],
       },
     ]);

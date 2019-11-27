@@ -559,6 +559,17 @@ const mapper: StepMatcher<MongoStep> = {
 };
 
 export class Mongo36Translator extends BaseTranslator {
+  domainCollectionMap: { [k: string]: string };
+
+  constructor() {
+    super();
+    this.domainCollectionMap = {};
+  }
+
+  setDomainCollectionMap(domColMap: { [k: string]: string }) {
+    this.domainCollectionMap = domColMap;
+  }
+
   translate(pipeline: S.Pipeline) {
     const mongoSteps = super.translate(pipeline).flat();
     if (mongoSteps.length) {
@@ -577,7 +588,7 @@ export class Mongo36Translator extends BaseTranslator {
       const pipelineWithoutDomain = pipelines[i].slice(1);
       lookups.push({
         $lookup: {
-          from: domainStep.domain,
+          from: this.domainCollectionMap[domainStep.domain] || domainStep.domain,
           pipeline: this.translate(pipelineWithoutDomain),
           as: `_vqbPipelineToAppend_${i}`,
         },
