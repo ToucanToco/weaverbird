@@ -223,4 +223,11 @@ export default {
   setLoading(state: VQBState, { isLoading }: { isLoading: boolean }) {
     state.isLoading = isLoading;
   },
+
+  /**
+   * Update translator.
+   */
+  setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {
+    state.translator = translator;
+  },
 };

@@ -113,6 +113,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Concatenate columns ${formatMulticol(step.columns)}`;
   }
 
+  convert(step: Readonly<S.ConvertStep>) {
+    return `Convert columns ${formatMulticol(step.columns)} into ${step.data_type}`;
+  }
+
   custom(_step: Readonly<S.CustomStep>) {
     return 'Custom step';
   }

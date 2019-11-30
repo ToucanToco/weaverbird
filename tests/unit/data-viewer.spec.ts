@@ -97,9 +97,9 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
-      expect(headerCellsWrapper.at(0).text()).toEqual('columnA');
-      expect(headerCellsWrapper.at(1).text()).toEqual('columnB');
-      expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
+      expect(headerCellsWrapper.at(0).text()).toContain('columnA');
+      expect(headerCellsWrapper.at(1).text()).toContain('columnB');
+      expect(headerCellsWrapper.at(2).text()).toContain('columnC');
     });
 
     it("should contains column's names even if not on every rows", () => {
@@ -126,10 +126,10 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
-      expect(headerCellsWrapper.at(0).text()).toEqual('columnA');
-      expect(headerCellsWrapper.at(1).text()).toEqual('columnB');
-      expect(headerCellsWrapper.at(2).text()).toEqual('columnC');
-      expect(headerCellsWrapper.at(3).text()).toEqual('columnD');
+      expect(headerCellsWrapper.at(0).text()).toContain('columnA');
+      expect(headerCellsWrapper.at(1).text()).toContain('columnB');
+      expect(headerCellsWrapper.at(2).text()).toContain('columnC');
+      expect(headerCellsWrapper.at(3).text()).toContain('columnD');
     });
 
     it('should display the right icon for each types', () => {
@@ -143,6 +143,7 @@ describe('Data Viewer', () => {
             { name: 'columnD', type: 'date' },
             { name: 'columnE', type: 'object' },
             { name: 'columnF', type: 'boolean' },
+            { name: 'columnG', type: 'undefined' },
           ],
           data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
           paginationContext: {
@@ -169,6 +170,44 @@ describe('Data Viewer', () => {
           .find('i')
           .classes(),
       ).toEqual(['fas', 'fa-check']);
+      expect(headerIconsWrapper.at(6).text()).toEqual('???');
+    });
+
+    it('should have a data type menu for supported backends', async () => {
+      const store = setupMockStore({
+        translator: 'mongo40',
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [['value1', 'value2', 'value3']],
+          paginationContext: {
+            totalCount: 1,
+          },
+        },
+      });
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+      expect(wrapper.find('datatypesmenu-stub').exists()).toBeTruthy();
+      expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeTruthy();
+      wrapper.find('.data-viewer__header-icon--active').trigger('click');
+      await localVue.nextTick();
+      expect(wrapper.vm.$data.indexActiveDataTypeMenu).toEqual(0);
+      wrapper.find('datatypesmenu-stub').trigger('closed');
+      await localVue.nextTick();
+    });
+
+    it('should have a data type menu for not supported backends', () => {
+      const store = setupMockStore({
+        translator: 'mongo36',
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [['value1', 'value2', 'value3']],
+          paginationContext: {
+            totalCount: 1,
+          },
+        },
+      });
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+      expect(wrapper.find('datatypesmenu-stub').exists()).toBeFalsy();
+      expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeFalsy();
     });
 
     describe('selection', () => {
@@ -307,6 +346,13 @@ describe('Data Viewer', () => {
 
     it('should open step form when click in toolbar', () => {
       const actionMenuWrapper = wrapper.find('actiontoolbar-stub');
+
+      actionMenuWrapper.vm.$emit('actionClicked', { stepName: 'rename' });
+      expect(openStepFormStub).toBeCalledWith({ stepName: 'rename' });
+    });
+
+    it('should open step form when click in action menu', async () => {
+      const actionMenuWrapper = wrapper.find('actionmenu-stub');
 
       actionMenuWrapper.vm.$emit('actionClicked', { stepName: 'rename' });
       expect(openStepFormStub).toBeCalledWith({ stepName: 'rename' });

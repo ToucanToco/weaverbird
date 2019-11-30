@@ -4,6 +4,7 @@ import _ from 'lodash';
 import * as S from '@/lib/steps';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
+import { $$ } from '@/lib/helpers';
 import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
 
@@ -21,15 +22,6 @@ type ComboOperator = 'and' | 'or';
 type FilterComboAndMongo = {
   $and: MongoStep[];
 };
-
-/**
- * small helper / shortcut for `$${mycol}`
- *
- * @param colname the column name
- */
-function $$(colname: string) {
-  return `$${colname}`;
-}
 
 /**
  * Transform a list of column names into a mongo map `colname` -> `$colname`
@@ -500,7 +492,7 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
   return outputSteps;
 }
 
-const mapper: StepMatcher<MongoStep> = {
+const mapper: Partial<StepMatcher<MongoStep>> = {
   aggregate: transformAggregate,
   append: _ => [],
   argmax: transformArgmaxArgmin,

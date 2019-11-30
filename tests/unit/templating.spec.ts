@@ -85,6 +85,17 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave convert steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'convert',
+        columns: ['<%= foo %>', '<%= bar %>'],
+        data_type: 'date',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave custom steps untouched', () => {
     const pipeline: Pipeline = [
       {

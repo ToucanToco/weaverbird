@@ -6,6 +6,8 @@
 
 - Added `append` step (to append datasets resulting from multiple pipelines)
 - Mongo4.0 translator scaffold
+- Add data types conversion operations (with specific UI), only supported by
+  the 'mongo40' translator
 
 ### Fixed
 

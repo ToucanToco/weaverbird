@@ -73,6 +73,15 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Concatenate columns "Foo", "Bar"');
   });
 
+  it('generates label for convert steps', () => {
+    const step: S.ConvertStep = {
+      name: 'convert',
+      columns: ['Foo', 'Bar'],
+      data_type: 'integer',
+    };
+    expect(hrl(step)).toEqual('Convert columns "Foo", "Bar" into integer');
+  });
+
   it('generates label for custom steps', () => {
     const step: S.CustomStep = {
       name: 'custom',

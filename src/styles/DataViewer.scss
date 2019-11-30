@@ -60,12 +60,17 @@
   border-top-color: $active-color;
   border-left: 1px double;
   color: $active-color;
+
   .data-viewer__header-action:hover {
     background-color: $active-color-faded-2;
   }
 
   .data-viewer__header-icon {
     color: $active-color-faded;
+  }
+
+  .data-viewer__header-icon--active:hover {
+    color: $active-color;
   }
 }
 
@@ -100,9 +105,6 @@
   background-color: $data-viewer-border-color;
 }
 
-.data-viewer__header-cell:hover {
-  .data-viewer__header-action {
-    opacity: 1;
-    visibility: visible;
-  }
+.data-viewer__header-icon--active:hover {
+  color: $base-color;
 }

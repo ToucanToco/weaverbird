@@ -3,7 +3,7 @@ title: Split column
 permalink: /docs/split/
 ---
 
-### Replace values
+### Split column
 
 You can use this step to split a text column into several columns, based on a
 delimiter.

@@ -1,4 +1,4 @@
-import { castFromString, generateNewColumnName } from '@/lib/helpers';
+import { castFromString, generateNewColumnName, $$ } from '@/lib/helpers';
 
 describe('castFromString', () => {
   it('should cast numeric string to number type', () => {
@@ -47,6 +47,12 @@ describe('castFromString', () => {
       expect(generateNewColumnName(newName, existingNames)).toEqual('foo1');
       existingNames.push('foo1');
       expect(generateNewColumnName(newName, existingNames)).toEqual('foo2');
+    });
+  });
+
+  describe('$$: mongo column name', () => {
+    it('should return a formatted mongo column name', () => {
+      expect($$('test')).toEqual('$test');
     });
   });
 });

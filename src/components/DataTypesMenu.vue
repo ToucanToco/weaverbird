@@ -1,14 +1,31 @@
 <template>
   <popover :active="isActive" :align="alignLeft" bottom>
-    <div class="action-menu__body">
-      <div class="action-menu__section">
-        <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
-        <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
-        <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
-        <div class="action-menu__option" @click="createStep('filter')">Filter values</div>
-        <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
-        <div class="action-menu__option" @click="createStep('replace')">Replace values</div>
-        <div class="action-menu__option" @click="createStep('sort')">Sort values</div>
+    <div class="data-types-menu__body">
+      <div class="data-types-menu__section">
+        <div class="data-types-menu__option" @click="createConvertStep('integer')">
+          <span class="data-types-menu__icon">123</span>
+          <span>Integer</span>
+        </div>
+        <div class="data-types-menu__option" @click="createConvertStep('float')">
+          <span class="data-types-menu__icon">1.2</span>
+          <span>Float</span>
+        </div>
+        <div class="data-types-menu__option" @click="createConvertStep('text')">
+          <span class="data-types-menu__icon">ABC</span>
+          <span>Text</span>
+        </div>
+        <div class="data-types-menu__option" @click="createConvertStep('date')">
+          <span class="data-types-menu__icon">
+            <i class="fas fa-calendar-alt" />
+          </span>
+          <span>Date</span>
+        </div>
+        <div class="data-types-menu__option" @click="createConvertStep('boolean')">
+          <span class="data-types-menu__icon">
+            <i class="fas fa-check" />
+          </span>
+          <span>Boolean</span>
+        </div>
       </div>
     </div>
   </popover>
@@ -18,16 +35,18 @@ import { VQBModule } from '@/store';
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from './Popover.vue';
-import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import { Pipeline, ConvertStep } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
 
+type dataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
+
 @Component({
-  name: 'action-menu',
+  name: 'data-types-menu',
   components: {
     Popover,
   },
 })
-export default class ActionMenu extends Vue {
+export default class DataTypesMenu extends Vue {
   @Prop({
     type: Boolean,
     default: () => false,
@@ -67,25 +86,22 @@ export default class ActionMenu extends Vue {
     this.$emit('closed');
   }
 
-  createDeleteColumnStep() {
+  createConvertStep(dataType: dataType) {
     const newPipeline: Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
-    const deletecolumnStep: PipelineStep = { name: 'delete', columns: [this.columnName] };
-    /**
-     * If a step edition form is already open, close it so that the left panel displays
-     * the pipeline with the new delete step inserted
-     */
+    const convertStep: ConvertStep = {
+      name: 'convert',
+      columns: [this.columnName],
+      data_type: dataType,
+    };
+    // If a step edition form is already open, close it so that the left panel
+    // displays the pipeline with the new delete step inserted
     if (this.isEditingStep) {
       this.closeStepForm();
     }
-    newPipeline.splice(index, 0, deletecolumnStep);
+    newPipeline.splice(index, 0, convertStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
-    this.close();
-  }
-
-  createStep(stepName: PipelineStepName) {
-    this.$emit('actionClicked', stepName);
     this.close();
   }
 
@@ -102,7 +118,7 @@ export default class ActionMenu extends Vue {
 <style lang="scss">
 @import '../styles/_variables';
 
-.action-menu__body {
+.data-types-menu__body {
   display: flex;
   flex-direction: column;
   border-radius: 3px;
@@ -114,7 +130,7 @@ export default class ActionMenu extends Vue {
   color: $base-color;
 }
 
-.action-menu__section {
+.data-types-menu__section {
   display: flex;
   flex-direction: column;
   border-color: $data-viewer-border-color;
@@ -125,14 +141,13 @@ export default class ActionMenu extends Vue {
   }
 }
 
-.action-menu__option {
+.data-types-menu__option {
   display: flex;
   align-items: center;
   cursor: pointer;
   font-size: 13px;
   padding: 10px 12px;
   line-height: 20px;
-  justify-content: space-between;
   position: relative;
 
   &:hover {
@@ -143,5 +158,10 @@ export default class ActionMenu extends Vue {
   &:last-child {
     margin-bottom: 0;
   }
+}
+
+.data-types-menu__icon {
+  font-family: 'Roboto Slab', serif;
+  width: 30%;
 }
 </style>

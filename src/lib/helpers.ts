@@ -45,3 +45,12 @@ export function generateNewColumnName(newName: string, existingNames: string[]):
   }
   return validNewName;
 }
+
+/**
+ * small helper / shortcut for `$${mycol}` in mongo translations
+ *
+ * @param colname the column name
+ */
+export function $$(colname: string) {
+  return `$${colname}`;
+}
