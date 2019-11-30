@@ -11,7 +11,9 @@ const {
   registerModule,
 } = vqb;
 
-const mongo40translator = getTranslator('mongo40');
+const TRANSLATOR = 'mongo40'
+
+const mongo40translator = getTranslator(TRANSLATOR);
 
 const CASTERS = {
   date: (val) => new Date(val),
@@ -258,6 +260,7 @@ async function buildVueApp() {
           ],
         },
         currentDomain: 'test-collection',
+        translator: TRANSLATOR,
         // use lodash interpolate
         interpolateFunc: (value, context) => _.template(value)(context),
         variables: {

@@ -46,6 +46,12 @@ export type ConcatenateStep = {
   new_column_name: string;
 };
 
+export type ConvertStep = {
+  name: 'convert';
+  columns: string[];
+  data_type: 'boolean' | 'date' | 'float' | 'integer' | 'text';
+};
+
 export type CustomStep = {
   name: 'custom';
   query: object;
@@ -217,6 +223,7 @@ export type PipelineStep =
   | ArgmaxStep
   | ArgminStep
   | ConcatenateStep
+  | ConvertStep
   | CustomStep
   | DeleteStep
   | DuplicateColumnStep

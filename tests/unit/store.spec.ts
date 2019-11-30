@@ -204,6 +204,13 @@ describe('getter tests', () => {
       expect(getters.thereIsABackendError(state)).toBeTruthy();
     });
   });
+
+  describe('translator', () => {
+    it('should return the app translator', () => {
+      const state = buildState({ translator: 'mongo40' });
+      expect(getters.translator(state)).toEqual('mongo40');
+    });
+  });
 });
 
 describe('mutation tests', () => {
@@ -408,5 +415,13 @@ describe('mutation tests', () => {
       isLoading: true,
     });
     expect(state.isLoading).toEqual(true);
+  });
+
+  it('sets translator to true', () => {
+    const state = buildState({ translator: 'mongo36' });
+    mutations.setTranslator(state, {
+      translator: 'mongo40',
+    });
+    expect(state.translator).toEqual('mongo40');
   });
 });

@@ -1,3 +1,5 @@
+import { PipelineStepName } from '@/lib/steps';
+
 export type ButtonDef = Readonly<{
   icon: string;
   label: string;
@@ -5,7 +7,7 @@ export type ButtonDef = Readonly<{
   enable: boolean;
 }>;
 
-type ActionCategories = {
+export type ActionCategories = {
   compute: ActionCategory[];
   filter: ActionCategory[];
   text: ActionCategory[];
@@ -16,7 +18,7 @@ type ActionCategories = {
 };
 
 export type ActionCategory = {
-  name: string;
+  name: PipelineStepName;
   label: string;
 };
 
@@ -93,9 +95,10 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'Others action',
     actions: [
+      { name: 'convert', label: 'Convert column data type' },
       { name: 'duplicate', label: 'Duplicate column' },
-      { name: 'rename', label: 'Rename column' },
       { name: 'fillna', label: 'Fill null values' },
+      { name: 'rename', label: 'Rename column' },
       { name: 'replace', label: 'Replace values' },
       { name: 'sort', label: 'Sort values' },
     ],

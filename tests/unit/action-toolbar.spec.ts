@@ -14,6 +14,8 @@ describe('ActionToolbar', () => {
       propsData: {
         buttons: CATEGORY_BUTTONS,
       },
+      store: setupMockStore({}),
+      localVue,
     });
     const actionButtons = wrapper.findAll(ActionToolbarButton);
     expect(actionButtons.length).toEqual(7);

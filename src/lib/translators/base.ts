@@ -106,6 +106,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   concatenate(step: Readonly<S.ConcatenateStep>) {}
 
   @unsupported
+  convert(step: Readonly<S.ConvertStep>) {}
+
+  @unsupported
   custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported

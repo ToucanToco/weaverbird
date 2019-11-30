@@ -75,6 +75,11 @@ export interface VQBState {
    * interpolation function
    */
   interpolateFunc?: InterpolateFunction;
+
+  /**
+   * the app translator
+   */
+  translator: string;
 }
 
 /**
@@ -103,6 +108,7 @@ export const emptyState: VQBState = {
   backendError: undefined,
   isLoading: false,
   variables: {},
+  translator: 'mongo40',
   interpolateFunc: (x: string, _context: ScopeContext) => x,
 };
 

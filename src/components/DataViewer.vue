@@ -1,7 +1,7 @@
 <template>
   <div class="data-viewer">
-    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm"/>
-    <div v-if="isLoading" class="data-viewer-loader-spinner"/>
+    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm" />
+    <div v-if="isLoading" class="data-viewer-loader-spinner" />
     <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
       <table class="data-viewer-table">
         <thead class="data-viewer__header">
@@ -10,13 +10,17 @@
               v-for="(column, index) in formattedColumns"
               :class="column.class"
               :key="column.name"
-              @click="toggleColumnSelection({ column: column.name})"
+              @click="toggleColumnSelection({ column: column.name })"
             >
-              <span
-                v-if="column.type"
-                v-html="getIconType(column.type)"
-                class="data-viewer__header-icon"
-              />
+              <span v-if="column.type" :class="iconClass" @click.stop="openDataTypeMenu(index)">
+                <span v-html="getIconType(column.type)" />
+                <DataTypesMenu
+                  v-if="isSupported('convert')"
+                  :column-name="column.name"
+                  :is-active="column.isDataTypeMenuOpened"
+                  @closed="closeDataTypeMenu"
+                />
+              </span>
               <span class="data-viewer__header-label">{{ column.name }}</span>
               <i class="data-viewer__header-action fas fa-angle-down" @click.stop="openMenu(index)">
                 <ActionMenu
@@ -50,9 +54,11 @@ import Vue from 'vue';
 import { VQBModule } from '@/store';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import { PipelineStepName } from '@/lib/steps';
+import { getTranslator } from '@/lib/translators';
 import { Component } from 'vue-property-decorator';
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
+import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
 import Pagination from '@/components/Pagination.vue';
 import { CATEGORY_BUTTONS } from './constants';
@@ -67,6 +73,7 @@ import { CATEGORY_BUTTONS } from './constants';
   components: {
     ActionMenu,
     ActionToolbar,
+    DataTypesMenu,
     DataViewerCell,
     Pagination,
   },
@@ -79,12 +86,14 @@ export default class DataViewer extends Vue {
 
   @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
+  @VQBModule.Getter translator!: string;
 
   @VQBModule.Mutation createStepForm!: ({ stepName }: { stepName: PipelineStepName }) => void;
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
   indexActiveActionMenu = -1;
+  indexActiveDataTypeMenu = -1;
 
   /**
    * @description Get our columns with their names and linked classes
@@ -94,15 +103,21 @@ export default class DataViewer extends Vue {
   get formattedColumns() {
     return this.columnHeaders.map((d, index) => {
       let isActionMenuOpened = false;
+      let isDataTypeMenuOpened = false;
 
       if (index === this.indexActiveActionMenu) {
         isActionMenuOpened = true;
       }
 
+      if (index === this.indexActiveDataTypeMenu) {
+        isDataTypeMenuOpened = true;
+      }
+
       return {
         name: d.name,
-        type: d.type || undefined,
+        type: d.type || 'undefined',
         isActionMenuOpened,
+        isDataTypeMenuOpened,
         class: {
           'data-viewer__header-cell': true,
           'data-viewer__header-cell--active': this.isSelected(d.name),
@@ -113,6 +128,14 @@ export default class DataViewer extends Vue {
 
   get buttons() {
     return CATEGORY_BUTTONS;
+  }
+
+  get iconClass() {
+    if (this.isSupported('convert')) {
+      return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': true };
+    } else {
+      return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': false };
+    }
   }
 
   /**
@@ -134,6 +157,10 @@ export default class DataViewer extends Vue {
     return this.selectedColumns.includes(column);
   }
 
+  isSupported(step: PipelineStepName) {
+    return getTranslator(this.translator).supports(step);
+  }
+
   getIconType(type: DataSetColumnType) {
     switch (type) {
       case 'string':
@@ -148,7 +175,18 @@ export default class DataViewer extends Vue {
         return '<i class="fas fa-check"></i>';
       case 'object':
         return '{ }';
+      default:
+        return '???';
     }
+  }
+
+  openDataTypeMenu(index: number) {
+    this.indexActiveDataTypeMenu = index;
+    this.setSelectedColumns({ column: this.formattedColumns[index].name });
+  }
+
+  closeDataTypeMenu() {
+    this.indexActiveDataTypeMenu = -1;
   }
 
   openMenu(index: number) {

@@ -81,4 +81,8 @@ export default {
    * Get the step config of the pipeline based on its index
    */
   stepConfig: (state: VQBState) => (index: number) => state.pipeline[index],
+  /**
+   * Return the app translator name
+   */
+  translator: (state: VQBState) => state.translator,
 };

@@ -15,8 +15,11 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { groupActions, SEARCH_ACTION } from './constants';
+import { SEARCH_ACTION } from './constants';
 import Multiselect from 'vue-multiselect';
+import { VQBModule } from '../store';
+import { getTranslator } from '@/lib/translators';
+import { PipelineStepName } from '../lib/steps';
 
 @Component({
   name: 'search-bar',
@@ -25,9 +28,17 @@ import Multiselect from 'vue-multiselect';
   },
 })
 export default class SearchBar extends Vue {
-  actionOptions: groupActions[] = SEARCH_ACTION;
+  @VQBModule.Getter translator!: string;
 
-  actionClicked(actionName: { name: string }) {
+  get actionOptions() {
+    const unsupportedSteps = getTranslator(this.translator).unsupportedSteps;
+    return SEARCH_ACTION.map(e => ({
+      ...e,
+      actions: e.actions.filter(a => !unsupportedSteps.includes(a.name)),
+    }));
+  }
+
+  actionClicked(actionName: { name: PipelineStepName }) {
     this.$emit('actionClicked', actionName.name);
   }
 }

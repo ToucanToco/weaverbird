@@ -5,8 +5,8 @@ import { MongoStep, _simplifyAndCondition, _simplifyMongoPipeline } from '@/lib/
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
 
-  it('should support any kind of operation', () => {
-    expect(mongo36translator.unsupportedSteps).toEqual([]);
+  it('should not support "convert" operation', () => {
+    expect(mongo36translator.unsupportedSteps).toEqual(['convert']);
   });
 });
 
@@ -1488,5 +1488,20 @@ describe('Pipeline to mongo translator', () => {
       { $replaceRoot: { newRoot: '$_vqbPipelinesUnion' } },
       { $project: { _id: 0 } },
     ]);
+  });
+  
+  it('does not support the convert step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'convert',
+        columns: ['foo', 'bar'],
+        data_type: 'boolean',
+      },
+    ];
+    try {
+      mongo36translator.translate(pipeline);
+    } catch (e) {
+      expect(e.message).toBe('Unsupported step <convert>');
+    }
   });
 });
