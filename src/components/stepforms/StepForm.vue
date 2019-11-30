@@ -21,7 +21,7 @@ type VqbError = Partial<ErrorObject>;
 type ValidatorProxy = {
   (step: PipelineStep): boolean | PromiseLike<any>;
   errors?: ErrorObject[] | null;
-}
+};
 
 /**
  * build a proxy on a Vue component instance that will automatically
@@ -115,20 +115,6 @@ export default class BaseStepForm<StepType> extends Vue {
     if (column) {
       this.setSelectedColumns({ column });
     }
-    this.editedStepModel = schemaFactory(this.stepname, this);
-    const ajv = Ajv({ schemaId: 'auto', allErrors: true });
-    addAjvKeywords(ajv);
-    const ajvValidator = ajv.compile(this.editedStepModel);
-    const interpolator = new PipelineInterpolator(
-      this.interpolateFunc,
-      this.variables);
-
-    const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
-      const ret = ajvValidator(interpolator.interpolateStep(step));
-      interpolateAndValidate.errors = ajvValidator.errors;
-      return ret;
-    }
-    this.validator = interpolateAndValidate;
   }
 
   mounted() {
@@ -221,6 +207,17 @@ export default class BaseStepForm<StepType> extends Vue {
    * with the edited step.
    */
   submit() {
+    this.editedStepModel = schemaFactory(this.stepname, this);
+    const ajv = Ajv({ schemaId: 'auto', allErrors: true });
+    addAjvKeywords(ajv);
+    const ajvValidator = ajv.compile(this.editedStepModel);
+    const interpolator = new PipelineInterpolator(this.interpolateFunc, this.variables);
+    const interpolateAndValidate: ValidatorProxy = function(step: PipelineStep) {
+      const ret = ajvValidator(interpolator.interpolateStep(step));
+      interpolateAndValidate.errors = ajvValidator.errors;
+      return ret;
+    };
+    this.validator = interpolateAndValidate;
     const errors = this.validate();
     this.errors = errors;
     if (errors === null) {
