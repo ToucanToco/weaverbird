@@ -1,5 +1,17 @@
 # Changelog
 
+
+## NEXT_RELEASE - RELEASE_DATE
+
+### Added
+
+- Mongo4.0 translator scaffold
+
+### Fixed
+
+- build stepform validator at submit time to avoid race condition
+  between `_updateDataset` and `initialize`
+
 ## [0.5.0] - 2019-11-13
 
 ### Added
