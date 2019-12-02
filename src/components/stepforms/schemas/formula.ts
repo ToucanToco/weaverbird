@@ -1,6 +1,4 @@
-import { StepFormType, addNotInColumnNamesConstraint } from './utils';
-
-const schema = {
+export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Formula step',
   type: 'object',
@@ -31,7 +29,3 @@ const schema = {
   required: ['name', 'formula', 'new_column'],
   additionalProperties: false,
 };
-
-export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'new_column', form.columnNames);
-}
