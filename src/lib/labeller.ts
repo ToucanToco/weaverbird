@@ -190,6 +190,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Extract substring from "${step.column}"`;
   }
 
+  text(step: Readonly<S.AddTextColumnStep>) {
+    return `Add text column "${step.new_column}"`;
+  }
+
   todate(step: Readonly<S.ToDateStep>) {
     return `Convert "${step.column}" into date`;
   }

@@ -8,6 +8,7 @@ export type ButtonDef = Readonly<{
 }>;
 
 export type ActionCategories = {
+  add: ActionCategory[];
   compute: ActionCategory[];
   filter: ActionCategory[];
   text: ActionCategory[];
@@ -28,6 +29,10 @@ export type groupActions = {
 };
 
 export const ACTION_CATEGORIES: ActionCategories = {
+  add: [
+    { name: 'text', label: 'Add text column' },
+    { name: 'formula', label: 'Add formula column' },
+  ],
   filter: [
     { name: 'delete', label: 'Delete columns' },
     { name: 'select', label: 'Keep columns' },
@@ -41,6 +46,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'percentage', label: 'Percentage of total' },
   ],
   text: [
+    { name: 'text', label: 'Add text column' },
     { name: 'concatenate', label: 'Concatenate' },
     { name: 'split', label: 'Split column' },
     { name: 'substring', label: 'Extract substring' },
@@ -59,6 +65,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
 };
 
 export const SEARCH_ACTION: groupActions[] = [
+  {
+    type: 'add',
+    actions: [...ACTION_CATEGORIES.add],
+  },
   {
     type: 'filter',
     actions: [...ACTION_CATEGORIES.filter],
@@ -106,6 +116,12 @@ export const SEARCH_ACTION: groupActions[] = [
 ];
 
 export const CATEGORY_BUTTONS: ButtonDef[] = [
+  {
+    category: 'add',
+    enable: true,
+    icon: 'plus',
+    label: 'Add',
+  },
   {
     category: 'filter',
     enable: true,

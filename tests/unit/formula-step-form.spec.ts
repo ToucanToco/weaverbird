@@ -12,7 +12,7 @@ interface ValidationError {
   keyword: string;
 }
 
-describe('Rename Step Form', () => {
+describe('Formula Step Form', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});

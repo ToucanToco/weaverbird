@@ -160,6 +160,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   substring(step: Readonly<S.SubstringStep>) {}
 
   @unsupported
+  text(step: Readonly<S.AddTextColumnStep>) {}
+
+  @unsupported
   todate(step: Readonly<S.ToDateStep>) {}
 
   @unsupported

@@ -1198,6 +1198,49 @@ Neither `start_index` nor `end_index` can be equal to 0.
 | can   | 10    |
 | oco   | 5     |
 
+### `text` step
+
+Use this step to add a text column where every value will be equal to the
+specified `text`.
+
+```javascript
+{
+  {
+    name: 'text',
+    new_column: 'new', // if the column already exists, overwrites it
+    text: 'some text'
+  }
+}
+```
+
+#### Example
+
+**Input dataset:**
+
+| Label   | Value1 |
+| ------- | ------ |
+| Label 1 | 10     |
+| Label 2 | 1      |
+| Label 3 | 5      |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'text',
+  new_column: 'KPI',
+  formula: 'Sales'
+}
+```
+
+**Output dataset:**
+
+| Label   | Value1 | KPI   |
+| ------- | ------ | ----- |
+| Label 1 | 10     | Sales |
+| Label 2 | 1      | Sales |
+| Label 3 | 5      | Sales |
+
 ### `todate` step
 
 Converts a string `column` into a date column based on a specified `format`.

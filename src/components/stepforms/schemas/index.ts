@@ -19,6 +19,7 @@ import selectSchema from './select';
 import sortSchema from './sort';
 import splitSchema from './split';
 import substringSchema from './substring';
+import textSchema from './text';
 import toLowerSchema from './tolower';
 import toDateSchema from './todate';
 import topBuildSchema from './top';
@@ -50,6 +51,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   sort: sortSchema,
   split: splitSchema,
   substring: substringSchema,
+  text: textSchema,
   todate: toDateSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,

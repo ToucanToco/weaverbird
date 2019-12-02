@@ -540,6 +540,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   split: transformSplit,
   sort: transformSort,
   substring: transformSubstring,
+  text: step => ({ $addFields: { [step.new_column]: step.text } }),
   todate: (step: Readonly<S.ToDateStep>) => ({
     $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
   }),
