@@ -12,7 +12,7 @@ interface ValidationError {
   keyword: string;
 }
 
-describe('Rename Step Form', () => {
+describe('Formula Step Form', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
@@ -62,26 +62,6 @@ describe('Rename Step Form', () => {
         { keyword: 'minLength', dataPath: '.formula' },
         { keyword: 'minLength', dataPath: '.new_column' },
       ]);
-    });
-
-    it('should report errors when newname is an already existing column name', async () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      });
-      const wrapper = mount(FormulaStepForm, { store, localVue });
-      wrapper.setData({
-        editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'columnB' },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-        keyword: err.keyword,
-        dataPath: err.dataPath,
-      }));
-      expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column' }]);
     });
   });
 
@@ -141,21 +121,5 @@ describe('Rename Step Form', () => {
     wrapper.setData({ editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(store.state.vqb.selectedColumns).toEqual(['foo']);
-  });
-
-  it('should not change the column focus if validation fails', () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(FormulaStepForm, { store, localVue });
-    wrapper.setData({
-      editedStep: { name: 'formula', formula: 'ColumnA * 2', new_column: 'columnB' },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.vqb.selectedColumns).toEqual(['columnA']);
   });
 });
