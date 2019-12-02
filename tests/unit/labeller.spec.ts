@@ -384,6 +384,15 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Extract substring from "foo"');
   });
 
+  it('generates label for text steps', () => {
+    const step: S.AddTextColumnStep = {
+      name: 'text',
+      text: 'Hello',
+      new_column: 'test',
+    };
+    expect(hrl(step)).toEqual('Add text column "test"');
+  });
+
   it('generates label for todate steps', () => {
     const step: S.ToDateStep = {
       name: 'todate',

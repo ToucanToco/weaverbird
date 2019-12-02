@@ -18,21 +18,23 @@ describe('ActionToolbar', () => {
       localVue,
     });
     const actionButtons = wrapper.findAll(ActionToolbarButton);
-    expect(actionButtons.length).toEqual(7);
-    expect(actionButtons.at(0).props().category).toEqual('filter');
+    expect(actionButtons.length).toEqual(8);
+    expect(actionButtons.at(0).props().category).toEqual('add');
     expect(actionButtons.at(0).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(1).props().category).toEqual('compute');
+    expect(actionButtons.at(1).props().category).toEqual('filter');
     expect(actionButtons.at(1).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(2).props().category).toEqual('text');
+    expect(actionButtons.at(2).props().category).toEqual('compute');
     expect(actionButtons.at(2).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(3).props().category).toEqual('date');
+    expect(actionButtons.at(3).props().category).toEqual('text');
     expect(actionButtons.at(3).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(4).props().category).toEqual('aggregate');
+    expect(actionButtons.at(4).props().category).toEqual('date');
     expect(actionButtons.at(4).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(5).props().category).toEqual('reshape');
+    expect(actionButtons.at(5).props().category).toEqual('aggregate');
     expect(actionButtons.at(5).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(6).props().category).toEqual('combine');
+    expect(actionButtons.at(6).props().category).toEqual('reshape');
     expect(actionButtons.at(6).classes()).toContain('action-toolbar__btn');
+    expect(actionButtons.at(7).props().category).toEqual('combine');
+    expect(actionButtons.at(7).classes()).toContain('action-toolbar__btn');
   });
 
   it('should instantiate with its hidden popover', () => {

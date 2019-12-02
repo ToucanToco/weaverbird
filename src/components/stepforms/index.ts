@@ -1,3 +1,4 @@
+import './AddTextColumnStepForm.vue';
 import './AggregateStepForm.vue';
 import './AppendStepForm.vue';
 import './ArgminStepForm.vue';

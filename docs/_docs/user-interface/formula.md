@@ -18,7 +18,7 @@ text in every row of the new column.
 
 #### Where to find this step?
 
-- Widget `Compute`
+- Widget `Add` and `Compute`
 - Search bar
 
 #### Options reference
@@ -32,18 +32,10 @@ text in every row of the new column.
 - `New column`: the name of the new column to be created with the formula
   result.
 
-#### Example 1: algebric formula
+#### Example
 
-<img src="../../img/docs/user-interface/formula_example_conf_1.jpg" width="750" />
-
-This configuration results in:
-
-<img src="../../img/docs/user-interface/formula_example_result_1.jpg" width="500" />
-
-#### Example 2: filling a column with a text
-
-<img src="../../img/docs/user-interface/formula_example_conf_2.jpg" width="750" />
+<img src="../../img/docs/user-interface/formula_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="../../img/docs/user-interface/formula_example_result_2.jpg" width="500" />
+<img src="../../img/docs/user-interface/formula_example_result.jpg" width="500" />

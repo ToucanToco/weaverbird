@@ -225,6 +225,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  text(step: Readonly<S.AddTextColumnStep>) {
+    return { ...step, text: _interpolate(this.interpolateFunc, step.text, this.context) };
+  }
+
   todate(step: Readonly<S.ToDateStep>) {
     return { ...step };
   }

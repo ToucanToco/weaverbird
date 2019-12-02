@@ -6,7 +6,18 @@ import { setupMockStore } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('ActionToolbar', () => {
+describe('ActionToolbarButton', () => {
+  it('should instantiate an Add button with the right list of actions', () => {
+    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'add' } });
+    expect(wrapper.exists()).toBeTruthy();
+    const actionsWrappers = wrapper.findAll('.action-menu__option');
+    expect(actionsWrappers.length).toEqual(2);
+    actionsWrappers.at(0).trigger('click');
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
+    actionsWrappers.at(1).trigger('click');
+    expect(wrapper.emitted().actionClicked[1]).toEqual(['formula']);
+  });
+
   it('should instantiate a Filter button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'filter' } });
     expect(wrapper.exists()).toBeTruthy();
@@ -48,22 +59,25 @@ describe('ActionToolbar', () => {
     });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(5);
+    expect(actionsWrappers.length).toEqual(6);
     actionsWrappers.at(0).trigger('click');
     expect(wrapper.emitted().actionClicked).toHaveLength(1);
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['concatenate']);
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
     actionsWrappers.at(1).trigger('click');
     expect(wrapper.emitted().actionClicked).toHaveLength(2);
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['split']);
+    expect(wrapper.emitted().actionClicked[1]).toEqual(['concatenate']);
     actionsWrappers.at(2).trigger('click');
     expect(wrapper.emitted().actionClicked).toHaveLength(3);
-    expect(wrapper.emitted().actionClicked[2]).toEqual(['substring']);
+    expect(wrapper.emitted().actionClicked[2]).toEqual(['split']);
+    actionsWrappers.at(3).trigger('click');
+    expect(wrapper.emitted().actionClicked).toHaveLength(4);
+    expect(wrapper.emitted().actionClicked[3]).toEqual(['substring']);
     // clicking on "lowercase" ou "uppercase" should not trigger "actionClicked"
     // since we don't use an edit form for these steps.
-    actionsWrappers.at(3).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(3);
     actionsWrappers.at(4).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(3);
+    expect(wrapper.emitted().actionClicked).toHaveLength(4);
+    actionsWrappers.at(5).trigger('click');
+    expect(wrapper.emitted().actionClicked).toHaveLength(4);
   });
 
   it('should instantiate a Date button with the right list of actions', () => {
@@ -114,7 +128,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(3).trigger('click');
+      await actionsWrappers.at(4).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
 
@@ -129,7 +143,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(3).trigger('click');
+      await actionsWrappers.at(4).trigger('click');
       expect(store.state.vqb.pipeline).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'lowercase', column: 'foo' },
@@ -148,7 +162,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(3).trigger('click');
+      await actionsWrappers.at(4).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
   });
@@ -165,7 +179,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(4).trigger('click');
+      await actionsWrappers.at(5).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
 
@@ -180,7 +194,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(4).trigger('click');
+      await actionsWrappers.at(5).trigger('click');
       expect(store.state.vqb.pipeline).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'uppercase', column: 'foo' },
@@ -199,7 +213,7 @@ describe('ActionToolbar', () => {
         localVue,
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(4).trigger('click');
+      await actionsWrappers.at(5).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
   });

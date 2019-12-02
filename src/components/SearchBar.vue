@@ -51,7 +51,7 @@ export default class SearchBar extends Vue {
   align-self: center;
   margin-left: 10px;
   max-width: 160px;
-  width: 160px;
+  width: 100px;
 }
 .search-bar-icon {
   vertical-align: middle;

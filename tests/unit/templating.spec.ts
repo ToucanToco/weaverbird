@@ -106,6 +106,23 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('interpolates the "text" parameter of text steps', () => {
+    const step: Pipeline = [
+      {
+        name: 'text',
+        text: '<%= foo %>',
+        new_column: '<%= foo %>',
+      },
+    ];
+    expect(translate(step)).toEqual([
+      {
+        name: 'text',
+        text: 'bar',
+        new_column: '<%= foo %>',
+      },
+    ]);
+  });
+
   it('should leave todate steps untouched', () => {
     const pipeline: Pipeline = [
       {

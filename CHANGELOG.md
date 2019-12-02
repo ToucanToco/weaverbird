@@ -8,6 +8,8 @@
 - Mongo4.0 translator scaffold
 - Add data types conversion operations (with specific UI), only supported by
   the 'mongo40' translator
+- Add an 'Add text column' operation
+- Introduce a new 'Add' widget (including adding a nex text or formula column)
 
 ### Fixed
 

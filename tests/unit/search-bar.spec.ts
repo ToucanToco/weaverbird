@@ -41,6 +41,7 @@ describe('SearchBar', () => {
       'concatenate',
       'split',
       'substring',
+      'text',
       'lowercase',
       'uppercase',
       'duplicate',
@@ -80,6 +81,7 @@ describe('SearchBar', () => {
       'concatenate',
       'split',
       'substring',
+      'text',
       'lowercase',
       'uppercase',
       'duplicate',
@@ -93,10 +95,29 @@ describe('SearchBar', () => {
     expect(multiselectOptions).toEqual(expectedOptions);
   });
 
+  it('should display the right option into multiselect', () => {
+    const wrapper = mount(SearchBar, {
+      store: setupMockStore(),
+      localVue,
+      propsData: {
+        type: 'compute',
+        actions: [{ name: 'text', label: 'Add text column' }],
+      },
+    });
+    const multiselect = wrapper.findAll('.multiselect__option');
+    expect(
+      multiselect
+        .at(1)
+        .find('span span')
+        .text(),
+    ).toEqual('Add text column');
+
+  });
+
   it('should emit "actionClicked" when an option multiselect is clicked', () => {
     const wrapper = mount(SearchBar, { store: setupMockStore(), localVue });
     const multiselectOption = wrapper.findAll('.multiselect__option');
     multiselectOption.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['delete']);
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
   });
 });
