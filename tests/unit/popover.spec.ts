@@ -364,14 +364,5 @@ describe('Popover', function() {
 
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
     });
-
-    it.skip('should be visible', function() {
-      createWrapper({ props: { active: true } });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      expect(
-        window.getComputedStyle(popoverWrapper.element).getPropertyValue('visibility'),
-      ).toEqual('visible');
-    });
   });
 });
