@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2019-12-04T10:12:03+01:00" />
+<meta property="article:published_time" content="2019-12-04T10:27:02+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-12-04T10:12:03+01:00","dateModified":"2019-12-04T10:12:03+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-12-04T10:27:02+01:00","dateModified":"2019-12-04T10:27:02+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -368,6 +368,147 @@ builder.</p>
     <tr>
       <td>Group 2</td>
       <td>16</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="append-step"><code class="highlighter-rouge">append</code> step</h3>
+
+<p>Appends to the current dataset, one or several datasets resulting from other
+<code class="highlighter-rouge">pipelines</code>.
+WeaverBird allows you to save <code class="highlighter-rouge">pipelines</code> referenced by name in the Vuex store
+of the application. You can then call them by their unique names in this step.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'append'</span><span class="p">,</span>
+  <span class="nx">pipelines</span><span class="p">:</span> <span class="p">[</span><span class="s1">'pipeline1'</span><span class="p">,</span> <span class="s1">'pipeline2'</span><span class="p">]</span> <span class="c1">// the name of the pipelines to append</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-1">Example</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>dataset1 (saved in the application Vuex store)</strong>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Label 4</td>
+      <td>Group 2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>dataset2 (saved in the application Vuex store)</strong>:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 5</td>
+      <td>Group 2</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 6</td>
+      <td>Group 2</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="p">{</span>
+    <span class="nl">name</span><span class="p">:</span> <span class="s1">'append'</span><span class="p">,</span>
+    <span class="nx">datasets</span><span class="p">:</span> <span class="p">[</span><span class="s1">'dataset1'</span><span class="p">,</span> <span class="s1">'dataset2'</span><span class="p">]</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Group</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>Group 1</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>Group 1</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>Group 1</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>Label 4</td>
+      <td>Group 2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 5</td>
+      <td>Group 2</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 6</td>
+      <td>Group 2</td>
+      <td>5</td>
     </tr>
   </tbody>
 </table>
@@ -720,7 +861,7 @@ is specified.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-1">Example</h4>
+<h4 id="example-2">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -953,7 +1094,7 @@ other existing steps.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-2">Example</h4>
+<h4 id="example-3">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1072,7 +1213,7 @@ other existing steps.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-3">Example</h4>
+<h4 id="example-4">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1148,7 +1289,7 @@ other existing steps.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-4">Example</h4>
+<h4 id="example-5">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1278,7 +1419,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-5">Example</h4>
+<h4 id="example-6">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1379,7 +1520,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-6">Example</h4>
+<h4 id="example-7">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1488,7 +1629,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-7">Example:</h4>
+<h4 id="example-8">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1569,7 +1710,7 @@ by <code class="highlighter-rouge">group</code> if specified. The result is writ
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-8">Example:</h4>
+<h4 id="example-9">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1686,7 +1827,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-9">Example:</h4>
+<h4 id="example-10">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1788,7 +1929,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-10">Example:</h4>
+<h4 id="example-11">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1905,7 +2046,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-11">Example</h4>
+<h4 id="example-12">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1972,7 +2113,7 @@ the <code class="highlighter-rouge">select</code> is used, it will only keep sel
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-12">Example</h4>
+<h4 id="example-13">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2083,7 +2224,7 @@ When sorting on several columns, order of columns specified in <code class="high
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-13">Example</h4>
+<h4 id="example-14">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2674,7 +2815,7 @@ Neither <code class="highlighter-rouge">start_index</code> nor <code class="high
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-14">Example</h4>
+<h4 id="example-15">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3202,7 +3343,7 @@ Neither <code class="highlighter-rouge">start_index</code> nor <code class="high
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-15">Example:</h4>
+<h4 id="example-16">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
