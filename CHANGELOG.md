@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.5.1] - 2019-12-04
+
+### Fixed
+
+- Removed usage of `Array.prototype.flat` to be compatible with Edge
+  (cf. [issue #387](https://github.com/ToucanToco/weaverbird/issues/387))
+
 ## [0.5.0] - 2019-11-13
 
 ### Added
