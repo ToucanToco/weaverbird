@@ -22,7 +22,7 @@ import {
   isFilterComboAnd,
   isFilterComboOr,
 } from '@/lib/steps';
-import { StepMatcher } from '@/lib/matcher';
+import { OutputStep, StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
@@ -569,7 +569,10 @@ const mapper: StepMatcher<MongoStep> = {
 
 export class Mongo36Translator extends BaseTranslator {
   translate(pipeline: Pipeline) {
-    const mongoSteps = super.translate(pipeline).flat();
+    // concat + spread operator is used as a flat() method
+    const mongoSteps = super
+      .translate(pipeline)
+      .reduce((acc: OutputStep[], val) => acc.concat(val), []) as MongoStep[];
     if (mongoSteps.length) {
       return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
     }

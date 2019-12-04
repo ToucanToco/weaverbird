@@ -18,7 +18,7 @@ export function mongoResultsToDataset(results: MongoResults): DataSet {
       // get list of list of key
       .map(row => Object.keys(row))
       // then flatten them
-      .flat()
+      .reduce((acc, val) => acc.concat(val), [])
       // and remove duplicates by keeping the _first_ occurence
       .filter((col, colidx, array) => array.indexOf(col) === colidx);
     // transform set of names to list of DataSetColumn objects
