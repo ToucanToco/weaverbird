@@ -85,6 +85,38 @@ describe('Formula Step Form', () => {
     });
   });
 
+  describe('Warning', () => {
+    it('should report a warning when new_column is an already existing column name', async () => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }],
+          data: [],
+        },
+      });
+      const wrapper = shallowMount(FormulaStepForm, { store, localVue });
+      wrapper.setData({ editedStep: { formula: '', new_column: 'columnA' } });
+      await localVue.nextTick();
+      const inputText = wrapper.findAll('inputtextwidget-stub');
+      expect(inputText.at(1).props().warning).toEqual(
+        'A column name "columnA" already exists. You will overwrite it.',
+      );
+    });
+
+    it('should not report any warning if new_column is not an already existing column name', async () => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }],
+          data: [],
+        },
+      });
+      const wrapper = shallowMount(FormulaStepForm, { store, localVue });
+      wrapper.setData({ editedStep: { formula: '', new_column: 'columnB' } });
+      await localVue.nextTick();
+      const inputText = wrapper.findAll('inputtextwidget-stub');
+      expect(inputText.at(1).props().warning).toBeNull();
+    });
+  });
+
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
     const wrapper = mount(FormulaStepForm, {
       store: emptyStore,

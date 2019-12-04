@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-autocomplete__container" :class="toggleClassError">
+  <div class="widget-autocomplete__container" :class="toggleClassErrorWarning">
     <label class="widget-autocomplete__label" v-if="name" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
@@ -9,7 +9,9 @@
       :track-by="trackBy"
       :label="label"
     />
-    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
+    <div v-if="messageError" class="field__msg-error">
+      <span class="fa fa-exclamation-circle" />{{ messageError }}
+    </div>
   </div>
 </template>
 
