@@ -1,12 +1,11 @@
 <template>
-  <div class="widget-list__container" :class="toggleClassError">
-    <label :for="id">{{name}}</label>
+  <div class="widget-list__container" :class="toggleClassErrorWarning">
+    <label :for="id">{{ name }}</label>
     <div class="widget-list__body">
       <div class="widget-list__child" v-for="(child, index) in children" :key="index">
-        <span
-          class="widget-list__component-sep"
-          v-if="index > 0 && separatorLabel"
-        >{{ separatorLabel }}</span>
+        <span class="widget-list__component-sep" v-if="index > 0 && separatorLabel">{{
+          separatorLabel
+        }}</span>
         <div class="widget-list__component">
           <component
             :is="widget"
@@ -56,7 +55,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
   addFieldName!: string;
 
-  @Prop({ type: Object, default: () => { } })
+  @Prop({ type: Object, default: () => {} })
   componentProps!: object;
 
   @Prop({ type: String, default: null })

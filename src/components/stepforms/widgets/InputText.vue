@@ -1,6 +1,6 @@
 <template>
-  <div class="widget-input-text__container" :class="toggleClassError">
-    <label v-if="name" :for="id">{{name}}</label>
+  <div class="widget-input-text__container" :class="toggleClassErrorWarning">
+    <label v-if="name" :for="id">{{ name }}</label>
     <input
       :id="id"
       :class="elementClass"
@@ -11,7 +11,12 @@
       @focus="focus()"
       @input="updateValue($event.target.value)"
     >
-    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
+    <div v-if="messageError" class="field__msg-error">
+      <span class="fa fa-exclamation-circle" />{{ messageError }}
+    </div>
+    <div v-if="messageWarning" class="field__msg-warning">
+      <span class="fas fa-exclamation-triangle" />{{ messageWarning }}
+    </div>
   </div>
 </template>
 

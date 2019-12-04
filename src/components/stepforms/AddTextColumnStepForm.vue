@@ -16,6 +16,7 @@
       placeholder="Enter a new column name"
       data-path=".new_column"
       :errors="errors"
+      :warning="duplicateColumnName"
     />
     <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
@@ -40,6 +41,14 @@ export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnSte
   initialStepValue!: AddTextColumnStep;
 
   readonly title: string = 'Add Text Column';
+
+  get duplicateColumnName() {
+    if (this.columnNames.includes(this.editedStep.new_column)) {
+      return `A column name "${this.editedStep.new_column}" already exists. You will overwrite it.`;
+    } else {
+      return null;
+    }
+  }
 
   submit() {
     this.$$super.submit();

@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-multiselect__container" :class="toggleClassError">
+  <div class="widget-multiselect__container" :class="toggleClassErrorWarning">
     <label class="widget-multiselect__label" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
@@ -9,7 +9,9 @@
       :taggable="true"
       :close-on-select="false"
     />
-    <div v-if="messageError" class="field__msg-error"><span class="fa fa-exclamation-circle"/>{{ messageError }}</div>
+    <div v-if="messageError" class="field__msg-error">
+      <span class="fa fa-exclamation-circle" />{{ messageError }}
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,4 @@
 <script lang="ts">
-
 import { Component, Vue, Prop } from 'vue-property-decorator';
 import { ErrorObject } from 'ajv';
 
@@ -12,6 +11,9 @@ export default class FormWidget extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop({ type: String, default: () => '' })
+  warning!: string;
 
   get error() {
     if (this.errors === null || this.errors === undefined) {
@@ -28,12 +30,25 @@ export default class FormWidget extends Vue {
     return null;
   }
 
-  get toggleClassError() {
-    return { 'field--error': this.messageError !== undefined && this.messageError !== null };
+  get messageWarning() {
+    if (this.warning) {
+      return this.warning;
+    }
+    return null;
   }
 
+  get toggleClassErrorWarning() {
+    // We returnn this warning class only if there is not an error class to return. The latter must take precedence
+    return {
+      'field--error': this.messageError !== undefined && this.messageError !== null,
+      'field--warning':
+        !(this.messageError !== undefined && this.messageError !== null) &&
+        this.warning !== undefined &&
+        this.warning !== null &&
+        this.warning !== '',
+    };
+  }
 }
-
 </script>
 
 <style lang="scss">
@@ -47,6 +62,21 @@ export default class FormWidget extends Vue {
   margin-top: 5px;
 }
 .field__msg-error .fa-exclamation-circle {
+  margin-right: 5px;
+}
+
+.field--warning .widget-input-text,
+.field--warning .multiselect__tags {
+  box-shadow: 0 0 0 1px #ff8800 inset;
+}
+
+.field__msg-warning {
+  color: #ff8800;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.field__msg-warning .fa-exclamation-triangle {
   margin-right: 5px;
 }
 </style>

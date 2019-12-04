@@ -1,21 +1,24 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" />
     <InputTextWidget
       id="formulaInput"
       v-model="editedStep.formula"
       name="Formula:"
       placeholder
       data-path=".formula"
-      :errors="errors"/>
+      :errors="errors"
+    />
     <InputTextWidget
       id="newColumnInput"
       v-model="editedStep.new_column"
       name="New colum:"
       placeholder="Enter a new column name"
       data-path=".new_column"
-      :errors="errors"/>
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+      :errors="errors"
+      :warning="duplicateColumnName"
+    />
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 
@@ -42,6 +45,14 @@ export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
   initialStepValue!: FormulaStep;
 
   readonly title: string = 'Formula';
+
+  get duplicateColumnName() {
+    if (this.columnNames.includes(this.editedStep.new_column)) {
+      return `A column name "${this.editedStep.new_column}" already exists. You will overwrite it.`;
+    } else {
+      return null;
+    }
+  }
 
   submit() {
     this.$$super.submit();

@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 
@@ -95,5 +95,39 @@ describe('Widget Input Text', () => {
     expect(wrapper.vm.$data.isFocused).toBeTruthy();
     inputWrapper.trigger('blur');
     expect(wrapper.vm.$data.isFocused).toBeFalsy();
+  });
+
+  it('should display an error message if messageError exists', () => {
+    const wrapper = mount(InputTextWidget, {
+      propsData: {
+        dataPath: '.condition',
+        errors: [
+          {
+            dataPath: '.condition',
+            message: 'test error',
+          },
+        ],
+      },
+    });
+    expect(wrapper.find('.field__msg-error').exists()).toBeTruthy();
+  });
+
+  it('should not display an error message if messageError does not exist', () => {
+    const wrapper = mount(InputTextWidget);
+    expect(wrapper.find('.field__msg-error').exists()).toBeFalsy();
+  });
+
+  it('should display an warning message if messageError exists', () => {
+    const wrapper = mount(InputTextWidget, {
+      propsData: {
+        warning: 'warning',
+      },
+    });
+    expect(wrapper.find('.field__msg-warning').exists()).toBeTruthy();
+  });
+
+  it('should not display a warning message if messageError does not exist', () => {
+    const wrapper = mount(InputTextWidget);
+    expect(wrapper.find('.field__msg-warning').exists()).toBeFalsy();
   });
 });
