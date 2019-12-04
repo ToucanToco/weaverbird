@@ -2,7 +2,7 @@
 
 import _ from 'lodash';
 import * as S from '@/lib/steps';
-import { StepMatcher } from '@/lib/matcher';
+import { OutputStep, StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
@@ -571,7 +571,9 @@ export class Mongo36Translator extends BaseTranslator {
   }
 
   translate(pipeline: S.Pipeline) {
-    const mongoSteps = super.translate(pipeline).flat();
+    const mongoSteps = super
+      .translate(pipeline)
+      .reduce((acc: OutputStep[], val) => acc.concat(val), []) as MongoStep[];
     if (mongoSteps.length) {
       return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
     }
