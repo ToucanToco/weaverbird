@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2019-12-04T20:30:38+01:00" />
+<meta property="article:published_time" content="2019-12-06T10:49:34+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-12-04T20:30:38+01:00","dateModified":"2019-12-04T20:30:38+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-12-06T10:49:34+01:00","dateModified":"2019-12-06T10:49:34+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -2904,6 +2904,85 @@ Neither <code class="highlighter-rouge">start_index</code> nor <code class="high
   </tbody>
 </table>
 
+<h3 id="text-step"><code class="highlighter-rouge">text</code> step</h3>
+
+<p>Use this step to add a text column where every value will be equal to the
+specified <code class="highlighter-rouge">text</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="p">{</span>
+    <span class="nl">name</span><span class="p">:</span> <span class="s1">'text'</span><span class="p">,</span>
+    <span class="nx">new_column</span><span class="p">:</span> <span class="s1">'new'</span><span class="p">,</span> <span class="c1">// if the column already exists, overwrites it</span>
+    <span class="nx">text</span><span class="p">:</span> <span class="s1">'some text'</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="example-16">Example</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value1</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>5</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'text'</span><span class="p">,</span>
+  <span class="nx">new_column</span><span class="p">:</span> <span class="s1">'KPI'</span><span class="p">,</span>
+  <span class="nx">formula</span><span class="p">:</span> <span class="s1">'Sales'</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value1</th>
+      <th>KPI</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>10</td>
+      <td>Sales</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>1</td>
+      <td>Sales</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>5</td>
+      <td>Sales</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="todate-step"><code class="highlighter-rouge">todate</code> step</h3>
 
 <p>Converts a string <code class="highlighter-rouge">column</code> into a date column based on a specified <code class="highlighter-rouge">format</code>.</p>
@@ -2918,7 +2997,7 @@ Neither <code class="highlighter-rouge">start_index</code> nor <code class="high
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-16">Example</h4>
+<h4 id="example-17">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3446,7 +3525,7 @@ Neither <code class="highlighter-rouge">start_index</code> nor <code class="high
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-17">Example:</h4>
+<h4 id="example-18">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
