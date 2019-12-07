@@ -1,6 +1,7 @@
 import { shallowMount } from '@vue/test-utils';
-import FormWidget from '@/components/stepforms/widgets/FormWidget.vue';
 import { Component, Mixins } from 'vue-property-decorator';
+
+import FormWidget from '@/components/stepforms/widgets/FormWidget.vue';
 
 /* Fake widget use to manage the mixins render issue */
 @Component({

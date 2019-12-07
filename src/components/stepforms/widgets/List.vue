@@ -36,9 +36,11 @@
 import _ from 'lodash';
 import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
 import { VueConstructor } from 'vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import FormWidget from './FormWidget.vue';
 import { ErrorObject } from 'ajv';
+
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+
+import FormWidget from './FormWidget.vue';
 
 type Field = {
   name: string;

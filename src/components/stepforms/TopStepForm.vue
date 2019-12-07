@@ -44,13 +44,15 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { TopStep } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { StepFormComponent } from '@/components/formlib';
+
 import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
-import { StepFormComponent } from '@/components/formlib';
 
 @StepFormComponent({
   vqbstep: 'top',

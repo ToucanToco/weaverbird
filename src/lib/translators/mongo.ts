@@ -1,11 +1,12 @@
 /** This module contains mongo specific translation operations */
 
 import _ from 'lodash';
+import * as math from 'mathjs';
+
 import * as S from '@/lib/steps';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import { BaseTranslator } from '@/lib/translators/base';
 import { $$ } from '@/lib/helpers';
-import * as math from 'mathjs';
 import { MathNode } from '@/typings/mathjs';
 
 type PropMap<T> = { [prop: string]: T };

@@ -1,6 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import DomainStepForm from '@/components/stepforms/DomainStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import DomainStepForm from '@/components/stepforms/DomainStepForm.vue';
+
 import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();

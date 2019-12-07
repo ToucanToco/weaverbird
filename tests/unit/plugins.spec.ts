@@ -6,10 +6,11 @@ import flushPromises from 'flush-promises';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
 import { VQBnamespace } from '@/store';
-import { setupMockStore } from './utils';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import PipelineComponent from '@/components/Pipeline.vue';
+
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

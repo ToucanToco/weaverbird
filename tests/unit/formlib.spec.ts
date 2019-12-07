@@ -1,4 +1,5 @@
 import Vue from 'vue';
+
 import { StepFormComponent, StepMapper } from '@/components/formlib';
 import { PipelineStepName } from '@/lib/steps';
 

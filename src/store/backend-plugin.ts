@@ -13,11 +13,11 @@ import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
-
-import { StateMutation } from './mutations';
 import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
 import { activePipeline } from '@/store/state';
 import { pageOffset } from '@/lib/dataset/pagination';
+
+import { StateMutation } from './mutations';
 
 type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;

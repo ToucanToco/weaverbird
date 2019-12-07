@@ -1,7 +1,9 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
 import { Pipeline } from '@/lib/steps';
+
 import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();

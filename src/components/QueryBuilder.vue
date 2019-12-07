@@ -18,10 +18,12 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
+
 import { VQBModule } from '@/store';
 import { VQBState } from '@/store/state';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import PipelineComponent from '@/components/Pipeline.vue';
+
 import '@/components/stepforms'; // required to load all step forms
 import { STEPFORM_REGISTRY } from './formlib';
 

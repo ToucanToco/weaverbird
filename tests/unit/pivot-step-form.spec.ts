@@ -1,7 +1,9 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import { VQBnamespace } from '@/store';
+
 import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();

@@ -17,9 +17,9 @@
  * ```
  */
 import Vue from 'vue';
-
 import Vuex, { Store, StoreOptions } from 'vuex';
 import { namespace } from 'vuex-class';
+
 import { VQBState, emptyState } from './state';
 import getters from './getters';
 import mutations from './mutations';

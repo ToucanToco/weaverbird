@@ -17,10 +17,12 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { StepFormComponent } from '@/components/formlib';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import BaseStepForm from './StepForm.vue';
 import { SelectStep } from '@/lib/steps';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'select',

@@ -1,6 +1,8 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import ConvertStepForm from '@/components/stepforms/ConvertStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import ConvertStepForm from '@/components/stepforms/ConvertStepForm.vue';
+
 import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();

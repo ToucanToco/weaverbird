@@ -1,5 +1,6 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
+
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 
 describe('Widget Input Text', () => {

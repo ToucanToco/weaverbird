@@ -19,8 +19,9 @@
 <script lang="ts">
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import InputTextWidget from './InputText.vue';
 import { ErrorObject } from 'ajv';
+
+import InputTextWidget from './InputText.vue';
 
 @Component({
   name: 'replace-widget',

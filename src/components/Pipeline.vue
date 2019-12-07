@@ -25,10 +25,12 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { VQBModule } from '@/store';
 import { Component } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
+
 import Step from './Step.vue';
 
 @Component({

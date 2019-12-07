@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+
 import MultiSelectWidget from '@/components/stepforms/widgets/InputText.vue';
 
 describe('Widget Multiselect', () => {

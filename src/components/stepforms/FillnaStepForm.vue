@@ -22,15 +22,17 @@
 </template>
 
 <script lang="ts">
-import { VQBModule } from '@/store';
 import { Prop } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import BaseStepForm from './StepForm.vue';
 import { FillnaStep } from '@/lib/steps';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'fillna',

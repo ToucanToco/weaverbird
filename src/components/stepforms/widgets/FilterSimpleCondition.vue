@@ -33,15 +33,17 @@
 </template>
 
 <script lang="ts">
-import { VQBModule } from '@/store';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { VueConstructor } from 'vue';
+import { ErrorObject } from 'ajv';
+
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import MultiInputTextWidget from './MultiInputText.vue';
 import { FilterSimpleCondition } from '@/lib/steps';
-import { VueConstructor } from 'vue';
-import { ErrorObject } from 'ajv';
+
+import MultiInputTextWidget from './MultiInputText.vue';
 
 type LiteralOperator =
   | 'equal'

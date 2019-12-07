@@ -4,6 +4,7 @@
 import _ from 'lodash';
 import Vue, { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
+
 import { PipelineStepName } from '@/lib/steps';
 
 export type StepMapper = { [K in PipelineStepName]?: VueConstructor<Vue> };

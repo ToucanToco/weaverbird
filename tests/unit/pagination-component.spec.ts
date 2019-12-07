@@ -1,10 +1,11 @@
 import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
-import { Pipeline } from '@/lib/steps';
-import { setupMockStore } from './utils';
-import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 
+import { Pipeline } from '@/lib/steps';
+import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import Pagination from '@/components/Pagination.vue';
+
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

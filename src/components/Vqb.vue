@@ -10,6 +10,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
+
 import DataViewer from '@/components/DataViewer.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';

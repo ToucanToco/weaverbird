@@ -16,9 +16,10 @@
 </template>
 
 <script lang="ts">
-import { VQBModule } from '@/store';
 import Paginate from 'vuejs-paginate';
 import { Vue, Component } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import { DataSet } from '@/lib/dataset';
 import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
 import { MutationCallbacks } from '@/store/mutations';

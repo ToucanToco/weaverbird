@@ -33,11 +33,13 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { SubstringStep } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'substring',

@@ -1,8 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import SearchBar from '@/components/SearchBar.vue';
 import Vuex from 'vuex';
-import { setupMockStore } from './utils';
+
+import SearchBar from '@/components/SearchBar.vue';
 import { ActionCategories } from '@/components/constants';
+
+import { setupMockStore } from './utils';
+
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

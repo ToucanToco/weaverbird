@@ -1,8 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
 import { Pipeline } from '@/lib/steps';
+
+import { setupMockStore, RootState } from './utils';
+
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

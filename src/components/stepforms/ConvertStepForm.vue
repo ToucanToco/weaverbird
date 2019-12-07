@@ -26,11 +26,13 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { StepFormComponent } from '@/components/formlib';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import BaseStepForm from './StepForm.vue';
 import { ConvertStep } from '@/lib/steps';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'convert',

@@ -1,9 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import { Pipeline } from '@/lib/steps';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
+
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 import { PipelineInterpolator, ScopeContext } from '@/lib/templating';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';

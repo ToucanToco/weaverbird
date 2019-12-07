@@ -15,11 +15,14 @@
 </template>
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { SEARCH_ACTION } from './constants';
 import Multiselect from 'vue-multiselect';
-import { VQBModule } from '../store';
+
 import { getTranslator } from '@/lib/translators';
+
+import { VQBModule } from '../store';
 import { PipelineStepName } from '../lib/steps';
+
+import { SEARCH_ACTION } from './constants';
 
 @Component({
   name: 'search-bar',

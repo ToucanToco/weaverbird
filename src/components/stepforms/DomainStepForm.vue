@@ -13,12 +13,14 @@
 </template>
 
 <script lang="ts">
-import { VQBModule } from '@/store';
 import { Prop } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { StepFormComponent } from '@/components/formlib';
-import BaseStepForm from './StepForm.vue';
 import { DomainStep } from '@/lib/steps';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'domain',

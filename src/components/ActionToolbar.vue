@@ -19,11 +19,13 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { VQBModule } from '@/store';
 import { Component, Prop } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
+import { PipelineStepName } from '@/lib/steps';
+
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';
-import { PipelineStepName } from '@/lib/steps';
 import SearchBar from './SearchBar.vue';
 
 @Component({

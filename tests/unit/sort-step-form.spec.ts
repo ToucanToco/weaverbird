@@ -1,8 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import SortStepForm from '@/components/stepforms/SortStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import SortStepForm from '@/components/stepforms/SortStepForm.vue';
 import { Pipeline } from '@/lib/steps';
+
+import { setupMockStore, RootState } from './utils';
+
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -1,6 +1,7 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import Vuex from 'vuex';
+
+import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

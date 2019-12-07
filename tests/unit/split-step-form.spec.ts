@@ -1,8 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import SplitStepForm from '@/components/stepforms/SplitStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import SplitStepForm from '@/components/stepforms/SplitStepForm.vue';
 import { Pipeline } from '@/lib/steps';
+
+import { setupMockStore, RootState } from './utils';
+
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

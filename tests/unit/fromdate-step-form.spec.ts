@@ -1,6 +1,8 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import FromDateStepForm from '@/components/stepforms/FromDateStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import FromDateStepForm from '@/components/stepforms/FromDateStepForm.vue';
+
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
