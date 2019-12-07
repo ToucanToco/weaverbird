@@ -1,9 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import { VQBnamespace } from '@/store';
-import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
+
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

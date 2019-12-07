@@ -1,6 +1,6 @@
 import Vuex, { Store } from 'vuex';
-import { registerModule } from '@/store';
 
+import { registerModule } from '@/store';
 import { VQBState } from '@/store/state';
 
 export type RootState = {

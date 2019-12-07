@@ -1,10 +1,12 @@
 import _ from 'lodash';
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import TopStepForm from '@/components/stepforms/TopStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import TopStepForm from '@/components/stepforms/TopStepForm.vue';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
+
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

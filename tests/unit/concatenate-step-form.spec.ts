@@ -1,9 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
 import { Pipeline } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

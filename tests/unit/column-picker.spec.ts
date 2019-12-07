@@ -1,8 +1,11 @@
 import { shallowMount, createLocalVue } from '@vue/test-utils';
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import { VQBnamespace } from '@/store';
+
+import { setupMockStore, RootState } from './utils';
+
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

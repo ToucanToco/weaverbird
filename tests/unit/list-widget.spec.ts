@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';

@@ -24,11 +24,13 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { PercentageStep } from '@/lib/steps';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+import { StepFormComponent } from '@/components/formlib';
+
 import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
-import { StepFormComponent } from '@/components/formlib';
 
 @StepFormComponent({
   vqbstep: 'percentage',

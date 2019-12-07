@@ -35,12 +35,14 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
-import BaseStepForm from './StepForm.vue';
 import { ConcatenateStep } from '@/lib/steps';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'concatenate',

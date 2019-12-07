@@ -1,6 +1,8 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
-import DataTypesMenu from '@/components/DataTypesMenu.vue';
 import Vuex from 'vuex';
+
+import DataTypesMenu from '@/components/DataTypesMenu.vue';
+
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();

@@ -1,8 +1,10 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
+
 import ActionToolbar from '@/components/ActionToolbar.vue';
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import { CATEGORY_BUTTONS } from '@/components/constants';
-import Vuex from 'vuex';
+
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();

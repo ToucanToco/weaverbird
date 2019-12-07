@@ -22,6 +22,7 @@
 
 <script lang="ts">
 import { Component, Prop, Mixins } from 'vue-property-decorator';
+
 import FormWidget from './FormWidget.vue';
 
 @Component({

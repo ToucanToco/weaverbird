@@ -1,6 +1,8 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
 import Vuex, { Store } from 'vuex';
+
+import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
+
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();

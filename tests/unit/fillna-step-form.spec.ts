@@ -1,9 +1,11 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
+
+import { setupMockStore, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

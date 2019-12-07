@@ -1,4 +1,5 @@
 import { shallowMount, WrapperArray } from '@vue/test-utils';
+
 import ResizablePanels from '../../src/components/ResizablePanels.vue';
 
 describe('Resizable Panels', () => {

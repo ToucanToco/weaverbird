@@ -1,9 +1,10 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import { VQBModule } from '@/store';
 import { Prop, Component, Watch } from 'vue-property-decorator';
 import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
+
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
 import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';

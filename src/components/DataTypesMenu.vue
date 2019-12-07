@@ -31,12 +31,14 @@
   </popover>
 </template>
 <script lang="ts">
-import { VQBModule } from '@/store';
 import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import { POPOVER_ALIGN } from '@/components/constants';
-import Popover from './Popover.vue';
 import { Pipeline, ConvertStep } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
+
+import Popover from './Popover.vue';
 
 type dataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
 

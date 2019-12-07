@@ -13,12 +13,14 @@
 
 <script lang="ts">
 import _ from 'lodash';
-import { VQBModule } from '@/store';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
+import { ErrorObject } from 'ajv';
+
+import { VQBModule } from '@/store';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { MutationCallbacks } from '@/store/mutations';
-import { ErrorObject } from 'ajv';
+
 
 @Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {

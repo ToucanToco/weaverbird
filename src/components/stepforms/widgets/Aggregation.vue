@@ -22,11 +22,14 @@
 </template>
 <script lang="ts">
 import _ from 'lodash';
-import { VQBModule } from '@/store';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { AggFunctionStep } from '@/lib/steps';
-import AutocompleteWidget from './Autocomplete.vue';
 import { ErrorObject } from 'ajv';
+
+import { VQBModule } from '@/store';
+import { AggFunctionStep } from '@/lib/steps';
+
+import AutocompleteWidget from './Autocomplete.vue';
+
 
 @Component({
   name: 'aggregation-widget',

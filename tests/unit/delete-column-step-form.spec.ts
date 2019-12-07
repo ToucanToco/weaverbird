@@ -1,9 +1,12 @@
 import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex, { Store } from 'vuex';
+
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
+
+import { setupMockStore, RootState } from './utils';
+
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

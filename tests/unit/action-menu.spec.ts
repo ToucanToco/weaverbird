@@ -1,7 +1,9 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
-import ActionMenu from '@/components/ActionMenu.vue';
 import Vuex from 'vuex';
+
+import ActionMenu from '@/components/ActionMenu.vue';
 import { VQBnamespace } from '@/store';
+
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();

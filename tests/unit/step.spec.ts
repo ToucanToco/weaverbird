@@ -1,10 +1,12 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
+
 import { Pipeline } from '@/lib/steps';
-import { setupMockStore } from './utils';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
+
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

@@ -32,11 +32,13 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { VQBModule } from '@/store';
 import { Component, Prop } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import { PipelineStep } from '@/lib/steps';
 import { MutationCallbacks } from '@/store/mutations';
 import { humanReadableLabel } from '@/lib/labeller';
+
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 
 @Component({

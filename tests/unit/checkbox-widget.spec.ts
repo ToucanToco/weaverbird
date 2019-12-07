@@ -1,4 +1,5 @@
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
+
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
 const localVue = createLocalVue();

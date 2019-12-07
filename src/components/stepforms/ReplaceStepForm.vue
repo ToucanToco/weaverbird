@@ -25,16 +25,18 @@
 </template>
 
 <script lang="ts">
-import { VQBModule } from '@/store';
 import { Prop } from 'vue-property-decorator';
+
+import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
-import BaseStepForm from './StepForm.vue';
 import { ReplaceStep } from '@/lib/steps';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
+
+import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'replace',

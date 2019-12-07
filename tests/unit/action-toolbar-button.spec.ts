@@ -1,6 +1,8 @@
 import { mount, createLocalVue } from '@vue/test-utils';
-import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import Vuex from 'vuex';
+
+import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
+
 import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();

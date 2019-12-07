@@ -129,9 +129,17 @@
       "import/resolver": {
         "alias": {
           "map": [
-            ["@", "./src"]
+            [
+              "@",
+              "./src"
+            ]
           ],
-          "extensions": [".ts", ".js", ".vue", ".d.ts"]
+          "extensions": [
+            ".ts",
+            ".js",
+            ".vue",
+            ".d.ts"
+          ]
         }
       }
     },

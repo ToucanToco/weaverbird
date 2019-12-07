@@ -24,12 +24,14 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { StepFormComponent } from '@/components/formlib';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import BaseStepForm from './StepForm.vue';
-import { FormulaStep } from '@/lib/steps';
 import { parse } from 'mathjs';
 import { ErrorObject } from 'ajv';
+
+import { StepFormComponent } from '@/components/formlib';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { FormulaStep } from '@/lib/steps';
+
+import BaseStepForm from './StepForm.vue';
 
 type VqbError = Partial<ErrorObject>;
 

@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 
 describe('Widget Autocomplete', () => {
