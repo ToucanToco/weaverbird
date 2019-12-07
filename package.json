@@ -3,8 +3,8 @@
   "version": "0.5.1",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
-    "url" : "https://github.com/ToucanToco/weaverbird/issues",
-    "email" : "dev+vqb@toucantoco.com"
+    "url": "https://github.com/ToucanToco/weaverbird/issues",
+    "email": "dev+vqb@toucantoco.com"
   },
   "keywords": [
     "typescript",
@@ -42,8 +42,8 @@
     "@types/mocha": "^5.2.7",
     "@types/mongodb": "^3.1.25",
     "@types/tmp": "^0.1.0",
-    "@typescript-eslint/eslint-plugin": "^2.6.1",
-    "@typescript-eslint/parser": "^2.6.1",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
     "@vue/eslint-config-typescript": "^3.2.0",
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "^7.0.0-bridge.0",
@@ -119,6 +119,7 @@
     "rules": {
       "@typescript-eslint/explicit-function-return-type": "allow",
       "@typescript-eslint/no-explicit-any": "allow",
+      "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }],
       "@typescript-eslint/explicit-member-accessibility": "no-public",
       "@typescript-eslint/indent": [
         "error",
