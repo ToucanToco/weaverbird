@@ -27,8 +27,8 @@ import { StepFormComponent } from '@/components/formlib';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import ListWidget from './widgets/List.vue';
 import BaseStepForm from './StepForm.vue';
-import { FilterStep, FilterComboAnd, isFilterComboAnd } from '@/lib/steps';
-import { FilterSimpleCondition } from '@/lib/steps';
+import { FilterStep, FilterComboAnd, isFilterComboAnd , FilterSimpleCondition } from '@/lib/steps';
+
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 
