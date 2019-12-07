@@ -19,11 +19,11 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { SortStep } from '@/lib/steps';
+import { SortStep , SortColumnType } from '@/lib/steps';
 import BaseStepForm from './StepForm.vue';
 import { StepFormComponent } from '@/components/formlib';
 import ListWidget from './widgets/List.vue';
-import { SortColumnType } from '@/lib/steps';
+
 import SortColumnWidget from './widgets/SortColumn.vue';
 
 @StepFormComponent({

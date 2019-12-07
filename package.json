@@ -54,6 +54,8 @@
     "core-js": "3",
     "csvtojson": "^2.0.8",
     "eslint": "^5.8.0",
+    "eslint-import-resolver-alias": "^1.1.2",
+    "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^22.13.0",
     "eslint-plugin-vue": "^5.0.0",
     "express": "^4.16.4",
@@ -112,14 +114,38 @@
     },
     "extends": [
       "plugin:@typescript-eslint/recommended",
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "plugin:import/typescript",
       "plugin:vue/essential",
       "eslint:recommended",
       "@vue/typescript"
     ],
+    "plugins": [
+      "import"
+    ],
+    "settings": {
+      "import/internal-regex": "^@/",
+      "import/resolver": {
+        "alias": {
+          "map": [
+            ["@", "./src"]
+          ],
+          "extensions": [".ts", ".js", ".vue", ".d.ts"]
+        }
+      }
+    },
     "rules": {
       "@typescript-eslint/explicit-function-return-type": "allow",
       "@typescript-eslint/no-explicit-any": "allow",
-      "@typescript-eslint/no-empty-function": ["error", { "allow": ["arrowFunctions"] }],
+      "@typescript-eslint/no-empty-function": [
+        "error",
+        {
+          "allow": [
+            "arrowFunctions"
+          ]
+        }
+      ],
       "@typescript-eslint/explicit-member-accessibility": "no-public",
       "@typescript-eslint/indent": [
         "error",
