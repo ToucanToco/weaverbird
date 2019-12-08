@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Sort | Weaverbird</title>
+<title>Join | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Sort" />
+<meta property="og:title" content="Join" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Sort values" />
-<meta property="og:description" content="Sort values" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/sort/" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/sort/" />
+<meta name="description" content="Join" />
+<meta property="og:description" content="Join" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/join/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/join/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2019-12-08T18:25:42+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/sort/","headline":"Sort","datePublished":"2019-12-08T18:25:42+01:00","dateModified":"2019-12-08T18:25:42+01:00","description":"Sort values","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/join/","headline":"Join","datePublished":"2019-12-08T18:25:42+01:00","dateModified":"2019-12-08T18:25:42+01:00","description":"Join","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/sort/">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/join/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -85,7 +85,7 @@
       </div>
       
       
-      <div class="panel-collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
+      <div class="panel-collapse collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
         <div class="list-group">
           
             
@@ -175,7 +175,7 @@
             
             
             <!--  -->
-              <a class="list-group-item active" href="/docs/sort/">Sort</a>
+              <a class="list-group-item " href="/docs/sort/">Sort</a>
             <!--  -->
           
             
@@ -264,9 +264,12 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><h3 id="sort-values">Sort values</h3>
+            <div id="markdown-content-container"><h3 id="join">Join</h3>
 
-<p>You can use this step to sort values based on one or several columns.</p>
+<p>You can use this step to join a registered dataset to the current dataset, i.e.
+to bring columns from the former into the latter, matching rows based <code class="highlighter-rouge">on</code>
+columns correspondance. It is similar to a <code class="highlighter-rouge">JOIN</code> clause in SQL, or to a
+<code class="highlighter-rouge">VLOOKUP</code> in Excel.</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
@@ -278,41 +281,100 @@
 <h4 id="where-to-find-this-step">Where to find this step?</h4>
 
 <ul>
-  <li>Column header menu</li>
+  <li>Widget <code class="highlighter-rouge">Combine</code></li>
   <li>Search bar</li>
 </ul>
 
 <h4 id="options-reference">Options reference</h4>
 
-<p><img src="../../img/docs/user-interface/sort_step_form.jpg" width="350" /></p>
+<p><img src="../../img/docs/user-interface/join_step_form.jpg" width="350" /></p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Column...</code>: the column where values will be sorted</p>
+    <p><code class="highlighter-rouge">Select a dataset to join (as right dataset):</code>: the name of the dataset you
+want to append to join to the current dataset</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Order</code>: whether you want the values in this column to be sorted in ascending
-(<code class="highlighter-rouge">asc</code>) or descending order (<code class="highlighter-rouge">desc</code>).</p>
+    <p><code class="highlighter-rouge">Select a join type</code>: either <code class="highlighter-rouge">left</code> or <code class="highlighter-rouge">inner</code>:</p>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">left</code>: will keep every row of the current dataset and fill unmatched rows
+with <code class="highlighter-rouge">null</code> values,</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">inner</code>: will only keep rows that match rows of the joined dataset.</p>
+      </li>
+    </ul>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Join based on column(s):</code>: specify 1 or more column couple(s) that will be
+compared to determine rows correspondance between the 2 datasets. The first
+element of a couple is for the current dataset column, and the second for the
+corresponding column in the right dataset to be joined. If you specify more
+than 1 couple, the matching rows will be those that find a correspondance
+between the 2 datasets for every column couple specified (logical ‘AND’).</p>
   </li>
 </ul>
 
-<p>You can add columns to apply a combined sort, by clicking on “Add column”. The
-order of columns matters, i.e. first the first column will be sorted, then and
-without changing the order of the first column, the second column will be
-sorted etc. Please see the example below for illustration.</p>
+<h4 id="example-1-left-join-on-1-column">Example 1: left join on 1 column</h4>
 
-<p>You can specify if you want to rank rows based on one or several columns.</p>
+<p>Say your dataset being currently edited looks like this:</p>
 
-<h4 id="example">Example</h4>
+<p><img src="../../img/docs/user-interface/join_example_current_dataset.jpg" width="500" /></p>
 
-<p><img src="../../img/docs/user-interface/sort_example_conf.jpg" width="750" /></p>
+<p>And say you have a dataset, stored in your application, that references country
+labels ased on their country code:</p>
 
-<p>This configuration results in:</p>
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">ref_countries</code>:</p>
 
-<p><img src="../../img/docs/user-interface/sort_example_result.jpg" width="500" /></p>
+    <p><img src="../../img/docs/user-interface/join_example_right_dataset_1.jpg" width="500" /></p>
+  </li>
+</ul>
 
-<p>First the column country is sorted by ascending order, and then values are
-sorted by descending order.</p>
+<p>Then if you you apply the following configuration on the current dataset…</p>
+
+<p><img src="../../img/docs/user-interface/join_example_conf_1.jpg" width="750" /></p>
+
+<p>…It will result in:</p>
+
+<p><img src="../../img/docs/user-interface/join_example_result_1.jpg" width="500" /></p>
+
+<h4 id="example-2-inner-join-on-1-column">Example 2: inner join on 1 column</h4>
+
+<p>Based on the same datasets as in example1, if you you apply the following
+configuration on the current dataset…</p>
+
+<p><img src="../../img/docs/user-interface/join_example_conf_2.jpg" width="750" /></p>
+
+<p>…It will result in:</p>
+
+<p><img src="../../img/docs/user-interface/join_example_result_2.jpg" width="500" /></p>
+
+<h4 id="example-3-join-on-several-columns">Example 3: join on several columns</h4>
+
+<p>Based on the same ase dataset as in example 1, now say that you have a dataset,
+stored in your application, that has information on employees number by country
+and by date:</p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">nb_employees</code>:</p>
+
+    <p><img src="../../img/docs/user-interface/join_example_right_dataset_2.jpg" width="500" /></p>
+  </li>
+</ul>
+
+<p>You want both the country AND date to be used for matching rows. So if you
+apply the following configuration on the current dataset…</p>
+
+<p><img src="../../img/docs/user-interface/join_example_conf_3.jpg" width="750" /></p>
+
+<p>…It will result in:</p>
+
+<p><img src="../../img/docs/user-interface/join_example_result_3.jpg" width="500" /></p>
 </div>
             
 
@@ -364,29 +426,37 @@ sorted by descending order.</p>
 
   
   
-    <ul class="pager">
-      
-        
-        
-        <li class="previous">
-          <a href="/docs/replace/">
-            <span aria-hidden="true">&larr;</span> Previous
-          </a>
-        </li>
-      
 
-      
-        
-        
-        <li class="next">
-          <a href="/docs/lowercase/">
-            Next <span aria-hidden="true">&rarr;</span>
-          </a>
-        </li>
-      
-      </ul>
-    <div class="clear"></div>
-    
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
 
         </div>
 
