@@ -58,6 +58,7 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   }
 
   updateValue(newValue: string) {
+    console.log('update value', newValue);
     this.$emit('input', newValue);
   }
 }

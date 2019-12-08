@@ -9,14 +9,11 @@
       data-path=".text"
       :errors="errors"
     />
-    <InputTextWidget
+    <OutputColumnWidget
       id="newColumnInput"
       v-model="editedStep.new_column"
-      name="New colum:"
-      placeholder="Enter a new column name"
       data-path=".new_column"
       :errors="errors"
-      :warning="duplicateColumnName"
     />
     <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
@@ -26,6 +23,7 @@
 import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import OutputColumnWidget from '@/components/stepforms/widgets/OuptutColumn.vue';
 import BaseStepForm from './StepForm.vue';
 import { AddTextColumnStep } from '@/lib/steps';
 
@@ -34,6 +32,7 @@ import { AddTextColumnStep } from '@/lib/steps';
   name: 'text-step-form',
   components: {
     InputTextWidget,
+    OutputColumnWidget,
   },
 })
 export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnStep> {
@@ -41,14 +40,6 @@ export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnSte
   initialStepValue!: AddTextColumnStep;
 
   readonly title: string = 'Add Text Column';
-
-  get duplicateColumnName() {
-    if (this.columnNames.includes(this.editedStep.new_column)) {
-      return `A column name "${this.editedStep.new_column}" already exists. You will overwrite it.`;
-    } else {
-      return null;
-    }
-  }
 
   submit() {
     this.$$super.submit();
