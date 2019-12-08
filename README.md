@@ -237,5 +237,19 @@ node playground/server.js --defaultDataset my-dataset.csv --reset
 If you don't have mongodb installed, you can use the `--automongo` flag from the
 command line. It will use
 [mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) to download
-(the first time) and run mongo `3.6.12` and then listen on the port guessed from
+(the first time) and run mongo `4.0.13` and then listen on the port guessed from
 the `--dburi` flag.
+
+> [mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) uses
+> [mongodb-download](https://github.com/mongodb-js/mongodb-download) internally
+> to download mongodb binaries. Unfortunately, the URLs on
+> https://fastdl.mongodb.org used for these binaries have changed and
+> `mongodb-download` doesn't seem up-to-date, cf.
+> https://github.com/mongodb-js/mongodb-download/issues/36 and
+> https://github.com/mongodb-js/mongodb-prebuilt/issues/59
+> To bypass this issue, you can manually specify the download URL by setting the
+> `MONGODB_DL_URI` environment variable. For instance, you can use
+> the following command line:
+> `MONGODB_DL_URI=https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.0.13.tgz node playground/server.js --automongo`
+> or
+> `MONGODB_DL_URI=https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.13.tgz node playground/server.js --automongo`
