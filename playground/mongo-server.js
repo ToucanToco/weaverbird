@@ -2,6 +2,23 @@
 const tmp = require('tmp');
 const { MongodHelper } = require('mongodb-prebuilt');
 
+/**
+ * `mongodb-download` package uses wrong download URLS for mongo binaries
+ * (cf. https://github.com/mongodb-js/mongodb-download/issues/36)
+ * Until the issue is fixed, users can set the `MONGODB_DL_URI` environment
+ * variable to specify the download URL. In that case, we monkeypatch `mongodb-download`
+ * to use the user specified URL.
+ */
+if (process.env.MONGODB_DL_URI !== undefined) {
+  const url = require('url');
+  const { MongoDBDownload } = require('mongodb-download');
+  MongoDBDownload.prototype.getDownloadURI = function() {
+    return new Promise(function(resolve,) {
+      resolve(url.parse(process.env.MONGODB_DL_URI));
+    });
+  }
+}
+
 tmp.setGracefulCleanup(); // required to be able to remove directory correctly
 
 /**
@@ -18,7 +35,7 @@ function portFromuri(dburi) {
   return match[2];
 }
 
-async function startMongo({ dburi = 'mongodb://localhost:27017', version = '3.6.12' } = {}) {
+async function startMongo({ dburi = 'mongodb://localhost:27017', version = '4.0.13' } = {}) {
   const port = portFromuri(dburi);
   if (port === null) {
     throw new Error(
