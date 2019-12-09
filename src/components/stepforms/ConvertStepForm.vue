@@ -1,12 +1,12 @@
 <template>
   <div>
-    <step-form-title :title="title" />
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="columnsInput"
       v-model="editedStep.columns"
       name="Convert columns:"
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.columns[editedStep.columns.length-1] })"
+      @input="setSelectedColumns({ column: editedStep.columns[editedStep.columns.length - 1] })"
       placeholder="Select column(s)"
       data-path=".columns"
       :errors="errors"

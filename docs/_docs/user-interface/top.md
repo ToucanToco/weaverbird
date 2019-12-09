@@ -1,6 +1,6 @@
 ---
 title: Top N rows
-permalink: /docs/topnrows/
+permalink: /docs/top/
 ---
 
 ### Top N rows

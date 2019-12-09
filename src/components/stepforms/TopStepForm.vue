@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title" />
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <InputTextWidget
       id="limitInput"
       v-model.number="editedStep.limit"
@@ -33,7 +33,7 @@
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length-1] })"
+      @input="setSelectedColumns({ column: editedStep.groups[editedStep.groups.length - 1] })"
       placeholder="Select columns"
       data-path=".groups"
       :errors="errors"

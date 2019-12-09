@@ -5,12 +5,13 @@
 ### Added
 
 - Added `append` step (to append datasets resulting from multiple pipelines)
-- Added `join` step (to perform either *left outer joins* or *inner joins*)
+- Added `join` step (to perform either _left outer joins_ or _inner joins_)
 - Mongo4.0 translator scaffold
 - Add data types conversion operations (with specific UI), only supported by
   the 'mongo40' translator
 - Add an 'Add text column' operation
 - Introduce a new 'Add' widget (including adding a nex text or formula column)
+- Introduce direct links to documenttion in the UI
 
 ### Fixed
 

@@ -1,5 +1,5 @@
 ---
-title: Delete
+title: Delete column(s)
 permalink: /docs/delete/
 ---
 

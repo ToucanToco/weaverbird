@@ -1,30 +1,37 @@
 - title: User interface
   docs:
-  - general-principles
-  - aggregate
-  - argmax
-  - argmin
-  - delete
-  - duplicate
-  - fillnull
-  - filter
-  - formula
-  - keep
-  - percentage
-  - pivot
-  - rename
-  - replace
-  - sort
-  - lowercase
-  - uppercase
-  - topnrows
-  - unpivot
+    - general-principles
+    - text
+    - aggregate
+    - append
+    - argmax
+    - argmin
+    - concatenate
+    - convert
+    - delete
+    - duplicate
+    - fillna
+    - filter
+    - formula
+    - join
+    - select
+    - percentage
+    - pivot
+    - rename
+    - replace
+    - sort
+    - split
+    - substring
+    - lowercase
+    - uppercase
+    - top
+    - unpivot
 
 - title: Technical documentation
   docs:
-  - index
-  - steps
-  - stepforms
-  - known_limitations
-  - translators
-  - variables
+    - index
+    - steps
+    - stepforms
+    - known_limitations
+    - translators
+    - variables

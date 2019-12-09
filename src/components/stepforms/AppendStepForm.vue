@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title" />
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="pipelinesInput"
       v-model="editedStep.pipelines"
@@ -17,13 +17,12 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { AppendStep , Pipeline } from '@/lib/steps';
+import { AppendStep, Pipeline } from '@/lib/steps';
 import { StepFormComponent } from '@/components/formlib';
 import { VQBModule } from '@/store';
 
 import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
-
 
 @StepFormComponent({
   vqbstep: 'append',

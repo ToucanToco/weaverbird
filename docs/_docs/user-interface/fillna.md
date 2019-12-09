@@ -1,6 +1,6 @@
 ---
 title: Fill null
-permalink: /docs/fillnull/
+permalink: /docs/fillna/
 ---
 
 ### Fill null values

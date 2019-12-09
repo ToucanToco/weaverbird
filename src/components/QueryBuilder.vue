@@ -11,7 +11,19 @@
       />
     </transition>
     <transition v-else name="slide-left" mode="out-in">
-      <Pipeline key="pipeline" @editStep="editStep" />
+      <div>
+        <div class="documentation-help">
+          <a
+            href="https://weaverbird.toucantoco.com/docs/general-principles/"
+            target="_blank"
+            class="documentation-help__content"
+          >
+            <i class="fas fa-question-circle" />
+            <p>Need help?</p>
+          </a>
+        </div>
+        <Pipeline key="pipeline" @editStep="editStep" />
+      </div>
     </transition>
   </div>
 </template>
@@ -87,6 +99,8 @@ export default class QueryBuilder extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+@import '../styles/_variables';
+
 .slide-left-enter,
 .slide-left-leave-to {
   transform: translateX(-100%);
@@ -105,5 +119,32 @@ export default class QueryBuilder extends Vue {
 
 .slide-right-enter-active {
   transition: all 0.3s ease;
+}
+
+.documentation-help {
+  display: flex;
+  justify-content: center;
+  margin-top: -15px;
+  margin-bottom: -10px;
+}
+
+.documentation-help__content {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  text-decoration: none;
+  color: $base-color;
+
+  &:hover {
+    color: $active-color;
+  }
+
+  p {
+    text-decoration: underline;
+  }
+
+  .fas.fa-question-circle {
+    margin-right: 5px;
+  }
 }
 </style>

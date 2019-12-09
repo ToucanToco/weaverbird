@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
 
     <ListWidget
       addFieldName="Add Column"
@@ -13,14 +13,14 @@
       :errors="errors"
     />
 
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { SortStep , SortColumnType } from '@/lib/steps';
+import { SortStep, SortColumnType } from '@/lib/steps';
 import { StepFormComponent } from '@/components/formlib';
 
 import BaseStepForm from './StepForm.vue';

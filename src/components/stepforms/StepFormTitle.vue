@@ -1,6 +1,13 @@
 <template functional>
   <div class="step-edit-form">
     <h1 class="step-edit-form__title">{{ props.title }}</h1>
+    <a
+      :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`"
+      target="_blank"
+      class="step-edit-form__help"
+    >
+      <i class="fas fa-question-circle" />
+    </a>
   </div>
 </template>
 <script lang="ts">
@@ -25,5 +32,14 @@ export default {};
   font-size: 17px;
   margin: 0;
 }
-</style>
 
+.fas.fa-question-circle {
+  margin-left: 5px;
+  color: $base-color;
+  font-size: 14px;
+
+  &:hover {
+    color: $active-color;
+  }
+}
+</style>

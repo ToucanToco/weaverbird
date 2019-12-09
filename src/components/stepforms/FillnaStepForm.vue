@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
       v-model="editedStep.column"
       id="columnInput"
@@ -17,7 +17,7 @@
       data-path=".value"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 

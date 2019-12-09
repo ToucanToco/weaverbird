@@ -1,6 +1,6 @@
 <template>
   <div class="filter-form" :class="multipleConditionsClass">
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <div class="filter-form-headers__container">
       <div class="filter-form-header">Values in...</div>
       <div class="filter-form-header">Must...</div>
@@ -16,7 +16,7 @@
       data-path=".condition.and"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 
@@ -26,7 +26,7 @@ import { Prop } from 'vue-property-decorator';
 import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
-import { FilterStep, FilterComboAnd, isFilterComboAnd , FilterSimpleCondition } from '@/lib/steps';
+import { FilterStep, FilterComboAnd, isFilterComboAnd, FilterSimpleCondition } from '@/lib/steps';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 
@@ -96,7 +96,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   get multipleConditionsClass() {
     return {
       'filter-form--multiple-conditions': this.conditions.length > 1,
-    }
+    };
   }
 
   submit() {
