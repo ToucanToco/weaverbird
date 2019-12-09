@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="indexInput"
       v-model="editedStep.index"
@@ -36,7 +36,7 @@
       data-path=".agg_function"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 <script lang="ts">

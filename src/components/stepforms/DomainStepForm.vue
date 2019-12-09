@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <AutocompleteWidget
       id="domainInput"
       v-model="editedStep.domain"
@@ -8,7 +8,7 @@
       :options="domains"
       placeholder="Choose a domain"
     />
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 

@@ -1,6 +1,6 @@
 ---
-title: Keep column
-permalink: /docs/keep/
+title: Keep column(s)
+permalink: /docs/select/
 ---
 
 ### Keep column(s)

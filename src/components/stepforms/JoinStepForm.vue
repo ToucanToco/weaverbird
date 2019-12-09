@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title" />
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <AutocompleteWidget
       id="rightPipelineInput"
       v-model="editedStep.right_pipeline"
@@ -37,7 +37,7 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { JoinStep , Pipeline } from '@/lib/steps';
+import { JoinStep, Pipeline } from '@/lib/steps';
 import BaseStepForm from './StepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
@@ -45,7 +45,6 @@ import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import Multiselect from './widgets/Multiselect.vue';
 import { StepFormComponent } from '@/components/formlib';
 import { VQBModule } from '@/store';
-
 
 @StepFormComponent({
   vqbstep: 'join',

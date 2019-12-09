@@ -1,17 +1,17 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="columnsInput"
       v-model="editedStep.columns"
       name="Delete columns..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.columns[editedStep.columns.length-1] })"
+      @input="setSelectedColumns({ column: editedStep.columns[editedStep.columns.length - 1] })"
       placeholder="Add columns"
       data-path=".columns"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 

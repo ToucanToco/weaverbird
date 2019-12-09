@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title" />
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
       id="column"
       v-model="editedStep.column"

@@ -1,12 +1,12 @@
 <template>
   <div>
-    <step-form-title :title="title"/>
+    <step-form-title :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="groupbyColumnsInput"
       v-model="editedStep.on"
       name="Group rows by..."
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length-1] })"
+      @input="setSelectedColumns({ column: editedStep.on[editedStep.on.length - 1] })"
       placeholder="Add columns"
       data-path=".on"
       :errors="errors"
@@ -22,7 +22,7 @@
       data-path=".aggregations"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit"/>
+    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
   </div>
 </template>
 

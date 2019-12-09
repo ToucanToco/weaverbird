@@ -1,5 +1,5 @@
 ---
-title: Text
+title: Add text column
 permalink: /docs/text/
 ---
 
