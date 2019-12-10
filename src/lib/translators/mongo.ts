@@ -77,6 +77,8 @@ function buildMatchTree(
     ge: '$gte',
     in: '$in',
     nin: '$nin',
+    isnull: '$eq',
+    notnull: '$ne',
   };
   if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
     return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });

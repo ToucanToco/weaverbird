@@ -64,9 +64,14 @@ function filterExpression(
       case 'in':
         return `"${condition.column}" in (${condition.value.join(MULTIVALUE_SEP)})`;
       case 'nin':
+        return `"${condition.column}" not in (${condition.value.join(MULTIVALUE_SEP)})`;
+      case 'isnull':
+        return `"${condition.column}" is null`;
+      case 'notnull':
+        return `"${condition.column}" is not null`;
       default:
         // only for typescript to be happy and see we always have a return value
-        return `"${condition.column}" not in (${condition.value.join(MULTIVALUE_SEP)})`;
+        return '';
     }
   }
 }

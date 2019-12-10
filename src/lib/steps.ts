@@ -107,7 +107,7 @@ type FilterConditionComparison = {
 type FilterConditionEquality = {
   column: string;
   value: any;
-  operator: 'eq' | 'ne';
+  operator: 'eq' | 'ne' | 'isnull' | 'notnull';
 };
 
 type FilterConditionInclusion = {

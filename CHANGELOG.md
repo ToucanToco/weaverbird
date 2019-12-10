@@ -11,7 +11,8 @@
   the 'mongo40' translator
 - Add an 'Add text column' operation
 - Introduce a new 'Add' widget (including adding a nex text or formula column)
-- Introduce direct links to documenttion in the UI
+- Introduce direct links to documention in the UI
+- Add 'isnull' and 'notnull' operators in filter step
 
 ### Fixed
 

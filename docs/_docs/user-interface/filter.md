@@ -27,8 +27,10 @@ moment, we only support `and` as logical link between conditions.
 
 - `Must...`: a comparison operator (equal, not equal etc.)
 
-- Then you can enter a value to be compared to. For `be one of` and `not be one of`
-  comparison operators, you can enter several values
+- Then you can enter value(s) to be compared to. For `be one of` and
+  `not be one of` operators, you can enter several values. For the `be null` and
+  `not be null` operators, you do not need to enter any value as it is a
+  comparison aginst `null` values.
 
 - `Add condition`: use this button if you need to add a new condition line. The
   retained rows will be those match every condition (logical `and`)
