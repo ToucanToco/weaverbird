@@ -616,9 +616,11 @@ Filter out lines that don't match a filter definition.
 ```
 
 `operator` is optional, and defaults to `eq`. Allowed operators are `eq`, `ne`,
-`gt`, `ge`, `lt`, `le`, `in`, `nin`.
+`gt`, `ge`, `lt`, `le`, `in`, `nin`, `isnull` or `notnull`.
 
-`value` can be an arbitrary value (e.g a list when used with the `in` operator)
+`value` can be an arbitrary value depending on the selected operator (e.g a list 
+when used with the `in` operator, or `null` when used with the `isnull` 
+operator).
 
 **This step is supported by the following backends:**
 

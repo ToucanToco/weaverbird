@@ -438,6 +438,52 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
+  it('should not interpolate simple filter steps / operator "isnull"', () => {
+    const step: Pipeline = [
+      {
+        name: 'filter',
+        condition: {
+          column: '<%= foo %>',
+          value: '<%= age %>',
+          operator: 'isnull',
+        },
+      },
+    ];
+    expect(translate(step)).toEqual([
+      {
+        name: 'filter',
+        condition: {
+          column: '<%= foo %>',
+          value: '<%= age %>',
+          operator: 'isnull',
+        },
+      },
+    ]);
+  });
+
+  it('should not interpolate simple filter steps / operator "notnull"', () => {
+    const step: Pipeline = [
+      {
+        name: 'filter',
+        condition: {
+          column: '<%= foo %>',
+          value: '<%= age %>',
+          operator: 'notnull',
+        },
+      },
+    ];
+    expect(translate(step)).toEqual([
+      {
+        name: 'filter',
+        condition: {
+          column: '<%= foo %>',
+          value: '<%= age %>',
+          operator: 'notnull',
+        },
+      },
+    ]);
+  });
+
   it('interpolates "and" filter steps', () => {
     const step: Pipeline = [
       {

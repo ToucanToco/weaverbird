@@ -72,12 +72,15 @@ function interpolateFilterCondition(
         };
       case 'in':
       case 'nin':
-      default:
-        // only for typescript to be happy and see we always have a return value
         return {
           ...condition,
           value: condition.value.map(v => _interpolate(interpolate, v, context, columnType)),
         };
+      case 'isnull':
+      case 'notnull':
+      default:
+        // only for typescript to be happy and see we always have a return value
+        return condition;
     }
   }
 }

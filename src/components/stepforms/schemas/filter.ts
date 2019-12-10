@@ -14,7 +14,7 @@ export default {
           type: 'array',
           minItems: 1,
           title: 'And condition',
-          items: { $ref: '#/definitions/simpleCondition' }
+          items: { $ref: '#/definitions/simpleCondition' },
         },
       },
       required: ['and'],
@@ -45,7 +45,7 @@ export default {
         },
         operator: {
           type: 'string',
-          enum: ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin'],
+          enum: ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin', 'isnull', 'notnull'],
           title: 'Operator',
           description: 'The filter operator',
           attrs: {

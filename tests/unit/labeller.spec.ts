@@ -220,6 +220,30 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Keep rows where "column1" not in (4, 2)');
   });
 
+  it('generates label for simple filter steps / operator "isnull"', () => {
+    const step: S.FilterStep = {
+      name: 'filter',
+      condition: {
+        column: 'column1',
+        value: null,
+        operator: 'isnull',
+      },
+    };
+    expect(hrl(step)).toEqual('Keep rows where "column1" is null');
+  });
+
+  it('generates label for simple filter steps / operator "notnull"', () => {
+    const step: S.FilterStep = {
+      name: 'filter',
+      condition: {
+        column: 'column1',
+        value: null,
+        operator: 'notnull',
+      },
+    };
+    expect(hrl(step)).toEqual('Keep rows where "column1" is not null');
+  });
+
   it('generates label for "and" filter steps', () => {
     const step: S.FilterStep = {
       name: 'filter',

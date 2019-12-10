@@ -37,6 +37,16 @@ describe('Widget AggregationWidget', () => {
     expect(autocompleteWrappers.length).toEqual(1);
   });
 
+  it('should not have any input component if operator is "isnull" or "not null"', async () => {
+    const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
+    wrapper.setData({ editedValue: { column: 'foo', value: [], operator: 'isnull' } });
+    await localVue.nextTick();
+    const inputTextWrappers = wrapper.find('inputtextwidget-stub');
+    const multinnputtextWrappers = wrapper.find('multiinputtextwidget-stub');
+    expect(inputTextWrappers.exists()).toBeFalsy();
+    expect(multinnputtextWrappers.exists()).toBeFalsy();
+  });
+
   it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
     const store = setupMockStore({
       dataset: {
@@ -72,10 +82,11 @@ describe('Widget AggregationWidget', () => {
   it('should change the type of value accordingly when switching the "operator"', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
     expect((wrapper.vm.$data.editedValue.value = ''));
-    wrapper.setData({ editedValue: { column: 'foo', value: [], operator: 'in' } });
     const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
     await operatorWrapper.trigger('input', { value: 'be one of' });
     expect((wrapper.vm.$data.editedValue.value = []));
+    await operatorWrapper.trigger('input', { value: 'isnull' });
+    expect((wrapper.vm.$data.editedValue.value = null));
   });
 
   it('should emit "input" event on "editedValue" update', async () => {

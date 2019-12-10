@@ -110,6 +110,8 @@ describe('Pipeline to mongo translator', () => {
       { name: 'filter', condition: { column: 'Value', value: 100, operator: 'ge' } },
       { name: 'filter', condition: { column: 'Category', value: ['Foo', 'Bar'], operator: 'in' } },
       { name: 'filter', condition: { column: 'Code', value: [0, 42], operator: 'nin' } },
+      { name: 'filter', condition: { column: 'IsNull', value: null, operator: 'isnull' } },
+      { name: 'filter', condition: { column: 'NotNull', value: null, operator: 'notnull' } },
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
@@ -125,6 +127,8 @@ describe('Pipeline to mongo translator', () => {
           Value: { $gte: 100 },
           Category: { $in: ['Foo', 'Bar'] },
           Code: { $nin: [0, 42] },
+          IsNull: { $eq: null },
+          NotNull: { $ne: null },
         },
       },
       { $project: { _id: 0 } },

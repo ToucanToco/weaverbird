@@ -23,6 +23,7 @@
       />
     </div>
     <component
+      v-if="inputWidget"
       :is="inputWidget"
       v-model="editedValue.value"
       :placeholder="placeholder"
@@ -53,14 +54,16 @@ type LiteralOperator =
   | 'be less than'
   | 'be less than or equal to'
   | 'be one of'
-  | 'not be one of';
+  | 'not be one of'
+  | 'be null'
+  | 'not be null';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
 type OperatorOption = {
   operator: ShortOperator;
   label: LiteralOperator;
-  inputWidget: VueConstructor<Vue>;
+  inputWidget?: VueConstructor<Vue>;
 };
 
 @Component({
@@ -98,6 +101,8 @@ export default class FilterSimpleConditionWidget extends Vue {
     { operator: 'le', label: 'be less than or equal to', inputWidget: InputTextWidget },
     { operator: 'in', label: 'be one of', inputWidget: MultiInputTextWidget },
     { operator: 'nin', label: 'not be one of', inputWidget: MultiInputTextWidget },
+    { operator: 'isnull', label: 'be null' },
+    { operator: 'notnull', label: 'not be null' },
   ];
 
   readonly placeholder = 'Enter a value';
@@ -106,14 +111,22 @@ export default class FilterSimpleConditionWidget extends Vue {
     return this.operators.filter(d => d.operator === this.editedValue.operator)[0];
   }
 
-  get inputWidget(): VueConstructor<Vue> {
-    return this.operators.filter(d => d.operator === this.editedValue.operator)[0].inputWidget;
+  get inputWidget(): VueConstructor<Vue> | undefined {
+    const widget = this.operators.filter(d => d.operator === this.editedValue.operator)[0]
+      .inputWidget;
+    if (widget) {
+      return widget;
+    } else {
+      return undefined;
+    }
   }
 
   updateStepOperator(op: OperatorOption) {
     this.editedValue.operator = op.operator;
     if (this.editedValue.operator === 'in' || this.editedValue.operator === 'nin') {
       this.editedValue.value = [];
+    } else if (this.editedValue.operator === 'isnull' || this.editedValue.operator === 'notnull') {
+      this.editedValue.value = null;
     } else {
       this.editedValue.value = '';
     }
@@ -166,4 +179,3 @@ export default class FilterSimpleConditionWidget extends Vue {
   width: 100%;
 }
 </style>
-
