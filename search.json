@@ -12,8 +12,24 @@
     
     
     {
+      "title": "Add text column",
+      "url": "/docs/text/"
+
+    },
+  
+    
+    
+    {
       "title": "Aggregate",
       "url": "/docs/aggregate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Append",
+      "url": "/docs/append/"
 
     },
   
@@ -36,7 +52,23 @@
     
     
     {
-      "title": "Delete",
+      "title": "Concatenate columns",
+      "url": "/docs/concatenate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Convert",
+      "url": "/docs/convert/"
+
+    },
+  
+    
+    
+    {
+      "title": "Delete column(s)",
       "url": "/docs/delete/"
 
     },
@@ -53,7 +85,7 @@
     
     {
       "title": "Fill null",
-      "url": "/docs/fillnull/"
+      "url": "/docs/fillna/"
 
     },
   
@@ -76,8 +108,16 @@
     
     
     {
-      "title": "Keep column",
-      "url": "/docs/keep/"
+      "title": "Join",
+      "url": "/docs/join/"
+
+    },
+  
+    
+    
+    {
+      "title": "Keep column(s)",
+      "url": "/docs/select/"
 
     },
   
@@ -124,6 +164,22 @@
     
     
     {
+      "title": "Split column",
+      "url": "/docs/split/"
+
+    },
+  
+    
+    
+    {
+      "title": "Extract substring",
+      "url": "/docs/substring/"
+
+    },
+  
+    
+    
+    {
       "title": "To lowercase",
       "url": "/docs/lowercase/"
 
@@ -141,7 +197,7 @@
     
     {
       "title": "Top N rows",
-      "url": "/docs/topnrows/"
+      "url": "/docs/top/"
 
     },
   
