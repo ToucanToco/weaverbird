@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2019-12-10T12:39:53+01:00" />
+<meta property="article:published_time" content="2019-12-11T11:29:46+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-12-10T12:39:53+01:00","dateModified":"2019-12-10T12:39:53+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2019-12-11T11:29:46+01:00","dateModified":"2019-12-11T11:29:46+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -1608,9 +1608,11 @@ other existing steps.</p>
 </code></pre></div></div>
 
 <p><code class="highlighter-rouge">operator</code> is optional, and defaults to <code class="highlighter-rouge">eq</code>. Allowed operators are <code class="highlighter-rouge">eq</code>, <code class="highlighter-rouge">ne</code>,
-<code class="highlighter-rouge">gt</code>, <code class="highlighter-rouge">ge</code>, <code class="highlighter-rouge">lt</code>, <code class="highlighter-rouge">le</code>, <code class="highlighter-rouge">in</code>, <code class="highlighter-rouge">nin</code>.</p>
+<code class="highlighter-rouge">gt</code>, <code class="highlighter-rouge">ge</code>, <code class="highlighter-rouge">lt</code>, <code class="highlighter-rouge">le</code>, <code class="highlighter-rouge">in</code>, <code class="highlighter-rouge">nin</code>, <code class="highlighter-rouge">isnull</code> or <code class="highlighter-rouge">notnull</code>.</p>
 
-<p><code class="highlighter-rouge">value</code> can be an arbitrary value (e.g a list when used with the <code class="highlighter-rouge">in</code> operator)</p>
+<p><code class="highlighter-rouge">value</code> can be an arbitrary value depending on the selected operator (e.g a list 
+when used with the <code class="highlighter-rouge">in</code> operator, or <code class="highlighter-rouge">null</code> when used with the <code class="highlighter-rouge">isnull</code> 
+operator).</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
