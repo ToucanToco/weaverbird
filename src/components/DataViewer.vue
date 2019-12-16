@@ -3,47 +3,52 @@
     <ActionToolbar :buttons="buttons" @actionClicked="openStepForm" />
     <div v-if="isLoading" class="data-viewer-loader-spinner" />
     <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
-      <table class="data-viewer-table">
-        <thead class="data-viewer__header">
-          <tr>
-            <td
-              v-for="(column, index) in formattedColumns"
-              :class="column.class"
-              :key="column.name"
-              @click="toggleColumnSelection({ column: column.name })"
-            >
-              <span v-if="column.type" :class="iconClass" @click.stop="openDataTypeMenu(index)">
-                <span v-html="getIconType(column.type)" />
-                <DataTypesMenu
-                  v-if="isSupported('convert')"
-                  :column-name="column.name"
-                  :is-active="column.isDataTypeMenuOpened"
-                  @closed="closeDataTypeMenu"
-                />
-              </span>
-              <span class="data-viewer__header-label">{{ column.name }}</span>
-              <i class="data-viewer__header-action fas fa-angle-down" @click.stop="openMenu(index)">
-                <ActionMenu
-                  :column-name="column.name"
-                  :is-active="column.isActionMenuOpened"
-                  @closed="closeMenu"
-                  @actionClicked="openStepForm"
-                />
-              </i>
-            </td>
-          </tr>
-        </thead>
-        <tbody class="data-viewer__body">
-          <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
-            <DataViewerCell
-              v-for="(cell, cellidx) in row"
-              :key="cellidx"
-              :isSelected="isSelected(columnHeaders[cellidx].name)"
-              :value="cell"
-            />
-          </tr>
-        </tbody>
-      </table>
+      <div class="data-viewer-table-container">
+        <table class="data-viewer-table">
+          <thead class="data-viewer__header">
+            <tr>
+              <td
+                v-for="(column, index) in formattedColumns"
+                :class="column.class"
+                :key="column.name"
+                @click="toggleColumnSelection({ column: column.name })"
+              >
+                <span v-if="column.type" :class="iconClass" @click.stop="openDataTypeMenu(index)">
+                  <span v-html="getIconType(column.type)" />
+                  <DataTypesMenu
+                    v-if="isSupported('convert')"
+                    :column-name="column.name"
+                    :is-active="column.isDataTypeMenuOpened"
+                    @closed="closeDataTypeMenu"
+                  />
+                </span>
+                <span class="data-viewer__header-label">{{ column.name }}</span>
+                <i
+                  class="data-viewer__header-action fas fa-angle-down"
+                  @click.stop="openMenu(index)"
+                >
+                  <ActionMenu
+                    :column-name="column.name"
+                    :is-active="column.isActionMenuOpened"
+                    @closed="closeMenu"
+                    @actionClicked="openStepForm"
+                  />
+                </i>
+              </td>
+            </tr>
+          </thead>
+          <tbody class="data-viewer__body">
+            <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
+              <DataViewerCell
+                v-for="(cell, cellidx) in row"
+                :key="cellidx"
+                :isSelected="isSelected(columnHeaders[cellidx].name)"
+                :value="cell"
+              />
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <Pagination v-if="dataset.paginationContext.totalCount > pagesize" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
