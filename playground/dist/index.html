@@ -20,24 +20,31 @@
         height: 100%;
       }
 
+      body {
+        background: url('./pattern-blueprints.png');
+        background-color: rgb(38, 101, 163);
+      }
+
       pre {
         height: 100%;
         display: flex;
+        background: white;
       }
 
       #app {
-        position: relative;
-        background: url('./pattern-blueprints.png');
-        background-color: rgb(38, 101, 163);
+        position: absolute;
         flex: 1;
-        height: 100%;
-        padding: 60px 40px 0 40px;
+        top: 60px;
+        left: 40px;
+        right: 40px;
+        bottom: 0;
       }
 
       #app .weaverbird {
         box-shadow: 0px 0px 10px #1119;
         border-radius: 0px;
         padding: 10px 15px;
+        box-sizing: border-box;
       }
 
       .vqb__drop-zone {

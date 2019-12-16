@@ -11,14 +11,13 @@ const {
   registerModule,
 } = vqb;
 
-const TRANSLATOR = 'mongo40'
+const TRANSLATOR = 'mongo40';
 
 const mongo40translator = getTranslator(TRANSLATOR);
 
 const CASTERS = {
-  date: (val) => new Date(val),
+  date: val => new Date(val),
 };
-
 
 function mongoToVQBType(type) {
   if (type === 'int' || type === 'long') {
@@ -36,18 +35,16 @@ function mongoToVQBType(type) {
   return undefined;
 }
 
-
 function annotateDataset(dataset, typeAnnotations) {
-  const typedHeaders = dataset.headers.map((hdr) => ({
+  const typedHeaders = dataset.headers.map(hdr => ({
     name: hdr.name,
     type: typeAnnotations ? mongoToVQBType(typeAnnotations[hdr.name]) : undefined,
   }));
   return {
     ...dataset,
-    headers: typedHeaders
+    headers: typedHeaders,
   };
 }
-
 
 function autocastDataset(dataset) {
   // inspect column types to find out which ones should be casted, that is which
@@ -75,10 +72,9 @@ function autocastDataset(dataset) {
   return {
     ...dataset,
     data: newData,
-    headers: dataset.headers
+    headers: dataset.headers,
   };
 }
-
 
 class MongoService {
   async listCollections(_store) {
@@ -87,22 +83,12 @@ class MongoService {
   }
 
   async executePipeline(_store, pipeline, limit, offset = 0) {
-    const {
-      domain,
-      pipeline: subpipeline
-    } = filterOutDomain(pipeline);
+    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
     const query = mongo40translator.translate(subpipeline);
-    const {
-      isResponseOk,
-      responseContent
-    } = await this.executeQuery(query, domain, limit, offset);
+    const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
-      const [{
-        count,
-        data: rset,
-        types
-      }] = responseContent;
+      const [{ count, data: rset, types }] = responseContent;
       let dataset = mongoResultsToDataset(rset);
       dataset.paginationContext = {
         totalCount: count,
@@ -156,20 +142,23 @@ class MongoService {
 
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
-const initialPipeline = [{
-  name: 'domain',
-  domain: 'test-collection',
-},
-{
-  name: 'filter',
-  condition: {
-    and: [{
-      column: 'Groups',
-      value: '<%= groupname %>',
-      operator: 'eq'
-    }]
+const initialPipeline = [
+  {
+    name: 'domain',
+    domain: 'test-collection',
   },
-},
+  {
+    name: 'filter',
+    condition: {
+      and: [
+        {
+          column: 'Groups',
+          value: '<%= groupname %>',
+          operator: 'eq',
+        },
+      ],
+    },
+  },
 ];
 
 async function setupInitialData(store, domain = null) {
@@ -191,12 +180,12 @@ async function setupInitialData(store, domain = null) {
       store.commit(VQBnamespace('setBackendError'), {
         backendError: {
           type: 'error',
-          error: response.error
+          error: response.error,
         },
       });
     } else {
       store.commit(VQBnamespace('setDataset'), {
-        dataset: response.data
+        dataset: response.data,
       });
     }
   }
@@ -226,74 +215,78 @@ async function buildVueApp() {
       registerModule(this.$store, {
         pipeline: initialPipeline,
         pipelines: {
-          pipeline1: [{
-            name: 'domain',
-            domain: 'test-collection',
-          },
-          {
-            name: 'replace',
-            search_column: 'Label',
-            to_replace: [
-              ['Label 1', 'Label 6'],
-              ['Label 2', 'Label 7'],
-              ['Label 3', 'Label 8'],
-              ['Label 4', 'Label 9'],
-              ['Label 5', 'Label 10'],
-            ]
-          },
+          pipeline1: [
+            {
+              name: 'domain',
+              domain: 'test-collection',
+            },
+            {
+              name: 'replace',
+              search_column: 'Label',
+              to_replace: [
+                ['Label 1', 'Label 6'],
+                ['Label 2', 'Label 7'],
+                ['Label 3', 'Label 8'],
+                ['Label 4', 'Label 9'],
+                ['Label 5', 'Label 10'],
+              ],
+            },
           ],
-          pipeline2: [{
-            name: 'domain',
-            domain: 'test-collection',
-          },
-          {
-            name: 'replace',
-            search_column: 'Label',
-            to_replace: [
-              ['Label 1', 'Label 11'],
-              ['Label 2', 'Label 12'],
-              ['Label 3', 'Label 13'],
-              ['Label 4', 'Label 14'],
-              ['Label 5', 'Label 15'],
-            ]
-          },
+          pipeline2: [
+            {
+              name: 'domain',
+              domain: 'test-collection',
+            },
+            {
+              name: 'replace',
+              search_column: 'Label',
+              to_replace: [
+                ['Label 1', 'Label 11'],
+                ['Label 2', 'Label 12'],
+                ['Label 3', 'Label 13'],
+                ['Label 4', 'Label 14'],
+                ['Label 5', 'Label 15'],
+              ],
+            },
           ],
-          pipelineRight1: [{
-            name: 'domain',
-            domain: 'test-collection',
-          },
-          {
-            name: 'replace',
-            search_column: 'Label',
-            to_replace: [
-              ['Label 4', 'Label 6'],
-              ['Label 5', 'Label 7'],
-            ]
-          },
-          {
-            name: 'formula',
-            formula: 'Value2 * 10',
-            new_column: 'ValueRight1'
-          },
+          pipelineRight1: [
+            {
+              name: 'domain',
+              domain: 'test-collection',
+            },
+            {
+              name: 'replace',
+              search_column: 'Label',
+              to_replace: [
+                ['Label 4', 'Label 6'],
+                ['Label 5', 'Label 7'],
+              ],
+            },
+            {
+              name: 'formula',
+              formula: 'Value2 * 10',
+              new_column: 'ValueRight1',
+            },
           ],
-          pipelineRight2: [{
-            name: 'domain',
-            domain: 'test-collection',
-          },
-          {
-            name: 'replace',
-            search_column: 'Label',
-            to_replace: [
-              ['Label 1', 'Label 8'],
-              ['Label 2', 'Label 9'],
-              ['Label 3', 'Label 10'],
-            ]
-          },
-          {
-            name: 'formula',
-            formula: 'Value3 * 10',
-            new_column: 'ValueRight2'
-          },
+          pipelineRight2: [
+            {
+              name: 'domain',
+              domain: 'test-collection',
+            },
+            {
+              name: 'replace',
+              search_column: 'Label',
+              to_replace: [
+                ['Label 1', 'Label 8'],
+                ['Label 2', 'Label 9'],
+                ['Label 3', 'Label 10'],
+              ],
+            },
+            {
+              name: 'formula',
+              formula: 'Value3 * 10',
+              new_column: 'ValueRight2',
+            },
           ],
         },
         currentDomain: 'test-collection',
@@ -310,8 +303,8 @@ async function buildVueApp() {
     },
     computed: {
       code: function() {
-        let activePipeline = this.$store.getters[VQBnamespace('activePipeline')]
-        const pipelines = this.$store.getters[VQBnamespace('pipelines')]
+        let activePipeline = this.$store.getters[VQBnamespace('activePipeline')];
+        const pipelines = this.$store.getters[VQBnamespace('pipelines')];
         if (pipelines) {
           activePipeline = dereferencePipelines(activePipeline, pipelines);
         }
@@ -355,9 +348,7 @@ async function buildVueApp() {
         this.draggedover = false;
         event.preventDefault();
         // For the moment, only take one file and we should also test event.target
-        const {
-          collection: domain
-        } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
+        const { collection: domain } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
         await setupInitialData(store, domain);
         event.target.value = null;
       },
