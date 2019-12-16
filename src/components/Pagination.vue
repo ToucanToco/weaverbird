@@ -1,6 +1,7 @@
 <template>
   <div class="pagination">
     <paginate
+      :value="pageNo"
       :page-count="pageCount"
       containerClass="pagination__list"
       prev-class="prevnext"
@@ -38,6 +39,13 @@ export default class Pagination extends Vue {
   get pageCount() {
     if (this.dataset.paginationContext) {
       return numberOfPages(this.dataset.paginationContext);
+    }
+    return 1;
+  }
+
+  get pageNo() {
+    if (this.dataset.paginationContext) {
+      return this.dataset.paginationContext.pageno;
     }
     return 1;
   }
