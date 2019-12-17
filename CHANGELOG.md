@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.7.0] - 2019-12-17
+
+### Added
+
+- Added `isnull` and `notnull` operators in filter operations,
+- Improved pagination component so that integration and component update
+  is easier.
+
+### Fixed
+
+- Fixed pagination bug where page number was always reset to `1`.
+
 ## [0.6.0] - 2019-12-09
 
 ### Added
@@ -96,6 +108,7 @@
 
 - Initial version, showtime!
 
+[0.7.0]: https://github.com/ToucanToco/weaverbird/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/ToucanToco/weaverbird/compare/v0.5.0...v0.6.0
 [0.5.1]: https://github.com/ToucanToco/weaverbird/compare/v0.5.0...v0.5.1
 [0.5.0]: https://github.com/ToucanToco/weaverbird/compare/v0.4.0...v0.5.0
