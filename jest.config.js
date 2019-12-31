@@ -1,5 +1,5 @@
 module.exports = {
-  moduleFileExtensions: ['js', 'json', 'vue', 'ts'],
+  moduleFileExtensions: ['js', 'json', 'vue', 'ts', 'd.ts'],
   testEnvironment: 'jsdom',
   testURL: 'http://localhost/',
   testMatch: ['<rootDir>/tests/unit/*.spec.ts'],
