@@ -109,16 +109,14 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
       pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
     );
     if (response.error) {
-      store.commit(VQBnamespace('setBackendError'), {
+      store.commit(VQBnamespace('logBackendError'), {
         backendError: { type: 'error', message: response.error },
       });
     } else {
       store.commit(VQBnamespace('setDataset'), { dataset: response.data });
-      // reset backend error to undefined:
-      store.commit(VQBnamespace('setBackendError'), { backendError: undefined });
     }
   } catch (error) {
-    store.commit(VQBnamespace('setBackendError'), {
+    store.commit(VQBnamespace('logBackendError'), {
       backendError: { type: 'error', message: error },
     });
   }

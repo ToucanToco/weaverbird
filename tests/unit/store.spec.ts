@@ -195,12 +195,12 @@ describe('getter tests', () => {
 
   describe('message error related test', () => {
     it('should return false if backendError is undefined', () => {
-      const state = buildState({ backendError: undefined });
+      const state = buildState({ backendErrors: [] });
       expect(getters.thereIsABackendError(state)).toBeFalsy();
     });
 
     it('should return true if backendError is not undefined', () => {
-      const state = buildState({ backendError: { type: 'error', message: 'error msg' } });
+      const state = buildState({ backendErrors: [{ type: 'error', message: 'error msg' }] });
       expect(getters.thereIsABackendError(state)).toBeTruthy();
     });
   });
@@ -401,12 +401,28 @@ describe('mutation tests', () => {
     expect(state.selectedColumns).toEqual([]);
   });
 
-  it('set a backend error', () => {
+  it('logs backend errors', () => {
     const state = buildState({});
-    mutations.setBackendError(state, {
+    mutations.logBackendError(state, {
       backendError: { type: 'error', message: 'error msg' },
     });
-    expect(state.backendError).toEqual({ type: 'error', message: 'error msg' });
+    expect(state.backendErrors).toEqual([{ type: 'error', message: 'error msg' }]);
+    mutations.logBackendError(state, {
+      backendError: { type: 'error', message: 'error msg 2' },
+    });
+    expect(state.backendErrors).toEqual([
+      { type: 'error', message: 'error msg' },
+      { type: 'error', message: 'error msg 2' },
+    ]);
+  });
+
+  it('resets backend errors', () => {
+    const state = buildState({});
+    mutations.logBackendError(state, {
+      backendError: { type: 'error', message: 'error msg' },
+    });
+    mutations.resetBackendErrors(state);
+    expect(state.backendErrors).toEqual([]);
   });
 
   it('set loading to true', () => {

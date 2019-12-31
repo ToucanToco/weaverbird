@@ -14,8 +14,7 @@ export default {
   /**
    * current backend's error message
    */
-  backendErrorMessage: (state: VQBState) =>
-    state.backendError ? state.backendError.message : null,
+  backendErrorMessages: (state: VQBState) => state.backendErrors,
   /**
    * the list of current dataset's colum names.
    **/
@@ -72,7 +71,7 @@ export default {
   /**
    * Return true if an error occured in the backend
    */
-  thereIsABackendError: (state: VQBState) => state.backendError !== undefined,
+  thereIsABackendError: (state: VQBState) => state.backendErrors.length > 0,
   /**
    * selected columns in the dataviewer (materialized by a styled focus)
    */
