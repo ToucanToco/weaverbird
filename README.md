@@ -24,6 +24,9 @@ yarn build-bundle
 
 This will generate an importable JS `VisualQueryBuilder` library in the `dist` directory.
 
+**Important note**: While we do our best to embrace [semantic versioning](https://semver.org/),
+we do not guarantee full backward compatibility until version 1.0.0 is realeased.
+
 ### Run your tests
 
 The basic command to run all tests is:
