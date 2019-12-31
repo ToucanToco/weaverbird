@@ -2,14 +2,14 @@
  * exports the list of store mutations.
  */
 
+import { BackendError } from '@/lib/backend-response';
 import { DomainStep, PipelineStepName } from '@/lib/steps';
-
 import { VQBState } from './state';
 
 // provide types for each possible mutations' payloads
 type BackendErrorMutation = {
-  type: 'setBackendError';
-  payload: Pick<VQBState, 'backendError'>;
+  type: 'logBackendError';
+  payload: BackendError;
 };
 
 type DatasetMutation = {
@@ -88,6 +88,14 @@ export default {
     state.currentStepFormName = stepName;
     state.stepFormInitialValue = undefined;
   },
+
+  /**
+   * log a backend error message.
+   */
+  logBackendError(state: VQBState, { backendError }: { backendError: BackendError }) {
+    state.backendErrors.push(backendError);
+  },
+
   /**
    * open step form when editing a step
    */
@@ -97,6 +105,13 @@ export default {
   ) {
     state.stepFormInitialValue = { ...initialValue };
     state.currentStepFormName = stepName;
+  },
+
+  /**
+   * empty error log on VQB's state
+   */
+  resetBackendErrors(state: VQBState) {
+    state.backendErrors = [];
   },
 
   /**
@@ -209,13 +224,6 @@ export default {
       const length = state.dataset.data.length;
       state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
     }
-  },
-
-  /**
-   * update backendErrorMessage.
-   */
-  setBackendError(state: VQBState, { backendError }: Pick<VQBState, 'backendError'>) {
-    state.backendError = backendError;
   },
 
   /**

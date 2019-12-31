@@ -177,7 +177,7 @@ async function setupInitialData(store, domain = null) {
       store.state[VQB_MODULE_NAME].pagesize,
     );
     if (response.error) {
-      store.commit(VQBnamespace('setBackendError'), {
+      store.commit(VQBnamespace('logBackendError'), {
         backendError: {
           type: 'error',
           error: response.error,
@@ -315,7 +315,7 @@ async function buildVueApp() {
         return this.$store.getters[VQBnamespace('thereIsABackendError')];
       },
       backendErrorMessage: function() {
-        return this.$store.getters[VQBnamespace('backendErrorMessage')];
+        return this.$store.getters[VQBnamespace('backendErrorMessages')].join('<br/>');
       },
     },
     methods: {

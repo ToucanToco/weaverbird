@@ -59,7 +59,7 @@ export interface VQBState {
   /**
    * error send by backend or catch from its interface
    */
-  backendError?: BackendError;
+  backendErrors: BackendError[];
 
   /**
    * whether the data is loading
@@ -105,7 +105,7 @@ export const emptyState: VQBState = {
   pipelines: {},
   selectedColumns: [],
   pagesize: 50,
-  backendError: undefined,
+  backendErrors: [],
   isLoading: false,
   variables: {},
   translator: 'mongo40',

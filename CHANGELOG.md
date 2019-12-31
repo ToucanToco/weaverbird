@@ -1,5 +1,14 @@
 # Changelog
 
+## UNRELEASED -
+
+### Added
+
+- `logBackendError` and `resetBackendErrors` mutations.
+
+### Breaking
+- removed `setBackendError` mutation, please use `logBackendError` instead.
+
 ## [0.7.0] - 2019-12-17
 
 ### Added
