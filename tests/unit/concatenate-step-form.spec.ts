@@ -74,7 +74,10 @@ describe('Concatenate Step Form', () => {
   it('should validate and emit "formSaved" when submitting a valid condition', () => {
     const store = setupMockStore({
       dataset: {
-        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'string' },
+        ],
         data: [[null], [null]],
       },
     });
@@ -109,7 +112,7 @@ describe('Concatenate Step Form', () => {
 
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = mount(ConcatenateStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
@@ -128,10 +131,10 @@ describe('Concatenate Step Form', () => {
     });
     const wrapper = mount(ConcatenateStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 
@@ -163,5 +166,4 @@ describe('Concatenate Step Form', () => {
     expect(picker2.props('value')).toEqual('bar');
     expect(picker2.vm.$data.column).toEqual('bar');
   });
-
 });

@@ -86,7 +86,10 @@ describe('Replace Step Form', () => {
   it('should validate and emit "formSaved" when submitted data is valid', async () => {
     const store = setupMockStore({
       dataset: {
-        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'string' },
+        ],
         data: [],
       },
     });
@@ -206,7 +209,7 @@ describe('Replace Step Form', () => {
 
   it('should emit "cancel" event when edition is cancelled', async () => {
     const wrapper = mount(ReplaceStepForm, { store: emptyStore, localVue, sync: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     await localVue.nextTick();
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
@@ -230,10 +233,10 @@ describe('Replace Step Form', () => {
       sync: false,
       propsData: { isStepCreation: true },
     });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

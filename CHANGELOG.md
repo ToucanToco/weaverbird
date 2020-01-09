@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Replaced the "CANCEL" button in the footer by a "Back" button in the header.
+
 ## [0.8.0] - 2020-01-03
 
 ### Added
@@ -7,7 +13,12 @@
 - `logBackendError` and `resetBackendErrors` mutations.
 
 ### Breaking
+
 - removed `setBackendError` mutation, please use `logBackendError` instead.
+
+### Changed
+
+- Replaced the "CANCEL" button in the footer by a "Back" button in the header.
 
 ## [0.7.0] - 2019-12-17
 

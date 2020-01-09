@@ -77,7 +77,7 @@ describe('Substring Step Form', () => {
 
   it('should emit "cancel" event when edition is cancelled', async () => {
     const wrapper = mount(SubstringStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     await localVue.nextTick();
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],

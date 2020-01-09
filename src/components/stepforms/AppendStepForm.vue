@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title" :stepName="this.editedStep.name" />
+    <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="pipelinesInput"
       v-model="editedStep.pipelines"

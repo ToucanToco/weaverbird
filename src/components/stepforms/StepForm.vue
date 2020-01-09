@@ -7,7 +7,7 @@ import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
-import StepFormTitle from '@/components/stepforms/StepFormTitle.vue';
+import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 import schemaFactory from '@/components/stepforms/schemas';
 import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
 import { Pipeline, PipelineStep } from '@/lib/steps';
@@ -76,7 +76,7 @@ function componentProxyBoundOn(self: Vue) {
  */
 @Component({
   components: {
-    StepFormTitle,
+    StepFormHeader,
     StepFormButtonbar,
   },
 })

@@ -69,7 +69,7 @@ describe('Domain Step Form', () => {
 
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = mount(DomainStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });

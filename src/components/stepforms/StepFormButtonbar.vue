@@ -5,10 +5,6 @@
         class="widget-form-action__button widget-form-action__button--validate"
         @click="props.submit()"
       >Save changes</button>
-      <button
-        class="widget-form-action__button widget-form-action__button--cancel"
-        @click="props.cancel()"
-      >Cancel</button>
     </div>
     <div v-if="props.errors" class="errors">
       <ul>

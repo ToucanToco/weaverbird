@@ -7,7 +7,6 @@ import { Pipeline } from '@/lib/steps';
 
 import { setupMockStore, RootState } from './utils';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -83,7 +82,7 @@ describe('Delete Column Step Form', () => {
     });
 
     const wrapper = mount(DeleteColumnStepForm, { store, localVue });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(wrapper.emitted()).toEqual({ cancel: [[]] });
     expect(store.state.vqb.selectedStepIndex).toEqual(1);
     expect(store.state.vqb.pipeline).toEqual([
@@ -127,10 +126,10 @@ describe('Delete Column Step Form', () => {
     });
     const wrapper = mount(DeleteColumnStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
