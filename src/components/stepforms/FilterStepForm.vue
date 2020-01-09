@@ -1,6 +1,6 @@
 <template>
   <div class="filter-form" :class="multipleConditionsClass">
-    <step-form-title :title="title" :stepName="this.editedStep.name" />
+    <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
     <div class="filter-form-headers__container">
       <div class="filter-form-header">Values in...</div>
       <div class="filter-form-header">Must...</div>

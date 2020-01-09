@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-title :title="title" :stepName="this.editedStep.name" />
+    <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
       id="columnToSplit"
       v-model="editedStep.column"
@@ -26,7 +26,7 @@
       data-path=".number_cols_to_keep"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
+    <step-form-buttonbar :submit="submit" />
   </div>
 </template>
 

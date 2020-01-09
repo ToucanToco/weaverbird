@@ -6,7 +6,6 @@ import { Pipeline } from '@/lib/steps';
 
 import { setupMockStore, RootState } from './utils';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -79,7 +78,7 @@ describe('Split Step Form', () => {
 
   it('should emit "cancel" event when edition is cancelled', async () => {
     const wrapper = mount(SplitStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     await localVue.nextTick();
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
@@ -99,10 +98,10 @@ describe('Split Step Form', () => {
     });
     const wrapper = mount(SplitStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });

@@ -9,12 +9,11 @@ Chances are that you'll want to reuse the standard step form layout
 (i.e. with a title, an `ok` and `cancel` button, etc.). To do that,
 you can leverage a few components and base classes provided:
 
-- `@/components/stepforms/StepFormTitle.vue` is the component that
-  generates a standard step form title bar. It should be fed with a
-  `title` props, e.g.:
+- `@/components/stepforms/StepFormHeader.vue` is the component that
+  generates a standard step form header bar. It should be fed with a `cancel` event handler and a `title` prop, e.g.:
 
   ```typescript
-  <step-form-title :title="title"></step-form-title>
+  <step-form-header :cancel= "cancelEventHandler" :title="title"></step-form-header>
   ```
 
 - `@/components/stepforms/StepFormButtonBar.vue` is the component that

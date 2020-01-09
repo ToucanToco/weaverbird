@@ -6,7 +6,6 @@ import { Pipeline } from '@/lib/steps';
 
 import { setupMockStore, RootState } from './utils';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -68,7 +67,10 @@ describe('Filter Step Form', () => {
   it('should use selected column at creation', () => {
     const store = setupMockStore({
       dataset: {
-        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'string' },
+        ],
         data: [[null]],
       },
       selectedColumns: ['bar'],
@@ -84,7 +86,10 @@ describe('Filter Step Form', () => {
   it('should have no default column if no selected column', () => {
     const store = setupMockStore({
       dataset: {
-        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'string' },
+        ],
         data: [[null]],
       },
     });
@@ -99,7 +104,10 @@ describe('Filter Step Form', () => {
   it('should not use selected column on edition', () => {
     const store = setupMockStore({
       dataset: {
-        headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'string' },
+        ],
         data: [[null]],
       },
       selectedColumns: ['bar'],
@@ -320,7 +328,7 @@ describe('Filter Step Form', () => {
 
   it('should emit "cancel" event when edition is cancelled', () => {
     const wrapper = mount(FilterStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
     });
@@ -339,10 +347,10 @@ describe('Filter Step Form', () => {
     });
     const wrapper = mount(FilterStepForm, { store, localVue });
     wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.widget-form-action__button--cancel').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
