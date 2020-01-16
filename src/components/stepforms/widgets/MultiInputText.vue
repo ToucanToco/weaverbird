@@ -19,6 +19,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
+import _ from 'lodash';
 
 @Component({
   name: 'multi-input-text-widget',
@@ -41,15 +42,25 @@ export default class MultiInputTextWidget extends Vue {
 
   editedValue: string[] = [];
   options: string[] = [];
+  initialOptionsLength: number = this.options.length;
 
-  clearOptions() {
-    this.options = [];
+  clearOptions(newVal: string) {
+    if(this.options.length > this.initialOptionsLength) {
+      this.options.pop();
+    }
   }
 
   updateOptions(newVal: string) {
     if (newVal.length > 0) {
-      this.options = [newVal];
+      if(this.options.length === this.initialOptionsLength) {
+        this.options.push(newVal);
+      } else {
+        this.options[this.options.length - 1] = newVal;
+      }
+    } else if(this.options.length > this.initialOptionsLength) {
+      this.options.pop();
     }
+    this.options = _.uniq(this.options);
   }
 
   @Watch('value', { immediate: true })
