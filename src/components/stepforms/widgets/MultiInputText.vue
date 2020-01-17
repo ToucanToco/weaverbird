@@ -1,6 +1,5 @@
 <template>
   <div class="widget-multiinputtext__container">
-    <label class="widget-multiinputtext__label" :for="id">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
@@ -10,9 +9,7 @@
       :placeholder="placeholder"
       @input="clearOptions"
       @search-change="updateOptions"
-    >
-      <template slot="noOptions">{{ placeholder }}</template>
-    </multiselect>
+    />
   </div>
 </template>
 
@@ -80,10 +77,14 @@ export default class MultiInputTextWidget extends Vue {
 .multiselect .multiselect__placeholder {
   margin-bottom: 0;
   color: $grey-dark;
+  font-size: 14px;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   width: 100%;
+  padding: 0;
+  line-height: 20px;
+  padding-left: 5px;
 }
 
 .multiselect__single {
@@ -136,6 +137,7 @@ export default class MultiInputTextWidget extends Vue {
   max-height: none;
   display: block;
   padding-right: 30px;
+  height: 40px;
   & > input {
     background: transparent;
     margin-bottom: 0;
@@ -143,6 +145,76 @@ export default class MultiInputTextWidget extends Vue {
       color: $grey-dark;
     }
   }
+}
+
+.widget-multiinputtext__container {
+  .multiselect__content-wrapper {
+    display: none !important;
+  }
+  .multiselect__tags {
+    background: none;
+    box-shadow: rgb(241, 241, 241) 0px 0px 0px 1px inset;
+    display: flex;
+    position: absolute;
+    overflow: hidden;
+    height: 40px;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+    width: 100%;
+  }
+  .multiselect__placeholder {
+    padding: 8px 30px 8px 10px;
+  }
+  .multiselect__tags-wrap {
+    order: 2;
+    padding: 8px 30px 8px 8px;
+    width: 100%;
+  }
+  .multiselect__input {
+    border-radius: 0px;
+    order: 1;
+    padding: 4px 10px 11px;
+    left: 0px;
+    position: relative;
+    box-shadow: rgb(241, 241, 241) 0px 0px 0px 1px inset;
+    height: 40px;
+  }
+  .multiselect--active .multiselect__tags {
+    overflow: visible;
+    height: auto;
+  }
+  .multiselect--active {
+    .multiselect__tags {
+      box-shadow: none;
+    }
+    .multiselect__tags-wrap {
+      background: #fff;
+      box-shadow: rgb(241, 241, 241) 0px 0px 0px 1px inset;
+      border-radius: 0 0 5px 5px;
+      padding: 8px 10px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    .multiselect__input {
+      box-shadow: 0 0 0 1px #2665a3 inset;
+    }
+    .multiselect__tag:last-child {
+      margin-bottom: 0;
+    }
+  }
+  .multiselect__select {
+    z-index: 3;
+  }
+}
+
+.multiselect__select:before {
+  border: 0;
+  content: "\f078";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
+  line-height: 1;
+  top: 8px;
 }
 
 .multiselect__tags .multiselect__tag {
