@@ -9,8 +9,7 @@
       :placeholder="placeholder"
       @input="clearOptions"
       @search-change="updateOptions"
-    >
-    </multiselect>
+    />
   </div>
 </template>
 
