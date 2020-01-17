@@ -3,15 +3,11 @@ import Vuex, { Store } from 'vuex';
 
 import AddTextColumnStepForm from '@/components/stepforms/AddTextColumnStepForm.vue';
 
-import { setupMockStore, RootState } from './utils';
+import { setupMockStore, RootState, BasicStepFormTestRunner } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-interface ValidationError {
-  dataPath: string;
-  keyword: string;
-}
 
 describe('Add Text Column Step Form', () => {
   let emptyStore: Store<RootState>;
@@ -19,16 +15,10 @@ describe('Add Text Column Step Form', () => {
     emptyStore = setupMockStore({});
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(AddTextColumnStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('text');
-  });
-
-  it('should have exactly 2 widgetinputtext component', () => {
-    const wrapper = shallowMount(AddTextColumnStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
-    expect(inputWrappers.length).toEqual(2);
+  const runner = new BasicStepFormTestRunner(AddTextColumnStepForm, 'text', localVue);
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'inputtextwidget-stub': 2,
   });
 
   it('should pass down properties', async () => {

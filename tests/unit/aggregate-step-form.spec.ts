@@ -4,7 +4,7 @@ import Vuex, { Store } from 'vuex';
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { setupMockStore, RootState, ValidationError } from './utils';
+import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
 import { Pipeline } from '@/lib/steps';
 
 const localVue = createLocalVue();
@@ -16,18 +16,13 @@ describe('Aggregate Step Form', () => {
     emptyStore = setupMockStore();
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('aggregate');
+  const runner = new BasicStepFormTestRunner(AggregateStepForm, 'aggregate', localVue);
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'multiselectwidget-stub': 1,
   });
 
   describe('MultiselectWidget', () => {
-    it('should have exactly one MultiselectWidget component', () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-      const widgetWrappers = wrapper.findAll('multiselectwidget-stub');
-      expect(widgetWrappers.length).toEqual(1);
-    });
 
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
       const store = setupMockStore({
@@ -52,7 +47,8 @@ describe('Aggregate Step Form', () => {
       const store = emptyStore;
       const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
       wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
-      await wrapper.find(MultiselectWidget).trigger('input');
+      wrapper.find(MultiselectWidget);
+      await wrapper.vm.$nextTick();
       expect(store.state.vqb.selectedColumns).toEqual(['foo']);
     });
   });
@@ -88,81 +84,81 @@ describe('Aggregate Step Form', () => {
   });
 
   describe('Validation', () => {
-    it('should report errors when the "on" parameter is an empty string', () => {
-      const wrapper = mount(AggregateStepForm, {
-        store: emptyStore,
-        localVue,
-        data: () => {
-          return {
-            editedStep: {
-              name: 'aggregate',
-              on: [''],
-              aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
-            },
-          };
-        },
-        sync: false,
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      const errors = wrapper.vm.$data.errors
-        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-        .sort((err1: ValidationError, err2: ValidationError) =>
-          err1.dataPath.localeCompare(err2.dataPath),
-        );
-      expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.on[0]' }]);
-    });
 
-    it('should report errors when the "column" parameter is an empty string', () => {
-      const wrapper = mount(AggregateStepForm, {
-        store: emptyStore,
-        localVue,
-        data: () => {
-          return {
-            editedStep: {
-              name: 'aggregate',
-              on: ['foo'],
-              aggregations: [{ column: '', newcolumn: 'bar', aggfunction: 'sum' }],
-            },
-          };
+    runner.testValidationErrors([
+      {
+        testlabel: '"on" parameter is an empty string',
+        props: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: [''],
+            aggregations: [
+              {
+                newcolumn: 'sum_col1',
+                aggfunction: 'sum',
+                column: 'col1',
+              }
+            ],
+          },
         },
-        sync: false,
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      const errors = wrapper.vm.$data.errors
-        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-        .sort((err1: ValidationError, err2: ValidationError) =>
-          err1.dataPath.localeCompare(err2.dataPath),
-        );
-      expect(errors).toEqual([
-        { keyword: 'minLength', dataPath: '.aggregations[0].column' },
-        // newcolumn is computed based on column so an error is also returned for this parameter
-        { keyword: 'minLength', dataPath: '.aggregations[0].newcolumn' },
-      ]);
-    });
+        errors: [
+          { keyword: 'minLength', dataPath: '.on[0]' }
+        ],
+      },
+      {
+        testlabel: '"column" parameter is an empty string',
+        props: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: ['column1'],
+            aggregations: [
+              {
+                newcolumn: '',
+                aggfunction: 'sum',
+                column: '',
+              }
+            ]
+          },
+        },
+        errors: [
+          { keyword: 'minLength', dataPath: '.aggregations[0].column' },
+          // newcolumn is computed based on column so an error is also returned for this parameter
+          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumn' },
+        ],
+      },
+      {
+        testlabel: '"aggfunction" unknown',
+        props: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: ['column1'],
+            aggregations: [
+              {
+                newcolumn: 'foo_col1',
+                aggfunction: 'foo',
+                column: 'col1',
+              }
+            ]
+          },
+        },
+        errors: [
+          { keyword: 'enum', dataPath: '.aggregations[0].aggfunction' },
+        ],
+      },
+    ]);
 
-    it('should report errors when the "aggfunction" parameter is not allowed', () => {
-      const wrapper = mount(AggregateStepForm, {
-        store: emptyStore,
-        localVue,
-        data: () => {
-          return {
-            editedStep: {
-              name: 'aggregate',
-              on: ['foo'],
-              aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: '' }],
-            },
-          };
+    runner.testValidate(
+      {
+        testlabel: 'submitted data is valid',
+        props: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: ['foo'],
+            aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
+          },
         },
-        sync: false,
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      const errors = wrapper.vm.$data.errors
-        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-        .sort((err1: ValidationError, err2: ValidationError) =>
-          err1.dataPath.localeCompare(err2.dataPath),
-        );
-      expect(errors).toEqual([{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }]);
-    });
+      }
+    );
 
     it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
       const wrapper = mount(AggregateStepForm, {
@@ -207,36 +203,6 @@ describe('Aggregate Step Form', () => {
       expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
       expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).toEqual('bar-avg');
     });
-
-    it('should validate and emit "formSaved" when submitted data is valid', () => {
-      const wrapper = mount(AggregateStepForm, {
-        store: emptyStore,
-        localVue,
-        data: () => {
-          return {
-            editedStep: {
-              name: 'aggregate',
-              on: ['foo'],
-              aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
-            },
-          };
-        },
-        sync: false,
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.emitted()).toEqual({
-        formSaved: [
-          [
-            {
-              name: 'aggregate',
-              on: ['foo'],
-              aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
-            },
-          ],
-        ],
-      });
-    });
   });
 
   it('should emit "cancel" event when edition is cancelled', () => {
@@ -276,7 +242,8 @@ describe('Aggregate Step Form', () => {
     wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
-    await wrapper.find('.step-edit-form__back-button').trigger('click');
+    wrapper.find('.step-edit-form__back-button').trigger('click');
+    await wrapper.vm.$nextTick();
     expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
