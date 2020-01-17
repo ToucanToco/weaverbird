@@ -12,16 +12,6 @@ describe('Widget MultisInputText', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it('should have a label', () => {
-    const wrapper = shallowMount(MultiInputTextWidget, {
-      propsData: {
-        name: 'Stark',
-      },
-    });
-    const labelWrapper = wrapper.find('label');
-    expect(labelWrapper.text()).toEqual('Stark');
-  });
-
   it('should have an empty placeholder', () => {
     const wrapper = shallowMount(MultiInputTextWidget, {
       propsData: {
