@@ -60,7 +60,7 @@ export type ConvertStep = {
 
 export type CustomStep = {
   name: 'custom';
-  query: object;
+  query: string;
 };
 
 export type DeleteStep = {

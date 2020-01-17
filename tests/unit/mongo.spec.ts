@@ -398,7 +398,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
       {
         name: 'custom',
-        query: { $group: { _id: '$Country', Population: { $sum: '$Population' } } },
+        query: "{ $group: { _id: '$Country', Population: { $sum: '$Population' } } }",
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);

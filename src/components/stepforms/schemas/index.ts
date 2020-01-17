@@ -4,6 +4,7 @@ import argmaxSchema from './argmax';
 import argminSchema from './argmin';
 import concatenateBuildSchema from './concatenate';
 import convertSchema from './convert';
+import customSchema from './custom';
 import deleteSchema from './delete';
 import duplicateSchema from './duplicate';
 import domainSchema from './domain';
@@ -36,6 +37,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   argmin: argminSchema,
   concatenate: concatenateBuildSchema,
   convert: convertSchema,
+  custom: customSchema,
   delete: deleteSchema,
   duplicate: duplicateSchema,
   domain: domainSchema,
