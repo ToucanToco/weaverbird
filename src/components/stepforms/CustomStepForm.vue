@@ -18,6 +18,7 @@ import { StepFormComponent } from '@/components/formlib';
 import BaseStepForm from './StepForm.vue';
 import { CustomStep } from '@/lib/steps';
 import TextareaWidget from './widgets/TextareaWidget.vue';
+import capitalize from 'lodash/capitalize'
 
 @StepFormComponent({
   vqbstep: 'custom',
@@ -29,7 +30,6 @@ export default class CustomStepForm extends BaseStepForm<CustomStep> {
   initialStepValue!: CustomStep;
 
   readonly title: string = 'Custom step';
-  // Will need to be dynnamic depending on backend type in the future
-  name = 'Write a custom Mongo 3.6 query';
+  name = `Write a custom ${capitalize(this.$store.getters['vqb/translator'])} query`;
 }
 </script>
