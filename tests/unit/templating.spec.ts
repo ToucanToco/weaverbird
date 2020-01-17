@@ -101,7 +101,7 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'custom',
-        query: {},
+        query: "{}",
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);

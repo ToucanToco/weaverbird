@@ -500,7 +500,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   concatenate: transformConcatenate,
-  custom: step => step.query,
+  custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   delete: (step: Readonly<S.DeleteStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 0])),
   }),

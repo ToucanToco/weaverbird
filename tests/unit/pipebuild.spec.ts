@@ -118,9 +118,7 @@ describe('Pipebuild translator', () => {
       { name: 'domain', domain: 'test_cube' },
       {
         name: 'custom',
-        query: {
-          $group: { _id: '$Manager', Value: { $sum: '$Value' } },
-        },
+        query: '{"$group":{"_id":"$Manager","Value":{"$sum":"$Value"}}}',
       },
     ]);
   });
