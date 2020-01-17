@@ -104,7 +104,7 @@ function transformFallback(step: MongoStep): Pipeline {
   return [
     {
       name: 'custom',
-      query: step,
+      query: JSON.stringify(step),
     },
   ];
 }

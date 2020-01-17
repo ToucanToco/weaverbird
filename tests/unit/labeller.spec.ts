@@ -85,7 +85,7 @@ describe('Labeller', () => {
   it('generates label for custom steps', () => {
     const step: S.CustomStep = {
       name: 'custom',
-      query: {},
+      query: "{}",
     };
     expect(hrl(step)).toEqual('Custom step');
   });
