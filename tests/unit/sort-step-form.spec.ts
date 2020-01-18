@@ -51,15 +51,7 @@ describe('Sort Step Form', () => {
     selectedStepIndex: 2,
   });
 
-  runner.testResetSelectedIndex({
-    pipeline: [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ],
-    selectedStepIndex: 2,
-  });
+  runner.testResetSelectedIndex();
 
   describe('ListWidget', () => {
     let emptyStore: Store<RootState>;

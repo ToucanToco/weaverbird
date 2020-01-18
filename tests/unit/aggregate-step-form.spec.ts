@@ -177,16 +177,7 @@ describe('Aggregate Step Form', () => {
   });
 
   runner.testCancel();
-
-  runner.testResetSelectedIndex({
-    pipeline: [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ],
-    selectedStepIndex: 2,
-  });
+  runner.testResetSelectedIndex();
 
   it('should change the column focus after input in multiselect', async () => {
     const initialState = { selectedColumns: [] };
