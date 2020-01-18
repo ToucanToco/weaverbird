@@ -1,113 +1,52 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import { VQBnamespace } from '@/store';
-import { setupMockStore, RootState, ValidationError } from './utils';
-import { Pipeline } from '@/lib/steps';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Percentage Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
+  const runner = new BasicStepFormTestRunner(PercentageStepForm, 'percentage');
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'columnpicker-stub': 1,
+    'multiselectwidget-stub': 1,
+  });
+  runner.testValidationErrors([
+    {
+      testlabel: 'submitted data is not valid',
+      errors: [{ keyword: 'minLength', dataPath: '.column' }],
+    },
+  ]);
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      initialStepValue: { name: 'percentage', column: 'foo', group: ['test'] },
+    },
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('percentage');
-  });
-
-  it('should have exactly 3 input components', () => {
-    const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
-    const autocompleteWrappers = wrapper.findAll('columnpicker-stub');
-    const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
-    expect(autocompleteWrappers.length).toEqual(1);
-    expect(multiselectWrappers.length).toEqual(1);
-  });
+  runner.testCancel();
+  runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = shallowMount(PercentageStepForm, { store: emptyStore, localVue });
-    wrapper.setData({
-      editedStep: { name: 'percentage', column: 'foo', group: ['test'] },
+    const wrapper = runner.shallowMount(undefined, {
+      data: {
+        editedStep: { name: 'percentage', column: 'foo', group: ['test'] },
+      },
     });
-    await localVue.nextTick();
+    await wrapper.vm.$nextTick();
     expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['test']);
   });
 
-  describe('Errors', () => {
-    it('should report errors when column is empty', async () => {
-      const wrapper = mount(PercentageStepForm, { store: emptyStore, localVue });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors
-        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-        .sort((err1: ValidationError, err2: ValidationError) =>
-          err1.dataPath.localeCompare(err2.dataPath),
-        );
-      expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.column' }]);
-    });
-  });
-
-  it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const wrapper = mount(PercentageStepForm, {
-      store: emptyStore,
-      localVue,
-      propsData: {
-        initialStepValue: { name: 'percentage', column: 'foo', group: ['test'] },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'percentage', column: 'foo', group: ['test'] }]],
-    });
-  });
-
-  it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = mount(PercentageStepForm, { store: emptyStore, localVue });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
-  });
-
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'percentage', column: 'foo' },
-      { name: 'percentage', column: 'baz' },
-      { name: 'percentage', column: 'tic' },
-    ];
-    const store = setupMockStore({
-      pipeline,
-      selectedStepIndex: 2,
-    });
-    const wrapper = mount(PercentageStepForm, { store, localVue });
-    wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(2);
-    wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(3);
-  });
-
   it('should update step when selectedColumn is changed', async () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
-    });
-    const wrapper = shallowMount(PercentageStepForm, { store, localVue });
+    };
+    const wrapper = runner.shallowMount(initialState);
     expect(wrapper.vm.$data.editedStep.column).toEqual('');
-    store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
-    await localVue.nextTick();
+    wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
   });
 });
