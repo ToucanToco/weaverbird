@@ -56,15 +56,7 @@ describe('Rename Step Form', () => {
     selectedStepIndex: 2,
   });
 
-  runner.testResetSelectedIndex({
-    pipeline: [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ],
-    selectedStepIndex: 2,
-  });
+  runner.testResetSelectedIndex();
 
   it('should pass down the newname prop to widget value prop', async () => {
     const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });

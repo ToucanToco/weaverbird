@@ -176,8 +176,18 @@ export class BasicStepFormTestRunner<StepType> {
     });
   }
 
-  testResetSelectedIndex(initialState: Partial<VQBState>) {
-    const store = setupMockStore(initialState);
+  testResetSelectedIndex(initialState?: Partial<VQBState>) {
+    const store = setupMockStore(
+      initialState ?? {
+        pipeline: [
+          { name: 'domain', domain: 'foo' },
+          { name: 'rename', oldname: 'foo', newname: 'bar' },
+          { name: 'rename', oldname: 'baz', newname: 'spam' },
+          { name: 'rename', oldname: 'tic', newname: 'tac' },
+        ],
+        selectedStepIndex: 2,
+      },
+    );
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
