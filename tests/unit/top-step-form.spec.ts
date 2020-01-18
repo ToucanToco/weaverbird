@@ -1,75 +1,49 @@
 import _ from 'lodash';
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
 
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
-import { setupMockStore, RootState, ValidationError } from './utils';
-import { Pipeline } from '@/lib/steps';
+import { BasicStepFormTestRunner } from './utils';
+
 import { ScopeContext } from '@/lib/templating';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
 describe('Top Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
+  const runner = new BasicStepFormTestRunner(TopStepForm, 'top');
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'inputtextwidget-stub': 1,
+    'columnpicker-stub': 1,
+    'autocompletewidget-stub': 1,
+    'multiselectwidget-stub': 1,
+  });
+  runner.testValidationErrors([
+    {
+      testlabel: 'submitted data is not valid',
+      errors: [
+        { keyword: 'type', dataPath: '.limit' },
+        { keyword: 'minLength', dataPath: '.rank_on' },
+      ],
+    },
+  ]);
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      initialStepValue: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
+    },
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(TopStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('top');
-  });
-
-  it('should have exactly 4 input components', () => {
-    const wrapper = shallowMount(TopStepForm, { store: emptyStore, localVue });
-    expect(wrapper.find('#limitInput').exists()).toBeTruthy();
-    expect(wrapper.find('#rankOnInput').exists()).toBeTruthy();
-    expect(wrapper.find('#sortOrderInput').exists()).toBeTruthy();
-    expect(wrapper.find('#groupbyColumnsInput').exists()).toBeTruthy();
-  });
+  runner.testCancel();
+  runner.testResetSelectedIndex();
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = shallowMount(TopStepForm, { store: emptyStore, localVue });
-    wrapper.setData({
-      editedStep: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
+    const wrapper = runner.shallowMount(undefined, {
+      data: {
+        editedStep: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
+      },
     });
-    await localVue.nextTick();
+    await wrapper.vm.$nextTick();
     expect(wrapper.find('#limitInput').props('value')).toEqual(10);
     expect(wrapper.find('#sortOrderInput').props('value')).toEqual('asc');
     expect(wrapper.find('#groupbyColumnsInput').props('value')).toEqual(['test']);
-  });
-
-  it('should report errors when column is empty', async () => {
-    const wrapper = mount(TopStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    const errors = wrapper.vm.$data.errors
-      .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-      .sort((err1: ValidationError, err2: ValidationError) =>
-        err1.dataPath.localeCompare(err2.dataPath),
-      );
-    expect(errors).toEqual([
-      { keyword: 'type', dataPath: '.limit' },
-      { keyword: 'minLength', dataPath: '.rank_on' },
-    ]);
-  });
-
-  it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const wrapper = mount(TopStepForm, {
-      store: emptyStore,
-      localVue,
-      propsData: {
-        initialStepValue: { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'top', rank_on: 'foo', sort: 'asc', limit: 10, groups: ['test'] }]],
-    });
   });
 
   it('should accept templatable values', async () => {
@@ -77,60 +51,32 @@ describe('Top Step Form', () => {
       const compiled = _.template(s);
       return compiled(context);
     }
-    const wrapper = mount(TopStepForm, {
-      store: setupMockStore({
+    const wrapper = runner.mount(
+      {
         variables: {
           leemeat: 42,
         },
         interpolateFunc: interpolate,
-      }),
-      localVue,
-      propsData: {
-        initialStepValue: {
-          name: 'top',
-          rank_on: 'foo',
-          sort: 'asc',
-          limit: '<%= leemeat %>',
-          groups: ['test'],
+      },
+      {
+        propsData: {
+          initialStepValue: {
+            name: 'top',
+            rank_on: 'foo',
+            sort: 'asc',
+            limit: '<%= leemeat %>',
+            groups: ['test'],
+          },
         },
       },
-    });
+    );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
+    await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
       formSaved: [
         [{ name: 'top', rank_on: 'foo', sort: 'asc', limit: '<%= leemeat %>', groups: ['test'] }],
       ],
     });
-  });
-
-  it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = mount(TopStepForm, { store: emptyStore, localVue });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
-  });
-
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'top', rank_on: 'foo', sort: 'asc', limit: 10 },
-      { name: 'top', rank_on: 'bar', sort: 'asc', limit: 5 },
-      { name: 'top', rank_on: 'tic', sort: 'desc', limit: 1 },
-    ];
-    const store = setupMockStore({
-      pipeline,
-      selectedStepIndex: 2,
-    });
-    const wrapper = mount(TopStepForm, { store, localVue });
-    wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(2);
-    wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
