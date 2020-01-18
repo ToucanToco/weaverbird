@@ -74,6 +74,7 @@
     "mongodb-prebuilt": "^6.5.0",
     "multer": "^1.4.1",
     "node-sass": "^4.11.0",
+    "prettier": "^1.19.1",
     "puppeteer": "^1.16.0",
     "rollup": "^1.5.0",
     "rollup-plugin-alias": "^1.5.1",
