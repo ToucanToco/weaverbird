@@ -1,6 +1,6 @@
 import AppendStepForm from '@/components/stepforms/AppendStepForm.vue';
 
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Append Step Form', () => {
   const runner = new BasicStepFormTestRunner(AppendStepForm, 'append');
