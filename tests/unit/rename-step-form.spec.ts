@@ -35,18 +35,16 @@ describe('Rename Step Form', () => {
         },
       }),
       data: { editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } },
-      errors: [ { keyword: 'columnNameAlreadyUsed', dataPath: '.newname' } ],
-    }
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newname' }],
+    },
   ]);
 
-  runner.testValidate(
-    {
-      testlabel: 'submitted data is valid',
-      props: {
-        initialStepValue: { name: 'rename', oldname: 'foo', newname: 'bar' },
-      },
-    }
-  );
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      initialStepValue: { name: 'rename', oldname: 'foo', newname: 'bar' },
+    },
+  });
 
   runner.testCancel({
     pipeline: [

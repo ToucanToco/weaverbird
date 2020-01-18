@@ -5,7 +5,6 @@ import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
 import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -14,7 +13,6 @@ describe('Unpivot Step Form', () => {
   beforeEach(() => {
     emptyStore = setupMockStore({});
   });
-
 
   const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot', localVue);
   runner.testInstantiate();
@@ -52,7 +50,8 @@ describe('Unpivot Step Form', () => {
       unpivot_column_name: 'variable',
       value_column_name: 'value',
       dropna: true,
-    });
+    },
+  );
 
   runner.testCancel({
     pipeline: [
@@ -112,5 +111,4 @@ describe('Unpivot Step Form', () => {
       'columnA,columnB,columnC',
     );
   });
-
 });

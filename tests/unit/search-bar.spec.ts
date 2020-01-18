@@ -6,7 +6,6 @@ import { ActionCategories } from '@/components/constants';
 
 import { setupMockStore } from './utils';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

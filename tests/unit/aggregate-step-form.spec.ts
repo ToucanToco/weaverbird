@@ -12,7 +12,6 @@ describe('Aggregate Step Form', () => {
   });
 
   describe('MultiselectWidget', () => {
-
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
       const initialState = {
         dataset: {
@@ -27,14 +26,16 @@ describe('Aggregate Step Form', () => {
 
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {
-        data: { editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] }}
+        data: { editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] } },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('multiselectwidget-stub').props().value).toEqual(['foo', 'bar']);
     });
 
     it('should call the setColumnMutation on input', async () => {
-      const wrapper = runner.mount(undefined, {data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } }});
+      const wrapper = runner.mount(undefined, {
+        data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } },
+      });
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
     });
@@ -72,7 +73,6 @@ describe('Aggregate Step Form', () => {
   });
 
   describe('Validation', () => {
-
     runner.testValidationErrors([
       {
         testlabel: '"on" parameter is an empty string',
@@ -85,13 +85,11 @@ describe('Aggregate Step Form', () => {
                 newcolumn: 'sum_col1',
                 aggfunction: 'sum',
                 column: 'col1',
-              }
+              },
             ],
           },
         },
-        errors: [
-          { keyword: 'minLength', dataPath: '.on[0]' }
-        ],
+        errors: [{ keyword: 'minLength', dataPath: '.on[0]' }],
       },
       {
         testlabel: '"column" parameter is an empty string',
@@ -104,8 +102,8 @@ describe('Aggregate Step Form', () => {
                 newcolumn: '',
                 aggfunction: 'sum',
                 column: '',
-              }
-            ]
+              },
+            ],
           },
         },
         errors: [
@@ -125,28 +123,24 @@ describe('Aggregate Step Form', () => {
                 newcolumn: 'foo_col1',
                 aggfunction: 'foo',
                 column: 'col1',
-              }
-            ]
+              },
+            ],
           },
         },
-        errors: [
-          { keyword: 'enum', dataPath: '.aggregations[0].aggfunction' },
-        ],
+        errors: [{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }],
       },
     ]);
 
-    runner.testValidate(
-      {
-        testlabel: 'submitted data is valid',
-        props: {
-          initialStepValue: {
-            name: 'aggregate',
-            on: ['foo'],
-            aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
-          },
+    runner.testValidate({
+      testlabel: 'submitted data is valid',
+      props: {
+        initialStepValue: {
+          name: 'aggregate',
+          on: ['foo'],
+          aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
         },
-      }
-    );
+      },
+    });
 
     it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
       const wrapper = runner.mount(undefined, {
@@ -156,7 +150,7 @@ describe('Aggregate Step Form', () => {
             on: ['foo'],
             aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
           },
-        }
+        },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
@@ -174,7 +168,7 @@ describe('Aggregate Step Form', () => {
               { column: 'bar', newcolumn: '', aggfunction: 'avg' },
             ],
           },
-        }
+        },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
@@ -193,7 +187,9 @@ describe('Aggregate Step Form', () => {
 
   it('should change the column focus after input in multiselect', async () => {
     const initialState = { selectedColumns: [] };
-    const wrapper = runner.mount(initialState, { data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] }}});
+    const wrapper = runner.mount(initialState, {
+      data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } },
+    });
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);

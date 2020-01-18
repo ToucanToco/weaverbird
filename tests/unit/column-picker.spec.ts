@@ -6,7 +6,6 @@ import { VQBnamespace } from '@/store';
 
 import { setupMockStore, RootState } from './utils';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

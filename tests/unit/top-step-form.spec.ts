@@ -7,7 +7,6 @@ import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
