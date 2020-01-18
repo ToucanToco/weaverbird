@@ -2,7 +2,6 @@ import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { BasicStepFormTestRunner } from './utils';
-import { Pipeline } from '@/lib/steps';
 
 describe('Aggregate Step Form', () => {
   const runner = new BasicStepFormTestRunner(AggregateStepForm, 'aggregate');
@@ -177,12 +176,16 @@ describe('Aggregate Step Form', () => {
     });
   });
 
-  it('should emit "cancel" event when edition is cancelled', () => {
-    const wrapper = runner.mount();
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
+  runner.testCancel();
+
+  runner.testResetSelectedIndex({
+    pipeline: [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ],
+    selectedStepIndex: 2,
   });
 
   it('should change the column focus after input in multiselect', async () => {
@@ -193,27 +196,5 @@ describe('Aggregate Step Form', () => {
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
-  });
-
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', async () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ];
-    const initialState = {
-      pipeline,
-      selectedStepIndex: 2,
-    };
-    const wrapper = runner.mount(initialState, {
-      propsData: { isStepCreation: true },
-    });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(2);
-    wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
