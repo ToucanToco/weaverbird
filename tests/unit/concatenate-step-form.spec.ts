@@ -9,7 +9,6 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Concatenate Step Form', () => {
-
   const runner = new BasicStepFormTestRunner(ConcatenateStepForm, 'concatenate', localVue);
   runner.testInstantiate();
   runner.testExpectedComponents({
@@ -32,25 +31,26 @@ describe('Concatenate Step Form', () => {
     },
   ]);
 
-  runner.testValidate(
-    {
-      testlabel: 'submitted data is valid',
-      store: setupMockStore({
-        dataset: {
-          headers: [{ name: 'foo', type: 'string' }, { name: 'bar', type: 'string' }],
-          data: [[null], [null]],
-        },
-      }),
-      props: {
-        initialStepValue: {
-          name: 'concatenate',
-          columns: ['foo', 'bar'],
-          separator: '-',
-          new_column_name: 'new',
-        },
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    store: setupMockStore({
+      dataset: {
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'bar', type: 'string' },
+        ],
+        data: [[null], [null]],
       },
-    }
-  );
+    }),
+    props: {
+      initialStepValue: {
+        name: 'concatenate',
+        columns: ['foo', 'bar'],
+        separator: '-',
+        new_column_name: 'new',
+      },
+    },
+  });
 
   runner.testCancel({
     pipeline: [

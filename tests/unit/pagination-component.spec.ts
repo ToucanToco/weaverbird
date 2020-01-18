@@ -34,7 +34,10 @@ describe('Pagination Component', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-        data: [['Paris', 10000000, true], ['Marseille', 3000000, false]],
+        data: [
+          ['Paris', 10000000, true],
+          ['Marseille', 3000000, false],
+        ],
         paginationContext: {
           totalCount: 7,
           pageno: 1,
@@ -64,7 +67,10 @@ describe('Pagination Component', () => {
         pipeline: [{ name: 'domain', domain: 'foo' }],
         dataset: {
           headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-          data: [['Paris', 10000000, true], ['Marseille', 3000000, false]],
+          data: [
+            ['Paris', 10000000, true],
+            ['Marseille', 3000000, false],
+          ],
           paginationContext: {
             totalCount: 7,
             pageno: 1,
@@ -88,7 +94,10 @@ describe('Pagination Component', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-        data: [['Paris', 10000000, true], ['Marseille', 3000000, false]],
+        data: [
+          ['Paris', 10000000, true],
+          ['Marseille', 3000000, false],
+        ],
         paginationContext: {
           totalCount: 7,
           pageno: 1,

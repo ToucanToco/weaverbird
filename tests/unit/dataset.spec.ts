@@ -32,18 +32,27 @@ describe('_sortDataset tests', () => {
   it('should be able to leave as is sorted results', () => {
     const dataset: DataSet = {
       headers: [{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }],
-      data: [[1, 2, 3], [4, 5, 6]],
+      data: [
+        [1, 2, 3],
+        [4, 5, 6],
+      ],
       paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
     };
     const sorted = _sortDataset(dataset);
     expect(sorted.headers).toEqual([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
-    expect(sorted.data).toEqual([[1, 2, 3], [4, 5, 6]]);
+    expect(sorted.data).toEqual([
+      [1, 2, 3],
+      [4, 5, 6],
+    ]);
   });
 
   it('should be able to sort results', () => {
     const dataset: DataSet = {
       headers: [{ name: 'col3' }, { name: 'col1' }, { name: 'col4' }, { name: 'col2' }],
-      data: [[1, 2, 3, 4], [5, 6, 7, 8]],
+      data: [
+        [1, 2, 3, 4],
+        [5, 6, 7, 8],
+      ],
       paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
     };
     const sorted = _sortDataset(dataset);
@@ -53,7 +62,10 @@ describe('_sortDataset tests', () => {
       { name: 'col3' },
       { name: 'col4' },
     ]);
-    expect(sorted.data).toEqual([[2, 4, 1, 3], [6, 8, 5, 7]]);
+    expect(sorted.data).toEqual([
+      [2, 4, 1, 3],
+      [6, 8, 5, 7],
+    ]);
   });
 });
 
@@ -72,7 +84,10 @@ describe('Dataset helper tests', () => {
     ];
     const dataset = _sortDataset(mongoResultsToDataset(mongoResults));
     expect(dataset.headers).toEqual([{ name: 'col1' }, { name: 'col2' }, { name: 'col3' }]);
-    expect(dataset.data).toEqual([['foo', 42, true], ['bar', 7, false]]);
+    expect(dataset.data).toEqual([
+      ['foo', 42, true],
+      ['bar', 7, false],
+    ]);
   });
 
   it('should be able to convert heterogeneous mongo results', () => {
@@ -87,7 +102,10 @@ describe('Dataset helper tests', () => {
       { name: 'col3' },
       { name: 'col4' },
     ]);
-    expect(dataset.data).toEqual([['foo', null, true, null], ['bar', 7, null, '?']]);
+    expect(dataset.data).toEqual([
+      ['foo', null, true, null],
+      ['bar', 7, null, '?'],
+    ]);
   });
 });
 
@@ -246,7 +264,10 @@ describe('inferTypeFromDataset', () => {
   it("should infer type on column with null values if there's other values in the column", () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-      data: [['Paris', 10000000, null], ['Paris', 10000000, false]],
+      data: [
+        ['Paris', 10000000, null],
+        ['Paris', 10000000, false],
+      ],
       paginationContext: { pageno: 1, pagesize: 50, totalCount: 2 },
     };
 
@@ -291,7 +312,11 @@ describe('inferTypeFromDataset', () => {
   it('should not infer a float type for mixed integer and float values', () => {
     const dataset: DataSet = {
       headers: [{ name: 'city' }, { name: 'density' }, { name: 'isCapitalCity' }],
-      data: [['Paris', 61.7, true], ['Marseille', 40, false], ['Berlin', 41.5, true]],
+      data: [
+        ['Paris', 61.7, true],
+        ['Marseille', 40, false],
+        ['Berlin', 41.5, true],
+      ],
       paginationContext: { pageno: 1, pagesize: 50, totalCount: 1 },
     };
 

@@ -4,12 +4,10 @@ import Vuex, { Store } from 'vuex';
 import SortStepForm from '@/components/stepforms/SortStepForm.vue';
 import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Sort Step Form', () => {
-
   const runner = new BasicStepFormTestRunner(SortStepForm, 'sort', localVue);
   runner.testInstantiate();
   runner.testExpectedComponents({ 'listwidget-stub': 1 });
@@ -24,7 +22,7 @@ describe('Sort Step Form', () => {
         },
       },
       errors: [{ keyword: 'minLength', dataPath: '.columns[0].column' }],
-    }
+    },
   ]);
 
   runner.testValidate(

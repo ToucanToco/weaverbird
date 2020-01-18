@@ -27,18 +27,14 @@ describe('Duplicate Column Step Form', () => {
         },
       }),
       data: { editedStep: { name: 'duplicate', column: 'foo', new_column_name: 'columnA' } },
-      errors: [
-        { keyword: 'columnNameAlreadyUsed', dataPath: '.new_column_name' },
-      ]
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.new_column_name' }],
     },
   ]);
 
-  runner.testValidate(
-    {
-      testlabel: 'submitted data is valid',
-      props: { initialStepValue: { name: 'duplicate', column: 'foo', new_column_name: 'bar' } },
-    }
-  );
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: { initialStepValue: { name: 'duplicate', column: 'foo', new_column_name: 'bar' } },
+  });
 
   runner.testCancel({
     pipeline: [
@@ -56,5 +52,5 @@ describe('Duplicate Column Step Form', () => {
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ],
     selectedStepIndex: 2,
-  })
+  });
 });

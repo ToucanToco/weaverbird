@@ -31,7 +31,7 @@ type ComponentType = typeof BaseStepForm;
 type TestCaseConfiguration = {
   testlabel?: string;
   store?: Store<RootState>;
-  props?: {initialStepValue?: object; [prop: string]: any};
+  props?: { initialStepValue?: object; [prop: string]: any };
   data?: object;
 };
 
@@ -57,7 +57,7 @@ export class BasicStepFormTestRunner<StepType> {
 
   _mount(shallow: boolean, initialState: object = {}, optional: MountOptions = {}) {
     const mountfunc = shallow ? shallowMount : mount;
-    const {propsData, data} = optional;
+    const { propsData, data } = optional;
     const wrapper = mountfunc(this.componentType, {
       store: initialState ? setupMockStore(initialState) : undefined,
       propsData,
@@ -86,8 +86,10 @@ export class BasicStepFormTestRunner<StepType> {
     });
   }
 
-  testExpectedComponents(componentSpec: {[prop: string]: number}) {
-    const specStr = Object.entries(componentSpec).map((k, v) => `${v} ${k}`).join(', ');
+  testExpectedComponents(componentSpec: { [prop: string]: number }) {
+    const specStr = Object.entries(componentSpec)
+      .map((k, v) => `${v} ${k}`)
+      .join(', ');
     it(`should generate ${specStr} components`, () => {
       const wrapper = this.shallowMount();
       for (const [componentName, count] of Object.entries(componentSpec)) {
@@ -97,7 +99,13 @@ export class BasicStepFormTestRunner<StepType> {
     });
   }
 
-  async checkValidationError(testlabel: any, store: any, propsData: any, data: any, expectedErrors: any) {
+  async checkValidationError(
+    testlabel: any,
+    store: any,
+    propsData: any,
+    data: any,
+    expectedErrors: any,
+  ) {
     const wrapper = mount(this.componentType, {
       store,
       propsData,
@@ -118,18 +126,21 @@ export class BasicStepFormTestRunner<StepType> {
   }
 
   testValidationErrors(configurations: ValidationErrorConfiguration[]) {
-    const cases = configurations.map( ({testlabel, store, props, data, errors}) => [
+    const cases = configurations.map(({ testlabel, store, props, data, errors }) => [
       testlabel,
       store ?? setupMockStore(),
       props ?? {},
       data,
-      errors
-    ])
-    test.each(cases)('should generate validation error if %s (#%#)', this.checkValidationError.bind(this));
+      errors,
+    ]);
+    test.each(cases)(
+      'should generate validation error if %s (#%#)',
+      this.checkValidationError.bind(this),
+    );
   }
 
   testValidate(testConfiguration: TestCaseConfiguration, expectedEmit?: object) {
-    const {testlabel, store, props, data} = testConfiguration;
+    const { testlabel, store, props, data } = testConfiguration;
     // assume by default that the expected output is the initial input
     expectedEmit = expectedEmit ?? props?.initialStepValue;
     it(`should validate and emit "formSaved" when ${testlabel}`, async () => {
@@ -153,7 +164,7 @@ export class BasicStepFormTestRunner<StepType> {
 
   testCancel(initialState: Partial<VQBState> = {}) {
     const store = setupMockStore(initialState);
-    const initialPipeline = [... store.state.vqb.pipeline];
+    const initialPipeline = [...store.state.vqb.pipeline];
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should emit "cancel" event when edition is canceled', () => {

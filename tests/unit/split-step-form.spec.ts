@@ -5,7 +5,6 @@ import SplitStepForm from '@/components/stepforms/SplitStepForm.vue';
 import { setupMockStore, RootState, ValidationError } from './utils';
 import { Pipeline } from '@/lib/steps';
 
-
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
