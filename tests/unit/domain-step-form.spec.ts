@@ -1,31 +1,35 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
+import Vuex from 'vuex';
 
 import DomainStepForm from '@/components/stepforms/DomainStepForm.vue';
 
-import { setupMockStore, RootState, ValidationError } from './utils';
+import { setupMockStore, BasicStepFormTestRunner } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Domain Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
+  const runner = new BasicStepFormTestRunner(DomainStepForm, 'domain', localVue);
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'autocompletewidget-stub': 1,
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(DomainStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('domain');
+  runner.testValidationErrors([
+    {
+      testlabel: 'submitted data is not valid',
+      errors: [{ dataPath: '.domain', keyword: 'minLength' }],
+    },
+  ]);
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    props: {
+      initialStepValue: { name: 'domain', domain: 'foo' },
+    },
   });
 
-  it('should have exactly one widgetautocomplete component', () => {
-    const wrapper = shallowMount(DomainStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('autocompletewidget-stub');
-
-    expect(inputWrappers.length).toEqual(1);
-  });
+  runner.testCancel();
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
     const store = setupMockStore({
@@ -35,38 +39,5 @@ describe('Domain Step Form', () => {
     const widgetAutocomplete = wrapper.find('autocompletewidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('foo,bar');
-  });
-
-  it('should report errors when submitted data is not valid', () => {
-    const wrapper = mount(DomainStepForm, { store: emptyStore, localVue });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-      keyword: err.keyword,
-      dataPath: err.dataPath,
-    }));
-    expect(errors).toEqual([{ keyword: 'minLength', dataPath: '.domain' }]);
-  });
-
-  it('should validate and emit "formSaved" when submitted data is valid', () => {
-    const wrapper = mount(DomainStepForm, {
-      store: emptyStore,
-      localVue,
-      propsData: {
-        initialStepValue: { name: 'domain', domain: 'foo' },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'domain', domain: 'foo' }]],
-    });
-  });
-
-  it('should emit "cancel" event when edition is cancelled', () => {
-    const wrapper = mount(DomainStepForm, { store: emptyStore, localVue });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
   });
 });
