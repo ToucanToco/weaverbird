@@ -1,15 +1,9 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Delete Column Step Form', () => {
-  const runner = new BasicStepFormTestRunner(DeleteColumnStepForm, 'delete', localVue);
+  const runner = new BasicStepFormTestRunner(DeleteColumnStepForm, 'delete');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'multiselectwidget-stub': 1,
@@ -47,38 +41,36 @@ describe('Delete Column Step Form', () => {
   });
 
   it('should instantiate a multiselect widget with proper options from the store', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
-    });
-    const wrapper = shallowMount(DeleteColumnStepForm, { store, localVue });
+    };
+    const wrapper = runner.shallowMount(initialState);
     const widgetAutocomplete = wrapper.find('multiselectwidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should update selectedColumn when column is changed', async () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
       selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(DeleteColumnStepForm, {
+    };
+    const wrapper = runner.mount(initialState, {
       propsData: {
         initialValue: {
           columns: ['columnA'],
         },
       },
-      store,
-      localVue,
+      data: { editedStep: { columns: ['columnB'] } },
     });
-    wrapper.setData({ editedStep: { columns: ['columnB'] } });
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnB']);
   });
 });
