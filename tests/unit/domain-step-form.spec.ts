@@ -1,15 +1,9 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-
 import DomainStepForm from '@/components/stepforms/DomainStepForm.vue';
 
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Domain Step Form', () => {
-  const runner = new BasicStepFormTestRunner(DomainStepForm, 'domain', localVue);
+  const runner = new BasicStepFormTestRunner(DomainStepForm, 'domain');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'autocompletewidget-stub': 1,
@@ -32,10 +26,7 @@ describe('Domain Step Form', () => {
   runner.testCancel();
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupMockStore({
-      domains: ['foo', 'bar'],
-    });
-    const wrapper = shallowMount(DomainStepForm, { store, localVue });
+    const wrapper = runner.shallowMount({ domains: ['foo', 'bar'] });
     const widgetAutocomplete = wrapper.find('autocompletewidget-stub');
 
     expect(widgetAutocomplete.attributes('options')).toEqual('foo,bar');
