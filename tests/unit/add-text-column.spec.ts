@@ -1,30 +1,18 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import AddTextColumnStepForm from '@/components/stepforms/AddTextColumnStepForm.vue';
 
-import { setupMockStore, RootState, BasicStepFormTestRunner } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Add Text Column Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
-  const runner = new BasicStepFormTestRunner(AddTextColumnStepForm, 'text', localVue);
+  const runner = new BasicStepFormTestRunner(AddTextColumnStepForm, 'text');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'inputtextwidget-stub': 2,
   });
 
   it('should pass down properties', async () => {
-    const wrapper = shallowMount(AddTextColumnStepForm, { store: emptyStore, localVue });
+    const wrapper = runner.shallowMount();
     wrapper.setData({ editedStep: { name: 'text', text: 'some text', new_column: 'foo' } });
-    await localVue.nextTick();
+    await wrapper.vm.$nextTick();
     expect(
       wrapper
         .findAll('inputtextwidget-stub')
@@ -40,45 +28,46 @@ describe('Add Text Column Step Form', () => {
   });
 
   it('should make the focus on the column added after validation', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
-    });
-    const wrapper = mount(AddTextColumnStepForm, { store, localVue });
+    };
+    const wrapper = runner.mount(initialState);
     wrapper.setData({ editedStep: { name: 'text', text: 'some text', new_column: 'foo' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.vqb.selectedColumns).toEqual(['foo']);
+    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
   });
 
   it('should not change the column focus if validation fails', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
       selectedColumns: ['columnA'],
-    });
-    const wrapper = mount(AddTextColumnStepForm, { store, localVue });
-    wrapper.setData({
-      editedStep: { name: 'text', text: '', new_column: 'columnB' },
+    };
+    const wrapper = runner.mount(initialState, {
+      data: {
+        editedStep: { name: 'text', text: '', new_column: 'columnB' },
+      },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(store.state.vqb.selectedColumns).toEqual(['columnA']);
+    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnA']);
   });
 
   describe('Warning', () => {
     it('should report a warning when new_column is an already existing column name', async () => {
-      const store = setupMockStore({
+      const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
           data: [],
         },
-      });
-      const wrapper = shallowMount(AddTextColumnStepForm, { store, localVue });
+      };
+      const wrapper = runner.shallowMount(initialState);
       wrapper.setData({ editedStep: { text: '', new_column: 'columnA' } });
-      await localVue.nextTick();
+      await wrapper.vm.$nextTick();
       const inputText = wrapper.findAll('inputtextwidget-stub');
       expect(inputText.at(1).props().warning).toEqual(
         'A column name "columnA" already exists. You will overwrite it.',
@@ -86,15 +75,15 @@ describe('Add Text Column Step Form', () => {
     });
 
     it('should not report any warning if new_column is not an already existing column name', async () => {
-      const store = setupMockStore({
+      const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
           data: [],
         },
-      });
-      const wrapper = shallowMount(AddTextColumnStepForm, { store, localVue });
+      };
+      const wrapper = runner.shallowMount(initialState);
       wrapper.setData({ editedStep: { text: '', new_column: 'columnB' } });
-      await localVue.nextTick();
+      await wrapper.vm.$nextTick();
       const inputText = wrapper.findAll('inputtextwidget-stub');
       expect(inputText.at(1).props().warning).toBeNull();
     });
