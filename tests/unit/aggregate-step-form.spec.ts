@@ -1,22 +1,11 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 import { Pipeline } from '@/lib/steps';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
 describe('Aggregate Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore();
-  });
-
-  const runner = new BasicStepFormTestRunner(AggregateStepForm, 'aggregate', localVue);
+  const runner = new BasicStepFormTestRunner(AggregateStepForm, 'aggregate');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'multiselectwidget-stub': 1,
@@ -25,48 +14,47 @@ describe('Aggregate Step Form', () => {
   describe('MultiselectWidget', () => {
 
     it('should instantiate an MultiselectWidget widget with proper options from the store', () => {
-      const store = setupMockStore({
+      const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
           data: [],
         },
-      });
-      const wrapper = shallowMount(AggregateStepForm, { store, localVue, sync: false });
+      };
+      const wrapper = runner.shallowMount(initialState);
       const widgetMultiselect = wrapper.find('multiselectwidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-      wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] } });
+      const wrapper = runner.shallowMount(undefined, {
+        data: { editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] }}
+      });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('multiselectwidget-stub').props().value).toEqual(['foo', 'bar']);
     });
 
     it('should call the setColumnMutation on input', async () => {
-      const store = emptyStore;
-      const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
-      wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
-      wrapper.find(MultiselectWidget);
+      const wrapper = runner.mount(undefined, {data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } }});
       await wrapper.vm.$nextTick();
-      expect(store.state.vqb.selectedColumns).toEqual(['foo']);
+      expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
     });
   });
 
   describe('ListWidget', () => {
     it('should have exactly on ListWidget component', () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
+      const wrapper = runner.shallowMount();
       const widgetWrappers = wrapper.findAll('listwidget-stub');
       expect(widgetWrappers.length).toEqual(1);
     });
 
     it('should pass down the "aggregations" prop to the ListWidget value prop', async () => {
-      const wrapper = shallowMount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
-      wrapper.setData({
-        editedStep: {
-          name: 'aggregate',
-          on: [],
-          aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
+      const wrapper = runner.shallowMount(undefined, {
+        data: {
+          editedStep: {
+            name: 'aggregate',
+            on: [],
+            aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
+          },
         },
       });
       await wrapper.vm.$nextTick();
@@ -76,7 +64,7 @@ describe('Aggregate Step Form', () => {
     });
 
     it('should have expected default aggregation parameters', () => {
-      const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
+      const wrapper = runner.mount();
       const widgetWrappers = wrapper.findAll(AutocompleteWidget);
       expect(widgetWrappers.at(0).props().value).toEqual('');
       expect(widgetWrappers.at(1).props().value).toEqual('sum');
@@ -161,19 +149,14 @@ describe('Aggregate Step Form', () => {
     );
 
     it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
-      const wrapper = mount(AggregateStepForm, {
-        store: emptyStore,
-        localVue,
-        data: () => {
-          return {
-            editedStep: {
-              name: 'aggregate',
-              on: ['foo'],
-              aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
-            },
-          };
-        },
-        sync: false,
+      const wrapper = runner.mount(undefined, {
+        data: {
+          editedStep: {
+            name: 'aggregate',
+            on: ['foo'],
+            aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
+          },
+        }
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
@@ -181,22 +164,17 @@ describe('Aggregate Step Form', () => {
     });
 
     it('should set newcolumn cleverly if several aggregations are performed o, the same column', () => {
-      const wrapper = mount(AggregateStepForm, {
-        store: emptyStore,
-        localVue,
-        data: () => {
-          return {
-            editedStep: {
-              name: 'aggregate',
-              on: ['foo'],
-              aggregations: [
-                { column: 'bar', newcolumn: '', aggfunction: 'sum' },
-                { column: 'bar', newcolumn: '', aggfunction: 'avg' },
-              ],
-            },
-          };
-        },
-        sync: false,
+      const wrapper = runner.mount(undefined, {
+        data: {
+          editedStep: {
+            name: 'aggregate',
+            on: ['foo'],
+            aggregations: [
+              { column: 'bar', newcolumn: '', aggfunction: 'sum' },
+              { column: 'bar', newcolumn: '', aggfunction: 'avg' },
+            ],
+          },
+        }
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
@@ -206,7 +184,7 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should emit "cancel" event when edition is cancelled', () => {
-    const wrapper = mount(AggregateStepForm, { store: emptyStore, localVue, sync: false });
+    const wrapper = runner.mount();
     wrapper.find('.step-edit-form__back-button').trigger('click');
     expect(wrapper.emitted()).toEqual({
       cancel: [[]],
@@ -214,12 +192,11 @@ describe('Aggregate Step Form', () => {
   });
 
   it('should change the column focus after input in multiselect', async () => {
-    const store = setupMockStore({ selectedColumns: [] });
-    const wrapper = mount(AggregateStepForm, { store, localVue, sync: false });
-    wrapper.setData({ editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } });
+    const initialState = { selectedColumns: [] };
+    const wrapper = runner.mount(initialState, { data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] }}});
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
-    expect(store.state.vqb.selectedColumns).toEqual(['foo']);
+    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', async () => {
@@ -229,21 +206,18 @@ describe('Aggregate Step Form', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
       { name: 'rename', oldname: 'tic', newname: 'tac' },
     ];
-    const store = setupMockStore({
+    const initialState = {
       pipeline,
       selectedStepIndex: 2,
-    });
-    const wrapper = mount(AggregateStepForm, {
-      store,
-      localVue,
+    };
+    const wrapper = runner.mount(initialState, {
       propsData: { isStepCreation: true },
-      sync: false,
     });
     wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(2);
+    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(2);
     wrapper.setProps({ isStepCreation: false });
     wrapper.find('.step-edit-form__back-button').trigger('click');
     await wrapper.vm.$nextTick();
-    expect(store.state.vqb.selectedStepIndex).toEqual(3);
+    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
