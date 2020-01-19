@@ -1,15 +1,9 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
+import { setupMockStore, BasicStepFormTestRunner } from './utils';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
 describe('Concatenate Step Form', () => {
-  const runner = new BasicStepFormTestRunner(ConcatenateStepForm, 'concatenate', localVue);
+  const runner = new BasicStepFormTestRunner(ConcatenateStepForm, 'concatenate');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'listwidget-stub': 1,
@@ -65,34 +59,31 @@ describe('Concatenate Step Form', () => {
   runner.testResetSelectedIndex();
 
   describe('ListWidget', () => {
-    let emptyStore: Store<RootState>;
-    beforeEach(() => {
-      emptyStore = setupMockStore({});
-    });
-
     it('should pass down the "toConcatenate" prop to the ListWidget value prop', async () => {
-      const wrapper = shallowMount(ConcatenateStepForm, { store: emptyStore, localVue });
-      wrapper.setData({
-        editedStep: {
-          name: 'concatenate',
-          columns: ['foo', 'bar'],
-          separator: '-',
-          new_column_name: 'new',
+      const wrapper = runner.shallowMount(
+        {},
+        {
+          data: {
+            editedStep: {
+              name: 'concatenate',
+              columns: ['foo', 'bar'],
+              separator: '-',
+              new_column_name: 'new',
+            },
+          },
         },
-      });
-      await localVue.nextTick();
+      );
+      await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual(['foo', 'bar']);
     });
   });
 
   it('should not sync selected columns on edition', async () => {
-    const store = setupMockStore({
+    const initialState = {
       selectedStepIndex: 1,
       selectedColumns: ['spam'],
-    });
-    const wrapper = mount(ConcatenateStepForm, {
-      store,
-      localVue,
+    };
+    const wrapper = runner.mount(initialState, {
       propsData: {
         initialStepValue: {
           name: 'concatenate',
@@ -103,8 +94,8 @@ describe('Concatenate Step Form', () => {
         isStepCreation: false,
       },
     });
-    await localVue.nextTick();
-    expect(store.state.vqb.selectedStepIndex).toEqual(1);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(1);
     const columnPickers = wrapper.findAll(ColumnPicker);
     expect(columnPickers.length).toEqual(2);
     const [picker1, picker2] = columnPickers.wrappers;
