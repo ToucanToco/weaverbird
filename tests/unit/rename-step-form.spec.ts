@@ -3,8 +3,7 @@ import Vuex, { Store } from 'vuex';
 
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 import { VQBnamespace } from '@/store';
-import { setupMockStore, RootState, ValidationError } from './utils';
-import { Pipeline } from '@/lib/steps';
+import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -15,18 +14,58 @@ describe('Rename Step Form', () => {
     emptyStore = setupMockStore({});
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
+  const runner = new BasicStepFormTestRunner(RenameStepForm, 'rename', localVue);
+  runner.testInstantiate();
+  runner.testExpectedComponents({ 'inputtextwidget-stub': 1, 'columnpicker-stub': 1 });
 
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('rename');
+  runner.testValidationErrors([
+    {
+      testlabel: 'oldname or newname is empty',
+      errors: [
+        { keyword: 'minLength', dataPath: '.newname' },
+        { keyword: 'minLength', dataPath: '.oldname' },
+      ],
+    },
+    {
+      testlabel: 'newname is an already existing column name',
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [],
+        },
+      }),
+      data: { editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } },
+      errors: [ { keyword: 'columnNameAlreadyUsed', dataPath: '.newname' } ],
+    }
+  ]);
+
+  runner.testValidate(
+    {
+      testlabel: 'submitted data is valid',
+      props: {
+        initialStepValue: { name: 'rename', oldname: 'foo', newname: 'bar' },
+      },
+    }
+  );
+
+  runner.testCancel({
+    pipeline: [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ],
+    selectedStepIndex: 2,
   });
 
-  it('should have exactly one widgetinputtext component', () => {
-    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
-    const inputWrappers = wrapper.findAll('inputtextwidget-stub');
-
-    expect(inputWrappers.length).toEqual(1);
+  runner.testResetSelectedIndex({
+    pipeline: [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ],
+    selectedStepIndex: 2,
   });
 
   it('should pass down the newname prop to widget value prop', async () => {
@@ -34,72 +73,6 @@ describe('Rename Step Form', () => {
     wrapper.setData({ editedStep: { name: 'rename', oldname: '', newname: 'foo' } });
     await localVue.nextTick();
     expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('foo');
-  });
-
-  it('should have a columnpicker widget', () => {
-    const wrapper = shallowMount(RenameStepForm, { store: emptyStore, localVue });
-
-    expect(wrapper.find('columnpicker-stub').exists()).toBeTruthy();
-  });
-
-  describe('Errors', () => {
-    it('should report errors when oldname or newname is empty', async () => {
-      const wrapper = mount(RenameStepForm, { store: emptyStore, localVue });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors
-        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-        .sort((err1: ValidationError, err2: ValidationError) =>
-          err1.dataPath.localeCompare(err2.dataPath),
-        );
-      expect(errors).toEqual([
-        { keyword: 'minLength', dataPath: '.newname' },
-        { keyword: 'minLength', dataPath: '.oldname' },
-      ]);
-    });
-
-    it('should report errors when newname is an already existing column name', async () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      });
-      const wrapper = mount(RenameStepForm, { store, localVue });
-      wrapper.setData({ editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors.map((err: ValidationError) => ({
-        keyword: err.keyword,
-        dataPath: err.dataPath,
-      }));
-      expect(errors).toEqual([{ keyword: 'columnNameAlreadyUsed', dataPath: '.newname' }]);
-    });
-  });
-
-  it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const wrapper = mount(RenameStepForm, {
-      store: emptyStore,
-      localVue,
-      propsData: {
-        initialStepValue: { name: 'rename', oldname: 'foo', newname: 'bar' },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'rename', newname: 'bar', oldname: 'foo' }]],
-    });
-  });
-
-  it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = mount(RenameStepForm, { store: emptyStore, localVue });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
   });
 
   it('should update step when selectedColumn is changed', async () => {
@@ -117,7 +90,7 @@ describe('Rename Step Form', () => {
   });
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-    const pipeline: Pipeline = [
+    const pipeline = [
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
