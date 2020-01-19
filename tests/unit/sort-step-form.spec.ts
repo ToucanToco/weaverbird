@@ -1,14 +1,8 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import SortStepForm from '@/components/stepforms/SortStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Sort Step Form', () => {
-  const runner = new BasicStepFormTestRunner(SortStepForm, 'sort', localVue);
+  const runner = new BasicStepFormTestRunner(SortStepForm, 'sort');
   runner.testInstantiate();
   runner.testExpectedComponents({ 'listwidget-stub': 1 });
 
@@ -54,26 +48,25 @@ describe('Sort Step Form', () => {
   runner.testResetSelectedIndex();
 
   describe('ListWidget', () => {
-    let emptyStore: Store<RootState>;
-    beforeEach(() => {
-      emptyStore = setupMockStore({});
-    });
-
     it('should pass the defaultSortColumn props to widgetList', async () => {
-      const wrapper = shallowMount(SortStepForm, { store: emptyStore, localVue, sync: false });
-      await localVue.nextTick();
+      const wrapper = runner.shallowMount();
+      await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual([{ column: '', order: 'asc' }]);
     });
 
     it('should pass right sort props to widgetList sort column', async () => {
-      const wrapper = shallowMount(SortStepForm, { store: emptyStore, localVue, sync: false });
-      wrapper.setData({
-        editedStep: {
-          name: 'sort',
-          columns: [{ column: 'amazing', order: 'desc' }],
+      const wrapper = runner.shallowMount(
+        {},
+        {
+          data: {
+            editedStep: {
+              name: 'sort',
+              columns: [{ column: 'amazing', order: 'desc' }],
+            },
+          },
         },
-      });
-      await localVue.nextTick();
+      );
+      await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual([
         { column: 'amazing', order: 'desc' },
       ]);
