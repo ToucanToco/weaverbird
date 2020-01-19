@@ -1,39 +1,23 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import ToUpperStepForm from '@/components/stepforms/ToUpperStepForm.vue';
 
-import { setupMockStore, RootState } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('To Uppercase Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
-  it('should instantiate', () => {
-    const wrapper = shallowMount(ToUpperStepForm, { store: emptyStore, localVue });
-
-    expect(wrapper.exists()).toBeTruthy();
-  });
-
-  it('should have exactly 1 input component', () => {
-    const wrapper = shallowMount(ToUpperStepForm, { store: emptyStore, localVue });
-
-    expect(wrapper.findAll('columnpicker-stub').length).toEqual(1);
+  const runner = new BasicStepFormTestRunner(ToUpperStepForm, 'uppercase');
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'columnpicker-stub': 1,
   });
 
   it('should display step column on edition', () => {
-    const wrapper = shallowMount(ToUpperStepForm, {
-      propsData: {
-        initialStepValue: { name: 'uppercase', column: 'foo' },
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        propsData: {
+          initialStepValue: { name: 'uppercase', column: 'foo' },
+        },
       },
-      store: emptyStore,
-      localVue,
-    });
+    );
     const columnPicker = wrapper.find('columnpicker-stub');
     expect(columnPicker.attributes('value')).toEqual('foo');
   });
