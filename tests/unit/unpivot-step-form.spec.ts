@@ -1,9 +1,8 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { shallowMount, createLocalVue } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
-import { setupMockStore, RootState, ValidationError } from './utils';
-import { Pipeline } from '@/lib/steps';
+import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
 
@@ -16,17 +15,63 @@ describe('Unpivot Step Form', () => {
     emptyStore = setupMockStore({});
   });
 
-  it('should instantiate', () => {
-    const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).toBeTruthy();
+
+  const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot', localVue);
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'multiselectwidget-stub': 2,
+    'checkboxwidget-stub': 1,
   });
 
-  it('should have 3 input components', () => {
-    const wrapper = shallowMount(UnpivotStepForm, { store: emptyStore, localVue });
-    const autocompleteWrappers = wrapper.findAll('multiselectwidget-stub');
-    expect(autocompleteWrappers.length).toEqual(2);
-    const checkboxWrappers = wrapper.findAll('checkboxwidget-stub');
-    expect(checkboxWrappers.length).toEqual(1);
+  runner.testValidationErrors([
+    {
+      testlabel: 'fields are missing',
+      errors: [
+        { keyword: 'minItems', dataPath: '.keep' },
+        { keyword: 'minItems', dataPath: '.unpivot' },
+      ],
+    },
+  ]);
+
+  runner.testValidate(
+    {
+      testlabel: 'submitted data is valid',
+      props: {
+        initialStepValue: {
+          name: 'unpivot',
+          keep: ['columnA', 'columnB'],
+          unpivot: ['columnC'],
+          dropna: true,
+        },
+      },
+    },
+    {
+      name: 'unpivot',
+      keep: ['columnA', 'columnB'],
+      unpivot: ['columnC'],
+      unpivot_column_name: 'variable',
+      value_column_name: 'value',
+      dropna: true,
+    });
+
+  runner.testCancel({
+    pipeline: [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ],
+    selectedStepIndex: 2,
+  });
+
+  runner.testResetSelectedIndex({
+    pipeline: [
+      { name: 'domain', domain: 'foo' },
+      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', oldname: 'tic', newname: 'tac' },
+    ],
+    selectedStepIndex: 2,
   });
 
   it('should pass down props to widgets', () => {
@@ -68,81 +113,4 @@ describe('Unpivot Step Form', () => {
     );
   });
 
-  describe('Errors', () => {
-    it('should report errors when fields are missing', async () => {
-      const wrapper = mount(UnpivotStepForm, { store: emptyStore, localVue });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      await localVue.nextTick();
-      const errors = wrapper.vm.$data.errors
-        .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
-        .sort((err1: ValidationError, err2: ValidationError) =>
-          err1.dataPath.localeCompare(err2.dataPath),
-        );
-      expect(errors).toEqual([
-        { keyword: 'minItems', dataPath: '.keep' },
-        { keyword: 'minItems', dataPath: '.unpivot' },
-      ]);
-    });
-  });
-
-  it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const wrapper = mount(UnpivotStepForm, {
-      store: emptyStore,
-      localVue,
-      propsData: {
-        initialStepValue: {
-          name: 'unpivot',
-          keep: ['columnA', 'columnB'],
-          unpivot: ['columnC'],
-          dropna: true,
-        },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [
-        [
-          {
-            name: 'unpivot',
-            keep: ['columnA', 'columnB'],
-            unpivot: ['columnC'],
-            unpivot_column_name: 'variable',
-            value_column_name: 'value',
-            dropna: true,
-          },
-        ],
-      ],
-    });
-  });
-
-  it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = mount(UnpivotStepForm, { store: emptyStore, localVue });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
-  });
-
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ];
-    const store = setupMockStore({
-      pipeline,
-      selectedStepIndex: 2,
-    });
-    const wrapper = mount(UnpivotStepForm, { store, localVue });
-    wrapper.setProps({ isStepCreation: true });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(2);
-    wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(3);
-  });
 });
