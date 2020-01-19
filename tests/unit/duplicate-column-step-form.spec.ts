@@ -1,15 +1,8 @@
-import { createLocalVue } from '@vue/test-utils';
-import Vuex from 'vuex';
-
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 import { setupMockStore, BasicStepFormTestRunner } from './utils';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
 describe('Duplicate Column Step Form', () => {
-
-  const runner = new BasicStepFormTestRunner(DuplicateColumnStepForm, 'duplicate', localVue);
+  const runner = new BasicStepFormTestRunner(DuplicateColumnStepForm, 'duplicate');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'columnpicker-stub': 1,
