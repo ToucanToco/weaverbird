@@ -1,20 +1,9 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
+import { BasicStepFormTestRunner } from './utils';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
 describe('Unpivot Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
-  const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot', localVue);
+  const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'multiselectwidget-stub': 2,
@@ -65,23 +54,20 @@ describe('Unpivot Step Form', () => {
 
   runner.testResetSelectedIndex();
 
-  it('should pass down props to widgets', () => {
-    const wrapper = shallowMount(UnpivotStepForm, {
-      store: emptyStore,
-      localVue,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'unpivot',
-            keep: ['foo', 'bar'],
-            unpivot: ['baz'],
-            unpivot_column_name: 'spam',
-            value_column_name: 'eggs',
-            dropna: false,
-          },
-        };
+  it('should pass down props to widgets', async () => {
+    const wrapper = runner.shallowMount(undefined, {
+      data: {
+        editedStep: {
+          name: 'unpivot',
+          keep: ['foo', 'bar'],
+          unpivot: ['baz'],
+          unpivot_column_name: 'spam',
+          value_column_name: 'eggs',
+          dropna: false,
+        },
       },
     });
+    await wrapper.vm.$nextTick();
     expect(wrapper.find('#keepColumnInput').props('value')).toEqual(['foo', 'bar']);
     expect(wrapper.find('#unpivotColumnInput').props('value')).toEqual(['baz']);
     const widgetCheckbox = wrapper.find(CheckboxWidget);
@@ -89,13 +75,13 @@ describe('Unpivot Step Form', () => {
   });
 
   it('should instantiate an autocomplete widget with proper options from the store', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
         data: [],
       },
-    });
-    const wrapper = shallowMount(UnpivotStepForm, { store, localVue });
+    };
+    const wrapper = runner.shallowMount(initialState);
     expect(wrapper.find('#keepColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
