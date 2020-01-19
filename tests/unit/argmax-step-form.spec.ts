@@ -1,19 +1,8 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import ArgmaxStepForm from '@/components/stepforms/ArgmaxStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner, RootState } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Argmax Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
-  const runner = new BasicStepFormTestRunner(ArgmaxStepForm, 'argmax', localVue);
+  const runner = new BasicStepFormTestRunner(ArgmaxStepForm, 'argmax');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'columnpicker-stub': 1,
@@ -46,11 +35,11 @@ describe('Argmax Step Form', () => {
   });
 
   it('should pass down the properties to the input components', async () => {
-    const wrapper = shallowMount(ArgmaxStepForm, { store: emptyStore, localVue });
+    const wrapper = runner.shallowMount();
     wrapper.setData({
       editedStep: { name: 'argmax', column: 'foo', groups: ['bar'] },
     });
-    await localVue.nextTick();
+    await wrapper.vm.$nextTick();
     expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['bar']);
   });
 });
