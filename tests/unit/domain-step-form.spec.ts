@@ -3,7 +3,7 @@ import Vuex, { Store } from 'vuex';
 
 import DomainStepForm from '@/components/stepforms/DomainStepForm.vue';
 
-import { setupMockStore, RootState } from './utils';
+import { setupMockStore, RootState, ValidationError } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
