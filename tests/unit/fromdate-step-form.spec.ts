@@ -1,43 +1,24 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import FromDateStepForm from '@/components/stepforms/FromDateStepForm.vue';
 
-import { setupMockStore } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Convert Date to String Step Form', () => {
-  let emptyStore: Store<any>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
-  });
-
-  it('should instantiate', () => {
-    const wrapper = shallowMount(FromDateStepForm, { store: emptyStore, localVue });
-    expect(wrapper.exists()).toBeTruthy();
-  });
-
-  it('should have exactly 2 input component', () => {
-    const wrapper = shallowMount(FromDateStepForm, { store: emptyStore, localVue });
-    expect(wrapper.findAll('columnpicker-stub').length).toEqual(1);
-    expect(wrapper.findAll('inputtextwidget-stub').length).toEqual(1);
+  const runner = new BasicStepFormTestRunner(FromDateStepForm, 'fromdate');
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'columnpicker-stub': 1,
+    'inputtextwidget-stub': 1,
   });
 
   it('should update editedStep with the selected column at creation', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'foo', type: 'string' }],
         data: [[null]],
       },
       selectedColumns: ['foo'],
-    });
-    const wrapper = shallowMount(FromDateStepForm, {
-      store,
-      localVue,
-      sync: false,
-    });
+    };
+    const wrapper = runner.shallowMount(initialState);
     expect(wrapper.vm.$data.editedStep.column).toEqual('foo');
   });
 });
