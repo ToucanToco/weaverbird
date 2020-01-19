@@ -1,90 +1,17 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
-
 import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
-import { Pipeline } from '@/lib/steps';
 
-import { setupMockStore, RootState } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
+import { setupMockStore, BasicStepFormTestRunner } from './utils';
 
 describe('Replace Step Form', () => {
-  let emptyStore: Store<RootState>;
-  beforeEach(() => {
-    emptyStore = setupMockStore({});
+  const runner = new BasicStepFormTestRunner(ReplaceStepForm, 'replace');
+  runner.testInstantiate();
+  runner.testExpectedComponents({
+    'columnpicker-stub': 1,
+    'listwidget-stub': 1,
   });
-
-  it('should instantiate', () => {
-    const wrapper = shallowMount(ReplaceStepForm, { store: emptyStore, localVue, sync: false });
-    expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.vm.$data.stepname).toEqual('replace');
-  });
-
-  it('should have exactly 2 input components', () => {
-    const wrapper = shallowMount(ReplaceStepForm, { store: emptyStore, localVue, sync: false });
-    const columnPickerWrappers = wrapper.findAll('columnpicker-stub');
-    const widgetListWrappers = wrapper.findAll('listwidget-stub');
-    expect(columnPickerWrappers.length).toEqual(1);
-    expect(widgetListWrappers.length).toEqual(1);
-  });
-
-  it('should pass down "search_column" to ColumnPicker', () => {
-    const wrapper = shallowMount(ReplaceStepForm, {
-      store: emptyStore,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'replace',
-            search_column: 'test',
-            to_replace: [['foo', 'bar']],
-          },
-        };
-      },
-    });
-    expect(wrapper.find('columnpicker-stub').attributes().value).toEqual('test');
-  });
-
-  it('should pass down "to_replace" to ListWidget', () => {
-    const wrapper = shallowMount(ReplaceStepForm, {
-      store: emptyStore,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'replace',
-            search_column: 'test',
-            to_replace: [['foo', 'bar']],
-          },
-        };
-      },
-    });
-    expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
-  });
-
-  it('should pass down the default "to_replace" to ListWidget', () => {
-    const wrapper = shallowMount(ReplaceStepForm, {
-      store: emptyStore,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'replace',
-            search_column: 'test',
-            to_replace: [],
-          },
-        };
-      },
-    });
-    expect(wrapper.find('listwidget-stub').props().value).toEqual([[]]);
-  });
-
-  it('should validate and emit "formSaved" when submitted data is valid', async () => {
-    const store = setupMockStore({
+  runner.testValidate({
+    testlabel: 'submitted data is valid',
+    store: setupMockStore({
       dataset: {
         headers: [
           { name: 'foo', type: 'string' },
@@ -92,56 +19,79 @@ describe('Replace Step Form', () => {
         ],
         data: [],
       },
-    });
-    const wrapper = mount(ReplaceStepForm, {
-      store,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
+    }),
+    props: {
+      initialStepValue: { name: 'replace', search_column: 'foo', to_replace: [['hello', 'hi']] },
+    },
+  });
+
+  runner.testCancel();
+  runner.testResetSelectedIndex();
+
+  it('should pass down "search_column" to ColumnPicker', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        data: {
           editedStep: {
             name: 'replace',
-            search_column: 'foo',
-            to_replace: [['hello', 'hi']],
+            search_column: 'test',
+            to_replace: [['foo', 'bar']],
           },
-        };
+        },
       },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.emitted()).toEqual({
-      formSaved: [
-        [
-          {
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('columnpicker-stub').attributes().value).toEqual('test');
+  });
+
+  it('should pass down "to_replace" to ListWidget', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        data: {
+          editedStep: {
             name: 'replace',
-            search_column: 'foo',
-            to_replace: [['hello', 'hi']],
+            search_column: 'test',
+            to_replace: [['foo', 'bar']],
           },
-        ],
-      ],
-    });
+        },
+      },
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
+  });
+
+  it('should pass down the default "to_replace" to ListWidget', () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        data: {
+          editedStep: {
+            name: 'replace',
+            search_column: 'test',
+            to_replace: [],
+          },
+        },
+      },
+    );
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([[]]);
   });
 
   it('should convert input value to integer when the column data type is integer', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
         data: [[null]],
       },
-    });
-    const wrapper = mount(ReplaceStepForm, {
-      store,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'replace',
-            search_column: 'columnA',
-            to_replace: [['0', '42']],
-          },
-        };
+    };
+    const wrapper = runner.mount(initialState, {
+      data: {
+        editedStep: {
+          name: 'replace',
+          search_column: 'columnA',
+          to_replace: [['0', '42']],
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -152,24 +102,19 @@ describe('Replace Step Form', () => {
   });
 
   it('should convert input value to float when the column data type is float', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA', type: 'float' }],
         data: [[null]],
       },
-    });
-    const wrapper = mount(ReplaceStepForm, {
-      store,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'replace',
-            search_column: 'columnA',
-            to_replace: [['0', '42.3']],
-          },
-        };
+    };
+    const wrapper = runner.mount(initialState, {
+      data: {
+        editedStep: {
+          name: 'replace',
+          search_column: 'columnA',
+          to_replace: [['0', '42.3']],
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -180,24 +125,19 @@ describe('Replace Step Form', () => {
   });
 
   it('should convert input value to boolean when the column data type is boolean', () => {
-    const store = setupMockStore({
+    const initialState = {
       dataset: {
         headers: [{ name: 'columnA', type: 'boolean' }],
         data: [[null]],
       },
-    });
-    const wrapper = mount(ReplaceStepForm, {
-      store,
-      localVue,
-      sync: false,
-      data: () => {
-        return {
-          editedStep: {
-            name: 'replace',
-            search_column: 'columnA',
-            to_replace: [['false', 'true']],
-          },
-        };
+    };
+    const wrapper = runner.mount(initialState, {
+      data: {
+        editedStep: {
+          name: 'replace',
+          search_column: 'columnA',
+          to_replace: [['false', 'true']],
+        },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -205,38 +145,5 @@ describe('Replace Step Form', () => {
     expect(wrapper.emitted()).toEqual({
       formSaved: [[{ name: 'replace', search_column: 'columnA', to_replace: [[false, true]] }]],
     });
-  });
-
-  it('should emit "cancel" event when edition is cancelled', async () => {
-    const wrapper = mount(ReplaceStepForm, { store: emptyStore, localVue, sync: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({
-      cancel: [[]],
-    });
-  });
-
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ];
-    const store = setupMockStore({
-      pipeline,
-      selectedStepIndex: 2,
-    });
-    const wrapper = mount(ReplaceStepForm, {
-      store,
-      localVue,
-      sync: false,
-      propsData: { isStepCreation: true },
-    });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(2);
-    wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(store.state.vqb.selectedStepIndex).toEqual(3);
   });
 });
