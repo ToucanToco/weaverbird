@@ -7829,6 +7829,11 @@ mocha@^6.1.4:
     yargs-parser "13.1.1"
     yargs-unparser "1.6.0"
 
+monaco-editor@^0.19.3:
+  version "0.19.3"
+  resolved "https://registry.yarnpkg.com/monaco-editor/-/monaco-editor-0.19.3.tgz#1c994b3186c00650dbcd034d5370d46bf56c0663"
+  integrity sha512-2n1vJBVQF2Hhi7+r1mMeYsmlf18hjVb6E0v5SoMZyb4aeOmYPKun+CE3gYpiNA1KEvtSdaDHFBqH9d7Wd9vREg==
+
 mongodb-download@^2.2.7:
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/mongodb-download/-/mongodb-download-2.2.7.tgz#6bb4937e1a2bbd9756560c8dab0923253828ee98"

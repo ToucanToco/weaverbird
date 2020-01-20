@@ -18,12 +18,13 @@ import { StepFormComponent } from '@/components/formlib';
 import BaseStepForm from './StepForm.vue';
 import { CustomStep } from '@/lib/steps';
 import TextareaWidget from './widgets/TextareaWidget.vue';
+import MonacoEditorWidget from './widgets/MonacoEditorWidget.vue';
 import capitalize from 'lodash/capitalize'
 
 @StepFormComponent({
   vqbstep: 'custom',
   name: 'custom-step-form',
-  components:{ TextareaWidget }
+  components:{ TextareaWidget, MonacoEditorWidget}
 })
 export default class CustomStepForm extends BaseStepForm<CustomStep> {
   @Prop({ type: Object, default: () => ({ name: 'custom', query: "[{\"$match\": {\"domain\": \"test\"}}]" }) })
