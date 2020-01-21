@@ -14,6 +14,12 @@
 import { StepMatcher, OutputStep, TransformStep } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
+export interface ValidationError {
+  dataPath: string;
+  keyword: string;
+  message?: string;
+}
+
 /**
  * Custom exception raised when a transform method is called on a step
  * that is not supported by the translator.
@@ -204,6 +210,15 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
     }
     return result;
   }
+
+  /**
+   * validate the query written in a custom step
+   * return null if no error
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  validate(customEditedStep: S.CustomStep): ValidationError[] | null {
+    return null;
+  }
 }
 
 /**
@@ -217,6 +232,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 function isStepFunction(propname: string): propname is S.PipelineStepName {
   const ignoredProps = new Set([
     'label',
+    'validate',
     'constructor',
     'supportedSteps',
     'unsupportedSteps',

@@ -1697,4 +1697,15 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _vqbJoinKey: 0, _id: 0 } },
     ]);
   });
+
+  it('validate any custom query has json valid', () => {
+    const correctQuery = '[{"$match": {"domain": "test"}}]'
+    expect(mongo36translator.validate({name: 'custom', query: correctQuery})).toBeNull()
+    const failedQuery = 'a[{"$match": {"domain": "test"}}]'
+    expect(mongo36translator.validate({name: 'custom', query: failedQuery})).toEqual([{
+      keyword: 'json',
+      dataPath: '.query',
+      message: "Unexpected token a in JSON at position 0",
+    }])
+  });
 });

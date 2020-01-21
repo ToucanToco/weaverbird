@@ -38,5 +38,14 @@ export default class CustomStepForm extends BaseStepForm<CustomStep> {
   get name() {
     return `Write a custom ${getTranslator(this.translator).constructor.label} query`;
   }
+
+  validate() {
+    const errors = this.$$super.validate();
+    if (errors !== null) {
+      return errors;
+    }
+    const translatorErrors = getTranslator(this.translator).validate({ ...this.editedStep });
+    return translatorErrors;
+  }
 }
 </script>

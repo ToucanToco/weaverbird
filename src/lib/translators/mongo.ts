@@ -5,7 +5,7 @@ import * as math from 'mathjs';
 
 import * as S from '@/lib/steps';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
-import { BaseTranslator } from '@/lib/translators/base';
+import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 import { $$ } from '@/lib/helpers';
 import { MathNode } from '@/typings/mathjs';
 
@@ -645,6 +645,19 @@ export class Mongo36Translator extends BaseTranslator {
       },
     );
     return mongoPipeline;
+  }
+
+  validate(customEditedStep: S.CustomStep): ValidationError[]|null {
+    try {
+      JSON.parse(customEditedStep.query)
+      return null
+    } catch(e){
+      return [{
+        keyword: 'json',
+        dataPath: '.query',
+        message: e.message,
+      }]
+    }
   }
 }
 Object.assign(Mongo36Translator.prototype, mapper);
