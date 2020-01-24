@@ -31,6 +31,6 @@ function transformConvert(step: Readonly<ConvertStep>): MongoStep {
 }
 
 export class Mongo40Translator extends Mongo36Translator {
-  label = 'Mongo 4.0';
+  static label = 'Mongo 4.0';
 }
 Object.assign(Mongo40Translator.prototype, { convert: transformConvert });

@@ -554,7 +554,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
 };
 
 export class Mongo36Translator extends BaseTranslator {
-  label = 'Mongo 3.6';
+  static label = 'Mongo 3.6';
 
   domainCollectionMap: { [k: string]: string };
 
