@@ -61,6 +61,11 @@ function unsupported(target: BaseTranslator, propertyKey: S.PipelineStepName, de
  */
 export class BaseTranslator implements StepMatcher<OutputStep> {
   /**
+   * `label` will be displayed to the user
+   */
+  static label: string;
+
+  /**
    * `supportedSteps` returns the list of steps supported by this translator class.
    */
   get supportedSteps(): S.PipelineStepName[] {
@@ -211,6 +216,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
  */
 function isStepFunction(propname: string): propname is S.PipelineStepName {
   const ignoredProps = new Set([
+    'label',
     'constructor',
     'supportedSteps',
     'unsupportedSteps',

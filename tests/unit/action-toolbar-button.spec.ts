@@ -13,11 +13,13 @@ describe('ActionToolbarButton', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'add' } });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(2);
+    expect(actionsWrappers.length).toEqual(3);
     actionsWrappers.at(0).trigger('click');
     expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
     actionsWrappers.at(1).trigger('click');
     expect(wrapper.emitted().actionClicked[1]).toEqual(['formula']);
+    actionsWrappers.at(2).trigger('click');
+    expect(wrapper.emitted().actionClicked[2]).toEqual(['custom']);
   });
 
   it('should instantiate a Filter button with the right list of actions', () => {
