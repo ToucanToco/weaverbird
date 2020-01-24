@@ -30,5 +30,7 @@ function transformConvert(step: Readonly<ConvertStep>): MongoStep {
   return { $addFields: mongoAddFields };
 }
 
-export class Mongo40Translator extends Mongo36Translator {}
+export class Mongo40Translator extends Mongo36Translator {
+  label = 'Mongo 4.0';
+}
 Object.assign(Mongo40Translator.prototype, { convert: transformConvert });

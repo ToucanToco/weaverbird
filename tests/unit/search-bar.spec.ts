@@ -53,6 +53,7 @@ describe('SearchBar', () => {
       'sort',
       'append',
       'join',
+      'custom',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -95,6 +96,7 @@ describe('SearchBar', () => {
       'convert',
       'append',
       'join',
+      'custom',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
