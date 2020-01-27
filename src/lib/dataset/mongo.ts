@@ -25,7 +25,7 @@ export function mongoResultsToDataset(results: MongoResults): DataSet {
     dataset.headers = colnames.map(name => ({ name }));
     for (const row of results) {
       dataset.data.push(
-        dataset.headers.map(coldef => (row.hasOwnProperty(coldef.name) ? row[coldef.name] : null)),
+        dataset.headers.map(coldef => (Object.prototype.hasOwnProperty.call(row, coldef.name) ? row[coldef.name] : null)),
       );
     }
   }

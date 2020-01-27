@@ -69,7 +69,12 @@ module.exports = {
         "argsIgnorePattern": "^_"
       }
     ],
-    "@typescript-eslint/no-unused-vars-experimental": ["error"],
+    "@typescript-eslint/no-unused-vars-experimental": [
+      "error",
+      {
+        "ignoredNamesRegex": "^_"
+      }
+    ],
     "space-before-function-paren": [
       "error",
       {

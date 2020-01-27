@@ -33,8 +33,6 @@ import { FormulaStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-type VqbError = Partial<ErrorObject>;
-
 @StepFormComponent({
   vqbstep: 'formula',
   name: 'formula-step-form',

@@ -44,7 +44,7 @@ type MountOptions = {
   data?: object;
 };
 
-export class BasicStepFormTestRunner<StepType> {
+export class BasicStepFormTestRunner {
   componentType: ComponentType;
   stepname: string;
   vue: VueConstructor;
@@ -100,7 +100,7 @@ export class BasicStepFormTestRunner<StepType> {
   }
 
   async checkValidationError(
-    testlabel: any,
+    _testlabel: any,
     store: any,
     propsData: any,
     data: any,
