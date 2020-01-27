@@ -1,0 +1,5 @@
+# typescript declaration files
+**/*.d.ts
+
+# Ignore node modules
+node_modules/*

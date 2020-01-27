@@ -53,10 +53,12 @@
     "concurrently": "^4.1.0",
     "core-js": "3",
     "csvtojson": "^2.0.8",
-    "eslint": "^5.8.0",
+    "eslint": "^6.8.0",
+    "eslint-config-import": "^0.13.0",
     "eslint-import-resolver-alias": "^1.1.2",
-    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-import": "^2.20.0",
     "eslint-plugin-jest": "^22.13.0",
+    "eslint-plugin-simple-import-sort": "^5.0.1",
     "eslint-plugin-vue": "^5.0.0",
     "express": "^4.16.4",
     "flush-promises": "^1.0.2",
@@ -93,6 +95,7 @@
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^3.7.0",
+    "typescript-eslint": "^0.0.1-alpha.0",
     "vue": "^2.6.10",
     "vue-class-component": "^6.0.0",
     "vue-jest": "^3.0.4",
@@ -104,119 +107,6 @@
     "vuejs-paginate": "^2.1.0",
     "vuex": "^3.1.1",
     "vuex-class": "^0.3.2"
-  },
-  "eslintIgnore": [
-    "**/*.d.ts"
-  ],
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "plugin:import/errors",
-      "plugin:import/warnings",
-      "plugin:import/typescript",
-      "plugin:vue/essential",
-      "eslint:recommended",
-      "@vue/typescript"
-    ],
-    "plugins": [
-      "import"
-    ],
-    "settings": {
-      "import/internal-regex": "^@/",
-      "import/resolver": {
-        "alias": {
-          "map": [
-            [
-              "@",
-              "./src"
-            ]
-          ],
-          "extensions": [
-            ".ts",
-            ".js",
-            ".vue",
-            ".d.ts"
-          ]
-        }
-      }
-    },
-    "rules": {
-      "@typescript-eslint/explicit-function-return-type": "allow",
-      "@typescript-eslint/no-explicit-any": "allow",
-      "@typescript-eslint/no-empty-function": [
-        "error",
-        {
-          "allow": [
-            "arrowFunctions"
-          ]
-        }
-      ],
-      "@typescript-eslint/explicit-member-accessibility": "no-public",
-      "@typescript-eslint/indent": [
-        "error",
-        2
-      ],
-      "@typescript-eslint/camelcase": [
-        "error",
-        {
-          "properties": "never"
-        }
-      ],
-      "@typescript-eslint/prefer-interface": [
-        "allow"
-      ],
-      "no-unused-vars": [
-        "error",
-        {
-          "argsIgnorePattern": "^_"
-        }
-      ],
-      "@typescript-eslint/no-unused-vars": [
-        "error",
-        {
-          "argsIgnorePattern": "^_"
-        }
-      ],
-      "space-before-function-paren": [
-        "error",
-        {
-          "anonymous": "never",
-          "named": "never",
-          "asyncArrow": "always"
-        }
-      ],
-      "prefer-const": [
-        "error"
-      ],
-      "no-console": [
-        "error",
-        {
-          "allow": [
-            "warn",
-            "error"
-          ]
-        }
-      ],
-      "vue/html-self-closing": [
-        "error",
-        {
-          "html": {
-            "void": "never",
-            "normal": "always",
-            "component": "always"
-          },
-          "svg": "always",
-          "math": "always"
-        }
-      ]
-    },
-    "parserOptions": {
-      "parser": "@typescript-eslint/parser"
-    }
   },
   "postcss": {
     "plugins": {
