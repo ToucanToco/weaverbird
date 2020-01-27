@@ -1,4 +1,5 @@
 import CustomStepForm from '@/components/stepforms/CustomStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Custom Step Form', () => {
@@ -13,25 +14,20 @@ describe('Custom Step Form', () => {
       props: {
         initialStepValue: {
           name: 'custom',
-          query: "",
+          query: '',
         },
       },
-      errors: [
-        { dataPath: '.query', keyword: 'minLength' },
-      ],
+      errors: [{ dataPath: '.query', keyword: 'minLength' }],
     },
     {
       testlabel: 'submitted query is not json', // only for translator: mongo40 (which is default translator)
       props: {
         initialStepValue: {
           name: 'custom',
-          query: "a",
+          query: 'a',
         },
       },
-      errors: [
-        { dataPath: '.query', keyword: 'json' },
-      ],
+      errors: [{ dataPath: '.query', keyword: 'json' }],
     },
   ]);
-
 });

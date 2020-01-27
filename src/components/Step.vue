@@ -34,10 +34,10 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
-import { PipelineStep } from '@/lib/steps';
-import { MutationCallbacks } from '@/store/mutations';
 import { humanReadableLabel } from '@/lib/labeller';
+import { PipelineStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
+import { MutationCallbacks } from '@/store/mutations';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 

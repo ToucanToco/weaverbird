@@ -1,8 +1,8 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { createLocalVue,shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
-import { Pipeline } from '@/lib/steps';
 import PipelineComponent from '@/components/Pipeline.vue';
+import { Pipeline } from '@/lib/steps';
 
 import { setupMockStore } from './utils';
 

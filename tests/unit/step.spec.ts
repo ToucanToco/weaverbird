@@ -1,10 +1,10 @@
-import { mount, createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
-import { Pipeline } from '@/lib/steps';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
+import { Pipeline } from '@/lib/steps';
 
 import { setupMockStore } from './utils';
 

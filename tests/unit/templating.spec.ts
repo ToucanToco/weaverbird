@@ -1,8 +1,8 @@
 import _ from 'lodash';
 
-import { PipelineInterpolator, ScopeContext } from '@/lib/templating';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
+import { PipelineInterpolator, ScopeContext } from '@/lib/templating';
 
 function interpolate(value: string, context: ScopeContext) {
   const compiled = _.template(value);
@@ -101,7 +101,7 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'custom',
-        query: "{}",
+        query: '{}',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);

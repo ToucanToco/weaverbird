@@ -3,10 +3,10 @@
 import _ from 'lodash';
 import * as math from 'mathjs';
 
-import * as S from '@/lib/steps';
-import { OutputStep, StepMatcher } from '@/lib/matcher';
-import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 import { $$ } from '@/lib/helpers';
+import { OutputStep, StepMatcher } from '@/lib/matcher';
+import * as S from '@/lib/steps';
+import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 import { MathNode } from '@/typings/mathjs';
 
 type PropMap<T> = { [prop: string]: T };
@@ -647,16 +647,18 @@ export class Mongo36Translator extends BaseTranslator {
     return mongoPipeline;
   }
 
-  validate(customEditedStep: S.CustomStep): ValidationError[]|null {
+  validate(customEditedStep: S.CustomStep): ValidationError[] | null {
     try {
-      JSON.parse(customEditedStep.query)
-      return null
-    } catch(e){
-      return [{
-        keyword: 'json',
-        dataPath: '.query',
-        message: e.message,
-      }]
+      JSON.parse(customEditedStep.query);
+      return null;
+    } catch (e) {
+      return [
+        {
+          keyword: 'json',
+          dataPath: '.query',
+          message: e.message,
+        },
+      ];
     }
   }
 }

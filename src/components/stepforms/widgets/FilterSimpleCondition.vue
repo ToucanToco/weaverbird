@@ -34,15 +34,15 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { VueConstructor } from 'vue';
 import { ErrorObject } from 'ajv';
+import { VueConstructor } from 'vue';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { FilterSimpleCondition } from '@/lib/steps';
+import { VQBModule } from '@/store';
+import { MutationCallbacks } from '@/store/mutations';
 
 import MultiInputTextWidget from './MultiInputText.vue';
 

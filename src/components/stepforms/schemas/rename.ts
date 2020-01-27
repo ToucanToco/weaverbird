@@ -1,4 +1,4 @@
-import { StepFormType, addNotInColumnNamesConstraint } from './utils';
+import { addNotInColumnNamesConstraint,StepFormType } from './utils';
 
 const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',

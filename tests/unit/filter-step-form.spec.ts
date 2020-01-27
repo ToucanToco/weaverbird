@@ -1,5 +1,6 @@
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
+
+import { BasicStepFormTestRunner,setupMockStore } from './utils';
 
 describe('Filter Step Form', () => {
   const runner = new BasicStepFormTestRunner(FilterStepForm, 'filter');

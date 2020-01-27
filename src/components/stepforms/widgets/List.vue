@@ -33,10 +33,10 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
-import { Component, Prop, Vue, Mixins } from 'vue-property-decorator';
-import { VueConstructor } from 'vue';
 import { ErrorObject } from 'ajv';
+import _ from 'lodash';
+import { VueConstructor } from 'vue';
+import { Component, Mixins,Prop, Vue } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 

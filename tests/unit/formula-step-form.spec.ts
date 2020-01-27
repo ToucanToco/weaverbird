@@ -1,4 +1,5 @@
 import FormulaStepForm from '@/components/stepforms/FormulaStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Formula Step Form', () => {

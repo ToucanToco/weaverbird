@@ -31,11 +31,11 @@
   </popover>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
 import { POPOVER_ALIGN } from '@/components/constants';
-import { Pipeline, ConvertStep } from '@/lib/steps';
+import { ConvertStep,Pipeline } from '@/lib/steps';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 import Popover from './Popover.vue';

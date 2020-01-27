@@ -1,6 +1,6 @@
+import { filterOutDomain, mongoToPipe } from '@/lib/pipeline';
 import { Pipeline } from '@/lib/steps';
 import { MongoStep } from '@/lib/translators/mongo';
-import { filterOutDomain, mongoToPipe } from '@/lib/pipeline';
 
 describe('Pipebuild translator', () => {
   it('generate domain step', () => {

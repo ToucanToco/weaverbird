@@ -27,9 +27,9 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
-import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 
 import Step from './Step.vue';
 

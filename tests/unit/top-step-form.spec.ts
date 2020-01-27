@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
 import TopStepForm from '@/components/stepforms/TopStepForm.vue';
-import { BasicStepFormTestRunner } from './utils';
-
 import { ScopeContext } from '@/lib/templating';
+
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Top Step Form', () => {
   const runner = new BasicStepFormTestRunner(TopStepForm, 'top');

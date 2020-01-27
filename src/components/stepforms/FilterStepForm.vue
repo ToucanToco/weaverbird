@@ -23,12 +23,12 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
-import { FilterStep, FilterComboAnd, isFilterComboAnd, FilterSimpleCondition } from '@/lib/steps';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
+import { FilterComboAnd, FilterSimpleCondition,FilterStep, isFilterComboAnd } from '@/lib/steps';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import ListWidget from './widgets/List.vue';

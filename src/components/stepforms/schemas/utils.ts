@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import { Ajv } from 'ajv';
+import _ from 'lodash';
 
 type JsonPropSchema = {
   [prop: string]: any;

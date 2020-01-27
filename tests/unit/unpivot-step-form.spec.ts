@@ -1,6 +1,7 @@
 import UnpivotStepForm from '@/components/stepforms/UnpivotStepForm.vue';
-import { BasicStepFormTestRunner } from './utils';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
+
+import { BasicStepFormTestRunner } from './utils';
 
 describe('Unpivot Step Form', () => {
   const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot');

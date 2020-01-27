@@ -34,10 +34,10 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { SubstringStep } from '@/lib/steps';
+import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { StepFormComponent } from '@/components/formlib';
+import { SubstringStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 

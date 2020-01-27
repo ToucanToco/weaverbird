@@ -11,11 +11,11 @@ import { Store } from 'vuex';
 
 import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
+import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
-import { VQBnamespace, VQB_MODULE_NAME } from '@/store';
+import { VQB_MODULE_NAME,VQBnamespace } from '@/store';
 import { activePipeline } from '@/store/state';
-import { pageOffset } from '@/lib/dataset/pagination';
 
 import { StateMutation } from './mutations';
 

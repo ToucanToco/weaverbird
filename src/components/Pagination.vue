@@ -17,12 +17,12 @@
 </template>
 
 <script lang="ts">
+import { Component,Vue } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
-import { Vue, Component } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
 import { DataSet } from '@/lib/dataset';
 import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 @Component({

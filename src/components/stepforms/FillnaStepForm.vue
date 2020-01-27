@@ -24,13 +24,13 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { FillnaStep } from '@/lib/steps';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
+import { FillnaStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 

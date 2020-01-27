@@ -1,10 +1,10 @@
 /**
  * define what the application state looks like.
  */
+import { BackendError } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
-import { BackendError } from '@/lib/backend-response';
-import { ScopeContext, InterpolateFunction } from '@/lib/templating';
+import { InterpolateFunction,ScopeContext } from '@/lib/templating';
 
 export interface VQBState {
   /**

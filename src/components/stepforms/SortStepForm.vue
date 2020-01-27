@@ -19,8 +19,8 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { SortStep, SortColumnType } from '@/lib/steps';
 import { StepFormComponent } from '@/components/formlib';
+import { SortColumnType,SortStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import ListWidget from './widgets/List.vue';

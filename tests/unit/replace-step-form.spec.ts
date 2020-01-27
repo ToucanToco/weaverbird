@@ -1,6 +1,6 @@
 import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
 
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner,setupMockStore } from './utils';
 
 describe('Replace Step Form', () => {
   const runner = new BasicStepFormTestRunner(ReplaceStepForm, 'replace');

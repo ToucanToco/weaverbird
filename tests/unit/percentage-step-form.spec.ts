@@ -1,5 +1,6 @@
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import { VQBnamespace } from '@/store';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Percentage Step Form', () => {

@@ -1,4 +1,5 @@
 import JoinStepForm from '@/components/stepforms/JoinStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('join Step Form', () => {

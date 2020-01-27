@@ -1,4 +1,5 @@
 import SortStepForm from '@/components/stepforms/SortStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Sort Step Form', () => {

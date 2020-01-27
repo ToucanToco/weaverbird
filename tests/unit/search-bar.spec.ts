@@ -1,8 +1,8 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { createLocalVue,mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
-import SearchBar from '@/components/SearchBar.vue';
 import { ActionCategories } from '@/components/constants';
+import SearchBar from '@/components/SearchBar.vue';
 
 import { setupMockStore } from './utils';
 

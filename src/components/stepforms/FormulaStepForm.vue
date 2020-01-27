@@ -23,9 +23,9 @@
 </template>
 
 <script lang="ts">
-import { Prop } from 'vue-property-decorator';
-import { parse } from 'mathjs';
 import { ErrorObject } from 'ajv';
+import { parse } from 'mathjs';
+import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';

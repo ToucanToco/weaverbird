@@ -29,13 +29,13 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { AggFunctionStep, AggregationStep } from '@/lib/steps';
 import { StepFormComponent } from '@/components/formlib';
+import { AggFunctionStep, AggregationStep } from '@/lib/steps';
 
-import AggregationWidget from './widgets/Aggregation.vue';
-import MultiselectWidget from './widgets/Multiselect.vue';
-import ListWidget from './widgets/List.vue';
 import BaseStepForm from './StepForm.vue';
+import AggregationWidget from './widgets/Aggregation.vue';
+import ListWidget from './widgets/List.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
 
 @StepFormComponent({
   vqbstep: 'aggregate',

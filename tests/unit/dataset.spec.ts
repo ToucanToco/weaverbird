@@ -1,9 +1,9 @@
 import { DataSet } from '@/lib/dataset';
 import {
-  mongoResultsToDataset,
-  MongoResults,
   _guessType,
   inferTypeFromDataset,
+  MongoResults,
+  mongoResultsToDataset,
 } from '@/lib/dataset/mongo';
 
 /**

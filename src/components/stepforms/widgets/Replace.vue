@@ -17,9 +17,9 @@
   </div>
 </template>
 <script lang="ts">
+import { ErrorObject } from 'ajv';
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { ErrorObject } from 'ajv';
 
 import InputTextWidget from './InputText.vue';
 

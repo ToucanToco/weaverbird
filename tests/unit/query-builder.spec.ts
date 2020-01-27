@@ -1,9 +1,9 @@
-import { shallowMount, createLocalVue, Wrapper } from '@vue/test-utils';
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
 
-import { registerModule, VQBnamespace } from '@/store';
 import QueryBuilder from '@/components/QueryBuilder.vue';
+import { registerModule, VQBnamespace } from '@/store';
 import { VQBState } from '@/store/state';
 
 const localVue = createLocalVue();

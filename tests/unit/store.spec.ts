@@ -1,7 +1,7 @@
 import { Pipeline } from '@/lib/steps';
-import { VQBState, emptyState } from '@/store/state';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
+import { emptyState,VQBState } from '@/store/state';
 
 function buildState(customState: Partial<VQBState>) {
   return {

@@ -1,11 +1,11 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
+import { createLocalVue,mount, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
-import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 
-import { setupMockStore, RootState } from './utils';
+import { RootState,setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

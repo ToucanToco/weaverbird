@@ -1,8 +1,8 @@
 /** This module contains mongo specific translation operations */
 
-import { Mongo36Translator } from '@/lib/translators/mongo';
-import { ConvertStep } from '@/lib/steps';
 import { $$ } from '@/lib/helpers';
+import { ConvertStep } from '@/lib/steps';
+import { Mongo36Translator } from '@/lib/translators/mongo';
 
 type PropMap<T> = { [prop: string]: T };
 
