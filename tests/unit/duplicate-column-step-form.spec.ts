@@ -1,6 +1,6 @@
 import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepForm.vue';
 
-import { BasicStepFormTestRunner,setupMockStore } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 describe('Duplicate Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(DuplicateColumnStepForm, 'duplicate');

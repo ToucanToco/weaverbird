@@ -307,31 +307,20 @@ function transformSplit(step: Readonly<S.SplitStep>): MongoStep {
   ];
 }
 
+function $add(...args: any[]) {
+  return {
+    $add: args,
+  };
+}
 /** transform a 'substring' step into corresponding mongo steps */
 function transformSubstring(step: Readonly<S.SubstringStep>): MongoStep {
   const posStartIndex: number | PropMap<any> =
     step.start_index > 0
       ? step.start_index - 1
-      : {
-        $add: [
-          {
-            $strLenCP: $$(step.column),
-          },
-          step.start_index,
-        ],
-      };
+      : $add({ $strLenCP: $$(step.column) }, step.start_index);
 
   const posEndIndex: number | PropMap<any> =
-    step.end_index > 0
-      ? step.end_index - 1
-      : {
-        $add: [
-          {
-            $strLenCP: $$(step.column),
-          },
-          step.end_index,
-        ],
-      };
+    step.end_index > 0 ? step.end_index - 1 : $add({ $strLenCP: $$(step.column) }, step.end_index);
 
   const lengthToKeep = {
     $add: [

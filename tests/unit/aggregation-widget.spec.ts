@@ -1,9 +1,9 @@
-import { createLocalVue,shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import AggregationWidget from '@/components/stepforms/widgets/Aggregation.vue';
 
-import { RootState,setupMockStore } from './utils';
+import { RootState, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

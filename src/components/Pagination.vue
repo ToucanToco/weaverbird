@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts">
-import { Component,Vue } from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
 
 import { DataSet } from '@/lib/dataset';

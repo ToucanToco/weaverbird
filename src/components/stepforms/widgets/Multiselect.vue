@@ -18,7 +18,7 @@
 
 <script lang="ts">
 import Multiselect from 'vue-multiselect';
-import { Component, Mixins,Prop, Watch } from 'vue-property-decorator';
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
 import FormWidget from './FormWidget.vue';
 

@@ -1,10 +1,9 @@
 <template functional>
-  <td
-    :class="{'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }"
-  >{{ $options.methods.getValue(props.value)}}</td>
+  <td :class="{ 'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }">
+    {{ $options.methods.getValue(props.value) }}
+  </td>
 </template>
 <script lang="ts">
-
 /**
  * @name DataViewerCell
  * @description A table cell displayed in a DataViewer
@@ -30,5 +29,4 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-</style>
+<style lang="scss"></style>

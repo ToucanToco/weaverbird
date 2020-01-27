@@ -5,7 +5,7 @@
     </div>
 
     <div class="resizable-panels__resizer" @mousedown="startResize()">
-      <div class="resizable-panels__line"/>
+      <div class="resizable-panels__line" />
     </div>
 
     <div class="resizable-panels__panel" :style="rightPanelWidth">
@@ -13,7 +13,7 @@
     </div>
   </div>
 </template>
-<script  lang="ts">
+<script lang="ts">
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 

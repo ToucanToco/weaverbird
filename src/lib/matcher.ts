@@ -33,7 +33,7 @@ export type StepByType<A, T> = A extends { name: T } ? A : never;
  * translation function at compile time.
  */
 export type StepMatcher<T> = {
-  [K in PipelineStepName]: (step: Readonly<StepByType<PipelineStep, K>>) => T
+  [K in PipelineStepName]: (step: Readonly<StepByType<PipelineStep, K>>) => T;
 };
 export type TransformStep = (step: Readonly<PipelineStep>) => void;
 

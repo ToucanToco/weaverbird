@@ -10,7 +10,7 @@
       @blur="blur()"
       @focus="focus()"
       @input="updateValue($event.target.value)"
-    >
+    />
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />{{ messageError }}
     </div>
@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins,Prop } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import FormWidget from './FormWidget.vue';
 

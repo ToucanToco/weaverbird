@@ -3,7 +3,7 @@
  */
 import _ from 'lodash';
 
-import { activePipeline, inactivePipeline,VQBState } from './state';
+import { activePipeline, inactivePipeline, VQBState } from './state';
 
 export default {
   /**

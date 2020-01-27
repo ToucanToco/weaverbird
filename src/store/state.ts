@@ -4,7 +4,7 @@
 import { BackendError } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
-import { InterpolateFunction,ScopeContext } from '@/lib/templating';
+import { InterpolateFunction, ScopeContext } from '@/lib/templating';
 
 export interface VQBState {
   /**

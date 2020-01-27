@@ -2,7 +2,7 @@ import { mount, Wrapper } from '@vue/test-utils';
 import _ from 'lodash';
 import Vue from 'vue';
 
-import { Alignment,POPOVER_SHADOW_GAP } from '@/components/constants';
+import { Alignment, POPOVER_SHADOW_GAP } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
 import Popover from '@/components/Popover.vue';
 

@@ -32,7 +32,7 @@ type PositionContext = {
 };
 
 type PartialPositionContext = Partial<
-{ [K in keyof PositionContext]: Partial<PositionContext[K]> }
+  { [K in keyof PositionContext]: Partial<PositionContext[K]> }
 >;
 
 /**

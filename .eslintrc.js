@@ -8,6 +8,7 @@ module.exports = {
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
+    "plugin:prettier/recommended",
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript",
@@ -48,7 +49,14 @@ module.exports = {
     ],
     "@typescript-eslint/indent": [
       "error",
-      2
+      2,
+      {
+        "ignoredNodes": [
+          // cf. https://github.com/typescript-eslint/typescript-eslint/issues/455
+          "TSTypeParameterInstantiation"
+        ],
+        "SwitchCase": 1
+      }
     ],
     "@typescript-eslint/camelcase": [
       "error",
@@ -99,7 +107,7 @@ module.exports = {
       "error",
       {
         "html": {
-          "void": "never",
+          "void": "always",
           "normal": "always",
           "component": "always"
         },
