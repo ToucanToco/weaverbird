@@ -43,7 +43,7 @@ export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): Mongo
 
   for (const cond of filterAndCond.$and) {
     for (const key in cond) {
-      counter[key] = counter.hasOwnProperty(key) ? counter[key] + 1 : 1;
+      counter[key] = Object.prototype.hasOwnProperty.call(counter, key) ? counter[key] + 1 : 1;
     }
   }
 
@@ -464,7 +464,7 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
           const included = Boolean(step.$project[key]);
           merge = Object.values(lastStep.$project).every(value => Boolean(value) === included);
         }
-        if (lastStep[stepOperator].hasOwnProperty(key)) {
+        if (Object.prototype.hasOwnProperty.call(lastStep[stepOperator], key)) {
           // We do not want to merge two $project with common keys
           merge = false;
           break;

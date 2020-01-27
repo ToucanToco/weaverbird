@@ -306,7 +306,7 @@ describe('Data Viewer', () => {
       firstHeadCellWrapper.trigger('click');
       await localVue.nextTick();
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
-      dataset.data.forEach((d, i) => {
+      dataset.data.forEach((_d, i) => {
         expect(
           rowsWrapper
             .at(i)

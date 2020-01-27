@@ -39,7 +39,7 @@ export class StepNotSupported extends Error {
  * @param propertyKey the name of the method, in our case necessarily a step name
  * @param descriptor the method descriptor
  */
-function unsupported(target: BaseTranslator, propertyKey: S.PipelineStepName, descriptor: any) {
+function unsupported(_target: BaseTranslator, _propertyKey: S.PipelineStepName, descriptor: any) {
   descriptor.value = function(step: Readonly<S.PipelineStep>) {
     throw new StepNotSupported(step.name);
   };
@@ -100,7 +100,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
     return !this.unsupportedSteps.includes(stepname);
   }
 
-  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function */
+  /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental, @typescript-eslint/no-empty-function */
   @unsupported
   aggregate(step: Readonly<S.AggregationStep>) {}
 
@@ -188,7 +188,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   uppercase(step: Readonly<S.ToUpperStep>) {}
 
-  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars */
+  /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
 
   /**
    * translates an input pipeline into a list of steps that makes sense for the
