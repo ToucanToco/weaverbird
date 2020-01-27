@@ -1,9 +1,9 @@
-import { createLocalVue, shallowMount, mount } from '@vue/test-utils';
+import { createLocalVue, mount,shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
+import Pagination from '@/components/Pagination.vue';
 import { Pipeline } from '@/lib/steps';
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
-import Pagination from '@/components/Pagination.vue';
 
 import { setupMockStore } from './utils';
 

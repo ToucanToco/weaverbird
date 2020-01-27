@@ -2,10 +2,10 @@ import * as S from '@/lib/steps';
 import {
   availableTranslators,
   backendsSupporting,
-  registerTranslator,
   getTranslator,
+  registerTranslator,
 } from '@/lib/translators';
-import { BaseTranslator, ALL_STEP_NAMES } from '@/lib/translators/base';
+import { ALL_STEP_NAMES,BaseTranslator } from '@/lib/translators/base';
 
 class DummyStringTranslator extends BaseTranslator {
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars */

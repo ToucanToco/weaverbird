@@ -19,12 +19,14 @@
   </div>
 </template>
 <script lang="ts">
-import _ from 'lodash';
-import { VQBModule } from '@/store';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import InputTextWidget from './InputText.vue';
 import { ErrorObject } from 'ajv';
+import _ from 'lodash';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { VQBModule } from '@/store';
+
+import InputTextWidget from './InputText.vue';
 
 @Component({
   name: 'join-colum-widget',

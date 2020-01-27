@@ -14,8 +14,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 @Component({
   name: 'multi-input-text-widget',

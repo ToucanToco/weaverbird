@@ -37,14 +37,16 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
-import { JoinStep, Pipeline } from '@/lib/steps';
-import BaseStepForm from './StepForm.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import ListWidget from '@/components/stepforms/widgets/List.vue';
-import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
-import Multiselect from './widgets/Multiselect.vue';
+
 import { StepFormComponent } from '@/components/formlib';
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
+import ListWidget from '@/components/stepforms/widgets/List.vue';
+import { JoinStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
+
+import BaseStepForm from './StepForm.vue';
+import Multiselect from './widgets/Multiselect.vue';
 
 @StepFormComponent({
   vqbstep: 'join',

@@ -1,6 +1,6 @@
 import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { MongoStep, _simplifyAndCondition, _simplifyMongoPipeline } from '@/lib/translators/mongo';
+import { _simplifyAndCondition, _simplifyMongoPipeline,MongoStep } from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
@@ -1699,13 +1699,15 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('validate any custom query has json valid', () => {
-    const correctQuery = '[{"$match": {"domain": "test"}}]'
-    expect(mongo36translator.validate({name: 'custom', query: correctQuery})).toBeNull()
-    const failedQuery = 'a[{"$match": {"domain": "test"}}]'
-    expect(mongo36translator.validate({name: 'custom', query: failedQuery})).toEqual([{
-      keyword: 'json',
-      dataPath: '.query',
-      message: "Unexpected token a in JSON at position 0",
-    }])
+    const correctQuery = '[{"$match": {"domain": "test"}}]';
+    expect(mongo36translator.validate({ name: 'custom', query: correctQuery })).toBeNull();
+    const failedQuery = 'a[{"$match": {"domain": "test"}}]';
+    expect(mongo36translator.validate({ name: 'custom', query: failedQuery })).toEqual([
+      {
+        keyword: 'json',
+        dataPath: '.query',
+        message: 'Unexpected token a in JSON at position 0',
+      },
+    ]);
   });
 });

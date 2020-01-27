@@ -1,6 +1,7 @@
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
 import { VQBnamespace } from '@/store';
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
+
+import { BasicStepFormTestRunner,setupMockStore } from './utils';
 
 describe('Rename Step Form', () => {
   const runner = new BasicStepFormTestRunner(RenameStepForm, 'rename');

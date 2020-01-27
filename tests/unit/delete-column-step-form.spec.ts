@@ -1,5 +1,6 @@
 import DeleteColumnStepForm from '@/components/stepforms/DeleteColumnStepForm.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Delete Column Step Form', () => {

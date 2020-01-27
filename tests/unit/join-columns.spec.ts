@@ -1,8 +1,10 @@
-import { mount, shallowMount, createLocalVue } from '@vue/test-utils';
-import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { createLocalVue,mount, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
-import { setupMockStore, RootState } from './utils';
+
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
+
+import { RootState,setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

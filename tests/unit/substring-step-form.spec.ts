@@ -1,4 +1,5 @@
 import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Substring Step Form', () => {

@@ -1,17 +1,17 @@
 <script lang="ts">
+import Ajv, { ErrorObject,ValidateFunction } from 'ajv';
 import _ from 'lodash';
 import Vue from 'vue';
-import { Prop, Component, Watch } from 'vue-property-decorator';
-import Ajv, { ValidateFunction, ErrorObject } from 'ajv';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
-import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
-import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 import schemaFactory from '@/components/stepforms/schemas';
 import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
+import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
+import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 import { Pipeline, PipelineStep } from '@/lib/steps';
-import { ScopeContext, PipelineInterpolator, InterpolateFunction } from '@/lib/templating';
+import { InterpolateFunction,PipelineInterpolator, ScopeContext } from '@/lib/templating';
+import { VQBModule } from '@/store';
+import { MutationCallbacks } from '@/store/mutations';
 
 type VqbError = Partial<ErrorObject>;
 /**

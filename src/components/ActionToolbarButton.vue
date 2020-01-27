@@ -21,10 +21,10 @@
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
+import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
+import * as S from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
-import * as S from '@/lib/steps';
-import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 
 import Popover from './Popover.vue';
 

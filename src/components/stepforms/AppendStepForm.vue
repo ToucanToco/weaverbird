@@ -17,12 +17,12 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { AppendStep, Pipeline } from '@/lib/steps';
 import { StepFormComponent } from '@/components/formlib';
+import { AppendStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
-import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
 
 @StepFormComponent({
   vqbstep: 'append',

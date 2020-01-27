@@ -1,7 +1,7 @@
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
-
 import { VQBnamespace } from '@/store';
+
+import { BasicStepFormTestRunner,setupMockStore } from './utils';
 
 describe('Fillna Step Form', () => {
   const runner = new BasicStepFormTestRunner(FillnaStepForm, 'fillna');

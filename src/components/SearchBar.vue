@@ -14,14 +14,13 @@
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
 import Multiselect from 'vue-multiselect';
+import { Component, Vue } from 'vue-property-decorator';
 
 import { getTranslator } from '@/lib/translators';
 
-import { VQBModule } from '../store';
 import { PipelineStepName } from '../lib/steps';
-
+import { VQBModule } from '../store';
 import { SEARCH_ACTION } from './constants';
 
 @Component({

@@ -1,7 +1,7 @@
 import PivotStepForm from '@/components/stepforms/PivotStepForm.vue';
 import { VQBnamespace } from '@/store';
 
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner,setupMockStore } from './utils';
 
 describe('Pivot Step Form', () => {
   const runner = new BasicStepFormTestRunner(PivotStepForm, 'pivot');

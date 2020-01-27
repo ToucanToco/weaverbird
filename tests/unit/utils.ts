@@ -1,10 +1,10 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { VueConstructor } from 'vue';
 import Vuex, { Store } from 'vuex';
 
+import BaseStepForm from '@/components/stepforms/StepForm.vue';
 import { registerModule } from '@/store';
 import { VQBState } from '@/store/state';
-import BaseStepForm from '@/components/stepforms/StepForm.vue';
-import { VueConstructor } from 'vue';
 
 export type RootState = {
   vqb: VQBState;

@@ -21,12 +21,12 @@
   </fieldset>
 </template>
 <script lang="ts">
+import { ErrorObject } from 'ajv';
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { ErrorObject } from 'ajv';
 
-import { VQBModule } from '@/store';
 import { AggFunctionStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
 
 import AutocompleteWidget from './Autocomplete.vue';
 

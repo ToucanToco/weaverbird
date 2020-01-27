@@ -58,17 +58,17 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
+import Pagination from '@/components/Pagination.vue';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import { PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import Pagination from '@/components/Pagination.vue';
+import { VQBModule } from '@/store';
 
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
+import { CATEGORY_BUTTONS } from './constants';
 import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
-import { CATEGORY_BUTTONS } from './constants';
 
 /**
  * @name DataViewer

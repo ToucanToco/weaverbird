@@ -11,7 +11,7 @@
  *
  */
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-import { StepMatcher, OutputStep, TransformStep } from '@/lib/matcher';
+import { OutputStep, StepMatcher, TransformStep } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
 export interface ValidationError {
@@ -215,8 +215,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * validate the query written in a custom step
    * return null if no error
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
-  validate(customEditedStep: S.CustomStep): ValidationError[] | null {
+  validate(_customEditedStep: S.CustomStep): ValidationError[] | null {
     return null;
   }
 }

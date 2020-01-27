@@ -1,5 +1,5 @@
-import * as S from '@/lib/steps';
 import { humanReadableLabel as hrl } from '@/lib/labeller';
+import * as S from '@/lib/steps';
 
 describe('Labeller', () => {
   it('generates label for single aggregation', () => {
@@ -85,7 +85,7 @@ describe('Labeller', () => {
   it('generates label for custom steps', () => {
     const step: S.CustomStep = {
       name: 'custom',
-      query: "{}",
+      query: '{}',
     };
     expect(hrl(step)).toEqual('Custom step');
   });

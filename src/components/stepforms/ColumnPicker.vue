@@ -12,13 +12,13 @@
 </template>
 
 <script lang="ts">
+import { ErrorObject } from 'ajv';
 import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
-import { ErrorObject } from 'ajv';
 
-import { VQBModule } from '@/store';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 

@@ -21,8 +21,8 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
 import { PipelineStepName } from '@/lib/steps';
+import { VQBModule } from '@/store';
 
 import ActionToolbarButton from './ActionToolbarButton.vue';
 import { ButtonDef } from './constants';

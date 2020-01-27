@@ -1,14 +1,14 @@
-import _ from 'lodash';
 import { createLocalVue, mount } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
 import flushPromises from 'flush-promises';
+import _ from 'lodash';
+import Vuex, { Store } from 'vuex';
 
+import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
 import { VQBnamespace } from '@/store';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
-import PipelineComponent from '@/components/Pipeline.vue';
 
 import { setupMockStore } from './utils';
 

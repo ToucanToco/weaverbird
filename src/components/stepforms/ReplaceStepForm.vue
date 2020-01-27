@@ -27,14 +27,14 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
-import { ReplaceStep } from '@/lib/steps';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
+import { ReplaceStep } from '@/lib/steps';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 

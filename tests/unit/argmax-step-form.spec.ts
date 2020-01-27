@@ -1,4 +1,5 @@
 import ArgmaxStepForm from '@/components/stepforms/ArgmaxStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Argmax Step Form', () => {

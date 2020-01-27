@@ -25,12 +25,12 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import { ArgmaxStep } from '@/lib/steps';
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import { StepFormComponent } from '@/components/formlib';
+import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+import { ArgmaxStep } from '@/lib/steps';
 
-import MultiselectWidget from './widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
 
 @StepFormComponent({
   vqbstep: 'argmax',

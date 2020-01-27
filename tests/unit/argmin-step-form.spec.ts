@@ -1,4 +1,5 @@
 import ArgminStepForm from '@/components/stepforms/ArgminStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Argmin Step Form', () => {

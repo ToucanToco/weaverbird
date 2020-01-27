@@ -28,15 +28,16 @@
   </div>
 </template>
 <script lang="ts">
+import '@/components/stepforms'; // required to load all step forms
+
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+import PipelineComponent from '@/components/Pipeline.vue';
+import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { VQBState } from '@/store/state';
-import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
-import PipelineComponent from '@/components/Pipeline.vue';
 
-import '@/components/stepforms'; // required to load all step forms
 import { STEPFORM_REGISTRY } from './formlib';
 
 @Component({

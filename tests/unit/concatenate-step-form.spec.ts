@@ -1,6 +1,7 @@
-import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
-import { setupMockStore, BasicStepFormTestRunner } from './utils';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
+import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue';
+
+import { BasicStepFormTestRunner,setupMockStore } from './utils';
 
 describe('Concatenate Step Form', () => {
   const runner = new BasicStepFormTestRunner(ConcatenateStepForm, 'concatenate');

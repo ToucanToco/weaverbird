@@ -14,12 +14,14 @@
 
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
+
 import { StepFormComponent } from '@/components/formlib';
-import BaseStepForm from './StepForm.vue';
 import { CustomStep } from '@/lib/steps';
-import TextareaWidget from './widgets/TextareaWidget.vue';
 import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
+
+import BaseStepForm from './StepForm.vue';
+import TextareaWidget from './widgets/TextareaWidget.vue';
 
 @StepFormComponent({
   vqbstep: 'custom',

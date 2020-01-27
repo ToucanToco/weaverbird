@@ -1,9 +1,9 @@
-import { shallowMount, createLocalVue } from '@vue/test-utils';
+import { createLocalVue,shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import SortColumnWidget from '@/components/stepforms/widgets/SortColumn.vue';
 
-import { setupMockStore, RootState } from './utils';
+import { RootState,setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

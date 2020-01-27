@@ -32,8 +32,8 @@ import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { UnpivotStep } from '@/lib/steps';
 import { generateNewColumnName } from '@/lib/helpers';
+import { UnpivotStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 

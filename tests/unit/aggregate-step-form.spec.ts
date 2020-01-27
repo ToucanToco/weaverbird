@@ -1,6 +1,7 @@
 import AggregateStepForm from '@/components/stepforms/AggregateStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Aggregate Step Form', () => {

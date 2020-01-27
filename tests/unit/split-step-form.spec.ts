@@ -1,4 +1,5 @@
 import SplitStepForm from '@/components/stepforms/SplitStepForm.vue';
+
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Split Step Form', () => {

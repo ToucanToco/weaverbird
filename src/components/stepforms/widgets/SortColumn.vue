@@ -22,13 +22,13 @@
   </fieldset>
 </template>
 <script lang="ts">
+import { ErrorObject } from 'ajv';
 import _ from 'lodash';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-import { ErrorObject } from 'ajv';
 
+import { SortColumnType } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
-import { SortColumnType } from '@/lib/steps';
 
 import AutocompleteWidget from './Autocomplete.vue';
 
