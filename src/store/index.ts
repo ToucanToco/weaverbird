@@ -22,7 +22,7 @@ import { namespace } from 'vuex-class';
 
 import getters from './getters';
 import mutations from './mutations';
-import { emptyState,VQBState } from './state';
+import { emptyState, VQBState } from './state';
 
 /**
  * the default VQB namespace name

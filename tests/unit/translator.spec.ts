@@ -5,7 +5,7 @@ import {
   getTranslator,
   registerTranslator,
 } from '@/lib/translators';
-import { ALL_STEP_NAMES,BaseTranslator } from '@/lib/translators/base';
+import { ALL_STEP_NAMES, BaseTranslator } from '@/lib/translators/base';
 
 class DummyStringTranslator extends BaseTranslator {
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */

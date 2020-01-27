@@ -21,7 +21,6 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
-
 @Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {
   @Prop({ type: String, default: 'columnInput' })

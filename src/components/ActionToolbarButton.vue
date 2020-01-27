@@ -10,7 +10,9 @@
             :key="index"
             class="action-menu__option"
             @click="actionClicked(item.name)"
-          >{{ item.label }}</div>
+          >
+            {{ item.label }}
+          </div>
         </div>
       </div>
     </popover>

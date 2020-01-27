@@ -1,4 +1,4 @@
-import { createLocalVue,mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import ActionToolbar from '@/components/ActionToolbar.vue';

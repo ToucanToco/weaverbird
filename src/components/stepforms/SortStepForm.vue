@@ -20,7 +20,7 @@
 import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
-import { SortColumnType,SortStep } from '@/lib/steps';
+import { SortColumnType, SortStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import ListWidget from './widgets/List.vue';

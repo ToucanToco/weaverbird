@@ -30,7 +30,6 @@ import { VQBModule } from '@/store';
 
 import AutocompleteWidget from './Autocomplete.vue';
 
-
 @Component({
   name: 'aggregation-widget',
   components: {

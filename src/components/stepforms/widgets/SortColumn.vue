@@ -69,4 +69,3 @@ export default class SortColumnWidget extends Vue {
   }
 }
 </script>
-

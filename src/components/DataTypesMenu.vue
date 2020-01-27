@@ -34,7 +34,7 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
-import { ConvertStep,Pipeline } from '@/lib/steps';
+import { ConvertStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 

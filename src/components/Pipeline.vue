@@ -14,14 +14,13 @@
       @editStep="editStep"
     />
     <div class="query-pipeline__tips-container">
-      <div
-        class="query-pipeline__tips"
-      >Interact with the widgets and table on the right to add steps</div>
-      <i class="fas fa-magic"/>
+      <div class="query-pipeline__tips">
+        Interact with the widgets and table on the right to add steps
+      </div>
+      <i class="fas fa-magic" />
     </div>
   </div>
 </template>
-
 
 <script lang="ts">
 import Vue from 'vue';

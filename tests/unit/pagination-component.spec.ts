@@ -1,4 +1,4 @@
-import { createLocalVue, mount,shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import Pagination from '@/components/Pagination.vue';

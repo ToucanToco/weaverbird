@@ -1,4 +1,4 @@
-import { $$,castFromString, generateNewColumnName } from '@/lib/helpers';
+import { $$, castFromString, generateNewColumnName } from '@/lib/helpers';
 
 describe('castFromString', () => {
   it('should cast numeric string to number type', () => {

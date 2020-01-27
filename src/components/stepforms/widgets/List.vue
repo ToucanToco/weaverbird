@@ -36,7 +36,7 @@
 import { ErrorObject } from 'ajv';
 import _ from 'lodash';
 import { VueConstructor } from 'vue';
-import { Component, Mixins,Prop, Vue } from 'vue-property-decorator';
+import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 

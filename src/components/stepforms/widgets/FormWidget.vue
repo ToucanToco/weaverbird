@@ -1,6 +1,6 @@
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import { Component, Prop,Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   name: 'form-widget',
