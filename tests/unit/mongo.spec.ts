@@ -629,7 +629,10 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'replace',
         search_column: 'column_1',
-        to_replace: [['foo', 'bar'], ['old', 'new']],
+        to_replace: [
+          ['foo', 'bar'],
+          ['old', 'new'],
+        ],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -673,7 +676,10 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
-        columns: [{ column: 'foo', order: 'asc' }, { column: 'bar', order: 'desc' }],
+        columns: [
+          { column: 'foo', order: 'asc' },
+          { column: 'bar', order: 'desc' },
+        ],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1578,7 +1584,10 @@ describe('Pipeline to mongo translator', () => {
         name: 'join',
         right_pipeline: rightPipeline,
         type: 'inner',
-        on: [['id', 'id'], ['country', 'country']],
+        on: [
+          ['id', 'id'],
+          ['country', 'country'],
+        ],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1640,7 +1649,10 @@ describe('Pipeline to mongo translator', () => {
         name: 'join',
         right_pipeline: rightPipeline,
         type: 'inner',
-        on: [['id', 'id_right'], ['country', 'country_right']],
+        on: [
+          ['id', 'id_right'],
+          ['country', 'country_right'],
+        ],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
