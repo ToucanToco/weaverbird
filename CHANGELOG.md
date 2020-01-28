@@ -6,6 +6,10 @@
 
 - aggregation step input columns are now templatable
 
+### Fixed
+
+- Fixed unpivot step where dropna parameter was not handled properly
+
 ## [0.9.0] - 2020-01-13
 
 ### Changed
