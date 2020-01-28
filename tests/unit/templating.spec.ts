@@ -33,13 +33,53 @@ describe('Pipeline interpolator', () => {
         aggregations: [
           {
             aggfunction: 'avg',
-            column: '<%= foo %>',
+            column: 'spam',
             newcolumn: '<%= egg %>',
           },
         ],
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should interpolate aggregation steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'aggregate',
+        on: ['column1', '<%= foo %>'],
+        aggregations: [
+          {
+            aggfunction: 'avg',
+            column: '<%= foo %>',
+            newcolumn: '<%= egg %>',
+          },
+          {
+            aggfunction: 'sum',
+            column: '<%= foo %>',
+            newcolumn: '<%= egg %>',
+          },
+        ],
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'aggregate',
+        on: ['column1', 'bar'],
+        aggregations: [
+          {
+            aggfunction: 'avg',
+            column: 'bar',
+            newcolumn: '<%= egg %>',
+          },
+          {
+            aggfunction: 'sum',
+            column: 'bar',
+            newcolumn: '<%= egg %>',
+          },
+        ],
+      },
+    ]);
   });
 
   it('should leave append steps untouched', () => {

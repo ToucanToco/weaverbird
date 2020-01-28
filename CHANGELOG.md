@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED -
+
+### Changed
+
+- aggregation step input columns are now templatable
+
 ## [0.9.0] - 2020-01-13
 
 ### Changed
