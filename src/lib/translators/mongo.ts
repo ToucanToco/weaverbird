@@ -355,12 +355,16 @@ function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
   // projectCols to be included in Mongo $project steps
   const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
   // objectToArray to be included in the first Mongo $project step
-  const objectToArray: PropMap<string> = _.fromPairs(step.unpivot.map(col => [col, `$${col}`]));
+  const objectToArray: PropMap<object> = _.fromPairs(
+    step.unpivot.map(col => [col, { $ifNull: [`$${col}`, null] }]),
+  );
   const mongoPipeline: MongoStep[] = [
     {
       $project: { ...projectCols, _vqbToUnpivot: { $objectToArray: objectToArray } },
     },
-    { $unwind: '$_vqbToUnpivot' },
+    {
+      $unwind: '$_vqbToUnpivot',
+    },
     {
       $project: {
         ...projectCols,

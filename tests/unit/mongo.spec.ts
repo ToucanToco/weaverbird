@@ -629,10 +629,7 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'replace',
         search_column: 'column_1',
-        to_replace: [
-          ['foo', 'bar'],
-          ['old', 'new'],
-        ],
+        to_replace: [['foo', 'bar'], ['old', 'new']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -676,10 +673,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
-        columns: [
-          { column: 'foo', order: 'asc' },
-          { column: 'bar', order: 'desc' },
-        ],
+        columns: [{ column: 'foo', order: 'asc' }, { column: 'bar', order: 'desc' }],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1164,8 +1158,8 @@ describe('Pipeline to mongo translator', () => {
           CANAL: '$CANAL',
           _vqbToUnpivot: {
             $objectToArray: {
-              NB_CLIENTS_TOTAL: '$NB_CLIENTS_TOTAL',
-              NB_ROWS: '$NB_ROWS',
+              NB_CLIENTS_TOTAL: { $ifNull: ['$NB_CLIENTS_TOTAL', null] },
+              NB_ROWS: { $ifNull: ['$NB_ROWS', null] },
             },
           },
         },
@@ -1209,8 +1203,8 @@ describe('Pipeline to mongo translator', () => {
           CANAL: '$CANAL',
           _vqbToUnpivot: {
             $objectToArray: {
-              NB_CLIENTS_TOTAL: '$NB_CLIENTS_TOTAL',
-              NB_ROWS: '$NB_ROWS',
+              NB_CLIENTS_TOTAL: { $ifNull: ['$NB_CLIENTS_TOTAL', null] },
+              NB_ROWS: { $ifNull: ['$NB_ROWS', null] },
             },
           },
         },
@@ -1584,10 +1578,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'join',
         right_pipeline: rightPipeline,
         type: 'inner',
-        on: [
-          ['id', 'id'],
-          ['country', 'country'],
-        ],
+        on: [['id', 'id'], ['country', 'country']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1649,10 +1640,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'join',
         right_pipeline: rightPipeline,
         type: 'inner',
-        on: [
-          ['id', 'id_right'],
-          ['country', 'country_right'],
-        ],
+        on: [['id', 'id_right'], ['country', 'country_right']],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
