@@ -117,7 +117,15 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   aggregate(step: Readonly<S.AggregationStep>) {
-    return { ...step };
+    const aggregations = step.aggregations.map(aggfunc => ({
+      ...aggfunc,
+      column: _interpolate(this.interpolateFunc, aggfunc.column, this.context),
+    }));
+    return {
+      name: step.name,
+      on: step.on.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      aggregations,
+    };
   }
 
   argmax(step: Readonly<S.ArgmaxStep>) {
