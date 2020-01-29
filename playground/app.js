@@ -83,8 +83,9 @@ class MongoService {
   }
 
   async executePipeline(_store, pipeline, limit, offset = 0) {
-    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const query = mongo40translator.translate(subpipeline);
+    // const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
+    // const query = mongo40translator.translate(subpipeline);
+    // const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
@@ -95,6 +96,7 @@ class MongoService {
         pagesize: limit,
         pageno: Math.floor(offset / limit) + 1,
       };
+      console.log('types=', types)
       if (types && types.length) {
         dataset = annotateDataset(dataset, types[0]);
         dataset = autocastDataset(dataset);
@@ -140,24 +142,75 @@ class MongoService {
   }
 }
 
-const mongoservice = new MongoService();
+class LocalFlaskService {
+  async listCollections(_store) {
+    const response = await fetch('/collections');
+    return response.json();
+  }
+
+  async executePipeline(_store, pipeline, limit, offset = 0) {
+    // const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
+    // const query = mongo40translator.translate(subpipeline);
+    // const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
+    const { isResponseOk, responseContent } = await this.executeQuery(pipeline);
+
+    if (isResponseOk) {
+      const [{ count, data: rset, types }] = responseContent;
+      let dataset = mongoResultsToDataset(rset);
+      // let dataset = rset;
+      dataset.paginationContext = {
+        totalCount: count,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      if (types && types.length) {
+        dataset = annotateDataset(dataset, types[0]);
+        dataset = autocastDataset(dataset);
+      }
+      console.log('dataset', dataset)
+      return {
+        data: dataset,
+      };
+    } else {
+      return {
+        error: responseContent.errmsg,
+      };
+    }
+  }
+
+  async executeQuery(pipeline, limit, skip) {
+    const response = await fetch('/query', {
+      method: 'POST',
+      body: JSON.stringify(pipeline),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    return {
+      isResponseOk: response.ok,
+      responseContent: await response.json(),
+    };
+  }
+
+  async loadCSV(file) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    const response = await fetch('/load', {
+      method: 'POST',
+      body: formData,
+    });
+    return response.json();
+  }
+}
+
+// const mongoservice = new MongoService();
+const mongoservice = new LocalFlaskService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
 const initialPipeline = [
   {
     name: 'domain',
-    domain: 'test-collection',
-  },
-  {
-    name: 'filter',
-    condition: {
-      and: [
-        {
-          column: 'Groups',
-          value: '<%= groupname %>',
-          operator: 'eq',
-        },
-      ],
-    },
+    domain: 'realestate.csv',
   },
 ];
 
@@ -218,60 +271,25 @@ async function buildVueApp() {
           pipeline1: [
             {
               name: 'domain',
-              domain: 'test-collection',
-            },
-            {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 1', 'Label 6'],
-                ['Label 2', 'Label 7'],
-                ['Label 3', 'Label 8'],
-                ['Label 4', 'Label 9'],
-                ['Label 5', 'Label 10'],
-              ],
+              domain: 'realestate.csv',
             },
           ],
           pipeline2: [
             {
               name: 'domain',
-              domain: 'test-collection',
-            },
-            {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 1', 'Label 11'],
-                ['Label 2', 'Label 12'],
-                ['Label 3', 'Label 13'],
-                ['Label 4', 'Label 14'],
-                ['Label 5', 'Label 15'],
-              ],
+              domain: 'realestate.csv',
             },
           ],
           pipelineRight1: [
             {
               name: 'domain',
-              domain: 'test-collection',
-            },
-            {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 4', 'Label 6'],
-                ['Label 5', 'Label 7'],
-              ],
-            },
-            {
-              name: 'formula',
-              formula: 'Value2 * 10',
-              new_column: 'ValueRight1',
+              domain: 'realestate.csv',
             },
           ],
           pipelineRight2: [
             {
               name: 'domain',
-              domain: 'test-collection',
+              domain: 'realestate.csv',
             },
             {
               name: 'replace',
