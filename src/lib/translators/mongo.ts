@@ -488,12 +488,36 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
   return outputSteps;
 }
 
+type DateOperationMap = {
+  [OP in S.DateExtractPropertyStep['operation']]: string;
+};
+
+const DATE_EXTRACT_MAP: DateOperationMap = {
+  year: '$year',
+  month: '$month',
+  day: '$dayOfMonth',
+  hour: '$hour',
+  minutes: '$minute',
+  seconds: '$second',
+  milliseconds: '$millisecond',
+  dayOfYear: '$dayOfYear',
+  dayOfWeek: '$dayOfWeek',
+  week: '$week',
+};
+
 const mapper: Partial<StepMatcher<MongoStep>> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   concatenate: transformConcatenate,
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
+  dateextract: (step: Readonly<S.DateExtractPropertyStep>) => ({
+    $addFields: {
+      [`${step.column}_${step.operation}`]: {
+        [`${DATE_EXTRACT_MAP[step.operation]}`]: `$${step.column}`,
+      },
+    },
+  }),
   delete: (step: Readonly<S.DeleteStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 0])),
   }),

@@ -148,6 +148,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
+    return { ...step, column: _interpolate(this.interpolateFunc, step.column, this.context) };
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return { ...step };
   }

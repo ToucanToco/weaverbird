@@ -126,6 +126,10 @@ class StepLabeller implements StepMatcher<string> {
     return 'Custom step';
   }
 
+  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
+    return `Extract ${step.operation} from "${step.column}"`;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return `Use domain "${step.domain}"`;
   }

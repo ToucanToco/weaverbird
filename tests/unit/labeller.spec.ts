@@ -90,6 +90,15 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Custom step');
   });
 
+  it('generates label for date extraction steps', () => {
+    const step: S.DateExtractPropertyStep = {
+      name: 'dateextract',
+      operation: 'year',
+      column: 'foo',
+    };
+    expect(hrl(step)).toEqual('Extract year from "foo"');
+  });
+
   it('generates label for domain steps', () => {
     const step: S.DomainStep = {
       name: 'domain',

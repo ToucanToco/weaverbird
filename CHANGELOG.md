@@ -12,6 +12,10 @@
 
 ## [0.9.0] - 2020-01-13
 
+### Added
+
+- date extraction steps and corresponding mongo translations
+
 ### Changed
 
 - Replaced the "CANCEL" button in the footer by a "Back" button in the header.

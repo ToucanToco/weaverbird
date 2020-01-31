@@ -185,6 +185,23 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should interpolate dateextract steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'dateextract',
+        operation: 'year',
+        column: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'dateextract',
+        operation: 'year',
+        column: 'bar',
+      },
+    ]);
+  });
+
   it('should leave domain steps untouched', () => {
     const pipeline: Pipeline = [
       {
