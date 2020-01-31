@@ -1509,6 +1509,63 @@ describe('Pipeline to mongo translator', () => {
     }
   });
 
+  it('converts year step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'dateextract',
+        operation: 'year',
+        column: 'foo',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo_year: { $year: '$foo' },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('converts day step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'dateextract',
+        operation: 'day',
+        column: 'foo',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo_day: { $dayOfMonth: '$foo' },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('converts day of week step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'dateextract',
+        operation: 'dayOfWeek',
+        column: 'foo',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo_dayOfWeek: { $dayOfWeek: '$foo' },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate a left join step', () => {
     const rightPipeline: Pipeline = [
       { name: 'domain', domain: 'right' },

@@ -63,6 +63,22 @@ export type CustomStep = {
   query: string;
 };
 
+export type DateExtractPropertyStep = {
+  name: 'dateextract';
+  operation:
+    | 'year'
+    | 'month'
+    | 'day'
+    | 'hour'
+    | 'minutes'
+    | 'seconds'
+    | 'milliseconds'
+    | 'dayOfYear'
+    | 'dayOfWeek'
+    | 'week';
+  column: string;
+};
+
 export type DeleteStep = {
   name: 'delete';
   columns: string[];
@@ -239,6 +255,7 @@ export type PipelineStep =
   | ConcatenateStep
   | ConvertStep
   | CustomStep
+  | DateExtractPropertyStep
   | DeleteStep
   | DuplicateColumnStep
   | DomainStep
