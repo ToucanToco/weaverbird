@@ -1528,6 +1528,26 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('extracts date and use new column name', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'dateextract',
+        operation: 'year',
+        column: 'foo',
+        new_column_name: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          bar: { $year: '$foo' },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('converts day step', () => {
     const pipeline: Pipeline = [
       {
