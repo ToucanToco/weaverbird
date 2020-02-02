@@ -513,7 +513,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   dateextract: (step: Readonly<S.DateExtractPropertyStep>) => ({
     $addFields: {
-      [`${step.column}_${step.operation}`]: {
+      [`${step.new_column_name ?? step.column + '_' + step.operation}`]: {
         [`${DATE_EXTRACT_MAP[step.operation]}`]: `$${step.column}`,
       },
     },

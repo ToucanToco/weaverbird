@@ -77,6 +77,7 @@ export type DateExtractPropertyStep = {
     | 'dayOfWeek'
     | 'week';
   column: string;
+  new_column_name?: string;
 };
 
 export type DeleteStep = {
