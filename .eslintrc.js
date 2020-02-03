@@ -51,9 +51,12 @@ module.exports = {
       "error",
       2,
       {
+        // cf. https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/typescript-estree/src/ts-estree/ts-estree.ts
+        // for available types
         "ignoredNodes": [
           // cf. https://github.com/typescript-eslint/typescript-eslint/issues/455
-          "TSTypeParameterInstantiation"
+          "TSTypeParameterInstantiation",
+          "TSUnionType"
         ],
         "SwitchCase": 1
       }
