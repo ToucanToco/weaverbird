@@ -33,7 +33,7 @@ import Popover from './Popover.vue';
 /**
  * all steps that don't require form creation
  */
-type NoFormStep = S.ToLowerStep | S.ToDateStep | S.ToUpperStep;
+type NoFormStep = S.DateExtractPropertyStep | S.ToLowerStep | S.ToDateStep | S.ToUpperStep;
 
 @Component({
   name: 'action-toolbar-button',
@@ -84,21 +84,24 @@ export default class ActionToolbarButton extends Vue {
   /**
    * @description Emit an event with a PipelineStepName in order to open its form
    */
-  actionClicked(stepName: S.PipelineStepName) {
+  actionClicked(stepName: S.PipelineStepName, defaults = {}) {
     if (
-      (stepName === 'lowercase' || stepName === 'uppercase' || stepName === 'todate') &&
+      (stepName === 'dateextract' ||
+        stepName === 'lowercase' ||
+        stepName === 'uppercase' ||
+        stepName === 'todate') &&
       this.selectedColumns.length > 0
     ) {
-      this.createStep(stepName);
+      this.createStep(stepName, defaults);
     } else {
-      this.$emit('actionClicked', stepName);
+      this.$emit('actionClicked', stepName, defaults);
     }
   }
 
-  createStep(stepName: NoFormStep['name']) {
+  createStep(stepName: NoFormStep['name'], defaults: { [prop: string]: any } = {}) {
     const newPipeline: S.Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
-    const step: NoFormStep = { name: stepName, column: this.selectedColumns[0] };
+    const step = { name: stepName, column: this.selectedColumns[0], ...defaults };
     /**
      * If a step edition form is already open, close it so that the left panel displays
      * the pipeline with the new delete step inserted
@@ -106,7 +109,7 @@ export default class ActionToolbarButton extends Vue {
     if (this.isEditingStep) {
       this.closeStepForm();
     }
-    newPipeline.splice(index, 0, step);
+    newPipeline.splice(index, 0, step as S.PipelineStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
     this.close();
