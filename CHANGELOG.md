@@ -2,6 +2,10 @@
 
 ## UNRELEASED -
 
+### Added
+
+- add "date extraction" operations
+
 ### Changed
 
 - aggregation step input columns are now templatable
