@@ -21,6 +21,7 @@ export type ActionCategories = {
 export type ActionCategory = {
   name: PipelineStepName;
   label: string;
+  defaults?: { [prop: string]: any };
 };
 
 export type groupActions = {

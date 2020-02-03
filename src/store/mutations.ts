@@ -85,9 +85,13 @@ export default {
   /**
    * open step form when creating a step
    */
-  createStepForm(state: VQBState, { stepName }: { stepName: PipelineStepName }) {
+  createStepForm(
+    state: VQBState,
+    { stepName, initialValue }: { stepName: PipelineStepName; initialValue?: object },
+  ) {
     state.currentStepFormName = stepName;
-    state.stepFormInitialValue = undefined;
+    state.stepFormInitialValue =
+      initialValue === undefined ? undefined : { name: stepName, ...initialValue };
   },
 
   /**

@@ -9,7 +9,7 @@
             v-for="(item, index) in items"
             :key="index"
             class="action-menu__option"
-            @click="actionClicked(item.name)"
+            @click="actionClicked(item.name, item.defaults)"
           >
             {{ item.label }}
           </div>

@@ -95,7 +95,13 @@ export default class DataViewer extends Vue {
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
   @VQBModule.Getter translator!: string;
 
-  @VQBModule.Mutation createStepForm!: ({ stepName }: { stepName: PipelineStepName }) => void;
+  @VQBModule.Mutation createStepForm!: ({
+    stepName,
+    initialValue,
+  }: {
+    stepName: PipelineStepName;
+    initialValue?: object;
+  }) => void;
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
@@ -150,8 +156,8 @@ export default class DataViewer extends Vue {
    *
    * @param {PipelineStepName} stepName - The name of the step we want to create
    */
-  openStepForm(stepName: PipelineStepName) {
-    this.createStepForm({ stepName });
+  openStepForm(stepName: PipelineStepName, defaults = {}) {
+    this.createStepForm({ stepName, initialValue: defaults });
   }
 
   /**

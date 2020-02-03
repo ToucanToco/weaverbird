@@ -41,8 +41,8 @@ export default class ActionToolbar extends Vue {
 
   isActiveActionToolbarButton = -1;
 
-  actionClicked(stepName: PipelineStepName) {
-    this.$emit('actionClicked', stepName);
+  actionClicked(stepName: PipelineStepName, defaults = {}) {
+    this.$emit('actionClicked', stepName, defaults);
   }
 
   openPopover(index: number) {
