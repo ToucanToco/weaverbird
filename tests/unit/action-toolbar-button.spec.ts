@@ -8,48 +8,43 @@ import { setupMockStore } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+type VueMountedType = ReturnType<typeof mount>;
+type emitParameters = string | [string, object] | undefined;
+
+function assertMenuEmitsExpected(wrapper: VueMountedType, expectedEmits: emitParameters[]) {
+  const actionsWrappers = wrapper.findAll('.action-menu__option');
+  expect(actionsWrappers.length).toEqual(expectedEmits.length);
+  for (const [idx, parameters] of Object.entries(expectedEmits)) {
+    actionsWrappers.at(Number(idx)).trigger('click');
+    let expected = parameters;
+    if (typeof parameters === 'string') {
+      if (parameters[0] === '!') {
+        expected = undefined;
+      } else {
+        expected = [parameters, {}];
+      }
+    }
+    expect(wrapper.emitted().actionClicked[Number(idx)]).toEqual(expected);
+  }
+}
+
 describe('ActionToolbarButton', () => {
   it('should instantiate an Add button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'add' } });
     expect(wrapper.exists()).toBeTruthy();
-    const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(3);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['formula']);
-    actionsWrappers.at(2).trigger('click');
-    expect(wrapper.emitted().actionClicked[2]).toEqual(['custom']);
+    assertMenuEmitsExpected(wrapper, ['text', 'formula', 'custom']);
   });
 
   it('should instantiate a Filter button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'filter' } });
     expect(wrapper.exists()).toBeTruthy();
-    const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(6);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['delete']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['select']);
-    actionsWrappers.at(2).trigger('click');
-    expect(wrapper.emitted().actionClicked[2]).toEqual(['filter']);
-    actionsWrappers.at(3).trigger('click');
-    expect(wrapper.emitted().actionClicked[3]).toEqual(['top']);
-    actionsWrappers.at(4).trigger('click');
-    expect(wrapper.emitted().actionClicked[4]).toEqual(['argmax']);
-    actionsWrappers.at(5).trigger('click');
-    expect(wrapper.emitted().actionClicked[5]).toEqual(['argmin']);
+    assertMenuEmitsExpected(wrapper, ['delete', 'select', 'filter', 'top', 'argmax', 'argmin']);
   });
 
   it('should instantiate a Compute button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'compute' } });
     expect(wrapper.exists()).toBeTruthy();
-    const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(2);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['formula']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['percentage']);
+    assertMenuEmitsExpected(wrapper, ['formula', 'percentage']);
   });
 
   it('should instantiate a Text button with the right list of actions', () => {
@@ -62,26 +57,14 @@ describe('ActionToolbarButton', () => {
       store,
     });
     expect(wrapper.exists()).toBeTruthy();
-    const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(6);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(1);
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(2);
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['concatenate']);
-    actionsWrappers.at(2).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(3);
-    expect(wrapper.emitted().actionClicked[2]).toEqual(['split']);
-    actionsWrappers.at(3).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(4);
-    expect(wrapper.emitted().actionClicked[3]).toEqual(['substring']);
-    // clicking on "lowercase" ou "uppercase" should not trigger "actionClicked"
-    // since we don't use an edit form for these steps.
-    actionsWrappers.at(4).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(4);
-    actionsWrappers.at(5).trigger('click');
-    expect(wrapper.emitted().actionClicked).toHaveLength(4);
+    assertMenuEmitsExpected(wrapper, [
+      'text',
+      'concatenate',
+      'split',
+      'substring',
+      '!lowercase',
+      '!uppercase',
+    ]);
   });
 
   it('should instantiate a Date button with the right list of actions', () => {
@@ -116,23 +99,13 @@ describe('ActionToolbarButton', () => {
   it('should instantiate a Reshape button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'reshape' } });
     expect(wrapper.exists()).toBeTruthy();
-    const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(2);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['pivot']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['unpivot']);
+    assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot']);
   });
 
   it('should instantiate a Combine button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'combine' } });
     expect(wrapper.exists()).toBeTruthy();
-    const actionsWrappers = wrapper.findAll('.action-menu__option');
-    expect(actionsWrappers.length).toEqual(2);
-    actionsWrappers.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['append']);
-    actionsWrappers.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[1]).toEqual(['join']);
+    assertMenuEmitsExpected(wrapper, ['append', 'join']);
   });
 
   describe('When clicking on the "To lowercase" operation', () => {
