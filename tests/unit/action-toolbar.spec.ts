@@ -117,7 +117,7 @@ describe('ActionToolbar', () => {
     buttons.at(0).trigger('click');
     expect(wrapper.emitted().actionClicked).toBeUndefined();
     buttons.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['aggregate']);
+    expect(wrapper.emitted().actionClicked[0]).toEqual(['aggregate', {}]);
   });
 
   it('should instantiate the search bar', () => {
