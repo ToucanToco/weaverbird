@@ -41,6 +41,7 @@ import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { generateNewColumnName } from '@/lib/helpers';
 import { DateExtractPropertyStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
@@ -78,9 +79,13 @@ export default class DateExtractStepForm extends BaseStepForm<DateExtractPropert
     { operation: 'week', label: 'week number' },
   ];
 
-  get newColumnNamePlaceholder() {
+  get defaultNewColumnName() {
     const currentColname = this.editedStep.column ?? '<date-column-name>';
-    return `Enter a column name (default is ${currentColname}_${this.editedStep.operation})`;
+    return `${currentColname}_${this.editedStep.operation}`;
+  }
+
+  get newColumnNamePlaceholder() {
+    return `Enter a column name (default is ${this.defaultNewColumnName})`;
   }
 
   get currentOperation(): OperationOption | null {
@@ -103,6 +108,15 @@ export default class DateExtractStepForm extends BaseStepForm<DateExtractPropert
       throw new Error('should not try to set null on "column" field');
     }
     this.editedStep.column = colname;
+  }
+
+  submit() {
+    // make sure new_column_name doesn't overwrite an existing columm name
+    this.editedStep.new_column_name = generateNewColumnName(
+      this.editedStep.new_column_name ?? this.defaultNewColumnName,
+      this.columnNames,
+    );
+    this.$$super.submit();
   }
 }
 </script>

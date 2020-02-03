@@ -40,7 +40,7 @@ describe('DateExtract Step Form', () => {
     store: setupMockStore({
       dataset: {
         headers: [
-          { name: 'foo', type: 'string' },
+          { name: 'foo', type: 'date' },
           { name: 'bar', type: 'string' },
         ],
         data: [[null], [null]],
@@ -55,6 +55,34 @@ describe('DateExtract Step Form', () => {
       },
     },
   });
+
+  runner.testValidate(
+    {
+      testlabel: 'new_column_name is generated correctly',
+      store: setupMockStore({
+        dataset: {
+          headers: [
+            { name: 'foo', type: 'date' },
+            { name: 'foo_minutes', type: 'string' },
+          ],
+          data: [[null], [null]],
+        },
+      }),
+      props: {
+        initialStepValue: {
+          name: 'dateextract',
+          column: 'foo',
+          operation: 'minutes',
+        },
+      },
+    },
+    {
+      name: 'dateextract',
+      column: 'foo',
+      operation: 'minutes',
+      new_column_name: 'foo_minutes1',
+    },
+  );
 
   runner.testCancel({
     pipeline: [
