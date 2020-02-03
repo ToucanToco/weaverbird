@@ -5,6 +5,7 @@ import argminSchema from './argmin';
 import concatenateBuildSchema from './concatenate';
 import convertSchema from './convert';
 import customSchema from './custom';
+import dateextractSchema from './dateextract';
 import deleteSchema from './delete';
 import domainSchema from './domain';
 import duplicateSchema from './duplicate';
@@ -38,6 +39,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   concatenate: concatenateBuildSchema,
   convert: convertSchema,
   custom: customSchema,
+  dateextract: dateextractSchema,
   delete: deleteSchema,
   duplicate: duplicateSchema,
   domain: domainSchema,
