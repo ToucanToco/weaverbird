@@ -8,6 +8,7 @@
     - argmin
     - concatenate
     - convert
+    - dateextract
     - delete
     - duplicate
     - fillna

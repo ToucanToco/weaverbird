@@ -441,6 +441,75 @@ other existing steps.
 | Company 5 | Group 2 | 10    | Company 5 - Group 2 |
 | Company 6 | Group 2 | 5     | Company 6 - Group 2 |
 
+### `dateextract` step
+
+Extract a part of a date (e.g. _day_, _week_, _year_) `column`. The following properties
+can be extracted:
+
+- `year'`: extract 'year' from date,
+- `month'`: extract 'month' from date,
+- `day'`: extract 'day of month' from date,
+- `hour'`: extract 'hour' from date,
+- `minutes'`: extract 'minutes' from date,
+- `seconds'`: extract 'seconds' from date,
+- `milliseconds'`: extract 'milliseconds' from date,
+- `dayOfYear'`: extract 'day of year' from date,
+- `dayOfWeek'`: extract 'day of week' from date,
+- `week'`: extract 'week number' from date.
+
+Here's an example of such a step:
+
+```javascript
+{
+    name: 'dateextract',
+    column: 'date',
+    operation: 'day',
+    new_column_name: 'date_day',
+    format: '%Y-%m-%d',
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example
+
+**Input dataset:**
+
+| Company   | Date                     |
+| --------- | ------------------------ |
+| Company 1 | 2019-10-06T00:00:00.000Z |
+| Company 1 | 2019-10-07T00:00:00.000Z |
+| Company 1 | 2019-10-08T00:00:00.000Z |
+| Company 2 | 2019-10-06T00:00:00.000Z |
+| Company 2 | 2019-10-07T00:00:00.000Z |
+| Company 2 | 2019-10-08T00:00:00.000Z |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'dateextract',
+    column: 'Date',
+    operation: 'day',
+    new_column_name: 'Date_day',
+    format: '%Y-%m-%d',
+}
+```
+
+**Output dataset:**
+
+| Company   | Date                     | Date_day |
+| --------- | ------------------------ | -------- |
+| Company 1 | 2019-10-06T00:00:00.000Z | 6        |
+| Company 1 | 2019-10-07T00:00:00.000Z | 7        |
+| Company 1 | 2019-10-08T00:00:00.000Z | 8        |
+| Company 2 | 2019-10-06T00:00:00.000Z | 6        |
+| Company 2 | 2019-10-07T00:00:00.000Z | 7        |
+| Company 2 | 2019-10-08T00:00:00.000Z | 8        |
+
 ### `delete` step
 
 Delete a column.
