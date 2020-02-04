@@ -23,6 +23,7 @@
       />
     </div>
     <component
+      id="filterValue"
       v-if="inputWidget"
       :is="inputWidget"
       v-model="editedValue.value"
@@ -55,6 +56,8 @@ type LiteralOperator =
   | 'be less than or equal to'
   | 'be one of'
   | 'not be one of'
+  | 'matches pattern'
+  | "doesn't match pattern"
   | 'be null'
   | 'not be null';
 
@@ -101,11 +104,18 @@ export default class FilterSimpleConditionWidget extends Vue {
     { operator: 'le', label: 'be less than or equal to', inputWidget: InputTextWidget },
     { operator: 'in', label: 'be one of', inputWidget: MultiInputTextWidget },
     { operator: 'nin', label: 'not be one of', inputWidget: MultiInputTextWidget },
+    { operator: 'matches', label: 'matches pattern', inputWidget: InputTextWidget },
+    { operator: 'notmatches', label: "doesn't match pattern", inputWidget: InputTextWidget },
     { operator: 'isnull', label: 'be null' },
     { operator: 'notnull', label: 'not be null' },
   ];
 
-  readonly placeholder = 'Enter a value';
+  get placeholder() {
+    if (this.editedValue.operator === 'matches' || this.editedValue.operator === 'notmatches') {
+      return 'Enter a regex, e.g. "[Ss]ales"';
+    }
+    return 'Enter a value';
+  }
 
   get operator(): OperatorOption {
     return this.operators.filter(d => d.operator === this.editedValue.operator)[0];
