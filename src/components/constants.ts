@@ -58,28 +58,11 @@ export const ACTION_CATEGORIES: ActionCategories = {
   date: [
     { name: 'todate', label: 'Convert text to date' },
     { name: 'fromdate', label: 'Convert date to text' },
-    { name: 'dateextract', label: 'Extract year from date', defaults: { operation: 'year' } },
-    { name: 'dateextract', label: 'Extract month from date', defaults: { operation: 'month' } },
-    { name: 'dateextract', label: 'Extract day from date', defaults: { operation: 'day' } },
-    { name: 'dateextract', label: 'Extract hour from date', defaults: { operation: 'hour' } },
-    { name: 'dateextract', label: 'Extract minutes from date', defaults: { operation: 'minutes' } },
-    { name: 'dateextract', label: 'Extract seconds from date', defaults: { operation: 'seconds' } },
-    {
-      name: 'dateextract',
-      label: 'Extract milliseconds from date',
-      defaults: { operation: 'milliseconds' },
-    },
-    {
-      name: 'dateextract',
-      label: 'Extract day of year from date',
-      defaults: { operation: 'dayOfYear' },
-    },
-    {
-      name: 'dateextract',
-      label: 'Extract day of week from date',
-      defaults: { operation: 'dayOfWeek' },
-    },
-    { name: 'dateextract', label: 'Extract week from date', defaults: { operation: 'week' } },
+    { name: 'dateextract', label: 'Extract year', defaults: { operation: 'year' } },
+    { name: 'dateextract', label: 'Extract month', defaults: { operation: 'month' } },
+    { name: 'dateextract', label: 'Extract day', defaults: { operation: 'day' } },
+    { name: 'dateextract', label: 'Extract week', defaults: { operation: 'week' } },
+    { name: 'dateextract', label: 'Extract other', defaults: { operation: 'hour' } },
   ],
   reshape: [
     { name: 'pivot', label: 'Pivot' },
