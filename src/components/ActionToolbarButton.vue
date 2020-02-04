@@ -85,8 +85,11 @@ export default class ActionToolbarButton extends Vue {
    * @description Emit an event with a PipelineStepName in order to open its form
    */
   actionClicked(stepName: S.PipelineStepName, defaults = {}) {
+    const noFormOperation = ['year', 'month', 'day', 'week'].includes(
+      (defaults as S.DateExtractPropertyStep).operation,
+    );
     if (
-      (stepName === 'dateextract' ||
+      ((stepName === 'dateextract' && noFormOperation) ||
         stepName === 'lowercase' ||
         stepName === 'uppercase' ||
         stepName === 'todate') &&
