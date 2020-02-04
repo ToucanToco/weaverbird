@@ -45,7 +45,20 @@ export default {
         },
         operator: {
           type: 'string',
-          enum: ['eq', 'ne', 'gt', 'ge', 'lt', 'le', 'in', 'nin', 'isnull', 'notnull'],
+          enum: [
+            'eq',
+            'ne',
+            'gt',
+            'ge',
+            'lt',
+            'le',
+            'in',
+            'nin',
+            'matches',
+            'notmatches',
+            'isnull',
+            'notnull',
+          ],
           title: 'Operator',
           description: 'The filter operator',
           attrs: {

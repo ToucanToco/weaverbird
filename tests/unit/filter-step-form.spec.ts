@@ -71,6 +71,42 @@ describe('Filter Step Form', () => {
     expect(wrapper.classes()).toContain('filter-form--multiple-conditions');
   });
 
+  describe('PlaceHolders', () => {
+    it('should have a default placeholder', async () => {
+      const wrapper = runner.mount(
+        {},
+        {
+          data: {
+            editedStep: {
+              name: 'filter',
+              condition: { and: [{ column: 'foo', value: 'bar', operator: 'gt' }] },
+            },
+          },
+        },
+      );
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('#filterValue').attributes('placeholder')).toEqual('Enter a value');
+    });
+
+    it('should have a specific placeholder for regular expressions', async () => {
+      const wrapper = runner.mount(
+        {},
+        {
+          data: {
+            editedStep: {
+              name: 'filter',
+              condition: { and: [{ column: 'foo', value: 'bar', operator: 'matches' }] },
+            },
+          },
+        },
+      );
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('#filterValue').attributes('placeholder')).toEqual(
+        'Enter a regex, e.g. "[Ss]ales"',
+      );
+    });
+  });
+
   describe('ListWidget', () => {
     it('should pass down the "condition" prop to the ListWidget value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {

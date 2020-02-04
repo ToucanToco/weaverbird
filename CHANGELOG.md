@@ -5,6 +5,7 @@
 ### Added
 
 - add "date extraction" operations
+- added basic regexp support in filter steps
 
 ### Changed
 

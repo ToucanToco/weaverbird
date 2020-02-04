@@ -89,6 +89,11 @@ function buildMatchTree(
   if (S.isFilterComboOr(cond)) {
     return { $or: cond.or.map(elem => buildMatchTree(elem, 'or')) };
   }
+  if (cond.operator === 'matches') {
+    return { [cond.column]: { $regex: cond.value } };
+  } else if (cond.operator === 'notmatches') {
+    return { [cond.column]: { $not: { $regex: cond.value } } };
+  }
   return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
 }
 

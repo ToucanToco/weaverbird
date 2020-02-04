@@ -65,6 +65,10 @@ function filterExpression(
         return `"${condition.column}" in (${condition.value.join(MULTIVALUE_SEP)})`;
       case 'nin':
         return `"${condition.column}" not in (${condition.value.join(MULTIVALUE_SEP)})`;
+      case 'matches':
+        return `"${condition.column}" matches regex "${condition.value}"`;
+      case 'notmatches':
+        return `"${condition.column}" doesn't match regex "${condition.value}"`;
       case 'isnull':
         return `"${condition.column}" is null`;
       case 'notnull':

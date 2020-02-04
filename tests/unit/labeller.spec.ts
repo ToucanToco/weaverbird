@@ -229,6 +229,30 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Keep rows where "column1" not in (4, 2)');
   });
 
+  it('generates label for simple filter steps / operator "matches"', () => {
+    const step: S.FilterStep = {
+      name: 'filter',
+      condition: {
+        column: 'column1',
+        value: '[a-z]+',
+        operator: 'matches',
+      },
+    };
+    expect(hrl(step)).toEqual('Keep rows where "column1" matches regex "[a-z]+"');
+  });
+
+  it('generates label for simple filter steps / operator "notmatches"', () => {
+    const step: S.FilterStep = {
+      name: 'filter',
+      condition: {
+        column: 'column1',
+        value: '[a-z]+',
+        operator: 'notmatches',
+      },
+    };
+    expect(hrl(step)).toEqual('Keep rows where "column1" doesn\'t match regex "[a-z]+"');
+  });
+
   it('generates label for simple filter steps / operator "isnull"', () => {
     const step: S.FilterStep = {
       name: 'filter',
