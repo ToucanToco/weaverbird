@@ -133,6 +133,12 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     label: 'Filter',
   },
   {
+    category: 'aggregate',
+    enable: true,
+    icon: 'code-branch',
+    label: 'Aggregate',
+  },
+  {
     category: 'compute',
     enable: true,
     icon: 'calculator',
@@ -149,12 +155,6 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     enable: true,
     icon: 'calendar',
     label: 'Date',
-  },
-  {
-    category: 'aggregate',
-    enable: true,
-    icon: 'code-branch',
-    label: 'Aggregate',
   },
   {
     category: 'reshape',
