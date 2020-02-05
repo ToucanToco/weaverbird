@@ -25,13 +25,13 @@ describe('ActionToolbar', () => {
     expect(actionButtons.at(0).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(1).props().category).toEqual('filter');
     expect(actionButtons.at(1).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(2).props().category).toEqual('compute');
+    expect(actionButtons.at(2).props().category).toEqual('aggregate');
     expect(actionButtons.at(2).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(3).props().category).toEqual('text');
+    expect(actionButtons.at(3).props().category).toEqual('compute');
     expect(actionButtons.at(3).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(4).props().category).toEqual('date');
+    expect(actionButtons.at(4).props().category).toEqual('text');
     expect(actionButtons.at(4).classes()).toContain('action-toolbar__btn');
-    expect(actionButtons.at(5).props().category).toEqual('aggregate');
+    expect(actionButtons.at(5).props().category).toEqual('date');
     expect(actionButtons.at(5).classes()).toContain('action-toolbar__btn');
     expect(actionButtons.at(6).props().category).toEqual('reshape');
     expect(actionButtons.at(6).classes()).toContain('action-toolbar__btn');
