@@ -109,6 +109,11 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
   color: $base-color-light;
   font-size: 14px;
   margin-bottom: 0;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  white-space: nowrap;
 }
 
 .widget-autocomplete__container .multiselect__content-wrapper {
