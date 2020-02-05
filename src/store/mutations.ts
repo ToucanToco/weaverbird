@@ -87,11 +87,11 @@ export default {
    */
   createStepForm(
     state: VQBState,
-    { stepName, initialValue }: { stepName: PipelineStepName; initialValue?: object },
+    { stepName, stepFormDefaults }: { stepName: PipelineStepName; stepFormDefaults?: object },
   ) {
     state.currentStepFormName = stepName;
-    state.stepFormInitialValue =
-      initialValue === undefined ? undefined : { name: stepName, ...initialValue };
+    state.stepFormInitialValue = undefined;
+    state.stepFormDefaults = stepFormDefaults;
   },
 
   /**
@@ -110,6 +110,7 @@ export default {
   ) {
     state.stepFormInitialValue = { ...initialValue };
     state.currentStepFormName = stepName;
+    state.stepFormDefaults = undefined;
   },
 
   /**

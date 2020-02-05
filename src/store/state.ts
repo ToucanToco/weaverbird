@@ -45,6 +45,15 @@ export interface VQBState {
    * object used to fill an edit step form
    */
   stepFormInitialValue?: object;
+  /**
+   * object used to setup edit step form initially without interfering with
+   * `stepFormInitialValue` which has to be left undefined so that default
+   * StepForm's props can be used by VueJS.
+   *
+   * NOTE: This needs to be refactored, that's too many different properties for
+   * a single concern (i.e. form filling)
+   */
+  stepFormDefaults?: object;
 
   /**
    * the seclected columns (materialized by a styled focus on the DataViewer)
@@ -99,6 +108,7 @@ export const emptyState: VQBState = {
   domains: [],
   currentStepFormName: undefined,
   stepFormInitialValue: undefined,
+  stepFormDefaults: undefined,
   selectedStepIndex: -1,
   pipeline: [],
   currentPipelineName: undefined,

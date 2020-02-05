@@ -87,6 +87,9 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: Object, default: null })
   initialStepValue!: StepType;
 
+  @Prop({ type: Object, default: undefined })
+  stepFormDefaults!: Partial<StepType>;
+
   @VQBModule.State interpolateFunc!: InterpolateFunction;
   @VQBModule.State pipeline!: Pipeline;
   @VQBModule.State selectedStepIndex!: number;
@@ -101,7 +104,7 @@ export default class BaseStepForm<StepType> extends Vue {
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';
-  editedStep: StepType = { ...this.initialStepValue };
+  editedStep: StepType = { ...this.initialStepValue, ...this.stepFormDefaults };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
   stepname!: string; // fed by @StepFormComponent
