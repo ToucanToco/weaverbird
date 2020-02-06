@@ -39,7 +39,7 @@ stories.add('default', () => ({
 
   computed: {
     conditionsStringify() {
-      return JSON.stringify(this.conditionsTree, null, '\t');
+      return JSON.stringify(this.conditionsTree, null, 2);
     }
   },
 
@@ -106,7 +106,7 @@ stories.add('data filtering', () => ({
 
   computed: {
     conditionsStringify() {
-      return JSON.stringify(this.conditionsTree, null, '\t');
+      return JSON.stringify(this.conditionsTree, null, 2);
     }
   },
 

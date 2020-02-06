@@ -2,27 +2,28 @@
   <div
     class="conditions-group"
     :class="{
-      'conditions-group--root': isRootGroup,
       'conditions-group--with-switch': hasMultipleRows,
     }"
   >
-    <div v-if="!isRoot" class="conditions-group__link" />
     <div v-if="hasMultipleRows" class="conditions-group__switch">
-      <div
-        id="switch-button-and"
-        class="conditions-group__switch-button"
-        :class="{ 'conditions-group__switch-button--active': operator === 'and' }"
-        @click="switchOperator('and')"
-      >
-        and
-      </div>
-      <div
-        id="switch-button-or"
-        class="conditions-group__switch-button"
-        :class="{ 'conditions-group__switch-button--active': operator === 'or' }"
-        @click="switchOperator('or')"
-      >
-        or
+      <div class="condition-group__switch-link" />
+      <div class="conditions-group__switch-buttons">
+        <div
+          id="switch-button-and"
+          class="conditions-group__switch-button"
+          :class="{ 'conditions-group__switch-button--active': operator === 'and' }"
+          @click="switchOperator('and')"
+        >
+          and
+        </div>
+        <div
+          id="switch-button-or"
+          class="conditions-group__switch-button"
+          :class="{ 'conditions-group__switch-button--active': operator === 'or' }"
+          @click="switchOperator('or')"
+        >
+          or
+        </div>
       </div>
     </div>
     <i
@@ -31,27 +32,52 @@
       @click="$emit('groupDeleted')"
     />
     <div v-for="(condition, rowIndex) in conditions" :key="'row' + rowIndex" class="condition-row">
-      <div v-if="hasMultipleRows" class="condition-row__link" />
-      <slot :condition="condition" :updateCondition="updateCondition(rowIndex)" />
+      <div
+        v-if="hasMultipleRows"
+        class="condition-row__link"
+        :class="{'condition-row__link--last': !(groups && groups.length) && (rowIndex === conditions.length - 1)}"
+      >
+        <div class="condition-row__link__top" />
+        <div class="condition-row__link__middle" />
+        <div class="condition-row__link__bottom" />
+      </div>
+      <div class="condition-row__content">
+        <slot :condition="condition" :updateCondition="updateCondition(rowIndex)" />
+      </div>
       <i
         v-if="hasMultipleRows"
         class="condition-row__delete far fa-trash-alt"
         @click="deleteRow(rowIndex)"
       />
     </div>
-    <ConditionsGroup
+    <div
+      class="conditions-group__child-group"
       v-for="(groupConditionTree, groupIndex) in groups"
       :key="'group' + groupIndex"
-      :conditions-tree="groupConditionTree"
-      @conditionsTreeUpdated="updateGroup(groupIndex, $event)"
-      @groupDeleted="deleteGroup(groupIndex)"
     >
-      <template v-slot:default="slotProps">
-        <slot v-bind="slotProps" />
-      </template>
-    </ConditionsGroup>
+      <div
+        class="conditions-group__link"
+        :class="{'conditions-group__link--last': groupIndex === groups.length - 1}"
+      >
+        <div class="conditions-group__link__top" />
+        <div class="conditions-group__link__middle" />
+        <div class="conditions-group__link__bottom" />
+      </div>
+      <ConditionsGroup
+        :conditions-tree="groupConditionTree"
+        @conditionsTreeUpdated="updateGroup(groupIndex, $event)"
+        @groupDeleted="deleteGroup(groupIndex)"
+      >
+        <template v-slot:default="slotProps">
+          <slot v-bind="slotProps" />
+        </template>
+      </ConditionsGroup>
+    </div>
     <div class="conditions-group__action-buttons">
-      <div v-if="hasMultipleRows" class="conditions-group__link conditions-group__link--dashed" />
+      <div v-if="hasMultipleRows" class="action-buttons__link">
+        <div class="action-buttons__link__top" />
+        <div class="action-buttons__link__middle" />
+      </div>
       <div id="add-row-button" class="conditions-group__add-button" @click="addRow">add condition</div>
       <div id="add-group-button" class="conditions-group__add-button" v-if="isRootGroup" @click="addGroup">
         add group
@@ -197,22 +223,17 @@ $brown-grey-two: #aaaaaa;
 $blue-extra-light: #f4f7fa;
 $grey-light-2: #eeeeee;
 
+$conditions-group-top-margin: 20px;
+$conditions-group-top-left-padding: 30px;
+$conditions-group-bottom-right-padding: 15px;
+$conditions-group-border-width: 1px;
+
 .conditions-group {
-  background: $blue-extra-light;
-  border: 1px solid $grey-light-2;
-  border-radius: 3px;
-  margin-top: 20px;
   position: relative;
-  padding: 30px 15px 15px 30px;
-}
-
-.conditions-group--root {
-  background: white;
-  border: none;
-
-  > .condition-row {
-    background-color: $blue-extra-light;
-  }
+  padding-top: $conditions-group-top-left-padding;
+  padding-left: $conditions-group-top-left-padding;
+  padding-bottom: $conditions-group-bottom-right-padding;
+  padding-right: $conditions-group-bottom-right-padding;
 }
 
 .conditions-group--with-switch {
@@ -220,11 +241,14 @@ $grey-light-2: #eeeeee;
 }
 
 .conditions-group__switch {
-  box-sizing: border-box;
-  display: inline-flex;
   left: 10px;
   position: absolute;
   top: 10px;
+}
+
+.conditions-group__switch-buttons {
+  box-sizing: border-box;
+  display: inline-flex;
   z-index: 1;
 }
 
@@ -279,22 +303,24 @@ $grey-light-2: #eeeeee;
   text-transform: uppercase;
 }
 
-.conditions-group__link {
-  border-bottom: 1px solid $blue;
-  border-left: 1px solid $blue;
-  height: 100%;
-  left: -11px;
-  position: absolute;
-  top: -45px;
-  width: 5px;
+.conditions-group__child-group {
+  position: relative;
+  background: $blue-extra-light;
+  border: $conditions-group-border-width solid $grey-light-2;
+  border-radius: 3px;
+  margin-top: $conditions-group-top-margin;
+
+  .condition-row {
+    background-color: darken($blue-extra-light, 5%);
+  }
 }
 
-.conditions-group__link--dashed {
-  border-bottom: 1px dashed $blue;
-  border-left: 1px dashed $blue;
-  height: 45px;
-  top: -32px;
-  left: -10px;
+.condition-group__switch-link {
+  border-left: 1px solid $blue;
+  height: 50%;
+  position: absolute;
+  left: 10px;
+  top: 100%;
 }
 
 .conditions-group__input {
@@ -316,11 +342,11 @@ $grey-light-2: #eeeeee;
 }
 
 $condition-row-margin: 10px;
-$condition-row-border-width: 10px;
+$condition-row-border-width: 1px;
 
 .condition-row {
   align-items: center;
-  background-color: darken($blue-extra-light, 5%);
+  background-color: $blue-extra-light;
   border: $condition-row-border-width solid $grey-light-2;
   border-radius: 3px;
   display: flex;
@@ -328,31 +354,108 @@ $condition-row-border-width: 10px;
   position: relative;
 }
 
-$condition-row-offset: 35px;
-
-.condition-row__link {
-  border-bottom: 1px solid $blue;
-  border-left: 1px solid $blue;
-  height: calc(100% + #{$condition-row-margin + $condition-row-border-width});
-  left: - ($condition-row-margin + $condition-row-border-width);
-  position: absolute;
-  top: -$condition-row-offset;
-  width: $condition-row-margin + $condition-row-border-width;
+.condition-row__content {
+  flex: 1;
+  overflow: auto;
 }
 
 .condition-row__delete {
   color: $brown-grey-two;
   font-size: 16px;
   margin: 0 12px;
-  display: flex;
-  // Align the trash right of the remaining space
-  flex-shrink: 0;
-  flex-grow: 1;
-  justify-content: flex-end;
 
   &:hover {
     color: #000;
     cursor: pointer;
   }
 }
+
+.condition-row__link {
+  $row-link-width: $condition-row-margin + $condition-row-border-width;
+
+  height: calc(100% + #{2 * $condition-row-margin + $condition-row-border-width});
+  left: -$row-link-width;
+  position: absolute;
+  width: $row-link-width;
+
+  .condition-row__link__middle {
+    height: 0;
+    width: 100%;
+    border-bottom: 1px solid $blue;
+  }
+
+  .condition-row__link__top,
+  .condition-row__link__bottom {
+    height: 50%;
+    border-left: 1px solid $blue;
+  }
+}
+
+.conditions-group__link {
+  $link-width: $conditions-group-top-margin / 2 + 2 * $conditions-group-border-width + $conditions-group-top-left-padding / 2;
+
+  display: flex;
+  flex-direction: column;
+  top: -$conditions-group-top-margin;
+
+  height: calc(100% + #{$conditions-group-top-margin + 2 * $conditions-group-border-width});
+  left: -$conditions-group-top-margin / 2 - $conditions-group-border-width;
+  position: absolute;
+  width: $link-width;
+
+  .conditions-group__link__middle {
+    height: 0;
+    width: 100%;
+    border-bottom: 1px solid $blue;
+  }
+
+  .conditions-group__link__top {
+    // Position the middle link centered to the operator buttons
+    height: $conditions-group-top-margin + $conditions-group-top-left-padding / 1.5;
+  }
+
+  .conditions-group__link__bottom {
+    flex: 1;
+    border-left: 1px solid $blue;
+  }
+
+  .conditions-group__link__top,
+  .conditions-group__link__bottom {
+    border-left: 1px solid $blue;
+  }
+}
+
+// Last link is dashed, to the action buttons
+.condition-row__link--last {
+  .condition-row__link__bottom {
+    border-left-style: dashed;
+  }
+}
+
+.conditions-group__link--last {
+  .conditions-group__link__bottom {
+    border-left-style: dashed;
+  }
+}
+
+.action-buttons__link {
+  $action-button-link-width: $condition-row-margin;
+
+  height: 100%;
+  left: -$action-button-link-width;
+  position: absolute;
+  width: $action-button-link-width;
+
+  .action-buttons__link__top {
+    height: 50%;
+    border-left: 1px dashed $blue;
+  }
+
+  .action-buttons__link__middle {
+    height: 0;
+    width: 100%;
+    border-bottom: 1px dashed $blue;
+  }
+}
+
 </style>
