@@ -27,7 +27,7 @@ import { TempFilterStep } from '@/lib/steps';
 import ConditionsGroup from './ConditionsGroup.vue';
 
 @Component({
-  name: 'conditions-editor',
+  name: 'ConditionsEditor',
   components: {
     ConditionsGroup,
   },

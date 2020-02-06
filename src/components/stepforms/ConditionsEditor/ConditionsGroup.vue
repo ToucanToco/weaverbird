@@ -66,7 +66,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { TempFilterStep } from '@/lib/steps';
 
 @Component({
-  name: 'conditionsGroup',
+  name: 'ConditionsGroup',
 })
 
 export default class ConditionsGroup extends Vue {
