@@ -6,9 +6,9 @@
       @input="updateInput('column', $event.target.value)"
     >
     <input
-      :value="condition.comparison"
-      class="condition-form__input condition-form__input--comparison"
-      @input="updateInput('comparison', $event.target.value)"
+      :value="condition.operator"
+      class="condition-form__input condition-form__input--operator"
+      @input="updateInput('operator', $event.target.value)"
     >
     <input
       :value="condition.value"
@@ -23,7 +23,9 @@ import _ from 'lodash';
 
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { TempFilterCondition } from '@/lib/steps';
+import { FilterSimpleCondition } from '@/lib/steps';
+
+const EMPTY_CONDITION: FilterSimpleCondition = { column: '', operator: 'eq', value: ''};
 
 @Component({
   name: 'ConditionForm',
@@ -32,17 +34,28 @@ import { TempFilterCondition } from '@/lib/steps';
 export default class ConditionForm extends Vue {
   @Prop({
     type: Object,
-    default: () => ({ column: '', comparison: 'eq', value: ''})
+    default: () => (EMPTY_CONDITION)
   })
-  condition!: TempFilterCondition;
+  condition!: FilterSimpleCondition;
+
+  created() {
+    // In absence of condition, emit directly to the parent the default value
+    if (this.condition === EMPTY_CONDITION) {
+      this.emitUpdatedCondition(EMPTY_CONDITION);
+    }
+  }
 
   updateInput = _.debounce((type: string, newValue: any) => {
     const newCondition = {
       ...this.condition,
       [type]: newValue,
     };
-    this.$emit('conditionUpdated', newCondition);
+    this.emitUpdatedCondition(newCondition);
   }, 500);
+
+  emitUpdatedCondition(newCondition: FilterSimpleCondition) {
+    this.$emit('conditionUpdated', newCondition);
+  }
 }
 </script>
 

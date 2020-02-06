@@ -6,7 +6,7 @@ const stories = storiesOf('ConditionsEditor', module);
 stories.add('default', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
-      <ConditionsEditor :conditions-tree="conditionsTree" @conditionsUpdated="updateConditions"></ConditionsEditor>
+      <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateConditionsTree"></ConditionsEditor>
     </div>
   `,
 
@@ -37,13 +37,13 @@ stories.add('default', () => ({
   },
 
   methods: {
-    updateConditions(newConditions) {
-      this.conditionsTree = newConditions;
+    updateConditionsTree(newConditionsTree) {
+      this.conditionsTree = newConditionsTree;
     },
   },
 }));
 
-stories.add('data permission', () => ({
+stories.add('data filtering', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
       <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateConditionsTree">
@@ -66,12 +66,12 @@ stories.add('data permission', () => ({
         conditions: [
           {
             column: 'my_col',
-            comparison: 'equal',
+            operator: 'eq',
             value: 'my_value',
           },
           {
             column: 'my_col',
-            comparison: 'equal',
+            operator: 'eq',
             value: 'my_value',
           },
         ],
@@ -81,12 +81,12 @@ stories.add('data permission', () => ({
             conditions: [
               {
                 column: 'my_sub_col',
-                comparison: 'equal',
+                operator: 'eq',
                 value: 'my_value',
               },
               {
                 column: 'my_sub_col',
-                comparison: 'equal',
+                operator: 'eq',
                 value: 'my_value',
               },
             ],

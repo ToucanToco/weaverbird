@@ -13,14 +13,14 @@ describe('ConditionForm', () => {
   it.skip('should emit "conditionUpdated" event with the right args', async () => {
     const wrapper = shallowMount(ConditionForm, {
       propsData: {
-        condition: { column: '', comparison: 'eq', value: ''}
+        condition: { column: '', operator: 'eq', value: ''}
       },
     });
     wrapper.find('.condition-form__input--column').setValue('my_col');
-    jest.advanceTimersByTime(5000);
+    jest.advanceTimersByTime(500); // flush debounce
     expect(wrapper.emitted().conditionUpdated).toBeDefined();
-    // expect(wrapper.emitted().conditionUpdated[0]).toEqual([
-    //   { column: 'my_col', comparison: 'eq', value: ''},
-    // ]);
+    expect(wrapper.emitted().conditionUpdated[0]).toEqual([
+      { column: 'my_col', operator: 'eq', value: ''},
+    ]);
   });
 });
