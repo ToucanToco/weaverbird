@@ -68,6 +68,14 @@
     
     
     {
+      "title": "Extract date proeprty",
+      "url": "/docs/dateextract/"
+
+    },
+  
+    
+    
+    {
       "title": "Delete column(s)",
       "url": "/docs/delete/"
 
