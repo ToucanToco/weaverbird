@@ -33,7 +33,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   add: [
     { name: 'text', label: 'Add text column' },
     { name: 'formula', label: 'Add formula column' },
-    { name: 'custom', label: 'Custom step' },
+    { name: 'custom', label: 'Add custom step' },
   ],
   filter: [
     { name: 'delete', label: 'Delete columns' },
