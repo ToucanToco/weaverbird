@@ -6,7 +6,7 @@
       'conditions-group--with-switch': hasMultipleRows,
     }"
   >
-    <!-- <div v-if="!isRoot" class="conditions-group__link" /> -->
+    <div v-if="!isRoot" class="conditions-group__link" />
     <div v-if="hasMultipleRows" class="conditions-group__switch">
       <div
         id="switch-button-and"
@@ -282,8 +282,8 @@ $grey-light-2: #eeeeee;
 .conditions-group__link {
   border-bottom: 1px solid $blue;
   border-left: 1px solid $blue;
-  height: 209px;
-  left: -10px;
+  height: 100%;
+  left: -11px;
   position: absolute;
   top: -45px;
   width: 5px;
@@ -294,6 +294,7 @@ $grey-light-2: #eeeeee;
   border-left: 1px dashed $blue;
   height: 45px;
   top: -32px;
+  left: -10px;
 }
 
 .conditions-group__input {
@@ -314,24 +315,29 @@ $grey-light-2: #eeeeee;
   }
 }
 
+$condition-row-margin: 10px;
+$condition-row-border-width: 10px;
+
 .condition-row {
   align-items: center;
   background-color: darken($blue-extra-light, 5%);
-  border: 1px solid $grey-light-2;
+  border: $condition-row-border-width solid $grey-light-2;
   border-radius: 3px;
   display: flex;
-  margin: 10px 0;
+  margin: $condition-row-margin 0;
   position: relative;
 }
+
+$condition-row-offset: 35px;
 
 .condition-row__link {
   border-bottom: 1px solid $blue;
   border-left: 1px solid $blue;
-  height: 60px;
-  left: -11px;
+  height: calc(100% + #{$condition-row-margin + $condition-row-border-width});
+  left: - ($condition-row-margin + $condition-row-border-width);
   position: absolute;
-  top: -35px;
-  width: 10px;
+  top: -$condition-row-offset;
+  width: $condition-row-margin + $condition-row-border-width;
 }
 
 .condition-row__delete {
