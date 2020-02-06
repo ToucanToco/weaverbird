@@ -27,7 +27,7 @@
     </div>
     <i
       v-if="!isRootGroup"
-      class="conditions-group__delete fal fa-trash-alt"
+      class="conditions-group__delete far fa-trash-alt"
       @click="$emit('groupDeleted')"
     />
     <div v-for="(condition, rowIndex) in conditions" :key="'row' + rowIndex" class="condition-row">
@@ -35,7 +35,7 @@
       <slot :condition="condition" :updateCondition="updateCondition(rowIndex)" />
       <i
         v-if="hasMultipleRows"
-        class="condition-row__delete fal fa-trash-alt"
+        class="condition-row__delete far fa-trash-alt"
         @click="deleteRow(rowIndex)"
       />
     </div>
@@ -338,6 +338,11 @@ $grey-light-2: #eeeeee;
   color: $brown-grey-two;
   font-size: 16px;
   margin: 0 12px;
+  display: flex;
+  // Align the trash right of the remaining space
+  flex-shrink: 0;
+  flex-grow: 1;
+  justify-content: flex-end;
 
   &:hover {
     color: #000;
