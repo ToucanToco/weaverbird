@@ -7,6 +7,7 @@ stories.add('default', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
       <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateConditionsTree"></ConditionsEditor>
+      <pre style="margin-top: 30px;">{{ conditionsStringify }}</pre>
     </div>
   `,
 
@@ -36,6 +37,12 @@ stories.add('default', () => ({
     };
   },
 
+  computed: {
+    conditionsStringify() {
+      return JSON.stringify(this.conditionsTree, null, '\t');
+    }
+  },
+
   methods: {
     updateConditionsTree(newConditionsTree) {
       this.conditionsTree = newConditionsTree;
@@ -51,6 +58,7 @@ stories.add('data filtering', () => ({
           <ConditionForm :condition="slotProps.condition" @conditionUpdated="slotProps.updateCondition"></ConditionForm>
         </template>
       </ConditionsEditor>
+      <pre style="margin-top: 30px;">{{ conditionsStringify }}</pre>
     </div>
   `,
 
@@ -94,6 +102,12 @@ stories.add('data filtering', () => ({
         ],
       },
     };
+  },
+
+  computed: {
+    conditionsStringify() {
+      return JSON.stringify(this.conditionsTree, null, '\t');
+    }
   },
 
   methods: {

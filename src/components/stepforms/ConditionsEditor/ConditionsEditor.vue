@@ -12,9 +12,6 @@
         </slot>
       </template>
     </ConditionsGroup>
-    <div style="font-size: 10px; margin-top: 30px; white-space: pre;">
-      {{ conditionsStringify }}
-    </div>
   </div>
 </template>
 
@@ -45,10 +42,6 @@ export default class ConditionsEditor extends Vue {
     default: () => {}
   })
   conditionsTree!: AbstractFilterTree;
-
-  get conditionsStringify() {
-    return JSON.stringify(this.conditionsTree, null, '\t');
-  }
 
   updateConditionsTree(newConditionsTree: AbstractFilterTree) {
     this.$emit('conditionsTreeUpdated', newConditionsTree);
