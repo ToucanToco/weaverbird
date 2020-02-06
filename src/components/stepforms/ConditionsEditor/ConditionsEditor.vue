@@ -2,10 +2,7 @@
   <div class="conditions-editor">
     <div class="conditions-editor__info">Filter rows matching this condition:</div>
     <ConditionsGroup
-      :conditions-tree="conditionsTree"
-      :conditions="conditionsTree.conditions"
-      :groups="conditionsTree.groups"
-      :operator="conditionsTree.operator"
+      :conditionsTree="conditionsTree"
       :is-root-group="true"
       @conditionsTreeUpdated="updateConditionsTree"
     >
