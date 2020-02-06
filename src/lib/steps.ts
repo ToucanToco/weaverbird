@@ -138,19 +138,18 @@ export type FilterStep = {
   condition: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
 };
 
-// Temporary
-export type TempFilterStep = {
-  conditions: TempFilterCondition[];
-  groups: (TempFilterStep)[];
-  operator: 'and' | 'or';
+// Any ConditionType can be used with this generic type
+export type GenericFilterTree<ConditionType extends AbstractCondition> = {
+  conditions: ConditionType[];
+  groups: GenericFilterTree<ConditionType>[];
+  operator: ConditionOperator;
 };
+export type ConditionOperator = 'and' | 'or';
+export type AbstractCondition = any;
+export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
 
-export type TempFilterCondition = {
-  column: string;
-  comparison: string;
-  value: string;
-};
-// End - Temporary
+// Concrete FilterTree:
+export type FilterTree = GenericFilterTree<FilterSimpleCondition>;
 
 export type FormulaStep = {
   name: 'formula';

@@ -10,7 +10,9 @@
       @conditionsTreeUpdated="updateConditionsTree"
     >
       <template v-slot:default="slotProps">
-        <slot v-bind="slotProps" />
+        <slot v-bind="slotProps">
+          <input :value="slotProps.condition" @input="slotProps.updateCondition($event.target.value)">
+        </slot>
       </template>
     </ConditionsGroup>
     <div style="font-size: 10px; margin-top: 30px; white-space: pre;">
@@ -22,7 +24,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { TempFilterStep } from '@/lib/steps';
+import { AbstractFilterTree } from '@/lib/steps';
 
 import ConditionsGroup from './ConditionsGroup.vue';
 
@@ -38,13 +40,13 @@ export default class ConditionsEditor extends Vue {
     type: Object,
     default: () => {}
   })
-  conditionsTree!: TempFilterStep;
+  conditionsTree!: AbstractFilterTree;
 
   get conditionsStringify() {
     return JSON.stringify(this.conditionsTree, null, '\t');
   }
 
-  updateConditionsTree(newConditionsTree: object | null) {
+  updateConditionsTree(newConditionsTree: AbstractFilterTree) {
     this.$emit('conditionsTreeUpdated', newConditionsTree);
   }
 }

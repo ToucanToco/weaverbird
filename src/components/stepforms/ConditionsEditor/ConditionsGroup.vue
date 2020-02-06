@@ -63,7 +63,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { TempFilterStep } from '@/lib/steps';
+import { AbstractFilterTree, AbstractCondition, ConditionOperator } from '@/lib/steps';
 
 @Component({
   name: 'ConditionsGroup',
@@ -74,7 +74,7 @@ export default class ConditionsGroup extends Vue {
     type: Object,
     default: () => ({ operator: 'and', conditions: [], groups: []})
   })
-  conditionsTree!: TempFilterStep;
+  conditionsTree!: AbstractFilterTree;
 
   @Prop({
     type: Boolean,
@@ -102,12 +102,10 @@ export default class ConditionsGroup extends Vue {
     const newGroups = this.conditionsTree.groups || [];
     newGroups.push({
       operator: 'and',
-      // // Pass undefined values to force ConditionForm to use its default condition prop value
-      // conditions: [undefined, undefined],
+      // Pass undefined values to force ConditionForm to use its default condition prop value
       conditions: [
-        { column: '', comparison: '', value: ''}
-        ,
-        { column: '', comparison: '', value: ''}
+        undefined,
+        undefined,
       ],
       groups: []
     });
@@ -116,16 +114,16 @@ export default class ConditionsGroup extends Vue {
       ...this.conditionsTree,
       groups: newGroups,
     };
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
+    this.emitUpdatedConditionTree(newConditionsTree);
   }
 
   addRow() {
     const newConditionsTree = {
       ...this.conditionsTree,
       // Pass undefined value to force ConditionForm to use its default condition prop value
-      conditions: [...this.conditions, { column: '', comparison: '', value: ''}],
+      conditions: [...this.conditions, undefined],
     };
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
+    this.emitUpdatedConditionTree(newConditionsTree);
   }
 
   deleteGroup(groupIndex: number) {
@@ -137,7 +135,7 @@ export default class ConditionsGroup extends Vue {
       groups: newGroups,
     };
 
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
+    this.emitUpdatedConditionTree(newConditionsTree);
   }
 
   deleteRow(rowIndex: number) {
@@ -149,11 +147,11 @@ export default class ConditionsGroup extends Vue {
       conditions: newConditions,
     };
 
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
+    this.emitUpdatedConditionTree(newConditionsTree);
   }
 
   updateCondition(rowIndex: number) {
-    return (c: any) => {
+    return (c: AbstractCondition) => {
       const newConditions = [...this.conditions];
       newConditions[rowIndex] = c;
 
@@ -162,7 +160,7 @@ export default class ConditionsGroup extends Vue {
         conditions: newConditions,
       };
 
-      this.$emit('conditionsTreeUpdated', newConditionsTree);
+      this.emitUpdatedConditionTree(newConditionsTree);
     };
   }
 
@@ -175,14 +173,18 @@ export default class ConditionsGroup extends Vue {
       groups: newGroups,
     };
 
-    this.$emit('conditionsTreeUpdated', newConditionsTree);
+    this.emitUpdatedConditionTree(newConditionsTree);
   }
 
-  switchOperator(newOperator: string) {
+  switchOperator(newOperator: ConditionOperator) {
     const newConditionsTree = {
       ...this.conditionsTree,
       operator: newOperator,
     };
+    this.emitUpdatedConditionTree(newConditionsTree);
+  }
+
+  emitUpdatedConditionTree(newConditionsTree: AbstractFilterTree) {
     this.$emit('conditionsTreeUpdated', newConditionsTree);
   }
 }

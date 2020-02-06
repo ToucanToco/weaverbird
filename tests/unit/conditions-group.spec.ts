@@ -22,16 +22,8 @@ describe('ConditionsGroup', () => {
         conditionsTree: {
           operator: 'or',
           conditions: [
-            {
-              column: '',
-              comparison: '',
-              value: '',
-            },
-            {
-              column: '',
-              comparison: '',
-              value: '',
-            },
+            undefined,
+            undefined,
           ],
         },
       }
@@ -46,11 +38,7 @@ describe('ConditionsGroup', () => {
           isRootGroup: true,
           conditionsTree: {
             conditions: [
-              {
-                column: '',
-                comparison: '',
-                value: '',
-              },
+              'only condition',
             ],
           },
         }
@@ -76,16 +64,8 @@ describe('ConditionsGroup', () => {
         propsData: {
           conditionsTree: {
             conditions: [
-              {
-                column: '',
-                comparison: '',
-                value: '',
-              },
-              {
-                column: '',
-                comparison: '',
-                value: '',
-              }
+              'condition A',
+              'condition B'
             ]
           },
         }
@@ -115,20 +95,12 @@ describe('ConditionsGroup', () => {
         propsData: {
           conditionsTree: {
             conditions: [
-              {
-                column: '',
-                comparison: '',
-                value: '',
-              },
+              'condition A',
             ],
             groups: [
               {
                 conditions: [
-                  {
-                    column: '',
-                    comparison: '',
-                    value: '',
-                  },
+                  'condition B',
                 ],
               }
             ]
@@ -214,11 +186,7 @@ describe('ConditionsGroup', () => {
             comparison: 'eq',
             value: 'tata',
           },
-          {
-            column: '',
-            comparison: '',
-            value: '',
-          },
+          undefined,
         ],
         groups: [
           {
@@ -264,16 +232,8 @@ describe('ConditionsGroup', () => {
           {
             operator: 'and',
             conditions: [
-              {
-                column: '',
-                comparison: '',
-                value: '',
-              },
-              {
-                column: '',
-                comparison: '',
-                value: '',
-              },
+              undefined,
+              undefined,
             ],
             groups: [],
           }
