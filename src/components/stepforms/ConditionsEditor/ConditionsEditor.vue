@@ -22,6 +22,13 @@
 </template>
 
 <script lang="ts">
+/*
+  This component allows editing a tree of arbitrary conditions.
+  These abritrary conditions need each a form, which should be defined in the default slot.
+  This scoped slot will receive in `slotProps` its `condition`, and a `updateCondition` function.
+
+  The trees are intentionnaly limited to 2 levels to avoid unnecessary complexity.
+*/
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { AbstractFilterTree } from '@/lib/steps';
