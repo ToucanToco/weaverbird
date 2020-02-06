@@ -26,7 +26,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { TempFilterCondition } from '@/lib/steps';
 
 @Component({
-  name: 'condition-form',
+  name: 'ConditionForm',
 })
 
 export default class ConditionForm extends Vue {

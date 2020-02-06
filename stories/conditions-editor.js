@@ -4,10 +4,10 @@ import { storiesOf } from '@storybook/vue';
 const stories = storiesOf('ConditionsEditor', module);
 
 stories.add('default', () => ({
-  template: `\
+  template: `
     <div style="margin: 30px; overflow: auto">
       <ConditionsEditor :conditions-tree="conditionsTree" @conditionsUpdated="updateConditions"></ConditionsEditor>
-    </div>\
+    </div>
   `,
 
   components: {
@@ -20,31 +20,15 @@ stories.add('default', () => ({
       conditionsTree: {
         operator: 'and',
         conditions: [
-          {
-            column: 'my_col',
-            comparison: 'equal',
-            value: 'my_value',
-          },
-          {
-            column: 'my_col',
-            comparison: 'equal',
-            value: 'my_value',
-          },
+          'you',
+          'me',
         ],
         groups: [
           {
             operator: 'or',
             conditions: [
-              {
-                column: 'my_sub_col',
-                comparison: 'equal',
-                value: 'my_value',
-              },
-              {
-                column: 'my_sub_col',
-                comparison: 'equal',
-                value: 'my_value',
-              },
+              'to be',
+              'not to be',
             ],
           },
         ],
@@ -60,14 +44,14 @@ stories.add('default', () => ({
 }));
 
 stories.add('data permission', () => ({
-  template: `\
+  template: `
     <div style="margin: 30px; overflow: auto">
       <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateConditionsTree">
         <template v-slot:default="slotProps">
           <ConditionForm :condition="slotProps.condition" @conditionUpdated="slotProps.updateCondition"></ConditionForm>
         </template>
       </ConditionsEditor>
-    </div>\
+    </div>
   `,
 
   components: {
