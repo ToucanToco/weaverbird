@@ -138,6 +138,20 @@ export type FilterStep = {
   condition: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
 };
 
+// Temporary
+export type TempFilterStep = {
+  conditions: TempFilterCondition[];
+  groups: (TempFilterStep)[];
+  operator: 'and' | 'or';
+};
+
+export type TempFilterCondition = {
+  column: string;
+  comparison: string;
+  value: string;
+};
+// End - Temporary
+
 export type FormulaStep = {
   name: 'formula';
   new_column: string;
