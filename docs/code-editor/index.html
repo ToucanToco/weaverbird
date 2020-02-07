@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Convert | Weaverbird</title>
+<title>Custom code editor | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Convert" />
+<meta property="og:title" content="Custom code editor" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Convert columns data type" />
-<meta property="og:description" content="Convert columns data type" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/convert/" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/convert/" />
+<meta name="description" content="Customize the code editor" />
+<meta property="og:description" content="Customize the code editor" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/code-editor/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/code-editor/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-02-07T21:30:20+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/convert/","headline":"Convert","datePublished":"2020-02-07T21:30:20+01:00","dateModified":"2020-02-07T21:30:20+01:00","description":"Convert columns data type","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/code-editor/","headline":"Custom code editor","datePublished":"2020-02-07T21:30:20+01:00","dateModified":"2020-02-07T21:30:20+01:00","description":"Customize the code editor","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/convert/">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/code-editor/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -85,7 +85,7 @@
       </div>
       
       
-      <div class="panel-collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
+      <div class="panel-collapse collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
         <div class="list-group">
           
             
@@ -133,7 +133,7 @@
             
             
             <!--  -->
-              <a class="list-group-item active" href="/docs/convert/">Convert</a>
+              <a class="list-group-item " href="/docs/convert/">Convert</a>
             <!--  -->
           
             
@@ -312,46 +312,51 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><h3 id="convert-columns-data-type">Convert columns data type</h3>
+            <div id="markdown-content-container"><h1 id="customize-the-code-editor">Customize the code editor</h1>
 
-<p>You can use this step to cast column data types.</p>
+<p>The <code class="highlighter-rouge">custom step</code> allows user to write their own query step. It uses by default a basic textarea, but you might want to customize the code editor with the <code class="highlighter-rouge">setCodeEditor</code> interface.</p>
 
-<p><strong>This step is supported by the following backends:</strong></p>
+<h2 id="example">Example</h2>
 
-<ul>
-  <li>Mongo 4.0</li>
-</ul>
+<p>Here is a simple example, on how to provide a textarea with a fix placeholder:</p>
 
-<h4 id="where-to-find-this-step">Where to find this step?</h4>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setCodeEditor</span><span class="p">({</span>
+  <span class="na">props</span><span class="p">:[</span><span class="s1">'value'</span><span class="p">,</span> <span class="s1">'placeholder'</span><span class="p">],</span>
+  <span class="nx">render</span><span class="p">(</span><span class="nx">createElement</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">createElement</span><span class="p">(</span><span class="s2">"textarea"</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">domProps</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">value</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+        <span class="na">placeholder</span><span class="p">:</span> <span class="s2">"OMG I have to write code in here"</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="na">attrs</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">type</span><span class="p">:</span> <span class="s2">"text"</span>
+      <span class="p">},</span>
+      <span class="na">on</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">input</span><span class="p">:</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)},</span>
+        <span class="na">blur</span><span class="p">:</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'blur'</span><span class="p">)},</span>
+        <span class="na">focus</span><span class="p">:</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'focus'</span><span class="p">)},</span>
+      <span class="p">},</span>
+    <span class="p">})</span>
+  <span class="p">},</span>
+<span class="p">});</span>
+</code></pre></div></div>
 
-<ul>
-  <li>Column header data type icon</li>
-  <li>Search bar</li>
-</ul>
+<h2 id="api">API</h2>
 
-<p><img src="../../img/docs/user-interface/data_type_icon.jpg" width="350" /></p>
-
-<h4 id="options-reference">Options reference</h4>
-
-<p><img src="../../img/docs/user-interface/convert_step_form.jpg" width="350" /></p>
-
+<p><code class="highlighter-rouge">setCodeEditor</code>’s argument is a Vue component with the following requirements:</p>
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Convert columns:</code>: the columns to convert</p>
+    <p>It must accept a <code class="highlighter-rouge">value</code> property and emit an <code class="highlighter-rouge">input</code> event
+as it will be used with a <code class="highlighter-rouge">v-model</code></p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">To data type:</code>: the data type to convert into, either ‘integer’, ‘float’,
-‘text’, ‘date’ or ‘boolean’</p>
+    <p>Optionally:</p>
+    <ul>
+      <li>emit <code class="highlighter-rouge">blur</code> and <code class="highlighter-rouge">focus</code> event</li>
+      <li>a <code class="highlighter-rouge">placeholder</code> property</li>
+    </ul>
   </li>
 </ul>
-
-<h4 id="example">Example</h4>
-
-<p><img src="../../img/docs/user-interface/convert_example_conf.jpg" width="750" /></p>
-
-<p>This configuration results in:</p>
-
-<p><img src="../../img/docs/user-interface/convert_example_result.jpg" width="500" /></p>
 </div>
             
 
@@ -382,29 +387,82 @@
 
   
   
-    <ul class="pager">
-      
-        
-        
-        <li class="previous">
-          <a href="/docs/concatenate/">
-            <span aria-hidden="true">&larr;</span> Previous
-          </a>
-        </li>
-      
 
-      
-        
-        
-        <li class="next">
-          <a href="/docs/dateextract/">
-            Next <span aria-hidden="true">&rarr;</span>
-          </a>
-        </li>
-      
-      </ul>
-    <div class="clear"></div>
-    
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
 
         </div>
 
