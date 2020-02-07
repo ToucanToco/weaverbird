@@ -22,7 +22,7 @@ export default {
       title: 'Date format',
       description: 'Date format',
       attrs: {
-        placeholder: 'Enter a date format',
+        placeholder: '%Y-%m-%d',
       },
     },
   },

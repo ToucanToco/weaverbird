@@ -2,10 +2,10 @@ import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 
 describe('Mongo translator support tests', () => {
-  const mongo36translator = getTranslator('mongo40');
+  const mongo40translator = getTranslator('mongo40');
 
   it('should support any kind of operation', () => {
-    expect(mongo36translator.unsupportedSteps).toEqual([]);
+    expect(mongo40translator.unsupportedSteps).toEqual([]);
   });
 });
 
@@ -52,6 +52,21 @@ describe('Pipeline to mongo translator', () => {
           text: { $convert: { input: '$text', to: 'string' } },
         },
       },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a todate step with format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'todate',
+        column: 'foo',
+        format: '%d-%m-%Y',
+      },
+    ];
+    const querySteps = mongo40translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $dateFromString: { dateString: '$foo', format: '%d-%m-%Y' } } } },
       { $project: { _id: 0 } },
     ]);
   });

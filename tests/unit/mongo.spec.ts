@@ -1342,7 +1342,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a todate step', () => {
+  it('can generate a todate step without format', () => {
     const pipeline: Pipeline = [
       {
         name: 'todate',

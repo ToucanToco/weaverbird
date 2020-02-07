@@ -1,5 +1,12 @@
 # Changelog
 
+## UNRELEASED -
+
+### Added
+
+- add UI for "format" parameter in "todate" step (not supported for mongo36
+  translator)
+
 ## [0.10.0] - 2020-02-06
 
 ### Added
