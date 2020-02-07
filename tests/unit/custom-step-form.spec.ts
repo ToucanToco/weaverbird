@@ -6,7 +6,7 @@ describe('Custom Step Form', () => {
   const runner = new BasicStepFormTestRunner(CustomStepForm, 'custom');
   runner.testInstantiate();
   runner.testExpectedComponents({
-    'textareawidget-stub': 1,
+    'codeeditorwidget-stub': 1,
   });
   runner.testValidationErrors([
     {

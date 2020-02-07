@@ -2,7 +2,7 @@
   <div>
     <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
     <label v-if="name">{{ name }}</label>
-    <TextareaWidget
+    <CodeEditorWidget
       v-model="editedStep.query"
       placeholder="Write your custom mongo here"
       :errors="errors"
@@ -21,12 +21,12 @@ import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
-import TextareaWidget from './widgets/TextareaWidget.vue';
+import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 
 @StepFormComponent({
   vqbstep: 'custom',
   name: 'custom-step-form',
-  components: { TextareaWidget },
+  components: { CodeEditorWidget },
 })
 export default class CustomStepForm extends BaseStepForm<CustomStep> {
   @VQBModule.Getter translator!: string;

@@ -9,11 +9,35 @@ const {
   dereferencePipelines,
   servicePluginFactory,
   registerModule,
+  setCodeEditor,
 } = vqb;
 
 const TRANSLATOR = 'mongo40';
 
 const mongo40translator = getTranslator(TRANSLATOR);
+
+// Example to set a custom editor:
+// This one is quite simple. It customizes the placeholder.
+setCodeEditor({
+  props:['value', 'placeholder'],
+  render(createElement) {
+    return createElement("textarea", {
+      domProps: {
+        value: this.value,
+        placeholder: "OMG I have to write code in here",
+      },
+      attrs: {
+        type: "text"
+      },
+      on: {
+        input: (event) => {this.$emit('input', event.target.value)},
+        blur: (event) => {this.$emit('blur')},
+        focus: (event) => {this.$emit('focus')},
+      },
+    })
+  },
+});
+
 
 const CASTERS = {
   date: val => new Date(val),

@@ -1,15 +1,14 @@
 <template>
-  <div class="widget-textarea__container" :class="toggleClassErrorWarning">
+  <div class="widget-code-editor__container" :class="toggleClassErrorWarning">
     <label v-if="name" :for="id">{{ name }}</label>
-    <textarea
+    <component
+      :is="CodeEditor"
       :id="id"
       :class="elementClass"
       :placeholder="placeholder"
-      type="text"
-      :value="value"
+      v-model="editedValue"
       @blur="blur()"
       @focus="focus()"
-      @input="updateValue($event.target.value)"
     />
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />{{ messageError }}
@@ -21,14 +20,16 @@
 </template>
 
 <script lang="ts">
-import { Component, Mixins, Prop } from 'vue-property-decorator';
+import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
+
+import { CodeEditor } from '@/components/code-editor';
 
 import FormWidget from './FormWidget.vue';
 
 @Component({
-  name: 'textarea-widget',
+  name: 'code-editor-widget',
 })
-export default class TextareaWidget extends Mixins(FormWidget) {
+export default class CodeEditorWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: null })
   id!: string;
 
@@ -39,14 +40,24 @@ export default class TextareaWidget extends Mixins(FormWidget) {
   placeholder!: string;
 
   @Prop({ default: '' })
-  value!: string | number | boolean;
+  value!: string;
+
+  editedValue = this.value;
 
   isFocused = false;
 
+  CodeEditor = CodeEditor;
+  // Code editor is set through a responsive data so it can be change after import
+
+  @Watch('editedValue')
+  updateValue(newValue: string) {
+    this.$emit('input', newValue);
+  }
+
   get elementClass() {
     return {
-      'widget-textarea': true,
-      'widget-textarea--focused': this.isFocused,
+      'widget-code-editor': true,
+      'widget-code-editor--focused': this.isFocused,
     };
   }
 
@@ -57,33 +68,29 @@ export default class TextareaWidget extends Mixins(FormWidget) {
   focus() {
     this.isFocused = true;
   }
-
-  updateValue(newValue: string) {
-    this.$emit('input', newValue);
-  }
 }
 </script>
 
 <style lang="scss" scoped>
 @import '../../../styles/_variables';
 
-.widget-textarea__container {
+.widget-code-editor__container {
   @extend %form-widget__container;
 }
 
-.widget-textarea {
+.widget-code-editor {
   @extend %form-widget__field;
 }
 
-.widget-textarea--focused {
+.widget-code-editor--focused {
   @extend %form-widget__field--focused;
 }
 
-.widget-textarea__container label {
+.widget-code-editor__container label {
   @extend %form-widget__label;
 }
 
-.widget-textarea {
+.widget-code-editor {
   margin: 5px 0px;
   width: 100%;
   height: 300px;
