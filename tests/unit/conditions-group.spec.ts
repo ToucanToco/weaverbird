@@ -40,6 +40,7 @@ describe('ConditionsGroup', () => {
             conditions: [
               'only condition',
             ],
+            groups: [undefined]
           },
         }
       });
@@ -49,12 +50,14 @@ describe('ConditionsGroup', () => {
       wrapper.destroy();
     });
 
-    it('should have the class "conditions-group--root"', () => {
-      expect(wrapper.find('.conditions-group').classes()).toContain('conditions-group--root');
+    it('should be able to add sub groups', () => {
+      expect(wrapper.find('.conditions-group__add-button').exists()).toBeTruthy();
     });
+  });
 
-    it('should not display the trash button for the group', () => {
-      expect(wrapper.find('.conditions-group__delete').exists()).toBeFalsy();
+  describe('when the group is not the root', () => {
+    it('should not be able to add sub groups', () => {
+      expect(wrapper.find('.conditions-group__add-button').exists()).toBeFalsy();
     });
   });
 
@@ -76,20 +79,17 @@ describe('ConditionsGroup', () => {
       wrapper.destroy();
     });
 
-    it('should have the class "conditions-group--with-switch"', () => {
+    it('should have the switch button to choose an operator', () => {
       expect(wrapper.find('.conditions-group').classes()).toContain('conditions-group--with-switch');
-    });
-
-    it('should have the switch button', () => {
       expect(wrapper.find('.conditions-group__switch').exists()).toBeTruthy();
     });
 
-    it('should have the link', () => {
+    it('should display a link', () => {
       expect(wrapper.find('.condition-row__link').exists()).toBeTruthy();
     });
   });
 
-  describe('when the group has groups', () => {
+  describe('with child groups', () => {
     beforeEach(() => {
       wrapper = shallowMount(ConditionsGroup, {
         propsData: {
@@ -113,21 +113,17 @@ describe('ConditionsGroup', () => {
       wrapper.destroy();
     });
 
-    it('should have the class "conditions-group--with-switch"', () => {
-      expect(wrapper.find('.conditions-group').classes()).toContain('conditions-group--with-switch');
-    });
-
-    it('should have the switch button', () => {
+    it('should have the operator switch button', () => {
       expect(wrapper.find('.conditions-group__switch').exists()).toBeTruthy();
     });
 
-    it('should have the link', () => {
-      expect(wrapper.find('.condition-row__link').exists()).toBeTruthy();
+    it('should display a link', () => {
+      expect(wrapper.find('.conditions-group__link').exists()).toBeTruthy();
     });
 
-    it('should display the trash button', () => {
-      const wrapper = shallowMount(ConditionsGroup);
-      expect(wrapper.find('.conditions-group__delete').exists()).toBeTruthy();
+    it('should display the trash button for each group', () => {
+      const childGroupWrapper = wrapper.find('.conditions-group__child-group');
+      expect(childGroupWrapper.find('.conditions-group__delete').exists()).toBeTruthy();
     });
   });
 
@@ -267,8 +263,8 @@ describe('ConditionsGroup', () => {
       }]);
     });
 
-    it('should emit "conditionsTreeUpdated" with the new conditionTree when its group emit "groupDeleted" event', () => {
-      wrapper.find('conditionsgroup-stub').vm.$emit('groupDeleted');
+    it('should emit "conditionsTreeUpdated" with the new conditionTree when hitting the trash button for a group', () => {
+      wrapper.find('.conditions-group__child-group .conditions-group__delete').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
       expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
         operator: 'and',
@@ -358,7 +354,7 @@ describe('ConditionsGroup', () => {
       }]);
     });
 
-    it('should emit "conditionsTreeUpdated" with the new conditionTree when the slot emit an event', () => {
+    it('should emit "conditionsTreeUpdated" with the new conditionTree when the slot emits an event', () => {
       (wrapper.vm as any).updateCondition(0)({
         column: 'leader',
         comparison: 'eq',

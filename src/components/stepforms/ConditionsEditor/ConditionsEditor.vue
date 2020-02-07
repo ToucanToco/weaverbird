@@ -25,9 +25,7 @@
 */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { AbstractFilterTree } from '@/lib/steps';
-
-import ConditionsGroup from './ConditionsGroup.vue';
+import ConditionsGroup, { AbstractFilterTree } from './ConditionsGroup.vue';
 
 @Component({
   name: 'ConditionsEditor',

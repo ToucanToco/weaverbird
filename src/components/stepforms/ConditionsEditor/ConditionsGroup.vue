@@ -26,11 +26,6 @@
         </div>
       </div>
     </div>
-    <i
-      v-if="!isRootGroup"
-      class="conditions-group__delete far fa-trash-alt"
-      @click="$emit('groupDeleted')"
-    />
     <div v-for="(condition, rowIndex) in conditions" :key="'row' + rowIndex" class="condition-row">
       <div
         v-if="hasMultipleRows"
@@ -66,21 +61,24 @@
       <ConditionsGroup
         :conditions-tree="groupConditionTree"
         @conditionsTreeUpdated="updateGroup(groupIndex, $event)"
-        @groupDeleted="deleteGroup(groupIndex)"
       >
         <template v-slot:default="slotProps">
           <slot v-bind="slotProps" />
         </template>
       </ConditionsGroup>
+      <i
+        class="conditions-group__delete far fa-trash-alt"
+        @click="deleteGroup(groupIndex)"
+      />
     </div>
     <div class="conditions-group__action-buttons">
       <div v-if="hasMultipleRows" class="action-buttons__link">
         <div class="action-buttons__link__top" />
         <div class="action-buttons__link__middle" />
       </div>
-      <div id="add-row-button" class="conditions-group__add-button" @click="addRow">add condition</div>
-      <div id="add-group-button" class="conditions-group__add-button" v-if="isRootGroup" @click="addGroup">
-        add group
+      <div class="conditions-group__add-button conditions-group__add-button--condition" @click="addRow">Add condition</div>
+      <div class="conditions-group__add-button conditions-group__add-button--group" v-if="isRootGroup" @click="addGroup">
+        Add group
       </div>
     </div>
   </div>
@@ -89,7 +87,15 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { AbstractFilterTree, AbstractCondition, ConditionOperator } from '@/lib/steps';
+export type GenericFilterTree<ConditionType extends AbstractCondition> = {
+  conditions: ConditionType[];
+  groups: GenericFilterTree<ConditionType>[];
+  operator: ConditionOperator;
+};
+
+export type ConditionOperator = 'and' | 'or';
+export type AbstractCondition = any;
+export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
 
 @Component({
   name: 'ConditionsGroup',
@@ -190,7 +196,7 @@ export default class ConditionsGroup extends Vue {
     };
   }
 
-  updateGroup(groupIndex: number, g: any) {
+  updateGroup(groupIndex: number, g: AbstractFilterTree) {
     const newGroups = [...this.groups];
     newGroups[groupIndex] = g;
 
