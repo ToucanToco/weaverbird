@@ -9,16 +9,14 @@
       <div class="condition-group__switch-link" />
       <div class="conditions-group__switch-buttons">
         <div
-          id="switch-button-and"
-          class="conditions-group__switch-button"
+          class="conditions-group__switch-button conditions-group__switch-button--and"
           :class="{ 'conditions-group__switch-button--active': operator === 'and' }"
           @click="switchOperator('and')"
         >
           and
         </div>
         <div
-          id="switch-button-or"
-          class="conditions-group__switch-button"
+          class="conditions-group__switch-button conditions-group__switch-button--or"
           :class="{ 'conditions-group__switch-button--active': operator === 'or' }"
           @click="switchOperator('or')"
         >

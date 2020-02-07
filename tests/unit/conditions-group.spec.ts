@@ -28,7 +28,7 @@ describe('ConditionsGroup', () => {
         },
       }
     });
-    expect(wrapper.find('#switch-button-or').classes()).toContain('conditions-group__switch-button--active');
+    expect(wrapper.find('.conditions-group__switch-button--or').classes()).toContain('conditions-group__switch-button--active');
   });
 
   describe('when the group is the root', () => {
@@ -51,13 +51,31 @@ describe('ConditionsGroup', () => {
     });
 
     it('should be able to add sub groups', () => {
-      expect(wrapper.find('.conditions-group__add-button').exists()).toBeTruthy();
+      expect(wrapper.find('.conditions-group__add-button--group').exists()).toBeTruthy();
     });
   });
 
   describe('when the group is not the root', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(ConditionsGroup, {
+        propsData: {
+          isRootGroup: false,
+          conditionsTree: {
+            conditions: [
+              'only condition',
+            ],
+            groups: [undefined]
+          },
+        }
+      });
+    });
+
+    afterEach(() => {
+      wrapper.destroy();
+    });
+
     it('should not be able to add sub groups', () => {
-      expect(wrapper.find('.conditions-group__add-button').exists()).toBeFalsy();
+      expect(wrapper.find('.conditions-group__add-button--group').exists()).toBeFalsy();
     });
   });
 
@@ -167,7 +185,7 @@ describe('ConditionsGroup', () => {
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "add condition" button', () => {
-      wrapper.find('#add-row-button').trigger('click');
+      wrapper.find('.conditions-group__add-button--condition').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
       expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
         operator: 'and',
@@ -199,7 +217,7 @@ describe('ConditionsGroup', () => {
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "add group" button', () => {
-      wrapper.find('#add-group-button').trigger('click');
+      wrapper.find('.conditions-group__add-button--group').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
       expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
         operator: 'and',
@@ -324,7 +342,7 @@ describe('ConditionsGroup', () => {
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when "or" operator button is click', () => {
-      wrapper.find('#switch-button-or').trigger('click');
+      wrapper.find('.conditions-group__switch-button--or').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
       expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
         operator: 'or',
