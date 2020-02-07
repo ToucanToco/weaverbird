@@ -86,12 +86,12 @@ export class BasicStepFormTestRunner {
     });
   }
 
-  testExpectedComponents(componentSpec: { [prop: string]: number }) {
+  testExpectedComponents(componentSpec: { [prop: string]: number }, initialState: object = {}) {
     const specStr = Object.entries(componentSpec)
       .map((k, v) => `${v} ${k}`)
       .join(', ');
     it(`should generate ${specStr} components`, () => {
-      const wrapper = this.shallowMount();
+      const wrapper = this.shallowMount(initialState);
       for (const [componentName, count] of Object.entries(componentSpec)) {
         const compWrappers = wrapper.findAll(componentName);
         expect(compWrappers.length).toEqual(count);
