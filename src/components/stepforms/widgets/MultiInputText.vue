@@ -211,7 +211,7 @@ export default class MultiInputTextWidget extends Vue {
 .multiselect__select:before {
   border: 0;
   content: '\f078';
-  font-family: 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
   font-weight: 900;
   line-height: 1;
   top: 8px;
