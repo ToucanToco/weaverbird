@@ -21,14 +21,13 @@ describe('ConditionsGroup', () => {
       propsData: {
         conditionsTree: {
           operator: 'or',
-          conditions: [
-            undefined,
-            undefined,
-          ],
+          conditions: [undefined, undefined],
         },
-      }
+      },
     });
-    expect(wrapper.find('.conditions-group__switch-button--or').classes()).toContain('conditions-group__switch-button--active');
+    expect(wrapper.find('.conditions-group__switch-button--or').classes()).toContain(
+      'conditions-group__switch-button--active',
+    );
   });
 
   describe('when the group is the root', () => {
@@ -37,12 +36,10 @@ describe('ConditionsGroup', () => {
         propsData: {
           isRootGroup: true,
           conditionsTree: {
-            conditions: [
-              'only condition',
-            ],
-            groups: [undefined]
+            conditions: ['only condition'],
+            groups: [undefined],
           },
-        }
+        },
       });
     });
 
@@ -61,12 +58,10 @@ describe('ConditionsGroup', () => {
         propsData: {
           isRootGroup: false,
           conditionsTree: {
-            conditions: [
-              'only condition',
-            ],
-            groups: [undefined]
+            conditions: ['only condition'],
+            groups: [undefined],
           },
-        }
+        },
       });
     });
 
@@ -84,12 +79,9 @@ describe('ConditionsGroup', () => {
       wrapper = shallowMount(ConditionsGroup, {
         propsData: {
           conditionsTree: {
-            conditions: [
-              'condition A',
-              'condition B'
-            ]
+            conditions: ['condition A', 'condition B'],
           },
-        }
+        },
       });
     });
 
@@ -98,7 +90,9 @@ describe('ConditionsGroup', () => {
     });
 
     it('should have the switch button to choose an operator', () => {
-      expect(wrapper.find('.conditions-group').classes()).toContain('conditions-group--with-switch');
+      expect(wrapper.find('.conditions-group').classes()).toContain(
+        'conditions-group--with-switch',
+      );
       expect(wrapper.find('.conditions-group__switch').exists()).toBeTruthy();
     });
 
@@ -112,18 +106,14 @@ describe('ConditionsGroup', () => {
       wrapper = shallowMount(ConditionsGroup, {
         propsData: {
           conditionsTree: {
-            conditions: [
-              'condition A',
-            ],
+            conditions: ['condition A'],
             groups: [
               {
-                conditions: [
-                  'condition B',
-                ],
-              }
-            ]
+                conditions: ['condition B'],
+              },
+            ],
           },
-        }
+        },
       });
     });
 
@@ -173,10 +163,10 @@ describe('ConditionsGroup', () => {
                     value: 'tutu',
                   },
                 ],
-              }
-            ]
+              },
+            ],
           },
-        }
+        },
       });
     });
 
@@ -187,119 +177,127 @@ describe('ConditionsGroup', () => {
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "add condition" button', () => {
       wrapper.find('.conditions-group__add-button--condition').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'and',
-        conditions: [
-          {
-            column: 'a',
-            comparison: 'eq',
-            value: 'toto',
-          },
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-          undefined,
-        ],
-        groups: [
-          {
-            conditions: [
-              {
-                column: 'c',
-                comparison: 'eq',
-                value: 'tutu',
-              },
-            ],
-          }
-        ]
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+            undefined,
+          ],
+          groups: [
+            {
+              conditions: [
+                {
+                  column: 'c',
+                  comparison: 'eq',
+                  value: 'tutu',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "add group" button', () => {
       wrapper.find('.conditions-group__add-button--group').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'and',
-        conditions: [
-          {
-            column: 'a',
-            comparison: 'eq',
-            value: 'toto',
-          },
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-        ],
-        groups: [
-          {
-            conditions: [
-              {
-                column: 'c',
-                comparison: 'eq',
-                value: 'tutu',
-              },
-            ],
-          },
-          {
-            operator: 'and',
-            conditions: [
-              undefined,
-              undefined,
-            ],
-            groups: [],
-          }
-        ]
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+          ],
+          groups: [
+            {
+              conditions: [
+                {
+                  column: 'c',
+                  comparison: 'eq',
+                  value: 'tutu',
+                },
+              ],
+            },
+            {
+              operator: 'and',
+              conditions: [undefined, undefined],
+              groups: [],
+            },
+          ],
+        },
+      ]);
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "delete row button"', () => {
-      wrapper.findAll('.condition-row__delete').at(0).trigger('click');
+      wrapper
+        .findAll('.condition-row__delete')
+        .at(0)
+        .trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'and',
-        conditions: [
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-        ],
-        groups: [
-          {
-            conditions: [
-              {
-                column: 'c',
-                comparison: 'eq',
-                value: 'tutu',
-              },
-            ],
-          }
-        ]
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+          ],
+          groups: [
+            {
+              conditions: [
+                {
+                  column: 'c',
+                  comparison: 'eq',
+                  value: 'tutu',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when hitting the trash button for a group', () => {
       wrapper.find('.conditions-group__child-group .conditions-group__delete').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'and',
-        conditions: [
-          {
-            column: 'a',
-            comparison: 'eq',
-            value: 'toto',
-          },
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-        ],
-        groups: [],
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+          ],
+          groups: [],
+        },
+      ]);
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when its group emit "conditionsTreeUpdated" event', () => {
@@ -313,63 +311,67 @@ describe('ConditionsGroup', () => {
         ],
       });
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'and',
-        conditions: [
-          {
-            column: 'a',
-            comparison: 'eq',
-            value: 'toto',
-          },
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-        ],
-        groups: [
-          {
-            conditions: [
-              {
-                column: 'd',
-                comparison: 'eq',
-                value: 'blublu',
-              },
-            ],
-          }
-        ]
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+          ],
+          groups: [
+            {
+              conditions: [
+                {
+                  column: 'd',
+                  comparison: 'eq',
+                  value: 'blublu',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when "or" operator button is click', () => {
       wrapper.find('.conditions-group__switch-button--or').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'or',
-        conditions: [
-          {
-            column: 'a',
-            comparison: 'eq',
-            value: 'toto',
-          },
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-        ],
-        groups: [
-          {
-            conditions: [
-              {
-                column: 'c',
-                comparison: 'eq',
-                value: 'tutu',
-              },
-            ],
-          }
-        ]
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'or',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+          ],
+          groups: [
+            {
+              conditions: [
+                {
+                  column: 'c',
+                  comparison: 'eq',
+                  value: 'tutu',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
 
     it('should emit "conditionsTreeUpdated" with the new conditionTree when the slot emits an event', () => {
@@ -379,32 +381,34 @@ describe('ConditionsGroup', () => {
         value: 'arthas',
       });
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
-      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([{
-        operator: 'and',
-        conditions: [
-          {
-            column: 'leader',
-            comparison: 'eq',
-            value: 'arthas',
-          },
-          {
-            column: 'b',
-            comparison: 'eq',
-            value: 'tata',
-          },
-        ],
-        groups: [
-          {
-            conditions: [
-              {
-                column: 'c',
-                comparison: 'eq',
-                value: 'tutu',
-              },
-            ],
-          }
-        ]
-      }]);
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'leader',
+              comparison: 'eq',
+              value: 'arthas',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tata',
+            },
+          ],
+          groups: [
+            {
+              conditions: [
+                {
+                  column: 'c',
+                  comparison: 'eq',
+                  value: 'tutu',
+                },
+              ],
+            },
+          ],
+        },
+      ]);
     });
   });
 });
