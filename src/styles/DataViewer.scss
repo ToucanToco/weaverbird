@@ -31,7 +31,6 @@
   position: relative;
   padding: 8px;
   background-color: white;
-  cursor: pointer;
   border: 1px solid $data-viewer-border-color;
   font-size: 13px;
   text-align: left;
@@ -63,6 +62,7 @@
 }
 
 .data-viewer__header-cell {
+  cursor: pointer;
   font-weight: bold;
   padding: 6px 8px;
 }
