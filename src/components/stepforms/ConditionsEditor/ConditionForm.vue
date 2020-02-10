@@ -4,37 +4,35 @@
       :value="condition.column"
       class="condition-form__input condition-form__input--column"
       @input="updateInput('column', $event.target.value)"
-    >
+    />
     <input
       :value="condition.operator"
       class="condition-form__input condition-form__input--operator"
       @input="updateInput('operator', $event.target.value)"
-    >
+    />
     <input
       :value="condition.value"
       class="condition-form__input condition-form__input--value"
       @input="updateInput('value', $event.target.value)"
-    >
+    />
   </div>
 </template>
 
 <script lang="ts">
 import _ from 'lodash';
-
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { FilterSimpleCondition } from '@/lib/steps';
 
-const EMPTY_CONDITION: FilterSimpleCondition = { column: '', operator: 'eq', value: ''};
+const EMPTY_CONDITION: FilterSimpleCondition = { column: '', operator: 'eq', value: '' };
 
 @Component({
   name: 'ConditionForm',
 })
-
 export default class ConditionForm extends Vue {
   @Prop({
     type: Object,
-    default: () => (EMPTY_CONDITION)
+    default: () => EMPTY_CONDITION,
   })
   condition!: FilterSimpleCondition;
 
@@ -60,7 +58,6 @@ export default class ConditionForm extends Vue {
 </script>
 
 <style lang="scss">
-
 .condition-form {
   display: flex;
   flex-grow: 1;

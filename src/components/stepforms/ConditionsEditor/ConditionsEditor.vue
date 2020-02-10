@@ -8,7 +8,10 @@
     >
       <template v-slot:default="slotProps">
         <slot v-bind="slotProps">
-          <input :value="slotProps.condition" @input="slotProps.updateCondition($event.target.value)">
+          <input
+            :value="slotProps.condition"
+            @input="slotProps.updateCondition($event.target.value)"
+          />
         </slot>
       </template>
     </ConditionsGroup>
@@ -33,11 +36,10 @@ import ConditionsGroup, { AbstractFilterTree } from './ConditionsGroup.vue';
     ConditionsGroup,
   },
 })
-
 export default class ConditionsEditor extends Vue {
   @Prop({
     type: Object,
-    default: () => {}
+    default: () => {},
   })
   conditionsTree!: AbstractFilterTree;
 

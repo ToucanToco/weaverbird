@@ -28,7 +28,10 @@
       <div
         v-if="hasMultipleRows"
         class="condition-row__link"
-        :class="{'condition-row__link--last': !(groups && groups.length) && (rowIndex === conditions.length - 1)}"
+        :class="{
+          'condition-row__link--last':
+            !(groups && groups.length) && rowIndex === conditions.length - 1,
+        }"
       >
         <div class="condition-row__link__top" />
         <div class="condition-row__link__middle" />
@@ -50,7 +53,7 @@
     >
       <div
         class="conditions-group__link"
-        :class="{'conditions-group__link--last': groupIndex === groups.length - 1}"
+        :class="{ 'conditions-group__link--last': groupIndex === groups.length - 1 }"
       >
         <div class="conditions-group__link__top" />
         <div class="conditions-group__link__middle" />
@@ -64,18 +67,24 @@
           <slot v-bind="slotProps" />
         </template>
       </ConditionsGroup>
-      <i
-        class="conditions-group__delete far fa-trash-alt"
-        @click="deleteGroup(groupIndex)"
-      />
+      <i class="conditions-group__delete far fa-trash-alt" @click="deleteGroup(groupIndex)" />
     </div>
     <div class="conditions-group__action-buttons">
       <div v-if="hasMultipleRows" class="action-buttons__link">
         <div class="action-buttons__link__top" />
         <div class="action-buttons__link__middle" />
       </div>
-      <div class="conditions-group__add-button conditions-group__add-button--condition" @click="addRow">Add condition</div>
-      <div class="conditions-group__add-button conditions-group__add-button--group" v-if="isRootGroup" @click="addGroup">
+      <div
+        class="conditions-group__add-button conditions-group__add-button--condition"
+        @click="addRow"
+      >
+        Add condition
+      </div>
+      <div
+        class="conditions-group__add-button conditions-group__add-button--group"
+        v-if="isRootGroup"
+        @click="addGroup"
+      >
         Add group
       </div>
     </div>
@@ -98,17 +107,16 @@ export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
 @Component({
   name: 'ConditionsGroup',
 })
-
 export default class ConditionsGroup extends Vue {
   @Prop({
     type: Object,
-    default: () => ({ operator: 'and', conditions: [], groups: []})
+    default: () => ({ operator: 'and', conditions: [], groups: [] }),
   })
   conditionsTree!: AbstractFilterTree;
 
   @Prop({
     type: Boolean,
-    default: false
+    default: false,
   })
   isRootGroup!: boolean;
 
@@ -133,11 +141,8 @@ export default class ConditionsGroup extends Vue {
     newGroups.push({
       operator: 'and',
       // Pass undefined values to force ConditionForm to use its default condition prop value
-      conditions: [
-        undefined,
-        undefined,
-      ],
-      groups: []
+      conditions: [undefined, undefined],
+      groups: [],
     });
 
     const newConditionsTree = {
@@ -396,7 +401,8 @@ $condition-row-border-width: 1px;
 }
 
 .conditions-group__link {
-  $link-width: $conditions-group-top-margin / 2 + 2 * $conditions-group-border-width + $conditions-group-top-left-padding / 2;
+  $link-width: $conditions-group-top-margin / 2 + 2 * $conditions-group-border-width +
+    $conditions-group-top-left-padding / 2;
 
   display: flex;
   flex-direction: column;
@@ -461,5 +467,4 @@ $condition-row-border-width: 1px;
     border-bottom: 1px dashed $blue;
   }
 }
-
 </style>
