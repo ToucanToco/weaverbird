@@ -521,7 +521,7 @@ async function buildVueApp() {
           groupname: 'Group 1',
         },
       });
-      setupInitialData(this.$store);
+      setupInitialData(this.$store, 'test-collection');
     },
     computed: {
       code: function() {
