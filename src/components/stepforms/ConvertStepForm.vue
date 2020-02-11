@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
+    <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       id="columnsInput"
       v-model="editedStep.columns"
@@ -20,7 +20,7 @@
       data-path=".data_type"
       :errors="errors"
     />
-    <step-form-buttonbar :submit="submit" />
+    <StepFormButtonbar />
   </div>
 </template>
 

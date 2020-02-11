@@ -3,17 +3,10 @@
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
-        @click="props.submit()"
+        @click="parent.submit()"
       >
         Save changes
       </button>
-    </div>
-    <div v-if="props.errors" class="errors">
-      <ul>
-        <li v-for="(error, index) in props.errors" :key="index">
-          {{ error.dataPath }}: {{ error.message }}
-        </li>
-      </ul>
     </div>
   </div>
 </template>
