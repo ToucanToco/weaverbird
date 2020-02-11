@@ -43,6 +43,10 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'argmax', label: 'Argmax' },
     { name: 'argmin', label: 'Argmin' },
   ],
+  aggregate: [
+    { name: 'aggregate', label: 'Group by' },
+    { name: 'uniquegroups', label: 'Get unique groups/values' },
+  ],
   compute: [
     { name: 'formula', label: 'Formula' },
     { name: 'percentage', label: 'Percentage of total' },
@@ -80,6 +84,10 @@ export const SEARCH_ACTION: groupActions[] = [
     actions: [...ACTION_CATEGORIES.add],
   },
   {
+    type: 'aggregate',
+    actions: [...ACTION_CATEGORIES.aggregate],
+  },
+  {
     type: 'filter',
     actions: [...ACTION_CATEGORIES.filter],
   },
@@ -94,15 +102,6 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'date',
     actions: [...ACTION_CATEGORIES.date],
-  },
-  {
-    type: 'aggregate',
-    actions: [
-      {
-        name: 'aggregate',
-        label: 'Aggregate',
-      },
-    ],
   },
   {
     type: 'reshape',

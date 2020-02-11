@@ -205,4 +205,29 @@ describe('Action Menu', () => {
 
     expect(wrapper.emitted().closed).toBeTruthy();
   });
+
+  describe('when clicking on "Get unique values"', () => {
+    it('should add a valid uniquegroups step in the pipeline', async () => {
+      const store = setupMockStore();
+      const wrapper = shallowMount(ActionMenu, {
+        store,
+        localVue,
+        propsData: {
+          columnName: 'columnA',
+        },
+      });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(7).trigger('click');
+      await localVue.nextTick();
+      expect(store.state.vqb.pipeline).toEqual([{ name: 'uniquegroups', on: ['columnA'] }]);
+    });
+
+    it('should emit a close event', () => {
+      const store = setupMockStore();
+      const wrapper = shallowMount(ActionMenu, { store, localVue });
+      const actionsWrapper = wrapper.findAll('.action-menu__option');
+      actionsWrapper.at(7).trigger('click');
+      expect(wrapper.emitted().closed).toBeTruthy();
+    });
+  });
 });

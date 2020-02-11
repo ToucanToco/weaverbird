@@ -27,6 +27,7 @@ import toDateSchema from './todate';
 import toLowerSchema from './tolower';
 import topBuildSchema from './top';
 import toUpperSchema from './toupper';
+import uniqueGroupsSchema from './uniquegroups';
 import unpivotSchema from './unpivot';
 
 type buildSchemaType = ((form: any) => object) | object;
@@ -61,6 +62,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   todate: toDateSchema,
   top: topBuildSchema,
   unpivot: unpivotSchema,
+  uniquegroups: uniqueGroupsSchema,
   uppercase: toUpperSchema,
 };
 

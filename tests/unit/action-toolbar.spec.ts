@@ -104,22 +104,6 @@ describe('ActionToolbar', () => {
     expect(button1.props('isActive')).toBeFalsy();
   });
 
-  it('should emit an actionClicked event only on an aggregate button', () => {
-    const store = setupMockStore();
-    const wrapper = shallowMount(ActionToolbar, {
-      store,
-      localVue,
-      propsData: {
-        buttons: [{ label: 'Filter' }, { label: 'Aggregate' }],
-      },
-    });
-    const buttons = wrapper.findAll('action-toolbar-button-stub');
-    buttons.at(0).trigger('click');
-    expect(wrapper.emitted().actionClicked).toBeUndefined();
-    buttons.at(1).trigger('click');
-    expect(wrapper.emitted().actionClicked[0]).toEqual(['aggregate', {}]);
-  });
-
   it('should instantiate the search bar', () => {
     const wrapper = shallowMount(ActionToolbar, {
       propsData: {
