@@ -1794,4 +1794,35 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate a uniquegroups step step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'uniquegroups',
+        on: ['col1', 'col2'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: {
+            col1: '$col1',
+            col2: '$col2',
+          },
+        },
+      },
+      {
+        $project: {
+          col1: '$_id.col1',
+          col2: '$_id.col2',
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
 });

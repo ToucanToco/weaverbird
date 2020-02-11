@@ -186,6 +186,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   top(step: Readonly<S.TopStep>) {}
 
   @unsupported
+  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {}
+
+  @unsupported
   unpivot(step: Readonly<S.UnpivotStep>) {}
 
   @unsupported
