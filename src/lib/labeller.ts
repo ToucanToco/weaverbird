@@ -219,6 +219,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Keep top ${step.limit} values in column "${step.rank_on}"`;
   }
 
+  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
+    return `Get unique groups/values in columns ${formatMulticol(step.on)}`;
+  }
+
   unpivot(step: Readonly<S.UnpivotStep>) {
     return `Unpivot columns ${formatMulticol(step.unpivot)}`;
   }
