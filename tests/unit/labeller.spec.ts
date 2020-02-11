@@ -497,4 +497,12 @@ describe('Labeller', () => {
     };
     expect(hrl(step)).toEqual('Unpivot columns "column3", "column4"');
   });
+
+  it('generates label for uniquegroups steps', () => {
+    const step: S.UniqueGroupsStep = {
+      name: 'uniquegroups',
+      on: ['column1', 'column2'],
+    };
+    expect(hrl(step)).toEqual('Get unique groups/values in columns "column1", "column2"');
+  });
 });
