@@ -55,6 +55,7 @@ describe('SearchBar', () => {
       'append',
       'join',
       'custom',
+      'uniquegroups',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -99,6 +100,7 @@ describe('SearchBar', () => {
       'append',
       'join',
       'custom',
+      'uniquegroups',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });

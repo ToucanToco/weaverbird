@@ -46,11 +46,7 @@ export default class ActionToolbar extends Vue {
   }
 
   openPopover(index: number) {
-    const buttondef = this.buttons[index];
     this.isActiveActionToolbarButton = index;
-    if (buttondef.label === 'Aggregate') {
-      this.actionClicked('aggregate');
-    }
   }
 
   get formattedButtons() {

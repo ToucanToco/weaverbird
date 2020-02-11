@@ -9,6 +9,7 @@
         <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
         <div class="action-menu__option" @click="createStep('replace')">Replace values</div>
         <div class="action-menu__option" @click="createStep('sort')">Sort values</div>
+        <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
       </div>
     </div>
   </popover>
@@ -88,6 +89,23 @@ export default class ActionMenu extends Vue {
 
   createStep(stepName: PipelineStepName) {
     this.$emit('actionClicked', stepName);
+    this.close();
+  }
+
+  createUniqueGroupsStep() {
+    const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
+    const uniquegroupsStep: PipelineStep = { name: 'uniquegroups', on: [this.columnName] };
+    /**
+     * If a step edition form is already open, close it so that the left panel displays
+     * the pipeline with the new delete step inserted
+     */
+    if (this.isEditingStep) {
+      this.closeStepForm();
+    }
+    newPipeline.splice(index, 0, uniquegroupsStep);
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
     this.close();
   }
 
