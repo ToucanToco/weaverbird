@@ -355,6 +355,13 @@ function transformTop(step: Readonly<S.TopStep>): MongoStep[] {
   ];
 }
 
+/** transform an 'uniquegroups' step into corresponding mongo steps */
+function transformUniqueGroups(step: Readonly<S.UniqueGroupsStep>): MongoStep[] {
+  const id = columnMap(step.on);
+  const project = Object.fromEntries(Object.keys(id).map(col => [col, `$_id.${col}`]));
+  return [{ $group: { _id: id } }, { $project: project }];
+}
+
 /** transform an 'unpivot' step into corresponding mongo steps */
 function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
   // projectCols to be included in Mongo $project steps
@@ -569,6 +576,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
   }),
   top: transformTop,
+  uniquegroups: transformUniqueGroups,
   unpivot: transformUnpivot,
   uppercase: (step: Readonly<S.ToUpperStep>) => ({
     $addFields: { [step.column]: { $toUpper: $$(step.column) } },

@@ -236,6 +236,11 @@ export type ToUpperStep = {
   column: string;
 };
 
+export type UniqueGroupsStep = {
+  name: 'uniquegroups';
+  on: string[];
+};
+
 export type UnpivotStep = {
   name: 'unpivot';
   keep: string[];
@@ -277,6 +282,7 @@ export type PipelineStep =
   | ToLowerStep
   | TopStep
   | ToUpperStep
+  | UniqueGroupsStep
   | UnpivotStep;
 
 export type PipelineStepName = PipelineStep['name'];
