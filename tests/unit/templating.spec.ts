@@ -1008,4 +1008,20 @@ describe('Pipeline interpolator', () => {
     ];
     expect(translate(pipeline)).toEqual(pipeline);
   });
+
+  it('should interpolate uniquegroups steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'uniquegroups',
+        on: ['column1', '<%= foo %>'],
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'uniquegroups',
+        on: ['column1', 'bar'],
+      },
+    ]);
+  });
 });
