@@ -1813,3 +1813,50 @@ Converts a string `column` to uppercase.
 | LABEL 1 | Group 1 | 13    |
 | LABEL 2 | Group 1 | 7     |
 | LABEL 3 | Group 1 | 20    |
+
+### `uniquegroups` step
+
+Allow to get unique groups of values from one or several columns.
+
+```javascript
+{
+  name: 'uniquegroups',
+  on: ['foo', 'bar']
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 1 | Group 2 | 1     |
+| Label 2 | Group 1 | 2     |
+| Label 3 | Group 1 | 3     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'uniquegroups',
+  column: ['Label', 'Group'],
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   |
+| ------- | ------- |
+| Label 1 | Group 1 |
+| Label 1 | Group 2 |
+| Label 2 | Group 1 |
+| Label 3 | Group 1 |

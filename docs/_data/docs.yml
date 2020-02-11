@@ -27,6 +27,7 @@
     - uppercase
     - top
     - unpivot
+    - uniquegroups
 
 - title: Technical documentation
   docs:
