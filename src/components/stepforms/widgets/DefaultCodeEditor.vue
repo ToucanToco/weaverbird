@@ -28,3 +28,8 @@ export default class DefaultCodeEditor extends Vue {
   placeholder!: string;
 }
 </script>
+<style scoped>
+textarea {
+  outline: none;
+}
+</style>
