@@ -8,7 +8,7 @@
       :options="domains"
       placeholder="Choose a domain"
     />
-    <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit" />
+    <step-form-buttonbar :errors="errors" :submit="submit" />
   </div>
 </template>
 

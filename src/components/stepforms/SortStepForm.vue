@@ -12,7 +12,7 @@
       :errors="errors"
     />
 
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
+    <step-form-buttonbar :submit="submit" />
   </div>
 </template>
 
