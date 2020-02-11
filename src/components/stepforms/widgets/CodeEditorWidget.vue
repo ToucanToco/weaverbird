@@ -79,22 +79,21 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
 }
 
 .widget-code-editor {
-  @extend %form-widget__field;
-}
-
-.widget-code-editor--focused {
-  @extend %form-widget__field--focused;
-}
-
-.widget-code-editor__container label {
-  @extend %form-widget__label;
-}
-
-.widget-code-editor {
+  border: 1px #f1f1f1 solid;
+  transition: border 0.25s;
   margin: 5px 0px;
   width: 100%;
   height: 300px;
   resize: none;
   font-size: 15px;
+}
+
+.widget-code-editor--focused {
+  border: 1px $active-color solid;
+  transition: border 0.25s;
+}
+
+.widget-code-editor__container label {
+  @extend %form-widget__label;
 }
 </style>
