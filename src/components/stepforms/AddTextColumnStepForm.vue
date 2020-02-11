@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
+    <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <InputTextWidget
       id="textInput"
       v-model="editedStep.text"
@@ -18,7 +18,7 @@
       :errors="errors"
       :warning="duplicateColumnName"
     />
-    <step-form-buttonbar :submit="submit" />
+    <StepFormButtonbar />
   </div>
 </template>
 

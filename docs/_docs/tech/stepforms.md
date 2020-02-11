@@ -6,28 +6,32 @@ permalink: /docs/stepforms/
 # Writing your own Step form
 
 Chances are that you'll want to reuse the standard step form layout
-(i.e. with a title, an `ok` and `cancel` button, etc.). To do that,
+(i.e. with a title, an `ok` and `back` button, etc.). To do that,
 you can leverage a few components and base classes provided:
 
-- `@/components/stepforms/StepFormHeader.vue` is the component that
-  generates a standard step form header bar. It should be fed with a `cancel` event handler and a `title` prop, e.g.:
+- `@/components/stepforms/StepFormHeader.vue` is the component that generates a
+  standard step form header bar. It should be fed with a `title` and `stepName`
+  prop. Furthermore, you can edit the back button behaviour with the
+  `cancelEdition` method of your component. The default is in the `StepForm`
+  base class.
+
+  ![StepFormHeader](/img/StepFormHeader.png)
+
+  Example:
 
   ```typescript
-  <step-form-header :cancel= "cancelEventHandler" :title="title"></step-form-header>
+  <StepFormHeader :stepName="Filter Step" :title="title" />
   ```
 
 - `@/components/stepforms/StepFormButtonBar.vue` is the component that
-  generates a standard step form button bar (_ok_ / _cancel_). It should be fed with
-  three properties:
+  generates a standard step form button bar (_submit_ / _errors_). You can edit the submit button behavior with the `submit` method of your component. The default is in the base class `StepForm`.
 
-  - `errors` the list of errors that should be displayed,
-  - `cancel` the callback that will be called when the _cancel_ button is clicked,
-  - `submit` the callback that will be called when the _submit_ button is clicked.
+  ![StepFormButtonbar](/img/StepFormButtonbar.png)
 
-  e.g.:
+  Example:
 
   ```typescript
-  <step-form-buttonbar :errors="errors" :submit="submit"></step-form-buttonbar>
+  <StepFormButtonbar />
   ```
 
 Between those two elements should lie the list on inputs (_text inputs_, _autocomplete_. etc.) that your form wil need.

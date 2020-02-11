@@ -1,6 +1,6 @@
 <template functional>
   <div class="step-edit-form">
-    <button class="step-edit-form__back-button" @click="props.cancel()">
+    <button class="step-edit-form__back-button" @click="parent.cancelEdition">
       <i class="fas fa-angle-left" />
       BACK
     </button>

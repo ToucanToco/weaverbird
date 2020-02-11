@@ -45,7 +45,7 @@ function componentProxyBoundOn(self: Vue) {
 
 /**
  * Simple abstract base class for all step forms. `BaseStepForm` implements some
- * default basic 'submit' / 'cancel' event callbacks and map some of the props /
+ * default basic 'submit' / 'back' event callbacks and map some of the props /
  * getters / state and mutations from the store that you'll most of the time
  * need in your concrete step form implementation:
  * - `@VQBModule.State pipeline`
@@ -55,7 +55,7 @@ function componentProxyBoundOn(self: Vue) {
  *
  * This class provides a default `mounted()` hook that is used to bind the `Ajv`
  * validator that will be used on submit. It provides 2 default callbacks:
- * - `cancelEdition` that will trigger a `cancel` event and restore the selected
+ * - `cancelEdition` that will trigger a `back` event and restore the selected
  *   step as its former value
  * - `submit` that will trigger a `formSaved` event with the step object if
  *   validation passes. Default validation is handled by the `validate` method
@@ -201,11 +201,11 @@ export default class BaseStepForm<StepType> extends Vue {
   }
 
   /**
-   * `cancelEdition` emits the `cancel` event and reset the edited step
+   * `cancelEdition` emits the `back` event and reset the edited step
    * as it was before the edition.
    */
   cancelEdition() {
-    this.$emit('cancel');
+    this.$emit('back');
     const idx = this.isStepCreation ? this.computedActiveStepIndex : this.selectedStepIndex + 1;
     this.selectStep({ index: idx });
   }

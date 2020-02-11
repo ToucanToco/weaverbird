@@ -163,7 +163,7 @@ describe('Query Builder', () => {
       },
     });
     await localVue.nextTick();
-    wrapper.find('renamestepform-stub').vm.$emit('cancel');
+    wrapper.find('renamestepform-stub').vm.$emit('back');
     expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
     expect(store.state.vqb.pipeline).toEqual([{ name: 'domain', domain: 'foo' }]);
   });

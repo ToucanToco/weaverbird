@@ -7,7 +7,7 @@
         :initialStepValue="stepFormInitialValue"
         :stepFormDefaults="stepFormDefaults"
         :isStepCreation="isStepCreation"
-        @cancel="closeStepForm"
+        @back="closeStepForm"
         @formSaved="saveStep"
       />
     </transition>

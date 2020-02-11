@@ -203,12 +203,25 @@ export class BasicStepFormTestRunner {
     const initialPipeline = [...store.state.vqb.pipeline];
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
-    it('should emit "cancel" event when edition is canceled', () => {
+    it('should emit "back" event when back button is clicked', () => {
       const wrapper = mount(this.componentType, { store, localVue: this.vue, sync: false });
       wrapper.find('.step-edit-form__back-button').trigger('click');
-      expect(wrapper.emitted()).toEqual({ cancel: [[]] });
+      expect(wrapper.emitted()).toEqual({ back: [[]] });
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
       expect(store.state.vqb.pipeline).toEqual(initialPipeline);
+    });
+
+    it('should overwrite cancelEdition function', () => {
+      const cancelEditionCustomMock = jest.fn();
+      const methods = { cancelEdition: cancelEditionCustomMock };
+      const wrapper = mount(this.componentType, {
+        store,
+        localVue: this.vue,
+        sync: false,
+        methods,
+      });
+      wrapper.find('.step-edit-form__back-button').trigger('click');
+      expect(cancelEditionCustomMock).toHaveBeenCalledTimes(1);
     });
   }
 

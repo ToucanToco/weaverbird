@@ -1,6 +1,6 @@
 <template>
   <div>
-    <step-form-header :cancel="cancelEdition" :title="title" :stepName="this.editedStep.name" />
+    <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <label v-if="name">{{ name }}</label>
     <CodeEditorWidget
       v-model="editedStep.query"
@@ -8,7 +8,7 @@
       :errors="errors"
       data-path=".query"
     />
-    <step-form-buttonbar :submit="submit" />
+    <StepFormButtonbar />
   </div>
 </template>
 
