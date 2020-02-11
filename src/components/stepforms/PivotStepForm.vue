@@ -36,7 +36,7 @@
       data-path=".agg_function"
       :errors="errors"
     />
-    <step-form-buttonbar :cancel="cancelEdition" :submit="submit" />
+    <step-form-buttonbar :submit="submit" />
   </div>
 </template>
 <script lang="ts">

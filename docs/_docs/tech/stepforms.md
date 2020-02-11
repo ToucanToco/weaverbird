@@ -27,7 +27,7 @@ you can leverage a few components and base classes provided:
   e.g.:
 
   ```typescript
-  <step-form-buttonbar :errors="errors" :cancel="cancelEdition" :submit="submit"></step-form-buttonbar>
+  <step-form-buttonbar :errors="errors" :submit="submit"></step-form-buttonbar>
   ```
 
 Between those two elements should lie the list on inputs (_text inputs_, _autocomplete_. etc.) that your form wil need.
