@@ -19,7 +19,7 @@
     "lint": "eslint src/{components,lib,store}/**/*.{ts,vue} tests/**/*.ts",
     "build-bundle": "rollup -c",
     "build-doc": "typedoc --readme README.md --out dist/docs src/",
-    "playground": "concurrently \"yarn:build-bundle --watch\" \"node playground/server.js\"",
+    "playground": "concurrently \"yarn:build-bundle --watch\" \"live-server playground/dist --port=3000\"",
     "storybook": "start-storybook -p 9001 -c .storybook",
     "storybook:bundle": "rollup -c .storybook/rollup.config.js",
     "test:quick": "VQB_QUICKTEST=1 jest",
@@ -74,7 +74,6 @@
     "jsdom-global": "^3.0.2",
     "meow": "^5.0.0",
     "mocha": "^6.1.4",
-    "mongodb": "^3.2.3",
     "mongodb-prebuilt": "^6.5.0",
     "multer": "^1.4.1",
     "node-sass": "^4.11.0",
@@ -134,8 +133,10 @@
     "@formschema/native": "^2.0.0-alpha.2",
     "@types/ajv": "^1.0.0",
     "ajv": "^6.10.0",
+    "live-server": "^1.2.1",
     "lodash": "^4.17.11",
     "mathjs": "^5.9.0",
+    "mingo": "^2.4.0",
     "ts-jest": "^24.0.2"
   }
 }
