@@ -2,6 +2,9 @@
 
 ## UNRELEASED -
 
+### Added
+- When the dataset is updated, compute unique values for each columns using available rows and insert them in dataset's header
+
 ### Fixed
 
 - Fixed bad sort step from initialization

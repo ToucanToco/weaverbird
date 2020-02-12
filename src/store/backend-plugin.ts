@@ -11,6 +11,7 @@ import { Store } from 'vuex';
 
 import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
+import { addLocalUniquesToDataset } from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
@@ -137,7 +138,7 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
     pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
   );
   if (!response.error) {
-    store.commit(VQBnamespace('setDataset'), { dataset: response.data });
+    store.commit(VQBnamespace('setDataset'), { dataset: addLocalUniquesToDataset(response.data) });
   }
 }
 

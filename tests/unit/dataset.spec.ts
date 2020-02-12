@@ -1,4 +1,5 @@
 import { DataSet } from '@/lib/dataset';
+import { addLocalUniquesToDataset, iterateRecords } from '@/lib/dataset/helpers';
 import {
   _guessType,
   inferTypeFromDataset,
@@ -326,5 +327,139 @@ describe('inferTypeFromDataset', () => {
       { name: 'density', type: 'float' },
       { name: 'isCapitalCity', type: 'boolean' },
     ]);
+  });
+});
+
+describe('dataset records iteration', () => {
+  it('should handle empty datasets', () => {
+    const dataset: DataSet = { headers: [], data: [] };
+    expect(Array.from(iterateRecords(dataset))).toEqual([]);
+  });
+
+  it('should iterate on dataset records', () => {
+    const dataset: DataSet = {
+      headers: [{ name: 'city' }, { name: 'density' }, { name: 'isCapitalCity' }],
+      data: [
+        ['Paris', 61.7, true],
+        ['Marseille', 40, false],
+        ['Berlin', 41.5, true],
+      ],
+    };
+    expect(Array.from(iterateRecords(dataset))).toEqual([
+      { city: 'Paris', density: 61.7, isCapitalCity: true },
+      { city: 'Marseille', density: 40, isCapitalCity: false },
+      { city: 'Berlin', density: 41.5, isCapitalCity: true },
+    ]);
+  });
+});
+
+describe('dataset local uniques computation', () => {
+  it('should handle empty datasets with no columns', () => {
+    const dataset: DataSet = { headers: [], data: [] };
+    const extendedDataset = addLocalUniquesToDataset(dataset);
+    expect(dataset).toEqual({ headers: [], data: [] });
+    expect(extendedDataset).toEqual({
+      headers: [],
+      data: [],
+    });
+  });
+
+  it('should handle empty datasets with columns', () => {
+    const dataset: DataSet = { headers: [{ name: 'city' }, { name: 'density' }], data: [] };
+    const extendedDataset = addLocalUniquesToDataset(dataset);
+    expect(dataset).toEqual({ headers: [{ name: 'city' }, { name: 'density' }], data: [] });
+    expect(extendedDataset).toEqual({
+      headers: [
+        { name: 'city', uniques: { values: [], loaded: false } },
+        { name: 'density', uniques: { values: [], loaded: false } },
+      ],
+      data: [],
+    });
+  });
+
+  it('should handle datasets', () => {
+    const dataset: DataSet = {
+      headers: [
+        { name: 'city' },
+        { name: 'density' },
+        { name: 'isCapitalCity' },
+        { name: 'population' },
+      ],
+      data: [
+        ['Paris', 61.7, true, { population: 9 }],
+        ['Marseille', 40, false, { population: 4 }],
+        ['Berlin', 41.5, true, { population: 3 }],
+        ['Paris', 2, true, { population: 9 }],
+      ],
+    };
+    const extendedDataset = addLocalUniquesToDataset(dataset);
+    expect(dataset).toEqual({
+      headers: [
+        { name: 'city' },
+        { name: 'density' },
+        { name: 'isCapitalCity' },
+        { name: 'population' },
+      ],
+      data: [
+        ['Paris', 61.7, true, { population: 9 }],
+        ['Marseille', 40, false, { population: 4 }],
+        ['Berlin', 41.5, true, { population: 3 }],
+        ['Paris', 2, true, { population: 9 }],
+      ],
+    });
+    expect(extendedDataset).toEqual({
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Paris', nbOcc: 2 },
+              { value: 'Marseille', nbOcc: 1 },
+              { value: 'Berlin', nbOcc: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'density',
+          uniques: {
+            values: [
+              { value: 2, nbOcc: 1 }, // result order depends on the other columns because they have all the same nbOcc
+              { value: 40, nbOcc: 1 },
+              { value: 61.7, nbOcc: 1 },
+              { value: 41.5, nbOcc: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'isCapitalCity',
+          uniques: {
+            values: [
+              { value: true, nbOcc: 3 },
+              { value: false, nbOcc: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'population',
+          uniques: {
+            values: [
+              { value: '{"population":9}', nbOcc: 2 },
+              { value: '{"population":4}', nbOcc: 1 },
+              { value: '{"population":3}', nbOcc: 1 },
+            ],
+            loaded: false,
+          },
+        },
+      ],
+      data: [
+        ['Paris', 61.7, true, { population: 9 }],
+        ['Marseille', 40, false, { population: 4 }],
+        ['Berlin', 41.5, true, { population: 3 }],
+        ['Paris', 2, true, { population: 9 }],
+      ],
+    });
   });
 });

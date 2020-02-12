@@ -12,6 +12,10 @@ export type ColumnTypeMapping = {
 export type DataSetColumn = {
   name: string;
   type?: DataSetColumnType;
+  uniques?: {
+    values: any[];
+    loaded: boolean;
+  };
 };
 
 /**
