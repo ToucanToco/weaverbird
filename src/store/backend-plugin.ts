@@ -87,40 +87,67 @@ export function dereferencePipelines(
   return dereferencedPipeline;
 }
 
-async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
-  if (!store.getters[VQBnamespace('pipeline')].length) {
-    return;
+export let backendService: BackendService; // set at plugin instantiation
+
+/**
+ * `_preparePipeline` responsibility is to prepare the pipeline so as to be ready for direct translation.
+ * Specifically, this consists in 2 things:
+ *   - dereferencePipelines
+ *   - interpolate if an `interpolateFunc` has been set
+ */
+function _preparePipeline(pipeline: Pipeline, store: Store<any>) {
+  const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
+  if (pipelines && Object.keys(pipelines).length) {
+    pipeline = dereferencePipelines(pipeline, pipelines);
   }
-  try {
-    store.commit(VQBnamespace('setLoading'), { isLoading: true });
-    const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
-    if (pipelines && Object.keys(pipelines).length) {
-      pipeline = dereferencePipelines(pipeline, pipelines);
-    }
-    if (interpolateFunc && variables && Object.keys(variables).length) {
-      const columnTypes = store.getters[VQBnamespace('columnTypes')];
-      const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
-      pipeline = interpolator.interpolate(pipeline);
-    }
-    const response = await service.executePipeline(
-      store,
-      pipeline,
-      store.state[VQB_MODULE_NAME].pagesize,
-      pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
-    );
-    if (response.error) {
+  if (interpolateFunc && variables && Object.keys(variables).length) {
+    const columnTypes = store.getters[VQBnamespace('columnTypes')];
+    const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
+    pipeline = interpolator.interpolate(pipeline);
+  }
+  return pipeline;
+}
+
+/**
+ * `backendify` is a wrapper around backend service functions that:
+ *   - sets the `loading: true` property on the store at the beginning,
+ *   - logs the error in the store if any,
+ *   - sets the `loading: false` property on the store at the end.
+ */
+export function backendify(target: Function) {
+  return async function(this: BackendService | void, store: Store<any>, ...args: any[]) {
+    try {
+      store.commit(VQBnamespace('setLoading'), { isLoading: true });
+      const response = await target.bind(this)(store, ...args);
+      if (response.error) {
+        store.commit(VQBnamespace('logBackendError'), {
+          backendError: response.error,
+        });
+      }
+      return response;
+    } catch (error) {
+      const response = { error: { type: 'error', message: error.toString() } };
       store.commit(VQBnamespace('logBackendError'), {
-        backendError: { type: 'error', message: response.error },
+        backendError: response.error,
       });
-    } else {
-      store.commit(VQBnamespace('setDataset'), { dataset: response.data });
+      return response;
+    } finally {
+      store.commit(VQBnamespace('setLoading'), { isLoading: false });
     }
-  } catch (error) {
-    store.commit(VQBnamespace('logBackendError'), {
-      backendError: { type: 'error', message: error },
-    });
+  };
+}
+
+async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
+  pipeline = _preparePipeline(pipeline, store);
+  const response = await backendify(service.executePipeline).bind(service)(
+    store,
+    pipeline,
+    store.state[VQB_MODULE_NAME].pagesize,
+    pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
+  );
+  if (!response.error) {
+    store.commit(VQBnamespace('setDataset'), { dataset: response.data });
   }
-  store.commit(VQBnamespace('setLoading'), { isLoading: false });
 }
 
 /**
@@ -140,7 +167,7 @@ export function servicePluginFactory(service: BackendService) {
         mutation.type === VQBnamespace('setCurrentPage')
       ) {
         const pipeline = activePipeline(state[VQB_MODULE_NAME]);
-        if (pipeline) {
+        if (pipeline && pipeline.length > 0) {
           _updateDataset(store, service, pipeline);
         }
       }
