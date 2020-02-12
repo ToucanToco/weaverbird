@@ -65,7 +65,7 @@ export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
     let ret = this.validator({ ...this.editedStep });
     let errors: ErrorObject[] = [];
     try {
-      parse(this.editedStep.formula);
+      parse(this.editedStep.formula.replace(/\[.*?\]/g, 'var'));
     } catch {
       ret = false;
       errors.push({

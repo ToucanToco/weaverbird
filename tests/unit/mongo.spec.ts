@@ -1096,6 +1096,48 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate a formula step with special column name', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'formula',
+        new_column: 'test',
+        formula: '[column with space and + and, oh a - and_also *] + [an other ^column]',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          test: {
+            $add: ['$column with space and + and, oh a - and_also *', '$an other ^column'],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a formula step with a special column name and a normal column name', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'formula',
+        new_column: 'test',
+        formula: '[column with space and + and, oh a - and_also *] + A',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          test: {
+            $add: ['$column with space and + and, oh a - and_also *', '$A'],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate a pivot step', () => {
     const pipeline: Pipeline = [
       {

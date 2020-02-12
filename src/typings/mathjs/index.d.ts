@@ -16,21 +16,25 @@ declare namespace mathjs {
     fn: string;
     op: string;
     args: MathNode[];
+    traverse: function;
   }
 
   interface ConstantNode {
     type: 'ConstantNode';
     value: number;
+    traverse: function;
   }
 
   interface SymbolNode {
     type: 'SymbolNode';
     name: string;
+    traverse: function;
   }
 
   interface ParenthesisNode {
     type: 'ParenthesisNode';
     content: MathNode;
+    traverse: function;
   }
 
   type MathNode = OperatorNode | ConstantNode | SymbolNode | ParenthesisNode;
