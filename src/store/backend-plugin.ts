@@ -87,40 +87,58 @@ export function dereferencePipelines(
   return dereferencedPipeline;
 }
 
+export let backendService: BackendService; // set at plugin instantiation
+
+function _preparePipeline(pipeline: Pipeline, store: Store<any>) {
+  const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
+  if (pipelines && Object.keys(pipelines).length) {
+    pipeline = dereferencePipelines(pipeline, pipelines);
+  }
+  if (interpolateFunc && variables && Object.keys(variables).length) {
+    const columnTypes = store.getters[VQBnamespace('columnTypes')];
+    const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
+    pipeline = interpolator.interpolate(pipeline);
+  }
+  return pipeline;
+}
+
+export function backendify(service: BackendService, target: 'listCollections' | 'executePipeline') {
+  return async function(store: Store<any>, ...args: any[]) {
+    try {
+      store.commit(VQBnamespace('setLoading'), { isLoading: true });
+      const response = await service[target](store, ...args);
+      if (response.error) {
+        store.commit(VQBnamespace('logBackendError'), {
+          backendError: response.error,
+        });
+      }
+      return response;
+    } catch (error) {
+      const response = { error: { type: 'error', message: error.toString() } };
+      store.commit(VQBnamespace('logBackendError'), {
+        backendError: response.error,
+      });
+      return response;
+    } finally {
+      store.commit(VQBnamespace('setLoading'), { isLoading: false });
+    }
+  };
+}
+
 async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
   if (!store.getters[VQBnamespace('pipeline')].length) {
     return;
   }
-  try {
-    store.commit(VQBnamespace('setLoading'), { isLoading: true });
-    const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
-    if (pipelines && Object.keys(pipelines).length) {
-      pipeline = dereferencePipelines(pipeline, pipelines);
-    }
-    if (interpolateFunc && variables && Object.keys(variables).length) {
-      const columnTypes = store.getters[VQBnamespace('columnTypes')];
-      const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
-      pipeline = interpolator.interpolate(pipeline);
-    }
-    const response = await service.executePipeline(
-      store,
-      pipeline,
-      store.state[VQB_MODULE_NAME].pagesize,
-      pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
-    );
-    if (response.error) {
-      store.commit(VQBnamespace('logBackendError'), {
-        backendError: { type: 'error', message: response.error },
-      });
-    } else {
-      store.commit(VQBnamespace('setDataset'), { dataset: response.data });
-    }
-  } catch (error) {
-    store.commit(VQBnamespace('logBackendError'), {
-      backendError: { type: 'error', message: error },
-    });
+  pipeline = _preparePipeline(pipeline, store);
+  const response = await backendify(service, 'executePipeline')(
+    store,
+    pipeline,
+    store.state[VQB_MODULE_NAME].pagesize,
+    pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
+  );
+  if (!response.error) {
+    store.commit(VQBnamespace('setDataset'), { dataset: response.data });
   }
-  store.commit(VQBnamespace('setLoading'), { isLoading: false });
 }
 
 /**

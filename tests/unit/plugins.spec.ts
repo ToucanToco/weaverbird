@@ -6,9 +6,9 @@ import Vuex, { Store } from 'vuex';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
-import { VQBnamespace } from '@/store';
+import { VQB_MODULE_NAME, VQBnamespace } from '@/store';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
+import { backendify, BackendService, servicePluginFactory } from '@/store/backend-plugin';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
@@ -42,6 +42,65 @@ class DummyService implements BackendService {
     });
   }
 }
+
+describe('backendify tests', () => {
+  let store: Store<any>;
+  let commitSpy: any;
+
+  beforeEach(() => {
+    store = setupMockStore();
+    commitSpy = jest.spyOn(store, 'commit');
+  });
+
+  // NOTE: it.each can't be used to test both error and no-error cases because
+  // it messes with typescript's type resolution.
+  it('should return the expected valid response', async () => {
+    const backendResponse = { data: 'foo' }; // no-error backend response
+    const mockOperation = jest.fn((_store, ..._args) => Promise.resolve(backendResponse));
+    const result = await backendify(mockOperation)(store, 'foo', 'bar', 'baz');
+    expect(result).toEqual(backendResponse);
+    expect(mockOperation).toHaveBeenCalledTimes(1);
+    expect(mockOperation).toHaveBeenCalledWith(store, 'foo', 'bar', 'baz');
+    expect(commitSpy).toHaveBeenCalledTimes(2);
+    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('setLoading'), { isLoading: true });
+    expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('setLoading'), { isLoading: false });
+  });
+
+  it('should return the expected no-response', async () => {
+    const backendResponse = { error: { message: 'foo', type: 'error' as 'error' } }; // error backend response
+    const mockOperation = jest.fn((_store, ..._args) => Promise.resolve(backendResponse));
+    const result = await backendify(mockOperation)(store, 'foo', 'bar', 'baz');
+    expect(result).toEqual(backendResponse);
+    expect(mockOperation).toHaveBeenCalledTimes(1);
+    expect(mockOperation).toHaveBeenCalledWith(store, 'foo', 'bar', 'baz');
+    expect(store.state[VQB_MODULE_NAME].backendErrors).toEqual([{ message: 'foo', type: 'error' }]);
+    expect(commitSpy).toHaveBeenCalledTimes(3);
+    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('setLoading'), { isLoading: true });
+    expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendError'), {
+      backendError: { message: 'foo', type: 'error' },
+    });
+    expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('setLoading'), { isLoading: false });
+  });
+
+  it('should catch and log the exception', async () => {
+    const mockOperation = jest.fn(function(_store, ..._args) {
+      throw new Error('oopsie');
+    });
+    const result = await backendify(mockOperation)(store, 'foo', 'bar', 'baz');
+    expect(result).toEqual({ error: { message: 'Error: oopsie', type: 'error' } });
+    expect(mockOperation).toHaveBeenCalledTimes(1);
+    expect(mockOperation).toHaveBeenCalledWith(store, 'foo', 'bar', 'baz');
+    expect(store.state[VQB_MODULE_NAME].backendErrors).toEqual([
+      { message: 'Error: oopsie', type: 'error' },
+    ]);
+    expect(commitSpy).toHaveBeenCalledTimes(3);
+    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('setLoading'), { isLoading: true });
+    expect(commitSpy).toHaveBeenNthCalledWith(2, 'vqb/logBackendError', {
+      backendError: { message: 'Error: oopsie', type: 'error' },
+    });
+    expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('setLoading'), { isLoading: false });
+  });
+});
 
 describe('backend service plugin tests', () => {
   it('should call execute pipeline when a step is clicked on', async () => {
