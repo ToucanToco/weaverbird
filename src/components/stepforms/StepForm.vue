@@ -125,6 +125,12 @@ export default class BaseStepForm<StepType> extends Vue {
     if (this.isStepCreation && this.selectedColumns.length > 0) {
       this.stepSelectedColumn = this.selectedColumns[0];
     }
+    // shortcut to trigger the submit method: `ctr||command+enter`
+    this.$el.addEventListener('keydown', ((event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.code == 'Enter') {
+        this.submit();
+      }
+    }) as EventListener);
   }
 
   /**
