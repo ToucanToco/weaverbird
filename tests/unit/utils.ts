@@ -143,7 +143,7 @@ export class BasicStepFormTestRunner {
     const { testlabel, store, props, data } = testConfiguration;
     // assume by default that the expected output is the initial input
     expectedEmit = expectedEmit ?? props?.initialStepValue;
-    it(`should validate and emit "formSaved" when ${testlabel}`, async () => {
+    it(`should validate and emit "formSaved" when ${testlabel} -- click version`, async () => {
       const wrapper = mount(this.componentType, {
         store: store ?? setupMockStore(),
         localVue: this.vue,
@@ -154,6 +154,42 @@ export class BasicStepFormTestRunner {
         wrapper.setData(data);
       }
       wrapper.find('.widget-form-action__button--validate').trigger('click');
+      await this.vue.nextTick();
+      expect(wrapper.vm.$data.errors).toBeNull();
+      expect(wrapper.emitted()).toEqual({
+        formSaved: [[expectedEmit]],
+      });
+    });
+
+    it(`should validate and emit "formSaved" when ${testlabel} -- shortcut ctrl+enter version`, async () => {
+      const wrapper = mount(this.componentType, {
+        store: store ?? setupMockStore(),
+        localVue: this.vue,
+        propsData: props ?? {},
+        sync: false,
+      });
+      if (data) {
+        wrapper.setData(data);
+      }
+      wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { ctrlKey: true, code: 'Enter' }));
+      await this.vue.nextTick();
+      expect(wrapper.vm.$data.errors).toBeNull();
+      expect(wrapper.emitted()).toEqual({
+        formSaved: [[expectedEmit]],
+      });
+    });
+
+    it(`should validate and emit "formSaved" when ${testlabel} -- shortcut command+enter version`, async () => {
+      const wrapper = mount(this.componentType, {
+        store: store ?? setupMockStore(),
+        localVue: this.vue,
+        propsData: props ?? {},
+        sync: false,
+      });
+      if (data) {
+        wrapper.setData(data);
+      }
+      wrapper.vm.$el.dispatchEvent(new KeyboardEvent('keydown', { metaKey: true, code: 'Enter' }));
       await this.vue.nextTick();
       expect(wrapper.vm.$data.errors).toBeNull();
       expect(wrapper.emitted()).toEqual({
