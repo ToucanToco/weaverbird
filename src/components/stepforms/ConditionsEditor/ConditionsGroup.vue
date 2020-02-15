@@ -29,8 +29,7 @@
         v-if="hasMultipleRows"
         class="condition-row__link"
         :class="{
-          'condition-row__link--last':
-            !(groups && groups.length) && rowIndex === conditions.length - 1,
+          'condition-row__link--last': isLastRow(rowIndex),
         }"
       >
         <div class="condition-row__link__top" />
@@ -53,7 +52,7 @@
     >
       <div
         class="conditions-group__link"
-        :class="{ 'conditions-group__link--last': groupIndex === groups.length - 1 }"
+        :class="{ 'conditions-group__link--last': isLastGroup(groupIndex) }"
       >
         <div class="conditions-group__link__top" />
         <div class="conditions-group__link__middle" />
@@ -183,6 +182,16 @@ export default class ConditionsGroup extends Vue {
     };
 
     this.emitUpdatedConditionTree(newConditionsTree);
+  }
+
+  isLastRow(rowIndex: number) {
+    const hasGroups = this.groups && this.groups.length;
+    const isLastCondition = rowIndex === this.conditions.length - 1;
+    return !hasGroups && isLastCondition;
+  }
+
+  isLastGroup(groupIndex: number) {
+    return groupIndex === this.groups.length - 1;
   }
 
   updateCondition(rowIndex: number) {
