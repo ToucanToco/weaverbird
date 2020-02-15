@@ -19,7 +19,6 @@
 </template>
 
 <script lang="ts">
-import _ from 'lodash';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { FilterSimpleCondition } from '@/lib/steps';
@@ -43,13 +42,13 @@ export default class ConditionForm extends Vue {
     }
   }
 
-  updateInput = _.debounce((type: string, newValue: any) => {
+  updateInput(type: string, newValue: any) {
     const newCondition = {
       ...this.condition,
       [type]: newValue,
     };
     this.emitUpdatedCondition(newCondition);
-  }, 500);
+  }
 
   emitUpdatedCondition(newCondition: FilterSimpleCondition) {
     this.$emit('conditionUpdated', newCondition);
