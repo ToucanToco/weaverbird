@@ -96,8 +96,22 @@ describe('ConditionsGroup', () => {
       expect(wrapper.find('.conditions-group__switch').exists()).toBeTruthy();
     });
 
-    it('should display a link', () => {
-      expect(wrapper.find('.condition-row__link').exists()).toBeTruthy();
+    describe('links', () => {
+      it('should be plain links for all elements but the last condition', () => {
+        const conditionRowWrappers = wrapper.findAll('.condition-row');
+        expect(
+          conditionRowWrappers
+            .at(0)
+            .find('.condition-row__link')
+            .classes(),
+        ).not.toContain('condition-row__link--last');
+        expect(
+          conditionRowWrappers
+            .at(1)
+            .find('.condition-row__link')
+            .classes(),
+        ).toContain('condition-row__link--last');
+      });
     });
   });
 
@@ -106,10 +120,13 @@ describe('ConditionsGroup', () => {
       wrapper = shallowMount(ConditionsGroup, {
         propsData: {
           conditionsTree: {
-            conditions: ['condition A'],
+            conditions: ['condition A', 'condition A'],
             groups: [
               {
-                conditions: ['condition B'],
+                conditions: ['condition B', 'condition C'],
+              },
+              {
+                conditions: ['condition D', 'condition E'],
               },
             ],
           },
@@ -127,6 +144,38 @@ describe('ConditionsGroup', () => {
 
     it('should display a link', () => {
       expect(wrapper.find('.conditions-group__link').exists()).toBeTruthy();
+    });
+
+    describe('links', () => {
+      it('should be plain links for all elements but the last group', () => {
+        const conditionRowWrappers = wrapper.findAll('.condition-row');
+        expect(
+          conditionRowWrappers
+            .at(0)
+            .find('.condition-row__link')
+            .classes(),
+        ).not.toContain('condition-row__link--last');
+        expect(
+          conditionRowWrappers
+            .at(1)
+            .find('.condition-row__link')
+            .classes(),
+        ).not.toContain('condition-row__link--last');
+
+        const childGroupWrappers = wrapper.findAll('.conditions-group__child-group');
+        expect(
+          childGroupWrappers
+            .at(0)
+            .find('.conditions-group__link')
+            .classes(),
+        ).not.toContain('conditions-group__link--last');
+        expect(
+          childGroupWrappers
+            .at(1)
+            .find('.conditions-group__link')
+            .classes(),
+        ).toContain('conditions-group__link--last');
+      });
     });
 
     it('should display the trash button for each group', () => {
