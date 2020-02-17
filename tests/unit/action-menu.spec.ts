@@ -85,7 +85,7 @@ describe('Action Menu', () => {
   });
 
   describe('when clicking on "Delete column"', () => {
-    it('should add a valide delete step in the pipeline', async () => {
+    it('should add a valid delete step in the pipeline', async () => {
       const store = setupMockStore();
       const wrapper = shallowMount(ActionMenu, {
         store,
@@ -97,7 +97,9 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');
       await localVue.nextTick();
-      expect(store.state.vqb.pipeline).toEqual([{ name: 'delete', columns: ['columnA'] }]);
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+        { name: 'delete', columns: ['columnA'] },
+      ]);
     });
 
     it('should emit a close event', () => {
@@ -219,7 +221,9 @@ describe('Action Menu', () => {
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(7).trigger('click');
       await localVue.nextTick();
-      expect(store.state.vqb.pipeline).toEqual([{ name: 'uniquegroups', on: ['columnA'] }]);
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+        { name: 'uniquegroups', on: ['columnA'] },
+      ]);
     });
 
     it('should emit a close event', () => {

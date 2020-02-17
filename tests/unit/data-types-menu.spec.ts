@@ -2,8 +2,9 @@ import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import DataTypesMenu from '@/components/DataTypesMenu.vue';
+import { VQBnamespace } from '@/store';
 
-import { setupMockStore } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -36,14 +37,18 @@ describe('Data Types Menu', () => {
   });
 
   describe('when clicking on a data type', () => {
-    it('should add a valide convert step in the pipeline and select it', async () => {
-      const store = setupMockStore({
-        pipeline: [
-          { name: 'domain', domain: 'test' },
-          { name: 'delete', columns: ['test'] },
-        ],
-        selectedStepIndex: 0,
-      });
+    it('should add a valid convert step in the pipeline and select it', async () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline(
+          [
+            { name: 'domain', domain: 'test' },
+            { name: 'delete', columns: ['test'] },
+          ],
+          {
+            selectedStepIndex: 0,
+          },
+        ),
+      );
       const wrapper = shallowMount(DataTypesMenu, {
         store,
         localVue,
@@ -54,7 +59,7 @@ describe('Data Types Menu', () => {
       const actionsWrapper = wrapper.findAll('.data-types-menu__option');
       actionsWrapper.at(0).trigger('click');
       await localVue.nextTick();
-      expect(store.state.vqb.pipeline).toEqual([
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'test' },
         { name: 'convert', columns: ['columnA'], data_type: 'integer' },
         { name: 'delete', columns: ['test'] },
