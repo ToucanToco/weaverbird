@@ -39,7 +39,7 @@ export interface VQBState {
   /**
    * saved pipelines, with unique name as key and pipeline as value
    */
-  pipelines: { [k: string]: Pipeline };
+  pipelines: { [name: string]: Pipeline };
 
   /**
    * object used to fill an edit step form
