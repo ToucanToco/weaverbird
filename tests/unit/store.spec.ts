@@ -28,7 +28,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState(stateWithOnePipeline(pipeline));
-      expect(getters.activePipeline(state)).toEqual(pipeline);
+      expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline);
     });
 
     it('should return a partial pipeline if selectedIndex is specified', () => {
@@ -38,7 +38,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline), selectedStepIndex: 1 });
-      expect(getters.activePipeline(state)).toEqual(pipeline.slice(0, 2));
+      expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline.slice(0, 2));
     });
 
     it('should return an empty pipeline if selectedIndex is -1', () => {
@@ -48,7 +48,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline) });
-      expect(getters.inactivePipeline(state)).toEqual([]);
+      expect(getters.inactivePipeline(state, {}, {}, {})).toEqual([]);
     });
 
     it('should return the rest of the pipeline if selectedIndex is specified', () => {
@@ -58,7 +58,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline), selectedStepIndex: 1 });
-      expect(getters.inactivePipeline(state)).toEqual(pipeline.slice(2));
+      expect(getters.inactivePipeline(state, {}, {}, {})).toEqual(pipeline.slice(2));
     });
   });
 
@@ -70,7 +70,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline) });
-      expect(getters.computedActiveStepIndex(state)).toEqual(2);
+      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
     });
 
     it('should compute active step index if selectedIndex is specified', () => {
@@ -80,7 +80,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline), selectedStepIndex: 1 });
-      expect(getters.computedActiveStepIndex(state)).toEqual(1);
+      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(1);
     });
   });
 
@@ -92,7 +92,7 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      expect(getters.columnNames(state)).toEqual(['col1', 'col2']);
+      expect(getters.columnNames(state, {}, {}, {})).toEqual(['col1', 'col2']);
     });
 
     it('should be able to handle empty headers', () => {
@@ -102,7 +102,7 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      expect(getters.columnNames(state)).toEqual([]);
+      expect(getters.columnNames(state, {}, {}, {})).toEqual([]);
     });
   });
 
@@ -118,7 +118,7 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      const columnTypes = getters.columnTypes(state);
+      const columnTypes = getters.columnTypes(state, {}, {}, {});
       expect(columnTypes).toEqual({
         col1: 'integer',
         col2: 'boolean',
@@ -135,7 +135,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline) });
-      expect(getters.domainStep(state)).toEqual(pipeline[0]);
+      expect(getters.domainStep(state, {}, {}, {})).toEqual(pipeline[0]);
     });
   });
 
@@ -147,7 +147,7 @@ describe('getter tests', () => {
           data: [],
         },
       });
-      expect(getters.isDatasetEmpty(state)).toBeTruthy();
+      expect(getters.isDatasetEmpty(state, {}, {}, {})).toBeTruthy();
     });
 
     it('should return false if dataset is not empty', () => {
@@ -157,7 +157,7 @@ describe('getter tests', () => {
           data: [[0, 0]],
         },
       });
-      expect(getters.isDatasetEmpty(state)).toBeFalsy();
+      expect(getters.isDatasetEmpty(state, {}, {}, {})).toBeFalsy();
     });
   });
 
@@ -165,7 +165,7 @@ describe('getter tests', () => {
     it('should return true if pipeline is empty', () => {
       const pipeline: Pipeline = [];
       const state = buildState({ ...stateWithOnePipeline(pipeline) });
-      expect(getters.isPipelineEmpty(state)).toBeTruthy();
+      expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeTruthy();
     });
 
     it('should return false if pipeline is not empty', () => {
@@ -175,49 +175,49 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
       const state = buildState({ ...stateWithOnePipeline(pipeline) });
-      expect(getters.isPipelineEmpty(state)).toBeFalsy();
+      expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeFalsy();
     });
   });
 
   describe('step disabled tests', () => {
     it('should return false if selected step is not specified or -1', () => {
       let state = buildState({});
-      expect(getters.isStepDisabled(state)(0)).toBeFalsy();
-      expect(getters.isStepDisabled(state)(1)).toBeFalsy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(0)).toBeFalsy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(1)).toBeFalsy();
       state = buildState({ selectedStepIndex: -1 });
-      expect(getters.isStepDisabled(state)(0)).toBeFalsy();
-      expect(getters.isStepDisabled(state)(1)).toBeFalsy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(0)).toBeFalsy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(1)).toBeFalsy();
     });
 
     it('should return false if selected step index is greater than index', () => {
       const state = buildState({ selectedStepIndex: 1 });
-      expect(getters.isStepDisabled(state)(0)).toBeFalsy();
-      expect(getters.isStepDisabled(state)(1)).toBeFalsy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(0)).toBeFalsy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(1)).toBeFalsy();
     });
 
     it('should return true if selected step index is lower than index', () => {
       const state = buildState({ selectedStepIndex: 1 });
-      expect(getters.isStepDisabled(state)(2)).toBeTruthy();
-      expect(getters.isStepDisabled(state)(3)).toBeTruthy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(2)).toBeTruthy();
+      expect(getters.isStepDisabled(state, {}, {}, {})(3)).toBeTruthy();
     });
   });
 
   describe('message error related test', () => {
     it('should return false if backendError is undefined', () => {
       const state = buildState({ backendErrors: [] });
-      expect(getters.thereIsABackendError(state)).toBeFalsy();
+      expect(getters.thereIsABackendError(state, {}, {}, {})).toBeFalsy();
     });
 
     it('should return true if backendError is not undefined', () => {
       const state = buildState({ backendErrors: [{ type: 'error', message: 'error msg' }] });
-      expect(getters.thereIsABackendError(state)).toBeTruthy();
+      expect(getters.thereIsABackendError(state, {}, {}, {})).toBeTruthy();
     });
   });
 
   describe('translator', () => {
     it('should return the app translator', () => {
       const state = buildState({ translator: 'mongo40' });
-      expect(getters.translator(state)).toEqual('mongo40');
+      expect(getters.translator(state, {}, {}, {})).toEqual('mongo40');
     });
   });
 });
@@ -246,7 +246,7 @@ describe('mutation tests', () => {
     expect(state.currentDomain).toEqual('foo');
     mutations.setCurrentDomain(state, { currentDomain: 'bar' });
     expect(state.currentDomain).toEqual('bar');
-    expect(getters.pipeline(state)).toEqual([{ name: 'domain', domain: 'bar' }]);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual([{ name: 'domain', domain: 'bar' }]);
   });
 
   it('sets current domain on non empty pipeline', () => {
@@ -259,7 +259,7 @@ describe('mutation tests', () => {
     expect(state.currentDomain).toEqual('foo');
     mutations.setCurrentDomain(state, { currentDomain: 'bar' });
     expect(state.currentDomain).toEqual('bar');
-    expect(getters.pipeline(state)).toEqual([
+    expect(getters.pipeline(state, {}, {}, {})).toEqual([
       { name: 'domain', domain: 'bar' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
@@ -303,9 +303,9 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
     const state = buildState({});
-    expect(getters.pipeline(state)).toEqual([]);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
     mutations.setPipeline(state, { pipeline });
-    expect(getters.pipeline(state)).toEqual(pipeline);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
   });
 
   it('should set current domain when updating pipeline with domain', () => {
@@ -317,10 +317,10 @@ describe('mutation tests', () => {
       currentDomain: 'babar',
       ...stateWithOnePipeline([{ name: 'domain', domain: 'babar' }]),
     });
-    expect(getters.pipeline(state)).toEqual([{ name: 'domain', domain: 'babar' }]);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual([{ name: 'domain', domain: 'babar' }]);
     expect(state.currentDomain).toEqual('babar');
     mutations.setPipeline(state, { pipeline });
-    expect(getters.pipeline(state)).toEqual(pipeline);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
     expect(state.currentDomain).toEqual('foo');
   });
 
@@ -334,7 +334,7 @@ describe('mutation tests', () => {
       ...stateWithOnePipeline([{ name: 'rename', oldname: 'foo', newname: 'bar' }]),
     });
     mutations.setPipeline(state, { pipeline });
-    expect(getters.pipeline(state)).toEqual(pipeline);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
     expect(state.currentDomain).toEqual('foo');
   });
 
@@ -367,7 +367,7 @@ describe('mutation tests', () => {
   it('should create a step form', () => {
     const state = buildState({});
     mutations.createStepForm(state, { stepName: 'filter' });
-    expect(getters.isEditingStep(state)).toBeTruthy();
+    expect(getters.isEditingStep(state, {}, {}, {})).toBeTruthy();
     expect(state.currentStepFormName).toEqual('filter');
     expect(state.stepFormInitialValue).toBeUndefined();
   });
@@ -378,7 +378,7 @@ describe('mutation tests', () => {
       stepName: 'rename',
       initialValue: { oldname: 'oldcolumn', newname: 'newcolumn' },
     });
-    expect(getters.isEditingStep(state)).toBeTruthy();
+    expect(getters.isEditingStep(state, {}, {}, {})).toBeTruthy();
     expect(state.currentStepFormName).toEqual('rename');
     expect(state.stepFormInitialValue).toEqual({ oldname: 'oldcolumn', newname: 'newcolumn' });
   });
@@ -386,7 +386,7 @@ describe('mutation tests', () => {
   it('should close an opened form', () => {
     const state = buildState({ currentStepFormName: 'rename' });
     mutations.closeStepForm(state);
-    expect(getters.isEditingStep(state)).toBeFalsy();
+    expect(getters.isEditingStep(state, {}, {}, {})).toBeFalsy();
     expect(state.currentStepFormName).toBeUndefined();
   });
 
