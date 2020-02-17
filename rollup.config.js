@@ -1,13 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-import alias from 'rollup-plugin-alias';
-import commonjs from 'rollup-plugin-commonjs';
+import alias from '@rollup/plugin-alias';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import replace from '@rollup/plugin-replace';
+import resolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+
 import css from 'rollup-plugin-css-only';
-import json from 'rollup-plugin-json';
-import replace from 'rollup-plugin-replace';
-import resolve from 'rollup-plugin-node-resolve';
-import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
 import { terser } from 'rollup-plugin-terser';
 
