@@ -16,6 +16,7 @@ export interface VQBState {
    */
   domains: string[];
   /**
+   * FIXME should be a getter from the current pipeline
    * the domain currently selected.
    */
   currentDomain?: string;
@@ -32,6 +33,7 @@ export interface VQBState {
    */
   selectedStepIndex: number;
   /**
+   * FIXME should be a getter from pipelines + current selected pipeline
    * the current pipeline (including inactive steps).
    */
   pipeline: Pipeline;
