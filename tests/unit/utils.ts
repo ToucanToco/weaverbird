@@ -200,7 +200,7 @@ export class BasicStepFormTestRunner {
 
   testCancel(initialState: Partial<VQBState> = {}) {
     const store = setupMockStore(initialState);
-    const initialPipeline = [...store.state.vqb.pipeline];
+    const initialPipeline = [...store.getters.vqb.pipeline];
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should emit "back" event when back button is clicked', () => {
@@ -208,7 +208,7 @@ export class BasicStepFormTestRunner {
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(wrapper.emitted()).toEqual({ back: [[]] });
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
-      expect(store.state.vqb.pipeline).toEqual(initialPipeline);
+      expect(store.getters.vqb.pipeline).toEqual(initialPipeline);
     });
 
     it('should overwrite cancelEdition function', () => {
