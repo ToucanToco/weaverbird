@@ -2,8 +2,9 @@ import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
+import { VQBnamespace } from '@/store';
 
-import { setupMockStore } from './utils';
+import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -149,10 +150,11 @@ describe('ActionToolbarButton', () => {
 
   describe('When clicking on the "To lowercase" operation', () => {
     it('should close any open step form', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'text' },
         store,
@@ -164,10 +166,11 @@ describe('ActionToolbarButton', () => {
     });
 
     it('should insert a lowercase step in pipeline', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'text' },
         store,
@@ -175,7 +178,7 @@ describe('ActionToolbarButton', () => {
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
-      expect(store.state.vqb.pipeline).toEqual([
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'lowercase', column: 'foo' },
       ]);
@@ -183,10 +186,11 @@ describe('ActionToolbarButton', () => {
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'text' },
         store,
@@ -200,10 +204,11 @@ describe('ActionToolbarButton', () => {
 
   describe('When clicking on the "To uppercase" operation', () => {
     it('should close any open step form', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'text' },
         store,
@@ -215,10 +220,11 @@ describe('ActionToolbarButton', () => {
     });
 
     it('should insert a lowercase step in pipeline', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'text' },
         store,
@@ -226,7 +232,7 @@ describe('ActionToolbarButton', () => {
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(5).trigger('click');
-      expect(store.state.vqb.pipeline).toEqual([
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'uppercase', column: 'foo' },
       ]);
@@ -234,10 +240,11 @@ describe('ActionToolbarButton', () => {
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'text' },
         store,
@@ -251,10 +258,11 @@ describe('ActionToolbarButton', () => {
 
   describe('When clicking on the "Convert from text to date" operation', () => {
     it('should close any open step form', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'date' },
         store,
@@ -266,10 +274,11 @@ describe('ActionToolbarButton', () => {
     });
 
     it('should insert a todate step in pipeline', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'date' },
         store,
@@ -277,7 +286,7 @@ describe('ActionToolbarButton', () => {
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(0).trigger('click');
-      expect(store.state.vqb.pipeline).toEqual([
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'myDomain' },
         { name: 'todate', column: 'foo' },
       ]);
@@ -285,10 +294,11 @@ describe('ActionToolbarButton', () => {
     });
 
     it('should emit a close event', async () => {
-      const store = setupMockStore({
-        pipeline: [{ name: 'domain', domain: 'myDomain' }],
-        selectedColumns: ['foo'],
-      });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+          selectedColumns: ['foo'],
+        }),
+      );
       const wrapper = mount(ActionToolbarButton, {
         propsData: { category: 'date' },
         store,
@@ -303,10 +313,11 @@ describe('ActionToolbarButton', () => {
   for (const [idx, operation] of Object.entries(['year', 'month', 'day', 'week'])) {
     describe(`When clicking on the "Extract ${operation} from" operation`, () => {
       it('should insert a todate step in pipeline', async () => {
-        const store = setupMockStore({
-          pipeline: [{ name: 'domain', domain: 'myDomain' }],
-          selectedColumns: ['foo'],
-        });
+        const store = setupMockStore(
+          buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+            selectedColumns: ['foo'],
+          }),
+        );
         const wrapper = mount(ActionToolbarButton, {
           propsData: { category: 'date' },
           store,
@@ -314,7 +325,7 @@ describe('ActionToolbarButton', () => {
         });
         const actionsWrappers = wrapper.findAll('.action-menu__option');
         await actionsWrappers.at(Number(idx) + 2).trigger('click');
-        expect(store.state.vqb.pipeline).toEqual([
+        expect(store.getters[VQBnamespace('pipeline')]).toEqual([
           { name: 'domain', domain: 'myDomain' },
           { name: 'dateextract', column: 'foo', operation },
         ]);
@@ -322,10 +333,11 @@ describe('ActionToolbarButton', () => {
       });
 
       it('should emit a close event', async () => {
-        const store = setupMockStore({
-          pipeline: [{ name: 'domain', domain: 'myDomain' }],
-          selectedColumns: ['foo'],
-        });
+        const store = setupMockStore(
+          buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
+            selectedColumns: ['foo'],
+          }),
+        );
         const wrapper = mount(ActionToolbarButton, {
           propsData: { category: 'date' },
           store,

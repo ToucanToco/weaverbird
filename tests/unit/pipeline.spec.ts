@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline } from '@/lib/steps';
 
-import { setupMockStore } from './utils';
+import { setupMockStore, buildStateWithOnePipeline } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -16,7 +16,7 @@ describe('Pipeline.vue', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore({ pipeline });
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
     const wrapper = shallowMount(PipelineComponent, { store, localVue });
     const steps = wrapper.findAll('step-stub');
     expect(steps.length).toEqual(3);

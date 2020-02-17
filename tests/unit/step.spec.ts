@@ -5,8 +5,9 @@ import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
 import { Pipeline } from '@/lib/steps';
+import { VQBnamespace } from '@/store';
 
-import { setupMockStore } from './utils';
+import { setupMockStore, buildStateWithOnePipeline } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -124,7 +125,7 @@ describe('Step.vue', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore({ pipeline });
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       const wrapper = mount(PipelineComponent, { store, localVue });
       const step = wrapper.findAll(Step).at(1);
 
@@ -134,7 +135,7 @@ describe('Step.vue', () => {
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.fa-times').trigger('click');
       await localVue.nextTick();
-      expect(store.state.vqb.pipeline.length).toEqual(3);
+      expect(store.getters[VQBnamespace('pipeline')].length).toEqual(3);
       expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
 
       // Test for clicking on the bottom-left cancel button
@@ -143,7 +144,7 @@ describe('Step.vue', () => {
       const modalBis = step.find(DeleteConfirmationModal);
       modalBis.find('.vqb-modal__action--secondary').trigger('click');
       await localVue.nextTick();
-      expect(store.state.vqb.pipeline.length).toEqual(3);
+      expect(store.getters[VQBnamespace('pipeline')].length).toEqual(3);
       expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
     });
 
@@ -153,7 +154,7 @@ describe('Step.vue', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore({ pipeline });
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       const wrapper = mount(PipelineComponent, { store, localVue });
       const step = wrapper.findAll(Step).at(1);
       step.find('.fa-trash-alt').trigger('click');
@@ -161,7 +162,7 @@ describe('Step.vue', () => {
       const modal = step.find(DeleteConfirmationModal);
       modal.find('.vqb-modal__action--primary').trigger('click');
       await localVue.nextTick();
-      expect(store.state.vqb.pipeline.length).toEqual(2);
+      expect(store.getters[VQBnamespace('pipeline')].length).toEqual(2);
       expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
     });
   });
@@ -173,7 +174,7 @@ describe('Step.vue', () => {
       { name: 'rename', oldname: 'region', newname: 'kingdom' },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore({ pipeline });
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
@@ -191,7 +192,7 @@ describe('Step.vue', () => {
       { name: 'rename', oldname: 'region', newname: 'kingdom' },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore({ pipeline, isEditingStep: false });
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline, { isEditingStep: false }));
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);

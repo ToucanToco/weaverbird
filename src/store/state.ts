@@ -108,9 +108,9 @@ export function emptyState(): VQBState {
     stepFormInitialValue: undefined,
     stepFormDefaults: undefined,
     selectedStepIndex: -1,
-    currentPipelineName: 'my_pipeline',
+    currentPipelineName: 'default_pipeline',
     pipelines: {
-      my_pipeline: [],
+      default_pipeline: [],
     },
     selectedColumns: [],
     pagesize: 50,

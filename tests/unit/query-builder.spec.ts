@@ -3,28 +3,22 @@ import Vue from 'vue';
 import Vuex, { Store } from 'vuex';
 
 import QueryBuilder from '@/components/QueryBuilder.vue';
-import { registerModule, VQBnamespace } from '@/store';
-import { VQBState } from '@/store/state';
+import { VQBnamespace } from '@/store';
+
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Query Builder', () => {
-  const setupStore = (initialState: any = {}): Store<VQBState> => {
-    const store: Store<VQBState> = new Vuex.Store({});
-    registerModule(store, initialState);
-
-    return store;
-  };
-
   it('should instantiate', () => {
-    const wrapper = shallowMount(QueryBuilder, { store: setupStore(), localVue });
+    const wrapper = shallowMount(QueryBuilder, { store: setupMockStore(), localVue });
     expect(wrapper.exists()).toBeTruthy();
     expect(wrapper.vm.$store.state.isEditingStep).toBeFalsy();
   });
 
   it('should instantiate a AggregateStepForm component', () => {
-    const store = setupStore({ currentStepFormName: 'aggregate' });
+    const store = setupMockStore({ currentStepFormName: 'aggregate' });
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -34,7 +28,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a FormRenameStep component', () => {
-    const store = setupStore({ currentStepFormName: 'rename' });
+    const store = setupMockStore({ currentStepFormName: 'rename' });
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -44,7 +38,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a DeleteColumnStep component', () => {
-    const store = setupStore({ currentStepFormName: 'delete' });
+    const store = setupMockStore({ currentStepFormName: 'delete' });
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -54,7 +48,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a FillnaStep component', () => {
-    const store = setupStore({ currentStepFormName: 'fillna' });
+    const store = setupMockStore({ currentStepFormName: 'fillna' });
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -64,7 +58,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a DomainStep component', () => {
-    const store = setupStore({ currentStepFormName: 'domain' });
+    const store = setupMockStore({ currentStepFormName: 'domain' });
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -79,7 +73,7 @@ describe('Query Builder', () => {
 
     describe('when editing domain step', () => {
       beforeEach(async () => {
-        store = setupStore({
+        store = setupMockStore({
           pipeline: [{ name: 'domain', domain: 'foo' }],
           currentStepFormName: 'domain',
         });
@@ -99,7 +93,9 @@ describe('Query Builder', () => {
           domain: 'bar',
         });
         expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
-        expect(store.state.vqb.pipeline).toEqual([{ name: 'domain', domain: 'bar' }]);
+        expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+          { name: 'domain', domain: 'bar' },
+        ]);
       });
 
       it('should compute the right currentDomain', async () => {
@@ -113,10 +109,11 @@ describe('Query Builder', () => {
 
     describe('when saving other steps', () => {
       beforeEach(async () => {
-        store = setupStore({
-          pipeline: [{ name: 'domain', domain: 'foo' }],
-          currentStepFormName: 'rename',
-        });
+        store = setupMockStore(
+          buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
+            currentStepFormName: 'rename',
+          }),
+        );
         wrapper = shallowMount(QueryBuilder, {
           store,
           localVue,
@@ -132,7 +129,7 @@ describe('Query Builder', () => {
           .find('renamestepform-stub')
           .vm.$emit('formSaved', { name: 'rename', oldname: 'columnA', newname: 'columnAA' });
         expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
-        expect(store.state.vqb.pipeline).toEqual([
+        expect(store.getters[VQBnamespace('pipeline')]).toEqual([
           { name: 'domain', domain: 'foo' },
           { name: 'rename', oldname: 'columnA', newname: 'columnAA' },
         ]);
@@ -151,10 +148,11 @@ describe('Query Builder', () => {
   });
 
   it('should cancel edition', async () => {
-    const store: Store<any> = setupStore({
-      pipeline: [{ name: 'domain', domain: 'foo' }],
-      currentStepFormName: 'rename',
-    });
+    const store: Store<any> = setupMockStore(
+      buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
+        currentStepFormName: 'rename',
+      }),
+    );
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -165,6 +163,6 @@ describe('Query Builder', () => {
     await localVue.nextTick();
     wrapper.find('renamestepform-stub').vm.$emit('back');
     expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
-    expect(store.state.vqb.pipeline).toEqual([{ name: 'domain', domain: 'foo' }]);
+    expect(store.getters[VQBnamespace('pipeline')]).toEqual([{ name: 'domain', domain: 'foo' }]);
   });
 });

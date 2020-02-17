@@ -1,23 +1,9 @@
 import { Pipeline } from '@/lib/steps';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
-import { emptyState, VQBState } from '@/store/state';
+import { emptyState } from '@/store/state';
 
-function stateWithOnePipeline(pipeline: Pipeline) {
-  return {
-    currentPipelineName: 'my_pipeline',
-    pipelines: {
-      my_pipeline: pipeline,
-    },
-  };
-}
-
-function buildState(customState: Partial<VQBState>) {
-  return {
-    ...emptyState(),
-    ...customState,
-  };
-}
+import { buildState, buildStateWithOnePipeline } from './utils';
 
 describe('getter tests', () => {
   describe('(in)active pipeline steps', () => {
@@ -27,7 +13,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState(stateWithOnePipeline(pipeline));
+      const state = buildState(buildStateWithOnePipeline(pipeline));
       expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline);
     });
 
@@ -37,7 +23,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline), selectedStepIndex: 1 });
+      const state = buildState(buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 }));
       expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline.slice(0, 2));
     });
 
@@ -47,7 +33,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline) });
+      const state = buildState(buildStateWithOnePipeline(pipeline));
       expect(getters.inactivePipeline(state, {}, {}, {})).toEqual([]);
     });
 
@@ -57,7 +43,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline), selectedStepIndex: 1 });
+      const state = buildState(buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 }));
       expect(getters.inactivePipeline(state, {}, {}, {})).toEqual(pipeline.slice(2));
     });
   });
@@ -69,7 +55,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline) });
+      const state = buildState(buildStateWithOnePipeline(pipeline));
       expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
     });
 
@@ -79,7 +65,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline), selectedStepIndex: 1 });
+      const state = buildState(buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 }));
       expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(1);
     });
   });
@@ -134,7 +120,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline) });
+      const state = buildState(buildStateWithOnePipeline(pipeline));
       expect(getters.domainStep(state, {}, {}, {})).toEqual(pipeline[0]);
     });
   });
@@ -164,7 +150,7 @@ describe('getter tests', () => {
   describe('pipeline empty tests', () => {
     it('should return true if pipeline is empty', () => {
       const pipeline: Pipeline = [];
-      const state = buildState({ ...stateWithOnePipeline(pipeline) });
+      const state = buildState(buildStateWithOnePipeline(pipeline));
       expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeTruthy();
     });
 
@@ -174,7 +160,7 @@ describe('getter tests', () => {
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
-      const state = buildState({ ...stateWithOnePipeline(pipeline) });
+      const state = buildState(buildStateWithOnePipeline(pipeline));
       expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeFalsy();
     });
   });
@@ -229,7 +215,7 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
-    const state = buildState({ ...stateWithOnePipeline(pipeline) });
+    const state = buildState(buildStateWithOnePipeline(pipeline));
     expect(state.selectedStepIndex).toEqual(-1);
     mutations.selectStep(state, { index: 2 });
     expect(state.selectedStepIndex).toEqual(2);
@@ -255,7 +241,7 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
-    const state = buildState({ currentDomain: 'foo', ...stateWithOnePipeline(pipeline) });
+    const state = buildState({ currentDomain: 'foo', ...buildStateWithOnePipeline(pipeline) });
     expect(state.currentDomain).toEqual('foo');
     mutations.setCurrentDomain(state, { currentDomain: 'bar' });
     expect(state.currentDomain).toEqual('bar');
@@ -313,10 +299,11 @@ describe('mutation tests', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ];
-    const state = buildState({
-      currentDomain: 'babar',
-      ...stateWithOnePipeline([{ name: 'domain', domain: 'babar' }]),
-    });
+    const state = buildState(
+      buildStateWithOnePipeline([{ name: 'domain', domain: 'babar' }], {
+        currentDomain: 'babar',
+      }),
+    );
     expect(getters.pipeline(state, {}, {}, {})).toEqual([{ name: 'domain', domain: 'babar' }]);
     expect(state.currentDomain).toEqual('babar');
     mutations.setPipeline(state, { pipeline });
@@ -329,10 +316,11 @@ describe('mutation tests', () => {
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
     ];
-    const state = buildState({
-      currentDomain: 'foo',
-      ...stateWithOnePipeline([{ name: 'rename', oldname: 'foo', newname: 'bar' }]),
-    });
+    const state = buildState(
+      buildStateWithOnePipeline([{ name: 'rename', oldname: 'foo', newname: 'bar' }], {
+        currentDomain: 'foo',
+      }),
+    );
     mutations.setPipeline(state, { pipeline });
     expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
     expect(state.currentDomain).toEqual('foo');

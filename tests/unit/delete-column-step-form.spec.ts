@@ -24,10 +24,13 @@ describe('Delete Column Step Form', () => {
   });
 
   runner.testCancel({
-    pipeline: [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-    ],
+    currentPipelineName: 'default_pipeline',
+    pipelines: {
+      default_pipeline: [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', oldname: 'foo', newname: 'bar' },
+      ],
+    },
     selectedStepIndex: 1,
   });
 

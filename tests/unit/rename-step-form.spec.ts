@@ -37,12 +37,15 @@ describe('Rename Step Form', () => {
   });
 
   runner.testCancel({
-    pipeline: [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
-    ],
+    currentPipelineName: 'default_pipeline',
+    pipelines: {
+      default_pipeline: [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', oldname: 'foo', newname: 'bar' },
+        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', oldname: 'tic', newname: 'tac' },
+      ],
+    },
     selectedStepIndex: 2,
   });
 
@@ -75,12 +78,15 @@ describe('Rename Step Form', () => {
 
   it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
     const initialState = {
-      pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
-        { name: 'rename', oldname: 'tic', newname: 'tac' },
-      ],
+      currentPipelineName: 'default_pipeline',
+      pipelines: {
+        default_pipeline: [
+          { name: 'domain', domain: 'foo' },
+          { name: 'rename', oldname: 'foo', newname: 'bar' },
+          { name: 'rename', oldname: 'baz', newname: 'spam' },
+          { name: 'rename', oldname: 'tic', newname: 'tac' },
+        ],
+      },
       selectedStepIndex: 2,
     };
     const wrapper = runner.mount(initialState, { propsData: { isStepCreation: true } });

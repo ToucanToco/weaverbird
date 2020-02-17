@@ -3,8 +3,9 @@ import { VueConstructor } from 'vue';
 import Vuex, { Store } from 'vuex';
 
 import BaseStepForm from '@/components/stepforms/StepForm.vue';
-import { registerModule } from '@/store';
-import { VQBState } from '@/store/state';
+import { Pipeline } from '@/lib/steps';
+import { registerModule, VQBnamespace } from '@/store';
+import { emptyState, VQBState } from '@/store/state';
 
 export type RootState = {
   vqb: VQBState;
@@ -18,6 +19,23 @@ export interface ValidationError {
 
 export const localVue = createLocalVue();
 localVue.use(Vuex);
+
+export function buildState(customState: Partial<VQBState>) {
+  return {
+    ...emptyState(),
+    ...customState,
+  };
+}
+
+export function buildStateWithOnePipeline(pipeline: Pipeline, customState?: Partial<VQBState>) {
+  return buildState({
+    currentPipelineName: 'default_pipeline',
+    pipelines: {
+      default_pipeline: pipeline,
+    },
+    ...customState,
+  });
+}
 
 export function setupMockStore(initialState: object = {}, plugins: any[] = []) {
   const store: Store<RootState> = new Vuex.Store({ plugins });
@@ -200,7 +218,7 @@ export class BasicStepFormTestRunner {
 
   testCancel(initialState: Partial<VQBState> = {}) {
     const store = setupMockStore(initialState);
-    const initialPipeline = [...store.getters.vqb.pipeline];
+    const initialPipeline = [...store.getters[VQBnamespace('pipeline')]];
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should emit "back" event when back button is clicked', () => {
@@ -208,7 +226,7 @@ export class BasicStepFormTestRunner {
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(wrapper.emitted()).toEqual({ back: [[]] });
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
-      expect(store.getters.vqb.pipeline).toEqual(initialPipeline);
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual(initialPipeline);
     });
 
     it('should overwrite cancelEdition function', () => {
@@ -227,15 +245,18 @@ export class BasicStepFormTestRunner {
 
   testResetSelectedIndex(initialState?: Partial<VQBState>) {
     const store = setupMockStore(
-      initialState ?? {
-        pipeline: [
-          { name: 'domain', domain: 'foo' },
-          { name: 'rename', oldname: 'foo', newname: 'bar' },
-          { name: 'rename', oldname: 'baz', newname: 'spam' },
-          { name: 'rename', oldname: 'tic', newname: 'tac' },
-        ],
-        selectedStepIndex: 2,
-      },
+      initialState ??
+        buildStateWithOnePipeline(
+          [
+            { name: 'domain', domain: 'foo' },
+            { name: 'rename', oldname: 'foo', newname: 'bar' },
+            { name: 'rename', oldname: 'baz', newname: 'spam' },
+            { name: 'rename', oldname: 'tic', newname: 'tac' },
+          ],
+          {
+            selectedStepIndex: 2,
+          },
+        ),
     );
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
@@ -243,6 +264,7 @@ export class BasicStepFormTestRunner {
       const wrapper = mount(this.componentType, { store, localVue: this.vue, sync: false });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
+
       wrapper.setProps({ isStepCreation: false });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex + 1);

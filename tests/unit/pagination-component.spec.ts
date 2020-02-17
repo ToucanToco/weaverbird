@@ -5,7 +5,7 @@ import Pagination from '@/components/Pagination.vue';
 import { Pipeline } from '@/lib/steps';
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 
-import { setupMockStore } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -63,8 +63,7 @@ describe('Pagination Component', () => {
   it('should call executePipeline with limit / offset on backend service', () => {
     const pagesize = 2;
     const store = setupMockStore(
-      {
-        pipeline: [{ name: 'domain', domain: 'foo' }],
+      buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
         dataset: {
           headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
           data: [
@@ -78,7 +77,7 @@ describe('Pagination Component', () => {
           },
         },
         pagesize,
-      },
+      }),
       [servicePluginFactory(new DummyService())],
     );
     const wrapper = mount(Pagination, { localVue, store });
