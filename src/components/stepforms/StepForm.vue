@@ -48,8 +48,8 @@ function componentProxyBoundOn(self: Vue) {
  * default basic 'submit' / 'back' event callbacks and map some of the props /
  * getters / state and mutations from the store that you'll most of the time
  * need in your concrete step form implementation:
- * - `@VQBModule.State pipeline`
  * - `@VQBModule.State selectedStepIndex`
+ * - `@VQBModule.Getter pipeline`
  * - `@VQBModule.Mutation selectStep`
  * - `@VQBModule.Mutation setSelectedColumns`.
  *
@@ -91,7 +91,6 @@ export default class BaseStepForm<StepType> extends Vue {
   stepFormDefaults!: Partial<StepType>;
 
   @VQBModule.State interpolateFunc!: InterpolateFunction;
-  @VQBModule.State pipeline!: Pipeline;
   @VQBModule.State selectedStepIndex!: number;
   @VQBModule.State variables!: ScopeContext;
 
@@ -100,6 +99,7 @@ export default class BaseStepForm<StepType> extends Vue {
 
   @VQBModule.Getter columnNames!: string[];
   @VQBModule.Getter computedActiveStepIndex!: number;
+  @VQBModule.Getter pipeline!: Pipeline;
   @VQBModule.Getter selectedColumns!: string[];
 
   readonly selectedColumnAttrName: string | null = null;

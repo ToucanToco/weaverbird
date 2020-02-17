@@ -3,7 +3,7 @@
  */
 
 import { BackendError } from '@/lib/backend-response';
-import { DomainStep, PipelineStepName } from '@/lib/steps';
+import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
 
 import { VQBState } from './state';
 
@@ -30,7 +30,12 @@ type DomainsMutation = {
 
 type PipelineMutation = {
   type: 'setPipeline';
-  payload: Pick<VQBState, 'pipeline'>;
+  payload: { pipeline: Pipeline };
+};
+
+type SetCurrentPipelineNameMutation = {
+  type: 'setCurrentPipelineName';
+  payload: { name: string };
 };
 
 type SelectDomainMutation = {
@@ -64,6 +69,7 @@ export type StateMutation =
   | DeleteStepMutation
   | DomainsMutation
   | PipelineMutation
+  | SetCurrentPipelineNameMutation
   | SelectedColumnsMutation
   | SelectDomainMutation
   | SelectedStepMutation
@@ -131,7 +137,7 @@ export default {
    * set currently last selected step index.
    */
   selectStep(state: VQBState, { index }: { index: number }) {
-    if (index > state.pipeline.length) {
+    if (index > state.pipelines[state.currentPipelineName].length) {
       console.error('In selectStep: index out of bounds. Falling back to last selectable index.');
       state.selectedStepIndex = -1;
     } else {
@@ -142,7 +148,7 @@ export default {
    * Delete the step of index `index` in pipeline.
    */
   deleteStep(state: VQBState, { index }: { index: number }) {
-    state.pipeline.splice(index, 1);
+    state.pipelines[state.currentPipelineName].splice(index, 1);
     state.selectedStepIndex = index - 1;
   },
   /**
@@ -151,12 +157,12 @@ export default {
   setCurrentDomain(state: VQBState, { currentDomain }: Pick<VQBState, 'currentDomain'>) {
     state.currentDomain = currentDomain;
     if (currentDomain) {
-      const pipeline = state.pipeline;
+      const pipeline = state.pipelines[state.currentPipelineName];
       const domainStep: DomainStep = { name: 'domain', domain: currentDomain };
       if (pipeline.length) {
-        state.pipeline = [domainStep, ...pipeline.slice(1)];
+        state.pipelines[state.currentPipelineName] = [domainStep, ...pipeline.slice(1)];
       } else {
-        state.pipeline = [domainStep];
+        state.pipelines[state.currentPipelineName] = [domainStep];
       }
     }
   },
@@ -184,8 +190,8 @@ export default {
   /**
    * update pipeline.
    */
-  setPipeline(state: VQBState, { pipeline }: Pick<VQBState, 'pipeline'>) {
-    state.pipeline = pipeline;
+  setPipeline(state: VQBState, { pipeline }: { pipeline: Pipeline }) {
+    state.pipelines[state.currentPipelineName] = pipeline;
     if (pipeline.length) {
       const firstStep = pipeline[0];
       if (firstStep.name === 'domain') {

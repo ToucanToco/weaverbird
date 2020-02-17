@@ -5,13 +5,13 @@
  * e.g. `registerModule(hostStore, initialState)` to register a VQB store
  * and `unregisterModule()` for the dual operation.
  *
- * A `vuex-class`'s namesapce is exported as the '`VQBModule` symbol. It can therefore
+ * A `vuex-class`'s namespace is exported as the '`VQBModule` symbol. It can therefore
  * be used as a decorator inside a `Vue` component, .e.g.:
  *
  * ```typescript
  * @Component
  * class MyComponent extends Vue {
- *    @VQBModule.State pipeline!: Pipeline;
+ *    @VQBModule.Getter pipeline!: Pipeline;
  *    // ...
  * }
  * ```

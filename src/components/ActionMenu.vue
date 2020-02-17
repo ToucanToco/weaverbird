@@ -43,10 +43,9 @@ export default class ActionMenu extends Vue {
   })
   columnName!: string;
 
-  @VQBModule.State pipeline!: Pipeline;
-
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
+  @VQBModule.Getter pipeline!: Pipeline;
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
