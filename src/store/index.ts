@@ -42,7 +42,7 @@ export const VQBModule = namespace(VQB_MODULE_NAME);
 export function buildStoreModule(initialState: Partial<VQBState> = {}) {
   const store = {
     namespaced: true,
-    state: { ...emptyState, ...initialState },
+    state: { ...emptyState(), ...initialState },
     getters,
     mutations,
   };
@@ -81,7 +81,7 @@ export function setupStore(
     Vue.use(Vuex);
   }
   const store: StoreOptions<VQBState> = {
-    state: { ...emptyState, ...initialState },
+    state: { ...emptyState(), ...initialState },
     getters,
     mutations,
     plugins,

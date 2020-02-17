@@ -89,36 +89,38 @@ export interface VQBState {
 }
 
 /**
- * default empty state, useful to update just some parts of it
+ * generate the default empty state, useful to update just some parts of it
  * when creating the initial version of store.
  */
-export const emptyState: VQBState = {
-  dataset: {
-    headers: [],
-    data: [],
-    paginationContext: {
-      pagesize: 50,
-      pageno: 1,
-      totalCount: 0,
+export function emptyState(): VQBState {
+  return {
+    dataset: {
+      headers: [],
+      data: [],
+      paginationContext: {
+        pagesize: 50,
+        pageno: 1,
+        totalCount: 0,
+      },
     },
-  },
-  domains: [],
-  currentStepFormName: undefined,
-  stepFormInitialValue: undefined,
-  stepFormDefaults: undefined,
-  selectedStepIndex: -1,
-  currentPipelineName: 'my_pipeline',
-  pipelines: {
-    my_pipeline: [],
-  },
-  selectedColumns: [],
-  pagesize: 50,
-  backendErrors: [],
-  isLoading: false,
-  variables: {},
-  translator: 'mongo40',
-  interpolateFunc: (x: string, _context: ScopeContext) => x,
-};
+    domains: [],
+    currentStepFormName: undefined,
+    stepFormInitialValue: undefined,
+    stepFormDefaults: undefined,
+    selectedStepIndex: -1,
+    currentPipelineName: 'my_pipeline',
+    pipelines: {
+      my_pipeline: [],
+    },
+    selectedColumns: [],
+    pagesize: 50,
+    backendErrors: [],
+    isLoading: false,
+    variables: {},
+    translator: 'mongo40',
+    interpolateFunc: (x: string, _context: ScopeContext) => x,
+  };
+}
 
 /**
  * @param state current application state
