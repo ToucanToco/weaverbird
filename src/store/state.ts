@@ -93,7 +93,7 @@ export interface VQBState {
 
 /**
  * default empty state, useful to update just some parts of it
- * when creating the intiial version of store.
+ * when creating the initial version of store.
  */
 export const emptyState: VQBState = {
   dataset: {
