@@ -3,7 +3,7 @@
  */
 import _ from 'lodash';
 
-import { activePipeline, inactivePipeline, VQBState } from './state';
+import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
 
 export default {
   /**
@@ -32,12 +32,12 @@ export default {
    * a direct "usable" index (i.e. convert "-1" to a positive one) of last active step.
    */
   computedActiveStepIndex: (state: VQBState) =>
-    state.selectedStepIndex === -1 ? state.pipeline.length - 1 : state.selectedStepIndex,
+    state.selectedStepIndex === -1 ? currentPipeline(state).length - 1 : state.selectedStepIndex,
   /**
    * the first step of the pipeline. Since it's handled differently in the UI,
    * it's useful to be able to access it directly.
    */
-  domainStep: (state: VQBState) => state.pipeline[0],
+  domainStep: (state: VQBState) => currentPipeline(state)[0],
   /**
    * the part of the pipeline that is currently disabled.
    */
@@ -53,7 +53,7 @@ export default {
   /**
    * helper that is True if pipeline is empty or only contain a domain step.
    */
-  isPipelineEmpty: (state: VQBState) => state.pipeline.length <= 1,
+  isPipelineEmpty: (state: VQBState) => currentPipeline(state).length <= 1,
   /**
    * helper that is True if this step is after the last currently active step.
    */
@@ -64,6 +64,10 @@ export default {
    */
   pageno: (state: VQBState) =>
     state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
+  /**
+   * Return current edited pipeline
+   */
+  pipeline: (state: VQBState) => currentPipeline(state),
   /**
    * Return pipelines save in store
    */
@@ -79,7 +83,7 @@ export default {
   /**
    * Get the step config of the pipeline based on its index
    */
-  stepConfig: (state: VQBState) => (index: number) => state.pipeline[index],
+  stepConfig: (state: VQBState) => (index: number) => currentPipeline(state)[index],
   /**
    * Return the app translator name
    */

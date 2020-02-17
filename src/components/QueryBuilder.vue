@@ -49,12 +49,12 @@ import { STEPFORM_REGISTRY } from './formlib';
 })
 export default class QueryBuilder extends Vue {
   @VQBModule.State currentStepFormName!: PipelineStepName;
-  @VQBModule.State pipeline!: Pipeline;
   @VQBModule.State stepFormInitialValue!: object;
   @VQBModule.State stepFormDefaults!: object;
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
+  @VQBModule.Getter pipeline!: Pipeline;
 
   @VQBModule.Mutation closeStepForm!: () => void;
   @VQBModule.Mutation openStepForm!: (payload: {
@@ -64,7 +64,7 @@ export default class QueryBuilder extends Vue {
   @VQBModule.Mutation resetStepFormInitialValue!: () => void;
   @VQBModule.Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
   @VQBModule.Mutation selectStep!: (payload: { index: number }) => void;
-  @VQBModule.Mutation setPipeline!: (payload: Pick<VQBState, 'pipeline'>) => void;
+  @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
 
   get isStepCreation() {
     return this.stepFormInitialValue === undefined;

@@ -197,7 +197,7 @@ async function setupInitialData(store, domain = null) {
   } else {
     const response = await mongoservice.executePipeline(
       store,
-      store.state[VQB_MODULE_NAME].pipeline,
+      store.getters[VQBnamespace('pipeline')],
       store.state[VQB_MODULE_NAME].pagesize,
     );
     if (response.error) {
@@ -237,8 +237,26 @@ async function buildVueApp() {
     },
     created: function() {
       registerModule(this.$store, {
-        pipeline: initialPipeline,
+        currentPipelineName: 'pipeline',
         pipelines: {
+          pipeline: [
+            {
+              name: 'domain',
+              domain: 'test-collection',
+            },
+            {
+              name: 'filter',
+              condition: {
+                and: [
+                  {
+                    column: 'Groups',
+                    value: '<%= groupname %>',
+                    operator: 'eq',
+                  },
+                ],
+              },
+            },
+          ],
           pipeline1: [
             {
               name: 'domain',

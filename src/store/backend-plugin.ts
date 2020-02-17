@@ -88,7 +88,7 @@ export function dereferencePipelines(
 }
 
 async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
-  if (!store.state[VQB_MODULE_NAME].pipeline.length) {
+  if (!store.getters[VQBnamespace('pipeline')].length) {
     return;
   }
   try {

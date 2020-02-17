@@ -23,7 +23,7 @@ export interface VQBState {
   /**
    * the current pipeline (being edited) name
    */
-  currentPipelineName?: string;
+  currentPipelineName: string;
   /**
    * the current step form displayed
    */
@@ -32,11 +32,6 @@ export interface VQBState {
    * the last step currently active.
    */
   selectedStepIndex: number;
-  /**
-   * FIXME should be a getter from pipelines + current selected pipeline
-   * the current pipeline (including inactive steps).
-   */
-  pipeline: Pipeline;
 
   /**
    * saved pipelines, with unique name as key and pipeline as value
@@ -112,9 +107,10 @@ export const emptyState: VQBState = {
   stepFormInitialValue: undefined,
   stepFormDefaults: undefined,
   selectedStepIndex: -1,
-  pipeline: [],
-  currentPipelineName: undefined,
-  pipelines: {},
+  currentPipelineName: 'my_pipeline',
+  pipelines: {
+    my_pipeline: [],
+  },
   selectedColumns: [],
   pagesize: 50,
   backendErrors: [],
@@ -126,13 +122,21 @@ export const emptyState: VQBState = {
 
 /**
  * @param state current application state
+ * @return the pipeline currently edited
+ */
+export function currentPipeline(state: VQBState) {
+  return state.pipelines[state.currentPipelineName];
+}
+
+/**
+ * @param state current application state
  * @return the index of the first inactive step. Return first out of bound index
  * if all steps are active.
  */
 function firstNonSelectedIndex(state: VQBState) {
-  const { pipeline, selectedStepIndex } = state;
+  const { selectedStepIndex } = state;
   if (selectedStepIndex < 0) {
-    return pipeline.length;
+    return currentPipeline(state).length;
   }
   return selectedStepIndex + 1;
 }
@@ -142,7 +146,7 @@ function firstNonSelectedIndex(state: VQBState) {
  * @return the subpart of the pipeline that is currently active.
  */
 export function activePipeline(state: VQBState) {
-  return state.pipeline.slice(0, firstNonSelectedIndex(state));
+  return currentPipeline(state).slice(0, firstNonSelectedIndex(state));
 }
 
 /**
@@ -150,5 +154,5 @@ export function activePipeline(state: VQBState) {
  * @return the subpart of the pipeline that is currently inactive.
  */
 export function inactivePipeline(state: VQBState) {
-  return state.pipeline.slice(firstNonSelectedIndex(state));
+  return currentPipeline(state).slice(firstNonSelectedIndex(state));
 }

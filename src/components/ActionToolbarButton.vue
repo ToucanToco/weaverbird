@@ -59,10 +59,9 @@ export default class ActionToolbarButton extends Vue {
   })
   category!: string;
 
-  @VQBModule.State pipeline!: S.Pipeline;
-
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
+  @VQBModule.Getter pipeline!: S.Pipeline;
   @VQBModule.Getter selectedColumns!: string[];
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
