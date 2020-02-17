@@ -2,10 +2,11 @@
  * exports the list of store getters.
  */
 import _ from 'lodash';
+import { GetterTree } from 'vuex';
 
 import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
 
-export default {
+const getters: GetterTree<VQBState, any> = {
   /**
    * the part of the pipeline that is currently selected.
    */
@@ -89,3 +90,5 @@ export default {
    */
   translator: (state: VQBState) => state.translator,
 };
+
+export default getters;
