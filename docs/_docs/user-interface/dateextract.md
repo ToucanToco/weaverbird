@@ -1,5 +1,5 @@
 ---
-title: Extract date proeprty
+title: Extract date property
 permalink: /docs/dateextract/
 ---
 
