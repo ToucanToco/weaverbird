@@ -142,8 +142,13 @@ export default class ListWidget extends Mixins(FormWidget) {
 .fa-plus-circle {
   color: $active-color;
 }
+
 .widget-list__container {
   @extend %form-widget__container;
+  /deep/.multiselect__tags {
+    @extend %form-widget__field;
+    background: #fff;
+  }
 }
 
 .widget-list__container label {

@@ -75,12 +75,6 @@ $grey-dark: #585858;
   }
 }
 
-.widget-list__container {
-  %form-widget__field {
-    background-color: white;
-  }
-}
-
 %form-widget__field--focused {
   box-shadow: 0 0 0 1px $active-color inset;
 }
