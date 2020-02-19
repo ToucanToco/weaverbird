@@ -10,7 +10,7 @@ import { VQBnamespace } from '@/store';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 
-import { setupMockStore, buildStateWithOnePipeline } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

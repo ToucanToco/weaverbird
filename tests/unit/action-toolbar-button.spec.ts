@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import { VQBnamespace } from '@/store';
 
-import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
