@@ -43,7 +43,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
 .vqb-modal {
   bottom: 0;
   display: flex;
@@ -159,5 +158,4 @@ strong.vqb-modal__text {
   color: #fff;
   border: none;
 }
-
 </style>
