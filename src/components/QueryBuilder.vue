@@ -104,6 +104,23 @@ export default class QueryBuilder extends Vue {
 <style lang="scss" scoped>
 @import '../styles/_variables';
 
+.query-builder {
+  @extend %main-font-style;
+  /deep/ *,
+  /deep/::after,
+  /deep/::before {
+    box-sizing: border-box;
+  }
+
+  /deep/button {
+    outline: none;
+  }
+
+  /deep/fieldset {
+    border: none;
+  }
+}
+
 .slide-left-enter,
 .slide-left-leave-to {
   transform: translateX(-100%);

@@ -219,6 +219,20 @@ export default class DataViewer extends Vue {
   height: 100%;
   display: flex;
   flex-direction: column;
+  @extend %main-font-style;
+  /deep/ *,
+  /deep/::after,
+  /deep/::before {
+    box-sizing: border-box;
+  }
+
+  /deep/button {
+    outline: none;
+  }
+
+  /deep/fieldset {
+    border: none;
+  }
 }
 
 .data-viewer-container {
