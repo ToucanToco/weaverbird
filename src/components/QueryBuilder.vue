@@ -111,11 +111,11 @@ export default class QueryBuilder extends Vue {
     box-sizing: border-box;
   }
 
-  /deep/button {
+  /deep/ button {
     outline: none;
   }
 
-  /deep/fieldset {
+  /deep/ fieldset {
     border: none;
   }
 }
