@@ -220,7 +220,6 @@ export default class DataViewer extends Vue {
   display: flex;
   flex-direction: column;
   @extend %main-font-style;
-  /deep/ *,
   /deep/::after,
   /deep/::before {
     box-sizing: border-box;
