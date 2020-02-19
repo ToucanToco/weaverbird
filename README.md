@@ -3,6 +3,8 @@
 
 # weaverbird
 
+<img src="/docs/img/logonav.png" alt="GitHub Logo" width="250" />
+
 ## General documentation
 
 The project's technical and user documentation is hosted on https://weaverbird.toucantoco.com
