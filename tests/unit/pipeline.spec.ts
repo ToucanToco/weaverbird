@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline } from '@/lib/steps';
 
-import { setupMockStore, buildStateWithOnePipeline } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);

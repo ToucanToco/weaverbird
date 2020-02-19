@@ -7,7 +7,7 @@ import Step from '@/components/Step.vue';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
 
-import { setupMockStore, buildStateWithOnePipeline } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -192,7 +192,9 @@ describe('Step.vue', () => {
       { name: 'rename', oldname: 'region', newname: 'kingdom' },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline, { isEditingStep: false }));
+    const store = setupMockStore(
+      buildStateWithOnePipeline(pipeline, { currentStepFormName: 'rename' }),
+    );
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
