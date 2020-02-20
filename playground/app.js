@@ -166,24 +166,6 @@ class MongoService {
 
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
-const initialPipeline = [
-  {
-    name: 'domain',
-    domain: 'test-collection',
-  },
-  {
-    name: 'filter',
-    condition: {
-      and: [
-        {
-          column: 'Groups',
-          value: '<%= groupname %>',
-          operator: 'eq',
-        },
-      ],
-    },
-  },
-];
 
 async function setupInitialData(store, domain = null) {
   const collections = await mongoservice.listCollections();

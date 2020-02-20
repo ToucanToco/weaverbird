@@ -91,6 +91,10 @@ const getters: GetterTree<VQBState, any> = {
    */
   pipelines: (state: VQBState) => state.pipelines,
   /**
+   * Return the array of pipeline names
+   */
+  pipelinesNames: (state: VQBState) => Object.keys(state.pipelines),
+  /**
    * Return true if an error occured in the backend
    */
   thereIsABackendError: (state: VQBState) => state.backendErrors.length > 0,
