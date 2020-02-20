@@ -228,7 +228,7 @@ describe('mutation tests', () => {
   });
 
   it('sets current domain on empty pipeline', () => {
-    const state = buildState({ currentDomain: 'foo' });
+    const state = buildState(buildStateWithOnePipeline([], { currentDomain: 'foo' }));
     expect(state.currentDomain).toEqual('foo');
     mutations.setCurrentDomain(state, { currentDomain: 'bar' });
     expect(state.currentDomain).toEqual('bar');
@@ -288,7 +288,7 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
-    const state = buildState({});
+    const state = buildStateWithOnePipeline([]);
     expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
     mutations.setPipeline(state, { pipeline });
     expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);

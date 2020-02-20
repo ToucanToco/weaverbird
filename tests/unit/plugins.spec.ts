@@ -90,7 +90,9 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline when a setCurrentDomain mutation is committed', async () => {
-    const store = setupMockStore({}, [servicePluginFactory(new DummyService())]);
+    const store = setupMockStore(buildStateWithOnePipeline([]), [
+      servicePluginFactory(new DummyService()),
+    ]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
@@ -123,7 +125,9 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline with correct pagesize', async () => {
-    const store = setupMockStore({ pagesize: 1 }, [servicePluginFactory(new DummyService())]);
+    const store = setupMockStore(buildStateWithOnePipeline([], { pagesize: 1 }), [
+      servicePluginFactory(new DummyService()),
+    ]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({

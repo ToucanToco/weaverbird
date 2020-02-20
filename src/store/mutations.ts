@@ -5,7 +5,7 @@
 import { BackendError } from '@/lib/backend-response';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
 
-import { VQBState } from './state';
+import { currentPipeline, VQBState } from './state';
 
 // provide types for each possible mutations' payloads
 type BackendErrorMutation = {
@@ -137,7 +137,8 @@ export default {
    * set currently last selected step index.
    */
   selectStep(state: VQBState, { index }: { index: number }) {
-    if (index > state.pipelines[state.currentPipelineName].length) {
+    const pipeline = currentPipeline(state);
+    if (pipeline && index > pipeline.length) {
       console.error('In selectStep: index out of bounds. Falling back to last selectable index.');
       state.selectedStepIndex = -1;
     } else {
@@ -148,16 +149,23 @@ export default {
    * Delete the step of index `index` in pipeline.
    */
   deleteStep(state: VQBState, { index }: { index: number }) {
-    state.pipelines[state.currentPipelineName].splice(index, 1);
+    const pipeline = currentPipeline(state);
+    if (!pipeline) {
+      return;
+    }
+    pipeline.splice(index, 1);
     state.selectedStepIndex = index - 1;
   },
   /**
    * change current selected domain and reset pipeline accordingly.
    */
   setCurrentDomain(state: VQBState, { currentDomain }: Pick<VQBState, 'currentDomain'>) {
+    const pipeline = currentPipeline(state);
+    if (state.currentPipelineName === undefined || pipeline === undefined) {
+      return;
+    }
     state.currentDomain = currentDomain;
     if (currentDomain) {
-      const pipeline = state.pipelines[state.currentPipelineName];
       const domainStep: DomainStep = { name: 'domain', domain: currentDomain };
       if (pipeline.length) {
         state.pipelines[state.currentPipelineName] = [domainStep, ...pipeline.slice(1)];
@@ -191,6 +199,9 @@ export default {
    * update pipeline.
    */
   setPipeline(state: VQBState, { pipeline }: { pipeline: Pipeline }) {
+    if (state.currentPipelineName === undefined) {
+      return;
+    }
     state.pipelines[state.currentPipelineName] = pipeline;
     if (pipeline.length) {
       const firstStep = pipeline[0];

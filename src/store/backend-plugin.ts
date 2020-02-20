@@ -139,7 +139,10 @@ export function servicePluginFactory(service: BackendService) {
         mutation.type === VQBnamespace('deleteStep') ||
         mutation.type === VQBnamespace('setCurrentPage')
       ) {
-        _updateDataset(store, service, activePipeline(state[VQB_MODULE_NAME]));
+        const pipeline = activePipeline(state[VQB_MODULE_NAME]);
+        if (pipeline) {
+          _updateDataset(store, service, pipeline);
+        }
       }
     });
   };

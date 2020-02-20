@@ -23,7 +23,7 @@ export interface VQBState {
   /**
    * the current pipeline (being edited) name
    */
-  currentPipelineName: string;
+  currentPipelineName?: string;
   /**
    * the current step form displayed
    */
@@ -108,10 +108,8 @@ export function emptyState(): VQBState {
     stepFormInitialValue: undefined,
     stepFormDefaults: undefined,
     selectedStepIndex: -1,
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [],
-    },
+    currentPipelineName: undefined,
+    pipelines: {},
     selectedColumns: [],
     pagesize: 50,
     backendErrors: [],
@@ -127,18 +125,21 @@ export function emptyState(): VQBState {
  * @return the pipeline currently edited
  */
 export function currentPipeline(state: VQBState) {
+  if (!state.currentPipelineName) {
+    return;
+  }
   return state.pipelines[state.currentPipelineName];
 }
 
 /**
- * @param state current application state
+ * @param pipeline the current pipeline
+ * @param selectedStepIndex
  * @return the index of the first inactive step. Return first out of bound index
  * if all steps are active.
  */
-function firstNonSelectedIndex(state: VQBState) {
-  const { selectedStepIndex } = state;
+function firstNonSelectedIndex(pipeline: Pipeline, selectedStepIndex: number) {
   if (selectedStepIndex < 0) {
-    return currentPipeline(state).length;
+    return pipeline.length;
   }
   return selectedStepIndex + 1;
 }
@@ -148,7 +149,8 @@ function firstNonSelectedIndex(state: VQBState) {
  * @return the subpart of the pipeline that is currently active.
  */
 export function activePipeline(state: VQBState) {
-  return currentPipeline(state).slice(0, firstNonSelectedIndex(state));
+  const pipeline = currentPipeline(state);
+  return pipeline?.slice(0, firstNonSelectedIndex(pipeline, state.selectedStepIndex));
 }
 
 /**
@@ -156,5 +158,6 @@ export function activePipeline(state: VQBState) {
  * @return the subpart of the pipeline that is currently inactive.
  */
 export function inactivePipeline(state: VQBState) {
-  return currentPipeline(state).slice(firstNonSelectedIndex(state));
+  const pipeline = currentPipeline(state);
+  return pipeline?.slice(firstNonSelectedIndex(pipeline, state.selectedStepIndex));
 }
