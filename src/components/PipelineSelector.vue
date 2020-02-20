@@ -14,7 +14,6 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
   name: 'PipelineSelector',
@@ -23,10 +22,10 @@ export default class Vqb extends Vue {
   @VQBModule.State currentPipelineName?: string;
   @VQBModule.Getter pipelinesNames!: string[];
 
-  @VQBModule.Mutation setCurrentPipelineName!: MutationCallbacks['setCurrentPipelineName'];
+  @VQBModule.Action selectPipeline!: (payload: { name: string }) => void;
 
   selectPipelineByName(pipelineName: string) {
-    this.setCurrentPipelineName({ name: pipelineName });
+    this.selectPipeline({ name: pipelineName });
   }
 }
 </script>

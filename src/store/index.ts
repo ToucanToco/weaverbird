@@ -20,6 +20,7 @@ import Vue from 'vue';
 import Vuex, { Store, StoreOptions } from 'vuex';
 import { namespace } from 'vuex-class';
 
+import actions from './actions';
 import getters from './getters';
 import mutations from './mutations';
 import { emptyState, VQBState } from './state';
@@ -45,6 +46,7 @@ export function buildStoreModule(initialState: Partial<VQBState> = {}) {
     state: { ...emptyState(), ...initialState },
     getters,
     mutations,
+    actions,
   };
   return store;
 }
@@ -81,6 +83,7 @@ export function setupStore(
     Vue.use(Vuex);
   }
   const store: StoreOptions<VQBState> = {
+    actions,
     state: { ...emptyState(), ...initialState },
     getters,
     mutations,
