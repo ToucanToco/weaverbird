@@ -175,7 +175,7 @@ export default {
     }
   },
   /**
-   * update currentPipelineName.
+   * update currentPipelineName
    */
   setCurrentPipelineName(state: VQBState, { name }: { name: string }) {
     state.currentPipelineName = name;
