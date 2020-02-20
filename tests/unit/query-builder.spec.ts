@@ -73,10 +73,11 @@ describe('Query Builder', () => {
 
     describe('when editing domain step', () => {
       beforeEach(async () => {
-        store = setupMockStore({
-          pipeline: [{ name: 'domain', domain: 'foo' }],
-          currentStepFormName: 'domain',
-        });
+        store = setupMockStore(
+          buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
+            currentStepFormName: 'domain',
+          }),
+        );
         wrapper = shallowMount(QueryBuilder, {
           store,
           localVue,

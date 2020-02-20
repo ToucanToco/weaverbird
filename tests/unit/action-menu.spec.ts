@@ -4,7 +4,7 @@ import Vuex from 'vuex';
 import ActionMenu from '@/components/ActionMenu.vue';
 import { VQBnamespace } from '@/store';
 
-import { setupMockStore } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -112,7 +112,9 @@ describe('Action Menu', () => {
     });
 
     it('should close any open step form to show the addition of the delete step in the pipeline', () => {
-      const store = setupMockStore({ currentStepFormName: 'fillna' });
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }),
+      );
       const wrapper = shallowMount(ActionMenu, { store, localVue });
       const actionsWrapper = wrapper.findAll('.action-menu__option');
       actionsWrapper.at(2).trigger('click');

@@ -37,7 +37,10 @@ export function buildStateWithOnePipeline(pipeline: Pipeline, customState?: Part
   });
 }
 
-export function setupMockStore(initialState: object = {}, plugins: any[] = []) {
+export function setupMockStore(
+  initialState: object = buildStateWithOnePipeline([]),
+  plugins: any[] = [],
+) {
   const store: Store<RootState> = new Vuex.Store({ plugins });
   registerModule(store, initialState);
 
@@ -216,7 +219,7 @@ export class BasicStepFormTestRunner {
     });
   }
 
-  testCancel(initialState: Partial<VQBState> = {}) {
+  testCancel(initialState: Partial<VQBState> = buildStateWithOnePipeline([])) {
     const store = setupMockStore(initialState);
     const initialPipeline = [...store.getters[VQBnamespace('pipeline')]];
     const initialStepIndex = store.state.vqb.selectedStepIndex;

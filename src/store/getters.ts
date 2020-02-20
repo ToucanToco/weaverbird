@@ -32,13 +32,24 @@ const getters: GetterTree<VQBState, any> = {
   /**
    * a direct "usable" index (i.e. convert "-1" to a positive one) of last active step.
    */
-  computedActiveStepIndex: (state: VQBState) =>
-    state.selectedStepIndex === -1 ? currentPipeline(state).length - 1 : state.selectedStepIndex,
+  computedActiveStepIndex(state: VQBState) {
+    const pipeline = currentPipeline(state);
+    if (!pipeline) {
+      return;
+    }
+    return state.selectedStepIndex === -1 ? pipeline.length - 1 : state.selectedStepIndex;
+  },
   /**
    * the first step of the pipeline. Since it's handled differently in the UI,
    * it's useful to be able to access it directly.
    */
-  domainStep: (state: VQBState) => currentPipeline(state)[0],
+  domainStep(state: VQBState) {
+    const pipeline = currentPipeline(state);
+    if (!pipeline) {
+      return;
+    }
+    return pipeline?.[0];
+  },
   /**
    * the part of the pipeline that is currently disabled.
    */
@@ -54,7 +65,13 @@ const getters: GetterTree<VQBState, any> = {
   /**
    * helper that is True if pipeline is empty or only contain a domain step.
    */
-  isPipelineEmpty: (state: VQBState) => currentPipeline(state).length <= 1,
+  isPipelineEmpty(state: VQBState) {
+    const pipeline = currentPipeline(state);
+    if (!pipeline) {
+      return;
+    }
+    return pipeline.length <= 1;
+  },
   /**
    * helper that is True if this step is after the last currently active step.
    */
@@ -84,7 +101,10 @@ const getters: GetterTree<VQBState, any> = {
   /**
    * Get the step config of the pipeline based on its index
    */
-  stepConfig: (state: VQBState) => (index: number) => currentPipeline(state)[index],
+  stepConfig: (state: VQBState) => (index: number) => {
+    const pipeline = currentPipeline(state);
+    return pipeline?.[index];
+  },
   /**
    * Return the app translator name
    */
