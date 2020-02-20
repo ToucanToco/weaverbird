@@ -63,7 +63,7 @@ export default class DataTypesMenu extends Vue {
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
-  @VQBModule.Getter pipeline!: Pipeline;
+  @VQBModule.Getter pipeline?: Pipeline;
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
