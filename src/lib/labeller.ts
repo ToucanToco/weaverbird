@@ -190,6 +190,10 @@ class StepLabeller implements StepMatcher<string> {
     }
   }
 
+  rollup(step: Readonly<S.RollupStep>) {
+    return `Roll-up hierarchy [${formatMulticol(step.hierarchy)}]`;
+  }
+
   select(step: Readonly<S.SelectStep>) {
     return `Keep columns ${formatMulticol(step.columns)}`;
   }
