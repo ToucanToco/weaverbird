@@ -1,5 +1,5 @@
 <template>
-  <div class="query-builder">
+  <div class="query-builder" v-if="pipeline">
     <transition v-if="isEditingStep" name="slide-right" mode="out-in">
       <component
         key="stepForm"
@@ -26,6 +26,9 @@
         <Pipeline key="pipeline" @editStep="editStep" />
       </div>
     </transition>
+  </div>
+  <div class="query-builder query-builder--no-pipeline" v-else>
+    Select a pipeline...
   </div>
 </template>
 <script lang="ts">

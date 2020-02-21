@@ -17,8 +17,16 @@ describe('Query Builder', () => {
     expect(wrapper.vm.$store.state.isEditingStep).toBeFalsy();
   });
 
+  it('should display an empty state is no pipeline is selected', () => {
+    const wrapper = shallowMount(QueryBuilder, { store: setupMockStore({}), localVue });
+    expect(wrapper.find('.query-builder--no-pipeline').exists()).toBeTruthy();
+    expect(wrapper.find('Pipeline-stub').exists()).toBeFalsy();
+  });
+
   it('should instantiate a AggregateStepForm component', () => {
-    const store = setupMockStore({ currentStepFormName: 'aggregate' });
+    const store = setupMockStore(
+      buildStateWithOnePipeline([], { currentStepFormName: 'aggregate' }),
+    );
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -28,7 +36,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a FormRenameStep component', () => {
-    const store = setupMockStore({ currentStepFormName: 'rename' });
+    const store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'rename' }));
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -38,7 +46,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a DeleteColumnStep component', () => {
-    const store = setupMockStore({ currentStepFormName: 'delete' });
+    const store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'delete' }));
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -48,7 +56,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a FillnaStep component', () => {
-    const store = setupMockStore({ currentStepFormName: 'fillna' });
+    const store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,
@@ -58,7 +66,7 @@ describe('Query Builder', () => {
   });
 
   it('should instantiate a DomainStep component', () => {
-    const store = setupMockStore({ currentStepFormName: 'domain' });
+    const store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'domain' }));
     const wrapper = shallowMount(QueryBuilder, {
       store,
       localVue,

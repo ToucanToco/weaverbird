@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import DataViewer from '../../src/components/DataViewer.vue';
-import { setupMockStore } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -15,6 +15,12 @@ describe('Data Viewer', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
+  it('should display an empty state is no pipeline is selected', () => {
+    const wrapper = shallowMount(DataViewer, { store: setupMockStore({}), localVue });
+    expect(wrapper.find('.data-viewer--no-pipeline').exists()).toBeTruthy();
+    expect(wrapper.find('ActionToolbar-stub').exists()).toBeFalsy();
+  });
+
   it('should display a message when no data', () => {
     const wrapper = shallowMount(DataViewer, { store: setupMockStore(), localVue });
 
@@ -23,9 +29,11 @@ describe('Data Viewer', () => {
 
   it('should display a loader spinner when data is loading and hide data viewer container', () => {
     const wrapper = shallowMount(DataViewer, {
-      store: setupMockStore({
-        isLoading: true,
-      }),
+      store: setupMockStore(
+        buildStateWithOnePipeline([], {
+          isLoading: true,
+        }),
+      ),
       localVue,
     });
     const wrapperLoaderSpinner = wrapper.find('.data-viewer-loader-spinner');
@@ -36,21 +44,25 @@ describe('Data Viewer', () => {
 
   describe('header', () => {
     it('should have one row', () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerWrapper = wrapper.find('.data-viewer__header');
@@ -58,21 +70,25 @@ describe('Data Viewer', () => {
     });
 
     it('should have three cells', () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
@@ -80,21 +96,25 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names", () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
@@ -104,26 +124,30 @@ describe('Data Viewer', () => {
     });
 
     it("should contains column's names even if not on every rows", () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [
-            { name: 'columnA' },
-            { name: 'columnB' },
-            { name: 'columnC' },
-            { name: 'columnD' },
-          ],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15', 'value16'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [
+              { name: 'columnA' },
+              { name: 'columnB' },
+              { name: 'columnC' },
+              { name: 'columnD' },
+            ],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15', 'value16'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
@@ -135,23 +159,27 @@ describe('Data Viewer', () => {
 
     it('should display the right icon for each types', () => {
       const date = new Date();
-      const store = setupMockStore({
-        dataset: {
-          headers: [
-            { name: 'columnA', type: 'string' },
-            { name: 'columnB', type: 'integer' },
-            { name: 'columnC', type: 'float' },
-            { name: 'columnD', type: 'date' },
-            { name: 'columnE', type: 'object' },
-            { name: 'columnF', type: 'boolean' },
-            { name: 'columnG', type: 'undefined' },
-          ],
-          data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
-          paginationContext: {
-            totalCount: 1,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [
+              { name: 'columnA', type: 'string' },
+              { name: 'columnB', type: 'integer' },
+              { name: 'columnC', type: 'float' },
+              { name: 'columnD', type: 'date' },
+              { name: 'columnE', type: 'object' },
+              { name: 'columnF', type: 'boolean' },
+              { name: 'columnG', type: undefined },
+            ],
+            data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
+            paginationContext: {
+              totalCount: 1,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const headerIconsWrapper = wrapper.findAll('.data-viewer__header-icon');
@@ -175,16 +203,20 @@ describe('Data Viewer', () => {
     });
 
     it('should have a data type menu for supported backends', async () => {
-      const store = setupMockStore({
-        translator: 'mongo40',
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [['value1', 'value2', 'value3']],
-          paginationContext: {
-            totalCount: 1,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          translator: 'mongo40',
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [['value1', 'value2', 'value3']],
+            paginationContext: {
+              totalCount: 1,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
       expect(wrapper.find('datatypesmenu-stub').exists()).toBeTruthy();
       expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeTruthy();
@@ -196,16 +228,20 @@ describe('Data Viewer', () => {
     });
 
     it('should have a data type menu for not supported backends', () => {
-      const store = setupMockStore({
-        translator: 'mongo36',
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [['value1', 'value2', 'value3']],
-          paginationContext: {
-            totalCount: 1,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          translator: 'mongo36',
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [['value1', 'value2', 'value3']],
+            paginationContext: {
+              totalCount: 1,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
       expect(wrapper.find('datatypesmenu-stub').exists()).toBeFalsy();
       expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeFalsy();
@@ -213,21 +249,25 @@ describe('Data Viewer', () => {
 
     describe('selection', () => {
       it('should add an active class on the cell', async () => {
-        const store = setupMockStore({
-          dataset: {
-            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-            data: [
-              ['value1', 'value2', 'value3'],
-              ['value4', 'value5', 'value6'],
-              ['value7', 'value8', 'value9'],
-              ['value10', 'value11', 'value12'],
-              ['value13', 'value14', 'value15'],
-            ],
-            paginationContext: {
-              totalCount: 5,
+        const store = setupMockStore(
+          buildStateWithOnePipeline([], {
+            dataset: {
+              headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+              data: [
+                ['value1', 'value2', 'value3'],
+                ['value4', 'value5', 'value6'],
+                ['value7', 'value8', 'value9'],
+                ['value10', 'value11', 'value12'],
+                ['value13', 'value14', 'value15'],
+              ],
+              paginationContext: {
+                totalCount: 5,
+                pagesize: 10,
+                pageno: 1,
+              },
             },
-          },
-        });
+          }),
+        );
         const wrapper = shallowMount(DataViewer, { store, localVue });
 
         const firstHeaderCellWrapper = wrapper.find('.data-viewer__header-cell');
@@ -240,21 +280,25 @@ describe('Data Viewer', () => {
 
   describe('body', () => {
     it('should have 5 rows', () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const rowsWrapper = wrapper.findAll('.data-viewer__row');
@@ -262,21 +306,25 @@ describe('Data Viewer', () => {
     });
 
     it('should pass down the right value to DataViewerCell', () => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       const wrapper = shallowMount(DataViewer, { store, localVue });
 
       const firstRowWrapper = wrapper.find('.data-viewer__row');
@@ -298,9 +346,11 @@ describe('Data Viewer', () => {
         ],
         paginationContext: {
           totalCount: 5,
+          pagesize: 10,
+          pageno: 1,
         },
       };
-      const store = setupMockStore({ dataset });
+      const store = setupMockStore(buildStateWithOnePipeline([], { dataset }));
       const wrapper = shallowMount(DataViewer, { store, localVue });
       const firstHeadCellWrapper = wrapper.find('.data-viewer__header-cell');
       firstHeadCellWrapper.trigger('click');
@@ -322,21 +372,25 @@ describe('Data Viewer', () => {
     const openStepFormStub = jest.fn();
 
     beforeEach(() => {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [
-            ['value1', 'value2', 'value3'],
-            ['value4', 'value5', 'value6'],
-            ['value7', 'value8', 'value9'],
-            ['value10', 'value11', 'value12'],
-            ['value13', 'value14', 'value15'],
-          ],
-          paginationContext: {
-            totalCount: 5,
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
           },
-        },
-      });
+        }),
+      );
       wrapper = shallowMount(DataViewer, { store, localVue });
       wrapper.setMethods({ openStepForm: openStepFormStub });
     });

@@ -328,6 +328,9 @@ async function buildVueApp() {
     computed: {
       code: function() {
         let activePipeline = this.$store.getters[VQBnamespace('activePipeline')];
+        if (!activePipeline) {
+          return '';
+        }
         const pipelines = this.$store.getters[VQBnamespace('pipelines')];
         if (pipelines) {
           activePipeline = dereferencePipelines(activePipeline, pipelines);
