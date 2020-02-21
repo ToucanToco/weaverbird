@@ -1029,4 +1029,72 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate basic rollup steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['<%= foo %>', '<%= foo %>'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: '<%= foo %>',
+          },
+        ],
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'rollup',
+        hierarchy: ['bar', 'bar'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: 'bar',
+          },
+        ],
+      },
+    ]);
+  });
+
+  it('should interpolate complexe rollup steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['<%= foo %>', '<%= foo %>'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: '<%= foo %>',
+          },
+        ],
+        groupby: ['<%= foo %>'],
+        labelCol: '<%= foo %>',
+        levelCol: '<%= foo %>',
+        parentLabelCol: '<%= foo %>',
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'rollup',
+        hierarchy: ['bar', 'bar'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: 'bar',
+          },
+        ],
+        groupby: ['bar'],
+        labelCol: 'bar',
+        levelCol: 'bar',
+        parentLabelCol: 'bar',
+      },
+    ]);
+  });
 });

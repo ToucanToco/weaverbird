@@ -228,6 +228,30 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, to_replace: toReplace };
   }
 
+  rollup(step: Readonly<S.RollupStep>) {
+    const ret: S.RollupStep = { ...step };
+    ret.hierarchy = step.hierarchy.map(col =>
+      _interpolate(this.interpolateFunc, col, this.context),
+    );
+    ret.aggregations = step.aggregations.map(aggfunc => ({
+      ...aggfunc,
+      column: _interpolate(this.interpolateFunc, aggfunc.column, this.context),
+    }));
+    if (step.groupby) {
+      ret.groupby = step.groupby.map(col => _interpolate(this.interpolateFunc, col, this.context));
+    }
+    if (step.labelCol) {
+      ret.labelCol = _interpolate(this.interpolateFunc, step.labelCol, this.context);
+    }
+    if (step.parentLabelCol) {
+      ret.parentLabelCol = _interpolate(this.interpolateFunc, step.parentLabelCol, this.context);
+    }
+    if (step.levelCol) {
+      ret.levelCol = _interpolate(this.interpolateFunc, step.levelCol, this.context);
+    }
+    return ret;
+  }
+
   select(step: Readonly<S.SelectStep>) {
     return { ...step };
   }

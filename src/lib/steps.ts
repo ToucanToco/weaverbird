@@ -189,7 +189,7 @@ export type RollupStep = {
   hierarchy: string[];
   /** the list of columnns to aggregate, with related aggregation function to use */
   aggregations: AggFunctionStep[];
-  /** Groupby columns if rollup has to bbe performed by groups */
+  /** Groupby columns if rollup has to be performed by groups */
   groupby?: string[];
   /** To give a custom name to the output label column */
   labelCol?: string;
