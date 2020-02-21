@@ -1,5 +1,5 @@
 <template>
-  <div class="data-viewer">
+  <div class="data-viewer" v-if="pipeline">
     <ActionToolbar :buttons="buttons" @actionClicked="openStepForm" />
     <div v-if="isLoading" class="data-viewer-loader-spinner" />
     <div v-if="!isEmpty && !isLoading" class="data-viewer-container">
@@ -53,6 +53,7 @@
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
+  <div class="data-viewer data-viewer--no-pipeline" v-else />
 </template>
 <script lang="ts">
 import Vue from 'vue';
@@ -60,7 +61,7 @@ import { Component } from 'vue-property-decorator';
 
 import Pagination from '@/components/Pagination.vue';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
-import { PipelineStepName } from '@/lib/steps';
+import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
 
@@ -94,6 +95,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
   @VQBModule.Getter translator!: string;
+  @VQBModule.Getter pipeline?: Pipeline;
 
   @VQBModule.Mutation createStepForm!: ({
     stepName,
