@@ -140,6 +140,13 @@ export function servicePluginFactory(service: BackendService) {
         mutation.type === VQBnamespace('setCurrentPage')
       ) {
         _updateDataset(store, service, activePipeline(state[VQB_MODULE_NAME]));
+
+        // If we modified the pipeline, the ouptuted data
+        // can be different and then the page where you were
+        // does no longer exists, that's why we decide to reset the page
+        if (mutation.type !== VQBnamespace('setCurrentPage')) {
+          state.dataset.paginationContext.pageno = 1;
+        }
       }
     });
   };
