@@ -290,6 +290,64 @@ function transformReplace(step: Readonly<S.ReplaceStep>): MongoStep {
   };
 }
 
+/** transform a 'rollup' step into corresponding mongo pipeline steps */
+function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
+  const facet: { [id: string]: MongoStep[] } = {};
+  const labelCol = step.labelCol ?? 'label';
+  const levelCol = step.levelCol ?? 'level';
+  const parentLabelCol = step.parentLabelCol ?? 'parent';
+  for (const [idx, elem] of step.hierarchy.entries()) {
+    const id = columnMap([...step.hierarchy.slice(0, idx + 1), ...(step.groupby ?? [])]);
+    const aggs: { [id: string]: {} } = {};
+    for (const aggfStep of step.aggregations) {
+      if (aggfStep.aggfunction === 'count') {
+        aggs[aggfStep.newcolumn] = {
+          $sum: 1,
+        };
+      } else {
+        aggs[aggfStep.newcolumn] = {
+          [$$(aggfStep.aggfunction)]: $$(aggfStep.column),
+        };
+      }
+    }
+    const project: { [id: string]: string | number } = {
+      _id: 0,
+      ...Object.fromEntries(Object.keys(id).map(col => [col, `$_id.${col}`])),
+      ...Object.fromEntries(Object.keys(aggs).map(col => [col, 1])),
+      [labelCol]: `$_id.${elem}`,
+      [levelCol]: elem,
+    };
+    if (idx > 0) {
+      project[parentLabelCol] = `$_id.${step.hierarchy[idx - 1]}`;
+    }
+    facet[`level_${idx}`] = [
+      {
+        $group: {
+          _id: id,
+          ...aggs,
+        },
+      },
+      {
+        $project: project,
+      },
+    ];
+  }
+  return [
+    { $facet: facet },
+    {
+      $project: {
+        _vqbRollupLevels: {
+          $concatArrays: Object.keys(facet)
+            .sort()
+            .map(col => $$(col)),
+        },
+      },
+    },
+    { $unwind: '$_vqbRollupLevels' },
+    { $replaceRoot: { newRoot: '$_vqbRollupLevels' } },
+  ];
+}
+
 /** transform a 'sort' step into corresponding mongo steps */
 function transformSort(step: Readonly<S.SortStep>): MongoStep {
   const sortMongo: PropMap<number> = {};
@@ -565,6 +623,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     { $project: { [step.oldname]: 0 } },
   ],
   replace: transformReplace,
+  rollup: transformRollup,
   select: (step: Readonly<S.SelectStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 1])),
   }),

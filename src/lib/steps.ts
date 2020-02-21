@@ -183,6 +183,22 @@ export type ReplaceStep = {
   to_replace: any[][];
 };
 
+export type RollupStep = {
+  name: 'rollup';
+  /** the list of hierarchical columns from lowest to highest level */
+  hierarchy: string[];
+  /** the list of columnns to aggregate, with related aggregation function to use */
+  aggregations: AggFunctionStep[];
+  /** Groupby columns if rollup has to bbe performed by groups */
+  groupby?: string[];
+  /** To give a custom name to the output label column */
+  labelCol?: string;
+  /** To give a custom name to the output level column */
+  levelCol?: string;
+  /** To give a custom name to the output parent column */
+  parentLabelCol?: string;
+};
+
 export type SelectStep = {
   name: 'select';
   columns: string[];
@@ -274,6 +290,7 @@ export type PipelineStep =
   | PivotStep
   | RenameStep
   | ReplaceStep
+  | RollupStep
   | SelectStep
   | SplitStep
   | SortStep

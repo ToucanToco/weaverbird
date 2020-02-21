@@ -1795,7 +1795,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a uniquegroups step step', () => {
+  it('can generate a uniquegroups step', () => {
     const pipeline: Pipeline = [
       {
         name: 'uniquegroups',
@@ -1817,6 +1817,241 @@ describe('Pipeline to mongo translator', () => {
           col1: '$_id.col1',
           col2: '$_id.col2',
         },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can generate basic rollup steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['continent', 'country', 'city'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: 'value1',
+          },
+        ],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          level_0: [
+            {
+              $group: {
+                _id: {
+                  continent: '$continent',
+                },
+                value1: { $sum: '$value1' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                continent: '$_id.continent',
+                label: '$_id.continent',
+                level: 'continent',
+                value1: 1,
+              },
+            },
+          ],
+          level_1: [
+            {
+              $group: {
+                _id: {
+                  country: '$country',
+                  continent: '$continent',
+                },
+                value1: { $sum: '$value1' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.country',
+                parent: '$_id.continent',
+                level: 'country',
+                value1: 1,
+              },
+            },
+          ],
+          level_2: [
+            {
+              $group: {
+                _id: {
+                  city: '$city',
+                  country: '$country',
+                  continent: '$continent',
+                },
+                value1: { $sum: '$value1' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.city',
+                parent: '$_id.country',
+                level: 'city',
+                value1: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbRollupLevels: { $concatArrays: ['$level_0', '$level_1', '$level_2'] },
+        },
+      },
+      {
+        $unwind: '$_vqbRollupLevels',
+      },
+      {
+        $replaceRoot: { newRoot: '$_vqbRollupLevels' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can generate more complex rollup steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['continent', 'country', 'city'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: 'value1',
+          },
+          {
+            newcolumn: 'value2',
+            aggfunction: 'count',
+            column: 'value2',
+          },
+        ],
+        groupby: ['date', 'segment'],
+        labelCol: 'myLabel',
+        levelCol: 'myLevel',
+        parentLabelCol: 'myParent',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          level_0: [
+            {
+              $group: {
+                _id: {
+                  continent: '$continent',
+                  date: '$date',
+                  segment: '$segment',
+                },
+                value1: { $sum: '$value1' },
+                value2: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                continent: '$_id.continent',
+                date: '$_id.date',
+                segment: '$_id.segment',
+                myLabel: '$_id.continent',
+                myLevel: 'continent',
+                value1: 1,
+                value2: 1,
+              },
+            },
+          ],
+          level_1: [
+            {
+              $group: {
+                _id: {
+                  country: '$country',
+                  continent: '$continent',
+                  date: '$date',
+                  segment: '$segment',
+                },
+                value1: { $sum: '$value1' },
+                value2: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                country: '$_id.country',
+                continent: '$_id.continent',
+                date: '$_id.date',
+                segment: '$_id.segment',
+                myLabel: '$_id.country',
+                myParent: '$_id.continent',
+                myLevel: 'country',
+                value1: 1,
+                value2: 1,
+              },
+            },
+          ],
+          level_2: [
+            {
+              $group: {
+                _id: {
+                  city: '$city',
+                  country: '$country',
+                  continent: '$continent',
+                  date: '$date',
+                  segment: '$segment',
+                },
+                value1: { $sum: '$value1' },
+                value2: { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                country: '$_id.country',
+                continent: '$_id.continent',
+                date: '$_id.date',
+                segment: '$_id.segment',
+                myLabel: '$_id.city',
+                myParent: '$_id.country',
+                myLevel: 'city',
+                value1: 1,
+                value2: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbRollupLevels: { $concatArrays: ['$level_0', '$level_1', '$level_2'] },
+        },
+      },
+      {
+        $unwind: '$_vqbRollupLevels',
+      },
+      {
+        $replaceRoot: { newRoot: '$_vqbRollupLevels' },
       },
       {
         $project: {
