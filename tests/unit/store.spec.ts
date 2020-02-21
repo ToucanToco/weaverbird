@@ -1,7 +1,7 @@
 import { Pipeline } from '@/lib/steps';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
-import { emptyState } from '@/store/state';
+import { currentPipeline, emptyState } from '@/store/state';
 
 import { buildState, buildStateWithOnePipeline } from './utils';
 
@@ -265,6 +265,31 @@ describe('mutation tests', () => {
     spy.mockRestore();
   });
 
+  describe('deleteStep', function() {
+    it('should do nothing if no pipeline is selected', () => {
+      const state = buildState({});
+      mutations.deleteStep(state, { index: 1 });
+      expect(currentPipeline(state)).toBeUndefined();
+    });
+
+    it('should delete a step on an existing pipeline and select the previous one', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', oldname: 'foo', newname: 'bar' },
+        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', oldname: 'clou', newname: 'vis' },
+      ];
+      const state = buildStateWithOnePipeline(pipeline);
+      mutations.deleteStep(state, { index: 2 });
+      expect(currentPipeline(state)).toEqual([
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', oldname: 'foo', newname: 'bar' },
+        { name: 'rename', oldname: 'clou', newname: 'vis' },
+      ]);
+      expect(state.selectedStepIndex).toEqual(1);
+    });
+  });
+
   it('sets current domain on empty pipeline', () => {
     const state = buildStateWithOnePipeline([], { currentDomain: 'foo' });
     expect(state.currentDomain).toEqual('foo');
@@ -326,19 +351,25 @@ describe('mutation tests', () => {
     expect(state.currentPipelineName).toEqual('bar');
   });
 
-  it('sets pipeline', () => {
-    expect(getters.pipeline(buildState({}), {}, {}, {})).toBeUndefined();
+  describe('setPipeline', function() {
+    it('should do nothing if not pipeline is selected', function() {
+      const state = buildState({});
+      mutations.setPipeline(state, { pipeline: [] });
+      expect(getters.pipeline(state, {}, {}, {})).toBeUndefined();
+    });
 
-    const state = buildStateWithOnePipeline([]);
-    expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
+    it('should replace the current pipeline', function() {
+      const state = buildStateWithOnePipeline([]);
+      expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
 
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-    ];
-    mutations.setPipeline(state, { pipeline });
-    expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', oldname: 'foo', newname: 'bar' },
+        { name: 'rename', oldname: 'baz', newname: 'spam' },
+      ];
+      mutations.setPipeline(state, { pipeline });
+      expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
+    });
   });
 
   it('should set current domain when updating pipeline with domain', () => {
