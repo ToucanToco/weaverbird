@@ -505,4 +505,19 @@ describe('Labeller', () => {
     };
     expect(hrl(step)).toEqual('Get unique groups/values in columns "column1", "column2"');
   });
+
+  it('generates label for rollup steps', () => {
+    const step: S.RollupStep = {
+      name: 'rollup',
+      hierarchy: ['city', 'country', 'continent'],
+      aggregations: [
+        {
+          newcolumn: 'value1',
+          aggfunction: 'sum',
+          column: 'value1',
+        },
+      ],
+    };
+    expect(hrl(step)).toEqual('Roll-up hierarchy ["city", "country", "continent"]');
+  });
 });
