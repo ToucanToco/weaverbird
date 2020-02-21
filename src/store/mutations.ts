@@ -2,6 +2,8 @@
  * exports the list of store mutations.
  */
 
+import Vue from 'vue';
+
 import { BackendError } from '@/lib/backend-response';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
 
@@ -202,7 +204,7 @@ export default {
     if (state.currentPipelineName === undefined) {
       return;
     }
-    state.pipelines[state.currentPipelineName] = pipeline;
+    Vue.set(state.pipelines, state.currentPipelineName, pipeline);
     if (pipeline.length) {
       const firstStep = pipeline[0];
       if (firstStep.name === 'domain') {
