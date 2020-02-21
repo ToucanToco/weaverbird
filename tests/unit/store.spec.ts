@@ -7,6 +7,12 @@ import { buildState, buildStateWithOnePipeline } from './utils';
 
 describe('getter tests', () => {
   describe('(in)active pipeline steps', () => {
+    it('should not return anything without any selected pipeline', () => {
+      const state = buildState({});
+      expect(getters.activePipeline(state, {}, {}, {})).toBeUndefined();
+      expect(getters.inactivePipeline(state, {}, {}, {})).toBeUndefined();
+    });
+
     it('should return the whole pipeline if selectedIndex is -1', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
@@ -49,6 +55,11 @@ describe('getter tests', () => {
   });
 
   describe('active step index tests', () => {
+    it('should not return anything if no pipeline is selected', () => {
+      const state = buildState({});
+      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toBeUndefined();
+    });
+
     it('should compute active step index if selectedIndex is -1', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
@@ -114,6 +125,11 @@ describe('getter tests', () => {
   });
 
   describe('domain extraction tests', () => {
+    it('should not return anything if no pipeline is selected', function() {
+      const state = buildState({});
+      expect(getters.domainStep(state, {}, {}, {})).toBeUndefined;
+    });
+
     it('should return the domain step', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
@@ -148,6 +164,11 @@ describe('getter tests', () => {
   });
 
   describe('pipeline empty tests', () => {
+    it('should not return anything if no pipeline is selected', function() {
+      const state = buildState({});
+      expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeUndefined;
+    });
+
     it('should return true if pipeline is empty', () => {
       const pipeline: Pipeline = [];
       const state = buildState(buildStateWithOnePipeline(pipeline));
@@ -185,6 +206,23 @@ describe('getter tests', () => {
       const state = buildState({ selectedStepIndex: 1 });
       expect(getters.isStepDisabled(state, {}, {}, {})(2)).toBeTruthy();
       expect(getters.isStepDisabled(state, {}, {}, {})(3)).toBeTruthy();
+    });
+  });
+
+  describe('step configuration', () => {
+    it('should retrieve the configuration of a step using its index', function() {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', oldname: 'foo', newname: 'bar' },
+        { name: 'rename', oldname: 'baz', newname: 'spam' },
+      ];
+      const state = buildStateWithOnePipeline(pipeline);
+      expect(getters.stepConfig(state, {}, {}, {})(1)).toEqual(pipeline[1]);
+    });
+
+    it('should not return anything if there is no selected pipeline', function() {
+      const state = buildState({});
+      expect(getters.stepConfig(state, {}, {}, {})(0)).toBeUndefined();
     });
   });
 
@@ -252,6 +290,12 @@ describe('mutation tests', () => {
     ]);
   });
 
+  it('do nothing without any current pipeline', () => {
+    const state = buildState({});
+    mutations.setCurrentDomain(state, { currentDomain: 'bar' });
+    expect(state.currentDomain).toBeUndefined();
+  });
+
   it('sets domain list', () => {
     const state = buildState({});
     expect(state.domains).toEqual([]);
@@ -283,13 +327,16 @@ describe('mutation tests', () => {
   });
 
   it('sets pipeline', () => {
+    expect(getters.pipeline(buildState({}), {}, {}, {})).toBeUndefined();
+
+    const state = buildStateWithOnePipeline([]);
+    expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
+
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
-    const state = buildStateWithOnePipeline([]);
-    expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
     mutations.setPipeline(state, { pipeline });
     expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
   });

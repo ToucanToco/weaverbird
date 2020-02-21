@@ -85,7 +85,7 @@ describe('ActionToolbarButton', () => {
   it('should instantiate a Text button with the right list of actions', () => {
     // instantiate a store with at least one column selected so that steps
     // such as 'lowercase' can be triggered without creating a form.
-    const store = setupMockStore({ selectedColumns: ['foo'] });
+    const store = setupMockStore(buildStateWithOnePipeline([], { selectedColumns: ['foo'] }));
     const wrapper = mount(ActionToolbarButton, {
       propsData: { category: 'text' },
       localVue,
