@@ -18,6 +18,7 @@ import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
 import renameBuildSchema from './rename';
 import replaceSchema from './replace';
+import rollupSchema from './rollup';
 import selectSchema from './select';
 import sortSchema from './sort';
 import splitSchema from './split';
@@ -54,6 +55,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   pivot: pivotSchema,
   rename: renameBuildSchema,
   replace: replaceSchema,
+  rollup: rollupSchema,
   select: selectSchema,
   sort: sortSchema,
   split: splitSchema,
