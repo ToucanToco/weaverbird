@@ -133,7 +133,7 @@ describe('ActionToolbarButton', () => {
   it('should instantiate an Aggregate button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'aggregate' }, localVue });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['aggregate', 'uniquegroups']);
+    assertMenuEmitsExpected(wrapper, ['aggregate', 'rollup', 'uniquegroups']);
   });
 
   it('should instantiate a Reshape button with the right list of actions', () => {

@@ -45,6 +45,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   ],
   aggregate: [
     { name: 'aggregate', label: 'Group by' },
+    { name: 'rollup', label: 'Hierarchical rollup' },
     { name: 'uniquegroups', label: 'Get unique groups/values' },
   ],
   compute: [

@@ -19,6 +19,7 @@ import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
 import './RenameStepForm.vue';
 import './ReplaceStepForm.vue';
+import './RollupStepForm.vue';
 import './SelectColumnStepForm.vue';
 import './SplitStepForm.vue';
 import './SortStepForm.vue';
