@@ -4,7 +4,9 @@
 
 ### Added
 
-- add support for templatinng in custom step
+- add support for templating in custom step
+- Add translation and UI for rollup steps (to aggregate and stack data by
+  hierarchical levels)
 
 ### Changed
 
