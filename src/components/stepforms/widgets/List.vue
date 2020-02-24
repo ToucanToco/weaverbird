@@ -156,9 +156,11 @@ export default class ListWidget extends Mixins(FormWidget) {
 }
 
 .widget-list__body {
+  background: none;
   width: 100%;
   display: flex;
   flex-direction: column;
+  padding: 0;
 }
 
 .widget-list__child {
