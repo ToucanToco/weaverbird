@@ -8,12 +8,14 @@
     - argmin
     - concatenate
     - convert
-    - dateextract
     - delete
     - duplicate
+    - dateextract
+    - substring
     - fillna
     - filter
     - formula
+    - uniquegroups
     - join
     - select
     - percentage
@@ -22,12 +24,10 @@
     - replace
     - sort
     - split
-    - substring
     - lowercase
     - uppercase
     - top
     - unpivot
-    - uniquegroups
 
 - title: Technical documentation
   docs:
