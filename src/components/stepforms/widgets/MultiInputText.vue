@@ -138,6 +138,7 @@ export default class MultiInputTextWidget extends Vue {
   display: block;
   padding-right: 30px;
   height: 40px;
+  overflow: hidden;
   & > input {
     background: transparent;
     margin-bottom: 0;
@@ -145,6 +146,11 @@ export default class MultiInputTextWidget extends Vue {
       color: $grey-dark;
     }
   }
+}
+
+.multiselect--active .multiselect__tags {
+  overflow: visible;
+  height: auto;
 }
 
 .widget-multiinputtext__container {
