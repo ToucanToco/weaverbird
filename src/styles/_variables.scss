@@ -1,8 +1,3 @@
-//FONT - Temporary declaration for montserrat google font.
-// => we have to decide if we will use the same font as used in Tucana
-@import url('https://fonts.googleapis.com/css?family=Montserrat:500,600,700&display=swap');
-@import url('https://fonts.googleapis.com/css?family=Roboto+Slab:400&display=swap');
-
 // COLOR VARIABLES
 $base-color: #404040 !default;
 $base-color-light: #4c4c4c !default;
@@ -14,24 +9,10 @@ $data-viewer-border-color: #e0e0e0 !default;
 $grey: #eeeeee;
 $grey-dark: #585858;
 
-//GLOBAL STYLE
-.data-viewer,
-.query-builder {
+//GLOBAL STYLE (by default we use the google font "Montserrat")
+%main-font-style {
   color: $base-color;
   font-family: 'Montserrat', sans-serif;
-  *,
-  ::after,
-  ::before {
-    box-sizing: border-box;
-  }
-
-  button {
-    outline: none;
-  }
-
-  fieldset {
-    border: none;
-  }
 }
 
 // FORMS STYLES PLACEHOLDER
@@ -72,12 +53,6 @@ $grey-dark: #585858;
 
   box-size &::placeholder {
     color: $grey-dark;
-  }
-}
-
-.widget-list__container {
-  %form-widget__field {
-    background-color: white;
   }
 }
 

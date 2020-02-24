@@ -214,7 +214,140 @@ export default class DataViewer extends Vue {
 </script>
 <style lang="scss" scoped>
 @import '../styles/_variables';
-@import '../styles/DataViewer';
+
+.data-viewer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  @extend %main-font-style;
+  /deep/ *,
+  /deep/ ::after,
+  /deep/ ::before {
+    box-sizing: border-box;
+  }
+
+  /deep/ button {
+    outline: none;
+  }
+
+  /deep/ fieldset {
+    border: none;
+  }
+}
+
+.data-viewer-container {
+  width: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-viewer-table-container {
+  width: 100%;
+  max-height: 100%;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.data-viewer-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.data-viewer__header-cell,
+.data-viewer-cell {
+  position: relative;
+  padding: 8px;
+  background-color: white;
+  border: 1px solid $data-viewer-border-color;
+  font-size: 13px;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: pre;
+  //firefox hack for border-collapse issue
+  background-clip: padding-box;
+}
+
+.data-viewer-cell {
+  background-color: #fafafa;
+  white-space: normal;
+}
+
+.data-viewer__header-cell--active,
+.data-viewer-cell--active {
+  // It's trick to have its left side colored cause of border-collapse
+  border-left: 1px double;
+  background-color: $active-color-faded-3;
+  border-right-color: $active-color;
+  border-left-color: $active-color;
+}
+
+.data-viewer__row:last-child {
+  .data-viewer-cell--active {
+    border-bottom-color: $active-color;
+  }
+}
+
+.data-viewer__header-cell {
+  cursor: pointer;
+  font-weight: bold;
+  padding: 6px 8px;
+}
+
+.data-viewer__header-cell--active {
+  border-top-color: $active-color;
+  border-left: 1px double;
+  color: $active-color;
+
+  .data-viewer__header-action:hover {
+    background-color: $active-color-faded-2;
+  }
+
+  .data-viewer__header-icon {
+    color: $active-color-faded;
+  }
+
+  .data-viewer__header-icon--active:hover {
+    color: $active-color;
+  }
+}
+
+.data-viewer__header-label {
+  text-overflow: ellipsis;
+  max-width: 200px;
+  overflow: hidden;
+  padding-right: 23px;
+}
+
+.data-viewer__header-icon {
+  font-family: 'Roboto Slab', serif;
+  color: #aaaaaa;
+  margin-right: 6px;
+}
+
+.data-viewer__header-action {
+  position: absolute;
+  font-size: 18px;
+  right: 10px;
+  top: 6px;
+  transition: opacity 300ms ease;
+  display: flex;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+}
+
+.data-viewer__header-action:hover {
+  background-color: $data-viewer-border-color;
+}
+
+.data-viewer__header-icon--active:hover {
+  color: $base-color;
+}
 
 .data-viewer-loader-spinner {
   border-radius: 50%;
