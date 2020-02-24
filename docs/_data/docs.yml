@@ -16,6 +16,7 @@
     - filter
     - formula
     - uniquegroups
+    - rollup
     - join
     - select
     - percentage
