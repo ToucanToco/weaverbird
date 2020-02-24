@@ -1176,6 +1176,180 @@ A replace step has the following strucure:
 | Company 1 | France         |
 | Company 2 | United Kingdom |
 
+### `rollup` step
+
+Use this step if you need to compute aggregated data at every level of a
+`hierarchy`, specified as a series of columns from top to bottom level.
+The output data structure stacks the data of every level of the hierarchy,
+specifying for every row the label, level and parent in dedicated columns.
+
+```javascript
+{
+   name: 'rollup',
+   hierarchy: ['continent', 'country', 'city'], // Hierarchical columns, from top to bottom level
+   aggregations: [ // The columns to be aggregated, and how
+    {
+      newcolumn: 'revenues',
+      aggfunction: 'sum', // aggregate using sum
+      column: 'revenues'
+    },
+    {
+      newcolumn: 'average_cost',
+      aggfunction: 'avg', // aggregate using average
+      column: 'cost'
+    }
+   ],
+   groupby: ['date'], // optional, if needing to segment the rollup computation by group
+   labelCol: 'label', // optional, name of the output label column, 'label' by default
+   levelCol: 'label', // optional, name of the output level column, 'level' by default
+   parentLabelCol: 'label', // optional, name of the output parent column, 'parent' by default
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1 : Basic configuration
+
+**Input dataset:**
+
+| CITY      | COUNTRY | CONTINENT     | YEAR | VALUE |
+| --------- | ------- | ------------- | ---- | ----- |
+| Paris     | France  | Europe        | 2018 | 10    |
+| Bordeaux  | France  | Europe        | 2018 | 5     |
+| Barcelona | Spain   | Europe        | 2018 | 8     |
+| Madrid    | Spain   | Europe        | 2018 | 3     |
+| Boston    | USA     | North America | 2018 | 12    |
+| New-York  | USA     | North America | 2018 | 21    |
+| Montreal  | Canada  | North America | 2018 | 10    |
+| Ottawa    | Canada  | North America | 2018 | 7     |
+| Paris     | France  | Europe        | 2019 | 13    |
+| Bordeaux  | France  | Europe        | 2019 | 8     |
+| Barcelona | Spain   | Europe        | 2019 | 11    |
+| Madrid    | Spain   | Europe        | 2019 | 6     |
+| Boston    | USA     | North America | 2019 | 15    |
+| New-York  | USA     | North America | 2019 | 24    |
+| Montreal  | Canada  | North America | 2019 | 10    |
+| Ottawa    | Canada  | North America | 2019 | 13    |
+
+**Step configuration:**
+
+```javascript
+{
+   name: 'rollup',
+   hierarchy: ['CONTINENT', 'COUNTRY', 'CITY'],
+   aggregations: [
+    {
+      newcolumn: 'revenues',
+      aggfunction: 'sum',
+      column: 'revenues'
+    },
+   ],
+}
+```
+
+**Output dataset:**
+
+| CITY      | COUNTRY | CONTINENT     | label         | level     | parent        | VALUE |
+| --------- | ------- | ------------- | ------------- | --------- | ------------- | ----- |
+|           |         | North America | Europe        | CONTINENT |               | 64    |
+|           |         | North America | North America | CONTINENT |               | 112   |
+|           | France  | Europe        | France        | COUNTRY   | Europe        | 36    |
+|           | Spain   | Europe        | Spain         | COUNTRY   | Europe        | 28    |
+|           | USA     | North America | USA           | COUNTRY   | North America | 72    |
+|           | Canada  | North America | Canada        | COUNTRY   | North America | 40    |
+| Paris     | France  | Europe        | Paris         | CITY      | France        | 23    |
+| Bordeaux  | France  | Europe        | Bordeaux      | CITY      | France        | 13    |
+| Barcelona | Spain   | Europe        | Barcelona     | CITY      | Spain         | 19    |
+| Madrid    | Spain   | Europe        | Madrid        | CITY      | Spain         | 9     |
+| Boston    | USA     | North America | Boston        | CITY      | USA           | 27    |
+| New-York  | USA     | North America | New-York      | CITY      | USA           | 45    |
+| Montreal  | Canada  | North America | Montreal      | CITY      | Canada        | 17    |
+| Ottawa    | Canada  | North America | Ottawa        | CITY      | Canada        | 23    |
+
+#### Example 2 : Configuration with optional parameters
+
+**Input dataset:**
+
+| CITY      | COUNTRY | CONTINENT     | YEAR | VALUE |
+| --------- | ------- | ------------- | ---- | ----- |
+| Paris     | France  | Europe        | 2018 | 10    |
+| Bordeaux  | France  | Europe        | 2018 | 5     |
+| Barcelona | Spain   | Europe        | 2018 | 8     |
+| Madrid    | Spain   | Europe        | 2018 | 3     |
+| Boston    | USA     | North America | 2018 | 12    |
+| New-York  | USA     | North America | 2018 | 21    |
+| Montreal  | Canada  | North America | 2018 | 10    |
+| Ottawa    | Canada  | North America | 2018 | 7     |
+| Paris     | France  | Europe        | 2019 | 13    |
+| Bordeaux  | France  | Europe        | 2019 | 8     |
+| Barcelona | Spain   | Europe        | 2019 | 11    |
+| Madrid    | Spain   | Europe        | 2019 | 6     |
+| Boston    | USA     | North America | 2019 | 15    |
+| New-York  | USA     | North America | 2019 | 24    |
+| Montreal  | Canada  | North America | 2019 | 10    |
+| Ottawa    | Canada  | North America | 2019 | 13    |
+
+**Step configuration:**
+
+```javascript
+{
+   name: 'rollup',
+   hierarchy: ['CONTINENT', 'COUNTRY', 'CITY'],
+   aggregations: [
+    {
+      newcolumn: 'VALUE-sum',
+      aggfunction: 'sum',
+      column: 'VALUE'
+    },
+    {
+      newcolumn: 'VALUE-avg',
+      aggfunction: 'avg',
+      column: 'VALUE'
+    }
+   ],
+   groupby: ['date'],
+   labelCol: 'label',
+   levelCol: 'label',
+   parentLabelCol: 'label',
+}
+```
+
+**Output dataset:**
+
+| CITY      | COUNTRY | CONTINENT     | YEAR | MY_LABEL      | MY_LEVEL  | MY_PARENT     | VALUE-sum | VALUE-avg |
+| --------- | ------- | ------------- | ---- | ------------- | --------- | ------------- | --------- | --------- |
+|           |         | North America | 2018 | Europe        | CONTINENT |               | 26        | 6.5       |
+|           |         | North America | 2018 | North America | CONTINENT |               | 50        | 12.5      |
+|           | France  | Europe        | 2018 | France        | COUNTRY   | Europe        | 15        | 7.5       |
+|           | Spain   | Europe        | 2018 | Spain         | COUNTRY   | Europe        | 11        | 5.5       |
+|           | USA     | North America | 2018 | USA           | COUNTRY   | North America | 33        | 16.5      |
+|           | Canada  | North America | 2018 | Canada        | COUNTRY   | North America | 17        | 8.5       |
+| Paris     | France  | Europe        | 2018 | Paris         | CITY      | France        | 10        | 10        |
+| Bordeaux  | France  | Europe        | 2018 | Bordeaux      | CITY      | France        | 5         | 5         |
+| Barcelona | Spain   | Europe        | 2018 | Barcelona     | CITY      | Spain         | 8         | 8         |
+| Madrid    | Spain   | Europe        | 2018 | Madrid        | CITY      | Spain         | 3         | 3         |
+| Boston    | USA     | North America | 2018 | Boston        | CITY      | USA           | 12        | 12        |
+| New-York  | USA     | North America | 2018 | New-York      | CITY      | USA           | 21        | 21        |
+| Montreal  | Canada  | North America | 2018 | Montreal      | CITY      | Canada        | 7         | 7         |
+| Ottawa    | Canada  | North America | 2018 | Ottawa        | CITY      | Canada        | 10        | 10        |
+|           |         | North America | 2019 | Europe        | CONTINENT |               | 38        | 9.5       |
+|           |         | North America | 2019 | North America | CONTINENT |               | 62        | 15.5      |
+|           | France  | Europe        | 2019 | France        | COUNTRY   | Europe        | 21        | 10.5      |
+|           | Spain   | Europe        | 2019 | Spain         | COUNTRY   | Europe        | 17        | 8.5       |
+|           | USA     | North America | 2019 | USA           | COUNTRY   | North America | 39        | 19.5      |
+|           | Canada  | North America | 2019 | Canada        | COUNTRY   | North America | 23        | 11.1      |
+| Paris     | France  | Europe        | 2019 | Paris         | CITY      | France        | 13        | 13        |
+| Bordeaux  | France  | Europe        | 2019 | Bordeaux      | CITY      | France        | 8         | 8         |
+| Barcelona | Spain   | Europe        | 2019 | Barcelona     | CITY      | Spain         | 11        | 11        |
+| Madrid    | Spain   | Europe        | 2019 | Madrid        | CITY      | Spain         | 6         | 6         |
+| Boston    | USA     | North America | 2019 | Boston        | CITY      | USA           | 15        | 15        |
+| New-York  | USA     | North America | 2019 | New-York      | CITY      | USA           | 24        | 24        |
+| Montreal  | Canada  | North America | 2019 | Montreal      | CITY      | Canada        | 17        | 10        |
+| Ottawa    | Canada  | North America | 2019 | Ottawa        | CITY      | Canada        | 23        | 13        |
+
 ### `select` step
 
 Select a column. The default is to keep every columns of the input domain. If
