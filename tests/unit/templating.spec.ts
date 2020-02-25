@@ -1097,4 +1097,30 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate uniquegroups steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'evolution',
+        dateCol: '<%= foo %>',
+        valueCol: '<%= foo %>',
+        evolutionType: 'vsLastMonth',
+        evolutionFormat: 'abs',
+        indexColumns: ['<%= foo %>'],
+        newColumn: '<%= foo %>',
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'evolution',
+        dateCol: 'bar',
+        valueCol: 'bar',
+        evolutionType: 'vsLastMonth',
+        evolutionFormat: 'abs',
+        indexColumns: ['bar'],
+        newColumn: 'bar',
+      },
+    ]);
+  });
 });

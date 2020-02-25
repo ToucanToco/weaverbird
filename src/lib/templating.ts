@@ -164,6 +164,18 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  evolution(step: Readonly<S.EvolutionStep>) {
+    return {
+      ...step,
+      dateCol: _interpolate(this.interpolateFunc, step.dateCol, this.context),
+      valueCol: _interpolate(this.interpolateFunc, step.valueCol, this.context),
+      indexColumns: step.indexColumns.map(col =>
+        _interpolate(this.interpolateFunc, col, this.context),
+      ),
+      newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
+    };
+  }
+
   fillna(step: Readonly<S.FillnaStep>) {
     return {
       ...step,
