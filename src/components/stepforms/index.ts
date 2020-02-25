@@ -10,6 +10,7 @@ import './DateExtractStepForm.vue';
 import './DeleteColumnStepForm.vue';
 import './DuplicateColumnStepForm.vue';
 import './DomainStepForm.vue';
+import './EvolutionStepForm.vue';
 import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
 import './FormulaStepForm.vue';
