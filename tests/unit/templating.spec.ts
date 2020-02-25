@@ -137,14 +137,19 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave custom steps untouched', () => {
+  it('should interpolate a custom step query', () => {
     const pipeline: Pipeline = [
       {
         name: 'custom',
-        query: '{}',
+        query: '{ $match: "<%= foo %>"}',
       },
     ];
-    expect(translate(pipeline)).toEqual(pipeline);
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'custom',
+        query: '{ $match: "bar"}',
+      },
+    ]);
   });
 
   it('interpolates the "text" parameter of text steps', () => {

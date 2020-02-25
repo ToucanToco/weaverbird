@@ -2,6 +2,12 @@
 
 ## UNRELEASED -
 
+### Added
+
+- add support for templatinng in custom step
+
+### Changed
+
 - removed `pipeline` attribute in the store, recompute it dynamically from
   `pipelines` and `currentPipelineName` attributes.
 
