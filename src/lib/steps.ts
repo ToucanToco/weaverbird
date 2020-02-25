@@ -96,6 +96,16 @@ export type DuplicateColumnStep = {
   new_column_name: string;
 };
 
+export type EvolutionStep = {
+  name: 'evolution';
+  dateCol: string;
+  valueCol: string;
+  evolutionType: 'vsLastYear' | 'vsLastMonth' | 'vsLastWeek' | 'vsLastDay';
+  evolutionFormat: 'abs' | 'pct';
+  indexColumns: string[];
+  newColumn?: string;
+};
+
 export type FillnaStep = {
   name: 'fillna';
   column: string;
@@ -283,6 +293,7 @@ export type PipelineStep =
   | DeleteStep
   | DuplicateColumnStep
   | DomainStep
+  | EvolutionStep
   | FillnaStep
   | FilterStep
   | FormulaStep
