@@ -170,6 +170,126 @@ function transformArgmaxArgmin(step: Readonly<S.ArgmaxStep> | Readonly<S.ArgminS
   ];
 }
 
+/** transform an 'evolution' step into corresponding mongo steps */
+function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
+  const newColumn = step.newColumn ?? `${step.valueCol}_EVOL_${step.evolutionFormat.toUpperCase()}`;
+  const errorMsg = 'Error: More than one previous date found for the specified index columns';
+  const addFieldDatePrev: PropMap<any> = {};
+  const addFieldResult: PropMap<any> = {};
+
+  if (step.evolutionFormat === 'abs') {
+    addFieldResult[newColumn] = {
+      $cond: [
+        { $eq: ['$_VQB_VALUE_PREV', 'Error'] },
+        errorMsg,
+        { $subtract: [$$(step.valueCol), '$_VQB_VALUE_PREV'] },
+      ],
+    };
+  } else {
+    addFieldResult[newColumn] = {
+      $switch: {
+        branches: [
+          { case: { $eq: ['$_VQB_VALUE_PREV', 'Error'] }, then: errorMsg },
+          { case: { $eq: ['$_VQB_VALUE_PREV', 0] }, then: null },
+        ],
+        default: {
+          $divide: [{ $subtract: [$$(step.valueCol), '$_VQB_VALUE_PREV'] }, '$_VQB_VALUE_PREV'],
+        },
+      },
+    };
+  }
+
+  if (step.evolutionType === 'vsLastYear') {
+    addFieldDatePrev['_VQB_DATE_PREV'] = {
+      $dateFromParts: {
+        year: { $subtract: [{ $year: $$(step.dateCol) }, 1] },
+        month: { $month: $$(step.dateCol) },
+        day: { $dayOfMonth: $$(step.dateCol) },
+      },
+    };
+  } else if (step.evolutionType === 'vsLastMonth') {
+    addFieldDatePrev['_VQB_DATE_PREV'] = {
+      $dateFromParts: {
+        year: {
+          $cond: [
+            { $eq: [{ $month: $$(step.dateCol) }, 1] },
+            { $subtract: [{ $year: $$(step.dateCol) }, 1] },
+            { $year: $$(step.dateCol) },
+          ],
+        },
+        month: {
+          $cond: [
+            { $eq: [{ $month: $$(step.dateCol) }, 1] },
+            12,
+            { $subtract: [{ $month: $$(step.dateCol) }, 1] },
+          ],
+        },
+        day: { $dayOfMonth: $$(step.dateCol) },
+      },
+    };
+  } else {
+    addFieldDatePrev['_VQB_DATE_PREV'] = {
+      $subtract: [
+        $$(step.dateCol),
+        60 * 60 * 24 * 1000 * (step.evolutionType === 'vsLastWeek' ? 7 : 1),
+      ],
+    };
+  }
+  return [
+    { $addFields: addFieldDatePrev },
+    {
+      $facet: {
+        _VQB_ORIGINALS: [{ $project: { _id: 0 } }],
+        _VQB_COPIES_ARRAY: [{ $group: { _id: null, _VQB_ALL_DOCS: { $push: '$$ROOT' } } }],
+      },
+    },
+    { $unwind: '$_VQB_ORIGINALS' },
+    {
+      $project: {
+        _VQB_ORIGINALS: {
+          $mergeObjects: ['$_VQB_ORIGINALS', { $arrayElemAt: ['$_VQB_COPIES_ARRAY', 0] }],
+        },
+      },
+    },
+    { $replaceRoot: { newRoot: '$_VQB_ORIGINALS' } },
+    {
+      $addFields: {
+        _VQB_ALL_DOCS: {
+          $filter: {
+            input: '$_VQB_ALL_DOCS',
+            as: 'item',
+            cond: {
+              $and: [
+                { $eq: ['$_VQB_DATE_PREV', `$$item.${step.dateCol}`] },
+                ...step.indexColumns.map(col => ({ $eq: [$$(col), `$$item.${col}`] })),
+              ],
+            },
+          },
+        },
+      },
+    },
+    {
+      $addFields: {
+        _VQB_VALUE_PREV: {
+          $cond: [
+            { $gt: [{ $size: `$_VQB_ALL_DOCS.${step.valueCol}` }, 1] },
+            'Error',
+            { $arrayElemAt: [`$_VQB_ALL_DOCS.${step.valueCol}`, 0] },
+          ],
+        },
+      },
+    },
+    { $addFields: addFieldResult },
+    {
+      $project: {
+        _VQB_ALL_DOCS: 0,
+        _VQB_DATE_PREV: 0,
+        _VQB_VALUE_PREV: 0,
+      },
+    },
+  ];
+}
+
 /** transform a 'concatenate' step into corresponding mongo steps */
 function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
   const concatArr: string[] = [$$(step.columns[0])];
@@ -572,7 +692,7 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
           // key referencing as value a`lastStep` key
           const valueString: string = JSON.stringify(step[stepOperator][key]);
           for (const lastKey in lastStep[stepOperator]) {
-            const regex = new RegExp(`.*['"]\\$${lastKey}['"].*`);
+            const regex = new RegExp(`.*['"]\\$${lastKey}(\\..+)?['"].*`);
             if (regex.test(valueString)) {
               merge = false;
               break;
@@ -630,6 +750,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
     $addFields: { [step.new_column_name]: $$(step.column) },
   }),
+  evolution: transformEvolution,
   fillna: (step: Readonly<S.FillnaStep>) => ({
     $addFields: {
       [step.column]: {

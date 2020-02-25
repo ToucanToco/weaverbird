@@ -1,11 +1,6 @@
 import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import {
-  _simplifyAndCondition,
-  _simplifyMongoPipeline,
-  Mongo36Translator,
-  MongoStep,
-} from '@/lib/translators/mongo';
+import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
@@ -2107,53 +2102,368 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
-});
 
-describe('Pipeline to mongo36 with a custom domain to collection function', function() {
-  const mongo36translator = getTranslator('mongo36') as Mongo36Translator;
-  mongo36translator.setDomainToCollection((domain: string) => `data-${domain}`);
-
-  it('can generate an append step with a custom domain to collection function', () => {
-    const pipelineBis: Pipeline = [{ name: 'domain', domain: 'test_bis' }];
+  it('can generate a basic evolution step vs. last year in absolute value', () => {
     const pipeline: Pipeline = [
       {
-        name: 'domain',
-        domain: 'test',
-      },
-      {
-        name: 'append',
-        pipelines: [pipelineBis],
+        name: 'evolution',
+        dateCol: 'DATE',
+        valueCol: 'VALUE',
+        evolutionType: 'vsLastYear',
+        evolutionFormat: 'abs',
+        indexColumns: [],
       },
     ];
-
     const querySteps = mongo36translator.translate(pipeline);
-
-    const lookupStage = querySteps.find(s => s.$lookup);
-    expect(lookupStage).toBeDefined();
-    if (lookupStage) {
-      expect(lookupStage.$lookup.from).toEqual('data-test_bis');
-    }
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          _VQB_DATE_PREV: {
+            $dateFromParts: {
+              year: { $subtract: [{ $year: '$DATE' }, 1] },
+              month: { $month: '$DATE' },
+              day: { $dayOfMonth: '$DATE' },
+            },
+          },
+        },
+      },
+      {
+        $facet: {
+          _VQB_ORIGINALS: [{ $project: { _id: 0 } }],
+          _VQB_COPIES_ARRAY: [{ $group: { _id: null, _VQB_ALL_DOCS: { $push: '$$ROOT' } } }],
+        },
+      },
+      { $unwind: '$_VQB_ORIGINALS' },
+      {
+        $project: {
+          _VQB_ORIGINALS: {
+            $mergeObjects: ['$_VQB_ORIGINALS', { $arrayElemAt: ['$_VQB_COPIES_ARRAY', 0] }],
+          },
+        },
+      },
+      { $replaceRoot: { newRoot: '$_VQB_ORIGINALS' } },
+      {
+        $addFields: {
+          _VQB_ALL_DOCS: {
+            $filter: {
+              input: '$_VQB_ALL_DOCS',
+              as: 'item',
+              cond: {
+                $and: [{ $eq: ['$_VQB_DATE_PREV', '$$item.DATE'] }],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          _VQB_VALUE_PREV: {
+            $cond: [
+              { $gt: [{ $size: `$_VQB_ALL_DOCS.VALUE` }, 1] },
+              'Error',
+              { $arrayElemAt: [`$_VQB_ALL_DOCS.VALUE`, 0] },
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          VALUE_EVOL_ABS: {
+            $cond: [
+              {
+                $eq: ['$_VQB_VALUE_PREV', 'Error'],
+              },
+              'Error: More than one previous date found for the specified index columns',
+              { $subtract: ['$VALUE', '$_VQB_VALUE_PREV'] },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _VQB_ALL_DOCS: 0,
+          _VQB_DATE_PREV: 0,
+          _VQB_VALUE_PREV: 0,
+          _id: 0,
+        },
+      },
+    ]);
   });
 
-  it('can generate a join step', () => {
-    const rightPipeline: Pipeline = [{ name: 'domain', domain: 'right' }];
+  it('can generate a complete evolution step vs. last month in absolute value', () => {
     const pipeline: Pipeline = [
       {
-        name: 'domain',
-        domain: 'test',
-      },
-      {
-        name: 'join',
-        right_pipeline: rightPipeline,
-        type: 'left',
-        on: [['id', 'id']],
+        name: 'evolution',
+        dateCol: 'DATE',
+        valueCol: 'VALUE',
+        evolutionType: 'vsLastMonth',
+        evolutionFormat: 'abs',
+        indexColumns: ['PRODUCT', 'COUNTRY'],
+        newColumn: 'DIFF',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
-    const lookupStage = querySteps.find(s => s.$lookup);
-    expect(lookupStage).toBeDefined();
-    if (lookupStage) {
-      expect(lookupStage.$lookup.from).toEqual('data-right');
-    }
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          _VQB_DATE_PREV: {
+            $dateFromParts: {
+              year: {
+                $cond: [
+                  { $eq: [{ $month: '$DATE' }, 1] },
+                  { $subtract: [{ $year: '$DATE' }, 1] },
+                  { $year: '$DATE' },
+                ],
+              },
+              month: {
+                $cond: [
+                  { $eq: [{ $month: '$DATE' }, 1] },
+                  12,
+                  { $subtract: [{ $month: '$DATE' }, 1] },
+                ],
+              },
+              day: { $dayOfMonth: '$DATE' },
+            },
+          },
+        },
+      },
+      {
+        $facet: {
+          _VQB_ORIGINALS: [{ $project: { _id: 0 } }],
+          _VQB_COPIES_ARRAY: [{ $group: { _id: null, _VQB_ALL_DOCS: { $push: '$$ROOT' } } }],
+        },
+      },
+      { $unwind: '$_VQB_ORIGINALS' },
+      {
+        $project: {
+          _VQB_ORIGINALS: {
+            $mergeObjects: ['$_VQB_ORIGINALS', { $arrayElemAt: ['$_VQB_COPIES_ARRAY', 0] }],
+          },
+        },
+      },
+      { $replaceRoot: { newRoot: '$_VQB_ORIGINALS' } },
+      {
+        $addFields: {
+          _VQB_ALL_DOCS: {
+            $filter: {
+              input: '$_VQB_ALL_DOCS',
+              as: 'item',
+              cond: {
+                $and: [
+                  { $eq: ['$_VQB_DATE_PREV', '$$item.DATE'] },
+                  { $eq: ['$PRODUCT', '$$item.PRODUCT'] },
+                  { $eq: ['$COUNTRY', '$$item.COUNTRY'] },
+                ],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          _VQB_VALUE_PREV: {
+            $cond: [
+              { $gt: [{ $size: `$_VQB_ALL_DOCS.VALUE` }, 1] },
+              'Error',
+              { $arrayElemAt: [`$_VQB_ALL_DOCS.VALUE`, 0] },
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          DIFF: {
+            $cond: [
+              {
+                $eq: ['$_VQB_VALUE_PREV', 'Error'],
+              },
+              'Error: More than one previous date found for the specified index columns',
+              { $subtract: ['$VALUE', '$_VQB_VALUE_PREV'] },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _VQB_ALL_DOCS: 0,
+          _VQB_DATE_PREV: 0,
+          _VQB_VALUE_PREV: 0,
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can generate an evolution step vs. last week in percentage value', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'evolution',
+        dateCol: 'DATE',
+        valueCol: 'VALUE',
+        evolutionType: 'vsLastWeek',
+        evolutionFormat: 'pct',
+        indexColumns: [],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          _VQB_DATE_PREV: {
+            $subtract: ['$DATE', 60 * 60 * 24 * 1000 * 7],
+          },
+        },
+      },
+      {
+        $facet: {
+          _VQB_ORIGINALS: [{ $project: { _id: 0 } }],
+          _VQB_COPIES_ARRAY: [{ $group: { _id: null, _VQB_ALL_DOCS: { $push: '$$ROOT' } } }],
+        },
+      },
+      { $unwind: '$_VQB_ORIGINALS' },
+      {
+        $project: {
+          _VQB_ORIGINALS: {
+            $mergeObjects: ['$_VQB_ORIGINALS', { $arrayElemAt: ['$_VQB_COPIES_ARRAY', 0] }],
+          },
+        },
+      },
+      { $replaceRoot: { newRoot: '$_VQB_ORIGINALS' } },
+      {
+        $addFields: {
+          _VQB_ALL_DOCS: {
+            $filter: {
+              input: '$_VQB_ALL_DOCS',
+              as: 'item',
+              cond: {
+                $and: [{ $eq: ['$_VQB_DATE_PREV', '$$item.DATE'] }],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          _VQB_VALUE_PREV: {
+            $cond: [
+              { $gt: [{ $size: `$_VQB_ALL_DOCS.VALUE` }, 1] },
+              'Error',
+              { $arrayElemAt: [`$_VQB_ALL_DOCS.VALUE`, 0] },
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          VALUE_EVOL_PCT: {
+            $switch: {
+              branches: [
+                {
+                  case: {
+                    $eq: ['$_VQB_VALUE_PREV', 'Error'],
+                  },
+                  then: 'Error: More than one previous date found for the specified index columns',
+                },
+                { case: { $eq: ['$_VQB_VALUE_PREV', 0] }, then: null },
+              ],
+              default: {
+                $divide: [{ $subtract: ['$VALUE', '$_VQB_VALUE_PREV'] }, '$_VQB_VALUE_PREV'],
+              },
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _VQB_ALL_DOCS: 0,
+          _VQB_DATE_PREV: 0,
+          _VQB_VALUE_PREV: 0,
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can generate an evolution step vs. last day', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'evolution',
+        dateCol: 'DATE',
+        valueCol: 'VALUE',
+        evolutionType: 'vsLastDay',
+        evolutionFormat: 'abs',
+        indexColumns: [],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          _VQB_DATE_PREV: {
+            $subtract: ['$DATE', 60 * 60 * 24 * 1000],
+          },
+        },
+      },
+      {
+        $facet: {
+          _VQB_ORIGINALS: [{ $project: { _id: 0 } }],
+          _VQB_COPIES_ARRAY: [{ $group: { _id: null, _VQB_ALL_DOCS: { $push: '$$ROOT' } } }],
+        },
+      },
+      { $unwind: '$_VQB_ORIGINALS' },
+      {
+        $project: {
+          _VQB_ORIGINALS: {
+            $mergeObjects: ['$_VQB_ORIGINALS', { $arrayElemAt: ['$_VQB_COPIES_ARRAY', 0] }],
+          },
+        },
+      },
+      { $replaceRoot: { newRoot: '$_VQB_ORIGINALS' } },
+      {
+        $addFields: {
+          _VQB_ALL_DOCS: {
+            $filter: {
+              input: '$_VQB_ALL_DOCS',
+              as: 'item',
+              cond: {
+                $and: [{ $eq: ['$_VQB_DATE_PREV', '$$item.DATE'] }],
+              },
+            },
+          },
+        },
+      },
+      {
+        $addFields: {
+          _VQB_VALUE_PREV: {
+            $cond: [
+              { $gt: [{ $size: `$_VQB_ALL_DOCS.VALUE` }, 1] },
+              'Error',
+              { $arrayElemAt: [`$_VQB_ALL_DOCS.VALUE`, 0] },
+            ],
+          },
+        },
+      },
+      {
+        $addFields: {
+          VALUE_EVOL_ABS: {
+            $cond: [
+              {
+                $eq: ['$_VQB_VALUE_PREV', 'Error'],
+              },
+              'Error: More than one previous date found for the specified index columns',
+              { $subtract: ['$VALUE', '$_VQB_VALUE_PREV'] },
+            ],
+          },
+        },
+      },
+      {
+        $project: {
+          _VQB_ALL_DOCS: 0,
+          _VQB_DATE_PREV: 0,
+          _VQB_VALUE_PREV: 0,
+          _id: 0,
+        },
+      },
+    ]);
   });
 });
