@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED -
+
+- removed `pipeline` attribute in the store, recompute it dynamically from
+  `pipelines` and `currentPipelineName` attributes.
+
 ## [0.11.0] - 2020-02-12
 
 ### Added
