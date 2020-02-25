@@ -520,4 +520,16 @@ describe('Labeller', () => {
     };
     expect(hrl(step)).toEqual('Roll-up hierarchy ["city", "country", "continent"]');
   });
+
+  it('generates label for evolution steps', () => {
+    const step: S.EvolutionStep = {
+      name: 'evolution',
+      dateCol: 'DATE',
+      valueCol: 'VALUE',
+      evolutionType: 'vsLastMonth',
+      evolutionFormat: 'abs',
+      indexColumns: [],
+    };
+    expect(hrl(step)).toEqual('Compute evolution of column "VALUE"');
+  });
 });

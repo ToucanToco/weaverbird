@@ -146,6 +146,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Delete columns ${formatMulticol(step.columns)}`;
   }
 
+  evolution(step: Readonly<S.EvolutionStep>) {
+    return `Compute evolution of column "${step.valueCol}"`;
+  }
+
   fillna(step: Readonly<S.FillnaStep>) {
     return `Replace null values in "${step.column}" with ${step.value}`;
   }
