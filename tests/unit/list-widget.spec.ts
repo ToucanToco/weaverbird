@@ -66,6 +66,31 @@ describe('Widget List', () => {
       trashWrapper.trigger('click');
       expect(wrapper.emitted()['input']).toBeDefined();
     });
+
+    it('should remove the second input when clickng on trash', async () => {
+      const wrapper = shallowMount(ListWidget, {
+        propsData: {
+          value: [
+            { column: 'first', aggfunction: 'sum', newcolumn: 'first_bar' },
+            { column: 'second', aggfunction: 'sum', newcolumn: 'second_bar' },
+            { column: 'third', aggfunction: 'sum', newcolumn: 'third_bar' },
+          ],
+        },
+      });
+      const trashWrappers = wrapper.findAll('.widget-list__icon');
+      trashWrappers.at(1).trigger('click');
+      expect(wrapper.emitted()['input'][0][0].length).toEqual(2);
+      expect(wrapper.emitted()['input'][0][0][0]).toEqual({
+        column: 'first',
+        aggfunction: 'sum',
+        newcolumn: 'first_bar',
+      });
+      expect(wrapper.emitted()['input'][0][0][1]).toEqual({
+        column: 'third',
+        aggfunction: 'sum',
+        newcolumn: 'third_bar',
+      });
+    });
   });
 
   describe('not automatic new field', () => {

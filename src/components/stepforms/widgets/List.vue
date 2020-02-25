@@ -2,7 +2,7 @@
   <div class="widget-list__container" :class="toggleClassErrorWarning">
     <label :for="id">{{ name }}</label>
     <div class="widget-list__body">
-      <div class="widget-list__child" v-for="(child, index) in children" :key="index">
+      <div class="widget-list__child" v-for="(child, index) in children" :key="child.uid">
         <span class="widget-list__component-sep" v-if="index > 0 && separatorLabel">{{
           separatorLabel
         }}</span>
@@ -96,6 +96,7 @@ export default class ListWidget extends Mixins(FormWidget) {
       valueCopy.push(this.defaultChildValue);
     }
     return valueCopy.map(value => ({
+      uid: this.getUniqueId(value),
       isRemovable: valueCopy.length !== 1,
       value,
     }));
@@ -114,6 +115,10 @@ export default class ListWidget extends Mixins(FormWidget) {
 
   addFieldSet() {
     this.updateValue([...this.value, _.cloneDeep(this.defaultChildValue)]);
+  }
+
+  getUniqueId(childValue: any) {
+    return Object.values(childValue).join('-');
   }
 
   removeChild(index: number) {
