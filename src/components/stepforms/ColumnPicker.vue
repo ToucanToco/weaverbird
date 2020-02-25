@@ -60,6 +60,7 @@ export default class ColumnPicker extends Vue {
       const selected = this.selectedColumns;
       if (selected.length) {
         this.column = selected[0];
+        this.valueChanged();
       }
     }
   }

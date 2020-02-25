@@ -57,6 +57,7 @@ describe('SearchBar', () => {
       'custom',
       'uniquegroups',
       'rollup',
+      'evolution',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -103,6 +104,7 @@ describe('SearchBar', () => {
       'custom',
       'uniquegroups',
       'rollup',
+      'evolution',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
