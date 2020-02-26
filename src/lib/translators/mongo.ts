@@ -624,9 +624,13 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   ],
   replace: transformReplace,
   rollup: transformRollup,
-  select: (step: Readonly<S.SelectStep>) => ({
-    $project: _.fromPairs(step.columns.map(col => [col, 1])),
-  }),
+
+  select(this: Mongo36Translator, step: Readonly<S.SelectStep>) {
+    return {
+      $project: _.fromPairs(step.columns.map(col => [this.escapeFieldName(col), 1])),
+    };
+  },
+
   split: transformSplit,
   sort: transformSort,
   substring: transformSubstring,
@@ -646,10 +650,17 @@ export class Mongo36Translator extends BaseTranslator {
   static label = 'Mongo 3.6';
 
   domainCollectionMap: { [k: string]: string };
+  escapeFieldName = function(fieldName: string): string {
+    return fieldName;
+  };
 
   constructor() {
     super();
     this.domainCollectionMap = {};
+  }
+
+  setFieldNamesEscapingFunction(escapeFieldName: (fieldName: string) => string) {
+    this.escapeFieldName = escapeFieldName;
   }
 
   setDomainCollectionMap(domColMap: { [k: string]: string }) {

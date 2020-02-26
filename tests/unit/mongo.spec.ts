@@ -1,6 +1,11 @@
 import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
+import {
+  _simplifyAndCondition,
+  _simplifyMongoPipeline,
+  Mongo36Translator,
+  MongoStep,
+} from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
@@ -11,7 +16,11 @@ describe('Mongo translator support tests', () => {
 });
 
 describe('Pipeline to mongo translator', () => {
-  const mongo36translator = getTranslator('mongo36');
+  const mongo36translator = getTranslator('mongo36') as Mongo36Translator;
+
+  mongo36translator.setFieldNamesEscapingFunction(fieldName =>
+    fieldName.replace(/\$/g, '__DOLLAR_SIGN__'),
+  );
 
   it('can generate domain steps', () => {
     const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
@@ -31,6 +40,24 @@ describe('Pipeline to mongo translator', () => {
         $project: {
           Manager: 1,
           Region: 1,
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate select steps with escaped characters', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'select', columns: ['Man$', 'Re$$gion'] },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $project: {
+          Man__DOLLAR_SIGN__: 1,
+          Re__DOLLAR_SIGN____DOLLAR_SIGN__gion: 1,
         },
       },
       { $project: { _id: 0 } },
