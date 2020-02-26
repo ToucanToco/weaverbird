@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Unpivot | Weaverbird</title>
+<title>Hierarchical rollup | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Unpivot" />
+<meta property="og:title" content="Hierarchical rollup" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Unpivot column" />
-<meta property="og:description" content="Unpivot column" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/unpivot/" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/unpivot/" />
+<meta name="description" content="Hierarchical rollup" />
+<meta property="og:description" content="Hierarchical rollup" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/rollup/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/rollup/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-02-26T17:35:56+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/unpivot/","headline":"Unpivot","datePublished":"2020-02-26T17:35:56+01:00","dateModified":"2020-02-26T17:35:56+01:00","description":"Unpivot column","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/rollup/","headline":"Hierarchical rollup","datePublished":"2020-02-26T17:35:56+01:00","dateModified":"2020-02-26T17:35:56+01:00","description":"Hierarchical rollup","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/unpivot/">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/rollup/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -187,7 +187,7 @@
             
             
             <!--  -->
-              <a class="list-group-item " href="/docs/rollup/">Hierarchical rollup</a>
+              <a class="list-group-item active" href="/docs/rollup/">Hierarchical rollup</a>
             <!--  -->
           
             
@@ -259,7 +259,7 @@
             
             
             <!--  -->
-              <a class="list-group-item active" href="/docs/unpivot/">Unpivot</a>
+              <a class="list-group-item " href="/docs/unpivot/">Unpivot</a>
             <!--  -->
           
         </div>
@@ -330,19 +330,12 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><h3 id="unpivot-column">Unpivot column</h3>
+            <div id="markdown-content-container"><h3 id="hierarchical-rollup">Hierarchical rollup</h3>
 
-<p>You can use this step if you need to transform columns into rows. It is the
-reverse operation of a <code class="highlighter-rouge">pivot</code> step.</p>
-
-<p>Unpivoting columns into a unique column means that every unpivoted column header
-will be used as a label in the output unique column. The columns get unpivoted
-“around” fixed columns that you can specify. The step creates two new columns:
-a <code class="highlighter-rouge">variable</code> column where you can find the labels corresponding to the unpivoted
-columns headers, and a <code class="highlighter-rouge">value</code> column where you can find the value for every
-label.</p>
-
-<p>Equivalent to the <code class="highlighter-rouge">UNPIVOT</code> clause in SQL.</p>
+<p>You can use this step if you need to compute aggregated data at every level of a
+hierarchy, specified as a series of columns from top to bottom level.
+The output data structure stacks the data of every level of the hierarchy,
+specifying for every row the label, level and parent in dedicated columns.</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
@@ -354,35 +347,69 @@ label.</p>
 <h4 id="where-to-find-this-step">Where to find this step?</h4>
 
 <ul>
-  <li>Widget <code class="highlighter-rouge">Reshape</code></li>
+  <li>Widget <code class="highlighter-rouge">Aggregate</code></li>
   <li>Search bar</li>
 </ul>
 
 <h4 id="options-reference">Options reference</h4>
 
-<p><img src="../../img/docs/user-interface/unpivot_step_form.jpg" width="350" /></p>
+<p><img src="../../img/docs/user-interface/rollup_step_form.jpg" width="350" /></p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Keep columns...</code>: the columns to remain fixed, around which the unpivot will
-occur</p>
+    <p><code class="highlighter-rouge">Hierarchal columns (from top to bottom level)</code>: here you must specify the
+list of columns that have a hierarchical link, in hierarchical order from
+top to bottom level.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Unpivot columns...</code>: the columns to be unpivoted</p>
+    <p><code class="highlighter-rouge">Columns to aggregate</code>: Here you must specify one or more columns to
+aggregate, with the corresponding aggregation function to be applied. You can
+add a columnn to aggregate by clicking on the button <code class="highlighter-rouge">Add aggregation</code>.</p>
+
+    <ul>
+      <li>
+        <p><code class="highlighter-rouge">Column</code>: the columnn to be aggregated.</p>
+      </li>
+      <li>
+        <p><code class="highlighter-rouge">Function</code> the aggregation function to be applied (sum, average, count, min
+or max).</p>
+      </li>
+    </ul>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Drop null values...</code>: whether to drop rows if their value is null in the
-output <code class="highlighter-rouge">value</code> column</p>
+    <p><code class="highlighter-rouge">(Optional) Group rollup by</code>: Optional, if you need to apply the rollup
+computation by groups of rows, you may specify here columns used to constitute
+groups.</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">(Optional) Label column name to be created</code>: Optional, if you want to give a
+custom name to the output labels column (‘label’ by default).</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">(Optional) Level column name to be created</code>: Optional, if you want to give a
+custom name to the output levels column (‘level’ by default).</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">(Optional) Parent column name to be created</code>: Optional, if you want to give a
+custom name to the output parents column (‘parent’ by default).</p>
   </li>
 </ul>
 
-<h4 id="example">Example</h4>
+<h4 id="example-1--basic-configuration">Example 1 : Basic configuration</h4>
 
-<p><img src="../../img/docs/user-interface/unpivot_example_conf.jpg" width="750" /></p>
+<p><img src="../../img/docs/user-interface/rollup_example_conf_1.jpg" width="750" /></p>
 
 <p>This configuration results in:</p>
 
-<p><img src="../../img/docs/user-interface/unpivot_example_result.jpg" width="500" /></p>
+<p><img src="../../img/docs/user-interface/rollup_example_result_1.jpg" width="500" /></p>
+
+<h4 id="example-2--configuration-with-optional-parameters">Example 2 : Configuration with optional parameters</h4>
+
+<p><img src="../../img/docs/user-interface/rollup_example_conf_2.jpg" width="750" /></p>
+
+<p>This configuration results in:</p>
+
+<p><img src="../../img/docs/user-interface/rollup_example_result_2.jpg" width="750" /></p>
 </div>
             
 
@@ -440,48 +467,12 @@ output <code class="highlighter-rouge">value</code> column</p>
 
   
   
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
-
-  
-  
     <ul class="pager">
       
         
         
         <li class="previous">
-          <a href="/docs/top/">
+          <a href="/docs/uniquegroups/">
             <span aria-hidden="true">&larr;</span> Previous
           </a>
         </li>
@@ -491,7 +482,7 @@ output <code class="highlighter-rouge">value</code> column</p>
         
         
         <li class="next">
-          <a href="/docs/index/">
+          <a href="/docs/join/">
             Next <span aria-hidden="true">&rarr;</span>
           </a>
         </li>

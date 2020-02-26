@@ -68,14 +68,6 @@
     
     
     {
-      "title": "Extract date property",
-      "url": "/docs/dateextract/"
-
-    },
-  
-    
-    
-    {
       "title": "Delete column(s)",
       "url": "/docs/delete/"
 
@@ -86,6 +78,22 @@
     {
       "title": "Duplicate",
       "url": "/docs/duplicate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Extract date property",
+      "url": "/docs/dateextract/"
+
+    },
+  
+    
+    
+    {
+      "title": "Extract substring",
+      "url": "/docs/substring/"
 
     },
   
@@ -110,6 +118,22 @@
     {
       "title": "Formula",
       "url": "/docs/formula/"
+
+    },
+  
+    
+    
+    {
+      "title": "Get unique groups/values",
+      "url": "/docs/uniquegroups/"
+
+    },
+  
+    
+    
+    {
+      "title": "Hierarchical rollup",
+      "url": "/docs/rollup/"
 
     },
   
@@ -180,14 +204,6 @@
     
     
     {
-      "title": "Extract substring",
-      "url": "/docs/substring/"
-
-    },
-  
-    
-    
-    {
       "title": "To lowercase",
       "url": "/docs/lowercase/"
 
@@ -214,14 +230,6 @@
     {
       "title": "Unpivot",
       "url": "/docs/unpivot/"
-
-    },
-  
-    
-    
-    {
-      "title": "Get unique groups/values",
-      "url": "/docs/uniquegroups/"
 
     },
   

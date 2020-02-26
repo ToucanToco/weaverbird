@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-02-26T08:59:58+01:00" />
+<meta property="article:published_time" content="2020-02-26T17:35:56+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-02-26T08:59:58+01:00","dateModified":"2020-02-26T08:59:58+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-02-26T17:35:56+01:00","dateModified":"2020-02-26T17:35:56+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -139,12 +139,6 @@
             
             
             <!--  -->
-              <a class="list-group-item " href="/docs/dateextract/">Extract date property</a>
-            <!--  -->
-          
-            
-            
-            <!--  -->
               <a class="list-group-item " href="/docs/delete/">Delete column(s)</a>
             <!--  -->
           
@@ -152,6 +146,18 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/duplicate/">Duplicate</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/dateextract/">Extract date property</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/substring/">Extract substring</a>
             <!--  -->
           
             
@@ -170,6 +176,18 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/formula/">Formula</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/uniquegroups/">Get unique groups/values</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/rollup/">Hierarchical rollup</a>
             <!--  -->
           
             
@@ -223,12 +241,6 @@
             
             
             <!--  -->
-              <a class="list-group-item " href="/docs/substring/">Extract substring</a>
-            <!--  -->
-          
-            
-            
-            <!--  -->
               <a class="list-group-item " href="/docs/lowercase/">To lowercase</a>
             <!--  -->
           
@@ -248,12 +260,6 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/unpivot/">Unpivot</a>
-            <!--  -->
-          
-            
-            
-            <!--  -->
-              <a class="list-group-item " href="/docs/uniquegroups/">Get unique groups/values</a>
             <!--  -->
           
         </div>
@@ -2794,6 +2800,813 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   </tbody>
 </table>
 
+<h3 id="rollup-step"><code class="highlighter-rouge">rollup</code> step</h3>
+
+<p>Use this step if you need to compute aggregated data at every level of a
+<code class="highlighter-rouge">hierarchy</code>, specified as a series of columns from top to bottom level.
+The output data structure stacks the data of every level of the hierarchy,
+specifying for every row the label, level and parent in dedicated columns.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+   <span class="nl">name</span><span class="p">:</span> <span class="s1">'rollup'</span><span class="p">,</span>
+   <span class="nx">hierarchy</span><span class="p">:</span> <span class="p">[</span><span class="s1">'continent'</span><span class="p">,</span> <span class="s1">'country'</span><span class="p">,</span> <span class="s1">'city'</span><span class="p">],</span> <span class="c1">// Hierarchical columns, from top to bottom level</span>
+   <span class="nx">aggregations</span><span class="p">:</span> <span class="p">[</span> <span class="c1">// The columns to be aggregated, and how</span>
+    <span class="p">{</span>
+      <span class="na">newcolumn</span><span class="p">:</span> <span class="s1">'revenues'</span><span class="p">,</span>
+      <span class="na">aggfunction</span><span class="p">:</span> <span class="s1">'sum'</span><span class="p">,</span> <span class="c1">// aggregate using sum</span>
+      <span class="na">column</span><span class="p">:</span> <span class="s1">'revenues'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">newcolumn</span><span class="p">:</span> <span class="s1">'average_cost'</span><span class="p">,</span>
+      <span class="na">aggfunction</span><span class="p">:</span> <span class="s1">'avg'</span><span class="p">,</span> <span class="c1">// aggregate using average</span>
+      <span class="na">column</span><span class="p">:</span> <span class="s1">'cost'</span>
+    <span class="p">}</span>
+   <span class="p">],</span>
+   <span class="nx">groupby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'date'</span><span class="p">],</span> <span class="c1">// optional, if needing to segment the rollup computation by group</span>
+   <span class="nx">labelCol</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span> <span class="c1">// optional, name of the output label column, 'label' by default</span>
+   <span class="nx">levelCol</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span> <span class="c1">// optional, name of the output level column, 'level' by default</span>
+   <span class="nx">parentLabelCol</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span> <span class="c1">// optional, name of the output parent column, 'parent' by default</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>This step is supported by the following backends:</strong></p>
+
+<ul>
+  <li>Mongo 4.0</li>
+  <li>Mongo 3.6</li>
+</ul>
+
+<h4 id="example-1--basic-configuration">Example 1 : Basic configuration</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>CITY</th>
+      <th>COUNTRY</th>
+      <th>CONTINENT</th>
+      <th>YEAR</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+   <span class="nl">name</span><span class="p">:</span> <span class="s1">'rollup'</span><span class="p">,</span>
+   <span class="nx">hierarchy</span><span class="p">:</span> <span class="p">[</span><span class="s1">'CONTINENT'</span><span class="p">,</span> <span class="s1">'COUNTRY'</span><span class="p">,</span> <span class="s1">'CITY'</span><span class="p">],</span>
+   <span class="nx">aggregations</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">newcolumn</span><span class="p">:</span> <span class="s1">'revenues'</span><span class="p">,</span>
+      <span class="na">aggfunction</span><span class="p">:</span> <span class="s1">'sum'</span><span class="p">,</span>
+      <span class="na">column</span><span class="p">:</span> <span class="s1">'revenues'</span>
+    <span class="p">},</span>
+   <span class="p">],</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>CITY</th>
+      <th>COUNTRY</th>
+      <th>CONTINENT</th>
+      <th>label</th>
+      <th>level</th>
+      <th>parent</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>North America</td>
+      <td>Europe</td>
+      <td>CONTINENT</td>
+      <td> </td>
+      <td>64</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>North America</td>
+      <td>North America</td>
+      <td>CONTINENT</td>
+      <td> </td>
+      <td>112</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>France</td>
+      <td>COUNTRY</td>
+      <td>Europe</td>
+      <td>36</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>Spain</td>
+      <td>COUNTRY</td>
+      <td>Europe</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>USA</td>
+      <td>COUNTRY</td>
+      <td>North America</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>Canada</td>
+      <td>COUNTRY</td>
+      <td>North America</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>Paris</td>
+      <td>CITY</td>
+      <td>France</td>
+      <td>23</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>Bordeaux</td>
+      <td>CITY</td>
+      <td>France</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>Barcelona</td>
+      <td>CITY</td>
+      <td>Spain</td>
+      <td>19</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>Madrid</td>
+      <td>CITY</td>
+      <td>Spain</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>Boston</td>
+      <td>CITY</td>
+      <td>USA</td>
+      <td>27</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>New-York</td>
+      <td>CITY</td>
+      <td>USA</td>
+      <td>45</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>Montreal</td>
+      <td>CITY</td>
+      <td>Canada</td>
+      <td>17</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>Ottawa</td>
+      <td>CITY</td>
+      <td>Canada</td>
+      <td>23</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2--configuration-with-optional-parameters">Example 2 : Configuration with optional parameters</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>CITY</th>
+      <th>COUNTRY</th>
+      <th>CONTINENT</th>
+      <th>YEAR</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+   <span class="nl">name</span><span class="p">:</span> <span class="s1">'rollup'</span><span class="p">,</span>
+   <span class="nx">hierarchy</span><span class="p">:</span> <span class="p">[</span><span class="s1">'CONTINENT'</span><span class="p">,</span> <span class="s1">'COUNTRY'</span><span class="p">,</span> <span class="s1">'CITY'</span><span class="p">],</span>
+   <span class="nx">aggregations</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="na">newcolumn</span><span class="p">:</span> <span class="s1">'VALUE-sum'</span><span class="p">,</span>
+      <span class="na">aggfunction</span><span class="p">:</span> <span class="s1">'sum'</span><span class="p">,</span>
+      <span class="na">column</span><span class="p">:</span> <span class="s1">'VALUE'</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="na">newcolumn</span><span class="p">:</span> <span class="s1">'VALUE-avg'</span><span class="p">,</span>
+      <span class="na">aggfunction</span><span class="p">:</span> <span class="s1">'avg'</span><span class="p">,</span>
+      <span class="na">column</span><span class="p">:</span> <span class="s1">'VALUE'</span>
+    <span class="p">}</span>
+   <span class="p">],</span>
+   <span class="nx">groupby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'date'</span><span class="p">],</span>
+   <span class="nx">labelCol</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span>
+   <span class="nx">levelCol</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span>
+   <span class="nx">parentLabelCol</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>CITY</th>
+      <th>COUNTRY</th>
+      <th>CONTINENT</th>
+      <th>YEAR</th>
+      <th>MY_LABEL</th>
+      <th>MY_LEVEL</th>
+      <th>MY_PARENT</th>
+      <th>VALUE-sum</th>
+      <th>VALUE-avg</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>Europe</td>
+      <td>CONTINENT</td>
+      <td> </td>
+      <td>26</td>
+      <td>6.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>North America</td>
+      <td>CONTINENT</td>
+      <td> </td>
+      <td>50</td>
+      <td>12.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>France</td>
+      <td>COUNTRY</td>
+      <td>Europe</td>
+      <td>15</td>
+      <td>7.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>Spain</td>
+      <td>COUNTRY</td>
+      <td>Europe</td>
+      <td>11</td>
+      <td>5.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>USA</td>
+      <td>COUNTRY</td>
+      <td>North America</td>
+      <td>33</td>
+      <td>16.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>Canada</td>
+      <td>COUNTRY</td>
+      <td>North America</td>
+      <td>17</td>
+      <td>8.5</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>Paris</td>
+      <td>CITY</td>
+      <td>France</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>Bordeaux</td>
+      <td>CITY</td>
+      <td>France</td>
+      <td>5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>Barcelona</td>
+      <td>CITY</td>
+      <td>Spain</td>
+      <td>8</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2018</td>
+      <td>Madrid</td>
+      <td>CITY</td>
+      <td>Spain</td>
+      <td>3</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>Boston</td>
+      <td>CITY</td>
+      <td>USA</td>
+      <td>12</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>New-York</td>
+      <td>CITY</td>
+      <td>USA</td>
+      <td>21</td>
+      <td>21</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>Montreal</td>
+      <td>CITY</td>
+      <td>Canada</td>
+      <td>7</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2018</td>
+      <td>Ottawa</td>
+      <td>CITY</td>
+      <td>Canada</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>Europe</td>
+      <td>CONTINENT</td>
+      <td> </td>
+      <td>38</td>
+      <td>9.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td> </td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>North America</td>
+      <td>CONTINENT</td>
+      <td> </td>
+      <td>62</td>
+      <td>15.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>France</td>
+      <td>COUNTRY</td>
+      <td>Europe</td>
+      <td>21</td>
+      <td>10.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>Spain</td>
+      <td>COUNTRY</td>
+      <td>Europe</td>
+      <td>17</td>
+      <td>8.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>USA</td>
+      <td>COUNTRY</td>
+      <td>North America</td>
+      <td>39</td>
+      <td>19.5</td>
+    </tr>
+    <tr>
+      <td> </td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>Canada</td>
+      <td>COUNTRY</td>
+      <td>North America</td>
+      <td>23</td>
+      <td>11.1</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>Paris</td>
+      <td>CITY</td>
+      <td>France</td>
+      <td>13</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>Bordeaux</td>
+      <td>CITY</td>
+      <td>France</td>
+      <td>8</td>
+      <td>8</td>
+    </tr>
+    <tr>
+      <td>Barcelona</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>Barcelona</td>
+      <td>CITY</td>
+      <td>Spain</td>
+      <td>11</td>
+      <td>11</td>
+    </tr>
+    <tr>
+      <td>Madrid</td>
+      <td>Spain</td>
+      <td>Europe</td>
+      <td>2019</td>
+      <td>Madrid</td>
+      <td>CITY</td>
+      <td>Spain</td>
+      <td>6</td>
+      <td>6</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>Boston</td>
+      <td>CITY</td>
+      <td>USA</td>
+      <td>15</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>New-York</td>
+      <td>CITY</td>
+      <td>USA</td>
+      <td>24</td>
+      <td>24</td>
+    </tr>
+    <tr>
+      <td>Montreal</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>Montreal</td>
+      <td>CITY</td>
+      <td>Canada</td>
+      <td>17</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Ottawa</td>
+      <td>Canada</td>
+      <td>North America</td>
+      <td>2019</td>
+      <td>Ottawa</td>
+      <td>CITY</td>
+      <td>Canada</td>
+      <td>23</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="select-step"><code class="highlighter-rouge">select</code> step</h3>
 
 <p>Select a column. The default is to keep every columns of the input domain. If
@@ -4350,6 +5163,9 @@ specified <code class="highlighter-rouge">text</code>.</p>
 
 
 
+
+  
+  
 
   
   
