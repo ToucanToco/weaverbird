@@ -588,9 +588,13 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
       },
     },
   }),
-  delete: (step: Readonly<S.DeleteStep>) => ({
-    $project: _.fromPairs(step.columns.map(col => [col, 0])),
-  }),
+
+  delete(this: Mongo36Translator, step: Readonly<S.DeleteStep>) {
+    return {
+      $project: _.fromPairs(step.columns.map(col => [this.escapeFieldName(col), 0])),
+    };
+  },
+
   domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
     $addFields: { [step.new_column_name]: $$(step.column) },

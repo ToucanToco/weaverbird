@@ -82,6 +82,24 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate delete steps with escaped characters', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'delete', columns: ['Man$', 'Re$$gion'] },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $project: {
+          Man__DOLLAR_SIGN__: 0,
+          Re__DOLLAR_SIGN____DOLLAR_SIGN__gion: 0,
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
   it('can generate rename steps', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
