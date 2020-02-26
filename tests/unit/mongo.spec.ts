@@ -122,6 +122,28 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate rename steps with escaped characters', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'rename', oldname: 'Reg$ion', newname: 'zone$' },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $addFields: {
+          zone__DOLLAR_SIGN__: '$Reg__DOLLAR_SIGN__ion',
+        },
+      },
+      {
+        $project: {
+          Reg__DOLLAR_SIGN__ion: 0,
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
   it('can simplify "and" block', () => {
     const andBlock = {
       $and: [

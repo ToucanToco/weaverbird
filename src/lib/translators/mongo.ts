@@ -622,10 +622,18 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   percentage: transformPercentage,
   pivot: transformPivot,
-  rename: (step: Readonly<S.RenameStep>) => [
-    { $addFields: { [step.newname]: $$(step.oldname) } },
-    { $project: { [step.oldname]: 0 } },
-  ],
+
+  rename(this: Mongo36Translator, step: Readonly<S.RenameStep>) {
+    return [
+      {
+        $addFields: {
+          [this.escapeFieldName(step.newname)]: $$(this.escapeFieldName(step.oldname)),
+        },
+      },
+      { $project: { [this.escapeFieldName(step.oldname)]: 0 } },
+    ];
+  },
+
   replace: transformReplace,
   rollup: transformRollup,
 
