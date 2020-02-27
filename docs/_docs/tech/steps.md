@@ -620,6 +620,209 @@ This step is meant to duplicate a column.
 | Company 2 | 0     | Company 2    |
 | Company 3 | 20    | Company 3    |
 
+### `evolution` step
+
+Use this step if you need to compute the row-by-row evolution of a value column,
+based on a date column. It will output 2 columns: one for the evolution in
+absolute value, the other for the evolution in percentage.
+
+You must be careful that the computation is scoped so that there are no dates
+duplicates (so that any date finds no more than one previous date). That means
+that you may need to specify index columns to make any date unique by index. You
+should use the `indexColumns` parameter to specifiy what series of columns
+allows to build a unique index (by concatenation with the date column).
+If index is not unique and more than one previous date is found, you will get
+an error at row level ("Error: More than one previous date found for the
+specified index columns"). Please refere to example 3 and 4 below for a concrete
+illustration.
+
+```javascript
+{
+  name: 'evolution',
+  dateCol: 'DATE',
+  valueCol: 'VALUE',
+  evolutionType: 'vsLastYear', // or vsLastMonth, vsLastWeek, vsLastDay
+  evolutionFormat: 'abs', // or pct
+  // optional, if computation has to be performed by group so that any date finds no more than one previous date
+  indexColumns: ['COUNTRY'],
+  newColumn: 'MY_EVOL', // optional, <originalColumnName>_EVOL_ABS or <originalColumnName>_EVOL_PCT by default
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: Basic configuration - evolution in absolute value
+
+**Input dataset:**
+
+| DATE    | VALUE |
+| ------- | ----- |
+| 2019-06 | 79    |
+| 2019-07 | 81    |
+| 2019-08 | 77    |
+| 2019-09 | 75    |
+| 2019-11 | 78    |
+| 2019-12 | 88    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'evolution',
+  dateCol: 'DATE',
+  valueCol: 'VALUE',
+  evolutionType: 'vsLastMonth',
+  evolutionFormat: 'abs',
+  indexColumns: [],
+}
+```
+
+**Output dataset:**
+
+| DATE    | VALUE | VALUE_EVOL_ABS |
+| ------- | ----- | -------------- |
+| 2019-06 | 79    |                |
+| 2019-07 | 81    | 2              |
+| 2019-08 | 77    | -4             |
+| 2019-09 | 75    | -2             |
+| 2019-11 | 78    |                |
+| 2019-12 | 88    | 10             |
+
+#### Example 2: Basic configuration - evolution in percentage
+
+**Input dataset:**
+
+| DATE    | VALUE |
+| ------- | ----- |
+| 2019-06 | 79    |
+| 2019-07 | 81    |
+| 2019-08 | 77    |
+| 2019-09 | 75    |
+| 2019-11 | 78    |
+| 2019-12 | 88    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'evolution',
+  dateCol: 'DATE',
+  valueCol: 'VALUE',
+  evolutionType: 'vsLastMonth',
+  evolutionFormat: 'pct',
+  indexColumns: [],
+}
+```
+
+**Output dataset:**
+
+| DATE    | VALUE | VALUE_EVOL_PCT        |
+| ------- | ----- | --------------------- |
+| 2019-06 | 79    |                       |
+| 2019-07 | 81    | 0.02531645569620253   |
+| 2019-08 | 77    | -0.04938271604938271  |
+| 2019-09 | 75    | -0.025974025974025976 |
+| 2019-11 | 78    |                       |
+| 2019-12 | 88    | 0.1282051282051282    |
+
+#### Example 3: Error on duplicate dates
+
+If 'COUNTRY' is not specified as index column, the computation will not be
+scoped by country. Then there are duplicate dates in the "DATE" columns which is
+prohibited.
+
+**Input dataset:**
+
+| DATE    | COUNTRY | VALUE |
+| ------- | ------- | ----- |
+| 2014-12 | France  | 79    |
+| 2015-12 | France  | 81    |
+| 2016-12 | France  | 77    |
+| 2017-12 | France  | 75    |
+| 2014-12 | USA     | 74    |
+| 2015-12 | USA     | 74    |
+| 2016-12 | USA     | 73    |
+| 2017-12 | USA     | 72    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'evolution',
+  dateCol: 'DATE',
+  valueCol: 'VALUE',
+  evolutionType: 'vsLastYear',
+  evolutionFormat: 'abs',
+  indexColumns: [],
+}
+```
+
+**Output dataset:**
+
+| DATE    | COUNTRY | VALUE | MY_EVOL |
+| ------- | ------- | ----- | -------------- |
+| 2014-12 | France  | 79    |                |
+| 2015-12 | France  | 81    | Error ...      |
+| 2016-12 | France  | 77    | Error ...      |
+| 2017-12 | France  | 75    | Error ...      |
+| 2014-12 | USA     | 74    |                |
+| 2015-12 | USA     | 74    | Error ...      |
+| 2016-12 | USA     | 73    | Error ...      |
+| 2017-12 | USA     | 72    | Error ...      |
+
+#### Example 4: Complete configuration with index columns
+
+**Input dataset:**
+
+| DATE    | COUNTRY | VALUE |
+| ------- | ------- | ----- |
+| 2014-12 | France  | 79    |
+| 2015-12 | France  | 81    |
+| 2016-12 | France  | 77    |
+| 2017-12 | France  | 75    |
+| 2019-12 | France  | 78    |
+| 2020-12 | France  | 88    |
+| 2014-12 | USA     | 74    |
+| 2015-12 | USA     | 74    |
+| 2016-12 | USA     | 73    |
+| 2017-12 | USA     | 72    |
+| 2018-11 | USA     | 75    |
+| 2020-12 | USA     | 76    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'evolution',
+  dateCol: 'DATE',
+  valueCol: 'VALUE',
+  evolutionType: 'vsLastYear',
+  evolutionFormat: 'abs',
+  indexColumns: ['COUNTRY'],
+  newColumn: 'MY_EVOL',
+}
+```
+
+**Output dataset:**
+
+| DATE    | COUNTRY | VALUE | MY_EVOL |
+| ------- | ------- | ----- | ------- |
+| 2014-12 | France  | 79    |         |
+| 2015-12 | France  | 81    | 2       |
+| 2016-12 | France  | 77    | -4      |
+| 2017-12 | France  | 75    | -2      |
+| 2019-12 | France  | 78    |         |
+| 2020-12 | France  | 88    | 10      |
+| 2014-12 | USA     | 74    |         |
+| 2015-12 | USA     | 74    | 0       |
+| 2016-12 | USA     | 73    | -1      |
+| 2017-12 | USA     | 72    | -1      |
+| 2018-11 | USA     | 75    | 3       |
+| 2020-12 | USA     | 76    |         |
+
 ### `fillna` step
 
 Replace null values by a given value in a column.
