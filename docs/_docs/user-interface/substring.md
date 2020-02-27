@@ -27,6 +27,9 @@ You can use this step to exctract a sustring of characters in a text column.
   of the sustring you want to extract.
 - `Substring ends at character position`: the position of the last character
   of the sustring you want to extract.
+- `New colum name:` (optional): if you want to give a custom name to the column
+  of results to be created. By default, it will be your original column name
+  suffixed by '\_SUBSTR'.
 
 The character positions are integers that can be either positive (starting at 1
 for the first character of the original string) or negative (starting at -1 for

@@ -1,18 +1,37 @@
 import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
 
-import { BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 describe('Substring Step Form', () => {
   const runner = new BasicStepFormTestRunner(SubstringStepForm, 'substring');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'columnpicker-stub': 1,
-    'inputtextwidget-stub': 2,
+    'inputtextwidget-stub': 3,
   });
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
       errors: [{ keyword: 'minLength', dataPath: '.column' }],
+    },
+    {
+      testlabel: 'existing column name',
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'bar' }],
+          data: [],
+        },
+      }),
+      data: {
+        editedStep: {
+          name: 'substring',
+          column: 'foo',
+          start_index: 1,
+          end_index: 3,
+          newColumnName: 'bar',
+        },
+      },
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
     },
   ]);
 

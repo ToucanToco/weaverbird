@@ -396,7 +396,7 @@ function transformSubstring(step: Readonly<S.SubstringStep>): MongoStep {
 
   const substrMongo = { $substrCP: [$$(step.column), posStartIndex, lengthToKeep] };
 
-  return { $addFields: { [step.column]: substrMongo } };
+  return { $addFields: { [step.newColumnName ?? `${step.column}_SUBSTR`]: substrMongo } };
 }
 
 /** transform an 'top' step into corresponding mongo steps */
