@@ -5,6 +5,7 @@
 ### Changed
 
 - Write percentage step result in a new column
+- Write substring step result in a new column
 
 ## [0.12.0] - 2020-02-26
 

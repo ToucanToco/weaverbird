@@ -27,6 +27,14 @@
       data-path=".end_index"
       :errors="errors"
     />
+    <InputTextWidget
+      id="newColumnNameInput"
+      v-model="editedStep.newColumnName"
+      name="(Optional) New column name:"
+      :placeholder="`${editedStep.column}_SUBSTR`"
+      data-path=".newColumnName"
+      :errors="errors"
+    />
     <StepFormButtonbar />
   </div>
 </template>

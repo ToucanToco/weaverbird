@@ -227,6 +227,7 @@ export type SubstringStep = {
   column: string;
   start_index: number;
   end_index: number;
+  newColumnName?: string;
 };
 
 export type ToDateStep = {

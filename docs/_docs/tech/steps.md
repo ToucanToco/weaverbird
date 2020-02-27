@@ -1558,6 +1558,7 @@ Neither `start_index` nor `end_index` can be equal to 0.
   column: 'foo',
   start_index: 1, // 1 = fisrt character
   end_index: -1, // -1 = last character
+  newColumName: 'myNewColumn' // optional, <originalColumame>_SUBSTR by default
 }
 ```
 
@@ -1590,14 +1591,14 @@ Neither `start_index` nor `end_index` can be equal to 0.
 }
 ```
 
-| Label | Value |
-| ----- | ----- |
-| foo   | 13    |
-| over  | 7     |
-| some  | 20    |
-| a_wo  | 1     |
-| touc  | 10    |
-| toco  | 5     |
+| Label     | Value | Label_PCT |
+| --------- | ----- | --------- |
+| foo       | 13    | foo       |
+| overflow  | 7     | over      |
+| some_text | 20    | some      |
+| a_word    | 1     | a_wo      |
+| toucan    | 10    | touc      |
+| toco      | 5     | toco      |
 
 #### Example 2: `start_index` is positive and `end_index` is negative
 
@@ -1620,19 +1621,20 @@ Neither `start_index` nor `end_index` can be equal to 0.
   column: 'Label',
   start_index: 2,
   end_index: -2,
+  newColumName: 'short_label',
 }
 ```
 
 **Output dataset:**
 
-| Label   | Value |
-| ------- | ----- |
-| o       | 13    |
-| verflo  | 7     |
-| ome_tex | 20    |
-| \_wor   | 1     |
-| ouca    | 10    |
-| oc      | 5     |
+| Label     | Value | short_label |
+| --------- | ----- | ----------- |
+| foo       | 13    | o           |
+| overflow  | 7     | verflo      |
+| some_text | 20    | ome_tex     |
+| a_word    | 1     | \_wor       |
+| toucan    | 10    | ouca        |
+| toco      | 5     | oc          |
 
 #### Example 3: `start_index` and `end_index` are negative
 
@@ -1660,14 +1662,14 @@ Neither `start_index` nor `end_index` can be equal to 0.
 
 **Output dataset:**
 
-| Label | Value |
-| ----- | ----- |
-| foo   | 13    |
-| low   | 7     |
-| ext   | 20    |
-| ord   | 1     |
-| can   | 10    |
-| oco   | 5     |
+| Label     | Value | Label_PCT |
+| --------- | ----- | --------- |
+| foo       | 13    | foo       |
+| overflow  | 7     | low       |
+| some_text | 20    | ext       |
+| a_word    | 1     | ord       |
+| toucan    | 10    | can       |
+| toco      | 5     | oco       |
 
 ### `text` step
 
