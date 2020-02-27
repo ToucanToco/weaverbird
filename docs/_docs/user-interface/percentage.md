@@ -32,6 +32,10 @@ total of its group).
   `GROUP BY` clause in SQL or in the `_id` field of a `$group` in Mongo
   aggregation pipeline)
 
+- `New colum name:` (optional): if you want to give a custom name to the column
+  of results to be created. By default, it will be your original column name
+  suffixed by '\_PCT'.
+
 #### Example
 
 <img src="../../img/docs/user-interface/percentage_example_conf.jpg" width="750" />

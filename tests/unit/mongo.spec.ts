@@ -789,15 +789,14 @@ describe('Pipeline to mongo translator', () => {
       { $unwind: '$_vqbAppArray' },
       {
         $project: {
-          bar: {
-            // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
+          bar_PCT: {
             $cond: [
               { $eq: ['$_vqbTotalDenum', 0] },
               null,
               { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _vqbAppArray: 1, // we need to keep track of this key for the next operation
+          _vqbAppArray: 1,
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },
@@ -805,11 +804,12 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a percentage step without groups', () => {
+  it('can generate a percentage step without groups, in a custom new column', () => {
     const pipeline: Pipeline = [
       {
         name: 'percentage',
         column: 'bar',
+        newColumnName: 'newCol',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -824,15 +824,14 @@ describe('Pipeline to mongo translator', () => {
       { $unwind: '$_vqbAppArray' },
       {
         $project: {
-          bar: {
-            // we need to explicitely manage the case where '$total_denum' is null otherwise the query may just fail
+          newCol: {
             $cond: [
               { $eq: ['$_vqbTotalDenum', 0] },
               null,
               { $divide: ['$_vqbAppArray.bar', '$_vqbTotalDenum'] },
             ],
           },
-          _vqbAppArray: 1, // we need to keep track of this key for the next operation
+          _vqbAppArray: 1,
         },
       },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbAppArray', '$$ROOT'] } } },

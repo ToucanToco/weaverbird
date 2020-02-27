@@ -1,4 +1,6 @@
-export default {
+import { addNotInColumnNamesConstraint, StepFormType } from './utils';
+
+const schema = {
   $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Percentage step',
   type: 'object',
@@ -29,7 +31,17 @@ export default {
         placeholder: 'Add columns',
       },
     },
+    newColumnName: {
+      type: 'string',
+      minLength: 1,
+      title: 'New column name',
+      description: 'The new column name to be created for the computation result',
+    },
   },
-  required: ['column'],
+  required: ['name', 'column'],
   additionalProperties: false,
 };
+
+export default function buildSchema(form: StepFormType) {
+  return addNotInColumnNamesConstraint(schema, 'newColumnName', form.columnNames);
+}

@@ -18,6 +18,14 @@
       data-path=".group"
       :errors="errors"
     />
+    <InputTextWidget
+      id="newColumnNameInput"
+      v-model="editedStep.newColumnName"
+      name="(Optional) New column name:"
+      :placeholder="`${editedStep.column}_PCT`"
+      data-path=".newColumnName"
+      :errors="errors"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -30,6 +38,7 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import { PercentageStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
+import InputTextWidget from './widgets/InputText.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
 @StepFormComponent({
@@ -37,6 +46,7 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   name: 'percentage-step-form',
   components: {
     ColumnPicker,
+    InputTextWidget,
     MultiselectWidget,
   },
 })

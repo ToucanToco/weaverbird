@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED -
+
+### Changed
+
+- Write percentage step result in a new column
+
 ## [0.12.0] - 2020-02-26
 
 ### Added

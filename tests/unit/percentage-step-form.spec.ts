@@ -1,7 +1,7 @@
 import PercentageStepForm from '@/components/stepforms/PercentageStepForm.vue';
 import { VQBnamespace } from '@/store';
 
-import { BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 describe('Percentage Step Form', () => {
   const runner = new BasicStepFormTestRunner(PercentageStepForm, 'percentage');
@@ -9,11 +9,23 @@ describe('Percentage Step Form', () => {
   runner.testExpectedComponents({
     'columnpicker-stub': 1,
     'multiselectwidget-stub': 1,
+    'inputtextwidget-stub': 1,
   });
   runner.testValidationErrors([
     {
       testlabel: 'submitted data is not valid',
       errors: [{ keyword: 'minLength', dataPath: '.column' }],
+    },
+    {
+      testlabel: 'existing column name',
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'bar' }],
+          data: [],
+        },
+      }),
+      data: { editedStep: { name: 'percentage', column: 'foo', newColumnName: 'bar' } },
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
     },
   ]);
 

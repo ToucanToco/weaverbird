@@ -161,6 +161,7 @@ export type PercentageStep = {
   name: 'percentage';
   column: string;
   group?: string[];
+  newColumnName?: string;
 };
 
 export type PivotStep = {
