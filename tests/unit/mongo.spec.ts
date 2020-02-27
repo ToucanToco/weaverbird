@@ -18,10 +18,6 @@ describe('Mongo translator support tests', () => {
 describe('Pipeline to mongo translator', () => {
   const mongo36translator = getTranslator('mongo36') as Mongo36Translator;
 
-  mongo36translator.setFieldNamesEscapingFunction(fieldName =>
-    fieldName.replace(/\$/g, '__DOLLAR_SIGN__'),
-  );
-
   it('can generate domain steps', () => {
     const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
     const querySteps = mongo36translator.translate(pipeline);
@@ -46,24 +42,6 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate select steps with escaped characters', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
-      { name: 'select', columns: ['Man$', 'Re$$gion'] },
-    ];
-    const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $match: { domain: 'test_cube' } },
-      {
-        $project: {
-          Man__DOLLAR_SIGN__: 1,
-          Re__DOLLAR_SIGN____DOLLAR_SIGN__gion: 1,
-        },
-      },
-      { $project: { _id: 0 } },
-    ]);
-  });
-
   it('can generate delete steps', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
@@ -76,24 +54,6 @@ describe('Pipeline to mongo translator', () => {
         $project: {
           Manager: 0,
           Region: 0,
-          _id: 0,
-        },
-      },
-    ]);
-  });
-
-  it('can generate delete steps with escaped characters', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
-      { name: 'delete', columns: ['Man$', 'Re$$gion'] },
-    ];
-    const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $match: { domain: 'test_cube' } },
-      {
-        $project: {
-          Man__DOLLAR_SIGN__: 0,
-          Re__DOLLAR_SIGN____DOLLAR_SIGN__gion: 0,
           _id: 0,
         },
       },
@@ -116,28 +76,6 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Region: 0,
-          _id: 0,
-        },
-      },
-    ]);
-  });
-
-  it('can generate rename steps with escaped characters', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
-      { name: 'rename', oldname: 'Reg$ion', newname: 'zone$' },
-    ];
-    const querySteps = mongo36translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $match: { domain: 'test_cube' } },
-      {
-        $addFields: {
-          zone__DOLLAR_SIGN__: '$Reg__DOLLAR_SIGN__ion',
-        },
-      },
-      {
-        $project: {
-          Reg__DOLLAR_SIGN__ion: 0,
           _id: 0,
         },
       },
@@ -2122,6 +2060,72 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+});
+
+describe('Pipeline to mongo translator with fieldNames character escaping', () => {
+  const mongo36translator = getTranslator('mongo36') as Mongo36Translator;
+
+  mongo36translator.setFieldNamesEscapingFunction(fieldName =>
+    fieldName.replace(/\$/g, '__DOLLAR_SIGN__'),
+  );
+
+  it('can generate select steps', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'select', columns: ['Man$', 'Re$$gion'] },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $project: {
+          Man__DOLLAR_SIGN__: 1,
+          Re__DOLLAR_SIGN____DOLLAR_SIGN__gion: 1,
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate delete steps', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'delete', columns: ['Man$', 'Re$$gion'] },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $project: {
+          Man__DOLLAR_SIGN__: 0,
+          Re__DOLLAR_SIGN____DOLLAR_SIGN__gion: 0,
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can generate rename steps', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'rename', oldname: 'Reg$ion', newname: 'zone$' },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $addFields: {
+          zone__DOLLAR_SIGN__: '$Reg__DOLLAR_SIGN__ion',
+        },
+      },
+      {
+        $project: {
+          Reg__DOLLAR_SIGN__ion: 0,
           _id: 0,
         },
       },
