@@ -192,7 +192,7 @@ function transformPercentage(step: Readonly<S.PercentageStep>): MongoStep[] {
     { $unwind: '$_vqbAppArray' },
     {
       $project: {
-        [step.column]: {
+        [step.newColumnName ?? `${step.column}_PCT`]: {
           $cond: [
             { $eq: ['$_vqbTotalDenum', 0] },
             null,

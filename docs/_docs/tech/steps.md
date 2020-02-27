@@ -967,13 +967,14 @@ Converts a string `column` to lowercase.
 
 Compute the percentage of total, i.e. for every row the value in `column` divided
 by the total as the sum of every values in `column`. The computation can be performed
-by `group` if specified. The result is written inplace.
+by `group` if specified. The result is written in a new column.
 
 ```javascript
 {
   name: 'percentage',
   column: 'bar',
   group: ['foo'] // optional
+  newColumName: 'myNewColumn' // optional, <originalColumname>_PCT by default
 }
 ```
 
@@ -1003,19 +1004,20 @@ by `group` if specified. The result is written inplace.
   new_column: 'Percentage_of_total',
   column: 'Value',
   group: ['Group']
+  newColumn: 'Percentage'
 }
 ```
 
 **Output dataset:**
 
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| Label 1 | Group 1 | 0.167 |
-| Label 2 | Group 1 | 0.333 |
-| Label 3 | Group 1 | 0.5   |
-| Label 4 | Group 2 | 0.143 |
-| Label 5 | Group 2 | 0.5   |
-| Label 6 | Group 2 | 0.357 |
+| Label   | Group   | Value | Percentage |
+| ------- | ------- | ----- | ---------- |
+| Label 1 | Group 1 | 5     | 0.167      |
+| Label 2 | Group 1 | 10    | 0.333      |
+| Label 3 | Group 1 | 15    | 0.5        |
+| Label 4 | Group 2 | 2     | 0.143      |
+| Label 5 | Group 2 | 7     | 0.5        |
+| Label 6 | Group 2 | 5     | 0.357      |
 
 ### `pivot` step
 
