@@ -2131,4 +2131,23 @@ describe('Pipeline to mongo translator with fieldNames character escaping', () =
       },
     ]);
   });
+
+  it('can generate filter steps', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      { name: 'filter', condition: { column: 'Man$ager', value: 'Pier$re', operator: 'eq' } },
+      { name: 'filter', condition: { column: 'A$ge', value: 10, operator: 'lt' } },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'test_cube',
+          Man__DOLLAR_SIGN__ager: { $eq: 'Pier$re' },
+          A__DOLLAR_SIGN__ge: { $lt: 10 },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });

@@ -65,6 +65,7 @@ export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): Mongo
 }
 
 function buildMatchTree(
+  this: Mongo36Translator,
   cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
   parentComboOp: ComboOperator = 'and',
 ): MongoStep {
@@ -81,25 +82,31 @@ function buildMatchTree(
     notnull: '$ne',
   };
   if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
-    return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });
+    return _simplifyAndCondition({
+      $and: cond.and.map(elem => buildMatchTree.bind(this)(elem, 'and')),
+    });
   }
   if (S.isFilterComboAnd(cond)) {
-    return { $and: cond.and.map(elem => buildMatchTree(elem, 'and')) };
+    return { $and: cond.and.map(elem => buildMatchTree.bind(this)(elem, 'and')) };
   }
   if (S.isFilterComboOr(cond)) {
-    return { $or: cond.or.map(elem => buildMatchTree(elem, 'or')) };
+    return { $or: cond.or.map(elem => buildMatchTree.bind(this)(elem, 'or')) };
   }
+
+  let value;
   if (cond.operator === 'matches') {
-    return { [cond.column]: { $regex: cond.value } };
+    value = { $regex: cond.value };
   } else if (cond.operator === 'notmatches') {
-    return { [cond.column]: { $not: { $regex: cond.value } } };
+    value = { $not: { $regex: cond.value } };
+  } else {
+    value = { [operatorMapping[cond.operator]]: cond.value };
   }
-  return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
+  return { [this.escapeFieldName(cond.column)]: value };
 }
 
-function filterstepToMatchstep(step: Readonly<S.FilterStep>): MongoStep {
+function filterstepToMatchstep(this: Mongo36Translator, step: Readonly<S.FilterStep>): MongoStep {
   const condition = step.condition;
-  return { $match: buildMatchTree(condition) };
+  return { $match: buildMatchTree.bind(this)(condition) };
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
