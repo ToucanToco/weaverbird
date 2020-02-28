@@ -1,6 +1,11 @@
 import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
+import {
+  _simplifyAndCondition,
+  _simplifyMongoPipeline,
+  Mongo36Translator,
+  MongoStep,
+} from '@/lib/translators/mongo';
 
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
@@ -2101,5 +2106,54 @@ describe('Pipeline to mongo translator', () => {
         },
       },
     ]);
+  });
+});
+
+describe('Pipeline to mongo36 with a custom domain to collection function', function() {
+  const mongo36translator = getTranslator('mongo36') as Mongo36Translator;
+  mongo36translator.setDomainToCollection((domain: string) => `data-${domain}`);
+
+  it('can generate an append step with a custom domain to collection function', () => {
+    const pipelineBis: Pipeline = [{ name: 'domain', domain: 'test_bis' }];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'append',
+        pipelines: [pipelineBis],
+      },
+    ];
+
+    const querySteps = mongo36translator.translate(pipeline);
+
+    const lookupStage = querySteps.find(s => s.$lookup);
+    expect(lookupStage).toBeDefined();
+    if (lookupStage) {
+      expect(lookupStage.$lookup.from).toEqual('data-test_bis');
+    }
+  });
+
+  it('can generate a join step', () => {
+    const rightPipeline: Pipeline = [{ name: 'domain', domain: 'right' }];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'join',
+        right_pipeline: rightPipeline,
+        type: 'left',
+        on: [['id', 'id']],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    const lookupStage = querySteps.find(s => s.$lookup);
+    expect(lookupStage).toBeDefined();
+    if (lookupStage) {
+      expect(lookupStage.$lookup.from).toEqual('data-right');
+    }
   });
 });
