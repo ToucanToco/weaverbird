@@ -30,6 +30,7 @@
 - expose `setCodeEditor` to set a custom code editor component for custom steps
 - custom step which allows users to edit manually a step
 - uniquegroups step to get unique groups/values" from columns
+- escape column name between `[ ]` in formula step in mongo translator
 
 ## [0.10.0] - 2020-02-06
 

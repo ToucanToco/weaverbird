@@ -466,13 +466,47 @@ function getOperator(op: string) {
 }
 
 /**
+  Transform a formula expression into a MathNode
+  1. Replace in formula all column name between `[]` by a "pseudo"
+  2. Parse the formula into a MathNode
+  3. Replace all pseudo into MathNode by there original name
+*/
+function buildFormulaTree(formula: string): MathNode {
+  const ESCAPE_OPEN = '[';
+  const ESCAPE_CLOSE = ']';
+
+  // 1. Replace in formula all column name between `[]` by a "pseudo"
+  let formulaPseudotised = formula;
+  const pseudo: Record<string, string> = {};
+  let index = 0;
+  const regex = new RegExp(`\\${ESCAPE_OPEN}(.*?)\\${ESCAPE_CLOSE}`, 'g');
+  for (const match of formula.match(regex) || []) {
+    pseudo[`__vqb_col_${index}__`] = match;
+    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_col_${index}__`);
+    index++;
+  }
+
+  // 2. Parse the formula into a MathNode
+  const mathjsTree: MathNode = math.parse(formulaPseudotised);
+
+  // 3. Replace all pseudo into MathNode by there original name
+  mathjsTree.traverse(function(node: MathNode): MathNode {
+    if (node.type === 'SymbolNode') {
+      if (pseudo[node.name]) {
+        node.name = pseudo[node.name].replace(ESCAPE_OPEN, '').replace(ESCAPE_CLOSE, '');
+      }
+    }
+    return node;
+  });
+  return mathjsTree;
+}
+
+/**
  * Translate a mathjs logical tree describing a formula into a Mongo step
  * @param node a mathjs node object (usually received after parsing an string expression)
  * This node is the root node of the logical tree describing the formula
  */
 function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
-  // For type checking in `case: 'OperatorNode'` in the`switch`clause below,
-  // do not let`args` and `op` be potentially`undefined`
   switch (node.type) {
     case 'OperatorNode':
       if (node.args.length === 1) {
@@ -482,9 +516,10 @@ function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
         };
       }
       return {
-        [getOperator(node.op)]: node.args.map(buildMongoFormulaTree),
+        [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
       };
     case 'SymbolNode':
+      // Re-put the name back
       return $$(node.name);
     case 'ConstantNode':
       return node.value;
@@ -603,11 +638,13 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     },
   }),
   filter: filterstepToMatchstep,
-  formula: (step: Readonly<S.FormulaStep>) => ({
-    $addFields: {
-      [step.new_column]: buildMongoFormulaTree(math.parse(step.formula)),
-    },
-  }),
+  formula: (step: Readonly<S.FormulaStep>) => {
+    return {
+      $addFields: {
+        [step.new_column]: buildMongoFormulaTree(buildFormulaTree(step.formula)),
+      },
+    };
+  },
   fromdate: (step: Readonly<S.FromDateStep>) => ({
     $addFields: {
       [step.column]: { $dateToString: { date: $$(step.column), format: `${step.format}` } },
