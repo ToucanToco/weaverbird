@@ -682,15 +682,16 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
 export class Mongo36Translator extends BaseTranslator {
   static label = 'Mongo 3.6';
 
-  domainCollectionMap: { [k: string]: string };
+  domainToCollection(domain: string) {
+    return domain;
+  }
 
   constructor() {
     super();
-    this.domainCollectionMap = {};
   }
 
-  setDomainCollectionMap(domColMap: { [k: string]: string }) {
-    this.domainCollectionMap = domColMap;
+  setDomainToCollection(domainToCollectionFunc: (domain: string) => string) {
+    this.domainToCollection = domainToCollectionFunc;
   }
 
   translate(pipeline: S.Pipeline) {
@@ -713,7 +714,7 @@ export class Mongo36Translator extends BaseTranslator {
       const pipelineWithoutDomain = pipelines[i].slice(1);
       lookups.push({
         $lookup: {
-          from: this.domainCollectionMap[domainStep.domain] || domainStep.domain,
+          from: this.domainToCollection(domainStep.domain),
           pipeline: this.translate(pipelineWithoutDomain),
           as: `_vqbPipelineToAppend_${i}`,
         },
@@ -743,7 +744,7 @@ export class Mongo36Translator extends BaseTranslator {
     }
     mongoPipeline.push({
       $lookup: {
-        from: this.domainCollectionMap[rightDomain.domain] || rightDomain.domain,
+        from: this.domainToCollection(rightDomain.domain),
         let: mongoLet,
         pipeline: [
           ...this.translate(rightWithoutDomain),
