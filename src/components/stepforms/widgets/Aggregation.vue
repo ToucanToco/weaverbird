@@ -3,7 +3,7 @@
     <AutocompleteWidget
       id="columnInput"
       :options="columnNames"
-      v-model="aggregation.column"
+      v-model="aggregationColumn"
       name="Column:"
       placeholder="Enter a column"
       :data-path="`${dataPath}.column`"
@@ -11,7 +11,7 @@
     />
     <AutocompleteWidget
       id="aggregationFunctionInput"
-      v-model="aggregation.aggfunction"
+      v-model="aggregationFunction"
       name="Function:"
       :options="aggregationFunctions"
       placeholder="Aggregation function"
@@ -22,8 +22,7 @@
 </template>
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import _ from 'lodash';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { AggFunctionStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
@@ -48,15 +47,29 @@ export default class AggregationWidget extends Vue {
 
   @VQBModule.Getter columnNames!: string[];
 
-  aggregation: AggFunctionStep = { ...this.value };
-  aggregationFunctions: AggFunctionStep['aggfunction'][] = ['sum', 'avg', 'count', 'min', 'max'];
-
-  @Watch('aggregation', { immediate: true, deep: true })
-  onAggregationChanged(newval: AggFunctionStep, oldval: AggFunctionStep) {
-    if (!_.isEqual(newval, oldval)) {
-      this.$emit('input', this.aggregation);
-    }
+  get aggregationColumn() {
+    return this.value.column;
   }
+
+  set aggregationColumn(newAggregationColumn) {
+    this.$emit('input', {
+      ...this.value,
+      column: newAggregationColumn,
+    });
+  }
+
+  get aggregationFunction() {
+    return this.value.aggfunction;
+  }
+
+  set aggregationFunction(newAggregationFunction) {
+    this.$emit('input', {
+      ...this.value,
+      aggfunction: newAggregationFunction,
+    });
+  }
+
+  aggregationFunctions: AggFunctionStep['aggfunction'][] = ['sum', 'avg', 'count', 'min', 'max'];
 }
 </script>
 <style lang="scss" scoped>
