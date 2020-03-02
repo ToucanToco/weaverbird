@@ -57,16 +57,29 @@ describe('Widget AggregationWidget', () => {
     expect(widgetWrappers.at(1).props().value).toEqual('avg');
   });
 
-  it('should emit "input" event on "aggregation" update', async () => {
+  it('should emit "input" event on aggregation column update', async () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
+      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
     });
-    wrapper.setData({ aggregation: { column: 'bar', newcolumn: '', aggfunction: 'avg' } });
-    await localVue.nextTick();
+    wrapper.find('AutocompleteWidget-stub#columnInput').vm.$emit('input', 'plop');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
-      { column: 'bar', newcolumn: '', aggfunction: 'avg' },
+      { column: 'plop', newcolumn: '', aggfunction: 'sum' },
+    ]);
+  });
+
+  it('should emit "input" event on aggregation function update', async () => {
+    const wrapper = shallowMount(AggregationWidget, {
+      store: emptyStore,
+      localVue,
+      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+    });
+    wrapper.find('AutocompleteWidget-stub#aggregationFunctionInput').vm.$emit('input', 'avg');
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([
+      { column: 'foo', newcolumn: '', aggfunction: 'avg' },
     ]);
   });
 });
