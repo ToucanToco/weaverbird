@@ -252,7 +252,7 @@ function _testConnection(client) {
 }
 
 function setupApp(config) {
-  const client = new MongoClient(config.dburi, { useNewUrlParser: true });
+  const client = new MongoClient(config.dburi, { useNewUrlParser: true, useUnifiedTopology: true });
   _testConnection(client);
   if (config.reset) {
     loadCSVInDatabaseFromFile(config.defaultDataset, config, client, console.error);
