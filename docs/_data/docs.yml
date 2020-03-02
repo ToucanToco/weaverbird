@@ -39,7 +39,7 @@
   docs:
     - index
     - steps
-    - stepforms
+    - new-step
     - known_limitations
     - translators
     - variables
