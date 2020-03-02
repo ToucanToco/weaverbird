@@ -13,6 +13,7 @@
     - custom
     - delete
     - duplicate
+    - evolution
     - dateextract
     - substring
     - fillna
