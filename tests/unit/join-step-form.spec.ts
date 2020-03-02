@@ -57,5 +57,20 @@ describe('join Step Form', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual([[]]);
     });
+
+    it('should update the edited step when one of the subcomponents emits an updated value', () => {
+      const wrapper = runner.shallowMount(undefined, {
+        data: {
+          editedStep: {
+            name: 'join',
+            right_pipeline: 'pipeline_right',
+            type: 'left',
+            on: [],
+          },
+        },
+      });
+      wrapper.find('ListWidget-stub').vm.$emit('input', ['colRight', 'colLeft']);
+      expect(wrapper.vm.$data.editedStep.on).toEqual(['colRight', 'colLeft']);
+    });
   });
 });
