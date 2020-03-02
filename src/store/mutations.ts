@@ -143,6 +143,11 @@ export default {
     } else {
       state.selectedStepIndex = index;
     }
+
+    // FIXME: transform that mutation in order to dispatch setCurrentPage
+    if (state.dataset.paginationContext) {
+      state.dataset.paginationContext.pageno = 1;
+    }
   },
   /**
    * Delete the step of index `index` in pipeline.
@@ -150,6 +155,11 @@ export default {
   deleteStep(state: VQBState, { index }: { index: number }) {
     state.pipelines[state.currentPipelineName].splice(index, 1);
     state.selectedStepIndex = index - 1;
+
+    // FIXME: transform that mutation in order to dispatch setCurrentPage
+    if (state.dataset.paginationContext) {
+      state.dataset.paginationContext.pageno = 1;
+    }
   },
   /**
    * change current selected domain and reset pipeline accordingly.
@@ -163,6 +173,11 @@ export default {
         state.pipelines[state.currentPipelineName] = [domainStep, ...pipeline.slice(1)];
       } else {
         state.pipelines[state.currentPipelineName] = [domainStep];
+      }
+
+      // FIXME: transform that mutation in order to dispatch setCurrentPage
+      if (state.dataset.paginationContext) {
+        state.dataset.paginationContext.pageno = 1;
       }
     }
   },
