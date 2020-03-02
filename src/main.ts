@@ -18,5 +18,8 @@ export {
 // export Vue components
 import DataViewer from '@/components/DataViewer.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
+import Autocomplete from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
+
 import Vqb from '@/components/Vqb.vue';
-export { DataViewer, QueryBuilder, Vqb };
+export { Autocomplete, DataViewer, MultiInputTextWidget, QueryBuilder, Vqb };
