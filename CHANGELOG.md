@@ -1,12 +1,20 @@
 # Changelog
 
+## UNRELEASED -
+
+### Added
+
+- Add a "Compute evolution" step (Mongo translation + UI)
+
 ## [0.13.1] - 2020-03-06
 
 ### Added
+
 - Introduce a bracket syntax to escape column names with spaces in formula step
 - Documentation for the UI of fromdate, todate, custom and concatenate steps
 
 ### Changed
+
 - Remove `setDomainCollectionMap` in favor `setDomainToCollection` in mongo translator
 - Write percentage step result in a new column
 - Write substring step result in a new column
