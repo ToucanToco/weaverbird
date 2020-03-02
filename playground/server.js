@@ -318,7 +318,7 @@ function parseCommandLine() {
                           default is "playground-db"
 
     --defaultCollection   override "defaultCollection" option from config file,
-                          default is "test-collection"
+                          default is "sales"
 
     --reset               reset default collection, override "reset" option from config file,
                           default is false

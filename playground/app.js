@@ -224,96 +224,61 @@ async function buildVueApp() {
           pipeline: [
             {
               name: 'domain',
-              domain: 'test-collection',
+              domain: 'sales',
             },
             {
               name: 'filter',
               condition: {
-                and: [
-                  {
-                    column: 'Groups',
-                    value: '<%= groupname %>',
-                    operator: 'eq',
-                  },
-                ],
+                column: 'Price',
+                operator: 'ge',
+                value: 1200,
               },
-            },
+            }
           ],
-          pipeline1: [
+          pipelineAmex: [
             {
               name: 'domain',
-              domain: 'test-collection',
+              domain: 'sales',
             },
             {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 1', 'Label 6'],
-                ['Label 2', 'Label 7'],
-                ['Label 3', 'Label 8'],
-                ['Label 4', 'Label 9'],
-                ['Label 5', 'Label 10'],
-              ],
-            },
+              name: 'filter',
+              condition: {
+                column: 'Payment_Type',
+                operator: 'eq',
+                value: 'Amex',
+              },
+            }
           ],
-          pipeline2: [
+          pipelineVisa: [
             {
               name: 'domain',
-              domain: 'test-collection',
+              domain: 'sales',
             },
             {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 1', 'Label 11'],
-                ['Label 2', 'Label 12'],
-                ['Label 3', 'Label 13'],
-                ['Label 4', 'Label 14'],
-                ['Label 5', 'Label 15'],
-              ],
-            },
+              name: 'filter',
+              condition: {
+                column: 'Payment_Type',
+                operator: 'eq',
+                value: 'Visa',
+              },
+            }
           ],
-          pipelineRight1: [
+          pipelineMastercard: [
             {
               name: 'domain',
-              domain: 'test-collection',
+              domain: 'sales',
             },
             {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 4', 'Label 6'],
-                ['Label 5', 'Label 7'],
-              ],
-            },
-            {
-              name: 'formula',
-              formula: 'Value2 * 10',
-              new_column: 'ValueRight1',
-            },
-          ],
-          pipelineRight2: [
-            {
-              name: 'domain',
-              domain: 'test-collection',
-            },
-            {
-              name: 'replace',
-              search_column: 'Label',
-              to_replace: [
-                ['Label 1', 'Label 8'],
-                ['Label 2', 'Label 9'],
-                ['Label 3', 'Label 10'],
-              ],
-            },
-            {
-              name: 'formula',
-              formula: 'Value3 * 10',
-              new_column: 'ValueRight2',
-            },
+              name: 'filter',
+              condition: {
+                column: 'Payment_Type',
+                operator: 'eq',
+                value: 'Mastercard',
+              },
+            }
           ],
         },
-        currentDomain: 'test-collection',
+        currentDomain: 'sales',
         translator: TRANSLATOR,
         // use lodash interpolate
         interpolateFunc: (value, context) => _.template(value)(context),
