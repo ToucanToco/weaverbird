@@ -10,6 +10,8 @@
 The project's technical and user documentation is hosted on https://weaverbird.toucantoco.com
 The documentation's source files can be found in the `docs` directory.
 
+You can play with the online [playground](https://weaverbird.herokuapp.com)
+
 ## Project setup
 
 ```bash

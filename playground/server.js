@@ -397,7 +397,7 @@ function parseCommandLine() {
 }
 
 function start(config) {
-  setupApp(config).listen(config.httpPort, function() {
+  setupApp(config).listen(process.env.PORT || config.httpPort, function() {
     console.log(`VQB playground app listening on port ${config.httpPort}!`);
   });
 }
