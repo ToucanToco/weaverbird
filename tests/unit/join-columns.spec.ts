@@ -1,7 +1,6 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 
 import { RootState, setupMockStore } from './utils';
@@ -40,39 +39,80 @@ describe('Widget AggregationWidget', () => {
     expect(autocompleteWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
-  it('should pass down the right prop to AutocompleteWidget', async () => {
-    const wrapper = shallowMount(JoinColumns, { store: emptyStore, localVue });
-    wrapper.setData({ joinColumns: ['toto', 'tata'] });
-    await localVue.nextTick();
+  it('should pass down the right prop to AutocompleteWidget', () => {
+    const wrapper = shallowMount(JoinColumns, {
+      propsData: {
+        value: ['toto', 'tata'],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
     const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
     expect(autocompleteWrapper.props().value).toEqual('toto');
   });
 
-  it('should pass down the right prop to InputTextWidget', async () => {
-    const wrapper = shallowMount(JoinColumns, { store: emptyStore, localVue });
-    wrapper.setData({ joinColumns: ['toto', 'tata'] });
-    await localVue.nextTick();
+  it('should pass down the right prop to InputTextWidget', () => {
+    const wrapper = shallowMount(JoinColumns, {
+      propsData: {
+        value: ['toto', 'tata'],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
     const inputTextWrapper = wrapper.find('inputtextwidget-stub');
     expect(inputTextWrapper.props().value).toEqual('tata');
   });
 
-  it('should set joinColumns[1] = joinColumns[0] if joinColumns[0] is set while joinColumns[1] is null', async () => {
-    const wrapper = mount(JoinColumns, { store: emptyStore, localVue });
-    wrapper.setData({ joinColumns: ['toto', ''] });
-    await localVue.nextTick();
-    wrapper.find(AutocompleteWidget).trigger('input');
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.joinColumns[1]).toEqual('toto');
-  });
-
-  it('should emit "input" event on "joinColumns" update', async () => {
+  it('should update its value when the left column is modified', () => {
     const wrapper = shallowMount(JoinColumns, {
+      propsData: {
+        value: ['toto', 'tata'],
+      },
       store: emptyStore,
       localVue,
+      sync: false,
     });
-    wrapper.setData({ joinColumns: ['toto', 'tata'] });
-    await localVue.nextTick();
+
+    const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
+    autocompleteWrapper.vm.$emit('input', 'tutu');
+
     expect(wrapper.emitted().input).toBeDefined();
-    expect(wrapper.emitted().input[1]).toEqual([['toto', 'tata']]);
+    expect(wrapper.emitted().input[0]).toEqual([['tutu', 'tata']]);
+  });
+
+  it('should update its value when the right column is modified', () => {
+    const wrapper = shallowMount(JoinColumns, {
+      propsData: {
+        value: ['toto', 'tata'],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+
+    const inputTextWrapper = wrapper.find('inputtextwidget-stub');
+    inputTextWrapper.vm.$emit('input', 'tutu');
+
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([['toto', 'tutu']]);
+  });
+
+  it('should update both columns when the left column is modified if the right column was empty', () => {
+    const wrapper = shallowMount(JoinColumns, {
+      propsData: {
+        value: ['toto', ''],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+
+    const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
+    autocompleteWrapper.vm.$emit('input', 'tutu');
+
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([['tutu', 'tutu']]);
   });
 });

@@ -2,8 +2,7 @@
   <div class="widget-join-column__container">
     <AutocompleteWidget
       id="leftOn"
-      @input="setRightColumn()"
-      v-model="joinColumns[0]"
+      v-model="leftOnColumn"
       placeholder="Current dataset column"
       :options="columnNames"
       :data-path="`${dataPath}[0]`"
@@ -11,7 +10,7 @@
     />
     <InputTextWidget
       id="rightOn"
-      v-model="joinColumns[1]"
+      v-model="rightOnColumn"
       placeholder="Right dataset column"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
@@ -20,8 +19,7 @@
 </template>
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import _ from 'lodash';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import { VQBModule } from '@/store';
@@ -50,19 +48,26 @@ export default class JoinColumns extends Vue {
 
   @VQBModule.Getter columnNames!: string[];
 
-  joinColumns: string[] = [...this.value];
-
-  @Watch('joinColumns', { immediate: true, deep: true })
-  onJoinColumnsChanged(newval: any[], oldval: any[]) {
-    if (!_.isEqual(newval, oldval)) {
-      this.$emit('input', this.joinColumns);
-    }
+  get leftOnColumn() {
+    return this.value[0];
   }
 
-  setRightColumn() {
-    if (this.joinColumns[1] === '') {
-      this.joinColumns[1] = this.joinColumns[0];
-    }
+  set leftOnColumn(newLeftOnColumn) {
+    // If no right column, set it to the same as left column (smart default)
+    const newRightColumn = this.rightOnColumn === '' ? newLeftOnColumn : this.rightOnColumn;
+    this.update([newLeftOnColumn, newRightColumn]);
+  }
+
+  get rightOnColumn() {
+    return this.value[1];
+  }
+
+  set rightOnColumn(newRightOnColumn) {
+    this.update([this.leftOnColumn, newRightOnColumn]);
+  }
+
+  update(newJoinColumns: string[]) {
+    this.$emit('input', newJoinColumns);
   }
 }
 </script>
