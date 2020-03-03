@@ -6,15 +6,11 @@ permalink: /docs/formula/
 ### Formula
 
 You can use this step to create a column as a formula based on other columns.
-A column can be referenced by its name without quotes or any other escaping
-character.
+A column can be referenced by its name without quotes unless they include
+whitespaces, in such a case you need to use brackets '[]' (e.g. \[myColumn]).
 
-**Warning: we do not support column names including whitespaces at the moment.
-So please apply a rename step beforehand if needed.** (For example rename
-`my column` into `my_column`)
-
-You can also specify a text escaped by quotes. It will then write the specified
-text in every row of the new column.
+Any characters string escaped with quotes (simple or double) will be considered
+as a string.
 
 **This step is supported by the following backends:**
 
@@ -37,10 +33,18 @@ text in every row of the new column.
 - `New column`: the name of the new column to be created with the formula
   result.
 
-#### Example
+#### Example 1: Basic usage
 
-<img src="../../img/docs/user-interface/formula_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/formula_example_conf_1.jpg" width="750" />
 
 This configuration results in:
 
-<img src="../../img/docs/user-interface/formula_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/formula_example_result_1.jpg" width="500" />
+
+#### Example 2: Columnn names with whitespaces
+
+<img src="../../img/docs/user-interface/formula_example_conf_2.jpg" width="750" />
+
+This configuration results in:
+
+<img src="../../img/docs/user-interface/formula_example_result_2.jpg" width="500" />

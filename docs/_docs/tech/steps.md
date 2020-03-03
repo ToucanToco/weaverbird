@@ -700,8 +700,10 @@ operator).
 
 ### `formula` step
 
-Add a computation based on other columns or on values.
-Column names must not be escaped. Strings have to be escaped with quotes.
+Add a computation based on a formula. Usually column names do not need to be
+escaped, unless they include whitespaces, in such a case you need to use
+brackets '[]' (e.g. \[myColumn]). Any characters string escaped with quotes
+(simple or double) will be considered as a string.
 
 ```javascript
 {
@@ -713,7 +715,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 }
 ```
 
-#### Example
+#### Example 1: Basic usage
 
 **Input dataset:**
 
@@ -740,6 +742,34 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 | Label 1 | 10     | 2      | 3      | 1      | 2      |
 | Label 2 | 1      | 13     | 7      | 3      | -4     |
 | Label 3 | 5      | 20     | 5      | 2      | 1      |
+
+#### Example 2: Column name with whitespaces
+
+**Input dataset:**
+
+| Label   | Value1 | Value2 | Value3 | Value 4 |
+| ------- | ------ | ------ | ------ | ------- |
+| Label 1 | 10     | 2      | 3      | 1       |
+| Label 2 | 1      | 13     | 7      | 3       |
+| Label 3 | 5      | 20     | 5      | 2       |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'formula',
+  new_column: 'Result',
+  formula: '(Value1 + Value2) / Value3 - [Value 4] * 2'
+}
+```
+
+**Output dataset:**
+
+| Label   | Value1 | Value2 | Value3 | Value 4 | Result |
+| ------- | ------ | ------ | ------ | ------- | ------ |
+| Label 1 | 10     | 2      | 3      | 1       | 2      |
+| Label 2 | 1      | 13     | 7      | 3       | -4     |
+| Label 3 | 5      | 20     | 5      | 2       | 1      |
 
 ### `join` step
 
@@ -1707,7 +1737,7 @@ specified `text`.
 {
   name: 'text',
   new_column: 'KPI',
-  formula: 'Sales'
+  text: 'Sales'
 }
 ```
 
