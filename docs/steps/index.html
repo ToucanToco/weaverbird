@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-03-02T23:09:21+01:00" />
+<meta property="article:published_time" content="2020-03-03T16:43:07+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-03-02T23:09:21+01:00","dateModified":"2020-03-02T23:09:21+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-03-03T16:43:07+01:00","dateModified":"2020-03-03T16:43:07+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -1779,8 +1779,10 @@ operator).</p>
 
 <h3 id="formula-step"><code class="highlighter-rouge">formula</code> step</h3>
 
-<p>Add a computation based on other columns or on values.
-Column names must not be escaped. Strings have to be escaped with quotes.</p>
+<p>Add a computation based on a formula. Usually column names do not need to be
+escaped, unless they include whitespaces, in such a case you need to use
+brackets ‘[]’ (e.g. [myColumn]). Any characters string escaped with quotes
+(simple or double) will be considered as a string.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
   <span class="p">{</span>
@@ -1791,7 +1793,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<h4 id="example-8">Example</h4>
+<h4 id="example-1-basic-usage">Example 1: Basic usage</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -1849,6 +1851,95 @@ Column names must not be escaped. Strings have to be escaped with quotes.</p>
       <th>Value2</th>
       <th>Value3</th>
       <th>Value4</th>
+      <th>Result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>10</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>1</td>
+      <td>13</td>
+      <td>7</td>
+      <td>3</td>
+      <td>-4</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>5</td>
+      <td>20</td>
+      <td>5</td>
+      <td>2</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2-column-name-with-whitespaces">Example 2: Column name with whitespaces</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value1</th>
+      <th>Value2</th>
+      <th>Value3</th>
+      <th>Value 4</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>10</td>
+      <td>2</td>
+      <td>3</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>1</td>
+      <td>13</td>
+      <td>7</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>5</td>
+      <td>20</td>
+      <td>5</td>
+      <td>2</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'formula'</span><span class="p">,</span>
+  <span class="nx">new_column</span><span class="p">:</span> <span class="s1">'Result'</span><span class="p">,</span>
+  <span class="nx">formula</span><span class="p">:</span> <span class="s1">'(Value1 + Value2) / Value3 - [Value 4] * 2'</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>Value1</th>
+      <th>Value2</th>
+      <th>Value3</th>
+      <th>Value 4</th>
       <th>Result</th>
     </tr>
   </thead>
@@ -2185,7 +2276,7 @@ of the application. You can then call them by their unique names in this step.</
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-9">Example</h4>
+<h4 id="example-8">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2301,7 +2392,7 @@ of the application. You can then call them by their unique names in this step.</
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-10">Example:</h4>
+<h4 id="example-9">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2390,7 +2481,7 @@ by <code class="highlighter-rouge">group</code> if specified. The result is writ
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-11">Example:</h4>
+<h4 id="example-10">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2522,7 +2613,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-12">Example:</h4>
+<h4 id="example-11">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2631,7 +2722,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-13">Example:</h4>
+<h4 id="example-12">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -2753,7 +2844,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-14">Example</h4>
+<h4 id="example-13">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3634,7 +3725,7 @@ the <code class="highlighter-rouge">select</code> is used, it will only keep sel
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-15">Example</h4>
+<h4 id="example-14">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3752,7 +3843,7 @@ When sorting on several columns, order of columns specified in <code class="high
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-16">Example</h4>
+<h4 id="example-15">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -4387,7 +4478,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-17">Example</h4>
+<h4 id="example-16">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -4419,7 +4510,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
   <span class="nl">name</span><span class="p">:</span> <span class="s1">'text'</span><span class="p">,</span>
   <span class="nx">new_column</span><span class="p">:</span> <span class="s1">'KPI'</span><span class="p">,</span>
-  <span class="nx">formula</span><span class="p">:</span> <span class="s1">'Sales'</span>
+  <span class="nx">text</span><span class="p">:</span> <span class="s1">'Sales'</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
@@ -4473,7 +4564,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-18">Example</h4>
+<h4 id="example-17">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -5022,7 +5113,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-19">Example:</h4>
+<h4 id="example-18">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -5107,7 +5198,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-20">Example:</h4>
+<h4 id="example-19">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
