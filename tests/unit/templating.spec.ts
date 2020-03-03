@@ -34,7 +34,7 @@ describe('Pipeline interpolator', () => {
           {
             aggfunction: 'avg',
             column: 'spam',
-            newcolumn: '<%= egg %>',
+            newColumn: '<%= egg %>',
           },
         ],
       },
@@ -51,12 +51,12 @@ describe('Pipeline interpolator', () => {
           {
             aggfunction: 'avg',
             column: '<%= foo %>',
-            newcolumn: '<%= egg %>',
+            newColumn: '<%= egg %>',
           },
           {
             aggfunction: 'sum',
             column: '<%= foo %>',
-            newcolumn: '<%= egg %>',
+            newColumn: '<%= egg %>',
           },
         ],
       },
@@ -70,12 +70,12 @@ describe('Pipeline interpolator', () => {
           {
             aggfunction: 'avg',
             column: 'bar',
-            newcolumn: '<%= egg %>',
+            newColumn: '<%= egg %>',
           },
           {
             aggfunction: 'sum',
             column: 'bar',
-            newcolumn: '<%= egg %>',
+            newColumn: '<%= egg %>',
           },
         ],
       },
@@ -120,7 +120,7 @@ describe('Pipeline interpolator', () => {
         name: 'concatenate',
         columns: ['<%= foo %>', '<%= bar %>'],
         separator: '',
-        new_column_name: 'new',
+        newColumn: 'new',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -157,14 +157,14 @@ describe('Pipeline interpolator', () => {
       {
         name: 'text',
         text: '<%= foo %>',
-        new_column: '<%= foo %>',
+        newColumn: '<%= foo %>',
       },
     ];
     expect(translate(step)).toEqual([
       {
         name: 'text',
         text: 'bar',
-        new_column: '<%= foo %>',
+        newColumn: '<%= foo %>',
       },
     ]);
   });
@@ -222,7 +222,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'duplicate',
         column: '<%= foo %>',
-        new_column_name: '<%= bar %>',
+        newColumn: '<%= bar %>',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -766,14 +766,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + <%= age %>',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + 42',
       },
     ]);
@@ -783,14 +783,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + column2',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'formula',
-        new_column: 'column3',
+        newColumn: 'column3',
         formula: 'column1 + column2',
       },
     ]);
@@ -1037,7 +1037,7 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['<%= foo %>', '<%= foo %>'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newColumn: 'value1',
             aggfunction: 'sum',
             column: '<%= foo %>',
           },
@@ -1051,7 +1051,7 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['bar', 'bar'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newColumn: 'value1',
             aggfunction: 'sum',
             column: 'bar',
           },
@@ -1067,7 +1067,7 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['<%= foo %>', '<%= foo %>'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newColumn: 'value1',
             aggfunction: 'sum',
             column: '<%= foo %>',
           },
@@ -1085,7 +1085,7 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['bar', 'bar'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newColumn: 'value1',
             aggfunction: 'sum',
             column: 'bar',
           },

@@ -7,6 +7,11 @@
 - Write percentage step result in a new column
 - Write substring step result in a new column
 
+### Breaking
+
+- Homogenise new column parameter in steps: this parameter is now always named
+  `newColumn`
+
 ## [0.12.0] - 2020-02-26
 
 ### Added

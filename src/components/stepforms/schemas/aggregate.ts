@@ -34,12 +34,12 @@ const schema = {
             type: 'string',
             enum: ['sum', 'avg', 'count', 'min', 'max'],
           },
-          newcolumn: {
+          newColumn: {
             type: 'string',
             minLength: 1,
           },
         },
-        required: ['column', 'aggfunction', 'newcolumn'],
+        required: ['column', 'aggfunction', 'newColumn'],
         additionalProperties: false,
       },
       minItems: 1,
@@ -52,5 +52,5 @@ const schema = {
 };
 
 export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'aggregations.items.newcolumn', form.columnNames);
+  return addNotInColumnNamesConstraint(schema, 'aggregations.items.newColumn', form.columnNames);
 }

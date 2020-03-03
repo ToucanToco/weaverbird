@@ -11,10 +11,10 @@
     />
     <InputTextWidget
       id="newColumnInput"
-      v-model="editedStep.new_column"
+      v-model="editedStep.newColumn"
       name="New colum:"
       placeholder="Enter a new column name"
-      data-path=".new_column"
+      data-path=".newColumn"
       :errors="errors"
       :warning="duplicateColumnName"
     />
@@ -41,14 +41,14 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
-  @Prop({ type: Object, default: () => ({ name: 'formula', new_column: '', formula: '' }) })
+  @Prop({ type: Object, default: () => ({ name: 'formula', newColumn: '', formula: '' }) })
   initialStepValue!: FormulaStep;
 
   readonly title: string = 'Formula';
 
   get duplicateColumnName() {
-    if (this.columnNames.includes(this.editedStep.new_column)) {
-      return `A column name "${this.editedStep.new_column}" already exists. You will overwrite it.`;
+    if (this.columnNames.includes(this.editedStep.newColumn)) {
+      return `A column name "${this.editedStep.newColumn}" already exists. You will overwrite it.`;
     } else {
       return null;
     }
@@ -57,7 +57,7 @@ export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
   submit() {
     this.$$super.submit();
     if (this.errors === null) {
-      this.setSelectedColumns({ column: this.editedStep.new_column });
+      this.setSelectedColumns({ column: this.editedStep.newColumn });
     }
   }
 

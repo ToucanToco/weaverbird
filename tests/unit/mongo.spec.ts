@@ -332,27 +332,27 @@ describe('Pipeline to mongo translator', () => {
         on: ['col_agg1', 'col_agg2'],
         aggregations: [
           {
-            newcolumn: 'sum',
+            newColumn: 'sum',
             aggfunction: 'sum',
             column: 'col1',
           },
           {
-            newcolumn: 'average',
+            newColumn: 'average',
             aggfunction: 'avg',
             column: 'col2',
           },
           {
-            newcolumn: 'minimum',
+            newColumn: 'minimum',
             aggfunction: 'min',
             column: 'col1',
           },
           {
-            newcolumn: 'maximum',
+            newColumn: 'maximum',
             aggfunction: 'max',
             column: 'col3',
           },
           {
-            newcolumn: 'number_rows',
+            newColumn: 'number_rows',
             aggfunction: 'count',
             column: 'col3',
           },
@@ -395,7 +395,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'delete', columns: ['Random'] },
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
-      { name: 'formula', new_column: 'value', formula: 'value / 1000' },
+      { name: 'formula', newColumn: 'value', formula: 'value / 1000' },
       { name: 'rename', oldname: 'value', newname: 'Revenue' },
       {
         name: 'replace',
@@ -407,7 +407,7 @@ describe('Pipeline to mongo translator', () => {
         search_column: 'Country',
         to_replace: [['Spain - ', 'Spain']],
       },
-      { name: 'formula', new_column: 'Population', formula: 'Population / 1000' },
+      { name: 'formula', newColumn: 'Population', formula: 'Population / 1000' },
       {
         name: 'custom',
         query: '{"$group": {"_id": "$Country", "Population": {"$sum": "$Population"}}}',
@@ -814,7 +814,7 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'percentage',
         column: 'bar',
-        newColumnName: 'newCol',
+        newColumn: 'newCol',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -976,17 +976,17 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'foo',
+        newColumn: 'foo',
         formula: 'bar',
       },
       {
         name: 'formula',
-        new_column: 'constant',
+        newColumn: 'constant',
         formula: '42',
       },
       {
         name: 'formula',
-        new_column: 'with_parentheses',
+        newColumn: 'with_parentheses',
         formula: '(test)',
       },
     ];
@@ -1007,17 +1007,17 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'foo',
+        newColumn: 'foo',
         formula: '(column_1 + column_2) / column_3 - column_4 * 100',
       },
       {
         name: 'formula',
-        new_column: 'bar',
+        newColumn: 'bar',
         formula: '1 / ((column_1 + column_2 + column_3)) * 10',
       },
       {
         name: 'formula',
-        new_column: 'test_precedence',
+        newColumn: 'test_precedence',
         formula: 'column_1 + column_2 + column_3 * 10',
       },
     ];
@@ -1078,7 +1078,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'test',
+        newColumn: 'test',
         formula: '-column_1 + 10',
       },
     ];
@@ -1104,7 +1104,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'test',
+        newColumn: 'test',
         formula: '[column with space and + and, oh a - and_also *] + [an other ^column]',
       },
     ];
@@ -1125,7 +1125,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
-        new_column: 'test',
+        newColumn: 'test',
         formula: '[column with space and + and, oh a - and_also *] + A',
       },
     ];
@@ -1288,7 +1288,7 @@ describe('Pipeline to mongo translator', () => {
       {
         name: 'duplicate',
         column: 'foo',
-        new_column_name: 'bar',
+        newColumn: 'bar',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1329,7 +1329,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'concatenate',
         columns: ['foo'],
         separator: ' - ',
-        new_column_name: 'concat',
+        newColumn: 'concat',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1345,7 +1345,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'concatenate',
         columns: ['foo', 'bar', 'again'],
         separator: ' - ',
-        new_column_name: 'concat',
+        newColumn: 'concat',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1395,7 +1395,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
         start_index: -5,
         end_index: -1,
-        newColumnName: 'bar',
+        newColumn: 'bar',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1588,7 +1588,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'dateextract',
         operation: 'year',
         column: 'foo',
-        new_column_name: 'bar',
+        newColumn: 'bar',
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1880,7 +1880,7 @@ describe('Pipeline to mongo translator', () => {
         hierarchy: ['continent', 'country', 'city'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newColumn: 'value1',
             aggfunction: 'sum',
             column: 'value1',
           },
@@ -1984,12 +1984,12 @@ describe('Pipeline to mongo translator', () => {
         hierarchy: ['continent', 'country', 'city'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newColumn: 'value1',
             aggfunction: 'sum',
             column: 'value1',
           },
           {
-            newcolumn: 'value2',
+            newColumn: 'value2',
             aggfunction: 'count',
             column: 'value2',
           },

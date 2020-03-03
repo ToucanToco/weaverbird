@@ -32,12 +32,12 @@ export default {
             type: 'string',
             enum: ['sum', 'avg', 'count', 'min', 'max'],
           },
-          newcolumn: {
+          newColumn: {
             type: 'string',
             minLength: 1,
           },
         },
-        required: ['column', 'aggfunction', 'newcolumn'],
+        required: ['column', 'aggfunction', 'newColumn'],
         additionalProperties: false,
       },
       minItems: 1,

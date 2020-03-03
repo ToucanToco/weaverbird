@@ -41,7 +41,7 @@ describe('Widget AggregationWidget', () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+      propsData: { value: { column: 'foo', newColumn: '', aggfunction: 'sum' } },
     });
     const widgetWrappers = wrapper.findAll('AutocompleteWidget-stub');
     expect(widgetWrappers.at(0).props().value).toEqual('foo');
@@ -51,7 +51,7 @@ describe('Widget AggregationWidget', () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'avg' } },
+      propsData: { value: { column: 'foo', newColumn: '', aggfunction: 'avg' } },
     });
     const widgetWrappers = wrapper.findAll('AutocompleteWidget-stub');
     expect(widgetWrappers.at(1).props().value).toEqual('avg');
@@ -61,12 +61,12 @@ describe('Widget AggregationWidget', () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+      propsData: { value: { column: 'foo', newColumn: '', aggfunction: 'sum' } },
     });
     wrapper.find('AutocompleteWidget-stub#columnInput').vm.$emit('input', 'plop');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
-      { column: 'plop', newcolumn: '', aggfunction: 'sum' },
+      { column: 'plop', newColumn: '', aggfunction: 'sum' },
     ]);
   });
 
@@ -74,12 +74,13 @@ describe('Widget AggregationWidget', () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+      propsData: { value: { column: 'foo', newColumn: '', aggfunction: 'sum' } },
     });
     wrapper.find('AutocompleteWidget-stub#aggregationFunctionInput').vm.$emit('input', 'avg');
+    await localVue.nextTick();
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
-      { column: 'foo', newcolumn: '', aggfunction: 'avg' },
+      { column: 'foo', newColumn: '', aggfunction: 'avg' },
     ]);
   });
 });

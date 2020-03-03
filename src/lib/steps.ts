@@ -8,12 +8,12 @@ type Templatable<T> = T | string;
 export type AddTextColumnStep = {
   name: 'text';
   text: string;
-  new_column: string;
+  newColumn: string;
 };
 
 export type AggFunctionStep = {
   /** Name of the output column */
-  newcolumn: string;
+  newColumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
   aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
   /** the column the aggregation function is working on */
@@ -49,7 +49,7 @@ export type ConcatenateStep = {
   name: 'concatenate';
   columns: string[];
   separator: string;
-  new_column_name: string;
+  newColumn: string;
 };
 
 export type ConvertStep = {
@@ -77,7 +77,7 @@ export type DateExtractPropertyStep = {
     | 'dayOfWeek'
     | 'week';
   column: string;
-  new_column_name?: string;
+  newColumn?: string;
 };
 
 export type DeleteStep = {
@@ -93,7 +93,7 @@ export type DomainStep = {
 export type DuplicateColumnStep = {
   name: 'duplicate';
   column: string;
-  new_column_name: string;
+  newColumn: string;
 };
 
 export type FillnaStep = {
@@ -140,7 +140,7 @@ export type FilterStep = {
 
 export type FormulaStep = {
   name: 'formula';
-  new_column: string;
+  newColumn: string;
   formula: string;
 };
 
@@ -161,7 +161,7 @@ export type PercentageStep = {
   name: 'percentage';
   column: string;
   group?: string[];
-  newColumnName?: string;
+  newColumn?: string;
 };
 
 export type PivotStep = {
@@ -227,7 +227,7 @@ export type SubstringStep = {
   column: string;
   start_index: number;
   end_index: number;
-  newColumnName?: string;
+  newColumn?: string;
 };
 
 export type ToDateStep = {

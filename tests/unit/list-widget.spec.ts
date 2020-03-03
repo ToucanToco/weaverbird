@@ -42,7 +42,7 @@ describe('Widget List', () => {
 
     it('should automatically add an input when filling the first one', async () => {
       const wrapper = shallowMount(ListWidget);
-      wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }] });
+      wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newColumn: 'bar' }] });
 
       await wrapper.vm.$nextTick();
       expect(wrapper.findAll('inputtextwidget-stub').length).toEqual(2);
@@ -51,7 +51,7 @@ describe('Widget List', () => {
     it('should add trash icons after first input', async () => {
       const wrapper = shallowMount(ListWidget);
       expect(wrapper.findAll('.widget-list__icon').length).toEqual(0);
-      wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }] });
+      wrapper.setProps({ value: [{ column: 'foo', aggfunction: 'sum', newColumn: 'bar' }] });
       await wrapper.vm.$nextTick();
       expect(wrapper.findAll('.widget-list__icon').length).toEqual(2);
     });
@@ -59,12 +59,37 @@ describe('Widget List', () => {
     it('should remove first input when clickng on trash', async () => {
       const wrapper = shallowMount(ListWidget, {
         propsData: {
-          value: [{ column: 'foo', aggfunction: 'sum', newcolumn: 'bar' }],
+          value: [{ column: 'foo', aggfunction: 'sum', newColumn: 'bar' }],
         },
       });
       const trashWrapper = wrapper.find('.widget-list__icon');
       trashWrapper.trigger('click');
       expect(wrapper.emitted()['input']).toBeDefined();
+    });
+
+    it('should remove the second input when clickng on trash', async () => {
+      const wrapper = shallowMount(ListWidget, {
+        propsData: {
+          value: [
+            { column: 'first', aggfunction: 'sum', newColumn: 'first_bar' },
+            { column: 'second', aggfunction: 'sum', newColumn: 'second_bar' },
+            { column: 'third', aggfunction: 'sum', newColumn: 'third_bar' },
+          ],
+        },
+      });
+      const trashWrappers = wrapper.findAll('.widget-list__icon');
+      trashWrappers.at(1).trigger('click');
+      expect(wrapper.emitted()['input'][0][0].length).toEqual(2);
+      expect(wrapper.emitted()['input'][0][0][0]).toEqual({
+        column: 'first',
+        aggfunction: 'sum',
+        newColumn: 'first_bar',
+      });
+      expect(wrapper.emitted()['input'][0][0][1]).toEqual({
+        column: 'third',
+        aggfunction: 'sum',
+        newColumn: 'third_bar',
+      });
     });
   });
 

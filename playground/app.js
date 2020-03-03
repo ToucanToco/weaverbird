@@ -19,25 +19,30 @@ const mongo40translator = getTranslator(TRANSLATOR);
 // Example to set a custom editor:
 // This one is quite simple. It customizes the placeholder.
 setCodeEditor({
-  props:['value', 'placeholder'],
+  props: ['value', 'placeholder'],
   render(createElement) {
-    return createElement("textarea", {
+    return createElement('textarea', {
       domProps: {
         value: this.value,
-        placeholder: "OMG I have to write code in here",
+        placeholder: 'OMG I have to write code in here',
       },
       attrs: {
-        type: "text"
+        type: 'text',
       },
       on: {
-        input: (event) => {this.$emit('input', event.target.value)},
-        blur: (event) => {this.$emit('blur')},
-        focus: (event) => {this.$emit('focus')},
+        input: event => {
+          this.$emit('input', event.target.value);
+        },
+        blur: event => {
+          this.$emit('blur');
+        },
+        focus: event => {
+          this.$emit('focus');
+        },
       },
-    })
+    });
   },
 });
-
 
 const CASTERS = {
   date: val => new Date(val),
@@ -289,7 +294,7 @@ async function buildVueApp() {
             {
               name: 'formula',
               formula: 'Value2 * 10',
-              new_column: 'ValueRight1',
+              newColumn: 'ValueRight1',
             },
           ],
           pipelineRight2: [
@@ -309,7 +314,7 @@ async function buildVueApp() {
             {
               name: 'formula',
               formula: 'Value3 * 10',
-              new_column: 'ValueRight2',
+              newColumn: 'ValueRight2',
             },
           ],
         },

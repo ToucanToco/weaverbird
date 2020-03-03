@@ -39,7 +39,7 @@ export default class AggregationWidget extends Vue {
   @Prop({ type: String, default: null })
   dataPath!: string;
 
-  @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newcolumn: '' }) })
+  @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newColumn: '' }) })
   value!: AggFunctionStep;
 
   @Prop({ type: Array, default: () => [] })

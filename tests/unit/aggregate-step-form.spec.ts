@@ -54,13 +54,13 @@ describe('Aggregate Step Form', () => {
           editedStep: {
             name: 'aggregate',
             on: [],
-            aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
+            aggregations: [{ column: 'foo', newColumn: 'bar', aggfunction: 'sum' }],
           },
         },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual([
-        { column: 'foo', newcolumn: 'bar', aggfunction: 'sum' },
+        { column: 'foo', newColumn: 'bar', aggfunction: 'sum' },
       ]);
     });
 
@@ -82,7 +82,7 @@ describe('Aggregate Step Form', () => {
             on: [''],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newColumn: 'sum_col1',
                 aggfunction: 'sum',
                 column: 'col1',
               },
@@ -99,7 +99,7 @@ describe('Aggregate Step Form', () => {
             on: ['column1'],
             aggregations: [
               {
-                newcolumn: '',
+                newColumn: '',
                 aggfunction: 'sum',
                 column: '',
               },
@@ -108,8 +108,8 @@ describe('Aggregate Step Form', () => {
         },
         errors: [
           { keyword: 'minLength', dataPath: '.aggregations[0].column' },
-          // newcolumn is computed based on column so an error is also returned for this parameter
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumn' },
+          // newColumn is computed based on column so an error is also returned for this parameter
+          { keyword: 'minLength', dataPath: '.aggregations[0].newColumn' },
         ],
       },
       {
@@ -120,7 +120,7 @@ describe('Aggregate Step Form', () => {
             on: ['column1'],
             aggregations: [
               {
-                newcolumn: 'foo_col1',
+                newColumn: 'foo_col1',
                 aggfunction: 'foo',
                 column: 'col1',
               },
@@ -137,43 +137,43 @@ describe('Aggregate Step Form', () => {
         initialStepValue: {
           name: 'aggregate',
           on: ['foo'],
-          aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
+          aggregations: [{ column: 'bar', newColumn: 'bar', aggfunction: 'sum' }],
         },
       },
     });
 
-    it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
+    it('should keep the same column name as newColumn if only one aggregation is performed', () => {
       const wrapper = runner.mount(undefined, {
         data: {
           editedStep: {
             name: 'aggregate',
             on: ['foo'],
-            aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
+            aggregations: [{ column: 'bar', newColumn: '', aggfunction: 'sum' }],
           },
         },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar');
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newColumn).toEqual('bar');
     });
 
-    it('should set newcolumn cleverly if several aggregations are performed o, the same column', () => {
+    it('should set newColumn cleverly if several aggregations are performed o, the same column', () => {
       const wrapper = runner.mount(undefined, {
         data: {
           editedStep: {
             name: 'aggregate',
             on: ['foo'],
             aggregations: [
-              { column: 'bar', newcolumn: '', aggfunction: 'sum' },
-              { column: 'bar', newcolumn: '', aggfunction: 'avg' },
+              { column: 'bar', newColumn: '', aggfunction: 'sum' },
+              { column: 'bar', newColumn: '', aggfunction: 'avg' },
             ],
           },
         },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
-      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).toEqual('bar-avg');
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newColumn).toEqual('bar-sum');
+      expect(wrapper.vm.$data.editedStep.aggregations[1].newColumn).toEqual('bar-avg');
     });
   });
 

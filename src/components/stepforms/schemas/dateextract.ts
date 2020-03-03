@@ -38,7 +38,7 @@ const schema = {
         placeholder: 'Choose the property to extract',
       },
     },
-    new_column_name: {
+    newColumn: {
       type: 'string',
       title: 'New column name',
       description: 'The new column that will be created after extraction',
@@ -52,5 +52,5 @@ const schema = {
 };
 
 export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'new_column_name', form.columnNames);
+  return addNotInColumnNamesConstraint(schema, 'newColumn', form.columnNames);
 }

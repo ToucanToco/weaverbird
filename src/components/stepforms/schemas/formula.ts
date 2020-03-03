@@ -16,7 +16,7 @@ export default {
         placeholder: 'Enter a formula',
       },
     },
-    new_column: {
+    newColumn: {
       type: 'string',
       minLength: 1,
       title: 'New column name',
@@ -26,6 +26,6 @@ export default {
       },
     },
   },
-  required: ['name', 'formula', 'new_column'],
+  required: ['name', 'formula', 'newColumn'],
   additionalProperties: false,
 };

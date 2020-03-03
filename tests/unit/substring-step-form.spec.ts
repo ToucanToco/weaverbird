@@ -28,10 +28,10 @@ describe('Substring Step Form', () => {
           column: 'foo',
           start_index: 1,
           end_index: 3,
-          newColumnName: 'bar',
+          newColumn: 'bar',
         },
       },
-      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumn' }],
     },
   ]);
 

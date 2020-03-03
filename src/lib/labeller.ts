@@ -139,7 +139,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
-    return `Duplicate "${step.column}" in "${step.new_column_name}"`;
+    return `Duplicate "${step.column}" in "${step.newColumn}"`;
   }
 
   delete(step: Readonly<S.DeleteStep>) {
@@ -155,7 +155,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   formula(step: Readonly<S.FormulaStep>) {
-    return `Compute "${step.formula}" in "${step.new_column}"`;
+    return `Compute "${step.formula}" in "${step.newColumn}"`;
   }
 
   fromdate(step: Readonly<S.FromDateStep>) {
@@ -212,7 +212,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   text(step: Readonly<S.AddTextColumnStep>) {
-    return `Add text column "${step.new_column}"`;
+    return `Add text column "${step.newColumn}"`;
   }
 
   todate(step: Readonly<S.ToDateStep>) {

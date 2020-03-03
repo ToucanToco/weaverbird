@@ -112,11 +112,11 @@ function transformAggregate(step: Readonly<S.AggregationStep>): MongoStep[] {
     if (aggfStep.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
       // an equivalent result
-      group[aggfStep.newcolumn] = {
+      group[aggfStep.newColumn] = {
         $sum: 1,
       };
     } else {
-      group[aggfStep.newcolumn] = {
+      group[aggfStep.newColumn] = {
         [$$(aggfStep.aggfunction)]: $$(aggfStep.column),
       };
     }
@@ -176,7 +176,7 @@ function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
   for (const colname of step.columns.slice(1)) {
     concatArr.push(step.separator, $$(colname));
   }
-  return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
+  return { $addFields: { [step.newColumn]: { $concat: concatArr } } };
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
@@ -192,7 +192,7 @@ function transformPercentage(step: Readonly<S.PercentageStep>): MongoStep[] {
     { $unwind: '$_vqbAppArray' },
     {
       $project: {
-        [step.newColumnName ?? `${step.column}_PCT`]: {
+        [step.newColumn ?? `${step.column}_PCT`]: {
           $cond: [
             { $eq: ['$_vqbTotalDenum', 0] },
             null,
@@ -301,11 +301,11 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
     const aggs: { [id: string]: {} } = {};
     for (const aggfStep of step.aggregations) {
       if (aggfStep.aggfunction === 'count') {
-        aggs[aggfStep.newcolumn] = {
+        aggs[aggfStep.newColumn] = {
           $sum: 1,
         };
       } else {
-        aggs[aggfStep.newcolumn] = {
+        aggs[aggfStep.newColumn] = {
           [$$(aggfStep.aggfunction)]: $$(aggfStep.column),
         };
       }
@@ -396,7 +396,7 @@ function transformSubstring(step: Readonly<S.SubstringStep>): MongoStep {
 
   const substrMongo = { $substrCP: [$$(step.column), posStartIndex, lengthToKeep] };
 
-  return { $addFields: { [step.newColumnName ?? `${step.column}_SUBSTR`]: substrMongo } };
+  return { $addFields: { [step.newColumn ?? `${step.column}_SUBSTR`]: substrMongo } };
 }
 
 /** transform an 'top' step into corresponding mongo steps */
@@ -618,7 +618,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   dateextract: (step: Readonly<S.DateExtractPropertyStep>) => ({
     $addFields: {
-      [`${step.new_column_name ?? step.column + '_' + step.operation}`]: {
+      [`${step.newColumn ?? step.column + '_' + step.operation}`]: {
         [`${DATE_EXTRACT_MAP[step.operation]}`]: `$${step.column}`,
       },
     },
@@ -628,7 +628,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
-    $addFields: { [step.new_column_name]: $$(step.column) },
+    $addFields: { [step.newColumn]: $$(step.column) },
   }),
   fillna: (step: Readonly<S.FillnaStep>) => ({
     $addFields: {
@@ -641,7 +641,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   formula: (step: Readonly<S.FormulaStep>) => {
     return {
       $addFields: {
-        [step.new_column]: buildMongoFormulaTree(buildFormulaTree(step.formula)),
+        [step.newColumn]: buildMongoFormulaTree(buildFormulaTree(step.formula)),
       },
     };
   },
@@ -667,7 +667,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   split: transformSplit,
   sort: transformSort,
   substring: transformSubstring,
-  text: step => ({ $addFields: { [step.new_column]: step.text } }),
+  text: step => ({ $addFields: { [step.newColumn]: step.text } }),
   todate: (step: Readonly<S.ToDateStep>) => ({
     $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
   }),

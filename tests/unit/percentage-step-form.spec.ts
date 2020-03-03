@@ -24,8 +24,8 @@ describe('Percentage Step Form', () => {
           data: [],
         },
       }),
-      data: { editedStep: { name: 'percentage', column: 'foo', newColumnName: 'bar' } },
-      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumnName' }],
+      data: { editedStep: { name: 'percentage', column: 'foo', newColumn: 'bar' } },
+      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumn' }],
     },
   ]);
 

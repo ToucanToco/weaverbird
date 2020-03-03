@@ -91,7 +91,7 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   get defaultAggregation() {
     const agg: AggFunctionStep = {
       column: '',
-      newcolumn: '',
+      newColumn: '',
       aggfunction: 'sum',
     };
     return agg;
@@ -112,16 +112,16 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   submit() {
     /**
      * If different aggregations have to be performed on the same column, add a suffix
-     * to the automatically generated newcolumn name
+     * to the automatically generated new column name
      */
     const newcolumnOccurences: { [prop: string]: number } = {};
     for (const agg of this.editedStep.aggregations) {
-      agg.newcolumn = agg.column;
-      newcolumnOccurences[agg.newcolumn] = (newcolumnOccurences[agg.newcolumn] || 0) + 1;
+      agg.newColumn = agg.column;
+      newcolumnOccurences[agg.newColumn] = (newcolumnOccurences[agg.newColumn] || 0) + 1;
     }
     for (const agg of this.editedStep.aggregations) {
-      if (newcolumnOccurences[agg.newcolumn] > 1) {
-        agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
+      if (newcolumnOccurences[agg.newColumn] > 1) {
+        agg.newColumn = `${agg.newColumn}-${agg.aggfunction}`;
       }
     }
     this.$$super.submit();

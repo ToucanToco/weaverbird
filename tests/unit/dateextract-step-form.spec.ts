@@ -51,14 +51,14 @@ describe('DateExtract Step Form', () => {
         name: 'dateextract',
         column: 'foo',
         operation: 'minutes',
-        new_column_name: 'the minutes',
+        newColumn: 'the minutes',
       },
     },
   });
 
   runner.testValidate(
     {
-      testlabel: 'new_column_name is generated correctly',
+      testlabel: 'newColumn is generated correctly',
       store: setupMockStore({
         dataset: {
           headers: [
@@ -80,7 +80,7 @@ describe('DateExtract Step Form', () => {
       name: 'dateextract',
       column: 'foo',
       operation: 'minutes',
-      new_column_name: 'foo_minutes1',
+      newColumn: 'foo_minutes1',
     },
   );
 
@@ -109,7 +109,7 @@ describe('DateExtract Step Form', () => {
               name: 'dateextract',
               column: 'foo',
               operation: 'day',
-              new_column_name: 'bar',
+              newColumn: 'bar',
             },
           },
         },
@@ -133,7 +133,7 @@ describe('DateExtract Step Form', () => {
           name: 'dateextract',
           column: 'foo',
           operation: 'minutes',
-          new_column_name: 'baz',
+          newColumn: 'baz',
         },
         isStepCreation: false,
       },

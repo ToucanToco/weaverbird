@@ -10,7 +10,7 @@ describe('Labeller', () => {
         {
           aggfunction: 'avg',
           column: 'column3',
-          newcolumn: 'averaged3',
+          newColumn: 'averaged3',
         },
       ],
     };
@@ -25,12 +25,12 @@ describe('Labeller', () => {
         {
           aggfunction: 'avg',
           column: 'column3',
-          newcolumn: 'averaged3',
+          newColumn: 'averaged3',
         },
         {
           aggfunction: 'sum',
           column: 'column4',
-          newcolumn: 'sum4',
+          newColumn: 'sum4',
         },
       ],
     };
@@ -68,7 +68,7 @@ describe('Labeller', () => {
       name: 'concatenate',
       columns: ['Foo', 'Bar'],
       separator: '',
-      new_column_name: 'whatever',
+      newColumn: 'whatever',
     };
     expect(hrl(step)).toEqual('Concatenate columns "Foo", "Bar"');
   });
@@ -111,7 +111,7 @@ describe('Labeller', () => {
     const step: S.DuplicateColumnStep = {
       name: 'duplicate',
       column: 'column1',
-      new_column_name: 'column2',
+      newColumn: 'column2',
     };
     expect(hrl(step)).toEqual('Duplicate "column1" in "column2"');
   });
@@ -322,7 +322,7 @@ describe('Labeller', () => {
   it('generates label for formula steps', () => {
     const step: S.FormulaStep = {
       name: 'formula',
-      new_column: 'column3',
+      newColumn: 'column3',
       formula: 'column1 + column2',
     };
     expect(hrl(step)).toEqual('Compute "column1 + column2" in "column3"');
@@ -455,7 +455,7 @@ describe('Labeller', () => {
     const step: S.AddTextColumnStep = {
       name: 'text',
       text: 'Hello',
-      new_column: 'test',
+      newColumn: 'test',
     };
     expect(hrl(step)).toEqual('Add text column "test"');
   });
@@ -512,7 +512,7 @@ describe('Labeller', () => {
       hierarchy: ['city', 'country', 'continent'],
       aggregations: [
         {
-          newcolumn: 'value1',
+          newColumn: 'value1',
           aggfunction: 'sum',
           column: 'value1',
         },

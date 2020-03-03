@@ -11,10 +11,10 @@
     />
     <InputTextWidget
       id="newColumnNameInput"
-      v-model="editedStep.new_column_name"
+      v-model="editedStep.newColumn"
       name="New column name:"
       placeholder="Enter a column name"
-      data-path=".new_column_name"
+      data-path=".newColumn"
       :errors="errors"
     />
     <StepFormButtonbar />
@@ -40,7 +40,7 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class DuplicateColumnForm extends BaseStepForm<DuplicateColumnStep> {
-  @Prop({ type: Object, default: () => ({ name: 'duplicate', column: '', new_column_name: '' }) })
+  @Prop({ type: Object, default: () => ({ name: 'duplicate', column: '', newColumn: '' }) })
   initialStepValue!: DuplicateColumnStep;
 
   readonly title: string = 'Duplicate column';

@@ -23,11 +23,11 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnName"
-      v-model="editedStep.new_column_name"
+      id="newColumn"
+      v-model="editedStep.newColumn"
       name="New column name:"
       :placeholder="newColumnNamePlaceholder"
-      data-path=".new_column_name"
+      data-path=".newColumn"
       :errors="errors"
     />
     <StepFormButtonbar />
@@ -111,9 +111,9 @@ export default class DateExtractStepForm extends BaseStepForm<DateExtractPropert
   }
 
   submit() {
-    // make sure new_column_name doesn't overwrite an existing columm name
-    this.editedStep.new_column_name = generateNewColumnName(
-      this.editedStep.new_column_name ?? this.defaultNewColumnName,
+    // make sure newColumn doesn't overwrite an existing columm name
+    this.editedStep.newColumn = generateNewColumnName(
+      this.editedStep.newColumn ?? this.defaultNewColumnName,
       this.columnNames,
     );
     this.$$super.submit();

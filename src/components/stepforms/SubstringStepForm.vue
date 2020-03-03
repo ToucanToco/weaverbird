@@ -29,10 +29,10 @@
     />
     <InputTextWidget
       id="newColumnNameInput"
-      v-model="editedStep.newColumnName"
+      v-model="editedStep.newColumn"
       name="(Optional) New column name:"
       :placeholder="`${editedStep.column}_SUBSTR`"
-      data-path=".newColumnName"
+      data-path=".newColumn"
       :errors="errors"
     />
     <StepFormButtonbar />

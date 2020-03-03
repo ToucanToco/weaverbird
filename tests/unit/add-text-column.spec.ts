@@ -11,7 +11,7 @@ describe('Add Text Column Step Form', () => {
 
   it('should pass down properties', async () => {
     const wrapper = runner.shallowMount();
-    wrapper.setData({ editedStep: { name: 'text', text: 'some text', new_column: 'foo' } });
+    wrapper.setData({ editedStep: { name: 'text', text: 'some text', newColumn: 'foo' } });
     await wrapper.vm.$nextTick();
     expect(
       wrapper
@@ -35,7 +35,7 @@ describe('Add Text Column Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState);
-    wrapper.setData({ editedStep: { name: 'text', text: 'some text', new_column: 'foo' } });
+    wrapper.setData({ editedStep: { name: 'text', text: 'some text', newColumn: 'foo' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
   });
@@ -50,7 +50,7 @@ describe('Add Text Column Step Form', () => {
     };
     const wrapper = runner.mount(initialState, {
       data: {
-        editedStep: { name: 'text', text: '', new_column: 'columnB' },
+        editedStep: { name: 'text', text: '', newColumn: 'columnB' },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
@@ -58,7 +58,7 @@ describe('Add Text Column Step Form', () => {
   });
 
   describe('Warning', () => {
-    it('should report a warning when new_column is an already existing column name', async () => {
+    it('should report a warning when newColumn is an already existing column name', async () => {
       const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
@@ -66,7 +66,7 @@ describe('Add Text Column Step Form', () => {
         },
       };
       const wrapper = runner.shallowMount(initialState);
-      wrapper.setData({ editedStep: { text: '', new_column: 'columnA' } });
+      wrapper.setData({ editedStep: { text: '', newColumn: 'columnA' } });
       await wrapper.vm.$nextTick();
       const inputText = wrapper.findAll('inputtextwidget-stub');
       expect(inputText.at(1).props().warning).toEqual(
@@ -74,7 +74,7 @@ describe('Add Text Column Step Form', () => {
       );
     });
 
-    it('should not report any warning if new_column is not an already existing column name', async () => {
+    it('should not report any warning if newColumn is not an already existing column name', async () => {
       const initialState = {
         dataset: {
           headers: [{ name: 'columnA' }],
@@ -82,7 +82,7 @@ describe('Add Text Column Step Form', () => {
         },
       };
       const wrapper = runner.shallowMount(initialState);
-      wrapper.setData({ editedStep: { text: '', new_column: 'columnB' } });
+      wrapper.setData({ editedStep: { text: '', newColumn: 'columnB' } });
       await wrapper.vm.$nextTick();
       const inputText = wrapper.findAll('inputtextwidget-stub');
       expect(inputText.at(1).props().warning).toBeNull();

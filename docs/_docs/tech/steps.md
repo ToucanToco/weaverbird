@@ -23,7 +23,7 @@ An aggreation step has the following strucure:
    on: ['column1', 'column2'],
    aggregations:  [
       {
-          newcolumn: 'sum_value1',
+          newColumn: 'sum_value1',
           aggfunction: 'sum',
           column: 'value1'
       }
@@ -58,7 +58,7 @@ An aggreation step has the following strucure:
    on: ['Group'],
    aggregations:  [
     {
-      newcolumn: 'Total',
+      newColumn: 'Total',
       aggfunction: 'sum',
       column: 'Value'
     }
@@ -296,7 +296,7 @@ This step allows to concatenate several `columns` using a `separator`.
   name: 'concatenate',
   columns: ['Company', 'Group']
   separator: ' - ' // can be a string of any length
-  new_column_name: 'Label' // The new column in which to write the concatenation
+  newColumn: 'Label' // The new column in which to write the concatenation
 }
 ```
 
@@ -325,7 +325,7 @@ This step allows to concatenate several `columns` using a `separator`.
   name: 'concatenate',
   columns: ['Company', 'Group']
   separator: ' - '
-  new_column_name: 'Label'
+  newColumn: 'Label'
 }
 ```
 
@@ -464,7 +464,7 @@ Here's an example of such a step:
     name: 'dateextract',
     column: 'date',
     operation: 'day',
-    new_column_name: 'date_day',
+    newColumn: 'date_day',
     format: '%Y-%m-%d',
 }
 ```
@@ -494,7 +494,7 @@ Here's an example of such a step:
     name: 'dateextract',
     column: 'Date',
     operation: 'day',
-    new_column_name: 'Date_day',
+    newColumn: 'Date_day',
     format: '%Y-%m-%d',
 }
 ```
@@ -583,7 +583,7 @@ This step is meant to duplicate a column.
 {
     name: 'duplicate',
     column: 'my-column'
-    new_column_name: 'my-duplicate'
+    newColumn: 'my-duplicate'
 }
 ```
 
@@ -608,7 +608,7 @@ This step is meant to duplicate a column.
 {
   name: 'duplicate',
   column: "Company",
-  new_column_name: "Company-copy",
+  newColumn: "Company-copy",
 }
 ```
 
@@ -707,7 +707,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 {
   {
     name: 'formula',
-    new_column: 'result', // if the column already exists, overwrites it
+    newColumn: 'result', // if the column already exists, overwrites it
     formula: '(Value1 + Value2) / Value3 - Value4 * 2'
   }
 }
@@ -728,7 +728,7 @@ Column names must not be escaped. Strings have to be escaped with quotes.
 ```javascript
 {
   name: 'formula',
-  new_column: 'Result',
+  newColumn: 'Result',
   formula: '(Value1 + Value2) / Value3 - Value4 * 2'
 }
 ```
@@ -1001,7 +1001,7 @@ by `group` if specified. The result is written in a new column.
 ```javascript
 
   name: 'percentage',
-  new_column: 'Percentage_of_total',
+  newColumn: 'Percentage_of_total',
   column: 'Value',
   group: ['Group']
   newColumn: 'Percentage'
@@ -1191,12 +1191,12 @@ specifying for every row the label, level and parent in dedicated columns.
    hierarchy: ['continent', 'country', 'city'], // Hierarchical columns, from top to bottom level
    aggregations: [ // The columns to be aggregated, and how
     {
-      newcolumn: 'revenues',
+      newColumn: 'revenues',
       aggfunction: 'sum', // aggregate using sum
       column: 'revenues'
     },
     {
-      newcolumn: 'average_cost',
+      newColumn: 'average_cost',
       aggfunction: 'avg', // aggregate using average
       column: 'cost'
     }
@@ -1244,7 +1244,7 @@ specifying for every row the label, level and parent in dedicated columns.
    hierarchy: ['CONTINENT', 'COUNTRY', 'CITY'],
    aggregations: [
     {
-      newcolumn: 'revenues',
+      newColumn: 'revenues',
       aggfunction: 'sum',
       column: 'revenues'
     },
@@ -1302,12 +1302,12 @@ specifying for every row the label, level and parent in dedicated columns.
    hierarchy: ['CONTINENT', 'COUNTRY', 'CITY'],
    aggregations: [
     {
-      newcolumn: 'VALUE-sum',
+      newColumn: 'VALUE-sum',
       aggfunction: 'sum',
       column: 'VALUE'
     },
     {
-      newcolumn: 'VALUE-avg',
+      newColumn: 'VALUE-avg',
       aggfunction: 'avg',
       column: 'VALUE'
     }
@@ -1680,7 +1680,7 @@ specified `text`.
 {
   {
     name: 'text',
-    new_column: 'new', // if the column already exists, overwrites it
+    newColumn: 'new', // if the column already exists, overwrites it
     text: 'some text'
   }
 }
@@ -1706,7 +1706,7 @@ specified `text`.
 ```javascript
 {
   name: 'text',
-  new_column: 'KPI',
+  newColumn: 'KPI',
   formula: 'Sales'
 }
 ```
