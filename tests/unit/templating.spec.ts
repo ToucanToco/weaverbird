@@ -1060,7 +1060,7 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should interpolate complexe rollup steps if needed', () => {
+  it('should interpolate complex rollup steps if needed', () => {
     const pipeline: Pipeline = [
       {
         name: 'rollup',
@@ -1119,6 +1119,27 @@ describe('Pipeline interpolator', () => {
         evolutionType: 'vsLastMonth',
         evolutionFormat: 'abs',
         indexColumns: ['bar'],
+        newColumn: 'bar',
+      },
+    ]);
+  });
+
+  it('should interpolate cumsum steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        valueColumn: '<%= foo %>',
+        referenceColumn: '<%= foo %>',
+        groupby: ['<%= foo %>'],
+        newColumn: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'cumsum',
+        valueColumn: 'bar',
+        referenceColumn: 'bar',
+        groupby: ['bar'],
         newColumn: 'bar',
       },
     ]);
