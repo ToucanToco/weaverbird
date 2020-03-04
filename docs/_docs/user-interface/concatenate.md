@@ -3,7 +3,7 @@ title: Concatenate columns
 permalink: /docs/concatenate/
 ---
 
-### Replace values
+### Concatenate columns
 
 You can use this step to concatenate several text columns.
 
