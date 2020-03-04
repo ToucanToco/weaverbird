@@ -8,6 +8,7 @@
     - argmin
     - concatenate
     - convert
+    - fromdate
     - todate
     - custom
     - delete
