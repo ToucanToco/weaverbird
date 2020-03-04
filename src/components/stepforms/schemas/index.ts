@@ -4,6 +4,7 @@ import argmaxSchema from './argmax';
 import argminSchema from './argmin';
 import concatenateBuildSchema from './concatenate';
 import convertSchema from './convert';
+import cumsumSchema from './cumsum';
 import customSchema from './custom';
 import dateextractSchema from './dateextract';
 import deleteSchema from './delete';
@@ -41,6 +42,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   argmin: argminSchema,
   concatenate: concatenateBuildSchema,
   convert: convertSchema,
+  cumsum: cumsumSchema,
   custom: customSchema,
   dateextract: dateextractSchema,
   delete: deleteSchema,
