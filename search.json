@@ -68,6 +68,30 @@
     
     
     {
+      "title": "Convert date to text",
+      "url": "/docs/fromdate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Convert text to date",
+      "url": "/docs/todate/"
+
+    },
+  
+    
+    
+    {
+      "title": "Cutom step",
+      "url": "/docs/custom/"
+
+    },
+  
+    
+    
+    {
       "title": "Delete column(s)",
       "url": "/docs/delete/"
 
