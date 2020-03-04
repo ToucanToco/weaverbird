@@ -2466,4 +2466,87 @@ describe('Pipeline to mongo translator', () => {
       },
     ]);
   });
+
+  it('can generate basic cumsum steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        valueColumn: 'VALUE',
+        referenceColumn: 'DATE',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: { DATE: '$DATE' },
+          VALUE: { $sum: '$VALUE' },
+        },
+      },
+      { $sort: { _id: 1 } },
+      {
+        $group: {
+          _id: null,
+          DATE: { $push: '$_id.DATE' },
+          VALUE: { $push: '$VALUE' },
+        },
+      },
+      { $unwind: { path: '$DATE', includeArrayIndex: '_VQB_INDEX' } },
+      {
+        $project: {
+          DATE: 1,
+          VALUE: { $arrayElemAt: ['$VALUE', '$_VQB_INDEX'] },
+          VALUE_CUMSUM: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate more complex cumsum steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        valueColumn: 'VALUE',
+        referenceColumn: 'DATE',
+        groupby: ['COUNTRY', 'PRODUCT'],
+        newColumn: 'MY_NEW_COLUMN',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: {
+            DATE: '$DATE',
+            COUNTRY: '$COUNTRY',
+            PRODUCT: '$PRODUCT',
+          },
+          VALUE: { $sum: '$VALUE' },
+        },
+      },
+      { $sort: { _id: 1 } },
+      {
+        $group: {
+          _id: {
+            COUNTRY: '$_id.COUNTRY',
+            PRODUCT: '$_id.PRODUCT',
+          },
+          DATE: { $push: '$_id.DATE' },
+          VALUE: { $push: '$VALUE' },
+        },
+      },
+      { $unwind: { path: '$DATE', includeArrayIndex: '_VQB_INDEX' } },
+      {
+        $project: {
+          COUNTRY: '$_id.COUNTRY',
+          PRODUCT: '$_id.PRODUCT',
+          DATE: 1,
+          VALUE: { $arrayElemAt: ['$VALUE', '$_VQB_INDEX'] },
+          MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });

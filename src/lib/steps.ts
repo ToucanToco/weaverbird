@@ -58,6 +58,14 @@ export type ConvertStep = {
   data_type: 'boolean' | 'date' | 'float' | 'integer' | 'text';
 };
 
+export type CumSumStep = {
+  name: 'cumsum';
+  valueColumn: string;
+  referenceColumn: string;
+  groupby?: string[];
+  newColumn?: string;
+};
+
 export type CustomStep = {
   name: 'custom';
   query: string;
@@ -278,8 +286,6 @@ export type UnpivotStep = {
   dropna: boolean;
 };
 
-// interface AppendStep extends AppendStep<Pipeline> {}
-
 export type PipelineStep =
   | AddTextColumnStep
   | AggregationStep
@@ -288,6 +294,7 @@ export type PipelineStep =
   | ArgminStep
   | ConcatenateStep
   | ConvertStep
+  | CumSumStep
   | CustomStep
   | DateExtractPropertyStep
   | DeleteStep

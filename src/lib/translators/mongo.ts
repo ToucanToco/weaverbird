@@ -170,6 +170,52 @@ function transformArgmaxArgmin(step: Readonly<S.ArgmaxStep> | Readonly<S.ArgminS
   ];
 }
 
+/** transform a 'cumsum' step into corresponding mongo steps */
+function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
+  const groupby = step.groupby ?? [];
+  return [
+    {
+      $group: {
+        _id: columnMap([step.referenceColumn, ...groupby]),
+        [step.valueColumn]: { $sum: $$(step.valueColumn) },
+      },
+    },
+    { $sort: { _id: 1 } },
+    {
+      $group: {
+        _id:
+          step.groupby === undefined
+            ? null
+            : Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
+        [step.referenceColumn]: { $push: `$_id.${step.referenceColumn}` },
+        [step.valueColumn]: { $push: $$(step.valueColumn) },
+      },
+    },
+    { $unwind: { path: $$(step.referenceColumn), includeArrayIndex: '_VQB_INDEX' } },
+    {
+      $project: {
+        ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
+        [step.referenceColumn]: 1,
+        [step.valueColumn]: { $arrayElemAt: [$$(step.valueColumn), '$_VQB_INDEX'] },
+        [step.newColumn ?? `${step.valueColumn}_CUMSUM`]: {
+          $sum: {
+            $slice: [$$(step.valueColumn), { $add: ['$_VQB_INDEX', 1] }],
+          },
+        },
+      },
+    },
+  ];
+}
+
+/** transform a 'concatenate' step into corresponding mongo steps */
+function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
+  const concatArr: string[] = [$$(step.columns[0])];
+  for (const colname of step.columns.slice(1)) {
+    concatArr.push(step.separator, $$(colname));
+  }
+  return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
+}
+
 /** transform an 'evolution' step into corresponding mongo steps */
 function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
   const newColumn = step.newColumn ?? `${step.valueCol}_EVOL_${step.evolutionFormat.toUpperCase()}`;
@@ -288,15 +334,6 @@ function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
       },
     },
   ];
-}
-
-/** transform a 'concatenate' step into corresponding mongo steps */
-function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
-  const concatArr: string[] = [$$(step.columns[0])];
-  for (const colname of step.columns.slice(1)) {
-    concatArr.push(step.separator, $$(colname));
-  }
-  return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
@@ -735,6 +772,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
   concatenate: transformConcatenate,
+  cumsum: transformCumSum,
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   dateextract: (step: Readonly<S.DateExtractPropertyStep>) => ({
     $addFields: {
