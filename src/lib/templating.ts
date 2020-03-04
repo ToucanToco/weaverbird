@@ -144,6 +144,18 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  cumsum(step: Readonly<S.CumSumStep>) {
+    return {
+      ...step,
+      valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
+      referenceColumn: _interpolate(this.interpolateFunc, step.referenceColumn, this.context),
+      groupby: (step.groupby ?? []).map(col =>
+        _interpolate(this.interpolateFunc, col, this.context),
+      ),
+      newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
+    };
+  }
+
   custom(step: Readonly<S.CustomStep>) {
     return { ...step, query: _interpolate(this.interpolateFunc, step.query, this.context) };
   }
