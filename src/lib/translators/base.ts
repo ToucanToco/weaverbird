@@ -120,6 +120,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   convert(step: Readonly<S.ConvertStep>) {}
 
   @unsupported
+  cumsum(step: Readonly<S.CumSumStep>) {}
+
+  @unsupported
   custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported
