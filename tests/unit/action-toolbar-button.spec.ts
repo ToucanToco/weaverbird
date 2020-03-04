@@ -79,7 +79,7 @@ describe('ActionToolbarButton', () => {
   it('should instantiate a Compute button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, { propsData: { category: 'compute' }, localVue });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['formula', 'evolution', 'percentage']);
+    assertMenuEmitsExpected(wrapper, ['formula', 'evolution', 'cumsum', 'percentage']);
   });
 
   it('should instantiate a Text button with the right list of actions', () => {

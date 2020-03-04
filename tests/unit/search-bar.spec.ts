@@ -58,11 +58,12 @@ describe('SearchBar', () => {
       'uniquegroups',
       'rollup',
       'evolution',
+      'cumsum',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
 
-  it('should have the right options for mong40 translator', () => {
+  it('should have the right options for mongo40 translator', () => {
     const store = setupMockStore({ translator: 'mongo40' });
     const wrapper = shallowMount(SearchBar, {
       store,
@@ -105,6 +106,7 @@ describe('SearchBar', () => {
       'uniquegroups',
       'rollup',
       'evolution',
+      'cumsum',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });

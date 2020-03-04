@@ -5,6 +5,7 @@ import './ArgminStepForm.vue';
 import './ArgmaxStepForm.vue';
 import './ConcatenateStepForm.vue';
 import './ConvertStepForm.vue';
+import './CumSumStepForm.vue';
 import './CustomStepForm.vue';
 import './DateExtractStepForm.vue';
 import './DeleteColumnStepForm.vue';
