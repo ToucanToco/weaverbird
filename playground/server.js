@@ -327,7 +327,7 @@ function parseCommandLine() {
                           mongo server. If present, "--dburi" is ignored.
 
     --defaultDataset      path to dataset to load in database
-                          default is ${__dirname}/default-dataset.csv
+                          default is ${__dirname}/datastore/sales.csv
 
     --httpPort / -p       override "httpPort" option from config file,
                           default is 3000
@@ -368,7 +368,7 @@ function parseCommandLine() {
         defaultDataset: {
           type: 'string',
           alias: 'D',
-          default: `${__dirname}/default-dataset.csv`,
+          default: `${__dirname}/datastore/sales.csv`,
         },
       },
     },
