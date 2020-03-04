@@ -126,6 +126,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert columns ${formatMulticol(step.columns)} into ${step.data_type}`;
   }
 
+  cumsum(step: Readonly<S.CumSumStep>) {
+    return `Compute cumulated sum of "${step.valueColumn}"`;
+  }
+
   custom(_step: Readonly<S.CustomStep>) {
     return 'Custom step';
   }

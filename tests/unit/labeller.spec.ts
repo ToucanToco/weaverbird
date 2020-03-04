@@ -521,6 +521,17 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Roll-up hierarchy ["city", "country", "continent"]');
   });
 
+  it('generates label for cumsum steps', () => {
+    const step: S.CumSumStep = {
+      name: 'cumsum',
+      valueColumn: 'VALUE',
+      referenceColumn: 'DATE',
+      groupby: ['COUNTRY', 'PRODUCT'],
+      newColumn: 'MY_NEW_COLUMN',
+    };
+    expect(hrl(step)).toEqual('Compute cumulated sum of "VALUE"');
+  });
+
   it('generates label for evolution steps', () => {
     const step: S.EvolutionStep = {
       name: 'evolution',
