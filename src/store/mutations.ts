@@ -3,6 +3,7 @@
  */
 
 import Vue from 'vue';
+import { MutationTree } from 'vuex';
 
 import { BackendError } from '@/lib/backend-response';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
@@ -83,13 +84,33 @@ export type MutationCallbacks = {
   [K in StateMutation['type']]: (payload: MutationByType<StateMutation, K>['payload']) => void;
 };
 
-export default {
+/**
+ * Mutation wrapper so that the pagination is reset at the end of the mutation
+ */
+function resetPagination(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+  const originalMethod = descriptor.value;
+
+  descriptor.value = function(state: VQBState, ...args: any[]) {
+    originalMethod(state, ...args);
+    if (state.dataset.paginationContext) {
+      state.dataset.paginationContext.pageno = 1;
+    }
+  };
+
+  return descriptor;
+}
+
+/**
+ * HACK: this class is just a temporary wrapper to be able to use decorators.
+ * We'll export its prototype afterwards.
+ */
+class Mutations {
   /**
    * unset currentStepFormName in order to close step form
    */
   closeStepForm(state: VQBState) {
     state.currentStepFormName = undefined;
-  },
+  }
   /**
    * open step form when creating a step
    */
@@ -100,14 +121,14 @@ export default {
     state.currentStepFormName = stepName;
     state.stepFormInitialValue = undefined;
     state.stepFormDefaults = stepFormDefaults;
-  },
+  }
 
   /**
    * log a backend error message.
    */
   logBackendError(state: VQBState, { backendError }: { backendError: BackendError }) {
     state.backendErrors.push(backendError);
-  },
+  }
 
   /**
    * open step form when editing a step
@@ -119,25 +140,26 @@ export default {
     state.stepFormInitialValue = { ...initialValue };
     state.currentStepFormName = stepName;
     state.stepFormDefaults = undefined;
-  },
+  }
 
   /**
    * empty error log on VQB's state
    */
   resetBackendErrors(state: VQBState) {
     state.backendErrors = [];
-  },
+  }
 
   /**
    * reset step form initial value
    */
   resetStepFormInitialValue(state: VQBState) {
     state.stepFormInitialValue = undefined;
-  },
+  }
 
   /**
    * set currently last selected step index.
    */
+  @resetPagination
   selectStep(state: VQBState, { index }: { index: number }) {
     const pipeline = currentPipeline(state);
     if (pipeline && index > pipeline.length) {
@@ -146,10 +168,11 @@ export default {
     } else {
       state.selectedStepIndex = index;
     }
-  },
+  }
   /**
    * Delete the step of index `index` in pipeline.
    */
+  @resetPagination
   deleteStep(state: VQBState, { index }: { index: number }) {
     const pipeline = currentPipeline(state);
     if (!pipeline) {
@@ -157,10 +180,11 @@ export default {
     }
     pipeline.splice(index, 1);
     state.selectedStepIndex = index - 1;
-  },
+  }
   /**
    * change current selected domain and reset pipeline accordingly.
    */
+  @resetPagination
   setCurrentDomain(state: VQBState, { currentDomain }: Pick<VQBState, 'currentDomain'>) {
     const pipeline = currentPipeline(state);
     if (state.currentPipelineName === undefined || pipeline === undefined) {
@@ -175,19 +199,20 @@ export default {
         state.pipelines[state.currentPipelineName] = [domainStep];
       }
     }
-  },
+  }
   /**
    * update currentPipelineName
    */
+  @resetPagination
   setCurrentPipelineName(state: VQBState, { name }: { name: string }) {
     state.currentPipelineName = name;
-  },
+  }
   /**
    * update dataset.
    */
   setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
     state.dataset = dataset;
-  },
+  }
   /**
    * set the list of available domains.
    */
@@ -196,10 +221,11 @@ export default {
     if (!state.currentDomain || (domains.length && !domains.includes(state.currentDomain))) {
       state.currentDomain = domains[0];
     }
-  },
+  }
   /**
    * update pipeline.
    */
+  @resetPagination
   setPipeline(state: VQBState, { pipeline }: { pipeline: Pipeline }) {
     if (state.currentPipelineName === undefined) {
       return;
@@ -211,13 +237,13 @@ export default {
         state.currentDomain = firstStep.domain;
       }
     }
-  },
+  }
   /**
    * update pipelines.
    */
   setPipelines(state: VQBState, { pipelines }: Pick<VQBState, 'pipelines'>) {
     state.pipelines = pipelines;
-  },
+  }
   /**
    *
    * set selected columns
@@ -226,7 +252,7 @@ export default {
     if (column !== undefined) {
       state.selectedColumns = [column];
     }
-  },
+  }
 
   /**
    * toggle column selection
@@ -237,7 +263,7 @@ export default {
     } else {
       state.selectedColumns = [column];
     }
-  },
+  }
 
   /**
    * change current pagination context's page
@@ -249,19 +275,23 @@ export default {
       const length = state.dataset.data.length;
       state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
     }
-  },
+  }
 
   /**
    * toggle loading
    */
   setLoading(state: VQBState, { isLoading }: { isLoading: boolean }) {
     state.isLoading = isLoading;
-  },
+  }
 
   /**
    * Update translator.
    */
   setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {
     state.translator = translator;
-  },
-};
+  }
+}
+
+const mutations: MutationTree<VQBState> = {};
+Object.assign(mutations, Mutations.prototype);
+export default mutations;

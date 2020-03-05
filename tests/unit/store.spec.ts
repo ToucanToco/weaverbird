@@ -253,10 +253,14 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
-    const state = buildStateWithOnePipeline(pipeline);
+    const state = buildStateWithOnePipeline(pipeline, {
+      dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+    });
     expect(state.selectedStepIndex).toEqual(-1);
     mutations.selectStep(state, { index: 2 });
     expect(state.selectedStepIndex).toEqual(2);
+    // make sure the pagination is reset
+    expect(state.dataset.paginationContext?.pageno).toEqual(1);
 
     const spy = jest.spyOn(console, 'error').mockImplementation(() => {});
     mutations.selectStep(state, { index: 5 });
@@ -279,7 +283,9 @@ describe('mutation tests', () => {
         { name: 'rename', oldname: 'baz', newname: 'spam' },
         { name: 'rename', oldname: 'clou', newname: 'vis' },
       ];
-      const state = buildStateWithOnePipeline(pipeline);
+      const state = buildStateWithOnePipeline(pipeline, {
+        dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+      });
       mutations.deleteStep(state, { index: 2 });
       expect(currentPipeline(state)).toEqual([
         { name: 'domain', domain: 'foo' },
@@ -287,6 +293,8 @@ describe('mutation tests', () => {
         { name: 'rename', oldname: 'clou', newname: 'vis' },
       ]);
       expect(state.selectedStepIndex).toEqual(1);
+      // make sure the pagination is reset
+      expect(state.dataset.paginationContext?.pageno).toEqual(1);
     });
   });
 
@@ -304,7 +312,12 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
-    const state = buildState({ currentDomain: 'foo', ...buildStateWithOnePipeline(pipeline) });
+    const state = buildState({
+      currentDomain: 'foo',
+      ...buildStateWithOnePipeline(pipeline, {
+        dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+      }),
+    });
     expect(state.currentDomain).toEqual('foo');
     mutations.setCurrentDomain(state, { currentDomain: 'bar' });
     expect(state.currentDomain).toEqual('bar');
@@ -313,6 +326,8 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'foo', newname: 'bar' },
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ]);
+    // make sure the pagination is reset
+    expect(state.dataset.paginationContext?.pageno).toEqual(1);
   });
 
   it('do nothing without any current pipeline', () => {
@@ -346,20 +361,26 @@ describe('mutation tests', () => {
   });
 
   it('sets currentPipelineName', () => {
-    const state = buildState({});
+    const state = buildState({
+      dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+    });
     mutations.setCurrentPipelineName(state, { name: 'bar' });
     expect(state.currentPipelineName).toEqual('bar');
+    // make sure the pagination is reset
+    expect(state.dataset.paginationContext?.pageno).toEqual(1);
   });
 
   describe('setPipeline', function() {
-    it('should do nothing if not pipeline is selected', function() {
+    it('should do nothing if no pipeline is selected', function() {
       const state = buildState({});
       mutations.setPipeline(state, { pipeline: [] });
       expect(getters.pipeline(state, {}, {}, {})).toBeUndefined();
     });
 
     it('should replace the current pipeline', function() {
-      const state = buildStateWithOnePipeline([]);
+      const state = buildStateWithOnePipeline([], {
+        dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+      });
       expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
 
       const pipeline: Pipeline = [
@@ -369,6 +390,8 @@ describe('mutation tests', () => {
       ];
       mutations.setPipeline(state, { pipeline });
       expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
+      // make sure the pagination is reset
+      expect(state.dataset.paginationContext?.pageno).toEqual(1);
     });
   });
 
