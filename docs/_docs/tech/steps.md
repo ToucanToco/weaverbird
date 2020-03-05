@@ -342,7 +342,7 @@ This step allows to concatenate several `columns` using a `separator`.
 
 ### `convert` step
 
-This step allows to `columns` data types.
+This step allows to convert `columns` data types.
 
 ```javascript
 {
@@ -390,6 +390,109 @@ This step allows to `columns` data types.
 | Company 4 | 1     |
 | Company 5 | 10    |
 | Company 6 | 5     |
+
+### `cumsum` step
+
+This step allows to compute the cumulated sum of value column based on a
+reference column (usually dates) to be sorted by ascending order for the needs
+of the computation. The computation can be scoped by group if needed.
+
+```javascript
+{
+  name: 'cumsum',
+  valueColumn: 'myValues',
+  referenceColumn: 'myDates',
+  groupby: ['foo', 'bar'],
+  newColumn: 'myCumsum'
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: Basic usage
+
+**Input dataset:**
+
+| DATE      | VALUE |
+| --------- | ----- |
+| 2019-01   | 2     |
+| 2019-02   | 5     |
+| 2019-03   | 3     |
+| 2019-04   | 8     |
+| 2019-05   | 9     |
+| 2019-06   | 6     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'cumsum',
+  valueColumn: 'VALUE',
+  referenceColumn: 'DATE',
+}
+```
+
+**Output dataset:**
+
+| DATE      | VALUE | VALUE_CUMSUM |
+| --------- | ----- | ------------ |
+| 2019-01   | 2     | 2            |
+| 2019-02   | 5     | 7            |
+| 2019-03   | 3     | 10           |
+| 2019-04   | 8     | 18           |
+| 2019-05   | 9     | 27           |
+| 2019-06 6 | 6     | 33           |
+
+#### Example 2: With more advanced options
+
+**Input dataset:**
+
+| COUNTRY | DATE      | VALUE |
+| ------- | --------- | ----- |
+| France  | 2019-01   | 2     |
+| France  | 2019-02   | 5     |
+| France  | 2019-03   | 3     |
+| France  | 2019-04   | 8     |
+| France  | 2019-05   | 9     |
+| France  | 2019-06 6 | 6     |
+| USA     | 2019-01   | 10    |
+| USA     | 2019-02   | 6     |
+| USA     | 2019-03   | 6     |
+| USA     | 2019-04   | 4     |
+| USA     | 2019-05   | 8     |
+| USA     | 2019-06 6 | 7     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'cumsum',
+  valueColumn: 'VALUE',
+  referenceColumn: 'DATE',
+  groupby: ['COUNTRY'],
+  newColumn: 'MY_CUMSUM'
+}
+```
+
+**Output dataset:**
+
+| COUNTRY | DATE      | VALUE | MY_CUMSUM |
+| ------- | --------- | ----- | --------- |
+| France  | 2019-01   | 2     | 2         |
+| France  | 2019-02   | 5     | 7         |
+| France  | 2019-03   | 3     | 10        |
+| France  | 2019-04   | 8     | 18        |
+| France  | 2019-05   | 9     | 27        |
+| France  | 2019-06 6 | 6     | 33        |
+| USA     | 2019-01   | 10    | 10        |
+| USA     | 2019-02   | 6     | 16        |
+| USA     | 2019-03   | 6     | 22        |
+| USA     | 2019-04   | 4     | 26        |
+| USA     | 2019-05   | 8     | 34        |
+| USA     | 2019-06 6 | 7     | 41        |
 
 ### `custom` step
 
