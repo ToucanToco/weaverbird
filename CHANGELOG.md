@@ -1,11 +1,17 @@
 # Changelog
 
-## UNRELEASED -
+## [0.13.0] - 2020-03-06
+
+### Added
+- Introduce a bracket syntax to escape column names with spaces in formula step
+- Documentation for the UI of fromdate, todate, custom and concatenate steps
 
 ### Changed
-
+- Remove `setDomainCollectionMap` in favor `setDomainToCollection` in mongo translator
 - Write percentage step result in a new column
 - Write substring step result in a new column
+- Fix update problems of Aggregation widget
+- Fix update problems of JoinColumns widget
 
 ## [0.12.0] - 2020-02-26
 
@@ -179,6 +185,7 @@
 
 - Initial version, showtime!
 
+[0.13.0]: https://github.com/ToucanToco/weaverbird/compare/v0.12.0...v0.13.0
 [0.12.0]: https://github.com/ToucanToco/weaverbird/compare/v0.11.0...v0.12.0
 [0.11.0]: https://github.com/ToucanToco/weaverbird/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/ToucanToco/weaverbird/compare/v0.9.0...v0.10.0
