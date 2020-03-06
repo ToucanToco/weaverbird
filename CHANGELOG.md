@@ -5,6 +5,7 @@
 ### Added
 
 - Add a "Compute evolution" step (Mongo translation + UI)
+- Add a `cumsum` step to compute cumulated sums
 
 ## [0.13.1] - 2020-03-06
 
