@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-03-06T17:45:29+01:00" />
+<meta property="article:published_time" content="2020-03-10T11:34:38+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-03-06T17:45:29+01:00","dateModified":"2020-03-06T17:45:29+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-03-10T11:34:38+01:00","dateModified":"2020-03-10T11:34:38+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -164,6 +164,12 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/duplicate/">Duplicate</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/evolution/">Evolution</a>
             <!--  -->
           
             
@@ -1646,6 +1652,542 @@ can be extracted:</p>
       <td>Company 3</td>
       <td>20</td>
       <td>Company 3</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="evolution-step"><code class="highlighter-rouge">evolution</code> step</h3>
+
+<p>Use this step if you need to compute the row-by-row evolution of a value column,
+based on a date column. It will output 2 columns: one for the evolution in
+absolute value, the other for the evolution in percentage.</p>
+
+<p>You must be careful that the computation is scoped so that there are no dates
+duplicates (so that any date finds no more than one previous date). That means
+that you may need to specify index columns to make any date unique by index. You
+should use the <code class="highlighter-rouge">indexColumns</code> parameter to specifiy what series of columns
+allows to build a unique index (by concatenation with the date column).
+If index is not unique and more than one previous date is found, you will get
+an error at row level (“Error: More than one previous date found for the
+specified index columns”). Please refere to example 3 and 4 below for a concrete
+illustration.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'evolution'</span><span class="p">,</span>
+  <span class="nx">dateCol</span><span class="p">:</span> <span class="s1">'DATE'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">evolutionType</span><span class="p">:</span> <span class="s1">'vsLastYear'</span><span class="p">,</span> <span class="c1">// or vsLastMonth, vsLastWeek, vsLastDay</span>
+  <span class="nx">evolutionFormat</span><span class="p">:</span> <span class="s1">'abs'</span><span class="p">,</span> <span class="c1">// or pct</span>
+  <span class="c1">// optional, if computation has to be performed by group so that any date finds no more than one previous date</span>
+  <span class="nx">indexColumns</span><span class="p">:</span> <span class="p">[</span><span class="s1">'COUNTRY'</span><span class="p">],</span>
+  <span class="nx">newColumn</span><span class="p">:</span> <span class="s1">'MY_EVOL'</span><span class="p">,</span> <span class="c1">// optional, &lt;originalColumnName&gt;_EVOL_ABS or &lt;originalColumnName&gt;_EVOL_PCT by default</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>This step is supported by the following backends:</strong></p>
+
+<ul>
+  <li>Mongo 4.0</li>
+  <li>Mongo 3.6</li>
+</ul>
+
+<h4 id="example-1-basic-configuration---evolution-in-absolute-value">Example 1: Basic configuration - evolution in absolute value</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2019-06</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>2019-07</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <td>2019-08</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <td>2019-09</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <td>2019-11</td>
+      <td>78</td>
+    </tr>
+    <tr>
+      <td>2019-12</td>
+      <td>88</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'evolution'</span><span class="p">,</span>
+  <span class="nx">dateCol</span><span class="p">:</span> <span class="s1">'DATE'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">evolutionType</span><span class="p">:</span> <span class="s1">'vsLastMonth'</span><span class="p">,</span>
+  <span class="nx">evolutionFormat</span><span class="p">:</span> <span class="s1">'abs'</span><span class="p">,</span>
+  <span class="nx">indexColumns</span><span class="p">:</span> <span class="p">[],</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>VALUE</th>
+      <th>VALUE_EVOL_ABS</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2019-06</td>
+      <td>79</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2019-07</td>
+      <td>81</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2019-08</td>
+      <td>77</td>
+      <td>-4</td>
+    </tr>
+    <tr>
+      <td>2019-09</td>
+      <td>75</td>
+      <td>-2</td>
+    </tr>
+    <tr>
+      <td>2019-11</td>
+      <td>78</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2019-12</td>
+      <td>88</td>
+      <td>10</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2-basic-configuration---evolution-in-percentage">Example 2: Basic configuration - evolution in percentage</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2019-06</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>2019-07</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <td>2019-08</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <td>2019-09</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <td>2019-11</td>
+      <td>78</td>
+    </tr>
+    <tr>
+      <td>2019-12</td>
+      <td>88</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'evolution'</span><span class="p">,</span>
+  <span class="nx">dateCol</span><span class="p">:</span> <span class="s1">'DATE'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">evolutionType</span><span class="p">:</span> <span class="s1">'vsLastMonth'</span><span class="p">,</span>
+  <span class="nx">evolutionFormat</span><span class="p">:</span> <span class="s1">'pct'</span><span class="p">,</span>
+  <span class="nx">indexColumns</span><span class="p">:</span> <span class="p">[],</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>VALUE</th>
+      <th>VALUE_EVOL_PCT</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2019-06</td>
+      <td>79</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2019-07</td>
+      <td>81</td>
+      <td>0.02531645569620253</td>
+    </tr>
+    <tr>
+      <td>2019-08</td>
+      <td>77</td>
+      <td>-0.04938271604938271</td>
+    </tr>
+    <tr>
+      <td>2019-09</td>
+      <td>75</td>
+      <td>-0.025974025974025976</td>
+    </tr>
+    <tr>
+      <td>2019-11</td>
+      <td>78</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2019-12</td>
+      <td>88</td>
+      <td>0.1282051282051282</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-3-error-on-duplicate-dates">Example 3: Error on duplicate dates</h4>
+
+<p>If ‘COUNTRY’ is not specified as index column, the computation will not be
+scoped by country. Then there are duplicate dates in the “DATE” columns which is
+prohibited.</p>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2014-12</td>
+      <td>France</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>France</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>France</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>France</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <td>2014-12</td>
+      <td>USA</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>USA</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>USA</td>
+      <td>73</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>USA</td>
+      <td>72</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'evolution'</span><span class="p">,</span>
+  <span class="nx">dateCol</span><span class="p">:</span> <span class="s1">'DATE'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">evolutionType</span><span class="p">:</span> <span class="s1">'vsLastYear'</span><span class="p">,</span>
+  <span class="nx">evolutionFormat</span><span class="p">:</span> <span class="s1">'abs'</span><span class="p">,</span>
+  <span class="nx">indexColumns</span><span class="p">:</span> <span class="p">[],</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+      <th>MY_EVOL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2014-12</td>
+      <td>France</td>
+      <td>79</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>France</td>
+      <td>81</td>
+      <td>Error …</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>France</td>
+      <td>77</td>
+      <td>Error …</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>France</td>
+      <td>75</td>
+      <td>Error …</td>
+    </tr>
+    <tr>
+      <td>2014-12</td>
+      <td>USA</td>
+      <td>74</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>USA</td>
+      <td>74</td>
+      <td>Error …</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>USA</td>
+      <td>73</td>
+      <td>Error …</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>USA</td>
+      <td>72</td>
+      <td>Error …</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-4-complete-configuration-with-index-columns">Example 4: Complete configuration with index columns</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2014-12</td>
+      <td>France</td>
+      <td>79</td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>France</td>
+      <td>81</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>France</td>
+      <td>77</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>France</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <td>2019-12</td>
+      <td>France</td>
+      <td>78</td>
+    </tr>
+    <tr>
+      <td>2020-12</td>
+      <td>France</td>
+      <td>88</td>
+    </tr>
+    <tr>
+      <td>2014-12</td>
+      <td>USA</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>USA</td>
+      <td>74</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>USA</td>
+      <td>73</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>USA</td>
+      <td>72</td>
+    </tr>
+    <tr>
+      <td>2018-11</td>
+      <td>USA</td>
+      <td>75</td>
+    </tr>
+    <tr>
+      <td>2020-12</td>
+      <td>USA</td>
+      <td>76</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'evolution'</span><span class="p">,</span>
+  <span class="nx">dateCol</span><span class="p">:</span> <span class="s1">'DATE'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">evolutionType</span><span class="p">:</span> <span class="s1">'vsLastYear'</span><span class="p">,</span>
+  <span class="nx">evolutionFormat</span><span class="p">:</span> <span class="s1">'abs'</span><span class="p">,</span>
+  <span class="nx">indexColumns</span><span class="p">:</span> <span class="p">[</span><span class="s1">'COUNTRY'</span><span class="p">],</span>
+  <span class="nx">newColumn</span><span class="p">:</span> <span class="s1">'MY_EVOL'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>DATE</th>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+      <th>MY_EVOL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2014-12</td>
+      <td>France</td>
+      <td>79</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>France</td>
+      <td>81</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>France</td>
+      <td>77</td>
+      <td>-4</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>France</td>
+      <td>75</td>
+      <td>-2</td>
+    </tr>
+    <tr>
+      <td>2019-12</td>
+      <td>France</td>
+      <td>78</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2020-12</td>
+      <td>France</td>
+      <td>88</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>2014-12</td>
+      <td>USA</td>
+      <td>74</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>2015-12</td>
+      <td>USA</td>
+      <td>74</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <td>2016-12</td>
+      <td>USA</td>
+      <td>73</td>
+      <td>-1</td>
+    </tr>
+    <tr>
+      <td>2017-12</td>
+      <td>USA</td>
+      <td>72</td>
+      <td>-1</td>
+    </tr>
+    <tr>
+      <td>2018-11</td>
+      <td>USA</td>
+      <td>75</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>2020-12</td>
+      <td>USA</td>
+      <td>76</td>
+      <td> </td>
     </tr>
   </tbody>
 </table>
@@ -5304,6 +5846,9 @@ specified <code class="highlighter-rouge">text</code>.</p>
 
 
 
+
+  
+  
 
   
   
