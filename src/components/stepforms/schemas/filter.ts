@@ -8,20 +8,49 @@ export default {
       enum: ['filter'],
     },
     condition: {
-      type: 'object',
-      properties: {
-        and: {
-          type: 'array',
-          minItems: 1,
-          title: 'And condition',
-          items: { $ref: '#/definitions/simpleCondition' },
-        },
-      },
-      required: ['and'],
-      additionalProperties: false,
+      $ref: '#/definitions/advancedCondition',
     },
   },
   definitions: {
+    advancedCondition: {
+      type: 'object',
+      oneOf: [
+        {
+          properties: {
+            and: {
+              type: 'array',
+              minItems: 1,
+              title: 'And condition',
+              items: {
+                oneOf: [
+                  { $ref: '#/definitions/simpleCondition' },
+                  { $ref: '#/definitions/advancedCondition' },
+                ],
+              },
+            },
+          },
+          required: ['and'],
+          additionalProperties: false,
+        },
+        {
+          properties: {
+            or: {
+              type: 'array',
+              minItems: 1,
+              title: 'Or condition',
+              items: {
+                oneOf: [
+                  { $ref: '#/definitions/simpleCondition' },
+                  { $ref: '#/definitions/advancedCondition' },
+                ],
+              },
+            },
+          },
+          required: ['or'],
+          additionalProperties: false,
+        },
+      ],
+    },
     simpleCondition: {
       type: 'object',
       properties: {
