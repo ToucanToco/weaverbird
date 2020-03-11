@@ -30,8 +30,8 @@ describe('Widget ReplaceWidget', () => {
       store: emptyStore,
       localVue,
       sync: false,
-      data: () => {
-        return { toReplace: ['foo', 'bar'] };
+      propsData: {
+        value: ['foo', 'bar'],
       },
     });
     const widgetWrappers = wrapper.findAll('inputtextwidget-stub');
@@ -39,15 +39,37 @@ describe('Widget ReplaceWidget', () => {
     expect(widgetWrappers.at(1).props().value).toEqual('bar');
   });
 
-  it('should emit "input" event on "toReplace" update', async () => {
+  it('should emit "input" event with correct updated values when input valueToReplace is updated', async () => {
     const wrapper = shallowMount(ReplaceWidget, {
+      propsData: {
+        value: ['yolo', 'bim'],
+      },
       store: emptyStore,
       localVue,
       sync: false,
     });
-    wrapper.setData({ toReplace: ['foo', 'bar'] });
     await localVue.nextTick();
-    expect(wrapper.emitted().input).toBeDefined();
-    expect(wrapper.emitted().input[1]).toEqual([['foo', 'bar']]);
+    wrapper
+      .findAll('InputTextWidget-stub')
+      .at(0)
+      .vm.$emit('input', 'foo');
+    expect(wrapper.emitted().input[1][0]).toEqual(['foo', 'bim']);
+  });
+
+  it('should emit "input" event with correct updated values when input newValueToReplace is updated', async () => {
+    const wrapper = shallowMount(ReplaceWidget, {
+      propsData: {
+        value: ['yolo', 'bim'],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+    await localVue.nextTick();
+    wrapper
+      .findAll('InputTextWidget-stub')
+      .at(1)
+      .vm.$emit('input', 'bar');
+    expect(wrapper.emitted().input[1][0]).toEqual(['yolo', 'bar']);
   });
 });

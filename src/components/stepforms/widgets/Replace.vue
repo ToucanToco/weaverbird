@@ -2,14 +2,14 @@
   <div class="widget-to-replace__container">
     <InputTextWidget
       id="valueToReplace"
-      v-model="toReplace[0]"
+      v-model="valueToReplace"
       placeholder="Value to replace"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
     />
     <InputTextWidget
       id="newValue"
-      v-model="toReplace[1]"
+      v-model="newValueToReplace"
       placeholder="New value"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
@@ -18,8 +18,7 @@
 </template>
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import _ from 'lodash';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import InputTextWidget from './InputText.vue';
 
@@ -42,13 +41,28 @@ export default class ReplaceWidget extends Vue {
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
-  toReplace: any[] = [...this.value];
+  created() {
+    this.update(this.value);
+  }
 
-  @Watch('toReplace', { immediate: true, deep: true })
-  onToReplaceChanged(newval: any[], oldval: any[]) {
-    if (!_.isEqual(newval, oldval)) {
-      this.$emit('input', this.toReplace);
-    }
+  get valueToReplace() {
+    return this.value[0];
+  }
+
+  set valueToReplace(newValue) {
+    this.update([newValue, this.newValueToReplace]);
+  }
+
+  get newValueToReplace() {
+    return this.value[1];
+  }
+
+  set newValueToReplace(newValue) {
+    this.update([this.valueToReplace, newValue]);
+  }
+
+  update(newValues: string[]) {
+    this.$emit('input', newValues);
   }
 }
 </script>
