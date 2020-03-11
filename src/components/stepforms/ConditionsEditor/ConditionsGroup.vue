@@ -93,15 +93,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-export type GenericFilterTree<ConditionType extends AbstractCondition> = {
-  conditions: ConditionType[];
-  groups: GenericFilterTree<ConditionType>[];
-  operator: ConditionOperator;
-};
-
-export type ConditionOperator = 'and' | 'or';
-export type AbstractCondition = any;
-export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
+import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
 
 @Component({
   name: 'ConditionsGroup',
@@ -242,26 +234,40 @@ $blue-extra-light: #f4f7fa;
 $grey-light-2: #eeeeee;
 
 $conditions-group-top-margin: 20px;
-$conditions-group-top-left-padding: 30px;
+$conditions-group-top-padding: 20px;
+$conditions-group-left-padding: 20px;
+$conditions-group-child-left-padding: 30px;
 $conditions-group-bottom-right-padding: 15px;
 $conditions-group-border-width: 1px;
 
 .conditions-group {
   position: relative;
-  padding-top: $conditions-group-top-left-padding;
-  padding-left: $conditions-group-top-left-padding;
+  padding-top: $conditions-group-top-padding;
   padding-bottom: $conditions-group-bottom-right-padding;
+}
+
+.conditions-group__child-group .conditions-group {
+  padding-left: $conditions-group-child-left-padding;
   padding-right: $conditions-group-bottom-right-padding;
 }
 
 .conditions-group--with-switch {
   padding-top: 40px;
+  padding-left: $conditions-group-left-padding;
+}
+
+.conditions-group__child-group .conditions-group--with-switch {
+  padding-left: $conditions-group-child-left-padding;
 }
 
 .conditions-group__switch {
-  left: 10px;
+  left: 0;
   position: absolute;
   top: 10px;
+}
+
+.conditions-group__child-group .conditions-group__switch {
+  left: 10px;
 }
 
 .conditions-group__switch-buttons {
@@ -374,7 +380,7 @@ $condition-row-border-width: 1px;
 
 .condition-row__content {
   flex: 1;
-  overflow: auto;
+  // overflow: auto;
 }
 
 .condition-row__delete {
@@ -411,7 +417,7 @@ $condition-row-border-width: 1px;
 
 .conditions-group__link {
   $link-width: $conditions-group-top-margin / 2 + 2 * $conditions-group-border-width +
-    $conditions-group-top-left-padding / 2;
+    $conditions-group-left-padding / 2;
 
   display: flex;
   flex-direction: column;
@@ -430,7 +436,7 @@ $condition-row-border-width: 1px;
 
   .conditions-group__link__top {
     // Position the middle link centered to the operator buttons
-    height: $conditions-group-top-margin + $conditions-group-top-left-padding / 1.5;
+    height: $conditions-group-top-margin + $conditions-group-top-padding;
   }
 
   .conditions-group__link__bottom {

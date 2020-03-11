@@ -13,6 +13,7 @@
     <div class="step-edit-form__empty" />
   </div>
 </template>
+
 <style lang="scss" scoped>
 @import '../../styles/_variables';
 

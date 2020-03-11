@@ -155,32 +155,32 @@ export default class FilterSimpleConditionWidget extends Vue {
 </script>
 <style lang="scss" scoped>
 .filter-form-simple-condition__container {
-  background-color: white;
   display: flex;
-  min-height: 45px;
   width: 100%;
 }
 
-.filter-form-simple-condition-column-input {
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 33%;
-}
-.filter-form-simple-condition-operator-input {
-  margin-right: 10px;
-  width: 33%;
+.widget-autocomplete__container,
+.widget-input-text__container {
+  margin: 0;
 }
 
+.filter-form-simple-condition-column-input,
+.filter-form-simple-condition-operator-input,
+.filter-form-simple-condition__container .widget-input-text__container,
 .filter-form-simple-condition__container .widget-input-text__container {
-  margin-bottom: 0px;
-  margin-right: 10px;
+  background-color: white;
+  margin: 4px;
+  margin-right: 0;
   width: 33%;
+
+  &:last-child {
+    margin-right: 4px;
+  }
 }
 
-.filter-form-simple-condition__container .widget-multiinputtext__container {
-  margin-bottom: 0px;
-  margin-right: 10px;
-  width: 33%;
+.multiselect__tags {
+  border-radius: 0;
+  border: none;
 }
 </style>
 

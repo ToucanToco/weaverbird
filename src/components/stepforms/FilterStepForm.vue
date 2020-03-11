@@ -1,21 +1,19 @@
 <template>
-  <div class="filter-form" :class="multipleConditionsClass">
+  <div class="filter-form">
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
-    <div class="filter-form-headers__container">
-      <div class="filter-form-header">Values in...</div>
-      <div class="filter-form-header">Must...</div>
-    </div>
-    <ListWidget
-      addFieldName="Add condition"
-      separatorLabel="and"
-      id="filterConditions"
-      v-model="conditions"
-      :defaultItem="defaultCondition"
-      :widget="widgetFilterSimpleCondition"
-      :automatic-new-field="false"
-      data-path=".condition.and"
-      :errors="errors"
-    />
+    <ConditionsEditor
+      :conditions-tree="conditionsTree"
+      @conditionsTreeUpdated="updateConditionsTree"
+    >
+      <template v-slot:default="slotProps">
+        <FilterSimpleConditionWidget
+          :value="slotProps.condition"
+          @input="slotProps.updateCondition"
+          :data-path="dataPath"
+          :errors="errors"
+        />
+      </template>
+    </ConditionsEditor>
     <StepFormButtonbar />
   </div>
 </template>
@@ -24,21 +22,27 @@
 import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
+import {
+  buildConditionsEditorTree,
+  buildFilterStepTree,
+  isFilterCombo,
+} from '@/components/stepforms/convert-filter-step-tree.ts';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
-import { FilterComboAnd, FilterSimpleCondition, FilterStep, isFilterComboAnd } from '@/lib/steps';
+import { FilterSimpleCondition, FilterStep, isFilterComboAnd } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
+import ConditionsEditor from './ConditionsEditor/ConditionsEditor.vue';
+import { AbstractFilterTree } from './ConditionsEditor/tree-types';
 import BaseStepForm from './StepForm.vue';
-import ListWidget from './widgets/List.vue';
 
 @StepFormComponent({
   vqbstep: 'filter',
   name: 'filter-step-form',
   components: {
+    ConditionsEditor,
     FilterSimpleConditionWidget,
-    ListWidget,
   },
 })
 export default class FilterStepForm extends BaseStepForm<FilterStep> {
@@ -74,32 +78,26 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }
   }
 
+  get dataPath() {
+    if (isFilterCombo(this.editedStep.condition)) {
+      return Object.keys(this.editedStep.condition)[0];
+    } else {
+      return '';
+    }
+  }
+
   get defaultCondition() {
     const cond: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };
     return cond;
   }
 
-  get conditions() {
-    if (isFilterComboAnd(this.editedStep.condition) && this.editedStep.condition.and.length) {
-      return this.editedStep.condition.and;
-    } else {
-      return [this.defaultCondition];
-    }
-  }
-
-  set conditions(newval) {
-    if (isFilterComboAnd(this.editedStep.condition)) {
-      this.editedStep.condition.and = [...newval];
-    }
-  }
-
-  get multipleConditionsClass() {
-    return {
-      'filter-form--multiple-conditions': this.conditions.length > 1,
-    };
+  get conditionsTree() {
+    return buildConditionsEditorTree(this.editedStep.condition);
   }
 
   submit() {
+    // FIXME !!!!
+    // This "if" works only for comboAnd, not for comboOr and simpleCondition, and not recursive for groups.
     if (isFilterComboAnd(this.editedStep.condition)) {
       for (const cond of this.editedStep.condition.and as FilterSimpleCondition[]) {
         const type = this.columnTypes[cond.column];
@@ -114,8 +112,15 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }
     this.$$super.submit();
   }
+
+  updateConditionsTree(newConditionsTree: AbstractFilterTree) {
+    // second arg specify if it's the root or not (because it's a recursive function)
+    const newFilterStepTree = buildFilterStepTree(newConditionsTree, true);
+    this.editedStep = newFilterStepTree;
+  }
 }
 </script>
+
 <style lang="scss" scoped>
 .filter-form-headers__container {
   display: flex;

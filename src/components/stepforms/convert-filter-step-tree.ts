@@ -1,49 +1,52 @@
-import { FilterComboAnd, FilterComboOr, FilterSimpleCondition } from '@/lib/steps';
+import {
+  FilterComboAnd,
+  FilterComboOr,
+  FilterSimpleCondition,
+  isFilterComboAnd,
+  isFilterComboOr,
+} from '@/lib/steps';
 
-import { AbstractFilterTree } from './ConditionsEditor/ConditionsGroup.vue';
+import { AbstractFilterTree, ConditionOperator } from './ConditionsEditor/tree-types';
 
-// export type GenericFilterTree<ConditionType extends AbstractCondition> = {
-//   conditions: ConditionType[];
-//   groups: GenericFilterTree<ConditionType>[];
-//   operator: ConditionOperator;
-// };
-// export type ConditionOperator = 'and' | 'or';
-// export type AbstractCondition = any;
-// export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
-
-export function isFilterStepGroup(
+export function isFilterCombo(
   groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
-) {
+): groupOrCondition is FilterComboAnd | FilterComboOr {
   // Can be undefined when a new row is added
-  if (groupOrCondition) {
-    return ['and', 'or'].includes(Object.keys(groupOrCondition)[0]);
-  } else {
-    return false;
-  }
+  return isFilterComboAnd(groupOrCondition) || isFilterComboOr(groupOrCondition);
 }
 
 export function buildConditionsEditorTree(
   groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
 ) {
-  const operator = isFilterStepGroup(groupOrCondition) ? Object.keys(groupOrCondition)[0] : '';
   const conditions: object[] = [];
   const groups: object[] = [];
 
-  if (isFilterStepGroup(groupOrCondition)) {
+  if (isFilterCombo(groupOrCondition)) {
+    let operator: ConditionOperator;
     const group = groupOrCondition;
-    group[operator].forEach((obj: any) =>
-      isFilterStepGroup(obj) ? groups.push(buildConditionsEditorTree(obj)) : conditions.push(obj),
+    let subElements;
+    if (isFilterComboAnd(group)) {
+      operator = 'and';
+      subElements = group[operator];
+    } else {
+      operator = 'or';
+      subElements = group[operator];
+    }
+    subElements.forEach((obj: any) =>
+      isFilterCombo(obj) ? groups.push(buildConditionsEditorTree(obj)) : conditions.push(obj),
     );
+    return {
+      operator: operator,
+      conditions: conditions,
+      groups: groups,
+    };
   } else {
-    const condition = groupOrCondition;
-    conditions.push(condition);
+    return {
+      operator: '',
+      conditions: [groupOrCondition],
+      groups: [],
+    };
   }
-
-  return {
-    operator: operator,
-    conditions: conditions,
-    groups: groups,
-  };
 }
 
 export function buildFilterStepTree(conditionGroup: AbstractFilterTree, isRoot: boolean) {

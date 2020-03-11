@@ -1,21 +1,19 @@
 import {
   buildConditionsEditorTree,
   buildFilterStepTree,
-  isFilterStepGroup,
+  isFilterCombo,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 
 describe('Convert filter step tree', () => {
-  describe('isFilterStepGroup', () => {
+  describe('isFilterCombo', () => {
     it('should return true when the passed object is a group', () => {
-      expect(
-        isFilterStepGroup({ or: [{ column: 'columnC', operator: 'eq', value: 'true' }] }),
-      ).toEqual(true);
+      expect(isFilterCombo({ or: [{ column: 'columnC', operator: 'eq', value: 'true' }] })).toEqual(
+        true,
+      );
     });
 
     it('should return true when the passed object is a condition', () => {
-      expect(isFilterStepGroup({ column: 'columnA', operator: 'eq', value: 'true' })).toEqual(
-        false,
-      );
+      expect(isFilterCombo({ column: 'columnA', operator: 'eq', value: 'true' })).toEqual(false);
     });
   });
 
@@ -155,7 +153,7 @@ describe('Convert filter step tree', () => {
       });
     });
 
-    it('should return a condition with operator', () => {
+    it('should return a condition with groups', () => {
       expect(
         buildFilterStepTree(
           {
@@ -212,7 +210,7 @@ describe('Convert filter step tree', () => {
                 ],
                 groups: [
                   {
-                    operator: 'blu',
+                    operator: 'and',
                     conditions: [
                       { column: 'columnE', operator: 'eq', value: 'true' },
                       { column: 'columnF', operator: 'eq', value: 'true' },
@@ -236,7 +234,7 @@ describe('Convert filter step tree', () => {
                 { column: 'columnC', operator: 'eq', value: 'true' },
                 { column: 'columnD', operator: 'eq', value: 'true' },
                 {
-                  blu: [
+                  and: [
                     { column: 'columnE', operator: 'eq', value: 'true' },
                     { column: 'columnF', operator: 'eq', value: 'true' },
                   ],
