@@ -40,7 +40,7 @@
         <slot :condition="condition" :updateCondition="updateCondition(rowIndex)" />
       </div>
       <i
-        v-if="hasMultipleRows"
+        v-if="conditions.length > 1"
         class="condition-row__delete far fa-trash-alt"
         @click="deleteRow(rowIndex)"
       />
@@ -101,7 +101,7 @@ import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree
 export default class ConditionsGroup extends Vue {
   @Prop({
     type: Object,
-    default: () => ({ operator: 'and', conditions: [], groups: [] }),
+    default: () => ({ operator: '', conditions: [], groups: [] }),
   })
   conditionsTree!: AbstractFilterTree;
 

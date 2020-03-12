@@ -16,12 +16,64 @@ describe('ConditionsGroup', () => {
     expect(wrapper.find('.conditions-group').classes()).not.toContain('conditions-group--root');
   });
 
+  it('should not display the trash button for a row when there is only one condition', () => {
+    const wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: {
+          operator: '',
+          conditions: [{ column: '', operator: 'eq', value: '' }],
+          groups: [],
+        },
+      },
+    });
+    expect(wrapper.find('.condition-row__delete').exists()).toBeFalsy();
+  });
+
+  it('should not display the trash button for a row when there is only one condition even if there are groups', () => {
+    const wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: {
+          operator: 'and',
+          conditions: [{ column: '', operator: 'eq', value: '' }],
+          groups: [
+            {
+              operator: 'or',
+              conditions: [
+                { column: '', operator: 'eq', value: '' },
+                { column: '', operator: 'eq', value: '' },
+              ],
+              groups: [],
+            },
+          ],
+        },
+      },
+    });
+    expect(wrapper.find('.condition-row__delete').exists()).toBeFalsy();
+  });
+
+  it('should display the trash button for a row when there is more than one condition', () => {
+    const wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: {
+          operator: 'and',
+          conditions: [
+            { column: '', operator: 'eq', value: '' },
+            { column: '', operator: 'eq', value: '' },
+          ],
+          groups: [],
+        },
+      },
+    });
+    expect(wrapper.find('.condition-row__delete').exists()).toBeTruthy();
+  });
+
   it('should have the class "conditions-group__switch-button--active" on the right switch button', () => {
     const wrapper = shallowMount(ConditionsGroup, {
       propsData: {
         conditionsTree: {
           operator: 'or',
           conditions: [undefined, undefined],
+          groups: [],
         },
       },
     });

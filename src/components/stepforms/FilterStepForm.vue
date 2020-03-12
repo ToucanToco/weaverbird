@@ -50,7 +50,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     type: Object,
     default: () => ({
       name: 'filter',
-      condition: { and: [{ column: '', value: '', operator: 'eq' }] },
+      condition: { column: '', value: '', operator: 'eq' },
     }),
   })
   initialStepValue!: FilterStep;
@@ -64,10 +64,10 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     // On creation, if a column is selected, use it to set "column" property of
     // the filter step
     if (this.isStepCreation && this.selectedColumns[0]) {
-      const condition = { and: [{ column: this.selectedColumns[0], value: '', operator: 'eq' }] };
+      const condition = { column: this.selectedColumns[0], value: '', operator: 'eq' };
       this.editedStep = {
         name: 'filter' as 'filter',
-        condition: condition as FilterComboAnd,
+        condition: condition as FilterSimpleCondition,
       };
     } else {
       // Otherwise, fallback on the default initial value

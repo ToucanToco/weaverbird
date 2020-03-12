@@ -8,7 +8,10 @@ export default {
       enum: ['filter'],
     },
     condition: {
-      $ref: '#/definitions/advancedCondition',
+      oneOf: [
+        { $ref: '#/definitions/simpleCondition' },
+        { $ref: '#/definitions/advancedCondition' },
+      ],
     },
   },
   definitions: {
