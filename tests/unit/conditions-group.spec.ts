@@ -309,6 +309,38 @@ describe('ConditionsGroup', () => {
       ]);
     });
 
+    it('should emit "conditionsTreeUpdated" with the new conditionTree and set the operator to "and" when clicking on "add row" button and the operator is an empty string', () => {
+      wrapper.setProps({
+        conditionsTree: {
+          operator: '',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+          ],
+          groups: [],
+        },
+      });
+      wrapper.find('.conditions-group__add-button--condition').trigger('click');
+      expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            undefined,
+          ],
+          groups: [],
+        },
+      ]);
+    });
+
     it('should emit "conditionsTreeUpdated" with the new conditionTree when clicking on "add group" button', () => {
       wrapper.find('.conditions-group__add-button--group').trigger('click');
       expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
@@ -337,6 +369,43 @@ describe('ConditionsGroup', () => {
                 },
               ],
             },
+            {
+              operator: 'and',
+              conditions: [undefined, undefined],
+              groups: [],
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('should emit "conditionsTreeUpdated" with the new conditionTree and set the operator to "and" when clicking on "add group" and the operator is an empty string', () => {
+      wrapper.setProps({
+        conditionsTree: {
+          operator: '',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+          ],
+          groups: [],
+        },
+      });
+      wrapper.find('.conditions-group__add-button--group').trigger('click');
+      expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
+      expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+        {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+          ],
+          groups: [
             {
               operator: 'and',
               conditions: [undefined, undefined],
@@ -511,5 +580,184 @@ describe('ConditionsGroup', () => {
         },
       ]);
     });
+  });
+
+  it('should set the operator to "and" when the operator is empty (when setOperatorIfNecessaryAndUpdateConditionTree is called)', () => {
+    const wrapper = shallowMount(ConditionsGroup);
+    const newConditionsTree = {
+      operator: '',
+      conditions: [
+        {
+          column: 'a',
+          comparison: 'eq',
+          value: 'toto',
+        },
+        {
+          column: 'b',
+          comparison: 'eq',
+          value: 'tutu',
+        },
+      ],
+      groups: [],
+    };
+    (wrapper.vm as any).setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
+    expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
+    expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+      {
+        operator: 'and',
+        conditions: [
+          {
+            column: 'a',
+            comparison: 'eq',
+            value: 'toto',
+          },
+          {
+            column: 'b',
+            comparison: 'eq',
+            value: 'tutu',
+          },
+        ],
+        groups: [],
+      },
+    ]);
+  });
+
+  it('should NOT set the operator to "and" when the operator is already defined (when setOperatorIfNecessaryAndUpdateConditionTree is called)', () => {
+    const conditionsTree = {
+      operator: 'or',
+      conditions: [
+        {
+          column: 'a',
+          comparison: 'eq',
+          value: 'toto',
+        },
+        {
+          column: 'b',
+          comparison: 'eq',
+          value: 'tutu',
+        },
+        {
+          column: 'c',
+          comparison: 'eq',
+          value: 'titi',
+        },
+      ],
+      groups: [],
+    };
+    wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: conditionsTree,
+      },
+    });
+
+    (wrapper.vm as any).setOperatorIfNecessaryAndUpdateConditionTree(conditionsTree);
+    expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
+    expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+      {
+        operator: 'or',
+        conditions: [
+          {
+            column: 'a',
+            comparison: 'eq',
+            value: 'toto',
+          },
+          {
+            column: 'b',
+            comparison: 'eq',
+            value: 'tutu',
+          },
+          {
+            column: 'c',
+            comparison: 'eq',
+            value: 'titi',
+          },
+        ],
+        groups: [],
+      },
+    ]);
+  });
+
+  it('should set the operator to an empty string when there is only one condition and no group (when resetOperatorIfNecessary is called)', async () => {
+    wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+          ],
+          groups: [],
+        },
+      },
+    });
+    await (wrapper.vm as any).resetOperatorIfNecessary();
+    expect(wrapper.emitted().conditionsTreeUpdated).toBeDefined();
+    expect(wrapper.emitted().conditionsTreeUpdated[0]).toEqual([
+      {
+        operator: '',
+        conditions: [
+          {
+            column: 'a',
+            comparison: 'eq',
+            value: 'toto',
+          },
+        ],
+        groups: [],
+      },
+    ]);
+  });
+
+  it('should NOT set the operator to an empty string when there is at least two conditions (when resetOperatorIfNecessary is called)', () => {
+    wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tutu',
+            },
+          ],
+          groups: [],
+        },
+      },
+    });
+    (wrapper.vm as any).resetOperatorIfNecessary();
+    expect(wrapper.emitted().conditionsTreeUpdated).toBeUndefined();
+  });
+
+  it('should NOT set the operator to an empty string when there is at least one group (when resetOperatorIfNecessary is called)', () => {
+    wrapper = shallowMount(ConditionsGroup, {
+      propsData: {
+        conditionsTree: {
+          operator: 'and',
+          conditions: [
+            {
+              column: 'a',
+              comparison: 'eq',
+              value: 'toto',
+            },
+          ],
+          groups: [
+            {
+              column: 'b',
+              comparison: 'eq',
+              value: 'tutu',
+            },
+          ],
+        },
+      },
+    });
+    (wrapper.vm as any).resetOperatorIfNecessary();
+    expect(wrapper.emitted().conditionsTreeUpdated).toBeUndefined();
   });
 });

@@ -139,8 +139,11 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       groups: newGroups,
-    };
-    this.emitUpdatedConditionTree(newConditionsTree);
+    } as AbstractFilterTree;
+    // When there is only one condition, the operator is an empty string.
+    // Set the operator to 'and' when a group is added.
+
+    this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
   }
 
   addRow() {
@@ -148,8 +151,9 @@ export default class ConditionsGroup extends Vue {
       ...this.conditionsTree,
       // Pass undefined value to force ConditionForm to use its default condition prop value
       conditions: [...this.conditions, undefined],
-    };
-    this.emitUpdatedConditionTree(newConditionsTree);
+    } as AbstractFilterTree;
+
+    this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
   }
 
   deleteGroup(groupIndex: number) {
@@ -159,9 +163,10 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       groups: newGroups,
-    };
+    } as AbstractFilterTree;
 
     this.emitUpdatedConditionTree(newConditionsTree);
+    this.resetOperatorIfNecessary();
   }
 
   deleteRow(rowIndex: number) {
@@ -171,9 +176,10 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       conditions: newConditions,
-    };
+    } as AbstractFilterTree;
 
     this.emitUpdatedConditionTree(newConditionsTree);
+    this.resetOperatorIfNecessary();
   }
 
   isLastRow(rowIndex: number) {
@@ -186,6 +192,33 @@ export default class ConditionsGroup extends Vue {
     return groupIndex === this.groups.length - 1;
   }
 
+  async resetOperatorIfNecessary() {
+    // await the re-render to received the updated tree (emitted + received in props)
+    await this.$nextTick();
+
+    // reset the operator to an empty string when there's only one condition left
+    if (this.conditions.length === 1 && this.groups.length === 0) {
+      const newConditionsTree = {
+        ...this.conditionsTree,
+        operator: '',
+      } as AbstractFilterTree;
+      this.emitUpdatedConditionTree(newConditionsTree);
+    }
+    return;
+  }
+
+  setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree: AbstractFilterTree) {
+    // When there is only one condition and no group, the operator is an empty string (cf resetOperatorIfNecessary).
+    // Set the operator to 'and' when the condition is no longer alone.
+    if (this.operator === '') {
+      newConditionsTree = {
+        ...newConditionsTree,
+        operator: 'and',
+      } as AbstractFilterTree;
+    }
+    this.emitUpdatedConditionTree(newConditionsTree);
+  }
+
   updateCondition(rowIndex: number) {
     return (c: AbstractCondition) => {
       const newConditions = [...this.conditions];
@@ -194,7 +227,7 @@ export default class ConditionsGroup extends Vue {
       const newConditionsTree = {
         ...this.conditionsTree,
         conditions: newConditions,
-      };
+      } as AbstractFilterTree;
 
       this.emitUpdatedConditionTree(newConditionsTree);
     };
@@ -207,7 +240,7 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       groups: newGroups,
-    };
+    } as AbstractFilterTree;
 
     this.emitUpdatedConditionTree(newConditionsTree);
   }
@@ -216,7 +249,7 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       operator: newOperator,
-    };
+    } as AbstractFilterTree;
     this.emitUpdatedConditionTree(newConditionsTree);
   }
 

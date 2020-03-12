@@ -12,7 +12,11 @@ export function isFilterCombo(
   groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
 ): groupOrCondition is FilterComboAnd | FilterComboOr {
   // Can be undefined when a new row is added
-  return isFilterComboAnd(groupOrCondition) || isFilterComboOr(groupOrCondition);
+  if (groupOrCondition) {
+    return isFilterComboAnd(groupOrCondition) || isFilterComboOr(groupOrCondition);
+  } else {
+    return false;
+  }
 }
 
 export function buildConditionsEditorTree(
