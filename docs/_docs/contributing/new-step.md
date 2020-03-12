@@ -13,12 +13,16 @@ Designing a new pipeline step generally consists in doing the following changes:
   - define a "human readable" label for this step (e.g. "duplicate column 'foo'")
   - define which fields of the step supports interpolation
 
-- implement the ui part
+- implement the UI part
+  - implement a form to configure the step
+  - make it accessible through top bar widgets and/or columns contextual menus
+  - make it accessible through search
+
 - add documentation
   - add UI documentation
-  - add technical documentatino
+  - add technical documentation
 
-- update the ChangeLog
+- update the changelog
 
 # Implementation details
 
@@ -386,6 +390,44 @@ Again, this is pretty straightforward. We use our step fields as `v-model` for o
 form inputs. Please make sure to use the `data-path` property on your inputs to
 specify which step property the input is associated to. This will allow errors
 returned by `ajv` to be associated to the corresponding input in the UI.
+
+### Make it available through the UI
+
+To create this new step, users should be able to open the form you just implemented
+from the UI. Steps creation is possible either from the buttons on top of the data
+table (action bar), either from the contextual menus of each column of the table.
+The step should also be found in the search bar.
+
+#### In the action bar
+
+Actions are defined in `src/components/constants.ts`.
+Add to `ACTION_CATEGORIES` an object with the `name` of your new step and its
+action `label` into the adequate category.
+
+### In columns contextual menus
+
+If your step is directly related to one column, it's a good idea to access it through
+its contextual menu. To achieve this, add your action directly in the template of
+`src/components/ActionMenu.vue`:
+```vue
+<template>
+  <popover :active="isActive" :align="alignLeft" bottom>
+    <div class="action-menu__body">
+      <div class="action-menu__section">
+        ...
+        <div class="action-menu__option" @click="createStep('step-name')">Action label</div>
+        ...
+      </div>
+    </div>
+  </popover>
+</template>
+```
+
+#### In the search bar
+
+Searchable actions are defined in the `SEARCH_ACTION` constant in `src/components/constants.ts`.
+All actions from `ACTION_CATEGORIES` are imported. You should add in `type: 'Others actions'`
+any action not defined in `ACTION_CATEGORIES`, such as contextual ones.
 
 ## Adding documentation
 
