@@ -115,7 +115,7 @@ export const SEARCH_ACTION: groupActions[] = [
     actions: [...ACTION_CATEGORIES.combine],
   },
   {
-    type: 'Others action',
+    type: 'Others actions',
     actions: [
       { name: 'convert', label: 'Convert column data type' },
       { name: 'duplicate', label: 'Duplicate column' },
