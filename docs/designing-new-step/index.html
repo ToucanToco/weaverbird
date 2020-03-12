@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en-US">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+
+    <link rel="shortcut icon" href="/favicon.ico?1">
+    <!-- Begin Jekyll SEO tag v2.5.0 -->
+<title>Designing a new step | Weaverbird</title>
+<meta name="generator" content="Jekyll v3.8.4" />
+<meta property="og:title" content="Designing a new step" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="General principles" />
+<meta property="og:description" content="General principles" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/designing-new-step/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/designing-new-step/" />
+<meta property="og:site_name" content="Weaverbird" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2020-03-12T21:19:26+01:00" />
+<script type="application/ld+json">
+{"url":"https://weaverbird.toucantoco.com/docs/designing-new-step/","headline":"Designing a new step","datePublished":"2020-03-12T21:19:26+01:00","dateModified":"2020-03-12T21:19:26+01:00","description":"General principles","@type":"WebPage","@context":"http://schema.org"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/designing-new-step/">
+    <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
+</head>
+
+
+<body>
+
+    <nav class="navbar navbar-default navbar-fixed-top">
+    <div class="container navbar-container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+            <a class="navbar-brand" href="/">Weaverbird</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li  class="active" ><a href="/docs/steps/">Docs</a></li>
+                <!-- remove for the moment
+                  <li ><a href="">Blog</a></li> -->
+                <li ><a href="/about">About</a></li>
+            </ul>
+            <div class="navbar-right">
+                <form class="navbar-form navbar-left">
+                    <div class="form-group has-feedback">
+                        <input id="search-box" type="search" class="form-control" placeholder="Search...">
+                        <i class="fa fa-search form-control-feedback"></i>
+                    </div>
+                </form>
+                <ul class="nav navbar-nav">
+                    <li><a href="https://github.com/ToucanToco/weaverbird"><i class="fa fa-github" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+
+    <div class="page-content">
+        <div class="wrapper">
+            <div class="container">
+    <div class="row">
+        <div class="col-md-4">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-1" aria-expanded="false" aria-controls="collapse-1">
+            User interface
+          </a>
+        </h4>
+      </div>
+      
+      
+      <div class="panel-collapse collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
+        <div class="list-group">
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/general-principles/">General Principles</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/text/">Add text column</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/aggregate/">Aggregate</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/append/">Append</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/argmax/">Argmax</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/argmin/">Argmin</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/concatenate/">Concatenate columns</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/convert/">Convert</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/fromdate/">Convert date to text</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/todate/">Convert text to date</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/cumsum/">Cumulated sum</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/custom/">Cutom step</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/delete/">Delete column(s)</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/duplicate/">Duplicate</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/evolution/">Evolution</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/dateextract/">Extract date property</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/substring/">Extract substring</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/fillna/">Fill null</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/filter/">Filter</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/formula/">Formula</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/uniquegroups/">Get unique groups/values</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/rollup/">Hierarchical rollup</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/join/">Join</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/select/">Keep column(s)</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/percentage/">Percentage</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/pivot/">Pivot</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/rename/">Rename</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/replace/">Replace</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/sort/">Sort</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/split/">Split column</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/lowercase/">To lowercase</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/uppercase/">To uppercase</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/top/">Top N rows</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/unpivot/">Unpivot</a>
+            <!--  -->
+          
+        </div>
+      </div>
+    </div>
+  
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse-2" aria-expanded="false" aria-controls="collapse-2">
+            Technical documentation
+          </a>
+        </h4>
+      </div>
+      
+      
+      <div class="panel-collapse collapse" id="collapse-2" role="tabpanel" aria-label="Side Navigation">
+        <div class="list-group">
+          
+            
+            
+            <!-- 
+              <a class="list-group-item " href="https://weaverbird.toucantoco.com">index</a>
+             -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/steps/">Steps</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/new-step/"></a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/known_limitations/">Known limitations</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/translators/">Translators</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/variables/">Variables</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/code-editor/">Custom code editor</a>
+            <!--  -->
+          
+        </div>
+      </div>
+    </div>
+  
+</div>
+
+        </div>
+
+        <div class="col-md-8">
+            <div id="markdown-content-container"><h1 id="general-principles">General principles</h1>
+
+<p>Designing a new pipeline step generally consists in doing the following changes:</p>
+
+<ul>
+  <li>implement the pipeline / translation logic itself in the <code class="highlighter-rouge">lib</code> directory
+    <ul>
+      <li>define the step interface</li>
+      <li>implement a translation function for all supported backends</li>
+      <li>define a “human readable” label for this step (e.g. “duplicate column ‘foo’”)</li>
+      <li>define which fields of the step supports interpolation</li>
+    </ul>
+  </li>
+  <li>implement the UI part
+    <ul>
+      <li>implement a form to configure the step</li>
+      <li>make it accessible through top bar widgets and/or columns contextual menus</li>
+      <li>make it accessible through search</li>
+    </ul>
+  </li>
+  <li>add documentation
+    <ul>
+      <li>add UI documentation</li>
+      <li>add technical documentation</li>
+    </ul>
+  </li>
+  <li>update the changelog</li>
+</ul>
+
+<h1 id="implementation-details">Implementation details</h1>
+
+<p>In the rest of this documentation, we’ll implement a dummy <code class="highlighter-rouge">ColumnSumStep</code> that
+would sum two given columns and output the result in a third column. We’ll skip
+the unit tests but of course, any PR without tests will be dismissed :).</p>
+
+<h2 id="implementing-a-new-step-logic">Implementing a new step logic</h2>
+
+<h3 id="defining-the-step-interface">Defining the step interface</h3>
+
+<p>Step types are defined in <code class="highlighter-rouge">src/lib/steps.ts</code> through typescript types. Our
+<code class="highlighter-rouge">ColumnSumStep</code> needs the name of the two input columns and a name for the
+output one. This could be implemented as follows:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="nx">type</span> <span class="nx">ColumnSumStep</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s1">'columnsum'</span><span class="p">,</span>
+  <span class="na">column1</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">column2</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+  <span class="nl">newColumn</span><span class="p">:</span> <span class="nx">string</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>A few things are worth noticing here:</p>
+
+<ul>
+  <li>
+    <p>we will need the TypeScript type in other files so we’ll need to <code class="highlighter-rouge">export</code> it,</p>
+  </li>
+  <li>
+    <p><em>weaverbird</em> uses the <a href="https://www.typescriptlang.org/docs/handbook/advanced-types.html#discriminated-unions">discriminated unions
+pattern</a>
+so the <code class="highlighter-rouge">name</code> property is mandatory and should be unique amongst step types.
+Furthermore, <strong>it has to be a valid typescript identifier name</strong> since it will
+be used to match some method names later,</p>
+  </li>
+  <li>
+    <p>we keep the type definitions alphabetically sorted in the <code class="highlighter-rouge">steps.ts</code> module.</p>
+  </li>
+</ul>
+
+<p>We’ll also need to extend the <code class="highlighter-rouge">PipelineStep</code> union type whose role is to encompass
+all possible step types:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+<span class="k">export</span> <span class="nx">type</span> <span class="nx">PipelineStep</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nx">AddTextColumnStep</span>
+  <span class="c1">// […]</span>
+  <span class="o">|</span> <span class="nx">ArgminStep</span>
+  <span class="o">|</span> <span class="nx">ColumnSumStep</span> <span class="c1">// &lt;- add our new step definition here</span>
+  <span class="o">|</span> <span class="nx">ConcatenateStep</span>
+  <span class="c1">// […]</span>
+</code></pre></div></div>
+
+<h3 id="implementing-a-translation-function-for-all-supported-backends">Implementing a translation function for all supported backends</h3>
+
+<p>At this point, the typescript should be invalid since <em>weaverbird</em> provides a
+few base classes that <strong>must</strong> provide implementation methods for each step type
+defined in the <code class="highlighter-rouge">PipelineStep</code> union type. For reference, the <code class="highlighter-rouge">StepMatcher</code> type
+in the <code class="highlighter-rouge">src/lib/matchers.ts</code> module is the one in charge to enforce this from a
+type system point of view. Since we’ve just added a new <code class="highlighter-rouge">ColumnSumStep</code> to the
+<code class="highlighter-rouge">PipelineStep</code> union type, all classes implementing the <code class="highlighter-rouge">StepMatcher</code> type
+won’t be valid anymore.</p>
+
+<p>The first things we’ll be implementing at this point are backend translation
+methods, that is methods responsible for translating a step with the
+<code class="highlighter-rouge">ColumnSumType</code> into valid instructions for the supported output backends (e.g.
+<code class="highlighter-rouge">mongo3.6</code>).</p>
+
+<p>Each backend translation class extends the <code class="highlighter-rouge">BaseTranslator</code> class in the
+<code class="highlighter-rouge">src/lib/translators/base.ts</code> module. This base class is a kind of abstract
+base class for all backend translator classes. The default is to declare our
+new step as “unsupported” so that only backends that actually do support the
+step will need to provide a translation implementation.</p>
+
+<p>We therefore start by adding the following code in the <code class="highlighter-rouge">BaseTranslator</code> class
+(we’ll try to keep things alphabetically sorted here too):</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="kd">class</span> <span class="nx">BaseTranslator</span> <span class="kr">implements</span> <span class="nx">StepMatcher</span><span class="o">&lt;</span><span class="nx">OutputStep</span><span class="o">&gt;</span> <span class="p">{</span>
+
+  <span class="c1">// […]</span>
+  <span class="p">@</span><span class="nd">unsupported</span>
+  <span class="nx">columnsum</span><span class="p">(</span><span class="na">step</span><span class="p">:</span> <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">.</span><span class="nx">ColumnSumStep</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{}</span>
+  <span class="c1">// […]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The name of the method <strong>must</strong> be the same as the step name.</p>
+
+<p>Then, we’ll add an implementation for each supported backend, here mongo only.
+In <code class="highlighter-rouge">src/translators/mongo.ts</code>, we’ll add something like:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">export</span> <span class="kd">class</span> <span class="nx">Mongo36Translator</span> <span class="kd">extends</span> <span class="nx">BaseTranslator</span> <span class="p">{</span>
+  <span class="c1">// […]</span>
+  <span class="nx">columnsum</span><span class="p">(</span><span class="nx">step</span><span class="p">:</span>  <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">.</span><span class="nx">ColumnSumStep</span><span class="o">&gt;</span><span class="p">):</span> <span class="nx">MongoStep</span><span class="p">[]</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span>
+      <span class="na">$addFields</span><span class="p">:{</span>
+        <span class="p">[</span><span class="nx">step</span><span class="p">.</span><span class="nx">newcolumn</span><span class="p">]:</span> <span class="p">{</span>
+          <span class="na">$sum</span><span class="p">:</span> <span class="p">[</span> <span class="nx">$$</span><span class="p">(</span><span class="nx">step</span><span class="p">.</span><span class="nx">column1</span><span class="p">),</span> <span class="nx">$$</span><span class="p">(</span><span class="nx">step</span><span class="p">.</span><span class="nx">column2</span><span class="p">)</span> <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">};</span>
+  <span class="p">}</span>
+</code></pre></div></div>
+
+<p>Note: since the <code class="highlighter-rouge">Mongo40Translator</code> class extends the <code class="highlighter-rouge">Mongo36Translator</code> one,
+it will support our new step for free.</p>
+
+<h3 id="defining-a-human-readable-label-for-your-step">Defining a human readable label for your step</h3>
+
+<p>A labeller is the logical component that provide human readable label for a
+given step (e.g. <code class="highlighter-rouge">{ name: "duplicate", column: "foo", new_column_name: "bar" }</code>
+will be labelled <code class="highlighter-rouge">Duplicate "foo" in "bar"</code>). The graphical representation of
+the pipeline will use it to make the transformation easier to understand.</p>
+
+<p>As we did for the translator, we have to provide an implementation for our new
+step in the <code class="highlighter-rouge">StepLabeller</code> class of the <code class="highlighter-rouge">src/lib/labeller.ts</code> module.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">StepLabeller</span> <span class="kr">implements</span> <span class="nx">StepMatcher</span><span class="o">&lt;</span><span class="nx">string</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="c1">// […]</span>
+  <span class="nx">columnsum</span><span class="p">(</span><span class="na">step</span><span class="p">:</span>  <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">.</span><span class="nx">ColumnSumStep</span><span class="o">&gt;</span><span class="p">):</span> <span class="nx">MongoStep</span><span class="p">[]</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="s2">`Sum columns "</span><span class="p">${</span><span class="nx">step</span><span class="p">.</span><span class="nx">column1</span><span class="p">}</span><span class="s2">" and "</span><span class="p">${</span><span class="nx">step</span><span class="p">.</span><span class="nx">column2</span><span class="p">}</span><span class="s2">" into "</span><span class="p">${</span><span class="nx">step</span><span class="p">.</span><span class="nx">newColumn</span><span class="p">}</span><span class="s2">"`</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="c1">// […]</span>
+</code></pre></div></div>
+
+<h3 id="implementing-interpolation">Implementing interpolation</h3>
+
+<p>Again, this boils down to implementing a specific method, this time in the
+<code class="highlighter-rouge">PipelineInterpolator</code> class of the <code class="highlighter-rouge">src/lib/templating.ts</code> module.</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">class</span> <span class="nx">StepLabeller</span> <span class="kr">implements</span> <span class="nx">StepMatcher</span><span class="o">&lt;</span><span class="nx">string</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="c1">// […]</span>
+  <span class="nx">columnsum</span><span class="p">(</span><span class="na">step</span><span class="p">:</span>  <span class="nx">Readonly</span><span class="o">&lt;</span><span class="nx">S</span><span class="p">.</span><span class="nx">ColumnSumStep</span><span class="o">&gt;</span><span class="p">):</span> <span class="nx">MongoStep</span><span class="p">[]</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="p">{</span> <span class="p">...</span><span class="nx">step</span> <span class="p">};</span>
+  <span class="p">}</span>
+  <span class="c1">// […]</span>
+</code></pre></div></div>
+
+<p>If no interpolation is supported, you just have to return a copy of the input
+step. Otherwise, you’ll need to handle it, most probably by calling the
+<code class="highlighter-rouge">_interpolate</code> helper. You can take the <code class="highlighter-rouge">aggregate</code> step as an example.</p>
+
+<h2 id="implementing-a-new-step-form">Implementing a new step form</h2>
+
+<h3 id="define-the-jsonschema-for-your-new-step">Define the JSONSchema for your new step</h3>
+
+<p>We use <a href="https://json-schema.org/">JSONSchema</a> and the <a href="https://github.com/epoberezkin/ajv">ajv
+library</a> to validate the user input for the
+step.</p>
+
+<p>Our JSONSchema files are defined as TypeScript modules in the
+<code class="highlighter-rouge">src/components/stepforms/schemas</code> and export a default json schema definition.
+For our <code class="highlighter-rouge">ColumnSumStep</code>, we will create the following
+<code class="highlighter-rouge">src/components/stepforms/schemas/columnsum.ts</code> module:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">addNotInColumnNamesConstraint</span><span class="p">,</span> <span class="nx">StepFormType</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'./utils'</span><span class="p">;</span>
+
+<span class="kd">const</span> <span class="nx">schema</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="na">$schema</span><span class="p">:</span> <span class="s1">'http://json-schema.org/draft-07/schema#'</span><span class="p">,</span>
+  <span class="na">title</span><span class="p">:</span> <span class="s1">'Sum columns step'</span><span class="p">,</span>
+  <span class="na">type</span><span class="p">:</span> <span class="s1">'object'</span><span class="p">,</span>
+  <span class="na">properties</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">name</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
+      <span class="na">enum</span><span class="p">:</span> <span class="p">[</span><span class="s1">'columnsum'</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="na">column1</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
+      <span class="na">minLength</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s1">'Column1'</span><span class="p">,</span>
+      <span class="na">description</span><span class="p">:</span> <span class="s1">'First input column'</span><span class="p">,</span>
+      <span class="na">attrs</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">placeholder</span><span class="p">:</span> <span class="s1">'Enter a column'</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="na">column2</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
+      <span class="na">minLength</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s1">'Column2'</span><span class="p">,</span>
+      <span class="na">description</span><span class="p">:</span> <span class="s1">'Second input column'</span><span class="p">,</span>
+      <span class="na">attrs</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">placeholder</span><span class="p">:</span> <span class="s1">'Enter a column'</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="na">newColumn</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">type</span><span class="p">:</span> <span class="s1">'string'</span><span class="p">,</span>
+      <span class="na">minLength</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">title</span><span class="p">:</span> <span class="s1">'Output column name'</span><span class="p">,</span>
+      <span class="na">description</span><span class="p">:</span> <span class="s1">'Output column name'</span>
+      <span class="na">attrs</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">placeholder</span><span class="p">:</span> <span class="s1">'Enter a column name'</span><span class="p">,</span>
+      <span class="p">},</span>
+    <span class="p">},</span>
+  <span class="p">},</span>
+  <span class="na">required</span><span class="p">:</span> <span class="p">[</span><span class="s1">'name'</span><span class="p">,</span> <span class="s1">'column1'</span><span class="p">,</span> <span class="s1">'column2'</span><span class="p">,</span> <span class="s1">'newColumn'</span><span class="p">],</span>
+  <span class="na">additionalProperties</span><span class="p">:</span> <span class="kc">false</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">export</span> <span class="k">default</span> <span class="kd">function</span> <span class="nx">buildSchema</span><span class="p">(</span><span class="nx">form</span><span class="p">:</span> <span class="nx">StepFormType</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="nx">addNotInColumnNamesConstraint</span><span class="p">(</span><span class="nx">schema</span><span class="p">,</span> <span class="s1">'newColumn'</span><span class="p">,</span> <span class="nx">form</span><span class="p">.</span><span class="nx">columnNames</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>If you know JSONSchema, things should be pretty straightforward and easy to
+understand.  If not, it should still not be hard to grasp most of the concepts:
+for each step property, including <code class="highlighter-rouge">name</code>, we define the field type, some
+metadata such as title and description as well as some constraints that should
+be checked on form submission and will ensure that data is correct. When a
+submitted step is not valid, the <code class="highlighter-rouge">ajv</code> library outputs errors that are
+automatically reported in the UI.</p>
+
+<p>The only real specific constraint here comes from the usage of
+<code class="highlighter-rouge">addNotInColumNamesConstraint</code> which is a helper that takes an input schema, a
+column name and the existing column names.  This helper ensures that this
+column name doesn’t exist yet in order to avoid overriding and existing column.
+This is a check that you’ll surely want to perform on any new column that your
+step will create (i.e. <code class="highlighter-rouge">newColumn</code> in our specific case).</p>
+
+<p>To register this new schema, you’ll need to update the
+<code class="highlighter-rouge">src/components/stepforms/schemas/index.ts</code> module:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// […]</span>
+<span class="k">import</span> <span class="nx">argminSchema</span> <span class="k">from</span> <span class="s1">'./argmin'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">columnsumSchema</span> <span class="k">from</span> <span class="s1">'./columnsum'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">concatenateBuildSchema</span> <span class="k">from</span> <span class="s1">'./concatenate'</span><span class="p">;</span>
+<span class="c1">// […]</span>
+
+
+<span class="kd">const</span> <span class="nx">factories</span><span class="p">:</span> <span class="p">{</span> <span class="p">[</span><span class="nx">stepname</span><span class="p">:</span> <span class="nx">string</span><span class="p">]:</span> <span class="nx">buildSchemaType</span> <span class="p">}</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1">// […]</span>
+  <span class="na">argmin</span><span class="p">:</span> <span class="nx">argminSchema</span><span class="p">,</span>
+  <span class="na">columnsum</span><span class="p">:</span> <span class="nx">columnsumSchema</span><span class="p">,</span>
+  <span class="na">concatenate</span><span class="p">:</span> <span class="nx">concatenateBuildSchema</span><span class="p">,</span>
+  <span class="c1">// […]</span>
+</code></pre></div></div>
+
+<p>The property name in the <code class="highlighter-rouge">factories</code> object <strong>must</strong> match exactly the step’s name.</p>
+
+<h3 id="implementing-the-form">Implementing the form</h3>
+
+<p>Chances are that you’ll want to reuse the standard step form layout (i.e. with
+a title, an <code class="highlighter-rouge">ok</code> and <code class="highlighter-rouge">back</code> button, etc.). To do that, you can leverage a few
+components and base classes provided:</p>
+
+<ul>
+  <li>
+    <p><code class="highlighter-rouge">@/components/stepforms/StepFormHeader.vue</code> is the component that generates a
+standard step form header bar. It should be fed with a <code class="highlighter-rouge">title</code> and <code class="highlighter-rouge">stepName</code>
+prop. Furthermore, you can edit the back button behaviour with the
+<code class="highlighter-rouge">cancelEdition</code> method of your component. The default is in the <code class="highlighter-rouge">StepForm</code>
+base class.</p>
+
+    <p><img src="/img/StepFormHeader.png" alt="StepFormHeader" /></p>
+
+    <p>Example:</p>
+
+    <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">StepFormHeader</span> <span class="p">:</span><span class="nx">stepName</span><span class="o">=</span><span class="s2">"Filter Step"</span> <span class="p">:</span><span class="nx">title</span><span class="o">=</span><span class="s2">"title"</span> <span class="o">/&gt;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">@/components/stepforms/StepFormButtonBar.vue</code> is the component that
+generates a standard step form button bar (<em>submit</em> / <em>errors</em>). You can edit
+the submit button behavior with the <code class="highlighter-rouge">submit</code> method of your component. The
+default is in the base class <code class="highlighter-rouge">StepForm</code>.</p>
+
+    <p><img src="/img/StepFormButtonbar.png" alt="StepFormButtonbar" /></p>
+
+    <p>Example:</p>
+
+    <div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;</span><span class="nx">StepFormButtonbar</span> <span class="o">/&gt;</span>
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>Between those two elements should lie the list on inputs (<em>text inputs</em>,
+<em>autocomplete</em>. etc.) that your form wil need.</p>
+
+<p>In most cases, you’ll want to use the <code class="highlighter-rouge">StepForm</code> component that is defined in
+<code class="highlighter-rouge">@/components/stepforms/StepForm.vue</code>. This component will provide default
+wiring for the most common logic (e.g. form validation).</p>
+
+<p>Here could be a step form implementation:</p>
+
+<div class="language-typescript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">Prop</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'vue-property-decorator'</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="p">{</span> <span class="nx">StepFormComponent</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@/components/formlib'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">ColumnPicker</span> <span class="k">from</span> <span class="s1">'@/components/stepforms/ColumnPicker.vue'</span><span class="p">;</span>
+<span class="k">import</span> <span class="nx">InputTextWidget</span> <span class="k">from</span> <span class="s1">'@/components/stepforms/widgets/InputText.vue'</span><span class="p">;</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">ColumnSumStep</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'@/lib/steps'</span><span class="p">;</span>
+
+<span class="k">import</span> <span class="nx">BaseStepForm</span> <span class="k">from</span> <span class="s1">'./StepForm.vue'</span><span class="p">;</span>
+
+<span class="p">@</span><span class="nd">StepFormComponent</span><span class="p">({</span>
+  <span class="na">vqbstep</span><span class="p">:</span> <span class="s1">'columnsum'</span><span class="p">,</span>
+  <span class="na">name</span><span class="p">:</span> <span class="s1">'columnsum-step-form'</span><span class="p">,</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nx">ColumnPicker</span><span class="p">,</span>
+    <span class="nx">InputTextWidget</span><span class="p">,</span>
+  <span class="p">},</span>
+<span class="p">})</span>
+<span class="k">export</span> <span class="k">default</span> <span class="kd">class</span> <span class="nx">ColumnSumForm</span> <span class="kd">extends</span> <span class="nx">BaseStepForm</span><span class="o">&lt;</span><span class="nx">ColumnSumStep</span><span class="o">&gt;</span> <span class="p">{</span>
+  <span class="p">@</span><span class="nd">Prop</span><span class="p">({</span> <span class="na">type</span><span class="p">:</span> <span class="nb">Object</span><span class="p">,</span> <span class="na">default</span><span class="p">:</span> <span class="p">()</span> <span class="o">=&gt;</span> <span class="p">({</span> <span class="na">name</span><span class="p">:</span> <span class="s1">'columnsun'</span><span class="p">,</span> <span class="na">column1</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="na">column2</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="na">newColumn</span><span class="p">:</span> <span class="s1">''</span> <span class="p">})</span> <span class="p">})</span>
+  <span class="nx">initialStepValue</span><span class="o">!</span><span class="p">:</span> <span class="nx">ColumnSumStep</span><span class="p">;</span>
+
+  <span class="nx">readonly</span> <span class="na">title</span><span class="p">:</span> <span class="nx">string</span> <span class="o">=</span> <span class="s1">'Sum columns'</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Most of the code above is just a boilerplate with lots of imports but here are
+the few important things you should pay attention to:</p>
+
+<ul>
+  <li>
+    <p>the <code class="highlighter-rouge">@StepFormComponent</code> decorator will register your form component and
+associate it to the step name defined in the <code class="highlighter-rouge">vqbstep</code> property (i.e.
+<code class="highlighter-rouge">columnsum</code> in our
+case),</p>
+  </li>
+  <li>
+    <p>you should extend <code class="highlighter-rouge">BaseStepForm</code> that provides some standard basic behaviour
+such as form validation. It is a parametrized type that should be
+parametrized with your step type,</p>
+  </li>
+  <li>
+    <p>the <code class="highlighter-rouge">initialStepValue</code> data property should be typed with your step type.</p>
+  </li>
+</ul>
+
+<p>The <em>template</em> part of your Vue component is pretty much up to you but you’ll
+probably use a few existing widgets and facilities such as <code class="highlighter-rouge">ColumnPicker</code>.</p>
+
+<p>Here is a possible template for your step:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;template&gt;</span>
+  <span class="nt">&lt;div&gt;</span>
+    <span class="nt">&lt;StepFormHeader</span> <span class="na">:title=</span><span class="s">"title"</span> <span class="na">:stepName=</span><span class="s">"this.editedStep.name"</span> <span class="nt">/&gt;</span>
+    <span class="nt">&lt;ColumnPicker</span>
+      <span class="na">id=</span><span class="s">"column1Input"</span>
+      <span class="na">v-model=</span><span class="s">"editedStep.column1"</span>
+      <span class="na">name=</span><span class="s">"First column..."</span>
+      <span class="na">placeholder=</span><span class="s">"Enter a column"</span>
+      <span class="na">data-path=</span><span class="s">".column1"</span>
+      <span class="na">:errors=</span><span class="s">"errors"</span>
+    <span class="nt">/&gt;</span>
+    <span class="nt">&lt;ColumnPicker</span>
+      <span class="na">id=</span><span class="s">"column2Input"</span>
+      <span class="na">v-model=</span><span class="s">"editedStep.column2"</span>
+      <span class="na">name=</span><span class="s">"Secpmd column..."</span>
+      <span class="na">placeholder=</span><span class="s">"Enter a column"</span>
+      <span class="na">data-path=</span><span class="s">".column2"</span>
+      <span class="na">:errors=</span><span class="s">"errors"</span>
+    <span class="nt">/&gt;</span>
+    <span class="nt">&lt;InputTextWidget</span>
+      <span class="na">id=</span><span class="s">"newColumnInput"</span>
+      <span class="na">v-model=</span><span class="s">"editedStep.newColumn"</span>
+      <span class="na">name=</span><span class="s">"New column name:"</span>
+      <span class="na">placeholder=</span><span class="s">"Enter a column name"</span>
+      <span class="na">data-path=</span><span class="s">".newColumn"</span>
+      <span class="na">:errors=</span><span class="s">"errors"</span>
+    <span class="nt">/&gt;</span>
+    <span class="nt">&lt;StepFormButtonbar</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/div&gt;</span>
+<span class="nt">&lt;/template&gt;</span>
+</code></pre></div></div>
+
+<p>Again, this is pretty straightforward. We use our step fields as <code class="highlighter-rouge">v-model</code> for our
+form inputs. Please make sure to use the <code class="highlighter-rouge">data-path</code> property on your inputs to
+specify which step property the input is associated to. This will allow errors
+returned by <code class="highlighter-rouge">ajv</code> to be associated to the corresponding input in the UI.</p>
+
+<h3 id="make-it-available-through-the-ui">Make it available through the UI</h3>
+
+<p>To create this new step, users should be able to open the form you just implemented
+from the UI. Steps creation is possible either from the buttons on top of the data
+table (action bar), either from the contextual menus of each column of the table.
+The step should also be found in the search bar.</p>
+
+<h4 id="in-the-action-bar">In the action bar</h4>
+
+<p>Actions are defined in <code class="highlighter-rouge">src/components/constants.ts</code>.
+Add to <code class="highlighter-rouge">ACTION_CATEGORIES</code> an object with the <code class="highlighter-rouge">name</code> of your new step and its
+action <code class="highlighter-rouge">label</code> into the adequate category.</p>
+
+<h3 id="in-columns-contextual-menus">In columns contextual menus</h3>
+
+<p>If your step is directly related to one column, it’s a good idea to access it through
+its contextual menu. To achieve this, add your action directly in the template of
+<code class="highlighter-rouge">src/components/ActionMenu.vue</code>:</p>
+<div class="language-vue highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;</span><span class="k">template</span><span class="nt">&gt;</span>
+  <span class="nt">&lt;popover</span> <span class="na">:active=</span><span class="s">"isActive"</span> <span class="na">:align=</span><span class="s">"alignLeft"</span> <span class="na">bottom</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"action-menu__body"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"action-menu__section"</span><span class="nt">&gt;</span>
+        ...
+        <span class="nt">&lt;div</span> <span class="na">class=</span><span class="s">"action-menu__option"</span> <span class="err">@</span><span class="na">click=</span><span class="s">"createStep('step-name')"</span><span class="nt">&gt;</span>Action label<span class="nt">&lt;/div&gt;</span>
+        ...
+      <span class="nt">&lt;/div&gt;</span>
+    <span class="nt">&lt;/div&gt;</span>
+  <span class="nt">&lt;/popover&gt;</span>
+<span class="nt">&lt;/</span><span class="k">template</span><span class="nt">&gt;</span>
+</code></pre></div></div>
+
+<h4 id="in-the-search-bar">In the search bar</h4>
+
+<p>Searchable actions are defined in the <code class="highlighter-rouge">SEARCH_ACTION</code> constant in <code class="highlighter-rouge">src/components/constants.ts</code>.
+All actions from <code class="highlighter-rouge">ACTION_CATEGORIES</code> are imported. You should add in <code class="highlighter-rouge">type: 'Others actions'</code>
+any action not defined in <code class="highlighter-rouge">ACTION_CATEGORIES</code>, such as contextual ones.</p>
+
+<h2 id="adding-documentation">Adding documentation</h2>
+
+<p>You’re almost done! Your step is defined, translates to some backends, is
+editable, tested. You should just add some documentation before submitting
+your pull request. Look out how other step documentation is written and copy it
+for you custom step:</p>
+
+<ul>
+  <li>
+    <p>explain to the end user how it should be used in
+<code class="highlighter-rouge">docs/_docs/user-interface/columnsum.md</code>
+(don’t forget to take some screenshots and use them in your documentation),</p>
+  </li>
+  <li>
+    <p>add an entry in the <code class="highlighter-rouge">docs/_data/docs.yml</code> for your step.</p>
+  </li>
+</ul>
+
+</div>
+            
+
+
+
+
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+
+        </div>
+
+    </div>
+</div>
+
+        </div>
+    </div>
+
+    <footer class="footer">
+    <div class="container">
+
+        <p class="text-center">
+            Weaverbird 2020 |
+            Powered by <a href="https://github.com/aksakalli/jekyll-doc-theme">Jekyll Doc Theme</a>
+        </p>
+        <!-- <p class="text-muted">Place sticky footer content here.</p> -->
+    </div>
+</footer>
+
+    <script>
+  var baseurl = ''
+</script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script src="/js/bootstrap.min.js "></script>
+<script src="/js/typeahead.bundle.min.js "></script>
+
+<script src="/js/main.js "></script>
+
+</body>
+
+</html>
