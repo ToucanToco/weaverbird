@@ -25,6 +25,24 @@
   This scoped slot will receive in `slotProps` its `condition`, and a `updateCondition` function.
 
   The trees are intentionnaly limited to 2 levels to avoid unnecessary complexity.
+
+  Example:
+  conditionsTree = {
+    conditions: [
+      { column: 'country', operator: 'le',  value: 'France'}
+    ],
+    groups: [
+      {
+        conditions: [
+          { column: 'Section', operator: 'eq',  value: 'A'}
+          { column: 'City', operator: 'neq',  value: 'Paris'}
+        ],
+        groups: []
+        operator: 'or'
+      }
+    ],
+    operator: 'and'
+  }
 */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 

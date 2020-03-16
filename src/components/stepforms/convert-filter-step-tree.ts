@@ -8,6 +8,18 @@ import {
 
 import { AbstractFilterTree, ConditionOperator } from '../ConditionsEditor/tree-types';
 
+/**
+isFilterCombo return true for:
+{ or: [
+  { column: 'tata', value: 'B', operator: 'ne' }
+  { column: 'titi', value: '2', operator: 'le' }
+]} --> FilterComboOr
+or
+{ and: [
+  { column: 'tata', value: 'B', operator: 'ne' }
+  { column: 'titi', value: '2', operator: 'le' }
+]} --> FilterComboAnd
+*/
 export function isFilterCombo(
   groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
 ): groupOrCondition is FilterComboAnd | FilterComboOr {
@@ -19,6 +31,34 @@ export function isFilterCombo(
   }
 }
 
+/**
+buildConditionsEditorTree transform this:
+{
+	name: 'filter',
+	condition: {
+		and: [
+			{ column: 'toto', value: 'A', operator: 'eq' },
+			{ or: [
+				{ column: 'tata', value: 'B', operator: 'ne' }
+        { column: 'titi', value: '2', operator: 'le' }
+			]}
+		]
+}
+
+into:
+{
+	operator: 'and',
+	conditions: [{ column: 'toto', value: 'A', operator: 'eq' }],
+	groups: [
+		operator: 'or',
+		conditions: [
+      { column: 'tata', value: 'B', operator: 'ne' },
+      { column: 'titi', value: '2', operator: 'le' }
+    ],
+    groups: [],
+	]
+}
+*/
 export function buildConditionsEditorTree(
   groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
 ) {
@@ -53,6 +93,33 @@ export function buildConditionsEditorTree(
   }
 }
 
+/**
+buildConditionsEditorTree transform this:
+{
+	operator: 'and',
+	conditions: [{ column: 'toto', value: 'A', operator: 'eq' }],
+	groups: [
+		operator: 'or',
+		conditions: [
+      { column: 'tata', value: 'B', operator: 'ne' },
+      { column: 'titi', value: '2', operator: 'le' }
+    ],
+    groups: [],
+	]
+}
+into:
+{
+	name: 'filter',
+	condition: {
+		and: [
+			{ column: 'toto', value: 'A', operator: 'eq' },
+			{ or: [
+				{ column: 'tata', value: 'B', operator: 'ne' }
+        { column: 'titi', value: '2', operator: 'le' }
+			]}
+		]
+}
+*/
 export function buildFilterStepTree(conditionGroup: AbstractFilterTree, isRoot: boolean) {
   const filterStepConditions: object[] = [];
 
