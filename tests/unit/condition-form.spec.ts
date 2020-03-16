@@ -1,6 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 
-import ConditionForm from '@/components/stepforms/ConditionsEditor/ConditionForm.vue';
+import ConditionForm from '@/components/ConditionsEditor/ConditionForm.vue';
 
 describe('ConditionForm', () => {
   it('should instantiate', () => {

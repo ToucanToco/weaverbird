@@ -21,6 +21,7 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
+import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
 import { StepFormComponent } from '@/components/formlib';
 import {
   buildConditionsEditorTree,
@@ -33,8 +34,7 @@ import { castFromString } from '@/lib/helpers';
 import { FilterSimpleCondition, FilterStep, isFilterComboAnd } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
-import ConditionsEditor from './ConditionsEditor/ConditionsEditor.vue';
-import { AbstractFilterTree } from './ConditionsEditor/tree-types';
+import { AbstractFilterTree } from '../ConditionsEditor/tree-types';
 import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({

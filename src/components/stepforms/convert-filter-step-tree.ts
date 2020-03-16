@@ -6,7 +6,7 @@ import {
   isFilterComboOr,
 } from '@/lib/steps';
 
-import { AbstractFilterTree, ConditionOperator } from './ConditionsEditor/tree-types';
+import { AbstractFilterTree, ConditionOperator } from '../ConditionsEditor/tree-types';
 
 export function isFilterCombo(
   groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,

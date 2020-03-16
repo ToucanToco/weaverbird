@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import Vue from 'vue';
 
-import ConditionsGroup from '@/components/stepforms/ConditionsEditor/ConditionsGroup.vue';
+import ConditionsGroup from '@/components/ConditionsEditor/ConditionsGroup.vue';
 
 let wrapper: Wrapper<Vue>;
 
