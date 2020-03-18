@@ -8,51 +8,82 @@ export default {
       enum: ['filter'],
     },
     condition: {
-      oneOf: [
-        { $ref: '#/definitions/simpleCondition' },
-        { $ref: '#/definitions/advancedCondition' },
-      ],
+      if: { required: ['column'] },
+      then: {
+        $ref: '#/definitions/simpleCondition',
+      },
+      else: {
+        if: { required: ['or'] },
+        then: {
+          $ref: '#/definitions/orCondition',
+        },
+        else: {
+          if: { required: ['and'] },
+          then: {
+            $ref: '#/definitions/andCondition',
+          },
+        },
+      },
     },
   },
   definitions: {
-    advancedCondition: {
-      type: 'object',
-      oneOf: [
-        {
-          properties: {
-            and: {
-              type: 'array',
-              minItems: 1,
-              title: 'And condition',
-              items: {
-                oneOf: [
-                  { $ref: '#/definitions/simpleCondition' },
-                  { $ref: '#/definitions/advancedCondition' },
-                ],
+    andCondition: {
+      properties: {
+        and: {
+          type: 'array',
+          minItems: 1,
+          title: 'And condition',
+          items: {
+            if: { required: ['column'] },
+            then: {
+              $ref: '#/definitions/simpleCondition',
+            },
+            else: {
+              if: { required: ['or'] },
+              then: {
+                $ref: '#/definitions/orCondition',
+              },
+              else: {
+                if: { required: ['and'] },
+                then: {
+                  $ref: '#/definitions/andCondition',
+                },
               },
             },
           },
-          required: ['and'],
-          additionalProperties: false,
         },
-        {
-          properties: {
-            or: {
-              type: 'array',
-              minItems: 1,
-              title: 'Or condition',
-              items: {
-                oneOf: [
-                  { $ref: '#/definitions/simpleCondition' },
-                  { $ref: '#/definitions/advancedCondition' },
-                ],
+      },
+      required: ['and'],
+      additionalProperties: false,
+    },
+    orCondition: {
+      properties: {
+        or: {
+          type: 'array',
+          minItems: 1,
+          title: 'Or condition',
+          items: {
+            if: { required: ['column'] },
+            then: {
+              $ref: '#/definitions/simpleCondition',
+            },
+            else: {
+              if: { required: ['or'] },
+              then: {
+                $ref: '#/definitions/orCondition',
+              },
+              else: {
+                if: { required: ['and'] },
+                then: {
+                  $ref: '#/definitions/andCondition',
+                },
               },
             },
           },
-          required: ['or'],
-          additionalProperties: false,
         },
-      ],
+      },
+      required: ['or'],
+      additionalProperties: false,
     },
     simpleCondition: {
       type: 'object',

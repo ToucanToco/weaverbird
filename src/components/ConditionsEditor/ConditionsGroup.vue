@@ -37,7 +37,11 @@
         <div class="condition-row__link__bottom" />
       </div>
       <div class="condition-row__content">
-        <slot :condition="condition" :updateCondition="updateCondition(rowIndex)" />
+        <slot
+          :dataPath="operator != '' ? `${dataPath}.${operator}[${rowIndex}]` : dataPath"
+          :condition="condition"
+          :updateCondition="updateCondition(rowIndex)"
+        />
       </div>
       <i
         v-if="conditions.length > 1"
@@ -60,6 +64,7 @@
       </div>
       <ConditionsGroup
         :conditions-tree="groupConditionTree"
+        :dataPath="`${dataPath}.${operator}[${groupIndex + conditions.length}]`"
         @conditionsTreeUpdated="updateGroup(groupIndex, $event)"
       >
         <template v-slot:default="slotProps">
@@ -110,6 +115,12 @@ export default class ConditionsGroup extends Vue {
     default: false,
   })
   isRootGroup!: boolean;
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  dataPath!: string;
 
   get operator() {
     return this.conditionsTree.operator;

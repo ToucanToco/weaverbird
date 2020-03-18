@@ -8,24 +8,27 @@ describe('Filter Step Form', () => {
   runner.testExpectedComponents({
     'ConditionsEditor-stub': 1,
   });
-  // runner.testValidationErrors([
-  //   {
-  //     testlabel: 'submitted data is not valid',
-  //     store: setupMockStore({
-  //       dataset: {
-  //         headers: [{ name: 'foo', type: 'string' }],
-  //         data: [[null]],
-  //       },
-  //     }),
-  //     data: {
-  //       editedStep: {
-  //         name: 'filter',
-  //         condition: { column: 'toto', operator: 'eq', value: '' },
-  //       },
-  //     },
-  //     errors: [{ keyword: 'minItems', dataPath: '.condition.value' }],
-  //   },
-  // ]);
+  runner.testValidationErrors([
+    {
+      testlabel: 'submitted data is not valid',
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'foo', type: 'string' }],
+          data: [[null]],
+        },
+      }),
+      data: {
+        editedStep: {
+          name: 'filter',
+          condition: { column: 'toto', operator: 'eq', value: '' },
+        },
+      },
+      errors: [
+        { keyword: 'if', dataPath: '.condition' },
+        { keyword: 'minLength', dataPath: '.condition.value' },
+      ],
+    },
+  ]);
 
   runner.testValidate({
     store: setupMockStore({

@@ -9,7 +9,7 @@
         <FilterSimpleConditionWidget
           :value="slotProps.condition"
           @input="slotProps.updateCondition"
-          :data-path="dataPath"
+          :data-path="slotProps.dataPath"
           :errors="errors"
         />
       </template>
@@ -27,7 +27,6 @@ import {
   buildConditionsEditorTree,
   buildFilterStepTree,
   castFilterStepTreeValue,
-  isFilterCombo,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
@@ -75,14 +74,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
         name: 'filter' as 'filter',
         condition: { ...this.initialStepValue.condition },
       };
-    }
-  }
-
-  get dataPath() {
-    if (isFilterCombo(this.editedStep.condition)) {
-      return Object.keys(this.editedStep.condition)[0];
-    } else {
-      return '';
     }
   }
 
