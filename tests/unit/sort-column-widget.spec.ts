@@ -19,6 +19,18 @@ describe('Widget sort column', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
+  it('should update value with selected value column on created', () => {
+    const wrapper = shallowMount(SortColumnWidget, {
+      store: emptyStore,
+      localVue,
+      propsData: {
+        value: { column: 'bar', order: 'asc' },
+      },
+      sync: false,
+    });
+    expect(wrapper.emitted().input[0]).toEqual([{ column: 'bar', order: 'asc' }]);
+  });
+
   it('should have exactly two AutocompleteWidget components', () => {
     const wrapper = shallowMount(SortColumnWidget, { store: emptyStore, localVue });
     const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
@@ -53,14 +65,37 @@ describe('Widget sort column', () => {
     expect(widgetWrappers.at(1).props().value).toEqual('desc');
   });
 
-  it('should emit "input" event on "value" update', async () => {
+  it('should emit "input" event on "sortColumn" update with correct properties', () => {
     const wrapper = shallowMount(SortColumnWidget, {
       store: emptyStore,
       localVue,
+      sync: false,
+      propsData: {
+        value: { column: 'bar', order: 'desc' },
+      },
     });
-    wrapper.setProps({ value: { column: 'bar', order: 'desc' } });
-    await localVue.nextTick();
+    wrapper
+      .findAll('AutoCompleteWidget-stub')
+      .at(0)
+      .vm.$emit('input', 'year');
     expect(wrapper.emitted().input).toBeDefined();
-    expect(wrapper.emitted().input[1]).toEqual([{ column: 'bar', order: 'desc' }]);
+    expect(wrapper.emitted().input[1]).toEqual([{ column: 'year', order: 'desc' }]);
+  });
+
+  it('should emit "input" event on "sortOrder" update with correct properties', () => {
+    const wrapper = shallowMount(SortColumnWidget, {
+      store: emptyStore,
+      localVue,
+      sync: false,
+      propsData: {
+        value: { column: 'bar', order: 'desc' },
+      },
+    });
+    wrapper
+      .findAll('AutoCompleteWidget-stub')
+      .at(1)
+      .vm.$emit('input', 'asc');
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[1]).toEqual([{ column: 'bar', order: 'asc' }]);
   });
 });

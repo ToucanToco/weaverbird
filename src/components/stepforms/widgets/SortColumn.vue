@@ -3,16 +3,15 @@
     <AutocompleteWidget
       id="columnInput"
       :options="columnNames"
-      v-model="sort.column"
+      v-model="sortColumn"
       name="Column"
       placeholder="Enter a column"
-      @input="setSelectedColumns({ column: sort.column })"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
     />
     <AutocompleteWidget
       id="sortOrderInput"
-      v-model="sort.order"
+      v-model="sortOrder"
       name="Order"
       :options="['asc', 'desc']"
       placeholder="Order by"
@@ -23,8 +22,7 @@
 </template>
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import _ from 'lodash';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { SortColumnType } from '@/lib/steps';
 import { VQBModule } from '@/store';
@@ -55,17 +53,37 @@ export default class SortColumnWidget extends Vue {
   errors!: ErrorObject[];
 
   @VQBModule.Getter columnNames!: string[];
-
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
-  sort: SortColumnType = { ...this.value };
+  created() {
+    this.update(this.value);
+  }
 
-  @Watch('value', { immediate: true, deep: true })
-  onSortChanged(newval: SortColumnType, oldval: SortColumnType) {
-    if (!_.isEqual(newval, oldval)) {
-      this.sort = { ...newval };
-      this.$emit('input', this.sort);
-    }
+  get sortColumn() {
+    return this.value.column;
+  }
+
+  set sortColumn(newValue) {
+    this.setSelectedColumns({ column: newValue });
+    this.update({
+      column: newValue,
+      order: this.sortOrder,
+    });
+  }
+
+  get sortOrder() {
+    return this.value.order;
+  }
+
+  set sortOrder(newValue) {
+    this.update({
+      column: this.sortColumn,
+      order: newValue,
+    });
+  }
+
+  update(newValues) {
+    this.$emit('input', newValues);
   }
 }
 </script>
