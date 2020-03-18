@@ -195,7 +195,7 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.editedStep.condition.column).toEqual('foo');
   });
 
-  it.skip('should convert input value to integer when the column data type is integer', () => {
+  it('should convert input value to integer when the column data type is integer', () => {
     const initialState = {
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
@@ -203,8 +203,8 @@ describe('Filter Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState, {
-      data: {
-        editedStep: {
+      propsData: {
+        initialStepValue: {
           name: 'filter',
           condition: {
             and: [
@@ -234,7 +234,7 @@ describe('Filter Step Form', () => {
     });
   });
 
-  it.skip('should convert input value to float when the column data type is float', () => {
+  it('should convert input value to float when the column data type is float', () => {
     const initialState = {
       dataset: {
         headers: [{ name: 'columnA', type: 'float' }],
@@ -242,8 +242,8 @@ describe('Filter Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState, {
-      data: {
-        editedStep: {
+      propsData: {
+        initialStepValue: {
           name: 'filter',
           condition: {
             and: [
@@ -273,7 +273,7 @@ describe('Filter Step Form', () => {
     });
   });
 
-  it.skip('should convert input value to boolean when the column data type is boolean', () => {
+  it('should convert input value to boolean when the column data type is boolean', () => {
     const initialState = {
       dataset: {
         headers: [{ name: 'columnA', type: 'boolean' }],
@@ -281,8 +281,8 @@ describe('Filter Step Form', () => {
       },
     };
     const wrapper = runner.mount(initialState, {
-      data: {
-        editedStep: {
+      propsData: {
+        initialStepValue: {
           name: 'filter',
           condition: {
             and: [

@@ -26,12 +26,12 @@ import { StepFormComponent } from '@/components/formlib';
 import {
   buildConditionsEditorTree,
   buildFilterStepTree,
+  castFilterStepTreeValue,
   isFilterCombo,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { castFromString } from '@/lib/helpers';
-import { FilterSimpleCondition, FilterStep, isFilterComboAnd } from '@/lib/steps';
+import { FilterSimpleCondition, FilterStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import { AbstractFilterTree } from '../ConditionsEditor/tree-types';
@@ -86,30 +86,15 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }
   }
 
-  get defaultCondition() {
-    const cond: FilterSimpleCondition = { column: '', value: '', operator: 'eq' };
-    return cond;
-  }
-
   get conditionsTree() {
     return buildConditionsEditorTree(this.editedStep.condition);
   }
 
   submit() {
-    // FIXME !!!!
-    // This "if" works only for comboAnd, not for comboOr and simpleCondition, and not recursive for groups.
-    if (isFilterComboAnd(this.editedStep.condition)) {
-      for (const cond of this.editedStep.condition.and as FilterSimpleCondition[]) {
-        const type = this.columnTypes[cond.column];
-        if (type !== undefined) {
-          if (Array.isArray(cond.value)) {
-            cond.value = cond.value.map(v => castFromString(v, type));
-          } else {
-            cond.value = castFromString(cond.value, type);
-          }
-        }
-      }
-    }
+    this.editedStep.condition = castFilterStepTreeValue(
+      this.editedStep.condition,
+      this.columnTypes,
+    );
     this.$$super.submit();
   }
 

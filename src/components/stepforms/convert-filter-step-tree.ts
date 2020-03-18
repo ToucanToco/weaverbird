@@ -1,3 +1,5 @@
+import { ColumnTypeMapping } from '@/lib/dataset';
+import { castFromString } from '@/lib/helpers';
 import {
   FilterComboAnd,
   FilterComboOr,
@@ -147,5 +149,68 @@ export function buildFilterStepTree(conditionGroup: AbstractFilterTree, isRoot: 
     };
   } else {
     return filterStepGroup;
+  }
+}
+
+/**
+castFilterStepTreeValue transform:
+{
+	name: 'filter',
+	condition: {
+		and: [
+			{ column: 'toto', value: '1', operator: 'eq' },
+      { column: 'tata', value: 'true', operator: 'eq' },
+			{ or: [
+				{ column: 'titi', value: 'B', operator: 'ne' }
+        { column: 'tutu', value: '2.1', operator: 'le' }
+			]}
+		]
+}
+with: columnTypes = {
+  toto: integer,
+  tutu: float,
+  tata: boolean,
+}
+into:
+{
+	name: 'filter',
+	condition: {
+		and: [
+			{ column: 'toto', value: 1, operator: 'eq' },
+      { column: 'tata', value: true, operator: 'eq' },
+			{ or: [
+				{ column: 'titi', value: 'B', operator: 'ne' }
+        { column: 'tutu', value: 2.1, operator: 'le' }
+			]}
+		]
+}
+*/
+
+export function castFilterStepTreeValue(
+  filterStepTree: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+  columnTypes: ColumnTypeMapping,
+) {
+  if (isFilterCombo(filterStepTree)) {
+    if (isFilterComboOr(filterStepTree)) {
+      for (let condition of filterStepTree.or) {
+        condition = castFilterStepTreeValue(condition, columnTypes);
+      }
+    }
+    if (isFilterComboAnd(filterStepTree)) {
+      for (let condition of filterStepTree.and) {
+        condition = castFilterStepTreeValue(condition, columnTypes);
+      }
+    }
+    return filterStepTree;
+  } else {
+    const type = columnTypes[filterStepTree.column];
+    if (type !== undefined) {
+      if (Array.isArray(filterStepTree.value)) {
+        filterStepTree.value = filterStepTree.value.map(v => castFromString(v, type));
+      } else {
+        filterStepTree.value = castFromString(filterStepTree.value, type);
+      }
+    }
+    return filterStepTree;
   }
 }

@@ -1,6 +1,7 @@
 import {
   buildConditionsEditorTree,
   buildFilterStepTree,
+  castFilterStepTreeValue,
   isFilterCombo,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 
@@ -243,6 +244,185 @@ describe('Convert filter step tree', () => {
             },
           ],
         },
+      });
+    });
+  });
+
+  describe('castFilterStepTreeValue', () => {
+    it('should cast filterStepTreeValue according to columnTypes', () => {
+      expect(
+        castFilterStepTreeValue(
+          {
+            and: [
+              { column: 'toto', value: '1', operator: 'eq' },
+              { column: 'tata', value: 'true', operator: 'eq' },
+            ],
+          },
+          {
+            toto: 'integer',
+            tutu: 'float',
+            tata: 'boolean',
+            titi: 'string',
+          },
+        ),
+      ).toEqual({
+        and: [
+          { column: 'toto', value: 1, operator: 'eq' },
+          { column: 'tata', value: true, operator: 'eq' },
+        ],
+      });
+    });
+    it('should cast filterStepTreeValue according to columnTypes', () => {
+      expect(
+        castFilterStepTreeValue(
+          {
+            and: [
+              { column: 'toto', value: '1', operator: 'eq' },
+              { column: 'tata', value: 'true', operator: 'eq' },
+              {
+                or: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: '2.1', operator: 'le' },
+                ],
+              },
+            ],
+          },
+          {
+            toto: 'integer',
+            tutu: 'float',
+            tata: 'boolean',
+            titi: 'string',
+          },
+        ),
+      ).toEqual({
+        and: [
+          { column: 'toto', value: 1, operator: 'eq' },
+          { column: 'tata', value: true, operator: 'eq' },
+          {
+            or: [
+              { column: 'titi', value: 'B', operator: 'ne' },
+              { column: 'tutu', value: 2.1, operator: 'le' },
+            ],
+          },
+        ],
+      });
+    });
+    it('should cast filterStepTreeValue according to columnTypes', () => {
+      expect(
+        castFilterStepTreeValue(
+          {
+            and: [
+              { column: 'toto', value: '1', operator: 'eq' },
+              { column: 'tata', value: 'true', operator: 'eq' },
+              {
+                or: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: '2.1', operator: 'le' },
+                  {
+                    or: [
+                      { column: 'titi', value: 'B', operator: 'ne' },
+                      { column: 'tutu', value: '2.1', operator: 'le' },
+                    ],
+                  },
+                ],
+              },
+              {
+                and: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: '2.1', operator: 'le' },
+                ],
+              },
+            ],
+          },
+          {
+            toto: 'integer',
+            tutu: 'float',
+            tata: 'boolean',
+            titi: 'string',
+          },
+        ),
+      ).toEqual({
+        and: [
+          { column: 'toto', value: 1, operator: 'eq' },
+          { column: 'tata', value: true, operator: 'eq' },
+          {
+            or: [
+              { column: 'titi', value: 'B', operator: 'ne' },
+              { column: 'tutu', value: 2.1, operator: 'le' },
+              {
+                or: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: 2.1, operator: 'le' },
+                ],
+              },
+            ],
+          },
+          {
+            and: [
+              { column: 'titi', value: 'B', operator: 'ne' },
+              { column: 'tutu', value: 2.1, operator: 'le' },
+            ],
+          },
+        ],
+      });
+    });
+    it('should cast filterStepTreeValue according to columnTypes', () => {
+      expect(
+        castFilterStepTreeValue(
+          {
+            and: [
+              { column: 'toto', value: '1', operator: 'eq' },
+              { column: 'tata', value: ['true', 'false'], operator: 'in' },
+              {
+                or: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: '2.1', operator: 'le' },
+                  {
+                    or: [
+                      { column: 'titi', value: 'B', operator: 'ne' },
+                      { column: 'tutu', value: ['2.1', '2.3'], operator: 'in' },
+                    ],
+                  },
+                ],
+              },
+              {
+                and: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: '2.1', operator: 'le' },
+                ],
+              },
+            ],
+          },
+          {
+            toto: 'integer',
+            tutu: 'float',
+            tata: 'boolean',
+            titi: 'string',
+          },
+        ),
+      ).toEqual({
+        and: [
+          { column: 'toto', value: 1, operator: 'eq' },
+          { column: 'tata', value: [true, false], operator: 'in' },
+          {
+            or: [
+              { column: 'titi', value: 'B', operator: 'ne' },
+              { column: 'tutu', value: 2.1, operator: 'le' },
+              {
+                or: [
+                  { column: 'titi', value: 'B', operator: 'ne' },
+                  { column: 'tutu', value: [2.1, 2.3], operator: 'in' },
+                ],
+              },
+            ],
+          },
+          {
+            and: [
+              { column: 'titi', value: 'B', operator: 'ne' },
+              { column: 'tutu', value: 2.1, operator: 'le' },
+            ],
+          },
+        ],
       });
     });
   });
