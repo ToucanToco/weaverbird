@@ -72,7 +72,7 @@ describe('ConditionsGroup', () => {
       propsData: {
         conditionsTree: {
           operator: 'or',
-          conditions: [undefined, undefined],
+          conditions: [undefined],
           groups: [],
         },
       },
@@ -371,7 +371,7 @@ describe('ConditionsGroup', () => {
             },
             {
               operator: 'and',
-              conditions: [undefined, undefined],
+              conditions: [undefined],
               groups: [],
             },
           ],
@@ -408,7 +408,7 @@ describe('ConditionsGroup', () => {
           groups: [
             {
               operator: 'and',
-              conditions: [undefined, undefined],
+              conditions: [undefined],
               groups: [],
             },
           ],

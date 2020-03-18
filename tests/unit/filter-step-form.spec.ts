@@ -67,7 +67,11 @@ describe('Filter Step Form', () => {
         },
       );
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('#filterValue').attributes('placeholder')).toEqual('Enter a value');
+      // id of filterValue is based on the dataPath
+      // here, it is: '.condition' without special characthere we get: 'condition'
+      expect(wrapper.find('#condition-filterValue').attributes('placeholder')).toEqual(
+        'Enter a value',
+      );
     });
 
     it('should have a specific placeholder for regular expressions', async () => {
@@ -83,7 +87,9 @@ describe('Filter Step Form', () => {
         },
       );
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('#filterValue').attributes('placeholder')).toEqual(
+      // id of filterValue is based on the dataPath
+      // here, it is: '.condition.and[0]' without special characthere we get: 'conditionand0'
+      expect(wrapper.find('#conditionand0-filterValue').attributes('placeholder')).toEqual(
         'Enter a regex, e.g. "[Ss]ales"',
       );
     });

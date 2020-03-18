@@ -2,7 +2,7 @@
   <div class="filter-form-simple-condition__container">
     <div class="filter-form-simple-condition-column-input">
       <AutocompleteWidget
-        id="columnInput"
+        :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
         v-model="editedValue.column"
         :options="columnNames"
         @input="setSelectedColumns({ column: editedValue.column })"
@@ -13,7 +13,7 @@
     </div>
     <div class="filter-form-simple-condition-operator-input">
       <AutocompleteWidget
-        id="filterOperator"
+        :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterOperator`"
         :value="operator"
         @input="updateStepOperator"
         :options="operators"
@@ -23,7 +23,7 @@
       />
     </div>
     <component
-      id="filterValue"
+      :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterValue`"
       v-if="inputWidget"
       :is="inputWidget"
       v-model="editedValue.value"
@@ -69,6 +69,8 @@ type OperatorOption = {
   inputWidget?: VueConstructor<Vue>;
 };
 
+const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
+
 @Component({
   name: 'filter-simple-condition-widget',
   components: {
@@ -79,11 +81,11 @@ type OperatorOption = {
 export default class FilterSimpleConditionWidget extends Vue {
   @Prop({
     type: Object,
-    default: () => ({ column: '', value: '', operator: 'eq' }),
+    default: () => DEFAULT_FILTER,
   })
   value!: FilterSimpleCondition;
 
-  @Prop({ type: String, default: null })
+  @Prop({ type: String, default: '' })
   dataPath!: string;
 
   @Prop({ type: Array, default: () => [] })
@@ -109,6 +111,13 @@ export default class FilterSimpleConditionWidget extends Vue {
     { operator: 'isnull', label: 'be null' },
     { operator: 'notnull', label: 'not be null' },
   ];
+
+  created() {
+    // In absence of condition, emit directly to the parent the default value
+    if (this.value === DEFAULT_FILTER) {
+      this.$emit('input', DEFAULT_FILTER);
+    }
+  }
 
   get placeholder() {
     if (this.editedValue.operator === 'matches' || this.editedValue.operator === 'notmatches') {

@@ -2,10 +2,10 @@
   <div
     class="conditions-group"
     :class="{
-      'conditions-group--with-switch': hasMultipleRows,
+      'conditions-group--with-switch': hasMultipleRows || !isRootGroup,
     }"
   >
-    <div v-if="hasMultipleRows" class="conditions-group__switch">
+    <div v-if="hasMultipleRows || !isRootGroup" class="conditions-group__switch">
       <div class="condition-group__switch-link" />
       <div class="conditions-group__switch-buttons">
         <div
@@ -26,7 +26,7 @@
     </div>
     <div v-for="(condition, rowIndex) in conditions" :key="'row' + rowIndex" class="condition-row">
       <div
-        v-if="hasMultipleRows"
+        v-if="hasMultipleRows || !isRootGroup"
         class="condition-row__link"
         :class="{
           'condition-row__link--last': isLastRow(rowIndex),
@@ -74,7 +74,7 @@
       <i class="conditions-group__delete far fa-trash-alt" @click="deleteGroup(groupIndex)" />
     </div>
     <div class="conditions-group__action-buttons">
-      <div v-if="hasMultipleRows" class="action-buttons__link">
+      <div v-if="hasMultipleRows || !isRootGroup" class="action-buttons__link">
         <div class="action-buttons__link__top" />
         <div class="action-buttons__link__middle" />
       </div>
@@ -118,7 +118,7 @@ export default class ConditionsGroup extends Vue {
 
   @Prop({
     type: String,
-    required: true,
+    default: '',
   })
   dataPath!: string;
 
@@ -143,7 +143,7 @@ export default class ConditionsGroup extends Vue {
     newGroups.push({
       operator: 'and',
       // Pass undefined values to force ConditionForm to use its default condition prop value
-      conditions: [undefined, undefined],
+      conditions: [undefined],
       groups: [],
     });
 
