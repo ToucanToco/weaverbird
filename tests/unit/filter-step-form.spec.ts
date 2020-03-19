@@ -53,48 +53,6 @@ describe('Filter Step Form', () => {
   runner.testCancel();
   runner.testResetSelectedIndex();
 
-  describe('PlaceHolders', () => {
-    it('should have a default placeholder', async () => {
-      const wrapper = runner.mount(
-        {},
-        {
-          data: {
-            editedStep: {
-              name: 'filter',
-              condition: { column: 'foo', value: 'bar', operator: 'gt' },
-            },
-          },
-        },
-      );
-      await wrapper.vm.$nextTick();
-      // id of filterValue is based on the dataPath
-      // here, it is: '.condition' without special characthere we get: 'condition'
-      expect(wrapper.find('#condition-filterValue').attributes('placeholder')).toEqual(
-        'Enter a value',
-      );
-    });
-
-    it('should have a specific placeholder for regular expressions', async () => {
-      const wrapper = runner.mount(
-        {},
-        {
-          data: {
-            editedStep: {
-              name: 'filter',
-              condition: { and: [{ column: 'foo', value: 'bar', operator: 'matches' }] },
-            },
-          },
-        },
-      );
-      await wrapper.vm.$nextTick();
-      // id of filterValue is based on the dataPath
-      // here, it is: '.condition.and[0]' without special characthere we get: 'conditionand0'
-      expect(wrapper.find('#conditionand0-filterValue').attributes('placeholder')).toEqual(
-        'Enter a regex, e.g. "[Ss]ales"',
-      );
-    });
-  });
-
   describe('ConditionsEditor', () => {
     it('should pass down the "conditions-tree" prop to the ConditionsEditor value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {

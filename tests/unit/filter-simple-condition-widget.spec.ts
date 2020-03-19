@@ -3,6 +3,7 @@ import Vuex, { Store } from 'vuex';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 
 import { RootState, setupMockStore } from './utils';
@@ -10,7 +11,7 @@ import { RootState, setupMockStore } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('Widget AggregationWidget', () => {
+describe('Widget FilterSimpleCondition', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
@@ -79,22 +80,37 @@ describe('Widget AggregationWidget', () => {
     });
   });
 
-  it('should change the type of value accordingly when changing the "operator"', async () => {
-    const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
-    expect(wrapper.emitted().input[0]).toEqual([{ column: '', value: '', operator: 'eq' }])
+  it('should change the type of value and the widget accordingly when changing the "operator"', async () => {
+    const wrapper = shallowMount(FilterSimpleConditionWidget, {
+      store: emptyStore,
+      localVue,
+      propsData: { dataPath: '.condition' },
+    });
+    expect(wrapper.emitted().input[0]).toEqual([{ column: '', value: '', operator: 'eq' }]);
     const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
 
-    // operatorWrapper.vm.$emit('input', { operator: 'in' });
-    // await wrapper.vm.$nextTick();
-    // expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: [], operator: 'in' }]);
+    // in operator
+    operatorWrapper.vm.$emit('input', { operator: 'in' });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: [], operator: 'in' }]); // check value type
+    let valueInputWrapper = wrapper.find('#condition-filterValue');
+    expect(valueInputWrapper.is(MultiInputTextWidget)).toBe(true); // check value widget input
+    expect(valueInputWrapper.attributes('placeholder')).toEqual('Enter a value'); // check widget input placeholder
 
+    // isnull operator
     operatorWrapper.vm.$emit('input', { operator: 'isnull' });
     await wrapper.vm.$nextTick();
-    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: null, operator: 'isnull' }]);
+    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: null, operator: 'isnull' }]); // check value type
+    valueInputWrapper = wrapper.find('#condition-filterValue');
+    expect(valueInputWrapper.exists()).toBeFalsy();
 
+    // matches operator
     operatorWrapper.vm.$emit('input', { operator: 'matches' });
     await wrapper.vm.$nextTick();
-    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: '', operator: 'matches' }]);
+    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: '', operator: 'matches' }]); // check value type
+    valueInputWrapper = wrapper.find('#condition-filterValue');
+    expect(valueInputWrapper.is(InputTextWidget)).toBe(true); // check value widget input
+    expect(valueInputWrapper.attributes('placeholder')).toEqual('Enter a regex, e.g. "[Ss]ales"'); // check widget input placeholder
   });
 
   it('should emit input when changing the column', async () => {
