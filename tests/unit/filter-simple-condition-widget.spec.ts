@@ -79,27 +79,50 @@ describe('Widget AggregationWidget', () => {
     });
   });
 
-  it('should change the type of value accordingly when switching the "operator"', async () => {
+  it('should change the type of value accordingly when changing the "operator"', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
-    expect((wrapper.vm.$data.editedValue.value = ''));
+    expect(wrapper.emitted().input[0]).toEqual([{ column: '', value: '', operator: 'eq' }])
     const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-    operatorWrapper.vm.$emit('input', { operator: 'in' });
-    expect((wrapper.vm.$data.editedValue.value = []));
+
+    // operatorWrapper.vm.$emit('input', { operator: 'in' });
+    // await wrapper.vm.$nextTick();
+    // expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: [], operator: 'in' }]);
+
     operatorWrapper.vm.$emit('input', { operator: 'isnull' });
-    expect((wrapper.vm.$data.editedValue.value = null));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: null, operator: 'isnull' }]);
+
     operatorWrapper.vm.$emit('input', { operator: 'matches' });
-    expect((wrapper.vm.$data.editedValue.value = ''));
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: '', operator: 'matches' }]);
   });
 
-  it('should emit "input" event on "editedValue" update', async () => {
+  it('should emit input when changing the column', async () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, {
       store: emptyStore,
       localVue,
+      propsData: { dataPath: '.condition' },
     });
-    wrapper.setData({ editedValue: { column: 'foo', value: 'bar', operator: 'gt' } });
-    await localVue.nextTick();
-    expect(wrapper.emitted().input).toBeDefined();
-    expect(wrapper.emitted().input[0]).toEqual([{ column: 'foo', value: 'bar', operator: 'gt' }]);
+    expect(wrapper.emitted().input[0]).toEqual([{ column: '', value: '', operator: 'eq' }]);
+
+    const columnInputWrapper = wrapper.findAll('autocompletewidget-stub').at(0);
+    columnInputWrapper.vm.$emit('input', 'foo');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[1]).toEqual([{ column: 'foo', value: '', operator: 'eq' }]);
+  });
+
+  it('should emit input when changing the value', async () => {
+    const wrapper = shallowMount(FilterSimpleConditionWidget, {
+      store: emptyStore,
+      localVue,
+      propsData: { dataPath: '.condition' },
+    });
+    expect(wrapper.emitted().input[0]).toEqual([{ column: '', value: '', operator: 'eq' }]);
+
+    const valueInputWrapper = wrapper.find('#condition-filterValue');
+    valueInputWrapper.vm.$emit('input', 'toto');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: 'toto', operator: 'eq' }]);
   });
 
   it('should update selectedColumn when column is changed', async () => {

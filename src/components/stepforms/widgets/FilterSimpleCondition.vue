@@ -5,7 +5,10 @@
         :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
         v-model="editedValue.column"
         :options="columnNames"
-        @input="setSelectedColumns({ column: editedValue.column })"
+        @input="
+          setSelectedColumns({ column: editedValue.column });
+          $emit('input', editedValue);
+        "
         placeholder="Column"
         :data-path="`${dataPath}.column`"
         :errors="errors"
@@ -30,6 +33,7 @@
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
+      @input="$emit('input', editedValue)"
     />
   </div>
 </template>
@@ -37,7 +41,7 @@
 <script lang="ts">
 import { ErrorObject } from 'ajv';
 import { VueConstructor } from 'vue';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -149,16 +153,7 @@ export default class FilterSimpleConditionWidget extends Vue {
     } else {
       this.editedValue.value = '';
     }
-  }
-
-  @Watch('value', { immediate: true })
-  updateEditedValue(newValue: FilterSimpleCondition) {
-    this.editedValue = newValue;
-  }
-
-  @Watch('editedValue', { deep: true })
-  updateValue(newValue: FilterSimpleCondition) {
-    this.$emit('input', newValue);
+    this.$emit('input', this.editedValue);
   }
 }
 </script>
