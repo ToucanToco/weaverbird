@@ -73,6 +73,9 @@ export default class InputTextWidget extends Mixins(FormWidget) {
 
 .widget-input-text {
   @extend %form-widget__field;
+  border-radius: 5px;
+  background: white;
+  border: 1px solid #e8e8e8;
 }
 
 .widget-input-text--focused {

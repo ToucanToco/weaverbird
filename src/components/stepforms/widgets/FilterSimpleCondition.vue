@@ -177,7 +177,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 .filter-form-simple-condition-operator-input,
 .filter-form-simple-condition__container .widget-input-text__container,
 .filter-form-simple-condition__container .widget-input-text__container {
-  background-color: white;
+  background-color: transparent;
   margin: 4px;
   margin-right: 0;
   width: 33%;
