@@ -83,10 +83,12 @@ describe('Widget AggregationWidget', () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, { store: emptyStore, localVue });
     expect((wrapper.vm.$data.editedValue.value = ''));
     const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-    await operatorWrapper.trigger('input', { value: 'be one of' });
+    operatorWrapper.vm.$emit('input', { operator: 'in' });
     expect((wrapper.vm.$data.editedValue.value = []));
-    await operatorWrapper.trigger('input', { value: 'isnull' });
+    operatorWrapper.vm.$emit('input', { operator: 'isnull' });
     expect((wrapper.vm.$data.editedValue.value = null));
+    operatorWrapper.vm.$emit('input', { operator: 'matches' });
+    expect((wrapper.vm.$data.editedValue.value = ''));
   });
 
   it('should emit "input" event on "editedValue" update', async () => {
