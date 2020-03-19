@@ -16,6 +16,10 @@ describe('Convert filter step tree', () => {
     it('should return false when the passed object is a condition', () => {
       expect(isFilterCombo({ column: 'columnA', operator: 'eq', value: 'true' })).toEqual(false);
     });
+
+    it('should return false when the passed object is not defined', () => {
+      expect(isFilterCombo(undefined)).toEqual(false);
+    });
   });
 
   describe('buildConditionsEditorTree', () => {

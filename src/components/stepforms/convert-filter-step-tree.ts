@@ -23,7 +23,7 @@ or
 ]} --> FilterComboAnd
 */
 export function isFilterCombo(
-  groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+  groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr | undefined,
 ): groupOrCondition is FilterComboAnd | FilterComboOr {
   // Can be undefined when a new row is added
   if (groupOrCondition) {

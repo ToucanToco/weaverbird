@@ -3,11 +3,11 @@
     <div class="filter-form-simple-condition-column-input">
       <AutocompleteWidget
         :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
-        v-model="editedValue.column"
+        v-model="value.column"
         :options="columnNames"
         @input="
-          setSelectedColumns({ column: editedValue.column });
-          $emit('input', editedValue);
+          setSelectedColumns({ column: value.column });
+          $emit('input', value);
         "
         placeholder="Column"
         :data-path="`${dataPath}.column`"
@@ -29,17 +29,18 @@
       :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterValue`"
       v-if="inputWidget"
       :is="inputWidget"
-      v-model="editedValue.value"
+      v-model="value.value"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
-      @input="$emit('input', editedValue)"
+      @input="$emit('input', value)"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { ErrorObject } from 'ajv';
+import isEqual from 'lodash/isEqual';
 import { VueConstructor } from 'vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
@@ -85,7 +86,7 @@ const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
 export default class FilterSimpleConditionWidget extends Vue {
   @Prop({
     type: Object,
-    default: () => DEFAULT_FILTER,
+    default: () => ({ ...DEFAULT_FILTER }),
   })
   value!: FilterSimpleCondition;
 
@@ -98,8 +99,6 @@ export default class FilterSimpleConditionWidget extends Vue {
   @VQBModule.Getter columnNames!: string[];
 
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
-
-  editedValue: FilterSimpleCondition = { ...this.value };
 
   readonly operators: OperatorOption[] = [
     { operator: 'eq', label: 'equal', inputWidget: InputTextWidget },
@@ -118,25 +117,24 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   created() {
     // In absence of condition, emit directly to the parent the default value
-    if (this.value === DEFAULT_FILTER) {
+    if (isEqual(this.value, DEFAULT_FILTER)) {
       this.$emit('input', DEFAULT_FILTER);
     }
   }
 
   get placeholder() {
-    if (this.editedValue.operator === 'matches' || this.editedValue.operator === 'notmatches') {
+    if (this.value.operator === 'matches' || this.value.operator === 'notmatches') {
       return 'Enter a regex, e.g. "[Ss]ales"';
     }
     return 'Enter a value';
   }
 
   get operator(): OperatorOption {
-    return this.operators.filter(d => d.operator === this.editedValue.operator)[0];
+    return this.operators.filter(d => d.operator === this.value.operator)[0];
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
-    const widget = this.operators.filter(d => d.operator === this.editedValue.operator)[0]
-      .inputWidget;
+    const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
     if (widget) {
       return widget;
     } else {
@@ -145,15 +143,16 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   updateStepOperator(op: OperatorOption) {
-    this.editedValue.operator = op.operator;
-    if (this.editedValue.operator === 'in' || this.editedValue.operator === 'nin') {
-      this.editedValue.value = [];
-    } else if (this.editedValue.operator === 'isnull' || this.editedValue.operator === 'notnull') {
-      this.editedValue.value = null;
+    const updatedValue = { ...this.value };
+    updatedValue.operator = op.operator;
+    if (updatedValue.operator === 'in' || updatedValue.operator === 'nin') {
+      updatedValue.value = [];
+    } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
+      updatedValue.value = null;
     } else {
-      this.editedValue.value = '';
+      updatedValue.value = '';
     }
-    this.$emit('input', this.editedValue);
+    this.$emit('input', updatedValue);
   }
 }
 </script>
