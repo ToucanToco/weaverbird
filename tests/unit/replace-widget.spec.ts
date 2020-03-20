@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
@@ -46,7 +45,7 @@ describe('Widget ReplaceWidget', () => {
       localVue,
       sync: false,
     });
-    expect(wrapper.emitted().input[0][0]).toEqual(["", ""]);
+    expect(wrapper.emitted().input[0][0]).toEqual(['', '']);
   });
 
   it('should not emit value on created if there is some value', () => {

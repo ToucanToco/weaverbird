@@ -17,8 +17,8 @@
   </div>
 </template>
 <script lang="ts">
-import _ from 'lodash';
 import { ErrorObject } from 'ajv';
+import isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import InputTextWidget from './InputText.vue';
@@ -43,7 +43,7 @@ export default class ReplaceWidget extends Vue {
   errors!: ErrorObject[];
 
   created() {
-    if(_.isEqual(this.value, ['', ''])) {
+    if (isEqual(this.value, ['', ''])) {
       this.update(this.value);
     }
   }
