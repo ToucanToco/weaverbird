@@ -53,18 +53,18 @@ import { MutationCallbacks } from '@/store/mutations';
 import MultiInputTextWidget from './MultiInputText.vue';
 
 type LiteralOperator =
-  | 'equal'
-  | 'not equal'
-  | 'be greater than'
-  | 'be greater than or equal to'
-  | 'be less than'
-  | 'be less than or equal to'
-  | 'be one of'
-  | 'not be one of'
+  | 'equals'
+  | "doesn't equal"
+  | 'is greater than'
+  | 'is greater than or equal to'
+  | 'is less than'
+  | 'is less than or equal to'
+  | 'is one of'
+  | 'is not one of'
   | 'matches pattern'
   | "doesn't match pattern"
-  | 'be null'
-  | 'not be null';
+  | 'is null'
+  | 'is not null';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
@@ -101,18 +101,18 @@ export default class FilterSimpleConditionWidget extends Vue {
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   readonly operators: OperatorOption[] = [
-    { operator: 'eq', label: 'equal', inputWidget: InputTextWidget },
-    { operator: 'ne', label: 'not equal', inputWidget: InputTextWidget },
-    { operator: 'gt', label: 'be greater than', inputWidget: InputTextWidget },
-    { operator: 'ge', label: 'be greater than or equal to', inputWidget: InputTextWidget },
-    { operator: 'lt', label: 'be less than', inputWidget: InputTextWidget },
-    { operator: 'le', label: 'be less than or equal to', inputWidget: InputTextWidget },
-    { operator: 'in', label: 'be one of', inputWidget: MultiInputTextWidget },
-    { operator: 'nin', label: 'not be one of', inputWidget: MultiInputTextWidget },
+    { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },
+    { operator: 'ne', label: "doesn't equal", inputWidget: InputTextWidget },
+    { operator: 'gt', label: 'is greater than', inputWidget: InputTextWidget },
+    { operator: 'ge', label: 'is greater than or equal to', inputWidget: InputTextWidget },
+    { operator: 'lt', label: 'is less than', inputWidget: InputTextWidget },
+    { operator: 'le', label: 'is less than or equal to', inputWidget: InputTextWidget },
+    { operator: 'in', label: 'is one of', inputWidget: MultiInputTextWidget },
+    { operator: 'nin', label: 'is not one of', inputWidget: MultiInputTextWidget },
     { operator: 'matches', label: 'matches pattern', inputWidget: InputTextWidget },
     { operator: 'notmatches', label: "doesn't match pattern", inputWidget: InputTextWidget },
-    { operator: 'isnull', label: 'be null' },
-    { operator: 'notnull', label: 'not be null' },
+    { operator: 'isnull', label: 'is null' },
+    { operator: 'notnull', label: 'is not null' },
   ];
 
   created() {

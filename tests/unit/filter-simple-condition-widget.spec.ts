@@ -95,7 +95,7 @@ describe('Widget FilterSimpleCondition', () => {
     const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(widgetWrappers.at(1).props().value).toEqual({
       operator: 'nin',
-      label: 'not be one of',
+      label: 'is not one of',
       inputWidget: MultiInputTextWidget,
     });
   });
