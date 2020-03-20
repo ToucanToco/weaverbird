@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED
+
+## Changed
+- Filter step form can generate nested trees of and/or conditions
+
 ## [0.14.0] - 2020-03-17
 
 ### Added
