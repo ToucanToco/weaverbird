@@ -17,6 +17,7 @@
   </div>
 </template>
 <script lang="ts">
+import _ from 'lodash';
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
@@ -42,7 +43,9 @@ export default class ReplaceWidget extends Vue {
   errors!: ErrorObject[];
 
   created() {
-    this.update(this.value);
+    if(_.isEqual(this.value, ['', ''])) {
+      this.update(this.value);
+    }
   }
 
   get valueToReplace() {

@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
@@ -39,6 +40,27 @@ describe('Widget ReplaceWidget', () => {
     expect(widgetWrappers.at(1).props().value).toEqual('bar');
   });
 
+  it('should emit value on created if values are empty', () => {
+    const wrapper = shallowMount(ReplaceWidget, {
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+    expect(wrapper.emitted().input[0][0]).toEqual(["", ""]);
+  });
+
+  it('should not emit value on created if there is some value', () => {
+    const wrapper = shallowMount(ReplaceWidget, {
+      propsData: {
+        value: ['lolilol', 'yolo'],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+    expect(wrapper.emitted().input).toBe(undefined);
+  });
+
   it('should emit "input" event with correct updated values when input valueToReplace is updated', async () => {
     const wrapper = shallowMount(ReplaceWidget, {
       propsData: {
@@ -48,12 +70,11 @@ describe('Widget ReplaceWidget', () => {
       localVue,
       sync: false,
     });
-    await localVue.nextTick();
     wrapper
       .findAll('InputTextWidget-stub')
       .at(0)
       .vm.$emit('input', 'foo');
-    expect(wrapper.emitted().input[1][0]).toEqual(['foo', 'bim']);
+    expect(wrapper.emitted().input[0][0]).toEqual(['foo', 'bim']);
   });
 
   it('should emit "input" event with correct updated values when input newValueToReplace is updated', async () => {
@@ -65,11 +86,10 @@ describe('Widget ReplaceWidget', () => {
       localVue,
       sync: false,
     });
-    await localVue.nextTick();
     wrapper
       .findAll('InputTextWidget-stub')
       .at(1)
       .vm.$emit('input', 'bar');
-    expect(wrapper.emitted().input[1][0]).toEqual(['yolo', 'bar']);
+    expect(wrapper.emitted().input[0][0]).toEqual(['yolo', 'bar']);
   });
 });
