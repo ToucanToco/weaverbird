@@ -250,6 +250,58 @@ describe('Convert filter step tree', () => {
         },
       });
     });
+    it('should return a condition with "or" operator that appears multiple time in same group', () => {
+      expect(
+        buildFilterStepTree(
+          {
+            operator: 'and',
+            conditions: [
+              { column: 'columnA', operator: 'eq', value: 'true' },
+              { column: 'columnB', operator: 'eq', value: 'true' },
+            ],
+            groups: [
+              {
+                operator: 'or',
+                conditions: [
+                  { column: 'columnC', operator: 'eq', value: 'true' },
+                  { column: 'columnD', operator: 'eq', value: 'true' },
+                ],
+                groups: [],
+              },
+              {
+                operator: 'or',
+                conditions: [
+                  { column: 'columnX', operator: 'neq', value: 'Country' },
+                  { column: 'columnZ', operator: 'matches', value: 'KPI' },
+                ],
+                groups: [],
+              },
+            ],
+          },
+          true,
+        ),
+      ).toEqual({
+        name: 'filter',
+        condition: {
+          and: [
+            { column: 'columnA', operator: 'eq', value: 'true' },
+            { column: 'columnB', operator: 'eq', value: 'true' },
+            {
+              or: [
+                { column: 'columnC', operator: 'eq', value: 'true' },
+                { column: 'columnD', operator: 'eq', value: 'true' },
+              ],
+            },
+            {
+              or: [
+                { column: 'columnX', operator: 'neq', value: 'Country' },
+                { column: 'columnZ', operator: 'matches', value: 'KPI' },
+              ],
+            },
+          ],
+        },
+      });
+    });
   });
 
   describe('castFilterStepTreeValue', () => {
