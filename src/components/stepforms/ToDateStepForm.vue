@@ -18,6 +18,9 @@
       placeholder="%Y-%m-%d"
       data-path=".format"
       :errors="errors"
+      :docUrl="
+        `https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers`
+      "
     />
     <StepFormButtonbar />
   </div>
