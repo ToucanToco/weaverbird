@@ -17,6 +17,7 @@
           <a
             href="https://weaverbird.toucantoco.com/docs/general-principles/"
             target="_blank"
+            rel="noopener"
             class="documentation-help__content"
           >
             <i class="fas fa-question-circle" />
@@ -27,9 +28,7 @@
       </div>
     </transition>
   </div>
-  <div class="query-builder query-builder--no-pipeline" v-else>
-    Select a pipeline...
-  </div>
+  <div class="query-builder query-builder--no-pipeline" v-else>Select a pipeline...</div>
 </template>
 <script lang="ts">
 import '@/components/stepforms'; // required to load all step forms

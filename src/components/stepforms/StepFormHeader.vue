@@ -6,7 +6,11 @@
     </button>
     <div class="step-edit-form__title-container">
       <h1>{{ props.title }}</h1>
-      <a :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`" target="_blank">
+      <a
+        :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`"
+        target="_blank"
+        rel="noopener"
+      >
         <i class="fas fa-question-circle" />
       </a>
     </div>
