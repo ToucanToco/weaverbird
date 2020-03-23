@@ -1,6 +1,11 @@
 <template>
   <div class="widget-input-text__container" :class="toggleClassErrorWarning">
-    <label v-if="name" :for="id">{{ name }}</label>
+    <div class="widget-input-text__label">
+      <label v-if="name" :for="id">{{ name }}</label>
+      <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
+        <i class="fas fa-question-circle" />
+      </a>
+    </div>
     <input
       :id="id"
       :class="elementClass"
@@ -12,10 +17,12 @@
       @input="updateValue($event.target.value)"
     />
     <div v-if="messageError" class="field__msg-error">
-      <span class="fa fa-exclamation-circle" />{{ messageError }}
+      <span class="fa fa-exclamation-circle" />
+      {{ messageError }}
     </div>
     <div v-if="messageWarning" class="field__msg-warning">
-      <span class="fas fa-exclamation-triangle" />{{ messageWarning }}
+      <span class="fas fa-exclamation-triangle" />
+      {{ messageWarning }}
     </div>
   </div>
 </template>
@@ -40,6 +47,9 @@ export default class InputTextWidget extends Mixins(FormWidget) {
 
   @Prop({ default: '' })
   value!: string | number | boolean;
+
+  @Prop({ default: undefined })
+  docUrl!: string | undefined;
 
   isFocused = false;
 
@@ -79,7 +89,24 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @extend %form-widget__field--focused;
 }
 
-.widget-input-text__container label {
+.widget-input-text__label {
+  align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.widget-input-text__label label {
   @extend %form-widget__label;
+}
+
+.fas.fa-question-circle {
+  margin-left: 5px;
+  color: $base-color;
+  font-size: 14px;
+
+  &:hover {
+    color: $active-color;
+  }
 }
 </style>

@@ -27,6 +27,18 @@ describe('Widget Input Text', () => {
     expect(labelWrapper.text()).toEqual('Stark');
   });
 
+  it('should not have a hyperlink element if prop "docUrl" is undefined', () => {
+    const wrapper = shallowMount(InputTextWidget);
+    expect(wrapper.find('a').exists()).toBeFalsy();
+  });
+
+  it('should have a hyperlink element if prop "docUrl" is defined', () => {
+    const wrapper = shallowMount(InputTextWidget, { propsData: { docUrl: 'testURL' } });
+    const linkWrapper = wrapper.find('a');
+    expect(wrapper.find('a').exists()).toBeTruthy();
+    expect(linkWrapper.attributes().href).toEqual('testURL');
+  });
+
   it('should have an empty placeholder', () => {
     const wrapper = shallowMount(InputTextWidget, {
       propsData: {
