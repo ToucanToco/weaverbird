@@ -206,7 +206,10 @@ describe('Widget FilterSimpleCondition', () => {
       localVue,
       sync: false,
     });
-    wrapper.find(AutocompleteWidget).vm.$emit('input', 'columnB');
+    wrapper
+      .findAll(AutocompleteWidget)
+      .at(0)
+      .vm.$emit('input', 'columnB');
     await wrapper.vm.$nextTick();
     expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
   });

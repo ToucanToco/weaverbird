@@ -1,16 +1,29 @@
 import { shallowMount } from '@vue/test-utils';
+import Multiselect from 'vue-multiselect';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 
 describe('Widget Autocomplete', () => {
-  it('should instantiate', () => {
-    const wrapper = shallowMount(AutocompleteWidget);
-    expect(wrapper.exists()).toBeTruthy();
+  it('should instantiate passing the correct value to multiselect', () => {
+    const wrapper = shallowMount(AutocompleteWidget, {
+      propsData: {
+        value: 'AAA',
+        options: ['AAA', 'BBBB'],
+      },
+    });
+    expect(wrapper.find(Multiselect).vm.$props.value).toEqual('AAA');
+    expect(wrapper.find(Multiselect).vm.$props.options).toEqual(['AAA', 'BBBB']);
   });
 
-  it('should have an instantiated Multiselect autocomplete', () => {
-    const wrapper = shallowMount(AutocompleteWidget);
-    expect(wrapper.find('multiselect-stub').exists()).toBeTruthy();
+  it('should emit new value', async () => {
+    const wrapper = shallowMount(AutocompleteWidget, {
+      propsData: {
+        value: 'AAA',
+        options: ['AAA', 'BBBB'],
+      },
+    });
+    wrapper.find(Multiselect).vm.$emit('input', 'AAA');
+    expect(wrapper.emitted().input[0][0]).toEqual('AAA');
   });
 
   it('should have a label if prop "name" is defined', () => {

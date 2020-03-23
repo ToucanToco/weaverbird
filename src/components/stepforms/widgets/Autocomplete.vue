@@ -2,7 +2,8 @@
   <div class="widget-autocomplete__container" :class="toggleClassErrorWarning">
     <label class="widget-autocomplete__label" v-if="name" :for="id">{{ name }}</label>
     <multiselect
-      v-model="editedValue"
+      :value="value"
+      @input="$emit('input', $event)"
       :options="options"
       :placeholder="placeholder"
       :allow-empty="false"
@@ -18,7 +19,7 @@
 
 <script lang="ts">
 import Multiselect from 'vue-multiselect';
-import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
+import { Component, Mixins, Prop } from 'vue-property-decorator';
 
 import FormWidget from './FormWidget.vue';
 
@@ -49,18 +50,6 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop({ type: String, default: undefined })
   label!: string;
-
-  editedValue = '';
-
-  @Watch('value', { immediate: true })
-  updateEditedValue(newValue: string) {
-    this.editedValue = newValue;
-  }
-
-  @Watch('editedValue')
-  updateValue(newValue: string) {
-    this.$emit('input', newValue);
-  }
 }
 </script>
 
