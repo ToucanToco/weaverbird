@@ -984,9 +984,11 @@ Filter out lines that don't match a filter definition.
 ```javascript
 {
     name: 'filter',
-    column: 'my-column',
-    value: 42,
-    operator: 'ne'
+    condition: {
+      column: 'my-column',
+      value: 42,
+      operator: 'ne'
+    }
 }
 ```
 
@@ -998,6 +1000,42 @@ when used with the `in` operator, or `null` when used with the `isnull`
 operator).
 
 `matches` and `notmatches` operators are used to test value against a regular expression.
+
+Conditions can be grouped and nested with logical operators `and` and `or`.
+
+```javascript
+{
+    name: 'filter',
+    condition: {
+      and: [
+        {
+          column: 'my-column',
+          value: 42,
+          operator: 'gte'
+        },
+        {
+          column: 'my-column',
+          value: 118,
+          operator: 'lte'
+        },
+        {
+          or: [
+            {
+              column: 'my-other-column',
+              value: 'blue',
+              operator: 'eq'
+            },
+            {
+              column: 'my-other-column',
+              value: 'red',
+              operator: 'eq'
+            }
+          ]
+        }
+      ]
+    }
+}
+```
 
 **This step is supported by the following backends:**
 
