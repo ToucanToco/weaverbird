@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-03-23T10:37:39+01:00" />
+<meta property="article:published_time" content="2020-03-23T19:27:33+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-03-23T10:37:39+01:00","dateModified":"2020-03-23T10:37:39+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-03-23T19:27:33+01:00","dateModified":"2020-03-23T19:27:33+01:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -2609,9 +2609,11 @@ prohibited.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
     <span class="nl">name</span><span class="p">:</span> <span class="s1">'filter'</span><span class="p">,</span>
-    <span class="nx">column</span><span class="p">:</span> <span class="s1">'my-column'</span><span class="p">,</span>
-    <span class="nx">value</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
-    <span class="nx">operator</span><span class="p">:</span> <span class="s1">'ne'</span>
+    <span class="nx">condition</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nl">column</span><span class="p">:</span> <span class="s1">'my-column'</span><span class="p">,</span>
+      <span class="nx">value</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+      <span class="nx">operator</span><span class="p">:</span> <span class="s1">'ne'</span>
+    <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
@@ -2623,6 +2625,41 @@ when used with the <code class="highlighter-rouge">in</code> operator, or <code 
 operator).</p>
 
 <p><code class="highlighter-rouge">matches</code> and <code class="highlighter-rouge">notmatches</code> operators are used to test value against a regular expression.</p>
+
+<p>Conditions can be grouped and nested with logical operators <code class="highlighter-rouge">and</code> and <code class="highlighter-rouge">or</code>.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="nl">name</span><span class="p">:</span> <span class="s1">'filter'</span><span class="p">,</span>
+    <span class="nx">condition</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nl">and</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+          <span class="na">column</span><span class="p">:</span> <span class="s1">'my-column'</span><span class="p">,</span>
+          <span class="na">value</span><span class="p">:</span> <span class="mi">42</span><span class="p">,</span>
+          <span class="na">operator</span><span class="p">:</span> <span class="s1">'gte'</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="na">column</span><span class="p">:</span> <span class="s1">'my-column'</span><span class="p">,</span>
+          <span class="na">value</span><span class="p">:</span> <span class="mi">118</span><span class="p">,</span>
+          <span class="na">operator</span><span class="p">:</span> <span class="s1">'lte'</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+          <span class="na">or</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+              <span class="na">column</span><span class="p">:</span> <span class="s1">'my-other-column'</span><span class="p">,</span>
+              <span class="na">value</span><span class="p">:</span> <span class="s1">'blue'</span><span class="p">,</span>
+              <span class="na">operator</span><span class="p">:</span> <span class="s1">'eq'</span>
+            <span class="p">},</span>
+            <span class="p">{</span>
+              <span class="na">column</span><span class="p">:</span> <span class="s1">'my-other-column'</span><span class="p">,</span>
+              <span class="na">value</span><span class="p">:</span> <span class="s1">'red'</span><span class="p">,</span>
+              <span class="na">operator</span><span class="p">:</span> <span class="s1">'eq'</span>
+            <span class="p">}</span>
+          <span class="p">]</span>
+        <span class="p">}</span>
+      <span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
