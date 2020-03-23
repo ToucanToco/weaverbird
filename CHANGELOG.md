@@ -1,5 +1,14 @@
 # Changelog
 
+## UNRELEASED -
+
+### Added
+
+- Add a `docUrl` prop to widget-input-text so that a help picto with a direct
+  link to documentation can can be easily added to the the component
+- Add a help picto in `todate` and `fromdate` steps UI that links to the Mongo
+  documentation referencing supported date formats
+
 ## [0.14.0] - 2020-03-17
 
 ### Added
