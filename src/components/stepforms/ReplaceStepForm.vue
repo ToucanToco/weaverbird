@@ -59,10 +59,7 @@ export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
     return this.editedStep.search_column;
   }
 
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on search_column field');
-    }
+  set stepSelectedColumn(colname: string) {
     this.editedStep.search_column = colname;
   }
 
