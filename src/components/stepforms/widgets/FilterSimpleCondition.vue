@@ -3,12 +3,9 @@
     <div class="filter-form-simple-condition-column-input">
       <AutocompleteWidget
         :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
-        v-model="value.column"
+        :value="value.column"
         :options="columnNames"
-        @input="
-          setSelectedColumns({ column: value.column });
-          $emit('input', value);
-        "
+        @input="updateStepColumn"
         placeholder="Column"
         :data-path="`${dataPath}.column`"
         :errors="errors"
@@ -29,11 +26,11 @@
       :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterValue`"
       v-if="inputWidget"
       :is="inputWidget"
-      v-model="value.value"
+      :value="value.value"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
-      @input="$emit('input', value)"
+      @input="updateStepValue"
     />
   </div>
 </template>
@@ -142,9 +139,9 @@ export default class FilterSimpleConditionWidget extends Vue {
     }
   }
 
-  updateStepOperator(op: OperatorOption) {
+  updateStepOperator(newOperator: OperatorOption) {
     const updatedValue = { ...this.value };
-    updatedValue.operator = op.operator;
+    updatedValue.operator = newOperator.operator;
     if (updatedValue.operator === 'in' || updatedValue.operator === 'nin') {
       updatedValue.value = [];
     } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
@@ -152,6 +149,19 @@ export default class FilterSimpleConditionWidget extends Vue {
     } else {
       updatedValue.value = '';
     }
+    this.$emit('input', updatedValue);
+  }
+
+  updateStepValue(newColumn: any) {
+    const updatedValue = { ...this.value };
+    updatedValue.value = newColumn;
+    this.$emit('input', updatedValue);
+  }
+
+  updateStepColumn(newValue: string) {
+    const updatedValue = { ...this.value };
+    updatedValue.column = newValue;
+    this.setSelectedColumns({ column: updatedValue.column });
     this.$emit('input', updatedValue);
   }
 }
