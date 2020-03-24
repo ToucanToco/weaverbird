@@ -1,6 +1,10 @@
 # Changelog
 
-## UNRELEASED -
+## [0.15.0] - 2020-03-24
+
+### Changed
+
+- Revamp the filter step to allow edition of nested logical trees
 
 ### Added
 
@@ -203,6 +207,7 @@
 
 - Initial version, showtime!
 
+[0.15.0]: https://github.com/ToucanToco/weaverbird/compare/v0.14.0...v0.15.0
 [0.14.0]: https://github.com/ToucanToco/weaverbird/compare/v0.13.1...v0.14.0
 [0.13.1]: https://github.com/ToucanToco/weaverbird/compare/v0.12.0...v0.13.1
 [0.12.0]: https://github.com/ToucanToco/weaverbird/compare/v0.11.0...v0.12.0
