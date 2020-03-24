@@ -55,10 +55,6 @@ export default class SortColumnWidget extends Vue {
   @VQBModule.Getter columnNames!: string[];
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
-  created() {
-    this.update(this.value);
-  }
-
   get sortColumn() {
     return this.value.column;
   }
