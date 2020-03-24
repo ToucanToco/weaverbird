@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/filter/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-03-24T20:06:25+01:00" />
+<meta property="article:published_time" content="2020-03-24T20:14:48+01:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/filter/","headline":"Filter","datePublished":"2020-03-24T20:06:25+01:00","dateModified":"2020-03-24T20:06:25+01:00","description":"Filter rows","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/filter/","headline":"Filter","datePublished":"2020-03-24T20:14:48+01:00","dateModified":"2020-03-24T20:14:48+01:00","description":"Filter rows","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -384,25 +384,20 @@ moment, we only support <code class="highlighter-rouge">and</code> as logical li
 
 <p><img src="../../img/docs/user-interface/filter_step_form.jpg" width="350" /></p>
 
-<ul>
-  <li>
-    <p><code class="highlighter-rouge">Values in ...</code>: the target column</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">Must...</code>: a comparison operator (equal, not equal etc.)</p>
-  </li>
-  <li>
-    <p>Then you can enter value(s) to be compared to. For <code class="highlighter-rouge">be one of</code> and <code class="highlighter-rouge">not be one
-of</code> operators, you can enter several values. For the <code class="highlighter-rouge">be null</code> and <code class="highlighter-rouge">not be
-null</code> operators, you do not need to enter any value as it is a comparison
-aginst <code class="highlighter-rouge">null</code> values. <code class="highlighter-rouge">matches</code> and <code class="highlighter-rouge">notmatches</code> operators are used to test
-value against a regular expression.</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">Add condition</code>: use this button if you need to add a new condition line. The
-retained rows will be those match every condition (logical <code class="highlighter-rouge">and</code>)</p>
-  </li>
-</ul>
+<p>You can specify either one or several condition(s) to filter rows.
+A simple condition is defined by a target column, a comparison operator
+(“equals”, “doesn’t equal”…) and an input where you can specify value(s) to be
+compared to.</p>
+
+<p>You can either add a simple condition line, or a group of simple conditions
+that you can bind by either an “AND” or an “OR” logical operator.
+Note that you cannot nest a group of conditions in another group.</p>
+
+<blockquote>
+  <p>Tip: If you need to filter null values, use the dedicated operators “null” or
+“not null”. If you try to write the value ‘null’ with an “equals” or
+“does not equal” operator, it will be considered as text, not as a null value.</p>
+</blockquote>
 
 <h4 id="example">Example</h4>
 
