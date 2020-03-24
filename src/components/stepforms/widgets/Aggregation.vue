@@ -69,7 +69,15 @@ export default class AggregationWidget extends Vue {
     });
   }
 
-  aggregationFunctions: AggFunctionStep['aggfunction'][] = ['sum', 'avg', 'count', 'min', 'max'];
+  aggregationFunctions: AggFunctionStep['aggfunction'][] = [
+    'sum',
+    'avg',
+    'count',
+    'min',
+    'max',
+    'first',
+    'last',
+  ];
 }
 </script>
 <style lang="scss" scoped>

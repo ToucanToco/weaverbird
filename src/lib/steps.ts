@@ -15,7 +15,7 @@ export type AggFunctionStep = {
   /** Name of the output column */
   newcolumn: string;
   /** the aggregation operation (e.g. `sum` or `count`) */
-  aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max';
+  aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max' | 'first' | 'last';
   /** the column the aggregation function is working on */
   column: string;
 };

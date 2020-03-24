@@ -23,6 +23,8 @@ const AGGFUNCTION_LABELS = {
   count: 'count',
   min: 'min',
   max: 'max',
+  first: 'first',
+  last: 'last',
 };
 
 /**
