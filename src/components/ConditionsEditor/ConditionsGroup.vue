@@ -142,7 +142,7 @@ export default class ConditionsGroup extends Vue {
     const newGroups = this.conditionsTree.groups || [];
     newGroups.push({
       operator: 'and',
-      // Pass undefined values to force ConditionForm to use its default condition prop value
+      // Pass undefined values to force FilterSimpleCondition to use its default condition prop value
       conditions: [undefined],
       groups: [],
     });
@@ -160,7 +160,7 @@ export default class ConditionsGroup extends Vue {
   addRow() {
     const newConditionsTree = {
       ...this.conditionsTree,
-      // Pass undefined value to force ConditionForm to use its default condition prop value
+      // Pass undefined value to force FilterSimpleCondition to use its default condition prop value
       conditions: [...this.conditions, undefined],
     } as AbstractFilterTree;
 
