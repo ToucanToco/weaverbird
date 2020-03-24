@@ -8,20 +8,83 @@ export default {
       enum: ['filter'],
     },
     condition: {
-      type: 'object',
+      if: { required: ['column'] },
+      then: {
+        $ref: '#/definitions/simpleCondition',
+      },
+      else: {
+        if: { required: ['or'] },
+        then: {
+          $ref: '#/definitions/orCondition',
+        },
+        else: {
+          if: { required: ['and'] },
+          then: {
+            $ref: '#/definitions/andCondition',
+          },
+        },
+      },
+    },
+  },
+  definitions: {
+    andCondition: {
       properties: {
         and: {
           type: 'array',
           minItems: 1,
           title: 'And condition',
-          items: { $ref: '#/definitions/simpleCondition' },
+          items: {
+            if: { required: ['column'] },
+            then: {
+              $ref: '#/definitions/simpleCondition',
+            },
+            else: {
+              if: { required: ['or'] },
+              then: {
+                $ref: '#/definitions/orCondition',
+              },
+              else: {
+                if: { required: ['and'] },
+                then: {
+                  $ref: '#/definitions/andCondition',
+                },
+              },
+            },
+          },
         },
       },
       required: ['and'],
       additionalProperties: false,
     },
-  },
-  definitions: {
+    orCondition: {
+      properties: {
+        or: {
+          type: 'array',
+          minItems: 1,
+          title: 'Or condition',
+          items: {
+            if: { required: ['column'] },
+            then: {
+              $ref: '#/definitions/simpleCondition',
+            },
+            else: {
+              if: { required: ['or'] },
+              then: {
+                $ref: '#/definitions/orCondition',
+              },
+              else: {
+                if: { required: ['and'] },
+                then: {
+                  $ref: '#/definitions/andCondition',
+                },
+              },
+            },
+          },
+        },
+      },
+      required: ['or'],
+      additionalProperties: false,
+    },
     simpleCondition: {
       type: 'object',
       properties: {

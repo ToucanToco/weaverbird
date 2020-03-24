@@ -23,18 +23,18 @@ moment, we only support `and` as logical link between conditions.
 
 <img src="../../img/docs/user-interface/filter_step_form.jpg" width="350" />
 
-- `Values in ...`: the target column
+You can specify either one or several condition(s) to filter rows.
+A simple condition is defined by a target column, a comparison operator
+("equals", "doesn't equal"...) and an input where you can specify value(s) to be
+compared to.
 
-- `Must...`: a comparison operator (equal, not equal etc.)
+You can either add a simple condition line, or a group of simple conditions
+that you can bind by either an "AND" or an "OR" logical operator.
+Note that you cannot nest a group of conditions in another group.
 
-- Then you can enter value(s) to be compared to. For `be one of` and `not be one
-  of` operators, you can enter several values. For the `be null` and `not be
-  null` operators, you do not need to enter any value as it is a comparison
-  aginst `null` values. `matches` and `notmatches` operators are used to test
-  value against a regular expression.
-
-- `Add condition`: use this button if you need to add a new condition line. The
-  retained rows will be those match every condition (logical `and`)
+> Tip: If you need to filter null values, use the dedicated operators "null" or
+> "not null". If you try to write the value 'null' with an "equals" or
+> "does not equal" operator, it will be considered as text, not as a null value.
 
 #### Example
 

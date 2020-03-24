@@ -2,10 +2,10 @@
   <div class="filter-form-simple-condition__container">
     <div class="filter-form-simple-condition-column-input">
       <AutocompleteWidget
-        id="columnInput"
-        v-model="editedValue.column"
+        :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
+        :value="value.column"
         :options="columnNames"
-        @input="setSelectedColumns({ column: editedValue.column })"
+        @input="updateStepColumn"
         placeholder="Column"
         :data-path="`${dataPath}.column`"
         :errors="errors"
@@ -13,7 +13,7 @@
     </div>
     <div class="filter-form-simple-condition-operator-input">
       <AutocompleteWidget
-        id="filterOperator"
+        :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterOperator`"
         :value="operator"
         @input="updateStepOperator"
         :options="operators"
@@ -23,21 +23,23 @@
       />
     </div>
     <component
-      id="filterValue"
+      :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterValue`"
       v-if="inputWidget"
       :is="inputWidget"
-      v-model="editedValue.value"
+      :value="value.value"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
+      @input="updateStepValue"
     />
   </div>
 </template>
 
 <script lang="ts">
 import { ErrorObject } from 'ajv';
+import isEqual from 'lodash/isEqual';
 import { VueConstructor } from 'vue';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -48,18 +50,18 @@ import { MutationCallbacks } from '@/store/mutations';
 import MultiInputTextWidget from './MultiInputText.vue';
 
 type LiteralOperator =
-  | 'equal'
-  | 'not equal'
-  | 'be greater than'
-  | 'be greater than or equal to'
-  | 'be less than'
-  | 'be less than or equal to'
-  | 'be one of'
-  | 'not be one of'
+  | 'equals'
+  | "doesn't equal"
+  | 'is greater than'
+  | 'is greater than or equal to'
+  | 'is less than'
+  | 'is less than or equal to'
+  | 'is one of'
+  | 'is not one of'
   | 'matches pattern'
   | "doesn't match pattern"
-  | 'be null'
-  | 'not be null';
+  | 'is null'
+  | 'is not null';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
@@ -68,6 +70,8 @@ type OperatorOption = {
   label: LiteralOperator;
   inputWidget?: VueConstructor<Vue>;
 };
+
+const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
 
 @Component({
   name: 'filter-simple-condition-widget',
@@ -79,11 +83,11 @@ type OperatorOption = {
 export default class FilterSimpleConditionWidget extends Vue {
   @Prop({
     type: Object,
-    default: () => ({ column: '', value: '', operator: 'eq' }),
+    default: () => ({ ...DEFAULT_FILTER }),
   })
   value!: FilterSimpleCondition;
 
-  @Prop({ type: String, default: null })
+  @Prop({ type: String, default: '' })
   dataPath!: string;
 
   @Prop({ type: Array, default: () => [] })
@@ -93,37 +97,41 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
-  editedValue: FilterSimpleCondition = { ...this.value };
-
   readonly operators: OperatorOption[] = [
-    { operator: 'eq', label: 'equal', inputWidget: InputTextWidget },
-    { operator: 'ne', label: 'not equal', inputWidget: InputTextWidget },
-    { operator: 'gt', label: 'be greater than', inputWidget: InputTextWidget },
-    { operator: 'ge', label: 'be greater than or equal to', inputWidget: InputTextWidget },
-    { operator: 'lt', label: 'be less than', inputWidget: InputTextWidget },
-    { operator: 'le', label: 'be less than or equal to', inputWidget: InputTextWidget },
-    { operator: 'in', label: 'be one of', inputWidget: MultiInputTextWidget },
-    { operator: 'nin', label: 'not be one of', inputWidget: MultiInputTextWidget },
+    { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },
+    { operator: 'ne', label: "doesn't equal", inputWidget: InputTextWidget },
+    { operator: 'gt', label: 'is greater than', inputWidget: InputTextWidget },
+    { operator: 'ge', label: 'is greater than or equal to', inputWidget: InputTextWidget },
+    { operator: 'lt', label: 'is less than', inputWidget: InputTextWidget },
+    { operator: 'le', label: 'is less than or equal to', inputWidget: InputTextWidget },
+    { operator: 'in', label: 'is one of', inputWidget: MultiInputTextWidget },
+    { operator: 'nin', label: 'is not one of', inputWidget: MultiInputTextWidget },
     { operator: 'matches', label: 'matches pattern', inputWidget: InputTextWidget },
     { operator: 'notmatches', label: "doesn't match pattern", inputWidget: InputTextWidget },
-    { operator: 'isnull', label: 'be null' },
-    { operator: 'notnull', label: 'not be null' },
+    { operator: 'isnull', label: 'is null' },
+    { operator: 'notnull', label: 'is not null' },
   ];
 
+  created() {
+    // In absence of condition, emit directly to the parent the default value
+    if (isEqual(this.value, DEFAULT_FILTER)) {
+      this.$emit('input', DEFAULT_FILTER);
+    }
+  }
+
   get placeholder() {
-    if (this.editedValue.operator === 'matches' || this.editedValue.operator === 'notmatches') {
+    if (this.value.operator === 'matches' || this.value.operator === 'notmatches') {
       return 'Enter a regex, e.g. "[Ss]ales"';
     }
     return 'Enter a value';
   }
 
   get operator(): OperatorOption {
-    return this.operators.filter(d => d.operator === this.editedValue.operator)[0];
+    return this.operators.filter(d => d.operator === this.value.operator)[0];
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
-    const widget = this.operators.filter(d => d.operator === this.editedValue.operator)[0]
-      .inputWidget;
+    const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
     if (widget) {
       return widget;
     } else {
@@ -131,56 +139,71 @@ export default class FilterSimpleConditionWidget extends Vue {
     }
   }
 
-  updateStepOperator(op: OperatorOption) {
-    this.editedValue.operator = op.operator;
-    if (this.editedValue.operator === 'in' || this.editedValue.operator === 'nin') {
-      this.editedValue.value = [];
-    } else if (this.editedValue.operator === 'isnull' || this.editedValue.operator === 'notnull') {
-      this.editedValue.value = null;
+  updateStepOperator(newOperator: OperatorOption) {
+    const updatedValue = { ...this.value };
+    updatedValue.operator = newOperator.operator;
+    if (updatedValue.operator === 'in' || updatedValue.operator === 'nin') {
+      updatedValue.value = [];
+    } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
+      updatedValue.value = null;
     } else {
-      this.editedValue.value = '';
+      updatedValue.value = '';
     }
+    this.$emit('input', updatedValue);
   }
 
-  @Watch('value', { immediate: true })
-  updateEditedValue(newValue: FilterSimpleCondition) {
-    this.editedValue = newValue;
+  updateStepValue(newColumn: any) {
+    const updatedValue = { ...this.value };
+    updatedValue.value = newColumn;
+    this.$emit('input', updatedValue);
   }
 
-  @Watch('editedValue', { deep: true })
-  updateValue(newValue: FilterSimpleCondition) {
-    this.$emit('input', newValue);
+  updateStepColumn(newValue: string) {
+    const updatedValue = { ...this.value };
+    updatedValue.column = newValue;
+    this.setSelectedColumns({ column: updatedValue.column });
+    this.$emit('input', updatedValue);
   }
 }
 </script>
 <style lang="scss" scoped>
 .filter-form-simple-condition__container {
-  background-color: white;
   display: flex;
-  min-height: 45px;
   width: 100%;
 }
 
-.filter-form-simple-condition-column-input {
-  margin-left: 10px;
-  margin-right: 10px;
-  width: 33%;
-}
-.filter-form-simple-condition-operator-input {
-  margin-right: 10px;
-  width: 33%;
+.widget-autocomplete__container,
+.widget-input-text__container {
+  margin: 0;
 }
 
-.filter-form-simple-condition__container .widget-input-text__container {
-  margin-bottom: 0px;
-  margin-right: 10px;
-  width: 33%;
-}
-
+.filter-form-simple-condition-column-input,
+.filter-form-simple-condition-operator-input,
+.filter-form-simple-condition__container .widget-input-text__container,
+.filter-form-simple-condition__container .widget-input-text__container,
 .filter-form-simple-condition__container .widget-multiinputtext__container {
-  margin-bottom: 0px;
-  margin-right: 10px;
+  margin: 4px;
+  margin-right: 0;
   width: 33%;
+
+  &:last-child {
+    margin-right: 4px;
+  }
+}
+
+.filter-form-simple-condition__container /deep/ .widget-input-text,
+.filter-form-simple-condition__container /deep/ .multiselect {
+  background-color: white;
+
+  &::placeholder {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+}
+
+.multiselect__tags {
+  border-radius: 0;
+  border: none;
 }
 </style>
 

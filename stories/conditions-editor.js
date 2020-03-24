@@ -1,4 +1,4 @@
-import { ConditionsEditor, ConditionForm } from '../dist/storybook/components';
+import { ConditionsEditor, FilterSimpleCondition } from '../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
 const stories = storiesOf('ConditionsEditor', module);
@@ -13,7 +13,7 @@ stories.add('default', () => ({
 
   components: {
     ConditionsEditor,
-    ConditionForm
+    FilterSimpleCondition
   },
 
   data() {
@@ -55,7 +55,7 @@ stories.add('data filtering', () => ({
     <div style="margin: 30px; overflow: auto">
       <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateConditionsTree">
         <template v-slot:default="slotProps">
-          <ConditionForm :condition="slotProps.condition" @conditionUpdated="slotProps.updateCondition"></ConditionForm>
+          <FilterSimpleCondition :condition="slotProps.condition" @conditionUpdated="slotProps.updateCondition"></FilterSimpleCondition>
         </template>
       </ConditionsEditor>
       <pre style="margin-top: 30px;">{{ conditionsStringify }}</pre>
@@ -63,7 +63,7 @@ stories.add('data filtering', () => ({
   `,
 
   components: {
-    ConditionForm,
+    FilterSimpleCondition,
     ConditionsEditor,
   },
 

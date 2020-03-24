@@ -2,6 +2,7 @@
   <div class="conditions-editor">
     <div class="conditions-editor__info">Filter rows matching this condition:</div>
     <ConditionsGroup
+      data-path=".condition"
       :conditionsTree="conditionsTree"
       :is-root-group="true"
       @conditionsTreeUpdated="updateConditionsTree"
@@ -24,11 +25,30 @@
   These abritrary conditions need each a form, which should be defined in the default slot.
   This scoped slot will receive in `slotProps` its `condition`, and a `updateCondition` function.
 
-  The trees are intentionnaly limited to 2 levels to avoid unnecessary complexity.
+  The trees are intentionally limited to 2 levels to avoid unnecessary complexity.
+
+  Example:
+  conditionsTree = {
+    conditions: [
+      { column: 'country', operator: 'le',  value: 'France'}
+    ],
+    groups: [
+      {
+        conditions: [
+          { column: 'Section', operator: 'eq',  value: 'A'}
+          { column: 'City', operator: 'neq',  value: 'Paris'}
+        ],
+        groups: []
+        operator: 'or'
+      }
+    ],
+    operator: 'and'
+  }
 */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import ConditionsGroup, { AbstractFilterTree } from './ConditionsGroup.vue';
+import ConditionsGroup from './ConditionsGroup.vue';
+import { AbstractFilterTree } from './tree-types';
 
 @Component({
   name: 'ConditionsEditor',

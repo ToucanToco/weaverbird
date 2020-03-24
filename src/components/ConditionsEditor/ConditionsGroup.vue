@@ -2,10 +2,10 @@
   <div
     class="conditions-group"
     :class="{
-      'conditions-group--with-switch': hasMultipleRows,
+      'conditions-group--with-switch': hasMultipleRows || !isRootGroup,
     }"
   >
-    <div v-if="hasMultipleRows" class="conditions-group__switch">
+    <div v-if="hasMultipleRows || !isRootGroup" class="conditions-group__switch">
       <div class="condition-group__switch-link" />
       <div class="conditions-group__switch-buttons">
         <div
@@ -26,7 +26,7 @@
     </div>
     <div v-for="(condition, rowIndex) in conditions" :key="'row' + rowIndex" class="condition-row">
       <div
-        v-if="hasMultipleRows"
+        v-if="hasMultipleRows || !isRootGroup"
         class="condition-row__link"
         :class="{
           'condition-row__link--last': isLastRow(rowIndex),
@@ -37,10 +37,14 @@
         <div class="condition-row__link__bottom" />
       </div>
       <div class="condition-row__content">
-        <slot :condition="condition" :updateCondition="updateCondition(rowIndex)" />
+        <slot
+          :dataPath="operator != '' ? `${dataPath}.${operator}[${rowIndex}]` : dataPath"
+          :condition="condition"
+          :updateCondition="updateCondition(rowIndex)"
+        />
       </div>
       <i
-        v-if="hasMultipleRows"
+        v-if="conditions.length > 1"
         class="condition-row__delete far fa-trash-alt"
         @click="deleteRow(rowIndex)"
       />
@@ -60,6 +64,7 @@
       </div>
       <ConditionsGroup
         :conditions-tree="groupConditionTree"
+        :dataPath="`${dataPath}.${operator}[${groupIndex + conditions.length}]`"
         @conditionsTreeUpdated="updateGroup(groupIndex, $event)"
       >
         <template v-slot:default="slotProps">
@@ -69,7 +74,7 @@
       <i class="conditions-group__delete far fa-trash-alt" @click="deleteGroup(groupIndex)" />
     </div>
     <div class="conditions-group__action-buttons">
-      <div v-if="hasMultipleRows" class="action-buttons__link">
+      <div v-if="hasMultipleRows || !isRootGroup" class="action-buttons__link">
         <div class="action-buttons__link__top" />
         <div class="action-buttons__link__middle" />
       </div>
@@ -91,17 +96,17 @@
 </template>
 
 <script lang="ts">
+/**
+ * Represents a tree of conditions, grouped logically.
+ *
+ * The default slot act as template for each condition row.
+ * The logical operator switch is only displayed when there is more than one element.
+ *
+ * Nesting is intentionally blocked to two levels of depth to avoid unnecessary complexity.
+ */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-export type GenericFilterTree<ConditionType extends AbstractCondition> = {
-  conditions: ConditionType[];
-  groups: GenericFilterTree<ConditionType>[];
-  operator: ConditionOperator;
-};
-
-export type ConditionOperator = 'and' | 'or';
-export type AbstractCondition = any;
-export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
+import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
 
 @Component({
   name: 'ConditionsGroup',
@@ -109,7 +114,7 @@ export type AbstractFilterTree = GenericFilterTree<AbstractCondition>;
 export default class ConditionsGroup extends Vue {
   @Prop({
     type: Object,
-    default: () => ({ operator: 'and', conditions: [], groups: [] }),
+    default: () => ({ operator: '', conditions: [], groups: [] }),
   })
   conditionsTree!: AbstractFilterTree;
 
@@ -118,6 +123,12 @@ export default class ConditionsGroup extends Vue {
     default: false,
   })
   isRootGroup!: boolean;
+
+  @Prop({
+    type: String,
+    default: '',
+  })
+  dataPath!: string;
 
   get operator() {
     return this.conditionsTree.operator;
@@ -139,25 +150,29 @@ export default class ConditionsGroup extends Vue {
     const newGroups = this.conditionsTree.groups || [];
     newGroups.push({
       operator: 'and',
-      // Pass undefined values to force ConditionForm to use its default condition prop value
-      conditions: [undefined, undefined],
+      // Pass undefined values to force FilterSimpleCondition to use its default condition prop value
+      conditions: [undefined],
       groups: [],
     });
 
     const newConditionsTree = {
       ...this.conditionsTree,
       groups: newGroups,
-    };
-    this.emitUpdatedConditionTree(newConditionsTree);
+    } as AbstractFilterTree;
+    // When there is only one condition, the operator is an empty string.
+    // Set the operator to 'and' when a group is added.
+
+    this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
   }
 
   addRow() {
     const newConditionsTree = {
       ...this.conditionsTree,
-      // Pass undefined value to force ConditionForm to use its default condition prop value
+      // Pass undefined value to force FilterSimpleCondition to use its default condition prop value
       conditions: [...this.conditions, undefined],
-    };
-    this.emitUpdatedConditionTree(newConditionsTree);
+    } as AbstractFilterTree;
+
+    this.setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree);
   }
 
   deleteGroup(groupIndex: number) {
@@ -167,9 +182,10 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       groups: newGroups,
-    };
+    } as AbstractFilterTree;
 
     this.emitUpdatedConditionTree(newConditionsTree);
+    this.resetOperatorIfNecessary();
   }
 
   deleteRow(rowIndex: number) {
@@ -179,9 +195,10 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       conditions: newConditions,
-    };
+    } as AbstractFilterTree;
 
     this.emitUpdatedConditionTree(newConditionsTree);
+    this.resetOperatorIfNecessary();
   }
 
   isLastRow(rowIndex: number) {
@@ -194,6 +211,33 @@ export default class ConditionsGroup extends Vue {
     return groupIndex === this.groups.length - 1;
   }
 
+  async resetOperatorIfNecessary() {
+    // await the re-render to received the updated tree (emitted + received in props)
+    await this.$nextTick();
+
+    // reset the operator to an empty string when there's only one condition left
+    if (this.conditions.length === 1 && this.groups.length === 0) {
+      const newConditionsTree = {
+        ...this.conditionsTree,
+        operator: '',
+      } as AbstractFilterTree;
+      this.emitUpdatedConditionTree(newConditionsTree);
+    }
+    return;
+  }
+
+  setOperatorIfNecessaryAndUpdateConditionTree(newConditionsTree: AbstractFilterTree) {
+    // When there is only one condition and no group, the operator is an empty string (cf resetOperatorIfNecessary).
+    // Set the operator to 'and' when the condition is no longer alone.
+    if (this.operator === '') {
+      newConditionsTree = {
+        ...newConditionsTree,
+        operator: 'and',
+      } as AbstractFilterTree;
+    }
+    this.emitUpdatedConditionTree(newConditionsTree);
+  }
+
   updateCondition(rowIndex: number) {
     return (c: AbstractCondition) => {
       const newConditions = [...this.conditions];
@@ -202,7 +246,7 @@ export default class ConditionsGroup extends Vue {
       const newConditionsTree = {
         ...this.conditionsTree,
         conditions: newConditions,
-      };
+      } as AbstractFilterTree;
 
       this.emitUpdatedConditionTree(newConditionsTree);
     };
@@ -215,7 +259,7 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       groups: newGroups,
-    };
+    } as AbstractFilterTree;
 
     this.emitUpdatedConditionTree(newConditionsTree);
   }
@@ -224,7 +268,7 @@ export default class ConditionsGroup extends Vue {
     const newConditionsTree = {
       ...this.conditionsTree,
       operator: newOperator,
-    };
+    } as AbstractFilterTree;
     this.emitUpdatedConditionTree(newConditionsTree);
   }
 
@@ -242,26 +286,40 @@ $blue-extra-light: #f4f7fa;
 $grey-light-2: #eeeeee;
 
 $conditions-group-top-margin: 20px;
-$conditions-group-top-left-padding: 30px;
+$conditions-group-top-padding: 20px;
+$conditions-group-left-padding: 20px;
+$conditions-group-child-left-padding: 30px;
 $conditions-group-bottom-right-padding: 15px;
 $conditions-group-border-width: 1px;
 
 .conditions-group {
   position: relative;
-  padding-top: $conditions-group-top-left-padding;
-  padding-left: $conditions-group-top-left-padding;
+  padding-top: $conditions-group-top-padding;
   padding-bottom: $conditions-group-bottom-right-padding;
+}
+
+.conditions-group__child-group .conditions-group {
+  padding-left: $conditions-group-child-left-padding;
   padding-right: $conditions-group-bottom-right-padding;
 }
 
 .conditions-group--with-switch {
   padding-top: 40px;
+  padding-left: $conditions-group-left-padding;
+}
+
+.conditions-group__child-group .conditions-group--with-switch {
+  padding-left: $conditions-group-child-left-padding;
 }
 
 .conditions-group__switch {
-  left: 10px;
+  left: 0;
   position: absolute;
   top: 10px;
+}
+
+.conditions-group__child-group .conditions-group__switch {
+  left: 10px;
 }
 
 .conditions-group__switch-buttons {
@@ -374,7 +432,7 @@ $condition-row-border-width: 1px;
 
 .condition-row__content {
   flex: 1;
-  overflow: auto;
+  // overflow: auto;
 }
 
 .condition-row__delete {
@@ -411,7 +469,7 @@ $condition-row-border-width: 1px;
 
 .conditions-group__link {
   $link-width: $conditions-group-top-margin / 2 + 2 * $conditions-group-border-width +
-    $conditions-group-top-left-padding / 2;
+    $conditions-group-left-padding / 2;
 
   display: flex;
   flex-direction: column;
@@ -430,7 +488,7 @@ $condition-row-border-width: 1px;
 
   .conditions-group__link__top {
     // Position the middle link centered to the operator buttons
-    height: $conditions-group-top-margin + $conditions-group-top-left-padding / 1.5;
+    height: $conditions-group-top-margin + $conditions-group-top-padding;
   }
 
   .conditions-group__link__bottom {
