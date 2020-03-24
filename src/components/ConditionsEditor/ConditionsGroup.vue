@@ -96,6 +96,14 @@
 </template>
 
 <script lang="ts">
+/**
+ * Represents a tree of conditions, grouped logically.
+ *
+ * The default slot act as template for each condition row.
+ * The logical operator switch is only displayed when there is more than one element.
+ *
+ * Nesting is intentionally blocked to two levels of depth to avoid unnecessary complexity.
+ */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
