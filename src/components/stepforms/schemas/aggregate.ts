@@ -32,7 +32,7 @@ const schema = {
           },
           aggfunction: {
             type: 'string',
-            enum: ['sum', 'avg', 'count', 'min', 'max'],
+            enum: ['sum', 'avg', 'count', 'min', 'max', 'first', 'last'],
           },
           newcolumn: {
             type: 'string',
