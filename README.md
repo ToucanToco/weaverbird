@@ -1,3 +1,4 @@
+[![npm](https://img.shields.io/npm/v/weaverbird)](https://www.npmjs.com/package/weaverbird)
 [![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/weaverbird.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/weaverbird/)
 [![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/weaverbird.svg)](https://circleci.com/gh/ToucanToco/weaverbird)
 
