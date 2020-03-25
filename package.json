@@ -36,6 +36,7 @@
     "@fortawesome/fontawesome-free": "^5.7.2",
     "@storybook/addon-knobs": "^5.0.10",
     "@storybook/vue": "^5.0.10",
+    "@types/ajv": "^1.0.0",
     "@types/csvtojson": "^1.1.5",
     "@types/express": "^4.16.1",
     "@types/jest": "^24.0.15",
@@ -97,6 +98,7 @@
     "rollup-plugin-vue": "^4.7.2",
     "sass-loader": "^7.1.0",
     "tmp": "^0.1.0",
+    "ts-jest": "^24.0.2",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^3.7.0",
@@ -134,11 +136,8 @@
   },
   "sideeffects": false,
   "dependencies": {
-    "@formschema/native": "^2.0.0-alpha.2",
-    "@types/ajv": "^1.0.0",
     "ajv": "^6.10.0",
     "lodash": "^4.17.11",
-    "mathjs": "^5.9.0",
-    "ts-jest": "^24.0.2"
+    "mathjs": "^5.9.0"
   }
 }

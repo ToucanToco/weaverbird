@@ -947,11 +947,6 @@
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
   integrity sha512-6U71C2Wp7r5XtFtQzYrW5iKFT67OixrSxjI4MptCHzdSVlgabczzqLe0ZSgnub/5Kp4hSbpDB1tMytZY9pwxxA==
 
-"@formschema/native@^2.0.0-alpha.2":
-  version "2.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/@formschema/native/-/native-2.0.0-alpha.2.tgz#793dabb7bfe5c2359124a3f44aeaa0ab9f309e5d"
-  integrity sha512-i6QWSdI74AwanYqj3SYQD5nHXGABNAK+RXkbpGVUFqhL/S7JKy7bhwIaoOvlsLpH6xOZAa9oIzTvseIM7PlZCA==
-
 "@fortawesome/fontawesome-free@^5.7.2":
   version "5.11.2"
   resolved "https://registry.yarnpkg.com/@fortawesome/fontawesome-free/-/fontawesome-free-5.11.2.tgz#8644bc25b19475779a7b7c1fc104bc0a794f4465"
