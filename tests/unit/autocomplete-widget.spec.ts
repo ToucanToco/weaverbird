@@ -23,4 +23,18 @@ describe('Widget Autocomplete', () => {
     const wrapper = shallowMount(AutocompleteWidget);
     expect(wrapper.find('label').exists()).toBeFalsy();
   });
+
+  it('should emit "input" event with the updated value when multiselect is updated', () => {
+    const wrapper = shallowMount(AutocompleteWidget, {
+      propsData: {
+        value: 'Mastercard',
+      },
+      sync: false,
+    });
+    wrapper
+      .findAll('multiselect-stub')
+      .at(0)
+      .vm.$emit('input', 'Visa');
+    expect(wrapper.emitted().input[0][0]).toEqual('Visa');
+  });
 });
