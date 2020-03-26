@@ -104,8 +104,6 @@ describe('Concatenate Step Form', () => {
     expect(columnPickers.length).toEqual(2);
     const [picker1, picker2] = columnPickers.wrappers;
     expect(picker1.props('value')).toEqual('foo');
-    expect(picker1.vm.$data.column).toEqual('foo');
     expect(picker2.props('value')).toEqual('bar');
-    expect(picker2.vm.$data.column).toEqual('bar');
   });
 });

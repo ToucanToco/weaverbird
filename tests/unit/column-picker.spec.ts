@@ -51,10 +51,10 @@ describe('Column Picker', () => {
         value: 'columnA',
       },
     });
-    expect(wrapper.vm.$data.column).toEqual('columnA');
+    expect(wrapper.find('autocompletewidget-stub').props().value).toEqual('columnA');
   });
 
-  it('should update step when selectedColumn is changed by default', async () => {
+  it('should update the column when a column is selected in the data table', async () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -66,14 +66,24 @@ describe('Column Picker', () => {
       store,
       localVue,
     });
-    expect(wrapper.vm.$data.column).toEqual('columnA');
+
+    // On created, the selected column must be the one selected in the table
+    expect(wrapper.emitted('input')[0][0]).toEqual('columnA');
+
+    // When selecting another column, the form should update
     store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.column).toEqual('columnB');
     expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('input')[1][0]).toEqual('columnB');
+
+    // When the form updates, the selection in the table should also change
+    // Note: we can't directly call wrapper.find('AutocompleteWidget-stub') because vue-test-utils would return the same vm as it's parent, because it's an only child, and therefore ties to the same HTML element
+    wrapper.vm.$children[0].$emit('input', 'columnC');
+    expect(wrapper.emitted('input')[2][0]).toEqual('columnC');
+    expect(store.state.vqb.selectedColumns).toEqual(['columnC']);
   });
 
-  it('should not update step when selectedColumn is changed if prop "sync" is false', async () => {
+  it('should update the column when a column is selected in the data table when `syncWithSelectedColumn` is disabled', async () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -88,10 +98,19 @@ describe('Column Picker', () => {
         syncWithSelectedColumn: false,
       },
     });
-    expect(wrapper.vm.$data.column).toEqual('columnA');
+
+    // On created, the form should not update
+
+    expect(wrapper.emitted('input')).toBeUndefined();
+    // Nor on subsequent selections in the data table
+
     store.commit(VQBnamespace('setSelectedColumns'), { column: 'columnB' });
-    await localVue.nextTick();
-    expect(wrapper.vm.$data.column).toEqual('columnA');
+    expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
+    expect(wrapper.emitted('input')).toBeUndefined();
+
+    // When the form updates, the selection in the table should not change
+    wrapper.vm.$children[0].$emit('input', 'columnC');
+    expect(wrapper.emitted('input')[0][0]).toEqual('columnC');
     expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
   });
 });
