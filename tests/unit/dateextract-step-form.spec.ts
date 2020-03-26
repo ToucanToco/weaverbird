@@ -144,6 +144,5 @@ describe('DateExtract Step Form', () => {
     expect(columnPickers.length).toEqual(1);
     const [picker1] = columnPickers.wrappers;
     expect(picker1.props('value')).toEqual('foo');
-    expect(picker1.vm.$data.column).toEqual('foo');
   });
 });

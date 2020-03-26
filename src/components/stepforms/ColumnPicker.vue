@@ -1,7 +1,6 @@
 <template>
   <AutocompleteWidget
-    id=":id"
-    v-model="column"
+    :value="value"
     :name="name"
     :options="columnNames"
     @input="valueChanged"
@@ -13,7 +12,6 @@
 
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
@@ -46,37 +44,31 @@ export default class ColumnPicker extends Vue {
   @Prop({ default: true })
   syncWithSelectedColumn!: boolean;
 
-  // Only manage the deletion of 1 column at once at this stage
-  column: string | null = null;
-
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
   @VQBModule.Getter selectedColumns!: string[];
   @VQBModule.Getter columnNames!: string[];
 
   created() {
-    if (this.value) {
-      this.column = this.value;
-    } else {
-      const selected = this.selectedColumns;
-      if (selected.length) {
-        this.column = selected[0];
-        this.valueChanged();
-      }
-    }
-  }
-
-  valueChanged() {
-    if (this.column) {
-      // make sure to emit @input so that v-model in hosting component is notified
-      this.$emit('input', this.column);
-      this.setSelectedColumns({ column: this.column });
+    if (this.syncWithSelectedColumn && this.selectedColumns[0] && !this.value) {
+      this.$emit('input', this.selectedColumns[0]);
     }
   }
 
   @Watch('selectedColumns')
-  onSelectedColumnsChanged(val: string[], oldVal: string[]) {
-    if (!_.isEqual(val, oldVal) && this.syncWithSelectedColumn) {
-      this.column = val[0];
+  onSelectedColumnsChanged() {
+    if (
+      this.syncWithSelectedColumn &&
+      this.selectedColumns[0] &&
+      this.selectedColumns[0] !== this.value
+    ) {
+      this.$emit('input', this.selectedColumns[0]);
+    }
+  }
+
+  valueChanged(newColumn: string) {
+    this.$emit('input', newColumn);
+    if (this.syncWithSelectedColumn) {
+      this.setSelectedColumns({ column: newColumn });
     }
   }
 }
