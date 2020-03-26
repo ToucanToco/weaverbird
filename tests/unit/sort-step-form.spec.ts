@@ -51,12 +51,34 @@ describe('Sort Step Form', () => {
 
   runner.testResetSelectedIndex();
 
-  it('should suggest ordering by the column selected in the data table', function() {
+  it('should suggest the selected column as the column to be sorted', function() {
     const wrapper = runner.shallowMount({
       selectedColumns: ['selectedColumn'],
     });
     expect(wrapper.find('listwidget-stub').props().value).toEqual([
       { column: 'selectedColumn', order: 'asc' },
+    ]);
+  });
+
+  it('should not suggest a column to be sorted if no column is selected', function() {
+    const wrapper = runner.shallowMount({});
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([{ column: '', order: 'asc' }]);
+  });
+
+  it('should not suggest a column to be sorted if the step has already been edited', function() {
+    const wrapper = runner.shallowMount(
+      { selectedColumns: ['selectedColumn'] },
+      {
+        propsData: {
+          initialStepValue: {
+            name: 'sort',
+            columns: [{ column: 'amazing', order: 'desc' }],
+          },
+        },
+      },
+    );
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([
+      { column: 'amazing', order: 'desc' },
     ]);
   });
 
