@@ -6,6 +6,7 @@
       id="sortColumn"
       v-model="sortColumns"
       :widget="widgetSortColumn"
+      :defaultItem="{ column: '', order: 'asc' }"
       :automatic-new-field="false"
       data-path=".columns"
       :errors="errors"
@@ -34,15 +35,19 @@ import SortColumnWidget from './widgets/SortColumn.vue';
   },
 })
 export default class SortStepForm extends BaseStepForm<SortStep> {
-  @Prop({ type: Object, default: () => ({ name: 'sort', columns: [] }) })
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'sort', columns: [{ column: '', order: 'asc' }] }),
+  })
   initialStepValue!: SortStep;
 
   readonly title: string = 'Sort';
   widgetSortColumn = SortColumnWidget;
 
   created() {
-    // If a column is selected in the data table, suggest sorting it by default
-    if (this.selectedColumns.length > 0) {
+    // If a step has not been edited and a column is selected in the data table,
+    // suggest to sort by thus column in ascending order by default
+    if (this.editedStep.columns[0].column === '' && this.selectedColumns.length > 0) {
       this.editedStep.columns = [
         {
           column: this.selectedColumns[0],

@@ -78,8 +78,8 @@ export default class SortColumnWidget extends Vue {
     });
   }
 
-  update(newValues) {
-    this.$emit('input', newValues);
+  update(newValue: SortColumnType) {
+    this.$emit('input', newValue);
   }
 }
 </script>
