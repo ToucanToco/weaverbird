@@ -153,6 +153,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   join(step: Readonly<S.JoinStep>) {}
 
   @unsupported
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {}
+
+  @unsupported
   fromdate(step: Readonly<S.FromDateStep>) {}
 
   @unsupported

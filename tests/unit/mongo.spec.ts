@@ -3210,4 +3210,226 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate a basic ifthenelse step', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: { and: [{ column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' }] },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: { $eq: ['$TEST_COL', 'TEST_VALUE'] },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate an ifthenelse step with formulas', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: { and: [{ column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' }] },
+        then: 'BASIC_COL',
+        else: 'BASIC_COL * 100',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: { $eq: ['$TEST_COL', 'TEST_VALUE'] },
+              then: '$BASIC_COL',
+              else: { $multiply: ['$BASIC_COL', 100] },
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate an ifthenelse step with multiple "AND" conditions', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: {
+          and: [
+            { column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' },
+            { column: 'ANOTHER_TEST_COL', operator: 'ne', value: 'TEST_VALUE_BIS' },
+          ],
+        },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: {
+                $and: [
+                  { $eq: ['$TEST_COL', 'TEST_VALUE'] },
+                  { $ne: ['$ANOTHER_TEST_COL', 'TEST_VALUE_BIS'] },
+                ],
+              },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate an ifthenelse step with multiple "OR" conditions', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: {
+          or: [
+            { column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' },
+            { column: 'ANOTHER_TEST_COL', operator: 'ne', value: 'TEST_VALUE_BIS' },
+          ],
+        },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: {
+                $or: [
+                  { $eq: ['$TEST_COL', 'TEST_VALUE'] },
+                  { $ne: ['$ANOTHER_TEST_COL', 'TEST_VALUE_BIS'] },
+                ],
+              },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate an ifthenelse step with multiple "AND" / "OR" conditions', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: {
+          or: [
+            {
+              and: [
+                { column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' },
+                { column: 'ANOTHER_TEST_COL', operator: 'ne', value: 'TEST_VALUE_BIS' },
+              ],
+            },
+            { column: 'VALUE_COL', operator: 'gt', value: 0 },
+          ],
+        },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: {
+                $or: [
+                  {
+                    $and: [
+                      { $eq: ['$TEST_COL', 'TEST_VALUE'] },
+                      { $ne: ['$ANOTHER_TEST_COL', 'TEST_VALUE_BIS'] },
+                    ],
+                  },
+                  { $gt: ['$VALUE_COL', 0] },
+                ],
+              },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate nested ifthenelse steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: { and: [{ column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' }] },
+        then: '"True"',
+        else: {
+          if: { and: [{ column: 'ANOTHER_TEST_COL', operator: 'ne', value: 'TEST_VALUE_BIS' }] },
+          then: '"Still_True"',
+          else: {
+            if: { and: [{ column: 'VALUE_COL', operator: 'gt', value: 100 }] },
+            then: '"True_Eventually"',
+            else: '"False"',
+          },
+        },
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: { $eq: ['$TEST_COL', 'TEST_VALUE'] },
+              then: 'True',
+              else: {
+                $cond: {
+                  if: { $ne: ['$ANOTHER_TEST_COL', 'TEST_VALUE_BIS'] },
+                  then: 'Still_True',
+                  else: {
+                    $cond: {
+                      if: { $gt: ['$VALUE_COL', 100] },
+                      then: 'True_Eventually',
+                      else: 'False',
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });

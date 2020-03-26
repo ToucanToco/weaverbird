@@ -188,6 +188,14 @@ export type FromDateStep = {
   format: string;
 };
 
+export type IfThenElseStep = {
+  name: 'ifthenelse';
+  newColumn: string;
+  if: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+  then: string;
+  else: string | Omit<IfThenElseStep, 'name' | 'newColumn'>;
+};
+
 export type JoinStep = {
   name: 'join';
   right_pipeline: Pipeline | string;
@@ -325,6 +333,7 @@ export type PipelineStep =
   | FilterStep
   | FormulaStep
   | FromDateStep
+  | IfThenElseStep
   | JoinStep
   | PercentageStep
   | PivotStep

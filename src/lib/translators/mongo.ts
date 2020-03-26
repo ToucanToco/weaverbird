@@ -20,8 +20,25 @@ export interface MongoStep {
 
 type ComboOperator = 'and' | 'or';
 
+type DateOperationMap = {
+  [OP in S.DateExtractPropertyStep['operation']]: string;
+};
+
 type FilterComboAndMongo = {
   $and: MongoStep[];
+};
+
+const DATE_EXTRACT_MAP: DateOperationMap = {
+  year: '$year',
+  month: '$month',
+  day: '$dayOfMonth',
+  hour: '$hour',
+  minutes: '$minute',
+  seconds: '$second',
+  milliseconds: '$millisecond',
+  dayOfYear: '$dayOfYear',
+  dayOfWeek: '$dayOfWeek',
+  week: '$week',
 };
 
 /**
@@ -64,6 +81,155 @@ export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): Mongo
   return simplifiedBlock;
 }
 
+/**
+ * Simplify a list of mongo steps (i.e. merge them whenever possible)
+ *
+ * - if multiple `$match` steps are chained, merge them,
+ * - if multiple `$project` steps are chained, merge them.
+ *
+ * @param mongoSteps the input pipeline
+ *
+ * @returns the list of simplified mongo steps
+ */
+export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
+  if (!mongoSteps.length) {
+    return [];
+  }
+  let merge = true;
+  const outputSteps: MongoStep[] = [];
+  let lastStep: MongoStep = mongoSteps[0];
+  outputSteps.push(lastStep);
+
+  for (const step of mongoSteps.slice(1)) {
+    const [stepOperator] = Object.keys(step);
+    const isMergeable =
+      stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
+    if (isMergeable && lastStep[stepOperator] !== undefined) {
+      for (const key in step[stepOperator]) {
+        /**
+         * In Mongo, exclusions cannot be combined with any inclusion, so if we
+         * have an exclusion in a $project step, and that the previous one
+         * includes any inclusion, we do not want to merge those steps.
+         */
+        if (stepOperator === '$project') {
+          const included = Boolean(step.$project[key]);
+          merge = Object.values(lastStep.$project).every(value => Boolean(value) === included);
+        }
+        if (Object.prototype.hasOwnProperty.call(lastStep[stepOperator], key)) {
+          // We do not want to merge two $project with common keys
+          merge = false;
+          break;
+        }
+        if (stepOperator !== '$match') {
+          // We do not want to merge two $project or $addFields with a `step`
+          // key referencing as value a`lastStep` key
+          const valueString: string = JSON.stringify(step[stepOperator][key]);
+          for (const lastKey in lastStep[stepOperator]) {
+            const regex = new RegExp(`.*['"]\\$${lastKey}(\\..+)?['"].*`);
+            if (regex.test(valueString)) {
+              merge = false;
+              break;
+            }
+          }
+        }
+      }
+      if (merge) {
+        // merge $project steps together
+        lastStep[stepOperator] = { ...lastStep[stepOperator], ...step[stepOperator] };
+        continue;
+      }
+    }
+    lastStep = step;
+    outputSteps.push(lastStep);
+    merge = true;
+  }
+  return outputSteps;
+}
+
+function getOperator(op: string) {
+  const operators: PropMap<string> = {
+    '+': '$add',
+    '-': '$subtract',
+    '*': '$multiply',
+    '/': '$divide',
+  };
+  if (operators[op] === undefined) {
+    throw new Error(`Unsupported operator ${op}`);
+  } else {
+    return operators[op];
+  }
+}
+
+/**
+  Transform a formula expression into a MathNode
+  1. Replace in formula all column name between `[]` by a "pseudo"
+  2. Parse the formula into a MathNode
+  3. Replace all pseudo into MathNode by there original name
+*/
+function buildFormulaTree(formula: string): MathNode {
+  const ESCAPE_OPEN = '[';
+  const ESCAPE_CLOSE = ']';
+
+  // 1. Replace in formula all column name between `[]` by a "pseudo"
+  let formulaPseudotised = formula;
+  const pseudo: Record<string, string> = {};
+  let index = 0;
+  const regex = new RegExp(`\\${ESCAPE_OPEN}(.*?)\\${ESCAPE_CLOSE}`, 'g');
+  for (const match of formula.match(regex) || []) {
+    pseudo[`__vqb_col_${index}__`] = match;
+    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_col_${index}__`);
+    index++;
+  }
+
+  // 2. Parse the formula into a MathNode
+  const mathjsTree: MathNode = math.parse(formulaPseudotised);
+
+  // 3. Replace all pseudo into MathNode by there original name
+  mathjsTree.traverse(function(node: MathNode): MathNode {
+    if (node.type === 'SymbolNode') {
+      if (pseudo[node.name]) {
+        node.name = pseudo[node.name].replace(ESCAPE_OPEN, '').replace(ESCAPE_CLOSE, '');
+      }
+    }
+    return node;
+  });
+  return mathjsTree;
+}
+
+function buildCondExpression(
+  cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
+): MongoStep {
+  const operatorMapping = {
+    eq: '$eq',
+    ne: '$ne',
+    lt: '$lt',
+    le: '$lte',
+    gt: '$gt',
+    ge: '$gte',
+    in: '$in',
+    nin: '$nin',
+    isnull: '$eq',
+    notnull: '$ne',
+  };
+  if (S.isFilterComboAnd(cond)) {
+    if (cond.and.length == 1) {
+      return buildCondExpression(cond.and[0]);
+    } else {
+      // if cond.and.length > 1 we need to bind conditions in a $and operator,
+      // as we need a unnique document to be used as the first argument of the
+      // $cond operator
+      return { $and: cond.and.map(buildCondExpression) };
+    }
+  }
+  if (S.isFilterComboOr(cond)) {
+    return { $or: cond.or.map(elem => buildCondExpression(elem)) };
+  }
+  if (cond.operator === 'matches' || cond.operator === 'notmatches') {
+    throw new Error(`Unsupported operator ${cond.operator}`);
+  }
+  return { [operatorMapping[cond.operator]]: [$$(cond.column), cond.value] };
+}
+
 function buildMatchTree(
   cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
   parentComboOp: ComboOperator = 'and',
@@ -97,9 +263,31 @@ function buildMatchTree(
   return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
 }
 
-function filterstepToMatchstep(step: Readonly<S.FilterStep>): MongoStep {
-  const condition = step.condition;
-  return { $match: buildMatchTree(condition) };
+/**
+ * Translate a mathjs logical tree describing a formula into a Mongo step
+ * @param node a mathjs node object (usually received after parsing an string expression)
+ * This node is the root node of the logical tree describing the formula
+ */
+function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
+  switch (node.type) {
+    case 'OperatorNode':
+      if (node.args.length === 1) {
+        const factor = node.op === '+' ? 1 : -1;
+        return {
+          $multiply: [factor, buildMongoFormulaTree(node.args[0])],
+        };
+      }
+      return {
+        [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
+      };
+    case 'SymbolNode':
+      // Re-put the name back
+      return $$(node.name);
+    case 'ConstantNode':
+      return node.value;
+    case 'ParenthesisNode':
+      return buildMongoFormulaTree(node.content);
+  }
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
@@ -336,6 +524,12 @@ function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
   ];
 }
 
+/** transform a 'filter' step into corresponding mongo step */
+function transformFilterStep(step: Readonly<S.FilterStep>): MongoStep {
+  const condition = step.condition;
+  return { $match: buildMatchTree(condition) };
+}
+
 /** transform a 'fromdate' step into corresponding mongo steps */
 function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
   const smallMonthReplace = {
@@ -563,6 +757,21 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
         },
       ];
   }
+}
+
+/** transform an 'ifthenelse' step into corresponding mongo step */
+function transformIfThenElseStep(
+  step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
+): MongoStep {
+  const ifExpr: MongoStep = buildCondExpression(step.if);
+  const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then));
+  let elseExpr: MongoStep | string | number;
+  if (typeof step.else === 'string') {
+    elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else));
+  } else {
+    elseExpr = transformIfThenElseStep(step.else);
+  }
+  return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
 }
 
 /** transform an 'percentage' step into corresponding mongo steps */
@@ -867,6 +1076,7 @@ function $add(...args: any[]) {
     $add: args,
   };
 }
+
 /** transform a 'substring' step into corresponding mongo steps */
 function transformSubstring(step: Readonly<S.SubstringStep>): MongoStep {
   const posStartIndex: number | PropMap<any> =
@@ -943,165 +1153,6 @@ function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
   return mongoPipeline;
 }
 
-function getOperator(op: string) {
-  const operators: PropMap<string> = {
-    '+': '$add',
-    '-': '$subtract',
-    '*': '$multiply',
-    '/': '$divide',
-  };
-  if (operators[op] === undefined) {
-    throw new Error(`Unsupported operator ${op}`);
-  } else {
-    return operators[op];
-  }
-}
-
-/**
-  Transform a formula expression into a MathNode
-  1. Replace in formula all column name between `[]` by a "pseudo"
-  2. Parse the formula into a MathNode
-  3. Replace all pseudo into MathNode by there original name
-*/
-function buildFormulaTree(formula: string): MathNode {
-  const ESCAPE_OPEN = '[';
-  const ESCAPE_CLOSE = ']';
-
-  // 1. Replace in formula all column name between `[]` by a "pseudo"
-  let formulaPseudotised = formula;
-  const pseudo: Record<string, string> = {};
-  let index = 0;
-  const regex = new RegExp(`\\${ESCAPE_OPEN}(.*?)\\${ESCAPE_CLOSE}`, 'g');
-  for (const match of formula.match(regex) || []) {
-    pseudo[`__vqb_col_${index}__`] = match;
-    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_col_${index}__`);
-    index++;
-  }
-
-  // 2. Parse the formula into a MathNode
-  const mathjsTree: MathNode = math.parse(formulaPseudotised);
-
-  // 3. Replace all pseudo into MathNode by there original name
-  mathjsTree.traverse(function(node: MathNode): MathNode {
-    if (node.type === 'SymbolNode') {
-      if (pseudo[node.name]) {
-        node.name = pseudo[node.name].replace(ESCAPE_OPEN, '').replace(ESCAPE_CLOSE, '');
-      }
-    }
-    return node;
-  });
-  return mathjsTree;
-}
-
-/**
- * Translate a mathjs logical tree describing a formula into a Mongo step
- * @param node a mathjs node object (usually received after parsing an string expression)
- * This node is the root node of the logical tree describing the formula
- */
-function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
-  switch (node.type) {
-    case 'OperatorNode':
-      if (node.args.length === 1) {
-        const factor = node.op === '+' ? 1 : -1;
-        return {
-          $multiply: [factor, buildMongoFormulaTree(node.args[0])],
-        };
-      }
-      return {
-        [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
-      };
-    case 'SymbolNode':
-      // Re-put the name back
-      return $$(node.name);
-    case 'ConstantNode':
-      return node.value;
-    case 'ParenthesisNode':
-      return buildMongoFormulaTree(node.content);
-  }
-}
-
-/**
- * Simplify a list of mongo steps (i.e. merge them whenever possible)
- *
- * - if multiple `$match` steps are chained, merge them,
- * - if multiple `$project` steps are chained, merge them.
- *
- * @param mongoSteps the input pipeline
- *
- * @returns the list of simplified mongo steps
- */
-export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
-  if (!mongoSteps.length) {
-    return [];
-  }
-  let merge = true;
-  const outputSteps: MongoStep[] = [];
-  let lastStep: MongoStep = mongoSteps[0];
-  outputSteps.push(lastStep);
-
-  for (const step of mongoSteps.slice(1)) {
-    const [stepOperator] = Object.keys(step);
-    const isMergeable =
-      stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
-    if (isMergeable && lastStep[stepOperator] !== undefined) {
-      for (const key in step[stepOperator]) {
-        /**
-         * In Mongo, exclusions cannot be combined with any inclusion, so if we
-         * have an exclusion in a $project step, and that the previous one
-         * includes any inclusion, we do not want to merge those steps.
-         */
-        if (stepOperator === '$project') {
-          const included = Boolean(step.$project[key]);
-          merge = Object.values(lastStep.$project).every(value => Boolean(value) === included);
-        }
-        if (Object.prototype.hasOwnProperty.call(lastStep[stepOperator], key)) {
-          // We do not want to merge two $project with common keys
-          merge = false;
-          break;
-        }
-        if (stepOperator !== '$match') {
-          // We do not want to merge two $project or $addFields with a `step`
-          // key referencing as value a`lastStep` key
-          const valueString: string = JSON.stringify(step[stepOperator][key]);
-          for (const lastKey in lastStep[stepOperator]) {
-            const regex = new RegExp(`.*['"]\\$${lastKey}(\\..+)?['"].*`);
-            if (regex.test(valueString)) {
-              merge = false;
-              break;
-            }
-          }
-        }
-      }
-      if (merge) {
-        // merge $project steps together
-        lastStep[stepOperator] = { ...lastStep[stepOperator], ...step[stepOperator] };
-        continue;
-      }
-    }
-    lastStep = step;
-    outputSteps.push(lastStep);
-    merge = true;
-  }
-  return outputSteps;
-}
-
-type DateOperationMap = {
-  [OP in S.DateExtractPropertyStep['operation']]: string;
-};
-
-const DATE_EXTRACT_MAP: DateOperationMap = {
-  year: '$year',
-  month: '$month',
-  day: '$dayOfMonth',
-  hour: '$hour',
-  minutes: '$minute',
-  seconds: '$second',
-  milliseconds: '$millisecond',
-  dayOfYear: '$dayOfYear',
-  dayOfWeek: '$dayOfWeek',
-  week: '$week',
-};
-
 const mapper: Partial<StepMatcher<MongoStep>> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
@@ -1131,7 +1182,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
       },
     },
   }),
-  filter: filterstepToMatchstep,
+  filter: transformFilterStep,
   formula: (step: Readonly<S.FormulaStep>) => {
     return {
       $addFields: {
@@ -1140,6 +1191,9 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     };
   },
   fromdate: transformFromDate,
+  ifthenelse: (step: Readonly<S.IfThenElseStep>) => ({
+    $addFields: { [step.newColumn]: transformIfThenElseStep(_.omit(step, ['name', 'newColumn'])) },
+  }),
   lowercase: (step: Readonly<S.ToLowerStep>) => ({
     $addFields: { [step.column]: { $toLower: $$(step.column) } },
   }),
@@ -1280,4 +1334,5 @@ export class Mongo36Translator extends BaseTranslator {
     }
   }
 }
+
 Object.assign(Mongo36Translator.prototype, mapper);
