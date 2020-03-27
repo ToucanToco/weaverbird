@@ -72,8 +72,8 @@ describe('Unpivot Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('#keepColumnInput').props('value')).toEqual(['foo', 'bar']);
-    expect(wrapper.find('#unpivotColumnInput').props('value')).toEqual(['baz']);
+    expect(wrapper.find('.keepColumnInput').props('value')).toEqual(['foo', 'bar']);
+    expect(wrapper.find('.unpivotColumnInput').props('value')).toEqual(['baz']);
     const widgetCheckbox = wrapper.find(CheckboxWidget);
     expect(widgetCheckbox.classes()).not.toContain('widget-checkbox--checked');
   });
@@ -86,10 +86,10 @@ describe('Unpivot Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
-    expect(wrapper.find('#keepColumnInput').attributes('options')).toEqual(
+    expect(wrapper.find('.keepColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
-    expect(wrapper.find('#unpivotColumnInput').attributes('options')).toEqual(
+    expect(wrapper.find('.unpivotColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
   });

@@ -1,7 +1,7 @@
 <template>
   <div class="widget-join-column__container">
     <AutocompleteWidget
-      id="leftOn"
+      class="leftOn"
       v-model="leftOnColumn"
       placeholder="Current dataset column"
       :options="columnNames"
@@ -9,7 +9,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="rightOn"
+      class="rightOn"
       v-model="rightOnColumn"
       placeholder="Right dataset column"
       :data-path="`${dataPath}[1]`"

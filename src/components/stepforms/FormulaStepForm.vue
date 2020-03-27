@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <InputTextWidget
-      id="formulaInput"
+      class="formulaInput"
       v-model="editedStep.formula"
       name="Formula:"
       placeholder
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnInput"
+      class="newColumnInput"
       v-model="editedStep.new_column"
       name="New colum:"
       placeholder="Enter a new column name"

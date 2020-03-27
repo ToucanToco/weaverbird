@@ -358,7 +358,7 @@ Here is a possible template for your step:
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="column1Input"
+      class="column1Input"
       v-model="editedStep.column1"
       name="First column..."
       placeholder="Enter a column"
@@ -366,7 +366,7 @@ Here is a possible template for your step:
       :errors="errors"
     />
     <ColumnPicker
-      id="column2Input"
+      class="column2Input"
       v-model="editedStep.column2"
       name="Secpmd column..."
       placeholder="Enter a column"
@@ -374,7 +374,7 @@ Here is a possible template for your step:
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnInput"
+      class="newColumnInput"
       v-model="editedStep.newColumn"
       name="New column name:"
       placeholder="Enter a column name"

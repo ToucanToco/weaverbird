@@ -1,14 +1,14 @@
 <template>
   <div class="widget-to-replace__container">
     <InputTextWidget
-      id="valueToReplace"
+      class="valueToReplace"
       v-model="valueToReplace"
       placeholder="Value to replace"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
     />
     <InputTextWidget
-      id="newValue"
+      class="newValue"
       v-model="newValueToReplace"
       placeholder="New value"
       :data-path="`${dataPath}[1]`"

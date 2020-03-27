@@ -3,14 +3,14 @@
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
       v-model="editedStep.column"
-      id="columnInput"
+      class="columnInput"
       name="Replace null values in..."
       placeholder="Enter a column"
       data-path=".column"
       :errors="errors"
     />
     <InputTextWidget
-      id="valueInput"
+      class="valueInput"
       v-model="editedStep.value"
       name="With..."
       placeholder="Enter a value"

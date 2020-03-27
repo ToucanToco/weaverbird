@@ -24,9 +24,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
   },
 })
 export default class MultiInputTextWidget extends Vue {
-  @Prop({ type: String, default: null })
-  id!: string;
-
   @Prop({ type: String, default: '' })
   name!: string;
 

@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="columnInput"
+      class="columnInput"
       v-model="editedStep.column"
       name="Convert column..."
       placeholder="Enter a column"

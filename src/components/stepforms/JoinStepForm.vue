@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <AutocompleteWidget
-      id="rightPipelineInput"
+      class="rightPipelineInput"
       v-model="editedStep.right_pipeline"
       name="Select a dataset to join (as right dataset):"
       :options="Object.keys(pipelines).filter(p => p !== currentPipelineName)"
@@ -11,7 +11,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="typeInput"
+      class="typeInput"
       v-model="editedStep.type"
       name="Select a join type:"
       :options="joinTypes"
@@ -22,7 +22,7 @@
     <ListWidget
       addFieldName="Add columns"
       name="Join based on column(s):"
-      id="joinColumns"
+      class="joinColumns"
       v-model="on"
       :defaultItem="['', '']"
       :widget="joinColumns"

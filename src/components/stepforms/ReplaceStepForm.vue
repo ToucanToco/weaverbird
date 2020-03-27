@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="searchColumnInput"
+      class="searchColumnInput"
       v-model="editedStep.search_column"
       name="Search in column..."
       placeholder="Enter a column"
@@ -11,7 +11,7 @@
     />
     <ListWidget
       addFieldName="Add a value to replace"
-      id="toReplace"
+      class="toReplace"
       name="Values to replace:"
       v-model="toReplace"
       :defaultItem="[]"

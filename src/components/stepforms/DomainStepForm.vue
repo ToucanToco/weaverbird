@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <AutocompleteWidget
-      id="domainInput"
+      class="domainInput"
       v-model="editedStep.domain"
       name="Select domain..."
       :options="domains"

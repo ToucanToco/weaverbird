@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="indexInput"
+      class="indexInput"
       v-model="editedStep.index"
       name="Keep columns..."
       :options="columnNames"
@@ -11,7 +11,7 @@
       :errors="errors"
     />
     <ColumnPicker
-      id="columnToPivotInput"
+      class="columnToPivotInput"
       v-model="editedStep.column_to_pivot"
       name="Pivot column..."
       placeholder="Enter a column"
@@ -19,7 +19,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="valueColumnInput"
+      class="valueColumnInput"
       v-model="editedStep.value_column"
       name="Use values in..."
       :options="columnNames"
@@ -28,7 +28,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="aggregationFunctionInput"
+      class="aggregationFunctionInput"
       v-model="editedStep.agg_function"
       name="Aggregate values using..."
       :options="aggregationFunctions"

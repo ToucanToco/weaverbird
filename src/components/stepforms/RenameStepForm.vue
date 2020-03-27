@@ -3,14 +3,14 @@
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
       v-model="editedStep.oldname"
-      id="oldnameInput"
+      class="oldnameInput"
       name="Old name:"
       placeholder="Enter the old column name"
       data-path=".oldname"
       :errors="errors"
     />
     <InputTextWidget
-      id="newnameInput"
+      class="newnameInput"
       v-model="editedStep.newname"
       name="New name:"
       placeholder="Enter a new column name"

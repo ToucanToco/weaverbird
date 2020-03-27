@@ -1,6 +1,6 @@
 <template>
   <div class="widget-autocomplete__container" :class="toggleClassErrorWarning">
-    <label class="widget-autocomplete__label" v-if="name" :for="id">{{ name }}</label>
+    <label class="widget-autocomplete__label" v-if="name">{{ name }}</label>
     <multiselect
       :value="value"
       :options="options"
@@ -30,9 +30,6 @@ import FormWidget from './FormWidget.vue';
   },
 })
 export default class AutocompleteWidget extends Mixins(FormWidget) {
-  @Prop({ type: String, default: null })
-  id!: string;
-
   @Prop({ type: String, default: '' })
   name!: string;
 

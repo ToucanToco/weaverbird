@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="pipelinesInput"
+      class="pipelinesInput"
       v-model="editedStep.pipelines"
       name="Select datasets to append:"
       :options="Object.keys(pipelines).filter(p => p !== currentPipelineName)"

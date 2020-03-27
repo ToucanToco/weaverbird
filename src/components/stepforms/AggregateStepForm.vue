@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="groupbyColumnsInput"
+      class="groupbyColumnsInput"
       v-model="editedStep.on"
       name="Group rows by..."
       :options="columnNames"
@@ -13,7 +13,7 @@
     />
     <ListWidget
       addFieldName="Add aggregation"
-      id="toremove"
+      class="toremove"
       name="And aggregate..."
       v-model="aggregations"
       :defaultItem="defaultAggregation"

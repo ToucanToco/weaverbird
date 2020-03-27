@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="groupbyColumnsInput"
+      class="groupbyColumnsInput"
       v-model="editedStep.on"
       name="Get unique groups/values in columns:"
       :options="columnNames"

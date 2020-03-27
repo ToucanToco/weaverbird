@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="column"
+      class="column"
       v-model="editedStep.column"
       name="Column to work on:"
       :options="columnNames"
@@ -12,7 +12,7 @@
     />
     <AutocompleteWidget
       name="Property to extract"
-      id="operation"
+      class="operation"
       :options="operations"
       :value="currentOperation"
       @input="updateCurrentOperation"
@@ -23,7 +23,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnName"
+      class="newColumnName"
       v-model="editedStep.new_column_name"
       name="New column name:"
       :placeholder="newColumnNamePlaceholder"
