@@ -5,6 +5,7 @@
 ### Fixed
 
 - Fixed bad sort step from initialization
+- Fixed columnPicker to prevent the mutation of the props
 
 ## [0.15.0] - 2020-03-24
 
