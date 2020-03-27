@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="valueColumnInput"
+      class="valueColumnInput"
       v-model="editedStep.column"
       name="Search max value in..."
       placeholder="Enter a column name"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <MultiselectWidget
-      id="groupbyColumnsInput"
+      class="groupbyColumnsInput"
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"

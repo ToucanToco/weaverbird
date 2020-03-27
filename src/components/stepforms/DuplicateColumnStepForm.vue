@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="columnInput"
+      class="columnInput"
       v-model="editedStep.column"
       name="Duplicate column..."
       placeholder="Enter a column"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnNameInput"
+      class="newColumnNameInput"
       v-model="editedStep.new_column_name"
       name="New column name:"
       placeholder="Enter a column name"

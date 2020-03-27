@@ -1,6 +1,6 @@
 <template>
   <div class="widget-multiselect__container" :class="toggleClassErrorWarning">
-    <label class="widget-multiselect__label" :for="id">{{ name }}</label>
+    <label class="widget-multiselect__label">{{ name }}</label>
     <multiselect
       v-model="editedValue"
       :options="options"
@@ -29,9 +29,6 @@ import FormWidget from './FormWidget.vue';
   },
 })
 export default class MultiselectWidget extends Mixins(FormWidget) {
-  @Prop({ type: String, default: null })
-  id!: string;
-
   @Prop({ type: String, default: '' })
   name!: string;
 

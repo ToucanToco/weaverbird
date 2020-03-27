@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="columnsInput"
+      class="columnsInput"
       v-model="editedStep.columns"
       name="Convert columns:"
       :options="columnNames"
@@ -12,7 +12,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="typeInput"
+      class="typeInput"
       name="To data type:"
       v-model="editedStep.data_type"
       :options="dataTypes"

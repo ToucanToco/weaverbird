@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="column"
+      class="column"
       v-model="editedStep.column"
       name="Extract a substring from..."
       placeholder="Enter a column"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="startIndex"
+      class="startIndex"
       v-model.number="editedStep.start_index"
       type="number"
       name="Substring starts at character position:"
@@ -19,7 +19,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="endIndex"
+      class="endIndex"
       v-model.number="editedStep.end_index"
       type="number"
       name="And ends at character position:"
@@ -28,7 +28,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnNameInput"
+      class="newColumnNameInput"
       v-model="editedStep.newColumnName"
       name="(Optional) New column name:"
       :placeholder="`${editedStep.column}_SUBSTR`"

@@ -3,7 +3,7 @@
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ListWidget
       addFieldName="Add columns"
-      id="toConcatenate"
+      class="toConcatenate"
       name="Columns to concatenate:"
       v-model="toConcatenate"
       :defaultItem="[]"
@@ -14,7 +14,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="separator"
+      class="separator"
       v-model="editedStep.separator"
       name="Separator:"
       placeholder="Enter string of any length"
@@ -22,7 +22,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnName"
+      class="newColumnName"
       v-model="editedStep.new_column_name"
       name="New column name:"
       placeholder="Enter a columnn name"

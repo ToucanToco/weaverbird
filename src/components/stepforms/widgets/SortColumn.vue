@@ -1,7 +1,7 @@
 <template>
   <fieldset class="widget-sort__container">
     <AutocompleteWidget
-      id="columnInput"
+      class="columnInput"
       :options="columnNames"
       v-model="sortColumn"
       name="Column"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="sortOrderInput"
+      class="sortOrderInput"
       v-model="sortOrder"
       name="Order"
       :options="['asc', 'desc']"

@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="valueColumnInput"
+      class="valueColumnInput"
       v-model="editedStep.column"
       name="Value column..."
       placeholder="Enter a column"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <MultiselectWidget
-      id="groupbyColumnsInput"
+      class="groupbyColumnsInput"
       v-model="editedStep.group"
       name="(Optional) Group by..."
       :options="columnNames"
@@ -19,7 +19,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnNameInput"
+      class="newColumnNameInput"
       v-model="editedStep.newColumnName"
       name="(Optional) New column name:"
       :placeholder="`${editedStep.column}_PCT`"

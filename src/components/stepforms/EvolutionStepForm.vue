@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="dateColumnInput"
+      class="dateColumnInput"
       v-model="editedStep.dateCol"
       name="Date column:"
       placeholder="Enter a column"
@@ -11,7 +11,7 @@
       :errors="errors"
     />
     <ColumnPicker
-      id="valueColumnInput"
+      class="valueColumnInput"
       v-model="editedStep.valueCol"
       name="Value column:"
       placeholder="Enter a column"
@@ -20,7 +20,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="evolutionType"
+      class="evolutionType"
       name="Compute evolution versus:"
       v-model="evolutionType"
       :options="evolutionTypes"
@@ -28,7 +28,7 @@
       :label="`label`"
     />
     <AutocompleteWidget
-      id="evolutionFormat"
+      class="evolutionFormat"
       name="Compute evolution in:"
       v-model="evolutionFormat"
       :options="evolutionFormats"
@@ -36,7 +36,7 @@
       :label="`label`"
     />
     <MultiselectWidget
-      id="indexColumnsInput"
+      class="indexColumnsInput"
       v-model="editedStep.indexColumns"
       name="(Optional) Index columns (labels):"
       :options="columnNames"
@@ -45,7 +45,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnInput"
+      class="newColumnInput"
       v-model="editedStep.newColumn"
       name="(Optional) New column name"
       placeholder="Enter a name"

@@ -57,7 +57,7 @@ describe('Substring Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('#startIndex').props('value')).toEqual(1);
-    expect(wrapper.find('#endIndex').props('value')).toEqual(3);
+    expect(wrapper.find('.startIndex').props('value')).toEqual(1);
+    expect(wrapper.find('.endIndex').props('value')).toEqual(3);
   });
 });

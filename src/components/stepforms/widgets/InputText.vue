@@ -1,13 +1,13 @@
 <template>
   <div class="widget-input-text__container" :class="toggleClassErrorWarning">
     <div class="widget-input-text__label">
-      <label v-if="name" :for="id">{{ name }}</label>
+      <label v-if="name" @click="$refs.input.focus()">{{ name }}</label>
       <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
         <i class="fas fa-question-circle" />
       </a>
     </div>
     <input
-      :id="id"
+      ref="input"
       :class="elementClass"
       :placeholder="placeholder"
       type="text"
@@ -36,9 +36,6 @@ import FormWidget from './FormWidget.vue';
   name: 'input-text-widget',
 })
 export default class InputTextWidget extends Mixins(FormWidget) {
-  @Prop({ type: String, default: null })
-  id!: string;
-
   @Prop({ type: String, default: '' })
   name!: string;
 

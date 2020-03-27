@@ -1,6 +1,6 @@
 <template>
   <div class="widget-list__container" :class="toggleClassErrorWarning">
-    <label :for="id">{{ name }}</label>
+    <label v-if="name">{{ name }}</label>
     <div class="widget-list__body">
       <div class="widget-list__child" v-for="(child, index) in children" :key="index">
         <span class="widget-list__component-sep" v-if="index > 0 && separatorLabel">{{
@@ -59,9 +59,6 @@ export default class ListWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Object, default: () => {} })
   componentProps!: object;
-
-  @Prop({ type: String, default: null })
-  id!: string;
 
   @Prop({ type: String, default: '' })
   name!: string;

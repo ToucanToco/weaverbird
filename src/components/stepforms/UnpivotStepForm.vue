@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="keepColumnInput"
+      class="keepColumnInput"
       v-model="editedStep.keep"
       name="Keep columns..."
       :options="columnNames"
@@ -12,7 +12,7 @@
       :errors="errors"
     />
     <MultiselectWidget
-      id="unpivotColumnInput"
+      class="unpivotColumnInput"
       v-model="editedStep.unpivot"
       name="Unpivot columns..."
       :options="columnNames"
@@ -21,7 +21,7 @@
       data-path=".unpivot"
       :errors="errors"
     />
-    <CheckboxWidget id="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna" />
+    <CheckboxWidget class="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna" />
     <StepFormButtonbar />
   </div>
 </template>

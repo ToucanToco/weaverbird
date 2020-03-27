@@ -41,9 +41,9 @@ describe('Top Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('#limitInput').props('value')).toEqual(10);
-    expect(wrapper.find('#sortOrderInput').props('value')).toEqual('asc');
-    expect(wrapper.find('#groupbyColumnsInput').props('value')).toEqual(['test']);
+    expect(wrapper.find('.limitInput').props('value')).toEqual(10);
+    expect(wrapper.find('.sortOrderInput').props('value')).toEqual('asc');
+    expect(wrapper.find('.groupbyColumnsInput').props('value')).toEqual(['test']);
   });
 
   it('should accept templatable values', async () => {

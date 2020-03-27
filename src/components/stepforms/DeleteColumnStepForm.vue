@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="columnsInput"
+      class="columnsInput"
       v-model="editedStep.columns"
       name="Delete columns..."
       :options="columnNames"

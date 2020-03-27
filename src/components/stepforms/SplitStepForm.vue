@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="columnToSplit"
+      class="columnToSplit"
       v-model="editedStep.column"
       name="Split column..."
       placeholder="Enter a column"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="delimiter"
+      class="delimiter"
       v-model="editedStep.delimiter"
       name="Delimiter:"
       placeholder="Enter a text delimiter"
@@ -18,7 +18,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="numberColsToKeep"
+      class="numberColsToKeep"
       v-model.number="editedStep.number_cols_to_keep"
       type="number"
       name="Number of columns to keep:"

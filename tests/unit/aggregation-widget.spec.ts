@@ -63,7 +63,7 @@ describe('Widget AggregationWidget', () => {
       localVue,
       propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
     });
-    wrapper.find('AutocompleteWidget-stub#columnInput').vm.$emit('input', 'plop');
+    wrapper.find('AutocompleteWidget-stub.columnInput').vm.$emit('input', 'plop');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
       { column: 'plop', newcolumn: '', aggfunction: 'sum' },
@@ -76,7 +76,7 @@ describe('Widget AggregationWidget', () => {
       localVue,
       propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
     });
-    wrapper.find('AutocompleteWidget-stub#aggregationFunctionInput').vm.$emit('input', 'avg');
+    wrapper.find('AutocompleteWidget-stub.aggregationFunctionInput').vm.$emit('input', 'avg');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
       { column: 'foo', newcolumn: '', aggfunction: 'avg' },

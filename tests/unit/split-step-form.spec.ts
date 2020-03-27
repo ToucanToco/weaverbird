@@ -37,7 +37,7 @@ describe('Split Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('#delimiter').props('value')).toEqual('-');
-    expect(wrapper.find('#numberColsToKeep').props('value')).toEqual(3);
+    expect(wrapper.find('.delimiter').props('value')).toEqual('-');
+    expect(wrapper.find('.numberColsToKeep').props('value')).toEqual(3);
   });
 });

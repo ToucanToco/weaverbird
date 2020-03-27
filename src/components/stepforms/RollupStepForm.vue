@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
-      id="hierarchyColumnsInput"
+      class="hierarchyColumnsInput"
       v-model="editedStep.hierarchy"
       name="Hierarchical columns (from top to bottom level):"
       :options="columnNames"
@@ -12,7 +12,7 @@
       :errors="errors"
     />
     <ListWidget
-      id="aggregationsInput"
+      class="aggregationsInput"
       addFieldName="Add aggregation"
       name="Columns to aggregate:"
       v-model="aggregations"
@@ -23,7 +23,7 @@
       :errors="errors"
     />
     <MultiselectWidget
-      id="groupbyColumnsInput"
+      class="groupbyColumnsInput"
       v-model="editedStep.groupby"
       name="(Optional) Group rollup by:"
       :options="columnNames"
@@ -33,7 +33,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="labelColumnInput"
+      class="labelColumnInput"
       v-model="editedStep.labelCol"
       name="(Optional) Label column name to be created:"
       placeholder="label"
@@ -41,7 +41,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="levelColumnInput"
+      class="levelColumnInput"
       v-model="editedStep.levelCol"
       name="(Optional) Level column name to be created:"
       placeholder="level"
@@ -49,7 +49,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="parentColumnInput"
+      class="parentColumnInput"
       v-model="editedStep.parentLabelCol"
       name="(Optional) Parent column name to be created:"
       placeholder="parent"

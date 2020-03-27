@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="valueColumnInput"
+      class="valueColumnInput"
       v-model="editedStep.valueColumn"
       name="Value column to sum"
       placeholder="Enter a column"
@@ -11,7 +11,7 @@
       :errors="errors"
     />
     <ColumnPicker
-      id="referenceColumnInput"
+      class="referenceColumnInput"
       v-model="editedStep.referenceColumn"
       name="Reference column to sort (usually dates)"
       placeholder="Enter a column"
@@ -20,7 +20,7 @@
       :errors="errors"
     />
     <MultiselectWidget
-      id="groupbyInput"
+      class="groupbyInput"
       v-model="editedStep.groupby"
       name="(Optional) Group cumulated sum by:"
       :options="columnNames"
@@ -29,7 +29,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="newColumnInput"
+      class="newColumnInput"
       v-model="editedStep.newColumn"
       name="(Optional) New column name:"
       :placeholder="`${editedStep.valueColumn}_CUMSUM`"

@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <InputTextWidget
-      id="limitInput"
+      class="limitInput"
       v-model.number="editedStep.limit"
       type="number"
       name="Get top..."
@@ -11,7 +11,7 @@
       :errors="errors"
     />
     <ColumnPicker
-      id="rankOnInput"
+      class="rankOnInput"
       v-model="editedStep.rank_on"
       name="Sort column..."
       placeholder="Enter a column"
@@ -20,7 +20,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="sortOrderInput"
+      class="sortOrderInput"
       v-model="editedStep.sort"
       name="Sort order:"
       :options="['asc', 'desc']"
@@ -29,7 +29,7 @@
       :errors="errors"
     />
     <MultiselectWidget
-      id="groupbyColumnsInput"
+      class="groupbyColumnsInput"
       v-model="editedStep.groups"
       name="(Optional) Group by..."
       :options="columnNames"

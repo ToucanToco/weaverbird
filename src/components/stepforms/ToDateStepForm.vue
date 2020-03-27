@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="column"
+      class="column"
       v-model="editedStep.column"
       name="Column to convert:"
       :options="columnNames"
@@ -12,7 +12,7 @@
     />
     <InputTextWidget
       v-if="this.translator === 'mongo40'"
-      id="dateFormat"
+      class="dateFormat"
       v-model.number="editedStep.format"
       name="Date format:"
       placeholder="%Y-%m-%d"

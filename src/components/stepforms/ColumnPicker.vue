@@ -21,9 +21,6 @@ import { MutationCallbacks } from '@/store/mutations';
 
 @Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {
-  @Prop({ type: String, default: 'columnInput' })
-  id!: string;
-
   @Prop({ type: String, default: 'column' })
   name!: string;
 

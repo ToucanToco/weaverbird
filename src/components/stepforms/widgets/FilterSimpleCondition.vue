@@ -2,7 +2,7 @@
   <div class="filter-form-simple-condition__container">
     <div class="filter-form-simple-condition-column-input">
       <AutocompleteWidget
-        :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
+        :class="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-columnInput`"
         :value="value.column"
         :options="columnNames"
         @input="updateStepColumn"
@@ -13,7 +13,7 @@
     </div>
     <div class="filter-form-simple-condition-operator-input">
       <AutocompleteWidget
-        :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterOperator`"
+        :class="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterOperator`"
         :value="operator"
         @input="updateStepOperator"
         :options="operators"
@@ -23,7 +23,7 @@
       />
     </div>
     <component
-      :id="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterValue`"
+      :class="`${dataPath.replace(/[^a-zA-Z0-9]/g, '')}-filterValue`"
       v-if="inputWidget"
       :is="inputWidget"
       :value="value.value"

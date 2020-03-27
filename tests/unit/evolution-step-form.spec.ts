@@ -69,12 +69,12 @@ describe('Evolution Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('#dateColumnInput').props('value')).toEqual('date');
-    expect(wrapper.find('#valueColumnInput').props('value')).toEqual('value');
-    expect(wrapper.find('#evolutionType').props('value').evolutionType).toEqual('vsLastYear');
-    expect(wrapper.find('#evolutionFormat').props('value').evolutionFormat).toEqual('pct');
-    expect(wrapper.find('#indexColumnsInput').props('value')).toEqual(['index']);
-    expect(wrapper.find('#newColumnInput').props('value')).toEqual('foo');
+    expect(wrapper.find('.dateColumnInput').props('value')).toEqual('date');
+    expect(wrapper.find('.valueColumnInput').props('value')).toEqual('value');
+    expect(wrapper.find('.evolutionType').props('value').evolutionType).toEqual('vsLastYear');
+    expect(wrapper.find('.evolutionFormat').props('value').evolutionFormat).toEqual('pct');
+    expect(wrapper.find('.indexColumnsInput').props('value')).toEqual(['index']);
+    expect(wrapper.find('.newColumnInput').props('value')).toEqual('foo');
   });
 
   it('should pass set evolutionFormat properly', async () => {
@@ -91,7 +91,7 @@ describe('Evolution Step Form', () => {
     });
     await wrapper.vm.$nextTick();
     wrapper
-      .find('#evolutionFormat')
+      .find('.evolutionFormat')
       .vm.$emit('input', { evolutionFormat: 'pct', label: 'percentage' });
     expect(wrapper.vm.$data.editedStep.evolutionFormat).toEqual('pct');
   });
@@ -110,7 +110,7 @@ describe('Evolution Step Form', () => {
     });
     await wrapper.vm.$nextTick();
     wrapper
-      .find('#evolutionType')
+      .find('.evolutionType')
       .vm.$emit('input', { evolutionType: 'vsLastMonth', label: 'last month' });
     expect(wrapper.vm.$data.editedStep.evolutionType).toEqual('vsLastMonth');
   });

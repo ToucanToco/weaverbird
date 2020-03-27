@@ -3,7 +3,7 @@
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ListWidget
       addFieldName="Add Column"
-      id="sortColumn"
+      class="sortColumn"
       v-model="sortColumns"
       :widget="widgetSortColumn"
       :defaultItem="{ column: '', order: 'asc' }"

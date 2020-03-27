@@ -1,7 +1,7 @@
 <template>
   <fieldset class="widget-aggregation__container">
     <AutocompleteWidget
-      id="columnInput"
+      class="columnInput"
       :options="columnNames"
       v-model="aggregationColumn"
       name="Column:"
@@ -10,7 +10,7 @@
       :errors="errors"
     />
     <AutocompleteWidget
-      id="aggregationFunctionInput"
+      class="aggregationFunctionInput"
       v-model="aggregationFunction"
       name="Function:"
       :options="aggregationFunctions"

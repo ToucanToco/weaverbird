@@ -1,9 +1,8 @@
 <template>
   <div class="widget-code-editor__container" :class="toggleClassErrorWarning">
-    <label v-if="name" :for="id">{{ name }}</label>
+    <label v-if="name">{{ name }}</label>
     <component
       :is="CodeEditor"
-      :id="id"
       :class="elementClass"
       :placeholder="placeholder"
       v-model="editedValue"
@@ -30,9 +29,6 @@ import FormWidget from './FormWidget.vue';
   name: 'code-editor-widget',
 })
 export default class CodeEditorWidget extends Mixins(FormWidget) {
-  @Prop({ type: String, default: null })
-  id!: string;
-
   @Prop({ type: String, default: '' })
   name!: string;
 

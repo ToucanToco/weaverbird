@@ -2,7 +2,7 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <ColumnPicker
-      id="column"
+      class="column"
       v-model="editedStep.column"
       name="Column to convert:"
       :options="columnNames"
@@ -11,7 +11,7 @@
       :errors="errors"
     />
     <InputTextWidget
-      id="format"
+      class="format"
       v-model="editedStep.format"
       name="Date format of output text:"
       placeholder="Enter a date format"

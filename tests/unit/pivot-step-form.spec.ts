@@ -119,9 +119,9 @@ describe('Pivot Step Form', () => {
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('#indexInput').props('value')).toEqual(['label']);
-    expect(wrapper.find('#valueColumnInput').props('value')).toEqual('value');
-    expect(wrapper.find('#aggregationFunctionInput').props('value')).toEqual('sum');
+    expect(wrapper.find('.indexInput').props('value')).toEqual(['label']);
+    expect(wrapper.find('.valueColumnInput').props('value')).toEqual('value');
+    expect(wrapper.find('.aggregationFunctionInput').props('value')).toEqual('sum');
   });
 
   it('should instantiate indexInput widget multiselect with column names', () => {
@@ -132,7 +132,7 @@ describe('Pivot Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
-    expect(wrapper.find('#indexInput').attributes('options')).toEqual('columnA,columnB,columnC');
+    expect(wrapper.find('.indexInput').attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
   it('should instantiate valueColumnInput widget autocomplete with column names', () => {
@@ -143,14 +143,14 @@ describe('Pivot Step Form', () => {
       },
     };
     const wrapper = runner.shallowMount(initialState);
-    expect(wrapper.find('#valueColumnInput').attributes('options')).toEqual(
+    expect(wrapper.find('.valueColumnInput').attributes('options')).toEqual(
       'columnA,columnB,columnC',
     );
   });
 
   it('should instantiate aggregationFunctionInput widget autocomplete with the right aggregation function names', () => {
     const wrapper = runner.shallowMount();
-    expect(wrapper.find('#aggregationFunctionInput').attributes('options')).toEqual(
+    expect(wrapper.find('.aggregationFunctionInput').attributes('options')).toEqual(
       'sum,avg,count,min,max',
     );
   });

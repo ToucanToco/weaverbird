@@ -138,7 +138,7 @@ describe('Widget FilterSimpleCondition', () => {
       value: { column: '', value: [], operator: 'in' },
     });
     await wrapper.vm.$nextTick();
-    let valueInputWrapper = wrapper.find('#condition-filterValue');
+    let valueInputWrapper = wrapper.find('.condition-filterValue');
     expect(valueInputWrapper.is(MultiInputTextWidget)).toBe(true);
     expect(valueInputWrapper.attributes('placeholder')).toEqual('Enter a value');
 
@@ -147,7 +147,7 @@ describe('Widget FilterSimpleCondition', () => {
       value: { column: '', value: null, operator: 'isnull' },
     });
     await wrapper.vm.$nextTick();
-    valueInputWrapper = wrapper.find('#condition-filterValue');
+    valueInputWrapper = wrapper.find('.condition-filterValue');
     expect(valueInputWrapper.exists()).toBeFalsy();
 
     // matches operator
@@ -155,7 +155,7 @@ describe('Widget FilterSimpleCondition', () => {
       value: { column: '', value: '', operator: 'matches' },
     });
     await wrapper.vm.$nextTick();
-    valueInputWrapper = wrapper.find('#condition-filterValue');
+    valueInputWrapper = wrapper.find('.condition-filterValue');
     expect(valueInputWrapper.is(InputTextWidget)).toBe(true);
     expect(valueInputWrapper.attributes('placeholder')).toEqual('Enter a regex, e.g. "[Ss]ales"');
   });
@@ -184,7 +184,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
     expect(wrapper.emitted().input[0]).toEqual([{ column: '', value: '', operator: 'eq' }]);
 
-    const valueInputWrapper = wrapper.find('#condition-filterValue');
+    const valueInputWrapper = wrapper.find('.condition-filterValue');
     valueInputWrapper.vm.$emit('input', 'toto');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().input[1]).toEqual([{ column: '', value: 'toto', operator: 'eq' }]);
