@@ -157,7 +157,7 @@ describe('Aggregate Step Form', () => {
       expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar');
     });
 
-    it('should set newcolumn cleverly if several aggregations are performed o, the same column', () => {
+    it('should set newcolumn cleverly if several aggregations are performed on the same column', () => {
       const wrapper = runner.mount(undefined, {
         data: {
           editedStep: {
@@ -174,6 +174,21 @@ describe('Aggregate Step Form', () => {
       expect(wrapper.vm.$data.errors).toBeNull();
       expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
       expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).toEqual('bar-avg');
+    });
+
+    it('should set newcolumn cleverly if the an aggregation is perform on an id column', () => {
+      const wrapper = runner.mount(undefined, {
+        data: {
+          editedStep: {
+            name: 'aggregate',
+            on: ['foo'],
+            aggregations: [{ column: 'foo', newcolumn: '', aggfunction: 'count' }],
+          },
+        },
+      });
+      wrapper.find('.widget-form-action__button--validate').trigger('click');
+      expect(wrapper.vm.$data.errors).toBeNull();
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('foo-count');
     });
   });
 
