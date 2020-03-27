@@ -87,6 +87,9 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
       if (newcolumnOccurences[agg.newcolumn] > 1) {
         agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
       }
+      if (this.editedStep.on.includes(agg.newcolumn)) {
+        agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
+      }
     }
     this.$$super.submit();
   }
