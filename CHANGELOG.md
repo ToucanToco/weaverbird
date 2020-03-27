@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED -
+
+### Fixed
+
+- Fixed bad sort step from initialization
+
 ## [0.15.0] - 2020-03-24
 
 ### Changed
