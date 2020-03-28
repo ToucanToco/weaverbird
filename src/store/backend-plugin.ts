@@ -7,11 +7,16 @@
  * This plugin will hook up on store mutations to call corresponding operations
  * on an actual database.
  */
-import { Store } from 'vuex';
+import _keyBy from 'lodash/keyBy';
 
 import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
-import { addLocalUniquesToDataset } from '@/lib/dataset/helpers';
+import {
+  addLocalUniquesToDataset,
+  ColumnStat,
+  ColumnValueStat,
+  updateLocalUniquesFromDatabase,
+} from '@/lib/dataset/helpers';
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
 import { PipelineInterpolator } from '@/lib/templating';
@@ -19,6 +24,9 @@ import { VQB_MODULE_NAME, VQBnamespace } from '@/store';
 import { activePipeline } from '@/store/state';
 
 import { StateMutation } from './mutations';
+
+// FIXME: type VQBStoreLike = Store<any> | ActionContext<VQBState, any>;
+type VQBStoreLike = any;
 
 type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;
@@ -30,7 +38,7 @@ export interface BackendService {
    *
    * @return a promise that holds the list of available collections
    */
-  listCollections(store: Store<any>): BackendResponse<string[]>;
+  listCollections(store: VQBStoreLike): BackendResponse<string[]>;
   /**
    * @param store the Vuex store hosted by the application
    * @param pipeline the pipeline to translate and execute on the backend
@@ -43,7 +51,7 @@ export interface BackendService {
    * formatted as as `DataSet`
    */
   executePipeline(
-    store: Store<any>,
+    store: VQBStoreLike,
     pipeline: Pipeline,
     limit: number,
     offset: number,
@@ -90,7 +98,7 @@ export function dereferencePipelines(
 
 export let backendService: BackendService; // set at plugin instantiation
 
-function _preparePipeline(pipeline: Pipeline, store: Store<any>) {
+function _preparePipeline(pipeline: Pipeline, store: VQBStoreLike) {
   const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
   if (pipelines && Object.keys(pipelines).length) {
     pipeline = dereferencePipelines(pipeline, pipelines);
@@ -103,8 +111,8 @@ function _preparePipeline(pipeline: Pipeline, store: Store<any>) {
   return pipeline;
 }
 
-export function backendify(service: BackendService, target: 'listCollections' | 'executePipeline') {
-  return async function(store: Store<any>, ...args: any[]) {
+export function backendify(service: Record<string, any>, target: string) {
+  return async function(store: VQBStoreLike, ...args: any[]) {
     try {
       store.commit(VQBnamespace('setLoading'), { isLoading: true });
       const response = await service[target](store, ...args);
@@ -126,7 +134,7 @@ export function backendify(service: BackendService, target: 'listCollections' | 
   };
 }
 
-async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
+async function _updateDataset(store: VQBStoreLike, service: BackendService, pipeline: Pipeline) {
   if (!store.getters[VQBnamespace('pipeline')].length) {
     return;
   }
@@ -150,7 +158,8 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
  * @return a plugin function usable in the `plugins` field of the store.
  */
 export function servicePluginFactory(service: BackendService) {
-  return (store: Store<any>) => {
+  backendService = service;
+  return (store: VQBStoreLike) => {
     store.subscribe(async (mutation: StateMutation, state: any) => {
       if (
         mutation.type === VQBnamespace('selectStep') ||
@@ -165,4 +174,65 @@ export function servicePluginFactory(service: BackendService) {
       }
     });
   };
+}
+
+export async function computeUniques(store: VQBStoreLike, column: string) {
+  if (!store.state[VQB_MODULE_NAME].pipeline.length) {
+    return;
+  }
+  const uniquePipeline: Pipeline = [
+    ...store.state[VQB_MODULE_NAME].pipeline,
+    {
+      name: 'aggregate',
+      aggregations: {
+        column,
+        aggfunction: 'count',
+        newcolumn: 'nbOcc',
+      },
+      on: [column],
+    },
+  ];
+  const response = await backendify(backendService, 'executePipeline')(
+    store,
+    _preparePipeline(uniquePipeline, store),
+    -1,
+    -1,
+  );
+  if (!response.error) {
+    const resultDataset = response.data as DataSet;
+    /**
+      resultDataset.data is of the form:
+      [
+        ['Paris', 10],
+        ['Lyon', 1]
+        ['Marseille', 2]
+      ]
+      The following lines transform response.data into:
+      columnStat = {
+        Paris:  {value: 'Paris', nbOcc: 10},
+        Lyon:  {value: 'Lyon', nbOcc: 1},
+        Marseille:  {value: 'Marseille', nbOcc: 2},
+      }
+    */
+    const columnsArray: string[] = resultDataset.headers.map(e => e.name);
+    const indexOfValue: number = columnsArray.indexOf(column); // equal to 0 in the example given above
+    const indexOfNbOcc: number = columnsArray.indexOf('nbOcc'); // equal to 1 in the example given above
+    const columnStat: ColumnStat = _keyBy(
+      resultDataset.data.map(
+        (e: any[]): ColumnValueStat => {
+          // e is equal in the example given above tp: ['Paris', 10] or ['Marseille', 2]
+          const n = {
+            value: e[indexOfValue],
+            nbOcc: e[indexOfNbOcc],
+          };
+          return n;
+        },
+      ),
+      'value',
+    );
+
+    return updateLocalUniquesFromDatabase(store.state[VQB_MODULE_NAME].dataset, {
+      [column]: columnStat,
+    });
+  }
 }

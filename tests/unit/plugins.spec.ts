@@ -4,11 +4,17 @@ import _ from 'lodash';
 import Vuex, { Store } from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
+import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { ScopeContext } from '@/lib/templating';
 import { VQB_MODULE_NAME, VQBnamespace } from '@/store';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-import { backendify, BackendService, servicePluginFactory } from '@/store/backend-plugin';
+import {
+  backendify,
+  BackendService,
+  computeUniques,
+  servicePluginFactory,
+} from '@/store/backend-plugin';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
@@ -57,7 +63,10 @@ describe('backendify tests', () => {
   it('should return the expected valid response', async () => {
     const backendResponse = { data: 'foo' }; // no-error backend response
     const mockOperation = jest.fn((_store, ..._args) => Promise.resolve(backendResponse));
-    const result = await backendify(mockOperation)(store, 'foo', 'bar', 'baz');
+    const result = await backendify(
+      { executePipeline: mockOperation, listCollections: jest.fn() },
+      'executePipeline',
+    )(store, 'foo', 'bar', 'baz');
     expect(result).toEqual(backendResponse);
     expect(mockOperation).toHaveBeenCalledTimes(1);
     expect(mockOperation).toHaveBeenCalledWith(store, 'foo', 'bar', 'baz');
@@ -69,7 +78,10 @@ describe('backendify tests', () => {
   it('should return the expected no-response', async () => {
     const backendResponse = { error: { message: 'foo', type: 'error' as 'error' } }; // error backend response
     const mockOperation = jest.fn((_store, ..._args) => Promise.resolve(backendResponse));
-    const result = await backendify(mockOperation)(store, 'foo', 'bar', 'baz');
+    const result = await backendify(
+      { executePipeline: mockOperation, listCollections: jest.fn() },
+      'executePipeline',
+    )(store, 'foo', 'bar', 'baz');
     expect(result).toEqual(backendResponse);
     expect(mockOperation).toHaveBeenCalledTimes(1);
     expect(mockOperation).toHaveBeenCalledWith(store, 'foo', 'bar', 'baz');
@@ -86,7 +98,10 @@ describe('backendify tests', () => {
     const mockOperation = jest.fn(function(_store, ..._args) {
       throw new Error('oopsie');
     });
-    const result = await backendify(mockOperation)(store, 'foo', 'bar', 'baz');
+    const result = await backendify(
+      { executePipeline: mockOperation, listCollections: jest.fn() },
+      'executePipeline',
+    )(store, 'foo', 'bar', 'baz');
     expect(result).toEqual({ error: { message: 'Error: oopsie', type: 'error' } });
     expect(mockOperation).toHaveBeenCalledTimes(1);
     expect(mockOperation).toHaveBeenCalledWith(store, 'foo', 'bar', 'baz');
@@ -463,5 +478,79 @@ describe('backend service plugin tests', () => {
         ],
       },
     ]);
+  });
+});
+
+describe('computeUniques tests', () => {
+  let dummyDataset: DataSet, dummyService: BackendService;
+  beforeEach(() => {
+    dummyDataset = {
+      headers: [
+        { name: 'city', uniques: { values: [{ value: 'Lyon', nbOcc: 50 }], loaded: false } },
+      ],
+      data: [['Lyon']],
+    };
+    const resultOfAggregationCountOnCity: DataSet = {
+      headers: [{ name: 'city' }, { name: 'nbOcc' }],
+      data: [
+        ['Paris', 200],
+        ['Lyon', 150],
+        ['Marseille', 100],
+      ],
+    };
+    dummyService = {
+      listCollections: jest.fn(),
+      executePipeline: jest.fn().mockResolvedValue({ data: resultOfAggregationCountOnCity }),
+    };
+    servicePluginFactory(dummyService);
+  });
+  it('should note call anything if pipeline is empty', async () => {
+    const store = setupMockStore({
+      pipeline: [],
+      selectedStepIndex: 1,
+      dataset: dummyDataset,
+    });
+
+    await computeUniques(store, 'city');
+    expect(dummyService.executePipeline).toHaveBeenCalledTimes(0);
+  });
+  it('should call backendify with with pipeline added with aggregation step', async () => {
+    const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
+    const store = setupMockStore({
+      pipeline,
+      selectedStepIndex: 1,
+      dataset: dummyDataset,
+    });
+    const result = await computeUniques(store, 'city');
+
+    const expectedPipeline = [
+      ...pipeline,
+      {
+        name: 'aggregate',
+        aggregations: {
+          column: 'city',
+          aggfunction: 'count',
+          newcolumn: 'nbOcc',
+        },
+        on: ['city'],
+      },
+    ];
+    expect(dummyService.executePipeline).toHaveBeenCalledWith(store, expectedPipeline, -1, -1);
+    expect(result).toEqual({
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Paris', nbOcc: 200 },
+              { value: 'Lyon', nbOcc: 150 },
+              { value: 'Marseille', nbOcc: 100 },
+            ],
+            loaded: true,
+          },
+        },
+      ],
+      data: [['Lyon']],
+    });
   });
 });

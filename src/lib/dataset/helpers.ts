@@ -25,7 +25,7 @@ export type ColumnValueStat = {
   nbOcc: number;
 };
 
-type ColumnStat = Record<any, ColumnValueStat>;
+export type ColumnStat = Record<any, ColumnValueStat>;
 
 /**
  * Inspect a dataset and return, for each column, the list of its unique values.
@@ -90,5 +90,39 @@ export function addLocalUniquesToDataset(dataset: DataSet) {
       loaded: false,
     },
   }));
+  return { ...dataset, headers: newHeaders };
+}
+
+/**
+ * Merge a dataset's local value statistics with actual backend statistics.
+ *
+ * For a given column in the input dataset, if new statistics are found in the
+ * incoming statistics, override the local ones.
+ *
+ * @param {DataSet} dataset the dataset to update
+ * @param {object} uniqueStats a mapping columnname → column statistics that
+ * supposedly come from a backend.
+ *
+ * @return the _new_ dataset. The original one is left untouched.
+ */
+export function updateLocalUniquesFromDatabase(
+  dataset: DataSet,
+  uniqueStats: Record<string, Record<any, ColumnValueStat>>,
+) {
+  const newHeaders = [];
+  for (const hdr of dataset.headers) {
+    const columnStats = uniqueStats[hdr.name];
+    if (columnStats === undefined) {
+      newHeaders.push(hdr);
+    } else {
+      newHeaders.push({
+        ...hdr,
+        uniques: {
+          values: Object.values(columnStats).sort(_statCompare),
+          loaded: true,
+        },
+      });
+    }
+  }
   return { ...dataset, headers: newHeaders };
 }
