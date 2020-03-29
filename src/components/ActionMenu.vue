@@ -1,16 +1,38 @@
 <template>
   <popover :active="isActive" :align="alignLeft" bottom>
     <div class="action-menu__body">
-      <div class="action-menu__section">
-        <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
-        <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
-        <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
-        <div class="action-menu__option" @click="createStep('filter')">Filter values</div>
-        <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
-        <div class="action-menu__option" @click="createStep('replace')">Replace values</div>
-        <div class="action-menu__option" @click="createStep('sort')">Sort values</div>
-        <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
-      </div>
+      <transition name="slide-left" mode="out-in">
+        <div v-if="visiblePanel == 1">
+          <div class="action-menu__section">
+            <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
+            <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
+            <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
+            <div
+              class="action-menu__option action-menu__option--top-bordered"
+              @click="visiblePanel = 2"
+            >
+              Other operations
+            </div>
+          </div>
+        </div>
+      </transition>
+      <transition name="slide-right" mode="out-in">
+        <div v-if="visiblePanel == 2">
+          <div class="action-menu__option--back" @click="visiblePanel = 1">
+            <i class="fas fa-angle-left" /> BACK
+          </div>
+          <div
+            class="action-menu__option action-menu__option--top-bordered"
+            @click="createStep('filter')"
+          >
+            Filter values
+          </div>
+          <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
+          <div class="action-menu__option" @click="createStep('replace')">Replace values</div>
+          <div class="action-menu__option" @click="createStep('sort')">Sort values</div>
+          <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
+        </div>
+      </transition>
     </div>
   </popover>
 </template>
@@ -18,16 +40,25 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
+import ListUniqueValues from '@/components/ListUniqueValues.vue';
+import { DataSetColumn } from '@/lib/dataset';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
+import { ColumnStat, ColumnValueStat } from '../lib/dataset/helpers';
 import Popover from './Popover.vue';
+
+enum VisiblePanel {
+  'MAIN OPERATIONS',
+  'OTHER OPERATIONS',
+}
 
 @Component({
   name: 'action-menu',
   components: {
     Popover,
+    ListUniqueValues,
   },
 })
 export default class ActionMenu extends Vue {
@@ -42,6 +73,7 @@ export default class ActionMenu extends Vue {
     default: () => '',
   })
   columnName!: string;
+  visiblePanel: VisiblePanel = 1;
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
@@ -124,13 +156,14 @@ export default class ActionMenu extends Vue {
 .action-menu__body {
   display: flex;
   flex-direction: column;
-  border-radius: 3px;
+  border-radius: 10px;
   margin-left: -5px;
   margin-right: -5px;
   width: 200px;
   background-color: #fff;
-  box-shadow: 0px 1px 20px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
   color: $base-color;
+  overflow: hidden;
 }
 
 .action-menu__section {
@@ -162,5 +195,63 @@ export default class ActionMenu extends Vue {
   &:last-child {
     margin-bottom: 0;
   }
+}
+.action-menu__option--top-bordered {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 10px 12px;
+  line-height: 20px;
+  justify-content: space-between;
+  position: relative;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.03);
+    color: $active-color;
+  }
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.action-menu__option--back {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 10px 12px;
+  line-height: 20px;
+  position: relative;
+  font-weight: 600;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.fa-angle-left {
+  margin-right: 5px;
+}
+
+.slide-left-enter,
+.slide-right-leave {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.slide-right-enter,
+.slide-left-leave {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-left-enter-active,
+.slide-left-leave-active,
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.3s ease;
 }
 </style>

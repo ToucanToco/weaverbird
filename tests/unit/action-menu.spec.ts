@@ -9,7 +9,82 @@ import { buildStateWithOnePipeline, setupMockStore } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+type PanelElement = {
+  label: string;
+  stepName: string | null;
+  index: number;
+};
+
+const FIRST_PANEL: PanelElement[] = [
+  {
+    label: 'Rename column',
+    stepName: 'rename',
+    index: 0,
+  },
+  {
+    label: 'Duplicate column',
+    stepName: 'duplicate',
+    index: 1,
+  },
+  // "Delete" operation directly commit the step into the store, so it does not emit the stepname
+  // it will be test apart of Rename and Duplicate
+  {
+    label: 'Delete column',
+    stepName: null,
+    index: 2,
+  },
+];
+
+const SECOND_PANEL: PanelElement[] = [
+  {
+    label: 'Filter values',
+    stepName: 'filter',
+    index: 0,
+  },
+  {
+    label: 'Fill null values',
+    stepName: 'fillna',
+    index: 1,
+  },
+  {
+    label: 'Replace values',
+    stepName: 'replace',
+    index: 2,
+  },
+  {
+    label: 'Sort values',
+    stepName: 'sort',
+    index: 3,
+  },
+  // "Get unique values" operation directly commit the step into the store, so it does not emit the stepname
+  // it will be test apart
+  {
+    label: 'Get unique values',
+    stepName: null,
+    index: 4,
+  },
+];
+
 describe('Action Menu', () => {
+  let mountWrapper: any;
+  beforeEach(() => {
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+    mountWrapper = async function(isCurrentlyEditing: boolean = false) {
+      let store;
+      if (isCurrentlyEditing) {
+        store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
+      } else {
+        store = setupMockStore();
+      }
+      const wrapper = shallowMount(ActionMenu, {
+        store,
+        localVue,
+        propsData: { columnName: 'dreamfall' },
+      });
+      return [wrapper, store];
+    };
+  });
+
   it('should instantiate with its popover hidden', () => {
     const wrapper = mount(ActionMenu);
 
@@ -27,213 +102,152 @@ describe('Action Menu', () => {
     expect(wrapper.classes()).toContain('popover--active');
   });
 
-  it('should have an "Rename column" action', () => {
+  it('should display the first panel', () => {
     const wrapper = shallowMount(ActionMenu);
-    expect(wrapper.html()).toContain('Rename column');
+
+    let el: PanelElement;
+    for (el of FIRST_PANEL) {
+      expect(wrapper.html()).toContain(el.label);
+    }
+    for (el of SECOND_PANEL) {
+      expect(wrapper.html()).not.toContain(el.label);
+    }
   });
 
-  it('should have an "Fill null values" action', () => {
-    const wrapper = shallowMount(ActionMenu);
-    expect(wrapper.html()).toContain('Fill null values');
-  });
-
-  describe('when clicking on "Duplicate column"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = shallowMount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(0).trigger('click');
-
-      expect(wrapper.emitted().actionClicked.length).toBeGreaterThan(0);
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['duplicate']);
-    });
-
-    it('should emit a close event', () => {
-      const store = setupMockStore();
-      const wrapper = shallowMount(ActionMenu, { store, localVue });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(0).trigger('click');
-
+  it('should close on click on any operation', async () => {
+    let el: PanelElement;
+    for (el of FIRST_PANEL) {
+      const [wrapper] = await mountWrapper();
+      await wrapper
+        .findAll('.action-menu__option')
+        .at(el.index)
+        .trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
-    });
+    }
   });
 
-  describe('when clicking on "Rename column"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = shallowMount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(1).trigger('click');
-
-      expect(wrapper.emitted().actionClicked.length).toBeGreaterThan(0);
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['rename']);
-    });
-
-    it('should emit a close event', () => {
-      const wrapper = shallowMount(ActionMenu);
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(1).trigger('click');
-
-      expect(wrapper.emitted().closed).toBeTruthy();
-    });
+  it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
+    let el: PanelElement;
+    for (el of FIRST_PANEL) {
+      const [wrapper] = await mountWrapper();
+      await wrapper
+        .findAll('.action-menu__option')
+        .at(el.index)
+        .trigger('click');
+      await wrapper.vm.$nextTick();
+      if (el.stepName) {
+        expect(wrapper.emitted().actionClicked[0]).toEqual([el.stepName]);
+      }
+    }
   });
 
-  describe('when clicking on "Delete column"', () => {
+  describe('when click on delete operation', () => {
     it('should add a valid delete step in the pipeline', async () => {
-      const store = setupMockStore();
-      const wrapper = shallowMount(ActionMenu, {
-        store,
-        localVue,
-        propsData: {
-          columnName: 'columnA',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(2).trigger('click');
-      await localVue.nextTick();
+      const [wrapper, store] = await mountWrapper();
+      await wrapper
+        .findAll('.action-menu__option')
+        .at(2) //delete operation is at index 2
+        .trigger('click');
+      await wrapper.vm.$nextTick();
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
-        { name: 'delete', columns: ['columnA'] },
+        { name: 'delete', columns: ['dreamfall'] },
       ]);
     });
-
-    it('should emit a close event', () => {
-      const store = setupMockStore();
-      const wrapper = shallowMount(ActionMenu, { store, localVue });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(2).trigger('click');
-
-      expect(wrapper.emitted().closed).toBeTruthy();
-    });
-
-    it('should close any open step form to show the addition of the delete step in the pipeline', () => {
-      const store = setupMockStore(
-        buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }),
-      );
-      const wrapper = shallowMount(ActionMenu, { store, localVue });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(2).trigger('click');
+    it('should close any open step form to show the addition of the delete step in the pipeline', async () => {
+      const [wrapper, store] = await mountWrapper(true);
+      await wrapper
+        .findAll('.action-menu__option')
+        .at(2) //delete operation is at index 2
+        .trigger('click');
+      await wrapper.vm.$nextTick();
       expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
     });
   });
 
-  describe('when clicking on "Filter values"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = shallowMount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(3).trigger('click');
-
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['filter']);
-    });
-  });
-
-  it('should emit a close event', () => {
-    const wrapper = shallowMount(ActionMenu);
-    const actionsWrapper = wrapper.findAll('.action-menu__option');
-    actionsWrapper.at(3).trigger('click');
-
-    expect(wrapper.emitted().closed).toBeTruthy();
-  });
-
-  describe('when clicking on "Fill null values"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = shallowMount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(4).trigger('click');
-
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['fillna']);
-    });
-  });
-
-  it('should emit a close event', () => {
-    const wrapper = shallowMount(ActionMenu);
-    const actionsWrapper = wrapper.findAll('.action-menu__option');
-    actionsWrapper.at(4).trigger('click');
-
-    expect(wrapper.emitted().closed).toBeTruthy();
-  });
-
-  describe('when clicking on "Replace values"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = shallowMount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(5).trigger('click');
-
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['replace']);
-    });
-  });
-
-  it('should emit a close event', () => {
-    const wrapper = shallowMount(ActionMenu);
-    const actionsWrapper = wrapper.findAll('.action-menu__option');
-    actionsWrapper.at(5).trigger('click');
-
-    expect(wrapper.emitted().closed).toBeTruthy();
-  });
-
-  describe('when clicking on "Sort values"', () => {
-    it('should emit an "actionClicked" event with proper options', () => {
-      const wrapper = shallowMount(ActionMenu, {
-        propsData: {
-          columnName: 'dreamfall',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(6).trigger('click');
-
-      expect(wrapper.emitted().actionClicked[0]).toEqual(['sort']);
-    });
-  });
-
-  it('should emit a close event', () => {
-    const wrapper = shallowMount(ActionMenu);
-    const actionsWrapper = wrapper.findAll('.action-menu__option');
-    actionsWrapper.at(6).trigger('click');
-
-    expect(wrapper.emitted().closed).toBeTruthy();
-  });
-
-  describe('when clicking on "Get unique values"', () => {
-    it('should add a valid uniquegroups step in the pipeline', async () => {
-      const store = setupMockStore();
-      const wrapper = shallowMount(ActionMenu, {
-        store,
-        localVue,
-        propsData: {
-          columnName: 'columnA',
-        },
-      });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(7).trigger('click');
-      await localVue.nextTick();
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
-        { name: 'uniquegroups', on: ['columnA'] },
-      ]);
+  describe('when clicking on "Other operations"', () => {
+    let mountWrapper: any;
+    beforeEach(() => {
+      // eslint-disable-next-line @typescript-eslint/no-inferrable-types
+      mountWrapper = async function(isCurrentlyEditing: boolean = false) {
+        let store;
+        if (isCurrentlyEditing) {
+          store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
+        } else {
+          store = setupMockStore();
+        }
+        const wrapper = shallowMount(ActionMenu, {
+          store,
+          localVue,
+          propsData: { columnName: 'dreamfall' },
+        });
+        await wrapper
+          .findAll('.action-menu__option')
+          .at(3)
+          .trigger('click');
+        await wrapper.vm.$nextTick();
+        return [wrapper, store];
+      };
     });
 
-    it('should emit a close event', () => {
-      const store = setupMockStore();
-      const wrapper = shallowMount(ActionMenu, { store, localVue });
-      const actionsWrapper = wrapper.findAll('.action-menu__option');
-      actionsWrapper.at(7).trigger('click');
-      expect(wrapper.emitted().closed).toBeTruthy();
+    it('should display the second panel', async () => {
+      const [wrapper, store] = await mountWrapper();
+      let el: PanelElement;
+      for (el of FIRST_PANEL) {
+        expect(wrapper.html()).not.toContain(el.label);
+      }
+      for (el of SECOND_PANEL) {
+        expect(wrapper.html()).toContain(el.label);
+      }
+    });
+
+    it('should close on click on any operation', async () => {
+      let el: PanelElement;
+      for (el of SECOND_PANEL) {
+        const [wrapper, store] = await mountWrapper();
+        await wrapper
+          .findAll('.action-menu__option')
+          .at(el.index)
+          .trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted().closed).toBeTruthy();
+      }
+    });
+
+    it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
+      let el: PanelElement;
+      for (el of SECOND_PANEL) {
+        const [wrapper, store] = await mountWrapper();
+        await wrapper
+          .findAll('.action-menu__option')
+          .at(el.index)
+          .trigger('click');
+        await wrapper.vm.$nextTick();
+        if (el.stepName) {
+          expect(wrapper.emitted().actionClicked[0]).toEqual([el.stepName]);
+        }
+      }
+    });
+    describe('when click on delete operation', () => {
+      it('should add a valid delete step in the pipeline', async () => {
+        const [wrapper, store] = await mountWrapper();
+        await wrapper
+          .findAll('.action-menu__option')
+          .at(4) // "Get unique values" operation is at index 4
+          .trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+          { name: 'uniquegroups', on: ['dreamfall'] },
+        ]);
+      });
+      it('should close any open step form to show the addition of the delete step in the pipeline', async () => {
+        const [wrapper, store] = await mountWrapper(true);
+        await wrapper
+          .findAll('.action-menu__option')
+          .at(4) // "Get unique values" operation is at index 4
+          .trigger('click');
+        await wrapper.vm.$nextTick();
+        expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
+      });
     });
   });
 });
