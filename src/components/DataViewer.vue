@@ -27,6 +27,7 @@
                   class="data-viewer__header-action fas fa-angle-down"
                   @click.stop="openMenu(index)"
                 >
+                  <!-- TODO: only one ActionMenu should be mounted at the same time -->
                   <ActionMenu
                     :column-name="column.name"
                     :is-active="column.isActionMenuOpened"

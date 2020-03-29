@@ -13,6 +13,9 @@
             >
               Other operations
             </div>
+            <div style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
+              <ListUniqueValues :values="uniqueValues" />
+            </div>
           </div>
         </div>
       </transition>
@@ -78,12 +81,35 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: Pipeline;
+  @VQBModule.Getter columnHeaders!: DataSetColumn[];
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
+
+  get columnHeader(): DataSetColumn | undefined {
+    return this.columnHeaders.find(colHeader => {
+      return colHeader.name === this.columnName;
+    });
+  }
+
+  get uniqueValues(): ColumnValueStat[] {
+    if (this.columnHeader && this.columnHeader.uniques) {
+      return this.columnHeader.uniques.values;
+    } else {
+      return [];
+    }
+  }
+
+  get isLoaded(): boolean {
+    if (this.columnHeader && this.columnHeader.uniques) {
+      return this.columnHeader.uniques.loaded;
+    } else {
+      return false;
+    }
+  }
 
   /**
    * @description Close the popover when clicking outside
