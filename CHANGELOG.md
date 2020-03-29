@@ -10,6 +10,7 @@
 - Fixed bad sort step from initialization
 - Fixed columnPicker to prevent the mutation of the props
 - Fixed the no uniqueness of widgets ids by replacing them by class
+- Fixed checkbox props propagation
 
 ## [0.15.0] - 2020-03-24
 
