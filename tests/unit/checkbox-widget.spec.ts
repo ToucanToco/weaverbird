@@ -16,20 +16,21 @@ describe('Widget Checkbox', () => {
     expect(labelWrapper.text()).toEqual('test');
   });
 
-  it('should toggle the right class on click', async () => {
+  it('should be instantiated with the right class', async () => {
     const wrapper = mount(CheckboxWidget, {
       propsData: { value: false },
     });
     expect(wrapper.classes()).not.toContain('widget-checkbox--checked');
-    wrapper.trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.classes()).toContain('widget-checkbox--checked');
-    wrapper.trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.classes()).not.toContain('.widget-checkbox--checked');
   });
 
-  it('should emit "input" event on click', async () => {
+  it('should be instantiated with the right class', async () => {
+    const wrapper = mount(CheckboxWidget, {
+      propsData: { value: true },
+    });
+    expect(wrapper.classes()).toContain('widget-checkbox--checked');
+  });
+
+  it('should emit the right value of "input" event on click', async () => {
     const wrapper = shallowMount(CheckboxWidget, {
       propsData: {
         value: false,
@@ -38,5 +39,16 @@ describe('Widget Checkbox', () => {
     wrapper.trigger('click');
     await localVue.nextTick();
     expect(wrapper.emitted()).toEqual({ input: [[true]] });
+  });
+
+  it('should emit the right value of "input" event on click', async () => {
+    const wrapper = shallowMount(CheckboxWidget, {
+      propsData: {
+        value: true,
+      },
+    });
+    wrapper.trigger('click');
+    await localVue.nextTick();
+    expect(wrapper.emitted()).toEqual({ input: [[false]] });
   });
 });

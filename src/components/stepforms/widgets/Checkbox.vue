@@ -17,15 +17,12 @@ export default class CheckboxWidget extends Vue {
   @Prop({ type: Boolean, default: true })
   value!: boolean;
 
-  valueCopy = this.value;
-
   get toggleCheckedClass() {
-    return { 'widget-checkbox': true, 'widget-checkbox--checked': this.valueCopy };
+    return { 'widget-checkbox': true, 'widget-checkbox--checked': this.value };
   }
 
   toggleValue() {
-    this.valueCopy = !this.valueCopy;
-    this.$emit('input', this.valueCopy);
+    this.$emit('input', !this.value);
   }
 }
 </script>
@@ -87,5 +84,6 @@ export default class CheckboxWidget extends Vue {
   margin-bottom: 0;
   align-self: center;
   margin-left: 8px;
+  cursor: pointer;
 }
 </style>
