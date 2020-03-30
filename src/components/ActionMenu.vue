@@ -14,7 +14,7 @@
               Other operations
             </div>
             <div style="border-top: 1px solid rgba(0, 0, 0, 0.1)">
-              <ListUniqueValues :values="uniqueValues" />
+              <ListUniqueValues :values="uniqueValues" @input="createOrUpdateFilterColumnStep" />
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { POPOVER_ALIGN } from '@/components/constants';
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
 import { DataSetColumn } from '@/lib/dataset';
-import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import { AggFunctionStep, FilterStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
@@ -78,6 +78,7 @@ export default class ActionMenu extends Vue {
   columnName!: string;
   visiblePanel: VisiblePanel = 1;
 
+  @VQBModule.State currentStepFormName!: string;
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: Pipeline;
@@ -86,6 +87,13 @@ export default class ActionMenu extends Vue {
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
+  @VQBModule.Mutation createStepForm!: ({
+    stepName,
+    stepFormDefaults,
+  }: {
+    stepName: PipelineStepName;
+    stepFormDefaults?: object;
+  }) => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
@@ -164,6 +172,37 @@ export default class ActionMenu extends Vue {
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
     this.close();
+  }
+
+  createOrUpdateFilterColumnStep(checkedValue: any[]) {
+    this.$emit('actionClicked', 'filter', {
+      name: 'filter',
+      condition: { column: this.columnName, operator: 'in', value: checkedValue },
+    });
+    // console.log('checkedValue', checkedValue);
+    /**
+     * If a step edition form is already open, close it so that the left panel displays
+     * the pipeline with the new delete step inserted
+     */
+    if (this.isEditingStep) {
+      this.closeStepForm();
+    }
+    // else : create the filter step of edit it
+    // if (!this.isEditingStep) {
+    // create the step
+    // const newPipeline: Pipeline = [...this.pipeline];
+    // const index = this.computedActiveStepIndex + 1;
+    const filterStep: FilterStep = {
+      name: 'filter',
+      condition: { column: this.columnName, operator: 'in', value: checkedValue },
+    };
+    this.createStepForm({ stepName: 'filter', stepFormDefaults: filterStep });
+    // newPipeline.splice(index, 0, filterStep);
+    // this.setPipeline({ pipeline: newPipeline });
+    // this.selectStep({ index });
+    // } else {
+    //   console.log('allready open, to nothing');
+    // }
   }
 
   @Watch('isActive')

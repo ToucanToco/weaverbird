@@ -52,6 +52,8 @@ export interface VQBState {
    */
   stepFormDefaults?: object;
 
+  remoteStepForm?: object;
+
   /**
    * the seclected columns (materialized by a styled focus on the DataViewer)
    */
@@ -107,6 +109,7 @@ export function emptyState(): VQBState {
     currentStepFormName: undefined,
     stepFormInitialValue: undefined,
     stepFormDefaults: undefined,
+    remoteStepForm: undefined,
     selectedStepIndex: -1,
     currentPipelineName: undefined,
     pipelines: {},

@@ -6,6 +6,7 @@
         :is="formComponent"
         :initialStepValue="stepFormInitialValue"
         :stepFormDefaults="stepFormDefaults"
+        :remoteStepForm="remoteStepForm"
         :isStepCreation="isStepCreation"
         @back="closeStepForm"
         @formSaved="saveStep"
@@ -53,6 +54,7 @@ export default class QueryBuilder extends Vue {
   @VQBModule.State currentStepFormName!: PipelineStepName;
   @VQBModule.State stepFormInitialValue!: object;
   @VQBModule.State stepFormDefaults!: object;
+  @VQBModule.State remoteStepForm!: object;
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;

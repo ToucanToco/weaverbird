@@ -124,6 +124,20 @@ class Mutations {
   }
 
   /**
+   * open step form when creating a step
+   */
+  updateStepForm(
+    state: VQBState,
+    { stepName, remoteStepForm }: { stepName: PipelineStepName; remoteStepForm?: object },
+  ) {
+    console.log('updateStepForm', remoteStepForm);
+    // state.currentStepFormName = undefined;
+    state.currentStepFormName = stepName;
+    state.stepFormInitialValue = undefined;
+    state.remoteStepForm = remoteStepForm;
+  }
+
+  /**
    * log a backend error message.
    */
   logBackendError(state: VQBState, { backendError }: { backendError: BackendError }) {

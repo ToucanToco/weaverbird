@@ -98,7 +98,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Getter translator!: string;
   @VQBModule.Getter pipeline?: Pipeline;
 
-  @VQBModule.Mutation createStepForm!: ({
+  @VQBModule.Mutation updateStepForm!: ({
     stepName,
     stepFormDefaults,
   }: {
@@ -160,7 +160,7 @@ export default class DataViewer extends Vue {
    * @param {PipelineStepName} stepName - The name of the step we want to create
    */
   openStepForm(stepName: PipelineStepName, defaults = {}) {
-    this.createStepForm({ stepName, stepFormDefaults: defaults });
+    this.updateStepForm({ stepName, remoteStepForm: defaults });
   }
 
   /**

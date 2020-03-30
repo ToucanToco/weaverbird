@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Prop } from 'vue-property-decorator';
+import { Prop, Watch } from 'vue-property-decorator';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
 import { StepFormComponent } from '@/components/formlib';
@@ -63,7 +63,12 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     // On creation, if a column is selected, use it to set "column" property of
     // the filter step
     if (this.isStepCreation && this.selectedColumns[0]) {
-      const condition = { column: this.selectedColumns[0], value: '', operator: 'eq' };
+      let condition;
+      if (this.stepFormDefaults.condition) {
+        condition = this.stepFormDefaults.condition;
+      } else {
+        condition = { column: this.selectedColumns[0], value: '', operator: 'eq' };
+      }
       this.editedStep = {
         name: 'filter' as 'filter',
         condition: condition as FilterSimpleCondition,
@@ -72,7 +77,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
       // Otherwise, fallback on the default initial value
       this.editedStep = {
         name: 'filter' as 'filter',
-        condition: { ...this.initialStepValue.condition },
+        condition: { ...this.stepFormDefaults.condition, ...this.initialStepValue.condition },
       };
     }
   }

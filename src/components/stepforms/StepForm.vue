@@ -90,6 +90,9 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: Object, default: undefined })
   stepFormDefaults!: Partial<StepType>;
 
+  @Prop({ type: Object, default: undefined })
+  remoteStepForm!: Partial<StepType>;
+
   @VQBModule.State interpolateFunc!: InterpolateFunction;
   @VQBModule.State selectedStepIndex!: number;
   @VQBModule.State variables!: ScopeContext;
@@ -104,7 +107,11 @@ export default class BaseStepForm<StepType> extends Vue {
 
   readonly selectedColumnAttrName: string | null = null;
   readonly title: string = '';
-  editedStep: StepType = { ...this.initialStepValue, ...this.stepFormDefaults };
+  editedStep: StepType = {
+    ...this.initialStepValue,
+    ...this.stepFormDefaults,
+    ...this.remoteStepForm,
+  };
   editedStepModel!: object;
   errors?: VqbError[] | null = null;
   stepname!: string; // fed by @StepFormComponent
@@ -181,6 +188,12 @@ export default class BaseStepForm<StepType> extends Vue {
     if (val.length > 0 && !_.isEqual(val, oldVal)) {
       this.stepSelectedColumn = val[0];
     }
+  }
+
+  @Watch('remoteStepForm')
+  onRemoteStepFormChange() {
+    console.log('onRemoteStepFormChange', this.remoteStepForm);
+    this.editedStep = { ...this.remoteStepForm };
   }
 
   updateSelectedColumn(_colname: string) {
