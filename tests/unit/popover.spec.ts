@@ -154,6 +154,7 @@ describe('Popover', function() {
   let wrapper: Wrapper<Vue>;
   let popoverWrapper: Wrapper<Vue>;
   let throttleSpy: jest.SpyInstance<Function>;
+  let boundingRectSpy: jest.SpyInstance<ClientRect>;
 
   const createWrapper = (...args: any) => {
     const val = args[0],
@@ -193,6 +194,9 @@ describe('Popover', function() {
                   ),
                 ],
               ),
+              createElement('div', { attrs: { id: 'anotherelement' } }, [
+                createElement('div', 'My tay;or is rich'),
+              ]),
             ],
           );
         },
@@ -206,20 +210,29 @@ describe('Popover', function() {
 
   beforeEach(function() {
     throttleSpy = jest.spyOn(_, 'throttle').mockImplementation((fn: any) => fn);
+    boundingRectSpy = jest
+      .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
+      .mockImplementation(mockBoundingRect);
   });
 
   afterEach(function() {
     wrapper.destroy();
     throttleSpy.mockRestore();
+    boundingRectSpy.mockRestore();
   });
 
-  it('should instanciate a popover', function() {
-    createWrapper();
+  it('should instantiate a popover', function() {
+    createWrapper({ props: { visible: true } });
     expect(_.isElement(popoverWrapper.element)).toBeTruthy();
   });
 
+  it('should instantiate a popover', function() {
+    createWrapper({ props: { visible: false } });
+    expect(_.isElement(popoverWrapper.element)).toBeFalsy();
+  });
+
   it('should include the passed slot content', function() {
-    createWrapper({ slotText: 'Lorem ipsum' });
+    createWrapper({ props: { visible: true }, slotText: 'Lorem ipsum' });
     const slotContentWrapper = popoverWrapper.find('.slot-content');
 
     expect(slotContentWrapper.exists()).toBeTruthy();
@@ -227,142 +240,162 @@ describe('Popover', function() {
   });
 
   it('should append itself to the document body', function() {
-    createWrapper();
+    createWrapper({ props: { visible: true } });
 
     expect(popoverWrapper.element.parentElement).toEqual(document.body);
   });
 
   it('should remove its DOM upon destruction', function() {
-    createWrapper();
+    createWrapper({ props: { visible: true } });
     popoverWrapper.destroy();
 
     expect(document.body.querySelector('.tc-popover')).toBeNull();
   });
 
-  it('should be hidden by default', function() {
-    createWrapper();
-    expect(popoverWrapper.classes()).toEqual(['popover']);
+  it('should be above by default', async function() {
+    createWrapper({
+      props: { visible: true },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+    });
+
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+
+    expect(popoverBounds.top).toEqual(`${parentBounds.top - POPOVER_SHADOW_GAP}px`);
+    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
   });
 
-  describe('when active', function() {
-    let boundingRectSpy: jest.SpyInstance<ClientRect>;
-
-    beforeEach(() => {
-      boundingRectSpy = jest
-        .spyOn(HTMLElement.prototype, 'getBoundingClientRect')
-        .mockImplementation(mockBoundingRect);
+  it('should update its position on orientation change', async function() {
+    createWrapper({
+      props: { visible: true },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
     });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    afterEach(() => {
-      boundingRectSpy.mockRestore();
+    await wrapper.vm.$nextTick();
+    wrapper.element.style.left = '100px';
+    window.dispatchEvent(new Event('orientationchange'));
+
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+
+    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+  });
+
+  it('should update its position when resized', async function() {
+    createWrapper({
+      props: { visible: true },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
     });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    it('should be above by default', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-        },
-      });
+    await wrapper.vm.$nextTick();
+    wrapper.element.style.left = '100px';
+    window.dispatchEvent(new Event('resize'));
 
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      expect(popoverBounds.top).toEqual(`${parentBounds.top - POPOVER_SHADOW_GAP}px`);
-      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+  });
+
+  it('should update its position when scrolled', async function() {
+    createWrapper({
+      props: { visible: true },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
     });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
 
-    it('should update its position on orientation change', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
+    await wrapper.vm.$nextTick();
+    wrapper.element.style.left = '100px';
+    wrapper.element.dispatchEvent(new Event('scroll'));
 
-      await wrapper.vm.$nextTick();
-      wrapper.element.style.left = '100px';
-      window.dispatchEvent(new Event('orientationchange'));
+    await wrapper.vm.$nextTick();
+    const parentBounds = wrapper.element.getBoundingClientRect();
+    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
 
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+  });
 
-      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+  it('should emit close on click away', async function() {
+    createWrapper({
+      props: { visible: true },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
     });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
+    const anotherelement = wrapper.find('#anotherelement');
+    await wrapper.vm.$nextTick();
 
-    it('should update its position when resized', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
+    await anotherelement.trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(popoverWrapper.emitted().closed.length).toEqual(1);
+  });
 
-      await wrapper.vm.$nextTick();
-      wrapper.element.style.left = '100px';
-      window.dispatchEvent(new Event('resize'));
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
-
-      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+  it('should not emit close on click on it', async function() {
+    createWrapper({
+      props: { visible: true },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
     });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
+    await wrapper.vm.$nextTick();
 
-    it('should update its position when scrolled', async function() {
-      createWrapper({
-        parentStyle: {
-          height: '40px',
-          left: '200px',
-          position: 'absolute',
-          top: '200px',
-          width: '100px',
-        },
-        props: {
-          active: true,
-        },
-        slotStyle: {
-          height: '140px',
-          width: '140px',
-        },
-      });
-      const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-      await wrapper.vm.$nextTick();
-      wrapper.element.style.left = '100px';
-      wrapper.element.dispatchEvent(new Event('scroll'));
-
-      await wrapper.vm.$nextTick();
-      const parentBounds = wrapper.element.getBoundingClientRect();
-      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
-
-      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
-    });
+    await popoverWrapper.trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(popoverWrapper.emitted().closed).toBeUndefined();
   });
 });

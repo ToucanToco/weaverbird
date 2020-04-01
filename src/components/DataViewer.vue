@@ -14,27 +14,23 @@
                 @click="toggleColumnSelection({ column: column.name })"
               >
                 <span v-if="column.type" :class="iconClass" @click.stop="openDataTypeMenu(index)">
-                  <span v-html="getIconType(column.type)" />
                   <DataTypesMenu
-                    v-if="isSupported('convert')"
                     :column-name="column.name"
-                    :is-active="column.isDataTypeMenuOpened"
+                    :visible="isSupported('convert') && column.isDataTypeMenuOpened"
                     @closed="closeDataTypeMenu"
                   />
+                  <span v-html="getIconType(column.type)" />
                 </span>
                 <span class="data-viewer__header-label">{{ column.name }}</span>
-                <i
-                  class="data-viewer__header-action fas fa-angle-down"
-                  @click.stop="openMenu(index)"
-                >
-                  <!-- TODO: only one ActionMenu should be mounted at the same time -->
+                <span class="data-viewer__header-action" @click.stop="openMenu(index)">
                   <ActionMenu
                     :column-name="column.name"
-                    :is-active="column.isActionMenuOpened"
+                    :visible="column.isActionMenuOpened"
                     @closed="closeMenu"
                     @actionClicked="openStepForm"
                   />
-                </i>
+                  <i class="fas fa-angle-down" />
+                </span>
               </td>
             </tr>
           </thead>
@@ -340,7 +336,6 @@ export default class DataViewer extends Vue {
   width: 18px;
   height: 18px;
   border-radius: 4px;
-  align-items: center;
   justify-content: center;
 }
 

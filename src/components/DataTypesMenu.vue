@@ -1,5 +1,5 @@
 <template>
-  <popover :active="isActive" :align="alignLeft" bottom>
+  <popover :visible="visible" :align="alignLeft" bottom @closed="close">
     <div class="data-types-menu__body">
       <div class="data-types-menu__section">
         <div class="data-types-menu__option" @click="createConvertStep('integer')">
@@ -31,7 +31,7 @@
   </popover>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import { ConvertStep, Pipeline } from '@/lib/steps';
@@ -50,16 +50,16 @@ type dataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
 })
 export default class DataTypesMenu extends Vue {
   @Prop({
-    type: Boolean,
-    default: () => false,
-  })
-  isActive!: boolean;
-
-  @Prop({
     type: String,
     default: () => '',
   })
   columnName!: string;
+
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  visible!: boolean;
 
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
@@ -70,18 +70,6 @@ export default class DataTypesMenu extends Vue {
   @VQBModule.Mutation closeStepForm!: () => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
-
-  /**
-   * @description Close the popover when clicking outside
-   */
-  clickListener(e: Event) {
-    const target = e.target as HTMLElement;
-    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
-
-    if (!hasClickOnItSelf) {
-      this.close();
-    }
-  }
 
   close() {
     this.$emit('closed');
@@ -104,15 +92,6 @@ export default class DataTypesMenu extends Vue {
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
     this.close();
-  }
-
-  @Watch('isActive')
-  onIsActiveChanged(val: boolean) {
-    if (val) {
-      window.addEventListener('click', this.clickListener, { capture: true });
-    } else {
-      window.removeEventListener('click', this.clickListener, { capture: true });
-    }
   }
 }
 </script>

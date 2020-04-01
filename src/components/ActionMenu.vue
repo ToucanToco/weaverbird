@@ -1,5 +1,5 @@
 <template>
-  <popover :active="isActive" :align="alignLeft" bottom>
+  <popover :visible="visible" :align="alignLeft" bottom @closed="close">
     <div class="action-menu__body">
       <transition name="slide-left" mode="out-in">
         <div v-if="visiblePanel == 1">
@@ -40,7 +40,7 @@
   </popover>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
@@ -66,12 +66,6 @@ enum VisiblePanel {
 })
 export default class ActionMenu extends Vue {
   @Prop({
-    type: Boolean,
-    default: () => false,
-  })
-  isActive!: boolean;
-
-  @Prop({
     type: String,
     default: () => '',
   })
@@ -79,6 +73,12 @@ export default class ActionMenu extends Vue {
   visiblePanel: VisiblePanel = 1;
 
   @VQBModule.State currentStepFormName!: string;
+  @Prop({
+    type: Boolean,
+    default: true,
+  })
+  visible!: boolean;
+
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: Pipeline;
@@ -203,15 +203,6 @@ export default class ActionMenu extends Vue {
     // } else {
     //   console.log('allready open, to nothing');
     // }
-  }
-
-  @Watch('isActive')
-  onIsActiveChanged(val: boolean) {
-    if (val) {
-      window.addEventListener('click', this.clickListener, { capture: true });
-    } else {
-      window.removeEventListener('click', this.clickListener, { capture: true });
-    }
   }
 }
 </script>

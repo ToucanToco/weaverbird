@@ -10,20 +10,10 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Data Types Menu', () => {
-  it('should instantiate with its popover hidden', () => {
+  it('should instantiate with the popover', () => {
     const wrapper = mount(DataTypesMenu);
-
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).not.toContain('popover--active');
-  });
-
-  it('should instantiate with the popover active', () => {
-    const wrapper = mount(DataTypesMenu, {
-      propsData: {
-        isActive: true,
-      },
-    });
-    expect(wrapper.classes()).toContain('popover--active');
+    expect(wrapper.classes()).toContain('popover-container');
   });
 
   it('should contain the right set of data types', () => {

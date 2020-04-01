@@ -202,6 +202,47 @@ describe('Data Viewer', () => {
       expect(headerIconsWrapper.at(6).text()).toEqual('???');
     });
 
+    it('should have a action menu for each column', async () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 5,
+              pagesize: 10,
+              pageno: 1,
+            },
+          },
+        }),
+      );
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+
+      const actionMenuWrapperArray = wrapper.findAll('.data-viewer__header-action');
+      expect(actionMenuWrapperArray.length).toEqual(3);
+
+      const oneActionMenuIcon = actionMenuWrapperArray.at(0);
+      // there is no ActionMenu visible yet:
+      expect(oneActionMenuIcon.find('ActionMenu-stub').exists()).toBeFalsy;
+      // on click on icon:
+      await oneActionMenuIcon.trigger('click');
+      // it should display ActionMenu:
+      const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
+      expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
+      expect(wrapper.findAll('ActionMenu-stub').at(1).vm.$props.visible).toBeFalsy();
+      expect(wrapper.findAll('ActionMenu-stub').at(2).vm.$props.visible).toBeFalsy();
+      // when emit close:
+      actionMenuOpened.vm.$emit('closed');
+      // the Action menu disappear:
+      expect(actionMenuOpened.vm.$props.visible).toBeFalsy();
+    });
+
     it('should have a data type menu for supported backends', async () => {
       const store = setupMockStore(
         buildStateWithOnePipeline([], {
@@ -218,16 +259,30 @@ describe('Data Viewer', () => {
         }),
       );
       const wrapper = shallowMount(DataViewer, { store, localVue });
-      expect(wrapper.find('datatypesmenu-stub').exists()).toBeTruthy();
-      expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeTruthy();
-      wrapper.find('.data-viewer__header-icon--active').trigger('click');
-      await localVue.nextTick();
-      expect(wrapper.vm.$data.indexActiveDataTypeMenu).toEqual(0);
-      wrapper.find('datatypesmenu-stub').trigger('closed');
-      await localVue.nextTick();
+      // Icons are here:
+      expect(wrapper.findAll('.data-viewer__header-icon--active').length).toEqual(3);
+      // DataTypesMenu is not open yet:
+      expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeFalsy();
+      // when click on icon:
+      await wrapper
+        .findAll('.data-viewer__header-icon--active')
+        .at(0)
+        .trigger('click');
+      // it should open the DataTypesMenu
+      expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeTruthy();
+      expect(wrapper.findAll('DataTypesMenu-stub').at(1).vm.$props.visible).toBeFalsy();
+      expect(wrapper.findAll('DataTypesMenu-stub').at(2).vm.$props.visible).toBeFalsy();
+      // when close:
+      wrapper
+        .findAll('DataTypesMenu-stub')
+        .at(0)
+        .vm.$emit('closed');
+      await wrapper.vm.$nextTick();
+      // DataTypesMenu is not open anymore:
+      expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeFalsy();
     });
 
-    it('should have a data type menu for not supported backends', () => {
+    it('should not have an icon "data type menu" for not supported backends', () => {
       const store = setupMockStore(
         buildStateWithOnePipeline([], {
           translator: 'mongo36',
@@ -243,7 +298,6 @@ describe('Data Viewer', () => {
         }),
       );
       const wrapper = shallowMount(DataViewer, { store, localVue });
-      expect(wrapper.find('datatypesmenu-stub').exists()).toBeFalsy();
       expect(wrapper.find('.data-viewer__header-icon--active').exists()).toBeFalsy();
     });
 
@@ -333,6 +387,7 @@ describe('Data Viewer', () => {
       expect(firstCellWrapper.attributes('value')).toEqual('value1');
     });
   });
+
   describe('first column selection', () => {
     it('should select all first columns cells', async () => {
       const dataset = {
@@ -399,17 +454,10 @@ describe('Data Viewer', () => {
       wrapper.destroy();
     });
 
-    it('should open step form when click in toolbar', () => {
-      const actionMenuWrapper = wrapper.find('actiontoolbar-stub');
+    it('should open step form when click in one of toolbar button', () => {
+      const actionToolbarWrapper = wrapper.findAll('actiontoolbar-stub').at(0);
 
-      actionMenuWrapper.vm.$emit('actionClicked', { stepName: 'rename' });
-      expect(openStepFormStub).toBeCalledWith({ stepName: 'rename' });
-    });
-
-    it('should open step form when click in action menu', async () => {
-      const actionMenuWrapper = wrapper.find('actionmenu-stub');
-
-      actionMenuWrapper.vm.$emit('actionClicked', { stepName: 'rename' });
+      actionToolbarWrapper.vm.$emit('actionClicked', { stepName: 'rename' });
       expect(openStepFormStub).toBeCalledWith({ stepName: 'rename' });
     });
   });
