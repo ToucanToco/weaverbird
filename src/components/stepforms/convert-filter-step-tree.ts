@@ -111,25 +111,23 @@ buildConditionsEditorTree transform this:
 }
 into:
 {
-	name: 'filter',
-	condition: {
-		and: [
-			{ column: 'toto', value: 'A', operator: 'eq' },
-			{ or: [
-				{ column: 'tata', value: 'B', operator: 'ne' }
-        { column: 'titi', value: '2', operator: 'le' }
-			]}
-		]
+  and: [
+    { column: 'toto', value: 'A', operator: 'eq' },
+    { or: [
+      { column: 'tata', value: 'B', operator: 'ne' }
+      { column: 'titi', value: '2', operator: 'le' }
+    ]}
+  ]
 }
 */
-export function buildFilterStepTree(conditionGroup: AbstractFilterTree, isRoot: boolean) {
+export function buildFilterStepTree(conditionGroup: AbstractFilterTree) {
   const filterStepConditions: object[] = [];
 
   conditionGroup.conditions.forEach((obj: any) => filterStepConditions.push(obj));
 
   if (conditionGroup.groups && conditionGroup.groups.length > 0) {
     conditionGroup.groups.forEach((_obj: any, index: number) =>
-      filterStepConditions.push(buildFilterStepTree(conditionGroup.groups[index], false)),
+      filterStepConditions.push(buildFilterStepTree(conditionGroup.groups[index])),
     );
   }
 
@@ -142,29 +140,20 @@ export function buildFilterStepTree(conditionGroup: AbstractFilterTree, isRoot: 
     filterStepGroup = conditionGroup.conditions[0];
   }
 
-  if (isRoot) {
-    return {
-      name: 'filter',
-      condition: filterStepGroup,
-    };
-  } else {
-    return filterStepGroup;
-  }
+  return filterStepGroup;
 }
 
 /**
 castFilterStepTreeValue transform:
 {
-	name: 'filter',
-	condition: {
-		and: [
-			{ column: 'toto', value: '1', operator: 'eq' },
-      { column: 'tata', value: 'true', operator: 'eq' },
-			{ or: [
-				{ column: 'titi', value: 'B', operator: 'ne' }
-        { column: 'tutu', value: '2.1', operator: 'le' }
-			]}
-		]
+  and: [
+    { column: 'toto', value: '1', operator: 'eq' },
+    { column: 'tata', value: 'true', operator: 'eq' },
+    { or: [
+      { column: 'titi', value: 'B', operator: 'ne' }
+      { column: 'tutu', value: '2.1', operator: 'le' }
+    ]}
+  ]
 }
 with: columnTypes = {
   toto: integer,

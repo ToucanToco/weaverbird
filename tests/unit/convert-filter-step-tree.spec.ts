@@ -120,186 +120,156 @@ describe('Convert filter step tree', () => {
   describe('buildFilterStepTree', () => {
     it('should return a simple condition', () => {
       expect(
-        buildFilterStepTree(
-          {
-            operator: '',
-            conditions: [{ column: 'columnA', operator: 'eq', value: 'true' }],
-            groups: [],
-          },
-          true,
-        ),
-      ).toEqual({
-        name: 'filter',
-        condition: { column: 'columnA', operator: 'eq', value: 'true' },
-      });
+        buildFilterStepTree({
+          operator: '',
+          conditions: [{ column: 'columnA', operator: 'eq', value: 'true' }],
+          groups: [],
+        }),
+      ).toEqual({ column: 'columnA', operator: 'eq', value: 'true' });
     });
 
     it('should return a condition with operator', () => {
       expect(
-        buildFilterStepTree(
-          {
-            operator: 'and',
-            conditions: [
-              { column: 'columnA', operator: 'eq', value: 'true' },
-              { column: 'columnB', operator: 'eq', value: 'true' },
-            ],
-            groups: [],
-          },
-          true,
-        ),
-      ).toEqual({
-        name: 'filter',
-        condition: {
-          and: [
+        buildFilterStepTree({
+          operator: 'and',
+          conditions: [
             { column: 'columnA', operator: 'eq', value: 'true' },
             { column: 'columnB', operator: 'eq', value: 'true' },
           ],
-        },
+          groups: [],
+        }),
+      ).toEqual({
+        and: [
+          { column: 'columnA', operator: 'eq', value: 'true' },
+          { column: 'columnB', operator: 'eq', value: 'true' },
+        ],
       });
     });
 
     it('should return a condition with groups', () => {
       expect(
-        buildFilterStepTree(
-          {
-            operator: 'and',
-            conditions: [
-              { column: 'columnA', operator: 'eq', value: 'true' },
-              { column: 'columnB', operator: 'eq', value: 'true' },
-            ],
-            groups: [
-              {
-                operator: 'or',
-                conditions: [
-                  { column: 'columnC', operator: 'eq', value: 'true' },
-                  { column: 'columnD', operator: 'eq', value: 'true' },
-                ],
-                groups: [],
-              },
-            ],
-          },
-          true,
-        ),
-      ).toEqual({
-        name: 'filter',
-        condition: {
-          and: [
+        buildFilterStepTree({
+          operator: 'and',
+          conditions: [
             { column: 'columnA', operator: 'eq', value: 'true' },
             { column: 'columnB', operator: 'eq', value: 'true' },
+          ],
+          groups: [
             {
-              or: [
+              operator: 'or',
+              conditions: [
                 { column: 'columnC', operator: 'eq', value: 'true' },
                 { column: 'columnD', operator: 'eq', value: 'true' },
               ],
+              groups: [],
             },
           ],
-        },
+        }),
+      ).toEqual({
+        and: [
+          { column: 'columnA', operator: 'eq', value: 'true' },
+          { column: 'columnB', operator: 'eq', value: 'true' },
+          {
+            or: [
+              { column: 'columnC', operator: 'eq', value: 'true' },
+              { column: 'columnD', operator: 'eq', value: 'true' },
+            ],
+          },
+        ],
       });
     });
 
     it('should return a condition with depth groups', () => {
       expect(
-        buildFilterStepTree(
-          {
-            operator: 'and',
-            conditions: [
-              { column: 'columnA', operator: 'eq', value: 'true' },
-              { column: 'columnB', operator: 'eq', value: 'true' },
-            ],
-            groups: [
-              {
-                operator: 'or',
-                conditions: [
-                  { column: 'columnC', operator: 'eq', value: 'true' },
-                  { column: 'columnD', operator: 'eq', value: 'true' },
-                ],
-                groups: [
-                  {
-                    operator: 'and',
-                    conditions: [
-                      { column: 'columnE', operator: 'eq', value: 'true' },
-                      { column: 'columnF', operator: 'eq', value: 'true' },
-                    ],
-                    groups: [],
-                  },
-                ],
-              },
-            ],
-          },
-          true,
-        ),
-      ).toEqual({
-        name: 'filter',
-        condition: {
-          and: [
+        buildFilterStepTree({
+          operator: 'and',
+          conditions: [
             { column: 'columnA', operator: 'eq', value: 'true' },
             { column: 'columnB', operator: 'eq', value: 'true' },
+          ],
+          groups: [
             {
-              or: [
+              operator: 'or',
+              conditions: [
                 { column: 'columnC', operator: 'eq', value: 'true' },
                 { column: 'columnD', operator: 'eq', value: 'true' },
+              ],
+              groups: [
                 {
-                  and: [
+                  operator: 'and',
+                  conditions: [
                     { column: 'columnE', operator: 'eq', value: 'true' },
                     { column: 'columnF', operator: 'eq', value: 'true' },
                   ],
+                  groups: [],
                 },
               ],
             },
           ],
-        },
+        }),
+      ).toEqual({
+        and: [
+          { column: 'columnA', operator: 'eq', value: 'true' },
+          { column: 'columnB', operator: 'eq', value: 'true' },
+          {
+            or: [
+              { column: 'columnC', operator: 'eq', value: 'true' },
+              { column: 'columnD', operator: 'eq', value: 'true' },
+              {
+                and: [
+                  { column: 'columnE', operator: 'eq', value: 'true' },
+                  { column: 'columnF', operator: 'eq', value: 'true' },
+                ],
+              },
+            ],
+          },
+        ],
       });
     });
     it('should return a condition with "or" operator that appears multiple time in same group', () => {
       expect(
-        buildFilterStepTree(
-          {
-            operator: 'and',
-            conditions: [
-              { column: 'columnA', operator: 'eq', value: 'true' },
-              { column: 'columnB', operator: 'eq', value: 'true' },
-            ],
-            groups: [
-              {
-                operator: 'or',
-                conditions: [
-                  { column: 'columnC', operator: 'eq', value: 'true' },
-                  { column: 'columnD', operator: 'eq', value: 'true' },
-                ],
-                groups: [],
-              },
-              {
-                operator: 'or',
-                conditions: [
-                  { column: 'columnX', operator: 'neq', value: 'Country' },
-                  { column: 'columnZ', operator: 'matches', value: 'KPI' },
-                ],
-                groups: [],
-              },
-            ],
-          },
-          true,
-        ),
-      ).toEqual({
-        name: 'filter',
-        condition: {
-          and: [
+        buildFilterStepTree({
+          operator: 'and',
+          conditions: [
             { column: 'columnA', operator: 'eq', value: 'true' },
             { column: 'columnB', operator: 'eq', value: 'true' },
+          ],
+          groups: [
             {
-              or: [
+              operator: 'or',
+              conditions: [
                 { column: 'columnC', operator: 'eq', value: 'true' },
                 { column: 'columnD', operator: 'eq', value: 'true' },
               ],
+              groups: [],
             },
             {
-              or: [
+              operator: 'or',
+              conditions: [
                 { column: 'columnX', operator: 'neq', value: 'Country' },
                 { column: 'columnZ', operator: 'matches', value: 'KPI' },
               ],
+              groups: [],
             },
           ],
-        },
+        }),
+      ).toEqual({
+        and: [
+          { column: 'columnA', operator: 'eq', value: 'true' },
+          { column: 'columnB', operator: 'eq', value: 'true' },
+          {
+            or: [
+              { column: 'columnC', operator: 'eq', value: 'true' },
+              { column: 'columnD', operator: 'eq', value: 'true' },
+            ],
+          },
+          {
+            or: [
+              { column: 'columnX', operator: 'neq', value: 'Country' },
+              { column: 'columnZ', operator: 'matches', value: 'KPI' },
+            ],
+          },
+        ],
       });
     });
   });

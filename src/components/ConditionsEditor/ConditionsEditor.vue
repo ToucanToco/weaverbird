@@ -1,6 +1,5 @@
 <template>
   <div class="conditions-editor">
-    <div class="conditions-editor__info">Filter rows matching this condition:</div>
     <ConditionsGroup
       data-path=".condition"
       :conditionsTree="conditionsTree"

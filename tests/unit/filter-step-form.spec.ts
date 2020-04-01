@@ -6,7 +6,7 @@ describe('Filter Step Form', () => {
   const runner = new BasicStepFormTestRunner(FilterStepForm, 'filter');
   runner.testInstantiate();
   runner.testExpectedComponents({
-    'ConditionsEditor-stub': 1,
+    'FilterEditor-stub': 1,
   });
   runner.testValidationErrors([
     {
@@ -53,8 +53,8 @@ describe('Filter Step Form', () => {
   runner.testCancel();
   runner.testResetSelectedIndex();
 
-  describe('ConditionsEditor', () => {
-    it('should pass down the "conditions-tree" prop to the ConditionsEditor value prop', async () => {
+  describe('FilterEditor', () => {
+    it('should pass down the "filter-tree" prop to the FilterEditor value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {
         data: {
           editedStep: {
@@ -64,10 +64,10 @@ describe('Filter Step Form', () => {
         },
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('ConditionsEditor-stub').props().conditionsTree).toEqual({
-        conditions: [{ column: 'foo', operator: 'gt', value: 'bar' }],
-        groups: [],
-        operator: '',
+      expect(wrapper.find('FilterEditor-stub').props().filterTree).toEqual({
+        column: 'foo',
+        value: 'bar',
+        operator: 'gt',
       });
     });
   });
@@ -81,19 +81,10 @@ describe('Filter Step Form', () => {
         },
       },
     });
-    (wrapper.vm as any).updateConditionsTree({
-      operator: 'and',
-      conditions: [
-        {
-          column: 'foo',
-          value: 'bar',
-          operator: 'gt',
-        },
-        {
-          column: 'toto',
-          value: 'tata',
-          operator: 'eq',
-        },
+    (wrapper.vm as any).updateFilterTree({
+      and: [
+        { column: 'foo', value: 'bar', operator: 'gt' },
+        { column: 'toto', value: 'tata', operator: 'eq' },
       ],
     });
     expect(wrapper.vm.$data.editedStep).toEqual({
