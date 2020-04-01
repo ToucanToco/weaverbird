@@ -2,6 +2,7 @@ import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
+import Popover from '@/components/Popover.vue';
 import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
@@ -63,21 +64,49 @@ function assertMenuEmitsExpected(wrapper: VueMountedType, expectedEmits: emitPar
   return actionsWrappers;
 }
 
-describe('ActionToolbarButton', () => {
+describe('ActionToolbarButton not active', () => {
+  it('should instantiate with icon an label', () => {
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { category: 'add', label: 'toto', icon: 'plop' },
+      localVue,
+    });
+    expect(wrapper.find('.action-toolbar__btn-txt').text()).toEqual('toto');
+    expect(wrapper.find('.fa-plop').exists()).toBeTruthy();
+  });
+
+  it('should instantiate without popover', () => {
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { category: 'add' },
+      localVue,
+    });
+    expect(wrapper.find(Popover).vm.$props.visible).toBeFalsy();
+  });
+});
+
+describe('ActionToolbarButton active', () => {
   it('should instantiate an Add button with the right list of actions', () => {
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'add' }, localVue });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'add' },
+      localVue,
+    });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['text', 'formula', 'custom']);
   });
 
   it('should instantiate a Filter button with the right list of actions', () => {
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'filter' }, localVue });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'filter' },
+      localVue,
+    });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['delete', 'select', 'filter', 'top', 'argmax', 'argmin']);
   });
 
   it('should instantiate a Compute button with the right list of actions', () => {
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'compute' }, localVue });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'compute' },
+      localVue,
+    });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['formula', 'evolution', 'cumsum', 'percentage']);
   });
@@ -87,7 +116,7 @@ describe('ActionToolbarButton', () => {
     // such as 'lowercase' can be triggered without creating a form.
     const store = setupMockStore(buildStateWithOnePipeline([], { selectedColumns: ['foo'] }));
     const wrapper = mount(ActionToolbarButton, {
-      propsData: { category: 'text' },
+      propsData: { isActive: true, category: 'text' },
       localVue,
       store,
     });
@@ -104,7 +133,7 @@ describe('ActionToolbarButton', () => {
 
   it('should instantiate a Date button with the right list of actions', () => {
     const wrapper = mount(ActionToolbarButton, {
-      propsData: { category: 'date' },
+      propsData: { isActive: true, category: 'date' },
       store: setupMockStore(),
       localVue,
     });
@@ -131,19 +160,28 @@ describe('ActionToolbarButton', () => {
   });
 
   it('should instantiate an Aggregate button with the right list of actions', () => {
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'aggregate' }, localVue });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'aggregate' },
+      localVue,
+    });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['aggregate', 'rollup', 'uniquegroups']);
   });
 
   it('should instantiate a Reshape button with the right list of actions', () => {
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'reshape' }, localVue });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'reshape' },
+      localVue,
+    });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot']);
   });
 
   it('should instantiate a Combine button with the right list of actions', () => {
-    const wrapper = mount(ActionToolbarButton, { propsData: { category: 'combine' }, localVue });
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'combine' },
+      localVue,
+    });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['append', 'join']);
   });
@@ -156,7 +194,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'text' },
+        propsData: { isActive: true, category: 'text' },
         store,
         localVue,
       });
@@ -172,7 +210,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'text' },
+        propsData: { isActive: true, category: 'text' },
         store,
         localVue,
       });
@@ -192,7 +230,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'text' },
+        propsData: { isActive: true, category: 'text' },
         store,
         localVue,
       });
@@ -210,7 +248,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'text' },
+        propsData: { isActive: true, category: 'text' },
         store,
         localVue,
       });
@@ -226,7 +264,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'text' },
+        propsData: { isActive: true, category: 'text' },
         store,
         localVue,
       });
@@ -246,7 +284,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'text' },
+        propsData: { isActive: true, category: 'text' },
         store,
         localVue,
       });
@@ -264,7 +302,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'date' },
+        propsData: { isActive: true, category: 'date' },
         store,
         localVue,
       });
@@ -280,7 +318,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'date' },
+        propsData: { isActive: true, category: 'date' },
         store,
         localVue,
       });
@@ -300,7 +338,7 @@ describe('ActionToolbarButton', () => {
         }),
       );
       const wrapper = mount(ActionToolbarButton, {
-        propsData: { category: 'date' },
+        propsData: { isActive: true, category: 'date' },
         store,
         localVue,
       });
@@ -319,7 +357,7 @@ describe('ActionToolbarButton', () => {
           }),
         );
         const wrapper = mount(ActionToolbarButton, {
-          propsData: { category: 'date' },
+          propsData: { isActive: true, category: 'date' },
           store,
           localVue,
         });
@@ -339,7 +377,7 @@ describe('ActionToolbarButton', () => {
           }),
         );
         const wrapper = mount(ActionToolbarButton, {
-          propsData: { category: 'date' },
+          propsData: { isActive: true, category: 'date' },
           store,
           localVue,
         });

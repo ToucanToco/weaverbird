@@ -1,12 +1,14 @@
 <template>
-  <div :class="{ popover: true, 'popover--active': isActive }" :style="elementStyle">
-    <slot />
-  </div>
+  <span v-if="visible" class="popover-container">
+    <div class="popover" :style="elementStyle">
+      <slot />
+    </div>
+  </span>
 </template>
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 
 import { Alignment } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
@@ -28,15 +30,13 @@ interface ElementPosition {
 
 @description
 Implement a popover component
+@params {Boolean} visible sets the popover visibility. If `true` the popover is mounted.
 
-@params {Boolean} [active = false] toggles visibility
 @params {String} [align = 'center'] sets the popover's default alignment:
-                                    - possible values work like the text-align
-                                      CSS property
-                                    - justify adapts the popover to its parent
-                                      (same width and horizontal position)
-@params {Boolean} [bottom = false] sets the default position to below instead of
-                                   above
+  - possible values work like the text-align CSS property
+  - justify adapts the popover to its parent (same width and horizontal position)
+
+@params {Boolean} [bottom = false] sets the default position to below instead of above
 */
 @Component({
   name: 'popover',
@@ -47,9 +47,9 @@ export default class Popover extends Vue {
 
   @Prop({
     type: Boolean,
-    default: false,
+    required: true,
   })
-  active!: boolean;
+  visible!: boolean;
 
   @Prop({
     default: () => Alignment.Center,
@@ -66,10 +66,6 @@ export default class Popover extends Vue {
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
   parents: HTMLElement[] = [];
-
-  get isActive() {
-    return this.active;
-  }
 
   get isBottom() {
     return this.bottom;
@@ -95,12 +91,25 @@ export default class Popover extends Vue {
     this.parents = parents;
 
     // Attach listeners
+    window.addEventListener('click', this.clickListener, { capture: true });
     window.addEventListener('orientationchange', this.orientationchangeListener);
     window.addEventListener('resize', this.resizeListener);
     for (const p of parents) {
       p.addEventListener('scroll', this.scrollListener);
     }
     this.updatePosition();
+  }
+
+  /**
+   * @description Close the popover when clicking outside
+   */
+  clickListener(e: Event) {
+    const target = e.target as HTMLElement;
+    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
+
+    if (!hasClickOnItSelf) {
+      this.$emit('closed');
+    }
   }
 
   // Update position on orientation change
@@ -122,7 +131,7 @@ export default class Popover extends Vue {
   // Checks available space on screen for vertical positioning and alignment
   updatePosition = _.throttle(
     function() {
-      if (!this.isActive || this.parent === null) {
+      if (this.parent === null) {
         return;
       }
 
@@ -142,13 +151,6 @@ export default class Popover extends Vue {
     16,
   );
 
-  @Watch('isActive')
-  onisActiveChange(isActive: boolean) {
-    if (isActive) {
-      return this.updatePosition();
-    }
-  }
-
   beforeDestroy() {
     // Cleanup listeners
     window.removeEventListener('orientationchange', this.orientationchangeListener);
@@ -167,10 +169,6 @@ export default class Popover extends Vue {
 .popover {
   font-family: 'Montserrat', sans-serif;
   position: absolute;
-  visibility: hidden;
-}
-
-.popover--active {
   visibility: visible;
 }
 </style>

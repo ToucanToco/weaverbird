@@ -2,6 +2,9 @@
 
 ## UNRELEASED -
 
+### Changed
+- The Popover is not necessary mounted when not visible. Column's action menu are then not mounted, improving performance of DataSetViewer.
+
 ### Fixed
 
 - Fixed bad sort step from initialization
