@@ -10,21 +10,10 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Action Menu', () => {
-  it('should instantiate with its popover hidden', () => {
+  it('should instantiate with the popover', () => {
     const wrapper = mount(ActionMenu);
-
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).not.toContain('popover--active');
-  });
-
-  it('should instantiate with the popover active', () => {
-    const wrapper = mount(ActionMenu, {
-      propsData: {
-        isActive: true,
-      },
-    });
-
-    expect(wrapper.classes()).toContain('popover--active');
+    expect(wrapper.classes()).toContain('popover-container');
   });
 
   it('should have an "Rename column" action', () => {

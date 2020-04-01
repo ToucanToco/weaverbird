@@ -2,7 +2,7 @@
   <button type="button" class="action-toolbar__btn">
     <i :class="`action-toolbar__btn-icon fas fa-${icon}`" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
-    <popover :active="isActive" :align="'left'" bottom>
+    <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
       <div class="action-menu__body">
         <div class="action-menu__section">
           <div
@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
 import * as S from '@/lib/steps';
@@ -69,18 +69,6 @@ export default class ActionToolbarButton extends Vue {
   @VQBModule.Mutation closeStepForm!: () => void;
 
   /**
-   * @description Close the popover when clicking outside
-   */
-  clickListener(e: Event) {
-    const target = e.target as HTMLElement;
-    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
-
-    if (!hasClickOnItSelf) {
-      this.close();
-    }
-  }
-
-  /**
    * @description Emit an event with a PipelineStepName in order to open its form
    */
   actionClicked(stepName: S.PipelineStepName, defaults = {}) {
@@ -98,6 +86,7 @@ export default class ActionToolbarButton extends Vue {
     } else {
       this.$emit('actionClicked', stepName, defaults);
     }
+    this.$emit('closed');
   }
 
   createStep(stepName: NoFormStep['name'], defaults: { [prop: string]: any } = {}) {
@@ -114,24 +103,10 @@ export default class ActionToolbarButton extends Vue {
     newPipeline.splice(index, 0, step as S.PipelineStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
-    this.close();
   }
 
   get items() {
     return ACTION_CATEGORIES[this.category];
-  }
-
-  close() {
-    this.$emit('closed');
-  }
-
-  @Watch('isActive')
-  onIsActiveChanged(val: boolean) {
-    if (val) {
-      window.addEventListener('click', this.clickListener, { capture: true });
-    } else {
-      window.removeEventListener('click', this.clickListener, { capture: true });
-    }
   }
 }
 </script>
