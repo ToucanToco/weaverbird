@@ -1,19 +1,8 @@
 <template>
   <div class="filter-form">
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
-    <ConditionsEditor
-      :conditions-tree="conditionsTree"
-      @conditionsTreeUpdated="updateConditionsTree"
-    >
-      <template v-slot:default="slotProps">
-        <FilterSimpleConditionWidget
-          :value="slotProps.condition"
-          @input="slotProps.updateCondition"
-          :data-path="slotProps.dataPath"
-          :errors="errors"
-        />
-      </template>
-    </ConditionsEditor>
+    <div class="filter-form__info">Filter rows matching this condition:</div>
+    <FilterEditor :filter-tree="this.editedStep.condition" @filterTreeUpdated="updateFilterTree" />
     <StepFormButtonbar />
   </div>
 </template>
@@ -21,27 +10,20 @@
 <script lang="ts">
 import { Prop } from 'vue-property-decorator';
 
-import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
+import FilterEditor from '@/components/FilterEditor.vue';
 import { StepFormComponent } from '@/components/formlib';
-import {
-  buildConditionsEditorTree,
-  buildFilterStepTree,
-  castFilterStepTreeValue,
-} from '@/components/stepforms/convert-filter-step-tree.ts';
-import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
+import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterSimpleCondition, FilterStep } from '@/lib/steps';
+import { FilterComboAnd, FilterComboOr, FilterSimpleCondition, FilterStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
-import { AbstractFilterTree } from '../ConditionsEditor/tree-types';
 import BaseStepForm from './StepForm.vue';
 
 @StepFormComponent({
   vqbstep: 'filter',
   name: 'filter-step-form',
   components: {
-    ConditionsEditor,
-    FilterSimpleConditionWidget,
+    FilterEditor,
   },
 })
 export default class FilterStepForm extends BaseStepForm<FilterStep> {
@@ -57,7 +39,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
-  widgetFilterSimpleCondition = FilterSimpleConditionWidget;
 
   mounted() {
     // On creation, if a column is selected, use it to set "column" property of
@@ -77,10 +58,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }
   }
 
-  get conditionsTree() {
-    return buildConditionsEditorTree(this.editedStep.condition);
-  }
-
   submit() {
     this.editedStep.condition = castFilterStepTreeValue(
       this.editedStep.condition,
@@ -89,10 +66,11 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     this.$$super.submit();
   }
 
-  updateConditionsTree(newConditionsTree: AbstractFilterTree) {
-    // second arg specify if it's the root or not (because it's a recursive function)
-    const newFilterStepTree = buildFilterStepTree(newConditionsTree, true);
-    this.editedStep = newFilterStepTree;
+  updateFilterTree(newFilterTree: FilterSimpleCondition | FilterComboAnd | FilterComboOr) {
+    this.editedStep = {
+      name: 'filter',
+      condition: newFilterTree,
+    };
   }
 }
 </script>
