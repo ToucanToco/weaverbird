@@ -58,7 +58,7 @@ describe('Widget FilterSimpleCondition', () => {
     expect(multinnputtextWrappers.exists()).toBeFalsy();
   });
 
-  it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
+  it('should instantiate a widgetAutocomplete widget with column names from the store', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -68,6 +68,27 @@ describe('Widget FilterSimpleCondition', () => {
     const wrapper = shallowMount(FilterSimpleConditionWidget, { store, localVue });
     const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
     expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
+  });
+
+  it('should instantiate a widgetAutocomplete widget with column names from the prop', () => {
+    const wrapper = shallowMount(FilterSimpleConditionWidget, {
+      store: emptyStore,
+      localVue,
+      propsData: {
+        columnNamesProp: ['columnA', 'columnB', 'columnC'],
+      },
+    });
+    const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
+    expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
+  });
+
+  it('should instantiate a widgetAutocomplete widget with nothing', () => {
+    const wrapper = shallowMount(FilterSimpleConditionWidget, {
+      store: emptyStore,
+      localVue,
+    });
+    const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
+    expect(widgetWrappers.at(0).attributes('options')).toEqual('');
   });
 
   it('should pass down the "column" prop to the first AutocompleteWidget value prop', async () => {

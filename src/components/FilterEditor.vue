@@ -5,6 +5,7 @@
         <FilterSimpleConditionWidget
           :value="slotProps.condition"
           @input="slotProps.updateCondition"
+          :columnNamesProp="columnNames"
           :data-path="slotProps.dataPath"
           :errors="errors"
         />
@@ -39,6 +40,12 @@ export default class FilterEditor extends Vue {
     default: () => ({ column: '', value: '', operator: 'eq' }),
   })
   filterTree!: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+
+  @Prop({
+    type: Array,
+    default: () => [],
+  })
+  columnNames!: string[];
 
   @Prop({
     type: Array,
