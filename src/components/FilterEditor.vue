@@ -14,6 +14,7 @@
 </template>
 
 <script lang="ts">
+import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
@@ -38,6 +39,12 @@ export default class FilterEditor extends Vue {
     default: () => ({ column: '', value: '', operator: 'eq' }),
   })
   filterTree!: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+
+  @Prop({
+    type: Array,
+    default: () => [],
+  })
+  errors!: ErrorObject[];
 
   get conditionsTree() {
     return buildConditionsEditorTree(this.filterTree);

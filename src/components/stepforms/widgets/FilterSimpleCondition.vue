@@ -201,7 +201,7 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 }
 
-.multiselect__tags {
+.filter-form-simple-condition__container /deep/ .multiselect__tags {
   border-radius: 0;
   border: none;
 }
