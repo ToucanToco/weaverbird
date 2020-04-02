@@ -87,13 +87,19 @@ export default class FilterSimpleConditionWidget extends Vue {
   })
   value!: FilterSimpleCondition;
 
+  @Prop({
+    type: Array,
+    default: () => [],
+  })
+  columnNamesProp!: string[];
+
   @Prop({ type: String, default: '' })
   dataPath!: string;
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
-  @VQBModule.Getter columnNames!: string[];
+  @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
@@ -116,6 +122,16 @@ export default class FilterSimpleConditionWidget extends Vue {
     // In absence of condition, emit directly to the parent the default value
     if (isEqual(this.value, DEFAULT_FILTER)) {
       this.$emit('input', DEFAULT_FILTER);
+    }
+  }
+
+  get columnNames() {
+    if (this.columnNamesProp && this.columnNamesProp.length > 0) {
+      return this.columnNamesProp;
+    } else if (this.columnNamesFromStore && this.columnNamesFromStore.length > 0) {
+      return this.columnNamesFromStore;
+    } else {
+      return [];
     }
   }
 
