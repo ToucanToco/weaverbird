@@ -125,6 +125,8 @@ export default class FilterSimpleConditionWidget extends Vue {
     }
   }
 
+  // Column names can be provided either in the store or via a prop
+  // The prop takes priority over the store
   get columnNames() {
     if (this.columnNamesProp && this.columnNamesProp.length > 0) {
       return this.columnNamesProp;
