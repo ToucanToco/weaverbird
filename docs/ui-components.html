@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Split column | Weaverbird</title>
+<title>UI components | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Split column" />
+<meta property="og:title" content="UI components" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Split column" />
-<meta property="og:description" content="Split column" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/split/" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/split/" />
+<meta name="description" content="UI components" />
+<meta property="og:description" content="UI components" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/ui-components" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/ui-components" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-04-03T12:38:00+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/split/","headline":"Split column","datePublished":"2020-04-03T12:38:00+02:00","dateModified":"2020-04-03T12:38:00+02:00","description":"Split column","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/ui-components","headline":"UI components","datePublished":"2020-04-03T12:38:00+02:00","dateModified":"2020-04-03T12:38:00+02:00","description":"UI components","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/split/">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/ui-components">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -85,7 +85,7 @@
       </div>
       
       
-      <div class="panel-collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
+      <div class="panel-collapse collapse" id="collapse-1" role="tabpanel" aria-label="Side Navigation">
         <div class="list-group">
           
             
@@ -265,7 +265,7 @@
             
             
             <!--  -->
-              <a class="list-group-item active" href="/docs/split/">Split column</a>
+              <a class="list-group-item " href="/docs/split/">Split column</a>
             <!--  -->
           
             
@@ -366,54 +366,61 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><h3 id="split-column">Split column</h3>
+            <div id="markdown-content-container"><h1 id="ui-components">UI components</h1>
 
-<p>You can use this step to split a text column into several columns, based on a
-delimiter.</p>
+<p>For use in your own application, Weaverbird exports a bunch of Vue components:</p>
 
-<p><strong>This step is supported by the following backends:</strong></p>
+<h2 id="vqb-the-all-in-one-component">Vqb: the all-in-one component</h2>
+
+<p>The <code class="highlighter-rouge">Vqb</code> component contains the full UI of Weaverbird.</p>
+
+<p>To run correctly, it assumes the Vqb Vuex store module is present. The helper <code class="highlighter-rouge">registerModule</code> take care of this part: provide it its initial state and the translator you wish to use.</p>
+
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">import</span> <span class="p">{</span> <span class="nx">registerModule</span><span class="p">,</span> <span class="nx">Vqb</span> <span class="p">}</span> <span class="k">from</span> <span class="s1">'weaverbird'</span><span class="p">;</span>
+
+<span class="k">new</span> <span class="nx">Vue</span><span class="p">({</span>
+  <span class="na">el</span><span class="p">:</span> <span class="s1">'#app'</span><span class="p">,</span>
+  <span class="na">components</span><span class="p">:</span> <span class="p">{</span>
+    <span class="nx">Vqb</span><span class="p">,</span>
+  <span class="p">},</span>
+  <span class="na">created</span><span class="p">:</span> <span class="kd">function</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">registerModule</span><span class="p">(</span><span class="k">this</span><span class="p">.</span><span class="nx">$store</span><span class="p">,</span> <span class="p">{</span>
+      <span class="na">currentPipelineName</span><span class="p">:</span> <span class="s1">'pipeline'</span><span class="p">,</span>
+      <span class="na">pipelines</span><span class="p">:</span> <span class="p">{</span>
+        <span class="na">pipeline</span><span class="p">:</span> <span class="p">[</span> <span class="p">...]</span>
+      <span class="p">},</span>
+      <span class="na">translator</span><span class="p">:</span> <span class="s1">'mongo40'</span><span class="p">,</span>
+    <span class="p">});</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+
+</code></pre></div></div>
+
+<blockquote>
+  <p>An example of such integration is provided in <code class="highlighter-rouge">playground/dist/app.js</code>.</p>
+</blockquote>
+
+<h2 id="main-sub-components">Main sub-components</h2>
+
+<p>The <code class="highlighter-rouge">Vqb</code> component consists is three sub-components, that you can use as well to fit it nicely into your app.</p>
 
 <ul>
-  <li>Mongo 4.0</li>
-  <li>Mongo 3.6</li>
+  <li><code class="highlighter-rouge">QueryBuilder</code> is the main left panel, where user see the current pipeline and can edit its steps.</li>
+  <li><code class="highlighter-rouge">DataViewer</code> is the main right panel, where the data table resides and the associated actions.</li>
+  <li><code class="highlighter-rouge">PipelineSelector</code> is the simple dropdown to select the currently displayed pipeline.</li>
 </ul>
 
-<h4 id="where-to-find-this-step">Where to find this step?</h4>
+<h2 id="utility-components">Utility components</h2>
+
+<p>Weaverbird also exports some of its internal components so they can be reused elsewhere.</p>
 
 <ul>
-  <li>Widget <code class="highlighter-rouge">Text</code></li>
-  <li>Search bar</li>
+  <li><code class="highlighter-rouge">FilterEditor</code> is the main component of the Filter step. It can display and edit trees of filtering conditions.</li>
 </ul>
 
-<h4 id="options-reference">Options reference</h4>
-
-<p><img src="../../img/docs/user-interface/split_step_form.jpg" width="350" /></p>
-
-<ul>
-  <li>
-    <p><code class="highlighter-rouge">Split column</code>: the column to be splitted</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">Delimiter</code>: a character or a string of characters that will be identified as
-delimiter to split the column</p>
-  </li>
-  <li>
-    <p><code class="highlighter-rouge">Number of columns to keep</code>: the number of columns to keep after spklitting
-the original column</p>
-  </li>
-</ul>
-
-<p>The original column remains intact while the split results are written in
-specific columns automatically named after the original column name (in the
-form <code class="highlighter-rouge">original_column_name_1</code>, <code class="highlighter-rouge">original_column_name_2</code> etc.).</p>
-
-<h4 id="example">Example</h4>
-
-<p><img src="../../img/docs/user-interface/split_example_conf.jpg" width="750" /></p>
-
-<p>This configuration results in:</p>
-
-<p><img src="../../img/docs/user-interface/split_example_result.jpg" width="500" /></p>
+<blockquote>
+  <p>These components are not directly part of the public API. Changes can happen between versions.</p>
+</blockquote>
 </div>
             
 
@@ -510,29 +517,43 @@ form <code class="highlighter-rouge">original_column_name_1</code>, <code class=
 
   
   
-    <ul class="pager">
-      
-        
-        
-        <li class="previous">
-          <a href="/docs/sort/">
-            <span aria-hidden="true">&larr;</span> Previous
-          </a>
-        </li>
-      
 
-      
-        
-        
-        <li class="next">
-          <a href="/docs/lowercase/">
-            Next <span aria-hidden="true">&rarr;</span>
-          </a>
-        </li>
-      
-      </ul>
-    <div class="clear"></div>
-    
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
 
         </div>
 

@@ -294,8 +294,8 @@
     
     
     {
-      "title": "",
-      "url": ""
+      "title": "Designing a new step",
+      "url": "/docs/new-step/"
 
     },
   
@@ -303,7 +303,7 @@
     
     {
       "title": "Known limitations",
-      "url": "/docs/known_limitations/"
+      "url": "/docs/known-limitations/"
 
     },
   
@@ -320,6 +320,14 @@
     {
       "title": "Variables",
       "url": "/docs/variables/"
+
+    },
+  
+    
+    
+    {
+      "title": "",
+      "url": ""
 
     },
   
