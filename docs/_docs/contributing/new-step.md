@@ -1,6 +1,6 @@
 ---
 title: Designing a new step
-permalink: /docs/designing-new-step/
+permalink: /docs/new-step/
 ---
 
 # General principles

@@ -1,6 +1,6 @@
 ---
 title: Known limitations
-permalink: /docs/known_limitations/
+permalink: /docs/known-limitations/
 ---
 
 # Known limitations

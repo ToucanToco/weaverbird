@@ -40,7 +40,7 @@
     - index
     - steps
     - new-step
-    - known_limitations
+    - known-limitations
     - translators
     - variables
     - code-editor
