@@ -19,5 +19,6 @@ export {
 import DataViewer from '@/components/DataViewer.vue';
 import FilterEditor from '@/components/FilterEditor.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
+import PipelineSelector from '@/components/PipelineSelector.vue';
 import Vqb from '@/components/Vqb.vue';
-export { DataViewer, FilterEditor, QueryBuilder, Vqb };
+export { DataViewer, FilterEditor, QueryBuilder, PipelineSelector, Vqb };
