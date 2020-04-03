@@ -44,3 +44,8 @@ The `Vqb` component consists is three sub-components, that you can use as well t
 - `DataViewer` is the main right panel, where the data table resides and the associated actions.
 - `PipelineSelector` is the simple dropdown to select the currently displayed pipeline.
 
+## Utility components
+
+Weaverbird also exports some of its internal components so they can be reused elsewhere:
+
+- `FilterEditor` is the main component of the Filter step. It can display and edit trees of filtering conditions.
