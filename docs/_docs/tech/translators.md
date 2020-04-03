@@ -6,8 +6,8 @@ permalink: /docs/translators/
 # Writing your own translator
 
 A translator is the piece of code responsible for translating a
-list of _pipelines steps_ into anything you see fit. For intsance,
-this packages comes with a `mongo36` translator that translates a list
+list of _pipelines steps_ into anything you see fit. For instance,
+this packages comes with `mongo36` and `mongo40` translators that translates a list
 of _pipeline steps_ into the list of corresponding mongo instructions.
 
 You could imagine writing your own translator to output `SQL` code or
@@ -26,7 +26,7 @@ To define your own translator, you need to:
 
 4. register your backend so that is it available
 
-## Creating a transatlor class
+## Creating a translator class
 
 All pipeline steps are defined in the `lib/steps` using typescript interfaces.
 Each step type defines at least a `name` property which is required to be unique
@@ -34,9 +34,9 @@ among all possible step types. A generic `PipelineStep` type is defined as being
 the union type of all available step types.
 
 Your translator class will have to extend the `lib/translators/base:BaseTranslator` class and provide a transformation method for each supported step type. The method
-name **has to match exactly** the name of step type. It should accept a `step` parameter with the correspding type and return whatever you need.
+name **has to match exactly** the name of step type. It should accept a `step` parameter with the corresponding type and return whatever you need.
 
-For intance, suppose that you want to support the `rename` and `filter` step
+For instance, suppose that you want to support the `rename` and `filter` step
 only, your translator module might look like:
 
 ```ts

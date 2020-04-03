@@ -14,4 +14,4 @@ aggregations, SQL queries, Python scripts).
 
 The graphical users interface generates a list of [transformation
 steps](/docs/steps/) that can be [translated](/docs/translators/) afterwards on
-supported backends. For now , it only supports MongoDB.
+supported backends. For now, it only supports MongoDB.
