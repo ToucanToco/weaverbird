@@ -46,6 +46,8 @@ The `Vqb` component consists is three sub-components, that you can use as well t
 
 ## Utility components
 
-Weaverbird also exports some of its internal components so they can be reused elsewhere:
+Weaverbird also exports some of its internal components so they can be reused elsewhere.
 
 - `FilterEditor` is the main component of the Filter step. It can display and edit trees of filtering conditions.
+
+> These components are not directly part of the public API. Changes can happen between versions.
