@@ -145,7 +145,7 @@ type FilterConditionEquality = {
   operator: 'eq' | 'ne' | 'isnull' | 'notnull' | 'matches' | 'notmatches';
 };
 
-type FilterConditionInclusion = {
+export type FilterConditionInclusion = {
   column: string;
   value: any[];
   operator: 'in' | 'nin';

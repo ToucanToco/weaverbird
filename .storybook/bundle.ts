@@ -10,6 +10,7 @@ import ResizablePanels from '../src/components/ResizablePanels.vue';
 import Step from '../src/components/Step.vue';
 import ConditionsEditor from '../src/components/ConditionsEditor/ConditionsEditor.vue';
 import FilterSimpleCondition from '../src/components/stepforms/widgets/FilterSimpleCondition.vue';
+import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 
-export { FilterSimpleCondition, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step };
+export { FilterSimpleCondition, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step, ListUniqueValues };
 export { setupStore } from '../src/store';
