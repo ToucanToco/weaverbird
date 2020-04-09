@@ -107,7 +107,7 @@
       </button>
       <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
       <div class="error-message" v-if="thereIsABackendError">
-        <i class="fas fa-exclamation-triangle"></i> {{ backendErrorMessage }}
+        <i class="fas fa-exclamation-triangle"></i> <div v-html="backendErrorMessage" ></div>
       </div>
     </div>
     <!-- built files will be auto injected -->

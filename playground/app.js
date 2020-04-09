@@ -307,7 +307,7 @@ async function buildVueApp() {
         return this.$store.getters[VQBnamespace('thereIsABackendError')];
       },
       backendErrorMessage: function() {
-        return this.$store.getters[VQBnamespace('backendErrorMessages')].join('<br/>');
+        return this.$store.getters[VQBnamespace('backendErrorMessages')].map(e=>e.message).join('<br/>');
       },
     },
     methods: {
