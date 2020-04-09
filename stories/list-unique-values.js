@@ -18,5 +18,5 @@ stories.add('default', () => ({
         loaded: false,
     }
   },
-  template: `<div style="font-family: 'Montserrat', sans-serif;"><ListUniqueValues :loaded="loaded" :filter="filter" @input="filter = $event" :options="options"/></div>`,
+  template: `<div><ListUniqueValues :loaded="loaded" :filter="filter" @input="filter = $event" :options="options"/></div>`,
 }));
