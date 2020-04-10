@@ -1,31 +1,60 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
+import Vue from 'vue';
 import Vuex from 'vuex';
 
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
-import { FilterConditionInclusion } from '@/lib/steps.ts';
+
+import { setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('List Unique Value', () => {
-  const DUMMY_UNIQUE_VALUES = [
-    { value: 'France', count: 10 },
-    { value: 'Framboise', count: 9 },
-    { value: 'UK', count: 4 },
-    { value: 'Spain', count: 2 },
-  ];
-  let filter!: FilterConditionInclusion;
-  let wrapper: any;
+  let wrapper: Wrapper<Vue>;
+  /**
+  `shallowMountWrapper` is utility function for the `ListUniqueValues` component
+  It shallow mount the component with several options:
+  @param filterValue the value key of the prop `filter`
+  @param operator the operator key of the prop `filter`
+  @param loaded the `loaded` props of the component
+  @param isUniqueValuesLoading the store parameter indicating if column unique value is loading
 
-  beforeEach(() => {
-    filter = {
-      column: 'col1',
-      operator: 'in',
-      value: ['France', 'Spain'],
-    };
-    wrapper = shallowMount(ListUniqueValues, {
-      propsData: { filter, options: DUMMY_UNIQUE_VALUES, loaded: true },
+  By default the wrapper is mounted with 4 options: "France", "Framboise", "Spain" and "UK"
+  - The checked values are "France" and "Spain"
+  - All uniques are loaded
+  */
+  const shallowMountWrapper = (
+    filterValue: string[] = ['France', 'Spain'],
+    operator: 'in' | 'nin' = 'in',
+    loaded = true,
+    isUniqueValuesLoading = false,
+  ): Wrapper<Vue> => {
+    return shallowMount(ListUniqueValues, {
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'col1', isUniqueValuesLoading }],
+          data: [],
+        },
+      }),
+      localVue,
+      propsData: {
+        filter: {
+          column: 'col1',
+          operator,
+          value: filterValue,
+        },
+        options: [
+          { value: 'France', count: 10 },
+          { value: 'Framboise', count: 9 },
+          { value: 'UK', count: 4 },
+          { value: 'Spain', count: 2 },
+        ],
+        loaded,
+      },
     });
+  };
+  beforeEach(() => {
+    wrapper = shallowMountWrapper();
   });
 
   it('should display the list of unique values and how much time they are present in the whole dataset', () => {
@@ -47,14 +76,7 @@ describe('List Unique Value', () => {
   });
 
   it('should display the list of unique values and how much time they are present in the whole dataset (with "nin" operator)', () => {
-    filter = {
-      column: 'col1',
-      operator: 'nin',
-      value: ['Framboise', 'UK'],
-    };
-    wrapper = shallowMount(ListUniqueValues, {
-      propsData: { filter, options: DUMMY_UNIQUE_VALUES, loaded: true },
-    });
+    wrapper = shallowMountWrapper(['France', 'Spain'], 'nin');
     expect(wrapper.exists()).toBeTruthy();
     const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
     expect(CheckboxWidgetArray.length).toEqual(4);
@@ -65,14 +87,7 @@ describe('List Unique Value', () => {
   });
 
   it('should instantiate with correct value checked (with "nin" operator)', () => {
-    filter = {
-      column: 'col1',
-      operator: 'nin',
-      value: ['Framboise', 'UK'],
-    };
-    wrapper = shallowMount(ListUniqueValues, {
-      propsData: { filter, options: DUMMY_UNIQUE_VALUES, loaded: true },
-    });
+    wrapper = shallowMountWrapper(['Framboise', 'UK'], 'nin');
     const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
     expect(CheckboxWidgetArray.at(0).vm.$props.value).toBeTruthy();
     expect(CheckboxWidgetArray.at(1).vm.$props.value).toBeFalsy();
@@ -80,23 +95,27 @@ describe('List Unique Value', () => {
     expect(CheckboxWidgetArray.at(3).vm.$props.value).toBeTruthy();
   });
 
+  it('should instantiate without the spinner', async () => {
+    expect(wrapper.find('.list-unique-values__loader-spinner').exists()).toBeFalsy();
+  });
+
+  it('should instantiate with the spinner', async () => {
+    wrapper = shallowMountWrapper(['France', 'Spain'], 'in', true, true);
+    expect(wrapper.find('.list-unique-values__loader-spinner').exists()).toBeTruthy();
+  });
+
   describe('"load all values" message', () => {
     it('should instantiate with the "load all values" message', () => {
       expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeTruthy();
     });
 
-    it('should throw an error when click on "load all values"', async () => {
-      try {
-        await wrapper.find('.list-unique-values__load-all-values-button').trigger('click');
-      } catch (e) {
-        expect(e).toEqual(Error('Not implemented'));
-      }
+    it('should emit "loadAllValues" when click on "load all values"', async () => {
+      await wrapper.find('.list-unique-values__load-all-values-button').trigger('click');
+      expect(wrapper.emitted().loadAllValues.length).toBe(1);
     });
 
     it('should not instantiate with the "load all values" message', () => {
-      wrapper = shallowMount(ListUniqueValues, {
-        propsData: { filter, options: DUMMY_UNIQUE_VALUES, loaded: false },
-      });
+      wrapper = shallowMountWrapper(['France', 'Spain'], 'in', false);
       expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeFalsy();
     });
   });
@@ -186,14 +205,7 @@ describe('List Unique Value', () => {
 
   describe('search box with "nin" operator', () => {
     beforeEach(async () => {
-      filter = {
-        column: 'col1',
-        operator: 'nin',
-        value: ['France', 'Spain'],
-      };
-      wrapper = shallowMount(ListUniqueValues, {
-        propsData: { filter, options: DUMMY_UNIQUE_VALUES, loaded: true },
-      });
+      wrapper = shallowMountWrapper(['France', 'Spain'], 'nin');
       const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
       input.value = 'Fr'; // "Fr" like the start of "France" and "Framboise"
       await wrapper.find('.list-unique-values__search-box').trigger('input');

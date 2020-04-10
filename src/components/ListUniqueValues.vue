@@ -6,21 +6,24 @@
       <span class="list-unique-values__select-all" @click="selectAll">Select all</span> &nbsp;
       <span class="list-unique-values__clear-all" @click="clearAll">Clear all</span>
     </div>
-    <div
-      class="list-unique-values__checkbox-container"
-      v-for="option in searchedOptions"
-      :key="option.value"
-    >
-      <CheckboxWidget
-        :label="`${option.value} (${option.count})`"
-        :value="isChecked(option)"
-        @input="toggleCheck(option)"
-      />
-    </div>
-    <div class="list-unique-values__load-all-values" v-if="loaded">
-      <div>List maybe incomplete</div>
-      <div @click="loadAllValues" class="list-unique-values__load-all-values-button">
-        Load all values
+    <div v-if="isLoadingFunction(filter.column)" class="list-unique-values__loader-spinner" />
+    <div v-else>
+      <div
+        class="list-unique-values__checkbox-container"
+        v-for="option in searchedOptions"
+        :key="option.value"
+      >
+        <CheckboxWidget
+          :label="`${option.value} (${option.count})`"
+          :value="isChecked(option)"
+          @input="toggleCheck(option)"
+        />
+      </div>
+      <div class="list-unique-values__load-all-values" v-if="loaded">
+        <div>List maybe incomplete</div>
+        <div @click="loadAllValues" class="list-unique-values__load-all-values-button">
+          Load all values
+        </div>
       </div>
     </div>
   </div>
@@ -31,6 +34,9 @@ import _union from 'lodash/union';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { FilterConditionInclusion } from '@/lib/steps.ts';
+import { VQBModule } from '@/store';
+
+import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
 
 // This type will be imported from @/lib/dataset/helpers.ts
 type ColumnValueStat = {
@@ -46,7 +52,6 @@ type ColumnValueStat = {
     value: ['France', 'UK', 'Spain']
   }
  */
-import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
 @Component({
   name: 'list-unique-values',
   components: { CheckboxWidget },
@@ -69,6 +74,8 @@ export default class ListUniqueValues extends Vue {
     required: true,
   })
   loaded!: boolean;
+
+  @VQBModule.Getter('isUniqueValuesLoading') isLoadingFunction!: (column: string) => boolean;
 
   search = '';
 
@@ -138,7 +145,7 @@ export default class ListUniqueValues extends Vue {
   }
 
   loadAllValues() {
-    throw new Error('Not implemented');
+    this.$emit('loadAllValues');
   }
 }
 </script>
@@ -202,6 +209,23 @@ export default class ListUniqueValues extends Vue {
   .list-unique-values__load-all-values-button {
     text-decoration: underline;
     font-weight: 700;
+    cursor: pointer;
+  }
+}
+
+.list-unique-values__loader-spinner {
+  border-radius: 50%;
+  border: 4px solid #efefef;
+  border-top-color: $active-color;
+  width: 30px;
+  height: 30px;
+  animation: spin 1500ms ease-in-out infinite;
+  margin: 30px auto;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
   }
 }
 </style>
