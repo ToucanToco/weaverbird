@@ -4,6 +4,8 @@
 import _ from 'lodash';
 import { GetterTree } from 'vuex';
 
+import { DataSetColumn } from '@/lib/dataset/index.ts';
+
 import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
 
 const getters: GetterTree<VQBState, any> = {
@@ -82,6 +84,11 @@ const getters: GetterTree<VQBState, any> = {
    */
   pageno: (state: VQBState) =>
     state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
+  /**
+   * helper that is True if unique values are loading
+   */
+  isUniqueValuesLoading: (state: VQBState) => (column: string) =>
+    (state.dataset.headers.find(hdr => hdr.name === column) as DataSetColumn).isUniqueValuesLoading,
   /**
    * Return current edited pipeline
    */

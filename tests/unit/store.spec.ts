@@ -124,6 +124,24 @@ describe('getter tests', () => {
     });
   });
 
+  describe('column isUniqueValuesLoading tests', () => {
+    it('should return a boolean indicating if column unique values are loading types', () => {
+      const state = buildState({
+        dataset: {
+          headers: [
+            { name: 'col1', isUniqueValuesLoading: true },
+            { name: 'col2', isUniqueValuesLoading: false },
+            { name: 'col3' },
+          ],
+          data: [],
+        },
+      });
+      expect(getters.isUniqueValuesLoading(state, {}, {}, {})('col1')).toEqual(true);
+      expect(getters.isUniqueValuesLoading(state, {}, {}, {})('col2')).toEqual(false);
+      expect(getters.isUniqueValuesLoading(state, {}, {}, {})('col3')).toBeUndefined();
+    });
+  });
+
   describe('domain extraction tests', () => {
     it('should not return anything if no pipeline is selected', function() {
       const state = buildState({});
@@ -537,5 +555,25 @@ describe('mutation tests', () => {
       translator: 'mongo40',
     });
     expect(state.translator).toEqual('mongo40');
+  });
+
+  it('set isUniqueValuesLoading to true', () => {
+    const state = buildState({
+      dataset: {
+        headers: [{ name: 'col1', isUniqueValuesLoading: false }, { name: 'col2' }],
+        data: [],
+      },
+    });
+    mutations.setUniqueValuesLoading(state, {
+      isLoading: true,
+      column: 'col1',
+    });
+    expect(state.dataset.headers[0].isUniqueValuesLoading).toEqual(true);
+
+    mutations.setUniqueValuesLoading(state, {
+      isLoading: true,
+      column: 'col2',
+    });
+    expect(state.dataset.headers[1].isUniqueValuesLoading).toEqual(true);
   });
 });
