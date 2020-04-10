@@ -13,4 +13,4 @@ import FilterEditor from '../src/components/FilterEditor.vue';
 import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 
 export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step, ListUniqueValues };
-export { setupStore } from '../src/store';
+export { setupStore, registerModule, VQBnamespace } from '../src/store';
