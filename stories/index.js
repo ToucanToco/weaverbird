@@ -63,7 +63,6 @@ stories
   }));
 
 import './data-viewer';
-import './form-rename-step';
 import './resizable-panel';
 import './filter-editor';
 import './list-unique-values';
