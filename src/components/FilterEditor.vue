@@ -3,7 +3,7 @@
     <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateFilterTree">
       <template v-slot:default="slotProps">
         <FilterSimpleConditionWidget
-          :value="slotProps.condition"
+          :value="slotProps.condition || undefined"
           @input="slotProps.updateCondition"
           :columnNamesProp="columnNames"
           :data-path="slotProps.dataPath"
