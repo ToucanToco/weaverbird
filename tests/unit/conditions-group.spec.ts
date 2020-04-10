@@ -29,7 +29,7 @@ describe('ConditionsGroup', () => {
     expect(wrapper.find('.condition-row__delete').exists()).toBeFalsy();
   });
 
-  it('should not display the trash button for a row when there is only one condition even if there are groups', () => {
+  it('should display the trash button for a row if there is at least a group', () => {
     const wrapper = shallowMount(ConditionsGroup, {
       propsData: {
         conditionsTree: {
@@ -48,7 +48,7 @@ describe('ConditionsGroup', () => {
         },
       },
     });
-    expect(wrapper.find('.condition-row__delete').exists()).toBeFalsy();
+    expect(wrapper.find('.condition-row__delete').exists()).toBeTruthy();
   });
 
   it('should display the trash button for a row when there is more than one condition', () => {
