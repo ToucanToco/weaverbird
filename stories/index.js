@@ -14,6 +14,10 @@ import {
 
 const stories = storiesOf('Step', module);
 
+import Vue from 'vue';
+import Vuex from 'vuex';
+Vue.use(Vuex);
+
 stories
   .addDecorator(withKnobs)
   .add('default', () => ({
@@ -61,5 +65,5 @@ stories
 import './data-viewer';
 import './form-rename-step';
 import './resizable-panel';
-import './conditions-editor';
+import './filter-editor';
 import './list-unique-values';
