@@ -12,6 +12,11 @@ export type ColumnTypeMapping = {
 export type DataSetColumn = {
   name: string;
   type?: DataSetColumnType;
+  /**
+   * Indicates if there's an ongoing operation to fetch all unique values for this column from the database.
+   * This value is updated by the `backendify` function.
+   */
+  isUniqueValuesLoading?: boolean;
 };
 
 /**
