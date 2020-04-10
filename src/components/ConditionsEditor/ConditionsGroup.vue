@@ -44,7 +44,7 @@
         />
       </div>
       <i
-        v-if="conditions.length > 1"
+        v-if="hasMultipleRows"
         class="condition-row__delete far fa-trash-alt"
         @click="deleteRow(rowIndex)"
       />
