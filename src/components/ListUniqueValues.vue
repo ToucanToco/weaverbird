@@ -6,20 +6,26 @@
       placeholder="Search 50 items"
       @input="search($event.target.value)"
     />
+
     <div class="list-unique-values__select-clear-all">
       <span class="list-unique-values__select-all" @click="selectAll">Select all</span> &nbsp;
       <span class="list-unique-values__clear-all" @click="clearAll">Clear all</span>
     </div>
-    <div
-      class="list-unique-values__checkbox-container"
-      v-for="value in searchedValues"
-      :key="value.value"
-    >
-      <CheckboxWidget
-        :label="`${value.value} (${value.nbOcc})`"
-        :value="isChecked[value.value]"
-        @input="toggleCheck(value.value)"
-      />
+    <div class="list-unique-values__checkbox-container-container">
+      <div
+        class="list-unique-values__checkbox-container"
+        v-for="value in searchedValues"
+        :key="value.value"
+      >
+        <CheckboxWidget
+          :label="`${value.value} (${value.nbOcc})`"
+          :value="isChecked[value.value]"
+          @input="toggleCheck(value.value)"
+        />
+      </div>
+    </div>
+    <div v-if="displayApplyFilter" @click="applyFilter" class="list-unique-values__apply-filter">
+      Apply Filter
     </div>
   </div>
 </template>
@@ -49,24 +55,31 @@ export default class ActionMenu extends Vue {
   */
   isChecked: Record<string, boolean> = Object.fromEntries(this.values.map(e => [e.value, true]));
 
+  currentValue: any;
+  displayApplyFilter = false;
+
+  applyFilter() {
+    this.$emit('input', this.currentValue);
+  }
+
   selectAll() {
     this.isChecked = Object.fromEntries(this.values.map(e => [e.value, true]));
-    this.$emit('input', Object.keys(this.isChecked));
+    this.currentValue = Object.keys(this.isChecked);
+    this.displayApplyFilter = false;
   }
 
   clearAll() {
     this.isChecked = Object.fromEntries(this.values.map(e => [e.value, false]));
-    this.$emit('input', []);
+    this.currentValue = [];
+    this.displayApplyFilter = true;
   }
 
   toggleCheck(value: string) {
     this.isChecked[value] = !this.isChecked[value];
-    this.$emit(
-      'input',
-      Object.keys(this.isChecked).filter(k => {
-        return this.isChecked[k];
-      }),
-    );
+    this.currentValue = Object.keys(this.isChecked).filter(k => {
+      return this.isChecked[k];
+    });
+    this.displayApplyFilter = true;
   }
 
   search(search: string) {
@@ -85,8 +98,6 @@ export default class ActionMenu extends Vue {
 // @import '../styles/_variables';
 
 .list-unique-values {
-  max-height: 300px;
-  overflow: auto;
   background-color: #fafafa; //$grey
   padding: 10px 12px;
   font-size: 13px;
@@ -114,6 +125,11 @@ export default class ActionMenu extends Vue {
   }
 }
 
+.list-unique-values__checkbox-container-container {
+  max-height: 200px;
+  overflow: auto;
+}
+
 .list-unique-values__checkbox-container {
   min-width: fit-content;
   border-bottom: 2px #ededed solid;
@@ -127,5 +143,11 @@ export default class ActionMenu extends Vue {
 
 /deep/ .widget-checkbox {
   margin-bottom: 10px !important;
+}
+
+.list-unique-values__apply-filter {
+  padding: 15px 0px 0px;
+  cursor: pointer;
+  text-decoration: underline;
 }
 </style>

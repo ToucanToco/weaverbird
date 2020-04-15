@@ -64,7 +64,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     // the filter step
     if (this.isStepCreation && this.selectedColumns[0]) {
       let condition;
-      if (this.stepFormDefaults.condition) {
+      if (this.stepFormDefaults && this.stepFormDefaults.condition) {
         condition = this.stepFormDefaults.condition;
       } else {
         condition = { column: this.selectedColumns[0], value: '', operator: 'eq' };
@@ -77,7 +77,10 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
       // Otherwise, fallback on the default initial value
       this.editedStep = {
         name: 'filter' as 'filter',
-        condition: { ...this.stepFormDefaults.condition, ...this.initialStepValue.condition },
+        condition: {
+          ...(this.stepFormDefaults ? this.stepFormDefaults.condition : {}),
+          ...this.initialStepValue.condition,
+        },
       };
     }
   }

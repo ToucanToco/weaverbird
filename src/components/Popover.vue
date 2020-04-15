@@ -104,6 +104,9 @@ export default class Popover extends Vue {
    * @description Close the popover when clicking outside
    */
   clickListener(e: Event) {
+    if (!this.visible) {
+      return;
+    }
     const target = e.target as HTMLElement;
     const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
 
