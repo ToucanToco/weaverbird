@@ -96,10 +96,10 @@ export default class DataViewer extends Vue {
 
   @VQBModule.Mutation updateStepForm!: ({
     stepName,
-    stepFormDefaults,
+    remoteStepForm,
   }: {
     stepName: PipelineStepName;
-    stepFormDefaults?: object;
+    remoteStepForm?: object;
   }) => void;
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;

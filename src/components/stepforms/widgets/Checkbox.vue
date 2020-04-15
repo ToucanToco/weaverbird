@@ -35,14 +35,6 @@ export default class CheckboxWidget extends Vue {
   margin-bottom: 20px;
   cursor: pointer;
 
-  &:active,
-  &:focus,
-  &:hover {
-    &::after {
-      opacity: 1;
-    }
-  }
-
   &::before,
   &::after {
     content: '';

@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { Prop, Watch } from 'vue-property-decorator';
+import { Prop } from 'vue-property-decorator';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
 import { StepFormComponent } from '@/components/formlib';

@@ -79,6 +79,8 @@ export default class ActionMenu extends Vue {
   })
   visible!: boolean;
 
+  @VQBModule.State remoteStepForm?: object;
+
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: Pipeline;
@@ -94,7 +96,13 @@ export default class ActionMenu extends Vue {
     stepName: PipelineStepName;
     stepFormDefaults?: object;
   }) => void;
-
+  @VQBModule.Mutation updateStepForm!: ({
+    stepName,
+    remoteStepForm,
+  }: {
+    stepName: PipelineStepName;
+    remoteStepForm?: object;
+  }) => void;
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
   get columnHeader(): DataSetColumn | undefined {
@@ -175,11 +183,6 @@ export default class ActionMenu extends Vue {
   }
 
   createOrUpdateFilterColumnStep(checkedValue: any[]) {
-    this.$emit('actionClicked', 'filter', {
-      name: 'filter',
-      condition: { column: this.columnName, operator: 'in', value: checkedValue },
-    });
-    // console.log('checkedValue', checkedValue);
     /**
      * If a step edition form is already open, close it so that the left panel displays
      * the pipeline with the new delete step inserted
@@ -187,22 +190,51 @@ export default class ActionMenu extends Vue {
     if (this.isEditingStep) {
       this.closeStepForm();
     }
-    // else : create the filter step of edit it
-    // if (!this.isEditingStep) {
-    // create the step
-    // const newPipeline: Pipeline = [...this.pipeline];
-    // const index = this.computedActiveStepIndex + 1;
-    const filterStep: FilterStep = {
-      name: 'filter',
-      condition: { column: this.columnName, operator: 'in', value: checkedValue },
-    };
-    this.createStepForm({ stepName: 'filter', stepFormDefaults: filterStep });
-    // newPipeline.splice(index, 0, filterStep);
-    // this.setPipeline({ pipeline: newPipeline });
-    // this.selectStep({ index });
-    // } else {
-    //   console.log('allready open, to nothing');
-    // }
+    let filterStep: FilterStep;
+    let operator;
+    if (this.remoteStepForm !== undefined) {
+      operator = Object.keys(this.remoteStepForm.condition)[0] as 'or' | 'and';
+    }
+    console.log('operator', operator);
+    if (
+      this.remoteStepForm !== undefined &&
+      !this.remoteStepForm.condition[operator].map(e => e.column).includes(this.columnName)
+    ) {
+      filterStep = {
+        name: 'filter',
+        condition: {
+          [operator]: [
+            ...this.remoteStepForm.condition[operator],
+            { column: this.columnName, operator: 'in', value: checkedValue },
+          ],
+        },
+      };
+    } else if (this.remoteStepForm !== undefined) {
+      filterStep = {
+        name: 'filter',
+        condition: {
+          [operator]: [{ column: this.columnName, operator: 'in', value: checkedValue }],
+        },
+      };
+      const lolo = this.remoteStepForm.condition[operator];
+      lolo[lolo.map((e: any) => e.column).indexOf(this.columnName)] = {
+        column: this.columnName,
+        operator: 'in',
+        value: checkedValue,
+      };
+      filterStep = {
+        name: 'filter',
+        condition: { [operator]: lolo },
+      };
+    } else {
+      filterStep = {
+        name: 'filter',
+        condition: {
+          and: [{ column: this.columnName, operator: 'in', value: checkedValue }],
+        },
+      };
+    }
+    this.updateStepForm({ stepName: 'filter', remoteStepForm: filterStep });
   }
 }
 </script>

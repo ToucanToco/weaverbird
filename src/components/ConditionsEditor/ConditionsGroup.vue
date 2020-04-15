@@ -106,6 +106,8 @@
  */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import { VQBModule } from '@/store';
+
 import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
 
 @Component({
@@ -129,6 +131,15 @@ export default class ConditionsGroup extends Vue {
     default: '',
   })
   dataPath!: string;
+
+  @VQBModule.State remoteStepForm!: object;
+  @VQBModule.Mutation updateStepForm!: ({
+    stepName,
+    remoteStepForm,
+  }: {
+    stepName: PipelineStepName;
+    remoteStepForm?: object;
+  }) => void;
 
   get operator() {
     return this.conditionsTree.operator;
@@ -270,6 +281,13 @@ export default class ConditionsGroup extends Vue {
       operator: newOperator,
     } as AbstractFilterTree;
     this.emitUpdatedConditionTree(newConditionsTree);
+
+    const newRemoteStepForm = {
+      condition: {
+        [newOperator]: this.remoteStepForm.condition[newOperator === 'or' ? 'and' : 'or'],
+      },
+    };
+    this.updateStepForm({ stepName: 'filter', remoteStepForm: newRemoteStepForm });
   }
 
   emitUpdatedConditionTree(newConditionsTree: AbstractFilterTree) {

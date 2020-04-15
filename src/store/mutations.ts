@@ -130,9 +130,9 @@ class Mutations {
     state: VQBState,
     { stepName, remoteStepForm }: { stepName: PipelineStepName; remoteStepForm?: object },
   ) {
-    console.log('updateStepForm', remoteStepForm);
     // state.currentStepFormName = undefined;
     state.currentStepFormName = stepName;
+    state.stepFormDefaults = remoteStepForm;
     state.stepFormInitialValue = undefined;
     state.remoteStepForm = remoteStepForm;
   }
