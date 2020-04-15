@@ -149,5 +149,6 @@ export default class ActionMenu extends Vue {
   padding: 15px 0px 0px;
   cursor: pointer;
   text-decoration: underline;
+  text-align: center;
 }
 </style>
