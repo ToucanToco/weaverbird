@@ -2,6 +2,8 @@
  * This module handles template interpolation.
  */
 
+import _ from 'lodash';
+
 import { ColumnTypeMapping, DataSetColumnType } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 import { StepMatcher } from '@/lib/matcher';
@@ -83,6 +85,28 @@ function interpolateFilterCondition(
         return condition;
     }
   }
+}
+
+function interpolateIfThenElse(
+  ifthenelse: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
+  interpolateFunc: InterpolateFunction,
+  context: ScopeContext,
+  columnTypes?: ColumnTypeMapping,
+): Omit<S.IfThenElseStep, 'name' | 'newColumn'> {
+  const ret = {
+    if: interpolateFilterCondition(ifthenelse.if, interpolateFunc, context, columnTypes),
+    then: _interpolate(interpolateFunc, ifthenelse.then, context),
+  };
+  if (typeof ifthenelse.else === 'string') {
+    return {
+      ...ret,
+      else: _interpolate(interpolateFunc, ifthenelse.else, context),
+    };
+  }
+  return {
+    ...ret,
+    else: interpolateIfThenElse(ifthenelse.else, interpolateFunc, context, columnTypes),
+  };
 }
 
 /**
@@ -221,6 +245,18 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   fromdate(step: Readonly<S.FromDateStep>) {
     return { ...step };
+  }
+
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
+    return {
+      ...step,
+      ...interpolateIfThenElse(
+        _.omit(step, ['name', 'newColumn']),
+        this.interpolateFunc,
+        this.context,
+        this.columnTypes,
+      ),
+    };
   }
 
   join(step: Readonly<S.JoinStep>) {
