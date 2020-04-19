@@ -1158,4 +1158,54 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate basic ilfthenelse steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: '<%= foo %>',
+        if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '<%= age %>' }] },
+        then: '<%= foo %>',
+        else: '<%= age %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'ifthenelse',
+        newColumn: '<%= foo %>',
+        if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '42' }] },
+        then: 'bar',
+        else: '42',
+      },
+    ]);
+  });
+
+  it('should interpolate nested ilfthenelse steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: '<%= foo %>',
+        if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '<%= age %>' }] },
+        then: '<%= foo %>',
+        else: {
+          if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '<%= age %>' }] },
+          then: '<%= foo %>',
+          else: '<%= age %>',
+        },
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'ifthenelse',
+        newColumn: '<%= foo %>',
+        if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '42' }] },
+        then: 'bar',
+        else: {
+          if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '42' }] },
+          then: 'bar',
+          else: '42',
+        },
+      },
+    ]);
+  });
 });
