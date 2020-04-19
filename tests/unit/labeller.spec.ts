@@ -555,4 +555,15 @@ describe('Labeller', () => {
     };
     expect(hrl(step)).toEqual('Compute evolution of column "VALUE"');
   });
+
+  it('generates label for ifthenelse steps', () => {
+    const step: S.IfThenElseStep = {
+      name: 'ifthenelse',
+      newColumn: 'NEW_COL',
+      if: { and: [{ column: 'TEST_COL', operator: 'eq', value: 'TEST_VALUE' }] },
+      then: '"True"',
+      else: '"False"',
+    };
+    expect(hrl(step)).toEqual('Add conditional column "NEW_COL"');
+  });
 });
