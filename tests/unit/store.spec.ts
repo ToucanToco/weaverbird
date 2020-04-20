@@ -604,6 +604,34 @@ describe('action tests', () => {
         [3, 4],
       ],
     };
+    const dummyDatasetWithUniqueComputed = {
+      headers: [
+        {
+          name: 'x',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 1, count: 1 },
+              { value: 3, count: 1 },
+            ],
+          },
+        },
+        {
+          name: 'y',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 2, count: 1 },
+              { value: 4, count: 1 },
+            ],
+          },
+        },
+      ],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
+    };
     class DummyService implements BackendService {
       listCollections(_store: Store<any>) {
         return Promise.resolve({ data: ['foo', 'bar'] });
@@ -637,7 +665,7 @@ describe('action tests', () => {
     expect(commitSpy.mock.calls[2][1]).toEqual({ isRequestOnGoing: false });
     // call 3 :
     expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('setDataset'));
-    expect(commitSpy.mock.calls[3][1]).toEqual({ dataset: dummyDataset });
+    expect(commitSpy.mock.calls[3][1]).toEqual({ dataset: dummyDatasetWithUniqueComputed });
     // call 5 :
     expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
     expect(commitSpy.mock.calls[4][1]).toEqual({ isLoading: false });

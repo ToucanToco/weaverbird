@@ -17,6 +17,10 @@ export type DataSetColumn = {
    * This value is updated by the `backendify` function.
    */
   isUniqueValuesLoading?: boolean;
+  uniques?: {
+    values: any[];
+    loaded: boolean;
+  };
 };
 
 /**

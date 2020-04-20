@@ -1,10 +1,10 @@
 import { ActionContext, ActionTree } from 'vuex';
 
+import { addLocalUniquesToDataset } from '@/lib/dataset/helpers.ts';
 import { pageOffset } from '@/lib/dataset/pagination';
 
 import { backendService } from './backend-plugin';
 import { preparePipeline, VQBState } from './state';
-
 /**
  * Action wrapper so that the state loading is set to true at the start of
  *
@@ -42,7 +42,7 @@ class Actions {
     );
     if (!response.error) {
       context.commit('setDataset', {
-        dataset: response.data,
+        dataset: addLocalUniquesToDataset(response.data),
       });
     }
   }
