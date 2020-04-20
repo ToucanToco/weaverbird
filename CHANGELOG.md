@@ -1,5 +1,19 @@
 # Changelog
 
+# Unreleased
+
+### Changed
+
+- Add a `isUniqueValuesLoading` key to columns in the vuex state. This will allow us to display a spinner when loading column's unique  values.
+
+### Added
+
+- New component `ListUniqueValues` which will be used to display column's unique values.
+
+### Fixed
+
+- Fix setup of store in Storybook
+
 ## [0.15.1] - 2020-04-06
 
 ### Changed
