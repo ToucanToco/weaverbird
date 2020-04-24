@@ -105,6 +105,11 @@ describe('Action Menu', () => {
     expect(wrapper.classes()).toContain('popover-container');
   });
 
+  it('should not display the apply filter button', async () => {
+    const { wrapper } = await mountWrapper(false, true);
+    expect(wrapper.find('.action-menu__apply-filter').exists()).toBeFalsy();
+  });
+
   it('should display the first panel', async () => {
     const { wrapper } = await mountWrapper();
     let el: PanelElement;
@@ -153,6 +158,31 @@ describe('Action Menu', () => {
         expect(wrapper.emitted().actionClicked[0]).toEqual([el.stepName]);
       }
     }
+  });
+
+  describe('when click on "Apply Filter"', () => {
+    let mountWrapperWithEditedCondition: any;
+    beforeEach(async () => {
+      mountWrapperWithEditedCondition = async () => {
+        const { wrapper, store } = await mountWrapper();
+        wrapper
+          .find('ListUniqueValues-stub')
+          .vm.$emit('input', { column: 'dreamfall', value: ['mika'], operator: 'nin' });
+        return { wrapper, store };
+      };
+    });
+    it('should display "Apply Filter" when ListUniqueValue component emit a new condition', async () => {
+      const { wrapper } = await mountWrapperWithEditedCondition();
+      expect(wrapper.find('.action-menu__apply-filter').exists()).toBeTruthy();
+    });
+    it('should add a valid filter step', async () => {
+      const { wrapper, store } = await mountWrapperWithEditedCondition();
+      await wrapper.find('.action-menu__apply-filter').trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
+        { name: 'filter', condition: { column: 'dreamfall', value: ['mika'], operator: 'nin' } },
+      ]);
+    });
   });
 
   describe('when click on the operation "delete"', () => {

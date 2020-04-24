@@ -21,6 +21,13 @@
                 :loaded="currentUnique.loaded"
                 @input="condition = $event"
               />
+              <div
+                v-if="isApplyFilterVisible"
+                class="action-menu__apply-filter"
+                @click="createFilterStep"
+              >
+                Apply Filter
+              </div>
             </div>
           </div>
         </div>
@@ -48,6 +55,7 @@
   </popover>
 </template>
 <script lang="ts">
+import _isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
@@ -102,6 +110,10 @@ export default class ActionMenu extends Vue {
 
   condition: FilterConditionInclusion = { column: this.columnName, value: [], operator: 'nin' };
 
+  get isApplyFilterVisible() {
+    return !_isEqual(this.condition, { column: this.columnName, value: [], operator: 'nin' });
+  }
+
   close() {
     this.$emit('closed');
   }
@@ -140,6 +152,23 @@ export default class ActionMenu extends Vue {
       this.closeStepForm();
     }
     newPipeline.splice(index, 0, uniquegroupsStep);
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
+    this.close();
+  }
+
+  createFilterStep() {
+    const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
+    const filterStep: PipelineStep = { name: 'filter', condition: this.condition };
+    /**
+     * If a step edition form is already open, close it so that the left panel displays
+     * the pipeline with the new delete step inserted
+     */
+    if (this.isEditingStep) {
+      this.closeStepForm();
+    }
+    newPipeline.splice(index, 0, filterStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
     this.close();
@@ -232,5 +261,13 @@ export default class ActionMenu extends Vue {
 .slide-right-enter-active,
 .slide-right-leave-active {
   transition: all 0.3s ease;
+}
+
+.action-menu__apply-filter {
+  font-size: 13px;
+  text-decoration: underline;
+  text-align: center;
+  padding: 7px 0px;
+  cursor: pointer;
 }
 </style>
