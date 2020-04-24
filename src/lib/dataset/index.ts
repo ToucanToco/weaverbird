@@ -18,7 +18,7 @@ export type DataSetColumn = {
    */
   isUniqueValuesLoading?: boolean;
   uniques?: {
-    values: any[];
+    values: ColumnValueStat[];
     loaded: boolean;
   };
 };

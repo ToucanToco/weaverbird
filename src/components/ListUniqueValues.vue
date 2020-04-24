@@ -165,6 +165,7 @@ export default class ListUniqueValues extends Vue {
   margin: 10px 0px;
   width: 100%;
   outline: none;
+  box-sizing: border-box;
 }
 
 .list-unique-values__search-box::placeholder {

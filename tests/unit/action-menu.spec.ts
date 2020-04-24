@@ -69,31 +69,44 @@ describe('Action Menu', () => {
   let mountWrapper: any;
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    mountWrapper = async function(isCurrentlyEditing: boolean = false) {
-      let store;
-      if (isCurrentlyEditing) {
-        store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
-      } else {
-        store = setupMockStore();
-      }
-      const wrapper = shallowMount(ActionMenu, {
+    mountWrapper = async function(isCurrentlyEditing: boolean = false, isMounted: boolean = false) {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          currentStepFormName: isCurrentlyEditing ? 'fillna' : undefined,
+          dataset: {
+            headers: [
+              {
+                name: 'dreamfall',
+                uniques: {
+                  values: [
+                    { value: 'jjg', count: 2 },
+                    { value: 'mika', count: 1 },
+                  ],
+                  loaded: false,
+                },
+              },
+            ],
+            data: [['jjg'], ['jjg'], ['mika']],
+          },
+        }),
+      );
+      const wrapper = (isMounted ? mount : shallowMount)(ActionMenu, {
         store,
         localVue,
-        propsData: { columnName: 'dreamfall' },
+        propsData: { visible: true, columnName: 'dreamfall' },
       });
       return { wrapper, store };
     };
   });
 
-  it('should instantiate with its popover hidden', () => {
-    const wrapper = mount(ActionMenu);
+  it('should instantiate with popover', async () => {
+    const { wrapper } = await mountWrapper(false, true);
     expect(wrapper.exists()).toBeTruthy();
     expect(wrapper.classes()).toContain('popover-container');
   });
 
-  it('should display the first panel', () => {
-    const wrapper = shallowMount(ActionMenu);
-
+  it('should display the first panel', async () => {
+    const { wrapper } = await mountWrapper();
     let el: PanelElement;
     for (el of FIRST_PANEL) {
       expect(wrapper.html()).toContain(el.label);
@@ -101,6 +114,18 @@ describe('Action Menu', () => {
     for (el of SECOND_PANEL) {
       expect(wrapper.html()).not.toContain(el.label);
     }
+
+    expect(wrapper.find('ListUniqueValues-stub').exists()).toBeTruthy();
+    expect(wrapper.find('ListUniqueValues-stub').vm.$props.loaded).toEqual(false);
+    expect(wrapper.find('ListUniqueValues-stub').vm.$props.filter).toEqual({
+      column: 'dreamfall',
+      value: [],
+      operator: 'nin',
+    });
+    expect(wrapper.find('ListUniqueValues-stub').vm.$props.options).toEqual([
+      { value: 'jjg', count: 2 },
+      { value: 'mika', count: 1 },
+    ]);
   });
 
   it('should close on click on any operation', async () => {
@@ -155,21 +180,11 @@ describe('Action Menu', () => {
   });
 
   describe('when clicking on "Other operations"', () => {
-    let mountWrapper: any;
+    let mountWrapperAndClickOnOperation: any;
     beforeEach(() => {
       // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-      mountWrapper = async function(isCurrentlyEditing: boolean = false) {
-        let store;
-        if (isCurrentlyEditing) {
-          store = setupMockStore(buildStateWithOnePipeline([], { currentStepFormName: 'fillna' }));
-        } else {
-          store = setupMockStore();
-        }
-        const wrapper = shallowMount(ActionMenu, {
-          store,
-          localVue,
-          propsData: { columnName: 'dreamfall' },
-        });
+      mountWrapperAndClickOnOperation = async function(isCurrentlyEditing: boolean = false) {
+        const { wrapper, store } = await mountWrapper(isCurrentlyEditing);
         await wrapper
           .findAll('.action-menu__option')
           .at(3)
@@ -180,7 +195,7 @@ describe('Action Menu', () => {
     });
 
     it('should display the second panel', async () => {
-      const { wrapper } = await mountWrapper();
+      const { wrapper } = await mountWrapperAndClickOnOperation();
       let el: PanelElement;
       for (el of FIRST_PANEL) {
         expect(wrapper.html()).not.toContain(el.label);
@@ -191,7 +206,7 @@ describe('Action Menu', () => {
     });
 
     it('should return to the first panel when click on back', async () => {
-      const { wrapper } = await mountWrapper();
+      const { wrapper } = await mountWrapperAndClickOnOperation();
 
       expect(wrapper.find('.action-menu__option--back').exists()).toBeTruthy();
       await wrapper.find('.action-menu__option--back').trigger('click');
@@ -208,7 +223,7 @@ describe('Action Menu', () => {
     it('should close on click on any operation', async () => {
       let el: PanelElement;
       for (el of SECOND_PANEL) {
-        const { wrapper } = await mountWrapper();
+        const { wrapper } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
           .at(el.index)
@@ -221,7 +236,7 @@ describe('Action Menu', () => {
     it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
       let el: PanelElement;
       for (el of SECOND_PANEL) {
-        const { wrapper } = await mountWrapper();
+        const { wrapper } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
           .at(el.index)
@@ -235,7 +250,7 @@ describe('Action Menu', () => {
 
     describe('when click on the operation "get unique operation"', () => {
       it('should add a valid "unique" step in the pipeline', async () => {
-        const { wrapper, store } = await mountWrapper();
+        const { wrapper, store } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
           .at(4) // "Get unique values" operation is at index 4
@@ -247,7 +262,7 @@ describe('Action Menu', () => {
       });
 
       it('should close any open step form to show the "get unique" step in the pipeline', async () => {
-        const { wrapper, store } = await mountWrapper(true);
+        const { wrapper, store } = await mountWrapperAndClickOnOperation(true);
         await wrapper
           .findAll('.action-menu__option')
           .at(4) // "Get unique values" operation is at index 4

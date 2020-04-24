@@ -13,6 +13,15 @@
             >
               Other operations
             </div>
+            <div class="action-menu__option--top-bordered">
+              <ListUniqueValues
+                v-if="currentUnique"
+                :options="currentUnique.values"
+                :filter="condition"
+                :loaded="currentUnique.loaded"
+                @input="condition = $event"
+              />
+            </div>
           </div>
         </div>
       </transition>
@@ -42,7 +51,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
-import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import ListUniqueValues from '@/components/ListUniqueValues.vue';
+import { DataSetColumn } from '@/lib/dataset/index.ts';
+import { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
@@ -57,6 +68,7 @@ enum VisiblePanel {
   name: 'action-menu',
   components: {
     Popover,
+    ListUniqueValues,
   },
 })
 export default class ActionMenu extends Vue {
@@ -76,12 +88,19 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: Pipeline;
+  @VQBModule.Getter columnHeaders!: Pipeline;
+
+  get currentUnique() {
+    return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as DataSetColumn).uniques;
+  }
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
+
+  condition: FilterConditionInclusion = { column: this.columnName, value: [], operator: 'nin' };
 
   close() {
     this.$emit('closed');
@@ -174,24 +193,7 @@ export default class ActionMenu extends Vue {
   }
 }
 .action-menu__option--top-bordered {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 13px;
-  padding: 10px 12px;
-  line-height: 20px;
-  justify-content: space-between;
-  position: relative;
   border-top: 1px solid rgba(0, 0, 0, 0.1);
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-    color: $active-color;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
 }
 
 .action-menu__option--back {
