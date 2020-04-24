@@ -106,17 +106,18 @@ describe('List Unique Value', () => {
 
   describe('"load all values" message', () => {
     it('should instantiate with the "load all values" message', () => {
-      expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeTruthy();
+      expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeFalsy();
     });
 
     it('should emit "loadAllValues" when click on "load all values"', async () => {
+      wrapper = shallowMountWrapper(['France', 'Spain'], 'in', false);
       await wrapper.find('.list-unique-values__load-all-values-button').trigger('click');
       expect(wrapper.emitted().loadAllValues.length).toBe(1);
     });
 
     it('should not instantiate with the "load all values" message', () => {
       wrapper = shallowMountWrapper(['France', 'Spain'], 'in', false);
-      expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeFalsy();
+      expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeTruthy();
     });
   });
 

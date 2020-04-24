@@ -19,7 +19,7 @@
           @input="toggleCheck(option)"
         />
       </div>
-      <div class="list-unique-values__load-all-values" v-if="loaded">
+      <div class="list-unique-values__load-all-values" v-if="!loaded">
         <div>List maybe incomplete</div>
         <div @click="loadAllValues" class="list-unique-values__load-all-values-button">
           Load all values
