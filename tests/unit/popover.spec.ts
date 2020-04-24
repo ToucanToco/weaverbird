@@ -352,7 +352,7 @@ describe('Popover', function() {
     expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
   });
 
-  it('should emit close on click away', async function() {
+  it('should emit "closed" on click away', async function() {
     createWrapper({
       props: { visible: true },
       parentStyle: {
@@ -376,7 +376,7 @@ describe('Popover', function() {
     expect(popoverWrapper.emitted().closed.length).toEqual(1);
   });
 
-  it('should not emit close on click on it', async function() {
+  it('should not emit "closed" on click on it', async function() {
     createWrapper({
       props: { visible: true },
       parentStyle: {
@@ -395,6 +395,30 @@ describe('Popover', function() {
     await wrapper.vm.$nextTick();
 
     await popoverWrapper.trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(popoverWrapper.emitted().closed).toBeUndefined();
+  });
+
+  it('should not emit "closed" when not visible', async function() {
+    createWrapper({
+      props: { visible: false },
+      parentStyle: {
+        height: '40px',
+        left: '200px',
+        position: 'absolute',
+        top: '200px',
+        width: '100px',
+      },
+      slotStyle: {
+        height: '140px',
+        width: '140px',
+      },
+    });
+    const popoverWrapper = wrapper.find({ ref: 'popover' });
+    const anotherelement = wrapper.find('#anotherelement');
+    await wrapper.vm.$nextTick();
+
+    await anotherelement.trigger('click');
     await wrapper.vm.$nextTick();
     expect(popoverWrapper.emitted().closed).toBeUndefined();
   });
