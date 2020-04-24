@@ -8,21 +8,23 @@
     </div>
     <div v-if="isLoadingFunction(filter.column)" class="list-unique-values__loader-spinner" />
     <div v-else>
-      <div
-        class="list-unique-values__checkbox-container"
-        v-for="option in searchedOptions"
-        :key="option.value"
-      >
-        <CheckboxWidget
-          :label="`${option.value} (${option.count})`"
-          :value="isChecked(option)"
-          @input="toggleCheck(option)"
-        />
-      </div>
-      <div class="list-unique-values__load-all-values" v-if="!loaded">
-        <div>List maybe incomplete</div>
-        <div @click="loadAllValues" class="list-unique-values__load-all-values-button">
-          Load all values
+      <div class="list-unique-values__checkbox-container">
+        <div
+          class="list-unique-values__checkbox"
+          v-for="option in searchedOptions"
+          :key="option.value"
+        >
+          <CheckboxWidget
+            :label="`${option.value} (${option.count})`"
+            :value="isChecked(option)"
+            @input="toggleCheck(option)"
+          />
+        </div>
+        <div class="list-unique-values__load-all-values" v-if="!loaded">
+          <div>List maybe incomplete</div>
+          <div @click="loadAllValues" class="list-unique-values__load-all-values-button">
+            Load all values
+          </div>
         </div>
       </div>
     </div>
@@ -152,8 +154,6 @@ export default class ListUniqueValues extends Vue {
 }
 
 .list-unique-values {
-  max-height: 300px;
-  overflow: auto;
   background-color: $light-grey;
   padding: 10px 12px;
   font-size: 13px;
@@ -183,6 +183,11 @@ export default class ListUniqueValues extends Vue {
 }
 
 .list-unique-values__checkbox-container {
+  max-height: 250px;
+  overflow: auto;
+}
+
+.list-unique-values__checkbox {
   min-width: fit-content;
   border-bottom: 2px #ededed solid;
   font-weight: 600;
