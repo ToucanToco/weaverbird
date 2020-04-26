@@ -62,8 +62,12 @@ describe('backendify tests', () => {
     expect(mockOperation).toHaveBeenCalledTimes(1);
     expect(mockOperation).toHaveBeenCalledWith('foo', 'bar', 'baz');
     expect(commitSpy).toHaveBeenCalledTimes(2);
-    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('setLoading'), { isLoading: true });
-    expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('setLoading'), { isLoading: false });
+    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
+      isRequestOnGoing: true,
+    });
+    expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('toggleRequestOnGoing'), {
+      isRequestOnGoing: false,
+    });
   });
 
   it('should return the expected no-response', async () => {
@@ -75,11 +79,15 @@ describe('backendify tests', () => {
     expect(mockOperation).toHaveBeenCalledWith('foo', 'bar', 'baz');
     expect(store.state[VQB_MODULE_NAME].backendErrors).toEqual([{ message: 'foo', type: 'error' }]);
     expect(commitSpy).toHaveBeenCalledTimes(3);
-    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('setLoading'), { isLoading: true });
+    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
+      isRequestOnGoing: true,
+    });
     expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendError'), {
       backendError: { message: 'foo', type: 'error' },
     });
-    expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('setLoading'), { isLoading: false });
+    expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
+      isRequestOnGoing: false,
+    });
   });
 
   it('should catch and log the exception', async () => {
@@ -94,11 +102,15 @@ describe('backendify tests', () => {
       { message: 'Error: oopsie', type: 'error' },
     ]);
     expect(commitSpy).toHaveBeenCalledTimes(3);
-    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('setLoading'), { isLoading: true });
+    expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
+      isRequestOnGoing: true,
+    });
     expect(commitSpy).toHaveBeenNthCalledWith(2, 'vqb/logBackendError', {
       backendError: { message: 'Error: oopsie', type: 'error' },
     });
-    expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('setLoading'), { isLoading: false });
+    expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
+      isRequestOnGoing: false,
+    });
   });
 });
 

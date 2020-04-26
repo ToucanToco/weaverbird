@@ -67,6 +67,11 @@ type ToggleColumnSelectionMutation = {
   payload: { column: string };
 };
 
+type ToggleRequestOnGoing = {
+  type: 'toggleRequestOnGoing';
+  payload: BackendError;
+};
+
 export type StateMutation =
   | BackendErrorMutation
   | DatasetMutation
@@ -78,7 +83,8 @@ export type StateMutation =
   | SelectDomainMutation
   | SelectedStepMutation
   | SetCurrentPage
-  | ToggleColumnSelectionMutation;
+  | ToggleColumnSelectionMutation
+  | ToggleRequestOnGoing;
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
 export type MutationCallbacks = {
@@ -302,6 +308,14 @@ class Mutations {
    */
   setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {
     state.translator = translator;
+  }
+
+  /**
+   * toggle the `isRequestOnGoing` state property
+   * meant to be used by `backendify` plugin function.
+   */
+  toggleRequestOnGoing(state: VQBState, { isRequestOnGoing }: { isRequestOnGoing: boolean }) {
+    state.isRequestOnGoing = isRequestOnGoing;
   }
 }
 

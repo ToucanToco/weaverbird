@@ -54,14 +54,14 @@ export let backendService: BackendServiceInternal; // set at plugin instantiatio
 
 /**
  * `backendify` is a wrapper around backend service functions that:
- *   - sets the `loading: true` property on the store at the beginning,
+ *   - sets the `isRequestOnGoing: true` property on the store at the beginning,
  *   - logs the error in the store if any,
- *   - sets the `loading: false` property on the store at the end.
+ *   - sets the `isRequestOnGoing: false` property on the store at the end.
  */
 export function backendify(target: Function, store: Store<any>) {
   return async function(this: BackendService | void, ...args: any[]) {
     try {
-      store.commit('vqb/setLoading', { isLoading: true });
+      store.commit('vqb/toggleRequestOnGoing', { isRequestOnGoing: true });
       const response = await target.bind(this)(...args);
       if (response.error) {
         store.commit('vqb/logBackendError', {
@@ -76,7 +76,7 @@ export function backendify(target: Function, store: Store<any>) {
       });
       return response;
     } finally {
-      store.commit('vqb/setLoading', { isLoading: false });
+      store.commit('vqb/toggleRequestOnGoing', { isRequestOnGoing: false });
     }
   };
 }

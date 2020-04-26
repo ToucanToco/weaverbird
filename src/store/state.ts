@@ -70,9 +70,14 @@ export interface VQBState {
   backendErrors: BackendError[];
 
   /**
-   * whether the data is loading
+   * whether the data are loading
    */
   isLoading: boolean;
+
+  /**
+   * whether a request to backend service is on ongoing
+   */
+  isRequestOnGoing: boolean;
 
   /**
    * variables scope, if any.
@@ -116,6 +121,7 @@ export function emptyState(): VQBState {
     pagesize: 50,
     backendErrors: [],
     isLoading: false,
+    isRequestOnGoing: false,
     variables: {},
     translator: 'mongo40',
     interpolateFunc: (x: string, _context: ScopeContext) => x,
