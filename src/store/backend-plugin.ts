@@ -53,12 +53,12 @@ interface BackendServiceInternal {
 export let backendService: BackendServiceInternal; // set at plugin instantiation
 
 /**
- * `backendify` is a wrapper around backend service functions that:
+ * `_backendify` is a wrapper around backend service functions that:
  *   - sets the `isRequestOnGoing: true` property on the store at the beginning,
  *   - logs the error in the store if any,
  *   - sets the `isRequestOnGoing: false` property on the store at the end.
  */
-export function backendify(target: Function, store: Store<any>) {
+function _backendify(target: Function, store: Store<any>) {
   return async function(this: BackendService | void, ...args: any[]) {
     try {
       store.commit('vqb/toggleRequestOnGoing', { isRequestOnGoing: true });
@@ -95,11 +95,11 @@ export function servicePluginFactory(service: BackendService) {
      * We want to expose `backendService` to the vqb's actions module.
      * But in the vqb's actions module we will not have access to the hosting store.
      * Then we "wrap" the hosting store inside the backendService.
-     * Also, we `backendify` all methods of backendService.
+     * Also, we `_backendify` all methods of backendService.
      */
     backendService = {
-      listCollections: backendify(() => service.listCollections(store), store).bind(service),
-      executePipeline: backendify(
+      listCollections: _backendify(() => service.listCollections(store), store).bind(service),
+      executePipeline: _backendify(
         (pipeline: Pipeline, limit: number, offset: number) =>
           service.executePipeline(store, pipeline, limit, offset),
         store,
