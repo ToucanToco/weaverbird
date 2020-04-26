@@ -89,3 +89,73 @@ export function addLocalUniquesToDataset(dataset: DataSet) {
   }));
   return { ...dataset, headers: newHeaders };
 }
+
+/**
+ * uniqueStatsDataset is a Dataset with two columns:
+ *   - the inspected column
+ *   - the `__vqb_count__` column
+ *
+ * Example:
+ * uniqueStatsDataset = {
+ *   headers: [{name: 'City'}, {name: '__vqb_count__'}]
+ *   data: [
+ *     ['Paris', 10],
+ *     ['Lyon', 1]
+ *     ['Marseille', 2]
+ *   ]
+ * }
+ * The output will be:
+ * ['City', {
+ *   Paris:  {value: 'Paris', count: 10},
+ *   Lyon:  {value: 'Lyon', count: 1},
+ *   Marseille:  {value: 'Marseille', count: 2},
+ * }]
+ */
+export function _prepareColumnStats(uniqueStatsDataset: DataSet): [string, ColumnValueStat[]] {
+  const columns: string[] = uniqueStatsDataset.headers.map(e => e.name);
+  const indexOfCount: number = columns.indexOf('__vqb_count__');
+  const indexOfColumn: number = 1 - indexOfCount; // Trick to get the index of `${column}` in the `columns` array.
+  // In the example above I get:
+  // columns=['City', '__vqb_count__']; indexOfCount=1; indexOfColumn=0;
+
+  const columnStats: ColumnValueStat[] = uniqueStatsDataset.data.map(
+    (row: any[]): ColumnValueStat => {
+      return {
+        value: row[indexOfColumn],
+        count: row[indexOfCount],
+      };
+    },
+  );
+  return [columns[indexOfColumn], columnStats];
+}
+
+/**
+ * Merge a dataset's local value statistics with actual backend statistics.
+ *
+ * For a given column in the input dataset, if new statistics are found in the
+ * incoming statistics, override the local ones.
+ *
+ * @param {DataSet} dataset the dataset to update
+ * @param {object} uniqueStats a mapping columnname → dataset that
+ * supposedly come from a backend.
+ *
+ * @return the _new_ dataset. The original one is left untouched.
+ */
+export function updateLocalUniquesFromDatabase(dataset: DataSet, uniqueStatsDataset: DataSet) {
+  const [column, columnStats] = _prepareColumnStats(uniqueStatsDataset);
+  const newHeaders = [];
+  for (const hdr of dataset.headers) {
+    if (hdr.name !== column) {
+      newHeaders.push(hdr);
+    } else {
+      newHeaders.push({
+        ...hdr,
+        uniques: {
+          values: columnStats.sort(_statCompare),
+          loaded: true,
+        },
+      });
+    }
+  }
+  return { ...dataset, headers: newHeaders };
+}

@@ -1,5 +1,6 @@
 import { Store } from 'vuex';
 
+import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
 import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
@@ -713,5 +714,106 @@ describe('action tests', () => {
     // call 5 :
     expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
     expect(commitSpy.mock.calls[4][1]).toEqual({ isLoading: false });
+  });
+
+  describe('loadColumnUniqueValues', () => {
+    const dummyDataset: DataSet = {
+      headers: [
+        { name: 'city', uniques: { values: [{ value: 'Lyon', count: 50 }], loaded: false } },
+      ],
+      data: [['Lyon']],
+    };
+    const resultOfAggregationCountOnCity: DataSet = {
+      headers: [{ name: 'city' }, { name: '__vqb_count__' }],
+      data: [
+        ['Paris', 200],
+        ['Lyon', 150],
+        ['Marseille', 100],
+      ],
+    };
+    let instantiateDummyService: Function;
+    beforeEach(() => {
+      instantiateDummyService = (): BackendService => ({
+        listCollections: jest.fn(),
+        executePipeline: jest.fn().mockResolvedValue({ data: resultOfAggregationCountOnCity }),
+      });
+    });
+
+    it('should not call anything if pipeline is empty', async () => {
+      const dummyService = instantiateDummyService();
+      const store = setupMockStore(buildStateWithOnePipeline([], { dataset: dummyDataset }), [
+        servicePluginFactory(dummyService),
+      ]);
+      const commitSpy = jest.spyOn(store, 'commit');
+      await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
+      expect(commitSpy).toHaveBeenCalledTimes(2);
+      // call 1:
+      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setUniqueValuesLoading'));
+      expect(commitSpy.mock.calls[0][1]).toEqual({ isLoading: true, column: 'city' });
+      // call 2:
+      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setUniqueValuesLoading'));
+      expect(commitSpy.mock.calls[1][1]).toEqual({ isLoading: false, column: 'city' });
+      // backend Service is not called:
+      expect(dummyService.executePipeline).toHaveBeenCalledTimes(0);
+    });
+
+    it('should commit a new dataset with headers updated', async () => {
+      const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
+      const dummyService = instantiateDummyService();
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline, { dataset: dummyDataset }), [
+        servicePluginFactory(dummyService),
+      ]);
+      const expectedPipeline: Pipeline = [
+        ...pipeline,
+        {
+          name: 'aggregate',
+          aggregations: [
+            {
+              column: 'city',
+              aggfunction: 'count' as 'count',
+              newcolumn: '__vqb_count__',
+            },
+          ],
+          on: ['city'],
+        },
+      ];
+      const commitSpy = jest.spyOn(store, 'commit');
+      await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
+      expect(dummyService.executePipeline).toHaveBeenCalledWith(store, expectedPipeline, 10000, 0);
+      expect(commitSpy).toHaveBeenCalledTimes(5);
+      // call 1:
+      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setUniqueValuesLoading'));
+      expect(commitSpy.mock.calls[0][1]).toEqual({ isLoading: true, column: 'city' });
+      // call 2:
+      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
+      // call 3:
+      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[2][1]).toEqual({ isRequestOnGoing: false });
+      // call 4:
+      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('setDataset'));
+      expect(commitSpy.mock.calls[3][1]).toEqual({
+        dataset: {
+          headers: [
+            {
+              isUniqueValuesLoading: false,
+              name: 'city',
+              uniques: {
+                values: [
+                  { value: 'Paris', count: 200 },
+                  { value: 'Lyon', count: 150 },
+                  { value: 'Marseille', count: 100 },
+                ],
+                loaded: true,
+              },
+            },
+          ],
+          data: [['Lyon']],
+        },
+      });
+      // call 5:
+      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setUniqueValuesLoading'));
+      expect(commitSpy.mock.calls[4][1]).toEqual({ isLoading: false, column: 'city' });
+    });
   });
 });

@@ -1,5 +1,9 @@
 import { DataSet } from '@/lib/dataset';
-import { addLocalUniquesToDataset, iterateRecords } from '@/lib/dataset/helpers';
+import {
+  addLocalUniquesToDataset,
+  iterateRecords,
+  updateLocalUniquesFromDatabase,
+} from '@/lib/dataset/helpers';
 import {
   _guessType,
   inferTypeFromDataset,
@@ -459,6 +463,205 @@ describe('dataset local uniques computation', () => {
         ['Marseille', 40, false, { population: 4 }],
         ['Berlin', 41.5, true, { population: 3 }],
         ['Paris', 2, true, { population: 9 }],
+      ],
+    });
+  });
+});
+
+describe('dataset update local Uniques', () => {
+  it('should update header of dataset', () => {
+    const datasetToUpdate = {
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Paris', count: 2 },
+              { value: 'Marseille', count: 1 },
+              { value: 'Berlin', count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'density',
+          uniques: {
+            values: [
+              { value: 2, count: 1 },
+              { value: 40, count: 1 },
+              { value: 61.7, count: 1 },
+              { value: 41.5, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'isCapitalCity',
+          uniques: {
+            values: [
+              { value: true, count: 3 },
+              { value: false, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+      ],
+      data: [
+        ['Paris', 61.7, true],
+        ['Marseille', 40, false],
+        ['Berlin', 41.5, true],
+        ['Paris', 2, true],
+      ],
+    };
+    expect(
+      updateLocalUniquesFromDatabase(datasetToUpdate, {
+        headers: [{ name: 'city' }, { name: '__vqb_count__' }],
+        data: [
+          ['Paris', 4],
+          ['Marseille', 5],
+          ['Berlin', 10],
+          ['Washington', 2],
+        ],
+      }),
+    ).toEqual({
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Berlin', count: 10 },
+              { value: 'Marseille', count: 5 },
+              { value: 'Paris', count: 4 },
+              { value: 'Washington', count: 2 },
+            ],
+            loaded: true,
+          },
+        },
+        {
+          name: 'density',
+          uniques: {
+            values: [
+              { value: 2, count: 1 },
+              { value: 40, count: 1 },
+              { value: 61.7, count: 1 },
+              { value: 41.5, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'isCapitalCity',
+          uniques: {
+            values: [
+              { value: true, count: 3 },
+              { value: false, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+      ],
+      data: [
+        ['Paris', 61.7, true],
+        ['Marseille', 40, false],
+        ['Berlin', 41.5, true],
+        ['Paris', 2, true],
+      ],
+    });
+  });
+
+  it('should update dataset', () => {
+    const datasetToUpdate = {
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Paris', count: 2 },
+              { value: 'Marseille', count: 1 },
+              { value: 'Berlin', count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'density',
+          uniques: {
+            values: [
+              { value: 2, count: 1 },
+              { value: 40, count: 1 },
+              { value: 61.7, count: 1 },
+              { value: 41.5, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'isCapitalCity',
+          uniques: {
+            values: [
+              { value: true, count: 3 },
+              { value: false, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+      ],
+      data: [
+        ['Paris', 61.7, true],
+        ['Marseille', 40, false],
+        ['Berlin', 41.5, true],
+        ['Paris', 2, true],
+      ],
+    };
+    expect(
+      updateLocalUniquesFromDatabase(datasetToUpdate, {
+        headers: [{ name: 'isCapitalCity' }, { name: '__vqb_count__' }],
+        data: [
+          [true, 16],
+          [false, 5],
+        ],
+      }),
+    ).toEqual({
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Paris', count: 2 },
+              { value: 'Marseille', count: 1 },
+              { value: 'Berlin', count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'density',
+          uniques: {
+            values: [
+              { value: 2, count: 1 },
+              { value: 40, count: 1 },
+              { value: 61.7, count: 1 },
+              { value: 41.5, count: 1 },
+            ],
+            loaded: false,
+          },
+        },
+        {
+          name: 'isCapitalCity',
+          uniques: {
+            values: [
+              { value: true, count: 16 },
+              { value: false, count: 5 },
+            ],
+            loaded: true,
+          },
+        },
+      ],
+      data: [
+        ['Paris', 61.7, true],
+        ['Marseille', 40, false],
+        ['Berlin', 41.5, true],
+        ['Paris', 2, true],
       ],
     });
   });
