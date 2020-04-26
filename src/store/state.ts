@@ -217,9 +217,9 @@ export function dereferencePipelines(
  *   - dereferencePipelines
  *   - interpolate if an `interpolateFunc` has been set
  */
-export function preparePipeline(pipeline: any, state: VQBState) {
+export function preparePipeline(pipeline: Pipeline, state: VQBState) {
   if (!pipeline || !(pipeline.length > 0)) {
-    return;
+    throw new Error('pipeline should not be empty');
   }
   const { interpolateFunc, variables, pipelines } = state;
   if (pipelines && Object.keys(pipelines).length) {
