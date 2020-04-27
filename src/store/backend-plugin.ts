@@ -11,27 +11,17 @@ import { Store } from 'vuex';
 
 import { BackendResponse } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
-import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
-import { PipelineInterpolator } from '@/lib/templating';
-import { VQB_MODULE_NAME, VQBnamespace } from '@/store';
-import { activePipeline } from '@/store/state';
-
-import { StateMutation } from './mutations';
-
-type PipelinesScopeContext = {
-  [pipelineName: string]: Pipeline;
-};
 
 export interface BackendService {
   /**
-   * @param store the Vuex store hosted by the application
+   * @param store the Vuex store hosting the application
    *
    * @return a promise that holds the list of available collections
    */
   listCollections(store: Store<any>): BackendResponse<string[]>;
   /**
-   * @param store the Vuex store hosted by the application
+   * @param store the Vuex store hosting the application
    * @param pipeline the pipeline to translate and execute on the backend
    * @param limit if specified, a limit to be applied on the results. How is limit
    * is applied is up to the concrete implementor (either in the toolchain, the query
@@ -50,63 +40,17 @@ export interface BackendService {
 }
 
 /**
- * Dereference pipelines names in the current pipeline being edited, i.e.
- * replaces references to pipelines (by their names) to their corresponding
- * pipelines
- *
- * @param pipeline the pipeline to translate and execute on the backend
- * @param pipelines the pipelines stored in the Vuex store of the app, as an
- * object with the pipeline name as key and the correspondinng pipeline as value
- *
- * @return the dereferenced pipeline
+ * `BackendServiceInternal` is a copy of `BackendService` but without the `store` param.
+ * We will use the service in actions of "vqb" vuex module.
+ * Consequently we won't be able to pass to the service the hosting store.
+ * We are then force to build an "internal version" of this service with the hosting store wrapped inside.
  */
-export function dereferencePipelines(
-  pipeline: Pipeline,
-  pipelines: PipelinesScopeContext,
-): Pipeline {
-  const dereferencedPipeline: Pipeline = [];
-  for (const step of pipeline) {
-    let newStep;
-    if (step.name === 'append') {
-      const pipelineNames = step.pipelines as string[];
-      newStep = {
-        ...step,
-        pipelines: pipelineNames.map(p => dereferencePipelines(pipelines[p], pipelines)),
-      };
-    } else if (step.name === 'join') {
-      const rightPipelineName = step.right_pipeline as string;
-      newStep = {
-        ...step,
-        right_pipeline: dereferencePipelines(pipelines[rightPipelineName], pipelines),
-      };
-    } else {
-      newStep = { ...step };
-    }
-    dereferencedPipeline.push(newStep);
-  }
-  return dereferencedPipeline;
+interface BackendServiceInternal {
+  listCollections(): BackendResponse<string[]>;
+  executePipeline(pipeline: Pipeline, limit: number, offset: number): BackendResponse<DataSet>;
 }
 
-export let backendService: BackendService; // set at plugin instantiation
-
-/**
- * `_preparePipeline` responsibility is to prepare the pipeline so as to be ready for direct translation.
- * Specifically, this consists in 2 things:
- *   - dereferencePipelines
- *   - interpolate if an `interpolateFunc` has been set
- */
-function _preparePipeline(pipeline: Pipeline, store: Store<any>) {
-  const { interpolateFunc, variables, pipelines } = store.state[VQB_MODULE_NAME];
-  if (pipelines && Object.keys(pipelines).length) {
-    pipeline = dereferencePipelines(pipeline, pipelines);
-  }
-  if (interpolateFunc && variables && Object.keys(variables).length) {
-    const columnTypes = store.getters[VQBnamespace('columnTypes')];
-    const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
-    pipeline = interpolator.interpolate(pipeline);
-  }
-  return pipeline;
-}
+export let backendService: BackendServiceInternal; // set at plugin instantiation
 
 /**
  * `backendify` is a wrapper around backend service functions that:
@@ -114,40 +58,27 @@ function _preparePipeline(pipeline: Pipeline, store: Store<any>) {
  *   - logs the error in the store if any,
  *   - sets the `loading: false` property on the store at the end.
  */
-export function backendify(target: Function) {
-  return async function(this: BackendService | void, store: Store<any>, ...args: any[]) {
+export function backendify(target: Function, store: Store<any>) {
+  return async function(this: BackendService | void, ...args: any[]) {
     try {
-      store.commit(VQBnamespace('setLoading'), { isLoading: true });
-      const response = await target.bind(this)(store, ...args);
+      store.commit('vqb/setLoading', { isLoading: true });
+      const response = await target.bind(this)(...args);
       if (response.error) {
-        store.commit(VQBnamespace('logBackendError'), {
+        store.commit('vqb/logBackendError', {
           backendError: response.error,
         });
       }
       return response;
     } catch (error) {
       const response = { error: { type: 'error', message: error.toString() } };
-      store.commit(VQBnamespace('logBackendError'), {
+      store.commit('vqb/logBackendError', {
         backendError: response.error,
       });
       return response;
     } finally {
-      store.commit(VQBnamespace('setLoading'), { isLoading: false });
+      store.commit('vqb/setLoading', { isLoading: false });
     }
   };
-}
-
-async function _updateDataset(store: Store<any>, service: BackendService, pipeline: Pipeline) {
-  pipeline = _preparePipeline(pipeline, store);
-  const response = await backendify(service.executePipeline).bind(service)(
-    store,
-    pipeline,
-    store.state[VQB_MODULE_NAME].pagesize,
-    pageOffset(store.state[VQB_MODULE_NAME].pagesize, store.getters[VQBnamespace('pageno')]),
-  );
-  if (!response.error) {
-    store.commit(VQBnamespace('setDataset'), { dataset: response.data });
-  }
 }
 
 /**
@@ -159,17 +90,34 @@ async function _updateDataset(store: Store<any>, service: BackendService, pipeli
  */
 export function servicePluginFactory(service: BackendService) {
   return (store: Store<any>) => {
-    store.subscribe(async (mutation: StateMutation, state: any) => {
+    /**
+     * `store`  is the hosting store.
+     * We want to expose `backendService` to the vqb's actions module.
+     * But in the vqb's actions module we will not have access to the hosting store.
+     * Then we "wrap" the hosting store inside the backendService.
+     * Also, we `backendify` all methods of backendService.
+     */
+    backendService = {
+      listCollections: backendify(() => service.listCollections(store), store).bind(service),
+      executePipeline: backendify(
+        (pipeline: Pipeline, limit: number, offset: number) =>
+          service.executePipeline(store, pipeline, limit, offset),
+        store,
+      ).bind(service),
+    };
+
+    // TODO: replace this `store.subscribe` by a watcher on the appropriate state's properties
+    // FIXME: we hard-code `vqb/` namespace, instead of importing `VQBNamespace` from './index'.
+    // Importing `VQBNamespace` from './index' create a circular dependency.
+    // This could be fixed by importing `VQBNamespace` from an utils, but I think the TODO above might fix directly this issue.
+    store.subscribe(async (mutation: any) => {
       if (
-        mutation.type === VQBnamespace('selectStep') ||
-        mutation.type === VQBnamespace('setCurrentDomain') ||
-        mutation.type === VQBnamespace('deleteStep') ||
-        mutation.type === VQBnamespace('setCurrentPage')
+        mutation.type === 'vqb/selectStep' ||
+        mutation.type === 'vqb/setCurrentDomain' ||
+        mutation.type === 'vqb/deleteStep' ||
+        mutation.type === 'vqb/setCurrentPage'
       ) {
-        const pipeline = activePipeline(state[VQB_MODULE_NAME]);
-        if (pipeline && pipeline.length > 0) {
-          _updateDataset(store, service, pipeline);
-        }
+        store.dispatch('vqb/updateDataset');
       }
     });
   };
