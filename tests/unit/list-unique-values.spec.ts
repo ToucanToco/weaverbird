@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
+import { VQBnamespace } from '@/store/';
 
 import { setupMockStore } from './utils';
 
@@ -113,10 +114,14 @@ describe('List Unique Value', () => {
       expect(wrapper.find('.list-unique-values__load-all-values').exists()).toBeFalsy();
     });
 
-    it('should emit "loadAllValues" when click on "load all values"', async () => {
+    it('should dispatch when click on "load all values"', async () => {
       wrapper = shallowMountWrapper(['France', 'Spain'], 'in', false);
+      const dispatchSpy = jest.spyOn(wrapper.vm.$store, 'dispatch');
       await wrapper.find('.list-unique-values__load-all-values-button').trigger('click');
-      expect(wrapper.emitted().loadAllValues.length).toBe(1);
+      expect(dispatchSpy).toHaveBeenCalledTimes(1);
+      expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('loadColumnUniqueValues'), {
+        column: 'col1',
+      });
     });
 
     it('should not instantiate with the "load all values" message', () => {
