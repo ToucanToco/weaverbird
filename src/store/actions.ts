@@ -13,23 +13,15 @@ import { preparePipeline, VQBState } from './state';
  * - a "global" loading state which means that the whole dataset is currently loading
  * - a "column" loading state which means that unique values of this column are currently loading
  */
-function loading(column = false) {
+function loading(type: 'dataset' | 'uniqueValues') {
   return function loading(_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
     const originalMethod = descriptor.value;
 
-    if (!column) {
-      descriptor.value = async function(context: ActionContext<VQBState, any>, ...args: any[]) {
-        context.commit('setLoading', { isLoading: true });
-        await originalMethod(context, ...args);
-        context.commit('setLoading', { isLoading: false });
-      };
-    } else {
-      descriptor.value = async function(context: ActionContext<VQBState, any>, ...args: any[]) {
-        context.commit('setUniqueValuesLoading', { isLoading: true, column: args[0].column });
-        await originalMethod(context, ...args);
-        context.commit('setUniqueValuesLoading', { isLoading: false, column: args[0].column });
-      };
-    }
+    descriptor.value = async function(context: ActionContext<VQBState, any>, ...args: any[]) {
+      context.commit('setLoading', { type, isLoading: true });
+      await originalMethod(context, ...args);
+      context.commit('setLoading', { type, isLoading: false });
+    };
 
     return descriptor;
   };
@@ -47,7 +39,7 @@ class Actions {
     context.commit('selectStep', { index: -1 });
   }
 
-  @loading()
+  @loading('dataset')
   async updateDataset(context: ActionContext<VQBState, any>) {
     const response = await backendService.executePipeline(
       preparePipeline(context.getters.activePipeline, context.state),
@@ -66,7 +58,7 @@ class Actions {
    * The current pipeline is completed with a "count aggregation" on the requested column.
    * The result is loaded in store.
    */
-  @loading(true)
+  @loading('uniqueValues')
   async loadColumnUniqueValues(
     context: ActionContext<VQBState, any>,
     { column }: { column: string },

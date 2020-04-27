@@ -32,8 +32,12 @@ describe('List Unique Value', () => {
     return shallowMount(ListUniqueValues, {
       store: setupMockStore({
         dataset: {
-          headers: [{ name: 'col1', isUniqueValuesLoading }],
+          headers: [{ name: 'col1' }],
           data: [],
+        },
+        isLoading: {
+          dataset: false,
+          uniqueValues: isUniqueValuesLoading,
         },
       }),
       localVue,

@@ -6,7 +6,6 @@ import Vue from 'vue';
 import { MutationTree } from 'vuex';
 
 import { BackendError } from '@/lib/backend-response';
-import { DataSetColumn } from '@/lib/dataset/index.ts';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
 
 import { currentPipeline, VQBState } from './state';
@@ -287,20 +286,11 @@ class Mutations {
   /**
    * toggle loading
    */
-  setLoading(state: VQBState, { isLoading }: { isLoading: boolean }) {
-    state.isLoading = isLoading;
-  }
-
-  /**
-   * Set unique values loading
-   */
-  setUniqueValuesLoading(
+  setLoading(
     state: VQBState,
-    { isLoading, column }: { isLoading: boolean; column: string },
+    { type, isLoading }: { type: 'dataset' | 'uniqueValues'; isLoading: boolean },
   ) {
-    (state.dataset.headers.find(
-      hdr => hdr.name === column,
-    ) as DataSetColumn).isUniqueValuesLoading = isLoading;
+    state.isLoading[type] = isLoading;
   }
 
   /**
