@@ -6,28 +6,26 @@
       <span class="list-unique-values__select-all" @click="selectAll">Select all</span> &nbsp;
       <span class="list-unique-values__clear-all" @click="clearAll">Clear all</span>
     </div>
-    <div v-if="isLoading.uniqueValues" class="list-unique-values__loader-spinner" />
-    <div v-else>
-      <div class="list-unique-values__checkbox-container">
+    <div class="list-unique-values__checkbox-container">
+      <div
+        class="list-unique-values__checkbox"
+        v-for="option in searchedOptions"
+        :key="option.value"
+      >
+        <CheckboxWidget
+          :label="`${option.value} (${option.count})`"
+          :value="isChecked(option)"
+          @input="toggleCheck(option)"
+        />
+      </div>
+      <div v-if="isLoading.uniqueValues" class="list-unique-values__loader-spinner" />
+      <div v-if="!loaded && !isLoading.uniqueValues" class="list-unique-values__load-all-values">
+        <div>List maybe incomplete</div>
         <div
-          class="list-unique-values__checkbox"
-          v-for="option in searchedOptions"
-          :key="option.value"
+          @click="loadColumnUniqueValues({ column: filter.column })"
+          class="list-unique-values__load-all-values-button"
         >
-          <CheckboxWidget
-            :label="`${option.value} (${option.count})`"
-            :value="isChecked(option)"
-            @input="toggleCheck(option)"
-          />
-        </div>
-        <div class="list-unique-values__load-all-values" v-if="!loaded">
-          <div>List maybe incomplete</div>
-          <div
-            @click="loadColumnUniqueValues({ column: filter.column })"
-            class="list-unique-values__load-all-values-button"
-          >
-            Load all values
-          </div>
+          Load all values
         </div>
       </div>
     </div>
@@ -222,10 +220,10 @@ export default class ListUniqueValues extends Vue {
   border-radius: 50%;
   border: 4px solid #efefef;
   border-top-color: $active-color;
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   animation: spin 1500ms ease-in-out infinite;
-  margin: 30px auto;
+  margin: 20px auto;
 }
 
 @keyframes spin {
