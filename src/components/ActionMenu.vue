@@ -4,8 +4,8 @@
       <transition name="slide-left" mode="out-in">
         <div v-if="visiblePanel == 1">
           <div class="action-menu__panel">
-            <div class="action-menu__option" @click="createStep('rename')">Rename column</div>
-            <div class="action-menu__option" @click="createStep('duplicate')">Duplicate column</div>
+            <div class="action-menu__option" @click="openStep('rename')">Rename column</div>
+            <div class="action-menu__option" @click="openStep('duplicate')">Duplicate column</div>
             <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
             <div
               class="action-menu__option action-menu__option--top-bordered"
@@ -40,13 +40,13 @@
             </div>
             <div
               class="action-menu__option action-menu__option--top-bordered"
-              @click="createStep('filter')"
+              @click="openStep('filter')"
             >
               Filter values
             </div>
-            <div class="action-menu__option" @click="createStep('fillna')">Fill null values</div>
-            <div class="action-menu__option" @click="createStep('replace')">Replace values</div>
-            <div class="action-menu__option" @click="createStep('sort')">Sort values</div>
+            <div class="action-menu__option" @click="openStep('fillna')">Fill null values</div>
+            <div class="action-menu__option" @click="openStep('replace')">Replace values</div>
+            <div class="action-menu__option" @click="openStep('sort')">Sort values</div>
             <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
           </div>
         </div>
@@ -118,32 +118,14 @@ export default class ActionMenu extends Vue {
     this.$emit('closed');
   }
 
-  createDeleteColumnStep() {
-    const newPipeline: Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
-    const deletecolumnStep: PipelineStep = { name: 'delete', columns: [this.columnName] };
-    /**
-     * If a step edition form is already open, close it so that the left panel displays
-     * the pipeline with the new delete step inserted
-     */
-    if (this.isEditingStep) {
-      this.closeStepForm();
-    }
-    newPipeline.splice(index, 0, deletecolumnStep);
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-    this.close();
-  }
-
-  createStep(stepName: PipelineStepName) {
+  openStep(stepName: PipelineStepName) {
     this.$emit('actionClicked', stepName);
     this.close();
   }
 
-  createUniqueGroupsStep() {
+  createStep(newStepForm: PipelineStep) {
     const newPipeline: Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
-    const uniquegroupsStep: PipelineStep = { name: 'uniquegroups', on: [this.columnName] };
     /**
      * If a step edition form is already open, close it so that the left panel displays
      * the pipeline with the new delete step inserted
@@ -151,27 +133,22 @@ export default class ActionMenu extends Vue {
     if (this.isEditingStep) {
       this.closeStepForm();
     }
-    newPipeline.splice(index, 0, uniquegroupsStep);
+    newPipeline.splice(index, 0, newStepForm);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
     this.close();
   }
 
+  createDeleteColumnStep() {
+    this.createStep({ name: 'delete', columns: [this.columnName] });
+  }
+
+  createUniqueGroupsStep() {
+    this.createStep({ name: 'uniquegroups', on: [this.columnName] });
+  }
+
   createFilterStep() {
-    const newPipeline: Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
-    const filterStep: PipelineStep = { name: 'filter', condition: this.condition };
-    /**
-     * If a step edition form is already open, close it so that the left panel displays
-     * the pipeline with the new delete step inserted
-     */
-    if (this.isEditingStep) {
-      this.closeStepForm();
-    }
-    newPipeline.splice(index, 0, filterStep);
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-    this.close();
+    this.createStep({ name: 'filter', condition: this.condition });
   }
 }
 </script>
