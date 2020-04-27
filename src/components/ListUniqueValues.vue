@@ -22,7 +22,10 @@
         </div>
         <div class="list-unique-values__load-all-values" v-if="!loaded">
           <div>List maybe incomplete</div>
-          <div @click="loadAllValues" class="list-unique-values__load-all-values-button">
+          <div
+            @click="loadColumnUniqueValues({ column: filter.column })"
+            class="list-unique-values__load-all-values-button"
+          >
             Load all values
           </div>
         </div>
@@ -73,6 +76,7 @@ export default class ListUniqueValues extends Vue {
   loaded!: boolean;
 
   @VQBModule.State isLoading!: boolean;
+  @VQBModule.Action loadColumnUniqueValues!: (payload: { column: string }) => void;
 
   search = '';
 
