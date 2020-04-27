@@ -70,9 +70,14 @@ export interface VQBState {
   backendErrors: BackendError[];
 
   /**
-   * whether the data are loading
+   * An object containing all loading state
+   * `dataset` if the whole dataset is loading
+   * `uniqueValues` unique values of a column are loading
    */
-  isLoading: boolean;
+  isLoading: {
+    dataset: boolean;
+    uniqueValues: boolean;
+  };
 
   /**
    * whether a request to backend service is on ongoing
@@ -120,7 +125,7 @@ export function emptyState(): VQBState {
     selectedColumns: [],
     pagesize: 50,
     backendErrors: [],
-    isLoading: false,
+    isLoading: { dataset: false, uniqueValues: false },
     isRequestOnGoing: false,
     variables: {},
     translator: 'mongo40',

@@ -6,7 +6,7 @@
       <span class="list-unique-values__select-all" @click="selectAll">Select all</span> &nbsp;
       <span class="list-unique-values__clear-all" @click="clearAll">Clear all</span>
     </div>
-    <div v-if="isLoadingFunction(filter.column)" class="list-unique-values__loader-spinner" />
+    <div v-if="isLoading.uniqueValues" class="list-unique-values__loader-spinner" />
     <div v-else>
       <div class="list-unique-values__checkbox-container">
         <div
@@ -72,7 +72,7 @@ export default class ListUniqueValues extends Vue {
   })
   loaded!: boolean;
 
-  @VQBModule.Getter('isUniqueValuesLoading') isLoadingFunction!: (column: string) => boolean;
+  @VQBModule.State isLoading!: boolean;
 
   search = '';
 

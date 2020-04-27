@@ -31,7 +31,7 @@ describe('Data Viewer', () => {
     const wrapper = shallowMount(DataViewer, {
       store: setupMockStore(
         buildStateWithOnePipeline([], {
-          isLoading: true,
+          isLoading: { dataset: true, uniqueValues: false },
         }),
       ),
       localVue,
