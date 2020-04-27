@@ -1,9 +1,13 @@
+import { Store } from 'vuex';
+
 import { Pipeline } from '@/lib/steps';
+import { VQBnamespace } from '@/store';
+import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
 import { currentPipeline, emptyState } from '@/store/state';
 
-import { buildState, buildStateWithOnePipeline } from './utils';
+import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
 
 describe('getter tests', () => {
   describe('(in)active pipeline steps', () => {
@@ -575,5 +579,99 @@ describe('mutation tests', () => {
       column: 'col2',
     });
     expect(state.dataset.headers[1].isUniqueValuesLoading).toEqual(true);
+  });
+});
+
+describe('action tests', () => {
+  it('selectPipeline', () => {
+    const store = setupMockStore();
+    const commitSpy = jest.spyOn(store, 'commit');
+    store.dispatch(VQBnamespace('selectPipeline'), { name: 'chapopointu' });
+    expect(commitSpy).toHaveBeenCalledTimes(2);
+    // call 1 :
+    expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setCurrentPipelineName'));
+    expect(commitSpy.mock.calls[0][1]).toEqual({ name: 'chapopointu' });
+    // call 2 :
+    expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('selectStep'));
+    expect(commitSpy.mock.calls[1][1]).toEqual({ index: -1 });
+  });
+
+  it('updateDataset without error', async () => {
+    const dummyDataset = {
+      headers: [{ name: 'x' }, { name: 'y' }],
+      data: [
+        [1, 2],
+        [3, 4],
+      ],
+    };
+    class DummyService implements BackendService {
+      listCollections(_store: Store<any>) {
+        return Promise.resolve({ data: ['foo', 'bar'] });
+      }
+
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+      executePipeline(_store: Store<any>, _pipeline: Pipeline, _limit: number, _offset: number) {
+        return Promise.resolve({ data: dummyDataset });
+      }
+    }
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
+      servicePluginFactory(new DummyService()),
+    ]);
+    const commitSpy = jest.spyOn(store, 'commit');
+
+    await store.dispatch(VQBnamespace('updateDataset'));
+    expect(commitSpy).toHaveBeenCalledTimes(3);
+    // call 1 :
+    expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
+    expect(commitSpy.mock.calls[0][1]).toEqual({ isLoading: true });
+    // call 2 :
+    expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setLoading'));
+    expect(commitSpy.mock.calls[1][1]).toEqual({ isLoading: false });
+    // call 3 :
+    expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('setDataset'));
+    expect(commitSpy.mock.calls[2][1]).toEqual({ dataset: dummyDataset });
+  });
+
+  it('updateDataset with error from service', async () => {
+    class DummyService implements BackendService {
+      listCollections(_store: Store<any>) {
+        return Promise.resolve({ data: ['foo', 'bar'] });
+      }
+
+      // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
+      executePipeline(_store: Store<any>, _pipeline: Pipeline, _limit: number, _offset: number) {
+        return Promise.resolve({
+          error: { type: 'error' as 'error', message: 'OMG an error happens' },
+        });
+      }
+    }
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
+      servicePluginFactory(new DummyService()),
+    ]);
+    const commitSpy = jest.spyOn(store, 'commit');
+
+    await store.dispatch(VQBnamespace('updateDataset'));
+    // expect(commitSpy).toHaveBeenCalledTimes(3);
+    // call 1 :
+    expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
+    expect(commitSpy.mock.calls[0][1]).toEqual({ isLoading: true });
+    // call 2 :
+    expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('logBackendError'));
+    expect(commitSpy.mock.calls[1][1]).toEqual({
+      backendError: { type: 'error', message: 'OMG an error happens' },
+    });
+    // call 3 :
+    // expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('setLoading'));
+    // expect(commitSpy.mock.calls[2][1]).toEqual({ isLoading: false });
   });
 });

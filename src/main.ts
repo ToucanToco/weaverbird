@@ -5,7 +5,8 @@ export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo
 export { setCodeEditor } from './components/code-editor';
 
 // export store entrypoints
-export { servicePluginFactory, dereferencePipelines } from '@/store/backend-plugin';
+export { servicePluginFactory } from '@/store/backend-plugin';
+export { dereferencePipelines } from '@/store/state';
 export {
   setupStore,
   registerModule,

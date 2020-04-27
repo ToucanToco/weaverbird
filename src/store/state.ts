@@ -1,10 +1,12 @@
 /**
  * define what the application state looks like.
  */
+import _fromPairs from 'lodash/fromPairs';
+
 import { BackendError } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
-import { InterpolateFunction, ScopeContext } from '@/lib/templating';
+import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
 
 export interface VQBState {
   /**
@@ -160,4 +162,67 @@ export function activePipeline(state: VQBState) {
 export function inactivePipeline(state: VQBState) {
   const pipeline = currentPipeline(state);
   return pipeline?.slice(firstNonSelectedIndex(pipeline, state.selectedStepIndex));
+}
+
+type PipelinesScopeContext = {
+  [pipelineName: string]: Pipeline;
+};
+/**
+ * Dereference pipelines names in the current pipeline being edited, i.e.
+ * replaces references to pipelines (by their names) to their corresponding
+ * pipelines
+ *
+ * @param pipeline the pipeline to translate and execute on the backend
+ * @param pipelines the pipelines stored in the Vuex store of the app, as an
+ * object with the pipeline name as key and the correspondinng pipeline as value
+ *
+ * @return the dereferenced pipeline
+ */
+export function dereferencePipelines(
+  pipeline: Pipeline,
+  pipelines: PipelinesScopeContext,
+): Pipeline {
+  const dereferencedPipeline: Pipeline = [];
+  for (const step of pipeline) {
+    let newStep;
+    if (step.name === 'append') {
+      const pipelineNames = step.pipelines as string[];
+      newStep = {
+        ...step,
+        pipelines: pipelineNames.map(p => dereferencePipelines(pipelines[p], pipelines)),
+      };
+    } else if (step.name === 'join') {
+      const rightPipelineName = step.right_pipeline as string;
+      newStep = {
+        ...step,
+        right_pipeline: dereferencePipelines(pipelines[rightPipelineName], pipelines),
+      };
+    } else {
+      newStep = { ...step };
+    }
+    dereferencedPipeline.push(newStep);
+  }
+  return dereferencedPipeline;
+}
+
+/**
+ * `preparePipeline` responsibility is to prepare the pipeline so as to be ready for direct translation.
+ * Specifically, this consists in 2 things:
+ *   - dereferencePipelines
+ *   - interpolate if an `interpolateFunc` has been set
+ */
+export function preparePipeline(pipeline: any, state: VQBState) {
+  if (!pipeline || !(pipeline.length > 0)) {
+    return;
+  }
+  const { interpolateFunc, variables, pipelines } = state;
+  if (pipelines && Object.keys(pipelines).length) {
+    pipeline = dereferencePipelines(pipeline, pipelines);
+  }
+  if (interpolateFunc && variables && Object.keys(variables).length) {
+    const columnTypes = _fromPairs(state.dataset.headers.map(col => [col.name, col.type]));
+    const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
+    pipeline = interpolator.interpolate(pipeline);
+  }
+  return pipeline;
 }
