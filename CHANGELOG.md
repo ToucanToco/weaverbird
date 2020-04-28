@@ -4,12 +4,13 @@
 
 ### Changed
 
-- Add a `isUniqueValuesLoading` key to columns in the vuex state. This will allow us to display a spinner when loading column's unique  values.
+- `isLoading` state properties has now two keys: `dataset` and `uniqueValues` to identify what is loading.
 
 ### Added
 
 - New component `ListUniqueValues` which will be used to display column's unique values.
 - When the dataset is updated, compute unique values for each columns using available rows and insert them in dataset's header
+- New section in action menu to display unique values of column and allow user to filter them. The action menu is also split into two panels
 
 ### Fixed
 
