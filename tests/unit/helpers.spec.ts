@@ -1,4 +1,4 @@
-import { $$, castFromString, generateNewColumnName } from '@/lib/helpers';
+import { $$, castFromString, enumerate, generateNewColumnName } from '@/lib/helpers';
 
 describe('castFromString', () => {
   it('should cast numeric string to number type', () => {
@@ -53,6 +53,56 @@ describe('castFromString', () => {
   describe('$$: mongo column name', () => {
     it('should return a formatted mongo column name', () => {
       expect($$('test')).toEqual('$test');
+    });
+  });
+
+  describe('enumerate', () => {
+    it('should handle empty arrays', () => {
+      const got = Array.from(enumerate([]));
+      expect(got).toEqual([]);
+    });
+
+    it('should emit index / value pairs on arrays', () => {
+      const got = Array.from(enumerate(['foo', 'bar', 'baz']));
+      expect(got).toEqual([
+        [0, 'foo'],
+        [1, 'bar'],
+        [2, 'baz'],
+      ]);
+    });
+
+    it('should emit index / value pairs on arrays, starting at 1', () => {
+      const got = Array.from(enumerate(['foo', 'bar', 'baz'], 3));
+      expect(got).toEqual([
+        [3, 'foo'],
+        [4, 'bar'],
+        [5, 'baz'],
+      ]);
+    });
+
+    it('should emit index / value pairs on strings', () => {
+      const got = Array.from(enumerate('hello'));
+      expect(got).toEqual([
+        [0, 'h'],
+        [1, 'e'],
+        [2, 'l'],
+        [3, 'l'],
+        [4, 'o'],
+      ]);
+    });
+
+    it('should emit index / value pairs on generators', () => {
+      function* f() {
+        yield 'foo';
+        yield 'bar';
+        yield 'baz';
+      }
+      const got = Array.from(enumerate(f()));
+      expect(got).toEqual([
+        [0, 'foo'],
+        [1, 'bar'],
+        [2, 'baz'],
+      ]);
     });
   });
 });

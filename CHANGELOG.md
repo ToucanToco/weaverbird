@@ -9,6 +9,7 @@
 ### Added
 
 - New component `ListUniqueValues` which will be used to display column's unique values.
+- When the dataset is updated, compute unique values for each columns using available rows and insert them in dataset's header
 
 ### Fixed
 

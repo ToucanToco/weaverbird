@@ -128,7 +128,28 @@ describe('backend service plugin tests', () => {
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
-      headers: [{ name: 'x' }, { name: 'y' }],
+      headers: [
+        {
+          name: 'x',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 1, count: 1 },
+              { value: 3, count: 1 },
+            ],
+          },
+        },
+        {
+          name: 'y',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 2, count: 1 },
+              { value: 4, count: 1 },
+            ],
+          },
+        },
+      ],
       data: [
         [1, 2],
         [3, 4],
@@ -152,7 +173,28 @@ describe('backend service plugin tests', () => {
     store.commit(VQBnamespace('selectStep'), { index: 2 });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
-      headers: [{ name: 'x' }, { name: 'y' }],
+      headers: [
+        {
+          name: 'x',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 1, count: 1 },
+              { value: 3, count: 1 },
+            ],
+          },
+        },
+        {
+          name: 'y',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 2, count: 1 },
+              { value: 4, count: 1 },
+            ],
+          },
+        },
+      ],
       data: [
         [1, 2],
         [3, 4],
@@ -167,7 +209,28 @@ describe('backend service plugin tests', () => {
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
-      headers: [{ name: 'x' }, { name: 'y' }],
+      headers: [
+        {
+          name: 'x',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 1, count: 1 },
+              { value: 3, count: 1 },
+            ],
+          },
+        },
+        {
+          name: 'y',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 2, count: 1 },
+              { value: 4, count: 1 },
+            ],
+          },
+        },
+      ],
       data: [
         [1, 2],
         [3, 4],
@@ -187,7 +250,28 @@ describe('backend service plugin tests', () => {
     store.commit(VQBnamespace('deleteStep'), { index: 2 });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
-      headers: [{ name: 'x' }, { name: 'y' }],
+      headers: [
+        {
+          name: 'x',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 1, count: 1 },
+              { value: 3, count: 1 },
+            ],
+          },
+        },
+        {
+          name: 'y',
+          uniques: {
+            loaded: false,
+            values: [
+              { value: 2, count: 1 },
+              { value: 4, count: 1 },
+            ],
+          },
+        },
+      ],
       data: [
         [1, 2],
         [3, 4],
@@ -202,7 +286,22 @@ describe('backend service plugin tests', () => {
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
     await flushPromises();
     expect(store.state.vqb.dataset).toEqual({
-      headers: [{ name: 'x' }, { name: 'y' }],
+      headers: [
+        {
+          name: 'x',
+          uniques: {
+            loaded: false,
+            values: [{ value: 1, count: 1 }],
+          },
+        },
+        {
+          name: 'y',
+          uniques: {
+            loaded: false,
+            values: [{ value: 2, count: 1 }],
+          },
+        },
+      ],
       data: [[1, 2]],
     });
   });
