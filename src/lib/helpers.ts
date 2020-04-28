@@ -54,3 +54,18 @@ export function generateNewColumnName(newName: string, existingNames: string[]):
 export function $$(colname: string) {
   return `$${colname}`;
 }
+
+/**
+ * enumerate(iterable[, start]) -> iterator for index, value of iterable
+ *
+ * enumerate yields pairs containing a count (from `start`, which defaults to
+ * zero) and a value yielded by the iterable argument.
+ *
+ * @param values
+ */
+export function* enumerate<T>(values: Iterable<T>, start = 0): Generator<[number, T]> {
+  let idx = start;
+  for (const value of values) {
+    yield [idx++, value];
+  }
+}

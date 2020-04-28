@@ -33,16 +33,11 @@ import _difference from 'lodash/difference';
 import _union from 'lodash/union';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import { ColumnValueStat } from '@/lib/dataset/helpers.ts';
 import { FilterConditionInclusion } from '@/lib/steps.ts';
 import { VQBModule } from '@/store';
 
 import CheckboxWidget from './stepforms/widgets/Checkbox.vue';
-
-// This type will be imported from @/lib/dataset/helpers.ts
-type ColumnValueStat = {
-  value: any;
-  count: number;
-};
 
 /**
   Edit a `filter` object of the form:
