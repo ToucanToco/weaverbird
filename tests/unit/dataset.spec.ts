@@ -374,10 +374,111 @@ describe('dataset local uniques computation', () => {
     expect(dataset).toEqual({ headers: [{ name: 'city' }, { name: 'density' }], data: [] });
     expect(extendedDataset).toEqual({
       headers: [
-        { name: 'city', uniques: { values: [], loaded: false } },
-        { name: 'density', uniques: { values: [], loaded: false } },
+        { name: 'city', uniques: { values: [], loaded: true } },
+        { name: 'density', uniques: { values: [], loaded: true } },
       ],
       data: [],
+    });
+  });
+
+  it('should handle datasets with pagesize > totalCount', () => {
+    const dataset: DataSet = {
+      headers: [
+        { name: 'city' },
+        { name: 'density' },
+        { name: 'isCapitalCity' },
+        { name: 'population' },
+      ],
+      data: [
+        ['Paris', 61.7, true, { population: 9 }],
+        ['Marseille', 40, false, { population: 4 }],
+        ['Berlin', 41.5, true, { population: 3 }],
+        ['Paris', 2, true, { population: 9 }],
+      ],
+      paginationContext: {
+        pageno: 1,
+        totalCount: 10,
+        pagesize: 10,
+      },
+    };
+    const extendedDataset = addLocalUniquesToDataset(dataset);
+    expect(dataset).toEqual({
+      headers: [
+        { name: 'city' },
+        { name: 'density' },
+        { name: 'isCapitalCity' },
+        { name: 'population' },
+      ],
+      data: [
+        ['Paris', 61.7, true, { population: 9 }],
+        ['Marseille', 40, false, { population: 4 }],
+        ['Berlin', 41.5, true, { population: 3 }],
+        ['Paris', 2, true, { population: 9 }],
+      ],
+      paginationContext: {
+        pageno: 1,
+        totalCount: 10,
+        pagesize: 10,
+      },
+    });
+    expect(extendedDataset).toEqual({
+      headers: [
+        {
+          name: 'city',
+          uniques: {
+            values: [
+              { value: 'Paris', count: 2 },
+              { value: 'Marseille', count: 1 },
+              { value: 'Berlin', count: 1 },
+            ],
+            loaded: true,
+          },
+        },
+        {
+          name: 'density',
+          uniques: {
+            values: [
+              { value: 2, count: 1 }, // result order depends on the other columns because they have all the same count
+              { value: 40, count: 1 },
+              { value: 61.7, count: 1 },
+              { value: 41.5, count: 1 },
+            ],
+            loaded: true,
+          },
+        },
+        {
+          name: 'isCapitalCity',
+          uniques: {
+            values: [
+              { value: true, count: 3 },
+              { value: false, count: 1 },
+            ],
+            loaded: true,
+          },
+        },
+        {
+          name: 'population',
+          uniques: {
+            values: [
+              { value: '{"population":9}', count: 2 },
+              { value: '{"population":4}', count: 1 },
+              { value: '{"population":3}', count: 1 },
+            ],
+            loaded: true,
+          },
+        },
+      ],
+      data: [
+        ['Paris', 61.7, true, { population: 9 }],
+        ['Marseille', 40, false, { population: 4 }],
+        ['Berlin', 41.5, true, { population: 3 }],
+        ['Paris', 2, true, { population: 9 }],
+      ],
+      paginationContext: {
+        pageno: 1,
+        totalCount: 10,
+        pagesize: 10,
+      },
     });
   });
 
@@ -395,6 +496,11 @@ describe('dataset local uniques computation', () => {
         ['Berlin', 41.5, true, { population: 3 }],
         ['Paris', 2, true, { population: 9 }],
       ],
+      paginationContext: {
+        pageno: 1,
+        totalCount: 100,
+        pagesize: 50,
+      },
     };
     const extendedDataset = addLocalUniquesToDataset(dataset);
     expect(dataset).toEqual({
@@ -410,6 +516,11 @@ describe('dataset local uniques computation', () => {
         ['Berlin', 41.5, true, { population: 3 }],
         ['Paris', 2, true, { population: 9 }],
       ],
+      paginationContext: {
+        pageno: 1,
+        totalCount: 100,
+        pagesize: 50,
+      },
     });
     expect(extendedDataset).toEqual({
       headers: [
@@ -464,6 +575,11 @@ describe('dataset local uniques computation', () => {
         ['Berlin', 41.5, true, { population: 3 }],
         ['Paris', 2, true, { population: 9 }],
       ],
+      paginationContext: {
+        pageno: 1,
+        totalCount: 100,
+        pagesize: 50,
+      },
     });
   });
 });

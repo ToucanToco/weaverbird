@@ -4,6 +4,8 @@
 import _ from 'lodash';
 import { GetterTree } from 'vuex';
 
+import { isDatasetComplete } from '@/lib/dataset/helpers';
+
 import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
 
 const getters: GetterTree<VQBState, any> = {
@@ -58,6 +60,11 @@ const getters: GetterTree<VQBState, any> = {
    * helper that is True if dataset's data is empty.
    */
   isDatasetEmpty: (state: VQBState) => state.dataset.data.length === 0,
+  /**
+   * helper that is True if dataset is completely loaded in store
+   * Basically, if pagesize is less than the totalCount the dataset is not complete.
+   */
+  isDatasetComplete: (state: VQBState) => isDatasetComplete(state.dataset),
   /**
    * helper that tell us if we are editing a step
    */
