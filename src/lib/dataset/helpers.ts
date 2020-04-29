@@ -9,6 +9,17 @@ function datasetColumnNames(dataset: DataSet) {
   return dataset.headers.map(coldef => coldef.name);
 }
 
+export function isDatasetComplete(dataset: DataSet): boolean {
+  if (dataset.paginationContext) {
+    if (!dataset.paginationContext.totalCount) {
+      return true;
+    }
+    return dataset.paginationContext.totalCount <= dataset.paginationContext.pagesize;
+  } else {
+    return true;
+  }
+}
+
 export function* iterateRecords(dataset: DataSet) {
   const colnames = datasetColumnNames(dataset);
   for (const rowdata of dataset.data) {
@@ -84,7 +95,7 @@ export function addLocalUniquesToDataset(dataset: DataSet) {
     ...hdr,
     uniques: {
       values: Object.values(uniqueStats[hdr.name]).sort(_statCompare),
-      loaded: false,
+      loaded: isDatasetComplete(dataset),
     },
   }));
   return { ...dataset, headers: newHeaders };

@@ -197,7 +197,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'x',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 1, count: 1 },
               { value: 3, count: 1 },
@@ -207,7 +207,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'y',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 2, count: 1 },
               { value: 4, count: 1 },
@@ -242,7 +242,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'x',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 1, count: 1 },
               { value: 3, count: 1 },
@@ -252,7 +252,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'y',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 2, count: 1 },
               { value: 4, count: 1 },
@@ -278,7 +278,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'x',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 1, count: 1 },
               { value: 3, count: 1 },
@@ -288,7 +288,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'y',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 2, count: 1 },
               { value: 4, count: 1 },
@@ -319,7 +319,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'x',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 1, count: 1 },
               { value: 3, count: 1 },
@@ -329,7 +329,7 @@ describe('backend service plugin tests', () => {
         {
           name: 'y',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 2, count: 1 },
               { value: 4, count: 1 },
@@ -355,14 +355,14 @@ describe('backend service plugin tests', () => {
         {
           name: 'x',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [{ value: 1, count: 1 }],
           },
         },
         {
           name: 'y',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [{ value: 2, count: 1 }],
           },
         },

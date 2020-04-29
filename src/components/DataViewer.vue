@@ -46,7 +46,7 @@
           </tbody>
         </table>
       </div>
-      <Pagination v-if="dataset.paginationContext.totalCount > pagesize" />
+      <Pagination v-if="isDatasetComplete" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
@@ -90,6 +90,7 @@ export default class DataViewer extends Vue {
   @VQBModule.State selectedColumns!: string[];
 
   @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
+  @VQBModule.Getter isDatasetComplete!: boolean;
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
   @VQBModule.Getter translator!: string;
   @VQBModule.Getter pipeline?: Pipeline;

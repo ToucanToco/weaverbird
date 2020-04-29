@@ -166,6 +166,62 @@ describe('getter tests', () => {
     });
   });
 
+  describe('dataset complete tests', () => {
+    it('should return true if dataset does not have a paginationContext prop', () => {
+      const state = buildState({
+        dataset: {
+          headers: [{ name: 'col1' }, { name: 'col2' }],
+          data: [],
+        },
+      });
+      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
+    });
+
+    it('should return true if totalCount = pagesize', () => {
+      const state = buildState({
+        dataset: {
+          headers: [{ name: 'col1' }, { name: 'col2' }],
+          data: [[0, 0]],
+          paginationContext: {
+            totalCount: 10,
+            pagesize: 50,
+            pageno: 1,
+          },
+        },
+      });
+      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
+    });
+
+    it('should return true if totalCount is undefined', () => {
+      const state = buildState({
+        dataset: {
+          headers: [{ name: 'col1' }, { name: 'col2' }],
+          data: [[0, 0]],
+          paginationContext: {
+            pagesize: 50,
+            pageno: 1,
+          },
+        },
+      });
+      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
+    });
+
+    it('should return false if totalCount > pagesize', () => {
+      const state = buildState({
+        dataset: {
+          headers: [{ name: 'col1' }, { name: 'col2' }],
+          data: [[0, 0]],
+          paginationContext: {
+            totalCount: 100,
+            pagesize: 50,
+            pageno: 1,
+          },
+        },
+      });
+      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeFalsy();
+    });
+  });
+
   describe('pipeline empty tests', () => {
     it('should not return anything if no pipeline is selected', function() {
       const state = buildState({});
@@ -572,7 +628,7 @@ describe('action tests', () => {
         {
           name: 'x',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 1, count: 1 },
               { value: 3, count: 1 },
@@ -582,7 +638,7 @@ describe('action tests', () => {
         {
           name: 'y',
           uniques: {
-            loaded: false,
+            loaded: true,
             values: [
               { value: 2, count: 1 },
               { value: 4, count: 1 },
