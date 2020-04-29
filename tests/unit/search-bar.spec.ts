@@ -60,6 +60,7 @@ describe('SearchBar', () => {
       'rollup',
       'evolution',
       'cumsum',
+      'ifthenelse',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -109,6 +110,7 @@ describe('SearchBar', () => {
       'rollup',
       'evolution',
       'cumsum',
+      'ifthenelse',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });

@@ -14,6 +14,7 @@ import './DomainStepForm.vue';
 import './EvolutionStepForm.vue';
 import './FillnaStepForm.vue';
 import './FilterStepForm.vue';
+import './IfThenElseStepForm.vue';
 import './FormulaStepForm.vue';
 import './FromDateStepForm.vue';
 import './JoinStepForm.vue';
