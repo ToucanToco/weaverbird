@@ -90,7 +90,7 @@ describe('ActionToolbarButton active', () => {
       localVue,
     });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['text', 'formula', 'custom']);
+    assertMenuEmitsExpected(wrapper, ['text', 'formula', 'ifthenelse', 'custom']);
   });
 
   it('should instantiate a Filter button with the right list of actions', () => {

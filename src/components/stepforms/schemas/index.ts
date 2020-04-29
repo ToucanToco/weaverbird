@@ -15,6 +15,7 @@ import fillnaSchema from './fillna';
 import filterSchema from './filter';
 import formulaSchema from './formula';
 import fromDateSchema from './fromdate';
+import ifthenelseSchema from './ifthenelse';
 import joinSchema from './join';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
@@ -54,6 +55,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   filter: filterSchema,
   formula: formulaSchema,
   fromdate: fromDateSchema,
+  ifthenelse: ifthenelseSchema,
   join: joinSchema,
   lowercase: toLowerSchema,
   percentage: percentageBuildSchema,
