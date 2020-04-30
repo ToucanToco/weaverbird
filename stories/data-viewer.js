@@ -17,7 +17,7 @@ stories.add('empty', () => ({
         paginationContext: {
           pagesize: 50,
           pageno: 1,
-          totalCount: 0,
+          totalCount: 50,
         },
       },
       currentPipelineName: "test",
@@ -52,7 +52,7 @@ stories.add('simple', () => ({
         paginationContext: {
           pagesize: 50,
           pageno: 1,
-          totalCount: 0,
+          totalCount: 50,
         },
       },
       currentPipelineName: "test",

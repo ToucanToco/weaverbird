@@ -8,14 +8,14 @@ export interface PaginationContext {
    */
   pagesize: number;
   pageno: number;
-  totalCount?: number;
+  totalCount: number;
 }
 
 /**
  * Get number of total pages
  */
 export function numberOfPages(paginationContext: PaginationContext) {
-  return Math.ceil((paginationContext.totalCount || 0) / paginationContext.pagesize);
+  return Math.ceil(paginationContext.totalCount / paginationContext.pagesize);
 }
 
 /**

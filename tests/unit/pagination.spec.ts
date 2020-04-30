@@ -1,14 +1,6 @@
 import * as P from '@/lib/dataset/pagination';
 
 describe('pagination tests', () => {
-  it('should compute handle empty total count', () => {
-    const context: P.PaginationContext = {
-      pageno: 1,
-      pagesize: 20,
-    };
-    expect(P.numberOfPages(context)).toEqual(0);
-  });
-
   it('should compute number of pages correctly', () => {
     const context: P.PaginationContext = {
       pageno: 1,
