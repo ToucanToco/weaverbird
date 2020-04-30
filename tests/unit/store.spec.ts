@@ -177,27 +177,13 @@ describe('getter tests', () => {
       expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
     });
 
-    it('should return true if totalCount = pagesize', () => {
+    it('should return true if totalCount <= pagesize', () => {
       const state = buildState({
         dataset: {
           headers: [{ name: 'col1' }, { name: 'col2' }],
           data: [[0, 0]],
           paginationContext: {
-            totalCount: 10,
-            pagesize: 50,
-            pageno: 1,
-          },
-        },
-      });
-      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
-    });
-
-    it('should return true if totalCount is undefined', () => {
-      const state = buildState({
-        dataset: {
-          headers: [{ name: 'col1' }, { name: 'col2' }],
-          data: [[0, 0]],
-          paginationContext: {
+            totalCount: 50,
             pagesize: 50,
             pageno: 1,
           },
@@ -313,7 +299,11 @@ describe('mutation tests', () => {
       { name: 'rename', oldname: 'baz', newname: 'spam' },
     ];
     const state = buildStateWithOnePipeline(pipeline, {
-      dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+      dataset: {
+        headers: [],
+        data: [],
+        paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+      },
     });
     expect(state.selectedStepIndex).toEqual(-1);
     mutations.selectStep(state, { index: 2 });
@@ -343,7 +333,11 @@ describe('mutation tests', () => {
         { name: 'rename', oldname: 'clou', newname: 'vis' },
       ];
       const state = buildStateWithOnePipeline(pipeline, {
-        dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+        dataset: {
+          headers: [],
+          data: [],
+          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        },
       });
       mutations.deleteStep(state, { index: 2 });
       expect(currentPipeline(state)).toEqual([
@@ -374,7 +368,11 @@ describe('mutation tests', () => {
     const state = buildState({
       currentDomain: 'foo',
       ...buildStateWithOnePipeline(pipeline, {
-        dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+        dataset: {
+          headers: [],
+          data: [],
+          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        },
       }),
     });
     expect(state.currentDomain).toEqual('foo');
@@ -421,7 +419,11 @@ describe('mutation tests', () => {
 
   it('sets currentPipelineName', () => {
     const state = buildState({
-      dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+      dataset: {
+        headers: [],
+        data: [],
+        paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+      },
     });
     mutations.setCurrentPipelineName(state, { name: 'bar' });
     expect(state.currentPipelineName).toEqual('bar');
@@ -438,7 +440,11 @@ describe('mutation tests', () => {
 
     it('should replace the current pipeline', function() {
       const state = buildStateWithOnePipeline([], {
-        dataset: { headers: [], data: [], paginationContext: { pageno: 2, pagesize: 10 } },
+        dataset: {
+          headers: [],
+          data: [],
+          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        },
       });
       expect(getters.pipeline(state, {}, {}, {})).toEqual([]);
 
@@ -497,7 +503,7 @@ describe('mutation tests', () => {
       headers: [{ name: 'col1' }, { name: 'col2' }],
       data: [[0, 0]],
       paginationContext: {
-        totalCount: 0,
+        totalCount: 50,
         pagesize: 50,
         pageno: 1,
       },
