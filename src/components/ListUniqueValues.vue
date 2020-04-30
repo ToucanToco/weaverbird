@@ -10,10 +10,10 @@
       <div
         class="list-unique-values__checkbox"
         v-for="option in searchedOptions"
-        :key="option.value"
+        :key="stringify(option.value)"
       >
         <CheckboxWidget
-          :label="`${option.value} (${option.count})`"
+          :label="`${stringify(option.value)} (${option.count})`"
           :value="isChecked(option)"
           @input="toggleCheck(option)"
         />
@@ -138,9 +138,16 @@ export default class ListUniqueValues extends Vue {
     return this.options.filter(option => this.searchFunction(option.value, this.search));
   }
 
-  // TODO: enhance `searchFunction`
-  searchFunction(value: string, search: string) {
-    return value.toLowerCase().startsWith(search.toLowerCase());
+  stringify(value: any): string {
+    return JSON.stringify(value)
+      .replace(/^"/, '')
+      .replace(/"$/, ''); // remove `"` introduce by JSON.stringify around strings;
+  }
+
+  searchFunction(value: any, search: string) {
+    return this.stringify(value)
+      .toLowerCase()
+      .includes(search.toLowerCase());
   }
 
   loadAllValues() {

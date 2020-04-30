@@ -460,9 +460,9 @@ describe('dataset local uniques computation', () => {
           name: 'population',
           uniques: {
             values: [
-              { value: '{"population":9}', count: 2 },
-              { value: '{"population":4}', count: 1 },
-              { value: '{"population":3}', count: 1 },
+              { value: { population: 9 }, count: 2 },
+              { value: { population: 4 }, count: 1 },
+              { value: { population: 3 }, count: 1 },
             ],
             loaded: true,
           },
@@ -561,9 +561,9 @@ describe('dataset local uniques computation', () => {
           name: 'population',
           uniques: {
             values: [
-              { value: '{"population":9}', count: 2 },
-              { value: '{"population":4}', count: 1 },
-              { value: '{"population":3}', count: 1 },
+              { value: { population: 9 }, count: 2 },
+              { value: { population: 4 }, count: 1 },
+              { value: { population: 3 }, count: 1 },
             ],
             loaded: false,
           },
