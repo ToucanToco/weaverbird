@@ -1,13 +1,13 @@
 <template>
   <div class="widget-multiinputtext__container">
     <multiselect
-      v-model="editedValue"
+      :value="value"
+      @input="updateValue"
       :options="options"
       :multiple="true"
       :taggable="true"
       :close-on-select="false"
       :placeholder="placeholder"
-      @input="clearOptions"
       @search-change="updateOptions"
     />
   </div>
@@ -15,7 +15,7 @@
 
 <script lang="ts">
 import Multiselect from 'vue-multiselect';
-import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 @Component({
   name: 'multi-input-text-widget',
@@ -33,12 +33,7 @@ export default class MultiInputTextWidget extends Vue {
   @Prop({ type: Array, default: () => [] })
   value!: string[];
 
-  editedValue: string[] = [];
   options: string[] = [];
-
-  clearOptions() {
-    this.options = [];
-  }
 
   updateOptions(newVal: string) {
     if (newVal.length > 0) {
@@ -46,14 +41,9 @@ export default class MultiInputTextWidget extends Vue {
     }
   }
 
-  @Watch('value', { immediate: true })
-  updateEditedValue(newValue: string[]) {
-    this.editedValue = newValue;
-  }
-
-  @Watch('editedValue')
   updateValue(newValue: string[]) {
     this.$emit('input', newValue);
+    this.options = [];
   }
 }
 </script>
