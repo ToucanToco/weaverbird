@@ -1,5 +1,16 @@
 # Changelog
 
+# unreleased
+
+### Changed
+
+- `totalCount` becomes mandatory in `paginationContext` in DataSet
+
+### Fixed
+
+- pagination appears if DataSet is not complete 
+
+
 ## [0.16.0] - 2020-04-29
 
 ### Changed
