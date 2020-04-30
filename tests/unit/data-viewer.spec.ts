@@ -42,6 +42,63 @@ describe('Data Viewer', () => {
     expect(wrapperDataViewerContainer.exists()).toBeFalsy();
   });
 
+  describe('pagination', () => {
+    it('should display pagination if Dataset is not complete', () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            // I let headers and data empty because I only want to test the pagination
+            headers: [{ name: 'A' }],
+            data: [['a']],
+            // WARNING: the pagination context does not correspond to the headers and data above
+            paginationContext: {
+              totalCount: 50,
+              pagesize: 10,
+              pageno: 1,
+            },
+          },
+        }),
+      );
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+      expect(wrapper.find('Pagination-stub').exists()).toBeTruthy();
+    });
+
+    it('should not display pagination if Dataset is complete', () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            // I let headers and data empty because I only want to test the pagination
+            headers: [{ name: 'A' }],
+            data: [['a']],
+            // WARNING: the pagination context does not correspond to the headers and data above
+            paginationContext: {
+              totalCount: 50,
+              pagesize: 50,
+              pageno: 1,
+            },
+          },
+        }),
+      );
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+      expect(wrapper.find('Pagination-stub').exists()).toBeFalsy();
+    });
+
+    it('should not display pagination if Dataset has no paginationContext', () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            // I let headers and data empty because I only want to test the pagination
+            headers: [{ name: 'A' }],
+            data: [['a']],
+            // WARNING: the pagination context does not correspond to the headers and data above
+          },
+        }),
+      );
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+      expect(wrapper.find('Pagination-stub').exists()).toBeFalsy();
+    });
+  });
+
   describe('header', () => {
     it('should have one row', () => {
       const store = setupMockStore(
@@ -56,7 +113,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
@@ -82,7 +139,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
@@ -108,7 +165,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
@@ -141,7 +198,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15', 'value16'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
@@ -173,7 +230,7 @@ describe('Data Viewer', () => {
             ],
             data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
             paginationContext: {
-              totalCount: 1,
+              totalCount: 10,
               pagesize: 10,
               pageno: 1,
             },
@@ -215,7 +272,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
@@ -251,7 +308,7 @@ describe('Data Viewer', () => {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
             data: [['value1', 'value2', 'value3']],
             paginationContext: {
-              totalCount: 1,
+              totalCount: 10,
               pagesize: 10,
               pageno: 1,
             },
@@ -290,7 +347,7 @@ describe('Data Viewer', () => {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
             data: [['value1', 'value2', 'value3']],
             paginationContext: {
-              totalCount: 1,
+              totalCount: 10,
               pagesize: 10,
               pageno: 1,
             },
@@ -315,7 +372,7 @@ describe('Data Viewer', () => {
                 ['value13', 'value14', 'value15'],
               ],
               paginationContext: {
-                totalCount: 5,
+                totalCount: 50,
                 pagesize: 10,
                 pageno: 1,
               },
@@ -346,8 +403,8 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
-              pagesize: 10,
+              totalCount: 100,
+              pagesize: 50,
               pageno: 1,
             },
           },
@@ -372,7 +429,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
@@ -400,7 +457,7 @@ describe('Data Viewer', () => {
           ['value13', 'value14', 'value15'],
         ],
         paginationContext: {
-          totalCount: 5,
+          totalCount: 50,
           pagesize: 10,
           pageno: 1,
         },
@@ -439,7 +496,7 @@ describe('Data Viewer', () => {
               ['value13', 'value14', 'value15'],
             ],
             paginationContext: {
-              totalCount: 5,
+              totalCount: 50,
               pagesize: 10,
               pageno: 1,
             },
