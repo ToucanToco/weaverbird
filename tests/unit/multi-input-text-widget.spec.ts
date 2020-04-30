@@ -54,22 +54,16 @@ describe('Widget MultisInputText', () => {
     expect(wrapper.vm.$data.options).toEqual(['Foo']);
   });
 
-  it('should emit "input" event on editedValue update', async () => {
+  it('should emit "input" event when multiselect emit "input"', async () => {
     const wrapper = shallowMount(MultiInputTextWidget);
-    await wrapper.setData({ editedValue: ['Foo'] });
-    expect(wrapper.emitted()).toEqual({ input: [[['Foo']]] });
+    wrapper.find('multiselect-stub').vm.$emit('input', ['a', 'b']);
+    expect(wrapper.emitted().input[0][0]).toEqual(['a', 'b']);
   });
 
   it('should clear "options" on input', () => {
-    const wrapper = shallowMount(MultiInputTextWidget);
-    wrapper.setData({ options: ['Foo'] });
+    const wrapper = shallowMount(MultiInputTextWidget, { data: () => ({ options: ['Foo'] }) });
     expect(wrapper.vm.$data.options).toEqual(['Foo']);
     wrapper.find('multiselect-stub').vm.$emit('input');
     expect(wrapper.vm.$data.options).toEqual([]);
-  });
-
-  it('should set "editedValue" initially"', async () => {
-    const wrapper = shallowMount(MultiInputTextWidget, { propsData: { value: ['Foo'] } });
-    expect(wrapper.vm.$data.editedValue).toEqual(['Foo']);
   });
 });
