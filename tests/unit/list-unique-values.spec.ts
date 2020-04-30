@@ -178,73 +178,113 @@ describe('List Unique Value', () => {
     });
   });
 
-  describe('search box with "in" operator', () => {
-    beforeEach(async () => {
-      const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
-      input.value = 'Fr'; // "Fr" like the start of "France" and "Framboise"
-      await wrapper.find('.list-unique-values__search-box').trigger('input');
-    });
+  describe('search box', () => {
+    describe('with "in" operator', () => {
+      beforeEach(async () => {
+        const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
+        input.value = 'Fr'; // "Fr" like the start of "France" and "Framboise"
+        await wrapper.find('.list-unique-values__search-box').trigger('input');
+      });
 
-    it('should filter the unique value when search on the searchbox', async () => {
-      const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
-      expect(CheckboxWidgetArray.length).toEqual(2);
-      expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
-      expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
-    });
+      it('should filter the unique value when search on the searchbox', async () => {
+        const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
+        expect(CheckboxWidgetArray.length).toEqual(2);
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
+        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
+      });
 
-    it('should emit new value when click "select all" button (with "in" operator)', async () => {
-      await wrapper.find('.list-unique-values__select-all').trigger('click');
-      // "France" and "Framboise" only should be updated:
-      expect(wrapper.emitted().input[0][0]).toEqual({
-        column: 'col1',
-        operator: 'in',
-        value: ['France', 'Spain', 'Framboise'],
+      it('should emit new value when click "select all" button (with "in" operator)', async () => {
+        await wrapper.find('.list-unique-values__select-all').trigger('click');
+        // "France" and "Framboise" only should be updated:
+        expect(wrapper.emitted().input[0][0]).toEqual({
+          column: 'col1',
+          operator: 'in',
+          value: ['France', 'Spain', 'Framboise'],
+        });
+      });
+
+      it('should emit new value when click "clear all" button (with "in" operator)', async () => {
+        await wrapper.find('.list-unique-values__clear-all').trigger('click');
+        // "France" and "Framboise" only should be updated
+        expect(wrapper.emitted().input[0][0]).toEqual({
+          column: 'col1',
+          operator: 'in',
+          value: ['Spain'],
+        });
       });
     });
 
-    it('should emit new value when click "clear all" button (with "in" operator)', async () => {
-      await wrapper.find('.list-unique-values__clear-all').trigger('click');
-      // "France" and "Framboise" only should be updated
-      expect(wrapper.emitted().input[0][0]).toEqual({
-        column: 'col1',
-        operator: 'in',
-        value: ['Spain'],
+    describe('with "nin" operator', () => {
+      beforeEach(async () => {
+        wrapper = shallowMountWrapper(['France', 'Spain'], 'nin');
+        const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
+        input.value = 'Fr'; // "Fr" like the start of "France" and "Framboise"
+        await wrapper.find('.list-unique-values__search-box').trigger('input');
+      });
+
+      it('should filter the unique value when search on the searchbox', async () => {
+        const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
+        expect(CheckboxWidgetArray.length).toEqual(2);
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
+        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
+      });
+
+      it('should emit new value when click "select all" button (with "nin" operator)', async () => {
+        await wrapper.find('.list-unique-values__select-all').trigger('click');
+        // "France" and "Framboise" only should be updated:
+        expect(wrapper.emitted().input[0][0]).toEqual({
+          column: 'col1',
+          operator: 'nin',
+          value: ['Spain'],
+        });
+      });
+
+      it('should emit new value when click "clear all" button (with "nin" operator)', async () => {
+        await wrapper.find('.list-unique-values__clear-all').trigger('click');
+        // "France" and "Framboise" only should be updated
+        expect(wrapper.emitted().input[0][0]).toEqual({
+          column: 'col1',
+          operator: 'nin',
+          value: ['France', 'Spain', 'Framboise'],
+        });
       });
     });
-  });
 
-  describe('search box with "nin" operator', () => {
-    beforeEach(async () => {
-      wrapper = shallowMountWrapper(['France', 'Spain'], 'nin');
-      const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
-      input.value = 'Fr'; // "Fr" like the start of "France" and "Framboise"
-      await wrapper.find('.list-unique-values__search-box').trigger('input');
-    });
-
-    it('should filter the unique value when search on the searchbox', async () => {
-      const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
-      expect(CheckboxWidgetArray.length).toEqual(2);
-      expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
-      expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
-    });
-
-    it('should emit new value when click "select all" button (with "nin" operator)', async () => {
-      await wrapper.find('.list-unique-values__select-all').trigger('click');
-      // "France" and "Framboise" only should be updated:
-      expect(wrapper.emitted().input[0][0]).toEqual({
-        column: 'col1',
-        operator: 'nin',
-        value: ['Spain'],
-      });
-    });
-
-    it('should emit new value when click "clear all" button (with "nin" operator)', async () => {
-      await wrapper.find('.list-unique-values__clear-all').trigger('click');
-      // "France" and "Framboise" only should be updated
-      expect(wrapper.emitted().input[0][0]).toEqual({
-        column: 'col1',
-        operator: 'nin',
-        value: ['France', 'Spain', 'Framboise'],
+    describe('with with object value', () => {
+      it('should filter the unique value when search on the searchbox', async () => {
+        wrapper = shallowMount(ListUniqueValues, {
+          store: setupMockStore({
+            dataset: {
+              headers: [{ name: 'col1' }],
+              data: [],
+            },
+          }),
+          localVue,
+          propsData: {
+            filter: {
+              column: 'col1',
+              operator: 'nin',
+              value: [],
+            },
+            options: [
+              { value: { population: 10 }, count: 12 },
+              { value: { population: 2 }, count: 9 },
+              { value: { population: 3 }, count: 4 },
+            ],
+            loaded: true,
+          },
+        });
+        let CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
+        expect(CheckboxWidgetArray.length).toEqual(3);
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('{"population":10} (12)');
+        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('{"population":2} (9)');
+        expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('{"population":3} (4)');
+        const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
+        input.value = '2'; // "Fr" like the start of "France" and "Framboise"
+        await wrapper.find('.list-unique-values__search-box').trigger('input');
+        CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
+        expect(CheckboxWidgetArray.length).toEqual(1);
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('{"population":2} (9)');
       });
     });
   });

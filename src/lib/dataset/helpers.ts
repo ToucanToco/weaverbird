@@ -50,9 +50,9 @@ function localUniqueStats(dataset: DataSet) {
   for (const [, record] of enumerate(iterateRecords(dataset))) {
     for (const [colname, value] of Object.entries(record)) {
       const colRecord = columnValuesCount[colname];
-      const valueStringified = value instanceof Object ? JSON.stringify(value) : value;
+      const valueStringified = JSON.stringify(value);
       if (colRecord[valueStringified] === undefined) {
-        colRecord[valueStringified] = { value: valueStringified, count: 1 };
+        colRecord[valueStringified] = { value, count: 1 };
       } else {
         colRecord[valueStringified].count++;
       }
