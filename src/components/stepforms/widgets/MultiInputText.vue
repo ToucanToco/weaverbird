@@ -1,14 +1,28 @@
 <template>
   <div class="widget-multiinputtext__container">
-    <multiselect
-      :value="value"
-      @input="updateValue"
-      :options="options"
-      :multiple="true"
-      :taggable="true"
-      :close-on-select="false"
-      :placeholder="placeholder"
-      @search-change="updateOptions"
+    <div v-if="!isVariableInputActive" style="width: 100%; position: relative">
+      <multiselect
+        :value="value"
+        @input="updateValue"
+        :options="options"
+        :multiple="true"
+        :taggable="true"
+        :close-on-select="false"
+        :placeholder="placeholder"
+        @search-change="updateOptions"
+      />
+      <span
+        v-if="variable"
+        :class="['variable-toggle', variableToggleClass]"
+        @click="updateValue('', true)"
+        >x</span
+      >
+    </div>
+    <VariableInput
+      v-else
+      :value="currentVariableName"
+      @input="updateValue($event, true)"
+      @removed="updateValue('', false)"
     />
   </div>
 </template>
@@ -17,10 +31,13 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import VariableInput from './VariableInput.vue';
+
 @Component({
   name: 'multi-input-text-widget',
   components: {
     Multiselect,
+    VariableInput,
   },
 })
 export default class MultiInputTextWidget extends Vue {
@@ -30,8 +47,11 @@ export default class MultiInputTextWidget extends Vue {
   @Prop({ type: String, default: '' })
   placeholder!: string;
 
-  @Prop({ type: Array, default: () => [] })
-  value!: string[];
+  @Prop({ default: () => [] })
+  value!: string[] | string;
+
+  @Prop({ type: Boolean, default: false })
+  variable!: boolean;
 
   options: string[] = [];
 
@@ -41,9 +61,38 @@ export default class MultiInputTextWidget extends Vue {
     }
   }
 
-  updateValue(newValue: string[]) {
-    this.$emit('input', newValue);
-    this.options = [];
+  get currentVariableName() {
+    if (typeof this.value != 'string') {
+      return undefined;
+    }
+    return this.value.replace('<%=', '').replace('%>', '');
+  }
+
+  updateValue(newValue: string[] | string, isVariable = false) {
+    if (isVariable && newValue !== undefined) {
+      this.$emit('input', `<%=${newValue}%>`);
+    } else if (newValue === undefined) {
+      this.$emit('input', []);
+      this.options = [];
+    } else {
+      this.$emit('input', newValue);
+      this.options = [];
+    }
+  }
+
+  get variableInputClass() {
+    return { 'widget-input-text__container--with-variable': this.isVariableInputActive };
+  }
+
+  get variableToggleClass() {
+    return { 'variable-toggle--focused': true };
+  }
+
+  get isVariableInputActive() {
+    if (typeof this.value != 'string') {
+      return false;
+    }
+    return this.value.startsWith('<%=') && this.value.endsWith('%>');
   }
 }
 </script>
@@ -161,7 +210,7 @@ export default class MultiInputTextWidget extends Vue {
   }
   .multiselect__tags-wrap {
     order: 2;
-    padding: 8px 30px 8px 8px;
+    padding: 8px 8px 8px 8px;
     width: 100%;
   }
   .multiselect__input {
@@ -222,5 +271,38 @@ export default class MultiInputTextWidget extends Vue {
   &:hover {
     background: $active-color;
   }
+}
+
+.variable-toggle {
+  z-index: 10000; // IMPORTANT: only diff with Input Text
+
+  font-family: cursive;
+  opacity: 0;
+  visibility: hidden;
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  right: 10px;
+  width: 18px;
+  height: 18px;
+  background: #eaeff5;
+  color: rgb(38, 101, 163);
+  border-radius: 50%;
+  line-height: 16px;
+  font-size: 14px;
+  text-align: center;
+  transition: 250ms all ease-in;
+  cursor: pointer;
+  &:hover {
+    background: rgb(38, 101, 163);
+    color: #eaeff5;
+  }
+}
+
+.variable-toggle--focused {
+  opacity: 1;
+  visibility: visible;
 }
 </style>
