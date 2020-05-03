@@ -2,20 +2,7 @@
   <button type="button" class="action-toolbar__btn">
     <i :class="`action-toolbar__btn-icon fas fa-${icon}`" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
-    <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
-      <div class="action-menu__body">
-        <div class="action-menu__section">
-          <div
-            v-for="(item, index) in items"
-            :key="index"
-            class="action-menu__option"
-            @click="actionClicked(item.name, item.defaults)"
-          >
-            {{ item.label }}
-          </div>
-        </div>
-      </div>
-    </popover>
+    <Menu :visible="isActive" @closed="$emit('closed')" :buttons="items" />
   </button>
 </template>
 
@@ -24,6 +11,7 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
+import Menu, { ButtonsList } from '@/components/Menu.vue';
 import * as S from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -39,6 +27,7 @@ type NoFormStep = S.DateExtractPropertyStep | S.ToLowerStep | S.ToDateStep | S.T
   name: 'action-toolbar-button',
   components: {
     Popover,
+    Menu,
   },
   props: {
     label: String,
@@ -105,12 +94,15 @@ export default class ActionToolbarButton extends Vue {
     this.selectStep({ index });
   }
 
-  get items() {
-    return ACTION_CATEGORIES[this.category];
-  }
+  readonly items: ButtonsList = ACTION_CATEGORIES[this.category].map(
+    ({ label, name, defaults }) => ({
+      html: label,
+      onclick: () => this.actionClicked(name, defaults),
+    }),
+  );
 }
 </script>
-<style lang="scss">
+<style scoped lang="scss">
 @import '../styles/_variables';
 
 .action-toolbar__btn {

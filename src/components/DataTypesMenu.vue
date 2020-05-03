@@ -1,51 +1,19 @@
 <template>
-  <popover :visible="visible" :align="alignLeft" bottom @closed="close">
-    <div class="data-types-menu__body">
-      <div class="data-types-menu__section">
-        <div class="data-types-menu__option" @click="createConvertStep('integer')">
-          <span class="data-types-menu__icon">123</span>
-          <span>Integer</span>
-        </div>
-        <div class="data-types-menu__option" @click="createConvertStep('float')">
-          <span class="data-types-menu__icon">1.2</span>
-          <span>Float</span>
-        </div>
-        <div class="data-types-menu__option" @click="createConvertStep('text')">
-          <span class="data-types-menu__icon">ABC</span>
-          <span>Text</span>
-        </div>
-        <div class="data-types-menu__option" @click="createConvertStep('date')">
-          <span class="data-types-menu__icon">
-            <i class="fas fa-calendar-alt" />
-          </span>
-          <span>Date</span>
-        </div>
-        <div class="data-types-menu__option" @click="createConvertStep('boolean')">
-          <span class="data-types-menu__icon">
-            <i class="fas fa-check" />
-          </span>
-          <span>Boolean</span>
-        </div>
-      </div>
-    </div>
-  </popover>
+  <Menu @closed="$emit('closed')" :visible="visible" :buttons="buttons" />
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { POPOVER_ALIGN } from '@/components/constants';
+import { DATA_TYPE, DataType } from '@/components/constants';
+import Menu, { ButtonsList } from '@/components/Menu.vue';
 import { ConvertStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
-import Popover from './Popover.vue';
-
-type dataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
-
 @Component({
   name: 'data-types-menu',
   components: {
-    Popover,
+    Menu,
   },
 })
 export default class DataTypesMenu extends Vue {
@@ -69,13 +37,7 @@ export default class DataTypesMenu extends Vue {
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
 
-  alignLeft: string = POPOVER_ALIGN.LEFT;
-
-  close() {
-    this.$emit('closed');
-  }
-
-  createConvertStep(dataType: dataType) {
+  createConvertStep(dataType: DataType) {
     const newPipeline: Pipeline = [...this.pipeline];
     const index = this.computedActiveStepIndex + 1;
     const convertStep: ConvertStep = {
@@ -91,56 +53,17 @@ export default class DataTypesMenu extends Vue {
     newPipeline.splice(index, 0, convertStep);
     this.setPipeline({ pipeline: newPipeline });
     this.selectStep({ index });
-    this.close();
+    this.$emit('closed');
   }
+
+  readonly buttons: ButtonsList = DATA_TYPE.map(({ name, icon }) => ({
+    html: `<span class="data-types-menu__icon">${icon}</span><span style="text-transform: capitalize;">${name}</span>`,
+    onclick: () => this.createConvertStep(name),
+  }));
 }
 </script>
-<style lang="scss">
-@import '../styles/_variables';
-
-.data-types-menu__body {
-  display: flex;
-  flex-direction: column;
-  border-radius: 3px;
-  margin-left: -5px;
-  margin-right: -5px;
-  width: 200px;
-  background-color: #fff;
-  box-shadow: 0px 1px 20px 0px rgba(0, 0, 0, 0.2);
-  color: $base-color;
-}
-
-.data-types-menu__section {
-  display: flex;
-  flex-direction: column;
-  border-color: $data-viewer-border-color;
-
-  &:not(:last-child) {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-  }
-}
-
-.data-types-menu__option {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 13px;
-  padding: 10px 12px;
-  line-height: 20px;
-  position: relative;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-    color: $active-color;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.data-types-menu__icon {
+<style lang="scss" scoped>
+/deep/ .data-types-menu__icon {
   font-family: 'Roboto Slab', serif;
   width: 30%;
 }

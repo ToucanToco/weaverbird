@@ -1,7 +1,8 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import ActionMenu from '@/components/ActionMenu.vue';
+import ListUniqueValues from '@/components/ListUniqueValues.vue';
 import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
@@ -69,7 +70,7 @@ describe('Action Menu', () => {
   let mountWrapper: any;
   beforeEach(() => {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    mountWrapper = async function(isCurrentlyEditing: boolean = false, isMounted: boolean = false) {
+    mountWrapper = async function(isCurrentlyEditing: boolean = false) {
       const store = setupMockStore(
         buildStateWithOnePipeline([], {
           currentStepFormName: isCurrentlyEditing ? 'fillna' : undefined,
@@ -90,7 +91,7 @@ describe('Action Menu', () => {
           },
         }),
       );
-      const wrapper = (isMounted ? mount : shallowMount)(ActionMenu, {
+      const wrapper = mount(ActionMenu, {
         store,
         localVue,
         propsData: { visible: true, columnName: 'dreamfall' },
@@ -100,13 +101,13 @@ describe('Action Menu', () => {
   });
 
   it('should instantiate with popover', async () => {
-    const { wrapper } = await mountWrapper(false, true);
+    const { wrapper } = await mountWrapper(false);
     expect(wrapper.exists()).toBeTruthy();
     expect(wrapper.classes()).toContain('popover-container');
   });
 
   it('should not display the apply filter button', async () => {
-    const { wrapper } = await mountWrapper(false, true);
+    const { wrapper } = await mountWrapper(false);
     expect(wrapper.find('.action-menu__apply-filter').exists()).toBeFalsy();
   });
 
@@ -116,18 +117,15 @@ describe('Action Menu', () => {
     for (el of FIRST_PANEL) {
       expect(wrapper.html()).toContain(el.label);
     }
-    for (el of SECOND_PANEL) {
-      expect(wrapper.html()).not.toContain(el.label);
-    }
 
-    expect(wrapper.find('ListUniqueValues-stub').exists()).toBeTruthy();
-    expect(wrapper.find('ListUniqueValues-stub').vm.$props.loaded).toEqual(false);
-    expect(wrapper.find('ListUniqueValues-stub').vm.$props.filter).toEqual({
+    expect(wrapper.find(ListUniqueValues).exists()).toBeTruthy();
+    expect(wrapper.find(ListUniqueValues).vm.$props.loaded).toEqual(false);
+    expect(wrapper.find(ListUniqueValues).vm.$props.filter).toEqual({
       column: 'dreamfall',
       value: [],
       operator: 'nin',
     });
-    expect(wrapper.find('ListUniqueValues-stub').vm.$props.options).toEqual([
+    expect(wrapper.find(ListUniqueValues).vm.$props.options).toEqual([
       { value: 'jjg', count: 2 },
       { value: 'mika', count: 1 },
     ]);
@@ -138,7 +136,7 @@ describe('Action Menu', () => {
     for (el of FIRST_PANEL) {
       const { wrapper } = await mountWrapper();
       await wrapper
-        .findAll('.action-menu__option')
+        .findAll('.menu__option')
         .at(el.index)
         .trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
@@ -150,7 +148,7 @@ describe('Action Menu', () => {
     for (el of FIRST_PANEL) {
       const { wrapper } = await mountWrapper();
       await wrapper
-        .findAll('.action-menu__option')
+        .findAll('.menu__option')
         .at(el.index)
         .trigger('click');
       await wrapper.vm.$nextTick();
@@ -166,7 +164,7 @@ describe('Action Menu', () => {
       mountWrapperWithEditedCondition = async () => {
         const { wrapper, store } = await mountWrapper();
         wrapper
-          .find('ListUniqueValues-stub')
+          .find(ListUniqueValues)
           .vm.$emit('input', { column: 'dreamfall', value: ['mika'], operator: 'nin' });
         return { wrapper, store };
       };
@@ -189,7 +187,7 @@ describe('Action Menu', () => {
     it('should add a valid delete step in the pipeline', async () => {
       const { wrapper, store } = await mountWrapper();
       await wrapper
-        .findAll('.action-menu__option')
+        .findAll('.menu__option')
         .at(2) //delete operation is at index 2
         .trigger('click');
       await wrapper.vm.$nextTick();
@@ -201,7 +199,7 @@ describe('Action Menu', () => {
     it('should close any open step form to show the addition of the delete step in the pipeline', async () => {
       const { wrapper, store } = await mountWrapper(true);
       await wrapper
-        .findAll('.action-menu__option')
+        .findAll('.menu__option')
         .at(2) //delete operation is at index 2
         .trigger('click');
       await wrapper.vm.$nextTick();
@@ -216,7 +214,7 @@ describe('Action Menu', () => {
       mountWrapperAndClickOnOperation = async function(isCurrentlyEditing: boolean = false) {
         const { wrapper, store } = await mountWrapper(isCurrentlyEditing);
         await wrapper
-          .findAll('.action-menu__option')
+          .findAll('.menu__option')
           .at(3)
           .trigger('click');
         await wrapper.vm.$nextTick();
@@ -238,15 +236,12 @@ describe('Action Menu', () => {
     it('should return to the first panel when click on back', async () => {
       const { wrapper } = await mountWrapperAndClickOnOperation();
 
-      expect(wrapper.find('.action-menu__option--back').exists()).toBeTruthy();
-      await wrapper.find('.action-menu__option--back').trigger('click');
+      expect(wrapper.find('.menu__option--back').exists()).toBeTruthy();
+      await wrapper.find('.menu__option--back').trigger('click');
 
       let el: PanelElement;
       for (el of FIRST_PANEL) {
         expect(wrapper.html()).toContain(el.label);
-      }
-      for (el of SECOND_PANEL) {
-        expect(wrapper.html()).not.toContain(el.label);
       }
     });
 
@@ -255,7 +250,7 @@ describe('Action Menu', () => {
       for (el of SECOND_PANEL) {
         const { wrapper } = await mountWrapperAndClickOnOperation();
         await wrapper
-          .findAll('.action-menu__option')
+          .findAll('.menu__option')
           .at(el.index)
           .trigger('click');
         await wrapper.vm.$nextTick();
@@ -268,7 +263,7 @@ describe('Action Menu', () => {
       for (el of SECOND_PANEL) {
         const { wrapper } = await mountWrapperAndClickOnOperation();
         await wrapper
-          .findAll('.action-menu__option')
+          .findAll('.menu__option')
           .at(el.index)
           .trigger('click');
         await wrapper.vm.$nextTick();
@@ -282,7 +277,7 @@ describe('Action Menu', () => {
       it('should add a valid "unique" step in the pipeline', async () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation();
         await wrapper
-          .findAll('.action-menu__option')
+          .findAll('.menu__option')
           .at(4) // "Get unique values" operation is at index 4
           .trigger('click');
         await wrapper.vm.$nextTick();
@@ -294,7 +289,7 @@ describe('Action Menu', () => {
       it('should close any open step form to show the "get unique" step in the pipeline', async () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation(true);
         await wrapper
-          .findAll('.action-menu__option')
+          .findAll('.menu__option')
           .at(4) // "Get unique values" operation is at index 4
           .trigger('click');
         await wrapper.vm.$nextTick();

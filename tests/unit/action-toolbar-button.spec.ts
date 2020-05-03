@@ -42,7 +42,7 @@ function last(array: any[]) {
  * @return the list of menu item wrappers
  */
 function assertMenuEmitsExpected(wrapper: VueMountedType, expectedEmits: emitParameters[]) {
-  const actionsWrappers = wrapper.findAll('.action-menu__option');
+  const actionsWrappers = wrapper.findAll('.menu__option');
   expect(actionsWrappers.length).toEqual(expectedEmits.length);
   let shouldEmit;
   for (const [idx, parameters] of Object.entries(expectedEmits)) {
@@ -198,7 +198,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(4).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
@@ -214,7 +214,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(4).trigger('click');
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'myDomain' },
@@ -234,7 +234,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(4).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
@@ -252,7 +252,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(5).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
@@ -268,7 +268,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(5).trigger('click');
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'myDomain' },
@@ -288,7 +288,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(5).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
@@ -306,7 +306,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(0).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
     });
@@ -322,7 +322,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(0).trigger('click');
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
         { name: 'domain', domain: 'myDomain' },
@@ -342,7 +342,7 @@ describe('ActionToolbarButton active', () => {
         store,
         localVue,
       });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
+      const actionsWrappers = wrapper.findAll('.menu__option');
       await actionsWrappers.at(0).trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     });
@@ -361,7 +361,7 @@ describe('ActionToolbarButton active', () => {
           store,
           localVue,
         });
-        const actionsWrappers = wrapper.findAll('.action-menu__option');
+        const actionsWrappers = wrapper.findAll('.menu__option');
         await actionsWrappers.at(Number(idx) + 2).trigger('click');
         expect(store.getters[VQBnamespace('pipeline')]).toEqual([
           { name: 'domain', domain: 'myDomain' },
@@ -381,7 +381,7 @@ describe('ActionToolbarButton active', () => {
           store,
           localVue,
         });
-        const actionsWrappers = wrapper.findAll('.action-menu__option');
+        const actionsWrappers = wrapper.findAll('.menu__option');
         await actionsWrappers.at(Number(idx) + 2).trigger('click');
         expect(wrapper.emitted().closed).toBeTruthy();
       });

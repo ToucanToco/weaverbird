@@ -193,3 +193,28 @@ export enum Alignment {
 }
 
 export const POPOVER_SHADOW_GAP = 8;
+
+export type DataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
+
+export const DATA_TYPE: { name: DataType; icon: string }[] = [
+  {
+    name: 'integer',
+    icon: '123',
+  },
+  {
+    name: 'float',
+    icon: '1.2',
+  },
+  {
+    name: 'text',
+    icon: 'ABC',
+  },
+  {
+    name: 'date',
+    icon: '<i class="fas fa-calendar-alt"></i>',
+  },
+  {
+    name: 'boolean',
+    icon: '<i class="fas fa-check"></i>',
+  },
+];

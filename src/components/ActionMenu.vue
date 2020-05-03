@@ -1,58 +1,18 @@
 <template>
-  <popover :visible="visible" :align="alignLeft" bottom @closed="close">
-    <div class="action-menu__body">
-      <transition name="slide-left" mode="out-in">
-        <div v-if="visiblePanel == 1">
-          <div class="action-menu__panel">
-            <div class="action-menu__option" @click="openStep('rename')">Rename column</div>
-            <div class="action-menu__option" @click="openStep('duplicate')">Duplicate column</div>
-            <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
-            <div
-              class="action-menu__option action-menu__option--top-bordered"
-              @click="visiblePanel = 2"
-            >
-              Other operations
-            </div>
-            <div class="action-menu__option--top-bordered">
-              <ListUniqueValues
-                v-if="currentUnique"
-                :options="currentUnique.values"
-                :filter="condition"
-                :loaded="currentUnique.loaded"
-                @input="condition = $event"
-              />
-              <div
-                v-if="isApplyFilterVisible"
-                class="action-menu__apply-filter"
-                @click="createFilterStep"
-              >
-                Apply Filter
-              </div>
-            </div>
-          </div>
-        </div>
-      </transition>
-      <transition name="slide-right" mode="out-in">
-        <div v-if="visiblePanel == 2">
-          <div class="action-menu__panel">
-            <div class="action-menu__option--back" @click="visiblePanel = 1">
-              <i class="fas fa-angle-left" /> BACK
-            </div>
-            <div
-              class="action-menu__option action-menu__option--top-bordered"
-              @click="openStep('filter')"
-            >
-              Filter values
-            </div>
-            <div class="action-menu__option" @click="openStep('fillna')">Fill null values</div>
-            <div class="action-menu__option" @click="openStep('replace')">Replace values</div>
-            <div class="action-menu__option" @click="openStep('sort')">Sort values</div>
-            <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
-          </div>
-        </div>
-      </transition>
-    </div>
-  </popover>
+  <Menu :visible="visible" @closed="close" :buttons="firstPanel" :other-buttons="secondPanel">
+    <template v-slot:first-panel-special>
+      <ListUniqueValues
+        v-if="currentUnique"
+        :options="currentUnique.values"
+        :filter="condition"
+        :loaded="currentUnique.loaded"
+        @input="condition = $event"
+      />
+      <div v-if="isApplyFilterVisible" class="action-menu__apply-filter" @click="createFilterStep">
+        Apply Filter
+      </div>
+    </template>
+  </Menu>
 </template>
 <script lang="ts">
 import _isEqual from 'lodash/isEqual';
@@ -60,6 +20,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
+import Menu, { ButtonsList } from '@/components/Menu.vue';
 import { DataSetColumn } from '@/lib/dataset/index.ts';
 import { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
@@ -77,6 +38,7 @@ enum VisiblePanel {
   components: {
     Popover,
     ListUniqueValues,
+    Menu,
   },
 })
 export default class ActionMenu extends Vue {
@@ -150,96 +112,47 @@ export default class ActionMenu extends Vue {
   createFilterStep() {
     this.createStep({ name: 'filter', condition: this.condition });
   }
+
+  readonly firstPanel: ButtonsList = [
+    {
+      html: 'Rename column',
+      onclick: () => this.openStep('rename'),
+    },
+    {
+      html: 'Duplicate column',
+      onclick: () => this.openStep('duplicate'),
+    },
+    {
+      html: 'Delete column',
+      onclick: () => this.createDeleteColumnStep(),
+    },
+  ];
+
+  readonly secondPanel: ButtonsList = [
+    {
+      html: 'Filter values',
+      onclick: () => this.openStep('filter'),
+    },
+    {
+      html: 'Fill null values',
+      onclick: () => this.openStep('fillna'),
+    },
+    {
+      html: 'Replace values',
+      onclick: () => this.openStep('replace'),
+    },
+    {
+      html: 'Sort values',
+      onclick: () => this.openStep('sort'),
+    },
+    {
+      html: 'Get unique values',
+      onclick: () => this.createUniqueGroupsStep(),
+    },
+  ];
 }
 </script>
-<style lang="scss">
-@import '../styles/_variables';
-
-.action-menu__body {
-  display: flex;
-  border-radius: 10px;
-  margin-left: -5px;
-  margin-right: -5px;
-  width: 200px;
-  background-color: #fff;
-  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
-  color: $base-color;
-  overflow: hidden;
-}
-
-.action-menu__panel {
-  display: flex;
-  width: 200px;
-  flex-direction: column;
-  border-color: $data-viewer-border-color;
-
-  &:not(:last-child) {
-    border-bottom-style: solid;
-    border-bottom-width: 1px;
-  }
-}
-
-.action-menu__option {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 13px;
-  padding: 10px 12px;
-  line-height: 20px;
-  justify-content: space-between;
-  position: relative;
-
-  &:hover {
-    background-color: rgba(0, 0, 0, 0.03);
-    color: $active-color;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-.action-menu__option--top-bordered {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.action-menu__option--back {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  font-size: 13px;
-  padding: 10px 12px;
-  line-height: 20px;
-  position: relative;
-  font-weight: 600;
-
-  &:last-child {
-    margin-bottom: 0;
-  }
-}
-
-.fa-angle-left {
-  margin-right: 5px;
-}
-
-.slide-left-enter,
-.slide-right-leave {
-  transform: translateX(-100%);
-  opacity: 0;
-}
-
-.slide-right-enter,
-.slide-left-leave {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.slide-left-enter-active,
-.slide-left-leave-active,
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition: all 0.3s ease;
-}
-
+<style lang="scss" scoped>
 .action-menu__apply-filter {
   font-size: 13px;
   text-decoration: underline;
