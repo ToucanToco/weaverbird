@@ -5,6 +5,7 @@
 ### Changed
 
 - `isLoading` state properties has now two keys: `dataset` and `uniqueValues` to identify what is loading.
+- Design of "Apply Filter" in column action menu has been updated
 
 ### Added
 
