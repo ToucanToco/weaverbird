@@ -1,11 +1,17 @@
 <template>
-  <Menu @closed="$emit('closed')" :visible="visible" :buttons="buttons" />
+  <Menu @closed="$emit('closed')" :visible="visible">
+    <MenuOption v-for="type in types" :key="type.name" @click.native="createConvertStep(type.name)">
+      <span class="data-types-menu__type-icon" v-html="type.icon" />
+      <span class="data-types-menu__type-label">{{ type.name }}</span>
+    </MenuOption>
+  </Menu>
 </template>
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { DATA_TYPE, DataType } from '@/components/constants';
-import Menu, { ButtonsList } from '@/components/Menu.vue';
+import Menu from '@/components/Menu.vue';
+import MenuOption from '@/components/Menu/MenuOption.vue';
 import { ConvertStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -14,6 +20,7 @@ import { MutationCallbacks } from '@/store/mutations';
   name: 'data-types-menu',
   components: {
     Menu,
+    MenuOption,
   },
 })
 export default class DataTypesMenu extends Vue {
@@ -56,15 +63,16 @@ export default class DataTypesMenu extends Vue {
     this.$emit('closed');
   }
 
-  readonly buttons: ButtonsList = DATA_TYPE.map(({ name, icon }) => ({
-    html: `<span class="data-types-menu__icon">${icon}</span><span style="text-transform: capitalize;">${name}</span>`,
-    onclick: () => this.createConvertStep(name),
-  }));
+  readonly types = DATA_TYPE;
 }
 </script>
 <style lang="scss" scoped>
-/deep/ .data-types-menu__icon {
+.data-types-menu__type-icon {
   font-family: 'Roboto Slab', serif;
   width: 30%;
+}
+
+.data-types-menu__type-label {
+  text-transform: capitalize;
 }
 </style>

@@ -1,6 +1,6 @@
 <template>
   <div class="data-viewer" v-if="pipeline">
-    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm" />
+    <ActionToolbar @actionClicked="openStepForm" />
     <div v-if="isLoading.dataset" class="data-viewer-loader-spinner" />
     <div v-if="!isEmpty && !isLoading.dataset" class="data-viewer-container">
       <div class="data-viewer-table-container">

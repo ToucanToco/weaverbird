@@ -13,6 +13,7 @@ import FilterEditor from '../src/components/FilterEditor.vue';
 import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 import Menu from '../src/components/Menu.vue';
 import MenuOption from '../src/components/Menu/MenuOption.vue';
+import DataTypesMenu from '../src/components/DataTypesMenu.vue';
 
-export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step, ListUniqueValues, Menu, MenuOption };
+export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step, ListUniqueValues, Menu, MenuOption, DataTypesMenu };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';

@@ -6,7 +6,7 @@
       <MenuOption
         v-for="item in items"
         :key="item.name"
-        @click="actionClicked(item.name, defaults)"
+        @click.native="actionClicked(item.name, defaults)"
       >
         {{ item.label }}
       </MenuOption>
