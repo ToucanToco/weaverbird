@@ -62,6 +62,7 @@ stories
     template: '<step is-last :step="step"></step>',
   }));
 
+import './action-toolbar';
 import './data-types-menu';
 import './data-viewer';
 import './resizable-panel';

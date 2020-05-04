@@ -64,7 +64,6 @@ import { VQBModule } from '@/store';
 
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
-import { CATEGORY_BUTTONS } from './constants';
 import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
 
@@ -137,10 +136,6 @@ export default class DataViewer extends Vue {
         },
       };
     });
-  }
-
-  get buttons() {
-    return CATEGORY_BUTTONS;
   }
 
   get iconClass() {

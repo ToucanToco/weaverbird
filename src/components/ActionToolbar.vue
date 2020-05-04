@@ -19,13 +19,13 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
+import { ButtonDef, CATEGORY_BUTTONS } from '@/components/constants';
 import { PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import ActionToolbarButton from './ActionToolbarButton.vue';
-import { ButtonDef } from './constants';
 import SearchBar from './SearchBar.vue';
 
 @Component({
@@ -36,7 +36,8 @@ import SearchBar from './SearchBar.vue';
   },
 })
 export default class ActionToolbar extends Vue {
-  @Prop(Array) readonly buttons!: ButtonDef[];
+  readonly buttons: ButtonDef[] = CATEGORY_BUTTONS;
+
   @VQBModule.State selectedColumns!: string[];
 
   isActiveActionToolbarButton = -1;

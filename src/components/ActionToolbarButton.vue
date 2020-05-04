@@ -104,12 +104,7 @@ export default class ActionToolbarButton extends Vue {
     this.selectStep({ index });
   }
 
-  readonly items: ButtonsList = ACTION_CATEGORIES[this.category].map(
-    ({ label, name, defaults }) => ({
-      html: label,
-      onclick: () => this.actionClicked(name, defaults),
-    }),
-  );
+  readonly items = ACTION_CATEGORIES[this.category];
 }
 </script>
 <style scoped lang="scss">
