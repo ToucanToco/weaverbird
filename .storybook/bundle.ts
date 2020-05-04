@@ -11,6 +11,8 @@ import Step from '../src/components/Step.vue';
 import ConditionsEditor from '../src/components/ConditionsEditor/ConditionsEditor.vue';
 import FilterEditor from '../src/components/FilterEditor.vue';
 import ListUniqueValues from '../src/components/ListUniqueValues.vue';
+import Menu from '../src/components/Menu.vue';
+import MenuOption from '../src/components/Menu/MenuOption.vue';
 
-export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step, ListUniqueValues };
+export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, ResizablePanels, Step, ListUniqueValues, Menu, MenuOption };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';

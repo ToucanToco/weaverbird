@@ -66,3 +66,4 @@ import './data-viewer';
 import './resizable-panel';
 import './filter-editor';
 import './list-unique-values';
+import './menu';

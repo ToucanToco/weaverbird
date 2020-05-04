@@ -2,7 +2,15 @@
   <button type="button" class="action-toolbar__btn">
     <i :class="`action-toolbar__btn-icon fas fa-${icon}`" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
-    <Menu :visible="isActive" @closed="$emit('closed')" :buttons="items" />
+    <Menu :visible="isActive" @closed="$emit('closed')">
+      <MenuOption
+        v-for="item in items"
+        :key="item.name"
+        @click="actionClicked(item.name, defaults)"
+      >
+        {{ item.label }}
+      </MenuOption>
+    </Menu>
   </button>
 </template>
 
@@ -11,7 +19,8 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
-import Menu, { ButtonsList } from '@/components/Menu.vue';
+import Menu from '@/components/Menu.vue';
+import MenuOption from '@/components/Menu/MenuOption.vue';
 import * as S from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -28,6 +37,7 @@ type NoFormStep = S.DateExtractPropertyStep | S.ToLowerStep | S.ToDateStep | S.T
   components: {
     Popover,
     Menu,
+    MenuOption,
   },
   props: {
     label: String,
