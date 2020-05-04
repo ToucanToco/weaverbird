@@ -153,11 +153,15 @@ export default class ActionMenu extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+@import '../styles/_variables';
+
 .action-menu__apply-filter {
-  font-size: 13px;
-  text-decoration: underline;
+  font-size: 12px;
   text-align: center;
-  padding: 7px 0px;
+  padding: 12px 0px;
   cursor: pointer;
+  text-transform: uppercase;
+  color: white;
+  background-color: $active-color;
 }
 </style>
