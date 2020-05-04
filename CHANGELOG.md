@@ -9,6 +9,7 @@
 ### Fixed
 
 - pagination appears if DataSet is not complete 
+- column unique values can be of any type
 
 
 ## [0.16.0] - 2020-04-29
