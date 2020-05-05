@@ -67,3 +67,4 @@ import './resizable-panel';
 import './filter-editor';
 import './list-unique-values';
 import './variable';
+import './widgets';

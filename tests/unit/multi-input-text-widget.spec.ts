@@ -6,7 +6,7 @@ import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('Widget MultisInputText', () => {
+describe('Widget MultiInputText', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(MultiInputTextWidget);
     expect(wrapper.exists()).toBeTruthy();

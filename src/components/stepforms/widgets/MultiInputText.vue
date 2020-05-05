@@ -1,6 +1,11 @@
 <template>
   <div class="widget-multiinputtext__container">
-    <div v-if="!isVariableInputActive" style="width: 100%; position: relative">
+    <VariableInput
+      :value="value"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      @input="updateValue"
+    >
       <multiselect
         :value="value"
         @input="updateValue"
@@ -11,19 +16,7 @@
         :placeholder="placeholder"
         @search-change="updateOptions"
       />
-      <span
-        v-if="variable"
-        :class="['variable-toggle', variableToggleClass]"
-        @click="updateValue('', true)"
-        >x</span
-      >
-    </div>
-    <VariableInput
-      v-else
-      :value="currentVariableName"
-      @input="updateValue($event, true)"
-      @removed="updateValue('', false)"
-    />
+    </VariableInput>
   </div>
 </template>
 
@@ -31,7 +24,9 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import VariableInput from './VariableInput.vue';
+import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+
+import VariableInput, { VariablesBucket } from './VariableInput/VariableInput.vue';
 
 @Component({
   name: 'multi-input-text-widget',
@@ -50,8 +45,11 @@ export default class MultiInputTextWidget extends Vue {
   @Prop({ default: () => [] })
   value!: string[] | string;
 
-  @Prop({ type: Boolean, default: false })
-  variable!: boolean;
+  @Prop()
+  availableVariables!: VariablesBucket[];
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   options: string[] = [];
 
@@ -61,44 +59,19 @@ export default class MultiInputTextWidget extends Vue {
     }
   }
 
-  get currentVariableName() {
-    if (typeof this.value != 'string') {
-      return undefined;
-    }
-    return this.value.replace('<%=', '').replace('%>', '');
-  }
-
-  updateValue(newValue: string[] | string, isVariable = false) {
-    if (isVariable && newValue !== undefined) {
-      this.$emit('input', `<%=${newValue}%>`);
-    } else if (newValue === undefined) {
+  updateValue(newValue: string[] | string | undefined) {
+    if (newValue === undefined) {
       this.$emit('input', []);
-      this.options = [];
     } else {
       this.$emit('input', newValue);
-      this.options = [];
     }
-  }
-
-  get variableInputClass() {
-    return { 'widget-input-text__container--with-variable': this.isVariableInputActive };
-  }
-
-  get variableToggleClass() {
-    return { 'variable-toggle--focused': true };
-  }
-
-  get isVariableInputActive() {
-    if (typeof this.value != 'string') {
-      return false;
-    }
-    return this.value.startsWith('<%=') && this.value.endsWith('%>');
+    this.options = [];
   }
 }
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../../../styles/_variables';
 .widget-multiinputtext__container {
   @extend %form-widget__container;
@@ -108,88 +81,89 @@ export default class MultiInputTextWidget extends Vue {
 .multiselect {
   color: $base-color-light;
   font-size: 14px;
+  z-index: 0;
 }
 
-.multiselect .multiselect__placeholder {
-  margin-bottom: 0;
-  color: $grey-dark;
-  font-size: 14px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  width: 100%;
-  padding: 0;
-  line-height: 20px;
-  padding-left: 5px;
-}
-
-.multiselect__single {
-  background-color: transparent;
-  color: $base-color-light;
-  font-size: 14px;
-  margin-bottom: 0;
-}
-
-.multiselect--active {
-  & > .multiselect__tags {
-    @extend %form-widget__field--focused;
-  }
-}
-
-.multiselect__option {
-  font-size: 14px;
-  box-shadow: inset 0 -1px 0 0 #f1f1f1;
-  &:after {
-    display: none;
-  }
-}
-
-.multiselect__option--selected {
-  background-color: $active-color;
-  color: $base-color-light;
-  font-weight: normal;
-  color: #fff;
-}
-
-.multiselect__option--selected.multiselect__option--highlight {
-  background-color: $active-color;
-  color: #fff;
-}
-
-.multiselect__option--highlight {
-  background-color: #f8f8f8;
-  color: $base-color-light;
-}
-
-.widget-multiinputtext__label {
-  @extend %form-widget__label;
-}
-
-.multiselect__tags {
-  @extend %form-widget__field;
-  border-radius: 0;
-  border: none;
-  font-size: 14px;
-  max-height: none;
-  display: block;
-  padding-right: 30px;
-  height: 40px;
-  overflow: hidden;
-  & > input {
-    background: transparent;
+/deep/ {
+  .multiselect .multiselect__placeholder {
     margin-bottom: 0;
-    &::placeholder {
-      color: $grey-dark;
+    color: $grey-dark;
+    font-size: 14px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+    padding: 0;
+    line-height: 20px;
+    padding-left: 5px;
+  }
+
+  .multiselect__single {
+    background-color: transparent;
+    color: $base-color-light;
+    font-size: 14px;
+    margin-bottom: 0;
+  }
+
+  .multiselect--active {
+    & > .multiselect__tags {
+      @extend %form-widget__field--focused;
     }
   }
-}
 
-.multiselect--active .multiselect__tags {
-  overflow: visible;
-  height: auto;
-}
+  .multiselect__option {
+    font-size: 14px;
+    box-shadow: inset 0 -1px 0 0 #f1f1f1;
+    &:after {
+      display: none;
+    }
+  }
 
-.widget-multiinputtext__container {
+  .multiselect__option--selected {
+    background-color: $active-color;
+    color: $base-color-light;
+    font-weight: normal;
+    color: #fff;
+  }
+
+  .multiselect__option--selected.multiselect__option--highlight {
+    background-color: $active-color;
+    color: #fff;
+  }
+
+  .multiselect__option--highlight {
+    background-color: #f8f8f8;
+    color: $base-color-light;
+  }
+
+  .widget-multiinputtext__label {
+    @extend %form-widget__label;
+  }
+
+  .multiselect__tags {
+    @extend %form-widget__field;
+    border-radius: 0;
+    border: none;
+    font-size: 14px;
+    max-height: none;
+    display: block;
+    padding-right: 30px;
+    height: 40px;
+    overflow: hidden;
+    & > input {
+      background: transparent;
+      margin-bottom: 0;
+      &::placeholder {
+        color: $grey-dark;
+      }
+    }
+  }
+
+  .multiselect--active .multiselect__tags {
+    overflow: visible;
+    height: auto;
+  }
+
   .multiselect__content-wrapper {
     display: none !important;
   }
@@ -248,61 +222,28 @@ export default class MultiInputTextWidget extends Vue {
   .multiselect__select {
     z-index: 3;
   }
-}
 
-.multiselect__select:before {
-  border: 0;
-  content: '\f078';
-  font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
-  font-weight: 900;
-  line-height: 1;
-  top: 8px;
-}
-
-.multiselect__tags .multiselect__tag {
-  background: $active-color;
-}
-
-.multiselect__tags .multiselect__tag-icon {
-  background: $active-color;
-  &:after {
-    color: rgba(255, 255, 255, 0.75);
+  .multiselect__select:before {
+    border: 0;
+    content: '\f078';
+    font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
+    font-weight: 900;
+    line-height: 1;
+    top: 8px;
   }
-  &:hover {
+
+  .multiselect__tags .multiselect__tag {
     background: $active-color;
   }
-}
 
-.variable-toggle {
-  z-index: 10000; // IMPORTANT: only diff with Input Text
-
-  font-family: cursive;
-  opacity: 0;
-  visibility: hidden;
-  display: block;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  right: 10px;
-  width: 18px;
-  height: 18px;
-  background: #eaeff5;
-  color: rgb(38, 101, 163);
-  border-radius: 50%;
-  line-height: 16px;
-  font-size: 14px;
-  text-align: center;
-  transition: 250ms all ease-in;
-  cursor: pointer;
-  &:hover {
-    background: rgb(38, 101, 163);
-    color: #eaeff5;
+  .multiselect__tags .multiselect__tag-icon {
+    background: $active-color;
+    &:after {
+      color: rgba(255, 255, 255, 0.75);
+    }
+    &:hover {
+      background: $active-color;
+    }
   }
-}
-
-.variable-toggle--focused {
-  opacity: 1;
-  visibility: visible;
 }
 </style>

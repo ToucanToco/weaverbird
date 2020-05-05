@@ -63,7 +63,7 @@ interface AvailableVariable {
   value: any;
 }
 
-interface VariablesBucket {
+export interface VariablesBucket {
   name: string;
   variables: AvailableVariable[];
 }
