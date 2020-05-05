@@ -27,6 +27,8 @@
       v-if="inputWidget"
       :is="inputWidget"
       :value="value.value"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
@@ -43,6 +45,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+import { VariablesBucket } from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -102,6 +106,12 @@ export default class FilterSimpleConditionWidget extends Vue {
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
+
+  @Prop()
+  availableVariables!: VariablesBucket[];
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   readonly operators: OperatorOption[] = [
     { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },
