@@ -71,99 +71,87 @@ export default class MultiInputTextWidget extends Vue {
 </script>
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
-<style lang="scss" scoped>
+<style lang="scss">
 @import '../../../styles/_variables';
 .widget-multiinputtext__container {
   @extend %form-widget__container;
   position: relative;
 }
-
 .multiselect {
   color: $base-color-light;
   font-size: 14px;
   z-index: 0;
 }
-
-/deep/ {
-  .multiselect .multiselect__placeholder {
+.multiselect .multiselect__placeholder {
+  margin-bottom: 0;
+  color: $grey-dark;
+  font-size: 14px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+  padding: 0;
+  line-height: 20px;
+  padding-left: 5px;
+}
+.multiselect__single {
+  background-color: transparent;
+  color: $base-color-light;
+  font-size: 14px;
+  margin-bottom: 0;
+}
+.multiselect--active {
+  & > .multiselect__tags {
+    @extend %form-widget__field--focused;
+  }
+}
+.multiselect__option {
+  font-size: 14px;
+  box-shadow: inset 0 -1px 0 0 #f1f1f1;
+  &:after {
+    display: none;
+  }
+}
+.multiselect__option--selected {
+  background-color: $active-color;
+  color: $base-color-light;
+  font-weight: normal;
+  color: #fff;
+}
+.multiselect__option--selected.multiselect__option--highlight {
+  background-color: $active-color;
+  color: #fff;
+}
+.multiselect__option--highlight {
+  background-color: #f8f8f8;
+  color: $base-color-light;
+}
+.widget-multiinputtext__label {
+  @extend %form-widget__label;
+}
+.multiselect__tags {
+  @extend %form-widget__field;
+  border-radius: 0;
+  border: none;
+  font-size: 14px;
+  max-height: none;
+  display: block;
+  padding-right: 30px;
+  height: 40px;
+  overflow: hidden;
+  & > input {
+    background: transparent;
     margin-bottom: 0;
-    color: $grey-dark;
-    font-size: 14px;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    width: 100%;
-    padding: 0;
-    line-height: 20px;
-    padding-left: 5px;
-  }
-
-  .multiselect__single {
-    background-color: transparent;
-    color: $base-color-light;
-    font-size: 14px;
-    margin-bottom: 0;
-  }
-
-  .multiselect--active {
-    & > .multiselect__tags {
-      @extend %form-widget__field--focused;
+    &::placeholder {
+      color: $grey-dark;
     }
   }
-
-  .multiselect__option {
-    font-size: 14px;
-    box-shadow: inset 0 -1px 0 0 #f1f1f1;
-    &:after {
-      display: none;
-    }
-  }
-
-  .multiselect__option--selected {
-    background-color: $active-color;
-    color: $base-color-light;
-    font-weight: normal;
-    color: #fff;
-  }
-
-  .multiselect__option--selected.multiselect__option--highlight {
-    background-color: $active-color;
-    color: #fff;
-  }
-
-  .multiselect__option--highlight {
-    background-color: #f8f8f8;
-    color: $base-color-light;
-  }
-
-  .widget-multiinputtext__label {
-    @extend %form-widget__label;
-  }
-
-  .multiselect__tags {
-    @extend %form-widget__field;
-    border-radius: 0;
-    border: none;
-    font-size: 14px;
-    max-height: none;
-    display: block;
-    padding-right: 30px;
-    height: 40px;
-    overflow: hidden;
-    & > input {
-      background: transparent;
-      margin-bottom: 0;
-      &::placeholder {
-        color: $grey-dark;
-      }
-    }
-  }
-
-  .multiselect--active .multiselect__tags {
-    overflow: visible;
-    height: auto;
-  }
-
+}
+.multiselect--active .multiselect__tags {
+  overflow: visible;
+  height: auto;
+}
+.widget-multiinputtext__container {
   .multiselect__content-wrapper {
     display: none !important;
   }
@@ -222,28 +210,25 @@ export default class MultiInputTextWidget extends Vue {
   .multiselect__select {
     z-index: 3;
   }
-
-  .multiselect__select:before {
-    border: 0;
-    content: '\f078';
-    font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
-    font-weight: 900;
-    line-height: 1;
-    top: 8px;
+}
+.multiselect__select:before {
+  border: 0;
+  content: '\f078';
+  font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
+  font-weight: 900;
+  line-height: 1;
+  top: 8px;
+}
+.multiselect__tags .multiselect__tag {
+  background: $active-color;
+}
+.multiselect__tags .multiselect__tag-icon {
+  background: $active-color;
+  &:after {
+    color: rgba(255, 255, 255, 0.75);
   }
-
-  .multiselect__tags .multiselect__tag {
+  &:hover {
     background: $active-color;
-  }
-
-  .multiselect__tags .multiselect__tag-icon {
-    background: $active-color;
-    &:after {
-      color: rgba(255, 255, 255, 0.75);
-    }
-    &:hover {
-      background: $active-color;
-    }
   }
 }
 </style>
