@@ -47,6 +47,19 @@ describe('Variable Input', () => {
       expect(wrapper.find('.widget-input-variable__variable-toggle').exists()).toBe(true);
     });
 
+    describe('when there is no available variables', () => {
+      beforeEach(async () => {
+        wrapper.setProps({
+          availableVariables: undefined,
+        });
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should not be present', () => {
+        expect(wrapper.find('.widget-input-variable__variable-toggle').exists()).toBe(false);
+      });
+    });
+
     describe('when clicked', () => {
       beforeEach(async () => {
         wrapper.find('.widget-input-variable__variable-toggle').trigger('click');

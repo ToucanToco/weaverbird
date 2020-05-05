@@ -1,7 +1,7 @@
 <template>
   <div class="widget-input-variable">
     <div v-if="isVariable" class="widget-input-variable__variable-container">
-      <div class="widget-input-variable__tag-container" v-if="!isPopoverVisible">
+      <div class="widget-input-variable__tag-container">
         <div class="widget-input-variable__tag">
           <span>
             <span style="font-family: cursive">x</span>
@@ -15,7 +15,12 @@
 
     <div v-else class="widget-input-variable__input-container">
       <slot />
-      <span class="widget-input-variable__variable-toggle" @click="startChoosingVariable">x</span>
+      <span
+        v-if="canBeVariable"
+        class="widget-input-variable__variable-toggle"
+        @click="startChoosingVariable"
+        >x</span
+      >
     </div>
 
     <popover
@@ -93,6 +98,13 @@ export default class VariableInput extends Vue {
   search = '';
 
   isChoosingVariable = false;
+
+  /**
+   * Determine whether to authorize or not the selection of a variable
+   */
+  get canBeVariable() {
+    return this.availableVariables && this.availableVariables.length > 0;
+  }
 
   startChoosingVariable() {
     this.isChoosingVariable = true;
