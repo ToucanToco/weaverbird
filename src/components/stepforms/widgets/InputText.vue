@@ -39,7 +39,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
-import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 
 import FormWidget from './FormWidget.vue';
 import VariableInput, { VariablesBucket } from './VariableInput/VariableInput.vue';

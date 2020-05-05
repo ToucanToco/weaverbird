@@ -24,7 +24,7 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 
 import VariableInput, { VariablesBucket } from './VariableInput/VariableInput.vue';
 

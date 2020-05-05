@@ -13,9 +13,9 @@ function escapeRegExp(string: string) {
 }
 
 /**
- * Determine if value is variable surrounded by delimiters or not, and if yes, extract the variable name.
+ * Determine if value is variable surrounded by delimiters or not, and if yes, extract its identifier.
  */
-export default function extractVariableName(
+export default function extractVariableIdentifier(
   value: any,
   variableDelimiters: VariableDelimiters,
 ): string | undefined {
