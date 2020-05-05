@@ -5,6 +5,7 @@
 ### Changed
 
 - `totalCount` becomes mandatory in `paginationContext` in DataSet
+- Design of "Apply Filter" in column action menu has been updated
 
 ### Fixed
 
