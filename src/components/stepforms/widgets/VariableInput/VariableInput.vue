@@ -3,11 +3,8 @@
     <div v-if="isVariable" class="widget-input-variable__variable-container">
       <div class="widget-input-variable__tag-container">
         <div class="widget-input-variable__tag">
-          <span>
-            <span style="font-family: cursive">x</span>
-            &nbsp;
-            <span class="widget-input-variable__variable-name">{{ variableName }}</span>
-          </span>
+          <span class="widget-input-variable__variable-icon">x</span>
+          <span class="widget-input-variable__variable-name">{{ variableName }}</span>
           <i class="widget-input-variable__tag-close fa fa-times" @click="dismissVariable" />
         </div>
       </div>
@@ -273,8 +270,21 @@ export default class VariableInput extends Vue {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  .widget-input-variable__tag-close {
-    cursor: pointer;
-  }
+}
+
+.widget-input-variable__variable-icon {
+  font-family: cursive;
+  margin-right: 1em;
+}
+
+.widget-input-variable__tag-close {
+  cursor: pointer;
+}
+
+.widget-input-variable__variable-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>
