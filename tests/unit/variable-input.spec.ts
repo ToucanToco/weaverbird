@@ -1,6 +1,6 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import extractVariableName from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+import extractVariableIdentifier from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 import VariableInput from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
 
 describe('Variable Input', () => {
@@ -12,19 +12,34 @@ describe('Variable Input', () => {
       propsData: {
         availableVariables: [
           {
-            name: 'App variables',
-            variables: [
-              { name: 'view', value: 'Product 123' },
-              { name: 'date.month', value: 'Apr' },
-              { name: 'date.year', value: '2020' },
-            ],
+            category: 'App variables',
+            label: 'view',
+            identifier: 'appRequesters.view',
+            value: 'Product 123',
           },
           {
-            name: 'Story variables',
-            variables: [
-              { name: 'country', value: 'USA' },
-              { name: 'city', value: 'New york' },
-            ],
+            category: 'App variables',
+            label: 'date.month',
+            identifier: 'appRequesters.date.month',
+            value: 'Apr',
+          },
+          {
+            category: 'App variables',
+            label: 'date.year',
+            identifier: 'appRequesters.date.year',
+            value: '2020',
+          },
+          {
+            category: 'Story variables',
+            label: 'country',
+            identifier: 'requestersManager.country',
+            value: '2020',
+          },
+          {
+            category: 'Story variables',
+            label: 'city',
+            identifier: 'appRequesters.city',
+            value: 'New York',
           },
         ],
       },
@@ -50,7 +65,7 @@ describe('Variable Input', () => {
     describe('when there is no available variables', () => {
       beforeEach(async () => {
         wrapper.setProps({
-          availableVariables: undefined,
+          availableVariables: [],
         });
         await wrapper.vm.$nextTick();
       });
@@ -73,6 +88,18 @@ describe('Variable Input', () => {
       it('should present all available variables organized in sections', () => {
         const sections = wrapper.findAll('.widget-input-variable__options-section');
         expect(sections).toHaveLength(2);
+        expect(
+          sections
+            .at(0)
+            .find('.widget-input-variable__option-section-title')
+            .text(),
+        ).toEqual('App variables');
+        expect(
+          sections
+            .at(1)
+            .find('.widget-input-variable__option-section-title')
+            .text(),
+        ).toEqual('Story variables');
         const varsFromFirstSection = sections.at(0).findAll('.widget-input-variable__option');
         expect(varsFromFirstSection).toHaveLength(3);
       });
@@ -105,7 +132,7 @@ describe('Variable Input', () => {
 
         it('should emit a new value with the chosen variable', () => {
           expect(wrapper.emitted('input')).toHaveLength(1);
-          expect(wrapper.emitted('input')[0]).toEqual(['{{ view }}']);
+          expect(wrapper.emitted('input')[0]).toEqual(['{{ appRequesters.view }}']);
         });
 
         it('should hide the variable chooser', () => {
@@ -145,8 +172,28 @@ describe('Variable Input', () => {
       expect(wrapper.find('.widget-input-variable__variable-container').exists()).toBe(true);
     });
 
-    it('should display the name of the variable without delimiters', () => {
+    it('should display the label of the variable without delimiters', () => {
       expect(wrapper.find('.widget-input-variable__variable-name').text()).toBe('hummus');
+    });
+
+    describe('if the variable is listed in available variables', () => {
+      beforeEach(async () => {
+        wrapper.setProps({
+          availableVariables: [
+            {
+              label: 'The famous hummus',
+              identifier: 'hummus',
+            },
+          ],
+        });
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should display the human-friendly label instead of the identifier', () => {
+        expect(wrapper.find('.widget-input-variable__variable-name').text()).toBe(
+          'The famous hummus',
+        );
+      });
     });
 
     describe('when dismissing the variable', () => {
@@ -162,10 +209,10 @@ describe('Variable Input', () => {
   });
 });
 
-describe('extractVariableName', () => {
+describe('extractVariableIdentifier', () => {
   it('should extract simple variable names', () => {
     expect(
-      extractVariableName('{{ hummus }}', {
+      extractVariableIdentifier('{{ hummus }}', {
         start: '{{',
         end: '}}',
       }),
@@ -174,7 +221,7 @@ describe('extractVariableName', () => {
 
   it('should extract variable names with dots', () => {
     expect(
-      extractVariableName('{{ hummus.mtabal }}', {
+      extractVariableIdentifier('{{ hummus.mtabal }}', {
         start: '{{',
         end: '}}',
       }),
@@ -183,7 +230,7 @@ describe('extractVariableName', () => {
 
   it('should extract variables with different delimiters', () => {
     expect(
-      extractVariableName('<%= croissant %>', {
+      extractVariableIdentifier('<%= croissant %>', {
         start: '<%=',
         end: '%>',
       }),

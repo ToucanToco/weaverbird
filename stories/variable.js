@@ -5,19 +5,34 @@ const stories = storiesOf('Inputs with variables', module);
 
 const SAMPLE_VARIABLES = [
   {
-    name: 'App variables',
-    variables: [
-      { name: 'view', value: 'Product 123' },
-      { name: 'date.month', value: 'Apr' },
-      { name: 'date.year', value: '2020' },
-    ],
+    category: 'App variables',
+    label: 'view',
+    identifier: 'appRequesters.view',
+    value: 'Product 123',
   },
   {
-    name: 'Story variables',
-    variables: [
-      { name: 'country', value: 'USA' },
-      { name: 'city', value: 'New york' },
-    ],
+    category: 'App variables',
+    label: 'date.month',
+    identifier: 'appRequesters.date.month',
+    value: 'Apr',
+  },
+  {
+    category: 'App variables',
+    label: 'date.year',
+    identifier: 'appRequesters.date.year',
+    value: '2020',
+  },
+  {
+    category: 'Story variables',
+    label: 'country',
+    identifier: 'requestersManager.country',
+    value: '2020',
+  },
+  {
+    category: 'Story variables',
+    label: 'city',
+    identifier: 'appRequesters.city',
+    value: 'New York',
   },
 ];
 

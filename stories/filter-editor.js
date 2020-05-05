@@ -87,19 +87,12 @@ stories.add('with some variables available', () => ({
 
   data() {
     return {
-      availableVariables: [{
-        name: 'Values',
-        variables: [
-          {name: 'bestNumber', value: 42},
-          {name: 'kingInTheNorth', value: 'JSnow'},
-        ]
-      }, {
-        name: 'Lists',
-        variables: [
-          {name: 'someArray', value: ['plop', 'plip']},
-          {name: 'pokeList', value: ['pikachu', 'carapuce', 'evoli']},
-        ]
-      }],
+      availableVariables: [
+        {category: 'Values', label: 'The best number', identifier: 'bestNumber', value: 42},
+        {category: 'Values', label: 'King in the North', identifier: 'kingInTheNorth', value: 'JSnow'},
+        {category: 'Lists', label: 'Some array', identifier: 'someArray', value: ['plop', 'plip']},
+        {category: 'Lists', label: 'Poke-deck', identifier: 'pokedeck', value: ['pikachu', 'carapuce', 'evoli']},
+      ],
       filterTree: {
         column: 'my_col',
         operator: 'in',

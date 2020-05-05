@@ -4,7 +4,7 @@
       <div class="widget-input-variable__tag-container">
         <div class="widget-input-variable__tag">
           <span class="widget-input-variable__variable-icon">x</span>
-          <span class="widget-input-variable__variable-name">{{ variableName }}</span>
+          <span class="widget-input-variable__variable-name">{{ variableLabel }}</span>
           <i class="widget-input-variable__tag-close fa fa-times" @click="dismissVariable" />
         </div>
       </div>
@@ -16,8 +16,8 @@
         v-if="canBeVariable"
         class="widget-input-variable__variable-toggle"
         @click="startChoosingVariable"
-        >x</span
-      >
+        >x
+      </span>
     </div>
 
     <popover
@@ -30,19 +30,19 @@
       <div class="widget-input-variable__options-container">
         <div
           class="widget-input-variable__options-section"
-          v-for="variablesBucket in availableVariables"
-          :key="variablesBucket.name"
+          v-for="category in variablesByCategory"
+          :key="category.label"
         >
-          <div class="widget-input-variable__option-section-title">
-            {{ variablesBucket.name }}
+          <div class="widget-input-variable__option-section-title" v-if="category.label">
+            {{ category.label }}
           </div>
           <div
             class="widget-input-variable__option"
-            v-for="availableVariable in variablesBucket.variables"
-            :key="availableVariable.name"
-            @click="chooseVariable(availableVariable.name)"
+            v-for="availableVariable in category.variables"
+            :key="availableVariable.identifier"
+            @click="chooseVariable(availableVariable.identifier)"
           >
-            <span class="widget-input-variable__option-name">{{ availableVariable.name }}</span>
+            <span class="widget-input-variable__option-name">{{ availableVariable.label }}</span>
             <span class="widget-input-variable__option-value">{{ availableVariable.value }}</span>
           </div>
         </div>
@@ -58,15 +58,19 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 
-import extractVariableName, { VariableDelimiters } from './extract-variable-name';
+import extractVariableIdentifier, { VariableDelimiters } from './extract-variable-identifier';
 
 interface AvailableVariable {
-  name: string;
-  value: any;
+  identifier: string; // how the variable will be written in the code
+  value: any; // current value of the variable
+  category?: string;
+  label: string;
 }
 
-export interface VariablesBucket {
-  name: string;
+export type VariablesBucket = AvailableVariable[];
+
+interface VariablesCategory {
+  label: string | undefined;
   variables: AvailableVariable[];
 }
 
@@ -85,7 +89,28 @@ export default class VariableInput extends Vue {
   value!: any;
 
   @Prop({ default: () => [] })
-  availableVariables!: VariablesBucket[];
+  availableVariables!: VariablesBucket;
+
+  /**
+   * Group variables by category to easily choose among them
+   *
+   * https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_groupby
+   */
+  get variablesByCategory(): VariablesCategory[] {
+    return this.availableVariables.reduce(function(categories: VariablesCategory[], variable) {
+      const varCategoryLabel = variable.category;
+      const category = categories.find(c => c.label === varCategoryLabel);
+      if (category !== undefined) {
+        category.variables.push(variable);
+      } else {
+        categories.push({
+          label: varCategoryLabel,
+          variables: [variable],
+        });
+      }
+      return categories;
+    }, []);
+  }
 
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
@@ -114,20 +139,34 @@ export default class VariableInput extends Vue {
   /**
    * Wraps the chosen variable with delimiters and emits it
    */
-  chooseVariable(variableName: string) {
+  chooseVariable(variableIdentifier: string) {
     this.$emit(
       'input',
-      `${this.variableDelimiters.start} ${variableName} ${this.variableDelimiters.end}`,
+      `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`,
     );
     this.stopChoosingVariable();
   }
 
-  get variableName() {
-    return extractVariableName(this.value, this.variableDelimiters);
+  get variableIdentifier() {
+    return extractVariableIdentifier(this.value, this.variableDelimiters);
   }
 
   get isVariable() {
-    return this.variableName != null;
+    return this.variableIdentifier != null;
+  }
+
+  /**
+   * If the variable identifier is listed in the available variables, we prefer to display its label.
+   */
+  get variableLabel() {
+    const matchingAvailableVariable = this.availableVariables.find(
+      aV => aV.identifier === this.variableIdentifier,
+    );
+    if (matchingAvailableVariable) {
+      return matchingAvailableVariable.label;
+    } else {
+      return this.variableIdentifier;
+    }
   }
 
   /**
