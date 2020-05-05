@@ -1,19 +1,35 @@
-import { FilterEditor, VariableInput, InputText, MultiInputText } from '../dist/storybook/components';
+import { VariableInput, MultiInputText } from '../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
-import Vuex from 'vuex';
+const stories = storiesOf('Inputs with variables', module);
 
-const stories = storiesOf('variable', module);
+const SAMPLE_VARIABLES = [
+  {
+    name: 'App variables',
+    variables: [
+      { name: 'view', value: 'Product 123' },
+      { name: 'date.month', value: 'Apr' },
+      { name: 'date.year', value: '2020' },
+    ],
+  },
+  {
+    name: 'Story variables',
+    variables: [
+      { name: 'country', value: 'USA' },
+      { name: 'city', value: 'New york' },
+    ],
+  },
+];
 
-stories.add('Variable input', () => ({
+stories.add('wrapping a text input', () => ({
   template: `
-    <div style="margin: 30px;">
-        <div style="width: 300px;"><VariableInput v-model="value" @removed="value=''"></VariableInput></div>
-        <pre style="margin-top: 30px;">{{ value }}</pre>
+    <div>
+      <VariableInput v-model="value" :available-variables="availableVariables">
+        <input type="text" v-model="value" />
+      </VariableInput>
+      <pre>{{ value }}</pre>
     </div>
   `,
-
-  store: new Vuex.Store(),
 
   components: {
     VariableInput
@@ -21,83 +37,32 @@ stories.add('Variable input', () => ({
 
   data() {
     return {
-        value: '',
+      value: undefined,
+      availableVariables: SAMPLE_VARIABLES
     };
   },
 }));
 
-stories.add('MultiInput with variable input', () => ({
+stories.add('wrapping a MultiInputText', () => ({
   template: `
-    <div style="margin: 30px; width:200px;"">
-        <MultiInputText v-model="value" :variable="true"></MultiInputText>
-        <pre style="margin-top: 30px;">{{ JSON.stringify(value) }}</pre>
+    <div>
+      <VariableInput v-model="value" :available-variables="availableVariables">
+        <MultiInputText v-model="value"></MultiInputText>
+      </VariableInput>
+      <pre>{{ value }}</pre>
     </div>
   `,
 
-  store: new Vuex.Store(),
-
   components: {
-    MultiInputText
+    MultiInputText,
+    VariableInput,
   },
 
   data() {
     return {
-        value: []
+      value: undefined,
+      availableVariables: SAMPLE_VARIABLES
     };
   },
 }));
-
-stories.add('Input with variable input', () => ({
-  template: `
-    <div style="margin: 30px;  width:200px;"">
-        <InputText v-model="value" :variable="true" placeholder="a nice and cool input"></InputText>
-        <pre style="margin-top: 30px;">{{ value }}</pre>
-    </div>
-  `,
-
-  store: new Vuex.Store(),
-
-  components: {
-    InputText
-  },
-
-  data() {
-    return {
-        value: ''
-    };
-  },
-}));
-
-// stories.add('Condition editor With variable input', () => ({
-//   template: `
-//     <div style="margin: 30px;">
-//         <FilterEditor :filter-tree="filterTree" @filterTreeUpdated="updateFilterTree"></FilterEditor>
-//         <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
-//     </div>
-//   `,
-
-//   store: new Vuex.Store(),
-
-//   components: {
-//     FilterEditor
-//   },
-
-//   data() {
-//     return {
-//       filterTree: { column: '', value: '', operator: 'eq' },
-//     };
-//   },
-
-//   computed: {
-//     filterTreeStringify() {
-//       return JSON.stringify(this.filterTree, null, 2);
-//     }
-//   },
-
-//   methods: {
-//     updateFilterTree(newFilterTree) {
-//       this.filterTree = newFilterTree;
-//     },
-//   },
-// }));
 
