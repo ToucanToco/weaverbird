@@ -1,5 +1,5 @@
-import { ConditionsEditor, FilterEditor } from '../dist/storybook/components';
-import { storiesOf } from '@storybook/vue';
+import {ConditionsEditor, FilterEditor} from '../dist/storybook/components';
+import {storiesOf} from '@storybook/vue';
 
 import Vuex from 'vuex';
 
@@ -9,7 +9,6 @@ stories.add('FilterEditor', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
       <FilterEditor :filter-tree="filterTree" @filterTreeUpdated="updateFilterTree">
-      </ConditionsEditor>
       <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
     </div>
   `,
@@ -22,7 +21,8 @@ stories.add('FilterEditor', () => ({
 
   data() {
     return {
-      filterTree: {'and':[
+      filterTree: {
+        'and': [
           {
             column: 'my_col',
             operator: 'eq',
@@ -35,18 +35,18 @@ stories.add('FilterEditor', () => ({
           },
           {
             'or':
-             [
-              {
-                column: 'my_sub_col',
-                operator: 'eq',
-                value: 'my_value',
-              },
-              {
-                column: 'my_sub_col',
-                operator: 'eq',
-                value: 'my_value',
-              },
-            ],
+              [
+                {
+                  column: 'my_sub_col',
+                  operator: 'eq',
+                  value: 'my_value',
+                },
+                {
+                  column: 'my_sub_col',
+                  operator: 'eq',
+                  value: 'my_value',
+                },
+              ],
           },
         ],
       },
@@ -66,10 +66,67 @@ stories.add('FilterEditor', () => ({
   },
 }));
 
+
+stories.add('with some variables available', () => ({
+  template: `
+    <div>
+      <FilterEditor
+        :filter-tree="filterTree"
+        @filterTreeUpdated="updateFilterTree"
+        :available-variables="availableVariables"
+      />
+      <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
+    </div>
+  `,
+
+  store: new Vuex.Store(),
+
+  components: {
+    FilterEditor
+  },
+
+  data() {
+    return {
+      availableVariables: [{
+        name: 'Values',
+        variables: [
+          {name: 'bestNumber', value: 42},
+          {name: 'kingInTheNorth', value: 'JSnow'},
+        ]
+      }, {
+        name: 'Lists',
+        variables: [
+          {name: 'someArray', value: ['plop', 'plip']},
+          {name: 'pokeList', value: ['pikachu', 'carapuce', 'evoli']},
+        ]
+      }],
+      filterTree: {
+        column: 'my_col',
+        operator: 'in',
+        value: '{{ someArray }}',
+      },
+    };
+  },
+
+  computed: {
+    filterTreeStringify() {
+      return JSON.stringify(this.filterTree, null, 2);
+    }
+  },
+
+  methods: {
+    updateFilterTree(newFilterTree) {
+      this.filterTree = newFilterTree;
+    },
+  },
+}));
+
+
 stories.add('Condition editor (empty slot)', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
-      <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateConditionsTree"></ConditionsEditor>
+      <ConditionsEditor :conditions-tree="conditionsTree"
+                        @conditionsTreeUpdated="updateConditionsTree"></ConditionsEditor>
       <pre style="margin-top: 30px;">{{ conditionsStringify }}</pre>
     </div>
   `,

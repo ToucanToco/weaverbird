@@ -6,6 +6,8 @@
           :value="slotProps.condition || undefined"
           @input="slotProps.updateCondition"
           :columnNamesProp="columnNames"
+          :available-variables="availableVariables"
+          :variable-delimiters="variableDelimiters"
           :data-path="slotProps.dataPath"
           :errors="errors"
         />
@@ -25,6 +27,8 @@ import {
   buildFilterStepTree,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
+import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+import { VariablesBucket } from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
 import { FilterComboAnd, FilterComboOr, FilterSimpleCondition } from '@/lib/steps';
 
 @Component({
@@ -46,6 +50,12 @@ export default class FilterEditor extends Vue {
     default: () => [],
   })
   columnNames!: string[];
+
+  @Prop()
+  availableVariables!: VariablesBucket[];
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   @Prop({
     type: Array,
