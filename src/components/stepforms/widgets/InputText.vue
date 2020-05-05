@@ -6,7 +6,13 @@
         <i class="fas fa-question-circle" />
       </a>
     </div>
-    <div v-if="!isVariableInputActive" style="width: 100%; position: relative">
+
+    <VariableInput
+      :value="value"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      @input="updateValue"
+    >
       <input
         ref="input"
         :class="elementClass"
@@ -17,19 +23,8 @@
         @focus="focus()"
         @input="updateValue($event.target.value)"
       />
-      <span
-        v-if="variable"
-        :class="['variable-toggle', variableToggleClass]"
-        @click="updateValue('', true)"
-        >x</span
-      >
-    </div>
-    <VariableInput
-      v-else
-      :value="currentVariableName"
-      @input="updateValue($event, true)"
-      @removed="updateValue('', false)"
-    />
+    </VariableInput>
+
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
       {{ messageError }}
@@ -44,8 +39,10 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
+import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-name';
+
 import FormWidget from './FormWidget.vue';
-import VariableInput from './VariableInput.vue';
+import VariableInput, { VariablesBucket } from './VariableInput/VariableInput.vue';
 
 @Component({
   name: 'input-text-widget',
@@ -66,11 +63,11 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop({ default: undefined })
   docUrl!: string | undefined;
 
-  /**
-   * boolean to determine if input should propose variable or not
-   */
-  @Prop({ type: Boolean, default: false })
-  variable!: boolean;
+  @Prop()
+  availableVariables!: VariablesBucket[];
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   isFocused = false;
 
@@ -81,14 +78,6 @@ export default class InputTextWidget extends Mixins(FormWidget) {
     };
   }
 
-  get variableInputClass() {
-    return { 'widget-input-text__container--with-variable': this.isVariableInputActive };
-  }
-
-  get variableToggleClass() {
-    return { 'variable-toggle--focused': this.isFocused };
-  }
-
   blur() {
     this.isFocused = false;
   }
@@ -97,26 +86,8 @@ export default class InputTextWidget extends Mixins(FormWidget) {
     this.isFocused = true;
   }
 
-  updateValue(newValue?: string, isVariable = false) {
-    if (isVariable && newValue !== undefined) {
-      this.$emit('input', `<%=${newValue}%>`);
-    } else {
-      this.$emit('input', newValue);
-    }
-  }
-
-  get currentVariableName() {
-    if (typeof this.value != 'string') {
-      return undefined;
-    }
-    return this.value.replace('<%=', '').replace('%>', '');
-  }
-
-  get isVariableInputActive() {
-    if (typeof this.value != 'string') {
-      return false;
-    }
-    return this.value.startsWith('<%=') && this.value.endsWith('%>');
+  updateValue(newValue?: string) {
+    this.$emit('input', newValue);
   }
 }
 </script>
@@ -155,36 +126,5 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   &:hover {
     color: $active-color;
   }
-}
-
-.variable-toggle {
-  font-family: cursive;
-  opacity: 0;
-  visibility: hidden;
-  display: block;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  margin: auto;
-  right: 10px;
-  width: 18px;
-  height: 18px;
-  background: #eaeff5;
-  color: rgb(38, 101, 163);
-  border-radius: 50%;
-  line-height: 16px;
-  font-size: 14px;
-  text-align: center;
-  transition: 250ms all ease-in;
-  cursor: pointer;
-  &:hover {
-    background: rgb(38, 101, 163);
-    color: #eaeff5;
-  }
-}
-
-.variable-toggle--focused {
-  opacity: 1;
-  visibility: visible;
 }
 </style>
