@@ -171,4 +171,8 @@ export default class ActionToolbarButton extends Vue {
   font-weight: 500;
   text-transform: uppercase;
 }
+
+.action-menu__section {
+  width: 100%;
+}
 </style>

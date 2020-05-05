@@ -11,7 +11,7 @@
 
 - pagination appears if DataSet is not complete 
 - column unique values can be of any type
-
+- action toolbar buttons style
 
 ## [0.16.0] - 2020-04-29
 
