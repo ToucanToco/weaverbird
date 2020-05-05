@@ -258,12 +258,17 @@ export default class VariableInput extends Vue {
   font-size: 10px;
   font-weight: 500;
   color: #888888;
+  flex-shrink: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 1em;
 }
 
 .widget-input-variable__tag {
   border-radius: 4px;
   background-color: rgba(42, 102, 161, 0.05);
-  padding: 5px 10px;
+  padding: 0 10px;
   color: #2a66a1;
   display: flex;
   justify-content: space-between;
