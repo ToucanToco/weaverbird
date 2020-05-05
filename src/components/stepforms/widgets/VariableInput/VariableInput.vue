@@ -46,7 +46,7 @@
             <span class="widget-input-variable__option-value">{{ availableVariable.value }}</span>
           </div>
         </div>
-        <div class="widget-input-variable__advanced-variable">Advanced variable</div>
+        <!-- <div class="widget-input-variable__advanced-variable">Advanced variable</div> -->
       </div>
     </popover>
   </div>
