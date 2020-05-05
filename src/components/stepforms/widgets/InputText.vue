@@ -98,8 +98,6 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   }
 
   updateValue(newValue?: string, isVariable = false) {
-    console.log('updateValue>newValue', newValue);
-    console.log('updateValue>isVariable', isVariable);
     if (isVariable && newValue !== undefined) {
       this.$emit('input', `<%=${newValue}%>`);
     } else {

@@ -1,6 +1,6 @@
 <template>
   <div class="widget-input-variable">
-    <div class="widget-input-variable__tag-container" v-if="!areOptionsVisible">
+    <div class="widget-input-variable__tag-container" v-if="!isPopoverVisible">
       <div class="widget-input-variable__tag">
         <span><span style="font-family: cursive">x</span> &nbsp; {{ value }}</span>
         <i class="widget-input-variable__tag-close fa fa-times" @click="$emit('removed')" />
@@ -14,25 +14,29 @@
       placeholder="Search a variable"
     />
     <div>
-      <popover :visible="areOptionsVisible" :align="alignLeft" bottom>
+      <popover :visible="isPopoverVisible" :align="alignLeft" bottom>
         <div class="widget-input-variable__options-container">
           <div
             class="widget-input-variable__options-section"
-            v-for="optionType in filteredOptions"
-            :key="optionType.type"
+            v-for="variablesBucket in filteredAvailableVariables"
+            :key="variablesBucket.type"
           >
-            <div class="widget-input-variable__option-section-title">{{ optionType.type }}</div>
+            <div class="widget-input-variable__option-section-title">
+              {{ variablesBucket.name }}
+            </div>
             <div
               class="widget-input-variable__options"
-              v-for="option in optionType.values"
-              :key="option.name"
-              @click="$emit('input', option.name)"
+              v-for="availableVariable in variablesBucket.variables"
+              :key="availableVariable.name"
+              @click="$emit('input', availableVariable.name)"
             >
-              <span class="widget-input-variable__options-name">{{ option.name }}</span>
-              <span class="widget-input-variable__options-value">{{ option.value }}</span>
+              <span class="widget-input-variable__options-name">{{ availableVariable.name }}</span>
+              <span class="widget-input-variable__options-value">{{
+                availableVariable.value
+              }}</span>
             </div>
           </div>
-          <div class="widget-input-variable__advanced-variable">advanced variable</div>
+          <div class="widget-input-variable__advanced-variable">Advanced variable</div>
         </div>
       </popover>
     </div>
@@ -46,6 +50,16 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 
+interface AvailableVariable {
+  name: string;
+  value: any;
+}
+
+interface VariablesBucket {
+  name: string;
+  variables: AvailableVariable[];
+}
+
 @Component({
   name: 'variable-input',
   components: {
@@ -57,43 +71,44 @@ export default class VariableInput extends Vue {
   @Prop({ type: String, required: true })
   value!: string;
 
+  // availableVariables!: VariablesBucket[];
+
   /**
-   * These option are meat to be read by from the store via a getter
+   * These option are meat to be read from a prop
    */
-  readonly options = [
+  readonly availableVariables: VariablesBucket[] = [
     {
-      // type: { name: 'App variables', value: '' },
-      type: 'App variables',
-      values: [
+      name: 'App variables',
+      variables: [
         { name: 'view', value: 'Product 123' },
         { name: 'date.month', value: 'Apr' },
         { name: 'date.year', value: '2020' },
       ],
     },
     {
-      // type: { name: 'Story variables', value: '' },
-      type: 'Story variables',
-      values: [
+      name: 'Story variables',
+      variables: [
         { name: 'country', value: 'USA' },
         { name: 'city', value: 'New york' },
       ],
     },
   ];
+
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
   search = '';
 
-  get areOptionsVisible(): boolean {
+  get isPopoverVisible(): boolean {
     return this.value === '' || this.value === undefined;
   }
 
-  get filteredOptions() {
-    return this.options
-      .map(optionType => ({
-        type: optionType.type,
-        values: optionType.values.filter(({ name }) => name.includes(this.search)),
+  get filteredAvailableVariables(): VariablesBucket[] {
+    return this.availableVariables
+      .map(availableVariable => ({
+        name: availableVariable.name,
+        variables: availableVariable.variables.filter(({ name }) => name.includes(this.search)),
       }))
-      .filter(({ values }) => values.length > 0);
+      .filter(({ variables }) => variables.length > 0);
   }
 }
 </script>
