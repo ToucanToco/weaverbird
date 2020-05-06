@@ -73,14 +73,19 @@ export default class MultiInputTextWidget extends Vue {
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
 @import '../../../styles/_variables';
+
 .widget-multiinputtext__container {
   @extend %form-widget__container;
   position: relative;
+  // Prevent multi-select to overlap things put before it, like the variable button
+  isolation: isolate;
+  z-index: 0;
 }
+
+// TODO project-wide multiselect styles should be extracted from this components into a specific stylesheet, so we could scope this one.
 .multiselect {
   color: $base-color-light;
   font-size: 14px;
-  z-index: 0;
 }
 .multiselect .multiselect__placeholder {
   margin-bottom: 0;
@@ -207,10 +212,12 @@ export default class MultiInputTextWidget extends Vue {
       margin-bottom: 0;
     }
   }
+  // The selection caret is useless in this widget
   .multiselect__select {
-    z-index: 3;
+    display: none;
   }
 }
+
 .multiselect__select:before {
   border: 0;
   content: '\f078';
