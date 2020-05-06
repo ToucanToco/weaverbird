@@ -216,10 +216,15 @@ export default class VariableInput extends Vue {
   }
 }
 
-// Variable toggle appears when hovering the input
-.widget-input-variable__input-container:hover .widget-input-variable__variable-toggle {
-  visibility: visible;
-  opacity: 1;
+// Variable toggle appears when focusing or hovering the input
+.widget-input-variable__input-container {
+  &:focus-within,
+  &:hover {
+    .widget-input-variable__variable-toggle {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
 }
 
 .widget-input-variable__search,
