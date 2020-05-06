@@ -15,7 +15,7 @@
       <span
         v-if="canBeVariable"
         class="widget-input-variable__variable-toggle"
-        :class="{'widget-input-variable__variable-toggle--choosing': isChoosingVariable}"
+        :class="{ 'widget-input-variable__variable-toggle--choosing': isChoosingVariable }"
         @click="startChoosingVariable"
         >x
       </span>
@@ -203,7 +203,7 @@ export default class VariableInput extends Vue {
   width: 18px;
   height: 18px;
   background: #eaeff5;
-  color: rgb(38, 101, 163);
+  color: $active-color;
   border-radius: 50%;
   line-height: 16px;
   font-size: 14px;
@@ -215,7 +215,7 @@ export default class VariableInput extends Vue {
   &.widget-input-variable__variable-toggle--choosing {
     opacity: 1;
     visibility: visible;
-    background: rgb(38, 101, 163);
+    background: $active-color;
     color: #eaeff5;
   }
 }
