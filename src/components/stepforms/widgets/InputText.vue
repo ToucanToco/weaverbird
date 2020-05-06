@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-input-text__container" :class="[toggleClassErrorWarning, variableInputClass]">
+  <div class="widget-input-text__container" :class="toggleClassErrorWarning">
     <div class="widget-input-text__label">
       <label v-if="name" @click="$refs.input.focus()">{{ name }}</label>
       <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
@@ -15,12 +15,10 @@
     >
       <input
         ref="input"
-        :class="elementClass"
+        class="widget-input-text"
         :placeholder="placeholder"
         type="text"
         :value="value"
-        @blur="blur()"
-        @focus="focus()"
         @input="updateValue($event.target.value)"
       />
     </VariableInput>
@@ -69,23 +67,6 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters!: VariableDelimiters;
 
-  isFocused = false;
-
-  get elementClass() {
-    return {
-      'widget-input-text': true,
-      'widget-input-text--focused': this.isFocused,
-    };
-  }
-
-  blur() {
-    this.isFocused = false;
-  }
-
-  focus() {
-    this.isFocused = true;
-  }
-
   updateValue(newValue?: string) {
     this.$emit('input', newValue);
   }
@@ -101,10 +82,10 @@ export default class InputTextWidget extends Mixins(FormWidget) {
 
 .widget-input-text {
   @extend %form-widget__field;
-}
 
-.widget-input-text--focused {
-  @extend %form-widget__field--focused;
+  &:focus-within {
+    @extend %form-widget__field--focused;
+  }
 }
 
 .widget-input-text__label {

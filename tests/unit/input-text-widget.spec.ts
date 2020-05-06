@@ -1,5 +1,4 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import Vue from 'vue';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 
@@ -78,17 +77,6 @@ describe('Widget Input Text', () => {
     expect(el.value).toEqual('foo');
   });
 
-  it('should add the right class on focus', async () => {
-    const wrapper = shallowMount(InputTextWidget, {
-      propsData: { value: 'foo' },
-    });
-    const inputWrapper = wrapper.find("input[type='text']");
-    inputWrapper.trigger('focus');
-    await Vue.nextTick();
-
-    expect(inputWrapper.classes()).toContain('widget-input-text--focused');
-  });
-
   it('should emit "input" event on update', () => {
     const wrapper = shallowMount(InputTextWidget, {
       propsData: {
@@ -99,15 +87,6 @@ describe('Widget Input Text', () => {
     (inputWrapper.element as HTMLInputElement).value = 'Stark';
     inputWrapper.trigger('input', { value: 'k' });
     expect(wrapper.emitted()).toEqual({ input: [['Stark']] });
-  });
-
-  it('should set / unset "isFocused" on focus / blur events', () => {
-    const wrapper = shallowMount(InputTextWidget);
-    const inputWrapper = wrapper.find('input[type="text"]');
-    inputWrapper.trigger('focus');
-    expect(wrapper.vm.$data.isFocused).toBeTruthy();
-    inputWrapper.trigger('blur');
-    expect(wrapper.vm.$data.isFocused).toBeFalsy();
   });
 
   it('should display an error message if messageError exists', () => {
