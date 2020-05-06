@@ -15,6 +15,7 @@
       <span
         v-if="canBeVariable"
         class="widget-input-variable__variable-toggle"
+        :class="{'widget-input-variable__variable-toggle--choosing': isChoosingVariable}"
         @click="startChoosingVariable"
         >x
       </span>
@@ -210,7 +211,10 @@ export default class VariableInput extends Vue {
   transition: 250ms all ease-in;
   cursor: pointer;
 
-  &:hover {
+  &:hover,
+  &.widget-input-variable__variable-toggle--choosing {
+    opacity: 1;
+    visibility: visible;
     background: rgb(38, 101, 163);
     color: #eaeff5;
   }
