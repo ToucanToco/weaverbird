@@ -13,7 +13,7 @@ describe('Data Types Menu', () => {
   it('should instantiate with the popover', () => {
     const wrapper = mount(DataTypesMenu);
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).toContain('popover-container');
+    expect(wrapper.classes()).toContain('popover');
   });
 
   it('should contain the right set of data types', () => {
