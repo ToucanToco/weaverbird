@@ -102,7 +102,7 @@ describe('Action Menu', () => {
   it('should instantiate with popover', async () => {
     const { wrapper } = await mountWrapper(false, true);
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).toContain('popover-container');
+    expect(wrapper.classes()).toContain('popover');
   });
 
   it('should not display the apply filter button', async () => {

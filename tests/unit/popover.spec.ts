@@ -239,187 +239,100 @@ describe('Popover', function() {
     expect(slotContentWrapper.text()).toEqual('Lorem ipsum');
   });
 
-  it('should append itself to the document body', function() {
-    createWrapper({ props: { visible: true } });
-
-    expect(popoverWrapper.element.parentElement).toEqual(document.body);
-  });
-
-  it('should remove its DOM upon destruction', function() {
-    createWrapper({ props: { visible: true } });
-    popoverWrapper.destroy();
-
-    expect(document.body.querySelector('.tc-popover')).toBeNull();
-  });
-
-  it('should be above by default', async function() {
-    createWrapper({
-      props: { visible: true },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-    });
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
-
-    expect(popoverBounds.top).toEqual(`${parentBounds.top - POPOVER_SHADOW_GAP}px`);
-    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
-  });
-
-  it('should update its position on orientation change', async function() {
-    createWrapper({
-      props: { visible: true },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    wrapper.element.style.left = '100px';
-    window.dispatchEvent(new Event('orientationchange'));
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
-
-    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
-  });
-
-  it('should update its position when resized', async function() {
-    createWrapper({
-      props: { visible: true },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    wrapper.element.style.left = '100px';
-    window.dispatchEvent(new Event('resize'));
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
-
-    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
-  });
-
-  it('should update its position when scrolled', async function() {
-    createWrapper({
-      props: { visible: true },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-
-    await wrapper.vm.$nextTick();
-    wrapper.element.style.left = '100px';
-    wrapper.element.dispatchEvent(new Event('scroll'));
-
-    await wrapper.vm.$nextTick();
-    const parentBounds = wrapper.element.getBoundingClientRect();
-    const popoverBounds = popoverWrapper.vm.$data.elementStyle;
-
-    expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
-  });
-
-  it('should emit "closed" on click away', async function() {
-    createWrapper({
-      props: { visible: true },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-    const anotherelement = wrapper.find('#anotherelement');
-    await wrapper.vm.$nextTick();
-
-    await anotherelement.trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(popoverWrapper.emitted().closed.length).toEqual(1);
-  });
-
-  it('should not emit "closed" on click on it', async function() {
-    createWrapper({
-      props: { visible: true },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
-    await wrapper.vm.$nextTick();
-
-    await popoverWrapper.trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(popoverWrapper.emitted().closed).toBeUndefined();
-  });
-
   it('should not emit "closed" when not visible', async function() {
-    createWrapper({
-      props: { visible: false },
-      parentStyle: {
-        height: '40px',
-        left: '200px',
-        position: 'absolute',
-        top: '200px',
-        width: '100px',
-      },
-      slotStyle: {
-        height: '140px',
-        width: '140px',
-      },
-    });
-    const popoverWrapper = wrapper.find({ ref: 'popover' });
+    createWrapper({ props: { visible: false }, slotText: 'Lorem ipsum' });
     const anotherelement = wrapper.find('#anotherelement');
-    await wrapper.vm.$nextTick();
-
     await anotherelement.trigger('click');
     await wrapper.vm.$nextTick();
     expect(popoverWrapper.emitted().closed).toBeUndefined();
+  });
+
+  describe('setupPositioning', function() {
+    beforeEach(async function() {
+      createWrapper({
+        props: { visible: true },
+        parentStyle: {
+          height: '40px',
+          left: '200px',
+          position: 'absolute',
+          top: '200px',
+          width: '100px',
+        },
+        slotStyle: {
+          height: '140px',
+          width: '140px',
+        },
+      });
+      await popoverWrapper.vm.$nextTick();
+    });
+
+    it('should call setupPositioning when visible becomes true', async function() {
+      createWrapper({ props: { visible: false } });
+      const setupPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'setupPositioning');
+      popoverWrapper.setProps({ visible: true });
+      await popoverWrapper.vm.$nextTick();
+      expect(setupPositioningSpy).toHaveBeenCalled();
+    });
+
+    it('should append itself to the document body', function() {
+      expect(popoverWrapper.element.parentElement).toEqual(document.body);
+    });
+
+    it('should be above by default', function() {
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+      expect(popoverBounds.top).toEqual(`${parentBounds.top - POPOVER_SHADOW_GAP}px`);
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+    });
+
+    it('should update its position on orientation change', async function() {
+      wrapper.element.style.left = '100px';
+      window.dispatchEvent(new Event('orientationchange'));
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+    });
+
+    it('should update its position when resized', async function() {
+      wrapper.element.style.left = '100px';
+      window.dispatchEvent(new Event('resize'));
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+    });
+
+    it('should update its position when scrolled', async function() {
+      wrapper.element.style.left = '100px';
+      wrapper.element.dispatchEvent(new Event('scroll'));
+      await wrapper.vm.$nextTick();
+      const parentBounds = wrapper.element.getBoundingClientRect();
+      const popoverBounds = popoverWrapper.vm.$data.elementStyle;
+      expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
+    });
+
+    it('should emit "closed" on click away', async function() {
+      const anotherelement = wrapper.find('#anotherelement');
+      await anotherelement.trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(popoverWrapper.emitted().closed.length).toEqual(1);
+    });
+
+    it('should not emit "closed" on click on it', async function() {
+      await popoverWrapper.trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(popoverWrapper.emitted().closed).toBeUndefined();
+    });
+  });
+
+  describe('destroyPositioning', function() {
+    it('should call destroyPosition when visible becomes false', async function() {
+      createWrapper({ props: { visible: true } });
+      await popoverWrapper.vm.$nextTick();
+      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      popoverWrapper.setProps({ visible: false });
+      expect(destroyPositioningSpy).toHaveBeenCalled();
+    });
   });
 });

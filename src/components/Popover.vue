@@ -1,14 +1,12 @@
 <template>
-  <span v-if="visible" class="popover-container">
-    <div class="popover" :style="elementStyle">
-      <slot />
-    </div>
+  <span v-if="visible" class="popover" :style="elementStyle">
+    <slot />
   </span>
 </template>
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import { Alignment } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
@@ -55,7 +53,7 @@ export default class Popover extends Vue {
     default: () => Alignment.Center,
     validator: value => Object.values(Alignment).includes(value),
   })
-  align!: string;
+  align!: Alignment;
 
   @Prop({
     type: Boolean,
@@ -71,7 +69,25 @@ export default class Popover extends Vue {
     return this.bottom;
   }
 
-  mounted() {
+  hasBeenPositioning = false;
+
+  @Watch('visible', { immediate: true })
+  async onVisibleChange(visible: boolean) {
+    if (!visible) {
+      // `destroyPositioning` must not be called if `setupPositioning` has not been called as well
+      if (this.hasBeenPositioning) {
+        this.hasBeenPositioning = false;
+        this.destroyPositioning();
+      }
+    } else {
+      // We need to wait for the "visible" element to become effectively visible before positioning it.
+      await this.$nextTick();
+      this.hasBeenPositioning = true;
+      this.setupPositioning();
+    }
+  }
+
+  setupPositioning() {
     // Save original parent before moving into body to use its position
     this.parent = this.$el.parentElement;
 
@@ -133,7 +149,7 @@ export default class Popover extends Vue {
   // Set the absolute position
   // Checks available space on screen for vertical positioning and alignment
   updatePosition = _.throttle(
-    function() {
+    function(this: Popover) {
       if (this.parent === null) {
         return;
       }
@@ -154,7 +170,7 @@ export default class Popover extends Vue {
     16,
   );
 
-  beforeDestroy() {
+  destroyPositioning() {
     // Cleanup listeners
     window.removeEventListener('orientationchange', this.orientationchangeListener);
     window.removeEventListener('resize', this.resizeListener);
