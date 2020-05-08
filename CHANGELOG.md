@@ -5,6 +5,7 @@
 ## Added
 
 - Data format presets in todate and fromdate steps
+- `statistics` step form to compute main statistics, like median or quintiles, of a numeric column.
 
 ## [0.17.4] - 2020-05-15
 
