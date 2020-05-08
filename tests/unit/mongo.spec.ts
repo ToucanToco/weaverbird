@@ -115,6 +115,398 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  describe('statistics steps', () => {
+    it('can generate statistics steps', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: [],
+          statistics: ['standard deviation', 'max'],
+          quantiles: [
+            {
+              label: 'firstCentile',
+              order: 100,
+              nth: 1,
+            },
+          ],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] } } },
+        { $match: { column: { $ne: null } } },
+        { $sort: { column: 1 } },
+        {
+          $group: {
+            _id: {},
+            count: { $sum: 1 },
+            max: { $max: '$column' },
+            average: { $avg: '$column' },
+            average_sum_square: { $avg: '$column_square' },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            max: 1,
+            firstCentile: {
+              $avg: [
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: {
+                        $subtract: [{ $multiply: [{ $divide: ['$count', 100] }, 1] }, 1],
+                      },
+                    },
+                  ],
+                },
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: { $multiply: [{ $divide: ['$count', 100] }, 1] },
+                    },
+                  ],
+                },
+              ],
+            },
+            'standard deviation': {
+              $pow: [{ $subtract: ['$average_sum_square', { $pow: ['$average', 2] }] }, 0.5],
+            },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+
+    it('can generate statistics steps with variance', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: [],
+          statistics: ['variance'],
+          quantiles: [
+            {
+              order: 30,
+              nth: 4,
+            },
+          ],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] } } },
+        { $match: { column: { $ne: null } } },
+        { $sort: { column: 1 } },
+        {
+          $group: {
+            _id: {},
+            count: { $sum: 1 },
+            average: { $avg: '$column' },
+            average_sum_square: { $avg: '$column_square' },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            '4-th 30-quantile': {
+              $avg: [
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: {
+                        $subtract: [{ $multiply: [{ $divide: ['$count', 30] }, 4] }, 1],
+                      },
+                    },
+                  ],
+                },
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: { $multiply: [{ $divide: ['$count', 30] }, 4] },
+                    },
+                  ],
+                },
+              ],
+            },
+            variance: { $subtract: ['$average_sum_square', { $pow: ['$average', 2] }] },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+
+    it('can generate statistics steps with variance and groupby', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: ['sea'],
+          statistics: ['variance'],
+          quantiles: [
+            {
+              order: 30,
+              nth: 4,
+            },
+          ],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] }, sea: 1 } },
+        { $match: { column: { $ne: null } } },
+        { $sort: { column: 1 } },
+        {
+          $group: {
+            _id: { sea: '$sea' },
+            count: { $sum: 1 },
+            average: { $avg: '$column' },
+            average_sum_square: { $avg: '$column_square' },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            sea: '$_id.sea',
+            '4-th 30-quantile': {
+              $avg: [
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: {
+                        $subtract: [{ $multiply: [{ $divide: ['$count', 30] }, 4] }, 1],
+                      },
+                    },
+                  ],
+                },
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: { $multiply: [{ $divide: ['$count', 30] }, 4] },
+                    },
+                  ],
+                },
+              ],
+            },
+            variance: { $subtract: ['$average_sum_square', { $pow: ['$average', 2] }] },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+
+    it('can generate statistics steps with group by columns', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: ['sea'],
+          statistics: ['standard deviation', 'max'],
+          quantiles: [
+            {
+              label: 'firstCentile',
+              order: 100,
+              nth: 1,
+            },
+          ],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] }, sea: 1 } },
+        { $match: { column: { $ne: null } } },
+        { $sort: { column: 1 } },
+        {
+          $group: {
+            _id: { sea: '$sea' },
+            count: { $sum: 1 },
+            max: { $max: '$column' },
+            average: { $avg: '$column' },
+            average_sum_square: { $avg: '$column_square' },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            max: 1,
+            sea: '$_id.sea',
+            firstCentile: {
+              $avg: [
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: {
+                        $subtract: [{ $multiply: [{ $divide: ['$count', 100] }, 1] }, 1],
+                      },
+                    },
+                  ],
+                },
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: { $multiply: [{ $divide: ['$count', 100] }, 1] },
+                    },
+                  ],
+                },
+              ],
+            },
+            'standard deviation': {
+              $pow: [{ $subtract: ['$average_sum_square', { $pow: ['$average', 2] }] }, 0.5],
+            },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+
+    it('can generate statistics steps without quantile and with group by columns', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: ['sea'],
+          statistics: ['min'],
+          quantiles: [],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind', sea: 1 } },
+        { $match: { column: { $ne: null } } },
+        {
+          $group: {
+            _id: { sea: '$sea' },
+            min: { $min: '$column' },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            min: 1,
+            sea: '$_id.sea',
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+
+    it('can generate statistics steps without quantile and with group by columns', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: ['sea'],
+          statistics: ['count', 'standard deviation'],
+          quantiles: [],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind', sea: 1, column_square: { $pow: [`$wind`, 2] } } },
+        { $match: { column: { $ne: null } } },
+        {
+          $group: {
+            _id: { sea: '$sea' },
+            count: { $sum: 1 },
+            average: { $avg: '$column' },
+            average_sum_square: { $avg: '$column_square' },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            count: 1,
+            sea: '$_id.sea',
+            'standard deviation': {
+              $pow: [{ $subtract: ['$average_sum_square', { $pow: ['$average', 2] }] }, 0.5],
+            },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+
+    it('can generate statistics steps with only one quantile', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'test_cube' },
+        {
+          name: 'statistics',
+          column: 'wind',
+          groupbyColumns: [],
+          statistics: [],
+          quantiles: [
+            {
+              order: 20,
+              nth: 4,
+            },
+          ],
+        },
+      ];
+      const querySteps = mongo36translator.translate(pipeline);
+      expect(querySteps).toEqual([
+        { $match: { domain: 'test_cube' } },
+        { $project: { column: '$wind' } },
+        { $match: { column: { $ne: null } } },
+        { $sort: { column: 1 } },
+        {
+          $group: {
+            _id: {},
+            count: { $sum: 1 },
+            data: { $push: '$column' },
+          },
+        },
+        {
+          $project: {
+            '4-th 20-quantile': {
+              $avg: [
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: {
+                        $subtract: [{ $multiply: [{ $divide: ['$count', 20] }, 4] }, 1],
+                      },
+                    },
+                  ],
+                },
+                {
+                  $arrayElemAt: [
+                    '$data',
+                    {
+                      $trunc: { $multiply: [{ $divide: ['$count', 20] }, 4] },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+  });
+
   it('can simplify "and" block', () => {
     const andBlock = {
       $and: [

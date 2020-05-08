@@ -936,6 +936,19 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave statistics steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'statistics',
+        column: '<%= foo %>',
+        groupbyColumns: [],
+        statistics: ['average'],
+        quantiles: [],
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave split steps untouched', () => {
     const pipeline: Pipeline = [
       {

@@ -756,6 +756,112 @@ function transformSplit(step: Readonly<S.SplitStep>): MongoStep {
   ];
 }
 
+/** transform a 'statistics' step into corresponding mongo steps */
+function transformStatistics(step: Readonly<S.StatisticsStep>): MongoStep {
+  /** Get n-th p-quantile.
+   * Examples:
+   * - the median is the first quantile of order 2.
+   * - the last decile is the 9-th quantile of order 10.
+   */
+  const _getQuantile = (n: number, p: number): any => ({
+    $avg: [
+      {
+        $arrayElemAt: [
+          '$data',
+          {
+            $trunc: {
+              $subtract: [{ $multiply: [{ $divide: ['$count', p] }, n] }, 1],
+            },
+          },
+        ],
+      },
+      {
+        $arrayElemAt: [
+          '$data',
+          {
+            $trunc: { $multiply: [{ $divide: ['$count', p] }, n] },
+          },
+        ],
+      },
+    ],
+  });
+
+  const varianceFormula: any = { $subtract: ['$average_sum_square', { $pow: ['$average', 2] }] }; // I am using this formula of the variance: avg(x^2) - avg(x)^2
+  const statisticsFormula: any = {
+    count: 1,
+    max: 1,
+    min: 1,
+    average: 1,
+    variance: varianceFormula,
+    'standard deviation': { $pow: [varianceFormula, 0.5] },
+  };
+
+  const doWeNeedTo: any = {
+    computeColumnSquare: (step: Readonly<S.StatisticsStep>): boolean =>
+      step.statistics.includes('variance') || step.statistics.includes('standard deviation'),
+    computeAverage: (step: Readonly<S.StatisticsStep>): boolean =>
+      step.statistics.includes('average') ||
+      step.statistics.includes('variance') ||
+      step.statistics.includes('standard deviation'),
+    sort: (step: Readonly<S.StatisticsStep>): boolean => step.quantiles.length > 0,
+    count: (step: Readonly<S.StatisticsStep>): boolean =>
+      step.quantiles.length > 0 || step.statistics.includes('count'),
+  };
+
+  return [
+    {
+      $project: {
+        ...Object.fromEntries(step.groupbyColumns.map(groupByColumn => [groupByColumn, 1])),
+        column: $$(step.column),
+        ...(doWeNeedTo.computeColumnSquare(step)
+          ? { column_square: { $pow: [$$(step.column), 2] } }
+          : {}),
+      },
+    },
+    {
+      $match: {
+        column: { $ne: null },
+      },
+    },
+    ...(doWeNeedTo.sort(step) ? [{ $sort: { column: 1 } }] : []),
+    {
+      $group: {
+        _id:
+          Object.fromEntries(
+            step.groupbyColumns.map(groupByColumn => [groupByColumn, $$(groupByColumn)]),
+          ) || null,
+        data: { $push: '$column' },
+        ...(doWeNeedTo.count(step) ? { count: { $sum: 1 } } : {}),
+        ...(step.statistics.includes('max') ? { max: { $max: '$column' } } : {}),
+        ...(step.statistics.includes('min') ? { min: { $min: '$column' } } : {}),
+        ...(doWeNeedTo.computeColumnSquare(step)
+          ? { average_sum_square: { $avg: '$column_square' } }
+          : {}),
+        ...(doWeNeedTo.computeAverage(step) ? { average: { $avg: '$column' } } : {}),
+      },
+    },
+    {
+      $project: {
+        // groupByColumn
+        ...Object.fromEntries(
+          step.groupbyColumns.map(groupByColumn => [groupByColumn, `$_id.${groupByColumn}`]),
+        ),
+        // statistics
+        ...Object.fromEntries(
+          step.statistics.map(statistic => [statistic, statisticsFormula[statistic]]),
+        ),
+        // quantiles
+        ...Object.fromEntries(
+          step.quantiles.map(({ label, order, nth }) => [
+            label || `${nth}-th ${order}-quantile`,
+            _getQuantile(nth, order),
+          ]),
+        ),
+      },
+    },
+  ];
+}
+
 function $add(...args: any[]) {
   return {
     $add: args,
@@ -1050,6 +1156,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   split: transformSplit,
   sort: transformSort,
+  statistics: transformStatistics,
   substring: transformSubstring,
   text: step => ({ $addFields: { [step.new_column]: step.text } }),
   todate: (step: Readonly<S.ToDateStep>) => ({
