@@ -108,7 +108,13 @@ describe('ActionToolbarButton active', () => {
       localVue,
     });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['formula', 'evolution', 'cumsum', 'percentage']);
+    assertMenuEmitsExpected(wrapper, [
+      'formula',
+      'evolution',
+      'cumsum',
+      'percentage',
+      'statistics',
+    ]);
   });
 
   it('should instantiate a Text button with the right list of actions', () => {
