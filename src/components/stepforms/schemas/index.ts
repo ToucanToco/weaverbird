@@ -24,6 +24,7 @@ import rollupSchema from './rollup';
 import selectSchema from './select';
 import sortSchema from './sort';
 import splitSchema from './split';
+import statisticsSchema from './statistics';
 import substringSchema from './substring';
 import textSchema from './text';
 import toDateSchema from './todate';
@@ -63,6 +64,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   select: selectSchema,
   sort: sortSchema,
   split: splitSchema,
+  statistics: statisticsSchema,
   substring: substringSchema,
   text: textSchema,
   todate: toDateSchema,

@@ -433,6 +433,17 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Split column "foo"');
   });
 
+  it('generates label for statistics steps', () => {
+    const step: S.StatisticsStep = {
+      name: 'statistics',
+      column: 'foo',
+      groupbyColumns: [],
+      statistics: ['average'],
+      quantiles: [],
+    };
+    expect(hrl(step)).toEqual(`Compute statistics of "foo"`);
+  });
+
   it('generates label for lowercase steps', () => {
     const step: S.ToLowerStep = {
       name: 'lowercase',

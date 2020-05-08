@@ -217,6 +217,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Split column "${step.column}"`;
   }
 
+  statistics(step: Readonly<S.StatisticsStep>) {
+    return `Compute statistics of "${step.column}"`;
+  }
+
   substring(step: Readonly<S.SubstringStep>) {
     return `Extract substring from "${step.column}"`;
   }
