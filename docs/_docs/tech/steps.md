@@ -1450,6 +1450,58 @@ among `sum`, `avg`, `count`, `min` or `max`.
 | Label 2 | 7        | 10       |
 | Label 3 | 20       | 6        |
 
+
+### `statistics` step
+
+Compute statistics of a column.,
+
+```javascript
+{
+    name: 'statistics',
+    column: 'Value',
+    groupby: [],
+    statistics: ['average', 'count'],
+    quantiles: [{label: 'median', nth: 1, order: 2}],
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'statistics',
+    column: 'Value',
+    groupby: [],
+    statistics: ['average', 'count'],
+    quantiles: [{label: 'median', nth: 1, order: 2}],
+}
+```
+
+**Output dataset:**
+
+| average | count   | median |
+| ------- | ------- | ------ |
+| 9.33333 | 6       | 8.5    |
+
+
 ### `rename` step
 
 Rename a column.,

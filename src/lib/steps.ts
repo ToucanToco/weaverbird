@@ -93,6 +93,26 @@ export type DeleteStep = {
   columns: string[];
 };
 
+export type Statistics = 'count' | 'max' | 'min' | 'average' | 'variance' | 'standard deviation';
+export type Quantile = {
+  label?: string;
+  nth: any;
+  order: any;
+};
+export type StatisticsStep = {
+  name: 'statistics';
+  column: string;
+  groupbyColumns: string[];
+  statistics: Statistics[];
+  /**
+   * array of quantiles
+   * Examples:
+   * median is 1rst quantile of order 2
+   * last decile is 9th quantile of order 10
+   */
+  quantiles: Quantile[];
+};
+
 export type DomainStep = {
   name: 'domain';
   domain: string;
@@ -314,6 +334,7 @@ export type PipelineStep =
   | SelectStep
   | SplitStep
   | SortStep
+  | StatisticsStep
   | SubstringStep
   | ToDateStep
   | ToLowerStep

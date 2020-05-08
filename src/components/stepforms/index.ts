@@ -25,6 +25,7 @@ import './RollupStepForm.vue';
 import './SelectColumnStepForm.vue';
 import './SplitStepForm.vue';
 import './SortStepForm.vue';
+import './StatisticsStepForm.vue';
 import './SubstringStepForm.vue';
 import './ToDateStepForm.vue';
 import './ToLowerStepForm.vue';
