@@ -228,6 +228,33 @@ describe('extractVariableIdentifier', () => {
     ).toBe('hummus.mtabal');
   });
 
+  it('should extract variable names with other property access methods', () => {
+    expect(
+      extractVariableIdentifier("{{ hummus['mtabal'] }}", {
+        start: '{{',
+        end: '}}',
+      }),
+    ).toBe("hummus['mtabal']");
+  });
+
+  it('should extract variable names with any number of leading and trailing whitespaces', () => {
+    expect(
+      extractVariableIdentifier('     {{ hummus         }}  ', {
+        start: '{{',
+        end: '}}',
+      }),
+    ).toBe('hummus');
+  });
+
+  it('should extract expressions', () => {
+    expect(
+      extractVariableIdentifier('{{ a + b }}  ', {
+        start: '{{',
+        end: '}}',
+      }),
+    ).toBe('a + b');
+  });
+
   it('should extract variables with different delimiters', () => {
     expect(
       extractVariableIdentifier('<%= croissant %>', {

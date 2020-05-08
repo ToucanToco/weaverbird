@@ -4,15 +4,6 @@ export interface VariableDelimiters {
 }
 
 /**
- * Escape all characters used in a string for use in a regular expression pattern.
- *
- * From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
- */
-function escapeRegExp(string: string) {
-  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
-/**
  * Determine if value is variable surrounded by delimiters or not, and if yes, extract its identifier.
  */
 export default function extractVariableIdentifier(
@@ -23,13 +14,27 @@ export default function extractVariableIdentifier(
     return undefined;
   }
 
-  const regexPattern = `${escapeRegExp(
-    variableDelimiters.start,
-  )}\\s*([\\\\.\\w]+)\\s*${escapeRegExp(variableDelimiters.end)}`;
-  const regex = new RegExp(regexPattern);
-  const matches = regex.exec(value);
-  if (matches) {
-    return matches[1];
+  // Removes any leading and trailing spaces
+  const trimmedValue = value.trim();
+
+  if (
+    trimmedValue.startsWith(variableDelimiters.start) &&
+    trimmedValue.endsWith(variableDelimiters.end)
+  ) {
+    let variableIdentifier = trimmedValue;
+    // Removes delimiters
+    variableIdentifier = variableIdentifier.slice(
+      variableDelimiters.start.length,
+      variableIdentifier.length - 1,
+    );
+    variableIdentifier = variableIdentifier.slice(
+      0,
+      variableIdentifier.length - variableDelimiters.end.length,
+    );
+    // Removes any leading and trailing spaces
+    variableIdentifier = variableIdentifier.trim();
+
+    return variableIdentifier;
   } else {
     return undefined;
   }
