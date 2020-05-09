@@ -841,6 +841,18 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
+  it('should leave rank steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rank',
+        column: '<%= age %>',
+        rankColumnName: '<%= foo %>',
+        sortOrder: 'asc',
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should leave rename steps untouched', () => {
     const pipeline: Pipeline = [
       {

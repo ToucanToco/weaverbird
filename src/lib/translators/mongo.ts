@@ -432,7 +432,79 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
   ];
 }
 
-/** transform an 'replace' step into corresponding mongo steps */
+/** transform a 'rank' step into corresponding mongo steps */
+function transformRank(step: Readonly<S.RankStep>): MongoStep {
+  if (step.column) {
+    return [
+      {
+        $group: {
+          _id: `$${step.column}`,
+          grouped_ranked_column: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+      {
+        $sort: {
+          _id: step.sortOrder == 'asc' ? 1 : -1,
+        },
+      },
+      {
+        $group: {
+          _id: 'whatever',
+          items: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$items',
+          includeArrayIndex: 'items.rank',
+        },
+      },
+      {
+        $unwind: {
+          path: '$items.grouped_ranked_column',
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: [
+              '$items.grouped_ranked_column',
+              { [step.rankColumnName || 'Rank']: '$items.rank' },
+            ],
+          },
+        },
+      },
+    ];
+  } else {
+    return [
+      {
+        $group: {
+          _id: 'whatever',
+          items: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$items',
+          includeArrayIndex: `items.${step.rankColumnName || 'Rank'}`,
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$items',
+        },
+      },
+    ];
+  }
+}
+
+/** transform a 'replace' step into corresponding mongo steps */
 function transformReplace(step: Readonly<S.ReplaceStep>): MongoStep {
   const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
     case: { $eq: [$$(step.search_column), oldval] },
@@ -819,6 +891,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     { $project: { [step.oldname]: 0 } },
   ],
   replace: transformReplace,
+  rank: transformRank,
   rollup: transformRollup,
   select: (step: Readonly<S.SelectStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 1])),

@@ -239,6 +239,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  rank(step: Readonly<S.RankStep>) {
+    return { ...step };
+  }
+
   rename(step: Readonly<S.RenameStep>) {
     return { ...step };
   }

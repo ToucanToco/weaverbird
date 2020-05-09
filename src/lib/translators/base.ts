@@ -165,6 +165,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   pivot(step: Readonly<S.PivotStep>) {}
 
   @unsupported
+  rank(step: Readonly<S.RankStep>) {}
+
+  @unsupported
   rename(step: Readonly<S.RenameStep>) {}
 
   @unsupported

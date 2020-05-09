@@ -631,6 +631,94 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate a rank step without a column set', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rank',
+        column: '',
+        rankColumnName: 'rank',
+        sortOrder: 'asc',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: 'whatever',
+          items: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$items',
+          includeArrayIndex: `items.rank`,
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: '$items',
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a rank step with a column set', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rank',
+        column: 'column_1',
+        rankColumnName: 'rank',
+        sortOrder: 'asc',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: '$column_1',
+          grouped_ranked_column: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+      {
+        $sort: {
+          _id: 1,
+        },
+      },
+      {
+        $group: {
+          _id: 'whatever',
+          items: {
+            $push: '$$ROOT',
+          },
+        },
+      },
+      {
+        $unwind: {
+          path: '$items',
+          includeArrayIndex: 'items.rank',
+        },
+      },
+      {
+        $unwind: {
+          path: '$items.grouped_ranked_column',
+        },
+      },
+      {
+        $replaceRoot: {
+          newRoot: {
+            $mergeObjects: ['$items.grouped_ranked_column', { rank: '$items.rank' }],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate a replace step', () => {
     const pipeline: Pipeline = [
       {
