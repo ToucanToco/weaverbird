@@ -190,6 +190,13 @@ export type PivotStep = {
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
 };
 
+export type RankStep = {
+  name: 'rank';
+  column: string;
+  rankColumnName: string;
+  sortOrder: 'asc' | 'desc';
+};
+
 export type RenameStep = {
   name: 'rename';
   oldname: string;
@@ -308,6 +315,7 @@ export type PipelineStep =
   | JoinStep
   | PercentageStep
   | PivotStep
+  | RankStep
   | RenameStep
   | ReplaceStep
   | RollupStep

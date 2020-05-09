@@ -188,6 +188,14 @@ class StepLabeller implements StepMatcher<string> {
     return `Pivot column "${step.column_to_pivot}"`;
   }
 
+  rank(step: Readonly<S.RankStep>) {
+    if (step.column === '') {
+      return 'Add rank column';
+    } else {
+      return `Add rank on "${step.column}" column`;
+    }
+  }
+
   rename(step: Readonly<S.RenameStep>) {
     return `Rename column "${step.oldname}" to "${step.newname}"`;
   }

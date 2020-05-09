@@ -374,6 +374,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Pivot column "column3"');
   });
 
+  it('generates label for rank steps', () => {
+    const step: S.RankStep = {
+      name: 'rank',
+      column: 'column1',
+      rankColumnName: 'rank',
+      sortOrder: 'asc',
+    };
+    expect(hrl(step)).toEqual('Add rank on "column1" column');
+  });
+
   it('generates label for rename steps', () => {
     const step: S.RenameStep = {
       name: 'rename',

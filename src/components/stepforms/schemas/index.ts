@@ -18,6 +18,7 @@ import fromDateSchema from './fromdate';
 import joinSchema from './join';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
+import rankSchema from './rank';
 import renameBuildSchema from './rename';
 import replaceSchema from './replace';
 import rollupSchema from './rollup';
@@ -58,6 +59,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
   rename: renameBuildSchema,
+  rank: rankSchema,
   replace: replaceSchema,
   rollup: rollupSchema,
   select: selectSchema,
