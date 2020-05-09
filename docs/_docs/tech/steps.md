@@ -1450,6 +1450,59 @@ among `sum`, `avg`, `count`, `min` or `max`.
 | Label 2 | 7        | 10       |
 | Label 3 | 20       | 6        |
 
+### `rank` step
+
+Add a rank column.,
+
+```javascript
+{
+    name: 'rank',
+    column: '',
+    rankColumnName: '',
+    sortOrder: 'asc',
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example:
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'rank',
+    column: 'Value',
+    rankColumnName: 'rank',
+    sortOrder: 'asc',
+}
+```
+
+**Output dataset:**
+
+| Company | Group   | Value | rank |
+| ------- | ------- | ----- | ---- |
+| Label 4 | Group 2 | 1     | 1    |
+| Label 6 | Group 2 | 5     | 2    |
+| Label 2 | Group 1 | 7     | 3    |
+| Label 5 | Group 2 | 10    | 4    |
+| Label 1 | Group 1 | 13    | 5    |
+| Label 3 | Group 1 | 20    | 6    |
+
 ### `rename` step
 
 Rename a column.,
