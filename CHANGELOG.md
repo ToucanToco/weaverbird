@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- `rank` step to add a rank column to the dataset
+
 ## [0.16.1] - 2020-05-05
 
 ### Changed
