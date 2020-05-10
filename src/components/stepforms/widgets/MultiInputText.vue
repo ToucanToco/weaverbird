@@ -7,6 +7,7 @@
       @input="updateValue"
     >
       <multiselect
+        class="widget-multiinputtext__multiselect"
         :value="value"
         @input="updateValue"
         :options="options"
@@ -77,9 +78,15 @@ export default class MultiInputTextWidget extends Vue {
 .widget-multiinputtext__container {
   @extend %form-widget__container;
   position: relative;
+}
+
+.widget-multiinputtext__multiselect {
   // Prevent multi-select to overlap things put before it, like the variable button
   isolation: isolate;
-  z-index: 0;
+
+  &.multiselect--active {
+    z-index: 0;
+  }
 }
 
 // TODO project-wide multiselect styles should be extracted from this components into a specific stylesheet, so we could scope this one.
