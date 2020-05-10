@@ -9,7 +9,19 @@
       :track-by="trackBy"
       :label="label"
       @input="$emit('input', $event)"
-    />
+    >
+      <!-- If you want to use those templates you should provide a 'label' and 
+      'example' key in the options-->
+      <template v-if="withExample" slot="singleLabel" slot-scope="props">
+        <span class="option__title">{{ props.option.label }}</span>
+      </template>
+      <template v-if="withExample" slot="option" slot-scope="props">
+        <div class="option__container">
+          <div class="option__title">{{ props.option.label }}</div>
+          <div class="option__example">{{ props.option.example }}</div>
+        </div>
+      </template>
+    </multiselect>
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
       {{ messageError }}
@@ -47,6 +59,9 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop({ type: String, default: undefined })
   label!: string;
+
+  @Prop({ type: Boolean, default: false })
+  withExample!: boolean;
 }
 </script>
 
@@ -151,5 +166,14 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
 .widget-autocomplete__label {
   @extend %form-widget__label;
+}
+
+.option__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.option__example {
+  font-style: italic;
 }
 </style>

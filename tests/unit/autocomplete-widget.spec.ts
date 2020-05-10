@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount, shallowMount } from '@vue/test-utils';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 
@@ -11,6 +11,22 @@ describe('Widget Autocomplete', () => {
   it('should have an instantiated Multiselect autocomplete', () => {
     const wrapper = shallowMount(AutocompleteWidget);
     expect(wrapper.find('multiselect-stub').exists()).toBeTruthy();
+  });
+
+  it('should not have specific templates if the prop withExample is false', () => {
+    const wrapper = mount(AutocompleteWidget, {
+      propsData: { withExample: false, options: [{ label: 'foo', example: 'bar' }] },
+    });
+    expect(wrapper.find('.option__title').exists()).toBeFalsy();
+    expect(wrapper.find('.option__container').exists()).toBeFalsy();
+  });
+
+  it('should have specific templates if the prop withExample is true', () => {
+    const wrapper = mount(AutocompleteWidget, {
+      propsData: { withExample: true, options: [{ label: 'foo', example: 'bar' }] },
+    });
+    expect(wrapper.find('.option__title').exists()).toBeTruthy();
+    expect(wrapper.find('.option__container').exists()).toBeTruthy();
   });
 
   it('should have a label if prop "name" is defined', () => {

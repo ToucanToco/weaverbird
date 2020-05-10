@@ -56,18 +56,52 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a todate step with format', () => {
+  it('can generate a todate step without specified format ("guess")', () => {
     const pipeline: Pipeline = [
       {
         name: 'todate',
         column: 'foo',
-        format: '%d-%m-%Y',
       },
     ];
     const querySteps = mongo40translator.translate(pipeline);
     expect(querySteps).toEqual([
-      { $addFields: { foo: { $dateFromString: { dateString: '$foo', format: '%d-%m-%Y' } } } },
+      { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
       { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a todate step with a custom format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'todate',
+        column: 'foo',
+        format: '%Y-%m-%d',
+      },
+    ];
+    const querySteps = mongo40translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { foo: { $dateFromString: { dateString: '$foo', format: '%Y-%m-%d' } } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a todate step with "%Y-%m" format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'todate',
+        column: 'foo',
+        format: '%Y-%m',
+      },
+    ];
+    const querySteps = mongo40translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { _vqbTempDate: { $concat: ['$foo', '-01'] } } },
+      {
+        $addFields: {
+          foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y-%m-%d' } },
+        },
+      },
+      { $project: { _id: 0, _vqbTempDate: 0 } },
     ]);
   });
 });

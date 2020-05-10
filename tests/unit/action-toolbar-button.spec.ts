@@ -139,7 +139,7 @@ describe('ActionToolbarButton active', () => {
     });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = assertMenuEmitsExpected(wrapper, [
-      '!todate',
+      'todate',
       'fromdate',
       '!dateextract', // year
       '!dateextract', // month
@@ -309,26 +309,6 @@ describe('ActionToolbarButton active', () => {
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(0).trigger('click');
       expect(store.state.vqb.currentStepFormName).toEqual(undefined);
-    });
-
-    it('should insert a todate step in pipeline', async () => {
-      const store = setupMockStore(
-        buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
-          selectedColumns: ['foo'],
-        }),
-      );
-      const wrapper = mount(ActionToolbarButton, {
-        propsData: { isActive: true, category: 'date' },
-        store,
-        localVue,
-      });
-      const actionsWrappers = wrapper.findAll('.action-menu__option');
-      await actionsWrappers.at(0).trigger('click');
-      expect(store.getters[VQBnamespace('pipeline')]).toEqual([
-        { name: 'domain', domain: 'myDomain' },
-        { name: 'todate', column: 'foo' },
-      ]);
-      expect(store.state.vqb.selectedStepIndex).toEqual(1);
     });
 
     it('should emit a close event', async () => {
