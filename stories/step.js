@@ -1,7 +1,6 @@
 import {
   Step
 } from '../dist/storybook/components';
-import '../dist/weaverbird.css';
 
 import {
   withKnobs,
@@ -61,10 +60,3 @@ stories
     },
     template: '<step is-last :step="step"></step>',
   }));
-
-import './data-viewer';
-import './resizable-panel';
-import './filter-editor';
-import './list-unique-values';
-import './variable';
-import './widgets';
