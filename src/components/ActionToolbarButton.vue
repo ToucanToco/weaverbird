@@ -78,8 +78,7 @@ export default class ActionToolbarButton extends Vue {
     if (
       ((stepName === 'dateextract' && noFormOperation) ||
         stepName === 'lowercase' ||
-        stepName === 'uppercase' ||
-        stepName === 'todate') &&
+        stepName === 'uppercase') &&
       this.selectedColumns.length > 0
     ) {
       this.createStep(stepName, defaults);

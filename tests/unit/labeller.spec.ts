@@ -464,6 +464,7 @@ describe('Labeller', () => {
     const step: S.ToDateStep = {
       name: 'todate',
       column: 'foo',
+      format: '%Y-%m-%d',
     };
     expect(hrl(step)).toEqual('Convert "foo" into date');
   });

@@ -31,12 +31,37 @@ function transformConvert(step: Readonly<ConvertStep>): MongoStep {
 }
 
 /** transform a 'todate' step into corresponding mongo steps */
-function transformToDate(step: Readonly<ToDateStep>): MongoStep {
-  const dateFromString: MongoStep = { dateString: $$(step.column) };
-  if (step.format) {
-    dateFromString['format'] = step.format;
+function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
+  switch (step.format) {
+    case undefined:
+      // Mongo will try to guess the result
+      return [
+        { $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } } },
+      ];
+    case '%Y-%m':
+      // Mongo does not support "incomplete" date string where the day is missing
+      // so we add the first day of the month and use the format %Y-%m-%d instead
+      return [
+        { $addFields: { _vqbTempDate: { $concat: [$$(step.column), '-01'] } } },
+        {
+          $addFields: {
+            [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y-%m-%d' } },
+          },
+        },
+        { $project: { _vqbTempDate: 0 } },
+      ];
+    default:
+      // Any other string
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateFromString: { dateString: $$(step.column), format: step.format },
+            },
+          },
+        },
+      ];
   }
-  return { $addFields: { [step.column]: { $dateFromString: dateFromString } } };
 }
 
 export class Mongo40Translator extends Mongo36Translator {

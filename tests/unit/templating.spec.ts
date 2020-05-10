@@ -174,6 +174,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'todate',
         column: '<%= foo %>',
+        format: '<%= foo %>',
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
