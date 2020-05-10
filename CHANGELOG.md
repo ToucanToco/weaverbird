@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- `FilterEditor` form widgets supports variables that user can choose from a list
+
 ## [0.16.1] - 2020-05-05
 
 ### Changed
