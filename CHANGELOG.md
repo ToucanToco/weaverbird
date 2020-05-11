@@ -8,6 +8,7 @@
 ### Fixed
 
 - Popover positioning and mount
+- `ActionMenu` always open on first panel, even if user has previously open the second panel
 
 ## [0.16.1] - 2020-05-05
 

@@ -115,6 +115,7 @@ export default class ActionMenu extends Vue {
   }
 
   close() {
+    this.visiblePanel = 1;
     this.$emit('closed');
   }
 
