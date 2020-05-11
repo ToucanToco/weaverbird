@@ -65,25 +65,24 @@ export default class Popover extends Vue {
   parent: HTMLElement | null = null;
   parents: HTMLElement[] = [];
 
-  get isBottom() {
-    return this.bottom;
-  }
-
-  hasBeenPositioning = false;
-
-  @Watch('visible', { immediate: true })
+  @Watch('visible')
   async onVisibleChange(visible: boolean) {
     if (!visible) {
-      // `destroyPositioning` must not be called if `setupPositioning` has not been called as well
-      if (this.hasBeenPositioning) {
-        this.hasBeenPositioning = false;
-        this.destroyPositioning();
-      }
+      this.destroyPositioning();
     } else {
-      // We need to wait for the "visible" element to become effectively visible before positioning it.
-      await this.$nextTick();
-      this.hasBeenPositioning = true;
       this.setupPositioning();
+    }
+  }
+
+  mounted() {
+    if (this.visible) {
+      this.setupPositioning();
+    }
+  }
+
+  beforeDestroy() {
+    if (this.visible) {
+      this.destroyPositioning();
     }
   }
 
@@ -107,43 +106,26 @@ export default class Popover extends Vue {
     this.parents = parents;
 
     // Attach listeners
-    window.addEventListener('click', this.clickListener, { capture: true });
-    window.addEventListener('orientationchange', this.orientationchangeListener);
-    window.addEventListener('resize', this.resizeListener);
+    window.addEventListener('click', e => this.clickListener(e), { capture: true });
+    window.addEventListener('orientationchange', () => this.updatePosition());
+    window.addEventListener('resize', () => this.updatePosition());
     for (const p of parents) {
-      p.addEventListener('scroll', this.scrollListener);
+      p.addEventListener('scroll', () => this.updatePosition());
     }
     this.updatePosition();
   }
 
-  /**
-   * @description Close the popover when clicking outside
-   */
-  clickListener(e: Event) {
-    if (!this.visible) {
-      return;
+  destroyPositioning() {
+    // Cleanup listeners
+    window.removeEventListener('orientationchange', () => this.updatePosition());
+    window.removeEventListener('resize', () => this.updatePosition());
+    for (const parent of this.parents) {
+      parent.removeEventListener('scroll', () => this.updatePosition());
     }
-    const target = e.target as HTMLElement;
-    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
-
-    if (!hasClickOnItSelf) {
-      this.$emit('closed');
+    // Cleanup DOM
+    if (this.$el.parentElement !== null) {
+      return this.$el.parentElement.removeChild(this.$el);
     }
-  }
-
-  // Update position on orientation change
-  orientationchangeListener() {
-    return this.updatePosition();
-  }
-
-  // Update position on resize
-  resizeListener() {
-    return this.updatePosition();
-  }
-
-  // Update position on scroll
-  scrollListener() {
-    return this.updatePosition();
   }
 
   // Set the absolute position
@@ -162,7 +144,7 @@ export default class Popover extends Vue {
       };
       // Set alignment
       const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
-      elementStyle.top = DOMUtil.computeTop(this.isBottom, positionContext);
+      elementStyle.top = DOMUtil.computeTop(this.bottom, positionContext);
       // make sure to use `px` unit explicitly
       this.elementStyle = _.fromPairs(Object.entries(elementStyle).map(([k, v]) => [k, `${v}px`]));
     },
@@ -170,16 +152,13 @@ export default class Popover extends Vue {
     16,
   );
 
-  destroyPositioning() {
-    // Cleanup listeners
-    window.removeEventListener('orientationchange', this.orientationchangeListener);
-    window.removeEventListener('resize', this.resizeListener);
-    for (const parent of this.parents) {
-      parent.removeEventListener('scroll', this.scrollListener);
-    }
-    // Cleanup DOM
-    if (this.$el.parentElement !== null) {
-      return this.$el.parentElement.removeChild(this.$el);
+  // Close the popover when clicking outside
+  clickListener(e: Event) {
+    const target = e.target as HTMLElement;
+    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
+
+    if (!hasClickOnItSelf) {
+      this.$emit('closed');
     }
   }
 }

@@ -243,7 +243,7 @@ describe('Popover', function() {
     createWrapper({ props: { visible: false }, slotText: 'Lorem ipsum' });
     const anotherelement = wrapper.find('#anotherelement');
     await anotherelement.trigger('click');
-    await wrapper.vm.$nextTick();
+
     expect(popoverWrapper.emitted().closed).toBeUndefined();
   });
 
@@ -263,14 +263,13 @@ describe('Popover', function() {
           width: '140px',
         },
       });
-      await popoverWrapper.vm.$nextTick();
     });
 
     it('should call setupPositioning when visible becomes true', async function() {
       createWrapper({ props: { visible: false } });
       const setupPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'setupPositioning');
       popoverWrapper.setProps({ visible: true });
-      await popoverWrapper.vm.$nextTick();
+
       expect(setupPositioningSpy).toHaveBeenCalled();
     });
 
@@ -288,7 +287,7 @@ describe('Popover', function() {
     it('should update its position on orientation change', async function() {
       wrapper.element.style.left = '100px';
       window.dispatchEvent(new Event('orientationchange'));
-      await wrapper.vm.$nextTick();
+
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
@@ -297,7 +296,7 @@ describe('Popover', function() {
     it('should update its position when resized', async function() {
       wrapper.element.style.left = '100px';
       window.dispatchEvent(new Event('resize'));
-      await wrapper.vm.$nextTick();
+
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
@@ -306,7 +305,7 @@ describe('Popover', function() {
     it('should update its position when scrolled', async function() {
       wrapper.element.style.left = '100px';
       wrapper.element.dispatchEvent(new Event('scroll'));
-      await wrapper.vm.$nextTick();
+
       const parentBounds = wrapper.element.getBoundingClientRect();
       const popoverBounds = popoverWrapper.vm.$data.elementStyle;
       expect(popoverBounds.left).toEqual(`${parentBounds.left + 100 / 2}px`);
@@ -315,13 +314,13 @@ describe('Popover', function() {
     it('should emit "closed" on click away', async function() {
       const anotherelement = wrapper.find('#anotherelement');
       await anotherelement.trigger('click');
-      await wrapper.vm.$nextTick();
+
       expect(popoverWrapper.emitted().closed.length).toEqual(1);
     });
 
     it('should not emit "closed" on click on it', async function() {
       await popoverWrapper.trigger('click');
-      await wrapper.vm.$nextTick();
+
       expect(popoverWrapper.emitted().closed).toBeUndefined();
     });
   });
@@ -329,10 +328,26 @@ describe('Popover', function() {
   describe('destroyPositioning', function() {
     it('should call destroyPosition when visible becomes false', async function() {
       createWrapper({ props: { visible: true } });
-      await popoverWrapper.vm.$nextTick();
+
       const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
       popoverWrapper.setProps({ visible: false });
       expect(destroyPositioningSpy).toHaveBeenCalled();
+    });
+
+    it('should call destroyPosition at destroy if visible', async function() {
+      createWrapper({ props: { visible: true } });
+
+      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      popoverWrapper.destroy();
+      expect(destroyPositioningSpy).toHaveBeenCalled();
+    });
+
+    it('should not call destroyPosition at destroy if not visible', async function() {
+      createWrapper({ props: { visible: false } });
+
+      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+      popoverWrapper.destroy();
+      expect(destroyPositioningSpy).not.toHaveBeenCalled();
     });
   });
 });
