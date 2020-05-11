@@ -301,5 +301,33 @@ describe('Action Menu', () => {
         expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
       });
     });
+
+    it('should always open on first panel', async () => {
+      const { wrapper } = await mountWrapperAndClickOnOperation();
+      wrapper.vm.close();
+      await wrapper.vm.$nextTick();
+      wrapper.setProps({ visible: true });
+      await wrapper.vm.$nextTick();
+
+      let el: PanelElement;
+      for (el of FIRST_PANEL) {
+        expect(wrapper.html()).toContain(el.label);
+      }
+      for (el of SECOND_PANEL) {
+        expect(wrapper.html()).not.toContain(el.label);
+      }
+
+      expect(wrapper.find('ListUniqueValues-stub').exists()).toBeTruthy();
+      expect(wrapper.find('ListUniqueValues-stub').vm.$props.loaded).toEqual(false);
+      expect(wrapper.find('ListUniqueValues-stub').vm.$props.filter).toEqual({
+        column: 'dreamfall',
+        value: [],
+        operator: 'nin',
+      });
+      expect(wrapper.find('ListUniqueValues-stub').vm.$props.options).toEqual([
+        { value: 'jjg', count: 2 },
+        { value: 'mika', count: 1 },
+      ]);
+    });
   });
 });

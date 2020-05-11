@@ -224,15 +224,11 @@ async function buildVueApp() {
           pipeline: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: 'data',
             },
             {
-              name: 'filter',
-              condition: {
-                column: 'Price',
-                operator: 'ge',
-                value: 1200,
-              },
+              name: 'custom',
+              query: '{"$limit":50}'
             }
           ],
           pipelineAmex: [
