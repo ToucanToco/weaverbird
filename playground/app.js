@@ -123,12 +123,14 @@ class MongoService {
         dataset = annotateDataset(dataset, types[0]);
         dataset = autocastDataset(dataset);
       }
-      return {
-        data: dataset,
-      };
+      const response = { data: dataset };
+      if (dataset.paginationContext.totalCount > 50) {
+        response.warning = [{ type: 'warning', message: 'Il y a plus de 50 lignes dans le dataset'}];
+      }
+      return response;
     } else {
       return {
-        error: responseContent.errmsg,
+        error: [{type: 'error', message: responseContent.errmsg}],
       };
     }
   }
@@ -183,13 +185,11 @@ async function setupInitialData(store, domain = null) {
       store.state[VQB_MODULE_NAME].pagesize,
     );
     if (response.error) {
-      store.commit(VQBnamespace('logBackendError'), {
-        backendError: {
-          type: 'error',
-          error: response.error,
-        },
-      });
+      store.commit(VQBnamespace('logBackendMessages'), response.error);
     } else {
+      if (response.warning) {
+        store.commit(VQBnamespace('logBackendMessages'), response.warning);
+      }
       store.commit(VQBnamespace('setDataset'), {
         dataset: response.data,
       });
@@ -306,8 +306,14 @@ async function buildVueApp() {
       thereIsABackendError: function() {
         return this.$store.getters[VQBnamespace('thereIsABackendError')];
       },
-      backendErrorMessage: function() {
-        return this.$store.getters[VQBnamespace('backendErrorMessages')].join('<br/>');
+      backendMessages: function() {
+        return this.$store.getters[VQBnamespace('backendErrorMessages')];
+      },
+      backendErrors: function() {
+        return this.backendMessages.filter(({type}) => type === 'error');
+      },
+      backendWarnings: function() {
+        return this.backendMessages.filter(({type}) => type === 'warning');
       },
     },
     methods: {

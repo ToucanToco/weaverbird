@@ -3,7 +3,7 @@
  */
 import _fromPairs from 'lodash/fromPairs';
 
-import { BackendError } from '@/lib/backend-response';
+import { BackendError, BackendWarning } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
@@ -65,9 +65,9 @@ export interface VQBState {
   pagesize: number;
 
   /**
-   * error send by backend or catch from its interface
+   * error/warning messages send by backend or catch from its interface
    */
-  backendErrors: BackendError[];
+  backendMessages: BackendError[] | BackendWarning[];
 
   /**
    * An object containing all loading state
@@ -124,7 +124,7 @@ export function emptyState(): VQBState {
     pipelines: {},
     selectedColumns: [],
     pagesize: 50,
-    backendErrors: [],
+    backendMessages: [],
     isLoading: { dataset: false, uniqueValues: false },
     isRequestOnGoing: false,
     variables: {},

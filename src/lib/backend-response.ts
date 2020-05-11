@@ -1,10 +1,13 @@
-type BackendErrorType = 'error' | 'warning';
-
 export type BackendError = {
-  type: BackendErrorType;
+  type: 'error';
+  message: string;
+};
+
+export type BackendWarning = {
+  type: 'warning';
   message: string;
 };
 
 export type BackendResponse<T> =
-  | Promise<{ data: T; error?: never }>
-  | Promise<{ data?: never; error: BackendError }>;
+  | Promise<{ data: T; error?: never; warning?: BackendWarning[] }>
+  | Promise<{ data?: never; error: BackendError[] }>;
