@@ -88,6 +88,15 @@
         color: white;
         padding: 10px;
       }
+
+      .warning-message {
+        position: absolute;
+        right: 0;
+        top: 0;
+        background: orange;
+        color: white;
+        padding: 10px;
+      }
     </style>
   </head>
 
@@ -106,8 +115,11 @@
         Hide code
       </button>
       <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
-      <div class="error-message" v-if="thereIsABackendError">
-        <i class="fas fa-exclamation-triangle"></i> {{ backendErrorMessage }}
+      <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
+        <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}
+      </div>
+      <div class="error-message" v-if="backendErrors.length" v-for="error in backendErrors">
+        <i class="fas fa-exclamation-triangle"></i> {{ error.message }}
       </div>
     </div>
     <!-- built files will be auto injected -->

@@ -5,15 +5,15 @@
 import Vue from 'vue';
 import { MutationTree } from 'vuex';
 
-import { BackendError } from '@/lib/backend-response';
+import { BackendError, BackendWarning } from '@/lib/backend-response';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
 
 import { currentPipeline, VQBState } from './state';
 
 // provide types for each possible mutations' payloads
-type BackendErrorMutation = {
-  type: 'logBackendError';
-  payload: BackendError;
+type BackendMessageMutation = {
+  type: 'logBackendMessages';
+  payload: BackendError[] | BackendWarning[];
 };
 
 type DatasetMutation = {
@@ -72,7 +72,7 @@ type ToggleRequestOnGoing = {
 };
 
 export type StateMutation =
-  | BackendErrorMutation
+  | BackendMessageMutation
   | DatasetMutation
   | DeleteStepMutation
   | DomainsMutation
@@ -132,8 +132,11 @@ class Mutations {
   /**
    * log a backend error message.
    */
-  logBackendError(state: VQBState, { backendError }: { backendError: BackendError }) {
-    state.backendErrors.push(backendError);
+  logBackendMessages(
+    state: VQBState,
+    { backendMessages }: { backendMessages: BackendError[] | BackendWarning[] },
+  ) {
+    state.backendMessages = backendMessages;
   }
 
   /**
@@ -146,13 +149,6 @@ class Mutations {
     state.stepFormInitialValue = { ...initialValue };
     state.currentStepFormName = stepName;
     state.stepFormDefaults = undefined;
-  }
-
-  /**
-   * empty error log on VQB's state
-   */
-  resetBackendErrors(state: VQBState) {
-    state.backendErrors = [];
   }
 
   /**

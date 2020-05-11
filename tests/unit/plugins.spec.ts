@@ -68,22 +68,28 @@ describe('backendService', () => {
     it('listCollections', async () => {
       const result = await backendService.listCollections();
       expect(result).toEqual({ data: ['jjg', 'mika'] });
-      expect(commitSpy).toHaveBeenCalledTimes(2);
+      expect(commitSpy).toHaveBeenCalledTimes(3);
       expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: true,
       });
-      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('toggleRequestOnGoing'), {
+      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendMessages'), {
+        backendMessages: [],
+      });
+      expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: false,
       });
     });
     it('executePipeline', async () => {
       const result = await backendService.executePipeline([], -1, -1);
       expect(result).toEqual({ data: dummyDataset });
-      expect(commitSpy).toHaveBeenCalledTimes(2);
+      expect(commitSpy).toHaveBeenCalledTimes(3);
       expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: true,
       });
-      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('toggleRequestOnGoing'), {
+      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendMessages'), {
+        backendMessages: [],
+      });
+      expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: false,
       });
     });
@@ -94,23 +100,23 @@ describe('backendService', () => {
       service = {
         listCollections: jest
           .fn()
-          .mockResolvedValue({ error: { message: 'foo', type: 'error' as 'error' } }),
+          .mockResolvedValue({ error: [{ message: 'foo', type: 'error' as 'error' }] }),
         executePipeline: jest
           .fn()
-          .mockResolvedValue({ error: { message: 'foo', type: 'error' as 'error' } }),
+          .mockResolvedValue({ error: [{ message: 'foo', type: 'error' as 'error' }] }),
       };
       store = setupMockStore({}, [servicePluginFactory(service)]);
       commitSpy = jest.spyOn(store, 'commit');
     });
     it('listCollections', async () => {
       const result = await backendService.listCollections();
-      expect(result).toEqual({ error: { message: 'foo', type: 'error' as 'error' } });
+      expect(result).toEqual({ error: [{ message: 'foo', type: 'error' as 'error' }] });
       expect(commitSpy).toHaveBeenCalledTimes(3);
       expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: true,
       });
-      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendError'), {
-        backendError: { message: 'foo', type: 'error' },
+      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendMessages'), {
+        backendMessages: [{ message: 'foo', type: 'error' }],
       });
       expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: false,
@@ -118,13 +124,13 @@ describe('backendService', () => {
     });
     it('executePipeline', async () => {
       const result = await backendService.executePipeline([], -1, -1);
-      expect(result).toEqual({ error: { message: 'foo', type: 'error' as 'error' } });
+      expect(result).toEqual({ error: [{ message: 'foo', type: 'error' as 'error' }] });
       expect(commitSpy).toHaveBeenCalledTimes(3);
       expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: true,
       });
-      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendError'), {
-        backendError: { message: 'foo', type: 'error' },
+      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendMessages'), {
+        backendMessages: [{ message: 'foo', type: 'error' }],
       });
       expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: false,
@@ -147,13 +153,13 @@ describe('backendService', () => {
     });
     it('listCollections', async () => {
       const result = await backendService.listCollections();
-      expect(result).toEqual({ error: { message: 'Error: oopsie', type: 'error' as 'error' } });
+      expect(result).toEqual({ error: [{ message: 'Error: oopsie', type: 'error' as 'error' }] });
       expect(commitSpy).toHaveBeenCalledTimes(3);
       expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: true,
       });
-      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendError'), {
-        backendError: { message: 'Error: oopsie', type: 'error' },
+      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendMessages'), {
+        backendMessages: [{ message: 'Error: oopsie', type: 'error' }],
       });
       expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: false,
@@ -161,13 +167,13 @@ describe('backendService', () => {
     });
     it('executePipeline', async () => {
       const result = await backendService.executePipeline([], -1, -1);
-      expect(result).toEqual({ error: { message: 'Error: oopsie', type: 'error' as 'error' } });
+      expect(result).toEqual({ error: [{ message: 'Error: oopsie', type: 'error' as 'error' }] });
       expect(commitSpy).toHaveBeenCalledTimes(3);
       expect(commitSpy).toHaveBeenNthCalledWith(1, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: true,
       });
-      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendError'), {
-        backendError: { message: 'Error: oopsie', type: 'error' },
+      expect(commitSpy).toHaveBeenNthCalledWith(2, VQBnamespace('logBackendMessages'), {
+        backendMessages: [{ message: 'Error: oopsie', type: 'error' }],
       });
       expect(commitSpy).toHaveBeenNthCalledWith(3, VQBnamespace('toggleRequestOnGoing'), {
         isRequestOnGoing: false,

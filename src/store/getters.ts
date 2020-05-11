@@ -13,11 +13,6 @@ const getters: GetterTree<VQBState, any> = {
    * the part of the pipeline that is currently selected.
    */
   activePipeline,
-
-  /**
-   * current backend's error message
-   */
-  backendErrorMessages: (state: VQBState) => state.backendErrors,
   /**
    * the list of current dataset's colum names.
    **/
@@ -104,7 +99,7 @@ const getters: GetterTree<VQBState, any> = {
   /**
    * Return true if an error occured in the backend
    */
-  thereIsABackendError: (state: VQBState) => state.backendErrors.length > 0,
+  thereIsABackendError: (state: VQBState) => state.backendMessages.length > 0,
   /**
    * selected columns in the dataviewer (materialized by a styled focus)
    */
