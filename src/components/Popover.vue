@@ -75,24 +75,8 @@ export default class Popover extends Vue {
   }
 
   mounted() {
-    if (this.visible) {
-      this.setupPositioning();
-    }
-  }
-
-  beforeDestroy() {
-    if (this.visible) {
-      this.destroyPositioning();
-    }
-  }
-
-  setupPositioning() {
     // Save original parent before moving into body to use its position
     this.parent = this.$el.parentElement;
-
-    // Move the popover into the body to prevent its hiding by an
-    // `overflow: hidden` container
-    document.body.appendChild(this.$el);
 
     // Get all scrollable parents
     const parents = [];
@@ -105,12 +89,27 @@ export default class Popover extends Vue {
 
     this.parents = parents;
 
+    if (this.visible) {
+      this.setupPositioning();
+    }
+  }
+
+  beforeDestroy() {
+    if (this.visible) {
+      this.destroyPositioning();
+    }
+  }
+
+  setupPositioning() {
+    // Move the popover into the body to prevent its hiding by an
+    // `overflow: hidden` container
+    document.body.appendChild(this.$el);
     // Attach listeners
     window.addEventListener('click', e => this.clickListener(e), { capture: true });
     window.addEventListener('orientationchange', () => this.updatePosition());
     window.addEventListener('resize', () => this.updatePosition());
-    for (const p of parents) {
-      p.addEventListener('scroll', () => this.updatePosition());
+    for (const parent of this.parents) {
+      parent.addEventListener('scroll', () => this.updatePosition());
     }
     this.updatePosition();
   }
