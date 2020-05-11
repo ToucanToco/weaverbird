@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+- The way we handle backendMessages (error/warning) by `BackendService`
+
 ## [0.17.0] - 2020-05-12
 
 ### Added

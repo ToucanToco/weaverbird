@@ -63,16 +63,13 @@ function _backendify(target: Function, store: Store<any>) {
     try {
       store.commit('vqb/toggleRequestOnGoing', { isRequestOnGoing: true });
       const response = await target.bind(this)(...args);
-      if (response.error) {
-        store.commit('vqb/logBackendError', {
-          backendError: response.error,
-        });
-      }
+      const backendMessages = response.error || response.warning || [];
+      store.commit('vqb/logBackendMessages', { backendMessages });
       return response;
     } catch (error) {
-      const response = { error: { type: 'error', message: error.toString() } };
-      store.commit('vqb/logBackendError', {
-        backendError: response.error,
+      const response = { error: [{ type: 'error', message: error.toString() }] };
+      store.commit('vqb/logBackendMessages', {
+        backendMessages: response.error,
       });
       return response;
     } finally {
