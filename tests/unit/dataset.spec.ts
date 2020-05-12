@@ -427,9 +427,9 @@ describe('dataset local uniques computation', () => {
           name: 'city',
           uniques: {
             values: [
-              { value: 'Paris', count: 2 },
-              { value: 'Marseille', count: 1 },
               { value: 'Berlin', count: 1 },
+              { value: 'Marseille', count: 1 },
+              { value: 'Paris', count: 2 },
             ],
             loaded: true,
           },
@@ -440,8 +440,8 @@ describe('dataset local uniques computation', () => {
             values: [
               { value: 2, count: 1 }, // result order depends on the other columns because they have all the same count
               { value: 40, count: 1 },
-              { value: 61.7, count: 1 },
               { value: 41.5, count: 1 },
+              { value: 61.7, count: 1 },
             ],
             loaded: true,
           },
@@ -450,8 +450,8 @@ describe('dataset local uniques computation', () => {
           name: 'isCapitalCity',
           uniques: {
             values: [
-              { value: true, count: 3 },
               { value: false, count: 1 },
+              { value: true, count: 3 },
             ],
             loaded: true,
           },
@@ -460,9 +460,9 @@ describe('dataset local uniques computation', () => {
           name: 'population',
           uniques: {
             values: [
-              { value: { population: 9 }, count: 2 },
-              { value: { population: 4 }, count: 1 },
               { value: { population: 3 }, count: 1 },
+              { value: { population: 4 }, count: 1 },
+              { value: { population: 9 }, count: 2 },
             ],
             loaded: true,
           },
@@ -492,9 +492,11 @@ describe('dataset local uniques computation', () => {
       ],
       data: [
         ['Paris', 61.7, true, { population: 9 }],
-        ['Marseille', 40, false, { population: 4 }],
+        ['Marseille', 4, false, { population: 4 }],
+        ['marseille', 35, false, { population: 4 }],
         ['Berlin', 41.5, true, { population: 3 }],
-        ['Paris', 2, true, { population: 9 }],
+        ['Paris', 1, true, { population: 9 }],
+        ['paris', 10, true, { population: 9 }],
       ],
       paginationContext: {
         pageno: 1,
@@ -512,9 +514,11 @@ describe('dataset local uniques computation', () => {
       ],
       data: [
         ['Paris', 61.7, true, { population: 9 }],
-        ['Marseille', 40, false, { population: 4 }],
+        ['Marseille', 4, false, { population: 4 }],
+        ['marseille', 35, false, { population: 4 }],
         ['Berlin', 41.5, true, { population: 3 }],
-        ['Paris', 2, true, { population: 9 }],
+        ['Paris', 1, true, { population: 9 }],
+        ['paris', 10, true, { population: 9 }],
       ],
       paginationContext: {
         pageno: 1,
@@ -528,9 +532,11 @@ describe('dataset local uniques computation', () => {
           name: 'city',
           uniques: {
             values: [
-              { value: 'Paris', count: 2 },
-              { value: 'Marseille', count: 1 },
               { value: 'Berlin', count: 1 },
+              { value: 'marseille', count: 1 },
+              { value: 'Marseille', count: 1 },
+              { value: 'paris', count: 1 },
+              { value: 'Paris', count: 2 },
             ],
             loaded: false,
           },
@@ -539,10 +545,12 @@ describe('dataset local uniques computation', () => {
           name: 'density',
           uniques: {
             values: [
-              { value: 2, count: 1 }, // result order depends on the other columns because they have all the same count
-              { value: 40, count: 1 },
-              { value: 61.7, count: 1 },
+              { value: 1, count: 1 },
+              { value: 4, count: 1 },
+              { value: 10, count: 1 },
+              { value: 35, count: 1 },
               { value: 41.5, count: 1 },
+              { value: 61.7, count: 1 },
             ],
             loaded: false,
           },
@@ -551,8 +559,8 @@ describe('dataset local uniques computation', () => {
           name: 'isCapitalCity',
           uniques: {
             values: [
-              { value: true, count: 3 },
-              { value: false, count: 1 },
+              { value: false, count: 2 },
+              { value: true, count: 4 },
             ],
             loaded: false,
           },
@@ -561,9 +569,9 @@ describe('dataset local uniques computation', () => {
           name: 'population',
           uniques: {
             values: [
-              { value: { population: 9 }, count: 2 },
-              { value: { population: 4 }, count: 1 },
               { value: { population: 3 }, count: 1 },
+              { value: { population: 4 }, count: 2 },
+              { value: { population: 9 }, count: 3 },
             ],
             loaded: false,
           },
@@ -571,9 +579,11 @@ describe('dataset local uniques computation', () => {
       ],
       data: [
         ['Paris', 61.7, true, { population: 9 }],
-        ['Marseille', 40, false, { population: 4 }],
+        ['Marseille', 4, false, { population: 4 }],
+        ['marseille', 35, false, { population: 4 }],
         ['Berlin', 41.5, true, { population: 3 }],
-        ['Paris', 2, true, { population: 9 }],
+        ['Paris', 1, true, { population: 9 }],
+        ['paris', 10, true, { population: 9 }],
       ],
       paginationContext: {
         pageno: 1,
@@ -605,8 +615,8 @@ describe('dataset update local Uniques', () => {
             values: [
               { value: 2, count: 1 },
               { value: 40, count: 1 },
-              { value: 61.7, count: 1 },
               { value: 41.5, count: 1 },
+              { value: 61.7, count: 1 },
             ],
             loaded: false,
           },
@@ -659,8 +669,8 @@ describe('dataset update local Uniques', () => {
             values: [
               { value: 2, count: 1 },
               { value: 40, count: 1 },
-              { value: 61.7, count: 1 },
               { value: 41.5, count: 1 },
+              { value: 61.7, count: 1 },
             ],
             loaded: false,
           },
@@ -705,8 +715,8 @@ describe('dataset update local Uniques', () => {
             values: [
               { value: 2, count: 1 },
               { value: 40, count: 1 },
-              { value: 61.7, count: 1 },
               { value: 41.5, count: 1 },
+              { value: 61.7, count: 1 },
             ],
             loaded: false,
           },
@@ -756,8 +766,8 @@ describe('dataset update local Uniques', () => {
             values: [
               { value: 2, count: 1 },
               { value: 40, count: 1 },
-              { value: 61.7, count: 1 },
               { value: 41.5, count: 1 },
+              { value: 61.7, count: 1 },
             ],
             loaded: false,
           },
@@ -766,8 +776,8 @@ describe('dataset update local Uniques', () => {
           name: 'isCapitalCity',
           uniques: {
             values: [
-              { value: true, count: 16 },
               { value: false, count: 5 },
+              { value: true, count: 16 },
             ],
             loaded: true,
           },
