@@ -31,6 +31,7 @@
 }
 
 .step-edit-form__back-button {
+  background: none;
   align-items: center;
   border: none;
   color: #404040;
