@@ -76,7 +76,10 @@ function localUniqueStats(dataset: DataSet) {
  * item's rank is lesser than the other, any positive value otherwise.
  */
 function _statCompare(stat1: ColumnValueStat, stat2: ColumnValueStat) {
-  return stat2.count - stat1.count;
+  return JSON.stringify(stat1.value).localeCompare(JSON.stringify(stat2.value), 'en', {
+    numeric: true,
+    caseFirst: 'lower',
+  });
 }
 
 /**

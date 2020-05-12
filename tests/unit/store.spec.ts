@@ -754,9 +754,9 @@ describe('action tests', () => {
     const resultOfAggregationCountOnCity: DataSet = {
       headers: [{ name: 'city' }, { name: '__vqb_count__' }],
       data: [
-        ['Paris', 200],
         ['Lyon', 150],
         ['Marseille', 100],
+        ['Paris', 200],
       ],
     };
     let instantiateDummyService: Function;
@@ -830,9 +830,9 @@ describe('action tests', () => {
               name: 'city',
               uniques: {
                 values: [
-                  { value: 'Paris', count: 200 },
                   { value: 'Lyon', count: 150 },
                   { value: 'Marseille', count: 100 },
+                  { value: 'Paris', count: 200 },
                 ],
                 loaded: true,
               },

@@ -4,7 +4,8 @@
 
 ### Changed
 
-- The way we handle backendMessages (error/warning) by `BackendService`
+- better handle of backend messages (error or warning) from `BackendService`
+- Unique values are now sorted in alphanumeric order
 - Parameters order in text and formula steps forms
 - Deactivate date conversion option depending on columnn datatype in `DataTypesMenu`
 
