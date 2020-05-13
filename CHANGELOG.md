@@ -5,6 +5,12 @@
 ### Changed
 - The way we handle backendMessages (error/warning) by `BackendService`
 
+## [0.17.2] - 2020-05-13
+
+### Fixed
+
+- popover positioning and mounting
+
 ## [0.17.0] - 2020-05-12
 
 ### Added
@@ -265,6 +271,7 @@
 
 - Initial version, showtime!
 
+[0.17.2]: https://github.com/ToucanToco/weaverbird/compare/v0.17.0...v0.17.2
 [0.17.0]: https://github.com/ToucanToco/weaverbird/compare/v0.16.1...v0.17.0
 [0.16.1]: https://github.com/ToucanToco/weaverbird/compare/v0.16.0...v0.16.1
 [0.16.0]: https://github.com/ToucanToco/weaverbird/compare/v0.15.1...v0.16.0
