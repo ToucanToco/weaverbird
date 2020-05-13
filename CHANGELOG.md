@@ -6,6 +6,7 @@
 
 - The way we handle backendMessages (error/warning) by `BackendService`
 - Parameters order in text and formula steps forms
+- Deactivate date conversion option depending on columnn datatype in `DataTypesMenu`
 
 ## [0.17.2] - 2020-05-13
 

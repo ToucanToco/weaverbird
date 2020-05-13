@@ -11,19 +11,55 @@ localVue.use(Vuex);
 
 describe('Data Types Menu', () => {
   it('should instantiate with the popover', () => {
-    const wrapper = mount(DataTypesMenu);
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'text' }],
+      },
+    });
+    const wrapper = mount(DataTypesMenu, { store, localVue });
     expect(wrapper.exists()).toBeTruthy();
     expect(wrapper.classes()).toContain('popover');
   });
 
   it('should contain the right set of data types', () => {
-    const wrapper = shallowMount(DataTypesMenu);
-    const options = wrapper.findAll('.data-types-menu__option');
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'string' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: {
+        columnName: 'columnA',
+      },
+    });
+    const options = wrapper.findAll('.data-types-menu__option--active');
     expect(options.at(0).html()).toContain('Integer');
     expect(options.at(1).html()).toContain('Float');
     expect(options.at(2).html()).toContain('Text');
     expect(options.at(3).html()).toContain('Date');
     expect(options.at(4).html()).toContain('Boolean');
+  });
+
+  it('should deactivate the date option when the column is not a string', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'integer' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: {
+        columnName: 'columnA',
+      },
+    });
+    const activatedOptions = wrapper.findAll('.data-types-menu__option--active');
+    expect(activatedOptions.length).toEqual(4);
+    const deactivatedOptions = wrapper.findAll('.data-types-menu__option--deactivated');
+    expect(deactivatedOptions.length).toEqual(1);
+    expect(deactivatedOptions.at(0).html()).toContain('Date');
   });
 
   describe('when clicking on a data type', () => {
@@ -46,7 +82,7 @@ describe('Data Types Menu', () => {
           columnName: 'columnA',
         },
       });
-      const actionsWrapper = wrapper.findAll('.data-types-menu__option');
+      const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
       actionsWrapper.at(0).trigger('click');
       await localVue.nextTick();
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
@@ -60,10 +96,29 @@ describe('Data Types Menu', () => {
     it('should emit a close event', async () => {
       const store = setupMockStore();
       const wrapper = shallowMount(DataTypesMenu, { store, localVue });
-      const actionsWrapper = wrapper.findAll('.data-types-menu__option');
+      const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
       actionsWrapper.at(0).trigger('click');
       await localVue.nextTick();
       expect(wrapper.emitted().closed).toBeTruthy();
+    });
+
+    it('should not emit a close event if clicking on a deactivatedoption', async () => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA', type: 'integer' }],
+        },
+      });
+      const wrapper = shallowMount(DataTypesMenu, {
+        store,
+        localVue,
+        propsData: {
+          columnName: 'columnA',
+        },
+      });
+      const actionsWrapper = wrapper.findAll('.data-types-menu__option--deactivated');
+      actionsWrapper.at(0).trigger('click');
+      await localVue.nextTick();
+      expect(wrapper.emitted().closed).toBeFalsy();
     });
   });
 });
