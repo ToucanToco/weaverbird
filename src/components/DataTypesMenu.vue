@@ -2,25 +2,32 @@
   <popover :visible="visible" :align="alignLeft" bottom @closed="close">
     <div class="data-types-menu__body">
       <div class="data-types-menu__section">
-        <div class="data-types-menu__option" @click="createConvertStep('integer')">
+        <div class="data-types-menu__option--active" @click="createConvertStep('integer')">
           <span class="data-types-menu__icon">123</span>
           <span>Integer</span>
         </div>
-        <div class="data-types-menu__option" @click="createConvertStep('float')">
+        <div class="data-types-menu__option--active" @click="createConvertStep('float')">
           <span class="data-types-menu__icon">1.2</span>
           <span>Float</span>
         </div>
-        <div class="data-types-menu__option" @click="createConvertStep('text')">
+        <div class="data-types-menu__option--active" @click="createConvertStep('text')">
           <span class="data-types-menu__icon">ABC</span>
           <span>Text</span>
         </div>
-        <div class="data-types-menu__option" @click="createConvertStep('date')">
+        <div
+          :class="{
+            'data-types-menu__option--active': columnTypes[columnName] === 'string',
+            'data-types-menu__option--deactivated': !(columnTypes[columnName] === 'string'),
+          }"
+          title="Only string columns can be converted to date"
+          @click="createConvertStep('date')"
+        >
           <span class="data-types-menu__icon">
             <i class="fas fa-calendar-alt" />
           </span>
           <span>Date</span>
         </div>
-        <div class="data-types-menu__option" @click="createConvertStep('boolean')">
+        <div class="data-types-menu__option--active" @click="createConvertStep('boolean')">
           <span class="data-types-menu__icon">
             <i class="fas fa-check" />
           </span>
@@ -34,6 +41,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
+import { DataSetColumnType } from '@/lib/dataset';
 import { ConvertStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -41,6 +49,7 @@ import { MutationCallbacks } from '@/store/mutations';
 import Popover from './Popover.vue';
 
 type dataType = 'boolean' | 'date' | 'float' | 'integer' | 'text';
+type PropMap<T> = { [prop: string]: T };
 
 @Component({
   name: 'data-types-menu',
@@ -61,6 +70,7 @@ export default class DataTypesMenu extends Vue {
   })
   visible!: boolean;
 
+  @VQBModule.Getter columnTypes!: PropMap<DataSetColumnType>;
   @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline?: Pipeline;
@@ -76,22 +86,24 @@ export default class DataTypesMenu extends Vue {
   }
 
   createConvertStep(dataType: dataType) {
-    const newPipeline: Pipeline = [...this.pipeline];
-    const index = this.computedActiveStepIndex + 1;
-    const convertStep: ConvertStep = {
-      name: 'convert',
-      columns: [this.columnName],
-      data_type: dataType,
-    };
-    // If a step edition form is already open, close it so that the left panel
-    // displays the pipeline with the new delete step inserted
-    if (this.isEditingStep) {
-      this.closeStepForm();
+    if (dataType !== 'date' || this.columnTypes[this.columnName] === 'string') {
+      const newPipeline: Pipeline = [...this.pipeline];
+      const index = this.computedActiveStepIndex + 1;
+      const convertStep: ConvertStep = {
+        name: 'convert',
+        columns: [this.columnName],
+        data_type: dataType,
+      };
+      // If a step edition form is already open, close it so that the left panel
+      // displays the pipeline with the new delete step inserted
+      if (this.isEditingStep) {
+        this.closeStepForm();
+      }
+      newPipeline.splice(index, 0, convertStep);
+      this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
+      this.close();
     }
-    newPipeline.splice(index, 0, convertStep);
-    this.setPipeline({ pipeline: newPipeline });
-    this.selectStep({ index });
-    this.close();
   }
 }
 </script>
@@ -121,7 +133,7 @@ export default class DataTypesMenu extends Vue {
   }
 }
 
-.data-types-menu__option {
+.data-types-menu__option--active {
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -138,6 +150,18 @@ export default class DataTypesMenu extends Vue {
   &:last-child {
     margin-bottom: 0;
   }
+}
+
+.data-types-menu__option--deactivated {
+  display: flex;
+  align-items: center;
+  cursor: not-allowed;
+  font-size: 13px;
+  padding: 10px 12px;
+  line-height: 20px;
+  position: relative;
+  background-color: #d1d1d1;
+  opacity: 0.3;
 }
 
 .data-types-menu__icon {
