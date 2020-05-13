@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+## Added
+
+- Data format presets in todate and fromdate steps
+
 ## [0.17.4] - 2020-05-15
 
 ### Fixed
