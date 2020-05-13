@@ -36,18 +36,8 @@ describe('Formula Step Form', () => {
       },
     );
     await wrapper.vm.$nextTick();
-    expect(
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(0)
-        .props('value'),
-    ).toEqual('ColumnA * 2');
-    expect(
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(1)
-        .props('value'),
-    ).toEqual('foo');
+    expect(wrapper.find('.newColumnInput').props('value')).toEqual('foo');
+    expect(wrapper.find('.formulaInput').props('value')).toEqual('ColumnA * 2');
   });
 
   describe('Warning', () => {
@@ -62,8 +52,7 @@ describe('Formula Step Form', () => {
         data: { editedStep: { formula: '', new_column: 'columnA' } },
       });
       await wrapper.vm.$nextTick();
-      const inputText = wrapper.findAll('inputtextwidget-stub');
-      expect(inputText.at(1).props().warning).toEqual(
+      expect(wrapper.find('.newColumnInput').props().warning).toEqual(
         'A column name "columnA" already exists. You will overwrite it.',
       );
     });
@@ -79,8 +68,7 @@ describe('Formula Step Form', () => {
         data: { editedStep: { formula: '', new_column: 'columnB' } },
       });
       await wrapper.vm.$nextTick();
-      const inputText = wrapper.findAll('inputtextwidget-stub');
-      expect(inputText.at(1).props().warning).toBeNull();
+      expect(wrapper.find('.newColumnInput').props().warning).toBeNull();
     });
   });
 

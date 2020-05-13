@@ -2,14 +2,6 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <InputTextWidget
-      class="textInput"
-      v-model="editedStep.text"
-      name="Enter a text:"
-      placeholder
-      data-path=".text"
-      :errors="errors"
-    />
-    <InputTextWidget
       class="newColumnInput"
       v-model="editedStep.new_column"
       name="New colum:"
@@ -17,6 +9,14 @@
       data-path=".new_column"
       :errors="errors"
       :warning="duplicateColumnName"
+    />
+    <InputTextWidget
+      class="textInput"
+      v-model="editedStep.text"
+      name="Enter a text:"
+      placeholder
+      data-path=".text"
+      :errors="errors"
     />
     <StepFormButtonbar />
   </div>

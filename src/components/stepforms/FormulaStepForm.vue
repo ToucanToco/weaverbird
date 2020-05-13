@@ -2,14 +2,6 @@
   <div>
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <InputTextWidget
-      class="formulaInput"
-      v-model="editedStep.formula"
-      name="Formula:"
-      placeholder
-      data-path=".formula"
-      :errors="errors"
-    />
-    <InputTextWidget
       class="newColumnInput"
       v-model="editedStep.new_column"
       name="New colum:"
@@ -17,6 +9,14 @@
       data-path=".new_column"
       :errors="errors"
       :warning="duplicateColumnName"
+    />
+    <InputTextWidget
+      class="formulaInput"
+      v-model="editedStep.formula"
+      name="Formula:"
+      placeholder
+      data-path=".formula"
+      :errors="errors"
     />
     <StepFormButtonbar />
   </div>
