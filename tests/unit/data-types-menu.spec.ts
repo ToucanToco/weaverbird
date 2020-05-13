@@ -93,6 +93,19 @@ describe('Data Types Menu', () => {
       expect(store.state.vqb.selectedStepIndex).toEqual(1);
     });
 
+    it('should close any existing open form if another step was being edited', async () => {
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline([{ name: 'domain', domain: 'test' }], {
+          currentStepFormName: 'formula',
+        }),
+      });
+      const wrapper = shallowMount(DataTypesMenu, { store, localVue });
+      const actionsWrapper = wrapper.find('.data-types-menu__option--active');
+      actionsWrapper.trigger('click');
+      await localVue.nextTick();
+      expect(wrapper.vm.$store.state.currentStepFormName).toBeUndefined();
+    });
+
     it('should emit a close event', async () => {
       const store = setupMockStore();
       const wrapper = shallowMount(DataTypesMenu, { store, localVue });
@@ -102,7 +115,7 @@ describe('Data Types Menu', () => {
       expect(wrapper.emitted().closed).toBeTruthy();
     });
 
-    it('should not emit a close event if clicking on a deactivatedoption', async () => {
+    it('should not emit a close event if clicking on a deactivated option', async () => {
       const store = setupMockStore({
         dataset: {
           headers: [{ name: 'columnA', type: 'integer' }],
