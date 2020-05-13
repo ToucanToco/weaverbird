@@ -221,14 +221,14 @@ describe('Popover', function() {
     boundingRectSpy.mockRestore();
   });
 
-  it('should instantiate a popover', function() {
+  it("should instantiate the popover in document's body", function() {
     createWrapper({ props: { visible: true } });
-    expect(_.isElement(popoverWrapper.element)).toBeTruthy();
+    expect(document.body.contains(popoverWrapper.element)).toBeTruthy();
   });
 
-  it('should instantiate a popover', function() {
+  it("should not add the popover in document's body", function() {
     createWrapper({ props: { visible: false } });
-    expect(_.isElement(popoverWrapper.element)).toBeFalsy();
+    expect(document.body.contains(popoverWrapper.element)).toBeFalsy();
   });
 
   it('should include the passed slot content', function() {

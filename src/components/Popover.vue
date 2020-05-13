@@ -1,5 +1,5 @@
 <template>
-  <span v-if="visible" class="popover" :style="elementStyle">
+  <span class="popover" :style="elementStyle">
     <slot />
   </span>
 </template>
@@ -63,7 +63,10 @@ export default class Popover extends Vue {
 
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
+  element: HTMLElement | null = null;
   parents: HTMLElement[] = [];
+  updatePositionListener!: () => void;
+  clickListener!: (Event: any) => void;
 
   @Watch('visible')
   async onVisibleChange(visible: boolean) {
@@ -74,20 +77,34 @@ export default class Popover extends Vue {
     }
   }
 
-  mounted() {
+  async mounted() {
     // Save original parent before moving into body to use its position
     this.parent = this.$el.parentElement;
+    // Remove element from parent: it will be added to body when `setupPosition`
+    if (this.parent !== null) {
+      this.parent.removeChild(this.$el);
+    } else {
+      throw new Error('The popover has no parent!');
+    }
 
     // Get all scrollable parents
     const parents = [];
     let { parent } = this;
 
-    while (parent !== document.body && parent !== null) {
+    while (parent !== document.body) {
       parents.push(parent);
-      parent = parent.parentElement;
+      if (parent.parentElement) {
+        parent = parent.parentElement;
+      } else {
+        break;
+      }
     }
 
     this.parents = parents;
+
+    // instantiate the events listener
+    this.updatePositionListener = () => this.updatePosition();
+    this.clickListener = (event: Event) => this.closeWhenClickOutside(event);
 
     if (this.visible) {
       this.setupPositioning();
@@ -104,22 +121,23 @@ export default class Popover extends Vue {
     // Move the popover into the body to prevent its hiding by an
     // `overflow: hidden` container
     document.body.appendChild(this.$el);
-    // Attach listeners
-    window.addEventListener('click', e => this.clickListener(e), { capture: true });
-    window.addEventListener('orientationchange', () => this.updatePosition());
-    window.addEventListener('resize', () => this.updatePosition());
-    for (const parent of this.parents) {
-      parent.addEventListener('scroll', () => this.updatePosition());
-    }
     this.updatePosition();
+    // Attach listeners
+    window.addEventListener('click', this.clickListener);
+    window.addEventListener('orientationchange', this.updatePositionListener);
+    window.addEventListener('resize', this.updatePositionListener);
+    for (const parent of this.parents) {
+      parent.addEventListener('scroll', this.updatePositionListener);
+    }
   }
 
   destroyPositioning() {
     // Cleanup listeners
-    window.removeEventListener('orientationchange', () => this.updatePosition());
-    window.removeEventListener('resize', () => this.updatePosition());
+    window.removeEventListener('click', this.clickListener);
+    window.removeEventListener('orientationchange', this.updatePositionListener);
+    window.removeEventListener('resize', this.updatePositionListener);
     for (const parent of this.parents) {
-      parent.removeEventListener('scroll', () => this.updatePosition());
+      parent.removeEventListener('scroll', this.updatePositionListener);
     }
     // Cleanup DOM
     if (this.$el.parentElement !== null) {
@@ -152,7 +170,7 @@ export default class Popover extends Vue {
   );
 
   // Close the popover when clicking outside
-  clickListener(e: Event) {
+  closeWhenClickOutside(e: Event) {
     const target = e.target as HTMLElement;
     const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
 
