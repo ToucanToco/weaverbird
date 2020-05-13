@@ -10,7 +10,7 @@
         :is-active="button.isActionToolbarMenuOpened"
         :class="button.class"
         @actionClicked="actionClicked"
-        @click.native="openPopover(index)"
+        @click.native.stop="openPopover(index)"
         @closed="closePopover()"
       />
       <search-bar @actionClicked="actionClicked" />
