@@ -3,7 +3,9 @@
 ## Unreleased
 
 ### Changed
+
 - The way we handle backendMessages (error/warning) by `BackendService`
+- Parameters order in text and formula steps forms
 
 ## [0.17.0] - 2020-05-12
 
@@ -25,7 +27,7 @@
 
 ### Fixed
 
-- pagination appears if DataSet is not complete 
+- pagination appears if DataSet is not complete
 - column unique values can be of any type
 - action toolbar buttons style
 
@@ -48,6 +50,7 @@
 ## [0.15.1] - 2020-04-06
 
 ### Changed
+
 - The Popover is not necessary mounted when not visible. Column's action menu are then not mounted, improving performance of DataSetViewer.
 
 ### Fixed

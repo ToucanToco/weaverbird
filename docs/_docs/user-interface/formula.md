@@ -26,12 +26,12 @@ as a string.
 
 <img src="../../img/docs/user-interface/formula_step_form.jpg" width="350" />
 
+- `New column`: the name of the new column to be created with the formula
+  result.
+
 - `Formula`: the formula, which can be an algebraic formula composed of numbers,
   maths operators and columns; it can also be a text (escaped by quotes) to
   uniformly fill the column with that text.
-
-- `New column`: the name of the new column to be created with the formula
-  result.
 
 #### Example 1: Basic usage
 

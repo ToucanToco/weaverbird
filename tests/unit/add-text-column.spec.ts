@@ -13,18 +13,8 @@ describe('Add Text Column Step Form', () => {
     const wrapper = runner.shallowMount();
     wrapper.setData({ editedStep: { name: 'text', text: 'some text', new_column: 'foo' } });
     await wrapper.vm.$nextTick();
-    expect(
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(0)
-        .props('value'),
-    ).toEqual('some text');
-    expect(
-      wrapper
-        .findAll('inputtextwidget-stub')
-        .at(1)
-        .props('value'),
-    ).toEqual('foo');
+    expect(wrapper.find('.newColumnInput').props('value')).toEqual('foo');
+    expect(wrapper.find('.textInput').props('value')).toEqual('some text');
   });
 
   it('should make the focus on the column added after validation', () => {
@@ -68,8 +58,7 @@ describe('Add Text Column Step Form', () => {
       const wrapper = runner.shallowMount(initialState);
       wrapper.setData({ editedStep: { text: '', new_column: 'columnA' } });
       await wrapper.vm.$nextTick();
-      const inputText = wrapper.findAll('inputtextwidget-stub');
-      expect(inputText.at(1).props().warning).toEqual(
+      expect(wrapper.find('.newColumnInput').props().warning).toEqual(
         'A column name "columnA" already exists. You will overwrite it.',
       );
     });
@@ -84,8 +73,7 @@ describe('Add Text Column Step Form', () => {
       const wrapper = runner.shallowMount(initialState);
       wrapper.setData({ editedStep: { text: '', new_column: 'columnB' } });
       await wrapper.vm.$nextTick();
-      const inputText = wrapper.findAll('inputtextwidget-stub');
-      expect(inputText.at(1).props().warning).toBeNull();
+      expect(wrapper.find('.newColumnInput').props().warning).toBeNull();
     });
   });
 });

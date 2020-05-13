@@ -22,9 +22,9 @@ specified text.
 
 <img src="../../img/docs/user-interface/text_step_form.jpg" width="350" />
 
-- `Text`: the text that you want to write in the new column
-
 - `New column`: the name of the new column to be created
+
+- `Enter a text`: the text that you want to write in the new column
 
 #### Example:
 
