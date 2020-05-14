@@ -416,14 +416,14 @@ of the computation. The computation can be scoped by group if needed.
 
 **Input dataset:**
 
-| DATE      | VALUE |
-| --------- | ----- |
-| 2019-01   | 2     |
-| 2019-02   | 5     |
-| 2019-03   | 3     |
-| 2019-04   | 8     |
-| 2019-05   | 9     |
-| 2019-06   | 6     |
+| DATE    | VALUE |
+| ------- | ----- |
+| 2019-01 | 2     |
+| 2019-02 | 5     |
+| 2019-03 | 3     |
+| 2019-04 | 8     |
+| 2019-05 | 9     |
+| 2019-06 | 6     |
 
 **Step configuration:**
 
@@ -865,16 +865,16 @@ prohibited.
 
 **Output dataset:**
 
-| DATE    | COUNTRY | VALUE | MY_EVOL |
-| ------- | ------- | ----- | -------------- |
-| 2014-12 | France  | 79    |                |
-| 2015-12 | France  | 81    | Error ...      |
-| 2016-12 | France  | 77    | Error ...      |
-| 2017-12 | France  | 75    | Error ...      |
-| 2014-12 | USA     | 74    |                |
-| 2015-12 | USA     | 74    | Error ...      |
-| 2016-12 | USA     | 73    | Error ...      |
-| 2017-12 | USA     | 72    | Error ...      |
+| DATE    | COUNTRY | VALUE | MY_EVOL   |
+| ------- | ------- | ----- | --------- |
+| 2014-12 | France  | 79    |           |
+| 2015-12 | France  | 81    | Error ... |
+| 2016-12 | France  | 77    | Error ... |
+| 2017-12 | France  | 75    | Error ... |
+| 2014-12 | USA     | 74    |           |
+| 2015-12 | USA     | 74    | Error ... |
+| 2016-12 | USA     | 73    | Error ... |
+| 2017-12 | USA     | 72    | Error ... |
 
 #### Example 4: Complete configuration with index columns
 
@@ -2101,10 +2101,10 @@ Converts a string `column` into a date column based on a specified `format`.
 {
     name: 'todate',
     column: 'myTextColumn'
-    format: '%Y-%m-%d' // Optional. If not specified, the backend tries to guess
-                        // For further details on supported format specifiers,
-                        // see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers
-                        // Note: format is unsupported in Mongo versions older than 4.0
+    format: '%Y-%m-%d' // Optional. If undefined, the backend tries to infer the date format.
+                       // For further details on supported format specifiers,
+                       // see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers
+                       // Note: custom format is not supported in Mongo versions older than 4.0
 }
 ```
 
