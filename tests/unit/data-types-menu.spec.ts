@@ -128,10 +128,29 @@ describe('Data Types Menu', () => {
           columnName: 'columnA',
         },
       });
-      const actionsWrapper = wrapper.findAll('.data-types-menu__option--deactivated');
-      actionsWrapper.at(0).trigger('click');
+      wrapper.find('.data-types-menu__option--deactivated').trigger('click');
       await localVue.nextTick();
       expect(wrapper.emitted().closed).toBeFalsy();
     });
+  });
+
+  it('should emit "closed" and actionClicked" with "todate" as payload when clicking on "date"', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'string' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: {
+        columnName: 'columnA',
+      },
+    });
+    const options = wrapper.findAll('.data-types-menu__option--active');
+    options.at(3).trigger('click');
+    expect(wrapper.emitted().closed).toBeTruthy();
+    expect(wrapper.emitted().actionClicked).toBeTruthy();
+    expect(wrapper.emitted().actionClicked[0][0]).toEqual('todate');
   });
 });

@@ -20,7 +20,7 @@
             'data-types-menu__option--deactivated': !(columnTypes[columnName] === 'string'),
           }"
           title="Only string columns can be converted to date"
-          @click="createConvertStep('date')"
+          @click="openToDateStep()"
         >
           <span class="data-types-menu__icon">
             <i class="fas fa-calendar-alt" />
@@ -102,6 +102,12 @@ export default class DataTypesMenu extends Vue {
       newPipeline.splice(index, 0, convertStep);
       this.setPipeline({ pipeline: newPipeline });
       this.selectStep({ index });
+      this.close();
+    }
+  }
+  openToDateStep() {
+    if (this.columnTypes[this.columnName] === 'string') {
+      this.$emit('actionClicked', 'todate');
       this.close();
     }
   }
