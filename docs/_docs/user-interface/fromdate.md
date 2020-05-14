@@ -21,12 +21,18 @@ You can use this step to cast a date column to a text column.
 
 <img src="../../img/docs/user-interface/fromdate_step_form.jpg" width="350" />
 
+<img src="../../img/docs/user-interface/fromdate_step_form_presets.jpg" width="350" /></br>
+
+<img src="../../img/docs/user-interface/fromdate_step_form_custom.jpg" width="350" /></br>
+
 - `Column to convert:`: the date column to be converted to text
 
-- `Date format:`: here you can specify how the text will be formatted.
+- `Date format:`: either 'Custom' (to allow you to enter a custom format in the
+  `custom format` parameter below), or a preset (e.g. "%d-%m-%Y")
 
-Please see the [Mongo documentation](https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers)
-for Mongo supported formats.
+- `Custom format:`: only displayed and required if you selected 'custom' in the
+  `Date format` parameter. Please see the [Mongo documentation](https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers)
+  for Mongo supported formats.
 
 #### Example
 
