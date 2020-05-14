@@ -69,7 +69,7 @@ developing a new feature or fixing a bug. Under the hood, this will use the
 yarn lint
 ```
 
-### Build the documentation
+### Build the API documentation
 
 ```bash
 yarn build-doc
@@ -78,7 +78,7 @@ yarn build-doc
 This will run [typedoc](https://typedoc.org/) on the `src/` directory and
 generate the corresponding documentation in the `dist/docs` directory.
 
-### Build and Run documentation (local environnement)
+### Build and run the documentation website
 
 > The web documentation is powered by [Jekyll](https://jekyllrb.com).
 
@@ -94,7 +94,7 @@ gem install bundler
 bundle exec jekyll serve
 ```
 
-#### how to add doc to jekyll documentation
+#### Enrich it!
 
 > put your `.md` file into the `docs` folder. You can add a folder as well to better organization
 
@@ -134,6 +134,10 @@ Stories are defined in the `stories/` directory.
 ### Customize configuration
 
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+## Publication
+
+This library is published on npm under the name `weaverbird` automatically each time a release is created in GitHub.
 
 ## Usage as library
 
