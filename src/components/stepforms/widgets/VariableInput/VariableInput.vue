@@ -16,7 +16,7 @@
         v-if="canBeVariable"
         class="widget-input-variable__variable-toggle"
         :class="{ 'widget-input-variable__variable-toggle--choosing': isChoosingVariable }"
-        @click="startChoosingVariable"
+        @click.stop="startChoosingVariable"
         >x
       </span>
     </div>
