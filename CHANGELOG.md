@@ -8,6 +8,10 @@
 - Parameters order in text and formula steps forms
 - Deactivate date conversion option depending on columnn datatype in `DataTypesMenu`
 
+### Added
+
+- a trivial state getter to get backendMessage (useful when vuex sate is in strict mode)
+
 ## [0.17.2] - 2020-05-13
 
 ### Fixed

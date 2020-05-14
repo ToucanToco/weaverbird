@@ -14,6 +14,10 @@ const getters: GetterTree<VQBState, any> = {
    */
   activePipeline,
   /**
+   * list of backendMessages
+   */
+  backendMessages: (state: VQBState) => state.backendMessages,
+  /**
    * the list of current dataset's colum names.
    **/
   columnNames: (state: VQBState) => state.dataset.headers.map(col => col.name),
