@@ -77,8 +77,21 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
   readonly title: string = 'Convert Column From Text to Date';
   readonly formatOptions: FormatOption[] = [
     { format: 'guess', label: 'Try to guess', example: '' },
-    { format: '%Y-%m', label: '%Y-%m', example: '1970-12' },
     { format: 'custom', label: 'Custom', example: '' },
+    { format: '%Y-%m-%d', label: '%Y-%m-%d', example: '1970-12-31' },
+    { format: '%Y/%m/%d', label: '%Y/%m/%d', example: '1970/12/31' },
+    { format: '%d-%m-%Y', label: '%d-%m-%Y', example: '31-12-1970' },
+    { format: '%d/%m/%Y', label: '%d/%m/%Y', example: '31/12/1970' },
+    { format: '%d %b %Y', label: '%d %b %Y', example: '31 Dec 1970' },
+    { format: '%d-%b-%Y', label: '%d-%b-%Y', example: '31-Dec-1970' },
+    { format: '%d %B %Y', label: '%d %B %Y', example: '31 December 1970' },
+    { format: '%b %Y', label: '%b %Y', example: 'Dec 1970' },
+    { format: '%b-%Y', label: '%b-%Y', example: 'Dec-1970' },
+    { format: '%B %Y', label: '%B %Y', example: 'December 1970' },
+    { format: '%Y-%m', label: '%Y-%m', example: '1970-12' },
+    { format: '%Y/%m', label: '%Y/%m', example: '1970/12' },
+    { format: '%m-%Y', label: '%m-%Y', example: '12-1970' },
+    { format: '%m/%Y', label: '%m/%Y', example: '12/1970' },
   ];
   readonly datePresets = this.formatOptions
     .filter(d => d.format !== 'guess' && d.format !== 'custom')
