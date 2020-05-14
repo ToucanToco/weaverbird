@@ -20,10 +20,6 @@ export default {
       type: 'string',
       minLength: 1,
       title: 'Date format',
-      description: 'Date format',
-      attrs: {
-        placeholder: 'Enter a date format',
-      },
     },
   },
   required: ['name', 'column', 'format'],

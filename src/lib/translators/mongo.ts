@@ -336,6 +336,235 @@ function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
   ];
 }
 
+/** transform a 'fromdate' step into corresponding mongo steps */
+function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
+  const smallMonthReplace = {
+    $switch: {
+      branches: [
+        { case: { $eq: ['$_vqbTempMonth', '01'] }, then: 'Jan' },
+        { case: { $eq: ['$_vqbTempMonth', '02'] }, then: 'Feb' },
+        { case: { $eq: ['$_vqbTempMonth', '03'] }, then: 'Mar' },
+        { case: { $eq: ['$_vqbTempMonth', '04'] }, then: 'Apr' },
+        { case: { $eq: ['$_vqbTempMonth', '05'] }, then: 'May' },
+        { case: { $eq: ['$_vqbTempMonth', '06'] }, then: 'Jun' },
+        { case: { $eq: ['$_vqbTempMonth', '07'] }, then: 'Jul' },
+        { case: { $eq: ['$_vqbTempMonth', '08'] }, then: 'Aug' },
+        { case: { $eq: ['$_vqbTempMonth', '09'] }, then: 'Sep' },
+        { case: { $eq: ['$_vqbTempMonth', '10'] }, then: 'Oct' },
+        { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'Nov' },
+        { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'Dec' },
+      ],
+    },
+  };
+
+  const fullMonthReplace = {
+    $switch: {
+      branches: [
+        { case: { $eq: ['$_vqbTempMonth', '01'] }, then: 'January' },
+        { case: { $eq: ['$_vqbTempMonth', '02'] }, then: 'February' },
+        { case: { $eq: ['$_vqbTempMonth', '03'] }, then: 'March' },
+        { case: { $eq: ['$_vqbTempMonth', '04'] }, then: 'April' },
+        { case: { $eq: ['$_vqbTempMonth', '05'] }, then: 'May' },
+        { case: { $eq: ['$_vqbTempMonth', '06'] }, then: 'June' },
+        { case: { $eq: ['$_vqbTempMonth', '07'] }, then: 'July' },
+        { case: { $eq: ['$_vqbTempMonth', '08'] }, then: 'August' },
+        { case: { $eq: ['$_vqbTempMonth', '09'] }, then: 'September' },
+        { case: { $eq: ['$_vqbTempMonth', '10'] }, then: 'October' },
+        { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'December' },
+        { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'December' },
+      ],
+    },
+  };
+
+  switch (step.format) {
+    /**
+     * `%d %b %Y`, `%d-%b-%Y`, `%d %B %Y`, `%b %Y` are date format `$dateToString`
+     * cannot handle. Therefore we design special query to handle these formats
+     */
+    case '%d %b %Y':
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: '%d-%m-%Y' },
+            },
+          },
+        },
+        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        {
+          $addFields: {
+            _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+            _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 1] },
+            _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+          },
+        },
+        {
+          $addFields: { _vqbTempMonth: smallMonthReplace },
+        },
+        {
+          $addFields: {
+            [step.column]: {
+              $concat: ['$_vqbTempDay', ' ', '$_vqbTempMonth', ' ', '$_vqbTempYear'],
+            },
+          },
+        },
+        { $project: { _vqbTempArray: 0, _vqbTempDay: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+      ];
+    case '%d-%b-%Y':
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: '%d-%m-%Y' },
+            },
+          },
+        },
+        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        {
+          $addFields: {
+            _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+            _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 1] },
+            _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+          },
+        },
+        {
+          $addFields: { _vqbTempMonth: smallMonthReplace },
+        },
+        {
+          $addFields: {
+            [step.column]: {
+              $concat: ['$_vqbTempDay', '-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+            },
+          },
+        },
+        { $project: { _vqbTempArray: 0, _vqbTempDay: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+      ];
+    case '%d %B %Y':
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: '%d-%m-%Y' },
+            },
+          },
+        },
+        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        {
+          $addFields: {
+            _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+            _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 1] },
+            _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+          },
+        },
+        {
+          $addFields: { _vqbTempMonth: fullMonthReplace },
+        },
+        {
+          $addFields: {
+            [step.column]: {
+              $concat: ['$_vqbTempDay', ' ', '$_vqbTempMonth', ' ', '$_vqbTempYear'],
+            },
+          },
+        },
+        { $project: { _vqbTempArray: 0, _vqbTempDay: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+      ];
+    case '%b %Y':
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: '%m-%Y' },
+            },
+          },
+        },
+        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        {
+          $addFields: {
+            _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 0] },
+            _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+          },
+        },
+        {
+          $addFields: { _vqbTempMonth: smallMonthReplace },
+        },
+        {
+          $addFields: {
+            [step.column]: {
+              $concat: ['$_vqbTempMonth', ' ', '$_vqbTempYear'],
+            },
+          },
+        },
+        { $project: { _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+      ];
+    case '%b-%Y':
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: '%m-%Y' },
+            },
+          },
+        },
+        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        {
+          $addFields: {
+            _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 0] },
+            _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+          },
+        },
+        {
+          $addFields: { _vqbTempMonth: smallMonthReplace },
+        },
+        {
+          $addFields: {
+            [step.column]: {
+              $concat: ['$_vqbTempMonth', '-', '$_vqbTempYear'],
+            },
+          },
+        },
+        { $project: { _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+      ];
+    case '%B %Y':
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: '%m-%Y' },
+            },
+          },
+        },
+        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        {
+          $addFields: {
+            _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 0] },
+            _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+          },
+        },
+        {
+          $addFields: { _vqbTempMonth: fullMonthReplace },
+        },
+        {
+          $addFields: {
+            [step.column]: {
+              $concat: ['$_vqbTempMonth', ' ', '$_vqbTempYear'],
+            },
+          },
+        },
+        { $project: { _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+      ];
+    default:
+      return [
+        {
+          $addFields: {
+            [step.column]: {
+              $dateToString: { date: $$(step.column), format: step.format },
+            },
+          },
+        },
+      ];
+  }
+}
+
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: Readonly<S.PercentageStep>): MongoStep[] {
   return [
@@ -804,11 +1033,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
       },
     };
   },
-  fromdate: (step: Readonly<S.FromDateStep>) => ({
-    $addFields: {
-      [step.column]: { $dateToString: { date: $$(step.column), format: `${step.format}` } },
-    },
-  }),
+  fromdate: transformFromDate,
   lowercase: (step: Readonly<S.ToLowerStep>) => ({
     $addFields: { [step.column]: { $toLower: $$(step.column) } },
   }),

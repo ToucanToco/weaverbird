@@ -2,6 +2,44 @@ import { Pipeline } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
 
+const smallMonthReplace = {
+  $switch: {
+    branches: [
+      { case: { $eq: ['$_vqbTempMonth', '01'] }, then: 'Jan' },
+      { case: { $eq: ['$_vqbTempMonth', '02'] }, then: 'Feb' },
+      { case: { $eq: ['$_vqbTempMonth', '03'] }, then: 'Mar' },
+      { case: { $eq: ['$_vqbTempMonth', '04'] }, then: 'Apr' },
+      { case: { $eq: ['$_vqbTempMonth', '05'] }, then: 'May' },
+      { case: { $eq: ['$_vqbTempMonth', '06'] }, then: 'Jun' },
+      { case: { $eq: ['$_vqbTempMonth', '07'] }, then: 'Jul' },
+      { case: { $eq: ['$_vqbTempMonth', '08'] }, then: 'Aug' },
+      { case: { $eq: ['$_vqbTempMonth', '09'] }, then: 'Sep' },
+      { case: { $eq: ['$_vqbTempMonth', '10'] }, then: 'Oct' },
+      { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'Nov' },
+      { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'Dec' },
+    ],
+  },
+};
+
+const fullMonthReplace = {
+  $switch: {
+    branches: [
+      { case: { $eq: ['$_vqbTempMonth', '01'] }, then: 'January' },
+      { case: { $eq: ['$_vqbTempMonth', '02'] }, then: 'February' },
+      { case: { $eq: ['$_vqbTempMonth', '03'] }, then: 'March' },
+      { case: { $eq: ['$_vqbTempMonth', '04'] }, then: 'April' },
+      { case: { $eq: ['$_vqbTempMonth', '05'] }, then: 'May' },
+      { case: { $eq: ['$_vqbTempMonth', '06'] }, then: 'June' },
+      { case: { $eq: ['$_vqbTempMonth', '07'] }, then: 'July' },
+      { case: { $eq: ['$_vqbTempMonth', '08'] }, then: 'August' },
+      { case: { $eq: ['$_vqbTempMonth', '09'] }, then: 'September' },
+      { case: { $eq: ['$_vqbTempMonth', '10'] }, then: 'October' },
+      { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'December' },
+      { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'December' },
+    ],
+  },
+};
+
 describe('Mongo translator support tests', () => {
   const mongo36translator = getTranslator('mongo36');
 
@@ -1455,7 +1493,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step', () => {
+  it('can generate a fromdate step with a custom format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -1467,6 +1505,237 @@ describe('Pipeline to mongo translator', () => {
     expect(querySteps).toEqual([
       { $addFields: { foo: { $dateToString: { date: '$foo', format: '%Y-%m-%d' } } } },
       { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step with "%d %b %Y" preset format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%d %b %Y',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $dateToString: { date: '$foo', format: '%d-%m-%Y' },
+          },
+        },
+      },
+      { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+      {
+        $addFields: {
+          _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+          _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 1] },
+          _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+        },
+      },
+      {
+        $addFields: { _vqbTempMonth: smallMonthReplace },
+      },
+      {
+        $addFields: {
+          foo: {
+            $concat: ['$_vqbTempDay', ' ', '$_vqbTempMonth', ' ', '$_vqbTempYear'],
+          },
+        },
+      },
+      { $project: { _id: 0, _vqbTempArray: 0, _vqbTempDay: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step with "%d-%b-%Y" preset format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%d-%b-%Y',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $dateToString: { date: '$foo', format: '%d-%m-%Y' },
+          },
+        },
+      },
+      { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+      {
+        $addFields: {
+          _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+          _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 1] },
+          _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+        },
+      },
+      {
+        $addFields: { _vqbTempMonth: smallMonthReplace },
+      },
+      {
+        $addFields: {
+          foo: {
+            $concat: ['$_vqbTempDay', '-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+          },
+        },
+      },
+      { $project: { _id: 0, _vqbTempArray: 0, _vqbTempDay: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step with "%d %B %Y" preset format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%d %B %Y',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $dateToString: { date: '$foo', format: '%d-%m-%Y' },
+          },
+        },
+      },
+      { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+      {
+        $addFields: {
+          _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+          _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 1] },
+          _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+        },
+      },
+      {
+        $addFields: { _vqbTempMonth: fullMonthReplace },
+      },
+      {
+        $addFields: {
+          foo: {
+            $concat: ['$_vqbTempDay', ' ', '$_vqbTempMonth', ' ', '$_vqbTempYear'],
+          },
+        },
+      },
+      { $project: { _id: 0, _vqbTempArray: 0, _vqbTempDay: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step with "%b %Y" preset format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%b %Y',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $dateToString: { date: '$foo', format: '%m-%Y' },
+          },
+        },
+      },
+      { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+      {
+        $addFields: {
+          _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 0] },
+          _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+        },
+      },
+      {
+        $addFields: { _vqbTempMonth: smallMonthReplace },
+      },
+      {
+        $addFields: {
+          foo: {
+            $concat: ['$_vqbTempMonth', ' ', '$_vqbTempYear'],
+          },
+        },
+      },
+      { $project: { _id: 0, _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step with "%b-%Y" preset format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%b-%Y',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $dateToString: { date: '$foo', format: '%m-%Y' },
+          },
+        },
+      },
+      { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+      {
+        $addFields: {
+          _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 0] },
+          _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+        },
+      },
+      {
+        $addFields: { _vqbTempMonth: smallMonthReplace },
+      },
+      {
+        $addFields: {
+          foo: {
+            $concat: ['$_vqbTempMonth', '-', '$_vqbTempYear'],
+          },
+        },
+      },
+      { $project: { _id: 0, _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+    ]);
+  });
+
+  it('can generate a fromdate step with "%B %Y" preset format', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fromdate',
+        column: 'foo',
+        format: '%B %Y',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $dateToString: { date: '$foo', format: '%m-%Y' },
+          },
+        },
+      },
+      { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+      {
+        $addFields: {
+          _vqbTempMonth: { $arrayElemAt: ['$_vqbTempArray', 0] },
+          _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+        },
+      },
+      {
+        $addFields: { _vqbTempMonth: fullMonthReplace },
+      },
+      {
+        $addFields: {
+          foo: {
+            $concat: ['$_vqbTempMonth', ' ', '$_vqbTempYear'],
+          },
+        },
+      },
+      { $project: { _id: 0, _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
     ]);
   });
 
