@@ -332,7 +332,7 @@ describe('Labeller', () => {
     const step: S.FromDateStep = {
       name: 'fromdate',
       column: 'foo',
-      format: '%Y-%m-%d',
+      format: 'custom',
     };
     expect(hrl(step)).toEqual('Convert "foo" into text');
   });
