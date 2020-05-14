@@ -17,6 +17,7 @@
                   <DataTypesMenu
                     :column-name="column.name"
                     :visible="isSupported('convert') && column.isDataTypeMenuOpened"
+                    @actionClicked="openStepForm"
                     @closed="closeDataTypeMenu"
                   />
                   <span v-html="getIconType(column.type)" />
