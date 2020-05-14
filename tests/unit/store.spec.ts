@@ -26,6 +26,13 @@ describe('getter tests', () => {
       expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline);
     });
 
+    it('should return backendMessages', () => {
+      const state = buildState({ backendMessages: [{ type: 'error', message: 'lalalolilol' }] });
+      expect(getters.backendMessages(state, {}, {}, {})).toEqual([
+        { type: 'error', message: 'lalalolilol' },
+      ]);
+    });
+
     it('should return a partial pipeline if selectedIndex is specified', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
