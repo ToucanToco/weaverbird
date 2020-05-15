@@ -123,11 +123,7 @@ class MongoService {
         dataset = annotateDataset(dataset, types[0]);
         dataset = autocastDataset(dataset);
       }
-      const response = { data: dataset };
-      if (dataset.paginationContext.totalCount > 50) {
-        response.warning = [{ type: 'warning', message: 'Il y a plus de 50 lignes dans le dataset'}];
-      }
-      return response;
+      return { data: dataset };
     } else {
       return {
         error: [{type: 'error', message: responseContent.errmsg}],
@@ -169,34 +165,6 @@ class MongoService {
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
 
-async function setupInitialData(store, domain = null) {
-  const collections = await mongoservice.listCollections();
-  store.commit(VQBnamespace('setDomains'), {
-    domains: collections,
-  });
-  if (domain !== null) {
-    store.commit(VQBnamespace('setCurrentDomain'), {
-      currentDomain: domain,
-    });
-  } else {
-    const response = await mongoservice.executePipeline(
-      store,
-      store.getters[VQBnamespace('pipeline')],
-      store.state[VQB_MODULE_NAME].pagesize,
-    );
-    if (response.error) {
-      store.commit(VQBnamespace('logBackendMessages'), { backendMessages: response.error } );
-    } else {
-      if (response.warning) {
-        store.commit(VQBnamespace('logBackendMessages'), { backendMessages: response.warning });
-      }
-      store.commit(VQBnamespace('setDataset'), {
-        dataset: response.data,
-      });
-    }
-  }
-}
-
 async function buildVueApp() {
   Vue.use(Vuex);
   const store = new Vuex.Store({
@@ -217,7 +185,7 @@ async function buildVueApp() {
         draggedover: false,
       };
     },
-    created: function() {
+    created: async function() {
       registerModule(this.$store, {
         currentPipelineName: 'pipeline',
         pipelines: {
@@ -288,20 +256,29 @@ async function buildVueApp() {
           groupname: 'Group 1',
         },
       });
-      setupInitialData(this.$store);
+      const collections = await mongoservice.listCollections();
+      store.commit(VQBnamespace('setDomains'), { domains: collections });
+      store.dispatch(VQBnamespace('updateDataset'));
     },
     computed: {
-      code: function() {
+      activePipeline: function(){
         let activePipeline = this.$store.getters[VQBnamespace('activePipeline')];
         if (!activePipeline) {
-          return '';
+          return undefined;
         }
         const pipelines = this.$store.getters[VQBnamespace('pipelines')];
         if (pipelines) {
-          activePipeline = dereferencePipelines(activePipeline, pipelines);
+          return dereferencePipelines(activePipeline, pipelines);
+        } else {
+          return activePipeline
         }
-        const query = mongo40translator.translate(activePipeline);
+      },
+      mongoQueryAsJSON: function() {
+        const query = mongo40translator.translate(this.activePipeline);
         return JSON.stringify(query, null, 2);
+      },
+      pipelineAsJSON: function(){
+        return JSON.stringify(this.activePipeline, null, 2);
       },
       thereIsABackendError: function() {
         return this.$store.getters[VQBnamespace('thereIsABackendError')];

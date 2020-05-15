@@ -27,12 +27,6 @@
         background-color: rgb(38, 101, 163);
       }
 
-      pre {
-        height: 100%;
-        display: flex;
-        background: white;
-      }
-
       #app {
         position: absolute;
         flex: 1;
@@ -74,28 +68,54 @@
       }
 
       .open-code__button {
+        cursor: pointer;
         position: absolute;
         bottom: 0;
         height: 40px;
         font-size: 20px;
       }
 
+      pre {
+        padding: 5px;
+        background-color: #ededed;
+      }
+
       .error-message {
-        position: absolute;
-        right: 0;
-        top: 0;
         background: red;
         color: white;
         padding: 10px;
+        position: absolute;
+        top: 0;
+        right: 0;
       }
 
       .warning-message {
-        position: absolute;
-        right: 0;
-        top: 0;
         background: orange;
         color: white;
+        position: absolute;
+        top: 0;
+        right: 0;
         padding: 10px;
+      }
+
+      .debug-panel {
+        margin: 50px 0px;
+        position: relative;
+      }
+
+      .debug-panel__code {
+        display: flex;
+        background-color: white;
+      }
+
+      .debug-panel__code-translated-pipeline, .debug-panel__code-pipeline {
+        width: 50%;
+        padding: 10px;
+       
+      }
+
+      .debug-panel__code-translated-pipeline {
+        border-left: 1px solid;
       }
     </style>
   </head>
@@ -108,18 +128,29 @@
         </h1>
       </div>
       <vqb></vqb>
+      <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
+        <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}
+      </div>
+      <div class="error-message" v-if="backendErrors.length" v-for="error in backendErrors">
+        <i class="fas fa-exclamation-triangle"></i> {{ error.message }}
+      </div>
       <button class="open-code__button" v-show="!isCodeOpened" @click="openCode">
         Open code to debug
       </button>
       <button class="open-code__button" v-show="isCodeOpened" @click="hideCode">
         Hide code
       </button>
-      <pre v-show="isCodeOpened"><code>{{ code }}</code></pre>
-      <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
-        <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}
-      </div>
-      <div class="error-message" v-if="backendErrors.length" v-for="error in backendErrors">
-        <i class="fas fa-exclamation-triangle"></i> {{ error.message }}
+      <div v-if="isCodeOpened" class="debug-panel">
+        <div class="debug-panel__code">
+          <div class="debug-panel__code-pipeline">
+            <div>Pipeline</div>
+            <pre>{{ pipelineAsJSON }}</pre>
+          </div>
+          <div class="debug-panel__code-translated-pipeline">
+            <div>Translated pipeline</div>
+            <pre>{{ mongoQueryAsJSON }}</pre>
+          </div>
+        </div>
       </div>
     </div>
     <!-- built files will be auto injected -->
