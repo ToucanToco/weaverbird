@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.17.4] - 2020-05-15
+
+### Fixed
+
+- Popover to choose a variable were not opening
+
 ## [0.17.3] - 2020-05-14
 
 ### Changed
@@ -280,7 +286,8 @@
 
 - Initial version, showtime!
 
-[0.17.2]: https://github.com/ToucanToco/weaverbird/compare/v0.17.2...v0.17.3
+[0.17.4]: https://github.com/ToucanToco/weaverbird/compare/v0.17.3...v0.17.4
+[0.17.3]: https://github.com/ToucanToco/weaverbird/compare/v0.17.2...v0.17.3
 [0.17.2]: https://github.com/ToucanToco/weaverbird/compare/v0.17.0...v0.17.2
 [0.17.0]: https://github.com/ToucanToco/weaverbird/compare/v0.16.1...v0.17.0
 [0.16.1]: https://github.com/ToucanToco/weaverbird/compare/v0.16.0...v0.16.1
