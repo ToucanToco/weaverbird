@@ -1,5 +1,5 @@
 <template>
-  <span class="popover" :style="elementStyle">
+  <span class="popover" :style="elementStyle" @click.stop>
     <slot />
   </span>
 </template>
@@ -66,7 +66,7 @@ export default class Popover extends Vue {
   element: HTMLElement | null = null;
   parents: HTMLElement[] = [];
   updatePositionListener!: () => void;
-  clickListener!: (Event: any) => void;
+  clickListener!: () => void;
 
   @Watch('visible')
   async onVisibleChange(visible: boolean) {
@@ -104,7 +104,9 @@ export default class Popover extends Vue {
 
     // instantiate the events listener
     this.updatePositionListener = () => this.updatePosition();
-    this.clickListener = (event: Event) => this.closeWhenClickOutside(event);
+    this.clickListener = () => this.$emit('closed');
+    // IMPORTANT: in order to not close the popover when clicking inside, any click
+    // from inside the popover are not propagated to the window
 
     if (this.visible) {
       this.setupPositioning();
@@ -168,16 +170,6 @@ export default class Popover extends Vue {
     // 60fps
     16,
   );
-
-  // Close the popover when clicking outside
-  closeWhenClickOutside(e: Event) {
-    const target = e.target as HTMLElement;
-    const hasClickOnItSelf = target === this.$el || this.$el.contains(target);
-
-    if (!hasClickOnItSelf) {
-      this.$emit('closed');
-    }
-  }
 }
 </script>
 <style lang="scss" scoped>
