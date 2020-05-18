@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/fromdate/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-05-15T11:57:47+02:00" />
+<meta property="article:published_time" content="2020-05-18T10:32:48+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/fromdate/","headline":"Convert date to text","datePublished":"2020-05-15T11:57:47+02:00","dateModified":"2020-05-15T11:57:47+02:00","description":"Convert date column to text","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/fromdate/","headline":"Convert date to text","datePublished":"2020-05-18T10:32:48+02:00","dateModified":"2020-05-18T10:32:48+02:00","description":"Convert date column to text","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -388,17 +388,24 @@
 
 <p><img src="../../img/docs/user-interface/fromdate_step_form.jpg" width="350" /></p>
 
+<p><img src="../../img/docs/user-interface/fromdate_step_form_presets.jpg" width="350" />&lt;/br&gt;</p>
+
+<p><img src="../../img/docs/user-interface/fromdate_step_form_custom.jpg" width="350" />&lt;/br&gt;</p>
+
 <ul>
   <li>
     <p><code class="highlighter-rouge">Column to convert:</code>: the date column to be converted to text</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Date format:</code>: here you can specify how the text will be formatted.</p>
+    <p><code class="highlighter-rouge">Date format:</code>: either ‘Custom’ (to allow you to enter a custom format in the
+<code class="highlighter-rouge">custom format</code> parameter below), or a preset (e.g. “%d-%m-%Y”)</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Custom format:</code>: only displayed and required if you selected ‘custom’ in the
+<code class="highlighter-rouge">Date format</code> parameter. Please see the <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers">Mongo documentation</a>
+for Mongo supported formats.</p>
   </li>
 </ul>
-
-<p>Please see the <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers">Mongo documentation</a>
-for Mongo supported formats.</p>
 
 <h4 id="example">Example</h4>
 

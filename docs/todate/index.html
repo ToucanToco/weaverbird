@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/todate/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-05-15T11:57:47+02:00" />
+<meta property="article:published_time" content="2020-05-18T10:32:48+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/todate/","headline":"Convert text to date","datePublished":"2020-05-15T11:57:47+02:00","dateModified":"2020-05-15T11:57:47+02:00","description":"Convert text column to date","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/todate/","headline":"Convert text to date","datePublished":"2020-05-18T10:32:48+02:00","dateModified":"2020-05-18T10:32:48+02:00","description":"Convert text column to date","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -382,24 +382,28 @@
 <ul>
   <li>Widget <code class="highlighter-rouge">Date</code></li>
   <li>Search bar</li>
+  <li>Column header data type icon</li>
 </ul>
 
 <h4 id="options-reference">Options reference</h4>
 
-<p><img src="../../img/docs/user-interface/todate_step_form.jpg" width="350" /></p>
+<p><img src="../../img/docs/user-interface/todate_step_form.jpg" width="350" />&lt;/br&gt;</p>
+
+<p><img src="../../img/docs/user-interface/todate_step_form_presets.jpg" width="350" />&lt;/br&gt;</p>
+
+<p><img src="../../img/docs/user-interface/todate_step_form_custom.jpg" width="350" />&lt;/br&gt;</p>
 
 <ul>
   <li>
     <p><code class="highlighter-rouge">Column to convert:</code>: the text column to be converted to date</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Date format:</code>: (optional). By default, the backend tries to guess the date
-format of your column. But if needed you can specify here a custom format.</p>
+    <p><code class="highlighter-rouge">format:</code>: either ‘Try to guess’ (the backend tries to infer the date format of your column),
+‘Custom’ (to allow you to enter a custom format in the <code class="highlighter-rouge">custom format</code> parameter below),
+or a preset (e.g. “%d-%m-%Y”). Please see the <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers">Mongo documentation</a>
+for Mongo custom supported formats.</p>
   </li>
 </ul>
-
-<p>Please see the <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers">Mongo documentation</a>
-for Mongo supported formats.</p>
 
 <h4 id="example">Example</h4>
 

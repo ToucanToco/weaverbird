@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-05-15T11:57:47+02:00" />
+<meta property="article:published_time" content="2020-05-18T10:32:48+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-05-15T11:57:47+02:00","dateModified":"2020-05-15T11:57:47+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-05-18T10:32:48+02:00","dateModified":"2020-05-18T10:32:48+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -5447,10 +5447,10 @@ specified <code class="highlighter-rouge">text</code>.</p>
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
     <span class="nl">name</span><span class="p">:</span> <span class="s1">'todate'</span><span class="p">,</span>
     <span class="nx">column</span><span class="p">:</span> <span class="s1">'myTextColumn'</span>
-    <span class="nx">format</span><span class="p">:</span> <span class="s1">'%Y-%m-%d'</span> <span class="c1">// Optional. If not specified, the backend tries to guess</span>
-                        <span class="c1">// For further details on supported format specifiers,</span>
-                        <span class="c1">// see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers</span>
-                        <span class="c1">// Note: format is unsupported in Mongo versions older than 4.0</span>
+    <span class="nx">format</span><span class="p">:</span> <span class="s1">'%Y-%m-%d'</span> <span class="c1">// Optional. If undefined, the backend tries to infer the date format.</span>
+                       <span class="c1">// For further details on supported format specifiers,</span>
+                       <span class="c1">// see https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/#datefromstring-format-specifiers</span>
+                       <span class="c1">// Note: custom format is not supported in Mongo versions older than 4.0</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
