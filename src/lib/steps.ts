@@ -171,7 +171,7 @@ export type FromDateStep = {
 export type JoinStep = {
   name: 'join';
   right_pipeline: Pipeline | string;
-  type: 'left' | 'inner';
+  type: 'left' | 'inner' | 'left outer';
   on: string[][];
 };
 
