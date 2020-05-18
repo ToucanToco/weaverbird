@@ -48,6 +48,9 @@
             <div class="action-menu__option" @click="openStep('replace')">Replace values</div>
             <div class="action-menu__option" @click="openStep('sort')">Sort values</div>
             <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
+            <div class="action-menu__option" @click="openStep('statistics')">
+              Compute Statistics
+            </div>
           </div>
         </div>
       </transition>
