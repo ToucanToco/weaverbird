@@ -14,6 +14,7 @@ You can use this step to compute main statistics, like median or quintiles, of a
 
 #### Where to find this step?
 
+- Column header menu
 - Widget `Compute`
 - Search bar
 

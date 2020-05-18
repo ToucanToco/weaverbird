@@ -63,6 +63,11 @@ const SECOND_PANEL: PanelElement[] = [
     stepName: null,
     index: 4,
   },
+  {
+    label: 'Compute Statistics',
+    stepName: 'statistics',
+    index: 5,
+  },
 ];
 
 describe('Action Menu', () => {
