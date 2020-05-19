@@ -18,7 +18,7 @@ import FilterEditor from '@/components/FilterEditor.vue';
 import { StepFormComponent } from '@/components/formlib';
 import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterComboAnd, FilterComboOr, FilterSimpleCondition, FilterStep } from '@/lib/steps';
+import { FilterCondition, FilterSimpleCondition, FilterStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -70,7 +70,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     this.$$super.submit();
   }
 
-  updateFilterTree(newFilterTree: FilterSimpleCondition | FilterComboAnd | FilterComboOr) {
+  updateFilterTree(newFilterTree: FilterCondition) {
     this.editedStep = {
       name: 'filter',
       condition: newFilterTree,

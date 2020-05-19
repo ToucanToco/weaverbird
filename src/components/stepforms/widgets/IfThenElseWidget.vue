@@ -52,7 +52,7 @@ import FilterEditor from '@/components/FilterEditor.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterComboAnd, FilterComboOr, FilterSimpleCondition, IfThenElseStep } from '@/lib/steps';
+import { FilterCondition, IfThenElseStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 @Component({
@@ -95,7 +95,7 @@ export default class IfThenElseWidget extends Vue {
   readonly elseModes = ['ELSE:', 'ELSE IF:'];
   elseMode = typeof this.value.else === 'string' ? 'ELSE:' : 'ELSE IF:';
 
-  updateFilterTree(newFilterTree: FilterSimpleCondition | FilterComboAnd | FilterComboOr) {
+  updateFilterTree(newFilterTree: FilterCondition) {
     this.$emit('input', {
       ...this.value,
       if: newFilterTree,

@@ -3,7 +3,7 @@ import { castFromString } from '@/lib/helpers';
 import {
   FilterComboAnd,
   FilterComboOr,
-  FilterSimpleCondition,
+  FilterCondition,
   isFilterComboAnd,
   isFilterComboOr,
 } from '@/lib/steps';
@@ -23,7 +23,7 @@ or
 ]} --> FilterComboAnd
 */
 export function isFilterCombo(
-  groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr | undefined,
+  groupOrCondition: FilterCondition | undefined,
 ): groupOrCondition is FilterComboAnd | FilterComboOr {
   // Can be undefined when a new row is added
   if (groupOrCondition) {
@@ -61,9 +61,7 @@ into:
 	]
 }
 */
-export function buildConditionsEditorTree(
-  groupOrCondition: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
-) {
+export function buildConditionsEditorTree(groupOrCondition: FilterCondition) {
   const conditions: object[] = [];
   const groups: object[] = [];
 
@@ -176,7 +174,7 @@ into:
 */
 
 export function castFilterStepTreeValue(
-  filterStepTree: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
+  filterStepTree: FilterCondition,
   columnTypes: ColumnTypeMapping,
 ) {
   if (isFilterCombo(filterStepTree)) {
