@@ -29,7 +29,7 @@ import {
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 import { VariablesBucket } from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
-import { FilterComboAnd, FilterComboOr, FilterSimpleCondition } from '@/lib/steps';
+import { FilterCondition } from '@/lib/steps';
 
 @Component({
   name: 'filter-editor',
@@ -43,7 +43,7 @@ export default class FilterEditor extends Vue {
     type: Object,
     default: () => ({ column: '', value: '', operator: 'eq' }),
   })
-  filterTree!: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+  filterTree!: FilterCondition;
 
   @Prop({
     type: Array,

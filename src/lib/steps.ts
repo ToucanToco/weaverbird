@@ -140,12 +140,14 @@ export type FillnaStep = {
   value: PrimitiveType;
 };
 
+export type FilterCondition = FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+
 export type FilterComboAnd = {
-  and: (FilterSimpleCondition | FilterComboAnd | FilterComboOr)[];
+  and: FilterCondition[];
 };
 
 export type FilterComboOr = {
-  or: (FilterSimpleCondition | FilterComboAnd | FilterComboOr)[];
+  or: FilterCondition[];
 };
 
 export type FilterSimpleCondition =
@@ -173,7 +175,7 @@ export type FilterConditionInclusion = {
 
 export type FilterStep = {
   name: 'filter';
-  condition: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+  condition: FilterCondition;
 };
 
 export type FormulaStep = {
@@ -191,7 +193,7 @@ export type FromDateStep = {
 export type IfThenElseStep = {
   name: 'ifthenelse';
   newColumn: string;
-  if: FilterSimpleCondition | FilterComboAnd | FilterComboOr;
+  if: FilterCondition;
   then: string;
   else: string | Omit<IfThenElseStep, 'name' | 'newColumn'>;
 };
@@ -359,9 +361,7 @@ export type Pipeline = PipelineStep[];
  * Type guard for `FilterComboAnd` type
  * @param cond the condition to test
  */
-export function isFilterComboAnd(
-  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
-): cond is FilterComboAnd {
+export function isFilterComboAnd(cond: FilterCondition): cond is FilterComboAnd {
   if ((cond as FilterComboAnd).and) {
     return true;
   }
@@ -372,9 +372,7 @@ export function isFilterComboAnd(
  * Type guard for `FilterComboOr` type
  * @param cond the condition to test
  */
-export function isFilterComboOr(
-  cond: FilterSimpleCondition | FilterComboAnd | FilterComboOr,
-): cond is FilterComboOr {
+export function isFilterComboOr(cond: FilterCondition): cond is FilterComboOr {
   if ((cond as FilterComboOr).or) {
     return true;
   }
