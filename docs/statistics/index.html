@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Convert text to date | Weaverbird</title>
+<title>Column’s Statistics | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Convert text to date" />
+<meta property="og:title" content="Column’s Statistics" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Convert text column to date" />
-<meta property="og:description" content="Convert text column to date" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/todate/" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/todate/" />
+<meta name="description" content="Column’s Statistics" />
+<meta property="og:description" content="Column’s Statistics" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/statistics/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/statistics/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-05-20T10:49:45+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/todate/","headline":"Convert text to date","datePublished":"2020-05-20T10:49:45+02:00","dateModified":"2020-05-20T10:49:45+02:00","description":"Convert text column to date","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/statistics/","headline":"Column’s Statistics","datePublished":"2020-05-20T10:49:45+02:00","dateModified":"2020-05-20T10:49:45+02:00","description":"Column’s Statistics","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/todate/">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/statistics/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -145,7 +145,7 @@
             
             
             <!--  -->
-              <a class="list-group-item active" href="/docs/todate/">Convert text to date</a>
+              <a class="list-group-item " href="/docs/todate/">Convert text to date</a>
             <!--  -->
           
             
@@ -271,7 +271,7 @@
             
             
             <!--  -->
-              <a class="list-group-item " href="/docs/statistics/">Column's Statistics</a>
+              <a class="list-group-item active" href="/docs/statistics/">Column's Statistics</a>
             <!--  -->
           
             
@@ -372,9 +372,9 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><h3 id="convert-text-column-to-date">Convert text column to date</h3>
+            <div id="markdown-content-container"><h3 id="columns-statistics">Column’s Statistics</h3>
 
-<p>You can use this step to cast a text column to date.</p>
+<p>You can use this step to compute main statistics, like median or quintiles, of a numeric column.</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
@@ -386,38 +386,55 @@
 <h4 id="where-to-find-this-step">Where to find this step?</h4>
 
 <ul>
-  <li>Widget <code class="highlighter-rouge">Date</code></li>
+  <li>Column header menu</li>
+  <li>Widget <code class="highlighter-rouge">Compute</code></li>
   <li>Search bar</li>
-  <li>Column header data type icon</li>
 </ul>
 
 <h4 id="options-reference">Options reference</h4>
 
-<p><img src="../../img/docs/user-interface/todate_step_form.jpg" width="350" />&lt;/br&gt;</p>
-
-<p><img src="../../img/docs/user-interface/todate_step_form_presets.jpg" width="350" />&lt;/br&gt;</p>
-
-<p><img src="../../img/docs/user-interface/todate_step_form_custom.jpg" width="350" />&lt;/br&gt;</p>
+<p><img src="../../img/docs/user-interface/statistics_form_1.jpg" width="350" /></p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Column to convert:</code>: the text column to be converted to date</p>
+    <p>Choose the column to compute the statistics. This column must be of type ‘float’ or ‘integer’.</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">format:</code>: either ‘Try to guess’ (the backend tries to infer the date format of your column),
-‘Custom’ (to allow you to enter a custom format in the <code class="highlighter-rouge">custom format</code> parameter below),
-or a preset (e.g. “%d-%m-%Y”). Please see the <a href="https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers">Mongo documentation</a>
-for Mongo custom supported formats.</p>
+    <p>Optionally, you can split the result by other columns values.</p>
+  </li>
+  <li>
+    <p>Check statistics to compute.</p>
+  </li>
+  <li>
+    <p>You can also in the “custom quantile” section define quantiles. For instance, the median is the 1st 2-quantile.</p>
   </li>
 </ul>
 
-<h4 id="example">Example</h4>
+<h4 id="examples">Examples</h4>
 
-<p><img src="../../img/docs/user-interface/todate_example_conf.jpg" width="750" /></p>
+<h4 id="basic-example">Basic example</h4>
+
+<p><img src="../../img/docs/user-interface/statistics_form_2.jpg" width="750" /></p>
 
 <p>This configuration results in:</p>
 
-<p><img src="../../img/docs/user-interface/todate_example_result.jpg" width="500" /></p>
+<p><img src="../../img/docs/user-interface/statistics_result_2.jpg" width="500" /></p>
+
+<h4 id="with-a-group-column">With a group column</h4>
+
+<p><img src="../../img/docs/user-interface/statistics_form_1.jpg" width="750" /></p>
+
+<p>This configuration results in:</p>
+
+<p><img src="../../img/docs/user-interface/statistics_result_1.jpg" width="500" /></p>
+
+<h4 id="defining-a-custom-quantile">Defining a custom quantile</h4>
+
+<p><img src="../../img/docs/user-interface/statistics_form_3.jpg" width="750" /></p>
+
+<p>This configuration results in:</p>
+
+<p><img src="../../img/docs/user-interface/statistics_result_3.jpg" width="500" /></p>
 </div>
             
 
@@ -454,12 +471,75 @@ for Mongo custom supported formats.</p>
 
   
   
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
+
+  
+  
     <ul class="pager">
       
         
         
         <li class="previous">
-          <a href="/docs/fromdate/">
+          <a href="/docs/split/">
             <span aria-hidden="true">&larr;</span> Previous
           </a>
         </li>
@@ -469,7 +549,7 @@ for Mongo custom supported formats.</p>
         
         
         <li class="next">
-          <a href="/docs/cumsum/">
+          <a href="/docs/lowercase/">
             Next <span aria-hidden="true">&rarr;</span>
           </a>
         </li>
