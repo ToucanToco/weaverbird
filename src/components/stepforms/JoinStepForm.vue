@@ -39,6 +39,7 @@
 import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
+import { default as JoinStepFormSchema } from '@/components/stepforms/schemas/join.ts';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
@@ -47,6 +48,8 @@ import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import Multiselect from './widgets/Multiselect.vue';
+
+const joinTypes = JoinStepFormSchema.properties.type.enum;
 
 @StepFormComponent({
   vqbstep: 'join',
@@ -60,7 +63,7 @@ import Multiselect from './widgets/Multiselect.vue';
 export default class JoinStepForm extends BaseStepForm<JoinStep> {
   @Prop({
     type: Object,
-    default: () => ({ name: 'join', right_pipeline: '', type: 'left', on: [['', '']] }),
+    default: () => ({ name: 'join', right_pipeline: '', type: joinTypes[0], on: [['', '']] }),
   })
   initialStepValue!: JoinStep;
 
@@ -69,7 +72,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
-  joinTypes: JoinStep['type'][] = ['left', 'inner', 'left outer'];
+  joinTypes: JoinStep['type'][] = joinTypes;
 
   get on() {
     if (this.editedStep.on.length) {
