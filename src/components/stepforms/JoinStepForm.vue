@@ -39,7 +39,7 @@
 import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
-import { default as JoinStepFormSchema } from '@/components/stepforms/schemas/join.ts';
+import JoinStepFormSchema from '@/components/stepforms/schemas/join.ts';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
