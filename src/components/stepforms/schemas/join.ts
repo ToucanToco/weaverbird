@@ -18,7 +18,7 @@ export default {
     },
     type: {
       type: 'string',
-      enum: ['left', 'inner'],
+      enum: ['left', 'inner', 'left outer'],
       title: 'Join type',
       description: 'Select a join type:',
       attrs: {

@@ -13,7 +13,7 @@ describe('join Step Form', () => {
   runner.testCancel();
   runner.testResetSelectedIndex();
 
-  describe('ListWidget', () => {
+  describe('AutocompleteWidget', () => {
     it('should instantiate an autocomplete widget with proper options from the store', () => {
       const initialState = {
         currentPipelineName: 'my_dataset',
@@ -27,7 +27,9 @@ describe('join Step Form', () => {
       const widgetMultiselect = wrapper.find('autocompletewidget-stub');
       expect(widgetMultiselect.attributes('options')).toEqual('dataset1,dataset2');
     });
+  });
 
+  describe('ListWidget', () => {
     it('should pass down the "joinColumns" prop to the ListWidget value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {
         data: {
@@ -69,7 +71,7 @@ describe('join Step Form', () => {
           },
         },
       });
-      wrapper.find('ListWidget-stub').vm.$emit('input', ['colRight', 'colLeft']);
+      wrapper.find('listwidget-stub').vm.$emit('input', ['colRight', 'colLeft']);
       expect(wrapper.vm.$data.editedStep.on).toEqual(['colRight', 'colLeft']);
     });
   });
