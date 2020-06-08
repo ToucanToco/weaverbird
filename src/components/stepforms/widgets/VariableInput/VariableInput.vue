@@ -3,7 +3,7 @@
     <div v-if="isVariable" class="widget-input-variable__variable-container">
       <div class="widget-input-variable__tag-container">
         <div class="widget-input-variable__tag">
-          <span class="widget-input-variable__variable-icon">x</span>
+          <span class="widget-input-variable__variable-icon">{}</span>
           <span class="widget-input-variable__variable-name">{{ variableLabel }}</span>
           <i class="widget-input-variable__tag-close fa fa-times" @click="dismissVariable" />
         </div>
@@ -17,7 +17,7 @@
         class="widget-input-variable__variable-toggle"
         :class="{ 'widget-input-variable__variable-toggle--choosing': isChoosingVariable }"
         @click.stop="startChoosingVariable"
-        >x
+        >{}
       </span>
     </div>
 
@@ -191,7 +191,6 @@ export default class VariableInput extends Vue {
 }
 
 .widget-input-variable__variable-toggle {
-  font-family: cursive;
   opacity: 0;
   visibility: hidden;
   display: block;
@@ -321,7 +320,6 @@ export default class VariableInput extends Vue {
 }
 
 .widget-input-variable__variable-icon {
-  font-family: cursive;
   margin-right: 1em;
 }
 
