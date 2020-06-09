@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.18.0] - 2020-06-09
 
 ### Added
 
@@ -8,6 +8,7 @@
 - `statistics` step form to compute main statistics, like median or quintiles, of a numeric column.
 
 ### Changed
+
 - Button to toggle variable input is '{}'
 
 ## [0.17.4] - 2020-05-15
@@ -296,6 +297,7 @@
 
 - Initial version, showtime!
 
+[0.18.0]: https://github.com/ToucanToco/weaverbird/compare/v0.17.4...v0.18.0
 [0.17.4]: https://github.com/ToucanToco/weaverbird/compare/v0.17.3...v0.17.4
 [0.17.3]: https://github.com/ToucanToco/weaverbird/compare/v0.17.2...v0.17.3
 [0.17.2]: https://github.com/ToucanToco/weaverbird/compare/v0.17.0...v0.17.2
