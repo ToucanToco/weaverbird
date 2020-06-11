@@ -1115,6 +1115,74 @@ brackets '[]' (e.g. \[myColumn]). Any characters string escaped with quotes
 | Label 2 | 1      | 13     | 7      | 3       | -4     |
 | Label 3 | 5      | 20     | 5      | 2       | 1      |
 
+### `ifthenelse` step
+
+Creates a new column, which values will depend on a condition expressed on
+existing columns.
+
+The condition is expressed in the `if` parameter with a condition object, which
+is the same object expected by the `condition` parameter of the
+[filter step](#filter-step)). Conditions can be grouped and nested with logical
+operators `and` and `or`.
+
+The `then` parameter only supports a string, that will be interpreted as a
+formula (cf. [formula step](#formula-step)). If you want it to be interpreted
+striclty as a string and not a formula, you must escape the string with quotes
+(e.g. '"this is a text"').
+
+`if...then...else` blocks can be nested as the `else` parameter
+supports either a string that will be interpreted as a formula (cf.
+[formula step](#formula-step)), or a nested if `if...then...else` object.
+
+```javascript
+{
+  name: 'ifthenelse',
+  newColumn: '', // the name of the new column to be created
+  if: { column: '', value: '', operator: 'eq' }, // a condition, same object as in the filter step
+  then: '', // a string that will be interpreted as a formula
+  else: '', // a string interpreted as a formula or a nested if...then...else object
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example
+
+**Input dataset:**
+
+| Label   | number |
+| ------- | ------ |
+| Label 1 | -2     |
+| Label 2 | 2      |
+| Label 3 | 0      |
+
+**Step configuration:**
+
+```javascript
+{
+    name: 'ifthenelse',
+    newColumn: 'result',
+    if: { column: 'number', value: 0, operator: 'eq' },
+    then: '"zero"'
+    else: {
+      if: { column: 'rel', value: 0, operator: 'lt' },
+      then: 'number * -1',
+      else: 'number'
+    }
+}
+```
+
+**Output dataset:**
+
+| Label   | number | result |
+| ------- | ------ | ------ |
+| Label 1 | -2     | 2      |
+| Label 2 | 5      | 5      |
+| Label 3 | 0      | zero   |
+
 ### `join` step
 
 Joins a dataset to the current dataset, i.e. brings columns from the former into
@@ -1450,7 +1518,6 @@ among `sum`, `avg`, `count`, `min` or `max`.
 | Label 2 | 7        | 10       |
 | Label 3 | 20       | 6        |
 
-
 ### `statistics` step
 
 Compute statistics of a column.,
@@ -1497,10 +1564,9 @@ Compute statistics of a column.,
 
 **Output dataset:**
 
-| average | count   | median |
-| ------- | ------- | ------ |
-| 9.33333 | 6       | 8.5    |
-
+| average | count | median |
+| ------- | ----- | ------ |
+| 9.33333 | 6     | 8.5    |
 
 ### `rename` step
 
