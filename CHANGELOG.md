@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+## Added
+
+- "If...Then...Else" step to add conditional columns
+
 ## [0.18.0] - 2020-06-09
 
 ### Added
