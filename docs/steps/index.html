@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-06-09T10:43:50+02:00" />
+<meta property="article:published_time" content="2020-06-15T09:18:14+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-06-09T10:43:50+02:00","dateModified":"2020-06-09T10:43:50+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-06-15T09:18:14+02:00","dateModified":"2020-06-15T09:18:14+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -218,6 +218,12 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/rollup/">Hierarchical rollup</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/ifthenelse/"></a>
             <!--  -->
           
             
@@ -2874,6 +2880,112 @@ brackets ‘[]’ (e.g. [myColumn]). Any characters string escaped with quotes
   </tbody>
 </table>
 
+<h3 id="ifthenelse-step"><code class="highlighter-rouge">ifthenelse</code> step</h3>
+
+<p>Creates a new column, which values will depend on a condition expressed on
+existing columns.</p>
+
+<p>The condition is expressed in the <code class="highlighter-rouge">if</code> parameter with a condition object, which
+is the same object expected by the <code class="highlighter-rouge">condition</code> parameter of the
+<a href="#filter-step">filter step</a>). Conditions can be grouped and nested with logical
+operators <code class="highlighter-rouge">and</code> and <code class="highlighter-rouge">or</code>.</p>
+
+<p>The <code class="highlighter-rouge">then</code> parameter only supports a string, that will be interpreted as a
+formula (cf. <a href="#formula-step">formula step</a>). If you want it to be interpreted
+striclty as a string and not a formula, you must escape the string with quotes
+(e.g. ‘“this is a text”’).</p>
+
+<p><code class="highlighter-rouge">if...then...else</code> blocks can be nested as the <code class="highlighter-rouge">else</code> parameter
+supports either a string that will be interpreted as a formula (cf.
+<a href="#formula-step">formula step</a>), or a nested if <code class="highlighter-rouge">if...then...else</code> object.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'ifthenelse'</span><span class="p">,</span>
+  <span class="nx">newColumn</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="c1">// the name of the new column to be created</span>
+  <span class="k">if</span><span class="p">:</span> <span class="p">{</span> <span class="nl">column</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="nx">operator</span><span class="p">:</span> <span class="s1">'eq'</span> <span class="p">},</span> <span class="c1">// a condition, same object as in the filter step</span>
+  <span class="nx">then</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="c1">// a string that will be interpreted as a formula</span>
+  <span class="k">else</span><span class="p">:</span> <span class="s1">''</span><span class="p">,</span> <span class="c1">// a string interpreted as a formula or a nested if...then...else object</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>This step is supported by the following backends:</strong></p>
+
+<ul>
+  <li>Mongo 4.0</li>
+  <li>Mongo 3.6</li>
+</ul>
+
+<h4 id="example-8">Example</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>number</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>-2</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="nl">name</span><span class="p">:</span> <span class="s1">'ifthenelse'</span><span class="p">,</span>
+    <span class="nx">newColumn</span><span class="p">:</span> <span class="s1">'result'</span><span class="p">,</span>
+    <span class="k">if</span><span class="p">:</span> <span class="p">{</span> <span class="nl">column</span><span class="p">:</span> <span class="s1">'number'</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">operator</span><span class="p">:</span> <span class="s1">'eq'</span> <span class="p">},</span>
+    <span class="nx">then</span><span class="p">:</span> <span class="s1">'"zero"'</span>
+    <span class="k">else</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nl">if</span><span class="p">:</span> <span class="p">{</span> <span class="nl">column</span><span class="p">:</span> <span class="s1">'rel'</span><span class="p">,</span> <span class="nx">value</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="nx">operator</span><span class="p">:</span> <span class="s1">'lt'</span> <span class="p">},</span>
+      <span class="nx">then</span><span class="p">:</span> <span class="s1">'number * -1'</span><span class="p">,</span>
+      <span class="k">else</span><span class="p">:</span> <span class="s1">'number'</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Label</th>
+      <th>number</th>
+      <th>result</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Label 1</td>
+      <td>-2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>Label 2</td>
+      <td>5</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>Label 3</td>
+      <td>0</td>
+      <td>zero</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="join-step"><code class="highlighter-rouge">join</code> step</h3>
 
 <p>Joins a dataset to the current dataset, i.e. brings columns from the former into
@@ -3179,7 +3291,7 @@ of the application. You can then call them by their unique names in this step.</
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-8">Example</h4>
+<h4 id="example-9">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3295,7 +3407,7 @@ of the application. You can then call them by their unique names in this step.</
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-9">Example:</h4>
+<h4 id="example-10">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3384,7 +3496,7 @@ by <code class="highlighter-rouge">group</code> if specified. The result is writ
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-10">Example:</h4>
+<h4 id="example-11">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3516,7 +3628,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-11">Example:</h4>
+<h4 id="example-12">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3627,7 +3739,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-12">Example:</h4>
+<h4 id="example-13">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3721,7 +3833,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-13">Example:</h4>
+<h4 id="example-14">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -3843,7 +3955,7 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-14">Example</h4>
+<h4 id="example-15">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -4724,7 +4836,7 @@ the <code class="highlighter-rouge">select</code> is used, it will only keep sel
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-15">Example</h4>
+<h4 id="example-16">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -4842,7 +4954,7 @@ When sorting on several columns, order of columns specified in <code class="high
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-16">Example</h4>
+<h4 id="example-17">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -5477,7 +5589,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-17">Example</h4>
+<h4 id="example-18">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -5563,7 +5675,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-18">Example</h4>
+<h4 id="example-19">Example</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -6112,7 +6224,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-19">Example:</h4>
+<h4 id="example-20">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -6197,7 +6309,7 @@ specified <code class="highlighter-rouge">text</code>.</p>
   <li>Mongo 3.6</li>
 </ul>
 
-<h4 id="example-20">Example:</h4>
+<h4 id="example-21">Example:</h4>
 
 <p><strong>Input dataset:</strong></p>
 
@@ -6285,6 +6397,9 @@ specified <code class="highlighter-rouge">text</code>.</p>
 
 
 
+
+  
+  
 
   
   
