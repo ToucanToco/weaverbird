@@ -1,6 +1,6 @@
 # Changelog
 
-## UNRELEASED
+## [0.19.0] - 2020-06-15
 
 ## Added
 
@@ -303,6 +303,7 @@
 
 - Initial version, showtime!
 
+[0.19.0]: https://github.com/ToucanToco/weaverbird/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/ToucanToco/weaverbird/compare/v0.17.4...v0.18.0
 [0.17.4]: https://github.com/ToucanToco/weaverbird/compare/v0.17.3...v0.17.4
 [0.17.3]: https://github.com/ToucanToco/weaverbird/compare/v0.17.2...v0.17.3
