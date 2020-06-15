@@ -1,6 +1,7 @@
 <template>
   <div class="pagination">
     <paginate
+      v-if="showPager"
       :value="pageNo"
       :page-count="pageCount"
       containerClass="pagination__list"
@@ -8,10 +9,13 @@
       next-class="prevnext"
       :clickHandler="pageClicked"
     />
-    <div class="pagination-counter">
+    <div v-if="showPager" class="pagination-counter">
       <span class="pagination-counter__current-min">{{ pageRows.min }}</span>
       <span class="pagination-counter__current-max">&nbsp;- {{ pageRows.max }}</span>
       <span class="pagination-counter__total-count">&nbsp;of {{ totalCount }} rows</span>
+    </div>
+    <div v-else class="pagination-counter">
+      <span class="pagination-counter__total-count">{{ totalCount }} rows</span>
     </div>
   </div>
 </template>
@@ -35,6 +39,10 @@ export default class Pagination extends Vue {
   @VQBModule.State dataset!: DataSet;
 
   @VQBModule.Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
+
+  get showPager() {
+    return this.pageRows.max !== this.totalCount;
+  }
 
   get pageCount() {
     if (this.dataset.paginationContext) {

@@ -47,7 +47,7 @@
           </tbody>
         </table>
       </div>
-      <Pagination v-if="!isDatasetComplete" />
+      <Pagination />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>

@@ -173,48 +173,6 @@ describe('getter tests', () => {
     });
   });
 
-  describe('dataset complete tests', () => {
-    it('should return true if dataset does not have a paginationContext prop', () => {
-      const state = buildState({
-        dataset: {
-          headers: [{ name: 'col1' }, { name: 'col2' }],
-          data: [],
-        },
-      });
-      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
-    });
-
-    it('should return true if totalCount <= pagesize', () => {
-      const state = buildState({
-        dataset: {
-          headers: [{ name: 'col1' }, { name: 'col2' }],
-          data: [[0, 0]],
-          paginationContext: {
-            totalCount: 50,
-            pagesize: 50,
-            pageno: 1,
-          },
-        },
-      });
-      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeTruthy();
-    });
-
-    it('should return false if totalCount > pagesize', () => {
-      const state = buildState({
-        dataset: {
-          headers: [{ name: 'col1' }, { name: 'col2' }],
-          data: [[0, 0]],
-          paginationContext: {
-            totalCount: 100,
-            pagesize: 50,
-            pageno: 1,
-          },
-        },
-      });
-      expect(getters.isDatasetComplete(state, {}, {}, {})).toBeFalsy();
-    });
-  });
-
   describe('pipeline empty tests', () => {
     it('should not return anything if no pipeline is selected', function() {
       const state = buildState({});
