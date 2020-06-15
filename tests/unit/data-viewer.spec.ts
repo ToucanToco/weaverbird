@@ -62,41 +62,6 @@ describe('Data Viewer', () => {
       const wrapper = shallowMount(DataViewer, { store, localVue });
       expect(wrapper.find('Pagination-stub').exists()).toBeTruthy();
     });
-
-    it('should not display pagination if Dataset is complete', () => {
-      const store = setupMockStore(
-        buildStateWithOnePipeline([], {
-          dataset: {
-            // I let headers and data empty because I only want to test the pagination
-            headers: [{ name: 'A' }],
-            data: [['a']],
-            // WARNING: the pagination context does not correspond to the headers and data above
-            paginationContext: {
-              totalCount: 50,
-              pagesize: 50,
-              pageno: 1,
-            },
-          },
-        }),
-      );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
-      expect(wrapper.find('Pagination-stub').exists()).toBeFalsy();
-    });
-
-    it('should not display pagination if Dataset has no paginationContext', () => {
-      const store = setupMockStore(
-        buildStateWithOnePipeline([], {
-          dataset: {
-            // I let headers and data empty because I only want to test the pagination
-            headers: [{ name: 'A' }],
-            data: [['a']],
-            // WARNING: the pagination context does not correspond to the headers and data above
-          },
-        }),
-      );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
-      expect(wrapper.find('Pagination-stub').exists()).toBeFalsy();
-    });
   });
 
   describe('header', () => {

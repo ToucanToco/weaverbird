@@ -109,4 +109,27 @@ describe('Pagination Component', () => {
     const wrapperCounter = wrapper.find('.pagination-counter');
     expect(wrapperCounter.exists()).toBeTruthy();
   });
+
+  it('should hide the pagination navigation if there is only one page', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+        data: [
+          ['Paris', 10000000, true],
+          ['Marseille', 3000000, false],
+        ],
+        paginationContext: {
+          totalCount: 2,
+          pageno: 1,
+          pagesize: 2,
+        },
+      },
+      pagesize: 2,
+    });
+    const wrapper = mount(Pagination, { localVue, store });
+    expect(wrapper.find('.pagination__list').exists()).toBeFalsy();
+    expect(wrapper.find('.pagination-counter__current-min').exists()).toBeFalsy();
+    expect(wrapper.find('.pagination-counter__current-max').exists()).toBeFalsy();
+    expect(wrapper.find('.pagination-counter__total-count').text()).toEqual('2 rows');
+  });
 });
