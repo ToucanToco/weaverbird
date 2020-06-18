@@ -1,6 +1,5 @@
 <template>
   <div class="weaverbird">
-    <PipelineSelector class="weaverbird__pipeline-selector" />
     <ResizablePanels>
       <QueryBuilder slot="left-panel" />
       <DataViewer slot="right-panel" />
@@ -10,23 +9,92 @@
 
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import DataViewer from '@/components/DataViewer.vue';
-import PipelineSelector from '@/components/PipelineSelector.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
+import { Pipeline } from '@/lib/steps.ts';
+import { InterpolateFunction } from '@/lib/templating';
+import { registerModule, VQBModule, VQBnamespace } from '@/store';
+import { VQBState } from '@/store/state';
 
 @Component({
   name: 'vqb',
   components: {
     DataViewer,
-    PipelineSelector,
     QueryBuilder,
     ResizablePanels,
   },
 })
-export default class Vqb extends Vue {}
+export default class Vqb extends Vue {
+  @Prop({
+    type: Object,
+    required: true,
+  })
+  pipelines!: { [name: string]: Pipeline };
+
+  @Prop({
+    type: String,
+    required: true,
+  })
+  currentPipelineName!: string;
+
+  @Prop({
+    type: Array,
+    required: true,
+  })
+  domains!: Pick<VQBState, 'domains'>;
+
+  @Prop({
+    type: String,
+    default: () => 'mongo40',
+  })
+  translator!: string;
+
+  @Prop({
+    type: Function,
+    default: undefined,
+  })
+  interpolateFunc!: InterpolateFunction;
+
+  @VQBModule.Action selectPipeline!: (payload: { name: string }) => void;
+  @VQBModule.Action updateDataset!: () => void;
+  @VQBModule.Mutation setDomains!: (payload: { domains: Pick<VQBState, 'domains'> }) => void;
+  @VQBModule.Mutation setCurrentPipelineName!: (payload: { name: string }) => void;
+
+  created() {
+    registerModule(this.$store, {
+      currentPipelineName: this.currentPipelineName,
+      pipelines: this.pipelines,
+      interpolateFunc: this.interpolateFunc,
+      translator: this.translator,
+    });
+    this.setDomains({ domains: this.domains });
+    this.updateDataset();
+
+    // Watch store to emit events
+    this.$store.watch(
+      state => state[VQBnamespace('pipelines')],
+      (newPipelines: Pick<VQBState, 'pipelines'>) => {
+        this.$emit('input', newPipelines);
+      },
+      { deep: true },
+    );
+    this.$store.watch(
+      state => state[VQBnamespace('backendMessages')],
+      (backendMessages: Pick<VQBState, 'backendMessages'>) => {
+        this.$emit('input', backendMessages);
+      },
+      { deep: true },
+    );
+  }
+
+  @Watch('currentPipelineName')
+  onCurrentPipelineName() {
+    this.setCurrentPipelineName({ name: this.currentPipelineName });
+  }
+}
 </script>
 
 <style lang="scss" scoped>

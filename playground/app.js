@@ -1,14 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const {
   Vqb,
-  VQBnamespace,
-  VQB_MODULE_NAME,
   filterOutDomain,
   getTranslator,
   mongoResultsToDataset,
   dereferencePipelines,
   servicePluginFactory,
-  registerModule,
   setCodeEditor,
 } = vqb;
 
@@ -183,11 +180,8 @@ async function buildVueApp() {
         draggedOverFirst: false,
         draggedOverSecond: false,
         draggedover: false,
-      };
-    },
-    created: async function() {
-      registerModule(this.$store, {
         currentPipelineName: 'pipeline',
+        backendMessages: [],
         pipelines: {
           pipeline: [
             {
@@ -208,14 +202,6 @@ async function buildVueApp() {
               name: 'domain',
               domain: 'sales',
             },
-            {
-              name: 'filter',
-              condition: {
-                column: 'Payment_Type',
-                operator: 'eq',
-                value: 'Amex',
-              },
-            }
           ],
           pipelineVisa: [
             {
@@ -246,8 +232,6 @@ async function buildVueApp() {
             }
           ],
         },
-        currentDomain: 'sales',
-        translator: TRANSLATOR,
         // use lodash interpolate
         interpolateFunc: (value, context) => _.template(value)(context),
         variables: {
@@ -255,20 +239,23 @@ async function buildVueApp() {
           value2: 13,
           groupname: 'Group 1',
         },
-      });
-      const collections = await mongoservice.listCollections();
-      store.commit(VQBnamespace('setDomains'), { domains: collections });
-      store.dispatch(VQBnamespace('updateDataset'));
+        collections: [],
+      };
+    },
+    created: async function() {
+      this.collections = await mongoservice.listCollections();
     },
     computed: {
+      pipelinesNames(){
+        return Object.keys(this.pipelines)
+      },
       activePipeline: function(){
-        let activePipeline = this.$store.getters[VQBnamespace('activePipeline')];
+        let activePipeline = this.pipelines[this.currentPipelineName]
         if (!activePipeline) {
           return undefined;
         }
-        const pipelines = this.$store.getters[VQBnamespace('pipelines')];
-        if (pipelines) {
-          return dereferencePipelines(activePipeline, pipelines);
+        if (this.pipelines) {
+          return dereferencePipelines(activePipeline, this.pipelines);
         } else {
           return activePipeline
         }
@@ -282,9 +269,6 @@ async function buildVueApp() {
       },
       thereIsABackendError: function() {
         return this.$store.getters[VQBnamespace('thereIsABackendError')];
-      },
-      backendMessages: function() {
-        return this.$store.state[VQB_MODULE_NAME].backendMessages;
       },
       backendErrors: function() {
         return this.backendMessages.filter(({type}) => type === 'error');

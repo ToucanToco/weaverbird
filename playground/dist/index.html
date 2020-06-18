@@ -127,7 +127,21 @@
           Drop your CSV file here and start to shape your data like magic !
         </h1>
       </div>
-      <vqb></vqb>
+      <div class="pipeline-selector">
+        Pipelines:
+        <select :value="currentPipelineName" @input="currentPipelineName = $event.target.value">
+          <option v-for="pipelineName in pipelinesNames" :key="pipelineName" :value="pipelineName">
+            {{ pipelineName }}
+          </option>
+        </select>
+      </div>
+      <vqb 
+        :pipelines="pipelines" 
+        :current-pipeline-name="currentPipelineName" 
+        :domains="collections" 
+        :interpolate-func="interpolateFunc"
+        @backendMessages="backendMessages= $event"
+      ></vqb>
       <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
         <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}
       </div>

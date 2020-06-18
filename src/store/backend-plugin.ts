@@ -112,7 +112,8 @@ export function servicePluginFactory(service: BackendService) {
         mutation.type === 'vqb/selectStep' ||
         mutation.type === 'vqb/setCurrentDomain' ||
         mutation.type === 'vqb/deleteStep' ||
-        mutation.type === 'vqb/setCurrentPage'
+        mutation.type === 'vqb/setCurrentPage' ||
+        mutation.type === 'vqb/setCurrentPipelineName'
       ) {
         store.dispatch('vqb/updateDataset');
       }
