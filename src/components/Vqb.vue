@@ -1,10 +1,8 @@
 <template>
-  <div class="weaverbird">
-    <ResizablePanels>
-      <QueryBuilder slot="left-panel" />
-      <DataViewer slot="right-panel" />
-    </ResizablePanels>
-  </div>
+  <ResizablePanels>
+    <QueryBuilder slot="left-panel" />
+    <DataViewer slot="right-panel" />
+  </ResizablePanels>
 </template>
 
 <script lang="ts">
@@ -16,7 +14,7 @@ import QueryBuilder from '@/components/QueryBuilder.vue';
 import ResizablePanels from '@/components/ResizablePanels.vue';
 import { Pipeline } from '@/lib/steps.ts';
 import { InterpolateFunction } from '@/lib/templating';
-import { registerModule, VQBModule, VQBnamespace } from '@/store';
+import { registerModule, unregisterModule, VQBModule, VQBnamespace } from '@/store';
 import { VQBState } from '@/store/state';
 
 @Component({
@@ -58,10 +56,15 @@ export default class Vqb extends Vue {
   })
   interpolateFunc!: InterpolateFunction;
 
+  @Prop({
+    type: Object,
+    default: {},
+  })
+  variables!: Pick<VQBState, 'variables'>;
+
   @VQBModule.Action selectPipeline!: (payload: { name: string }) => void;
   @VQBModule.Action updateDataset!: () => void;
   @VQBModule.Mutation setDomains!: (payload: { domains: Pick<VQBState, 'domains'> }) => void;
-  @VQBModule.Mutation setCurrentPipelineName!: (payload: { name: string }) => void;
 
   created() {
     registerModule(this.$store, {
@@ -69,6 +72,7 @@ export default class Vqb extends Vue {
       pipelines: this.pipelines,
       interpolateFunc: this.interpolateFunc,
       translator: this.translator,
+      variables: this.variables,
     });
     this.setDomains({ domains: this.domains });
     this.updateDataset();
@@ -92,7 +96,11 @@ export default class Vqb extends Vue {
 
   @Watch('currentPipelineName')
   onCurrentPipelineName() {
-    this.setCurrentPipelineName({ name: this.currentPipelineName });
+    this.selectPipeline({ name: this.currentPipelineName });
+  }
+
+  destroyed() {
+    unregisterModule(this.$store);
   }
 }
 </script>
