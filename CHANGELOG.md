@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- ifthenelse doc permalink
+
 ## [0.19.0] - 2020-06-15
 
 ## Added
