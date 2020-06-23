@@ -1,6 +1,6 @@
 ---
 title: ifthenelse
-permalink: /docs/filter/
+permalink: /docs/ifthenelse/
 ---
 
 ### If...Then...Else
