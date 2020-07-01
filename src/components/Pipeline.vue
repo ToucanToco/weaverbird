@@ -39,8 +39,6 @@ import Step from './Step.vue';
   },
 })
 export default class PipelineComponent extends Vue {
-  @VQBModule.State domains!: string[];
-
   @VQBModule.Getter('computedActiveStepIndex') activeStepIndex!: number;
   @VQBModule.Getter domainStep!: DomainStep;
   @VQBModule.Getter('pipeline') steps!: Pipeline;

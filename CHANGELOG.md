@@ -6,6 +6,10 @@
 
 - ifthenelse doc permalink
 
+### Changed
+
+- rename  mutation `setDomains` into `setSources` and state prop `domains` into `sources`
+
 ## [0.19.0] - 2020-06-15
 
 ## Added

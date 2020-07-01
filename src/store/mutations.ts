@@ -26,9 +26,9 @@ type DeleteStepMutation = {
   payload: { index: number };
 };
 
-type DomainsMutation = {
-  type: 'setDomains';
-  payload: Pick<VQBState, 'domains'>;
+type SourcesMutation = {
+  type: 'setSources';
+  payload: Pick<VQBState, 'sources'>;
 };
 
 type PipelineMutation = {
@@ -75,7 +75,7 @@ export type StateMutation =
   | BackendMessageMutation
   | DatasetMutation
   | DeleteStepMutation
-  | DomainsMutation
+  | SourcesMutation
   | PipelineMutation
   | SetCurrentPipelineNameMutation
   | SelectedColumnsMutation
@@ -216,12 +216,13 @@ class Mutations {
     state.dataset = dataset;
   }
   /**
-   * set the list of available domains.
+   * set the list of available sources.
+   * NB: `sources` state props was previously named 'domain'
    */
-  setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
-    state.domains = domains;
-    if (!state.currentDomain || (domains.length && !domains.includes(state.currentDomain))) {
-      state.currentDomain = domains[0];
+  setSources(state: VQBState, { sources }: Pick<VQBState, 'sources'>) {
+    state.sources = sources;
+    if (!state.currentDomain || (sources.length && !sources.includes(state.currentDomain))) {
+      state.currentDomain = sources[0];
     }
   }
   /**

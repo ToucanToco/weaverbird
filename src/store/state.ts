@@ -14,9 +14,10 @@ export interface VQBState {
    */
   dataset: DataSet;
   /**
-   * the current list of domains available.
+   * the current list of sources available.
+   * NB: `sources` state props was previously named 'domain'
    */
-  domains: string[];
+  sources: string[];
   /**
    * FIXME should be a getter from the current pipeline
    * the domain currently selected.
@@ -115,7 +116,7 @@ export function emptyState(): VQBState {
         totalCount: 0,
       },
     },
-    domains: [],
+    sources: [],
     currentStepFormName: undefined,
     stepFormInitialValue: undefined,
     stepFormDefaults: undefined,
@@ -191,6 +192,7 @@ type PipelinesScopeContext = {
  */
 export function dereferencePipelines(
   pipeline: Pipeline,
+  sources: string[],
   pipelines: PipelinesScopeContext,
 ): Pipeline {
   const dereferencedPipeline: Pipeline = [];

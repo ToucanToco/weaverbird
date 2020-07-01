@@ -257,7 +257,7 @@ async function buildVueApp() {
         },
       });
       const collections = await mongoservice.listCollections();
-      store.commit(VQBnamespace('setDomains'), { domains: collections });
+      store.commit(VQBnamespace('setSources'), { sources: collections });
       store.dispatch(VQBnamespace('updateDataset'));
     },
     computed: {

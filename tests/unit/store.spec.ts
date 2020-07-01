@@ -360,25 +360,25 @@ describe('mutation tests', () => {
 
   it('sets domain list', () => {
     const state = buildState({});
-    expect(state.domains).toEqual([]);
-    mutations.setDomains(state, { domains: ['foo', 'bar'] });
-    expect(state.domains).toEqual(['foo', 'bar']);
+    expect(state.sources).toEqual([]);
+    mutations.setSources(state, { sources: ['foo', 'bar'] });
+    expect(state.sources).toEqual(['foo', 'bar']);
     expect(state.currentDomain).toEqual('foo');
   });
 
-  it('updates current domain when inconsistent with setDomains', () => {
+  it('updates current domain when inconsistent with setSources', () => {
     const state = buildState({ currentDomain: 'babar' });
-    expect(state.domains).toEqual([]);
-    mutations.setDomains(state, { domains: ['foo', 'bar'] });
-    expect(state.domains).toEqual(['foo', 'bar']);
+    expect(state.sources).toEqual([]);
+    mutations.setSources(state, { sources: ['foo', 'bar'] });
+    expect(state.sources).toEqual(['foo', 'bar']);
     expect(state.currentDomain).toEqual('foo');
   });
 
-  it('leaves current domain untouched when consistent with setDomains', () => {
+  it('leaves current domain untouched when consistent with setSources', () => {
     const state = buildState({ currentDomain: 'bar' });
-    expect(state.domains).toEqual([]);
-    mutations.setDomains(state, { domains: ['foo', 'bar'] });
-    expect(state.domains).toEqual(['foo', 'bar']);
+    expect(state.sources).toEqual([]);
+    mutations.setSources(state, { sources: ['foo', 'bar'] });
+    expect(state.sources).toEqual(['foo', 'bar']);
     expect(state.currentDomain).toEqual('bar');
   });
 
