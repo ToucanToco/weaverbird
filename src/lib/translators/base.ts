@@ -57,8 +57,8 @@ function unsupported(_target: BaseTranslator, _propertyKey: S.PipelineStepName, 
  *   `lib/matchers/OutputStep` type.
  *
  * - two properties `supportedSteps` and `unsupportedSteps` that respectively
- *   return the list of supported and unssupported steps by the translator
- *   class. These lists are computed automatically by instrospecting the
+ *   return the list of supported and unsupported steps by the translator
+ *   class. These lists are computed automatically by introspecting the
  *   instance and testing, for each transformation step, if the corresponding
  *   method holds a `__vqb_step_supported__` property. If this value is found
  *   and set to `false`, then the step is considered as not supported.

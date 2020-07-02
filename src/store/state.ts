@@ -180,7 +180,7 @@ type PipelinesScopeContext = {
 };
 /**
  * Dereference pipelines names in the current pipeline being edited, i.e.
- * replaces references to pipelines (by their names) to their corresponding
+ * replaces references to pipelines or sources (by their names) to their corresponding
  * pipelines
  *
  * @param pipeline the pipeline to translate and execute on the backend
