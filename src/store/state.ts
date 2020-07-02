@@ -176,7 +176,7 @@ export function inactivePipeline(state: VQBState) {
   return pipeline?.slice(firstNonSelectedIndex(pipeline, state.selectedStepIndex));
 }
 
-type PipelinesScopeContext = {
+export type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;
 };
 /**
@@ -190,28 +190,67 @@ type PipelinesScopeContext = {
  *
  * @return the dereferenced pipeline
  */
+
+/**
+ * The corresponding pipeline of a source is the pipeline with the only step "source"
+ */
+function _dereferenceSource(source: string): Pipeline {
+  return [
+    {
+      name: 'domain',
+      domain: source,
+    },
+  ];
+}
+
+/**
+ * Return for a reference the corresponding pipeline
+ */
+function _dereferenceSourceOrPipeline(
+  reference: string,
+  pipelines: PipelinesScopeContext,
+  sources: string[],
+): Pipeline {
+  if (sources.includes(reference)) {
+    return _dereferenceSource(reference);
+  } else if (Object.keys(pipelines).includes(reference)) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return dereferencePipelines(pipelines[reference], pipelines, sources);
+  } else {
+    throw `${reference} is neither a reference to an other pipeline neither reference to a source`;
+  }
+}
+
 export function dereferencePipelines(
   pipeline: Pipeline,
-  sources: string[],
   pipelines: PipelinesScopeContext,
+  sources: string[],
 ): Pipeline {
   const dereferencedPipeline: Pipeline = [];
   for (const step of pipeline) {
     let newStep;
-    if (step.name === 'append') {
-      const pipelineNames = step.pipelines as string[];
-      newStep = {
-        ...step,
-        pipelines: pipelineNames.map(p => dereferencePipelines(pipelines[p], pipelines)),
-      };
-    } else if (step.name === 'join') {
-      const rightPipelineName = step.right_pipeline as string;
-      newStep = {
-        ...step,
-        right_pipeline: dereferencePipelines(pipelines[rightPipelineName], pipelines),
-      };
-    } else {
-      newStep = { ...step };
+    switch (step.name) {
+      case 'append':
+        newStep = {
+          ...step,
+          pipelines: (step.pipelines as string[]).map(reference =>
+            _dereferenceSourceOrPipeline(reference, pipelines, sources),
+          ),
+        };
+        break;
+      case 'join':
+        newStep = {
+          ...step,
+          right_pipeline: _dereferenceSourceOrPipeline(
+            step.right_pipeline as string,
+            pipelines,
+            sources,
+          ),
+        };
+        break;
+      default:
+        newStep = { ...step };
+        break;
     }
     dereferencedPipeline.push(newStep);
   }
@@ -230,7 +269,7 @@ export function preparePipeline(pipeline: Pipeline, state: VQBState) {
   }
   const { interpolateFunc, variables, pipelines } = state;
   if (pipelines && Object.keys(pipelines).length) {
-    pipeline = dereferencePipelines(pipeline, pipelines);
+    pipeline = dereferencePipelines(pipeline, pipelines, state.sources);
   }
   if (interpolateFunc && variables && Object.keys(variables).length) {
     const columnTypes = _fromPairs(state.dataset.headers.map(col => [col.name, col.type]));
