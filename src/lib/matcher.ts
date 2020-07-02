@@ -40,10 +40,9 @@ export type TransformStep = (step: Readonly<PipelineStep>) => void;
 /**
  * OutputStep is a base type for all step transformer functions. Since
  * it doesn't contain any specific property, typescript should be happy with
- * any object. Still, it's convenient to be able to declare a speciifc return type.
+ * any object. Still, it's convenient to be able to declare a specific return type.
  *
  * NOTE: also accept `void` as a valid OutputStep, mostly for the BaseTranslator
  * class.
  */
 export type OutputStep = {} | void;
-export type MaybeArray<T> = T | T[];

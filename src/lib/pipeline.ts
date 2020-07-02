@@ -17,7 +17,7 @@ import { Pipeline } from './steps';
  *
  * @param pipeline the complete pipeline
  * @return an object with 2 keys: `domain` for the domain of the first step and
- * `pipeline` for the rest of the pieline.
+ * `pipeline` for the rest of the pipeline.
  */
 export function filterOutDomain(pipeline: Pipeline) {
   if (pipeline.length === 0) {
