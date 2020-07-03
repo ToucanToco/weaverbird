@@ -1,11 +1,11 @@
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="this.editedStep.name" />
+    <StepFormHeader :title="title" :stepName="editedStep.name" />
     <AutocompleteWidget
       v-model="editedStep.domain"
       name="Select a dataset to start..."
-      :options="sources"
-      placeholder="Choose a domain"
+      :options="sources.concat(pipelinesNames)"
+      placeholder="Choose a dataset"
     />
     <StepFormButtonbar :errors="errors" />
   </div>
@@ -39,7 +39,8 @@ export default class DomainStepForm extends BaseStepForm<DomainStep> {
   initialStepValue!: DomainStep;
 
   @VQBModule.State sources!: string[];
+  @VQBModule.Getter pipelinesNames!: string[];
 
-  readonly title: string = 'Select a domain';
+  readonly title: string = 'Select a dataset';
 }
 </script>

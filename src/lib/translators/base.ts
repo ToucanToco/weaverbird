@@ -128,8 +128,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   dateextract(step: Readonly<S.DateExtractPropertyStep>) {}
 
-  @unsupported
-  domain(step: Readonly<S.DomainStep>) {}
+  domain(step: Readonly<S.DomainStep>) {
+    return this.translate(step.domain as S.Pipeline); // domain has been de-referenced
+  }
 
   @unsupported
   duplicate(step: Readonly<S.DuplicateColumnStep>) {}
@@ -166,6 +167,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   @unsupported
   pivot(step: Readonly<S.PivotStep>) {}
+
+  @unsupported
+  source(step: Readonly<S.SourceStep>) {}
 
   @unsupported
   rename(step: Readonly<S.RenameStep>) {}
@@ -218,7 +222,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * @param pipeline the array of input steps.
    * @returns the list of translated output steps.
    */
-  translate(pipeline: S.PipelineStep[]): OutputStep[] {
+  translate(pipeline: S.Pipeline): OutputStep[] {
     const result: OutputStep[] = [];
     for (const step of pipeline) {
       // hack: cast `this[step.name]` to TransformStep to please typescript

@@ -51,15 +51,23 @@ describe('Mongo translator support tests', () => {
 describe('Pipeline to mongo translator', () => {
   const mongo36translator = getTranslator('mongo36');
 
-  it('can generate domain steps', () => {
-    const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
+  it('can translate source steps', () => {
+    const pipeline: Pipeline = [{ name: 'source', source: 'test_cube' }];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }, { $project: { _id: 0 } }]);
   });
 
-  it('can generate select steps', () => {
+  it('can translate domain steps', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'domain', domain: [{ name: 'source', source: 'test_cube' }] },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }, { $project: { _id: 0 } }]);
+  });
+
+  it('can translate select steps', () => {
+    const pipeline: Pipeline = [
+      { name: 'source', source: 'test_cube' },
       { name: 'select', columns: ['Manager', 'Region'] },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -75,9 +83,9 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate delete steps', () => {
+  it('can translate delete steps', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       { name: 'delete', columns: ['Manager', 'Region'] },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -93,9 +101,9 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate rename steps', () => {
+  it('can translate rename steps', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       { name: 'rename', oldname: 'Region', newname: 'zone' },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -116,9 +124,9 @@ describe('Pipeline to mongo translator', () => {
   });
 
   describe('statistics steps', () => {
-    it('can generate statistics steps', () => {
+    it('can translate statistics steps', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -183,9 +191,9 @@ describe('Pipeline to mongo translator', () => {
       ]);
     });
 
-    it('can generate statistics steps with variance', () => {
+    it('can translate statistics steps with variance', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -245,9 +253,9 @@ describe('Pipeline to mongo translator', () => {
       ]);
     });
 
-    it('can generate statistics steps with variance and groupby', () => {
+    it('can translate statistics steps with variance and groupby', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -308,9 +316,9 @@ describe('Pipeline to mongo translator', () => {
       ]);
     });
 
-    it('can generate statistics steps with group by columns', () => {
+    it('can translate statistics steps with group by columns', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -376,9 +384,9 @@ describe('Pipeline to mongo translator', () => {
       ]);
     });
 
-    it('can generate statistics steps without quantile and with group by columns', () => {
+    it('can translate statistics steps without quantile and with group by columns', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -409,9 +417,9 @@ describe('Pipeline to mongo translator', () => {
       ]);
     });
 
-    it('can generate statistics steps without quantile and with group by columns', () => {
+    it('can translate statistics steps without quantile and with group by columns', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -447,9 +455,9 @@ describe('Pipeline to mongo translator', () => {
       ]);
     });
 
-    it('can generate statistics steps with only one quantile', () => {
+    it('can translate statistics steps with only one quantile', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'test_cube' },
+        { name: 'source', source: 'test_cube' },
         {
           name: 'statistics',
           column: 'wind',
@@ -528,9 +536,9 @@ describe('Pipeline to mongo translator', () => {
     });
   });
 
-  it('can generate filter steps', () => {
+  it('can translate filter steps', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       { name: 'filter', condition: { column: 'Manager', value: 'Pierre', operator: 'eq' } },
       { name: 'filter', condition: { column: 'Region', value: 'Europe', operator: 'eq' } },
       { name: 'filter', condition: { column: 'Company', value: 'Toucan', operator: 'ne' } },
@@ -572,9 +580,9 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a complex filter step with "and" as root', () => {
+  it('can translate a complex filter step with "and" as root', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       {
         name: 'filter',
         condition: {
@@ -644,9 +652,9 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a complex filter step with "or" as root', () => {
+  it('can translate a complex filter step with "or" as root', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       {
         name: 'filter',
         condition: {
@@ -697,9 +705,9 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a filter step with an "and" condition including common keys', () => {
+  it('can translate a filter step with an "and" condition including common keys', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       {
         name: 'filter',
         condition: {
@@ -751,7 +759,7 @@ describe('Pipeline to mongo translator', () => {
 
   it('can translate aggregation steps', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       {
         name: 'aggregate',
         on: ['col_agg1', 'col_agg2'],
@@ -814,7 +822,7 @@ describe('Pipeline to mongo translator', () => {
 
   it('can simplify complex queries', () => {
     const pipeline: Pipeline = [
-      { name: 'domain', domain: 'test_cube' },
+      { name: 'source', source: 'test_cube' },
       { name: 'filter', condition: { column: 'Manager', value: 'Pierre', operator: 'eq' } },
       { name: 'delete', columns: ['Manager'] },
       { name: 'delete', columns: ['Random'] },
@@ -1061,7 +1069,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a replace step', () => {
+  it('can translate a replace step', () => {
     const pipeline: Pipeline = [
       {
         name: 'replace',
@@ -1091,7 +1099,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a basic sort step on one column', () => {
+  it('can translate a basic sort step on one column', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
@@ -1109,7 +1117,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a sort step on multiple columns', () => {
+  it('can translate a sort step on multiple columns', () => {
     const pipeline: Pipeline = [
       {
         name: 'sort',
@@ -1131,7 +1139,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fillna step', () => {
+  it('can translate a fillna step', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
@@ -1146,7 +1154,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a top step with groups', () => {
+  it('can translate a top step with groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'top',
@@ -1174,7 +1182,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a top step without groups', () => {
+  it('can translate a top step without groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'top',
@@ -1199,7 +1207,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a percentage step with groups', () => {
+  it('can translate a percentage step with groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'percentage',
@@ -1234,7 +1242,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a percentage step without groups, in a custom new column', () => {
+  it('can translate a percentage step without groups, in a custom new column', () => {
     const pipeline: Pipeline = [
       {
         name: 'percentage',
@@ -1269,7 +1277,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an argmax step without groups', () => {
+  it('can translate an argmax step without groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'argmax',
@@ -1311,7 +1319,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an argmax step with groups', () => {
+  it('can translate an argmax step with groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'argmax',
@@ -1354,7 +1362,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an argmin step with groups', () => {
+  it('can translate an argmin step with groups', () => {
     const pipeline: Pipeline = [
       {
         name: 'argmin',
@@ -1397,7 +1405,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a formula step with a single column or constant', () => {
+  it('can translate a formula step with a single column or constant', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
@@ -1428,7 +1436,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a formula step with complex operations imbrication', () => {
+  it('can translate a formula step with complex operations imbrication', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
@@ -1499,7 +1507,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a formula step with a a signed column name', () => {
+  it('can translate a formula step with a a signed column name', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
@@ -1525,7 +1533,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a formula step with special column name', () => {
+  it('can translate a formula step with special column name', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
@@ -1546,7 +1554,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a formula step with a special column name and a normal column name', () => {
+  it('can translate a formula step with a special column name and a normal column name', () => {
     const pipeline: Pipeline = [
       {
         name: 'formula',
@@ -1567,7 +1575,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a pivot step', () => {
+  it('can translate a pivot step', () => {
     const pipeline: Pipeline = [
       {
         name: 'pivot',
@@ -1623,7 +1631,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an unpivot step with fillna parameter to true', () => {
+  it('can translate an unpivot step with fillna parameter to true', () => {
     const pipeline: Pipeline = [
       {
         name: 'unpivot',
@@ -1668,7 +1676,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an unpivot step with fillna parameter to false', () => {
+  it('can translate an unpivot step with fillna parameter to false', () => {
     const pipeline: Pipeline = [
       {
         name: 'unpivot',
@@ -1708,7 +1716,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a duplicate step', () => {
+  it('can translate a duplicate step', () => {
     const pipeline: Pipeline = [
       {
         name: 'duplicate',
@@ -1720,7 +1728,7 @@ describe('Pipeline to mongo translator', () => {
     expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }, { $project: { _id: 0 } }]);
   });
 
-  it('can generate a lowercase step', () => {
+  it('can translate a lowercase step', () => {
     const pipeline: Pipeline = [
       {
         name: 'lowercase',
@@ -1734,7 +1742,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an uppercase step', () => {
+  it('can translate an uppercase step', () => {
     const pipeline: Pipeline = [
       {
         name: 'uppercase',
@@ -1748,7 +1756,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a concatenate step with only one column', () => {
+  it('can translate a concatenate step with only one column', () => {
     const pipeline: Pipeline = [
       {
         name: 'concatenate',
@@ -1764,7 +1772,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a concatenate step with at least two columns', () => {
+  it('can translate a concatenate step with at least two columns', () => {
     const pipeline: Pipeline = [
       {
         name: 'concatenate',
@@ -1780,7 +1788,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a substring step with positive start and end index', () => {
+  it('can translate a substring step with positive start and end index', () => {
     const pipeline: Pipeline = [
       {
         name: 'substring',
@@ -1813,7 +1821,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a substring step with negative start and end index', () => {
+  it('can translate a substring step with negative start and end index', () => {
     const pipeline: Pipeline = [
       {
         name: 'substring',
@@ -1871,7 +1879,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a todate step without format', () => {
+  it('can translate a todate step without format', () => {
     const pipeline: Pipeline = [
       {
         name: 'todate',
@@ -1885,7 +1893,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with a custom format', () => {
+  it('can translate a fromdate step with a custom format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -1900,7 +1908,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with "%d %b %Y" preset format', () => {
+  it('can translate a fromdate step with "%d %b %Y" preset format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -1939,7 +1947,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with "%d-%b-%Y" preset format', () => {
+  it('can translate a fromdate step with "%d-%b-%Y" preset format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -1978,7 +1986,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with "%d %B %Y" preset format', () => {
+  it('can translate a fromdate step with "%d %B %Y" preset format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -2017,7 +2025,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with "%b %Y" preset format', () => {
+  it('can translate a fromdate step with "%b %Y" preset format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -2055,7 +2063,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with "%b-%Y" preset format', () => {
+  it('can translate a fromdate step with "%b-%Y" preset format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -2093,7 +2101,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fromdate step with "%B %Y" preset format', () => {
+  it('can translate a fromdate step with "%B %Y" preset format', () => {
     const pipeline: Pipeline = [
       {
         name: 'fromdate',
@@ -2131,19 +2139,19 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an append step', () => {
+  it('can translate an append step', () => {
     const pipelineBis: Pipeline = [
-      { name: 'domain', domain: 'test_bis' },
+      { name: 'source', source: 'test_bis' },
       { name: 'delete', columns: ['useless'] },
     ];
     const pipelineTer: Pipeline = [
-      { name: 'domain', domain: 'test_ter' },
+      { name: 'source', source: 'test_ter' },
       { name: 'select', columns: ['useful'] },
     ];
     const pipeline: Pipeline = [
       {
-        name: 'domain',
-        domain: 'test',
+        name: 'source',
+        source: 'test',
       },
       {
         name: 'rename',
@@ -2296,15 +2304,15 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a left join step', () => {
+  it('can translate a left join step', () => {
     const rightPipeline: Pipeline = [
-      { name: 'domain', domain: 'right' },
+      { name: 'source', source: 'right' },
       { name: 'delete', columns: ['useless'] },
     ];
     const pipeline: Pipeline = [
       {
-        name: 'domain',
-        domain: 'test',
+        name: 'source',
+        source: 'test',
       },
       {
         name: 'rename',
@@ -2352,15 +2360,15 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an inner join step', () => {
+  it('can translate an inner join step', () => {
     const rightPipeline: Pipeline = [
-      { name: 'domain', domain: 'right' },
+      { name: 'source', source: 'right' },
       { name: 'delete', columns: ['useless'] },
     ];
     const pipeline: Pipeline = [
       {
-        name: 'domain',
-        domain: 'test',
+        name: 'source',
+        source: 'test',
       },
       {
         name: 'rename',
@@ -2417,15 +2425,15 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a join step with different "left_on" and "right_on" columns', () => {
+  it('can translate a join step with different "left_on" and "right_on" columns', () => {
     const rightPipeline: Pipeline = [
-      { name: 'domain', domain: 'right' },
+      { name: 'source', source: 'right' },
       { name: 'delete', columns: ['useless'] },
     ];
     const pipeline: Pipeline = [
       {
-        name: 'domain',
-        domain: 'test',
+        name: 'source',
+        source: 'test',
       },
       {
         name: 'rename',
@@ -2498,7 +2506,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a uniquegroups step', () => {
+  it('can translate a uniquegroups step', () => {
     const pipeline: Pipeline = [
       {
         name: 'uniquegroups',
@@ -2529,7 +2537,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate basic rollup steps', () => {
+  it('can translate basic rollup steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'rollup',
@@ -2633,7 +2641,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate more complex rollup steps if needed', () => {
+  it('can translate more complex rollup steps if needed', () => {
     const pipeline: Pipeline = [
       {
         name: 'rollup',
@@ -2764,7 +2772,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a basic evolution step vs. last year in absolute value', () => {
+  it('can translate a basic evolution step vs. last year in absolute value', () => {
     const pipeline: Pipeline = [
       {
         name: 'evolution',
@@ -2851,7 +2859,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a complete evolution step vs. last month in absolute value', () => {
+  it('can translate a complete evolution step vs. last month in absolute value', () => {
     const pipeline: Pipeline = [
       {
         name: 'evolution',
@@ -2955,7 +2963,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an evolution step vs. last week in percentage value', () => {
+  it('can translate an evolution step vs. last week in percentage value', () => {
     const pipeline: Pipeline = [
       {
         name: 'evolution',
@@ -3045,7 +3053,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an evolution step vs. last day', () => {
+  it('can translate an evolution step vs. last day', () => {
     const pipeline: Pipeline = [
       {
         name: 'evolution',
@@ -3128,7 +3136,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate basic cumsum steps if needed', () => {
+  it('can translate basic cumsum steps if needed', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
@@ -3164,7 +3172,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate more complex cumsum steps if needed', () => {
+  it('can translate more complex cumsum steps if needed', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
@@ -3211,7 +3219,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a basic ifthenelse step', () => {
+  it('can translate a basic ifthenelse step', () => {
     const pipeline: Pipeline = [
       {
         name: 'ifthenelse',
@@ -3238,7 +3246,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an ifthenelse step with formulas', () => {
+  it('can translate an ifthenelse step with formulas', () => {
     const pipeline: Pipeline = [
       {
         name: 'ifthenelse',
@@ -3265,7 +3273,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an ifthenelse step with multiple "AND" conditions', () => {
+  it('can translate an ifthenelse step with multiple "AND" conditions', () => {
     const pipeline: Pipeline = [
       {
         name: 'ifthenelse',
@@ -3302,7 +3310,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an ifthenelse step with multiple "OR" conditions', () => {
+  it('can translate an ifthenelse step with multiple "OR" conditions', () => {
     const pipeline: Pipeline = [
       {
         name: 'ifthenelse',
@@ -3339,7 +3347,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate an ifthenelse step with multiple "AND" / "OR" conditions', () => {
+  it('can translate an ifthenelse step with multiple "AND" / "OR" conditions', () => {
     const pipeline: Pipeline = [
       {
         name: 'ifthenelse',
@@ -3386,7 +3394,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate nested ifthenelse steps', () => {
+  it('can translate nested ifthenelse steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'ifthenelse',

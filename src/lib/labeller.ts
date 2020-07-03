@@ -141,7 +141,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   domain(step: Readonly<S.DomainStep>) {
-    return `Use domain "${step.domain}"`;
+    return `Use dataset "${step.domain}"`;
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
@@ -210,6 +210,10 @@ class StepLabeller implements StepMatcher<string> {
 
   select(step: Readonly<S.SelectStep>) {
     return `Keep columns ${formatMulticol(step.columns)}`;
+  }
+
+  source(step: Readonly<S.SourceStep>) {
+    return `Use dataset "${step.source}"`;
   }
 
   sort(step: Readonly<S.SortStep>) {

@@ -197,8 +197,8 @@ export type PipelinesScopeContext = {
 function _dereferenceSource(source: string): Pipeline {
   return [
     {
-      name: 'domain',
-      domain: source,
+      name: 'source',
+      source,
     },
   ];
 }
@@ -246,6 +246,13 @@ export function dereferencePipelines(
             pipelines,
             sources,
           ),
+        };
+        break;
+      // IMPORTANT: 'domain' should be renamed 'reference'
+      case 'domain':
+        newStep = {
+          ...step,
+          domain: _dereferenceSourceOrPipeline(step.domain as string, pipelines, sources),
         };
         break;
       default:

@@ -104,7 +104,7 @@ describe('Labeller', () => {
       name: 'domain',
       domain: 'the-domain',
     };
-    expect(hrl(step)).toEqual('Use domain "the-domain"');
+    expect(hrl(step)).toEqual('Use dataset "the-domain"');
   });
 
   it('generates label for duplicate steps', () => {
@@ -410,6 +410,14 @@ describe('Labeller', () => {
       columns: ['column1', 'column2'],
     };
     expect(hrl(step)).toEqual('Keep columns "column1", "column2"');
+  });
+
+  it('generates label for source steps', () => {
+    const step: S.SourceStep = {
+      name: 'source',
+      source: 'the-domain',
+    };
+    expect(hrl(step)).toEqual('Use dataset "the-domain"');
   });
 
   it('generates label for sort steps', () => {

@@ -237,7 +237,7 @@ class Mutations {
     if (pipeline.length) {
       const firstStep = pipeline[0];
       if (firstStep.name === 'domain') {
-        state.currentDomain = firstStep.domain;
+        state.currentDomain = firstStep.domain as string;
       }
     }
   }

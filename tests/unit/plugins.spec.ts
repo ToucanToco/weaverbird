@@ -192,7 +192,7 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline, { sources: ['GoT'] }), [
       servicePluginFactory(new DummyService()),
     ]);
     const wrapper = mount(PipelineComponent, { store, localVue });
@@ -238,6 +238,7 @@ describe('backend service plugin tests', () => {
     const store = setupMockStore(
       buildStateWithOnePipeline(pipeline, {
         selectedStepIndex: 1,
+        sources: ['foo'],
       }),
       [servicePluginFactory(new DummyService())],
     );
@@ -274,7 +275,7 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline when a setCurrentDomain mutation is committed', async () => {
-    const store = setupMockStore(buildStateWithOnePipeline([]), [
+    const store = setupMockStore(buildStateWithOnePipeline([], { sources: ['GoT'] }), [
       servicePluginFactory(new DummyService()),
     ]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
@@ -315,7 +316,7 @@ describe('backend service plugin tests', () => {
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
-    const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline, { sources: ['GoT'] }), [
       servicePluginFactory(new DummyService()),
     ]);
     store.commit(VQBnamespace('deleteStep'), { index: 2 });
@@ -351,7 +352,7 @@ describe('backend service plugin tests', () => {
   });
 
   it('should call execute pipeline with correct pagesize', async () => {
-    const store = setupMockStore(buildStateWithOnePipeline([], { pagesize: 1 }), [
+    const store = setupMockStore(buildStateWithOnePipeline([], { pagesize: 1, sources: ['GoT'] }), [
       servicePluginFactory(new DummyService()),
     ]);
     store.commit(VQBnamespace('setCurrentDomain'), { currentDomain: 'GoT' });
@@ -395,6 +396,7 @@ describe('backend service plugin tests', () => {
           what: 'king',
         },
         interpolateFunc: lodashInterpolate,
+        sources: ['GoT'],
       }),
       [servicePluginFactory(service)],
     );
@@ -402,7 +404,7 @@ describe('backend service plugin tests', () => {
     await flushPromises();
     expect(executeSpy).toHaveBeenCalledTimes(1);
     expect(executeSpy.mock.calls[0][1]).toEqual([
-      { domain: 'GoT', name: 'domain' },
+      { domain: [{ source: 'GoT', name: 'source' }], name: 'domain' },
       {
         name: 'replace',
         search_column: 'characters',
@@ -426,6 +428,7 @@ describe('backend service plugin tests', () => {
       buildStateWithOnePipeline(pipeline, {
         variables: {},
         interpolateFunc: lodashInterpolate,
+        sources: ['GoT'],
       }),
       [servicePluginFactory(service)],
     );
@@ -433,7 +436,7 @@ describe('backend service plugin tests', () => {
     await flushPromises();
     expect(executeSpy).toHaveBeenCalledTimes(1);
     expect(executeSpy.mock.calls[0][1]).toEqual([
-      { domain: 'GoT', name: 'domain' },
+      { domain: [{ name: 'source', source: 'GoT' }], name: 'domain' },
       {
         name: 'replace',
         search_column: 'characters',
@@ -464,6 +467,7 @@ describe('backend service plugin tests', () => {
           dataset2: [{ name: 'domain', domain: 'domain2' }],
           dataset3: [{ name: 'domain', domain: 'domain3' }],
         },
+        sources: ['domain1', 'domain2', 'domain3', 'GoT'],
       },
       [servicePluginFactory(service)],
     );
@@ -471,17 +475,17 @@ describe('backend service plugin tests', () => {
     await flushPromises();
     expect(executeSpy).toHaveBeenCalledTimes(1);
     expect(executeSpy.mock.calls[0][1]).toEqual([
-      { domain: 'GoT', name: 'domain' },
+      { domain: [{ name: 'source', source: 'GoT' }], name: 'domain' },
       {
         name: 'append',
         pipelines: [
-          [{ name: 'domain', domain: 'domain1' }],
-          [{ name: 'domain', domain: 'domain2' }],
+          [{ name: 'domain', domain: [{ name: 'source', source: 'domain1' }] }],
+          [{ name: 'domain', domain: [{ name: 'source', source: 'domain2' }] }],
         ],
       },
       {
         name: 'join',
-        right_pipeline: [{ name: 'domain', domain: 'domain3' }],
+        right_pipeline: [{ name: 'domain', domain: [{ name: 'source', source: 'domain3' }] }],
         type: 'left',
         on: [['toto', 'tata']],
       },
@@ -498,6 +502,7 @@ describe('backend service plugin tests', () => {
     const store = setupMockStore(
       {
         currentPipelineName: 'default_pipeline',
+        sources: ['domain1', 'domain2', 'domain3', 'GoT'],
         pipelines: {
           default_pipeline: pipeline,
           dataset1: [
@@ -522,20 +527,22 @@ describe('backend service plugin tests', () => {
     await flushPromises();
     expect(executeSpy).toHaveBeenCalledTimes(1);
     expect(executeSpy.mock.calls[0][1]).toEqual([
-      { domain: 'GoT', name: 'domain' },
+      { domain: [{ name: 'source', source: 'GoT' }], name: 'domain' },
       {
         name: 'append',
         pipelines: [
           [
-            { name: 'domain', domain: 'domain1' },
+            { name: 'domain', domain: [{ name: 'source', source: 'domain1' }] },
             {
               name: 'append',
               pipelines: [
                 [
-                  { name: 'domain', domain: 'domain2' },
+                  { name: 'domain', domain: [{ name: 'source', source: 'domain2' }] },
                   {
                     name: 'join',
-                    right_pipeline: [{ name: 'domain', domain: 'domain3' }],
+                    right_pipeline: [
+                      { name: 'domain', domain: [{ name: 'source', source: 'domain3' }] },
+                    ],
                     type: 'left',
                     on: [['toto', 'tata']],
                   },

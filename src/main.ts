@@ -1,5 +1,4 @@
 // export lib entrypoints
-export { filterOutDomain, mongoToPipe } from './lib/pipeline';
 export { getTranslator } from './lib/translators';
 export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo';
 export { setCodeEditor } from './components/code-editor';

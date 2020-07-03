@@ -114,9 +114,10 @@ export type StatisticsStep = {
   quantiles: Quantile[];
 };
 
+// IMPORTANT: `DomainStep` should be rename 'ReferenceStep'
 export type DomainStep = {
-  name: 'domain';
-  domain: string;
+  name: 'domain'; // IMPORTANT: 'domain' should be renamed 'reference'
+  domain: Reference;
 };
 
 export type DuplicateColumnStep = {
@@ -219,6 +220,11 @@ export type PivotStep = {
   column_to_pivot: string;
   value_column: string;
   agg_function: 'sum' | 'avg' | 'count' | 'min' | 'max';
+};
+
+export type SourceStep = {
+  name: 'source';
+  source: string;
 };
 
 export type RenameStep = {
@@ -342,6 +348,7 @@ export type PipelineStep =
   | PivotStep
   | RenameStep
   | ReplaceStep
+  | SourceStep
   | RollupStep
   | SelectStep
   | SplitStep

@@ -1170,7 +1170,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   delete: (step: Readonly<S.DeleteStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 0])),
   }),
-  domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
+  source: (step: Readonly<S.SourceStep>) => ({ $match: { domain: step.source } }),
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
     $addFields: { [step.new_column_name]: $$(step.column) },
   }),
@@ -1227,23 +1227,23 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
 export class Mongo36Translator extends BaseTranslator {
   static label = 'Mongo 3.6';
 
-  domainToCollection(domain: string) {
-    return domain;
+  sourceToCollection(source: string) {
+    return source;
   }
 
   constructor() {
     super();
   }
 
-  setDomainToCollection(domainToCollectionFunc: (domain: string) => string) {
-    this.domainToCollection = domainToCollectionFunc;
+  setsourceToCollection(sourceToCollectionFunc: (domain: string) => string) {
+    this.sourceToCollection = sourceToCollectionFunc;
   }
 
   translate(pipeline: S.Pipeline) {
     const mongoSteps = super
       .translate(pipeline)
       .reduce((acc: OutputStep[], val) => acc.concat(val), []) as MongoStep[];
-    if (mongoSteps.length) {
+    if (mongoSteps.length && mongoSteps.slice(-1)[0].$project?._id !== 0) {
       return _simplifyMongoPipeline([...mongoSteps, { $project: { _id: 0 } }]);
     }
     return _simplifyMongoPipeline(mongoSteps);
@@ -1255,11 +1255,11 @@ export class Mongo36Translator extends BaseTranslator {
     const pipelinesNames: string[] = ['$_vqbPipelineInline'];
     const lookups: MongoStep[] = [];
     for (let i = 0; i < pipelines.length; i++) {
-      const domainStep = pipelines[i][0] as S.DomainStep;
+      const sourceStep = pipelines[i][0] as S.SourceStep;
       const pipelineWithoutDomain = pipelines[i].slice(1);
       lookups.push({
         $lookup: {
-          from: this.domainToCollection(domainStep.domain),
+          from: this.sourceToCollection(sourceStep.source),
           pipeline: this.translate(pipelineWithoutDomain),
           as: `_vqbPipelineToAppend_${i}`,
         },
@@ -1279,7 +1279,7 @@ export class Mongo36Translator extends BaseTranslator {
   join(step: Readonly<S.JoinStep>): MongoStep[] {
     const mongoPipeline: MongoStep[] = [];
     const right = step.right_pipeline as S.Pipeline;
-    const rightDomain = right[0] as S.DomainStep;
+    const sourceStep = right[0] as S.SourceStep;
     const rightWithoutDomain = right.slice(1);
     const mongoLet: { [k: string]: string } = {};
     const mongoExprAnd: { [k: string]: object }[] = [];
@@ -1289,7 +1289,7 @@ export class Mongo36Translator extends BaseTranslator {
     }
     mongoPipeline.push({
       $lookup: {
-        from: this.domainToCollection(rightDomain.domain),
+        from: this.sourceToCollection(sourceStep.source),
         let: mongoLet,
         pipeline: [
           ...this.translate(rightWithoutDomain),

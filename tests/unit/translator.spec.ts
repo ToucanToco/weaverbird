@@ -9,8 +9,8 @@ import { ALL_STEP_NAMES, BaseTranslator } from '@/lib/translators/base';
 
 class DummyStringTranslator extends BaseTranslator {
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
-  domain(step: S.DomainStep) {
-    return 'domain';
+  source(step: S.SourceStep) {
+    return 'source';
   }
   filter(step: S.FilterStep) {
     return 'filter';
@@ -28,10 +28,10 @@ describe('base translator class', () => {
     const notrs = new NoSupportTranslator();
     const dummytrs = new DummyStringTranslator();
 
-    expect(notrs.unsupportedSteps).toEqual(ALL_STEP_NAMES);
-    expect(notrs.supportedSteps).toEqual([]);
-    expect(dummytrs.supportedSteps).toEqual(['domain', 'filter', 'rename']);
-    expect(dummytrs.supports('domain')).toBeTruthy();
+    expect(notrs.unsupportedSteps).toEqual(ALL_STEP_NAMES.filter(s => s !== 'domain'));
+    expect(notrs.supportedSteps).toEqual(['domain']);
+    expect(dummytrs.supportedSteps).toEqual(['domain', 'filter', 'rename', 'source']);
+    expect(dummytrs.supports('source')).toBeTruthy();
     expect(dummytrs.supports('filter')).toBeTruthy();
     expect(dummytrs.supports('rename')).toBeTruthy();
     expect(dummytrs.supports('aggregate')).toBeFalsy();
@@ -39,8 +39,8 @@ describe('base translator class', () => {
 
   it('should raise a NotSupported error', () => {
     const notrs = new NoSupportTranslator();
-    expect(() => notrs.translate([{ name: 'domain', domain: 'my-domain' }])).toThrow(
-      'Unsupported step <domain>',
+    expect(() => notrs.translate([{ name: 'source', source: 'my-source' }])).toThrow(
+      'Unsupported step <source>',
     );
   });
 
@@ -48,7 +48,7 @@ describe('base translator class', () => {
     const dummytrs = new DummyStringTranslator();
     expect(() =>
       dummytrs.translate([
-        { name: 'domain', domain: 'my-domain' },
+        { name: 'source', source: 'my-source' },
         { name: 'rename', oldname: 'old', newname: 'new' },
         { name: 'delete', columns: ['col1'] },
         { name: 'rename', oldname: 'old2', newname: 'new2' },
@@ -60,11 +60,11 @@ describe('base translator class', () => {
     const dummytrs = new DummyStringTranslator();
     expect(
       dummytrs.translate([
-        { name: 'domain', domain: 'my-domain' },
+        { name: 'source', source: 'my-source' },
         { name: 'rename', oldname: 'old', newname: 'new' },
         { name: 'rename', oldname: 'old2', newname: 'new2' },
       ]),
-    ).toEqual(['domain', 'rename', 'rename']);
+    ).toEqual(['source', 'rename', 'rename']);
   });
 });
 
@@ -72,7 +72,7 @@ describe('translator registration', () => {
   it('should be possible to register backends', () => {
     registerTranslator('dummy', DummyStringTranslator);
     expect(backendsSupporting('aggregate')).toEqual(['mongo36', 'mongo40']);
-    expect(backendsSupporting('domain')).toEqual(['dummy', 'mongo36', 'mongo40']);
+    expect(backendsSupporting('source')).toEqual(['dummy', 'mongo36', 'mongo40']);
   });
 
   it('should throw an error if backend is not available', () => {

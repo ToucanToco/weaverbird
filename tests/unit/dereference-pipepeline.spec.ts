@@ -2,7 +2,7 @@ import { dereferencePipelines, PipelinesScopeContext } from '@/store/state';
 
 const pipelines: PipelinesScopeContext = {
   lala: [
-    { name: 'domain', domain: 'jjg' },
+    { name: 'source', source: 'jjg' },
     {
       name: 'filter',
       condition: {
@@ -13,21 +13,21 @@ const pipelines: PipelinesScopeContext = {
     },
   ],
   append_p: [
-    { name: 'domain', domain: 'jjg' },
+    { name: 'source', source: 'jjg' },
     {
       name: 'append',
       pipelines: ['lala'],
     },
   ],
   append_s: [
-    { name: 'domain', domain: 'jjg' },
+    { name: 'source', source: 'jjg' },
     {
       name: 'append',
       pipelines: ['jjg'],
     },
   ],
   join_p: [
-    { name: 'domain', domain: 'mika' },
+    { name: 'source', source: 'mika' },
     {
       name: 'join',
       right_pipeline: 'lala',
@@ -36,7 +36,7 @@ const pipelines: PipelinesScopeContext = {
     },
   ],
   join_s: [
-    { name: 'domain', domain: 'mika' },
+    { name: 'source', source: 'mika' },
     {
       name: 'join',
       right_pipeline: 'jjg',
@@ -44,6 +44,8 @@ const pipelines: PipelinesScopeContext = {
       on: [['froufrou'], ['froufrou']],
     },
   ],
+  domain_p: [{ name: 'domain', domain: 'lala' }],
+  domain_s: [{ name: 'domain', domain: 'mika' }],
 };
 
 const sources = ['jjg', 'mika'];
@@ -58,7 +60,7 @@ describe('dereferencePipelines', () => {
   describe('dereference "append" step', () => {
     it('should dereferenced "append" step into a pipeline', () => {
       expect(dereferencePipelines(pipelines['append_p'], pipelines, sources)).toStrictEqual([
-        { name: 'domain', domain: 'jjg' },
+        { name: 'source', source: 'jjg' },
         {
           name: 'append',
           pipelines: [pipelines['lala']],
@@ -68,10 +70,10 @@ describe('dereferencePipelines', () => {
 
     it('should dereferenced "append" step into a source', () => {
       expect(dereferencePipelines(pipelines['append_s'], pipelines, sources)).toStrictEqual([
-        { name: 'domain', domain: 'jjg' },
+        { name: 'source', source: 'jjg' },
         {
           name: 'append',
-          pipelines: [[{ name: 'domain', domain: 'jjg' }]],
+          pipelines: [[{ name: 'source', source: 'jjg' }]],
         },
       ]);
     });
@@ -80,7 +82,7 @@ describe('dereferencePipelines', () => {
   describe('dereference "join" step', () => {
     it('should dereferenced "join" step into a pipeline', () => {
       expect(dereferencePipelines(pipelines['join_p'], pipelines, sources)).toStrictEqual([
-        { name: 'domain', domain: 'mika' },
+        { name: 'source', source: 'mika' },
         {
           name: 'join',
           right_pipeline: pipelines['lala'],
@@ -92,13 +94,27 @@ describe('dereferencePipelines', () => {
 
     it('should dereferenced "join" step into a source', () => {
       expect(dereferencePipelines(pipelines['join_s'], pipelines, sources)).toStrictEqual([
-        { name: 'domain', domain: 'mika' },
+        { name: 'source', source: 'mika' },
         {
           name: 'join',
-          right_pipeline: [{ name: 'domain', domain: 'jjg' }],
+          right_pipeline: [{ name: 'source', source: 'jjg' }],
           type: 'left',
           on: [['froufrou'], ['froufrou']],
         },
+      ]);
+    });
+  });
+
+  describe('dereference "domain" step', () => {
+    it('should dereferenced "reference" step into a pipeline', () => {
+      expect(dereferencePipelines(pipelines['domain_p'], pipelines, sources)).toStrictEqual([
+        { name: 'domain', domain: pipelines['lala'] },
+      ]);
+    });
+
+    it('should dereferenced "domain" step into a source', () => {
+      expect(dereferencePipelines(pipelines['domain_s'], pipelines, sources)).toStrictEqual([
+        { name: 'domain', domain: [{ name: 'source', source: 'mika' }] },
       ]);
     });
   });

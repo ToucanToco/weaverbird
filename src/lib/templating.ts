@@ -320,6 +320,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  source(step: Readonly<S.SourceStep>) {
+    return { ...step };
+  }
+
   sort(step: Readonly<S.SortStep>) {
     return { ...step };
   }

@@ -64,6 +64,7 @@ describe('Pagination Component', () => {
     const pagesize = 2;
     const store = setupMockStore(
       buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
+        sources: ['foo'],
         dataset: {
           headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
           data: [

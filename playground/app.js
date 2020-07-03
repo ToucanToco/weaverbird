@@ -3,7 +3,6 @@ const {
   Vqb,
   VQBnamespace,
   VQB_MODULE_NAME,
-  filterOutDomain,
   getTranslator,
   mongoResultsToDataset,
   dereferencePipelines,
@@ -107,9 +106,9 @@ class MongoService {
   }
 
   async executePipeline(_store, pipeline, limit, offset = 0) {
-    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const query = mongo40translator.translate(subpipeline);
-    const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
+    const query = mongo40translator.translate(pipeline);
+    const [{ $match: {domain, name} }, ...subquery] = query;
+    const { isResponseOk, responseContent } = await this.executeQuery(subquery, domain, limit, offset);
 
     if (isResponseOk) {
       const [{ count, data: rset, types }] = responseContent;
@@ -267,8 +266,9 @@ async function buildVueApp() {
           return undefined;
         }
         const pipelines = this.$store.getters[VQBnamespace('pipelines')];
+        const sources = this.$store.getters[VQBnamespace('sources')];
         if (pipelines) {
-          return dereferencePipelines(activePipeline, pipelines);
+          return dereferencePipelines(activePipeline, pipelines, sources);
         } else {
           return activePipeline
         }

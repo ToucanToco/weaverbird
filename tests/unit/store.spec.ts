@@ -45,7 +45,7 @@ describe('getter tests', () => {
 
     it('should return an empty pipeline if selectedIndex is -1', () => {
       const pipeline: Pipeline = [
-        { name: 'domain', domain: 'foo' },
+        { name: 'domain', domain: [{ name: 'source', source: 'foo' }] },
         { name: 'rename', oldname: 'foo', newname: 'bar' },
         { name: 'rename', oldname: 'baz', newname: 'spam' },
       ];
@@ -636,7 +636,7 @@ describe('action tests', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline, { sources: ['GoT'] }), [
         servicePluginFactory(instantiateDummyService()),
       ]);
       const commitSpy = jest.spyOn(store, 'commit');
@@ -670,7 +670,7 @@ describe('action tests', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline, { sources: ['GoT'] }), [
         servicePluginFactory({
           listCollections: jest.fn(),
           executePipeline: jest.fn().mockResolvedValue({
@@ -746,11 +746,12 @@ describe('action tests', () => {
     it('should commit a new dataset with headers updated', async () => {
       const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
       const dummyService = instantiateDummyService();
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline, { dataset: dummyDataset }), [
-        servicePluginFactory(dummyService),
-      ]);
+      const store = setupMockStore(
+        buildStateWithOnePipeline(pipeline, { dataset: dummyDataset, sources: ['foo'] }),
+        [servicePluginFactory(dummyService)],
+      );
       const expectedPipeline: Pipeline = [
-        ...pipeline,
+        { name: 'domain', domain: [{ name: 'source', source: 'foo' }] },
         {
           name: 'aggregate',
           aggregations: [
