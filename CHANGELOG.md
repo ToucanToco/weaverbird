@@ -9,6 +9,8 @@
 ### Changed
 
 - rename  mutation `setDomains` into `setSources` and state prop `domains` into `sources`
+- A pipeline can start by a reference to an other pipeline
+- The join and append step can make a reference to a source
 
 ## [0.19.0] - 2020-06-15
 
