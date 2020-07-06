@@ -8,6 +8,7 @@
       :allow-empty="false"
       :track-by="trackBy"
       :label="label"
+      openDirection="bottom"
       @input="$emit('input', $event)"
     >
       <!-- If you want to use those templates you should provide a 'label' and 

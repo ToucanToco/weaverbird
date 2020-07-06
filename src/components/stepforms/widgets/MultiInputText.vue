@@ -16,6 +16,7 @@
         :close-on-select="false"
         :placeholder="placeholder"
         @search-change="updateOptions"
+        open-direction="bottom"
       />
     </VariableInput>
   </div>

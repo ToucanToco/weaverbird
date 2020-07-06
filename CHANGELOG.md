@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.19.2] - 2020-07-06
+
+### Fixed
+
+- Open the vue-multiselect on the bottom direction
+
 ## [0.19.1] - 2020-06-23
 
 ### Fixed
@@ -309,6 +315,7 @@
 
 - Initial version, showtime!
 
+[0.19.2]: https://github.com/ToucanToco/weaverbird/compare/v0.19.1...v0.19.2
 [0.19.1]: https://github.com/ToucanToco/weaverbird/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/ToucanToco/weaverbird/compare/v0.18.0...v0.19.0
 [0.18.0]: https://github.com/ToucanToco/weaverbird/compare/v0.17.4...v0.18.0

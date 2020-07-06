@@ -8,6 +8,7 @@
       :multiple="true"
       :taggable="true"
       :close-on-select="false"
+      openDirection="bottom"
     />
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
