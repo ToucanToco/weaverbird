@@ -10,6 +10,7 @@
       group-values="actions"
       :group-select="false"
       @select="actionClicked"
+      open-direction="bottom"
     />
   </div>
 </template>
