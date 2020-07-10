@@ -1,14 +1,14 @@
 <template>
   <div class="ifthenelse-widget">
     <div class="ifthenelse-container">
-      <div v-if="isRoot" class="ifthenelse-widget__if">IF:</div>
+      <div class="ifthenelse-widget__if">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
       <FilterEditor
         :filter-tree="value.if"
         :errors="errors"
         :data-path="`${dataPath}.if`"
         @filterTreeUpdated="updateFilterTree"
       />
-      <div class="ifthenelse-widget__then">THEN:</div>
+      <div class="ifthenelse-widget__then">THEN</div>
       <InputTextWidget
         class="formulaInput"
         :value="value.then"
@@ -17,6 +17,7 @@
         :data-path="`${dataPath}.then`"
         :errors="errors"
       />
+      <div v-if="elseMode === 'ELSE:'" class="ifthenelse-widget__else">ELSE</div>
       <AutocompleteWidget
         class="ifthenelse-widget__else"
         v-model="elseMode"
@@ -189,17 +190,32 @@ export default class IfThenElseWidget extends Vue {
   margin-bottom: 10px;
 }
 
+%ifthenelse-widget__tag {
+  font-family: Montserrat;
+  font-size: 12px;
+  font-weight: 600;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.67;
+  letter-spacing: normal;
+  text-transform: uppercase;
+  color: #2e69a3;
+  display: inline-flex;
+  border-radius: 2px;
+  padding: 0 6px;
+  background-color: #d7e5f3;
+}
+
 .ifthenelse-widget__else {
+  @extend %ifthenelse-widget__tag;
   margin-bottom: 0px;
 }
 
 .ifthenelse-widget__if {
-  margin-bottom: 5px;
-  font-size: 14px;
+  @extend %ifthenelse-widget__tag;
 }
 
 .ifthenelse-widget__then {
-  margin-bottom: 5px;
-  font-size: 14px;
+  @extend %ifthenelse-widget__tag;
 }
 </style>
