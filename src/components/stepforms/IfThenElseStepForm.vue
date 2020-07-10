@@ -10,7 +10,7 @@
       :errors="errors"
       :warning="duplicateColumnName"
     />
-    <IfThenElseWidget :value="ifthenelse" @input="updateIfThenElse" :errors="errors" />
+    <IfThenElseWidget isRoot :value="ifthenelse" @input="updateIfThenElse" :errors="errors" />
     <StepFormButtonbar />
   </div>
 </template>
