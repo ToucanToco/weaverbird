@@ -35,7 +35,6 @@
     </div>
     <ifthenelse-widget
       v-if="elseMode === 'ELSE IF:'"
-      :isRoot="false"
       :value="value.else"
       @input="updateElseObject"
       :data-path="`${dataPath}.else`"
@@ -79,7 +78,7 @@ export default class IfThenElseWidget extends Vue {
 
   @Prop({
     type: Boolean,
-    default: true,
+    default: false,
   })
   isRoot!: boolean;
 
