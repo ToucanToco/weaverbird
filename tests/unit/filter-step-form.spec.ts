@@ -269,4 +269,33 @@ describe('Filter Step Form', () => {
       ],
     });
   });
+
+  it('should not convert null input value when the column data type is an integer', () => {
+    const initialState = {
+      dataset: {
+        headers: [{ name: 'columnA', type: 'integer' }],
+        data: [[null]],
+      },
+    };
+    const wrapper = runner.mount(initialState, {
+      propsData: {
+        initialStepValue: {
+          name: 'filter',
+          condition: { column: 'columnA', operator: 'eq', value: null },
+        },
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: { column: 'columnA', operator: 'eq', value: null },
+          },
+        ],
+      ],
+    });
+  });
 });
