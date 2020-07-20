@@ -75,13 +75,13 @@ export type StateMutation =
   | BackendMessageMutation
   | DatasetMutation
   | DeleteStepMutation
-  | SourcesMutation
   | PipelineMutation
   | SetCurrentPipelineNameMutation
   | SelectedColumnsMutation
   | SelectDomainMutation
   | SelectedStepMutation
   | SetCurrentPage
+  | SourcesMutation
   | ToggleColumnSelectionMutation
   | ToggleRequestOnGoing;
 
