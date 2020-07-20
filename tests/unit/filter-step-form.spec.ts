@@ -20,12 +20,12 @@ describe('Filter Step Form', () => {
       data: {
         editedStep: {
           name: 'filter',
-          condition: { column: 'toto', operator: 'eq', value: '' },
+          condition: { column: '', operator: 'eq', value: '' },
         },
       },
       errors: [
         { keyword: 'if', dataPath: '.condition' },
-        { keyword: 'minLength', dataPath: '.condition.value' },
+        { keyword: 'minLength', dataPath: '.condition.column' },
       ],
     },
   ]);
