@@ -20,7 +20,7 @@ function isBooleanString(string: string): boolean {
  * @returns a boolean to determine if the value can be connverted to a number
  */
 export function castFromString(value: string, type: DataSetColumnType) {
-  if ((type === 'integer' || type === 'float') && !isNaN(Number(value))) {
+  if ((type === 'integer' || type === 'float') && value !== null && !isNaN(Number(value))) {
     return Number(value);
   } else if (type === 'boolean' && isBooleanString(value)) {
     return value === 'true' || value === 'True' || value === 'TRUE' || value === '1';
