@@ -153,6 +153,35 @@ describe('Filter Step Form', () => {
     expect(wrapper.vm.$data.editedStep.condition.column).toEqual('foo');
   });
 
+  it('should not raise errors with undefined or empty value', () => {
+    const initialState = {
+      dataset: {
+        headers: [{ name: 'columnA', type: 'boolean' }],
+        data: [[null]],
+      },
+    };
+    const wrapper = runner.mount(initialState, {
+      propsData: {
+        initialStepValue: {
+          name: 'filter',
+          condition: { column: 'columnA', operator: 'eq', value: '' },
+        },
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.emitted()).toEqual({
+      formSaved: [
+        [
+          {
+            name: 'filter',
+            condition: { column: 'columnA', operator: 'eq', value: '' },
+          },
+        ],
+      ],
+    });
+  });
+
   it('should convert input value to integer when the column data type is integer', () => {
     const initialState = {
       dataset: {
