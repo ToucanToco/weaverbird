@@ -99,7 +99,6 @@ export default {
         },
         value: {
           type: ['string', 'number', 'boolean', 'null', 'array'],
-          minLength: 1,
           title: 'Value',
           description: 'The value to compare',
           attrs: {
