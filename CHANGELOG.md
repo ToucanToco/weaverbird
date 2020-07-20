@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.3] - 2020-07-20
+
+### Fixed
+- Filter step: allow to filter with empty or undefined values
+- Filter step: keep null value for numerical columns
+- "If...Then...Else" step: cast values on deeper conditional levels
+
 ## [0.19.2] - 2020-07-06
 
 ### Fixed
@@ -315,6 +322,7 @@
 
 - Initial version, showtime!
 
+[0.19.3]: https://github.com/ToucanToco/weaverbird/compare/v0.19.2...v0.19.3
 [0.19.2]: https://github.com/ToucanToco/weaverbird/compare/v0.19.1...v0.19.2
 [0.19.1]: https://github.com/ToucanToco/weaverbird/compare/v0.19.0...v0.19.1
 [0.19.0]: https://github.com/ToucanToco/weaverbird/compare/v0.18.0...v0.19.0
