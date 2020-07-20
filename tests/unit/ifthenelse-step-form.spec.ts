@@ -181,12 +181,21 @@ describe.only('If...Then...Else Step Form', () => {
             else: {
               if: {
                 and: [
-                  { column: 'columnA', operator: 'gt', value: '10' },
-                  { column: 'columnA', operator: 'in', value: ['0', '42'] },
+                  { column: 'columnA', operator: 'gt', value: '20' },
+                  { column: 'columnA', operator: 'in', value: ['1', '66'] },
                 ],
               },
               then: '456',
-              else: '789',
+              else: {
+                if: {
+                  and: [
+                    { column: 'columnA', operator: 'gt', value: '30' },
+                    { column: 'columnA', operator: 'in', value: ['2', '69'] },
+                  ],
+                },
+                then: '789',
+                else: '000',
+              },
             },
           },
         },
@@ -209,12 +218,21 @@ describe.only('If...Then...Else Step Form', () => {
               else: {
                 if: {
                   and: [
-                    { column: 'columnA', operator: 'gt', value: 10 },
-                    { column: 'columnA', operator: 'in', value: [0, 42] },
+                    { column: 'columnA', operator: 'gt', value: 20 },
+                    { column: 'columnA', operator: 'in', value: [1, 66] },
                   ],
                 },
                 then: '456',
-                else: '789',
+                else: {
+                  if: {
+                    and: [
+                      { column: 'columnA', operator: 'gt', value: 30 },
+                      { column: 'columnA', operator: 'in', value: [2, 69] },
+                    ],
+                  },
+                  then: '789',
+                  else: '000',
+                },
               },
             },
           ],
