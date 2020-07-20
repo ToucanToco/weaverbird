@@ -32,7 +32,7 @@ import BaseStepForm from './StepForm.vue';
 /**
 Applies the castFilterStepTreeValue function recursively to every condition
 object found in "if" keys of an if...then...else data structure, which can be
-nested. 
+nested.
 */
 function castIfThenElse(
   ifThenElseObj: Omit<IfThenElseStep, 'name' | 'newColumn'>,
@@ -42,7 +42,7 @@ function castIfThenElse(
   newObj.if = castFilterStepTreeValue(newObj.if, columnTypes);
   if (typeof newObj.else !== 'string') {
     // then it's a nested if...then...else object
-    newObj.else.if = castFilterStepTreeValue(newObj.else.if, columnTypes);
+    newObj.else = castIfThenElse(newObj.else, columnTypes);
   }
   return newObj;
 }
