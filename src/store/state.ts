@@ -194,7 +194,7 @@ export type PipelinesScopeContext = {
 /**
  * The corresponding pipeline of a source is the pipeline with the only step "source"
  */
-function _dereferenceSource(source: string): Pipeline {
+function _getPipelineForSource(source: string): Pipeline {
   return [
     {
       name: 'source',
@@ -212,7 +212,7 @@ function _dereferenceSourceOrPipeline(
   sources: string[],
 ): Pipeline {
   if (sources.includes(reference)) {
-    return _dereferenceSource(reference);
+    return _getPipelineForSource(reference);
   } else if (Object.keys(pipelines).includes(reference)) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return dereferencePipelines(pipelines[reference], pipelines, sources);
