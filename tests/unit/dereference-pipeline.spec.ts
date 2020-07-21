@@ -1,4 +1,4 @@
-import { dereferencePipelines, PipelinesScopeContext } from '@/store/state';
+import { dereferencePipelines, PipelinesScopeContext } from '@/store/utils/dereference-pipeline';
 
 const pipelines: PipelinesScopeContext = {
   lala: [
