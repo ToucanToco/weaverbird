@@ -158,4 +158,73 @@ describe('IfThenElseWidget', () => {
       },
     ]);
   });
+
+  it('should be expanded by default', () => {
+    const wrapper = shallowMount(IfThenElseWidget);
+    expect(wrapper.find('.ifthenelse-widget__container').classes()).not.toContain(
+      'ifthenelse-widget__container--collapsed',
+    );
+  });
+
+  it('should collapsed when clicking on arrow', () => {
+    const wrapper = shallowMount(IfThenElseWidget);
+    const button = wrapper.findAll('.ifthenelse-widget__collapse-button');
+    expect(button.length).toEqual(1);
+    button.trigger('click');
+    expect(wrapper.find('.ifthenelse-widget__container').classes()).toContain(
+      'ifthenelse-widget__container--collapsed',
+    );
+  });
+
+  it('should hide delete button and show expand button when collapsed', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+        },
+      },
+    });
+    const button = wrapper.findAll('.ifthenelse-widget__collapse-button');
+    button.trigger('click');
+    const expandTextButton = wrapper.findAll('.ifthenelse-widget__collapse-text');
+    expect(expandTextButton.length).toEqual(1);
+    const deleteButton = wrapper.findAll('.ifthenelse-widget__remove');
+    expect(deleteButton.length).toEqual(0);
+  });
+
+  it('should show delete button and hide expand button when expanded', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+        },
+      },
+    });
+    const expandTextButton = wrapper.findAll('.ifthenelse-widget__collapse-text');
+    expect(expandTextButton.length).toEqual(0);
+    const deleteButton = wrapper.findAll('.ifthenelse-widget__remove');
+    expect(deleteButton.length).toEqual(1);
+  });
+
+  it('should expand formula when a nested emitted delete', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+        },
+      },
+    });
+    const button = wrapper.findAll('.ifthenelse-widget__collapse-button');
+    button.trigger('click');
+    wrapper.find('ifthenelse-widget-stub').vm.$emit('delete');
+    expect(wrapper.find('.ifthenelse-widget__container').classes()).not.toContain(
+      'ifthenelse-widget__container--collapsed',
+    );
+  });
 });
