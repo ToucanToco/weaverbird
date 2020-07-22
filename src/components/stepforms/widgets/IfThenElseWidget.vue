@@ -1,62 +1,48 @@
 <template>
   <div class="ifthenelse-widget">
     <div class="ifthenelse-widget__container">
-      <div class="ifthenelse-widget__row">
-        <div class="ifthenelse-widget__cell">
-          <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
-        </div>
-        <div class="ifthenelse-widget__cell" v-if="!isRoot">
-          <div class="ifthenelse-widget__remove" @click="deleteCondition">
-            <i class="far fa-trash-alt" />
-          </div>
+      <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+        <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
+        <div v-if="!isRoot" class="ifthenelse-widget__remove" @click="deleteCondition">
+          <i class="far fa-trash-alt" />
         </div>
       </div>
-      <div class="ifthenelse-widget__row">
-        <div class="ifthenelse-widget__cell">
-          <FilterEditor
-            :filter-tree="value.if"
-            :errors="errors"
-            :data-path="`${dataPath}.if`"
-            @filterTreeUpdated="updateFilterTree"
-          />
-        </div>
+      <div class="ifthenelse-widget__row ifthenelse-widget__row--condition">
+        <FilterEditor
+          :filter-tree="value.if"
+          :errors="errors"
+          :data-path="`${dataPath}.if`"
+          @filterTreeUpdated="updateFilterTree"
+        />
       </div>
-      <div class="ifthenelse-widget__row ifthenelse-widget__row--step">
-        <div class="ifthenelse-widget__cell">
-          <div class="ifthenelse-widget__tag">THEN</div>
-        </div>
+      <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+        <div class="ifthenelse-widget__tag">THEN</div>
       </div>
-      <div class="ifthenelse-widget__row">
-        <div class="ifthenelse-widget__cell">
-          <InputTextWidget
-            class="ifthenelse-widget__input"
-            :value="value.then"
-            @input="updateThenFormula"
-            placeholder='Enter a "Text" with quotes, or a formula'
-            :data-path="`${dataPath}.then`"
-            :errors="errors"
-          />
-        </div>
+      <div class="ifthenelse-widget__row ifthenelse-widget__row--input">
+        <InputTextWidget
+          class="ifthenelse-widget__input"
+          :value="value.then"
+          @input="updateThenFormula"
+          placeholder='Enter a "Text" with quotes, or a formula'
+          :data-path="`${dataPath}.then`"
+          :errors="errors"
+        />
       </div>
       <template v-if="elseMode === 'ELSE:'">
-        <div class="ifthenelse-widget__row ifthenelse-widget__row--step">
-          <div class="ifthenelse-widget__cell">
-            <div class="ifthenelse-widget__tag">ELSE</div>
-          </div>
+        <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+          <div class="ifthenelse-widget__tag">ELSE</div>
         </div>
-        <div class="ifthenelse-widget__row">
-          <div class="ifthenelse-widget__cell">
-            <InputTextWidget
-              class="ifthenelse-widget__input"
-              :value="value.else"
-              @input="updateElseFormula"
-              placeholder='Enter a "Text" with quotes, or a formula'
-              :data-path="`${dataPath}.else`"
-              :errors="errors"
-            />
-          </div>
+        <div class="ifthenelse-widget__row ifthenelse-widget__row--input">
+          <InputTextWidget
+            class="ifthenelse-widget__input"
+            :value="value.else"
+            @input="updateElseFormula"
+            placeholder='Enter a "Text" with quotes, or a formula'
+            :data-path="`${dataPath}.else`"
+            :errors="errors"
+          />
         </div>
-        <div class="ifthenelse-widget__row ifthenelse-widget__row--step">
+        <div class="ifthenelse-widget__row ifthenelse-widget__row--add">
           <div class="ifthenelse-widget__add" @click="addNestedCondition">
             Add nested condition
           </div>
@@ -192,13 +178,6 @@ export default class IfThenElseWidget extends Vue {
 }
 </style>
 <style lang="scss">
-%ifthenelse-widget__text {
-  font-family: Montserrat;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: #2e69a3;
-}
-
 @import '../../../styles/_variables';
 
 .filter-form {
@@ -224,13 +203,22 @@ export default class IfThenElseWidget extends Vue {
 .ifthenelse-widget {
   .ifthenelse-widget__input {
     margin: 0;
-    background-color: white;
+    background-color: #e9eff5;
+    padding: 5px;
+    border: 1px solid $grey;
+    border-radius: 5px;
+  }
+  .widget-input-text {
+    background: white;
   }
   .conditions-group {
     padding-bottom: 0;
     &:not(.conditions-group--with-switch) {
       padding-top: 0;
     }
+  }
+  .condition-row {
+    background-color: #e9eff5;
   }
 }
 
@@ -242,31 +230,19 @@ export default class IfThenElseWidget extends Vue {
 }
 
 .ifthenelse-widget__row {
+  position: relative;
+  padding: 0 10px 0 15px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  padding-left: 10px;
 }
 
-.ifthenelse-widget__row--step {
-  padding-top: 15px;
-}
-
-.ifthenelse-widget__cell {
-  flex: 1;
-}
-
-.ifthenelse-widget__add {
-  @extend %ifthenelse-widget__text;
-  letter-spacing: 1px;
-  font-size: 10px;
-  cursor: pointer;
-}
-
-.ifthenelse-widget__remove {
-  color: #aaaaaa;
-  float: right;
+%ifthenelse-widget__text {
+  font-family: Montserrat;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: $active-color;
 }
 
 .ifthenelse-widget__tag {
@@ -276,17 +252,97 @@ export default class IfThenElseWidget extends Vue {
   display: inline-flex;
   border-radius: 2px;
   padding: 0 6px;
-  background-color: #e2ebf5;
+  margin-top: 15px;
   margin-bottom: 10px;
+  background-color: #e2ebf5;
 }
 
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 5s;
+.ifthenelse-widget__row--tag:first-child {
+  .ifthenelse-widget__tag {
+    margin: 0;
+  }
 }
 
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
+.ifthenelse-widget__remove {
+  color: #aaaaaa;
+  float: right;
+}
+
+.ifthenelse-widget__add {
+  @extend %ifthenelse-widget__text;
+  letter-spacing: 1px;
+  font-size: 10px;
+  cursor: pointer;
+  margin-top: 15px;
+}
+
+//timeline decorations
+
+%ifthenelse-widget__timeline-vertical {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  border-left: 1px solid #d7e5f3;
+  width: 1px;
+}
+
+%ifthenelse-widget__timeline-horizontal {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  border-bottom: 1px solid #d7e5f3;
+  width: 8px;
+}
+
+.ifthenelse-widget__row {
+  // start timeline to middle of first row ...
+  &:first-child:before {
+    top: 50%;
+  }
+  // ... and end timeline to middle of last row
+  &:last-child:not(.ifthenelse-widget__row--add):before {
+    bottom: 50%;
+  }
+}
+
+.ifthenelse-widget__row--tag {
+  &:before {
+    @extend %ifthenelse-widget__timeline-vertical;
+  }
+}
+
+.ifthenelse-widget__row--input {
+  &:before {
+    @extend %ifthenelse-widget__timeline-vertical;
+  }
+  &:after {
+    @extend %ifthenelse-widget__timeline-horizontal;
+  }
+}
+
+.ifthenelse-widget__row--condition {
+  &:before {
+    @extend %ifthenelse-widget__timeline-vertical;
+  }
+  &:after {
+    @extend %ifthenelse-widget__timeline-horizontal;
+    top: 25px;
+  }
+}
+
+.ifthenelse-widget__row--add {
+  &:before {
+    @extend %ifthenelse-widget__timeline-vertical;
+    border-left-style: dashed;
+    bottom: 25%;
+  }
+  &:after {
+    @extend %ifthenelse-widget__timeline-horizontal;
+    border-bottom-style: dashed;
+    top: 75%;
+  }
 }
 </style>
