@@ -3,7 +3,12 @@
     <div class="ifthenelse-widget__container">
       <div class="ifthenelse-widget__row">
         <div class="ifthenelse-widget__cell">
-          <div class="ifthenelse-widget__if">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
+          <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
+        </div>
+        <div class="ifthenelse-widget__cell" v-if="!isRoot">
+          <div class="ifthenelse-widget__remove" @click="deleteCondition">
+            <i class="far fa-trash-alt" />
+          </div>
         </div>
       </div>
       <div class="ifthenelse-widget__row">
@@ -18,7 +23,7 @@
       </div>
       <div class="ifthenelse-widget__row ifthenelse-widget__row--step">
         <div class="ifthenelse-widget__cell">
-          <div class="ifthenelse-widget__then">THEN</div>
+          <div class="ifthenelse-widget__tag">THEN</div>
         </div>
       </div>
       <div class="ifthenelse-widget__row">
@@ -36,7 +41,7 @@
       <template v-if="elseMode === 'ELSE:'">
         <div class="ifthenelse-widget__row ifthenelse-widget__row--step">
           <div class="ifthenelse-widget__cell">
-            <div class="ifthenelse-widget__else">ELSE</div>
+            <div class="ifthenelse-widget__tag">ELSE</div>
           </div>
         </div>
         <div class="ifthenelse-widget__row">
@@ -51,13 +56,18 @@
             />
           </div>
         </div>
+        <div class="ifthenelse-widget__row ifthenelse-widget__row--step">
+          <div class="ifthenelse-widget__add" @click="addNestedCondition">
+            Add nested condition
+          </div>
+        </div>
       </template>
     </div>
     <ifthenelse-widget
       v-if="elseMode === 'ELSE IF:'"
       :value="value.else"
       @input="updateElseObject"
-      @delete="updateElseMode('ELSE:')"
+      @delete="deleteNestedCondition"
       :data-path="`${dataPath}.else`"
       :errors="errors"
     />
@@ -136,29 +146,35 @@ export default class IfThenElseWidget extends Vue {
     });
   }
 
-  updateElseMode(elseMode: string) {
-    if (elseMode === 'ELSE:') {
-      this.$emit('input', {
-        ...this.value,
-        else: '',
-      });
-    } else {
-      this.$emit('input', {
-        ...this.value,
-        else: {
-          if: { column: '', value: '', operator: 'eq' },
-          then: '',
-          else: '',
-        },
-      });
-    }
-  }
-
   updateElseObject(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'>) {
     this.$emit('input', {
       ...this.value,
       else: elseObject,
     });
+  }
+
+  addNestedCondition() {
+    this.elseMode = 'ELSE IF:';
+    this.$emit('input', {
+      ...this.value,
+      else: {
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: '',
+      },
+    });
+  }
+
+  deleteNestedCondition() {
+    this.elseMode = 'ELSE:';
+    this.$emit('input', {
+      ...this.value,
+      else: '',
+    });
+  }
+
+  deleteCondition() {
+    this.$emit('delete');
   }
 }
 </script>
@@ -179,20 +195,8 @@ export default class IfThenElseWidget extends Vue {
 %ifthenelse-widget__text {
   font-family: Montserrat;
   font-weight: 600;
-  letter-spacing: 0.25px;
   text-transform: uppercase;
   color: #2e69a3;
-}
-
-%ifthenelse-widget__tag {
-  @extend %ifthenelse-widget__text;
-  font-size: 12px;
-  line-height: 1.67;
-  display: inline-flex;
-  border-radius: 2px;
-  padding: 0 6px;
-  background-color: #e2ebf5;
-  margin-bottom: 10px;
 }
 
 @import '../../../styles/_variables';
@@ -241,7 +245,7 @@ export default class IfThenElseWidget extends Vue {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   padding-left: 10px;
 }
 
@@ -253,14 +257,27 @@ export default class IfThenElseWidget extends Vue {
   flex: 1;
 }
 
-.ifthenelse-widget__if,
-.ifthenelse-widget__then,
-.ifthenelse-widget__else {
-  @extend %ifthenelse-widget__tag;
+.ifthenelse-widget__add {
+  @extend %ifthenelse-widget__text;
+  letter-spacing: 1px;
+  font-size: 10px;
+  cursor: pointer;
 }
 
-.ifthenelse-widget__if {
-  margin-bottom: 0px;
+.ifthenelse-widget__remove {
+  color: #aaaaaa;
+  float: right;
+}
+
+.ifthenelse-widget__tag {
+  @extend %ifthenelse-widget__text;
+  font-size: 12px;
+  line-height: 1.67;
+  display: inline-flex;
+  border-radius: 2px;
+  padding: 0 6px;
+  background-color: #e2ebf5;
+  margin-bottom: 10px;
 }
 
 .fade-enter-active,
