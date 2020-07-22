@@ -166,61 +166,7 @@ export default class IfThenElseWidget extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.filter-form-headers__container {
-  display: flex;
-  width: 66%;
-}
-
-.filter-form-header {
-  font-size: 14px;
-  margin-left: 10px;
-  width: 50%;
-}
-</style>
-<style lang="scss">
 @import '../../../styles/_variables';
-
-.filter-form {
-  .widget-list__body .widget-list__icon {
-    top: 5px;
-  }
-  .widget-list__component-sep {
-    left: 0;
-    position: absolute;
-    top: 10px;
-  }
-}
-
-.filter-form--multiple-conditions {
-  .filter-form-headers__container {
-    margin-left: 30px;
-  }
-  .widget-list__component {
-    margin-left: 30px;
-  }
-}
-
-.ifthenelse-widget {
-  .ifthenelse-widget__input {
-    margin: 0;
-    background-color: #e9eff5;
-    padding: 5px;
-    border: 1px solid $grey;
-    border-radius: 5px;
-  }
-  .widget-input-text {
-    background: white;
-  }
-  .conditions-group {
-    padding-bottom: 0;
-    &:not(.conditions-group--with-switch) {
-      padding-top: 0;
-    }
-  }
-  .condition-row {
-    background-color: #e9eff5;
-  }
-}
 
 .ifthenelse-widget__container {
   margin-bottom: 15px;
@@ -343,6 +289,34 @@ export default class IfThenElseWidget extends Vue {
     @extend %ifthenelse-widget__timeline-horizontal;
     border-bottom-style: dashed;
     top: 75%;
+  }
+}
+</style>
+
+<style lang="scss">
+@import '../../../styles/_variables';
+.ifthenelse-widget {
+  .ifthenelse-widget__input {
+    margin: 0;
+    background-color: #e9eff5;
+    padding: 5px;
+    border: 1px solid $grey;
+    border-radius: 5px;
+  }
+  .widget-input-text {
+    background: white;
+  }
+  .filter-editor {
+    width: 100%;
+  }
+  .conditions-group {
+    padding-bottom: 0;
+    &:not(.conditions-group--with-switch) {
+      padding-top: 0;
+    }
+  }
+  .condition-row {
+    background-color: #e9eff5;
   }
 }
 </style>
