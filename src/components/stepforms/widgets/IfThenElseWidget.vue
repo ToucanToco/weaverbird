@@ -1,10 +1,21 @@
 <template>
   <div class="ifthenelse-widget">
-    <div class="ifthenelse-widget__container">
+    <div
+      class="ifthenelse-widget__container"
+      :class="{ 'ifthenelse-widget__container--collapsed': collapsed }"
+    >
       <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+        <span class="ifthenelse-widget__collapse-button" @click="toggle" />
         <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
-        <div v-if="!isRoot" class="ifthenelse-widget__remove" @click="deleteCondition">
+        <div
+          v-if="!isRoot && !collapsed"
+          class="ifthenelse-widget__remove"
+          @click="deleteCondition"
+        >
           <i class="far fa-trash-alt" />
+        </div>
+        <div class="ifthenelse-widget__collapse-text" v-if="collapsed" @click="toggle">
+          expand
         </div>
       </div>
       <div class="ifthenelse-widget__row ifthenelse-widget__row--condition">
@@ -110,6 +121,7 @@ export default class IfThenElseWidget extends Vue {
   readonly title: string = 'Add a conditional column';
   readonly elseModes = ['ELSE:', 'ELSE IF:'];
   elseMode = typeof this.value.else === 'string' ? 'ELSE:' : 'ELSE IF:';
+  collapsed = false;
 
   updateFilterTree(newFilterTree: FilterCondition) {
     this.$emit('input', {
@@ -153,6 +165,7 @@ export default class IfThenElseWidget extends Vue {
 
   deleteNestedCondition() {
     this.elseMode = 'ELSE:';
+    this.collapsed = false;
     this.$emit('input', {
       ...this.value,
       else: '',
@@ -161,6 +174,10 @@ export default class IfThenElseWidget extends Vue {
 
   deleteCondition() {
     this.$emit('delete');
+  }
+
+  toggle() {
+    this.collapsed = !this.collapsed;
   }
 }
 </script>
@@ -175,13 +192,30 @@ export default class IfThenElseWidget extends Vue {
   background-color: #f9fbfc;
 }
 
+.ifthenelse-widget__container--collapsed {
+  background-color: #fbfbfb;
+  .ifthenelse-widget__row:not(:first-child) {
+    display: none;
+  }
+  .ifthenelse-widget__collapse-button {
+    transform: translateY(-50%) rotate(180deg);
+    &:before {
+      border-color: #d9d9d9 transparent transparent;
+    }
+  }
+  .ifthenelse-widget__tag {
+    background-color: $grey;
+    color: black;
+  }
+}
+
 .ifthenelse-widget__row {
   position: relative;
   padding: 0 10px 0 15px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
 }
 
 %ifthenelse-widget__text {
@@ -189,6 +223,16 @@ export default class IfThenElseWidget extends Vue {
   font-weight: 600;
   text-transform: uppercase;
   color: $active-color;
+}
+
+%ifthenelse-widget__button {
+  @extend %ifthenelse-widget__text;
+  letter-spacing: 1px;
+  font-size: 10px;
+  cursor: pointer;
+  &:hover {
+    color: black;
+  }
 }
 
 .ifthenelse-widget__tag {
@@ -209,16 +253,34 @@ export default class IfThenElseWidget extends Vue {
   }
 }
 
+.ifthenelse-widget__collapse-button {
+  position: absolute;
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 10px 5px;
+  transition: transform 0.4s;
+  cursor: pointer;
+  &:before {
+    content: '';
+    display: block;
+    border-color: #b8cce0 transparent transparent;
+    border-width: 5px 5px 0;
+    border-style: solid;
+  }
+}
+
+.ifthenelse-widget__collapse-text {
+  @extend %ifthenelse-widget__button;
+}
+
 .ifthenelse-widget__remove {
   color: #aaaaaa;
   float: right;
 }
 
 .ifthenelse-widget__add {
-  @extend %ifthenelse-widget__text;
-  letter-spacing: 1px;
-  font-size: 10px;
-  cursor: pointer;
+  @extend %ifthenelse-widget__button;
   margin-top: 15px;
 }
 
@@ -244,9 +306,9 @@ export default class IfThenElseWidget extends Vue {
 }
 
 .ifthenelse-widget__row {
-  // start timeline to middle of first row ...
+  // start timeline at end of first row ...
   &:first-child:before {
-    top: 50%;
+    display: none;
   }
   // ... and end timeline to middle of last row
   &:last-child:not(.ifthenelse-widget__row--add):before {
