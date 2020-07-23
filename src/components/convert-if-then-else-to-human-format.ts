@@ -6,24 +6,21 @@ import {
   isFilterComboOr,
 } from '@/lib/steps';
 
-type IfThenElseStepName = 'if' | 'then' | 'else';
-type IfThenElseValue = string | number;
 export const EMPTY_CONDITION_SIGN = '...';
 
 /**
  * Handle regular and interpolated values.
  */
-function _valueToHumanString(value: IfThenElseValue): string {
-  const interpolatedMatch = /\{\{\s*(\S*)\s*\}\}/.exec(value as string);
-  const interpolatedValue = interpolatedMatch && interpolatedMatch[1];
-  if (interpolatedValue) {
-    return `<em>${interpolatedValue}</em>`;
-  } else {
-    return typeof value === 'string' && value ? `'${value}'` : value + '';
+function _valueToHumanString(value: string | number): string {
+  if (typeof value === 'string') {
+    const interpolatedMatch = /\{\{\s*(\S*)\s*\}\}/.exec(value);
+    const interpolatedValue = interpolatedMatch && interpolatedMatch[1];
+    return interpolatedValue ? `<em>${interpolatedValue}</em>` : `'${value}'`;
   }
+  return value + '';
 }
 
-function _valueOrArrayToString(value: IfThenElseValue | IfThenElseValue[]): string {
+function _valueOrArrayToString(value: string | number | string[]): string {
   if (Array.isArray(value)) {
     return value.map(_valueToHumanString).join(', ');
   } else {
@@ -54,13 +51,6 @@ function _parenthesesUnlessTopLevel(isOnTopLevel: boolean) {
   return (v: string) => (isOnTopLevel ? v : `(${v})`);
 }
 
-const SEPARATOR_HUMAN_STRINGS: any = {
-  or: ' <strong>OR</strong> ',
-  and: ' <strong>AND</strong> ',
-  then: ' <strong>THEN</strong> ',
-  else: ' <strong>ELSE</strong> ',
-};
-
 /**
  * Convert a condition into a human readable format.
  *
@@ -74,13 +64,13 @@ function _conditionToHumanString(condition: FilterCondition, isOnTopLevel: boole
     return _parenthesesUnlessTopLevel(isOnTopLevel)(
       condition.or
         .map((c: FilterCondition) => _conditionToHumanString(c, false))
-        .join(SEPARATOR_HUMAN_STRINGS['or']),
+        .join(' <strong>OR</strong> '),
     );
   } else if (isFilterComboAnd(condition)) {
     return _parenthesesUnlessTopLevel(isOnTopLevel)(
       condition.and
         .map((c: FilterCondition) => _conditionToHumanString(c, false))
-        .join(SEPARATOR_HUMAN_STRINGS['and']),
+        .join(' <strong>AND</strong> '),
     );
   } else {
     return _conditionUnitToHumanString(condition);
@@ -88,24 +78,18 @@ function _conditionToHumanString(condition: FilterCondition, isOnTopLevel: boole
 }
 
 /**
- * Convert a ifthenelse step into a human readable format.
+ * Convert a ifthenelse step into a human readable format prefixed by name
  *
- * THEN and ELSE should be prefixed by their name
- *
- * @param {String} name
+ * @param {String} prefix
  * @param {FilterCondition} condition
  */
-function _ifThenElseStepToHumanFormat(
-  name: IfThenElseStepName,
-  condition: FilterCondition | string,
-): string {
-  const separator = name in SEPARATOR_HUMAN_STRINGS ? SEPARATOR_HUMAN_STRINGS[name] : '';
+function _ifThenElseStepToHumanFormat(prefix: string, condition: FilterCondition | string): string {
   if (!condition) {
-    return separator + EMPTY_CONDITION_SIGN;
+    return prefix + EMPTY_CONDITION_SIGN;
   } else if (typeof condition === 'string') {
-    return separator + _valueToHumanString(condition);
+    return prefix + _valueToHumanString(condition);
   } else {
-    return separator + _conditionToHumanString(condition, true);
+    return prefix + _conditionToHumanString(condition, true);
   }
 }
 
@@ -120,12 +104,12 @@ function _ifThenElseStepToHumanFormat(
 export default function convertIfThenElseToHumanFormat(
   ifthenelse: Omit<IfThenElseStep, 'name' | 'newColumn'>,
 ): string {
-  const stepsNames = Object.keys(ifthenelse) as IfThenElseStepName[];
-  if (typeof ifthenelse.else !== 'string') stepsNames.pop();
+  const ifStep: string = _ifThenElseStepToHumanFormat('', ifthenelse.if);
+  const thenStep: string = _ifThenElseStepToHumanFormat(' <strong>THEN</strong> ', ifthenelse.then);
+  const elseStep: string =
+    typeof ifthenelse.else === 'string'
+      ? _ifThenElseStepToHumanFormat(' <strong>ELSE</strong> ', ifthenelse.else)
+      : ''; //keep elseif empty
 
-  return stepsNames
-    .map((name: IfThenElseStepName) =>
-      _ifThenElseStepToHumanFormat(name, ifthenelse[name] as FilterCondition),
-    )
-    .join('');
+  return ifStep + thenStep + elseStep;
 }

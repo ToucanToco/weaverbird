@@ -7,15 +7,11 @@
       <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
         <span class="ifthenelse-widget__collapse-button" @click="toggle" />
         <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
-        <div
-          v-if="!isRoot && !collapsed"
-          class="ifthenelse-widget__remove"
-          @click="deleteCondition"
-        >
+        <div v-if="!isRoot && !collapsed" class="ifthenelse-widget__remove" @click="deleteElseIf">
           <i class="far fa-trash-alt" />
         </div>
         <template v-if="collapsed">
-          <div class="ifthenelse-widget__collapse-description" v-html="description" />
+          <div class="ifthenelse-widget__collapse-description" v-html="formulaToHumanFormat" />
           <div class="ifthenelse-widget__collapse-text" @click="toggle">
             EXPAND
           </div>
@@ -57,7 +53,7 @@
           />
         </div>
         <div class="ifthenelse-widget__row ifthenelse-widget__row--add">
-          <div class="ifthenelse-widget__add" @click="addNestedCondition">
+          <div class="ifthenelse-widget__add" @click="transformElseIntoElseIf">
             Add nested condition
           </div>
         </div>
@@ -66,8 +62,8 @@
     <ifthenelse-widget
       v-if="elseMode === 'ELSE IF:'"
       :value="value.else"
-      @input="updateElseObject"
-      @delete="deleteNestedCondition"
+      @input="updateElseFormula"
+      @deletedElseIf="transformElseIfIntoElse"
       :data-path="`${dataPath}.else`"
       :errors="errors"
     />
@@ -126,7 +122,7 @@ export default class IfThenElseWidget extends Vue {
   readonly elseModes = ['ELSE:', 'ELSE IF:'];
   collapsed = false;
 
-  get description() {
+  get formulaToHumanFormat() {
     return convertIfThenElseToHumanFormat(this.value);
   }
 
@@ -148,39 +144,32 @@ export default class IfThenElseWidget extends Vue {
     });
   }
 
-  updateElseFormula(formula: string) {
-    this.$emit('input', {
-      ...this.value,
-      else: formula,
-    });
-  }
-
-  updateElseObject(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | string) {
+  updateElseFormula(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | string) {
     this.$emit('input', {
       ...this.value,
       else: elseObject,
     });
   }
 
-  addNestedCondition() {
-    this.updateElseObject({
+  transformElseIntoElseIf() {
+    this.updateElseFormula({
       if: { column: '', value: '', operator: 'eq' },
       then: '',
       else: this.value.else,
     });
   }
 
-  deleteNestedCondition() {
+  transformElseIfIntoElse() {
     if (typeof this.value.else === 'string') {
       return;
     } else {
       this.collapsed = false;
-      this.updateElseObject(this.value.else.else);
+      this.updateElseFormula(this.value.else.else);
     }
   }
 
-  deleteCondition() {
-    this.$emit('delete');
+  deleteElseIf() {
+    this.$emit('deletedElseIf');
   }
 
   toggle() {
