@@ -215,7 +215,7 @@ export default class IfThenElseWidget extends Vue {
 }
 
 %ifthenelse-widget__text {
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   font-weight: 600;
   text-transform: uppercase;
   color: $active-color;
@@ -275,7 +275,7 @@ export default class IfThenElseWidget extends Vue {
 .ifthenelse-widget__collapse-description {
   flex: 1;
   padding: 0 10px;
-  font-family: Montserrat;
+  font-family: Montserrat, sans-serif;
   font-size: 12px;
   line-height: 1.5;
   white-space: nowrap;

@@ -14,6 +14,7 @@ import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 import VariableInput from '../src/components/stepforms/widgets/VariableInput/VariableInput.vue';
 import InputText from '../src/components/stepforms/widgets/InputText.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
+import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
 
-export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, InputText, ResizablePanels, Step, ListUniqueValues, VariableInput, MultiInputText };
+export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, InputText, ResizablePanels, Step, ListUniqueValues, VariableInput, MultiInputText, IfThenElseWidget };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
