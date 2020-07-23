@@ -176,7 +176,7 @@ describe('IfThenElseWidget', () => {
     );
   });
 
-  it('should hide delete button and show expand button when collapsed', () => {
+  it('should hide delete button and show description/expand button when collapsed', () => {
     const wrapper = shallowMount(IfThenElseWidget, {
       propsData: {
         value: {
@@ -190,11 +190,13 @@ describe('IfThenElseWidget', () => {
     button.trigger('click');
     const expandTextButton = wrapper.findAll('.ifthenelse-widget__collapse-text');
     expect(expandTextButton.length).toEqual(1);
+    const description = wrapper.findAll('.ifthenelse-widget__collapse-description');
+    expect(description.length).toEqual(1);
     const deleteButton = wrapper.findAll('.ifthenelse-widget__remove');
     expect(deleteButton.length).toEqual(0);
   });
 
-  it('should show delete button and hide expand button when expanded', () => {
+  it('should show delete button and hide description/expand button when expanded', () => {
     const wrapper = shallowMount(IfThenElseWidget, {
       propsData: {
         value: {
@@ -206,8 +208,27 @@ describe('IfThenElseWidget', () => {
     });
     const expandTextButton = wrapper.findAll('.ifthenelse-widget__collapse-text');
     expect(expandTextButton.length).toEqual(0);
+    const description = wrapper.findAll('.ifthenelse-widget__collapse-description');
+    expect(description.length).toEqual(0);
     const deleteButton = wrapper.findAll('.ifthenelse-widget__remove');
     expect(deleteButton.length).toEqual(1);
+  });
+
+  it('should compute description when collapsed', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: 'column', value: 1, operator: 'eq' },
+          then: 'foo',
+          else: 'bar',
+        },
+      },
+    });
+    const button = wrapper.findAll('.ifthenelse-widget__collapse-button');
+    button.trigger('click');
+    expect(wrapper.find('.ifthenelse-widget__collapse-description').text()).toBe(
+      `column is 1 THEN 'foo' ELSE 'bar'`,
+    );
   });
 
   it('should expand formula when a nested emitted delete', () => {
