@@ -4,7 +4,7 @@
       class="ifthenelse-widget__container"
       :class="{ 'ifthenelse-widget__container--collapsed': collapsed }"
     >
-      <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+      <div class="ifthenelse-widget__row ifthenelse-widget__row--head">
         <span class="ifthenelse-widget__collapse-button" @click="toggle" />
         <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
         <div v-if="!isRoot && !collapsed" class="ifthenelse-widget__remove" @click="deleteElseIf">
@@ -17,18 +17,33 @@
           </div>
         </template>
       </div>
-      <div class="ifthenelse-widget__row ifthenelse-widget__row--condition">
+      <div class="ifthenelse-widget__row">
         <FilterEditor
+          class="ifthenelse-widget__filter"
           :filter-tree="value.if"
           :errors="errors"
           :data-path="`${dataPath}.if`"
           @filterTreeUpdated="updateFilterTree"
         />
+        <div class="ifthenelse-widget__row__link">
+          <div class="ifthenelse-widget__row__link-top" />
+          <div class="ifthenelse-widget__row__link-middle" />
+          <div class="ifthenelse-widget__row__link-bottom" />
+        </div>
       </div>
-      <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+      <div class="ifthenelse-widget__row">
+        <div class="ifthenelse-widget__row__link">
+          <div class="ifthenelse-widget__row__link-top" />
+          <div class="ifthenelse-widget__row__link-bottom" />
+        </div>
         <div class="ifthenelse-widget__tag">THEN</div>
       </div>
-      <div class="ifthenelse-widget__row ifthenelse-widget__row--input">
+      <div class="ifthenelse-widget__row">
+        <div class="ifthenelse-widget__row__link">
+          <div class="ifthenelse-widget__row__link-top" />
+          <div class="ifthenelse-widget__row__link-middle" />
+          <div class="ifthenelse-widget__row__link-bottom" />
+        </div>
         <InputTextWidget
           class="ifthenelse-widget__input"
           :value="value.then"
@@ -39,10 +54,19 @@
         />
       </div>
       <template v-if="elseMode === 'ELSE:'">
-        <div class="ifthenelse-widget__row ifthenelse-widget__row--tag">
+        <div class="ifthenelse-widget__row">
+          <div class="ifthenelse-widget__row__link">
+            <div class="ifthenelse-widget__row__link-top" />
+            <div class="ifthenelse-widget__row__link-bottom" />
+          </div>
           <div class="ifthenelse-widget__tag">ELSE</div>
         </div>
-        <div class="ifthenelse-widget__row ifthenelse-widget__row--input">
+        <div class="ifthenelse-widget__row">
+          <div class="ifthenelse-widget__row__link">
+            <div class="ifthenelse-widget__row__link-top" />
+            <div class="ifthenelse-widget__row__link-middle" />
+            <div class="ifthenelse-widget__row__link-bottom ifthenelse-widget__row__link--dashed" />
+          </div>
           <InputTextWidget
             class="ifthenelse-widget__input"
             :value="value.else"
@@ -52,7 +76,11 @@
             :errors="errors"
           />
         </div>
-        <div class="ifthenelse-widget__row ifthenelse-widget__row--add">
+        <div class="ifthenelse-widget__row ifthenelse-widget__row--foot">
+          <div class="ifthenelse-widget__row__link">
+            <div class="ifthenelse-widget__row__link-top ifthenelse-widget__row__link--dashed" />
+            <div class="ifthenelse-widget__row__link-middle ifthenelse-widget__row__link--dashed" />
+          </div>
           <div class="ifthenelse-widget__add" @click="transformElseIntoElseIf">
             Add nested condition
           </div>
@@ -181,6 +209,23 @@ export default class IfThenElseWidget extends Vue {
 <style lang="scss" scoped>
 @import '../../../styles/_variables';
 
+%ifthenelse-widget__text {
+  font-family: Montserrat, sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: $active-color;
+}
+
+%ifthenelse-widget__button {
+  @extend %ifthenelse-widget__text;
+  letter-spacing: 1px;
+  font-size: 10px;
+  cursor: pointer;
+  &:hover {
+    color: black;
+  }
+}
+
 .ifthenelse-widget__container {
   margin-bottom: 15px;
   padding: 10px;
@@ -208,27 +253,27 @@ export default class IfThenElseWidget extends Vue {
 .ifthenelse-widget__row {
   position: relative;
   padding: 0 10px 0 15px;
+}
+
+.ifthenelse-widget__row--head {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-}
 
-%ifthenelse-widget__text {
-  font-family: Montserrat, sans-serif;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: $active-color;
-}
-
-%ifthenelse-widget__button {
-  @extend %ifthenelse-widget__text;
-  letter-spacing: 1px;
-  font-size: 10px;
-  cursor: pointer;
-  &:hover {
-    color: black;
+  .ifthenelse-widget__tag,
+  .ifthenelse-widget__collapse-text,
+  .ifthenelse-widget__remove {
+    flex: 0 auto;
   }
+  .ifthenelse-widget__collapse-description {
+    flex: 1;
+  }
+}
+
+.ifthenelse-widget__row--foot {
+  padding-top: 15px;
+  padding-bottom: 15px;
 }
 
 .ifthenelse-widget__tag {
@@ -238,15 +283,12 @@ export default class IfThenElseWidget extends Vue {
   display: inline-flex;
   border-radius: 2px;
   padding: 0 6px;
-  margin-top: 15px;
-  margin-bottom: 10px;
   background-color: #e2ebf5;
-  flex: 0 auto;
 }
 
-.ifthenelse-widget__row--tag:first-child {
+.ifthenelse-widget__row:not(.ifthenelse-widget__row--head) {
   .ifthenelse-widget__tag {
-    margin: 0;
+    margin: 15px 0 10px;
   }
 }
 
@@ -267,13 +309,7 @@ export default class IfThenElseWidget extends Vue {
   }
 }
 
-.ifthenelse-widget__collapse-text {
-  @extend %ifthenelse-widget__button;
-  flex: 0 auto;
-}
-
 .ifthenelse-widget__collapse-description {
-  flex: 1;
   padding: 0 10px;
   font-family: Montserrat, sans-serif;
   font-size: 12px;
@@ -287,83 +323,59 @@ export default class IfThenElseWidget extends Vue {
   }
 }
 
+.ifthenelse-widget__collapse-text {
+  @extend %ifthenelse-widget__button;
+}
+
 .ifthenelse-widget__remove {
   color: #aaaaaa;
-  float: right;
 }
 
 .ifthenelse-widget__add {
   @extend %ifthenelse-widget__button;
-  margin-top: 15px;
 }
 
 //timeline decorations
 
-%ifthenelse-widget__timeline-vertical {
-  content: '';
+.ifthenelse-widget__row__link {
   position: absolute;
   top: 0;
-  left: 0;
   bottom: 0;
-  border-left: 1px solid #d7e5f3;
-  width: 1px;
+  left: 0;
 }
 
-%ifthenelse-widget__timeline-horizontal {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
+.ifthenelse-widget__row__link-bottom,
+.ifthenelse-widget__row__link-top {
+  height: 50%;
+  width: 0;
+  border-left: 1px solid #d7e5f3;
+  &.ifthenelse-widget__row__link--dashed {
+    border-left-style: dashed;
+  }
+}
+
+.ifthenelse-widget__row__link-middle {
+  height: 0;
+  width: 10px;
   border-bottom: 1px solid #d7e5f3;
-  width: 8px;
+  &.ifthenelse-widget__row__link--dashed {
+    border-bottom-style: dashed;
+  }
 }
 
 .ifthenelse-widget__row {
-  // start timeline at end of first row ...
-  &:first-child:before {
-    display: none;
+  &:last-child {
+    .ifthenelse-widget__row__link-bottom {
+      height: 0;
+    }
   }
-  // ... and end timeline to middle of last row
-  &:last-child:not(.ifthenelse-widget__row--add):before {
-    bottom: 50%;
-  }
-}
-
-.ifthenelse-widget__row--tag {
-  &:before {
-    @extend %ifthenelse-widget__timeline-vertical;
-  }
-}
-
-.ifthenelse-widget__row--input {
-  &:before {
-    @extend %ifthenelse-widget__timeline-vertical;
-  }
-  &:after {
-    @extend %ifthenelse-widget__timeline-horizontal;
-  }
-}
-
-.ifthenelse-widget__row--condition {
-  &:before {
-    @extend %ifthenelse-widget__timeline-vertical;
-  }
-  &:after {
-    @extend %ifthenelse-widget__timeline-horizontal;
-    top: 25px;
-  }
-}
-
-.ifthenelse-widget__row--add {
-  &:before {
-    @extend %ifthenelse-widget__timeline-vertical;
-    border-left-style: dashed;
-    bottom: 25%;
-  }
-  &:after {
-    @extend %ifthenelse-widget__timeline-horizontal;
-    border-bottom-style: dashed;
-    top: 75%;
+  .ifthenelse-widget__filter + .ifthenelse-widget__row__link {
+    .ifthenelse-widget__row__link-top {
+      height: 20px;
+    }
+    .ifthenelse-widget__row__link-bottom {
+      height: 100%;
+    }
   }
 }
 </style>
