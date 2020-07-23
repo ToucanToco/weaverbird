@@ -166,7 +166,7 @@ export default class IfThenElseWidget extends Vue {
     this.updateElseObject({
       if: { column: '', value: '', operator: 'eq' },
       then: '',
-      else: '',
+      else: this.value.else,
     });
   }
 

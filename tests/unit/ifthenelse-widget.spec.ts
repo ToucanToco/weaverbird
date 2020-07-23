@@ -96,6 +96,27 @@ describe('IfThenElseWidget', () => {
     ]);
   });
 
+  it('should keep else value when adding', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: 'else',
+        },
+      },
+    });
+    wrapper.find('.ifthenelse-widget__add').trigger('click');
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([
+      {
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: 'else' },
+      },
+    ]);
+  });
+
   it('should not have delete button if root', () => {
     const wrapper = shallowMount(IfThenElseWidget, { propsData: { isRoot: true } });
     expect(wrapper.findAll('.ifthenelse-widget__remove').length).toEqual(0);
