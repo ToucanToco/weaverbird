@@ -124,11 +124,14 @@ export default class IfThenElseWidget extends Vue {
 
   readonly title: string = 'Add a conditional column';
   readonly elseModes = ['ELSE:', 'ELSE IF:'];
-  elseMode = typeof this.value.else === 'string' ? 'ELSE:' : 'ELSE IF:';
   collapsed = false;
 
   get description() {
     return convertIfThenElseToHumanFormat(this.value);
+  }
+
+  get elseMode() {
+    return typeof this.value.else === 'string' ? 'ELSE:' : 'ELSE IF:';
   }
 
   updateFilterTree(newFilterTree: FilterCondition) {
@@ -152,7 +155,7 @@ export default class IfThenElseWidget extends Vue {
     });
   }
 
-  updateElseObject(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'>) {
+  updateElseObject(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | string) {
     this.$emit('input', {
       ...this.value,
       else: elseObject,
@@ -160,24 +163,20 @@ export default class IfThenElseWidget extends Vue {
   }
 
   addNestedCondition() {
-    this.elseMode = 'ELSE IF:';
-    this.$emit('input', {
-      ...this.value,
-      else: {
-        if: { column: '', value: '', operator: 'eq' },
-        then: '',
-        else: '',
-      },
+    this.updateElseObject({
+      if: { column: '', value: '', operator: 'eq' },
+      then: '',
+      else: '',
     });
   }
 
   deleteNestedCondition() {
-    this.elseMode = 'ELSE:';
-    this.collapsed = false;
-    this.$emit('input', {
-      ...this.value,
-      else: '',
-    });
+    if (typeof this.value.else === 'string') {
+      return;
+    } else {
+      this.collapsed = false;
+      this.updateElseObject(this.value.else.else);
+    }
   }
 
   deleteCondition() {

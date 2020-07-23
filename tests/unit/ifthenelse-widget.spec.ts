@@ -109,6 +109,20 @@ describe('IfThenElseWidget', () => {
     expect(wrapper.emitted().delete).toBeDefined();
   });
 
+  it('should not emit input when deleting an else', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: '',
+        },
+      },
+    });
+    wrapper.vm.$emit('deleted');
+    expect(wrapper.emitted().input).not.toBeDefined();
+  });
+
   it('should delete nested formula when a nested emitted delete', () => {
     const wrapper = shallowMount(IfThenElseWidget, {
       propsData: {
@@ -126,6 +140,56 @@ describe('IfThenElseWidget', () => {
         if: { column: '', value: '', operator: 'eq' },
         then: '',
         else: '',
+      },
+    ]);
+  });
+
+  it('should keep children of nested deleted formula', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: {
+            if: { column: '', value: '', operator: 'eq' },
+            then: '',
+            else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+          },
+        },
+      },
+    });
+    wrapper.find('ifthenelse-widget-stub').vm.$emit('delete');
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([
+      {
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+      },
+    ]);
+  });
+
+  it('should keep else value when deleted', () => {
+    const wrapper = shallowMount(IfThenElseWidget, {
+      propsData: {
+        value: {
+          if: { column: '', value: '', operator: 'eq' },
+          then: '',
+          else: {
+            if: { column: '', value: '', operator: 'eq' },
+            then: '',
+            else: 'else',
+          },
+        },
+      },
+    });
+    wrapper.find('ifthenelse-widget-stub').vm.$emit('delete');
+    expect(wrapper.emitted().input).toBeDefined();
+    expect(wrapper.emitted().input[0]).toEqual([
+      {
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: 'else',
       },
     ]);
   });
