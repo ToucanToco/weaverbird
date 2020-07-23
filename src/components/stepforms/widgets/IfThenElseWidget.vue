@@ -14,9 +14,12 @@
         >
           <i class="far fa-trash-alt" />
         </div>
-        <div class="ifthenelse-widget__collapse-text" v-if="collapsed" @click="toggle">
-          expand
-        </div>
+        <template v-if="collapsed">
+          <div class="ifthenelse-widget__collapse-description" v-html="description" />
+          <div class="ifthenelse-widget__collapse-text" @click="toggle">
+            EXPAND
+          </div>
+        </template>
       </div>
       <div class="ifthenelse-widget__row ifthenelse-widget__row--condition">
         <FilterEditor
@@ -75,6 +78,7 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import convertIfThenElseToHumanFormat from '@/components/convert-if-then-else-to-human-format';
 import FilterEditor from '@/components/FilterEditor.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -122,6 +126,10 @@ export default class IfThenElseWidget extends Vue {
   readonly elseModes = ['ELSE:', 'ELSE IF:'];
   elseMode = typeof this.value.else === 'string' ? 'ELSE:' : 'ELSE IF:';
   collapsed = false;
+
+  get description() {
+    return convertIfThenElseToHumanFormat(this.value);
+  }
 
   updateFilterTree(newFilterTree: FilterCondition) {
     this.$emit('input', {
@@ -245,6 +253,7 @@ export default class IfThenElseWidget extends Vue {
   margin-top: 15px;
   margin-bottom: 10px;
   background-color: #e2ebf5;
+  flex: 0 auto;
 }
 
 .ifthenelse-widget__row--tag:first-child {
@@ -272,6 +281,22 @@ export default class IfThenElseWidget extends Vue {
 
 .ifthenelse-widget__collapse-text {
   @extend %ifthenelse-widget__button;
+  flex: 0 auto;
+}
+
+.ifthenelse-widget__collapse-description {
+  flex: 1;
+  padding: 0 10px;
+  font-family: Montserrat;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  /deep/ strong {
+    font-size: 10px;
+  }
 }
 
 .ifthenelse-widget__remove {
