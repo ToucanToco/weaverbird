@@ -157,13 +157,11 @@ describe('convertIfThenElseToHumanFormat', function() {
   it('should handle string values', function() {
     expect(
       convertIfThenElseToHumanFormat({
-        if: { operator: 'in', column: 'myColumn', value: '{{ user.groups }}' },
+        if: { operator: 'eq', column: 'myColumn', value: '{{ user.groups }}' },
         then: '',
         else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
       }),
-    ).toEqual(
-      `myColumn is in (<em>user.groups</em>) <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`,
-    );
+    ).toEqual(`myColumn is <em>user.groups</em> <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
   });
 
   it('should display interpolated values with some emphasis', function() {

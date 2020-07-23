@@ -20,11 +20,11 @@ function _valueToHumanString(value: string | number): string {
   return value + '';
 }
 
-function _valueOrArrayToString(value: string | number | string[]): string {
-  if (Array.isArray(value)) {
-    return value.map(_valueToHumanString).join(', ');
-  } else {
+function _valueOrArrayToString(value: string | string[]): string {
+  if (!Array.isArray(value)) {
     return _valueToHumanString(value);
+  } else {
+    return value.map(v => _valueToHumanString(v)).join(', ');
   }
 }
 

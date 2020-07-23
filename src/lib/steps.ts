@@ -169,7 +169,7 @@ type FilterConditionEquality = {
 
 export type FilterConditionInclusion = {
   column: string;
-  value: any[] | string;
+  value: any[];
   operator: 'in' | 'nin';
 };
 
