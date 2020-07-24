@@ -36,7 +36,7 @@ export function dereferencePipelines(
     switch (step.name) {
       case 'domain':
         // if domain is a pipeline replace step by selected dereferenced pipeline steps
-        dereferencedPipeline.push(..._getPipelineForDomain(step.domain as string, pipelines));
+        dereferencedPipeline.push(..._getPipelineForDomain(step.domain, pipelines));
         break;
       case 'append':
         dereferencedPipeline.push({
