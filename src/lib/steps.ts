@@ -4,6 +4,7 @@
 
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
+export type Reference = Pipeline | string;
 
 export type AddTextColumnStep = {
   name: 'text';
@@ -30,7 +31,7 @@ export type AggregationStep = {
 
 export type AppendStep = {
   name: 'append';
-  pipelines: Pipeline[] | string[];
+  pipelines: Reference[];
 };
 
 export type ArgmaxStep = {
@@ -200,7 +201,7 @@ export type IfThenElseStep = {
 
 export type JoinStep = {
   name: 'join';
-  right_pipeline: Pipeline | string;
+  right_pipeline: Reference;
   type: 'left' | 'inner' | 'left outer';
   on: string[][];
 };
