@@ -5,6 +5,12 @@
 ### Fixed
 - Pagination: always display pagination for multiple pages dataset
 
+### Added
+- Move pipeline dereference methods into utils file
+
+### Changed
+- A pipeline can start by a reference to an other pipeline
+
 ## [0.19.3] - 2020-07-20
 
 ### Fixed
