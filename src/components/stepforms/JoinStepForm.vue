@@ -5,7 +5,7 @@
       class="rightPipelineInput"
       v-model="editedStep.right_pipeline"
       name="Select a dataset to join (as right dataset):"
-      :options="Object.keys(pipelines).filter(p => p !== currentPipelineName)"
+      :options="availableDomains"
       placeholder="Select a dataset"
       data-path=".right_pipeline"
       :errors="errors"
@@ -43,7 +43,7 @@ import JoinStepFormSchema from '@/components/stepforms/schemas/join.ts';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
-import { JoinStep, Pipeline } from '@/lib/steps';
+import { JoinStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -68,7 +68,8 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   initialStepValue!: JoinStep;
 
   @VQBModule.State currentPipelineName!: string;
-  @VQBModule.State pipelines!: { [k: string]: Pipeline };
+  @VQBModule.State domains!: string[];
+  @VQBModule.Getter pipelinesNames!: string[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -84,6 +85,12 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   set on(newval) {
     this.editedStep.on = [...newval];
+  }
+
+  get availableDomains(): string[] {
+    return this.pipelinesNames
+      .filter((name: string) => name !== this.currentPipelineName)
+      .concat(this.domains);
   }
 }
 </script>
