@@ -174,13 +174,25 @@ export function inactivePipeline(state: VQBState) {
   const pipeline = currentPipeline(state);
   return pipeline?.slice(firstNonSelectedIndex(pipeline, state.selectedStepIndex));
 }
-
-type PipelinesScopeContext = {
+export type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;
 };
+
+/**
+ * Return a pipeline for the corresponding domain
+ */
+function _getPipelineForDomain(reference: string, pipelines: PipelinesScopeContext): Pipeline {
+  if (Object.keys(pipelines).includes(reference)) {
+    // eslint-disable-next-line @typescript-eslint/no-use-before-define
+    return dereferencePipelines(pipelines[reference], pipelines);
+  } else {
+    return [{ domain: reference, name: 'domain' }];
+  }
+}
+
 /**
  * Dereference pipelines names in the current pipeline being edited, i.e.
- * replaces references to pipelines or sources (by their names) to their corresponding
+ * replaces references to pipelines or domains (by their names) to their corresponding
  * pipelines
  *
  * @param pipeline the pipeline to translate and execute on the backend
@@ -195,23 +207,30 @@ export function dereferencePipelines(
 ): Pipeline {
   const dereferencedPipeline: Pipeline = [];
   for (const step of pipeline) {
-    let newStep;
-    if (step.name === 'append') {
-      const pipelineNames = step.pipelines as string[];
-      newStep = {
-        ...step,
-        pipelines: pipelineNames.map(p => dereferencePipelines(pipelines[p], pipelines)),
-      };
-    } else if (step.name === 'join') {
-      const rightPipelineName = step.right_pipeline as string;
-      newStep = {
-        ...step,
-        right_pipeline: dereferencePipelines(pipelines[rightPipelineName], pipelines),
-      };
-    } else {
-      newStep = { ...step };
+    switch (step.name) {
+      case 'domain':
+        // if domain is a pipeline replace step by selected dereferenced pipeline steps
+        dereferencedPipeline.push(..._getPipelineForDomain(step.domain as string, pipelines));
+        break;
+      case 'append':
+        dereferencedPipeline.push({
+          ...step,
+          pipelines: (step.pipelines as string[]).map(reference =>
+            _getPipelineForDomain(reference, pipelines),
+          ),
+        });
+        break;
+      case 'join':
+        dereferencedPipeline.push({
+          ...step,
+          right_pipeline: _getPipelineForDomain(step.right_pipeline as string, pipelines),
+        });
+        break;
+
+      default:
+        dereferencedPipeline.push(step);
+        break;
     }
-    dereferencedPipeline.push(newStep);
   }
   return dereferencedPipeline;
 }
