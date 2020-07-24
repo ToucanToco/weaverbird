@@ -6,7 +6,7 @@ export { setCodeEditor } from './components/code-editor';
 
 // export store entrypoints
 export { servicePluginFactory } from '@/store/backend-plugin';
-export { dereferencePipelines } from '@/store/state';
+export { dereferencePipelines } from '@/store/utils/dereference-pipeline';
 export {
   setupStore,
   registerModule,

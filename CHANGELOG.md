@@ -15,6 +15,12 @@
 - "If...Then...Else": button to delete specific step
 - "If...Then...Else": button to add elseif nested condition
 
+### Added
+- Move pipeline dereference methods into utils file
+
+### Changed
+- A pipeline can start by a reference to an other pipeline
+
 ## [0.19.3] - 2020-07-20
 
 ### Fixed
