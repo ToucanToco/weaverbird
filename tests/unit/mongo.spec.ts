@@ -2485,6 +2485,74 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate a join step with column names containing any character', () => {
+    const rightPipeline: Pipeline = [
+      { name: 'domain', domain: 'right' },
+      { name: 'delete', columns: ['useless'] },
+    ];
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'rename',
+        oldname: 'old',
+        newname: 'new',
+      },
+      {
+        name: 'join',
+        right_pipeline: rightPipeline,
+        type: 'inner',
+        on: [
+          ['some column', 'some column'],
+          ['other column', 'other column'],
+        ],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toStrictEqual([
+      {
+        $match: {
+          domain: 'test',
+        },
+      },
+      {
+        $addFields: {
+          new: '$old',
+        },
+      },
+      {
+        $project: {
+          old: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: 'right',
+          let: { vqb_some_column: '$some column', vqb_other_column: '$other column' },
+          pipeline: [
+            { $project: { useless: 0, _id: 0 } },
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ['$some column', '$$vqb_some_column'] },
+                    { $eq: ['$other column', '$$vqb_other_column'] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: '_vqbJoinKey',
+        },
+      },
+      { $unwind: '$_vqbJoinKey' },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } } },
+      { $project: { _vqbJoinKey: 0, _id: 0 } },
+    ]);
+  });
+
   it('validate any custom query has json valid', () => {
     const correctQuery = '[{"$match": {"domain": "test"}}]';
     expect(mongo36translator.validate({ name: 'custom', query: correctQuery })).toBeNull();
