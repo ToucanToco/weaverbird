@@ -53,6 +53,21 @@ function columnMap(colnames: string[]) {
   return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
+/**
+ * Generate a mongo [user variable](https://docs.mongodb.com/manual/reference/aggregation-variables/#user-variables)
+ * valid identifier from a column name.
+ *
+ * @param colname
+ */
+function columnToUserVariable(colname: string): string {
+  // User variable names can contain the ascii characters [_a-zA-Z0-9] and any non-ascii character.
+  const colnameWithoutInvalidChars = colname.replace(/[^_a-zA-Z0-9]/g, '_');
+
+  // User variable names must begin with a lowercase ascii letter [a-z] or a non-ascii character.
+  // Starting with the `vqb_` prefix guaranties that.
+  return `vqb_${colnameWithoutInvalidChars}`;
+}
+
 export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): MongoStep {
   let simplifiedBlock: MongoStep = {};
   const andList: MongoStep[] = [];
@@ -1284,8 +1299,10 @@ export class Mongo36Translator extends BaseTranslator {
     const mongoLet: { [k: string]: string } = {};
     const mongoExprAnd: { [k: string]: object }[] = [];
     for (const [leftOn, rightOn] of step.on) {
-      mongoLet[`vqb_${leftOn}`] = $$(leftOn);
-      mongoExprAnd.push({ $eq: [$$(rightOn), $$($$(`vqb_${leftOn}`))] });
+      mongoLet[columnToUserVariable(leftOn)] = $$(leftOn);
+      mongoExprAnd.push({
+        $eq: [$$(rightOn), $$($$(columnToUserVariable(leftOn)))],
+      });
     }
     mongoPipeline.push({
       $lookup: {
