@@ -42,7 +42,10 @@
         <div class="ifthenelse-widget__row__link">
           <div class="ifthenelse-widget__row__link-top" />
           <div class="ifthenelse-widget__row__link-middle" />
-          <div class="ifthenelse-widget__row__link-bottom" />
+          <div
+            class="ifthenelse-widget__row__link-bottom"
+            :class="{ 'ifthenelse-widget__row__link--hidden': elseMode === 'ELSE IF:' }"
+          />
         </div>
         <InputTextWidget
           class="ifthenelse-widget__input"
@@ -76,15 +79,6 @@
             :errors="errors"
           />
         </div>
-        <div class="ifthenelse-widget__row ifthenelse-widget__row--foot">
-          <div class="ifthenelse-widget__row__link">
-            <div class="ifthenelse-widget__row__link-top ifthenelse-widget__row__link--dashed" />
-            <div class="ifthenelse-widget__row__link-middle ifthenelse-widget__row__link--dashed" />
-          </div>
-          <div class="ifthenelse-widget__add" @click="transformElseIntoElseIf">
-            Add nested condition
-          </div>
-        </div>
       </template>
     </div>
     <ifthenelse-widget
@@ -95,6 +89,17 @@
       :data-path="`${dataPath}.else`"
       :errors="errors"
     />
+    <div class="ifthenelse-widget__footer" v-if="elseMode === 'ELSE:'">
+      <div class="ifthenelse-widget__row">
+        <div class="ifthenelse-widget__row__link">
+          <div class="ifthenelse-widget__row__link-top ifthenelse-widget__row__link--dashed" />
+          <div class="ifthenelse-widget__row__link-middle ifthenelse-widget__row__link--dashed" />
+        </div>
+        <div class="ifthenelse-widget__add" @click="transformElseIntoElseIf">
+          Add nested condition
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -227,10 +232,13 @@ export default class IfThenElseWidget extends Vue {
 }
 
 .ifthenelse-widget__container {
-  margin-bottom: 15px;
   padding: 10px;
   border-radius: 5px;
   background-color: #f9fbfc;
+
+  + .ifthenelse-widget {
+    margin-top: 15px;
+  }
 }
 
 .ifthenelse-widget__container--collapsed {
@@ -271,9 +279,13 @@ export default class IfThenElseWidget extends Vue {
   }
 }
 
-.ifthenelse-widget__row--foot {
-  padding-top: 15px;
-  padding-bottom: 15px;
+.ifthenelse-widget__footer {
+  padding: 10px;
+  margin-bottom: 10px;
+  .ifthenelse-widget__row__link {
+    top: -20px;
+    bottom: -20px;
+  }
 }
 
 .ifthenelse-widget__tag {
@@ -333,6 +345,7 @@ export default class IfThenElseWidget extends Vue {
 
 .ifthenelse-widget__add {
   @extend %ifthenelse-widget__button;
+  padding: 5px;
 }
 
 //timeline decorations
@@ -352,6 +365,9 @@ export default class IfThenElseWidget extends Vue {
   &.ifthenelse-widget__row__link--dashed {
     border-left-style: dashed;
   }
+  &.ifthenelse-widget__row__link--hidden {
+    height: 0;
+  }
 }
 
 .ifthenelse-widget__row__link-middle {
@@ -363,19 +379,12 @@ export default class IfThenElseWidget extends Vue {
   }
 }
 
-.ifthenelse-widget__row {
-  &:last-child {
-    .ifthenelse-widget__row__link-bottom {
-      height: 0;
-    }
+.ifthenelse-widget__filter + .ifthenelse-widget__row__link {
+  .ifthenelse-widget__row__link-top {
+    height: 20px;
   }
-  .ifthenelse-widget__filter + .ifthenelse-widget__row__link {
-    .ifthenelse-widget__row__link-top {
-      height: 20px;
-    }
-    .ifthenelse-widget__row__link-bottom {
-      height: 100%;
-    }
+  .ifthenelse-widget__row__link-bottom {
+    height: 100%;
   }
 }
 </style>

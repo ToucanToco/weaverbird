@@ -36,6 +36,21 @@ describe('IfThenElseWidget', () => {
     });
   });
 
+  it('should have a footer only on else mode', () => {
+    const wrapper = shallowMount(IfThenElseWidget);
+    expect(wrapper.findAll('.ifthenelse-widget__footer').length).toEqual(1);
+    expect(wrapper.findAll('.ifthenelse-widget__row__link--hidden').length).toEqual(0);
+    wrapper.setProps({
+      value: {
+        if: { column: '', value: '', operator: 'eq' },
+        then: '',
+        else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+      },
+    });
+    expect(wrapper.findAll('.ifthenelse-widget__footer').length).toEqual(0);
+    expect(wrapper.findAll('.ifthenelse-widget__row__link--hidden').length).toEqual(1);
+  });
+
   describe('edition', () => {
     it('should emit input when the "if" condition is updated', () => {
       const wrapper = shallowMount(IfThenElseWidget);
