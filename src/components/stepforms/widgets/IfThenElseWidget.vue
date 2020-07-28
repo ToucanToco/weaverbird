@@ -365,7 +365,7 @@ export default class IfThenElseWidget extends Vue {
 }
 
 .ifthenelse-widget__remove {
-  color: #aaaaaa;
+  color: $grey-medium;
   cursor: pointer;
 
   &:hover {
