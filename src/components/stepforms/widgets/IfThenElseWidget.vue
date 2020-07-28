@@ -236,19 +236,19 @@ export default class IfThenElseWidget extends Vue {
     border: 1px solid $grey;
     border-radius: 5px;
   }
-  .widget-input-text {
+  /deep/ .widget-input-text {
     background: white;
   }
-  .filter-editor {
+  /deep/ .filter-editor {
     width: 100%;
   }
-  .conditions-group {
+  /deep/ .conditions-group {
     padding-bottom: 0;
   }
-  .conditions-group:not(.conditions-group--with-switch) {
+  /deep/ .conditions-group:not(.conditions-group--with-switch) {
     padding-top: 0;
   }
-  .condition-row {
+  /deep/ .condition-row {
     background-color: #e9eff5;
   }
 }
@@ -357,6 +357,10 @@ export default class IfThenElseWidget extends Vue {
   /deep/ strong {
     font-size: 10px;
   }
+
+  /deep/ .empty {
+    color: $grey-medium;
+  }
 }
 
 .ifthenelse-widget__collapse-text {
@@ -407,8 +411,9 @@ export default class IfThenElseWidget extends Vue {
 }
 
 .ifthenelse-widget__row__link--filter {
+  top: -10px;
   .ifthenelse-widget__row__link-top {
-    height: 20px;
+    height: 33px;
   }
   .ifthenelse-widget__row__link-bottom {
     height: 100%;
