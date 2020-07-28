@@ -222,11 +222,19 @@ describe('IfThenElseWidget', () => {
       expect(deleteButton.length).toEqual(1);
     });
     it('should compute the right description', () => {
-      const wrapper = shallowMount(IfThenElseWidget);
+      const wrapper = shallowMount(IfThenElseWidget, {
+        propsData: {
+          value: {
+            if: { column: 'column', value: 'value', operator: 'eq' },
+            then: 'then',
+            else: 'else',
+          },
+        },
+      });
       const button = wrapper.findAll('.ifthenelse-widget__collapse-button');
       button.trigger('click');
       expect(wrapper.find('.ifthenelse-widget__collapse-description').text()).toBe(
-        `... THEN ... ELSE ...`,
+        `column is 'value' THEN 'then' ELSE 'else'`,
       );
     });
     it('should show expand button when collapsed', () => {
