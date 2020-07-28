@@ -40,8 +40,8 @@ export default class Pagination extends Vue {
 
   @VQBModule.Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
 
-  get showPager() {
-    return this.pageRows.max !== this.totalCount;
+  get showPager(): boolean {
+    return this.pageCount > 1;
   }
 
   get pageCount() {
