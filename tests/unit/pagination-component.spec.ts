@@ -132,4 +132,39 @@ describe('Pagination Component', () => {
     expect(wrapper.find('.pagination-counter__current-max').exists()).toBeFalsy();
     expect(wrapper.find('.pagination-counter__total-count').text()).toEqual('2 rows');
   });
+  describe('Pagination navigation lifecycle', () => {
+    const pagesize = 50;
+    const totalCount = 400;
+    const paginationNavigationExistsOnpageIndex = function(pageno: number): boolean {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+          data: [
+            ['Paris', 10000000, true],
+            ['Marseille', 3000000, false],
+          ],
+          paginationContext: {
+            totalCount,
+            pagesize,
+            pageno,
+          },
+        },
+        pagesize,
+      });
+      const wrapper = mount(Pagination, { localVue, store });
+      return wrapper.find('.pagination__list').exists();
+    };
+    it('should display pagination navigation on first page', () => {
+      const pageIndex = 1;
+      expect(paginationNavigationExistsOnpageIndex(pageIndex)).toBe(true);
+    });
+    it('should display pagination navigation on any middle page', () => {
+      const pageIndex = totalCount / pagesize - 2;
+      expect(paginationNavigationExistsOnpageIndex(pageIndex)).toBe(true);
+    });
+    it('should display pagination navigation on last page', () => {
+      const pageIndex = totalCount / pagesize;
+      expect(paginationNavigationExistsOnpageIndex(pageIndex)).toBe(true);
+    });
+  });
 });
