@@ -43,7 +43,7 @@
           <div class="ifthenelse-widget__row__link-middle" />
           <div
             class="ifthenelse-widget__row__link-bottom"
-            :class="{ 'ifthenelse-widget__row__link--hidden': elseMode === 'ELSE IF:' }"
+            :class="{ 'ifthenelse-widget__row__link--hidden': hasElseIf }"
           />
         </div>
         <InputTextWidget
@@ -55,7 +55,7 @@
           :errors="errors"
         />
       </div>
-      <template v-if="elseMode === 'ELSE:'">
+      <template v-if="!hasElseIf">
         <div class="ifthenelse-widget__row">
           <div class="ifthenelse-widget__row__link">
             <div class="ifthenelse-widget__row__link-top" />
@@ -81,14 +81,14 @@
       </template>
     </div>
     <ifthenelse-widget
-      v-if="elseMode === 'ELSE IF:'"
+      v-if="hasElseIf"
       :value="value.else"
       @input="updateElseFormula"
       @deletedElseIf="transformElseIfIntoElse"
       :data-path="`${dataPath}.else`"
       :errors="errors"
     />
-    <div class="ifthenelse-widget__footer" v-if="elseMode === 'ELSE:'">
+    <div class="ifthenelse-widget__footer" v-if="!hasElseIf">
       <div class="ifthenelse-widget__row">
         <div class="ifthenelse-widget__row__link">
           <div class="ifthenelse-widget__row__link-top ifthenelse-widget__row__link--dashed" />
@@ -151,15 +151,14 @@ export default class IfThenElseWidget extends Vue {
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Add a conditional column';
-  readonly elseModes = ['ELSE:', 'ELSE IF:'];
   collapsed = false;
 
   get formulaToHumanFormat() {
     return convertIfThenElseToHumanFormat(this.value);
   }
 
-  get elseMode() {
-    return typeof this.value.else === 'string' ? 'ELSE:' : 'ELSE IF:';
+  get hasElseIf() {
+    return typeof this.value.else !== 'string';
   }
 
   updateFilterTree(newFilterTree: FilterCondition) {
