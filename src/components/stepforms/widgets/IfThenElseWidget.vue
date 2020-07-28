@@ -4,7 +4,7 @@
       class="ifthenelse-widget__container"
       :class="{ 'ifthenelse-widget__container--collapsed': collapsed }"
     >
-      <div class="ifthenelse-widget__row ifthenelse-widget__row--head">
+      <div class="ifthenelse-widget__header">
         <span class="ifthenelse-widget__collapse-button" @click="toggle" />
         <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
         <div v-if="!isRoot && !collapsed" class="ifthenelse-widget__remove" @click="deleteElseIf">
@@ -18,18 +18,17 @@
         </template>
       </div>
       <div class="ifthenelse-widget__row">
+        <div class="ifthenelse-widget__row__link ifthenelse-widget__row__link--filter">
+          <div class="ifthenelse-widget__row__link-top" />
+          <div class="ifthenelse-widget__row__link-middle" />
+          <div class="ifthenelse-widget__row__link-bottom" />
+        </div>
         <FilterEditor
-          class="ifthenelse-widget__filter"
           :filter-tree="value.if"
           :errors="errors"
           :data-path="`${dataPath}.if`"
           @filterTreeUpdated="updateFilterTree"
         />
-        <div class="ifthenelse-widget__row__link">
-          <div class="ifthenelse-widget__row__link-top" />
-          <div class="ifthenelse-widget__row__link-middle" />
-          <div class="ifthenelse-widget__row__link-bottom" />
-        </div>
       </div>
       <div class="ifthenelse-widget__row">
         <div class="ifthenelse-widget__row__link">
@@ -230,6 +229,30 @@ export default class IfThenElseWidget extends Vue {
     color: black;
   }
 }
+.ifthenelse-widget {
+  .ifthenelse-widget__input {
+    margin: 0;
+    background-color: #e9eff5;
+    padding: 5px;
+    border: 1px solid $grey;
+    border-radius: 5px;
+  }
+  .widget-input-text {
+    background: white;
+  }
+  .filter-editor {
+    width: 100%;
+  }
+  .conditions-group {
+    padding-bottom: 0;
+  }
+  .conditions-group:not(.conditions-group--with-switch) {
+    padding-top: 0;
+  }
+  .condition-row {
+    background-color: #e9eff5;
+  }
+}
 
 .ifthenelse-widget__container {
   padding: 10px;
@@ -263,7 +286,9 @@ export default class IfThenElseWidget extends Vue {
   padding: 0 10px 0 15px;
 }
 
-.ifthenelse-widget__row--head {
+.ifthenelse-widget__header {
+  position: relative;
+  padding: 0 10px 0 15px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -298,7 +323,7 @@ export default class IfThenElseWidget extends Vue {
   background-color: #e2ebf5;
 }
 
-.ifthenelse-widget__row:not(.ifthenelse-widget__row--head) {
+.ifthenelse-widget__row {
   .ifthenelse-widget__tag {
     margin: 15px 0 10px;
   }
@@ -341,14 +366,17 @@ export default class IfThenElseWidget extends Vue {
 
 .ifthenelse-widget__remove {
   color: #aaaaaa;
+  cursor: pointer;
+
+  &:hover {
+    color: black;
+  }
 }
 
 .ifthenelse-widget__add {
   @extend %ifthenelse-widget__button;
   padding: 5px;
 }
-
-//timeline decorations
 
 .ifthenelse-widget__row__link {
   position: absolute;
@@ -379,40 +407,12 @@ export default class IfThenElseWidget extends Vue {
   }
 }
 
-.ifthenelse-widget__filter + .ifthenelse-widget__row__link {
+.ifthenelse-widget__row__link--filter {
   .ifthenelse-widget__row__link-top {
     height: 20px;
   }
   .ifthenelse-widget__row__link-bottom {
     height: 100%;
-  }
-}
-</style>
-
-<style lang="scss">
-@import '../../../styles/_variables';
-.ifthenelse-widget {
-  .ifthenelse-widget__input {
-    margin: 0;
-    background-color: #e9eff5;
-    padding: 5px;
-    border: 1px solid $grey;
-    border-radius: 5px;
-  }
-  .widget-input-text {
-    background: white;
-  }
-  .filter-editor {
-    width: 100%;
-  }
-  .conditions-group {
-    padding-bottom: 0;
-    &:not(.conditions-group--with-switch) {
-      padding-top: 0;
-    }
-  }
-  .condition-row {
-    background-color: #e9eff5;
   }
 }
 </style>
