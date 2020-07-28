@@ -1,8 +1,8 @@
 import {
   $$,
   castFromString,
-  compareType,
   compareArrayType,
+  compareType,
   enumerate,
   generateNewColumnName,
 } from '@/lib/helpers';
@@ -117,7 +117,7 @@ describe('castFromString', () => {
     it('should return default if selected value is an array', () => {
       expect(compareType(['a'], '')).toEqual('');
     });
-    it('should return default if its type doesn\'t match selected value', () => {
+    it("should return default if its type doesn't match selected value", () => {
       expect(compareType(3, '')).toEqual('');
     });
     it('should return selected value if its type match default one', () => {

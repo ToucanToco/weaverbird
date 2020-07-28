@@ -4,6 +4,7 @@
 
 ### Fixed
 - Pagination: always display pagination for multiple pages dataset
+- Filters: keep value if typeof match on operator change
 
 ## Added
 - Util to compare value types
