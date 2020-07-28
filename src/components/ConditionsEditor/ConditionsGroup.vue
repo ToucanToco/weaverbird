@@ -279,9 +279,9 @@ export default class ConditionsGroup extends Vue {
 </script>
 
 <style lang="scss">
+@import '../../styles/_variables';
 $blue: #2a66a1;
 $brown-grey: #888888;
-$brown-grey-two: #aaaaaa;
 $blue-extra-light: #f4f7fa;
 $grey-light-2: #eeeeee;
 
@@ -329,7 +329,7 @@ $conditions-group-border-width: 1px;
 }
 
 .conditions-group__delete {
-  color: $brown-grey-two;
+  color: $grey-medium;
   font-size: 16px;
   position: absolute;
   right: 15px;
@@ -436,7 +436,7 @@ $condition-row-border-width: 1px;
 }
 
 .condition-row__delete {
-  color: $brown-grey-two;
+  color: $grey-medium;
   font-size: 16px;
   margin: 0 12px;
 
