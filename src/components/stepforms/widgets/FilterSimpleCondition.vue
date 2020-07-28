@@ -47,6 +47,7 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 import { VariablesBucket } from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
+import { compareArrayType, compareType } from '@/lib/helpers';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -171,11 +172,11 @@ export default class FilterSimpleConditionWidget extends Vue {
     const updatedValue = { ...this.value };
     updatedValue.operator = newOperator.operator;
     if (updatedValue.operator === 'in' || updatedValue.operator === 'nin') {
-      updatedValue.value = [];
+      updatedValue.value = compareArrayType(updatedValue.value, []);
     } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
       updatedValue.value = null;
     } else {
-      updatedValue.value = '';
+      updatedValue.value = compareType(updatedValue.value, '');
     }
     this.$emit('input', updatedValue);
   }

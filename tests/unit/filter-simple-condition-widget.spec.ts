@@ -231,4 +231,48 @@ describe('Widget FilterSimpleCondition', () => {
     await wrapper.vm.$nextTick();
     expect(store.state.vqb.selectedColumns).toEqual(['columnB']);
   });
+
+  it('should keep value when operator is changed and types match', async () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    const wrapper = mount(FilterSimpleConditionWidget, {
+      propsData: {
+        value: { column: 'columnA', value: 'bar', operator: 'eq' },
+      },
+      store,
+      localVue,
+      sync: false,
+    });
+    wrapper.find('.filterOperator').vm.$emit('input', { operator: 'ne' });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[0]).toEqual([
+      { column: 'columnA', value: 'bar', operator: 'ne' },
+    ]);
+  });
+
+  it("should replace value with default when operator is changed and types don't match", async () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    const wrapper = mount(FilterSimpleConditionWidget, {
+      propsData: {
+        value: { column: 'columnA', value: 'bar', operator: 'eq' },
+      },
+      store,
+      localVue,
+      sync: false,
+    });
+    wrapper.find('.filterOperator').vm.$emit('input', { operator: 'in' });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[0]).toEqual([{ column: 'columnA', value: [], operator: 'in' }]);
+  });
 });
