@@ -6,7 +6,7 @@ import {
   isFilterComboOr,
 } from '@/lib/steps';
 
-export const EMPTY_CONDITION_SIGN = '...';
+export const EMPTY_CONDITION_SIGN = '<span class="empty">[null]</span>';
 
 /**
  * Handle regular and interpolated values.
