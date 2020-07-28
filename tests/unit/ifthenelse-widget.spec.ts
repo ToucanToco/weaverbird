@@ -234,7 +234,7 @@ describe('IfThenElseWidget', () => {
       const button = wrapper.findAll('.ifthenelse-widget__collapse-button');
       button.trigger('click');
       expect(wrapper.find('.ifthenelse-widget__collapse-description').text()).toBe(
-        `column is 'value' THEN 'then' ELSE 'else'`,
+        `column = 'value' THEN 'then' ELSE 'else'`,
       );
     });
     it('should show expand button when collapsed', () => {

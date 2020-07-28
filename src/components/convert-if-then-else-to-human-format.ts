@@ -29,9 +29,20 @@ function _valueOrArrayToString(value: string | string[]): string {
 }
 
 const CONDITION_HUMAN_STRINGS: any = {
-  eq: ({ column, value }: FilterSimpleCondition) => `${column} is ${_valueToHumanString(value)}`,
+  eq: ({ column, value }: FilterSimpleCondition) => `${column} = ${_valueToHumanString(value)}`,
+  ne: ({ column, value }: FilterSimpleCondition) => `${column} ≠ ${_valueToHumanString(value)}`,
+  gt: ({ column, value }: FilterSimpleCondition) => `${column} > ${_valueToHumanString(value)}`,
+  ge: ({ column, value }: FilterSimpleCondition) => `${column} ≥ ${_valueToHumanString(value)}`,
+  lt: ({ column, value }: FilterSimpleCondition) => `${column} < ${_valueToHumanString(value)}`,
+  le: ({ column, value }: FilterSimpleCondition) => `${column} ≤ ${_valueToHumanString(value)}`,
   in: ({ column, value }: FilterSimpleCondition) =>
     `${column} is in (${_valueOrArrayToString(value)})`,
+  nin: ({ column, value }: FilterSimpleCondition) =>
+    `${column} is not in (${_valueOrArrayToString(value)})`,
+  matches: ({ column, value }: FilterSimpleCondition) =>
+    `${column} matches regex ${_valueToHumanString(value)}`,
+  notmatches: ({ column, value }: FilterSimpleCondition) =>
+    `${column} doesn't match regex ${_valueToHumanString(value)}`,
   null: ({ column }: FilterSimpleCondition) => `${column} is null`,
   notnull: ({ column }: FilterSimpleCondition) => `${column} is not null`,
 };

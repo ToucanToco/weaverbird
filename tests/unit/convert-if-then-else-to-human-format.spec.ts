@@ -10,7 +10,7 @@ describe('convertIfThenElseToHumanFormat', function() {
         then: 'then',
         else: 'else',
       }),
-    ).toEqual(`column is 'value' <strong>THEN</strong> 'then' <strong>ELSE</strong> 'else'`);
+    ).toEqual(`column = 'value' <strong>THEN</strong> 'then' <strong>ELSE</strong> 'else'`);
   });
   it('should handle full empty condition', function() {
     expect(
@@ -93,14 +93,14 @@ describe('convertIfThenElseToHumanFormat', function() {
         if: {
           or: [
             { operator: 'in', column: 'mycolumn1', value: ['one', 'two'] },
-            { operator: 'eq', column: 'mycolumn2', value: 'and three' },
+            { operator: 'ne', column: 'mycolumn2', value: 'and three' },
           ],
         },
         then: '',
         else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
       }),
     ).toEqual(
-      `mycolumn1 is in ('one', 'two') <strong>OR</strong> mycolumn2 is 'and three' <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`,
+      `mycolumn1 is in ('one', 'two') <strong>OR</strong> mycolumn2 ≠ 'and three' <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`,
     );
   });
 
@@ -110,7 +110,7 @@ describe('convertIfThenElseToHumanFormat', function() {
         if: {
           and: [
             { operator: 'in', column: 'mycolumn1', value: ['one', 'two'] },
-            { operator: 'eq', column: 'mycolumn2', value: 'three' },
+            { operator: 'le', column: 'mycolumn2', value: 3 },
             {
               or: [
                 { operator: 'matches', column: 'mycolumn3', value: 'yo.*lo?' },
@@ -123,7 +123,7 @@ describe('convertIfThenElseToHumanFormat', function() {
         else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
       }),
     ).toEqual(
-      `mycolumn1 is in ('one', 'two') <strong>AND</strong> mycolumn2 is 'three' <strong>AND</strong> (mycolumn3 matches 'yo.*lo?' <strong>OR</strong> mycolumn4 is not null) <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`,
+      `mycolumn1 is in ('one', 'two') <strong>AND</strong> mycolumn2 ≤ 3 <strong>AND</strong> (mycolumn3 matches regex 'yo.*lo?' <strong>OR</strong> mycolumn4 is not null) <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`,
     );
   });
 
@@ -134,7 +134,7 @@ describe('convertIfThenElseToHumanFormat', function() {
         then: '',
         else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
       }),
-    ).toEqual(`note matches 'duh' <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
+    ).toEqual(`note matches regex 'duh' <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
   });
 
   it('should handle non-string values', function() {
@@ -161,7 +161,7 @@ describe('convertIfThenElseToHumanFormat', function() {
         then: '',
         else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
       }),
-    ).toEqual(`myColumn is <em>user.groups</em> <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
+    ).toEqual(`myColumn = <em>user.groups</em> <strong>THEN</strong> ${EMPTY_CONDITION_SIGN}`);
   });
 
   it('should display interpolated values with some emphasis', function() {
@@ -172,7 +172,7 @@ describe('convertIfThenElseToHumanFormat', function() {
         else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
       }),
     ).toEqual(
-      'city is <em>user.attributes.city</em> <strong>THEN</strong> <em>user.attributes.city</em>',
+      'city = <em>user.attributes.city</em> <strong>THEN</strong> <em>user.attributes.city</em>',
     );
   });
 });
