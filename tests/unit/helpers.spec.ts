@@ -1,4 +1,11 @@
-import { $$, castFromString, enumerate, generateNewColumnName } from '@/lib/helpers';
+import {
+  $$,
+  castFromString,
+  compareType,
+  compareArrayType,
+  enumerate,
+  generateNewColumnName,
+} from '@/lib/helpers';
 
 describe('castFromString', () => {
   it('should cast numeric string to number type', () => {
@@ -103,6 +110,27 @@ describe('castFromString', () => {
         [1, 'bar'],
         [2, 'baz'],
       ]);
+    });
+  });
+
+  describe('compareType', () => {
+    it('should return default if selected value is an array', () => {
+      expect(compareType(['a'], '')).toEqual('');
+    });
+    it('should return default if its type doesn\'t match selected value', () => {
+      expect(compareType(3, '')).toEqual('');
+    });
+    it('should return selected value if its type match default one', () => {
+      expect(compareType('3', '')).toEqual('3');
+    });
+  });
+
+  describe('compareArrayType', () => {
+    it('should return default if selected value is not an array', () => {
+      expect(compareArrayType('a', [])).toEqual([]);
+    });
+    it('should return selected value if its type is an array', () => {
+      expect(compareArrayType(['a'], [])).toEqual(['a']);
     });
   });
 });

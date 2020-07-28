@@ -5,6 +5,9 @@
 ### Fixed
 - Pagination: always display pagination for multiple pages dataset
 
+## Added
+- Util to compare value types
+
 ## [0.19.3] - 2020-07-20
 
 ### Fixed

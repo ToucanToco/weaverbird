@@ -1,5 +1,7 @@
 import { DataSetColumnType } from './dataset';
 
+type ValueType = number | boolean | string | null;
+
 function isBooleanString(string: string): boolean {
   return (
     string === 'true' ||
@@ -68,4 +70,28 @@ export function* enumerate<T>(values: Iterable<T>, start = 0): Generator<[number
   for (const value of values) {
     yield [idx++, value];
   }
+}
+
+/**
+ * Return default value if selected value has different typeof
+ *
+ * @param value the selected value
+ * @param defaultValue the default to compare
+ */
+export function compareType(value: ValueType | ValueType[], defaultValue: ValueType): ValueType {
+  if (Array.isArray(value)) return defaultValue;
+  return typeof value === typeof defaultValue ? value : defaultValue;
+}
+
+/**
+ * Return default value if selected value is not an array
+ *
+ * @param value the selected value
+ * @param defaultValue the default to compare
+ */
+export function compareArrayType(
+  value: ValueType | ValueType[],
+  defaultValue: ValueType[],
+): ValueType[] {
+  return Array.isArray(value) ? value : defaultValue;
 }
