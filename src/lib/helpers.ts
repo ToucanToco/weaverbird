@@ -78,7 +78,10 @@ export function* enumerate<T>(values: Iterable<T>, start = 0): Generator<[number
  * @param value the selected value
  * @param defaultValue the default to compare
  */
-export function compareType(value: ValueType | ValueType[], defaultValue: ValueType): ValueType {
+export function keepCurrentValueIfCompatibleType(
+  value: ValueType | ValueType[],
+  defaultValue: ValueType,
+): ValueType {
   if (Array.isArray(value)) return defaultValue;
   return typeof value === typeof defaultValue ? value : defaultValue;
 }
@@ -89,7 +92,7 @@ export function compareType(value: ValueType | ValueType[], defaultValue: ValueT
  * @param value the selected value
  * @param defaultValue the default to compare
  */
-export function compareArrayType(
+export function keepCurrentValueIfArrayType(
   value: ValueType | ValueType[],
   defaultValue: ValueType[],
 ): ValueType[] {

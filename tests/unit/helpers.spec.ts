@@ -1,10 +1,10 @@
 import {
   $$,
   castFromString,
-  compareArrayType,
-  compareType,
   enumerate,
   generateNewColumnName,
+  keepCurrentValueIfArrayType,
+  keepCurrentValueIfCompatibleType,
 } from '@/lib/helpers';
 
 describe('castFromString', () => {
@@ -113,24 +113,24 @@ describe('castFromString', () => {
     });
   });
 
-  describe('compareType', () => {
+  describe('keepCurrentValueIfCompatibleType', () => {
     it('should return default if selected value is an array', () => {
-      expect(compareType(['a'], '')).toEqual('');
+      expect(keepCurrentValueIfCompatibleType(['a'], '')).toEqual('');
     });
     it("should return default if its type doesn't match selected value", () => {
-      expect(compareType(3, '')).toEqual('');
+      expect(keepCurrentValueIfCompatibleType(3, '')).toEqual('');
     });
     it('should return selected value if its type match default one', () => {
-      expect(compareType('3', '')).toEqual('3');
+      expect(keepCurrentValueIfCompatibleType('3', '')).toEqual('3');
     });
   });
 
-  describe('compareArrayType', () => {
+  describe('keepCurrentValueIfArrayType', () => {
     it('should return default if selected value is not an array', () => {
-      expect(compareArrayType('a', [])).toEqual([]);
+      expect(keepCurrentValueIfArrayType('a', [])).toEqual([]);
     });
     it('should return selected value if its type is an array', () => {
-      expect(compareArrayType(['a'], [])).toEqual(['a']);
+      expect(keepCurrentValueIfArrayType(['a'], [])).toEqual(['a']);
     });
   });
 });
