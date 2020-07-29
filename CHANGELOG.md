@@ -7,6 +7,7 @@
 
 ### Added
 - Move pipeline dereference methods into utils file
+- Getter to retrieve available pipelines in steps form
 
 ### Changed
 - A pipeline can start by a reference to an other pipeline

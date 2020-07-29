@@ -5,7 +5,7 @@
       class="domainInput"
       v-model="editedStep.domain"
       name="Select a dataset to start..."
-      :options="availableDomains"
+      :options="[...availablePipelines, ...domains]"
       placeholder="Choose a dataset"
     />
     <StepFormButtonbar :errors="errors" />
@@ -39,16 +39,9 @@ export default class DomainStepForm extends BaseStepForm<DomainStep> {
   })
   initialStepValue!: DomainStep;
 
+  @VQBModule.Getter availablePipelines!: string[];
   @VQBModule.State domains!: string[];
-  @VQBModule.State currentPipelineName!: string;
-  @VQBModule.Getter pipelinesNames!: string[];
 
   readonly title: string = 'Select a dataset';
-
-  get availableDomains(): string[] {
-    return this.pipelinesNames
-      .filter((name: string) => name !== this.currentPipelineName)
-      .concat(this.domains);
-  }
 }
 </script>

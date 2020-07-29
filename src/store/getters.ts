@@ -94,6 +94,11 @@ const getters: GetterTree<VQBState, any> = {
    */
   pipelinesNames: (state: VQBState) => Object.keys(state.pipelines),
   /**
+   * Return all available domains (including pipelines but excluding currentPipelineName)
+   */
+  availablePipelines: (state: VQBState) =>
+    Object.keys(state.pipelines).filter((name: string) => name !== state.currentPipelineName),
+  /**
    * Return true if an error occured in the backend
    */
   thereIsABackendError: (state: VQBState) => state.backendMessages.length > 0,

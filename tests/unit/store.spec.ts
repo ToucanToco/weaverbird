@@ -366,6 +366,13 @@ describe('mutation tests', () => {
     expect(state.currentDomain).toEqual('foo');
   });
 
+  it('remove current pipeline in available pipelines', () => {
+    const state = buildState({});
+    mutations.setPipelines(state, { pipelines: { pipeline1: [], pipeline2: [] } });
+    mutations.setCurrentPipelineName(state, { name: 'pipeline1' });
+    expect(getters.availablePipelines(state, {}, {}, {})).toEqual(['pipeline2']);
+  });
+
   it('updates current domain when inconsistent with setDomains', () => {
     const state = buildState({ currentDomain: 'babar' });
     expect(state.domains).toEqual([]);
