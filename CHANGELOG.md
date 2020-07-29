@@ -8,6 +8,12 @@
 
 ## Added
 - Util to compare value types
+- "If...Then...Else": util file to display human format formula
+
+## Changed
+- "If...Then...Else": button to toggle step
+- "If...Then...Else": button to delete specific step
+- "If...Then...Else": button to add elseif nested condition
 
 ## [0.19.3] - 2020-07-20
 
