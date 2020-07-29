@@ -1,5 +1,10 @@
+import Vue from 'vue';
 import { VariableInput, MultiInputText } from '../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
+
+import VTooltip from 'v-tooltip';
+
+Vue.use(VTooltip);
 
 const stories = storiesOf('Inputs with variables', module);
 
