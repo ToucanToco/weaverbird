@@ -171,6 +171,17 @@ export default class VariableInput extends Vue {
   }
 
   /**
+   * If the variable identifier is listed in the available variables display its value.
+   */
+  get variableValue() {
+    const matchingAvailableVariable = this.availableVariables.find(
+      aV => aV.identifier === this.variableIdentifier,
+    );
+    const value = matchingAvailableVariable?.value || '';
+    return Array.isArray(value) ? value.join(', ') : value;
+  }
+
+  /**
    * Remove any previously chosen variable
    */
   dismissVariable() {
