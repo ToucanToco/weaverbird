@@ -176,6 +176,10 @@ describe('Variable Input', () => {
       expect(wrapper.find('.widget-input-variable__variable-name').text()).toBe('hummus');
     });
 
+    it('should compute the variable value as empty', () => {
+      expect((wrapper as any).vm.variableValue).toBe('');
+    });
+
     describe('if the variable is listed in available variables', () => {
       beforeEach(async () => {
         wrapper.setProps({
@@ -183,6 +187,7 @@ describe('Variable Input', () => {
             {
               label: 'The famous hummus',
               identifier: 'hummus',
+              value: ['hummus', 'hummus'],
             },
           ],
         });
@@ -193,6 +198,10 @@ describe('Variable Input', () => {
         expect(wrapper.find('.widget-input-variable__variable-name').text()).toBe(
           'The famous hummus',
         );
+      });
+
+      it('should compute the variable value', () => {
+        expect((wrapper as any).vm.variableValue).toBe('hummus, hummus');
       });
     });
 
