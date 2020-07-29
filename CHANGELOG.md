@@ -14,6 +14,7 @@
 - "If...Then...Else": button to toggle step
 - "If...Then...Else": button to delete specific step
 - "If...Then...Else": button to add elseif nested condition
+- Variable input: add tooltip with value when hovering tag
 
 ### Added
 - Move pipeline dereference methods into utils file

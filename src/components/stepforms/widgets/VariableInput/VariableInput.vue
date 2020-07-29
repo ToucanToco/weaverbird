@@ -2,7 +2,14 @@
   <div class="widget-input-variable">
     <div v-if="isVariable" class="widget-input-variable__variable-container">
       <div class="widget-input-variable__tag-container">
-        <div class="widget-input-variable__tag">
+        <div
+          class="widget-input-variable__tag"
+          v-tooltip="{
+            classes: 'weaverbird__tooltip',
+            content: variableValue,
+            placement: 'bottom-center',
+          }"
+        >
           <span class="widget-input-variable__variable-icon">{}</span>
           <span class="widget-input-variable__variable-name">{{ variableLabel }}</span>
           <i class="widget-input-variable__tag-close fa fa-times" @click="dismissVariable" />
@@ -191,6 +198,8 @@ export default class VariableInput extends Vue {
 </script>
 <style lang="scss">
 @import '../../../../styles/variables';
+@import '../../../../styles/utils/v-tooltip.scss';
+
 .widget-input-variable {
   position: relative;
   width: 100%;
