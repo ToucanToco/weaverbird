@@ -5,7 +5,7 @@
       class="rightPipelineInput"
       v-model="editedStep.right_pipeline"
       name="Select a dataset to join (as right dataset):"
-      :options="availableDomains"
+      :options="[...availablePipelines, ...domains]"
       placeholder="Select a dataset"
       data-path=".right_pipeline"
       :errors="errors"
@@ -67,9 +67,8 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   })
   initialStepValue!: JoinStep;
 
-  @VQBModule.State currentPipelineName!: string;
+  @VQBModule.Getter availablePipelines!: string[];
   @VQBModule.State domains!: string[];
-  @VQBModule.Getter pipelinesNames!: string[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -85,12 +84,6 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   set on(newval) {
     this.editedStep.on = [...newval];
-  }
-
-  get availableDomains(): string[] {
-    return this.pipelinesNames
-      .filter((name: string) => name !== this.currentPipelineName)
-      .concat(this.domains);
   }
 }
 </script>

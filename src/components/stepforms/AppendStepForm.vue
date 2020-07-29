@@ -5,7 +5,7 @@
       class="pipelinesInput"
       v-model="editedStep.pipelines"
       name="Select datasets to append:"
-      :options="availableDomains"
+      :options="[...availablePipelines, ...domains]"
       placeholder="Select datasets"
       data-path=".pipelines"
       :errors="errors"
@@ -35,16 +35,9 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   initialStepValue!: AppendStep;
 
-  @VQBModule.State currentPipelineName!: string;
+  @VQBModule.Getter availablePipelines!: string[];
   @VQBModule.State domains!: string[];
-  @VQBModule.Getter pipelinesNames!: string[];
 
   readonly title: string = 'Append datasets';
-
-  get availableDomains(): string[] {
-    return this.pipelinesNames
-      .filter((name: string) => name !== this.currentPipelineName)
-      .concat(this.domains);
-  }
 }
 </script>
