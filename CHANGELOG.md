@@ -14,6 +14,7 @@
 - "If...Then...Else": button to toggle step
 - "If...Then...Else": button to delete specific step
 - "If...Then...Else": button to add elseif nested condition
+- Variable input: add tooltip with value when hovering tag
 
 ## [0.19.3] - 2020-07-20
 
