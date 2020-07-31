@@ -5,6 +5,7 @@
         <div
           class="widget-input-variable__tag"
           v-tooltip="{
+            targetClasses: 'has-weaverbird__tooltip',
             classes: 'weaverbird__tooltip',
             content: variableValue,
             placement: 'bottom-center',
@@ -196,9 +197,13 @@ export default class VariableInput extends Vue {
   }
 }
 </script>
+
 <style lang="scss">
-@import '../../../../styles/variables';
 @import '../../../../styles/utils/v-tooltip.scss';
+</style>
+
+<style scoped lang="scss">
+@import '../../../../styles/variables';
 
 .widget-input-variable {
   position: relative;
