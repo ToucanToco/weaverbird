@@ -1,4 +1,4 @@
-.has-tooltip {
+.has-weaverbird__tooltip {
   cursor: pointer;
 }
 
@@ -60,6 +60,7 @@
     width: 0;
     height: 0;
     margin-left: -4px;
+    margin-top: -4px;
     box-sizing: border-box;
     transform-origin: center;
     transform: rotate(-45deg);

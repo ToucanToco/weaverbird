@@ -1,4 +1,5 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
+import { VTooltip } from 'v-tooltip';
 
 import extractVariableIdentifier from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 import VariableInput from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
@@ -9,6 +10,9 @@ describe('Variable Input', () => {
   beforeEach(() => {
     wrapper = shallowMount(VariableInput, {
       sync: false,
+      directives: {
+        tooltip: VTooltip,
+      },
       propsData: {
         availableVariables: [
           {
@@ -180,6 +184,12 @@ describe('Variable Input', () => {
       expect((wrapper as any).vm.variableValue).toBe('');
     });
 
+    it('should nit display a tooltip on hover', () => {
+      expect(wrapper.find('.widget-input-variable__tag').classes()).not.toContain(
+        'has-weaverbird__tooltip',
+      );
+    });
+
     describe('if the variable is listed in available variables', () => {
       beforeEach(async () => {
         wrapper.setProps({
@@ -202,6 +212,12 @@ describe('Variable Input', () => {
 
       it('should compute the variable value', () => {
         expect((wrapper as any).vm.variableValue).toBe('hummus, hummus');
+      });
+
+      it('should display a tooltip on hover', () => {
+        expect(wrapper.find('.widget-input-variable__tag').classes()).toContain(
+          'has-weaverbird__tooltip',
+        );
       });
     });
 
