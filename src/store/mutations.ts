@@ -71,7 +71,18 @@ type ToggleRequestOnGoing = {
   payload: BackendError;
 };
 
+type AvailableVariablesMutation = {
+  type: 'setAvailableVariables';
+  payload: Pick<VQBState, 'availableVariables'>;
+};
+
+type VariableDelimitersMutation = {
+  type: 'setVariableDelimiters';
+  payload: Pick<VQBState, 'variableDelimiters'>;
+};
+
 export type StateMutation =
+  | AvailableVariablesMutation
   | BackendMessageMutation
   | DatasetMutation
   | DeleteStepMutation
@@ -83,7 +94,8 @@ export type StateMutation =
   | SelectedStepMutation
   | SetCurrentPage
   | ToggleColumnSelectionMutation
-  | ToggleRequestOnGoing;
+  | ToggleRequestOnGoing
+  | VariableDelimitersMutation;
 
 type MutationByType<M, MT> = M extends { type: MT } ? M : never;
 export type MutationCallbacks = {
@@ -302,6 +314,24 @@ class Mutations {
    */
   toggleRequestOnGoing(state: VQBState, { isRequestOnGoing }: { isRequestOnGoing: boolean }) {
     state.isRequestOnGoing = isRequestOnGoing;
+  }
+  /**
+   * set the list of available variables for templating.
+   */
+  setAvailableVariables(
+    state: VQBState,
+    { availableVariables }: Pick<VQBState, 'availableVariables'>,
+  ) {
+    state.availableVariables = availableVariables;
+  }
+  /**
+   * set the variable delimiters for templating.
+   */
+  setVariableDelimiters(
+    state: VQBState,
+    { variableDelimiters }: Pick<VQBState, 'variableDelimiters'>,
+  ) {
+    state.variableDelimiters = variableDelimiters;
   }
 }
 

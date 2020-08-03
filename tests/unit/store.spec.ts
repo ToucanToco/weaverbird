@@ -366,13 +366,6 @@ describe('mutation tests', () => {
     expect(state.currentDomain).toEqual('foo');
   });
 
-  it('remove current pipeline in available pipelines', () => {
-    const state = buildState({});
-    mutations.setPipelines(state, { pipelines: { pipeline1: [], pipeline2: [] } });
-    mutations.setCurrentPipelineName(state, { name: 'pipeline1' });
-    expect(getters.availablePipelines(state, {}, {}, {})).toEqual(['pipeline2']);
-  });
-
   it('updates current domain when inconsistent with setDomains', () => {
     const state = buildState({ currentDomain: 'babar' });
     expect(state.domains).toEqual([]);
@@ -809,6 +802,27 @@ describe('action tests', () => {
       // call 5:
       expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('setLoading'));
       expect(commitSpy.mock.calls[5][1]).toEqual({ type: 'uniqueValues', isLoading: false });
+    });
+  });
+
+  describe('setAvailableVariables', function() {
+    it('set available variables', () => {
+      const state = buildState({});
+      const availableVariables = [
+        { identifier: 'var1', value: 1, label: 'First variable' },
+        { identifier: 'var2', value: 2, label: 'Second variable' },
+      ];
+      mutations.setAvailableVariables(state, { availableVariables });
+      expect(state.availableVariables).toEqual(availableVariables);
+    });
+  });
+
+  describe('setVariableDelimiters', function() {
+    it('set variable delimiters', () => {
+      const state = buildState({});
+      const variableDelimiters = { start: '{{', end: '}}' };
+      mutations.setVariableDelimiters(state, { variableDelimiters });
+      expect(state.variableDelimiters).toEqual(variableDelimiters);
     });
   });
 });
