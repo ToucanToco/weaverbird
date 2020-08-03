@@ -117,8 +117,7 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
 
   for (const step of mongoSteps.slice(1)) {
     const [stepOperator] = Object.keys(step);
-    const isMergeable =
-      stepOperator === '$project' || stepOperator === '$addFields' || stepOperator === '$match';
+    const isMergeable = stepOperator === '$project' || stepOperator === '$match';
     if (isMergeable && lastStep[stepOperator] !== undefined) {
       for (const key in step[stepOperator]) {
         /**

@@ -108,9 +108,25 @@ describe('Pipeline to mongo translator', () => {
         $addFields: {
           foo: { $convert: { input: '$foo', to: 'bool' } },
           bar: { $convert: { input: '$bar', to: 'bool' } },
+        },
+      },
+      {
+        $addFields: {
           date: { $convert: { input: '$date', to: 'date' } },
+        },
+      },
+      {
+        $addFields: {
           float: { $convert: { input: '$float', to: 'double' } },
+        },
+      },
+      {
+        $addFields: {
           int: { $convert: { input: '$int', to: 'int' } },
+        },
+      },
+      {
+        $addFields: {
           text: { $convert: { input: '$text', to: 'string' } },
         },
       },

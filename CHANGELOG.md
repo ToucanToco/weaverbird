@@ -5,6 +5,7 @@
 ### Fixed
 - Pagination: always display pagination for multiple pages dataset
 - Filters: keep value if typeof match on operator change
+- MongoQuery: degroup addFields
 
 ## Added
 - Util to compare value types
