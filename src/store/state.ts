@@ -7,9 +7,14 @@ import { BackendError, BackendWarning } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { dereferencePipelines } from '@/store/utils/dereference-pipeline';
 
 export interface VQBState {
+  /**
+   * available variables for templating
+   */
+  availableVariables?: VariablesBucket;
   /**
    * the current dataset.
    */
@@ -99,6 +104,10 @@ export interface VQBState {
    * the app translator
    */
   translator: string;
+  /**
+   * variable delimiter for templating
+   */
+  variableDelimiters?: VariableDelimiters;
 }
 
 /**
