@@ -27,9 +27,8 @@ import {
   buildFilterStepTree,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
-import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
-import { VariablesBucket } from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
 import { FilterCondition } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 @Component({
   name: 'filter-editor',

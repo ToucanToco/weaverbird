@@ -37,10 +37,10 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
-import { VariableDelimiters } from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
-import VariableInput, { VariablesBucket } from './VariableInput/VariableInput.vue';
+import VariableInput from './VariableInput/VariableInput.vue';
 
 @Component({
   name: 'input-text-widget',

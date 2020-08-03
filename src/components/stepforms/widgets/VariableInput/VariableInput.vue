@@ -66,22 +66,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
+import { VariableDelimiters, VariablesBucket, VariablesCategory } from '@/lib/variables';
 
-import extractVariableIdentifier, { VariableDelimiters } from './extract-variable-identifier';
-
-interface AvailableVariable {
-  identifier: string; // how the variable will be written in the code
-  value: any; // current value of the variable
-  category?: string;
-  label: string;
-}
-
-export type VariablesBucket = AvailableVariable[];
-
-interface VariablesCategory {
-  label: string | undefined;
-  variables: AvailableVariable[];
-}
+import extractVariableIdentifier from './extract-variable-identifier';
 
 /**
  * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
