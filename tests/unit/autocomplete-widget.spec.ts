@@ -13,6 +13,11 @@ describe('Widget Autocomplete', () => {
     expect(wrapper.find('multiselect-stub').exists()).toBeTruthy();
   });
 
+  it('should have an instantiated VariableInput', () => {
+    const wrapper = shallowMount(AutocompleteWidget);
+    expect(wrapper.find('VariableInput-stub').exists()).toBeTruthy();
+  });
+
   it('should not have specific templates if the prop withExample is false', () => {
     const wrapper = mount(AutocompleteWidget, {
       propsData: { withExample: false, options: [{ label: 'foo', example: 'bar' }] },
@@ -49,6 +54,20 @@ describe('Widget Autocomplete', () => {
     });
     wrapper
       .findAll('multiselect-stub')
+      .at(0)
+      .vm.$emit('input', 'Visa');
+    expect(wrapper.emitted().input[0][0]).toEqual('Visa');
+  });
+
+  it('should emit "input" event with the updated value when VariableInput is updated', () => {
+    const wrapper = shallowMount(AutocompleteWidget, {
+      propsData: {
+        value: 'Mastercard',
+      },
+      sync: false,
+    });
+    wrapper
+      .findAll('VariableInput-stub')
       .at(0)
       .vm.$emit('input', 'Visa');
     expect(wrapper.emitted().input[0][0]).toEqual('Visa');

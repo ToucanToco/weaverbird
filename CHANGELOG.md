@@ -11,6 +11,7 @@
 ## Added
 - Util to compare value types
 - "If...Then...Else": util file to display human format formula
+- Allow to use variables in AutocompleteWidget
 
 ## Changed
 - "If...Then...Else": button to toggle step
