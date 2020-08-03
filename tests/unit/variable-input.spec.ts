@@ -232,6 +232,15 @@ describe('Variable Input', () => {
       });
     });
   });
+
+  describe('with a parent component which has an arrow', () => {
+    beforeEach(() => {
+      wrapper.setProps({ hasArrow: true });
+    });
+    it('should move the variable chooser toggle button away from arrow', () => {
+      expect(wrapper.find('.widget-input-variable--parent-arrow').exists()).toBe(true);
+    });
+  });
 });
 
 describe('extractVariableIdentifier', () => {

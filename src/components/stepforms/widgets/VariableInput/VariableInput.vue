@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-input-variable">
+  <div class="widget-input-variable" :class="{ 'widget-input-variable--parent-arrow': hasArrow }">
     <div v-if="isVariable" class="widget-input-variable__variable-container">
       <div class="widget-input-variable__tag-container">
         <div
@@ -83,6 +83,9 @@ import extractVariableIdentifier from './extract-variable-identifier';
 export default class VariableInput extends Vue {
   @Prop()
   value!: any;
+
+  @Prop({ default: false })
+  hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
@@ -228,6 +231,12 @@ export default class VariableInput extends Vue {
     visibility: visible;
     background: $active-color;
     color: #eaeff5;
+  }
+}
+
+.widget-input-variable--parent-arrow {
+  .widget-input-variable__variable-toggle {
+    right: 35px;
   }
 }
 
