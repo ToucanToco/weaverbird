@@ -5,6 +5,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :has-arrow="true"
       @input="updateValue"
     >
       <multiselect
