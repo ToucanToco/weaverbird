@@ -889,7 +889,6 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       {
-        // Two steps with common keys should not be merged
         $addFields: {
           Country: {
             $switch: {
@@ -897,6 +896,10 @@ describe('Pipeline to mongo translator', () => {
               default: '$Country',
             },
           },
+        },
+      },
+      {
+        $addFields: {
           Population: { $divide: ['$Population', 1000] },
         },
       },
@@ -1036,7 +1039,6 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       {
-        // Two steps with common keys should not be merged
         $addFields: {
           Zone: {
             $switch: {
@@ -1044,6 +1046,10 @@ describe('Pipeline to mongo translator', () => {
               default: '$Zone',
             },
           },
+        },
+      },
+      {
+        $addFields: {
           Population: { $divide: ['$Population', 1000] },
         },
       },
@@ -1417,13 +1423,9 @@ describe('Pipeline to mongo translator', () => {
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
-      {
-        $addFields: {
-          foo: '$bar',
-          constant: 42,
-          with_parentheses: '$test',
-        },
-      },
+      { $addFields: { foo: '$bar' } },
+      { $addFields: { constant: 42 } },
+      { $addFields: { with_parentheses: '$test' } },
       { $project: { _id: 0 } },
     ]);
   });
@@ -1465,6 +1467,10 @@ describe('Pipeline to mongo translator', () => {
               },
             ],
           },
+        },
+      },
+      {
+        $addFields: {
           bar: {
             $multiply: [
               {
@@ -1483,6 +1489,10 @@ describe('Pipeline to mongo translator', () => {
               10,
             ],
           },
+        },
+      },
+      {
+        $addFields: {
           test_precedence: {
             $add: [
               {
