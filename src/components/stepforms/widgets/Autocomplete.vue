@@ -1,28 +1,35 @@
 <template>
   <div class="widget-autocomplete__container" :class="toggleClassErrorWarning">
     <label class="widget-autocomplete__label" v-if="name">{{ name }}</label>
-    <multiselect
+    <VariableInput
       :value="value"
-      :options="options"
-      :placeholder="placeholder"
-      :allow-empty="false"
-      :track-by="trackBy"
-      :label="label"
-      openDirection="bottom"
-      @input="$emit('input', $event)"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      @input="updateValue"
     >
-      <!-- If you want to use those templates you should provide a 'label' and 
+      <multiselect
+        :value="value"
+        :options="options"
+        :placeholder="placeholder"
+        :allow-empty="false"
+        :track-by="trackBy"
+        :label="label"
+        openDirection="bottom"
+        @input="updateValue"
+      >
+        <!-- If you want to use those templates you should provide a 'label' and 
       'example' key in the options-->
-      <template v-if="withExample" slot="singleLabel" slot-scope="props">
-        <span class="option__title">{{ props.option.label }}</span>
-      </template>
-      <template v-if="withExample" slot="option" slot-scope="props">
-        <div class="option__container">
-          <div class="option__title">{{ props.option.label }}</div>
-          <div class="option__example">{{ props.option.example }}</div>
-        </div>
-      </template>
-    </multiselect>
+        <template v-if="withExample" slot="singleLabel" slot-scope="props">
+          <span class="option__title">{{ props.option.label }}</span>
+        </template>
+        <template v-if="withExample" slot="option" slot-scope="props">
+          <div class="option__container">
+            <div class="option__title">{{ props.option.label }}</div>
+            <div class="option__example">{{ props.option.example }}</div>
+          </div>
+        </template>
+      </multiselect>
+    </VariableInput>
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
       {{ messageError }}
@@ -34,12 +41,16 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+
 import FormWidget from './FormWidget.vue';
+import VariableInput from './VariableInput/VariableInput.vue';
 
 @Component({
   name: 'autocomplete-widget',
   components: {
     Multiselect,
+    VariableInput,
   },
 })
 export default class AutocompleteWidget extends Mixins(FormWidget) {
@@ -63,6 +74,16 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
+
+  @Prop()
+  availableVariables!: VariablesBucket[];
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
+
+  updateValue(newValue?: string | object) {
+    this.$emit('input', newValue);
+  }
 }
 </script>
 
