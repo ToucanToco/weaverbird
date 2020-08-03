@@ -139,6 +139,48 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 This library is published on npm under the name `weaverbird` automatically each time a release is created in GitHub.
 
+### Create a release
+
+- Define new version using [semantic versioning](https://semver.org/)
+
+- Create a new local branch `release/X.Y.Z` from master
+
+  ex: `release/0.20.0`
+
+- Update the `version` property in `package.json`
+
+- Check differences between last release and current and fill `CHANGELOG.md` with updates
+  - Delete the ```##changes``` title at start of the `CHANGELOG.md` if provided
+  - Add the date and version at start of `CHANGELOG.md` following this convention
+
+    ```
+    [X.Y.Z] - YYYY-MM-DD
+    ```
+    ex: `[0.20.0] - 2020-08-03`
+
+  - Add link to the `CHANGELOG.md` from this version to the previous one at the end of the `CHANGELOG.md`
+
+    ```
+    [X.Y.Z]: https://github.com/ToucanToco/weaverbird/compare/voldX.oldY.oldZ...vX.Y.Z
+    ```
+
+    ex: [0.20.0]: https://github.com/ToucanToco/weaverbird/compare/v0.19.2...v0.20.0
+
+- Commit changes with version number
+
+  ex: `v0.20.0`
+
+- Push branch
+
+- Create a pull request into master from your branch
+
+- When pull request is merged, [create a release](https://github.com/ToucanToco/weaverbird/releases) with the version number in tag version and title (no description needed)
+
+  ex: `v0.20.0`
+
+- Hit the release "publish release" button (this will automatically create a tag and trigger the [package publication](https://github.com/ToucanToco/weaverbird/actions?query=workflow%3A%22npm+publish%22) )
+
+
 ## Usage as library
 
 ### Without any module bundler
