@@ -1,8 +1,4 @@
-export interface VariableDelimiters {
-  start: string;
-  end: string;
-}
-
+import { VariableDelimiters } from '@/lib/variables';
 /**
  * Determine if value is variable surrounded by delimiters or not, and if yes, extract its identifier.
  */
