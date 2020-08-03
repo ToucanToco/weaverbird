@@ -1,8 +1,9 @@
 # Changelog
 
-## Changes
+## [0.20.0] - 2020-08-03
 
 ### Fixed
+- Mongo translator: generate a join step with column names containing any character
 - Pagination: always display pagination for multiple pages dataset
 - Filters: keep value if typeof match on operator change
 - MongoQuery: degroup addFields
@@ -346,6 +347,7 @@
 
 - Initial version, showtime!
 
+[0.20.0]: https://github.com/ToucanToco/weaverbird/compare/v0.19.3...v0.20.0
 [0.19.3]: https://github.com/ToucanToco/weaverbird/compare/v0.19.2...v0.19.3
 [0.19.2]: https://github.com/ToucanToco/weaverbird/compare/v0.19.1...v0.19.2
 [0.19.1]: https://github.com/ToucanToco/weaverbird/compare/v0.19.0...v0.19.1
