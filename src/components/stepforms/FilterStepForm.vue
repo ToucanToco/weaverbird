@@ -5,6 +5,8 @@
     <FilterEditor
       :filter-tree="this.editedStep.condition"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
       @filterTreeUpdated="updateFilterTree"
     />
     <StepFormButtonbar />
@@ -19,6 +21,7 @@ import { StepFormComponent } from '@/components/formlib';
 import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { FilterCondition, FilterSimpleCondition, FilterStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -41,6 +44,10 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   initialStepValue!: FilterStep;
 
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
+
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
 
   readonly title: string = 'Filter';
 
