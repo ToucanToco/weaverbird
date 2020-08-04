@@ -4,6 +4,8 @@
       <AutocompleteWidget
         class="columnInput"
         :value="value.column"
+        :available-variables="availableVariables"
+        :variable-delimiters="variableDelimiters"
         :options="columnNames"
         @input="updateStepColumn"
         placeholder="Column"
