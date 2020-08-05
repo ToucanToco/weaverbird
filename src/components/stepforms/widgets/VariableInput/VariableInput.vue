@@ -20,6 +20,11 @@
 
     <div v-else class="widget-input-variable__input-container">
       <slot />
+      <div
+        class="widget-input-variable__variable-click-handler"
+        v-if="isChoosingVariable"
+        @click="stopChoosingVariable"
+      />
       <span
         v-if="canBeVariable"
         class="widget-input-variable__variable-toggle"
@@ -249,6 +254,13 @@ export default class VariableInput extends Vue {
       opacity: 1;
     }
   }
+}
+
+.widget-input-variable__variable-click-handler {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
 }
 
 .widget-input-variable__search,

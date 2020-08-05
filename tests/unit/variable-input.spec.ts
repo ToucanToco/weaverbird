@@ -89,6 +89,10 @@ describe('Variable Input', () => {
         expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(true);
       });
 
+      it('should display the slot click handler', () => {
+        expect(wrapper.find('.widget-input-variable__variable-click-handler').exists()).toBe(true);
+      });
+
       it('should present all available variables organized in sections', () => {
         const sections = wrapper.findAll('.widget-input-variable__options-section');
         expect(sections).toHaveLength(2);
@@ -123,6 +127,30 @@ describe('Variable Input', () => {
 
         it('should hide the variable chooser', () => {
           expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(
+            false,
+          );
+        });
+
+        it('should hide the slot click handler', () => {
+          expect(wrapper.find('.widget-input-variable__variable-click-handler').exists()).toBe(
+            false,
+          );
+        });
+      });
+
+      describe('when clicking on slot click handler', () => {
+        beforeEach(async () => {
+          wrapper.find('.widget-input-variable__variable-click-handler').trigger('click');
+          await wrapper.vm.$nextTick();
+        });
+        it('should hide the variable chooser', () => {
+          expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(
+            false,
+          );
+        });
+
+        it('should hide the slot click handler', () => {
+          expect(wrapper.find('.widget-input-variable__variable-click-handler').exists()).toBe(
             false,
           );
         });
