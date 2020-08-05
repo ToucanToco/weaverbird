@@ -15,6 +15,7 @@ import VariableInput from '../src/components/stepforms/widgets/VariableInput/Var
 import InputText from '../src/components/stepforms/widgets/InputText.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
+import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
 
-export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, InputText, ResizablePanels, Step, ListUniqueValues, VariableInput, MultiInputText, IfThenElseWidget };
+export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, InputText, ResizablePanels, Step, ListUniqueValues, VariableInput, MultiInputText, IfThenElseWidget, Autocomplete };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
