@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.21.0] - 2020-08-06
+
+## Added
+- Allow to use store `availableVariables` and `variableDelimiters` in FilterStep
+
 ## [0.20.0] - 2020-08-03
 
 ### Fixed
@@ -348,6 +353,7 @@
 
 - Initial version, showtime!
 
+[0.21.0]: https://github.com/ToucanToco/weaverbird/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/ToucanToco/weaverbird/compare/v0.19.3...v0.20.0
 [0.19.3]: https://github.com/ToucanToco/weaverbird/compare/v0.19.2...v0.19.3
 [0.19.2]: https://github.com/ToucanToco/weaverbird/compare/v0.19.1...v0.19.2
