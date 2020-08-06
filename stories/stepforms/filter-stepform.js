@@ -20,6 +20,15 @@ stories.add('FilterStepForm', () => ({
       dataset: {
         headers: [],
         data: [],
+      },
+      availableVariables: [{
+        identifier: 'foo',
+        value: 'bar',
+        label: 'Foo',
+      }],
+      variableDelimiters: {
+        start: '{{',
+        end: '}}'
       }
     })
   },
