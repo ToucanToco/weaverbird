@@ -1,5 +1,12 @@
 import Vue from 'vue';
-import { Autocomplete, VariableInput, MultiInputText, InputText, List } from '../dist/storybook/components';
+import {
+  Autocomplete,
+  VariableInput,
+  MultiInputText,
+  InputNumber,
+  InputText,
+  List,
+} from '../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
 import VTooltip from 'v-tooltip';
@@ -120,19 +127,37 @@ stories.add('wrapping a List', () => ({
         :automatic-new-field="false"
         defaultItem=""
       ></List>
-      <pre>{{ value }}</pre>
-    </div>
   `,
 
   components: {
-    List,
     InputText,
+    List,
   },
 
   data() {
     return {
       value: undefined,
       widget: InputText,
+      availableVariables: SAMPLE_VARIABLES,
+    };
+  },
+}));
+
+stories.add('wrapping a InputNumber', () => ({
+  template: `
+    <div>
+      <InputNumber v-model="value" :available-variables="availableVariables"></InputNumber>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    InputNumber,
+  },
+
+  data() {
+    return {
+      value: undefined,
       availableVariables: SAMPLE_VARIABLES,
     };
   },
