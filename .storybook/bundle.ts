@@ -13,6 +13,7 @@ import ConditionsEditor from '../src/components/ConditionsEditor/ConditionsEdito
 import FilterEditor from '../src/components/FilterEditor.vue';
 import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 import VariableInput from '../src/components/stepforms/widgets/VariableInput/VariableInput.vue';
+import InputNumber from '../src/components/stepforms/widgets/InputNumber.vue';
 import InputText from '../src/components/stepforms/widgets/InputText.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
@@ -35,9 +36,6 @@ export {
   IfThenElseWidget,
   Autocomplete,
   List,
+  InputNumber,
 };
-export {
-  setupStore,
-  registerModule,
-  VQBnamespace,
-} from '../src/store';
+export { setupStore, registerModule, VQBnamespace } from '../src/store';
