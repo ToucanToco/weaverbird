@@ -77,7 +77,7 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
   withExample!: boolean;
 
   @Prop()
-  availableVariables!: VariablesBucket[];
+  availableVariables!: VariablesBucket;
 
   @Prop()
   variableDelimiters!: VariableDelimiters;

@@ -110,7 +110,7 @@ export default class FilterSimpleConditionWidget extends Vue {
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   @Prop()
-  availableVariables!: VariablesBucket[];
+  availableVariables!: VariablesBucket;
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
