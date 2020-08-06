@@ -11,6 +11,8 @@
             :is="widget"
             v-bind="componentProps"
             :value="child.value"
+            :available-variables="availableVariables"
+            :variable-delimiters="variableDelimiters"
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}[${index}]`"
             :errors="errors"
@@ -39,6 +41,7 @@ import { VueConstructor } from 'vue';
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
 
@@ -86,6 +89,12 @@ export default class ListWidget extends Mixins(FormWidget) {
 
   @Prop({ default: null })
   dataPath!: string;
+
+  @Prop()
+  availableVariables!: VariablesBucket;
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   get children() {
     const valueCopy = [...this.value];

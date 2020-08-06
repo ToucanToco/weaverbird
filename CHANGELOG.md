@@ -1,5 +1,10 @@
 # Changelog
 
+## Changes
+
+## Added
+- Allow to use variables in ListWidget
+
 ## [0.21.0] - 2020-08-06
 
 ## Added
