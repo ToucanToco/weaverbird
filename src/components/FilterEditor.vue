@@ -51,7 +51,7 @@ export default class FilterEditor extends Vue {
   columnNames!: string[];
 
   @Prop()
-  availableVariables!: VariablesBucket[];
+  availableVariables!: VariablesBucket;
 
   @Prop()
   variableDelimiters!: VariableDelimiters;

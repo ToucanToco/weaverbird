@@ -48,7 +48,7 @@ export default class MultiInputTextWidget extends Vue {
   value!: string[] | string;
 
   @Prop()
-  availableVariables!: VariablesBucket[];
+  availableVariables!: VariablesBucket;
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
