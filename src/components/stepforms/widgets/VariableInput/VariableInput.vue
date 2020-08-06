@@ -275,11 +275,13 @@ export default class VariableInput extends Vue {
   display: flex;
   border-radius: 2px;
   width: 180px;
+  max-height: 300px;
   background-color: #fff;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
   color: $base-color;
   overflow: hidden;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .widget-input-variable__options-section {
