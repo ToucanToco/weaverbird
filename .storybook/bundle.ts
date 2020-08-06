@@ -4,6 +4,7 @@
 */
 
 import DataViewer from '../src/components/DataViewer.vue';
+import FilterStepForm from '../src/components/stepforms/FilterStepForm.vue';
 import RenameStepForm from '../src/components/stepforms/RenameStepForm.vue';
 import Pipeline from '../src/components/Pipeline.vue';
 import ResizablePanels from '../src/components/ResizablePanels.vue';
@@ -17,5 +18,24 @@ import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.v
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
 import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
 
-export { FilterEditor, ConditionsEditor, DataViewer, RenameStepForm, Pipeline, InputText, ResizablePanels, Step, ListUniqueValues, VariableInput, MultiInputText, IfThenElseWidget, Autocomplete };
-export { setupStore, registerModule, VQBnamespace } from '../src/store';
+export {
+  FilterEditor,
+  ConditionsEditor,
+  DataViewer,
+  FilterStepForm,
+  RenameStepForm,
+  Pipeline,
+  InputText,
+  ResizablePanels,
+  Step,
+  ListUniqueValues,
+  VariableInput,
+  MultiInputText,
+  IfThenElseWidget,
+  Autocomplete,
+};
+export {
+  setupStore,
+  registerModule,
+  VQBnamespace,
+} from '../src/store';
