@@ -2,8 +2,9 @@
 
 ## Changes
 
-## Added
+### Added
 - Allow to use variables in ListWidget
+- Allow to use variables in InputNumberWidget
 
 ## [0.21.0] - 2020-08-06
 

@@ -6,18 +6,26 @@
         <i class="fas fa-question-circle" />
       </a>
     </div>
-    <input
-      ref="input"
-      :class="elementClass"
-      :placeholder="placeholder"
-      type="number"
-      :min="min"
-      :max="max"
+    <VariableInput
       :value="value"
-      @blur="blur()"
-      @focus="focus()"
-      @input="updateValue($event.target.value)"
-    />
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      :has-arrow="true"
+      @input="updateValue"
+    >
+      <input
+        ref="input"
+        :class="elementClass"
+        :placeholder="placeholder"
+        type="number"
+        :min="min"
+        :max="max"
+        :value="value"
+        @blur="blur()"
+        @focus="focus()"
+        @input="updateValue($event.target.value)"
+      />
+    </VariableInput>
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
       {{ messageError }}
@@ -32,10 +40,16 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+
 import FormWidget from './FormWidget.vue';
+import VariableInput from './VariableInput/VariableInput.vue';
 
 @Component({
   name: 'input-number-widget',
+  components: {
+    VariableInput,
+  },
 })
 export default class InputNumberWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
@@ -55,6 +69,12 @@ export default class InputNumberWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Number, default: undefined })
   max!: number;
+
+  @Prop()
+  availableVariables!: VariablesBucket;
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   isFocused = false;
 
