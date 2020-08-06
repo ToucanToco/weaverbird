@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { Autocomplete, VariableInput, MultiInputText } from '../dist/storybook/components';
+import { Autocomplete, VariableInput, MultiInputText, InputText, List } from '../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
 import VTooltip from 'v-tooltip';
@@ -102,7 +102,37 @@ stories.add('wrapping a Autocomplete', () => ({
   data() {
     return {
       value: undefined,
-      options: ["foo", "bar", "helloworld"],
+      options: ['foo', 'bar', 'helloworld'],
+      availableVariables: SAMPLE_VARIABLES,
+    };
+  },
+}));
+
+stories.add('wrapping a List', () => ({
+  template: `
+    <div>
+      <List
+        addFieldName="Add Column"
+        name="Columns:"
+        v-model="value"
+        :widget="widget"
+        :available-variables="availableVariables"
+        :automatic-new-field="false"
+        defaultItem=""
+      ></List>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    List,
+    InputText,
+  },
+
+  data() {
+    return {
+      value: undefined,
+      widget: InputText,
       availableVariables: SAMPLE_VARIABLES,
     };
   },
