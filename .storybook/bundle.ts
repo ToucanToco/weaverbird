@@ -17,6 +17,7 @@ import InputText from '../src/components/stepforms/widgets/InputText.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
 import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
+import List from '../src/components/stepforms/widgets/List.vue';
 
 export {
   FilterEditor,
@@ -33,6 +34,7 @@ export {
   MultiInputText,
   IfThenElseWidget,
   Autocomplete,
+  List,
 };
 export {
   setupStore,
