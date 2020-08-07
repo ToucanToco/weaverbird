@@ -2,6 +2,7 @@
   "name": "weaverbird",
   "version": "0.21.0",
   "description": "A generic Visual Query Builder built in Vue.js",
+  "types": "dist/index.d.ts",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
     "email": "dev+vqb@toucantoco.com"
