@@ -10,6 +10,7 @@
       :is-last="index === steps.length - 1"
       :step="step"
       :indexInPipeline="index"
+      :variable-delimiters="variableDelimiters"
       @selectedStep="selectStep({ index: index })"
       @editStep="editStep"
     />
@@ -27,6 +28,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
 import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
+import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
@@ -40,6 +42,7 @@ import Step from './Step.vue';
 })
 export default class PipelineComponent extends Vue {
   @VQBModule.State domains!: string[];
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
 
   @VQBModule.Getter('computedActiveStepIndex') activeStepIndex!: number;
   @VQBModule.Getter domainStep!: DomainStep;
