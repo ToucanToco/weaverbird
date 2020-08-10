@@ -118,6 +118,23 @@ describe('Step.vue', () => {
     expect(wrapper.find('.fa-trash-alt').exists()).toBeFalsy();
   });
 
+  it('should render a stepLabel with the variable names', () => {
+    const wrapper = shallowMount(Step, {
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: true,
+        isLast: true,
+        step: { name: 'domain', domain: '{{ user.username }}' },
+        indexInPipeline: 0,
+        variableDelimiters: { start: '{{ ', end: ' }}' },
+      },
+    });
+    expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Use domain "user.username"');
+  });
+
   describe('Delete confirmation modal', () => {
     it('does not delete a step when clicking on cancel on the delete confirmation modal', async () => {
       const pipeline: Pipeline = [
