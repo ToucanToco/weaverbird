@@ -8,7 +8,7 @@
       <div :class="lastStrokeClass" />
     </div>
     <div class="query-pipeline-step">
-      <span class="query-pipeline-step__name" :title="stepLabel()">{{ stepLabel() }}</span>
+      <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
       <div class="query-pipeline-step__actions">
         <!-- @click.stop is used to avoid to trigger select event when editing a step -->
         <div class="query-pipeline-step__action" @click.stop="editStep()">
@@ -34,8 +34,9 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { humanReadableLabel } from '@/lib/labeller';
+import { humanReadableLabel, labelWithReadeableVariables } from '@/lib/labeller';
 import { PipelineStep } from '@/lib/steps';
+import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
@@ -67,6 +68,9 @@ export default class Step extends Vue {
   step!: PipelineStep;
 
   @Prop()
+  variableDelimiters!: VariableDelimiters;
+
+  @Prop()
   readonly indexInPipeline!: number;
 
   deleteConfirmationModalIsOpened = false;
@@ -75,8 +79,18 @@ export default class Step extends Vue {
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
-  stepLabel() {
+  get stepName(): string {
     return humanReadableLabel(this.step);
+  }
+
+  get stepTitle(): string {
+    const replaceDelimiters = { start: '', end: '' };
+    return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters);
+  }
+
+  get stepLabel(): string {
+    const replaceDelimiters = { start: '<em>', end: '</em>' };
+    return labelWithReadeableVariables(this.stepName, this.variableDelimiters, replaceDelimiters);
   }
 
   get classContainer() {
