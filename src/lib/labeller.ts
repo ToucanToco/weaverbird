@@ -14,6 +14,8 @@
 import { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
+import { VariableDelimiters } from './variables';
+
 /**
  * human-readable labels for aggregation functions.
  */
@@ -265,4 +267,20 @@ const LABELLER = new StepLabeller();
 export function humanReadableLabel(step: S.PipelineStep) {
   const transform = LABELLER[step.name] as (step: S.PipelineStep) => string;
   return transform(step);
+}
+
+function _replaceAll(str: string, search: string, replace: string) {
+  return str.replace(new RegExp(search, 'g'), replace);
+}
+
+export function labelWithReadeableVariables(
+  label: string | null,
+  variableDelimiters: VariableDelimiters | null,
+  replaceDelimiters: VariableDelimiters | null,
+): string {
+  if (!variableDelimiters || !replaceDelimiters || !label) {
+    return label || '';
+  }
+  const formattedLabel = _replaceAll(label, variableDelimiters.start, replaceDelimiters.start);
+  return _replaceAll(formattedLabel, variableDelimiters.end, replaceDelimiters.end);
 }

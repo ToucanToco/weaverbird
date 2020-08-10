@@ -1,5 +1,6 @@
-import { humanReadableLabel as hrl } from '@/lib/labeller';
+import { humanReadableLabel as hrl, labelWithReadeableVariables as lwv } from '@/lib/labeller';
 import * as S from '@/lib/steps';
+import { VariableDelimiters } from '@/lib/variables';
 
 describe('Labeller', () => {
   it('generates label for single aggregation', () => {
@@ -565,5 +566,29 @@ describe('Labeller', () => {
       else: '"False"',
     };
     expect(hrl(step)).toEqual('Add conditional column "NEW_COL"');
+  });
+
+  describe('labelWithReadeableVariables', () => {
+    const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
+    const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };
+    const label = 'Replace column {{ date.year }} with 9';
+
+    it('generates label where variable delimiters are replaced with selected ones', () => {
+      expect(lwv(label, variableDelimiters, replaceDelimiters)).toEqual(
+        'Replace column <em>date.year</em> with 9',
+      );
+    });
+
+    it('generates keep label unchanged when there is no variableDelimiters', () => {
+      expect(lwv(label, null, replaceDelimiters)).toEqual('Replace column {{ date.year }} with 9');
+    });
+
+    it('should keep label unchanged when there is no replaceDelimiters', () => {
+      expect(lwv(label, variableDelimiters, null)).toEqual('Replace column {{ date.year }} with 9');
+    });
+
+    it('should return empty label if there is no label', () => {
+      expect(lwv(null, variableDelimiters, replaceDelimiters)).toEqual('');
+    });
   });
 });
