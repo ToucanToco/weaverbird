@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { VTooltip } from 'v-tooltip';
 
-import VariableInput from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
+import VariableInput from '@/components/stepforms/widgets/VariableInput.vue';
 
 describe('Variable Input', () => {
   let wrapper: Wrapper<VariableInput>;
