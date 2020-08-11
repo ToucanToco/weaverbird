@@ -4,6 +4,8 @@
 import _ from 'lodash';
 import { GetterTree } from 'vuex';
 
+import { getPipelineNamesReferencing } from '@/store/utils/dereference-pipeline';
+
 import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
 
 const getters: GetterTree<VQBState, any> = {
@@ -17,7 +19,7 @@ const getters: GetterTree<VQBState, any> = {
   backendMessages: (state: VQBState) => state.backendMessages,
   /**
    * the list of current dataset's colum names.
-   **/
+   */
   columnNames: (state: VQBState) => state.dataset.headers.map(col => col.name),
   /**
    * the list of dataset's column headers.
@@ -98,6 +100,16 @@ const getters: GetterTree<VQBState, any> = {
    */
   availablePipelines: (state: VQBState) =>
     Object.keys(state.pipelines).filter((name: string) => name !== state.currentPipelineName),
+
+  /**
+   * Return the pipelines referencing the current pipeline
+   */
+  referencingPipelines: (state: VQBState) => {
+    if (state.currentPipelineName) {
+      return getPipelineNamesReferencing(state.currentPipelineName, state.pipelines);
+    }
+    return [];
+  },
   /**
    * Return true if an error occured in the backend
    */
