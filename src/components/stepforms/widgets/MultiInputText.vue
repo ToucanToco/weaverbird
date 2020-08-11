@@ -28,7 +28,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
-import VariableInput from './VariableInput/VariableInput.vue';
+import VariableInput from './VariableInput.vue';
 
 @Component({
   name: 'multi-input-text-widget',

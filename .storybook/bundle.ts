@@ -12,13 +12,13 @@ import Step from '../src/components/Step.vue';
 import ConditionsEditor from '../src/components/ConditionsEditor/ConditionsEditor.vue';
 import FilterEditor from '../src/components/FilterEditor.vue';
 import ListUniqueValues from '../src/components/ListUniqueValues.vue';
-import VariableInput from '../src/components/stepforms/widgets/VariableInput/VariableInput.vue';
-import InputNumber from '../src/components/stepforms/widgets/InputNumber.vue';
+import VariableInput from '../src/components/stepforms/widgets/VariableInput.vue';
 import InputText from '../src/components/stepforms/widgets/InputText.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
 import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
 import List from '../src/components/stepforms/widgets/List.vue';
+import InputNumber from '../src/components/stepforms/widgets/InputNumber.vue';
 
 export {
   FilterEditor,
