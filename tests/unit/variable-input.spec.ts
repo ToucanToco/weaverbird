@@ -1,7 +1,6 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { VTooltip } from 'v-tooltip';
 
-import extractVariableIdentifier from '@/components/stepforms/widgets/VariableInput/extract-variable-identifier';
 import VariableInput from '@/components/stepforms/widgets/VariableInput/VariableInput.vue';
 
 describe('Variable Input', () => {
@@ -268,61 +267,5 @@ describe('Variable Input', () => {
     it('should move the variable chooser toggle button away from arrow', () => {
       expect(wrapper.find('.widget-input-variable--parent-arrow').exists()).toBe(true);
     });
-  });
-});
-
-describe('extractVariableIdentifier', () => {
-  it('should extract simple variable names', () => {
-    expect(
-      extractVariableIdentifier('{{ hummus }}', {
-        start: '{{',
-        end: '}}',
-      }),
-    ).toBe('hummus');
-  });
-
-  it('should extract variable names with dots', () => {
-    expect(
-      extractVariableIdentifier('{{ hummus.mtabal }}', {
-        start: '{{',
-        end: '}}',
-      }),
-    ).toBe('hummus.mtabal');
-  });
-
-  it('should extract variable names with other property access methods', () => {
-    expect(
-      extractVariableIdentifier("{{ hummus['mtabal'] }}", {
-        start: '{{',
-        end: '}}',
-      }),
-    ).toBe("hummus['mtabal']");
-  });
-
-  it('should extract variable names with any number of leading and trailing whitespaces', () => {
-    expect(
-      extractVariableIdentifier('     {{ hummus         }}  ', {
-        start: '{{',
-        end: '}}',
-      }),
-    ).toBe('hummus');
-  });
-
-  it('should extract expressions', () => {
-    expect(
-      extractVariableIdentifier('{{ a + b }}  ', {
-        start: '{{',
-        end: '}}',
-      }),
-    ).toBe('a + b');
-  });
-
-  it('should extract variables with different delimiters', () => {
-    expect(
-      extractVariableIdentifier('<%= croissant %>', {
-        start: '<%=',
-        end: '%>',
-      }),
-    ).toBe('croissant');
   });
 });
