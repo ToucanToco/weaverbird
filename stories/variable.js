@@ -93,6 +93,31 @@ stories.add('wrapping a MultiInputText', () => ({
   },
 }));
 
+stories.add('wrapping a MultiInputText with multi variable', () => ({
+  template: `
+    <div>
+    <MultiInputText 
+      v-model="value" 
+      :available-variables="availableVariables"
+      :multiVariable="true"
+      :variableDelimiters="variableDelimiters" />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    MultiInputText,
+  },
+
+  data() {
+    return {
+      value: undefined,
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
+    };
+  },
+}));
+
 stories.add('wrapping a Autocomplete', () => ({
   template: `
     <div>
