@@ -6,6 +6,7 @@ import {
   InputNumber,
   InputText,
   List,
+  Multiselect,
 } from '../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
@@ -136,6 +137,31 @@ stories.add('wrapping a Autocomplete', () => ({
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
       availableVariables: SAMPLE_VARIABLES,
+    };
+  },
+}));
+
+stories.add('wrapping a Multiselect with multi variables', () => ({
+  template: `
+    <div>
+      <Multiselect 
+        v-model="value" 
+        :available-variables="availableVariables"
+        :variableDelimiters="variableDelimiters"
+        :options="options"
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: { Multiselect },
+
+  data() {
+    return {
+      value: undefined,
+      options: ['foo', 'bar', 'helloworld'],
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));

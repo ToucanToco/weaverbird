@@ -15,6 +15,7 @@ import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 import VariableInput from '../src/components/stepforms/widgets/VariableInput.vue';
 import InputText from '../src/components/stepforms/widgets/InputText.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
+import Multiselect from '../src/components/stepforms/widgets/Multiselect.vue';
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
 import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
 import List from '../src/components/stepforms/widgets/List.vue';
@@ -37,5 +38,6 @@ export {
   Autocomplete,
   List,
   InputNumber,
+  Multiselect,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
