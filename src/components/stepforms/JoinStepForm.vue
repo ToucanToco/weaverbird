@@ -95,7 +95,9 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
         option['$isDisabled'] = true;
-        option['tooltip'] = 'This dataset is not available for jointure.';
+        option[
+          'tooltip'
+        ] = `Circular reference: you cannot combine ${name} because it references the current dataset.`;
       }
       return option;
     });

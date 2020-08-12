@@ -49,7 +49,9 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
         option['$isDisabled'] = true;
-        option['tooltip'] = 'This dataset is not available for appending.';
+        option[
+          'tooltip'
+        ] = `Circular reference: you cannot combine ${name} because it references the current dataset.`;
       }
       return option;
     });

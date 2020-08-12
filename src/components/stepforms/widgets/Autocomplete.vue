@@ -24,7 +24,7 @@
           <span class="option__title">{{ props.option.label }}</span>
         </template>
         <template v-if="withExample" slot="option" slot-scope="props">
-          <div class="option__container">
+          <div class="option__container" :title="props.option.tooltip">
             <div class="option__title">{{ props.option.label }}</div>
             <div class="option__example">{{ props.option.example }}</div>
           </div>

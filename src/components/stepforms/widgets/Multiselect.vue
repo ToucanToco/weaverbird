@@ -5,11 +5,25 @@
       v-model="editedValue"
       :options="options"
       :placeholder="placeholder"
+      :track-by="trackBy"
+      :label="label"
       :multiple="true"
       :taggable="true"
       :close-on-select="false"
       openDirection="bottom"
-    />
+    >
+      <!-- If you want to use those templates you should provide a 'label' and 
+    'example' key in the options-->
+      <template v-if="withExample" slot="singleLabel" slot-scope="props">
+        <span class="option__title">{{ props.option.label }}</span>
+      </template>
+      <template v-if="withExample" slot="option" slot-scope="props">
+        <div class="option__container" :title="props.option.tooltip">
+          <div class="option__title">{{ props.option.label }}</div>
+          <div class="option__example">{{ props.option.example }}</div>
+        </div>
+      </template>
+    </multiselect>
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
       {{ messageError }}
@@ -41,6 +55,15 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Array, default: () => [] })
   options!: string[];
+
+  @Prop({ type: String, default: undefined })
+  trackBy!: string;
+
+  @Prop({ type: String, default: undefined })
+  label!: string;
+
+  @Prop({ type: Boolean, default: false })
+  withExample!: boolean;
 
   editedValue: string[] = [];
 

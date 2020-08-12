@@ -72,4 +72,15 @@ describe('Widget Autocomplete', () => {
       .vm.$emit('input', 'Visa');
     expect(wrapper.emitted().input[0][0]).toEqual('Visa');
   });
+
+  it('should add a tooltip to the option', () => {
+    const wrapper = mount(AutocompleteWidget, {
+      propsData: {
+        withExample: true,
+        options: [{ label: 'foo', example: 'bar', tooltip: 'ukulélé' }],
+      },
+    });
+    expect(wrapper.find('.option__container').exists()).toBeTruthy();
+    expect(wrapper.find('.option__container').attributes('title')).toEqual('ukulélé');
+  });
 });
