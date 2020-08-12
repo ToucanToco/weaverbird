@@ -18,7 +18,22 @@
         :placeholder="placeholder"
         @search-change="updateOptions"
         open-direction="bottom"
-      />
+      >
+        <template v-if="multiVariable" slot="tag" slot-scope="{ option, remove }">
+          <VariableTag
+            class="multiselect__tag widget-multiinputtext__tag"
+            v-if="isVariable(option)"
+            :available-variables="availableVariables"
+            :variable-delimiters="variableDelimiters"
+            :value="option"
+            @removed="remove(option)"
+          />
+          <span class="multiselect__tag widget-multiinputtext__tag" v-else>
+            <span v-html="option" />
+            <i @click.stop="remove(option)" class="multiselect__tag-icon" />
+          </span>
+        </template>
+      </multiselect>
     </component>
   </div>
 </template>
@@ -27,7 +42,8 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
+import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import MultiVariableInput from './MultiVariableInput.vue';
 import VariableInput from './VariableInput.vue';
@@ -36,8 +52,7 @@ import VariableInput from './VariableInput.vue';
   name: 'multi-input-text-widget',
   components: {
     Multiselect,
-    MultiVariableInput,
-    VariableInput,
+    VariableTag,
   },
 })
 export default class MultiInputTextWidget extends Vue {
@@ -78,6 +93,11 @@ export default class MultiInputTextWidget extends Vue {
       this.$emit('input', newValue);
     }
     this.options = [];
+  }
+
+  isVariable(value: string) {
+    const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+    return identifier != null;
   }
 }
 </script>
