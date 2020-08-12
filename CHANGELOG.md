@@ -5,6 +5,7 @@
 ### Added
 - Allow to use variables in ListWidget
 - Allow to use variables in InputNumberWidget
+- MultiVariableInput to select multiple variables in MultiTextInput or Multiselect
 
 ## [0.21.0] - 2020-08-06
 
