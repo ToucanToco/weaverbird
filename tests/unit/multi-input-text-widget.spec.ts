@@ -66,4 +66,18 @@ describe('Widget MultiInputText', () => {
     wrapper.find('multiselect-stub').vm.$emit('input');
     expect(wrapper.vm.$data.options).toEqual([]);
   });
+
+  describe('with multiVariable', () => {
+    let wrapper: any;
+    beforeEach(() => {
+      wrapper = shallowMount(MultiInputTextWidget, {
+        data: () => ({ options: ['Foo'] }),
+        propsData: { multiVariable: true },
+      });
+    });
+    it('should use MultiVariableInput', () => {
+      expect(wrapper.find('MultiVariableInput-stub').exists()).toBe(true);
+      expect(wrapper.find('VariableInput-stub').exists()).toBe(false);
+    });
+  });
 });

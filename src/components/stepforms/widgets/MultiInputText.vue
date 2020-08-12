@@ -1,6 +1,7 @@
 <template>
   <div class="widget-multiinputtext__container">
-    <VariableInput
+    <component
+      :is="variableInputMode"
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -18,7 +19,7 @@
         @search-change="updateOptions"
         open-direction="bottom"
       />
-    </VariableInput>
+    </component>
   </div>
 </template>
 
@@ -28,12 +29,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
+import MultiVariableInput from './MultiVariableInput.vue';
 import VariableInput from './VariableInput.vue';
 
 @Component({
   name: 'multi-input-text-widget',
   components: {
     Multiselect,
+    MultiVariableInput,
     VariableInput,
   },
 })
@@ -53,7 +56,14 @@ export default class MultiInputTextWidget extends Vue {
   @Prop()
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: false })
+  multiVariable!: boolean;
+
   options: string[] = [];
+
+  get variableInputMode() {
+    return this.multiVariable ? MultiVariableInput : VariableInput;
+  }
 
   updateOptions(newVal: string) {
     if (newVal.length > 0) {
@@ -244,6 +254,23 @@ export default class MultiInputTextWidget extends Vue {
   }
   &:hover {
     background: $active-color;
+  }
+}
+</style>
+
+<style scoped lang="scss">
+.widget-multiinputtext__multiselect {
+  /deep/ .widget-variable__tag {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 0;
+  }
+  /deep/ .widget-variable__tag-icon {
+    margin: 0 0.5em;
+  }
+  /deep/ .widget-variable__tag-close {
+    font-size: 10px;
+    padding: 0.5em;
   }
 }
 </style>
