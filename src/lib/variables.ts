@@ -24,7 +24,7 @@ export function extractVariableIdentifier(
   value: any,
   variableDelimiters: VariableDelimiters,
 ): string | undefined {
-  if (typeof value !== 'string') {
+  if (typeof value !== 'string' || !variableDelimiters) {
     return undefined;
   }
 
@@ -52,4 +52,11 @@ export function extractVariableIdentifier(
   } else {
     return undefined;
   }
+}
+
+export function setVariableIdentifier(
+  variableIdentifier: string,
+  variableDelimiters: VariableDelimiters,
+) {
+  return `${variableDelimiters.start} ${variableIdentifier} ${variableDelimiters.end}`;
 }
