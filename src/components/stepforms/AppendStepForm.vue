@@ -5,10 +5,13 @@
       class="pipelinesInput"
       v-model="editedStep.pipelines"
       name="Select datasets to append:"
-      :options="[...availablePipelines, ...domains]"
+      :options="options"
       placeholder="Select datasets"
       data-path=".pipelines"
       :errors="errors"
+      track-by="trackBy"
+      label="label"
+      with-example
     />
     <StepFormButtonbar />
   </div>
@@ -35,9 +38,21 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @Prop({ type: Object, default: () => ({ name: 'append', pipelines: [] }) })
   initialStepValue!: AppendStep;
 
+  @VQBModule.Getter referencingPipelines!: string[];
   @VQBModule.Getter availablePipelines!: string[];
   @VQBModule.State domains!: string[];
 
   readonly title: string = 'Append datasets';
+
+  get options() {
+    return [...this.availablePipelines, ...this.domains].map(name => {
+      const option = { label: name, trackBy: name };
+      if (this.referencingPipelines.includes(name)) {
+        option['$isDisabled'] = true;
+        option['tooltip'] = 'This dataset is not available for appending.';
+      }
+      return option;
+    });
+  }
 }
 </script>
