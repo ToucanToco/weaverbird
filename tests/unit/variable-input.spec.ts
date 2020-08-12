@@ -60,130 +60,17 @@ describe('Variable Input', () => {
     expect(wrapper.find("input[type='text']").exists()).toBe(true);
   });
 
-  describe('the variable (x) button', () => {
-    it('should be present', () => {
-      expect(wrapper.find('.widget-input-variable__variable-toggle').exists()).toBe(true);
-    });
-
-    describe('when there is no available variables', () => {
-      beforeEach(async () => {
-        wrapper.setProps({
-          availableVariables: [],
-        });
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should not be present', () => {
-        expect(wrapper.find('.widget-input-variable__variable-toggle').exists()).toBe(false);
-      });
-    });
-
-    describe('when clicked', () => {
-      beforeEach(async () => {
-        wrapper.find('.widget-input-variable__variable-toggle').trigger('click');
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should display the variable chooser', () => {
-        expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(true);
-      });
-
-      it('should display the slot click handler', () => {
-        expect(wrapper.find('.widget-input-variable__variable-click-handler').exists()).toBe(true);
-      });
-
-      it('should present all available variables organized in sections', () => {
-        const sections = wrapper.findAll('.widget-input-variable__options-section');
-        expect(sections).toHaveLength(2);
-        expect(
-          sections
-            .at(0)
-            .find('.widget-input-variable__option-section-title')
-            .text(),
-        ).toEqual('App variables');
-        expect(
-          sections
-            .at(1)
-            .find('.widget-input-variable__option-section-title')
-            .text(),
-        ).toEqual('Story variables');
-        const varsFromFirstSection = sections.at(0).findAll('.widget-input-variable__option');
-        expect(varsFromFirstSection).toHaveLength(3);
-      });
-
-      it('should display variables current values along their names', () => {
-        wrapper.findAll('.widget-input-variable__option').wrappers.forEach(w => {
-          expect(w.find('.widget-input-variable__option-name').text()).not.toBe('');
-          expect(w.find('.widget-input-variable__option-value').text()).not.toBe('');
-        });
-      });
-
-      describe('when closing the popover', () => {
-        beforeEach(async () => {
-          wrapper.find('popover-stub').vm.$emit('closed');
-          await wrapper.vm.$nextTick();
-        });
-
-        it('should hide the variable chooser', () => {
-          expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(
-            false,
-          );
-        });
-
-        it('should hide the slot click handler', () => {
-          expect(wrapper.find('.widget-input-variable__variable-click-handler').exists()).toBe(
-            false,
-          );
-        });
-      });
-
-      describe('when clicking on slot click handler', () => {
-        beforeEach(async () => {
-          wrapper.find('.widget-input-variable__variable-click-handler').trigger('click');
-          await wrapper.vm.$nextTick();
-        });
-        it('should hide the variable chooser', () => {
-          expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(
-            false,
-          );
-        });
-
-        it('should hide the slot click handler', () => {
-          expect(wrapper.find('.widget-input-variable__variable-click-handler').exists()).toBe(
-            false,
-          );
-        });
-      });
-
-      describe('when choosing a variable', () => {
-        beforeEach(async () => {
-          wrapper.find('.widget-input-variable__option').trigger('click');
-          await wrapper.vm.$nextTick();
-        });
-
-        it('should emit a new value with the chosen variable', () => {
-          expect(wrapper.emitted('input')).toHaveLength(1);
-          expect(wrapper.emitted('input')[0]).toEqual(['{{ appRequesters.view }}']);
-        });
-
-        it('should hide the variable chooser', () => {
-          expect(wrapper.find('.widget-input-variable__variable-chooser').props().visible).toBe(
-            false,
-          );
-        });
-      });
-    });
+  it('should contain the variable input base', () => {
+    expect(wrapper.find('VariableInputBase-stub').exists()).toBe(true);
   });
 
   describe('when value is not a variable', () => {
     beforeEach(() => {
-      wrapper.setProps({
-        value: 'hummus',
-      });
+      wrapper.setProps({ value: 'hummus' });
     });
 
     it('should display the regular input slot', () => {
-      expect(wrapper.find('.widget-input-variable__input-container').exists()).toBe(true);
+      expect(wrapper.find('VariableInputBase-stub').exists()).toBe(true);
     });
   });
 
@@ -196,76 +83,24 @@ describe('Variable Input', () => {
     });
 
     it('should not display the regular input slot', () => {
-      expect(wrapper.find('.widget-input-variable__input-container').exists()).toBe(false);
+      expect(wrapper.find('VariableInputBase-stub').exists()).toBe(false);
     });
 
-    it('should display the variable container', () => {
-      expect(wrapper.find('.widget-input-variable__variable-container').exists()).toBe(true);
-    });
-
-    it('should display the label of the variable without delimiters', () => {
-      expect(wrapper.find('.widget-input-variable__variable-name').text()).toBe('hummus');
-    });
-
-    it('should compute the variable value as empty', () => {
-      expect((wrapper as any).vm.variableValue).toBe('');
-    });
-
-    it('should nit display a tooltip on hover', () => {
-      expect(wrapper.find('.widget-input-variable__tag').classes()).not.toContain(
-        'has-weaverbird__tooltip',
-      );
-    });
-
-    describe('if the variable is listed in available variables', () => {
-      beforeEach(async () => {
-        wrapper.setProps({
-          availableVariables: [
-            {
-              label: 'The famous hummus',
-              identifier: 'hummus',
-              value: ['hummus', 'hummus'],
-            },
-          ],
-        });
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should display the human-friendly label instead of the identifier', () => {
-        expect(wrapper.find('.widget-input-variable__variable-name').text()).toBe(
-          'The famous hummus',
-        );
-      });
-
-      it('should compute the variable value', () => {
-        expect((wrapper as any).vm.variableValue).toBe('hummus, hummus');
-      });
-
-      it('should display a tooltip on hover', () => {
-        expect(wrapper.find('.widget-input-variable__tag').classes()).toContain(
-          'has-weaverbird__tooltip',
-        );
-      });
+    it('should display the tag of the variable', () => {
+      expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
+      expect(wrapper.find('VariableTag-stub').props().value).toBe('{{ hummus }}');
     });
 
     describe('when dismissing the variable', () => {
       beforeEach(async () => {
-        wrapper.find('.widget-input-variable__tag-close').trigger('click');
+        wrapper.find('VariableTag-stub').vm.$emit('removed');
+        await wrapper.vm.$nextTick();
       });
 
       it('should reset the value', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0]).toEqual([undefined]);
       });
-    });
-  });
-
-  describe('with a parent component which has an arrow', () => {
-    beforeEach(() => {
-      wrapper.setProps({ hasArrow: true });
-    });
-    it('should move the variable chooser toggle button away from arrow', () => {
-      expect(wrapper.find('.widget-input-variable--parent-arrow').exists()).toBe(true);
     });
   });
 });
