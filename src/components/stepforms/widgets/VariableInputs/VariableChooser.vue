@@ -1,0 +1,166 @@
+<template>
+  <popover
+    class="widget-variable-chooser"
+    :visible="isOpened"
+    :align="alignLeft"
+    bottom
+    @closed="close"
+  >
+    <div class="widget-variable-chooser__options-container">
+      <div
+        class="widget-variable-chooser__options-section"
+        v-for="category in variablesByCategory"
+        :key="category.label"
+      >
+        <div class="widget-variable-chooser__option-section-title" v-if="category.label">
+          {{ category.label }}
+        </div>
+        <div
+          class="widget-variable-chooser__option"
+          v-for="availableVariable in category.variables"
+          :key="availableVariable.identifier"
+          @click="chooseVariable(availableVariable.identifier)"
+        >
+          <span class="widget-variable-chooser__option-name">{{ availableVariable.label }}</span>
+          <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
+        </div>
+      </div>
+      <!-- <div class="widget-advanced-variable">Advanced variable</div> -->
+    </div>
+  </popover>
+</template>
+
+<script lang="ts">
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import { POPOVER_ALIGN } from '@/components/constants';
+import Popover from '@/components/Popover.vue';
+import { VariablesBucket, VariablesCategory } from '@/lib/variables';
+
+/**
+ * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
+ * expression.
+ */
+@Component({
+  name: 'variable-chooser',
+  components: { Popover },
+})
+export default class VariableChooser extends Vue {
+  @Prop({ default: () => [] })
+  availableVariables!: VariablesBucket;
+
+  @Prop({ default: false })
+  isOpened!: boolean;
+
+  alignLeft: string = POPOVER_ALIGN.LEFT;
+
+  /**
+   * Group variables by category to easily choose among them
+   *
+   * https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_groupby
+   */
+  get variablesByCategory(): VariablesCategory[] {
+    return this.availableVariables.reduce(function(categories: VariablesCategory[], variable) {
+      const varCategoryLabel = variable.category;
+      const category = categories.find(c => c.label === varCategoryLabel);
+      if (category !== undefined) {
+        category.variables.push(variable);
+      } else {
+        categories.push({
+          label: varCategoryLabel,
+          variables: [variable],
+        });
+      }
+      return categories;
+    }, []);
+  }
+
+  close() {
+    this.$emit('closed');
+  }
+
+  /**
+   * Emit the choosen variable
+   */
+  chooseVariable(variableIdentifier: string) {
+    this.$emit('input', variableIdentifier);
+  }
+}
+</script>
+
+<style scoped lang="scss">
+@import '../../../../styles/variables';
+
+.widget-variable-chooser__options-container {
+  display: flex;
+  border-radius: 2px;
+  width: 180px;
+  max-height: 300px;
+  background-color: #fff;
+  box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
+  color: $base-color;
+  overflow: hidden;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.widget-variable-chooser__options-section {
+  border-bottom: 1px solid #eeeeee;
+  padding-bottom: 10px;
+}
+
+.widget-variable-chooser__option-section-title {
+  font-style: italic;
+  color: #888888;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.widget-variable-chooser__option-section-title,
+.widget-variable-chooser__option {
+  padding: 12px;
+}
+
+.widget-variable-chooser__option {
+  &:hover {
+    background-color: rgba(42, 102, 161, 0.05);
+    color: #2a66a1;
+    .widget-options-value {
+      color: #2a66a1;
+    }
+  }
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.widget-variable-chooser__option-name {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.widget-variable-chooser__option-value {
+  font-size: 10px;
+  font-weight: 500;
+  color: #888888;
+  flex-shrink: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 1em;
+}
+
+.widget-advanced-variable {
+  font-size: 12px;
+  font-weight: 500;
+  &:hover {
+    background-color: rgba(42, 102, 161, 0.05);
+    color: #2a66a1;
+  }
+  display: flex;
+  justify-content: space-between;
+  cursor: pointer;
+  margin-bottom: 5px;
+  padding: 12px;
+}
+</style>
