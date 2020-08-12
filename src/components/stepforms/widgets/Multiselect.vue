@@ -9,6 +9,7 @@
       @input="updateValue"
     >
       <multiselect
+        class="widget-multiselect__multiselect"
         v-model="editedValue"
         :options="options"
         :placeholder="placeholder"
@@ -225,16 +226,18 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   bottom: auto;
   z-index: 50;
 }
-/deep/ .widget-variable__tag {
-  display: inline-block;
-  margin-right: 10px;
-  padding: 0;
-}
-/deep/ .widget-variable__tag-icon {
-  margin: 0 0.5em;
-}
-/deep/ .widget-variable__tag-close {
-  font-size: 10px;
-  padding: 0.5em;
+.widget-multiselect__multiselect {
+  /deep/ .widget-variable__tag {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 0;
+  }
+  /deep/ .widget-variable__tag-icon {
+    margin: 0 0.5em;
+  }
+  /deep/ .widget-variable__tag-close {
+    font-size: 10px;
+    padding: 0.6em 0.5em;
+  }
 }
 </style>

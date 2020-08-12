@@ -290,7 +290,7 @@ export default class MultiInputTextWidget extends Vue {
   }
   /deep/ .widget-variable__tag-close {
     font-size: 10px;
-    padding: 0.5em;
+    padding: 0.6em 0.5em;
   }
 }
 </style>
