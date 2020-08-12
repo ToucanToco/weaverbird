@@ -1,29 +1,51 @@
 <template>
   <div class="widget-multiselect__container" :class="toggleClassErrorWarning">
     <label class="widget-multiselect__label">{{ name }}</label>
-    <multiselect
-      v-model="editedValue"
-      :options="options"
-      :placeholder="placeholder"
-      :track-by="trackBy"
-      :label="label"
-      :multiple="true"
-      :taggable="true"
-      :close-on-select="false"
-      openDirection="bottom"
+    <MultiVariableInput
+      :value="value"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      :has-arrow="true"
+      @input="updateValue"
     >
-      <!-- If you want to use those templates you should provide a 'label' and 
+      <multiselect
+        v-model="editedValue"
+        :options="options"
+        :placeholder="placeholder"
+        :track-by="trackBy"
+        :label="label"
+        :multiple="true"
+        :taggable="true"
+        :close-on-select="false"
+        openDirection="bottom"
+      >
+        <!-- If you want to use those templates you should provide a 'label' and 
     'example' key in the options-->
-      <template v-if="withExample" slot="singleLabel" slot-scope="props">
-        <span class="option__title">{{ props.option.label }}</span>
-      </template>
-      <template v-if="withExample" slot="option" slot-scope="props">
-        <div class="option__container" :title="props.option.tooltip">
-          <div class="option__title">{{ props.option.label }}</div>
-          <div class="option__example">{{ props.option.example }}</div>
-        </div>
-      </template>
-    </multiselect>
+        <template v-if="withExample" slot="singleLabel" slot-scope="props">
+          <span class="option__title">{{ props.option.label }}</span>
+        </template>
+        <template v-if="withExample" slot="option" slot-scope="props">
+          <div class="option__container" :title="props.option.tooltip">
+            <div class="option__title">{{ props.option.label }}</div>
+            <div class="option__example">{{ props.option.example }}</div>
+          </div>
+        </template>
+        <template slot="tag" slot-scope="{ option, remove }">
+          <VariableTag
+            class="multiselect__tag widget-multiselect__tag"
+            v-if="isVariable(option)"
+            :available-variables="availableVariables"
+            :variable-delimiters="variableDelimiters"
+            :value="option"
+            @removed="remove(option)"
+          />
+          <span class="multiselect__tag widget-multiselect__tag" v-else>
+            <span v-html="option" />
+            <i @click.stop="remove(option)" class="multiselect__tag-icon" />
+          </span>
+        </template>
+      </multiselect>
+    </MultiVariableInput>
     <div v-if="messageError" class="field__msg-error">
       <span class="fa fa-exclamation-circle" />
       {{ messageError }}
@@ -35,12 +57,18 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
+import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
+import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+
 import FormWidget from './FormWidget.vue';
+import MultiVariableInput from './MultiVariableInput.vue';
 
 @Component({
   name: 'multiselect-widget',
   components: {
     Multiselect,
+    VariableTag,
+    MultiVariableInput,
   },
 })
 export default class MultiselectWidget extends Mixins(FormWidget) {
@@ -65,6 +93,15 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
 
+  @Prop()
+  availableVariables!: VariablesBucket[];
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
+
+  @Prop({ default: false })
+  multiVariable!: boolean;
+
   editedValue: string[] = [];
 
   @Watch('value', { immediate: true })
@@ -75,6 +112,11 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Watch('editedValue')
   updateValue(newValue: string[]) {
     this.$emit('input', newValue);
+  }
+
+  isVariable(value: string) {
+    const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+    return identifier != null;
   }
 }
 </script>
@@ -174,5 +216,25 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   &:hover {
     background: $active-color;
   }
+}
+</style>
+
+<style scoped lang="scss">
+/deep/ .widget-variable__toggle {
+  top: 10px;
+  bottom: auto;
+  z-index: 50;
+}
+/deep/ .widget-variable__tag {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 0;
+}
+/deep/ .widget-variable__tag-icon {
+  margin: 0 0.5em;
+}
+/deep/ .widget-variable__tag-close {
+  font-size: 10px;
+  padding: 0.5em;
 }
 </style>
