@@ -1,68 +1,32 @@
-import { shallowMount } from '@vue/test-utils';
+import { mount } from '@vue/test-utils';
 
-import MultiSelectWidget from '@/components/stepforms/widgets/InputText.vue';
+import MultiSelectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 describe('Widget Multiselect', () => {
-  it('should instantiate', () => {
-    const wrapper = shallowMount(MultiSelectWidget);
-
-    expect(wrapper.exists()).toBeTruthy();
+  it('should not have specific templates if the prop withExample is false', () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: { withExample: false, options: [{ label: 'foo', example: 'bar' }] },
+    });
+    expect(wrapper.find('.option__title').exists()).toBeFalsy();
+    expect(wrapper.find('.option__container').exists()).toBeFalsy();
   });
 
-  it('should have a label', () => {
-    const wrapper = shallowMount(MultiSelectWidget, {
+  it('should have specific templates if the prop withExample is true', () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: { withExample: true, options: [{ label: 'foo', example: 'bar' }] },
+    });
+    expect(wrapper.find('.option__title').exists()).toBeTruthy();
+    expect(wrapper.find('.option__container').exists()).toBeTruthy();
+  });
+
+  it('should add a tooltip to the option', () => {
+    const wrapper = mount(MultiSelectWidget, {
       propsData: {
-        name: 'Stark',
+        withExample: true,
+        options: [{ label: 'foo', example: 'bar', tooltip: 'ukulélé' }],
       },
     });
-    const labelWrapper = wrapper.find('label');
-    expect(labelWrapper.text()).toEqual('Stark');
-  });
-
-  it('should have an empty placeholder', () => {
-    const wrapper = shallowMount(MultiSelectWidget, {
-      propsData: {
-        value: 'foo',
-      },
-    });
-    const el = wrapper.find("input[type='text']").element as HTMLInputElement;
-    expect(el.placeholder).toEqual('');
-  });
-
-  it('should have a placeholder', () => {
-    const wrapper = shallowMount(MultiSelectWidget, {
-      propsData: {
-        placeholder: 'I m a placeholder',
-        value: 'foo',
-      },
-    });
-    const el = wrapper.find("input[type='text']").element as HTMLInputElement;
-    expect(el.placeholder).toEqual('I m a placeholder');
-  });
-
-  it('should have an empty input', () => {
-    const wrapper = shallowMount(MultiSelectWidget);
-    const el = wrapper.find("input[type='text']").element as HTMLInputElement;
-    expect(el.value).toEqual('');
-  });
-
-  it('should have a non empty input', () => {
-    const wrapper = shallowMount(MultiSelectWidget, {
-      propsData: { value: 'foo' },
-    });
-    const el = wrapper.find("input[type='text']").element as HTMLInputElement;
-    expect(el.value).toEqual('foo');
-  });
-
-  it('should emit "input" event on update', () => {
-    const wrapper = shallowMount(MultiSelectWidget, {
-      propsData: {
-        value: ['Foo'],
-      },
-    });
-    const inputWrapper = wrapper.find('input[type="text"]');
-    (inputWrapper.element as HTMLInputElement).value = 'Bar';
-    inputWrapper.trigger('input', { value: 'Bar' });
-    expect(wrapper.emitted()).toEqual({ input: [['Bar']] });
+    expect(wrapper.find('.option__container').exists()).toBeTruthy();
+    expect(wrapper.find('.option__container').attributes('title')).toEqual('ukulélé');
   });
 });

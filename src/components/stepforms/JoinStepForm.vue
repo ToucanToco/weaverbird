@@ -5,10 +5,13 @@
       class="rightPipelineInput"
       v-model="editedStep.right_pipeline"
       name="Select a dataset to join (as right dataset):"
-      :options="[...availablePipelines, ...domains]"
+      :options="options"
       placeholder="Select a dataset"
       data-path=".right_pipeline"
       :errors="errors"
+      track-by="trackBy"
+      label="label"
+      with-example
     />
     <AutocompleteWidget
       class="typeInput"
@@ -67,6 +70,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   })
   initialStepValue!: JoinStep;
 
+  @VQBModule.Getter referencingPipelines!: string[];
   @VQBModule.Getter availablePipelines!: string[];
   @VQBModule.State domains!: string[];
 
@@ -84,6 +88,19 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   set on(newval) {
     this.editedStep.on = [...newval];
+  }
+
+  get options() {
+    return [...this.availablePipelines, ...this.domains].map(name => {
+      const option = { label: name, trackBy: name };
+      if (this.referencingPipelines.includes(name)) {
+        option['$isDisabled'] = true;
+        option[
+          'tooltip'
+        ] = `Circular reference: you cannot combine ${name} because it references the current dataset.`;
+      }
+      return option;
+    });
   }
 }
 </script>

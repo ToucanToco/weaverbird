@@ -9,6 +9,16 @@ import { currentPipeline, emptyState } from '@/store/state';
 import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
 
 describe('getter tests', () => {
+  describe('pipelines', () => {
+    it('should return the pipelines', () => {
+      const pipelines = { foo: [], bar: [] };
+      const state = buildState({
+        pipelines,
+      });
+      expect(getters.pipelines(state, {}, {}, {})).toEqual(pipelines);
+    });
+  });
+
   describe('(in)active pipeline steps', () => {
     it('should not return anything without any selected pipeline', () => {
       const state = buildState({});
@@ -61,6 +71,55 @@ describe('getter tests', () => {
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
       expect(getters.inactivePipeline(state, {}, {}, {})).toEqual(pipeline.slice(2));
+    });
+  });
+
+  describe('availablePipelines', () => {
+    it('should not return the current pipeline', () => {
+      const state = buildState({
+        currentPipelineName: 'coco_l_asticot',
+        pipelines: {
+          coco_l_asticot: [],
+          dataset1: [],
+          dataset2: [],
+        },
+      });
+      expect(getters.availablePipelines(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
+    });
+    it('should return everything if the currentPipelineName is not defined', () => {
+      const pipelines = {
+        dataset1: [],
+        dataset2: [],
+      };
+      const state = buildState({
+        currentPipelineName: undefined,
+        pipelines,
+      });
+      expect(getters.availablePipelines(state, {}, {}, {})).toEqual(Object.keys(pipelines));
+    });
+  });
+
+  describe('referencingPipelines', () => {
+    it('should return the referencing pipeline(s)', () => {
+      const state = buildState({
+        currentPipelineName: 'coco_l_asticot',
+        pipelines: {
+          coco_l_asticot: [{ name: 'domain', domain: 'dataset1' }],
+          dataset1: [],
+          dataset2: [{ name: 'domain', domain: 'coco_l_asticot' }],
+        },
+      });
+      expect(getters.referencingPipelines(state, {}, {}, {})).toEqual(['dataset2']);
+    });
+    it('should return nothing if the currentPipelineName is not defined', () => {
+      const state = buildState({
+        currentPipelineName: undefined,
+        pipelines: {
+          dataset1: [],
+          dataset2: [],
+        },
+      });
+      expect(getters.referencingPipelines(state, {}, {}, {})).toEqual([]);
     });
   });
 
