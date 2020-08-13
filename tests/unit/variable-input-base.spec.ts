@@ -133,6 +133,18 @@ describe('Variable Input', () => {
           expect(wrapper.find('VariableChooser-stub').props().isOpened).toBe(false);
         });
       });
+
+      describe('when choosing a variable on toggable mode', () => {
+        beforeEach(async () => {
+          wrapper.setProps({ toggable: true });
+          wrapper.find('VariableChooser-stub').vm.$emit('input', 'appRequesters.view');
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should keep the variable chooser open', () => {
+          expect(wrapper.find('VariableChooser-stub').props().isOpened).toBe(true);
+        });
+      });
     });
   });
 

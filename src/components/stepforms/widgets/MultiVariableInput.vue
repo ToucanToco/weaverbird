@@ -4,6 +4,8 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="hasArrow"
+      :toggable="true"
+      :value="value"
       @input="toggleVariable"
     >
       <slot />
