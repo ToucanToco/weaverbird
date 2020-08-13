@@ -54,10 +54,3 @@ export function extractVariableIdentifier(
     return undefined;
   }
 }
-
-export function setVariableIdentifier(
-  variableIdentifier: string,
-  variableDelimiters: VariableDelimiters,
-) {
-  return `${variableDelimiters.start} ${variableIdentifier} ${variableDelimiters.end}`;
-}

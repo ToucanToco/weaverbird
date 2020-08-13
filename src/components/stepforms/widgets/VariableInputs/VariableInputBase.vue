@@ -34,12 +34,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import {
-  extractVariableIdentifier,
-  setVariableIdentifier,
-  VariableDelimiters,
-  VariablesBucket,
-} from '@/lib/variables';
+import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import VariableChooser from './VariableChooser.vue';
 
@@ -98,7 +93,7 @@ export default class VariableInputBase extends Vue {
    * Emit the choosen variable
    */
   chooseVariable(variableIdentifier: string) {
-    const value = setVariableIdentifier(variableIdentifier, this.variableDelimiters);
+    const value = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
     this.$emit('input', value);
     if (!this.isMultiple) {
       this.stopChoosingVariable(); // keep list open with multiVariable mode
