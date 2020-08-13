@@ -102,4 +102,21 @@ describe('Variable Chooser', () => {
       expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
     });
   });
+
+  describe('toggable mode', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        toggable: true,
+        value: ['a', '{{ appRequesters.date.month }}', '{{ appRequesters.date.year }}'],
+      });
+    });
+
+    it('should display checkboxes before options', () => {
+      expect(wrapper.findAll('.widget-variable-chooser__option-toggle').length).toBe(5);
+    });
+
+    it('should highlight selected options', () => {
+      expect(wrapper.findAll('.widget-variable-chooser__option--selected').length).toBe(2);
+    });
+  });
 });
