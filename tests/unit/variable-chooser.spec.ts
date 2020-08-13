@@ -107,7 +107,7 @@ describe('Variable Chooser', () => {
     beforeEach(async () => {
       wrapper.setProps({
         isMultiple: true,
-        value: ['a', '{{ appRequesters.date.month }}', '{{ appRequesters.date.year }}'],
+        selectedVariables: ['appRequesters.date.month', 'appRequesters.date.year'],
       });
     });
 

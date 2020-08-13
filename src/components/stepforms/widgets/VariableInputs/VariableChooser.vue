@@ -39,13 +39,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
-import {
-  AvailableVariable,
-  setVariableIdentifier,
-  VariableDelimiters,
-  VariablesBucket,
-  VariablesCategory,
-} from '@/lib/variables';
+import { VariableDelimiters, VariablesBucket, VariablesCategory } from '@/lib/variables';
 
 /**
  * This component list all the available variables to use as value in VariableInputs
@@ -58,8 +52,8 @@ export default class VariableChooser extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
-  @Prop({ default: () => '' })
-  value!: string[];
+  @Prop({ default: () => [] })
+  selectedVariables!: string[];
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
@@ -81,7 +75,10 @@ export default class VariableChooser extends Vue {
     return this.availableVariables.reduce((categories: VariablesCategory[], variable) => {
       const varCategoryLabel = variable.category;
       const category = categories.find(c => c.label === varCategoryLabel);
-      const variableObj = this.isVariableSelected(variable);
+      const variableObj = {
+        ...variable,
+        selected: this.isVariableSelected(variable.identifier),
+      };
       if (category !== undefined) {
         category.variables.push(variableObj);
       } else {
@@ -95,14 +92,10 @@ export default class VariableChooser extends Vue {
   }
 
   /**
-  Add delimiters to variableIdentifier to verify if item is selected in multiple mode
+  Verify if item is selected (multiple mode)
   **/
-  isVariableSelected(variable: AvailableVariable): AvailableVariable {
-    if (!this.isMultiple) return variable;
-
-    const value = setVariableIdentifier(variable.identifier, this.variableDelimiters);
-    const selected = this.value.indexOf(value) !== -1;
-    return { ...variable, selected };
+  isVariableSelected(variableIdentifier: string): boolean {
+    return this.isMultiple && this.selectedVariables.indexOf(variableIdentifier) != -1;
   }
 
   close() {
