@@ -71,7 +71,7 @@ describe('Widget Multiselect', () => {
       },
     });
     const tag = wrapper.findAll('.widget-multiselect__tag').at(0);
-    tag.find('.multiselect__tag-icon').trigger('click');
+    tag.find('.multiselect__tag-icon').trigger('mousedown');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().input[0][0]).toStrictEqual(['b']);
   });

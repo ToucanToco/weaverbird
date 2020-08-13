@@ -42,7 +42,12 @@
           />
           <span class="multiselect__tag widget-multiselect__tag" v-else>
             <span v-html="option" />
-            <i @click.stop="remove(option)" class="multiselect__tag-icon" />
+            <i
+              tabindex="1"
+              class="multiselect__tag-icon"
+              @keypress.enter.prevent="remove(option)"
+              @mousedown.prevent="remove(option)"
+            />
           </span>
         </template>
       </multiselect>
