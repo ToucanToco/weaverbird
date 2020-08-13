@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiVariableInput from '@/components/stepforms/widgets/MultiVariableInput.vue';
 import VariableInput from '@/components/stepforms/widgets/VariableInput.vue';
+import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -69,21 +70,75 @@ describe('Widget MultiInputText', () => {
     expect(wrapper.vm.$data.options).toEqual([]);
   });
 
-  describe('with multiVariable', () => {
-    let wrapper: any;
-    beforeEach(() => {
-      wrapper = mount(MultiInputTextWidget, {
-        data: () => ({ options: ['Foo'] }),
-        propsData: {
-          value: ['a', 'b', '{{ var1 }}'],
-          variableDelimiters: { start: '{{', end: '}}' },
-        },
-      });
+  it('should use MultiVariableInput', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+      },
     });
-    it('should use MultiVariableInput', () => {
-      expect(wrapper.findAll(MultiVariableInput).length).toBe(1);
-      expect(wrapper.findAll(VariableInput).length).toBe(0);
+    expect(wrapper.findAll(MultiVariableInput).length).toBe(1);
+    expect(wrapper.findAll(VariableInput).length).toBe(0);
+  });
+
+  it('should not use custom template for tags', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '{{ var2 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+      },
     });
+    expect(wrapper.findAll('.widget-multiinputtext__tag').length).toBe(0);
+  });
+
+  it('... until there is availableVariables', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '{{ var2 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    expect(wrapper.findAll('.widget-multiinputtext__tag').length).toBe(4);
+  });
+
+  it('should use specific variable template for variable tags', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '{{ var2 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    expect(wrapper.findAll(VariableTag).length).toBe(2);
+  });
+
+  it('should remove variable from value when clicking on tag', async () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    const tag = wrapper.findAll('.widget-multiinputtext__tag').at(0);
+    tag.find('.multiselect__tag-icon').trigger('click');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[0][0]).toStrictEqual(['b']);
+  });
+
+  it('should remove variable from value when clicking on variable tag', async () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', '{{ var1 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    const variableTag = wrapper.findAll(VariableTag).at(0);
+    variableTag.vm.$emit('removed');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[0][0]).toStrictEqual(['a']);
   });
 
   describe('without multiVariable', () => {
@@ -103,7 +158,7 @@ describe('Widget MultiInputText', () => {
       expect(wrapper.findAll(MultiVariableInput).length).toBe(0);
     });
     it('should not use custom template', () => {
-      expect(wrapper.findAll('.widget-multiinputtext__tag').exists()).toBe(false);
+      expect(wrapper.find('.widget-multiinputtext__tag').exists()).toBe(false);
     });
   });
 });
