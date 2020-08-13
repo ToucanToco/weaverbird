@@ -10,7 +10,13 @@
   >
     <span class="widget-variable__tag-icon">{}</span>
     <span class="widget-variable__tag-name">{{ variableLabel }}</span>
-    <i class="widget-variable__tag-close fa fa-times" @click.stop="removeVariableTag" />
+    <i
+      class="widget-variable__tag-close fa fa-times"
+      @click="removeVariableTag"
+      tabindex="1"
+      @keypress.enter.prevent="removeVariableTag"
+      @mousedown.prevent="removeVariableTag"
+    />
   </div>
 </template>
 

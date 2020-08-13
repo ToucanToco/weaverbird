@@ -163,6 +163,7 @@ export default class VariableChooser extends Vue {
 .widget-variable-chooser__option-container {
   display: flex;
   flex-direction: row;
+  align-items: center;
 }
 
 .widget-variable-chooser__option-name {

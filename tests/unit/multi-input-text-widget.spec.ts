@@ -122,7 +122,7 @@ describe('Widget MultiInputText', () => {
       },
     });
     const tag = wrapper.findAll('.widget-multiinputtext__tag').at(0);
-    tag.find('.multiselect__tag-icon').trigger('click');
+    tag.find('.multiselect__tag-icon').trigger('mousedown');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().input[0][0]).toStrictEqual(['b']);
   });

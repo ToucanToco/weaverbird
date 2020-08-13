@@ -32,9 +32,14 @@
             :value="option"
             @removed="remove(option)"
           />
-          <span class="multiselect__tag widget-multiinputtext__tag" v-else>
+          <span class="multiselect__tag widget-multiinputtext__tag" @click.prevent.stop="" v-else>
             <span v-html="option" />
-            <i @click.stop="remove(option)" class="multiselect__tag-icon" />
+            <i
+              tabindex="1"
+              class="multiselect__tag-icon"
+              @keypress.enter.prevent="remove(option)"
+              @mousedown.prevent="remove(option)"
+            />
           </span>
         </template>
       </multiselect>
@@ -252,9 +257,6 @@ export default class MultiInputTextWidget extends Vue {
     }
     .multiselect__input {
       box-shadow: 0 0 0 1px #2665a3 inset;
-    }
-    .multiselect__tag:last-child {
-      margin-bottom: 0;
     }
   }
   // The selection caret is useless in this widget
