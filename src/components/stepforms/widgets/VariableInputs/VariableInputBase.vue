@@ -22,6 +22,8 @@
     <VariableChooser
       :available-variables="availableVariables"
       :isOpened="isChoosingVariable"
+      :toggable="toggable"
+      :value="value"
       @input="chooseVariable"
       @closed="stopChoosingVariable"
     />
@@ -44,6 +46,12 @@ import VariableChooser from './VariableChooser.vue';
   components: { VariableChooser },
 })
 export default class VariableInputBase extends Vue {
+  @Prop({ default: false })
+  toggable!: boolean;
+
+  @Prop({ default: () => '' })
+  value!: string[];
+
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
@@ -75,7 +83,9 @@ export default class VariableInputBase extends Vue {
    */
   chooseVariable(variableIdentifier: string) {
     this.$emit('input', variableIdentifier);
-    this.stopChoosingVariable();
+    if (!this.toggable) {
+      this.stopChoosingVariable(); // keep list open with multiVariable mode
+    }
   }
 }
 </script>
