@@ -17,11 +17,15 @@
         </div>
         <div
           class="widget-variable-chooser__option"
+          :class="{ 'widget-variable-chooser__option--selected': availableVariable.selected }"
           v-for="availableVariable in category.variables"
           :key="availableVariable.identifier"
           @click="chooseVariable(availableVariable.identifier)"
         >
-          <span class="widget-variable-chooser__option-name">{{ availableVariable.label }}</span>
+          <div class="widget-variable-chooser__option-container">
+            <span v-if="toggable" class="widget-variable-chooser__option-toggle" />
+            <span class="widget-variable-chooser__option-name">{{ availableVariable.label }}</span>
+          </div>
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
         </div>
       </div>
@@ -35,7 +39,13 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
-import { VariablesBucket, VariablesCategory } from '@/lib/variables';
+import {
+  AvailableVariable,
+  setVariableIdentifier,
+  VariableDelimiters,
+  VariablesBucket,
+  VariablesCategory,
+} from '@/lib/variables';
 
 /**
  * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
@@ -46,8 +56,17 @@ import { VariablesBucket, VariablesCategory } from '@/lib/variables';
   components: { Popover },
 })
 export default class VariableChooser extends Vue {
+  @Prop({ default: false })
+  toggable!: boolean;
+
+  @Prop({ default: () => '' })
+  value!: string[];
+
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
+  variableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
   isOpened!: boolean;
@@ -60,19 +79,31 @@ export default class VariableChooser extends Vue {
    * https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_groupby
    */
   get variablesByCategory(): VariablesCategory[] {
-    return this.availableVariables.reduce(function(categories: VariablesCategory[], variable) {
+    return this.availableVariables.reduce((categories: VariablesCategory[], variable) => {
       const varCategoryLabel = variable.category;
       const category = categories.find(c => c.label === varCategoryLabel);
+      const variableObj = this.isVariableSelected(variable);
       if (category !== undefined) {
-        category.variables.push(variable);
+        category.variables.push(variableObj);
       } else {
         categories.push({
           label: varCategoryLabel,
-          variables: [variable],
+          variables: [variableObj],
         });
       }
       return categories;
     }, []);
+  }
+
+  /**
+  Add delimiters to variableIdentifier to verify if item is selected in toggable mode
+  **/
+  isVariableSelected(variable: AvailableVariable): AvailableVariable {
+    if (!this.toggable) return variable;
+
+    const value = setVariableIdentifier(variable.identifier, this.variableDelimiters);
+    const selected = this.value.indexOf(value) !== -1;
+    return { ...variable, selected };
   }
 
   close() {
@@ -94,7 +125,7 @@ export default class VariableChooser extends Vue {
 .widget-variable-chooser__options-container {
   display: flex;
   border-radius: 2px;
-  width: 180px;
+  width: 200px;
   max-height: 300px;
   background-color: #fff;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
@@ -125,13 +156,21 @@ export default class VariableChooser extends Vue {
   &:hover {
     background-color: rgba(42, 102, 161, 0.05);
     color: #2a66a1;
-    .widget-options-value {
+    .widget-variable-chooser__option-value {
       color: #2a66a1;
+    }
+    .widget-variable-chooser__option-toggle {
+      border-color: #2a66a1;
     }
   }
   display: flex;
   justify-content: space-between;
   cursor: pointer;
+}
+
+.widget-variable-chooser__option-container {
+  display: flex;
+  flex-direction: row;
 }
 
 .widget-variable-chooser__option-name {
@@ -162,5 +201,63 @@ export default class VariableChooser extends Vue {
   cursor: pointer;
   margin-bottom: 5px;
   padding: 12px;
+}
+
+.widget-variable-chooser__option-toggle {
+  position: relative;
+  background: white;
+  width: 12px;
+  height: 12px;
+  border: 1px solid #d4d4d4;
+  border-radius: 1px;
+  margin-right: 10px;
+
+  &:active,
+  &:focus,
+  &:hover {
+    border-color: #2a66a1;
+  }
+
+  &::before,
+  &::after {
+    content: '';
+    order: -1;
+    display: block;
+    background: black;
+    height: 2px;
+    top: 4px;
+    position: absolute;
+    opacity: 0;
+  }
+
+  &::before {
+    right: 1px;
+    width: 7px;
+    transform: rotate(-45deg);
+  }
+
+  &::after {
+    left: 1px;
+    width: 3px;
+    transform: rotate(45deg);
+  }
+}
+
+.widget-variable-chooser__option--selected {
+  background: #f5f5f5;
+  .widget-variable-chooser__option-toggle {
+    background: black;
+    border-color: black;
+    &::before,
+    &::after {
+      background: white;
+      opacity: 1;
+    }
+  }
+  &:hover {
+    .widget-variable-chooser__option-toggle {
+      background: #2a66a1;
+    }
+  }
 }
 </style>

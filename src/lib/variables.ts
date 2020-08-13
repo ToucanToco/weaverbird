@@ -1,8 +1,9 @@
-interface AvailableVariable {
+export interface AvailableVariable {
   identifier: string; // how the variable will be written in the code
   value: any; // current value of the variable
   category?: string;
   label: string;
+  selected?: boolean;
 }
 
 export type VariablesBucket = AvailableVariable[];
