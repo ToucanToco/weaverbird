@@ -27,12 +27,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/VariableInputBase.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
-import {
-  extractVariableIdentifier,
-  setVariableIdentifier,
-  VariableDelimiters,
-  VariablesBucket,
-} from '@/lib/variables';
+import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /**
  * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
@@ -69,8 +64,7 @@ export default class VariableInput extends Vue {
   /**
    * Wraps the chosen variable with delimiters and emits it
    */
-  chooseVariable(variableIdentifier: string) {
-    const value = setVariableIdentifier(variableIdentifier, this.variableDelimiters);
+  chooseVariable(value: string) {
     this.$emit('input', value);
   }
 

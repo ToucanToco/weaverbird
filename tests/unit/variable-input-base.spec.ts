@@ -126,7 +126,7 @@ describe('Variable Input', () => {
 
         it('should emit a new value with the chosen variable', () => {
           expect(wrapper.emitted('input')).toHaveLength(1);
-          expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
+          expect(wrapper.emitted('input')[0]).toEqual(['{{ appRequesters.view }}']);
         });
 
         it('should hide the variable chooser', () => {

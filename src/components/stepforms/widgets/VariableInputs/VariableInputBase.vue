@@ -24,6 +24,7 @@
       :is-opened="isChoosingVariable"
       :is-multiple="isMultiple"
       :value="value"
+      :selected-variables="selectedVariables"
       @input="chooseVariable"
       @closed="stopChoosingVariable"
     />
@@ -33,7 +34,12 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import {
+  extractVariableIdentifier,
+  setVariableIdentifier,
+  VariableDelimiters,
+  VariablesBucket,
+} from '@/lib/variables';
 
 import VariableChooser from './VariableChooser.vue';
 
@@ -49,7 +55,7 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
-  @Prop({ default: () => '' })
+  @Prop({ default: () => [] })
   value!: string[];
 
   @Prop({ default: () => [] })
@@ -62,6 +68,16 @@ export default class VariableInputBase extends Vue {
   hasArrow!: boolean;
 
   isChoosingVariable = false;
+
+  /**
+   * Find variables in value array
+   */
+  get selectedVariables(): string[] {
+    return this.value.reduce((variables: string[], value: string) => {
+      const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+      return identifier ? [...variables, identifier] : variables;
+    }, []);
+  }
 
   /**
    * Determine whether to authorize or not the selection of a variable
@@ -82,7 +98,8 @@ export default class VariableInputBase extends Vue {
    * Emit the choosen variable
    */
   chooseVariable(variableIdentifier: string) {
-    this.$emit('input', variableIdentifier);
+    const value = setVariableIdentifier(variableIdentifier, this.variableDelimiters);
+    this.$emit('input', value);
     if (!this.isMultiple) {
       this.stopChoosingVariable(); // keep list open with multiVariable mode
     }

@@ -17,7 +17,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/VariableInputBase.vue';
-import { setVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /**
  * This component wraps an input (multiselect) and toggle variables in value array
@@ -40,11 +40,9 @@ export default class MultiVariableInput extends Vue {
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
 
   /**
-   * Wraps the chosen variable with delimiters
-   * Add it if missing or remove it
+   * Toggle value in array
    */
-  toggleVariable(variableIdentifier: string) {
-    const value = setVariableIdentifier(variableIdentifier, this.variableDelimiters);
+  toggleVariable(value: string) {
     if (this.value.indexOf(value) !== -1) {
       this.$emit(
         'input',
