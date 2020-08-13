@@ -48,8 +48,7 @@ import {
 } from '@/lib/variables';
 
 /**
- * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
- * expression.
+ * This component list all the available variables to use as value in VariableInputs
  */
 @Component({
   name: 'variable-chooser',

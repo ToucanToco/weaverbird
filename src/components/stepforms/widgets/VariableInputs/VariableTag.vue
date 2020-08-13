@@ -20,8 +20,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /**
- * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
- * expression.
+ * This component display a variable based on a human readable format and allow to delete it
  */
 @Component({
   name: 'variable-input',
@@ -36,6 +35,9 @@ export default class VariableInput extends Vue {
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
 
+  /**
+   * Retrieve identifier by removing delimiters from value.
+   */
   get variableIdentifier() {
     return extractVariableIdentifier(this.value, this.variableDelimiters);
   }

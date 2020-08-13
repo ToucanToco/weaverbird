@@ -58,6 +58,9 @@ export default class VariableInput extends Vue {
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
 
+  /**
+   * Verify if we need to display the slot or the variableTag
+   */
   get isVariable() {
     const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
     return identifier != null;
