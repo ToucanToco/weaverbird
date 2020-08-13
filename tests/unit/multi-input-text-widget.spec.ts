@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 
 import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiVariableInput from '@/components/stepforms/widgets/MultiVariableInput.vue';
-import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
+import VariableInput from '@/components/stepforms/widgets/VariableInput.vue';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -75,7 +75,6 @@ describe('Widget MultiInputText', () => {
       wrapper = mount(MultiInputTextWidget, {
         data: () => ({ options: ['Foo'] }),
         propsData: {
-          multiVariable: true,
           value: ['a', 'b', '{{ var1 }}'],
           variableDelimiters: { start: '{{', end: '}}' },
         },
@@ -83,12 +82,28 @@ describe('Widget MultiInputText', () => {
     });
     it('should use MultiVariableInput', () => {
       expect(wrapper.findAll(MultiVariableInput).length).toBe(1);
+      expect(wrapper.findAll(VariableInput).length).toBe(0);
     });
-    it('should use custom template', () => {
-      expect(wrapper.findAll('.widget-multiinputtext__tag').length).toBe(3);
+  });
+
+  describe('without multiVariable', () => {
+    let wrapper: any;
+    beforeEach(() => {
+      wrapper = mount(MultiInputTextWidget, {
+        data: () => ({ options: ['Foo'] }),
+        propsData: {
+          multiVariable: false,
+          value: ['a', 'b', '{{ var1 }}'],
+          variableDelimiters: { start: '{{', end: '}}' },
+        },
+      });
     });
-    it('should use VariableTag with variables in multiselect', () => {
-      expect(wrapper.findAll(VariableTag).length).toBe(1);
+    it('should use VariableInput', () => {
+      expect(wrapper.findAll(VariableInput).length).toBe(1);
+      expect(wrapper.findAll(MultiVariableInput).length).toBe(0);
+    });
+    it('should not use custom template', () => {
+      expect(wrapper.findAll('.widget-multiinputtext__tag').exists()).toBe(false);
     });
   });
 });

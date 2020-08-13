@@ -100,9 +100,6 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters!: VariableDelimiters;
 
-  @Prop({ default: false })
-  multiVariable!: boolean;
-
   editedValue: string[] = [];
 
   @Watch('value', { immediate: true })
