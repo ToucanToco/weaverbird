@@ -19,7 +19,11 @@
         @search-change="updateOptions"
         open-direction="bottom"
       >
-        <template v-if="multiVariable" slot="tag" slot-scope="{ option, remove }">
+        <template
+          v-if="multiVariable && availableVariables"
+          slot="tag"
+          slot-scope="{ option, remove }"
+        >
           <VariableTag
             class="multiselect__tag widget-multiinputtext__tag"
             v-if="isVariable(option)"
@@ -71,7 +75,7 @@ export default class MultiInputTextWidget extends Vue {
   @Prop()
   variableDelimiters!: VariableDelimiters;
 
-  @Prop({ default: false })
+  @Prop({ default: true })
   multiVariable!: boolean;
 
   options: string[] = [];

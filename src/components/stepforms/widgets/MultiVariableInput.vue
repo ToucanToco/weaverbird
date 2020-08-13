@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-multiinput-variable">
+  <div class="widget-multi-variable-input">
     <VariableInputBase
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -56,7 +56,7 @@ export default class MultiVariableInput extends Vue {
 </script>
 
 <style scoped lang="scss">
-.widget-multiinput-variable {
+.widget-multi-variable-input {
   position: relative;
   width: 100%;
 }
