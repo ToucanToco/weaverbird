@@ -1,5 +1,5 @@
 <template>
-  <div class="widget-input-variable">
+  <div class="widget-multiinput-variable">
     <VariableInputBase
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -20,8 +20,7 @@ import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/Var
 import { setVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /**
- * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
- * expression.
+ * This component wraps an input (multiselect) and toggle variables in value array
  */
 @Component({
   name: 'multi-variable-input',
@@ -41,7 +40,8 @@ export default class MultiVariableInput extends Vue {
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
 
   /**
-   * Wraps the chosen variable with delimiters and toggle it
+   * Wraps the chosen variable with delimiters
+   * Add it if missing or remove it
    */
   toggleVariable(variableIdentifier: string) {
     const value = setVariableIdentifier(variableIdentifier, this.variableDelimiters);
@@ -58,7 +58,7 @@ export default class MultiVariableInput extends Vue {
 </script>
 
 <style scoped lang="scss">
-.widget-input-variable {
+.widget-multiinput-variable {
   position: relative;
   width: 100%;
 }

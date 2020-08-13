@@ -95,6 +95,9 @@ export default class MultiInputTextWidget extends Vue {
     this.options = [];
   }
 
+  /**
+   * Verify if we need to use regular template or variable one
+   **/
   isVariable(value: string) {
     const identifier = extractVariableIdentifier(value, this.variableDelimiters);
     return identifier != null;

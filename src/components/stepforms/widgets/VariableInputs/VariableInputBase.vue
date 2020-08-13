@@ -38,7 +38,7 @@ import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import VariableChooser from './VariableChooser.vue';
 
 /**
- * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an
+ * This component wraps an input of any type and allow modifing its value by one or multiple variables chosen from a list or an
  * expression.
  */
 @Component({
