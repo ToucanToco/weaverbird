@@ -134,9 +134,9 @@ describe('Variable Input', () => {
         });
       });
 
-      describe('when choosing a variable on toggable mode', () => {
+      describe('when choosing a variable on multiple mode', () => {
         beforeEach(async () => {
-          wrapper.setProps({ toggable: true });
+          wrapper.setProps({ isMultiple: true });
           wrapper.find('VariableChooser-stub').vm.$emit('input', 'appRequesters.view');
           await wrapper.vm.$nextTick();
         });

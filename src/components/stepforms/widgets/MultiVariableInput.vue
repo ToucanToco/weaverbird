@@ -4,7 +4,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="hasArrow"
-      :toggable="true"
+      :is-multiple="true"
       :value="value"
       @input="toggleVariable"
     >

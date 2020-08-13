@@ -23,7 +23,7 @@
           @click="chooseVariable(availableVariable.identifier)"
         >
           <div class="widget-variable-chooser__option-container">
-            <span v-if="toggable" class="widget-variable-chooser__option-toggle" />
+            <span v-if="isMultiple" class="widget-variable-chooser__option-toggle" />
             <span class="widget-variable-chooser__option-name">{{ availableVariable.label }}</span>
           </div>
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
@@ -57,7 +57,7 @@ import {
 })
 export default class VariableChooser extends Vue {
   @Prop({ default: false })
-  toggable!: boolean;
+  isMultiple!: boolean;
 
   @Prop({ default: () => '' })
   value!: string[];
@@ -96,10 +96,10 @@ export default class VariableChooser extends Vue {
   }
 
   /**
-  Add delimiters to variableIdentifier to verify if item is selected in toggable mode
+  Add delimiters to variableIdentifier to verify if item is selected in multiple mode
   **/
   isVariableSelected(variable: AvailableVariable): AvailableVariable {
-    if (!this.toggable) return variable;
+    if (!this.isMultiple) return variable;
 
     const value = setVariableIdentifier(variable.identifier, this.variableDelimiters);
     const selected = this.value.indexOf(value) !== -1;

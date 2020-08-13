@@ -103,10 +103,10 @@ describe('Variable Chooser', () => {
     });
   });
 
-  describe('toggable mode', () => {
+  describe('multiple mode', () => {
     beforeEach(async () => {
       wrapper.setProps({
-        toggable: true,
+        isMultiple: true,
         value: ['a', '{{ appRequesters.date.month }}', '{{ appRequesters.date.year }}'],
       });
     });
