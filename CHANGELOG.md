@@ -1,11 +1,15 @@
 # Changelog
 
-## Changes
+## [0.22.0] - 2020-08-14
 
 ### Added
 - Allow to use variables in ListWidget
 - Allow to use variables in InputNumberWidget
 - MultiVariableInput to select multiple variables in MultiTextInput or Multiselect
+- Prevent cyclic jointures between pipelines
+
+### Fixed
+- Remove variable delimiters in pipeline step name
 
 ## [0.21.0] - 2020-08-06
 
@@ -360,6 +364,7 @@
 
 - Initial version, showtime!
 
+[0.22.0]: https://github.com/ToucanToco/weaverbird/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/ToucanToco/weaverbird/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/ToucanToco/weaverbird/compare/v0.19.3...v0.20.0
 [0.19.3]: https://github.com/ToucanToco/weaverbird/compare/v0.19.2...v0.19.3
