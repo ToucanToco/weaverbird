@@ -18,6 +18,8 @@
       :syncWithSelectedColumn="false"
       data-path=".rank_on"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <AutocompleteWidget
       class="sortOrderInput"
@@ -36,6 +38,8 @@
       placeholder="Select columns"
       data-path=".groups"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -49,6 +53,8 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { TopStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -64,6 +70,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class TopStepForm extends BaseStepForm<TopStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'top', rank_on: '', sort: 'asc' }) })
   initialStepValue!: TopStep;
 
