@@ -14,16 +14,10 @@ jobs:
     steps:
       - checkout
       - run: yarn
+      - run: yarn lint:ci
       - run: yarn test:unit --runInBand
       - run: yarn codecov
       - sonarcloud/scan
-  lint:
-    docker:
-      - image: circleci/node:latest-browsers
-    steps:
-      - checkout
-      - run: yarn
-      - run: yarn lint
 
   doc-build:
     docker:
@@ -82,7 +76,6 @@ workflows:
       - build
       - test:
           context: SonarCloud
-      - lint
   Doc_build_deploy:
     jobs:
       - doc-build:
