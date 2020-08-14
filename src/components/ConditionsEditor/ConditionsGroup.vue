@@ -71,7 +71,9 @@
           <slot v-bind="slotProps" />
         </template>
       </ConditionsGroup>
-      <i class="conditions-group__delete far fa-trash-alt" @click="deleteGroup(groupIndex)" />
+      <div class="conditions-group__delete" role="button" aria-label="Delete this group"  @click="deleteGroup(groupIndex)">
+        <i aria-hidden="true" class=" far fa-trash-alt" />
+      </div>
     </div>
     <div class="conditions-group__action-buttons">
       <div v-if="hasMultipleRows || !isRootGroup" class="action-buttons__link">
