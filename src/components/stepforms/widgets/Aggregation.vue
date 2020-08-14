@@ -8,6 +8,8 @@
       placeholder="Enter a column"
       :data-path="`${dataPath}.column`"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <AutocompleteWidget
       class="aggregationFunctionInput"
@@ -25,6 +27,7 @@ import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { AggFunctionStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import AutocompleteWidget from './Autocomplete.vue';
@@ -44,6 +47,12 @@ export default class AggregationWidget extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop()
+  availableVariables!: VariablesBucket;
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   @VQBModule.Getter columnNames!: string[];
 
