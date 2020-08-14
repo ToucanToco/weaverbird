@@ -18,6 +18,8 @@
       data-path=".valueCol"
       :syncWithSelectedColumn="false"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <AutocompleteWidget
       class="evolutionType"
@@ -64,6 +66,8 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { EvolutionStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -88,6 +92,10 @@ type EvolutionType = {
   },
 })
 export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({

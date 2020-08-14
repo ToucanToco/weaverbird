@@ -27,6 +27,7 @@ import TopStepForm from '../src/components/stepforms/TopStepForm.vue';
 import ArgmaxStepForm from '../src/components/stepforms/ArgmaxStepForm.vue';
 import ArgminStepForm from '../src/components/stepforms/ArgminStepForm.vue';
 import AggregateStepForm from '../src/components/stepforms/AggregateStepForm.vue';
+import EvolutionStepForm from '../src/components/stepforms/EvolutionStepForm.vue';
 
 export {
   FilterEditor,
@@ -53,5 +54,6 @@ export {
   ArgmaxStepForm,
   ArgminStepForm,
   AggregateStepForm,
+  EvolutionStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
