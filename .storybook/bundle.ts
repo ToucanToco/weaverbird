@@ -30,6 +30,7 @@ import AggregateStepForm from '../src/components/stepforms/AggregateStepForm.vue
 import EvolutionStepForm from '../src/components/stepforms/EvolutionStepForm.vue';
 import CumSumStepForm from '../src/components/stepforms/CumSumStepForm.vue';
 import ConcatenateStepForm from '../src/components/stepforms/ConcatenateStepForm.vue';
+import SplitStepForm from '../src/components/stepforms/SplitStepForm.vue';
 
 export {
   FilterEditor,
@@ -59,5 +60,6 @@ export {
   EvolutionStepForm,
   CumSumStepForm,
   ConcatenateStepForm,
+  SplitStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';

@@ -8,6 +8,8 @@
       placeholder="Enter a column"
       data-path=".column"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="delimiter"
@@ -37,6 +39,8 @@ import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { SplitStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -49,6 +53,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class SplitStepForm extends BaseStepForm<SplitStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({ name: 'split', column: '', delimiter: '' }),
