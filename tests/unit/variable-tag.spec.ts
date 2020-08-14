@@ -70,7 +70,7 @@ describe('Variable Tag', () => {
 
   it('should remove the tag when clicking on the remove button', async () => {
     const removeButton = wrapper.find('.widget-variable__tag-close');
-    removeButton.trigger('click');
+    removeButton.trigger('mousedown');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().removed).toBeTruthy();
   });
