@@ -12,7 +12,6 @@
     <span class="widget-variable__tag-name">{{ variableLabel }}</span>
     <i
       class="widget-variable__tag-close fa fa-times"
-      @click="removeVariableTag"
       tabindex="1"
       @keypress.enter.prevent="removeVariableTag"
       @mousedown.prevent="removeVariableTag"
