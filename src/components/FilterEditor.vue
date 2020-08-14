@@ -10,6 +10,7 @@
           :variable-delimiters="variableDelimiters"
           :data-path="slotProps.dataPath"
           :errors="errors"
+          :multi-variable="multiVariable"
         />
       </template>
     </ConditionsEditor>
@@ -55,6 +56,9 @@ export default class FilterEditor extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop({ type: Boolean, default: true })
+  multiVariable!: boolean; // display multiInputText as multiVariableInput
 
   @Prop({
     type: Array,

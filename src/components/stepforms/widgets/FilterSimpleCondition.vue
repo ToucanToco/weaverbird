@@ -28,6 +28,7 @@
       class="filterValue"
       v-if="inputWidget"
       :is="inputWidget"
+      :multi-variable="multiVariable"
       :value="value.value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -104,6 +105,9 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop({ type: Boolean, default: true })
+  multiVariable!: boolean; // display multiInputText as multiVariableInput
 
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
