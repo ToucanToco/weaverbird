@@ -8,6 +8,8 @@
       placeholder="Enter a column name"
       data-path=".column"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <MultiselectWidget
       class="groupbyColumnsInput"
@@ -17,6 +19,8 @@
       placeholder="Add columns"
       data-path=".groups"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -28,6 +32,8 @@ import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import { ArgmaxStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
@@ -41,6 +47,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'argmax', column: '' }) })
   initialStepValue!: ArgmaxStep;
 

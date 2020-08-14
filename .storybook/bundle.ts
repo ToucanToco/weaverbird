@@ -24,6 +24,8 @@ import AddTextColumnStepForm from '../src/components/stepforms/AddTextColumnStep
 import FormulaStepForm from '../src/components/stepforms/FormulaStepForm.vue';
 import IfThenElseStepForm from '../src/components/stepforms/IfThenElseStepForm.vue';
 import TopStepForm from '../src/components/stepforms/TopStepForm.vue';
+import ArgmaxStepForm from '../src/components/stepforms/ArgmaxStepForm.vue';
+import ArgminStepForm from '../src/components/stepforms/ArgminStepForm.vue';
 
 export {
   FilterEditor,
@@ -47,5 +49,7 @@ export {
   FormulaStepForm,
   IfThenElseStepForm,
   TopStepForm,
+  ArgmaxStepForm,
+  ArgminStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
