@@ -52,7 +52,6 @@
       >
         <i aria-hidden="true" class=" far fa-trash-alt" />
       </div>
-      <i class="far fa-trash-alt" aria-hidden="true" />
     </div>
     <div
       class="conditions-group__child-group"
