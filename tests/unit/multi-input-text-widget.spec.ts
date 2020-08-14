@@ -70,6 +70,26 @@ describe('Widget MultiInputText', () => {
     expect(wrapper.vm.$data.options).toEqual([]);
   });
 
+  it('should not use an overflow on tags wrapper...', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b'],
+        variableDelimiters: { start: '{{', end: '}}' },
+      },
+    });
+    expect(wrapper.find('.widget-multiinputtext__multiselect--big').exists()).toBe(false);
+  });
+
+  it('...except with a lot of values', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '{{ var2 }}', '{{ var6 }}', '{{ var7 }}', '{{ var8 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+      },
+    });
+    expect(wrapper.find('.widget-multiinputtext__multiselect--big').exists()).toBe(true);
+  });
+
   it('should use MultiVariableInput', () => {
     const wrapper = mount(MultiInputTextWidget, {
       propsData: {
