@@ -10,6 +10,8 @@
       placeholder="Add columns"
       data-path=".on"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <ListWidget
       addFieldName="Add aggregation"
@@ -21,6 +23,8 @@
       :automatic-new-field="false"
       data-path=".aggregations"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -31,6 +35,8 @@ import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
@@ -46,6 +52,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'aggregate', on: [], aggregations: [] }) })
   initialStepValue!: AggregationStep;
 
