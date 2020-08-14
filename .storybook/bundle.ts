@@ -20,6 +20,7 @@ import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidg
 import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
 import List from '../src/components/stepforms/widgets/List.vue';
 import InputNumber from '../src/components/stepforms/widgets/InputNumber.vue';
+import AddTextColumnStepForm from '../src/components/stepforms/AddTextColumnStepForm.vue';
 
 export {
   FilterEditor,
@@ -39,5 +40,6 @@ export {
   List,
   InputNumber,
   Multiselect,
+  AddTextColumnStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
