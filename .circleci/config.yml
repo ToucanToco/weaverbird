@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 jobs:
   build:
@@ -16,6 +16,7 @@ jobs:
       - run: yarn
       - run: yarn test:unit --runInBand
       - run: yarn codecov
+      - sonarcloud/scan
   lint:
     docker:
       - image: circleci/node:latest-browsers
@@ -71,12 +72,16 @@ jobs:
             cd docs/_site
             ../../node_modules/.bin/gh-pages --dist .
 
+orbs:
+  sonarcloud: sonarsource/sonarcloud@1.0.2
+
 workflows:
   version: 2
   build_and_test:
     jobs:
       - build
-      - test
+      - test:
+          context: SonarCloud
       - lint
   Doc_build_deploy:
     jobs:
