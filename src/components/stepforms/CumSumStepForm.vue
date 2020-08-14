@@ -9,6 +9,8 @@
       data-path=".valueColumn"
       :syncWithSelectedColumn="false"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <ColumnPicker
       class="referenceColumnInput"
@@ -27,6 +29,8 @@
       placeholder="Add columns"
       data-path=".groupby"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="newColumnInput"
@@ -46,6 +50,8 @@ import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { CumSumStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
@@ -63,6 +69,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'cumsum', valueColumn: '', referenceColumn: '' }) })
   initialStepValue!: CumSumStep;
 
