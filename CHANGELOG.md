@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.23.0] - 2020-08-14
+
+## Added
+- Enable variables usage in all eligible steps
+
+### Fixed
+- Accessibility for delete icons in filter step form
+- Allow to use unique variable in multiInputText of FilterEditor
+
 ## [0.22.0] - 2020-08-14
 
 ### Added
@@ -364,6 +373,7 @@
 
 - Initial version, showtime!
 
+[0.23.0]: https://github.com/ToucanToco/weaverbird/compare/v0.22.0...v0.23.0
 [0.22.0]: https://github.com/ToucanToco/weaverbird/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/ToucanToco/weaverbird/compare/v0.20.0...v0.21.0
 [0.20.0]: https://github.com/ToucanToco/weaverbird/compare/v0.19.3...v0.20.0
