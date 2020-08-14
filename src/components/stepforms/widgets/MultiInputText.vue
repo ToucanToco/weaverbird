@@ -9,6 +9,7 @@
     >
       <multiselect
         class="widget-multiinputtext__multiselect"
+        :class="{ 'widget-multiinputtext__multiselect--big': isMultiselectBig }"
         :value="value"
         @input="updateValue"
         :options="options"
@@ -87,6 +88,11 @@ export default class MultiInputTextWidget extends Vue {
 
   get variableInputMode() {
     return this.multiVariable ? MultiVariableInput : VariableInput;
+  }
+
+  get isMultiselectBig() {
+    // add overflow to tag container when there is a lot of values
+    return Array.isArray(this.value) && this.value.length > 6;
   }
 
   updateOptions(newVal: string) {
@@ -253,7 +259,6 @@ export default class MultiInputTextWidget extends Vue {
       border-radius: 0 0 5px 5px;
       padding: 8px 10px;
       max-height: 200px;
-      overflow-y: auto;
     }
     .multiselect__input {
       box-shadow: 0 0 0 1px #2665a3 inset;
@@ -262,6 +267,13 @@ export default class MultiInputTextWidget extends Vue {
   // The selection caret is useless in this widget
   .multiselect__select {
     display: none;
+  }
+}
+
+.widget-multiinputtext__multiselect--big.multiselect--active {
+  .multiselect__tags-wrap {
+    // We can overflow only when there is more than one line (enough place to display tooltip at top or bottom of a tag)
+    overflow-y: auto;
   }
 }
 
@@ -290,7 +302,7 @@ export default class MultiInputTextWidget extends Vue {
 <style scoped lang="scss">
 .widget-multiinputtext__multiselect {
   /deep/ .widget-variable__tag {
-    display: inline-block;
+    display: inline-flex;
     margin-right: 10px;
     padding: 0;
   }
