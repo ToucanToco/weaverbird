@@ -2,6 +2,7 @@ module.exports = {
   moduleFileExtensions: ['js', 'json', 'vue', 'ts', 'd.ts'],
   testEnvironment: 'jsdom',
   testURL: 'http://localhost/',
+  testResultsProcessor: 'jest-sonar-reporter',
   testMatch: ['<rootDir>/tests/unit/*.spec.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
