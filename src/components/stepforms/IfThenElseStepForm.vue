@@ -10,7 +10,14 @@
       :errors="errors"
       :warning="duplicateColumnName"
     />
-    <IfThenElseWidget isRoot :value="ifthenelse" @input="updateIfThenElse" :errors="errors" />
+    <IfThenElseWidget
+      isRoot
+      :value="ifthenelse"
+      :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      @input="updateIfThenElse"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -25,6 +32,7 @@ import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vu
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { IfThenElseStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -56,6 +64,10 @@ function castIfThenElse(
   },
 })
 export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({

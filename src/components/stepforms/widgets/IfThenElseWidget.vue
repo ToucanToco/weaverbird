@@ -27,6 +27,8 @@
           :filter-tree="value.if"
           :errors="errors"
           :data-path="`${dataPath}.if`"
+          :available-variables="availableVariables"
+          :variable-delimiters="variableDelimiters"
           @filterTreeUpdated="updateFilterTree"
         />
       </div>
@@ -49,10 +51,12 @@
         <InputTextWidget
           class="ifthenelse-widget__input"
           :value="value.then"
-          @input="updateThenFormula"
           placeholder='Enter a "Text" with quotes, or a formula'
           :data-path="`${dataPath}.then`"
           :errors="errors"
+          :available-variables="availableVariables"
+          :variable-delimiters="variableDelimiters"
+          @input="updateThenFormula"
         />
       </div>
       <template v-if="!hasElseIf">
@@ -72,10 +76,12 @@
           <InputTextWidget
             class="ifthenelse-widget__input"
             :value="value.else"
-            @input="updateElseFormula"
             placeholder='Enter a "Text" with quotes, or a formula'
             :data-path="`${dataPath}.else`"
             :errors="errors"
+            :available-variables="availableVariables"
+            :variable-delimiters="variableDelimiters"
+            @input="updateElseFormula"
           />
         </div>
       </template>
@@ -83,10 +89,12 @@
     <ifthenelse-widget
       v-if="hasElseIf"
       :value="value.else"
-      @input="updateElseFormula"
-      @deletedElseIf="transformElseIfIntoElse"
       :data-path="`${dataPath}.else`"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+      @input="updateElseFormula"
+      @deletedElseIf="transformElseIfIntoElse"
     />
     <div class="ifthenelse-widget__footer" v-if="!hasElseIf">
       <div class="ifthenelse-widget__row">
@@ -112,6 +120,7 @@ import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue'
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { FilterCondition, IfThenElseStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 @Component({
@@ -123,6 +132,12 @@ import { VQBModule } from '@/store';
   },
 })
 export default class IfThenElseWidget extends Vue {
+  @Prop()
+  availableVariables!: VariablesBucket;
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({
@@ -178,7 +193,7 @@ export default class IfThenElseWidget extends Vue {
   updateElseFormula(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | string) {
     this.$emit('input', {
       ...this.value,
-      else: elseObject,
+      else: elseObject || '',
     });
   }
 
@@ -250,6 +265,10 @@ export default class IfThenElseWidget extends Vue {
   }
   /deep/ .condition-row {
     background-color: #e9eff5;
+  }
+  /deep/ .multiselect,
+  /deep/ .widget-variable__toggle {
+    z-index: 1; // prevent inputs to be over multiselect dropdown
   }
 }
 
