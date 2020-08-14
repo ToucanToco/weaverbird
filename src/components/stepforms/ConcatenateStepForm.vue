@@ -12,6 +12,8 @@
       :automatic-new-field="false"
       data-path=".columns"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="separator"
@@ -41,6 +43,8 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import { ConcatenateStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -54,6 +58,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({ name: 'concatenate', columns: [''], separator: '', new_column_name: '' }),
