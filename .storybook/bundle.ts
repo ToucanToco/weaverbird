@@ -23,6 +23,7 @@ import InputNumber from '../src/components/stepforms/widgets/InputNumber.vue';
 import AddTextColumnStepForm from '../src/components/stepforms/AddTextColumnStepForm.vue';
 import FormulaStepForm from '../src/components/stepforms/FormulaStepForm.vue';
 import IfThenElseStepForm from '../src/components/stepforms/IfThenElseStepForm.vue';
+import TopStepForm from '../src/components/stepforms/TopStepForm.vue';
 
 export {
   FilterEditor,
@@ -45,5 +46,6 @@ export {
   AddTextColumnStepForm,
   FormulaStepForm,
   IfThenElseStepForm,
+  TopStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
