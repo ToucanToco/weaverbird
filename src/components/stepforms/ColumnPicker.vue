@@ -7,6 +7,8 @@
     :placeholder="placeholder"
     :data-path="dataPath"
     :errors="errors"
+    :available-variables="availableVariables"
+    :variable-delimiters="variableDelimiters"
   />
 </template>
 
@@ -16,6 +18,7 @@ import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
@@ -35,6 +38,12 @@ export default class ColumnPicker extends Vue {
 
   @Prop({ default: null })
   value!: string;
+
+  @Prop()
+  availableVariables!: VariablesBucket;
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   // Whether the column data of ColumnPicker should react to a change of
   // selected column
