@@ -43,11 +43,16 @@
           :updateCondition="updateCondition(rowIndex)"
         />
       </div>
-      <i
+      <div
         v-if="hasMultipleRows"
-        class="condition-row__delete far fa-trash-alt"
+        class="condition-row__delete"
+        role="button"
+        aria-label="Delete this group"
         @click="deleteRow(rowIndex)"
-      />
+      >
+        <i aria-hidden="true" class=" far fa-trash-alt" />
+      </div>
+      <i class="far fa-trash-alt" aria-hidden="true" />
     </div>
     <div
       class="conditions-group__child-group"
@@ -71,7 +76,12 @@
           <slot v-bind="slotProps" />
         </template>
       </ConditionsGroup>
-      <div class="conditions-group__delete" role="button" aria-label="Delete this group"  @click="deleteGroup(groupIndex)">
+      <div
+        class="conditions-group__delete"
+        role="button"
+        aria-label="Delete this group"
+        @click="deleteGroup(groupIndex)"
+      >
         <i aria-hidden="true" class=" far fa-trash-alt" />
       </div>
     </div>
