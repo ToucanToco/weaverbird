@@ -2,6 +2,7 @@ node_modules
 /dist
 .storybook/dist
 coverage
+test-report.xml
 playground/*.map
 
 # local env files
