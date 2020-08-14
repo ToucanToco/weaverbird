@@ -147,7 +147,7 @@ This library is published on npm under the name `weaverbird` automatically each 
 
   ex: `release/0.20.0`
 
-- Update the `version` property in `package.json`
+- Update the `version` property in `package.json` and in `sonar-project.properties`
 
 - Check differences between last release and current and fill `CHANGELOG.md` with updates
   - Delete the ```##changes``` title at start of the `CHANGELOG.md` if provided
