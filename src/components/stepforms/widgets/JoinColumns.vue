@@ -7,6 +7,8 @@
       :options="columnNames"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="rightOn"
@@ -14,6 +16,8 @@
       placeholder="Right dataset column"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
   </div>
 </template>
@@ -22,6 +26,7 @@ import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import InputTextWidget from './InputText.vue';
@@ -45,6 +50,12 @@ export default class JoinColumns extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop()
+  availableVariables!: VariablesBucket;
+
+  @Prop()
+  variableDelimiters!: VariableDelimiters;
 
   @VQBModule.Getter columnNames!: string[];
 
