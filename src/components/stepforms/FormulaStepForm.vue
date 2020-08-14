@@ -9,6 +9,8 @@
       data-path=".new_column"
       :errors="errors"
       :warning="duplicateColumnName"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="formulaInput"
@@ -30,6 +32,8 @@ import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { FormulaStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -41,6 +45,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'formula', new_column: '', formula: '' }) })
   initialStepValue!: FormulaStep;
 

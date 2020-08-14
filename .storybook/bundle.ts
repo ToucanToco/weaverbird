@@ -21,6 +21,7 @@ import Autocomplete from '../src/components/stepforms/widgets/Autocomplete.vue';
 import List from '../src/components/stepforms/widgets/List.vue';
 import InputNumber from '../src/components/stepforms/widgets/InputNumber.vue';
 import AddTextColumnStepForm from '../src/components/stepforms/AddTextColumnStepForm.vue';
+import FormulaStepForm from '../src/components/stepforms/FormulaStepForm.vue';
 
 export {
   FilterEditor,
@@ -41,5 +42,6 @@ export {
   InputNumber,
   Multiselect,
   AddTextColumnStepForm,
+  FormulaStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
