@@ -9,6 +9,8 @@
       data-path=".new_column"
       :errors="errors"
       :warning="duplicateColumnName"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="textInput"
@@ -17,6 +19,8 @@
       placeholder
       data-path=".text"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -28,6 +32,8 @@ import { Prop } from 'vue-property-decorator';
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { AddTextColumnStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -39,6 +45,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnStep> {
+  @VQBModule.State availableVariables!: VariablesBucket;
+
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'text', new_column: '', text: '' }) })
   initialStepValue!: AddTextColumnStep;
 
