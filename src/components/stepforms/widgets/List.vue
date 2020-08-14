@@ -203,6 +203,13 @@ export default class ListWidget extends Mixins(FormWidget) {
   top: calc(50% - 16px);
   cursor: pointer;
 }
+.widget-list__component /deep/ .widget-input-variable,
+.widget-list__component /deep/ .widget-multi-input-variable {
+  width: 60%;
+  /deep/ .multiselect {
+    width: 100%;
+  }
+}
 </style>
 <style lang="scss">
 .widget-list__container .widget-autocomplete__container {
