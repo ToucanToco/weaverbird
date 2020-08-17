@@ -11,7 +11,6 @@
       :errors="errors"
       track-by="trackBy"
       label="label"
-      with-example
     />
     <StepFormButtonbar />
   </div>
