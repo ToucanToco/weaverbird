@@ -50,7 +50,6 @@ describe('Append Step Form', () => {
       { trackBy: 'dataset1', label: 'dataset1' },
       { trackBy: 'dataset2', label: 'dataset2' },
     ]);
-    expect(widgetMultiselect.props('withExample')).toEqual(true);
     expect(widgetMultiselect.props('trackBy')).toEqual('trackBy');
     expect(widgetMultiselect.props('label')).toEqual('label');
   });
