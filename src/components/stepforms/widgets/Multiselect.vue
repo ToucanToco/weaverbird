@@ -19,15 +19,12 @@
         :taggable="true"
         :closeOnSelect="false"
         openDirection="bottom"
+        :customLabel="customLabel"
       >
-        <!-- If you want to use those templates you should provide a 'label' and 
-    'example' key in the options-->
-        <template v-if="withExample" slot="singleLabel" slot-scope="props">
-          <span class="option__title">{{ props.option.label }}</span>
-        </template>
+        <!-- If you want to use those templates you should provide a 'label' and 'example' key in the options-->
         <template v-if="withExample" slot="option" slot-scope="props">
           <div class="option__container" :title="props.option.tooltip">
-            <div class="option__title">{{ props.option.label }}</div>
+            <div class="option__title">{{ customLabel(props.option) }}</div>
             <div class="option__example">{{ props.option.example }}</div>
           </div>
         </template>
@@ -37,11 +34,11 @@
             v-if="isVariable(option)"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
-            :value="option"
+            :value="customLabel(option)"
             @removed="remove(option)"
           />
           <span class="multiselect__tag widget-multiselect__tag" v-else>
-            <span v-html="option" />
+            <span v-html="customLabel(option)" />
             <i
               tabindex="1"
               class="multiselect__tag-icon"
@@ -123,6 +120,18 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   isVariable(value: string) {
     const identifier = extractVariableIdentifier(value, this.variableDelimiters);
     return identifier != null;
+  }
+
+  /**
+   * Returns the option's label field if possible,
+   * return the whole option otherwise
+   */
+  customLabel(option) {
+    if (typeof option === 'object' && this.label != null) {
+      return option[this.label];
+    } else {
+      return option;
+    }
   }
 }
 </script>
