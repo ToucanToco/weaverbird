@@ -13,11 +13,11 @@
         v-model="editedValue"
         :options="options"
         :placeholder="placeholder"
-        :track-by="trackBy"
+        :trackBy="trackBy"
         :label="label"
         :multiple="true"
         :taggable="true"
-        :close-on-select="false"
+        :closeOnSelect="false"
         openDirection="bottom"
       >
         <!-- If you want to use those templates you should provide a 'label' and 
