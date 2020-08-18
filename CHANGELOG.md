@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.23.1] - 2020-08-18
+
+### Fixed
+- Multiselect: display custom label correctly
+
 ## [0.23.0] - 2020-08-14
 
 ## Added
@@ -373,6 +378,7 @@
 
 - Initial version, showtime!
 
+[0.23.1]: https://github.com/ToucanToco/weaverbird/compare/v0.23.0...v0.23.1
 [0.23.0]: https://github.com/ToucanToco/weaverbird/compare/v0.22.0...v0.23.0
 [0.22.0]: https://github.com/ToucanToco/weaverbird/compare/v0.21.0...v0.22.0
 [0.21.0]: https://github.com/ToucanToco/weaverbird/compare/v0.20.0...v0.21.0
