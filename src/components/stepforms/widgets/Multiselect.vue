@@ -2,11 +2,11 @@
   <div class="widget-multiselect__container" :class="toggleClassErrorWarning">
     <label class="widget-multiselect__label">{{ name }}</label>
     <MultiVariableInput
-      :value="value"
+      :value="stringValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="true"
-      @input="updateValue"
+      @input="updateStringValue"
     >
       <multiselect
         class="widget-multiselect__multiselect"
@@ -82,10 +82,10 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   placeholder!: string;
 
   @Prop({ type: Array, default: () => [] })
-  value!: string[];
+  value!: any[];
 
   @Prop({ type: Array, default: () => [] })
-  options!: string[];
+  options!: any[];
 
   @Prop({ type: String, default: undefined })
   trackBy!: string;
@@ -102,16 +102,47 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters!: VariableDelimiters;
 
-  editedValue: string[] = [];
+  editedValue: any[] = [];
 
+  /**
+   * Are the props are set up to handle object options ?
+   */
+  get isObjectValue() {
+    return this.label != null && this.trackBy != null;
+  }
+
+  /**
+   * Convert object initial values as string initial values
+   *
+   * This is usefull because MultiVariableInput cannot handle object values
+   */
+  get stringValue(): string[] {
+    if (this.isObjectValue) {
+      return this.value.map(this.customLabel);
+    }
+    return [...this.value];
+  }
+
+  /**
+   * Initialize the edited value
+   */
   @Watch('value', { immediate: true })
-  updateEditedValue(newValue: string[]) {
+  updateEditedValue(newValue: any[]) {
     this.editedValue = newValue;
   }
 
+  /**
+   * Emits an input event each time editedValue moves or a variable is choosen.
+   * This event's payload is the value as objects or strings.
+   */
   @Watch('editedValue')
-  updateValue(newValue: string[]) {
-    this.$emit('input', newValue);
+  updateStringValue(newValue: any[], oldValue: any[]) {
+    const newValues = Array.isArray(newValue) ? newValue.map(this.customLabel).join(' ') : newValue;
+    const oldValues = Array.isArray(oldValue) ? oldValue.map(this.customLabel).join(' ') : oldValue;
+    // Prevent an infinite loop of emitting and receiving.
+    if (newValues !== oldValues) {
+      this.$emit('input', newValue);
+    }
   }
 
   /**
@@ -127,7 +158,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
    * return the whole option otherwise
    */
   customLabel(option) {
-    if (typeof option === 'object' && this.label != null) {
+    if (typeof option === 'object' && this.isObjectValue) {
       return option[this.label];
     } else {
       return option;

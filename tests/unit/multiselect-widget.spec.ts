@@ -42,6 +42,38 @@ describe('Widget Multiselect', () => {
     expect(wrapper.findAll(MultiVariableInput).length).toBe(1);
   });
 
+  it('should pass the values as string to the MultiVariableInput', () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+      },
+    });
+    expect(
+      wrapper
+        .findAll(MultiVariableInput)
+        .at(0)
+        .props('value'),
+    ).toStrictEqual(['a', 'b', '{{ var1 }}']);
+  });
+
+  it('should pass the values as string to the MultiVariableInput in object mode', () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: {
+        value: [{ name: 'a' }, { name: 'b' }, { name: '{{ var1 }}' }],
+        label: 'name',
+        trackBy: 'name',
+        variableDelimiters: { start: '{{', end: '}}' },
+      },
+    });
+    expect(
+      wrapper
+        .findAll(MultiVariableInput)
+        .at(0)
+        .props('value'),
+    ).toStrictEqual(['a', 'b', '{{ var1 }}']);
+  });
+
   it('should use custom template for tags', () => {
     const wrapper = mount(MultiSelectWidget, {
       propsData: {
