@@ -3,7 +3,7 @@
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <AutocompleteWidget
       class="rightPipelineInput"
-      v-model="editedStep.right_pipeline"
+      v-model="rightPipeline"
       name="Select a dataset to join (as right dataset):"
       :options="options"
       placeholder="Select a dataset"
@@ -77,6 +77,17 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
   joinTypes: JoinStep['type'][] = joinTypes;
+
+  get rightPipeline() {
+    return {
+      label: this.editedStep.right_pipeline,
+      trackBy: this.editedStep.right_pipeline,
+    };
+  }
+
+  set rightPipeline(value: object) {
+    this.editedStep.right_pipeline = value.label;
+  }
 
   get on() {
     if (this.editedStep.on.length) {
