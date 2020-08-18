@@ -29,6 +29,6 @@ describe('Domain Step Form', () => {
     const wrapper = runner.shallowMount({ domains: ['foo', 'bar'] });
     const widgetAutocomplete = wrapper.find('autocompletewidget-stub');
 
-    expect(widgetAutocomplete.attributes('options')).toEqual('foo,bar');
+    expect(widgetAutocomplete.attributes('options')).toEqual('bar,foo');
   });
 });

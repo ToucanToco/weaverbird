@@ -1,69 +1,88 @@
 # Changelog
 
+## [TBD]
+
+### Fixed
+
+- Append, Domain, Join steps: sort the dataset selection
+
 ## [0.23.2] - 2020-08-19
 
 ### Fixed
+
 - Multiselect: transform object to string for MultiVariableInput
 
 ## [0.23.1] - 2020-08-18
 
 ### Fixed
+
 - Multiselect: display custom label correctly
 
 ## [0.23.0] - 2020-08-14
 
 ## Added
+
 - Enable variables usage in all eligible steps
 
 ### Fixed
+
 - Accessibility for delete icons in filter step form
 - Allow to use unique variable in multiInputText of FilterEditor
 
 ## [0.22.0] - 2020-08-14
 
 ### Added
+
 - Allow to use variables in ListWidget
 - Allow to use variables in InputNumberWidget
 - MultiVariableInput to select multiple variables in MultiTextInput or Multiselect
 - Prevent cyclic jointures between pipelines
 
 ### Fixed
+
 - Remove variable delimiters in pipeline step name
 
 ## [0.21.0] - 2020-08-06
 
 ## Added
+
 - Allow to use store `availableVariables` and `variableDelimiters` in FilterStep
 
 ## [0.20.0] - 2020-08-03
 
 ### Fixed
+
 - Mongo translator: generate a join step with column names containing any character
 - Pagination: always display pagination for multiple pages dataset
 - Filters: keep value if typeof match on operator change
 - MongoQuery: degroup addFields
 
 ## Added
+
 - Util to compare value types
 - "If...Then...Else": util file to display human format formula
 - Allow to use variables in AutocompleteWidget
 
 ## Changed
+
 - "If...Then...Else": button to toggle step
 - "If...Then...Else": button to delete specific step
 - "If...Then...Else": button to add elseif nested condition
 - Variable input: add tooltip with value when hovering tag
 
 ### Added
+
 - Move pipeline dereference methods into utils file
 - Getter to retrieve available pipelines in steps form
 
 ### Changed
+
 - A pipeline can start by a reference to an other pipeline
 
 ## [0.19.3] - 2020-07-20
 
 ### Fixed
+
 - Filter step: allow to filter with empty or undefined values
 - Filter step: keep null value for numerical columns
 - "If...Then...Else" step: cast values on deeper conditional levels

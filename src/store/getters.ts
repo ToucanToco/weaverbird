@@ -98,18 +98,18 @@ const getters: GetterTree<VQBState, any> = {
   /**
    * Return all available domains (including pipelines but excluding currentPipelineName)
    */
-  availablePipelines: (state: VQBState) =>
-    Object.keys(state.pipelines).filter((name: string) => name !== state.currentPipelineName),
-
+  availablePipelineNames: (state: VQBState) =>
+    Object.keys(state.pipelines)
+      .concat(state.domains)
+      .filter((name: string) => name !== state.currentPipelineName)
+      .sort((a, b) => a.localeCompare(b)),
   /**
    * Return the pipelines referencing the current pipeline
    */
-  referencingPipelines: (state: VQBState) => {
-    if (state.currentPipelineName) {
-      return getPipelineNamesReferencing(state.currentPipelineName, state.pipelines);
-    }
-    return [];
-  },
+  referencingPipelines: (state: VQBState) =>
+    state.currentPipelineName
+      ? getPipelineNamesReferencing(state.currentPipelineName, state.pipelines)
+      : [],
   /**
    * Return true if an error occured in the backend
    */
