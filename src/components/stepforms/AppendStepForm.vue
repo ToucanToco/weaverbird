@@ -3,7 +3,7 @@
     <StepFormHeader :title="title" :stepName="this.editedStep.name" />
     <MultiselectWidget
       class="pipelinesInput"
-      v-model="editedStep.pipelines"
+      v-model="pipelines"
       name="Select datasets to append:"
       :options="options"
       placeholder="Select datasets"
@@ -42,6 +42,17 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   @VQBModule.State domains!: string[];
 
   readonly title: string = 'Append datasets';
+
+  get pipelines() {
+    return this.editedStep.pipelines.map(pipeline => ({
+      label: pipeline,
+      trackBy: pipeline,
+    }));
+  }
+
+  set pipelines(values: array) {
+    this.editedStep.pipelines = values.map(v => v.label);
+  }
 
   get options() {
     return [...this.availablePipelines, ...this.domains].map(name => {
