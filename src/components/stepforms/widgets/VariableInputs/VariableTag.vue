@@ -20,9 +20,12 @@
 </template>
 
 <script lang="ts">
+import VTooltip from 'v-tooltip';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+
+Vue.use(VTooltip);
 
 /**
  * This component display a variable based on a human readable format and allow to delete it
