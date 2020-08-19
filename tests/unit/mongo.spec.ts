@@ -3216,29 +3216,23 @@ describe('Pipeline to mongo translator', () => {
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
-      {
-        $group: {
-          _id: { DATE: '$DATE' },
-          VALUE: { $sum: '$VALUE' },
-        },
-      },
-      { $sort: { _id: 1 } },
+      { $sort: { DATE: 1 } },
       {
         $group: {
           _id: null,
-          DATE: { $push: '$_id.DATE' },
           VALUE: { $push: '$VALUE' },
+          _vqbArray: { $push: '$$ROOT' },
         },
       },
-      { $unwind: { path: '$DATE', includeArrayIndex: '_VQB_INDEX' } },
+      { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
       {
         $project: {
-          DATE: 1,
-          VALUE: { $arrayElemAt: ['$VALUE', '$_VQB_INDEX'] },
           VALUE_CUMSUM: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          _vqbArray: 1,
         },
       },
-      { $project: { _id: 0 } },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+      { $project: { _vqbArray: 0, _id: 0 } },
     ]);
   });
 
@@ -3254,38 +3248,28 @@ describe('Pipeline to mongo translator', () => {
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
       {
         $group: {
           _id: {
-            DATE: '$DATE',
             COUNTRY: '$COUNTRY',
             PRODUCT: '$PRODUCT',
           },
-          VALUE: { $sum: '$VALUE' },
-        },
-      },
-      { $sort: { _id: 1 } },
-      {
-        $group: {
-          _id: {
-            COUNTRY: '$_id.COUNTRY',
-            PRODUCT: '$_id.PRODUCT',
-          },
-          DATE: { $push: '$_id.DATE' },
           VALUE: { $push: '$VALUE' },
+          _vqbArray: { $push: '$$ROOT' },
         },
       },
-      { $unwind: { path: '$DATE', includeArrayIndex: '_VQB_INDEX' } },
+      { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
       {
         $project: {
           COUNTRY: '$_id.COUNTRY',
           PRODUCT: '$_id.PRODUCT',
-          DATE: 1,
-          VALUE: { $arrayElemAt: ['$VALUE', '$_VQB_INDEX'] },
           MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          _vqbArray: 1,
         },
       },
-      { $project: { _id: 0 } },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+      { $project: { _vqbArray: 0, _id: 0 } },
     ]);
   });
 
