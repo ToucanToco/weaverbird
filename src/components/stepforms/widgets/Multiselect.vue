@@ -114,7 +114,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   /**
    * Convert object initial values as string initial values
    *
-   * This is usefull because MultiVariableInput cannot handle object values
+   * This is useful because MultiVariableInput cannot handle object values
    */
   get stringValue(): string[] {
     if (this.isObjectValue) {
