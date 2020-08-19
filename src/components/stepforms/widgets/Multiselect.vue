@@ -105,7 +105,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   editedValue: any[] = [];
 
   /**
-   * Are the props are set up to handle object options ?
+   * Are the props set up to handle object options?
    */
   get isObjectValue() {
     return this.label != null && this.trackBy != null;
