@@ -376,36 +376,28 @@ function transformArgmaxArgmin(step: Readonly<S.ArgmaxStep> | Readonly<S.ArgminS
 function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
   const groupby = step.groupby ?? [];
   return [
+    { $sort: { [step.referenceColumn]: 1 } },
     {
       $group: {
-        _id: columnMap([step.referenceColumn, ...groupby]),
-        [step.valueColumn]: { $sum: $$(step.valueColumn) },
-      },
-    },
-    { $sort: { _id: 1 } },
-    {
-      $group: {
-        _id:
-          step.groupby === undefined
-            ? null
-            : Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
-        [step.referenceColumn]: { $push: `$_id.${step.referenceColumn}` },
+        _id: step.groupby ? columnMap(groupby) : null,
         [step.valueColumn]: { $push: $$(step.valueColumn) },
+        _vqbArray: { $push: '$$ROOT' },
       },
     },
-    { $unwind: { path: $$(step.referenceColumn), includeArrayIndex: '_VQB_INDEX' } },
+    { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
     {
       $project: {
         ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
-        [step.referenceColumn]: 1,
-        [step.valueColumn]: { $arrayElemAt: [$$(step.valueColumn), '$_VQB_INDEX'] },
         [step.newColumn ?? `${step.valueColumn}_CUMSUM`]: {
           $sum: {
             $slice: [$$(step.valueColumn), { $add: ['$_VQB_INDEX', 1] }],
           },
         },
+        _vqbArray: 1,
       },
     },
+    { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+    { $project: { _vqbArray: 0 } },
   ];
 }
 
