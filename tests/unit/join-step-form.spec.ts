@@ -19,14 +19,20 @@ describe('join Step Form', () => {
         currentPipelineName: 'my_dataset',
         pipelines: {
           my_dataset: [{ name: 'domain', domain: 'my_data' }],
-          dataset1: [{ name: 'domain', domain: 'domain1' }],
+          dataset1: [{ name: 'domain', domain: 'my_dataset' }],
           dataset2: [{ name: 'domain', domain: 'domain2' }],
         },
       };
       const wrapper = runner.shallowMount(initialState);
       const widgetMultiselect = wrapper.find('autocompletewidget-stub');
       expect(widgetMultiselect.props('options')).toEqual([
-        { trackBy: 'dataset1', label: 'dataset1' },
+        {
+          $isDisabled: true,
+          trackBy: 'dataset1',
+          tooltip:
+            'Circular reference: you cannot combine dataset1 because it references the current dataset.',
+          label: 'dataset1',
+        },
         { trackBy: 'dataset2', label: 'dataset2' },
       ]);
       expect(widgetMultiselect.props('withExample')).toEqual(true);
