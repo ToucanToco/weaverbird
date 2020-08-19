@@ -78,7 +78,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   joinColumns = JoinColumns;
   joinTypes: JoinStep['type'][] = joinTypes;
 
-  get rightPipeline() {
+  get rightPipeline(): object {
     return {
       label: this.editedStep.right_pipeline,
       trackBy: this.editedStep.right_pipeline,
@@ -86,6 +86,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   set rightPipeline(value: object) {
+    /* istanbul ignore next */
     this.editedStep.right_pipeline = value.label;
   }
 
@@ -101,7 +102,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
     this.editedStep.on = [...newval];
   }
 
-  get options() {
+  get options(): object[] {
     return [...this.availablePipelines, ...this.domains].map(name => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {

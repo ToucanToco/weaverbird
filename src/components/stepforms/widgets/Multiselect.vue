@@ -82,10 +82,10 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   placeholder!: string;
 
   @Prop({ type: Array, default: () => [] })
-  value!: any[];
+  value!: string[] | object[];
 
   @Prop({ type: Array, default: () => [] })
-  options!: any[];
+  options!: (string | object)[];
 
   @Prop({ type: String, default: undefined })
   trackBy!: string;
@@ -102,7 +102,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters!: VariableDelimiters;
 
-  editedValue: any[] = [];
+  editedValue: string[] | object[] = [];
 
   /**
    * Are the props set up to handle object options?
@@ -127,7 +127,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
    * Initialize the edited value
    */
   @Watch('value', { immediate: true })
-  updateEditedValue(newValue: any[]) {
+  updateEditedValue(newValue: string[] | object[]) {
     this.editedValue = newValue;
   }
 
@@ -136,9 +136,9 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
    * This event's payload is the value as objects or strings.
    */
   @Watch('editedValue')
-  updateStringValue(newValue: any[], oldValue: any[]) {
-    const newValues = Array.isArray(newValue) ? newValue.map(this.customLabel).join(' ') : newValue;
-    const oldValues = Array.isArray(oldValue) ? oldValue.map(this.customLabel).join(' ') : oldValue;
+  updateStringValue(newValue: string[] | object[], oldValue: string[] | object[]) {
+    const newValues = newValue.map(this.customLabel).join(' ');
+    const oldValues = oldValue.map(this.customLabel).join(' ');
     // Prevent an infinite loop of emitting and receiving.
     if (newValues !== oldValues) {
       this.$emit('input', newValue);
@@ -148,8 +148,8 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   /**
    * Verify if we need to use regular template or variable one
    **/
-  isVariable(value: string) {
-    const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+  isVariable(value: string | object) {
+    const identifier = extractVariableIdentifier(this.customLabel(value), this.variableDelimiters);
     return identifier != null;
   }
 
@@ -157,7 +157,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
    * Returns the option's label field if possible,
    * return the whole option otherwise
    */
-  customLabel(option) {
+  customLabel(option: string | object): string {
     if (typeof option === 'object' && this.isObjectValue) {
       return option[this.label];
     } else {

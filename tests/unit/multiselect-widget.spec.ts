@@ -108,6 +108,22 @@ describe('Widget Multiselect', () => {
     expect(wrapper.emitted().input[0][0]).toStrictEqual(['b']);
   });
 
+  it('should remove variable from value when clicking on tag in object mode', async () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: {
+        value: [{ name: 'a' }, { name: 'b' }],
+        label: 'name',
+        trackBy: 'name',
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    const tag = wrapper.findAll('.widget-multiselect__tag').at(0);
+    tag.find('.multiselect__tag-icon').trigger('mousedown');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[0][0]).toStrictEqual([{ name: 'b' }]);
+  });
+
   it('should remove variable from value when clicking on variable tag', async () => {
     const wrapper = mount(MultiSelectWidget, {
       propsData: {
@@ -120,5 +136,21 @@ describe('Widget Multiselect', () => {
     variableTag.vm.$emit('removed');
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().input[0][0]).toStrictEqual(['a']);
+  });
+
+  it('should remove variable from value when clicking on variable tag in object mode', async () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: {
+        value: [{ name: 'a' }, { name: '{{ var1 }}' }],
+        label: 'name',
+        trackBy: 'name',
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    const variableTag = wrapper.findAll(VariableTag).at(0);
+    variableTag.vm.$emit('removed');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().input[0][0]).toStrictEqual([{ name: 'a' }]);
   });
 });

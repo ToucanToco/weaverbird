@@ -43,18 +43,19 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
 
   readonly title: string = 'Append datasets';
 
-  get pipelines() {
+  get pipelines(): object[] {
     return this.editedStep.pipelines.map(pipeline => ({
       label: pipeline,
       trackBy: pipeline,
     }));
   }
 
-  set pipelines(values: array) {
+  set pipelines(values: object[]) {
+    /* istanbul ignore next */
     this.editedStep.pipelines = values.map(v => v.label);
   }
 
-  get options() {
+  get options(): object[] {
     return [...this.availablePipelines, ...this.domains].map(name => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
