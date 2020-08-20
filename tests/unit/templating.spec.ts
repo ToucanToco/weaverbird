@@ -1208,4 +1208,27 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate rank steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rank',
+        valueCol: '<%= foo %>',
+        order: 'desc',
+        method: 'dense',
+        groupby: ['<%= foo %>'],
+        newColumnName: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'rank',
+        valueCol: 'bar',
+        order: 'desc',
+        method: 'dense',
+        groupby: ['bar'],
+        newColumnName: 'bar',
+      },
+    ]);
+  });
 });
