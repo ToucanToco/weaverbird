@@ -3494,4 +3494,154 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate basic rank steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rank',
+        valueCol: 'VALUE',
+        order: 'asc',
+        method: 'standard',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { VALUE: 1 } },
+      {
+        $group: {
+          _id: null,
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      {
+        $project: {
+          _vqbSortedArray: {
+            $let: {
+              vars: {
+                reducedArrayInObj: {
+                  $reduce: {
+                    input: '$_vqbArray',
+                    initialValue: {
+                      a: [],
+                      order: 0,
+                      prevValue: undefined,
+                      prevRank: undefined,
+                    },
+                    in: {
+                      $let: {
+                        vars: {
+                          order: { $add: ['$$value.order', 1] },
+                          rank: {
+                            $cond: [
+                              { $ne: [`$$this.VALUE`, '$$value.prevValue'] },
+                              { $add: ['$$value.order', 1] },
+                              '$$value.prevRank',
+                            ],
+                          },
+                        },
+                        in: {
+                          a: {
+                            $concatArrays: [
+                              '$$value.a',
+                              [{ $mergeObjects: ['$$this', { VALUE_RANK: '$$rank' }] }],
+                            ],
+                          },
+                          order: '$$order',
+                          prevValue: '$$this.VALUE',
+                          prevRank: '$$rank',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              in: '$$reducedArrayInObj.a',
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbSortedArray' },
+      { $replaceRoot: { newRoot: '$_vqbSortedArray' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate rank steps with more options', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rank',
+        valueCol: 'VALUE',
+        order: 'desc',
+        method: 'dense',
+        groupby: ['COUNTRY', 'DATE'],
+        newColumnName: 'RANK',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { VALUE: -1 } },
+      {
+        $group: {
+          _id: { COUNTRY: '$COUNTRY', DATE: '$DATE' },
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      {
+        $project: {
+          _vqbSortedArray: {
+            $let: {
+              vars: {
+                reducedArrayInObj: {
+                  $reduce: {
+                    input: '$_vqbArray',
+                    initialValue: {
+                      a: [],
+                      order: 0,
+                      prevValue: undefined,
+                      prevRank: undefined,
+                    },
+                    in: {
+                      $let: {
+                        vars: {
+                          order: {
+                            $cond: [
+                              { $ne: [`$$this.VALUE`, '$$value.prevValue'] },
+                              { $add: ['$$value.order', 1] },
+                              '$$value.order',
+                            ],
+                          },
+                          rank: {
+                            $cond: [
+                              { $ne: [`$$this.VALUE`, '$$value.prevValue'] },
+                              { $add: ['$$value.order', 1] },
+                              '$$value.prevRank',
+                            ],
+                          },
+                        },
+                        in: {
+                          a: {
+                            $concatArrays: [
+                              '$$value.a',
+                              [{ $mergeObjects: ['$$this', { RANK: '$$rank' }] }],
+                            ],
+                          },
+                          order: '$$order',
+                          prevValue: '$$this.VALUE',
+                          prevRank: '$$rank',
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              in: '$$reducedArrayInObj.a',
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbSortedArray' },
+      { $replaceRoot: { newRoot: '$_vqbSortedArray' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });
