@@ -568,6 +568,18 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Add conditional column "NEW_COL"');
   });
 
+  it('generates label for rank steps', () => {
+    const step: S.RankStep = {
+      name: 'rank',
+      valueCol: 'VALUE',
+      order: 'desc',
+      method: 'dense',
+      groupby: ['COUNTRY', 'DATE'],
+      newColumnName: 'RANK',
+    };
+    expect(hrl(step)).toEqual('Compute rank of column "VALUE"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };
