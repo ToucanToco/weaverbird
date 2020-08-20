@@ -876,6 +876,129 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
   ];
 }
 
+/** transform a 'rank' step into corresponding mongo steps */
+function transformRank(step: Readonly<S.RankStep>): MongoStep {
+  let vqbVarOrder: MongoStep = {};
+
+  /**
+   * Here we define the order variable that will be used in the '$reduce' step
+   * defined below. The order definition depends on the ranking method chosen.
+   *
+   * Example of ranking output depending on method chosen:
+   *
+   *  - standard: [10, 15, 15, 15, 20, 20, 22] => [1, 2, 2, 2, 5, 5, 6]
+   *  - dense: [10, 15, 15, 15, 20, 20, 22] => [1, 2, 2, 2, 3, 3, 4]
+   *
+   * Notes on special Mongo variables used in the '$reduce' step defined below:
+   *
+   *  - '$$this' refers to the element being processed
+   *  - '$$value' refers to the cumulative value of the expression
+   */
+  if (step.method === 'dense') {
+    vqbVarOrder = {
+      $cond: [
+        { $ne: [`$$this.${step.valueCol}`, '$$value.prevValue'] },
+        { $add: ['$$value.order', 1] },
+        '$$value.order',
+      ],
+    };
+  } else {
+    vqbVarOrder = { $add: ['$$value.order', 1] };
+  }
+
+  /**
+   * This is the variable object used in the '$reduce' step described below (see
+   * the object structure in the 'rankedArray' doc below). It's here that we
+   * compute the rank, that compares two consecutive documents in sorted arrays
+   * and which definition depends on the ranking method chosen (see above)
+   *
+   * Notes on special Mongo variables used in the '$reduce' step defined below:
+   *
+   *  - '$$this' refers to the element being processed
+   *  - '$$value' refers to the cumulative value of the expression
+   */
+  const vqbVarObj: MongoStep = {
+    $let: {
+      vars: {
+        order: vqbVarOrder,
+        rank: {
+          $cond: [
+            { $ne: [`$$this.${step.valueCol}`, '$$value.prevValue'] },
+            { $add: ['$$value.order', 1] },
+            '$$value.prevRank',
+          ],
+        },
+      },
+      in: {
+        a: {
+          $concatArrays: [
+            '$$value.a',
+            [
+              {
+                $mergeObjects: [
+                  '$$this',
+                  { [step.newColumnName ?? `${step.valueCol}_RANK`]: '$$rank' },
+                ],
+              },
+            ],
+          ],
+        },
+        order: '$$order',
+        prevValue: `$$this.${step.valueCol}`,
+        prevRank: '$$rank',
+      },
+    },
+  };
+
+  /**
+   * This step transforms sorted arrays (1 array per group as specified by the
+   * 'groupby' parameter) of documents into an array of the same sorted documents,
+   * with the information of ranking of each document added ionto each(key 'rank).
+   *
+   * To do so we reduce orignal arrays in one document each with the structure:
+   * {
+   *   a: [ < list of sorted documents with rank key added > ],
+   *   order: < an order counter >,
+   *   prevValue: < to keep track of previous document value >,
+   *   prevRank: < to keep track of previous document rank >
+   * }
+   *
+   * At the end we just extract the 'a' array (as other keys were only useful as
+   * variables in the '$reduce' step)
+   */
+  const rankedArray: MongoStep = {
+    $let: {
+      vars: {
+        reducedArrayInObj: {
+          $reduce: {
+            input: '$_vqbArray',
+            initialValue: {
+              a: [],
+              order: 0,
+              prevValue: undefined,
+              prevRank: undefined,
+            },
+            in: vqbVarObj,
+          },
+        },
+      },
+      in: '$$reducedArrayInObj.a',
+    },
+  };
+  return [
+    { $sort: { [step.valueCol]: step.order == 'asc' ? 1 : -1 } },
+    {
+      $group: {
+        _id: step.groupby ? columnMap(step.groupby) : null,
+        _vqbArray: { $push: '$$ROOT' },
+      },
+    },
+    { $project: { _vqbSortedArray: rankedArray } },
+    { $unwind: '$_vqbSortedArray' },
+    { $replaceRoot: { newRoot: '$_vqbSortedArray' } },
+  ];
+}
+
 /** transform an 'replace' step into corresponding mongo steps */
 function transformReplace(step: Readonly<S.ReplaceStep>): MongoStep {
   const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
@@ -1205,6 +1328,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   percentage: transformPercentage,
   pivot: transformPivot,
+  rank: transformRank,
   rename: (step: Readonly<S.RenameStep>) => [
     { $addFields: { [step.newname]: $$(step.oldname) } },
     { $project: { [step.oldname]: 0 } },
