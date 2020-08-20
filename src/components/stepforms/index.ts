@@ -20,6 +20,7 @@ import './FromDateStepForm.vue';
 import './JoinStepForm.vue';
 import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
+import './RankStepForm.vue';
 import './RenameStepForm.vue';
 import './ReplaceStepForm.vue';
 import './RollupStepForm.vue';
