@@ -886,7 +886,7 @@ function transformRank(step: Readonly<S.RankStep>): MongoStep {
    *
    * Example of ranking output depending on method chosen:
    *
-   *  - standard: [10, 15, 15, 15, 20, 20, 22] => [1, 2, 2, 2, 5, 5, 6]
+   *  - standard: [10, 15, 15, 15, 20, 20, 22] => [1, 2, 2, 2, 5, 5, 7]
    *  - dense: [10, 15, 15, 15, 20, 20, 22] => [1, 2, 2, 2, 3, 3, 4]
    *
    * Notes on special Mongo variables used in the '$reduce' step defined below:
