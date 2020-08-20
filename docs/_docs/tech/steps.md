@@ -1568,6 +1568,133 @@ Compute statistics of a column.,
 | ------- | ----- | ------ |
 | 9.33333 | 6     | 8.5    |
 
+### `rank` step
+
+This step allows to compute a rank column based on a value column that can be
+sorted in ascending or descending order. The ranking can be computed by group.
+
+There are 2 ranking methods available, that you will understand easily through
+those examples:
+
+- `standard`: input = [10, 20, 20, 20, 25, 25, 30] => ranking = [1, 2, 2, 2, 5, 5, 7]
+- `dense`: input = [10, 20, 20, 20, 25, 25, 30] => ranking = [1, 2, 2, 2, 3, 3, 4]
+
+(The `dense` method is basically the same as the `standard` method, but rank
+always increases by 1 at most).
+
+```javascript
+{
+  name: 'rank',
+  valueCol: 'VALUE', // The value column that will be ordered to determine rank
+  order: 'desc', // How to order the value column to determine ranking.
+                 // either asc(ending) or desc(ending), 'desc' by default
+  method: 'standard', // either 'standard' or 'dense', as explained above
+  groupby: ['foo', 'bar'], // specify columns if you want to group the ranking computation
+  newColumnName: 'columnA', // specify the new column name to be created (by default '<yourValueColumn>_RANK')
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: Basic usage
+
+**Input dataset:**
+
+| COUNTRY | VALUE |
+| ------- | ----- |
+| FRANCE  | 15    |
+| FRANCE  | 5     |
+| FRANCE  | 10    |
+| FRANCE  | 20    |
+| FRANCE  | 10    |
+| FRANCE  | 15    |
+| USA     | 20    |
+| USA     | 30    |
+| USA     | 20    |
+| USA     | 25    |
+| USA     | 15    |
+| USA     | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'rank',
+  valueCol: 'VALUE',
+  order: 'desc',
+  method: 'standard',
+}
+```
+
+**Output dataset:**
+
+| COUNTRY | VALUE | VALUE_RANK |
+| ------- | ----- | ---------- |
+| USA     | 30    | 1          |
+| USA     | 25    | 2          |
+| FRANCE  | 20    | 3          |
+| USA     | 20    | 3          |
+| USA     | 20    | 3          |
+| USA     | 20    | 3          |
+| FRANCE  | 15    | 7          |
+| FRANCE  | 15    | 7          |
+| USA     | 15    | 7          |
+| FRANCE  | 10    | 10         |
+| FRANCE  | 10    | 10         |
+| FRANCE  | 5     | 12         |
+
+#### Example 2: With more options
+
+**Input dataset:**
+
+| COUNTRY | VALUE |
+| ------- | ----- |
+| FRANCE  | 15    |
+| FRANCE  | 5     |
+| FRANCE  | 10    |
+| FRANCE  | 20    |
+| FRANCE  | 10    |
+| FRANCE  | 15    |
+| USA     | 20    |
+| USA     | 30    |
+| USA     | 20    |
+| USA     | 25    |
+| USA     | 15    |
+| USA     | 20    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'rank',
+  valueCol: 'VALUE',
+  order: 'asc',
+  method: 'dense',
+  groupby: ['COUNTRY'],
+  newColumnName: 'MY_RANK',
+}
+```
+
+**Output dataset:**
+
+| COUNTRY | VALUE | MY_RANK |
+| ------- | ----- | ------- |
+| FRANCE  | 5     | 1       |
+| FRANCE  | 10    | 2       |
+| FRANCE  | 10    | 2       |
+| FRANCE  | 15    | 3       |
+| FRANCE  | 15    | 3       |
+| FRANCE  | 20    | 4       |
+| USA     | 15    | 1       |
+| USA     | 20    | 2       |
+| USA     | 20    | 2       |
+| USA     | 20    | 2       |
+| USA     | 25    | 3       |
+| USA     | 30    | 4       |
+
 ### `rename` step
 
 Rename a column.,
