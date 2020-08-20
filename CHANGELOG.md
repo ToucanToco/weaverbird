@@ -1,6 +1,10 @@
 # Changelog
 
-## [TBD]
+## Unreleased
+
+### Added
+
+- Add 'rank' step
 
 ### Fixed
 
