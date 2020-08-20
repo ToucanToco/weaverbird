@@ -19,6 +19,7 @@ import ifthenelseSchema from './ifthenelse';
 import joinSchema from './join';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
+import rankSchema from './rank';
 import renameBuildSchema from './rename';
 import replaceSchema from './replace';
 import rollupSchema from './rollup';
@@ -60,6 +61,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   lowercase: toLowerSchema,
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
+  rank: rankSchema,
   rename: renameBuildSchema,
   replace: replaceSchema,
   rollup: rollupSchema,

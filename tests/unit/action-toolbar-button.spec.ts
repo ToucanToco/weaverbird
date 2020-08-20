@@ -113,6 +113,7 @@ describe('ActionToolbarButton active', () => {
       'evolution',
       'cumsum',
       'percentage',
+      'rank',
       'statistics',
     ]);
   });
