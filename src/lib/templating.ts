@@ -185,7 +185,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   dateextract(step: Readonly<S.DateExtractPropertyStep>) {
-    return { ...step, column: _interpolate(this.interpolateFunc, step.column, this.context) };
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+    };
   }
 
   domain(step: Readonly<S.DomainStep>) {
@@ -273,6 +276,17 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   pivot(step: Readonly<S.PivotStep>) {
     return { ...step };
+  }
+
+  rank(step: Readonly<S.RankStep>) {
+    return {
+      ...step,
+      valueCol: _interpolate(this.interpolateFunc, step.valueCol, this.context),
+      groupby: (step.groupby ?? []).map(col =>
+        _interpolate(this.interpolateFunc, col, this.context),
+      ),
+      newColumnName: _interpolate(this.interpolateFunc, step.newColumnName, this.context),
+    };
   }
 
   rename(step: Readonly<S.RenameStep>) {
