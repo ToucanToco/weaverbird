@@ -71,8 +71,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   initialStepValue!: JoinStep;
 
   @VQBModule.Getter referencingPipelines!: string[];
-  @VQBModule.Getter availablePipelines!: string[];
-  @VQBModule.State domains!: string[];
+  @VQBModule.Getter availableDatasetNames!: string[];
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;
@@ -103,7 +102,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   }
 
   get options(): object[] {
-    return [...this.availablePipelines, ...this.domains].map(name => {
+    return this.availableDatasetNames.map(name => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
         option['$isDisabled'] = true;
