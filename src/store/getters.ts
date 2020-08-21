@@ -96,9 +96,9 @@ const getters: GetterTree<VQBState, any> = {
    */
   pipelinesNames: (state: VQBState) => Object.keys(state.pipelines),
   /**
-   * Return all available domains (including pipelines but excluding currentPipelineName)
+   * Return all available dataset (including pipelines but excluding currentPipelineName)
    */
-  availablePipelineNames: (state: VQBState) =>
+  availableDatasetNames: (state: VQBState) =>
     Object.keys(state.pipelines)
       .concat(state.domains)
       .filter((name: string) => name !== state.currentPipelineName)

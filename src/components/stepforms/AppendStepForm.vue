@@ -38,7 +38,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   initialStepValue!: AppendStep;
 
   @VQBModule.Getter referencingPipelines!: string[];
-  @VQBModule.Getter availablePipelineNames!: string[];
+  @VQBModule.Getter availableDatasetNames!: string[];
 
   readonly title: string = 'Append datasets';
 
@@ -55,7 +55,7 @@ export default class AppendStepForm extends BaseStepForm<AppendStep> {
   }
 
   get options(): object[] {
-    return this.availablePipelineNames.map(name => {
+    return this.availableDatasetNames.map(name => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
         option['$isDisabled'] = true;

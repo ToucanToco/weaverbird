@@ -74,7 +74,7 @@ describe('getter tests', () => {
     });
   });
 
-  describe('availablePipelines', () => {
+  describe('availableDatasetNames', () => {
     it('should not return the current pipeline', () => {
       const state = buildState({
         currentPipelineName: 'coco_l_asticot',
@@ -84,7 +84,7 @@ describe('getter tests', () => {
           dataset2: [],
         },
       });
-      expect(getters.availablePipelineNames(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
+      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
     });
     it('should return everything if the currentPipelineName is not defined', () => {
       const state = buildState({
@@ -94,7 +94,7 @@ describe('getter tests', () => {
           dataset2: [],
         },
       });
-      expect(getters.availablePipelineNames(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
+      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual(['dataset1', 'dataset2']);
     });
     it('should return the pipeline names and the domains', () => {
       const state = buildState({
@@ -104,7 +104,7 @@ describe('getter tests', () => {
         },
         domains: ['domain1', 'domain2'],
       });
-      expect(getters.availablePipelineNames(state, {}, {}, {})).toEqual([
+      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual([
         'dataset1',
         'dataset2',
         'domain1',
@@ -119,7 +119,7 @@ describe('getter tests', () => {
         },
         domains: ['mno', 'dataset1'],
       });
-      expect(getters.availablePipelineNames(state, {}, {}, {})).toEqual([
+      expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual([
         'abc',
         'dataset1',
         'mno',
