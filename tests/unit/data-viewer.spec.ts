@@ -304,6 +304,50 @@ describe('Data Viewer', () => {
       expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeFalsy();
     });
 
+    it('should close the menu when the dataset is changed', async () => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [
+              ['value1', 'value2', 'value3'],
+              ['value4', 'value5', 'value6'],
+              ['value7', 'value8', 'value9'],
+              ['value10', 'value11', 'value12'],
+              ['value13', 'value14', 'value15'],
+            ],
+            paginationContext: {
+              totalCount: 50,
+              pagesize: 10,
+              pageno: 1,
+            },
+          },
+        }),
+      );
+      const wrapper = shallowMount(DataViewer, { store, localVue });
+
+      const actionMenuWrapperArray = wrapper.findAll('.data-viewer__header-action');
+      expect(actionMenuWrapperArray.length).toEqual(3);
+
+      const oneActionMenuIcon = actionMenuWrapperArray.at(0);
+      // there is no ActionMenu visible yet:
+      expect(oneActionMenuIcon.find('ActionMenu-stub').exists()).toBeFalsy;
+      // on click on icon:
+      await oneActionMenuIcon.trigger('click');
+      // it should display ActionMenu:
+      const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
+      expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
+      // change the dataset
+      store.commit('vqb/setDataset', {
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [['value1', 'value2', 'value3']],
+        },
+      });
+      // the Action menu disappear:
+      expect(actionMenuOpened.vm.$props.visible).toBeFalsy();
+    });
+
     it('should not have an icon "data type menu" for not supported backends', () => {
       const store = setupMockStore(
         buildStateWithOnePipeline([], {

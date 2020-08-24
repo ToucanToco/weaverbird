@@ -59,7 +59,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Watch } from 'vue-property-decorator';
 
 import Pagination from '@/components/Pagination.vue';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
@@ -203,6 +203,16 @@ export default class DataViewer extends Vue {
 
   closeMenu() {
     this.activeActionMenuColumnName = '';
+  }
+
+  /**
+   * These menus are associated to the column headers.
+   * It makes sense to close them when the headers change.
+   */
+  @Watch('columnHeaders')
+  onSelectedColumnsChange() {
+    this.closeMenu();
+    this.closeDataTypeMenu();
   }
 }
 </script>
