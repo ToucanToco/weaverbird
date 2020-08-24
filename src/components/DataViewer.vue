@@ -8,12 +8,16 @@
           <thead class="data-viewer__header">
             <tr>
               <td
-                v-for="(column, index) in formattedColumns"
+                v-for="column in formattedColumns"
                 :class="column.class"
                 :key="column.name"
                 @click="toggleColumnSelection({ column: column.name })"
               >
-                <span v-if="column.type" :class="iconClass" @click.stop="openDataTypeMenu(index)">
+                <span
+                  v-if="column.type"
+                  :class="iconClass"
+                  @click.stop="openDataTypeMenu(column.name)"
+                >
                   <DataTypesMenu
                     :column-name="column.name"
                     :visible="isSupported('convert') && column.isDataTypeMenuOpened"
@@ -23,7 +27,7 @@
                   <span v-html="getIconType(column.type)" />
                 </span>
                 <span class="data-viewer__header-label">{{ column.name }}</span>
-                <span class="data-viewer__header-action" @click.stop="openMenu(index)">
+                <span class="data-viewer__header-action" @click.stop="openMenu(column.name)">
                   <ActionMenu
                     :column-name="column.name"
                     :visible="column.isActionMenuOpened"
@@ -106,8 +110,8 @@ export default class DataViewer extends Vue {
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
-  indexActiveActionMenu = -1;
-  indexActiveDataTypeMenu = -1;
+  activeActionMenuColumnName = '';
+  activeDataTypeMenuColumnName = '';
 
   /**
    * @description Get our columns with their names and linked classes
@@ -115,23 +119,12 @@ export default class DataViewer extends Vue {
    * @return {Array<object>}
    */
   get formattedColumns() {
-    return this.columnHeaders.map((d, index) => {
-      let isActionMenuOpened = false;
-      let isDataTypeMenuOpened = false;
-
-      if (index === this.indexActiveActionMenu) {
-        isActionMenuOpened = true;
-      }
-
-      if (index === this.indexActiveDataTypeMenu) {
-        isDataTypeMenuOpened = true;
-      }
-
+    return this.columnHeaders.map(d => {
       return {
         name: d.name,
         type: d.type || 'undefined',
-        isActionMenuOpened,
-        isDataTypeMenuOpened,
+        isActionMenuOpened: this.activeActionMenuColumnName === d.name,
+        isDataTypeMenuOpened: this.activeDataTypeMenuColumnName === d.name,
         class: {
           'data-viewer__header-cell': true,
           'data-viewer__header-cell--active': this.isSelected(d.name),
@@ -194,22 +187,22 @@ export default class DataViewer extends Vue {
     }
   }
 
-  openDataTypeMenu(index: number) {
-    this.indexActiveDataTypeMenu = index;
-    this.setSelectedColumns({ column: this.formattedColumns[index].name });
+  openDataTypeMenu(name: string) {
+    this.activeDataTypeMenuColumnName = name;
+    this.setSelectedColumns({ column: name });
   }
 
   closeDataTypeMenu() {
-    this.indexActiveDataTypeMenu = -1;
+    this.activeDataTypeMenuColumnName = '';
   }
 
-  openMenu(index: number) {
-    this.indexActiveActionMenu = index;
-    this.setSelectedColumns({ column: this.formattedColumns[index].name });
+  openMenu(name: string) {
+    this.activeActionMenuColumnName = name;
+    this.setSelectedColumns({ column: name });
   }
 
   closeMenu() {
-    this.indexActiveActionMenu = -1;
+    this.activeActionMenuColumnName = '';
   }
 }
 </script>
