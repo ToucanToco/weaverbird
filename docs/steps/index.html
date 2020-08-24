@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-08-21T13:53:51+02:00" />
+<meta property="article:published_time" content="2020-08-24T13:59:44+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-08-21T13:53:51+02:00","dateModified":"2020-08-21T13:53:51+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-08-24T13:59:44+02:00","dateModified":"2020-08-24T13:59:44+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -248,6 +248,12 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/pivot/">Pivot</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/rank/">Rank</a>
             <!--  -->
           
             
@@ -3815,6 +3821,336 @@ among <code class="highlighter-rouge">sum</code>, <code class="highlighter-rouge
   </tbody>
 </table>
 
+<h3 id="rank-step"><code class="highlighter-rouge">rank</code> step</h3>
+
+<p>This step allows to compute a rank column based on a value column that can be
+sorted in ascending or descending order. The ranking can be computed by group.</p>
+
+<p>There are 2 ranking methods available, that you will understand easily through
+those examples:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">standard</code>: input = [10, 20, 20, 20, 25, 25, 30] =&gt; ranking = [1, 2, 2, 2, 5, 5, 7]</li>
+  <li><code class="highlighter-rouge">dense</code>: input = [10, 20, 20, 20, 25, 25, 30] =&gt; ranking = [1, 2, 2, 2, 3, 3, 4]</li>
+</ul>
+
+<p>(The <code class="highlighter-rouge">dense</code> method is basically the same as the <code class="highlighter-rouge">standard</code> method, but rank
+always increases by 1 at most).</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'rank'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span> <span class="c1">// The value column that will be ordered to determine rank</span>
+  <span class="nx">order</span><span class="p">:</span> <span class="s1">'desc'</span><span class="p">,</span> <span class="c1">// How to order the value column to determine ranking.</span>
+                 <span class="c1">// either asc(ending) or desc(ending), 'desc' by default</span>
+  <span class="nx">method</span><span class="p">:</span> <span class="s1">'standard'</span><span class="p">,</span> <span class="c1">// either 'standard' or 'dense', as explained above</span>
+  <span class="nx">groupby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'foo'</span><span class="p">,</span> <span class="s1">'bar'</span><span class="p">],</span> <span class="c1">// specify columns if you want to group the ranking computation</span>
+  <span class="nx">newColumnName</span><span class="p">:</span> <span class="s1">'columnA'</span><span class="p">,</span> <span class="c1">// specify the new column name to be created (by default '&lt;yourValueColumn&gt;_RANK')</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>This step is supported by the following backends:</strong></p>
+
+<ul>
+  <li>Mongo 4.0</li>
+  <li>Mongo 3.6</li>
+</ul>
+
+<h4 id="example-1-basic-usage-2">Example 1: Basic usage</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'rank'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">order</span><span class="p">:</span> <span class="s1">'desc'</span><span class="p">,</span>
+  <span class="nx">method</span><span class="p">:</span> <span class="s1">'standard'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+      <th>VALUE_RANK</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>USA</td>
+      <td>30</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>25</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>20</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>15</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>5</td>
+      <td>12</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2-with-more-options">Example 2: With more options</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>25</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>15</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'rank'</span><span class="p">,</span>
+  <span class="nx">valueCol</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span>
+  <span class="nx">order</span><span class="p">:</span> <span class="s1">'asc'</span><span class="p">,</span>
+  <span class="nx">method</span><span class="p">:</span> <span class="s1">'dense'</span><span class="p">,</span>
+  <span class="nx">groupby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'COUNTRY'</span><span class="p">],</span>
+  <span class="nx">newColumnName</span><span class="p">:</span> <span class="s1">'MY_RANK'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>COUNTRY</th>
+      <th>VALUE</th>
+      <th>MY_RANK</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>FRANCE</td>
+      <td>5</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>10</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>15</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>FRANCE</td>
+      <td>20</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>15</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>20</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>25</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>30</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
+
 <h3 id="rename-step"><code class="highlighter-rouge">rename</code> step</h3>
 
 <p>Rename a column.,</p>
@@ -6397,6 +6733,9 @@ specified <code class="highlighter-rouge">text</code>.</p>
 
 
 
+
+  
+  
 
   
   
