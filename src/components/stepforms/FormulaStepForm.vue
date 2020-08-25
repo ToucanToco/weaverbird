@@ -11,6 +11,7 @@
       :warning="duplicateColumnName"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <InputTextWidget
       class="formulaInput"

@@ -11,6 +11,7 @@
       :warning="duplicateColumnName"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <InputTextWidget
       class="textInput"
@@ -21,6 +22,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <StepFormButtonbar />
   </div>

@@ -7,6 +7,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
       @filterTreeUpdated="updateFilterTree"
     />
     <StepFormButtonbar />

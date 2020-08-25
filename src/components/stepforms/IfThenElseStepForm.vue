@@ -16,6 +16,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
       @input="updateIfThenElse"
     />
     <StepFormButtonbar />
