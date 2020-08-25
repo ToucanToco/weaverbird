@@ -80,6 +80,16 @@ describe('Variable Chooser', () => {
     });
   });
 
+  it('should always display an "Advanced variable" option ...', () => {
+    expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
+  });
+
+  it('... even without other values', async () => {
+    wrapper.setProps({ availableVariables: [] });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
+  });
+
   describe('when closing the popover', () => {
     beforeEach(async () => {
       wrapper.find('popover-stub').vm.$emit('closed');
