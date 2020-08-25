@@ -25,8 +25,13 @@
       :is-multiple="isMultiple"
       :value="value"
       :selected-variables="selectedVariables"
+      @addAdvancedVariable="openAdvancedVariableModal"
       @input="chooseVariable"
       @closed="stopChoosingVariable"
+    />
+    <AdvancedVariableModal
+      :is-opened="isAdvancedVariableModalOpened"
+      @closed="closeAdvancedVariableModal"
     />
   </div>
 </template>
@@ -36,6 +41,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
+import AdvancedVariableModal from './AdvancedVariableModal.vue';
 import VariableChooser from './VariableChooser.vue';
 
 /**
@@ -44,7 +50,10 @@ import VariableChooser from './VariableChooser.vue';
  */
 @Component({
   name: 'variable-input-base',
-  components: { VariableChooser },
+  components: {
+    VariableChooser,
+    AdvancedVariableModal,
+  },
 })
 export default class VariableInputBase extends Vue {
   @Prop({ default: false })
@@ -66,6 +75,8 @@ export default class VariableInputBase extends Vue {
   hasArrow!: boolean;
 
   isChoosingVariable = false;
+
+  isAdvancedVariableModalOpened = false;
 
   /**
    * Find variables in value array
@@ -92,6 +103,15 @@ export default class VariableInputBase extends Vue {
 
   stopChoosingVariable() {
     this.isChoosingVariable = false;
+  }
+
+  openAdvancedVariableModal() {
+    this.stopChoosingVariable();
+    this.isAdvancedVariableModalOpened = true;
+  }
+
+  closeAdvancedVariableModal() {
+    this.isAdvancedVariableModalOpened = false;
   }
 
   /**
