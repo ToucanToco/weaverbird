@@ -3644,4 +3644,226 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate basic waterfall steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'waterfall',
+        valueColumn: 'VALUE',
+        milestonesColumn: 'DATE',
+        start: '2019',
+        end: '2020',
+        labelsColumn: 'PRODUCT',
+        sortBy: 'value',
+        order: 'desc',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { DATE: { $in: ['2019', '2020'] } } },
+      {
+        $facet: {
+          _vqb_start_end: [
+            {
+              $group: {
+                _id: { DATE: '$DATE' },
+                VALUE: { $sum: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                LABEL_waterfall: '$_id.DATE',
+                TYPE_waterfall: null,
+                VALUE: 1,
+                _vqbOrder: { $cond: [{ $eq: ['$_id.DATE', '2019'] }, -1, 1] },
+              },
+            },
+          ],
+          _vqb_children: [
+            {
+              $group: {
+                _id: { PRODUCT: '$PRODUCT', DATE: '$DATE' },
+                VALUE: { $sum: '$VALUE' },
+              },
+            },
+            {
+              $addFields: {
+                _vqbOrder: { $cond: [{ $eq: ['$_id.DATE', '2019'] }, 1, 2] },
+              },
+            },
+            { $sort: { _vqbOrder: 1 } },
+            {
+              $group: {
+                _id: { PRODUCT: '$_id.PRODUCT' },
+                _vqbValuesArray: { $push: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                LABEL_waterfall: '$_id.PRODUCT',
+                TYPE_waterfall: 'parent',
+                VALUE: {
+                  $reduce: {
+                    input: '$_vqbValuesArray',
+                    initialValue: 0,
+                    in: { $subtract: ['$$this', '$$value'] },
+                  },
+                },
+                _vqbOrder: { $literal: 0 },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbFullArray: { $concatArrays: ['$_vqb_start_end', '$_vqb_children'] },
+        },
+      },
+      { $unwind: '$_vqbFullArray' },
+      { $replaceRoot: { newRoot: '$_vqbFullArray' } },
+      { $sort: { _vqbOrder: 1, VALUE: -1 } },
+      { $project: { _vqbOrder: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can generate waterfall steps with more options', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'waterfall',
+        valueColumn: 'VALUE',
+        milestonesColumn: 'DATE',
+        start: '2019',
+        end: '2020',
+        labelsColumn: 'PRODUCT',
+        parentsColumn: 'CATEGORY',
+        groupby: ['COUNTRY'],
+        sortBy: 'label',
+        order: 'asc',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { DATE: { $in: ['2019', '2020'] } } },
+      {
+        $facet: {
+          _vqb_start_end: [
+            {
+              $group: {
+                _id: { COUNTRY: '$COUNTRY', DATE: '$DATE' },
+                VALUE: { $sum: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                COUNTRY: '$_id.COUNTRY',
+                LABEL_waterfall: '$_id.DATE',
+                GROUP_waterfall: '$_id.DATE',
+                TYPE_waterfall: null,
+                VALUE: 1,
+                _vqbOrder: { $cond: [{ $eq: ['$_id.DATE', '2019'] }, -1, 1] },
+              },
+            },
+          ],
+          _vqb_parents: [
+            {
+              $group: {
+                _id: {
+                  COUNTRY: '$COUNTRY',
+                  CATEGORY: '$CATEGORY',
+                  DATE: '$DATE',
+                },
+                VALUE: { $sum: '$VALUE' },
+              },
+            },
+            {
+              $addFields: {
+                _vqbOrder: { $cond: [{ $eq: ['$_id.DATE', '2019'] }, 1, 2] },
+              },
+            },
+            { $sort: { _vqbOrder: 1 } },
+            {
+              $group: {
+                _id: {
+                  COUNTRY: '$_id.COUNTRY',
+                  CATEGORY: '$_id.CATEGORY',
+                },
+                _vqbValuesArray: { $push: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                COUNTRY: '$_id.COUNTRY',
+                LABEL_waterfall: '$_id.CATEGORY',
+                GROUP_waterfall: '$_id.CATEGORY',
+                TYPE_waterfall: 'parent',
+                VALUE: {
+                  $reduce: {
+                    input: '$_vqbValuesArray',
+                    initialValue: 0,
+                    in: { $subtract: ['$$this', '$$value'] },
+                  },
+                },
+                _vqbOrder: { $literal: 0 },
+              },
+            },
+          ],
+          _vqb_children: [
+            {
+              $group: {
+                _id: {
+                  COUNTRY: '$COUNTRY',
+                  CATEGORY: '$CATEGORY',
+                  PRODUCT: '$PRODUCT',
+                  DATE: '$DATE',
+                },
+                VALUE: { $sum: '$VALUE' },
+              },
+            },
+            {
+              $addFields: {
+                _vqbOrder: { $cond: [{ $eq: ['$_id.DATE', '2019'] }, 1, 2] },
+              },
+            },
+            { $sort: { _vqbOrder: 1 } },
+            {
+              $group: {
+                _id: {
+                  COUNTRY: '$_id.COUNTRY',
+                  CATEGORY: '$_id.CATEGORY',
+                  PRODUCT: '$_id.PRODUCT',
+                },
+                _vqbValuesArray: { $push: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                COUNTRY: '$_id.COUNTRY',
+                LABEL_waterfall: '$_id.PRODUCT',
+                GROUP_waterfall: '$_id.CATEGORY',
+                TYPE_waterfall: 'child',
+                VALUE: {
+                  $reduce: {
+                    input: '$_vqbValuesArray',
+                    initialValue: 0,
+                    in: { $subtract: ['$$this', '$$value'] },
+                  },
+                },
+                _vqbOrder: { $literal: 0 },
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbFullArray: { $concatArrays: ['$_vqb_start_end', '$_vqb_parents', '$_vqb_children'] },
+        },
+      },
+      { $unwind: '$_vqbFullArray' },
+      { $replaceRoot: { newRoot: '$_vqbFullArray' } },
+      { $sort: { _vqbOrder: 1, LABEL_waterfall: 1 } },
+      { $project: { _vqbOrder: 0, _id: 0 } },
+    ]);
+  });
 });
