@@ -9,6 +9,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
     />
     <InputTextWidget
       class="rightOn"
@@ -18,6 +19,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
     />
   </div>
 </template>
@@ -50,6 +52,9 @@ export default class JoinColumns extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

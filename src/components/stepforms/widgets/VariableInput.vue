@@ -14,8 +14,8 @@
       v-else
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :has-arrow="hasArrow"
       :use-advanced-variable="useAdvancedVariable"
+      :has-arrow="hasArrow"
       @input="chooseVariable"
     >
       <slot />

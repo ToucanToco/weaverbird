@@ -3,10 +3,10 @@
     <VariableInputBase
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
-      :use-advanced-variable="useAdvancedVariable"
       @input="toggleVariable"
     >
       <slot />
