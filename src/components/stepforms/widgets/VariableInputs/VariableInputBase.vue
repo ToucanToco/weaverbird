@@ -56,6 +56,9 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
+
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
 
@@ -78,7 +81,9 @@ export default class VariableInputBase extends Vue {
    * Determine whether to authorize or not the selection of a variable
    */
   get canBeVariable() {
-    return this.availableVariables && this.availableVariables.length > 0;
+    return (
+      (this.availableVariables && this.availableVariables.length > 0) || this.useAdvancedVariable
+    );
   }
 
   startChoosingVariable() {

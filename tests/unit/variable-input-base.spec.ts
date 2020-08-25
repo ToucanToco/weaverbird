@@ -73,6 +73,12 @@ describe('Variable Input', () => {
       it('should not be present', () => {
         expect(wrapper.find('.widget-variable__toggle').exists()).toBe(false);
       });
+
+      it('... except if advanced variable is allowed', async () => {
+        wrapper.setProps({ useAdvancedVariable: true });
+        await wrapper.vm.$nextTick();
+        expect(wrapper.find('.widget-variable__toggle').exists()).toBe(true);
+      });
     });
 
     describe('when clicked', () => {

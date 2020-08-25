@@ -15,6 +15,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="hasArrow"
+      :use-advanced-variable="useAdvancedVariable"
       @input="chooseVariable"
     >
       <slot />
@@ -43,6 +44,9 @@ import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '
 export default class VariableInput extends Vue {
   @Prop()
   value!: any;
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
