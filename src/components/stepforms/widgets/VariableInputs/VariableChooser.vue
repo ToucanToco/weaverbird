@@ -29,7 +29,7 @@
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
         </div>
       </div>
-      <!-- <div class="widget-advanced-variable">Advanced variable</div> -->
+      <div class="widget-advanced-variable">advanced variable</div>
     </div>
   </popover>
 </template>
