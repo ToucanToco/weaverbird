@@ -10,6 +10,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <MultiselectWidget
       class="groupbyColumnsInput"
@@ -21,6 +22,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <StepFormButtonbar />
   </div>

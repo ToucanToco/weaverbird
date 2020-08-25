@@ -11,6 +11,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <ColumnPicker
       class="referenceColumnInput"
@@ -31,6 +32,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="true"
     />
     <InputTextWidget
       class="newColumnInput"
