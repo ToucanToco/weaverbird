@@ -376,6 +376,21 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  waterfall(step: Readonly<S.WaterfallStep>) {
+    return {
+      ...step,
+      valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
+      milestonesColumn: _interpolate(this.interpolateFunc, step.milestonesColumn, this.context),
+      groupby: (step.groupby ?? []).map(col =>
+        _interpolate(this.interpolateFunc, col, this.context),
+      ),
+      start: _interpolate(this.interpolateFunc, step.start, this.context),
+      end: _interpolate(this.interpolateFunc, step.end, this.context),
+      labelsColumn: _interpolate(this.interpolateFunc, step.labelsColumn, this.context),
+      parentsColumn: _interpolate(this.interpolateFunc, step.parentsColumn, this.context),
+    };
+  }
+
   interpolate(pipeline: S.Pipeline): S.Pipeline {
     return pipeline.map(this.interpolateStep.bind(this));
   }

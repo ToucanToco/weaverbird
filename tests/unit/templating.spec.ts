@@ -1231,4 +1231,35 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate waterfall steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'waterfall',
+        valueColumn: '<%= foo %>',
+        milestonesColumn: '<%= foo %>',
+        start: '<%= foo %>',
+        end: '<%= foo %>',
+        labelsColumn: '<%= foo %>',
+        parentsColumn: '<%= foo %>',
+        groupby: ['<%= foo %>'],
+        sortBy: 'value',
+        order: 'desc',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'waterfall',
+        valueColumn: 'bar',
+        milestonesColumn: 'bar',
+        start: 'bar',
+        end: 'bar',
+        labelsColumn: 'bar',
+        parentsColumn: 'bar',
+        groupby: ['bar'],
+        sortBy: 'value',
+        order: 'desc',
+      },
+    ]);
+  });
 });
