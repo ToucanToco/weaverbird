@@ -95,11 +95,11 @@ export default class AdvancedVariableModal extends Vue {
 }
 
 .vqb-modal__header {
-  background-color: #f5f5f5;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
   display: flex;
   padding: 20px 30px;
+  box-shadow: inset 0 -1px 0 0 #f5f5f5;
 }
 
 .vqb-modal__title {
