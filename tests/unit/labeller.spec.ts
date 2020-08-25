@@ -580,6 +580,22 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Compute rank of column "VALUE"');
   });
 
+  it('generates label for waterfall steps', () => {
+    const step: S.WaterfallStep = {
+      name: 'waterfall',
+      valueColumn: 'value',
+      milestonesColumn: 'date',
+      start: '2019',
+      end: '2020',
+      labelsColumn: 'child',
+      parentsColumn: 'parent',
+      groupby: ['foo', 'bar'],
+      sortBy: 'value',
+      order: 'desc',
+    };
+    expect(hrl(step)).toEqual('Compute waterfall of "value" from "2019" to "2020"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };
