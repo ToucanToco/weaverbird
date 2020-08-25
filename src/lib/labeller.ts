@@ -258,6 +258,10 @@ class StepLabeller implements StepMatcher<string> {
   uppercase(step: Readonly<S.ToUpperStep>) {
     return `Convert column "${step.column}" to uppercase`;
   }
+
+  waterfall(step: Readonly<S.WaterfallStep>) {
+    return `Compute waterfall of "${step.valueColumn}" from "${step.start}" to "${step.end}"`;
+  }
 }
 
 const LABELLER = new StepLabeller();
