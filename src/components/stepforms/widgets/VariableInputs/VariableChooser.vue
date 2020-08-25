@@ -29,7 +29,7 @@
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
         </div>
       </div>
-      <div class="widget-advanced-variable">Add variable</div>
+      <div class="widget-advanced-variable" @click="addAdvancedVariable">Add variable</div>
     </div>
   </popover>
 </template>
@@ -107,6 +107,10 @@ export default class VariableChooser extends Vue {
    */
   chooseVariable(variableIdentifier: string) {
     this.$emit('input', variableIdentifier);
+  }
+
+  addAdvancedVariable() {
+    this.$emit('addAdvancedVariable');
   }
 }
 </script>

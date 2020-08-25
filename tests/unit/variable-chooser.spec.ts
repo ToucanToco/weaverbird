@@ -90,6 +90,17 @@ describe('Variable Chooser', () => {
     expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
   });
 
+  describe('when clicking on "Advanced variable"', () => {
+    beforeEach(async () => {
+      wrapper.find('.widget-advanced-variable').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should emit advancedVariable', () => {
+      expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
+    });
+  });
+
   describe('when closing the popover', () => {
     beforeEach(async () => {
       wrapper.find('popover-stub').vm.$emit('closed');
