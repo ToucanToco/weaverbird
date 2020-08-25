@@ -326,6 +326,19 @@ export type UnpivotStep = {
   dropna: boolean;
 };
 
+export type WaterfallStep = {
+  name: 'waterfall';
+  valueColumn: string;
+  milestonesColumn: string;
+  start: string;
+  end: string;
+  labelsColumn: string;
+  parentsColumn?: string;
+  groupby?: string[];
+  sortBy: 'label' | 'value';
+  order: 'asc' | 'desc';
+};
+
 export type PipelineStep =
   | AddTextColumnStep
   | AggregationStep
@@ -363,7 +376,8 @@ export type PipelineStep =
   | TopStep
   | ToUpperStep
   | UniqueGroupsStep
-  | UnpivotStep;
+  | UnpivotStep
+  | WaterfallStep;
 
 export type PipelineStepName = PipelineStep['name'];
 export type Pipeline = PipelineStep[];

@@ -1282,6 +1282,148 @@ function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
   return mongoPipeline;
 }
 
+/** transform a 'waterfall' step into corresponding mongo steps */
+function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
+  let concatMongo = {};
+  let facet = {};
+  const groupby = step.groupby ?? [];
+  const parents = step.parentsColumn !== undefined ? [step.parentsColumn] : [];
+
+  // Pipeline that will be executed to get the array of results for the starting
+  // and ending milestone of the waterfall
+  const facetStartEnd = [
+    {
+      $group: {
+        _id: columnMap([...groupby, step.milestonesColumn]),
+        [step.valueColumn]: { $sum: $$(step.valueColumn) },
+      },
+    },
+    {
+      $project: {
+        ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
+        LABEL_waterfall: `$_id.${step.milestonesColumn}`,
+        GROUP_waterfall:
+          step.parentsColumn !== undefined ? `$_id.${step.milestonesColumn}` : undefined,
+        TYPE_waterfall: null,
+        [step.valueColumn]: 1,
+        _vqbOrder: { $cond: [{ $eq: [`$_id.${step.milestonesColumn}`, step.start] }, -1, 1] },
+      },
+    },
+  ];
+
+  // Pipeline that will be executed to get the array of results for the children
+  // elements of the waterfall
+  const facetChildren = [
+    {
+      $group: {
+        _id: columnMap([...groupby, ...parents, step.labelsColumn, step.milestonesColumn]),
+        [step.valueColumn]: { $sum: $$(step.valueColumn) },
+      },
+    },
+    {
+      $addFields: {
+        _vqbOrder: { $cond: [{ $eq: [`$_id.${step.milestonesColumn}`, step.start] }, 1, 2] },
+      },
+    },
+    { $sort: { _vqbOrder: 1 } },
+    {
+      $group: {
+        _id: {
+          ...Object.fromEntries(
+            [...groupby, ...parents, step.labelsColumn].map(col => [col, `$_id.${col}`]),
+          ),
+        },
+        _vqbValuesArray: { $push: $$(step.valueColumn) },
+      },
+    },
+    {
+      $project: {
+        ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
+        LABEL_waterfall: `$_id.${step.labelsColumn}`,
+        GROUP_waterfall:
+          step.parentsColumn !== undefined ? `$_id.${step.parentsColumn}` : undefined,
+        TYPE_waterfall: step.parentsColumn !== undefined ? 'child' : 'parent',
+        [step.valueColumn]: {
+          $reduce: {
+            input: '$_vqbValuesArray',
+            initialValue: 0,
+            in: { $subtract: ['$$this', '$$value'] },
+          },
+        },
+        _vqbOrder: { $literal: 0 },
+      },
+    },
+  ];
+
+  // If parentsColumn is define, we set the pipeline that will be executed to
+  // get the array of results for the parents elements of the waterfall. In such
+  // a case we add it to the concatenation of all the pipelines results arrays
+  if (step.parentsColumn) {
+    const facetParents = [
+      {
+        $group: {
+          _id: columnMap([...groupby, ...parents, step.milestonesColumn]),
+          [step.valueColumn]: { $sum: $$(step.valueColumn) },
+        },
+      },
+      {
+        $addFields: {
+          _vqbOrder: { $cond: [{ $eq: [`$_id.${step.milestonesColumn}`, step.start] }, 1, 2] },
+        },
+      },
+      { $sort: { _vqbOrder: 1 } },
+      {
+        $group: {
+          _id: { ...Object.fromEntries([...groupby, ...parents].map(col => [col, `$_id.${col}`])) },
+          _vqbValuesArray: { $push: $$(step.valueColumn) },
+        },
+      },
+      {
+        $project: {
+          ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
+          LABEL_waterfall: `$_id.${step.parentsColumn}`,
+          GROUP_waterfall: `$_id.${step.parentsColumn}`,
+          TYPE_waterfall: 'parent',
+          [step.valueColumn]: {
+            $reduce: {
+              input: '$_vqbValuesArray',
+              initialValue: 0,
+              in: { $subtract: ['$$this', '$$value'] },
+            },
+          },
+          _vqbOrder: { $literal: 0 },
+        },
+      },
+    ];
+
+    facet = {
+      _vqb_start_end: facetStartEnd,
+      _vqb_parents: facetParents,
+      _vqb_children: facetChildren,
+    };
+    concatMongo = { $concatArrays: ['$_vqb_start_end', '$_vqb_parents', '$_vqb_children'] };
+  } else {
+    facet = { _vqb_start_end: facetStartEnd, _vqb_children: facetChildren };
+    concatMongo = { $concatArrays: ['$_vqb_start_end', '$_vqb_children'] };
+  }
+
+  return [
+    { $match: { [step.milestonesColumn]: { $in: [step.start, step.end] } } },
+    { $facet: facet },
+    { $project: { _vqbFullArray: concatMongo } },
+    { $unwind: '$_vqbFullArray' },
+    { $replaceRoot: { newRoot: '$_vqbFullArray' } },
+    {
+      $sort: {
+        _vqbOrder: 1,
+        [step.sortBy === 'label' ? 'LABEL_waterfall' : step.valueColumn]:
+          step.order === 'asc' ? 1 : -1,
+      },
+    },
+    { $project: { _vqbOrder: 0 } },
+  ];
+}
+
 const mapper: Partial<StepMatcher<MongoStep>> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
@@ -1352,6 +1494,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   uppercase: (step: Readonly<S.ToUpperStep>) => ({
     $addFields: { [step.column]: { $toUpper: $$(step.column) } },
   }),
+  waterfall: transformWaterfall,
 };
 
 export class Mongo36Translator extends BaseTranslator {

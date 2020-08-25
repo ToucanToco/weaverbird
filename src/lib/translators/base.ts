@@ -212,6 +212,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   @unsupported
   uppercase(step: Readonly<S.ToUpperStep>) {}
 
+  @unsupported
+  waterfall(step: Readonly<S.WaterfallStep>) {}
+
   /* eslint-enable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental */
 
   /**
