@@ -35,6 +35,7 @@ import topBuildSchema from './top';
 import toUpperSchema from './toupper';
 import uniqueGroupsSchema from './uniquegroups';
 import unpivotSchema from './unpivot';
+import waterfallSchema from './waterfall';
 
 type buildSchemaType = ((form: any) => object) | object;
 
@@ -76,6 +77,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   unpivot: unpivotSchema,
   uniquegroups: uniqueGroupsSchema,
   uppercase: toUpperSchema,
+  waterfall: waterfallSchema,
 };
 
 /**

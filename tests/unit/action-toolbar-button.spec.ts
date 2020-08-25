@@ -181,7 +181,7 @@ describe('ActionToolbarButton active', () => {
       localVue,
     });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot']);
+    assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot', 'waterfall']);
   });
 
   it('should instantiate a Combine button with the right list of actions', () => {

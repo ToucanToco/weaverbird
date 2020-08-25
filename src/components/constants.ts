@@ -77,6 +77,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   reshape: [
     { name: 'pivot', label: 'Pivot' },
     { name: 'unpivot', label: 'Unpivot' },
+    { name: 'waterfall', label: 'Waterfall' },
   ],
   combine: [
     { name: 'append', label: 'Append datasets' },

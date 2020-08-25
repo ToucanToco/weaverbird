@@ -62,6 +62,7 @@ describe('SearchBar', () => {
       'cumsum',
       'ifthenelse',
       'rank',
+      'waterfall',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -113,6 +114,7 @@ describe('SearchBar', () => {
       'cumsum',
       'ifthenelse',
       'rank',
+      'waterfall',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });

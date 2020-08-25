@@ -35,3 +35,4 @@ import './TopStepForm.vue';
 import './ToUpperStepForm.vue';
 import './UniqueGroupsStepForm.vue';
 import './UnpivotStepForm.vue';
+import './WaterfallStepForm.vue';
