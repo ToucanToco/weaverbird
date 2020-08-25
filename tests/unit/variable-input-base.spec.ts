@@ -57,6 +57,10 @@ describe('Variable Input', () => {
     expect(wrapper.find("input[type='text']").exists()).toBe(true);
   });
 
+  it('should contain the advanced variable modal', () => {
+    expect(wrapper.find('AdvancedVariableModal-stub').exists()).toBe(true);
+  });
+
   describe('the variable (x) button', () => {
     it('should be present', () => {
       expect(wrapper.find('.widget-variable__toggle').exists()).toBe(true);
@@ -149,6 +153,27 @@ describe('Variable Input', () => {
 
         it('should keep the variable chooser open', () => {
           expect(wrapper.find('VariableChooser-stub').props().isOpened).toBe(true);
+        });
+      });
+
+      describe('when choosing an advanced variable', () => {
+        beforeEach(async () => {
+          wrapper.find('VariableChooser-stub').vm.$emit('addAdvancedVariable');
+          await wrapper.vm.$nextTick();
+        });
+
+        it('should hide the variable chooser', () => {
+          expect(wrapper.find('VariableChooser-stub').props().isOpened).toBe(false);
+        });
+
+        it('should open the advanced variable modal', () => {
+          expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+        });
+
+        it('... and close it on closed emit', async () => {
+          wrapper.find('AdvancedVariableModal-stub').vm.$emit('closed');
+          await wrapper.vm.$nextTick();
+          expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
         });
       });
     });
