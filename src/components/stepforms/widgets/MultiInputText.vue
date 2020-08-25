@@ -5,6 +5,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
       @input="updateValue"
     >
       <multiselect
@@ -74,6 +75,9 @@ export default class MultiInputTextWidget extends Vue {
 
   @Prop({ default: () => [] })
   value!: string[] | string;
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

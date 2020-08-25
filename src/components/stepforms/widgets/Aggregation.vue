@@ -10,6 +10,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
     />
     <AutocompleteWidget
       class="aggregationFunctionInput"
@@ -47,6 +48,9 @@ export default class AggregationWidget extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

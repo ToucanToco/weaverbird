@@ -5,6 +5,7 @@
       :value="stringValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
       :has-arrow="true"
       @input="updateStringValue"
     >
@@ -95,6 +96,9 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket[];

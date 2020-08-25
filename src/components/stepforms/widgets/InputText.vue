@@ -11,6 +11,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :use-advanced-variable="useAdvancedVariable"
       @input="updateValue"
     >
       <input
@@ -60,6 +61,9 @@ export default class InputTextWidget extends Mixins(FormWidget) {
 
   @Prop({ default: undefined })
   docUrl!: string | undefined;
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;
