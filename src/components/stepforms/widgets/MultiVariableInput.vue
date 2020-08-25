@@ -6,6 +6,7 @@
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
+      :use-advanced-variable="useAdvancedVariable"
       @input="toggleVariable"
     >
       <slot />
@@ -29,6 +30,9 @@ import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 export default class MultiVariableInput extends Vue {
   @Prop({ type: Array, default: () => [] })
   value!: any[];
+
+  @Prop({ default: () => false })
+  useAdvancedVariable!: boolean;
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
