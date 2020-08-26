@@ -37,6 +37,7 @@
     - uppercase
     - top
     - unpivot
+    - waterfall
 
 - title: Technical documentation
   docs:
