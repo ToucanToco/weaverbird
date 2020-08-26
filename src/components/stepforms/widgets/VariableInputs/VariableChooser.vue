@@ -29,7 +29,7 @@
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
         </div>
       </div>
-      <div class="widget-advanced-variable">advanced variable</div>
+      <div class="widget-advanced-variable">Add variable</div>
     </div>
   </popover>
 </template>
@@ -183,17 +183,17 @@ export default class VariableChooser extends Vue {
 }
 
 .widget-advanced-variable {
+  padding: 12px;
   font-size: 12px;
   font-weight: 500;
-  &:hover {
-    background-color: rgba(42, 102, 161, 0.05);
-    color: #2a66a1;
-  }
-  display: flex;
-  justify-content: space-between;
+  text-align: center;
+  background: #f5f5f5;
+  color: #888888;
   cursor: pointer;
-  margin-bottom: 5px;
-  padding: 12px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 
 .widget-variable-chooser__option-toggle {
