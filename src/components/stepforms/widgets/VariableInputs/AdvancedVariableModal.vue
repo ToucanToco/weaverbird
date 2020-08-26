@@ -5,15 +5,15 @@
       <div class="vqb-modal__body" style="width: 500px;">
         <em class="vqb-modal__close fas fa-times" @click="close" />
         <div class="vqb-modal__header">
-          <div class="vqb-modal__title">Advanced variable</div>
+          <div class="vqb-modal__title">Custom Variable</div>
         </div>
         <div class="vqb-modal__section" />
         <div class="vqb-modal__footer">
           <div class="vqb-modal__action vqb-modal__action--secondary" @click="close">
             cancel
           </div>
-          <div class="vqb-modal__action vqb-modal__action--primary" @click="confirm">
-            confirm
+          <div class="vqb-modal__action vqb-modal__action--primary" @click="save">
+            save
           </div>
         </div>
       </div>
@@ -37,13 +37,15 @@ export default class AdvancedVariableModal extends Vue {
     this.$emit('closed');
   }
 
-  confirm() {
+  save() {
     this.close();
   }
 }
 </script>
 
 <style lang="scss" scoped>
+@import '../../../../styles/_variables';
+
 .vqb-modal {
   bottom: 0;
   display: flex;
@@ -154,7 +156,7 @@ strong.vqb-modal__text {
 }
 
 .vqb-modal__action--primary {
-  background-color: #4c4c4c;
+  background-color: $active-color;
   color: #fff;
   border: none;
 }
