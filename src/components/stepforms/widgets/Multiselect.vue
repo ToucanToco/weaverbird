@@ -2,6 +2,7 @@
   <div class="widget-multiselect__container" :class="toggleClassErrorWarning">
     <label class="widget-multiselect__label">{{ name }}</label>
     <MultiVariableInput
+      class="widget-multiselect__multi-variable"
       :value="stringValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -266,11 +267,14 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 </style>
 
 <style scoped lang="scss">
-/deep/ .widget-variable__toggle {
-  top: 10px;
-  bottom: auto;
-  z-index: 50;
+.widget-multiselect__multi-variable {
+  /deep/ .widget-variable__toggle {
+    top: 10px;
+    bottom: auto;
+    z-index: 50;
+  }
 }
+
 .widget-multiselect__multiselect {
   /deep/ .widget-variable__tag {
     display: inline-flex;
