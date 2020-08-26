@@ -160,7 +160,7 @@ export default class AdvancedVariableModal extends Vue {
 
 .vqb-modal__section {
   box-shadow: inset 0 -1px 0 0 #f5f5f5;
-  padding: 25px 30px;
+  padding: 25px 0;
 }
 
 .vqb-modal__text {
@@ -205,5 +205,46 @@ strong.vqb-modal__text {
   background-color: $active-color;
   color: #fff;
   border: none;
+}
+
+.nameInput {
+  padding: 0 30px;
+  /deep/ .widget-input-text__label label {
+    text-transform: uppercase;
+    color: #6a6a6a;
+    font-weight: 600;
+    font-size: 12px;
+  }
+}
+
+.codeInput {
+  height: 200px;
+
+  /deep/ .view-lines,
+  /deep/ .margin {
+    background: #fafafa;
+  }
+
+  /deep/ .glyph-margin {
+    background: #eeeeee;
+  }
+}
+
+.typeInput {
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 0;
+  padding: 0 30px;
+
+  /deep/ .widget-autocomplete__label {
+    flex: 0 auto;
+    padding-right: 20px;
+  }
+
+  /deep/ .widget-input-variable {
+    width: auto;
+    flex: 0 auto;
+    min-width: 120px;
+  }
 }
 </style>
