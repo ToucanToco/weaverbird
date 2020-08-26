@@ -216,4 +216,19 @@ describe('Variable Input', () => {
       expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
     });
   });
+
+  describe('with multi variables selected (>= 2)', () => {
+    beforeEach(() => {
+      wrapper.setProps({ isMultiple: true, value: ['{{ a }}', '{{ b }}'] });
+    });
+    it('should use multi variables mode', () => {
+      expect((wrapper.vm as any).hasMultipleSelectedVariables).toBe(true);
+    });
+    it('should replace the {} sign in button picker by selected variables length', () => {
+      expect(wrapper.find('.widget-variable__toggle').text()).toBe('+2');
+    });
+    it('should add specific style to button picker', () => {
+      expect(wrapper.find('.widget-variable__toggle--multi-selected').exists()).toBe(true);
+    });
+  });
 });

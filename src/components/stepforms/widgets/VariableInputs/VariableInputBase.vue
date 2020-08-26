@@ -11,11 +11,14 @@
         v-if="canBeVariable"
         class="widget-variable__toggle"
         :class="{
+          'widget-variable__toggle--multi-selected': hasMultipleSelectedVariables,
           'widget-variable__toggle--choosing': isChoosingVariable,
           'widget-variable__toggle--parent-arrow': hasArrow,
         }"
         @click.stop="startChoosingVariable"
-        >{}
+      >
+        <template v-if="hasMultipleSelectedVariables">+{{ selectedVariables.length }}</template>
+        <template v-else>{}</template>
       </span>
     </div>
 
@@ -94,6 +97,13 @@ export default class VariableInputBase extends Vue {
       const identifier = extractVariableIdentifier(value, this.variableDelimiters);
       return identifier ? [...variables, identifier] : variables;
     }, []);
+  }
+
+  /**
+   * Display number of selected variables in multiple mode
+   */
+  get hasMultipleSelectedVariables() {
+    return this.isMultiple && this.selectedVariables.length >= 2;
   }
 
   /**
@@ -197,5 +207,17 @@ export default class VariableInputBase extends Vue {
   &.widget-variable__toggle--parent-arrow {
     right: 35px;
   }
+}
+
+.widget-variable__toggle--multi-selected {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  font-size: 12px;
+  width: 20px;
+  height: 20px;
+  opacity: 1;
+  visibility: visible;
 }
 </style>
