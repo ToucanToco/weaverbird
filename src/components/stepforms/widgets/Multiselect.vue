@@ -139,7 +139,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Watch('editedValue')
   updateStringValue(newValue: string[] | object[], oldValue: string[] | object[]) {
     const newValues = newValue.map(this.customLabel).join(' ');
-    const oldValues = oldValue.map(this.customLabel).join(' ');
+    const oldValues = oldValue ? oldValue.map(this.customLabel).join(' ') : '';
     // Prevent an infinite loop of emitting and receiving.
     if (newValues !== oldValues) {
       this.$emit('input', newValue);
