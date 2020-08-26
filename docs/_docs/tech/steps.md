@@ -2657,3 +2657,135 @@ Allow to get unique groups of values from one or several columns.
 | Label 1 | Group 2 |
 | Label 2 | Group 1 |
 | Label 3 | Group 1 |
+
+### `waterfall` step
+
+This step allows to generate a data structure useful to build waterfall charts.
+It breaks down the variation between two values (usually between two dates)
+accross entities. Entities are found in the `labelsColumn`, and can optionally
+be regrouped under common parents found in the `parentsColumn` for drill-down
+purposes.
+
+```javascript
+{
+  name: 'waterfall',
+  valueColumn: 'VALUE', // the column of values
+  milestonesColumn: 'DATE', // the column where starting and ending blocks labels
+                            // are to be found (usually dates)
+  start: '2019', // the starting block label to be found in `milestonesColumn`
+  end: '2020', // the starting block label to be found in `milestonesColumn`
+  labelsColumn: 'PRODUCT', // the column of labels for the variations breakdown
+  groupby: ['COUNTRY'], // specify columns if you want to group the waterfall computation
+  sortBy: 'value', // either 'value' (default) or 'label' depending on wether to
+                   // sort waterfall blocks by their label or value
+  order: 'desc', // either 'asc' or 'desc' (default) depending on wether to sort
+                 // by ascending or descending order
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: Basic usage
+
+**Input dataset:**
+
+| city     | year | revenue |
+| -------- | ---- | ------- |
+| Bordeaux | 2019 | 135     |
+| Boston   | 2019 | 275     |
+| New-York | 2019 | 115     |
+| Paris    | 2019 | 450     |
+| Bordeaux | 2018 | 98      |
+| Boston   | 2018 | 245     |
+| New-York | 2018 | 103     |
+| Paris    | 2018 | 385     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'waterfall',
+  valueColumn: 'revenue',
+  milestonesColumn: 'year',
+  start: '2018',
+  end: '2019',
+  labelsColumn: 'city',
+  sortBy: 'value',
+  order: 'desc',
+}
+```
+
+**Output dataset:**
+
+| LABEL_waterfall | TYPE_waterfall | revenue |
+| --------------- | -------------- | ------- |
+| 2018            | null           | 831     |
+| Paris           | parent         | 65      |
+| Bordeaux        | parent         | 37      |
+| Boston          | parent         | 30      |
+| New-York        | parent         | 12      |
+| 2019            | null           | 975     |
+
+#### Example 2: With more options
+
+**Input dataset:**
+
+| city     | country | product  | year | revenue |
+| -------- | ------- | -------- | ---- | ------- |
+| Bordeaux | France  | product1 | 2019 | 65      |
+| Bordeaux | France  | product2 | 2019 | 70      |
+| Paris    | France  | product1 | 2019 | 210     |
+| Paris    | France  | product2 | 2019 | 240     |
+| Boston   | USA     | product1 | 2019 | 130     |
+| Boston   | USA     | product2 | 2019 | 145     |
+| New-York | USA     | product1 | 2019 | 55      |
+| New-York | USA     | product2 | 2019 | 60      |
+| Bordeaux | France  | product1 | 2018 | 38      |
+| Bordeaux | France  | product2 | 2018 | 60      |
+| Paris    | France  | product1 | 2018 | 175     |
+| Paris    | France  | product2 | 2018 | 210     |
+| Boston   | USA     | product1 | 2018 | 95      |
+| Boston   | USA     | product2 | 2018 | 150     |
+| New-York | USA     | product1 | 2018 | 50      |
+| New-York | USA     | product2 | 2018 | 53      |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'waterfall',
+  valueColumn: 'revenue',
+  milestonesColumn: 'year',
+  start: '2018',
+  end: '2019',
+  labelsColumn: 'city',
+  parentsColumn: 'country',
+  groupby: ['product'],
+  sortBy: 'label',
+  order: 'asc',
+}
+```
+
+**Output dataset:**
+
+| LABEL_waterfall | GROUP_waterfall | TYPE_waterfall | product  | revenue |
+| --------------- | --------------- | -------------- | -------- | ------- |
+| 2018            | 2018            | null           | product1 | 358     |
+| 2018            | 2018            | null           | product2 | 473     |
+| Bordeaux        | France          | child          | product1 | 27      |
+| Bordeaux        | France          | child          | product2 | 10      |
+| Boston          | USA             | child          | product1 | 35      |
+| Boston          | USA             | child          | product2 | -5      |
+| France          | France          | parent         | product2 | 40      |
+| France          | France          | parent         | product1 | 62      |
+| New-York        | USA             | child          | product1 | 5       |
+| New-York        | USA             | child          | product2 | 7       |
+| Paris           | France          | child          | product1 | 35      |
+| Paris           | France          | child          | product2 | 30      |
+| USA             | USA             | parent         | product2 | 2       |
+| USA             | USA             | parent         | product1 | 40      |
+| 2019            | 2019            | null           | product2 | 515     |
+| 2019            | 2019            | null           | product1 | 460     |
