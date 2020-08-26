@@ -26,7 +26,7 @@ describe('Variable Chooser', () => {
     });
 
     it('should have a title', () => {
-      expect(wrapper.find('.vqb-modal__title').text()).toBe('Advanced variable');
+      expect(wrapper.find('.vqb-modal__title').text()).toBe('Custom Variable');
     });
 
     it('should have a close button', () => {
