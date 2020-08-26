@@ -276,6 +276,11 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 }
 
 .widget-multiselect__multiselect {
+  &:not(.multiselect--active) {
+    /deep/ .multiselect__tags {
+      padding-right: 40px;
+    }
+  }
   /deep/ .widget-variable__tag {
     display: inline-flex;
     vertical-align: top;
