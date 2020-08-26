@@ -5,6 +5,7 @@
 ### Added
 
 - Add 'rank' step
+- Add 'waterfall' step
 
 ### Fixed
 
