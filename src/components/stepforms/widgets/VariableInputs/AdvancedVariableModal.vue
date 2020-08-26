@@ -7,7 +7,32 @@
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Custom Variable</div>
         </div>
-        <div class="vqb-modal__section" />
+        <div class="vqb-modal__section">
+          <InputTextWidget
+            class="nameInput"
+            v-model="variable.name"
+            name="Variable name"
+            placeholder
+            data-path=".name"
+            :errors="errors"
+          />
+          <CodeEditorWidget
+            class="codeInput"
+            v-model="variable.code"
+            placeholder="Write your custom variable here"
+            :errors="errors"
+            data-path=".code"
+          />
+          <AutocompleteWidget
+            class="typeInput"
+            v-model="variable.type"
+            name="Return result as"
+            :options="types"
+            placeholder
+            data-path=".type"
+            :errors="errors"
+          />
+        </div>
         <div class="vqb-modal__footer">
           <div class="vqb-modal__action vqb-modal__action--secondary" @click="close">
             cancel
@@ -22,16 +47,37 @@
 </template>
 
 <script lang="ts">
+import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
+import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 /**
  * This component allow to add an advanced variable
  */
 @Component({
   name: 'advanced-variable-modal',
+  components: {
+    CodeEditorWidget,
+    InputTextWidget,
+  },
 })
 export default class AdvancedVariableModal extends Vue {
+  variable = { type: 'text', name: '', code: '' };
+
+  @Prop({ type: Array, default: () => [] })
+  errors!: ErrorObject[];
+
   @Prop({ default: false })
   isOpened!: boolean;
+
+  readonly types = ['text', 'number'];
+
+  // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
+  beforeCreate() {
+    this.$options.components['AutocompleteWidget'] = AutocompleteWidget;
+  }
 
   close() {
     this.$emit('closed');
