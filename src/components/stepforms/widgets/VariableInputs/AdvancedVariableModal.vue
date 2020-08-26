@@ -3,7 +3,7 @@
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body" style="width: 500px;">
-        <i class="vqb-modal__close fas fa-times" @click="close" />
+        <em class="vqb-modal__close fas fa-times" @click="close" />
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Advanced variable</div>
         </div>
@@ -103,12 +103,11 @@ export default class AdvancedVariableModal extends Vue {
 }
 
 .vqb-modal__title {
-  font-size: 12px;
+  font-size: 18px;
   letter-spacing: 0.25px;
   line-height: 20px;
   color: #4c4c4c;
   font-weight: 700;
-  font-size: 18px;
 }
 
 .vqb-modal__section {
