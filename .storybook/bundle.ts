@@ -31,6 +31,8 @@ import EvolutionStepForm from '../src/components/stepforms/EvolutionStepForm.vue
 import CumSumStepForm from '../src/components/stepforms/CumSumStepForm.vue';
 import ConcatenateStepForm from '../src/components/stepforms/ConcatenateStepForm.vue';
 import SplitStepForm from '../src/components/stepforms/SplitStepForm.vue';
+import WaterfallStepForm from '../src/components/stepforms/WaterfallStepForm.vue';
+
 
 export {
   FilterEditor,
@@ -61,5 +63,6 @@ export {
   CumSumStepForm,
   ConcatenateStepForm,
   SplitStepForm,
+  WaterfallStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
