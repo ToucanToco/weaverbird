@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-08-27T08:16:47+02:00" />
+<meta property="article:published_time" content="2020-08-27T17:02:27+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-08-27T08:16:47+02:00","dateModified":"2020-08-27T08:16:47+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-08-27T17:02:27+02:00","dateModified":"2020-08-27T17:02:27+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -308,6 +308,12 @@
             
             <!--  -->
               <a class="list-group-item " href="/docs/unpivot/">Unpivot</a>
+            <!--  -->
+          
+            
+            
+            <!--  -->
+              <a class="list-group-item " href="/docs/waterfall/">Waterfall</a>
             <!--  -->
           
         </div>
@@ -6727,12 +6733,434 @@ specified <code class="highlighter-rouge">text</code>.</p>
     </tr>
   </tbody>
 </table>
+
+<h3 id="waterfall-step"><code class="highlighter-rouge">waterfall</code> step</h3>
+
+<p>This step allows to generate a data structure useful to build waterfall charts.
+It breaks down the variation between two values (usually between two dates)
+accross entities. Entities are found in the <code class="highlighter-rouge">labelsColumn</code>, and can optionally
+be regrouped under common parents found in the <code class="highlighter-rouge">parentsColumn</code> for drill-down
+purposes.</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'waterfall'</span><span class="p">,</span>
+  <span class="nx">valueColumn</span><span class="p">:</span> <span class="s1">'VALUE'</span><span class="p">,</span> <span class="c1">// the column of values</span>
+  <span class="nx">milestonesColumn</span><span class="p">:</span> <span class="s1">'DATE'</span><span class="p">,</span> <span class="c1">// the column where starting and ending blocks labels</span>
+                            <span class="c1">// are to be found (usually dates)</span>
+  <span class="nx">start</span><span class="p">:</span> <span class="s1">'2019'</span><span class="p">,</span> <span class="c1">// the starting block label to be found in `milestonesColumn`</span>
+  <span class="nx">end</span><span class="p">:</span> <span class="s1">'2020'</span><span class="p">,</span> <span class="c1">// the starting block label to be found in `milestonesColumn`</span>
+  <span class="nx">labelsColumn</span><span class="p">:</span> <span class="s1">'PRODUCT'</span><span class="p">,</span> <span class="c1">// the column of labels for the variations breakdown</span>
+  <span class="nx">groupby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'COUNTRY'</span><span class="p">],</span> <span class="c1">// specify columns if you want to group the waterfall computation</span>
+  <span class="nx">sortBy</span><span class="p">:</span> <span class="s1">'value'</span><span class="p">,</span> <span class="c1">// either 'value' (default) or 'label' depending on wether to</span>
+                   <span class="c1">// sort waterfall blocks by their label or value</span>
+  <span class="nx">order</span><span class="p">:</span> <span class="s1">'desc'</span><span class="p">,</span> <span class="c1">// either 'asc' or 'desc' (default) depending on wether to sort</span>
+                 <span class="c1">// by ascending or descending order</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>This step is supported by the following backends:</strong></p>
+
+<ul>
+  <li>Mongo 4.0</li>
+  <li>Mongo 3.6</li>
+</ul>
+
+<h4 id="example-1-basic-usage-3">Example 1: Basic usage</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>city</th>
+      <th>year</th>
+      <th>revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Bordeaux</td>
+      <td>2019</td>
+      <td>135</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>2019</td>
+      <td>275</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>2019</td>
+      <td>115</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>2019</td>
+      <td>450</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>2018</td>
+      <td>98</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>2018</td>
+      <td>245</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>2018</td>
+      <td>103</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>2018</td>
+      <td>385</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'waterfall'</span><span class="p">,</span>
+  <span class="nx">valueColumn</span><span class="p">:</span> <span class="s1">'revenue'</span><span class="p">,</span>
+  <span class="nx">milestonesColumn</span><span class="p">:</span> <span class="s1">'year'</span><span class="p">,</span>
+  <span class="nx">start</span><span class="p">:</span> <span class="s1">'2018'</span><span class="p">,</span>
+  <span class="nx">end</span><span class="p">:</span> <span class="s1">'2019'</span><span class="p">,</span>
+  <span class="nx">labelsColumn</span><span class="p">:</span> <span class="s1">'city'</span><span class="p">,</span>
+  <span class="nx">sortBy</span><span class="p">:</span> <span class="s1">'value'</span><span class="p">,</span>
+  <span class="nx">order</span><span class="p">:</span> <span class="s1">'desc'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>LABEL_waterfall</th>
+      <th>TYPE_waterfall</th>
+      <th>revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2018</td>
+      <td>null</td>
+      <td>831</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>parent</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>parent</td>
+      <td>37</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>parent</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>parent</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>2019</td>
+      <td>null</td>
+      <td>975</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="example-2-with-more-options-1">Example 2: With more options</h4>
+
+<p><strong>Input dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>city</th>
+      <th>country</th>
+      <th>product</th>
+      <th>year</th>
+      <th>revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>product1</td>
+      <td>2019</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>product2</td>
+      <td>2019</td>
+      <td>70</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>product1</td>
+      <td>2019</td>
+      <td>210</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>product2</td>
+      <td>2019</td>
+      <td>240</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>product1</td>
+      <td>2019</td>
+      <td>130</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>product2</td>
+      <td>2019</td>
+      <td>145</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>product1</td>
+      <td>2019</td>
+      <td>55</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>product2</td>
+      <td>2019</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>product1</td>
+      <td>2018</td>
+      <td>38</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>product2</td>
+      <td>2018</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>product1</td>
+      <td>2018</td>
+      <td>175</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>product2</td>
+      <td>2018</td>
+      <td>210</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>product1</td>
+      <td>2018</td>
+      <td>95</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>product2</td>
+      <td>2018</td>
+      <td>150</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>product1</td>
+      <td>2018</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>product2</td>
+      <td>2018</td>
+      <td>53</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Step configuration:</strong></p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+  <span class="nl">name</span><span class="p">:</span> <span class="s1">'waterfall'</span><span class="p">,</span>
+  <span class="nx">valueColumn</span><span class="p">:</span> <span class="s1">'revenue'</span><span class="p">,</span>
+  <span class="nx">milestonesColumn</span><span class="p">:</span> <span class="s1">'year'</span><span class="p">,</span>
+  <span class="nx">start</span><span class="p">:</span> <span class="s1">'2018'</span><span class="p">,</span>
+  <span class="nx">end</span><span class="p">:</span> <span class="s1">'2019'</span><span class="p">,</span>
+  <span class="nx">labelsColumn</span><span class="p">:</span> <span class="s1">'city'</span><span class="p">,</span>
+  <span class="nx">parentsColumn</span><span class="p">:</span> <span class="s1">'country'</span><span class="p">,</span>
+  <span class="nx">groupby</span><span class="p">:</span> <span class="p">[</span><span class="s1">'product'</span><span class="p">],</span>
+  <span class="nx">sortBy</span><span class="p">:</span> <span class="s1">'label'</span><span class="p">,</span>
+  <span class="nx">order</span><span class="p">:</span> <span class="s1">'asc'</span><span class="p">,</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Output dataset:</strong></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>LABEL_waterfall</th>
+      <th>GROUP_waterfall</th>
+      <th>TYPE_waterfall</th>
+      <th>product</th>
+      <th>revenue</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2018</td>
+      <td>2018</td>
+      <td>null</td>
+      <td>product1</td>
+      <td>358</td>
+    </tr>
+    <tr>
+      <td>2018</td>
+      <td>2018</td>
+      <td>null</td>
+      <td>product2</td>
+      <td>473</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>child</td>
+      <td>product1</td>
+      <td>27</td>
+    </tr>
+    <tr>
+      <td>Bordeaux</td>
+      <td>France</td>
+      <td>child</td>
+      <td>product2</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>child</td>
+      <td>product1</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <td>Boston</td>
+      <td>USA</td>
+      <td>child</td>
+      <td>product2</td>
+      <td>-5</td>
+    </tr>
+    <tr>
+      <td>France</td>
+      <td>France</td>
+      <td>parent</td>
+      <td>product2</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>France</td>
+      <td>France</td>
+      <td>parent</td>
+      <td>product1</td>
+      <td>62</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>child</td>
+      <td>product1</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>New-York</td>
+      <td>USA</td>
+      <td>child</td>
+      <td>product2</td>
+      <td>7</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>child</td>
+      <td>product1</td>
+      <td>35</td>
+    </tr>
+    <tr>
+      <td>Paris</td>
+      <td>France</td>
+      <td>child</td>
+      <td>product2</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>USA</td>
+      <td>parent</td>
+      <td>product2</td>
+      <td>2</td>
+    </tr>
+    <tr>
+      <td>USA</td>
+      <td>USA</td>
+      <td>parent</td>
+      <td>product1</td>
+      <td>40</td>
+    </tr>
+    <tr>
+      <td>2019</td>
+      <td>2019</td>
+      <td>null</td>
+      <td>product2</td>
+      <td>515</td>
+    </tr>
+    <tr>
+      <td>2019</td>
+      <td>2019</td>
+      <td>null</td>
+      <td>product1</td>
+      <td>460</td>
+    </tr>
+  </tbody>
+</table>
 </div>
             
 
 
 
 
+
+  
+  
 
   
   

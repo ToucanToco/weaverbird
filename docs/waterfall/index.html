@@ -11,23 +11,23 @@
 
     <link rel="shortcut icon" href="/favicon.ico?1">
     <!-- Begin Jekyll SEO tag v2.5.0 -->
-<title>Top N rows | Weaverbird</title>
+<title>Waterfall | Weaverbird</title>
 <meta name="generator" content="Jekyll v3.8.4" />
-<meta property="og:title" content="Top N rows" />
+<meta property="og:title" content="Waterfall" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Top N rows" />
-<meta property="og:description" content="Top N rows" />
-<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/top/" />
-<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/top/" />
+<meta name="description" content="Waterfall" />
+<meta property="og:description" content="Waterfall" />
+<link rel="canonical" href="https://weaverbird.toucantoco.com/docs/waterfall/" />
+<meta property="og:url" content="https://weaverbird.toucantoco.com/docs/waterfall/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2020-08-27T17:02:27+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/top/","headline":"Top N rows","datePublished":"2020-08-27T17:02:27+02:00","dateModified":"2020-08-27T17:02:27+02:00","description":"Top N rows","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/waterfall/","headline":"Waterfall","datePublished":"2020-08-27T17:02:27+02:00","dateModified":"2020-08-27T17:02:27+02:00","description":"Waterfall","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
-    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/top/">
+    <link rel="canonical" href="https://weaverbird.toucantoco.com/docs/waterfall/">
     <link rel="alternate" type="application/rss+xml" title="Weaverbird" href="https://weaverbird.toucantoco.com/feed.xml" />
 </head>
 
@@ -301,7 +301,7 @@
             
             
             <!--  -->
-              <a class="list-group-item active" href="/docs/top/">Top N rows</a>
+              <a class="list-group-item " href="/docs/top/">Top N rows</a>
             <!--  -->
           
             
@@ -313,7 +313,7 @@
             
             
             <!--  -->
-              <a class="list-group-item " href="/docs/waterfall/">Waterfall</a>
+              <a class="list-group-item active" href="/docs/waterfall/">Waterfall</a>
             <!--  -->
           
         </div>
@@ -390,14 +390,13 @@
         </div>
 
         <div class="col-md-8">
-            <div id="markdown-content-container"><h3 id="top-n-rows">Top N rows</h3>
+            <div id="markdown-content-container"><h3 id="waterfall">Waterfall</h3>
 
-<p>Use this step if you need to get the top N rows of your data based on value
-column to be ranked. The top can be performed by group if specified (i.e. if you
-want a top 3 by group, it will return the top 3 rows for every group - see the
-example below for illustration).</p>
-
-<p>Similar to a <code class="highlighter-rouge">SELECT TOP</code> clause in SQL.</p>
+<p>This step allows to generate a data structure useful to build waterfall charts.
+It breaks down the variation between two values (usually between two dates)
+accross entities. Entities are found in the <code class="highlighter-rouge">labelsColumn</code>, and can optionally
+be regrouped under common parents found in the <code class="highlighter-rouge">parentsColumn</code> for drill-down
+purposes.</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
@@ -409,49 +408,82 @@ example below for illustration).</p>
 <h4 id="where-to-find-this-step">Where to find this step?</h4>
 
 <ul>
-  <li>Widget <code class="highlighter-rouge">Filter</code></li>
+  <li>Widget <code class="highlighter-rouge">Reshape</code></li>
   <li>Search bar</li>
 </ul>
 
 <h4 id="options-reference">Options reference</h4>
 
-<p><img src="../../img/docs/user-interface/top_step_form.jpg" width="350" /></p>
+<p><img src="../../img/docs/user-interface/waterfall_step_form.jpg" width="350" /></p>
 
 <ul>
   <li>
-    <p><code class="highlighter-rouge">Get top...</code>: specify the numer of top rows to retain</p>
+    <p><code class="highlighter-rouge">Value column name</code>: the name of the value column tht will be used to compute
+waterfall blocks values</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Sort column...</code>: the ranking will be based on this column (so its values must
-be sortable)</p>
+    <p><code class="highlighter-rouge">Column incl. start and end labels (usually dates)</code>: name of the column that
+includes the labels of the starting and ending blocks of the waterfall
+(usually dates)</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Sort order...</code>: wether the you want the above column to e sorted on ascending
-(<code class="highlighter-rouge">asc</code>) or descending (<code class="highlighter-rouge">desc</code>) order</p>
+    <p><code class="highlighter-rouge">Starting block label</code>: the label of the starting block to find in the column
+above</p>
   </li>
   <li>
-    <p><code class="highlighter-rouge">Group by...</code> (optional): if you want to return a top by group, you can
-select one or several columns that will be used to constitute unique groups
-(equivalent to the columns that you would specify after the <code class="highlighter-rouge">GROUP BY</code> clause
-in SQL or in the <code class="highlighter-rouge">_id</code> field of a <code class="highlighter-rouge">$group</code> in Mongo aggregation pipeline)</p>
+    <p><code class="highlighter-rouge">Ending block label</code>: the label of the ending block to find in the column
+above</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Labels columns (for intermediate blocks)</code>: the name of the column where
+intermediate blocks labels are to be found (used to break down the total
+variation between the starting and ending block)</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">(Optional) Parents labels column (for drill-down)</code>: the name of the column
+where parent labels are to be found if any, for drill-down purposes (parents
+of the labels specified above)</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">(Optional) Group waterfall by</code>: the columns used to group waterfall
+computation (useful to keep track of a column used for filtering for example)</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Sort by</code>: whether to sort waterfall blocks depending on their labels or on
+their values</p>
+  </li>
+  <li>
+    <p><code class="highlighter-rouge">Sort order</code>: whether to use ascending or descending order when sorting</p>
   </li>
 </ul>
 
-<h4 id="example">Example</h4>
+<h4 id="example-1--basic-configuration">Example 1 : Basic configuration</h4>
 
-<p><img src="../../img/docs/user-interface/top_example_conf.jpg" width="750" /></p>
+<p><img src="../../img/docs/user-interface/waterfall_example_conf_1.jpg" width="750" /></p>
 
 <p>This configuration results in:</p>
 
-<p><img src="../../img/docs/user-interface/top_example_result.jpg" width="500" /></p>
+<p><img src="../../img/docs/user-interface/waterfall_example_result_1.jpg" width="500" /></p>
 
-<p>We get the top 3 brands by country.</p>
+<h4 id="example-2--configuration-with-optional-parameters">Example 2 : Configuration with optional parameters</h4>
+
+<p><img src="../../img/docs/user-interface/waterfall_example_conf_2.jpg" width="750" /></p>
+
+<p>This configuration results in:</p>
+
+<p><img src="../../img/docs/user-interface/waterfall_example_result_2.jpg" width="500" /></p>
 </div>
             
 
 
 
 
+
+  
+  
+
+  
+  
 
   
   
@@ -565,7 +597,7 @@ in SQL or in the <code class="highlighter-rouge">_id</code> field of a <code cla
         
         
         <li class="previous">
-          <a href="/docs/uppercase/">
+          <a href="/docs/unpivot/">
             <span aria-hidden="true">&larr;</span> Previous
           </a>
         </li>
@@ -575,7 +607,7 @@ in SQL or in the <code class="highlighter-rouge">_id</code> field of a <code cla
         
         
         <li class="next">
-          <a href="/docs/unpivot/">
+          <a href="/docs/index/">
             Next <span aria-hidden="true">&rarr;</span>
           </a>
         </li>
