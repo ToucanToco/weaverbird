@@ -8,14 +8,14 @@
           <div class="vqb-modal__title">Custom Variable</div>
         </div>
         <div class="vqb-modal__section">
-          <InputTextWidget
+          <!-- <InputTextWidget
             class="nameInput"
             v-model="variable.name"
             name="Variable name"
             placeholder
             data-path=".name"
             :errors="errors"
-          />
+          /> -->
           <CodeEditorWidget
             class="codeInput"
             v-model="variable.code"
@@ -64,7 +64,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
   },
 })
 export default class AdvancedVariableModal extends Vue {
-  variable = { type: 'text', name: '', code: '' };
+  variable = { type: 'text', code: '' };
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
