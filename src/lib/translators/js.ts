@@ -52,6 +52,64 @@ export class JavaScriptTranslator extends BaseTranslator {
       return dataDomains[domainStep.domain];
     };
   }
+
+  // transform a "filter" step into corresponding function
+  filter(filterStep: Readonly<S.FilterStep>): JsStepFunction {
+    type FilteringFunction = (dataRow: DataRow) => boolean;
+
+    function filteringFunctionForSimpleCondition(
+      condition: S.FilterSimpleCondition,
+    ): FilteringFunction {
+      switch (condition.operator) {
+        case 'eq':
+          return d => d[condition.column] == condition.value;
+        case 'ne':
+          return d => d[condition.column] != condition.value;
+        case 'lt':
+          return d => d[condition.column] < condition.value;
+        case 'le':
+          return d => d[condition.column] <= condition.value;
+        case 'gt':
+          return d => d[condition.column] > condition.value;
+        case 'ge':
+          return d => d[condition.column] >= condition.value;
+        case 'in':
+          return d => condition.value.includes(d[condition.column]);
+        case 'nin':
+          return d => !condition.value.includes(d[condition.column]);
+        case 'isnull':
+          return d => d[condition.column] == null;
+        case 'notnull':
+          return d => d[condition.column] != null;
+        case 'matches':
+          // eslint-disable-next-line no-case-declarations
+          const regexToMatch = new RegExp(condition.value);
+          return d => regexToMatch.test(d[condition.column]);
+        case 'notmatches':
+          // eslint-disable-next-line no-case-declarations
+          const regexToNotMatch = new RegExp(condition.value);
+          return d => !regexToNotMatch.test(d[condition.column]);
+        default:
+          throw new Error(`Invalid condition operator in ${JSON.stringify(condition, null, 2)}`);
+      }
+    }
+
+    function filteringFunctionForCondition(condition: S.FilterCondition): FilteringFunction {
+      if (S.isFilterComboAnd(condition)) {
+        const filteringFunctions = condition.and.map(filteringFunctionForCondition);
+        return d => filteringFunctions.every(f => f(d));
+      } else if (S.isFilterComboOr(condition)) {
+        const filteringFunctions = condition.or.map(filteringFunctionForCondition);
+        return d => filteringFunctions.some(f => f(d));
+      } else {
+        return filteringFunctionForSimpleCondition(condition);
+      }
+    }
+
+    return function(data: Readonly<DataTable>, _dataDomains: Readonly<DataDomains>) {
+      return data.filter(filteringFunctionForCondition(filterStep.condition));
+    };
+  }
 }
 
 /**
