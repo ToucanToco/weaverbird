@@ -2,7 +2,7 @@ import WaterfallStepForm from '@/components/stepforms/WaterfallStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
-describe('Cumsum Step Form', () => {
+describe('Waterfall Step Form', () => {
   const runner = new BasicStepFormTestRunner(WaterfallStepForm, 'waterfall');
   runner.testInstantiate();
   runner.testExpectedComponents({
