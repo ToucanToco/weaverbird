@@ -96,7 +96,7 @@ export default class VariableInput extends Vue {
    * Select the advanced variable to edit in advanced variable modal when clicking on tag
    */
   editAdvancedVariable() {
-    if (this.useAdvancedVariable) {
+    if (this.advancedVariableDelimiters) {
       this.selectedAdvancedVariable = this.value;
     }
   }

@@ -122,6 +122,17 @@ describe('Widget MultiInputText', () => {
     expect(wrapper.findAll('.widget-multiinputtext__tag').length).toBe(4);
   });
 
+  it('... or advanced variable is enabled', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '{{ var2 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        advancedVariableDelimiters: { start: '<<<', end: '>>>' },
+      },
+    });
+    expect(wrapper.findAll('.widget-multiinputtext__tag').length).toBe(4);
+  });
+
   it('should use specific variable template for variable tags', () => {
     const wrapper = mount(MultiInputTextWidget, {
       propsData: {
@@ -191,6 +202,27 @@ describe('Widget MultiInputText', () => {
     });
     it('should not use custom template', () => {
       expect(wrapper.find('.widget-multiinputtext__tag').exists()).toBe(false);
+    });
+  });
+
+  describe('when tags are advanced variable', () => {
+    let wrapper: any;
+    beforeEach(() => {
+      wrapper = mount(MultiInputTextWidget, {
+        propsData: {
+          value: ['{{ var1 }}', '{{ var2 }}'],
+          variableDelimiters: { start: '{{', end: '}}' },
+          advancedVariableDelimiters: { start: '<<<', end: '>>>' },
+          availableVariables: [],
+        },
+      });
+    });
+
+    it('should select the advanced variable to edit when clicking on tag', async () => {
+      const variableTag = wrapper.findAll(VariableTag).at(0);
+      variableTag.vm.$emit('edited');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(MultiVariableInput).props().selectedAdvancedVariable).toBe('{{ var1 }}');
     });
   });
 });

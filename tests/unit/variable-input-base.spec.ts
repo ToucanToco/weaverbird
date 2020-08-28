@@ -58,7 +58,7 @@ describe('Variable Input', () => {
   });
 
   it('should contain the advanced variable modal when use advanced variable is enabled', async () => {
-    wrapper.setProps({ useAdvancedVariable: true });
+    wrapper.setProps({ advancedVariableDelimiters: { start: '<<<', end: '>>>' } });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('AdvancedVariableModal-stub').exists()).toBe(true);
   });
@@ -160,7 +160,7 @@ describe('Variable Input', () => {
 
       describe('when choosing an advanced variable', () => {
         beforeEach(async () => {
-          wrapper.setProps({ useAdvancedVariable: true });
+          wrapper.setProps({ advancedVariableDelimiters: { start: '<<<', end: '>>>' } });
           wrapper.find('VariableChooser-stub').vm.$emit('addAdvancedVariable');
           await wrapper.vm.$nextTick();
         });
@@ -193,7 +193,7 @@ describe('Variable Input', () => {
   describe('when updating an advanced variable', () => {
     beforeEach(async () => {
       wrapper.setProps({
-        useAdvancedVariable: true,
+        advancedVariableDelimiters: { start: '<<<', end: '>>>' },
         selectedAdvancedVariable: '{{ a | number }}',
       });
       await wrapper.vm.$nextTick();

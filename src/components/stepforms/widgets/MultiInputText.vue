@@ -6,6 +6,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
+      :selected-advanced-variable="selectedAdvancedVariable"
       @input="updateValue"
     >
       <multiselect
@@ -21,11 +22,7 @@
         @search-change="updateOptions"
         open-direction="bottom"
       >
-        <template
-          v-if="multiVariable && availableVariables"
-          slot="tag"
-          slot-scope="{ option, remove }"
-        >
+        <template v-if="hasMultiVariables" slot="tag" slot-scope="{ option, remove }">
           <VariableTag
             class="multiselect__tag widget-multiinputtext__tag"
             v-if="isVariable(option)"
@@ -34,6 +31,7 @@
             :is-advanced="advancedVariableDelimiters"
             :value="option"
             @removed="remove(option)"
+            @edited="editAdvancedVariable(option)"
           />
           <span class="multiselect__tag widget-multiinputtext__tag" @click.prevent.stop="" v-else>
             <span v-html="option" />
@@ -68,6 +66,9 @@ import VariableInput from './VariableInput.vue';
   },
 })
 export default class MultiInputTextWidget extends Vue {
+  /* Select the advanced variable to edit in advanced variable modal */
+  selectedAdvancedVariable = '';
+
   @Prop({ type: String, default: '' })
   name!: string;
 
@@ -100,6 +101,10 @@ export default class MultiInputTextWidget extends Vue {
     return Array.isArray(this.value) && this.value.length > 6;
   }
 
+  get hasMultiVariables() {
+    return this.multiVariable && (this.availableVariables || this.advancedVariableDelimiters);
+  }
+
   updateOptions(newVal: string) {
     if (newVal.length > 0) {
       this.options = [newVal];
@@ -125,6 +130,15 @@ export default class MultiInputTextWidget extends Vue {
       this.advancedVariableDelimiters,
     );
     return identifier != null || advancedVariableIdentifier != null;
+  }
+
+  /**
+   * Select the advanced variable to edit in advanced variable modal when clicking on tag
+   */
+  editAdvancedVariable(value: string) {
+    if (this.advancedVariableDelimiters) {
+      this.selectedAdvancedVariable = value;
+    }
   }
 }
 </script>

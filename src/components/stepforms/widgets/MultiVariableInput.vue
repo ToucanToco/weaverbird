@@ -7,6 +7,7 @@
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
+      :selectedAdvancedVariable="selectedAdvancedVariable"
       @input="toggleVariable"
     >
       <slot />
@@ -41,6 +42,9 @@ export default class MultiVariableInput extends Vue {
 
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
+
+  @Prop({ type: String, default: '' })
+  selectedAdvancedVariable!: string;
 
   // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
   beforeCreate() {
