@@ -12,9 +12,8 @@ const {
   setCodeEditor,
 } = vqb;
 
-const TRANSLATOR = 'mongo40';
-
-const mongo40translator = getTranslator(TRANSLATOR);
+const mongo40translator = getTranslator('mongo40');
+const jsTranslator = getTranslator('js');
 
 // Example to set a custom editor:
 // This one is quite simple. It customizes the placeholder.
@@ -165,10 +164,55 @@ class MongoService {
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
 
+class DataService {
+  constructor() {
+    this.dataDomains = {
+      defaultDataset: [{
+        label: 'A',
+        value: 1,
+      },{
+        label: 'B',
+        value: 2,
+      }],
+      sales: [{
+        label: 'bli',
+        value: 1,
+      },{
+        label: 'blu',
+        value: 2,
+      }]
+    };
+  }
+
+  async listCollections(_store) {
+    return Object.keys(this.dataDomains);
+  }
+
+  async executePipeline(_store, pipeline, limit, offset = 0) {
+    const jsStepFunctions = jsTranslator.translate(pipeline);
+    try {
+      let result = [];
+      for (const jsStepFunction of jsStepFunctions) {
+        result = jsStepFunction(result, this.dataDomains);
+      }
+
+      let dataset = mongoResultsToDataset(result);
+      return { data: dataset };
+    } catch (e) {
+      return {
+        error: [{type: 'error', message: e.message || e}],
+      };
+    }
+  }
+}
+
+const dataService = new DataService();
+const dataBackendPlugin = servicePluginFactory(dataService);
+
 async function buildVueApp() {
   Vue.use(Vuex);
   const store = new Vuex.Store({
-    plugins: [mongoBackendPlugin],
+    plugins: [dataBackendPlugin],
   });
 
   new Vue({
@@ -187,9 +231,9 @@ async function buildVueApp() {
     },
     created: async function() {
       registerModule(this.$store, {
-        currentPipelineName: 'pipeline',
+        currentPipelineName: 'sample_pipeline',
         pipelines: {
-          pipeline: [
+          sample_pipeline: [
             {
               name: 'domain',
               domain: 'sales',
@@ -197,57 +241,15 @@ async function buildVueApp() {
             {
               name: 'filter',
               condition: {
-                column: 'Price',
-                operator: 'ge',
-                value: 1200,
-              },
-            }
-          ],
-          pipelineAmex: [
-            {
-              name: 'domain',
-              domain: 'sales',
-            },
-            {
-              name: 'filter',
-              condition: {
-                column: 'Payment_Type',
-                operator: 'eq',
-                value: 'Amex',
-              },
-            }
-          ],
-          pipelineVisa: [
-            {
-              name: 'domain',
-              domain: 'sales',
-            },
-            {
-              name: 'filter',
-              condition: {
-                column: 'Payment_Type',
-                operator: 'eq',
-                value: 'Visa',
-              },
-            }
-          ],
-          pipelineMastercard: [
-            {
-              name: 'domain',
-              domain: 'sales',
-            },
-            {
-              name: 'filter',
-              condition: {
-                column: 'Payment_Type',
-                operator: 'eq',
-                value: 'Mastercard',
+                column: 'label',
+                operator: 'notnull',
+                value: null,
               },
             }
           ],
         },
         currentDomain: 'sales',
-        translator: TRANSLATOR,
+        translator: 'js',
         // use lodash interpolate
         interpolateFunc: (value, context) => _.template(value)(context),
         variables: {
