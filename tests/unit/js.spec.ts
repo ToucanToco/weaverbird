@@ -254,4 +254,23 @@ describe('Pipeline to js function translator', () => {
       ]);
     });
   });
+
+  describe('custom step', () => {
+    it('should apply the custom function to data', () => {
+      const addPlipPloupAndDoubleValue = jsTranslator.custom({
+        name: 'custom',
+        query: `function transformData(data) {
+          return data.map(d => ({
+            ...d,
+            value: d.value * 2,
+            plip: "ploup"
+          }));
+        }`,
+      });
+      expect(addPlipPloupAndDoubleValue(SAMPLE_DATA.domainA, {})).toEqual([
+        { label: 'A', value: 2, plip: 'ploup' },
+        { label: 'B', value: 4, plip: 'ploup' },
+      ]);
+    });
+  });
 });

@@ -124,6 +124,19 @@ export class JavaScriptTranslator extends BaseTranslator {
       return data.map(addTextColumnToRow);
     };
   }
+
+  /**
+   * Transform a "custom" step into corresponding function
+   *
+   * The "query" parameter of the custom step should be a javascript function, of which the first parameter will be
+   * the data table, and the second an object of all available domains.
+   */
+  custom(step: Readonly<S.CustomStep>) {
+    const func = Function('"use strict";return (' + step.query + ')')();
+    return function(data: Readonly<DataTable>, dataDomains: Readonly<DataDomains>) {
+      return func(data, dataDomains);
+    };
+  }
 }
 
 /**
