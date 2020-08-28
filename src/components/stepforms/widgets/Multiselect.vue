@@ -36,7 +36,7 @@
             v-if="isVariable(option)"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
-            :advanced-variable-delimiters="advancedVariableDelimiters"
+            :is-advanced="advancedVariableDelimiters"
             :value="customLabel(option)"
             @removed="remove(option)"
           />
@@ -156,7 +156,11 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
    **/
   isVariable(value: string | object) {
     const identifier = extractVariableIdentifier(this.customLabel(value), this.variableDelimiters);
-    return identifier != null;
+    const advancedVariableIdentifier = extractVariableIdentifier(
+      value,
+      this.advancedVariableDelimiters,
+    );
+    return identifier != null || advancedVariableIdentifier != null;
   }
 
   /**

@@ -31,6 +31,7 @@
             v-if="isVariable(option)"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :is-advanced="advancedVariableDelimiters"
             :value="option"
             @removed="remove(option)"
           />
@@ -119,7 +120,11 @@ export default class MultiInputTextWidget extends Vue {
    **/
   isVariable(value: string) {
     const identifier = extractVariableIdentifier(value, this.variableDelimiters);
-    return identifier != null;
+    const advancedVariableIdentifier = extractVariableIdentifier(
+      value,
+      this.advancedVariableDelimiters,
+    );
+    return identifier != null || advancedVariableIdentifier != null;
   }
 }
 </script>

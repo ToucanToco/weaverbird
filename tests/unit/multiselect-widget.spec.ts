@@ -94,6 +94,17 @@ describe('Widget Multiselect', () => {
     expect(wrapper.findAll(VariableTag).length).toBe(1);
   });
 
+  it('... and advanced variable tags', () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '<%= var3 %>'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        advancedVariableDelimiters: { start: '<%=', end: '%>' },
+      },
+    });
+    expect(wrapper.findAll(VariableTag).length).toBe(2);
+  });
+
   it('should remove variable from value when clicking on tag', async () => {
     const wrapper = mount(MultiSelectWidget, {
       propsData: {

@@ -133,6 +133,18 @@ describe('Widget MultiInputText', () => {
     expect(wrapper.findAll(VariableTag).length).toBe(2);
   });
 
+  it('... and advanced variable tags', () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', 'b', '{{ var1 }}', '{{ var2 }}', '<%= var3 %>'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+        advancedVariableDelimiters: { start: '<%=', end: '%>' },
+      },
+    });
+    expect(wrapper.findAll(VariableTag).length).toBe(3);
+  });
+
   it('should remove variable from value when clicking on tag', async () => {
     const wrapper = mount(MultiInputTextWidget, {
       propsData: {

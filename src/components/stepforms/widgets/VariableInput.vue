@@ -6,6 +6,7 @@
           :value="value"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :is-advanced="advancedVariableDelimiters"
           @removed="dismissVariable"
         />
       </div>
@@ -47,7 +48,7 @@ export default class VariableInput extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
+  @Prop()
   variableDelimiters!: VariableDelimiters;
 
   @Prop()
@@ -66,7 +67,11 @@ export default class VariableInput extends Vue {
    */
   get isVariable() {
     const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
-    return identifier != null;
+    const advancedVariableIdentifier = extractVariableIdentifier(
+      this.value,
+      this.advancedVariableDelimiters,
+    );
+    return identifier != null || advancedVariableIdentifier != null;
   }
 
   /**

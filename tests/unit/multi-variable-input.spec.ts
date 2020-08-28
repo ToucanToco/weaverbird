@@ -13,6 +13,8 @@ describe('Variable Input', () => {
         tooltip: VTooltip,
       },
       propsData: {
+        variableDelimiters: { start: '{{', end: '}}' },
+        advancedVariableDelimiters: { start: '<%=', end: '%>' },
         availableVariables: [
           {
             category: 'App variables',

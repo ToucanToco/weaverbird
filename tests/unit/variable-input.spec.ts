@@ -13,6 +13,7 @@ describe('Variable Input', () => {
         tooltip: VTooltip,
       },
       propsData: {
+        variableDelimiters: { start: '{{', end: '}}' },
         availableVariables: [
           {
             category: 'App variables',
@@ -101,6 +102,25 @@ describe('Variable Input', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0]).toEqual([undefined]);
       });
+    });
+  });
+
+  describe('when value is an advanced variable', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        value: '<%= hummus %>',
+        advancedVariableDelimiters: { start: '<%=', end: '%>' },
+      });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should not display the regular input slot', () => {
+      expect(wrapper.find('VariableInputBase-stub').exists()).toBe(false);
+    });
+
+    it('should display the tag of the variable', () => {
+      expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
+      expect(wrapper.find('VariableTag-stub').props().value).toBe('<%= hummus %>');
     });
   });
 });

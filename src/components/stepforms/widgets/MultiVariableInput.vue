@@ -33,7 +33,7 @@ export default class MultiVariableInput extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
+  @Prop()
   variableDelimiters!: VariableDelimiters;
 
   @Prop()

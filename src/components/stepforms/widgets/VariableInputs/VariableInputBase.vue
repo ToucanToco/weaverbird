@@ -71,7 +71,7 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
 
-  @Prop({ default: null })
+  @Prop()
   advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
