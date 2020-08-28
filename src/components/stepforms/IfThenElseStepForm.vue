@@ -16,6 +16,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="true"
       @input="updateIfThenElse"
     />
@@ -68,6 +69,8 @@ export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
+
+  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({
     type: Object,

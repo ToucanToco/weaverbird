@@ -11,6 +11,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="true"
     />
     <ColumnPicker
@@ -32,6 +33,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="true"
     />
     <InputTextWidget
@@ -74,6 +76,8 @@ export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
+
+  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'cumsum', valueColumn: '', referenceColumn: '' }) })
   initialStepValue!: CumSumStep;
