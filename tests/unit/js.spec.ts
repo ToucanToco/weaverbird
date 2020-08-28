@@ -69,7 +69,7 @@ describe('Pipeline to js function translator', () => {
           operator: 'eq',
         },
       });
-      expect(filterALabel(SAMPLE_DATA, {})).toEqual([{label: 'A', value: 1}]);
+      expect(filterALabel(SAMPLE_DATA, {})).toEqual([{ label: 'A', value: 1 }]);
     });
 
     it('should handle and conditions with matches and gt', () => {
@@ -91,7 +91,7 @@ describe('Pipeline to js function translator', () => {
         },
       });
       expect(filterValuesGreaterThan1AndLabelsWithOnlyOneLetter(SAMPLE_DATA, {})).toEqual([
-        {label: 'B', value: 2},
+        { label: 'B', value: 2 },
       ]);
     });
 
@@ -114,9 +114,9 @@ describe('Pipeline to js function translator', () => {
         },
       });
       expect(filterLabelsWithMoreThanOneLetterOrValuesLessThan1(SAMPLE_DATA, {})).toEqual([
-        {label: 'A', value: 1},
-        {label: 'alpha', value: 0.1},
-        {label: 'beta', value: 0.2},
+        { label: 'A', value: 1 },
+        { label: 'alpha', value: 0.1 },
+        { label: 'beta', value: 0.2 },
       ]);
     });
 
@@ -171,9 +171,9 @@ describe('Pipeline to js function translator', () => {
         },
       });
       expect(filterNotEqual(SAMPLE_DATA, {})).toEqual([
-        {label: 'B', value: 2},
-        {label: 'alpha', value: 0.1},
-        {label: 'beta', value: 0.2},
+        { label: 'B', value: 2 },
+        { label: 'alpha', value: 0.1 },
+        { label: 'beta', value: 0.2 },
       ]);
     });
 
@@ -182,7 +182,7 @@ describe('Pipeline to js function translator', () => {
         name: 'filter',
         condition: {
           or: [
-            {column: 'value', operator: 'lt', value: 0.2},
+            { column: 'value', operator: 'lt', value: 0.2 },
             {
               column: 'value',
               operator: 'ge',
@@ -192,8 +192,8 @@ describe('Pipeline to js function translator', () => {
         },
       });
       expect(filterLowerThan1OrGreatherThan1(SAMPLE_DATA, {})).toEqual([
-        {label: 'B', value: 2},
-        {label: 'alpha', value: 0.1},
+        { label: 'B', value: 2 },
+        { label: 'alpha', value: 0.1 },
       ]);
     });
 
@@ -207,8 +207,8 @@ describe('Pipeline to js function translator', () => {
         },
       });
       expect(filterIn(SAMPLE_DATA, {})).toEqual([
-        {label: 'A', value: 1},
-        {label: 'alpha', value: 0.1},
+        { label: 'A', value: 1 },
+        { label: 'alpha', value: 0.1 },
       ]);
     });
 
