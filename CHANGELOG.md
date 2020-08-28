@@ -15,6 +15,11 @@
 - Add a mutation to populate store with advanced variable delimiters
 - Add templating support for several steps parameters
 
+### Changed
+
+- Improve 'aggregate' step by adding an option to keep the original granularity
+  and add computed aggregations in new columns
+
 ### Fixed
 
 - Append, Domain, Join steps: sort the dataset selection

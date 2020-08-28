@@ -309,7 +309,9 @@ function transformAggregate(step: Readonly<S.AggregationStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};
+
   group._id = idblock;
+
   for (const aggfStep of step.aggregations) {
     if (aggfStep.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
@@ -323,16 +325,28 @@ function transformAggregate(step: Readonly<S.AggregationStep>): MongoStep[] {
       };
     }
   }
-  for (const groupKey of Object.keys(group)) {
-    if (groupKey === '_id') {
-      for (const idkey of Object.keys(group[groupKey])) {
-        project[idkey] = `$_id.${idkey}`;
+
+  if (step.keepOriginalGranularity) {
+    // we keep track of all columns
+    group['_vqbDocsArray'] = { $push: '$$ROOT' };
+    return [
+      { $group: group },
+      { $unwind: '$_vqbDocsArray' },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
+      { $project: { _vqbDocsArray: 0 } },
+    ];
+  } else {
+    for (const groupKey of Object.keys(group)) {
+      if (groupKey === '_id') {
+        for (const idkey of Object.keys(group[groupKey])) {
+          project[idkey] = `$_id.${idkey}`;
+        }
+      } else {
+        project[groupKey] = 1;
       }
-    } else {
-      project[groupKey] = 1;
     }
+    return [{ $group: group }, { $project: project }];
   }
-  return [{ $group: group }, { $project: project }];
 }
 
 /** transform an 'argmax' or 'argmin' step into corresponding mongo steps */

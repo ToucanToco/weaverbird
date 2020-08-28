@@ -26,6 +26,11 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
     />
+    <CheckboxWidget
+      class="keepOriginalGranularityCheckbox"
+      label="Keep original granularity and add aggregation(s) in new column(s)"
+      v-model="editedStep.keepOriginalGranularity"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -34,6 +39,7 @@
 import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
+import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import { AggFunctionStep, AggregationStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
@@ -47,6 +53,7 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   vqbstep: 'aggregate',
   name: 'aggregate-step-form',
   components: {
+    CheckboxWidget,
     ListWidget,
     MultiselectWidget,
   },
@@ -56,11 +63,29 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
 
-  @Prop({ type: Object, default: () => ({ name: 'aggregate', on: [], aggregations: [] }) })
+  @Prop({
+    type: Object,
+    default: () => ({
+      name: 'aggregate',
+      on: [],
+      aggregations: [],
+      keepOriginalGranularity: false,
+    }),
+  })
   initialStepValue!: AggregationStep;
 
   readonly title: string = 'Aggregate';
   widgetAggregation = AggregationWidget;
+
+  /** Overload the definition of editedStep in BaseStepForm, to manage the
+   * keepOriginalGranularity parameter which may be undefined and has to be treated
+   * specifically to guarantee retrocompatibility (as this parameter did not exist
+   *  when this step was first created) */
+  editedStep = {
+    ...this.initialStepValue,
+    ...this.stepFormDefaults,
+    keepOriginalGranularity: this.initialStepValue.keepOriginalGranularity ?? false,
+  };
 
   get defaultAggregation() {
     const agg: AggFunctionStep = {
@@ -94,7 +119,11 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
       newcolumnOccurences[agg.newcolumn] = (newcolumnOccurences[agg.newcolumn] || 0) + 1;
     }
     for (const agg of this.editedStep.aggregations) {
-      if (newcolumnOccurences[agg.newcolumn] > 1) {
+      /**
+       * If we keep the original granularity, we keep the original value columns
+       * and add the aggregation results in new columns, so we need to suffix those
+       */
+      if (newcolumnOccurences[agg.newcolumn] > 1 || this.editedStep.keepOriginalGranularity) {
         agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
       }
       if (this.editedStep.on.includes(agg.newcolumn)) {

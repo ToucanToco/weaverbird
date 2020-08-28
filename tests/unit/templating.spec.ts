@@ -37,6 +37,7 @@ describe('Pipeline interpolator', () => {
             newcolumn: '<%= egg %>',
           },
         ],
+        keepOriginalGranularity: false,
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
@@ -59,6 +60,7 @@ describe('Pipeline interpolator', () => {
             newcolumn: '<%= egg %>',
           },
         ],
+        keepOriginalGranularity: false,
       },
     ];
 
@@ -78,6 +80,7 @@ describe('Pipeline interpolator', () => {
             newcolumn: '<%= egg %>',
           },
         ],
+        keepOriginalGranularity: false,
       },
     ]);
   });

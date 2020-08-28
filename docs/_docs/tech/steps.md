@@ -29,6 +29,8 @@ An aggreation step has the following strucure:
       }
     // ...
   ]
+  keepOriginalGranularity: false, // whether to keep the original granularity, in that
+                                  // case computed aggregations will be added in new columns
 }
 ```
 
@@ -37,7 +39,7 @@ An aggreation step has the following strucure:
 - Mongo 4.0
 - Mongo 3.6
 
-#### Example:
+#### Example 1: keepOriginalGranularity set to false
 
 **Input dataset:**
 
@@ -62,7 +64,8 @@ An aggreation step has the following strucure:
       aggfunction: 'sum',
       column: 'Value'
     }
-  ]
+  ],
+  keepOriginalGranularity: false,
 }
 ```
 
@@ -72,6 +75,47 @@ An aggreation step has the following strucure:
 | ------- | ----- |
 | Group 1 | 30    |
 | Group 2 | 16    |
+
+#### Example 2: keepOriginalGranularity set to true
+
+**Input dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 13    |
+| Label 2 | Group 1 | 7     |
+| Label 3 | Group 1 | 20    |
+| Label 4 | Group 2 | 1     |
+| Label 5 | Group 2 | 10    |
+| Label 6 | Group 2 | 5     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'aggregate',
+   on: ['Group'],
+   aggregations:  [
+    {
+      newcolumn: 'Total',
+      aggfunction: 'sum',
+      column: 'Value'
+    }
+  ],
+  keepOriginalGranularity: true,
+}
+```
+
+**Output dataset:**
+
+| Label   | Group   | Value |
+| ------- | ------- | ----- |
+| Label 1 | Group 1 | 30    |
+| Label 2 | Group 1 | 30    |
+| Label 3 | Group 1 | 30    |
+| Label 4 | Group 2 | 16    |
+| Label 5 | Group 2 | 16    |
+| Label 6 | Group 2 | 16    |
 
 ### `append` step
 

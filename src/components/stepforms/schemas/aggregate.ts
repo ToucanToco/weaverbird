@@ -46,6 +46,11 @@ const schema = {
       title: 'Aggregations',
       description: 'The aggregations to be performed',
     },
+    keepOriginalGranularity: {
+      type: 'boolean',
+      description:
+        'If true, keeps the original granularity and adds the aggregation(s) in new column(s)',
+    },
   },
   required: ['name', 'on', 'aggregations'],
   additionalProperties: false,

@@ -14,6 +14,7 @@ describe('Labeller', () => {
           newcolumn: 'averaged3',
         },
       ],
+      keepOriginalGranularity: false,
     };
     expect(hrl(step)).toEqual('Average of "column3" grouped by "column1", "column2"');
   });
@@ -34,6 +35,7 @@ describe('Labeller', () => {
           newcolumn: 'sum4',
         },
       ],
+      keepOriginalGranularity: false,
     };
     expect(hrl(step)).toEqual('Aggregate "column3", "column4" grouped by "column1", "column2"');
   });

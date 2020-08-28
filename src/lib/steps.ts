@@ -27,6 +27,9 @@ export type AggregationStep = {
   on: string[];
   /** the list of aggregation operations to perform */
   aggregations: AggFunctionStep[];
+  /** optional to guarantee retrocompatibility as this parameter did not exist
+   *  when this step was first created */
+  keepOriginalGranularity?: boolean;
 };
 
 export type AppendStep = {
