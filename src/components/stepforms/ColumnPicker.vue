@@ -9,6 +9,7 @@
     :errors="errors"
     :available-variables="availableVariables"
     :variable-delimiters="variableDelimiters"
+    :advanced-variable-delimiters="advancedVariableDelimiters"
     :use-advanced-variable="useAdvancedVariable"
   />
 </template>
@@ -48,6 +49,9 @@ export default class ColumnPicker extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   // Whether the column data of ColumnPicker should react to a change of
   // selected column

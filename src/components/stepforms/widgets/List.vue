@@ -13,6 +13,7 @@
             :value="child.value"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :advanced-variable-delimiters="advancedVariableDelimiters"
             :use-advanced-variable="useAdvancedVariable"
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}[${index}]`"
@@ -99,6 +100,9 @@ export default class ListWidget extends Mixins(FormWidget) {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   get children() {
     const valueCopy = [...this.value];

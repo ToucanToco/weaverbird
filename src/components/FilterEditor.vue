@@ -9,6 +9,7 @@
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
           :use-advanced-variable="useAdvancedVariable"
+          :advanced-variable-delimiters="advancedVariableDelimiters"
           :data-path="slotProps.dataPath"
           :errors="errors"
           :multi-variable="multiVariable"
@@ -60,6 +61,9 @@ export default class FilterEditor extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ type: Boolean, default: true })
   multiVariable!: boolean; // display multiInputText as multiVariableInput

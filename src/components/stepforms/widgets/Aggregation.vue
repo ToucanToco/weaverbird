@@ -10,6 +10,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="useAdvancedVariable"
     />
     <AutocompleteWidget
@@ -57,6 +58,9 @@ export default class AggregationWidget extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   @VQBModule.Getter columnNames!: string[];
 
