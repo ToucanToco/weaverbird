@@ -83,10 +83,6 @@ describe('Variable Input', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('should not display the regular input slot', () => {
-      expect(wrapper.find('VariableInputBase-stub').exists()).toBe(false);
-    });
-
     it('should display the tag of the variable', () => {
       expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
       expect(wrapper.find('VariableTag-stub').props().value).toBe('{{ hummus }}');
@@ -114,13 +110,17 @@ describe('Variable Input', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('should not display the regular input slot', () => {
-      expect(wrapper.find('VariableInputBase-stub').exists()).toBe(false);
-    });
-
     it('should display the tag of the variable', () => {
       expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
       expect(wrapper.find('VariableTag-stub').props().value).toBe('<%= hummus %>');
+    });
+
+    it('should edit the advanced variable when clicking on tag', async () => {
+      wrapper.find('VariableTag-stub').vm.$emit('edited');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableInputBase-stub').props().selectedAdvancedVariable).toBe(
+        '<%= hummus %>',
+      );
     });
   });
 });

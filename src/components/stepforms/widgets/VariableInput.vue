@@ -8,18 +8,19 @@
           :variable-delimiters="variableDelimiters"
           :is-advanced="advancedVariableDelimiters"
           @removed="dismissVariable"
+          @edited="editAdvancedVariable"
         />
       </div>
     </div>
     <VariableInputBase
-      v-else
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
       :has-arrow="hasArrow"
+      :selected-advanced-variable="selectedAdvancedVariable"
       @input="chooseVariable"
     >
-      <slot />
+      <slot v-if="!isVariable" />
     </VariableInputBase>
   </div>
 </template>
@@ -42,6 +43,9 @@ import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '
   },
 })
 export default class VariableInput extends Vue {
+  /* Select the advanced variable to edit in advanced variable modal */
+  selectedAdvancedVariable = '';
+
   @Prop()
   value!: any;
 
@@ -86,6 +90,15 @@ export default class VariableInput extends Vue {
    */
   dismissVariable() {
     this.$emit('input', undefined);
+  }
+
+  /**
+   * Select the advanced variable to edit in advanced variable modal when clicking on tag
+   */
+  editAdvancedVariable() {
+    if (this.useAdvancedVariable) {
+      this.selectedAdvancedVariable = this.value;
+    }
   }
 }
 </script>
