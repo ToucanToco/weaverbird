@@ -110,6 +110,20 @@ export class JavaScriptTranslator extends BaseTranslator {
       return data.filter(filteringFunctionForCondition(filterStep.condition));
     };
   }
+
+  // transform a "text" step into corresponding function
+  text(step: Readonly<S.AddTextColumnStep>): JsStepFunction {
+    function addTextColumnToRow(row: Readonly<DataRow>) {
+      return {
+        ...row,
+        [step.new_column]: step.text,
+      };
+    }
+
+    return function(data: Readonly<DataTable>, _dataDomains: Readonly<DataDomains>) {
+      return data.map(addTextColumnToRow);
+    };
+  }
 }
 
 /**

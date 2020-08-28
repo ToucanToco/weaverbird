@@ -240,4 +240,18 @@ describe('Pipeline to js function translator', () => {
       expect(() => invalidFilter(SAMPLE_DATA, {})).toThrow();
     });
   });
+
+  describe('text step', () => {
+    it('should add a column with text to each row', () => {
+      const addTextColumn = jsTranslator.text({
+        name: 'text',
+        text: 'some text',
+        new_column: 'text_new_column',
+      });
+      expect(addTextColumn(SAMPLE_DATA.domainA, {})).toEqual([
+        { label: 'A', value: 1, text_new_column: 'some text' },
+        { label: 'B', value: 2, text_new_column: 'some text' },
+      ]);
+    });
+  });
 });
