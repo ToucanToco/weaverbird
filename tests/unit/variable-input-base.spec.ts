@@ -57,7 +57,9 @@ describe('Variable Input', () => {
     expect(wrapper.find("input[type='text']").exists()).toBe(true);
   });
 
-  it('should contain the advanced variable modal', () => {
+  it('should contain the advanced variable modal when use advanced variable is enabled', async () => {
+    wrapper.setProps({ useAdvancedVariable: true });
+    await wrapper.vm.$nextTick();
     expect(wrapper.find('AdvancedVariableModal-stub').exists()).toBe(true);
   });
 
@@ -158,6 +160,7 @@ describe('Variable Input', () => {
 
       describe('when choosing an advanced variable', () => {
         beforeEach(async () => {
+          wrapper.setProps({ useAdvancedVariable: true });
           wrapper.find('VariableChooser-stub').vm.$emit('addAdvancedVariable');
           await wrapper.vm.$nextTick();
         });
@@ -184,6 +187,31 @@ describe('Variable Input', () => {
           expect(wrapper.emitted('input')[0]).toEqual(['value']);
         });
       });
+    });
+  });
+
+  describe('when updating an advanced variable', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        useAdvancedVariable: true,
+        selectedAdvancedVariable: '{{ a | number }}',
+      });
+      await wrapper.vm.$nextTick();
+      wrapper.find('AdvancedVariableModal-stub').vm.$emit('closed');
+    });
+    it('should open the advanced variable modal and use the selected variable as value', async () => {
+      wrapper.setProps({ selectedAdvancedVariable: '<%= toto %>' });
+      await wrapper.vm.$nextTick();
+      const modal = wrapper.find('AdvancedVariableModal-stub');
+      expect(modal.props().isOpened).toBe(true);
+      expect(modal.props().value).toBe('<%= toto %>');
+    });
+    it('... unless value is empty', async () => {
+      wrapper.setProps({ selectedAdvancedVariable: '' });
+      await wrapper.vm.$nextTick();
+      const modal = wrapper.find('AdvancedVariableModal-stub');
+      expect(modal.props().isOpened).toBe(false);
+      expect(modal.props().value).toBe('');
     });
   });
 

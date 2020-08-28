@@ -31,7 +31,9 @@
       @closed="stopChoosingVariable"
     />
     <AdvancedVariableModal
+      v-if="useAdvancedVariable"
       :is-opened="isAdvancedVariableModalOpened"
+      :value="selectedAdvancedVariable"
       :variable-delimiters="advancedVariableDelimiters"
       @closed="closeAdvancedVariableModal"
       @input="chooseAdvancedVariable"
@@ -40,7 +42,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
@@ -77,9 +79,20 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: false })
   hasArrow!: boolean;
 
+  @Prop({ type: String, default: '' })
+  selectedAdvancedVariable!: string;
+
   isChoosingVariable = false;
 
   isAdvancedVariableModalOpened = false;
+
+  @Watch('selectedAdvancedVariable')
+  selectAdvancedVariable(value: string) {
+    // open advanced variable modal when changing selected variable in parent component
+    if (value && this.useAdvancedVariable) {
+      this.openAdvancedVariableModal();
+    }
+  }
 
   /**
    * Find variables in value array
