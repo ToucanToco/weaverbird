@@ -161,10 +161,7 @@ class MongoService {
   }
 }
 
-const mongoservice = new MongoService();
-const mongoBackendPlugin = servicePluginFactory(mongoservice);
-
-class DataService {
+class JsDataService {
   constructor() {
     this.dataDomains = {
       defaultDataset: [{
@@ -204,9 +201,17 @@ class DataService {
       };
     }
   }
+
+  async loadCSV(file) {
+    throw Error('Not implemented');
+  }
 }
 
-const dataService = new DataService();
+/* Use either:
+   - `JsDataService`: to execute all data transforms directly in the browser
+   - `MongoService`: to query against a Mongo database
+ */
+const dataService = new JsDataService();
 const dataBackendPlugin = servicePluginFactory(dataService);
 
 async function buildVueApp() {
@@ -258,7 +263,7 @@ async function buildVueApp() {
           groupname: 'Group 1',
         },
       });
-      const collections = await mongoservice.listCollections();
+      const collections = await dataService.listCollections();
       store.commit(VQBnamespace('setDomains'), { domains: collections });
       store.dispatch(VQBnamespace('updateDataset'));
     },
@@ -325,7 +330,7 @@ async function buildVueApp() {
         this.draggedover = false;
         event.preventDefault();
         // For the moment, only take one file and we should also test event.target
-        const { collection: domain } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
+        const { collection: domain } = await dataService.loadCSV(event.dataTransfer.files[0]);
         await setupInitialData(store, domain);
         event.target.value = null;
       },
