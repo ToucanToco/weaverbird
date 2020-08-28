@@ -56,6 +56,84 @@ describe('Variable Chooser', () => {
     it('should have a type input', () => {
       expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
     });
+
+    it('should format the variable based on current value', async () => {
+      expect((wrapper.vm as any).variable).toStrictEqual({ type: '', code: '' });
+      wrapper.setProps({ isOpened: false }); // close the modal to reopen it
+      wrapper.setProps({ value: '{{ <%= a %> | number }}', isOpened: true });
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).variable).toStrictEqual({ type: ' | number', code: '<%= a %>' });
+    });
+  });
+
+  describe('format variable from value', () => {
+    describe('with empty value', () => {
+      beforeEach(() => {
+        wrapper.setProps({ value: '', isOpened: true });
+      });
+      it('should format the variable', () => {
+        expect((wrapper.vm as any).variable).toStrictEqual({ type: '', code: '' });
+      });
+
+      it('should use the default type', () => {
+        expect((wrapper.vm as any).variableType).toBe('');
+        expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+          type: '',
+          label: 'Text',
+        });
+      });
+
+      it('should use empty code value', () => {
+        expect((wrapper.vm as any).variableCode).toBe('');
+        expect(wrapper.find('CodeEditorWidget-stub').props().value).toBe('');
+      });
+    });
+
+    describe('with selected variable', () => {
+      beforeEach(() => {
+        wrapper.setProps({ value: '{{ <%= a %> | number }}', isOpened: true });
+      });
+
+      it('should format the variable', () => {
+        expect((wrapper.vm as any).variable).toStrictEqual({ type: ' | number', code: '<%= a %>' });
+      });
+
+      it('should use the selected variable type', () => {
+        expect((wrapper.vm as any).variableType).toBe(' | number');
+        expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+          type: ' | number',
+          label: 'Number',
+        });
+      });
+
+      it('should use the selected variable code value', () => {
+        expect((wrapper.vm as any).variableCode).toBe('<%= a %>');
+        expect(wrapper.find('CodeEditorWidget-stub').props().value).toBe('<%= a %>');
+      });
+    });
+
+    describe('with unknow type', () => {
+      beforeEach(() => {
+        wrapper.setProps({ value: '{{ <%= a %> | lala }}', isOpened: true });
+      });
+
+      it('should format the variable with default empty type', () => {
+        expect((wrapper.vm as any).variable).toStrictEqual({ type: '', code: '<%= a %> | lala' });
+      });
+    });
+
+    describe('with multiple type', () => {
+      beforeEach(() => {
+        wrapper.setProps({ value: '{{ <%= a | number %> | number }}', isOpened: true });
+      });
+
+      it('should only focus on end one', () => {
+        expect((wrapper.vm as any).variable).toStrictEqual({
+          type: ' | number',
+          code: '<%= a | number %>',
+        });
+      });
+    });
   });
 
   describe('when clicking on the close button', () => {

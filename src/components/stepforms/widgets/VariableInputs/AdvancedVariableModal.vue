@@ -51,12 +51,17 @@
 
 <script lang="ts">
 import { ErrorObject } from 'ajv';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { AdvancedVariable, VariableDelimiters, VariableType } from '@/lib/variables';
+import {
+  AdvancedVariable,
+  extractVariableIdentifier,
+  VariableDelimiters,
+  VariableType,
+} from '@/lib/variables';
 /**
  * This component allow to add an advanced variable
  */
@@ -69,6 +74,9 @@ import { AdvancedVariable, VariableDelimiters, VariableType } from '@/lib/variab
 })
 export default class AdvancedVariableModal extends Vue {
   variable: AdvancedVariable = { type: '', code: '' };
+
+  @Prop({ type: String, default: '' })
+  value!: string;
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
@@ -87,6 +95,41 @@ export default class AdvancedVariableModal extends Vue {
 
   get selectedType() {
     return this.types.find((type: VariableType) => type.type === this.variable.type);
+  }
+
+  /*
+  Transform string value into object to use type and code in related inputs
+  */
+  @Watch('isOpened')
+  setVariable() {
+    if (this.isOpened) {
+      this.variable = { type: this.variableType, code: this.variableCode };
+    }
+  }
+
+  /*
+  Remove delimiters from value
+  */
+  get variableIdentifier(): string {
+    return extractVariableIdentifier(this.value, this.variableDelimiters) || this.value;
+  }
+  /*
+  Retrieve variable type in variable identifier
+  */
+  get variableType(): string {
+    const type = this.types.find(
+      (type: VariableType) => type.type && this.variableIdentifier.endsWith(type.type),
+    );
+    return type?.type || '';
+  }
+  /*
+  Retrieve variable code in variable identifier
+  */
+  get variableCode(): string {
+    if (!this.variableType) return this.variableIdentifier;
+    const values = this.variableIdentifier.split(this.variableType);
+    values.pop();
+    return values.join(this.variableType);
   }
 
   /*
