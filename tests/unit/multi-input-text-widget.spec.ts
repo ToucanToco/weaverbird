@@ -224,5 +224,18 @@ describe('Widget MultiInputText', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.find(MultiVariableInput).props().selectedAdvancedVariable).toBe('{{ var1 }}');
     });
+
+    it('should reset the selected variable when multi variable input ask to', async () => {
+      wrapper.setData({ selectedAdvancedVariable: '{{ var1 }}' });
+      wrapper.find(MultiVariableInput).vm.$emit('resetSelectedAdvancedVariable');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(MultiVariableInput).props().selectedAdvancedVariable).toBe('');
+    });
+
+    it('should reset the selected variable when updating value', async () => {
+      wrapper.find(MultiVariableInput).vm.$emit('input', ['{{ var1 }}']);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(MultiVariableInput).props().selectedAdvancedVariable).toBe('');
+    });
   });
 });

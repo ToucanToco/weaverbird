@@ -186,6 +186,18 @@ describe('Variable Input', () => {
           expect(wrapper.emitted('input')).toHaveLength(1);
           expect(wrapper.emitted('input')[0]).toEqual(['value']);
         });
+
+        it('should reset advanced variable value when closing the modal', async () => {
+          wrapper.find('AdvancedVariableModal-stub').vm.$emit('closed');
+          await wrapper.vm.$nextTick();
+          expect(wrapper.emitted('resetSelectedAdvancedVariable')).toBeDefined();
+        });
+
+        it('... unless on save', async () => {
+          wrapper.find('AdvancedVariableModal-stub').vm.$emit('input', 'value');
+          await wrapper.vm.$nextTick();
+          expect(wrapper.emitted('resetSelectedAdvancedVariable')).not.toBeDefined();
+        });
       });
     });
   });

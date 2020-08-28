@@ -58,4 +58,12 @@ describe('Variable Input', () => {
       expect(wrapper.emitted('input')[0][0]).toEqual([]);
     });
   });
+
+  describe('when resetting the selected advanced variable', () => {
+    it('should emit resetSelectedAdvancedVariable', async () => {
+      wrapper.find('VariableInputBase-stub').vm.$emit('resetSelectedAdvancedVariable');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('resetSelectedAdvancedVariable')).toHaveLength(1);
+    });
+  });
 });

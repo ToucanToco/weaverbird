@@ -122,5 +122,18 @@ describe('Variable Input', () => {
         '<%= hummus %>',
       );
     });
+
+    it('should reset the selected variable when multi variable input ask to', async () => {
+      wrapper.setData({ selectedAdvancedVariable: '{{ var1 }}' });
+      wrapper.find('VariableInputBase-stub').vm.$emit('resetSelectedAdvancedVariable');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableInputBase-stub').props().selectedAdvancedVariable).toBe('');
+    });
+
+    it('should reset the selected variable when updating value', async () => {
+      wrapper.find('VariableInputBase-stub').vm.$emit('input', '{{ var1 }}');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableInputBase-stub').props().selectedAdvancedVariable).toBe('');
+    });
   });
 });

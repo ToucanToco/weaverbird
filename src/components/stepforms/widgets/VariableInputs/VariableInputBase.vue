@@ -35,7 +35,7 @@
       :is-opened="isAdvancedVariableModalOpened"
       :value="selectedAdvancedVariable"
       :variable-delimiters="advancedVariableDelimiters"
-      @closed="closeAdvancedVariableModal"
+      @closed="closeAdvancedVariableModal(true)"
       @input="chooseAdvancedVariable"
     />
   </div>
@@ -127,8 +127,11 @@ export default class VariableInputBase extends Vue {
     this.isAdvancedVariableModalOpened = true;
   }
 
-  closeAdvancedVariableModal() {
+  closeAdvancedVariableModal(resetSelectedAdvancedVariable?: boolean) {
     this.isAdvancedVariableModalOpened = false;
+    if (resetSelectedAdvancedVariable) {
+      this.$emit('resetSelectedAdvancedVariable');
+    }
   }
 
   /**

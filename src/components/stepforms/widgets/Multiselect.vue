@@ -10,6 +10,7 @@
       :has-arrow="true"
       :selected-advanced-variable="selectedAdvancedVariable"
       @input="updateStringValue"
+      @resetSelectedAdvancedVariable="resetSelectedAdvancedVariable"
     >
       <multiselect
         class="widget-multiselect__multiselect"
@@ -154,6 +155,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
     if (newValues !== oldValues) {
       this.$emit('input', newValue);
     }
+    this.resetSelectedAdvancedVariable();
   }
 
   /**
@@ -187,6 +189,13 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
     if (this.advancedVariableDelimiters) {
       this.selectedAdvancedVariable = value;
     }
+  }
+
+  /*
+  Reset the advanced variable to edit (reload watcher if clicking on the same tag)
+  */
+  resetSelectedAdvancedVariable() {
+    this.selectedAdvancedVariable = '';
   }
 }
 </script>

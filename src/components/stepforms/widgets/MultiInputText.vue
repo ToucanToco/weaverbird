@@ -8,6 +8,7 @@
       :advanced-variable-delimiters="advancedVariableDelimiters"
       :selected-advanced-variable="selectedAdvancedVariable"
       @input="updateValue"
+      @resetSelectedAdvancedVariable="resetSelectedAdvancedVariable"
     >
       <multiselect
         class="widget-multiinputtext__multiselect"
@@ -118,6 +119,7 @@ export default class MultiInputTextWidget extends Vue {
       this.$emit('input', newValue);
     }
     this.options = [];
+    this.resetSelectedAdvancedVariable();
   }
 
   /**
@@ -139,6 +141,13 @@ export default class MultiInputTextWidget extends Vue {
     if (this.advancedVariableDelimiters) {
       this.selectedAdvancedVariable = value;
     }
+  }
+
+  /*
+  Reset the advanced variable to edit (reload watcher if clicking on the same tag)
+  */
+  resetSelectedAdvancedVariable() {
+    this.selectedAdvancedVariable = '';
   }
 }
 </script>
