@@ -88,4 +88,22 @@ describe('Variable Tag', () => {
       expect((wrapper as any).vm.variableValue).toBe('');
     });
   });
+
+  describe('if the variable is an advanced variable', () => {
+    beforeEach(() => {
+      wrapper.setProps({
+        value: '{{ toto }}',
+        isAdvanced: true,
+      });
+    });
+    it('should display "AdVariable" as label', () => {
+      expect(wrapper.find('.widget-variable__tag-name').text()).toBe('AdVariable');
+    });
+    it('should display nothing instead of the human-friendly value', () => {
+      expect((wrapper as any).vm.variableValue).toBe('');
+    });
+    it('should have specific style', () => {
+      expect(wrapper.classes()).toContain('widget-variable__tag--advanced');
+    });
+  });
 });
