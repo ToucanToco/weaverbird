@@ -305,6 +305,11 @@ export default class MultiInputTextWidget extends Vue {
 
 <style scoped lang="scss">
 .widget-multiinputtext__multiselect {
+  &:not(.multiselect--active) {
+    /deep/ .multiselect__tags-wrap {
+      padding-right: 40px;
+    }
+  }
   /deep/ .widget-variable__tag {
     display: inline-flex;
     vertical-align: top;

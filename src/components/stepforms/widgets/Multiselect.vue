@@ -2,6 +2,7 @@
   <div class="widget-multiselect__container" :class="toggleClassErrorWarning">
     <label class="widget-multiselect__label">{{ name }}</label>
     <MultiVariableInput
+      class="widget-multiselect__multi-variable"
       :value="stringValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -142,7 +143,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Watch('editedValue')
   updateStringValue(newValue: string[] | object[], oldValue: string[] | object[]) {
     const newValues = newValue.map(this.customLabel).join(' ');
-    const oldValues = oldValue.map(this.customLabel).join(' ');
+    const oldValues = oldValue ? oldValue.map(this.customLabel).join(' ') : '';
     // Prevent an infinite loop of emitting and receiving.
     if (newValues !== oldValues) {
       this.$emit('input', newValue);
@@ -270,12 +271,20 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 </style>
 
 <style scoped lang="scss">
-/deep/ .widget-variable__toggle {
-  top: 10px;
-  bottom: auto;
-  z-index: 50;
+.widget-multiselect__multi-variable {
+  /deep/ .widget-variable__toggle {
+    top: 10px;
+    bottom: auto;
+    z-index: 50;
+  }
 }
+
 .widget-multiselect__multiselect {
+  &:not(.multiselect--active) {
+    /deep/ .multiselect__tags {
+      padding-right: 40px;
+    }
+  }
   /deep/ .widget-variable__tag {
     display: inline-flex;
     vertical-align: top;
