@@ -29,6 +29,7 @@
           :data-path="`${dataPath}.if`"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :advanced-variable-delimiters="advancedVariableDelimiters"
           :use-advanced-variable="useAdvancedVariable"
           @filterTreeUpdated="updateFilterTree"
         />
@@ -57,6 +58,7 @@
           :errors="errors"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :advanced-variable-delimiters="advancedVariableDelimiters"
           :use-advanced-variable="useAdvancedVariable"
           @input="updateThenFormula"
         />
@@ -83,6 +85,7 @@
             :errors="errors"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :advanced-variable-delimiters="advancedVariableDelimiters"
             :use-advanced-variable="useAdvancedVariable"
             @input="updateElseFormula"
           />
@@ -96,6 +99,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="useAdvancedVariable"
       @input="updateElseFormula"
       @deletedElseIf="transformElseIfIntoElse"
@@ -144,6 +148,9 @@ export default class IfThenElseWidget extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({
     type: Object,

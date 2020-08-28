@@ -6,6 +6,7 @@
         :value="value.column"
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
+        :advanced-variable-delimiters="advancedVariableDelimiters"
         :use-advanced-variable="useAdvancedVariable"
         :options="columnNames"
         @input="updateStepColumn"
@@ -33,6 +34,7 @@
       :value="value.value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="useAdvancedVariable"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
@@ -123,6 +125,9 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   readonly operators: OperatorOption[] = [
     { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },

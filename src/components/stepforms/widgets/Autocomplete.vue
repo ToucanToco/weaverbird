@@ -5,6 +5,7 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :use-advanced-variable="useAdvancedVariable"
       :has-arrow="true"
       @input="updateValue"
@@ -84,6 +85,9 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
   beforeCreate() {
