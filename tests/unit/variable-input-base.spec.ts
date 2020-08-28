@@ -175,6 +175,14 @@ describe('Variable Input', () => {
           await wrapper.vm.$nextTick();
           expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
         });
+
+        it('... and emit value then close it on input emit', async () => {
+          wrapper.find('AdvancedVariableModal-stub').vm.$emit('input', 'value');
+          await wrapper.vm.$nextTick();
+          expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
+          expect(wrapper.emitted('input')).toHaveLength(1);
+          expect(wrapper.emitted('input')[0]).toEqual(['value']);
+        });
       });
     });
   });
