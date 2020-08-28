@@ -6,7 +6,11 @@ describe('Variable Chooser', () => {
   let wrapper: Wrapper<AdvancedVariableModal>;
 
   beforeEach(() => {
-    wrapper = shallowMount(AdvancedVariableModal);
+    wrapper = shallowMount(AdvancedVariableModal, {
+      propsData: {
+        variableDelimiters: { start: '{{', end: '}}', type: ' | ' },
+      },
+    });
   });
 
   it('should instantiate', () => {
@@ -81,12 +85,56 @@ describe('Variable Chooser', () => {
   describe('when clicking on the save button', () => {
     beforeEach(async () => {
       wrapper.setProps({ isOpened: true });
+      wrapper.setData({ variable: { type: '', code: '<%= "a" === "a" %>' } });
       wrapper.find('.vqb-modal__action--primary').trigger('click');
       await wrapper.vm.$nextTick();
     });
 
-    it('should emit close', () => {
-      expect(wrapper.emitted().closed).toBeTruthy();
+    it('should emit the formatted variable as string', () => {
+      expect(wrapper.emitted().input).toStrictEqual([['<%= "a" === "a" %>']]);
+    });
+  });
+
+  describe('when updating the type', () => {
+    beforeEach(async () => {
+      wrapper.setProps({ isOpened: true });
+      wrapper.setData({ variable: { type: '', code: '<%= "a" === "a" %>' } });
+      wrapper
+        .find('AutocompleteWidget-stub')
+        .vm.$emit('input', { type: ' | number', label: 'Number' });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should update the variable type', () => {
+      expect((wrapper.vm as any).variable.type).toBe(' | number');
+    });
+
+    it('should replace value in type field', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+        type: ' | number',
+        label: 'Number',
+      });
+    });
+  });
+
+  describe('casting', () => {
+    let typeField: any;
+    beforeEach(() => {
+      wrapper.setProps({ isOpened: true });
+      wrapper.setData({ variable: { type: '', code: '<%= "a" === "a" ? 1 : 2 %>' } });
+      typeField = wrapper.find('AutocompleteWidget-stub');
+      typeField.vm.$emit('input', { type: ' | number', label: 'Number' });
+    });
+
+    it('should add delimiters and type to value with type', () => {
+      const formattedVariable = (wrapper.vm as any).formattedVariable;
+      expect(formattedVariable).toStrictEqual('{{ <%= "a" === "a" ? 1 : 2 %> | number }}');
+    });
+
+    it('should remove delimiters in value without type', () => {
+      typeField.vm.$emit('input', { type: '', label: 'Text' });
+      const formattedVariable = (wrapper.vm as any).formattedVariable;
+      expect(formattedVariable).toStrictEqual('<%= "a" === "a" ? 1 : 2 %>');
     });
   });
 });

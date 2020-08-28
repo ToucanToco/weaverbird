@@ -1,3 +1,8 @@
+export interface AdvancedVariable {
+  type: string;
+  code: string;
+}
+
 export interface AvailableVariable {
   identifier: string; // how the variable will be written in the code
   value: any; // current value of the variable
@@ -11,6 +16,12 @@ export type VariablesBucket = AvailableVariable[];
 export interface VariablesCategory {
   label: string | undefined;
   variables: AvailableVariable[];
+}
+
+export interface VariableType {
+  type: string;
+  label: string;
+  default?: boolean;
 }
 
 export interface VariableDelimiters {

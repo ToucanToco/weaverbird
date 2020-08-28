@@ -24,10 +24,13 @@
             data-path=".code"
           />
           <AutocompleteWidget
-            class="typeInput"
-            v-model="variable.type"
             name="Return result as"
+            class="typeInput"
+            :value="selectedType"
+            @input="updateType"
             :options="types"
+            :trackBy="`type`"
+            :label="`label`"
             placeholder
             data-path=".type"
             :errors="errors"
@@ -53,6 +56,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { AdvancedVariable, VariableDelimiters, VariableType } from '@/lib/variables';
 /**
  * This component allow to add an advanced variable
  */
@@ -64,7 +68,7 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
   },
 })
 export default class AdvancedVariableModal extends Vue {
-  variable = { type: 'text', code: '' };
+  variable: AdvancedVariable = { type: '', code: '' };
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
@@ -72,11 +76,38 @@ export default class AdvancedVariableModal extends Vue {
   @Prop({ default: false })
   isOpened!: boolean;
 
-  readonly types = ['text', 'number'];
+  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
+  variableDelimiters!: VariableDelimiters;
+
+  // TODO: populate variable types in store
+  readonly types: VariableType[] = [
+    { type: '', label: 'Text' },
+    { type: ' | number', label: 'Number' },
+  ];
+
+  get selectedType() {
+    return this.types.find((type: VariableType) => type.type === this.variable.type);
+  }
+
+  /*
+  Format variable to emit new value as string
+  */
+  get formattedVariable(): string {
+    // add type and delimiters only if type is not default one
+    if (this.variable.type) {
+      return `${this.variableDelimiters.start} ${this.variable.code}${this.variable.type} ${this.variableDelimiters.end}`;
+    } else {
+      return this.variable.code;
+    }
+  }
 
   // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
   beforeCreate() {
     this.$options.components['AutocompleteWidget'] = AutocompleteWidget;
+  }
+
+  updateType(type: VariableType) {
+    this.variable.type = type.type;
   }
 
   close() {
@@ -84,7 +115,8 @@ export default class AdvancedVariableModal extends Vue {
   }
 
   save() {
-    this.close();
+    // TODO: raise error if no code provided
+    this.$emit('input', this.formattedVariable);
   }
 }
 </script>
