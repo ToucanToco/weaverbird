@@ -75,6 +75,12 @@ describe('Variable Tag', () => {
     expect(wrapper.emitted().removed).toBeTruthy();
   });
 
+  it('should not emit edit action when clicking on the name', async () => {
+    wrapper.find('.widget-variable__tag-name').trigger('mousedown');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().edited).toBeFalsy();
+  });
+
   describe('if the variable is not listed in available variables', () => {
     beforeEach(() => {
       wrapper.setProps({
@@ -104,6 +110,11 @@ describe('Variable Tag', () => {
     });
     it('should have specific style', () => {
       expect(wrapper.classes()).toContain('widget-variable__tag--advanced');
+    });
+    it('should emit edit action when clicking on the name', async () => {
+      wrapper.find('.widget-variable__tag-name').trigger('mousedown');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().edited).toBeTruthy();
     });
   });
 });
