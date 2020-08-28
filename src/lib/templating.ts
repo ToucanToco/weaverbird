@@ -149,6 +149,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       name: step.name,
       on: step.on.map(col => _interpolate(this.interpolateFunc, col, this.context)),
       aggregations,
+      keepOriginalGranularity: step.keepOriginalGranularity,
     };
   }
 

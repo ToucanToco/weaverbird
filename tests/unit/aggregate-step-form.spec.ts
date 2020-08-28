@@ -24,9 +24,45 @@ describe('Aggregate Step Form', () => {
       expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
     });
 
+    it('keepOriginalGranularity should be set properly if defined in inititalStepValue', async () => {
+      const wrapper = runner.shallowMount(undefined, {
+        propsData: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: [''],
+            aggregations: [],
+            keepOriginalGranularity: true,
+          },
+        },
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.$data.editedStep.keepOriginalGranularity).toEqual(true);
+    });
+
+    it('keepOriginalGranularity should be set to false if undefined in inititalValue', async () => {
+      const wrapper = runner.shallowMount(undefined, {
+        propsData: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: [''],
+            aggregations: [],
+            keepOriginalGranularity: undefined,
+          },
+        },
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.vm.$data.editedStep.keepOriginalGranularity).toEqual(false);
+    });
+
     it('should pass down the "on" prop to the MultiselectWidget value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {
-        data: { editedStep: { name: 'aggregate', on: ['foo', 'bar'], aggregations: [] } },
+        data: {
+          editedStep: {
+            name: 'aggregate',
+            on: ['foo', 'bar'],
+            aggregations: [],
+          },
+        },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('multiselectwidget-stub').props().value).toEqual(['foo', 'bar']);
@@ -34,7 +70,13 @@ describe('Aggregate Step Form', () => {
 
     it('should call the setColumnMutation on input', async () => {
       const wrapper = runner.mount(undefined, {
-        data: { editedStep: { name: 'aggregate', on: ['foo'], aggregations: [] } },
+        data: {
+          editedStep: {
+            name: 'aggregate',
+            on: ['foo'],
+            aggregations: [],
+          },
+        },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
@@ -55,6 +97,7 @@ describe('Aggregate Step Form', () => {
             name: 'aggregate',
             on: [],
             aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
+            keepOriginalGranularity: false,
           },
         },
       });
@@ -87,6 +130,7 @@ describe('Aggregate Step Form', () => {
                 column: 'col1',
               },
             ],
+            keepOriginalGranularity: false,
           },
         },
         errors: [{ keyword: 'minLength', dataPath: '.on[0]' }],
@@ -138,6 +182,7 @@ describe('Aggregate Step Form', () => {
           name: 'aggregate',
           on: ['foo'],
           aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
+          keepOriginalGranularity: false,
         },
       },
     });
@@ -190,6 +235,22 @@ describe('Aggregate Step Form', () => {
       expect(wrapper.vm.$data.errors).toBeNull();
       expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('foo-count');
     });
+  });
+
+  it('should set newcolumn cleverly if we keep the original granularity', () => {
+    const wrapper = runner.mount(undefined, {
+      data: {
+        editedStep: {
+          name: 'aggregate',
+          on: ['foo'],
+          aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
+          keepOriginalGranularity: true,
+        },
+      },
+    });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
   });
 
   runner.testCancel();

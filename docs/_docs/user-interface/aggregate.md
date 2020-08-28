@@ -37,12 +37,24 @@ aggregation pipeline.
   - `Column`: the columnn to be aggregated
 
   - `Function` the aggregation function to be applied (sum, average, count, min
-    or max )
+    or max)
 
-#### Example
+- `Keep original granularity and add aggregation(s) in new column(s)`: whether
+  to keep the original granularity, in that case computed aggregations will be
+  added in new columns
 
-<img src="../../img/docs/user-interface/aggregate_example_conf.jpg" width="750" />
+#### Example 1: do not keep original granularity
+
+<img src="../../img/docs/user-interface/aggregate_example_conf_1.jpg" width="750" />
 
 This configuration results in:
 
-<img src="../../img/docs/user-interface/aggregate_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/aggregate_example_result_1.jpg" width="500" />
+
+#### Example 2: keep original granularity
+
+<img src="../../img/docs/user-interface/aggregate_example_conf_2.jpg" width="750" />
+
+This configuration results in:
+
+<img src="../../img/docs/user-interface/aggregate_example_result_2.jpg" width="500" />

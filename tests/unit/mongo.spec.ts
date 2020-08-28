@@ -749,7 +749,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can translate aggregation steps', () => {
+  it('can translate aggregation steps with keepOriginalGranularity to false', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
       {
@@ -782,6 +782,7 @@ describe('Pipeline to mongo translator', () => {
             column: 'col3',
           },
         ],
+        keepOriginalGranularity: false,
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -809,6 +810,38 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can translate aggregation steps with keepOriginalGranularity to true', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'aggregate',
+        on: ['col_agg1', 'col_agg2'],
+        aggregations: [
+          {
+            newcolumn: 'col1',
+            aggfunction: 'sum',
+            column: 'col1',
+          },
+        ],
+        keepOriginalGranularity: true,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $group: {
+          _id: { col_agg1: '$col_agg1', col_agg2: '$col_agg2' },
+          col1: { $sum: '$col1' },
+          _vqbDocsArray: { $push: '$$ROOT' },
+        },
+      },
+      { $unwind: '$_vqbDocsArray' },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
+      { $project: { _vqbDocsArray: 0, _id: 0 } },
     ]);
   });
 

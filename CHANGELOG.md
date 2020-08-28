@@ -7,6 +7,11 @@
 - Add 'rank' step
 - Add 'waterfall' step
 
+### Changed
+
+- Improve 'aggregate' step by adding an option to keep the original granularity
+  and add computed aggregations in new columns
+
 ### Fixed
 
 - Append, Domain, Join steps: sort the dataset selection
