@@ -59,11 +59,34 @@ describe('Variable Input', () => {
     });
   });
 
-  describe('when resetting the selected advanced variable', () => {
-    it('should emit resetSelectedAdvancedVariable', async () => {
+  describe('advanced variable', () => {
+    it('should emit resetSelectedAdvancedVariable when parent ask to', async () => {
       wrapper.find('VariableInputBase-stub').vm.$emit('resetSelectedAdvancedVariable');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('resetSelectedAdvancedVariable')).toHaveLength(1);
+    });
+
+    it('should add advanced variable to list if missing', async () => {
+      wrapper.setProps({ selectedAdvancedVariable: '', value: [] });
+      wrapper
+        .find('VariableInputBase-stub')
+        .vm.$emit('chooseAdvancedVariable', '{{ appRequesters.view }}');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      expect(wrapper.emitted('input')[0][0]).toEqual(['{{ appRequesters.view }}']);
+    });
+
+    it('... or update it if already in', async () => {
+      wrapper.setProps({
+        selectedAdvancedVariable: '{{ appRequesters.view }}',
+        value: ['{{ appRequesters.view }}'],
+      });
+      wrapper
+        .find('VariableInputBase-stub')
+        .vm.$emit('chooseAdvancedVariable', '{{ appRequesters.view | number }}');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      expect(wrapper.emitted('input')[0][0]).toEqual(['{{ appRequesters.view | number }}']);
     });
   });
 });

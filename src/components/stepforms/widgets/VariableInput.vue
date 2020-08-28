@@ -19,6 +19,7 @@
       :has-arrow="hasArrow"
       :selected-advanced-variable="selectedAdvancedVariable"
       @input="chooseVariable"
+      @chooseAdvancedVariable="chooseVariable"
       @resetSelectedAdvancedVariable="resetSelectedAdvancedVariable"
     >
       <slot v-if="!isVariable" />

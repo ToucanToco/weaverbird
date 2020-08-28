@@ -150,7 +150,7 @@ export default class VariableInputBase extends Vue {
    */
   chooseAdvancedVariable(variableIdentifier: string) {
     this.closeAdvancedVariableModal();
-    this.$emit('input', variableIdentifier);
+    this.$emit('chooseAdvancedVariable', variableIdentifier);
   }
 }
 </script>

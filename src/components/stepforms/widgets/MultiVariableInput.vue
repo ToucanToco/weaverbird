@@ -9,6 +9,7 @@
       :value="value"
       :selectedAdvancedVariable="selectedAdvancedVariable"
       @input="toggleVariable"
+      @chooseAdvancedVariable="toggleVariable($event, selectedAdvancedVariable)"
       @resetSelectedAdvancedVariable="resetSelectedAdvancedVariable"
     >
       <slot />
@@ -53,10 +54,15 @@ export default class MultiVariableInput extends Vue {
   }
 
   /**
-   * Toggle value in array
+   * Toggle value in array, if an old value is provided replace it with new value
    */
-  toggleVariable(value: string) {
-    if (this.value.indexOf(value) !== -1) {
+  toggleVariable(value: string, oldValue?: string) {
+    const oldValueIndex = this.value.indexOf(oldValue || '');
+    if (oldValue && oldValueIndex !== -1) {
+      const values = [...this.value];
+      values.splice(oldValueIndex, 1, value);
+      this.$emit('input', values);
+    } else if (this.value.indexOf(value) !== -1) {
       this.$emit(
         'input',
         this.value.filter(v => v !== value),

@@ -130,10 +130,12 @@ describe('Variable Input', () => {
       expect(wrapper.find('VariableInputBase-stub').props().selectedAdvancedVariable).toBe('');
     });
 
-    it('should reset the selected variable when updating value', async () => {
-      wrapper.find('VariableInputBase-stub').vm.$emit('input', '{{ var1 }}');
+    it('should reset the selected variable and emit the new value when updating value', async () => {
+      wrapper.find('VariableInputBase-stub').vm.$emit('chooseAdvancedVariable', '{{ var1 }}');
       await wrapper.vm.$nextTick();
       expect(wrapper.find('VariableInputBase-stub').props().selectedAdvancedVariable).toBe('');
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      expect(wrapper.emitted('input')[0]).toEqual(['{{ var1 }}']);
     });
   });
 });
