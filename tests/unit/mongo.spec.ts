@@ -93,10 +93,11 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate rename steps', () => {
+  // Test for retrocompatibility with old configurations
+  it('can generate rename steps old fashion', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
-      { name: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'rename', oldname: 'Region', newname: 'zone', toRename: [] },
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
@@ -109,6 +110,36 @@ describe('Pipeline to mongo translator', () => {
       {
         $project: {
           Region: 0,
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can generate rename steps new fashion', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'rename',
+        toRename: [
+          ['foo', 'bar'],
+          ['toto', 'tata'],
+        ],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $addFields: {
+          bar: '$foo',
+          tata: '$toto',
+        },
+      },
+      {
+        $project: {
+          foo: 0,
+          toto: 0,
           _id: 0,
         },
       },
@@ -854,7 +885,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'select', columns: ['Country', 'Region', 'Population', 'Region_bis'] },
       { name: 'delete', columns: ['Region_bis'] },
       { name: 'formula', new_column: 'value', formula: 'value / 1000' },
-      { name: 'rename', oldname: 'value', newname: 'Revenue' },
+      { name: 'rename', toRename: [['value', 'Revenue']] },
       {
         name: 'replace',
         search_column: 'Country',
@@ -2190,8 +2221,7 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         name: 'rename',
-        oldname: 'old',
-        newname: 'new',
+        toRename: [['old', 'new']],
       },
       {
         name: 'append',
@@ -2351,8 +2381,7 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         name: 'rename',
-        oldname: 'old',
-        newname: 'new',
+        toRename: [['old', 'new']],
       },
       {
         name: 'join',
@@ -2407,8 +2436,7 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         name: 'rename',
-        oldname: 'old',
-        newname: 'new',
+        toRename: [['old', 'new']],
       },
       {
         name: 'join',
@@ -2472,8 +2500,7 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         name: 'rename',
-        oldname: 'old',
-        newname: 'new',
+        toRename: [['old', 'new']],
       },
       {
         name: 'join',
@@ -2540,8 +2567,7 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         name: 'rename',
-        oldname: 'old',
-        newname: 'new',
+        toRename: [['old', 'new']],
       },
       {
         name: 'join',

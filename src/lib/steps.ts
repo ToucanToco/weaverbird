@@ -235,8 +235,14 @@ export type RankStep = {
 
 export type RenameStep = {
   name: 'rename';
-  oldname: string;
-  newname: string;
+  toRename: string[][];
+  /**
+   * optional, those parameters are deprecated and are accepted only to guarantee
+   * retrocompatibility with old configurations (when this step was first created,
+   * only one column at a time could be renamed, via those two parameters)
+   */
+  oldname?: string;
+  newname?: string;
 };
 
 export type ReplaceStep = {

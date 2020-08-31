@@ -1013,6 +1013,21 @@ function transformRank(step: Readonly<S.RankStep>): MongoStep {
   ];
 }
 
+function transformRename(step: Readonly<S.RenameStep>): MongoStep[] {
+  // For retrocompatibility with old configurations
+  if (step.oldname && step.newname) {
+    return [
+      { $addFields: { [step.newname]: $$(step.oldname) } },
+      { $project: { [step.oldname]: 0 } },
+    ];
+  }
+
+  return [
+    { $addFields: Object.fromEntries(step.toRename.map(a => [a[1], $$(a[0])])) },
+    { $project: Object.fromEntries(step.toRename.map(a => [a[0], 0])) },
+  ];
+}
+
 /** transform an 'replace' step into corresponding mongo steps */
 function transformReplace(step: Readonly<S.ReplaceStep>): MongoStep {
   const branches: MongoStep[] = step.to_replace.map(([oldval, newval]) => ({
@@ -1485,10 +1500,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   percentage: transformPercentage,
   pivot: transformPivot,
   rank: transformRank,
-  rename: (step: Readonly<S.RenameStep>) => [
-    { $addFields: { [step.newname]: $$(step.oldname) } },
-    { $project: { [step.oldname]: 0 } },
-  ],
+  rename: transformRename,
   replace: transformReplace,
   rollup: transformRollup,
   select: (step: Readonly<S.SelectStep>) => ({
