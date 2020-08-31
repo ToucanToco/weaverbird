@@ -16,6 +16,7 @@
 ### Fixed
 
 - Multiselect: transform object to string for MultiVariableInput
+- Autocomplete: keep consistent style in advanced variable modal
 
 ## [0.23.1] - 2020-08-18
 

@@ -136,21 +136,42 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
   }
 }
 
-.widget-autocomplete__container .multiselect__single {
-  background-color: transparent;
-  color: $base-color-light;
-  font-size: 14px;
-  margin-bottom: 0;
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  white-space: nowrap;
-}
-
-.widget-autocomplete__container .multiselect__content-wrapper {
-  min-width: 100%;
-  width: auto;
+.widget-autocomplete__container {
+  .multiselect__single {
+    background-color: transparent;
+    color: $base-color-light;
+    font-size: 14px;
+    margin-bottom: 0;
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    white-space: nowrap;
+  }
+  .multiselect__select {
+    display: block;
+  }
+  .multiselect__tags {
+    padding: 8px 40px 0 8px;
+  }
+  .multiselect--active {
+    .multiselect__tags {
+      @extend %form-widget__field--focused;
+    }
+    .multiselect__input {
+      box-shadow: none;
+      padding: 0;
+      height: auto;
+    }
+    .multiselect__content-wrapper {
+      display: block !important;
+      top: 100%;
+    }
+  }
+  .multiselect__content-wrapper {
+    min-width: 100%;
+    width: auto;
+  }
 }
 
 .multiselect__single,
