@@ -199,7 +199,16 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   rename(step: Readonly<S.RenameStep>) {
-    return `Rename column "${step.oldname}" to "${step.newname}"`;
+    // For retrocompatibility with old configurations
+    if (step.oldname && step.newname) {
+      return `Rename column "${step.oldname}" to "${step.newname}"`;
+    }
+
+    if (step.toRename.length === 1) {
+      return `Rename column "${step.toRename[0][0]}" to "${step.toRename[0][1]}"`;
+    } else {
+      return `Rename columns ${formatMulticol(step.toRename.map(a => a[0]))}`;
+    }
   }
 
   replace(step: Readonly<S.ReplaceStep>) {
