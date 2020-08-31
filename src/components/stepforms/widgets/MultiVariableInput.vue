@@ -3,7 +3,7 @@
     <VariableInputBase
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :use-advanced-variable="useAdvancedVariable"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
@@ -30,14 +30,14 @@ export default class MultiVariableInput extends Vue {
   @Prop({ type: Array, default: () => [] })
   value!: any[];
 
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
-
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow

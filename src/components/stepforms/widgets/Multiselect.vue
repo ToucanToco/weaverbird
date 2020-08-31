@@ -6,7 +6,7 @@
       :value="stringValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :use-advanced-variable="useAdvancedVariable"
+      :advanced-variable-delimiters="advancedVariableDelimiters"
       :has-arrow="true"
       @input="updateStringValue"
     >
@@ -36,6 +36,7 @@
             v-if="isVariable(option)"
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
+            :advanced-variable-delimiters="advancedVariableDelimiters"
             :value="customLabel(option)"
             @removed="remove(option)"
           />
@@ -98,14 +99,14 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
 
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
-
   @Prop()
   availableVariables!: VariablesBucket[];
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop()
+  advancedVariableDelimiters!: VariableDelimiters;
 
   editedValue: string[] | object[] = [];
 

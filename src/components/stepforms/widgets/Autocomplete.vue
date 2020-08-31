@@ -6,7 +6,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="useAdvancedVariable"
       :has-arrow="true"
       @input="updateValue"
     >
@@ -76,9 +75,6 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Boolean, default: false })
   withExample!: boolean;
-
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

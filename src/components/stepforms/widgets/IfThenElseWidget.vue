@@ -30,7 +30,6 @@
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
           :advanced-variable-delimiters="advancedVariableDelimiters"
-          :use-advanced-variable="useAdvancedVariable"
           @filterTreeUpdated="updateFilterTree"
         />
       </div>
@@ -59,7 +58,6 @@
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
           :advanced-variable-delimiters="advancedVariableDelimiters"
-          :use-advanced-variable="useAdvancedVariable"
           @input="updateThenFormula"
         />
       </div>
@@ -86,7 +84,6 @@
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
             :advanced-variable-delimiters="advancedVariableDelimiters"
-            :use-advanced-variable="useAdvancedVariable"
             @input="updateElseFormula"
           />
         </div>
@@ -100,7 +97,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="useAdvancedVariable"
       @input="updateElseFormula"
       @deletedElseIf="transformElseIfIntoElse"
     />
@@ -140,9 +136,6 @@ import { VQBModule } from '@/store';
   },
 })
 export default class IfThenElseWidget extends Vue {
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
-
   @Prop()
   availableVariables!: VariablesBucket;
 

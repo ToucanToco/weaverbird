@@ -7,7 +7,6 @@
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
         :advanced-variable-delimiters="advancedVariableDelimiters"
-        :use-advanced-variable="useAdvancedVariable"
         :options="columnNames"
         @input="updateStepColumn"
         placeholder="Column"
@@ -35,7 +34,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="useAdvancedVariable"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
       :errors="errors"
@@ -116,9 +114,6 @@ export default class FilterSimpleConditionWidget extends Vue {
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
-
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

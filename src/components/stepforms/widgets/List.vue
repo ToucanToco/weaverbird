@@ -14,7 +14,6 @@
             :available-variables="availableVariables"
             :variable-delimiters="variableDelimiters"
             :advanced-variable-delimiters="advancedVariableDelimiters"
-            :use-advanced-variable="useAdvancedVariable"
             @input="updateChildValue($event, index)"
             :data-path="`${dataPath}[${index}]`"
             :errors="errors"
@@ -91,9 +90,6 @@ export default class ListWidget extends Mixins(FormWidget) {
 
   @Prop({ default: null })
   dataPath!: string;
-
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

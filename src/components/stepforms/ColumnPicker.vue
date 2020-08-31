@@ -10,7 +10,6 @@
     :available-variables="availableVariables"
     :variable-delimiters="variableDelimiters"
     :advanced-variable-delimiters="advancedVariableDelimiters"
-    :use-advanced-variable="useAdvancedVariable"
   />
 </template>
 
@@ -40,9 +39,6 @@ export default class ColumnPicker extends Vue {
 
   @Prop({ default: null })
   value!: string;
-
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;
