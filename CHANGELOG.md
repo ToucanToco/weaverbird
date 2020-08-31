@@ -1,15 +1,18 @@
 # Changelog
 
-## Unreleased
+## [0.24.0] - 2020-08-31
 
 ### Added
 
 - Add 'rank' step
 - Add 'waterfall' step
+- Add an advanced variable modal component to create custom variable
+- Add a mutation to populate store with advanced variable delimiters
 
 ### Fixed
 
 - Append, Domain, Join steps: sort the dataset selection
+- VariableInput: position of the add variable button in input
 
 ## [0.23.2] - 2020-08-19
 
@@ -407,6 +410,7 @@
 
 - Initial version, showtime!
 
+[0.24.0]: https://github.com/ToucanToco/weaverbird/compare/v0.23.2...v0.24.0
 [0.23.2]: https://github.com/ToucanToco/weaverbird/compare/v0.23.1...v0.23.2
 [0.23.1]: https://github.com/ToucanToco/weaverbird/compare/v0.23.0...v0.23.1
 [0.23.0]: https://github.com/ToucanToco/weaverbird/compare/v0.22.0...v0.23.0
