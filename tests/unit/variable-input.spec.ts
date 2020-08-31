@@ -99,6 +99,13 @@ describe('Variable Input', () => {
         expect(wrapper.emitted('input')[0]).toEqual([undefined]);
       });
     });
+
+    it('should not select tag as advanced variable to edit when clicking on it', async () => {
+      const variableTag = wrapper.findAll('VariableTag-stub').at(0);
+      variableTag.vm.$emit('edited');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableInputBase-stub').props().selectedAdvancedVariable).toBe('');
+    });
   });
 
   describe('when value is an advanced variable', () => {

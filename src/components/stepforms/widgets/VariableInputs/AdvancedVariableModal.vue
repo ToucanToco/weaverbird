@@ -8,14 +8,6 @@
           <div class="vqb-modal__title">Custom Variable</div>
         </div>
         <div class="vqb-modal__section">
-          <!-- <InputTextWidget
-            class="nameInput"
-            v-model="variable.name"
-            name="Variable name"
-            placeholder
-            data-path=".name"
-            :errors="errors"
-          /> -->
           <CodeEditorWidget
             class="codeInput"
             v-model="variable.code"
@@ -55,7 +47,6 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import {
   AdvancedVariable,
   extractVariableIdentifier,
@@ -69,7 +60,6 @@ import {
   name: 'advanced-variable-modal',
   components: {
     CodeEditorWidget,
-    InputTextWidget,
   },
 })
 export default class AdvancedVariableModal extends Vue {

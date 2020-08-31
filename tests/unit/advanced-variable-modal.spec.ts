@@ -6,11 +6,7 @@ describe('Variable Chooser', () => {
   let wrapper: Wrapper<AdvancedVariableModal>;
 
   beforeEach(() => {
-    wrapper = shallowMount(AdvancedVariableModal, {
-      propsData: {
-        variableDelimiters: { start: '{{', end: '}}', type: ' | ' },
-      },
-    });
+    wrapper = shallowMount(AdvancedVariableModal);
   });
 
   it('should instantiate', () => {
@@ -21,6 +17,10 @@ describe('Variable Chooser', () => {
     it('should not show the modal container', () => {
       expect(wrapper.find('.vqb-modal__container').exists()).toBe(false);
     });
+  });
+
+  it('should instantiate variable delimiters with default value if not provided', () => {
+    expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '{{', end: '}}' });
   });
 
   describe('when opening the modal', () => {

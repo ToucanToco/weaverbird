@@ -184,6 +184,20 @@ describe('Widget MultiInputText', () => {
     expect(wrapper.emitted().input[0][0]).toStrictEqual(['a']);
   });
 
+  it('should not select tag as advanced variable to edit when clicking on it', async () => {
+    const wrapper = mount(MultiInputTextWidget, {
+      propsData: {
+        value: ['a', '{{ var1 }}'],
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    const variableTag = wrapper.findAll(VariableTag).at(0);
+    variableTag.vm.$emit('edited');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(MultiVariableInput).props().selectedAdvancedVariable).toBe('');
+  });
+
   describe('without multiVariable', () => {
     let wrapper: any;
     beforeEach(() => {

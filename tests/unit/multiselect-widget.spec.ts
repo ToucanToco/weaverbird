@@ -165,6 +165,22 @@ describe('Widget Multiselect', () => {
     expect(wrapper.emitted().input[0][0]).toStrictEqual([{ name: 'a' }]);
   });
 
+  it('should not select tag as advanced variable to edit when clicking on it', async () => {
+    const wrapper = mount(MultiSelectWidget, {
+      propsData: {
+        value: [{ name: 'a' }, { name: '{{ var1 }}' }],
+        label: 'name',
+        trackBy: 'name',
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: [],
+      },
+    });
+    const variableTag = wrapper.findAll(VariableTag).at(0);
+    variableTag.vm.$emit('edited');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find(MultiVariableInput).props().selectedAdvancedVariable).toBe('');
+  });
+
   describe('when tags are advanced variable', () => {
     let wrapper: any;
     beforeEach(() => {
