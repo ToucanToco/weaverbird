@@ -377,13 +377,34 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Pivot column "column3"');
   });
 
-  it('generates label for rename steps', () => {
+  // Test for retrocompatibility with old configurations
+  it('generates label for rename steps old fashion', () => {
     const step: S.RenameStep = {
       name: 'rename',
       oldname: 'column1',
       newname: 'column2',
+      toRename: [],
     };
     expect(hrl(step)).toEqual('Rename column "column1" to "column2"');
+  });
+
+  it('generates label for rename steps new fashion, with 1 column to be renamed', () => {
+    const step: S.RenameStep = {
+      name: 'rename',
+      toRename: [['column1', 'column2']],
+    };
+    expect(hrl(step)).toEqual('Rename column "column1" to "column2"');
+  });
+
+  it('generates label for rename steps new fashion, with multiple columns to be renamed', () => {
+    const step: S.RenameStep = {
+      name: 'rename',
+      toRename: [
+        ['column1', 'column2'],
+        ['foo', 'bar'],
+      ],
+    };
+    expect(hrl(step)).toEqual('Rename columns "column1", "foo"');
   });
 
   it('generates precise label for simple replace steps', () => {
