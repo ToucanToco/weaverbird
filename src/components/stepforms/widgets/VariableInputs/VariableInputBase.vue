@@ -23,6 +23,7 @@
       :available-variables="availableVariables"
       :is-opened="isChoosingVariable"
       :is-multiple="isMultiple"
+      :is-advanced="advancedVariableDelimiters"
       :value="value"
       :selected-variables="selectedVariables"
       @addAdvancedVariable="openAdvancedVariableModal"
@@ -65,11 +66,11 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
-
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
+
+  @Prop({ default: null })
+  advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
   hasArrow!: boolean;
@@ -93,7 +94,8 @@ export default class VariableInputBase extends Vue {
    */
   get canBeVariable() {
     return (
-      (this.availableVariables && this.availableVariables.length > 0) || this.useAdvancedVariable
+      (this.availableVariables && this.availableVariables.length > 0) ||
+      this.advancedVariableDelimiters
     );
   }
 

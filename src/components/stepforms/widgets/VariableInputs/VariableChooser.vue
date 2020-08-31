@@ -29,7 +29,9 @@
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
         </div>
       </div>
-      <div class="widget-advanced-variable" @click="addAdvancedVariable">Add variable</div>
+      <div v-if="isAdvanced" class="widget-advanced-variable" @click="addAdvancedVariable">
+        Advanced variable
+      </div>
     </div>
   </popover>
 </template>
@@ -51,6 +53,9 @@ import { VariableDelimiters, VariablesBucket, VariablesCategory } from '@/lib/va
 export default class VariableChooser extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
+
+  @Prop({ default: false })
+  isAdvanced!: boolean;
 
   @Prop({ default: () => [] })
   selectedVariables!: string[];

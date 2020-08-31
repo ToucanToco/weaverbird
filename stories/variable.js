@@ -220,8 +220,8 @@ stories.add('wrapping a widget with advanced variable', () => ({
       <Multiselect 
         v-model="value" 
         :available-variables="availableVariables"
-        :variableDelimiters="variableDelimiters"
-        :use-advanced-variable="useAdvancedVariable"
+        :variable-delimiters="variableDelimiters"
+        :advanced-variable-delimiters="advancedVariableDelimiters"
         :options="options"
       />
       <pre>{{ value }}</pre>
@@ -234,9 +234,9 @@ stories.add('wrapping a widget with advanced variable', () => ({
     return {
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
-      useAdvancedVariable: true,
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
+      advancedVariableDelimiters: { start: '<<<', end: '>>>' },
     };
   },
 }));
@@ -246,8 +246,8 @@ stories.add('wrapping a widget with advanced variable and no variables', () => (
     <div>
       <Multiselect 
         v-model="value" 
-        :variableDelimiters="variableDelimiters"
-        :use-advanced-variable="useAdvancedVariable"
+        :variable-delimiters="variableDelimiters"
+        :advanced-variable-delimiters="advancedVariableDelimiters"
         :options="options"
       />
       <pre>{{ value }}</pre>
@@ -260,8 +260,8 @@ stories.add('wrapping a widget with advanced variable and no variables', () => (
     return {
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
-      useAdvancedVariable: true,
       variableDelimiters: { start: '{{', end: '}}' },
+      advancedVariableDelimiters: { start: '<<<', end: '>>>' },
     };
   },
 }));
