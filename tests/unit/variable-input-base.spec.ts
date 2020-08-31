@@ -79,7 +79,7 @@ describe('Variable Input', () => {
       });
 
       it('... except if advanced variable is allowed', async () => {
-        wrapper.setProps({ useAdvancedVariable: true });
+        wrapper.setProps({ advancedVariableDelimiters: { start: '{{', end: '}}' } });
         await wrapper.vm.$nextTick();
         expect(wrapper.find('.widget-variable__toggle').exists()).toBe(true);
       });

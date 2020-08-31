@@ -80,24 +80,30 @@ describe('Variable Chooser', () => {
     });
   });
 
-  it('should always display an "Advanced variable" option ...', () => {
-    expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
-  });
-
-  it('... even without other values', async () => {
-    wrapper.setProps({ availableVariables: [] });
-    await wrapper.vm.$nextTick();
-    expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
-  });
-
-  describe('when clicking on "Advanced variable"', () => {
-    beforeEach(async () => {
-      wrapper.find('.widget-advanced-variable').trigger('click');
-      await wrapper.vm.$nextTick();
+  describe('when is advanced', () => {
+    beforeEach(() => {
+      wrapper.setProps({ isAdvanced: true });
     });
 
-    it('should emit advancedVariable', () => {
-      expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
+    it('should display an "Advanced variable" option ...', () => {
+      expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
+    });
+
+    it('... even without other values', async () => {
+      wrapper.setProps({ availableVariables: [] });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
+    });
+
+    describe('when clicking on "Advanced variable"', () => {
+      beforeEach(async () => {
+        wrapper.find('.widget-advanced-variable').trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should emit advancedVariable', () => {
+        expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
+      });
     });
   });
 
