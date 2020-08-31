@@ -8,7 +8,6 @@
           :columnNamesProp="columnNames"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
-          :use-advanced-variable="useAdvancedVariable"
           :advanced-variable-delimiters="advancedVariableDelimiters"
           :data-path="slotProps.dataPath"
           :errors="errors"
@@ -52,9 +51,6 @@ export default class FilterEditor extends Vue {
     default: () => [],
   })
   columnNames!: string[];
-
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

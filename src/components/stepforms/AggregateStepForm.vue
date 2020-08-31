@@ -13,7 +13,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="true"
     />
     <ListWidget
       addFieldName="Add aggregation"
@@ -28,7 +27,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="true"
     />
     <StepFormButtonbar />
   </div>

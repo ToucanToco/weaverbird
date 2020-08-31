@@ -10,7 +10,6 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :use-advanced-variable="useAdvancedVariable"
       :advanced-variable-delimiters="advancedVariableDelimiters"
       :has-arrow="true"
       @input="updateValue"
@@ -71,9 +70,6 @@ export default class InputNumberWidget extends Mixins(FormWidget) {
 
   @Prop({ type: Number, default: undefined })
   max!: number;
-
-  @Prop({ default: () => false })
-  useAdvancedVariable!: boolean;
 
   @Prop()
   availableVariables!: VariablesBucket;

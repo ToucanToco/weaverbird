@@ -8,7 +8,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="true"
       @filterTreeUpdated="updateFilterTree"
     />
     <StepFormButtonbar />

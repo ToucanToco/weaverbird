@@ -11,7 +11,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="true"
     />
     <InputTextWidget
       class="delimiter"

@@ -21,7 +21,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="true"
     />
     <AutocompleteWidget
       class="sortOrderInput"
@@ -43,7 +42,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :advanced-variable-delimiters="advancedVariableDelimiters"
-      :use-advanced-variable="true"
     />
     <StepFormButtonbar />
   </div>
