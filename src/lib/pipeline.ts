@@ -79,7 +79,7 @@ function transformProject(matchStep: MongoStep): Pipeline {
     if (typeof incol === 'string') {
       if (incol[0] === '$' && incol.slice(1) !== outcol) {
         // case { $project: { zone: '$Region' } }
-        needsRenaming.push({ name: 'rename', oldname: incol.slice(1), newname: outcol });
+        needsRenaming.push({ name: 'rename', toRename: [[incol.slice(1), outcol]] });
       } else if (incol.slice(1) === outcol) {
         select.push(outcol);
       }

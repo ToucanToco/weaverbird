@@ -231,9 +231,9 @@ describe('backend service plugin tests', () => {
   it('should call execute pipeline when a selectStep mutation is committed', async () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
-      { name: 'rename', oldname: 'tic', newname: 'tac' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
+      { name: 'rename', toRename: [['baz', 'spam']] },
+      { name: 'rename', toRename: [['tic', 'tac']] },
     ];
     const store = setupMockStore(
       buildStateWithOnePipeline(pipeline, {

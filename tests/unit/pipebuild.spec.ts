@@ -54,7 +54,7 @@ describe('Pipebuild translator', () => {
     const pipeline = mongoToPipe(query);
     expect(pipeline).toEqual([
       { name: 'domain', domain: 'test_cube' },
-      { name: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'rename', toRename: [['Region', 'zone']] },
     ]);
   });
 
@@ -103,7 +103,7 @@ describe('Pipebuild translator', () => {
     expect(pipeline).toEqual([
       { name: 'domain', domain: 'test_cube' },
       { name: 'select', columns: ['Region'] },
-      { name: 'rename', oldname: 'Region', newname: 'zone' },
+      { name: 'rename', toRename: [['Region', 'zone']] },
       { name: 'delete', columns: ['Manager'] },
     ]);
   });
