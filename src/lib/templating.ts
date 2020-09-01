@@ -181,7 +181,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   concatenate(step: Readonly<S.ConcatenateStep>) {
-    return { ...step };
+    return {
+      ...step,
+      columns: step.columns.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+    };
   }
 
   convert(step: Readonly<S.ConvertStep>) {
