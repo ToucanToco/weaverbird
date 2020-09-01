@@ -382,9 +382,14 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   top(step: Readonly<S.TopStep>) {
+    const groups = step.groups
+      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      : undefined;
     return {
       ...step,
       limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)),
+      rank_on: _interpolate(this.interpolateFunc, step.rank_on, this.context),
+      groups,
     };
   }
 

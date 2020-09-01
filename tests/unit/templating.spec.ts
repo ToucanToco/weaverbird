@@ -999,18 +999,6 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave top steps untouched if no variable is found', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'top',
-        rank_on: '<%= foo %>',
-        sort: 'asc',
-        limit: 42,
-      },
-    ];
-    expect(translate(pipeline)).toEqual(pipeline);
-  });
-
   it('should interpolate top steps', () => {
     const pipeline: Pipeline = [
       {
@@ -1018,14 +1006,16 @@ describe('Pipeline interpolator', () => {
         rank_on: '<%= foo %>',
         sort: 'asc',
         limit: '<%= age %>',
+        groups: ['<%= foo %>', '<%= egg %>'],
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'top',
-        rank_on: '<%= foo %>',
+        rank_on: 'bar',
         sort: 'asc',
         limit: 42,
+        groups: ['bar', 'spam'],
       },
     ]);
   });
