@@ -45,6 +45,8 @@
       placeholder="Add columns"
       data-path=".indexColumns"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="newColumnInput"
