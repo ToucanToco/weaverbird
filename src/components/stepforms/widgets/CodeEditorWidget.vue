@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
-import { CodeEditor } from '@/components/code-editor';
+import { AvailableCodeEditors, CodeEditor, CustomCodeEditor } from '@/components/code-editor';
 
 import FormWidget from './FormWidget.vue';
 
@@ -38,12 +38,15 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
   @Prop({ default: '' })
   value!: string;
 
+  @Prop({ type: String, default: '' })
+  lang!: string;
+
   editedValue = this.value;
 
   isFocused = false;
 
-  CodeEditor = CodeEditor;
   // Code editor is set through a responsive data so it can be change after import
+  CodeEditor: CustomCodeEditor = CodeEditor;
 
   @Watch('editedValue')
   updateValue(newValue: string) {
@@ -55,6 +58,19 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
       'widget-code-editor': true,
       'widget-code-editor--focused': this.isFocused,
     };
+  }
+
+  created() {
+    this.setEditorLang();
+  }
+
+  /*
+  Use a specific config of AvailableCodeEditors
+  */
+  setEditorLang() {
+    if (this.lang && AvailableCodeEditors[this.lang]) {
+      this.CodeEditor = AvailableCodeEditors[this.lang];
+    }
   }
 
   blur() {

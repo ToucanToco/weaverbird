@@ -1,5 +1,11 @@
 import { mount, shallowMount } from '@vue/test-utils';
+import Vue from 'vue';
 
+import {
+  AvailableCodeEditors,
+  CodeEditor,
+  setAvailableCodeEditors,
+} from '@/components/code-editor';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 
 describe('Widget CodeEditorWidget', () => {
@@ -125,5 +131,25 @@ describe('Widget CodeEditorWidget', () => {
   it('should not display a warning message if messageError does not exist', () => {
     const wrapper = shallowMount(CodeEditorWidget);
     expect(wrapper.find('.field__msg-warning').exists()).toBeFalsy();
+  });
+
+  describe('custom lang', () => {
+    it('should use custom code editor config if lang param is provided', () => {
+      setAvailableCodeEditors({ json: Vue.extend(), javascript: Vue.extend() });
+      const wrapper = shallowMount(CodeEditorWidget, {
+        propsData: { lang: 'javascript' },
+      });
+      const codeEditor = wrapper.vm.$data.CodeEditor;
+      expect(codeEditor).toEqual(AvailableCodeEditors.javascript);
+    });
+
+    it('... but keep default editor config if lang is unavailable', () => {
+      setAvailableCodeEditors({ json: Vue.extend() });
+      const wrapper = shallowMount(CodeEditorWidget, {
+        propsData: { lang: 'javascript' },
+      });
+      const codeEditor = wrapper.vm.$data.CodeEditor;
+      expect(codeEditor).toEqual(CodeEditor);
+    });
   });
 });
