@@ -10,7 +10,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <MultiselectWidget
       class="groupbyColumnsInput"
@@ -22,7 +21,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -52,8 +50,6 @@ export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-
-  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'argmax', column: '' }) })
   initialStepValue!: ArgmaxStep;

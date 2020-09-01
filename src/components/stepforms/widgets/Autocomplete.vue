@@ -5,7 +5,6 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
       :has-arrow="true"
       @input="updateValue"
     >
@@ -82,9 +81,6 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
-
-  @Prop()
-  advancedVariableDelimiters!: VariableDelimiters;
 
   updateValue(newValue?: string | object) {
     this.$emit('input', newValue);

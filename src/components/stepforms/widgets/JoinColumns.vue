@@ -9,7 +9,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <InputTextWidget
       class="rightOn"
@@ -19,7 +18,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
   </div>
 </template>
@@ -58,9 +56,6 @@ export default class JoinColumns extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
-
-  @Prop()
-  advancedVariableDelimiters!: VariableDelimiters;
 
   @VQBModule.Getter columnNames!: string[];
 

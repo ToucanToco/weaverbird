@@ -14,7 +14,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <InputTextWidget
       class="separator"
@@ -62,8 +61,6 @@ export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-
-  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({
     type: Object,

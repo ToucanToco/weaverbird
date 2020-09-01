@@ -7,7 +7,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
       @filterTreeUpdated="updateFilterTree"
     />
     <StepFormButtonbar />
@@ -49,8 +48,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-
-  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   readonly title: string = 'Filter';
 

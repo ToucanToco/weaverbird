@@ -11,7 +11,6 @@
       :warning="duplicateColumnName"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <InputTextWidget
       class="textInput"
@@ -22,7 +21,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -50,8 +48,6 @@ export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnSte
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-
-  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'text', new_column: '', text: '' }) })
   initialStepValue!: AddTextColumnStep;

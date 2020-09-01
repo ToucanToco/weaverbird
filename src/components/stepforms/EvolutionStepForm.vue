@@ -20,7 +20,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <AutocompleteWidget
       class="evolutionType"
@@ -96,8 +95,6 @@ export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-
-  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({
     type: Object,

@@ -78,6 +78,7 @@ describe('Variable Input', () => {
     beforeEach(async () => {
       wrapper.setProps({
         value: '{{ hummus }}',
+        variableDelimiters: { start: '{{', end: '}}' },
       });
       await wrapper.vm.$nextTick();
     });

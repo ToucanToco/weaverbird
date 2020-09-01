@@ -108,7 +108,6 @@ export interface VQBState {
    * variable delimiter for templating
    */
   variableDelimiters?: VariableDelimiters;
-  advancedVariableDelimiters?: VariableDelimiters;
 }
 
 /**

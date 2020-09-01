@@ -69,7 +69,7 @@ describe('Variable Input', () => {
     describe('when there is no available variables', () => {
       beforeEach(async () => {
         wrapper.setProps({
-          availableVariables: [],
+          availableVariables: null,
         });
         await wrapper.vm.$nextTick();
       });
@@ -78,8 +78,8 @@ describe('Variable Input', () => {
         expect(wrapper.find('.widget-variable__toggle').exists()).toBe(false);
       });
 
-      it('... except if advanced variable is allowed', async () => {
-        wrapper.setProps({ advancedVariableDelimiters: { start: '{{', end: '}}' } });
+      it('... except if availableVariables is not null', async () => {
+        wrapper.setProps({ availableVariables: [] });
         await wrapper.vm.$nextTick();
         expect(wrapper.find('.widget-variable__toggle').exists()).toBe(true);
       });

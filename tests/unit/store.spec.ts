@@ -913,13 +913,4 @@ describe('action tests', () => {
       expect(state.variableDelimiters).toEqual(variableDelimiters);
     });
   });
-
-  describe('setAdvancedVariableDelimiters', function() {
-    it('set advanced variable delimiters', () => {
-      const state = buildState({});
-      const advancedVariableDelimiters = { start: '{{', end: '}}' };
-      mutations.setAdvancedVariableDelimiters(state, { advancedVariableDelimiters });
-      expect(state.advancedVariableDelimiters).toEqual(advancedVariableDelimiters);
-    });
-  });
 });

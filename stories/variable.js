@@ -214,40 +214,12 @@ stories.add('wrapping a InputNumber', () => ({
   },
 }));
 
-stories.add('wrapping a widget with advanced variable', () => ({
-  template: `
-    <div>
-      <Multiselect 
-        v-model="value" 
-        :available-variables="availableVariables"
-        :variable-delimiters="variableDelimiters"
-        :advanced-variable-delimiters="advancedVariableDelimiters"
-        :options="options"
-      />
-      <pre>{{ value }}</pre>
-    </div>
-  `,
-
-  components: { Multiselect },
-
-  data() {
-    return {
-      value: undefined,
-      options: ['foo', 'bar', 'helloworld'],
-      availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}' },
-      advancedVariableDelimiters: { start: '<<<', end: '>>>' },
-    };
-  },
-}));
-
 stories.add('wrapping a widget with advanced variable and no variables', () => ({
   template: `
     <div>
       <Multiselect 
         v-model="value" 
         :variable-delimiters="variableDelimiters"
-        :advanced-variable-delimiters="advancedVariableDelimiters"
         :options="options"
       />
       <pre>{{ value }}</pre>
@@ -260,8 +232,7 @@ stories.add('wrapping a widget with advanced variable and no variables', () => (
     return {
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
-      variableDelimiters: { start: '{{', end: '}}' },
-      advancedVariableDelimiters: { start: '<<<', end: '>>>' },
+      availableVariables: [],
     };
   },
 }));
