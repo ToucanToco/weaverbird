@@ -42,3 +42,49 @@ setCodeEditor({
   - Optionally:
     - emit `blur` and `focus` event
     - a `placeholder` property
+
+# Use different config
+
+`setAvailableCodeEditors` can be used to provide a list of custom codeEditor config.
+
+## Example
+
+```js
+setAvailableCodeEditors(
+  {
+    javascript: {
+      props: ['value', 'placeholder'],
+      render(createElement) {
+        return createElement('textarea', {
+          domProps: {
+            value: this.value,
+            placeholder: 'OMG I have to write code in javascript here',
+          },
+          attrs: {
+            type: 'text',
+          },
+          on: {
+            input: event => {
+              this.$emit('input', event.target.value);
+            },
+            blur: event => {
+              this.$emit('blur');
+            },
+            focus: event => {
+              this.$emit('focus');
+            },
+          },
+        });
+      },
+    },
+    json: { ...config },
+    html: { ...config },
+  },
+  'json',
+);
+```
+
+## API
+
+`setAvailableCodeEditors`'s argument is a list of Vue component (see `setCodeEditor` API) keyed to a lang param:
+Then you can call a codeEditor with the choosen `lang` param to apply the associated config.

@@ -10,6 +10,7 @@ const {
   servicePluginFactory,
   registerModule,
   setCodeEditor,
+  setAvailableCodeEditors,
 } = vqb;
 
 const TRANSLATOR = 'mongo40';
@@ -38,6 +39,60 @@ setCodeEditor({
   },
 });
 
+// Example to provide custom configs for codeEditor
+// Won't replace setCodeEditor
+setAvailableCodeEditors({
+  javascript: {
+    props: ['value', 'placeholder'],
+    render(createElement) {
+      return createElement('textarea', {
+        domProps: {
+          value: this.value,
+          placeholder: 'OMG I have to write code in javascript in here',
+        },
+        attrs: {
+          type: 'text',
+        },
+        on: {
+          input: event => {
+            this.$emit('input', event.target.value);
+          },
+          blur: event => {
+            this.$emit('blur');
+          },
+          focus: event => {
+            this.$emit('focus');
+          },
+        },
+      });
+    },
+  },
+  json: {
+    props: ['value', 'placeholder'],
+    render(createElement) {
+      return createElement('textarea', {
+        domProps: {
+          value: this.value,
+          placeholder: 'OMG I have to write code in json in here',
+        },
+        attrs: {
+          type: 'text',
+        },
+        on: {
+          input: event => {
+            this.$emit('input', event.target.value);
+          },
+          blur: event => {
+            this.$emit('blur');
+          },
+          focus: event => {
+            this.$emit('focus');
+          },
+        },
+      });
+    },
+  },
+});
 
 const CASTERS = {
   date: val => new Date(val),
