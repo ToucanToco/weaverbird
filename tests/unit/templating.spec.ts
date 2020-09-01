@@ -968,16 +968,23 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave split steps untouched', () => {
+  it('should interpolate split steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'split',
         column: '<%= foo %>',
-        delimiter: '<%= delim %>',
+        delimiter: '<%= egg %>',
         number_cols_to_keep: 3,
       },
     ];
-    expect(translate(pipeline)).toEqual(pipeline);
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'split',
+        column: 'bar',
+        delimiter: '<%= egg %>',
+        number_cols_to_keep: 3,
+      },
+    ]);
   });
 
   it('should leave substring steps untouched', () => {
