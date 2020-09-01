@@ -42,7 +42,7 @@ describe('Duplicate Column Step Form', () => {
     pipelines: {
       default_pipeline: [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
       ],
     },
     selectedStepIndex: 1,

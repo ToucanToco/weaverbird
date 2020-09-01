@@ -49,9 +49,9 @@ describe('base translator class', () => {
     expect(() =>
       dummytrs.translate([
         { name: 'domain', domain: 'my-domain' },
-        { name: 'rename', oldname: 'old', newname: 'new' },
+        { name: 'rename', toRename: [['old', 'new']] },
         { name: 'delete', columns: ['col1'] },
-        { name: 'rename', oldname: 'old2', newname: 'new2' },
+        { name: 'rename', toRename: [['old2', 'new2']] },
       ]),
     ).toThrow('Unsupported step <delete>');
   });
@@ -61,8 +61,8 @@ describe('base translator class', () => {
     expect(
       dummytrs.translate([
         { name: 'domain', domain: 'my-domain' },
-        { name: 'rename', oldname: 'old', newname: 'new' },
-        { name: 'rename', oldname: 'old2', newname: 'new2' },
+        { name: 'rename', toRename: [['old', 'new']] },
+        { name: 'rename', toRename: [['old2', 'new2']] },
       ]),
     ).toEqual(['domain', 'rename', 'rename']);
   });

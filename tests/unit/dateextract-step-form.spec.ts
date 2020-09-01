@@ -89,9 +89,9 @@ describe('DateExtract Step Form', () => {
     pipelines: {
       default_pipeline: [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
-        { name: 'rename', oldname: 'tic', newname: 'tac' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['tic', 'tac']] },
       ],
     },
     selectedStepIndex: 2,

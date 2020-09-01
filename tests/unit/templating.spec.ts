@@ -868,8 +868,7 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'rename',
-        oldname: '<%= age %>',
-        newname: '<%= foo %>',
+        toRename: [['<%= age %>', '<%= foo %>']],
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);

@@ -21,7 +21,7 @@ describe('Step.vue', () => {
         isDisabled: false,
         isFirst: false,
         isLast: true,
-        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        step: { name: 'rename', toRename: [['foo', 'bar']] },
         indexInPipeline: 2,
       },
     });
@@ -38,7 +38,7 @@ describe('Step.vue', () => {
         isDisabled: false,
         isFirst: false,
         isLast: true,
-        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        step: { name: 'rename', toRename: [['foo', 'bar']] },
         indexInPipeline: 2,
       },
     });
@@ -55,7 +55,7 @@ describe('Step.vue', () => {
         isDisabled: false,
         isFirst: false,
         isLast: true,
-        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        step: { name: 'rename', toRename: [['foo', 'bar']] },
         indexInPipeline: 2,
       },
     });
@@ -71,7 +71,7 @@ describe('Step.vue', () => {
         isDisabled: false,
         isFirst: false,
         isLast: true,
-        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        step: { name: 'rename', toRename: [['foo', 'bar']] },
         indexInPipeline: 2,
       },
     });
@@ -89,7 +89,7 @@ describe('Step.vue', () => {
         isDisabled: false,
         isFirst: false,
         isLast: true,
-        step: { name: 'rename', oldname: 'foo', newname: 'bar' },
+        step: { name: 'rename', toRename: [['foo', 'bar']] },
         indexInPipeline: 2,
       },
     });
@@ -188,7 +188,7 @@ describe('Step.vue', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-      { name: 'rename', oldname: 'region', newname: 'kingdom' },
+      { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupMockStore(buildStateWithOnePipeline(pipeline));
@@ -198,7 +198,7 @@ describe('Step.vue', () => {
     renameStep.find('.fa-cog').trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
-      [{ name: 'rename', newname: 'kingdom', oldname: 'region' }, 2],
+      [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],
     ]);
   });
 
@@ -206,7 +206,7 @@ describe('Step.vue', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-      { name: 'rename', oldname: 'region', newname: 'kingdom' },
+      { name: 'rename', toRename: [['region', 'kingdom']] },
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupMockStore(
@@ -221,7 +221,7 @@ describe('Step.vue', () => {
       .trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
-      [{ name: 'rename', newname: 'kingdom', oldname: 'region' }, 2],
+      [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],
     ]);
   });
 });

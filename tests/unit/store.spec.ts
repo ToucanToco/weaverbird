@@ -29,8 +29,8 @@ describe('getter tests', () => {
     it('should return the whole pipeline if selectedIndex is -1', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
       expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline);
@@ -46,8 +46,8 @@ describe('getter tests', () => {
     it('should return a partial pipeline if selectedIndex is specified', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
       expect(getters.activePipeline(state, {}, {}, {})).toEqual(pipeline.slice(0, 2));
@@ -56,8 +56,8 @@ describe('getter tests', () => {
     it('should return an empty pipeline if selectedIndex is -1', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
       expect(getters.inactivePipeline(state, {}, {}, {})).toEqual([]);
@@ -66,8 +66,8 @@ describe('getter tests', () => {
     it('should return the rest of the pipeline if selectedIndex is specified', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
       expect(getters.inactivePipeline(state, {}, {}, {})).toEqual(pipeline.slice(2));
@@ -161,8 +161,8 @@ describe('getter tests', () => {
     it('should compute active step index if selectedIndex is -1', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
       expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
@@ -171,8 +171,8 @@ describe('getter tests', () => {
     it('should compute active step index if selectedIndex is specified', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 1 });
       expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(1);
@@ -231,8 +231,8 @@ describe('getter tests', () => {
     it('should return the domain step', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
       expect(getters.domainStep(state, {}, {}, {})).toEqual(pipeline[0]);
@@ -276,8 +276,8 @@ describe('getter tests', () => {
     it('should return false if pipeline is not empty', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
       expect(getters.isPipelineEmpty(state, {}, {}, {})).toBeFalsy();
@@ -311,8 +311,8 @@ describe('getter tests', () => {
     it('should retrieve the configuration of a step using its index', function() {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       const state = buildStateWithOnePipeline(pipeline);
       expect(getters.stepConfig(state, {}, {}, {})(1)).toEqual(pipeline[1]);
@@ -348,8 +348,8 @@ describe('mutation tests', () => {
   it('selects step', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
+      { name: 'rename', toRename: [['baz', 'spam']] },
     ];
     const state = buildStateWithOnePipeline(pipeline, {
       dataset: {
@@ -381,9 +381,9 @@ describe('mutation tests', () => {
     it('should delete a step on an existing pipeline and select the previous one', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
-        { name: 'rename', oldname: 'clou', newname: 'vis' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['clou', 'vis']] },
       ];
       const state = buildStateWithOnePipeline(pipeline, {
         dataset: {
@@ -395,8 +395,8 @@ describe('mutation tests', () => {
       mutations.deleteStep(state, { index: 2 });
       expect(currentPipeline(state)).toEqual([
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'clou', newname: 'vis' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['clou', 'vis']] },
       ]);
       expect(state.selectedStepIndex).toEqual(1);
       // make sure the pagination is reset
@@ -415,8 +415,8 @@ describe('mutation tests', () => {
   it('sets current domain on non empty pipeline', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
+      { name: 'rename', toRename: [['baz', 'spam']] },
     ];
     const state = buildState({
       currentDomain: 'foo',
@@ -433,8 +433,8 @@ describe('mutation tests', () => {
     expect(state.currentDomain).toEqual('bar');
     expect(getters.pipeline(state, {}, {}, {})).toEqual([
       { name: 'domain', domain: 'bar' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
-      { name: 'rename', oldname: 'baz', newname: 'spam' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
+      { name: 'rename', toRename: [['baz', 'spam']] },
     ]);
     // make sure the pagination is reset
     expect(state.dataset.paginationContext?.pageno).toEqual(1);
@@ -503,8 +503,8 @@ describe('mutation tests', () => {
 
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ];
       mutations.setPipeline(state, { pipeline });
       expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
@@ -516,7 +516,7 @@ describe('mutation tests', () => {
   it('should set current domain when updating pipeline with domain', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
     ];
     const state = buildState(
       buildStateWithOnePipeline([{ name: 'domain', domain: 'babar' }], {
@@ -533,10 +533,10 @@ describe('mutation tests', () => {
   it('should not set current domain when updating pipeline without domain', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'foo' },
-      { name: 'rename', oldname: 'foo', newname: 'bar' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
     ];
     const state = buildState(
-      buildStateWithOnePipeline([{ name: 'rename', oldname: 'foo', newname: 'bar' }], {
+      buildStateWithOnePipeline([{ name: 'rename', toRename: [['foo', 'bar']] }], {
         currentDomain: 'foo',
       }),
     );
