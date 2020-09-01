@@ -159,11 +159,25 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   argmax(step: Readonly<S.ArgmaxStep>) {
-    return { ...step };
+    const groups = step.groups
+      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      : undefined;
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+      groups,
+    };
   }
 
   argmin(step: Readonly<S.ArgminStep>) {
-    return { ...step };
+    const groups = step.groups
+      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      : undefined;
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+      groups,
+    };
   }
 
   concatenate(step: Readonly<S.ConcatenateStep>) {

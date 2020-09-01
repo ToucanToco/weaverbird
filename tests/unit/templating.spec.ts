@@ -92,26 +92,38 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave argmax steps untouched', () => {
+  it('should interpolate argmax steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'argmax',
         column: '<%= foo %>',
-        groups: ['<%= egg %>', 'column3'],
+        groups: ['<%= egg %>', 'column3', '<%= foo %>'],
       },
     ];
-    expect(translate(pipeline)).toEqual(pipeline);
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'argmax',
+        column: 'bar',
+        groups: ['spam', 'column3', 'bar'],
+      },
+    ]);
   });
 
-  it('should leave argmin steps untouched', () => {
+  it('should interpolate argmin steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'argmin',
         column: '<%= foo %>',
-        groups: ['<%= egg %>', 'column3'],
+        groups: ['<%= egg %>', 'column3', '<%= foo %>'],
       },
     ];
-    expect(translate(pipeline)).toEqual(pipeline);
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'argmin',
+        column: 'bar',
+        groups: ['spam', 'column3', 'bar'],
+      },
+    ]);
   });
 
   it('should leave concatenate steps untouched', () => {
