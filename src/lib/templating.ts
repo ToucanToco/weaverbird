@@ -370,7 +370,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   text(step: Readonly<S.AddTextColumnStep>) {
-    return { ...step, text: _interpolate(this.interpolateFunc, step.text, this.context) };
+    return {
+      ...step,
+      text: _interpolate(this.interpolateFunc, step.text, this.context),
+      new_column: _interpolate(this.interpolateFunc, step.new_column, this.context),
+    };
   }
 
   todate(step: Readonly<S.ToDateStep>) {
