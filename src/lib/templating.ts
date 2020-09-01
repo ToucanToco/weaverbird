@@ -70,16 +70,22 @@ function interpolateFilterCondition(
       case 'le':
         return {
           ...condition,
+          column: _interpolate(interpolate, condition.column, context),
           value: _interpolate(interpolate, condition.value, context, columnType),
         };
       case 'in':
       case 'nin':
         return {
           ...condition,
+          column: _interpolate(interpolate, condition.column, context),
           value: condition.value.map(v => _interpolate(interpolate, v, context, columnType)),
         };
       case 'isnull':
       case 'notnull':
+        return {
+          ...condition,
+          column: _interpolate(interpolate, condition.column, context),
+        };
       default:
         // only for typescript to be happy and see we always have a return value
         return condition;

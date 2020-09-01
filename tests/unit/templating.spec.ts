@@ -281,14 +281,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
-        column: '<%= foo %>',
+        column: 'foo',
         value: 'hola',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'fillna',
-        column: '<%= foo %>',
+        column: 'foo',
         value: 'hola',
       },
     ]);
@@ -309,7 +309,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '42',
           operator: 'eq',
         },
@@ -355,7 +355,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '42',
           operator: 'ne',
         },
@@ -378,7 +378,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '42',
           operator: 'lt',
         },
@@ -401,7 +401,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '42',
           operator: 'le',
         },
@@ -424,7 +424,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '42',
           operator: 'gt',
         },
@@ -447,7 +447,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '42',
           operator: 'ge',
         },
@@ -470,7 +470,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: [11, '42', 'spam', 'hola'],
           operator: 'in',
         },
@@ -493,7 +493,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: [11, '42', 'spam', 'hola'],
           operator: 'nin',
         },
@@ -501,7 +501,7 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should not interpolate simple filter steps / operator "isnull"', () => {
+  it('should interpolate simple filter steps / operator "isnull"', () => {
     const step: Pipeline = [
       {
         name: 'filter',
@@ -516,7 +516,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '<%= age %>',
           operator: 'isnull',
         },
@@ -524,7 +524,7 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should not interpolate simple filter steps / operator "notnull"', () => {
+  it('should interpolate simple filter steps / operator "notnull"', () => {
     const step: Pipeline = [
       {
         name: 'filter',
@@ -539,7 +539,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'filter',
         condition: {
-          column: '<%= foo %>',
+          column: 'bar',
           value: '<%= age %>',
           operator: 'notnull',
         },
@@ -578,17 +578,17 @@ describe('Pipeline interpolator', () => {
         condition: {
           and: [
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: [11, '42', 'spam', 'hola'],
               operator: 'nin',
             },
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: 12,
               operator: 'eq',
             },
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: 'spam',
               operator: 'ne',
             },
@@ -635,7 +635,7 @@ describe('Pipeline interpolator', () => {
         condition: {
           and: [
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: [11, '42', 'spam', 'hola'],
               operator: 'nin',
             },
@@ -686,17 +686,17 @@ describe('Pipeline interpolator', () => {
         condition: {
           or: [
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: [11, '42', 'spam', 'hola'],
               operator: 'nin',
             },
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: 12,
               operator: 'eq',
             },
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: 'spam',
               operator: 'ne',
             },
@@ -743,7 +743,7 @@ describe('Pipeline interpolator', () => {
         condition: {
           or: [
             {
-              column: '<%= foo %>',
+              column: 'bar',
               value: [11, '42', 'spam', 'hola'],
               operator: 'nin',
             },
@@ -1173,7 +1173,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'ifthenelse',
         newColumn: '<%= foo %>',
-        if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '42' }] },
+        if: { and: [{ column: 'bar', operator: 'eq', value: '42' }] },
         then: 'bar',
         else: '42',
       },
@@ -1198,10 +1198,10 @@ describe('Pipeline interpolator', () => {
       {
         name: 'ifthenelse',
         newColumn: '<%= foo %>',
-        if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '42' }] },
+        if: { and: [{ column: 'bar', operator: 'eq', value: '42' }] },
         then: 'bar',
         else: {
-          if: { and: [{ column: '<%= foo %>', operator: 'eq', value: '42' }] },
+          if: { and: [{ column: 'bar', operator: 'eq', value: '42' }] },
           then: 'bar',
           else: '42',
         },
