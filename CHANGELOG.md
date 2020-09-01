@@ -20,6 +20,10 @@
 - Improve 'aggregate' step by adding an option to keep the original granularity
   and add computed aggregations in new columns
 
+### Changed
+
+- Improve 'rename' step by allowing to rename several columns at once
+
 ### Fixed
 
 - Append, Domain, Join steps: sort the dataset selection
