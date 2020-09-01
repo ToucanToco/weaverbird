@@ -1,128 +1,171 @@
 import RenameStepForm from '@/components/stepforms/RenameStepForm.vue';
-import { VQBnamespace } from '@/store';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 describe('Rename Step Form', () => {
   const runner = new BasicStepFormTestRunner(RenameStepForm, 'rename');
+
   runner.testInstantiate();
-  runner.testExpectedComponents({ 'inputtextwidget-stub': 1, 'columnpicker-stub': 1 });
+
+  runner.testExpectedComponents({ 'listwidget-stub': 1 });
 
   runner.testValidationErrors([
     {
-      testlabel: 'oldname or newname is empty',
+      testlabel: 'toReplace strings are empty',
       errors: [
-        { keyword: 'minLength', dataPath: '.newname' },
-        { keyword: 'minLength', dataPath: '.oldname' },
+        { keyword: 'minLength', dataPath: '.toRename[0][0]' },
+        { keyword: 'minLength', dataPath: '.toRename[0][1]' },
       ],
-    },
-    {
-      testlabel: 'newname is an already existing column name',
-      store: setupMockStore({
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      }),
-      data: { editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } },
-      errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newname' }],
     },
   ]);
 
   runner.testValidate({
     testlabel: 'submitted data is valid',
+    store: setupMockStore({
+      dataset: {
+        headers: [
+          { name: 'foo', type: 'string' },
+          { name: 'hello', type: 'string' },
+        ],
+        data: [],
+      },
+    }),
     props: {
-      initialStepValue: { name: 'rename', oldname: 'foo', newname: 'bar' },
+      initialStepValue: { name: 'rename', toRename: [['foo', 'bar']] },
     },
   });
 
-  runner.testCancel({
-    currentPipelineName: 'default_pipeline',
-    pipelines: {
-      default_pipeline: [
-        { name: 'domain', domain: 'foo' },
-        { name: 'rename', oldname: 'foo', newname: 'bar' },
-        { name: 'rename', oldname: 'baz', newname: 'spam' },
-        { name: 'rename', oldname: 'tic', newname: 'tac' },
-      ],
-    },
-    selectedStepIndex: 2,
-  });
+  runner.testCancel();
 
   runner.testResetSelectedIndex();
 
-  it('should pass down the newname prop to widget value prop', async () => {
+  it('should update editedStep at creation depending on the selected column', async () => {
+    const initialState = {
+      dataset: {
+        headers: [{ name: 'toto' }, { name: 'foo' }],
+        data: [],
+      },
+      selectedColumns: ['toto'],
+    };
+    const wrapper = runner.shallowMount(initialState, {
+      propsData: {
+        initialStepValue: {
+          name: 'rename',
+          toRename: [['', '']],
+        },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.toRename).toEqual([['toto', '']]);
+  });
+
+  it('should return an error if trying to set a null column', async () => {
+    const initialState = {
+      dataset: {
+        headers: [{ name: 'toto' }, { name: 'foo' }],
+        data: [],
+      },
+      selectedColumns: [null],
+    };
+    try {
+      const wrapper = runner.shallowMount(initialState, {
+        propsData: {
+          initialStepValue: {
+            name: 'rename',
+            toRename: [['', '']],
+          },
+        },
+      });
+      await wrapper.vm.$nextTick();
+    } catch (error) {
+      expect(error.message).toBe('should not try to set null in rename "toRename" field');
+    }
+  });
+
+  it('should convert editedStep from old configurations to new configuration', async () => {
     const wrapper = runner.shallowMount(
       {},
       {
-        data: { editedStep: { name: 'rename', oldname: '', newname: 'foo' } },
+        propsData: {
+          initialStepValue: {
+            name: 'rename',
+            oldname: 'foo',
+            newname: 'bar',
+          },
+        },
       },
     );
     await wrapper.vm.$nextTick();
-    expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('foo');
+    expect(wrapper.vm.$data.editedStep.toRename).toBeDefined();
+    expect(wrapper.vm.$data.editedStep.toRename).toEqual([['foo', 'bar']]);
   });
 
-  it('should update step when selectedColumn is changed', async () => {
-    const initialState = {
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
+  it('should pass down "toRename" to ListWidget', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        data: {
+          editedStep: {
+            name: 'rename',
+            toRename: [['foo', 'bar']],
+          },
+        },
       },
-    };
-    const wrapper = runner.shallowMount(initialState);
-    expect(wrapper.vm.$data.editedStep.oldname).toEqual('');
-    wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
+    );
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$data.editedStep.oldname).toEqual('columnB');
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
   });
 
-  it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-    const initialState = {
-      currentPipelineName: 'default_pipeline',
-      pipelines: {
-        default_pipeline: [
-          { name: 'domain', domain: 'foo' },
-          { name: 'rename', oldname: 'foo', newname: 'bar' },
-          { name: 'rename', oldname: 'baz', newname: 'spam' },
-          { name: 'rename', oldname: 'tic', newname: 'tac' },
-        ],
-      },
-      selectedStepIndex: 2,
-    };
-    const wrapper = runner.mount(initialState, { propsData: { isStepCreation: true } });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(2);
-    wrapper.setProps({ isStepCreation: false });
-    wrapper.find('.step-edit-form__back-button').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedStepIndex).toEqual(3);
+  it('should update editedStep when ListWidget is updated', async () => {
+    const wrapper = runner.shallowMount({});
+    await wrapper.vm.$nextTick();
+    wrapper.find('listwidget-stub').vm.$emit('input', [['foo', 'bar']]);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.toRename).toEqual([['foo', 'bar']]);
   });
 
-  it('should make the focus on the column modified after rename validation', () => {
+  it('should make the focus on the last column modified at submit', () => {
     const initialState = {
       dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'toto' }, { name: 'foo' }],
         data: [],
       },
     };
     const wrapper = runner.mount(initialState, {
-      data: { editedStep: { name: 'rename', oldname: 'columnA', newname: 'toto' } },
+      data: {
+        editedStep: {
+          name: 'rename',
+          toRename: [
+            ['toto', 'tata'],
+            ['foo', 'bar'],
+          ],
+        },
+      },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['toto']);
+    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['bar']);
   });
 
   it('should not change the column focus if validation fails', () => {
     const initialState = {
       dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        headers: [{ name: 'toto' }, { name: 'foo' }],
         data: [],
       },
-      selectedColumns: ['columnA'],
+      selectedColumns: ['toto'],
     };
     const wrapper = runner.mount(initialState, {
-      data: { editedStep: { name: 'rename', oldname: 'columnA', newname: 'columnB' } },
+      data: {
+        editedStep: {
+          name: 'rename',
+          toRename: [
+            ['toto', ''],
+            ['foo', 'bar'],
+          ],
+        },
+      },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnA']);
+    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['toto']);
   });
 });
