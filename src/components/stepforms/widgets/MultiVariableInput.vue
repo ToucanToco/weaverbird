@@ -25,6 +25,7 @@ import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
  */
 @Component({
   name: 'multi-variable-input',
+  components: { VariableInputBase },
 })
 export default class MultiVariableInput extends Vue {
   @Prop({ type: Array, default: () => [] })
@@ -41,11 +42,6 @@ export default class MultiVariableInput extends Vue {
 
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
-
-  // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
-  beforeCreate() {
-    this.$options.components['VariableInputBase'] = VariableInputBase;
-  }
 
   /**
    * Toggle value in array

@@ -31,9 +31,9 @@ Vue.use(VTooltip);
  * This component display a variable based on a human readable format and allow to delete it
  */
 @Component({
-  name: 'variable-input',
+  name: 'variable-tag',
 })
-export default class VariableInput extends Vue {
+export default class VariableTag extends Vue {
   @Prop()
   value!: string;
 

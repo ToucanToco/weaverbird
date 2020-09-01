@@ -8,29 +8,12 @@
           <div class="vqb-modal__title">Custom Variable</div>
         </div>
         <div class="vqb-modal__section">
-          <InputTextWidget
-            class="nameInput"
-            v-model="variable.name"
-            name="Variable name"
-            placeholder
-            data-path=".name"
-            :errors="errors"
-          />
           <CodeEditorWidget
             class="codeInput"
-            v-model="variable.code"
+            v-model="value"
             placeholder="Write your custom variable here"
             :errors="errors"
             data-path=".code"
-          />
-          <AutocompleteWidget
-            class="typeInput"
-            v-model="variable.type"
-            name="Return result as"
-            :options="types"
-            placeholder
-            data-path=".type"
-            :errors="errors"
           />
         </div>
         <div class="vqb-modal__footer">
@@ -50,34 +33,22 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 /**
  * This component allow to add an advanced variable
  */
 @Component({
   name: 'advanced-variable-modal',
-  components: {
-    CodeEditorWidget,
-    InputTextWidget,
-  },
+  components: { CodeEditorWidget },
 })
 export default class AdvancedVariableModal extends Vue {
-  variable = { type: 'text', name: '', code: '' };
+  value = '';
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
 
   @Prop({ default: false })
   isOpened!: boolean;
-
-  readonly types = ['text', 'number'];
-
-  // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
-  beforeCreate() {
-    this.$options.components['AutocompleteWidget'] = AutocompleteWidget;
-  }
 
   close() {
     this.$emit('closed');
@@ -147,7 +118,6 @@ export default class AdvancedVariableModal extends Vue {
   border-top-right-radius: 20px;
   display: flex;
   padding: 20px 30px;
-  box-shadow: inset 0 -1px 0 0 #f5f5f5;
 }
 
 .vqb-modal__title {
@@ -156,11 +126,6 @@ export default class AdvancedVariableModal extends Vue {
   line-height: 20px;
   color: #4c4c4c;
   font-weight: 700;
-}
-
-.vqb-modal__section {
-  box-shadow: inset 0 -1px 0 0 #f5f5f5;
-  padding: 25px 0;
 }
 
 .vqb-modal__text {
@@ -207,18 +172,9 @@ strong.vqb-modal__text {
   border: none;
 }
 
-.nameInput {
-  padding: 0 30px;
-  /deep/ .widget-input-text__label label {
-    text-transform: uppercase;
-    color: #6a6a6a;
-    font-weight: 600;
-    font-size: 12px;
-  }
-}
-
 .codeInput {
   height: 200px;
+  margin: 0;
 
   /deep/ .view-lines,
   /deep/ .margin {
@@ -227,24 +183,6 @@ strong.vqb-modal__text {
 
   /deep/ .glyph-margin {
     background: #eeeeee;
-  }
-}
-
-.typeInput {
-  flex-direction: row;
-  align-items: center;
-  margin-bottom: 0;
-  padding: 0 30px;
-
-  /deep/ .widget-autocomplete__label {
-    flex: 0 auto;
-    padding-right: 20px;
-  }
-
-  /deep/ .widget-input-variable {
-    width: auto;
-    flex: 0 auto;
-    min-width: 120px;
   }
 }
 </style>
