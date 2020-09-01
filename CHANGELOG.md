@@ -8,6 +8,7 @@
 - Add 'waterfall' step
 - Add an advanced variable modal component to create custom variable
 - Add a mutation to populate store with advanced variable delimiters
+- Add templating support for several steps parameters
 
 ### Fixed
 
