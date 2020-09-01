@@ -183,7 +183,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'text',
         text: 'bar',
-        new_column: '<%= foo %>',
+        new_column: 'bar',
       },
     ]);
   });
