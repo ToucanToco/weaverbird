@@ -14,7 +14,6 @@
       v-else
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
       :has-arrow="hasArrow"
       @input="chooseVariable"
     >
@@ -45,14 +44,11 @@ export default class VariableInput extends Vue {
   @Prop()
   value!: any;
 
-  @Prop({ default: () => [] })
+  @Prop()
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
-  variableDelimiters!: VariableDelimiters;
-
   @Prop()
-  advancedVariableDelimiters!: VariableDelimiters;
+  variableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow

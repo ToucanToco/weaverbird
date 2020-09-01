@@ -11,7 +11,6 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
       @input="updateValue"
     >
       <input
@@ -65,9 +64,6 @@ export default class InputTextWidget extends Mixins(FormWidget) {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
-
-  @Prop()
-  advancedVariableDelimiters!: VariableDelimiters;
 
   updateValue(newValue?: string) {
     this.$emit('input', newValue);

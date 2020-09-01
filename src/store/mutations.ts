@@ -81,13 +81,7 @@ type VariableDelimitersMutation = {
   payload: Pick<VQBState, 'variableDelimiters'>;
 };
 
-type AdvancedVariableDelimitersMutation = {
-  type: 'setAdvancedVariableDelimiters';
-  payload: Pick<VQBState, 'advancedVariableDelimiters'>;
-};
-
 export type StateMutation =
-  | AdvancedVariableDelimitersMutation
   | AvailableVariablesMutation
   | BackendMessageMutation
   | DatasetMutation
@@ -338,16 +332,6 @@ class Mutations {
     { variableDelimiters }: Pick<VQBState, 'variableDelimiters'>,
   ) {
     state.variableDelimiters = variableDelimiters;
-  }
-
-  /**
-   * set the variable delimiters for templating advanced variables.
-   */
-  setAdvancedVariableDelimiters(
-    state: VQBState,
-    { advancedVariableDelimiters }: Pick<VQBState, 'advancedVariableDelimiters'>,
-  ) {
-    state.advancedVariableDelimiters = advancedVariableDelimiters;
   }
 }
 

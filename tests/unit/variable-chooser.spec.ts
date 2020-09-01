@@ -81,10 +81,6 @@ describe('Variable Chooser', () => {
   });
 
   describe('when is advanced', () => {
-    beforeEach(() => {
-      wrapper.setProps({ isAdvanced: true });
-    });
-
     it('should display an "Advanced variable" option ...', () => {
       expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
     });

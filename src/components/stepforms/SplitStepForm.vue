@@ -10,7 +10,6 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
-      :advanced-variable-delimiters="advancedVariableDelimiters"
     />
     <InputTextWidget
       class="delimiter"
@@ -57,8 +56,6 @@ export default class SplitStepForm extends BaseStepForm<SplitStep> {
   @VQBModule.State availableVariables!: VariablesBucket;
 
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-
-  @VQBModule.State advancedVariableDelimiters!: VariableDelimiters;
 
   @Prop({
     type: Object,

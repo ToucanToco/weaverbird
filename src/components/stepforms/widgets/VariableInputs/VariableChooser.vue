@@ -29,7 +29,7 @@
           <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
         </div>
       </div>
-      <div v-if="isAdvanced" class="widget-advanced-variable" @click="addAdvancedVariable">
+      <div class="widget-advanced-variable" @click="addAdvancedVariable">
         Advanced variable
       </div>
     </div>
@@ -41,7 +41,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
-import { VariableDelimiters, VariablesBucket, VariablesCategory } from '@/lib/variables';
+import { VariablesBucket, VariablesCategory } from '@/lib/variables';
 
 /**
  * This component list all the available variables to use as value in VariableInputs
@@ -54,17 +54,11 @@ export default class VariableChooser extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
-  @Prop({ default: false })
-  isAdvanced!: boolean;
-
   @Prop({ default: () => [] })
   selectedVariables!: string[];
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
-
-  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
-  variableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })
   isOpened!: boolean;
