@@ -1,11 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 
-import {
-  AvailableCodeEditors,
-  CodeEditor,
-  setAvailableCodeEditors,
-} from '@/components/code-editor';
+import { CodeEditor, CodeEditorConfigs, setAvailableCodeEditors } from '@/components/code-editor';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 
 describe('Widget CodeEditorWidget', () => {
@@ -135,21 +131,21 @@ describe('Widget CodeEditorWidget', () => {
 
   describe('custom lang', () => {
     it('should use custom code editor config if lang param is provided', () => {
-      setAvailableCodeEditors({ json: Vue.extend(), javascript: Vue.extend() });
+      setAvailableCodeEditors({ configs: { json: Vue.extend(), javascript: Vue.extend() } });
       const wrapper = shallowMount(CodeEditorWidget, {
-        propsData: { lang: 'javascript' },
+        propsData: { config: 'javascript' },
       });
-      const codeEditor = wrapper.vm.$data.CodeEditor;
-      expect(codeEditor).toEqual(AvailableCodeEditors.javascript);
+      const codeEditorData = wrapper.vm.$data.codeEditor;
+      expect(codeEditorData).toEqual(CodeEditorConfigs.javascript);
     });
 
     it('... but keep default editor config if lang is unavailable', () => {
-      setAvailableCodeEditors({ json: Vue.extend() });
+      setAvailableCodeEditors({ configs: { json: Vue.extend() } });
       const wrapper = shallowMount(CodeEditorWidget, {
-        propsData: { lang: 'javascript' },
+        propsData: { config: 'javascript' },
       });
-      const codeEditor = wrapper.vm.$data.CodeEditor;
-      expect(codeEditor).toEqual(CodeEditor);
+      const codeEditorData = wrapper.vm.$data.codeEditor;
+      expect(codeEditorData).toEqual(CodeEditor);
     });
   });
 });

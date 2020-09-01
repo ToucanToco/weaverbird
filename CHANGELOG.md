@@ -3,7 +3,7 @@
 ## Unreleased
 
 ### Added
-- CodeEditor: add `setAvailableCodeEditors` methods and lang param to set specific config for a CodeEditor
+- CodeEditor: replace `setCodeEditor` by `setAvailableCodeEditors` to set specific config for a CodeEditor
 
 ## [0.24.0] - 2020-08-31
 
