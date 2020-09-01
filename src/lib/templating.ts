@@ -362,7 +362,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   split(step: Readonly<S.SplitStep>) {
-    return { ...step };
+    return { ...step, column: _interpolate(this.interpolateFunc, step.column, this.context) };
   }
 
   substring(step: Readonly<S.SubstringStep>) {
