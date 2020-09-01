@@ -45,6 +45,7 @@ import VariableInput from './VariableInput.vue';
 
 @Component({
   name: 'input-text-widget',
+  components: { VariableInput },
 })
 export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
@@ -67,11 +68,6 @@ export default class InputTextWidget extends Mixins(FormWidget) {
 
   @Prop()
   advancedVariableDelimiters!: VariableDelimiters;
-
-  // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
-  beforeCreate() {
-    this.$options.components['VariableInput'] = VariableInput;
-  }
 
   updateValue(newValue?: string) {
     this.$emit('input', newValue);

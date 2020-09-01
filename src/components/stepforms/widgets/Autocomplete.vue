@@ -52,6 +52,7 @@ import VariableInput from './VariableInput.vue';
   name: 'autocomplete-widget',
   components: {
     Multiselect,
+    VariableInput,
   },
 })
 export default class AutocompleteWidget extends Mixins(FormWidget) {
@@ -84,11 +85,6 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 
   @Prop()
   advancedVariableDelimiters!: VariableDelimiters;
-
-  // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
-  beforeCreate() {
-    this.$options.components['VariableInput'] = VariableInput;
-  }
 
   updateValue(newValue?: string | object) {
     this.$emit('input', newValue);

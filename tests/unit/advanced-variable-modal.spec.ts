@@ -44,14 +44,6 @@ describe('Variable Chooser', () => {
     it('should have a code editor input', () => {
       expect(wrapper.find('CodeEditorWidget-stub').exists()).toBe(true);
     });
-
-    it('should have a name input', () => {
-      expect(wrapper.find('InputTextWidget-stub').exists()).toBe(true);
-    });
-
-    it('should have a type input', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
-    });
   });
 
   describe('when clicking on the close button', () => {

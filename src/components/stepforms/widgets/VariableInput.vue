@@ -38,6 +38,7 @@ import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '
   name: 'variable-input',
   components: {
     VariableTag,
+    VariableInputBase,
   },
 })
 export default class VariableInput extends Vue {
@@ -55,11 +56,6 @@ export default class VariableInput extends Vue {
 
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow
-
-  // See https://vuejs.org/v2/guide/components.html#Circular-References-Between-Components
-  beforeCreate() {
-    this.$options.components['VariableInputBase'] = VariableInputBase;
-  }
 
   /**
    * Verify if we need to display the slot or the variableTag
