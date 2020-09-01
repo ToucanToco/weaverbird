@@ -1741,13 +1741,37 @@ always increases by 1 at most).
 
 ### `rename` step
 
-Rename a column.,
+Rename one or several columns.
+The `toRename` parameter takes as input a list of 2-elements lists in the form
+['oldColumnName', 'newColumnName'].
 
 ```javascript
 {
     name: 'rename',
-    oldname: 'old-column-name',
-    newname: 'new-column-name'
+    toRename: [
+      ['oldCol1', 'newCol1'] // The first value is the column to be renamed, the second is the new column name
+      ['oldCol2', 'newCol2']
+    ]
+}
+```
+
+**Deprecated note:**
+
+The `oldname` and `newnname` parameters are deprecated and are support only for
+retrocompatibility purposes.
+When this step was first created, only 1 column at a time could be renamed, and
+the step was configured via 2 parameters, `oldname` and `newnname`, that are now
+deprecated and supported only for retrocompatibility purposes.
+An old-fashioned step with `oldname` set to 'old' and `newname` set to 'new'
+is equivalent to a new-fashioned step with `toRename` parameter set to ['old', 'new'].
+
+So an old-fashioned step looks like this:
+
+```javascript
+{
+    name: 'rename',
+    oldname: 'old-column-name', // optional and deprecated
+    newname: 'new-column-name'  // optional and deprecated
 }
 ```
 

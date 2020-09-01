@@ -21,9 +21,8 @@ You can use this step to rename a column.
 
 <img src="../../img/docs/user-interface/rename_step_form.jpg" width="350" />
 
-- `Old name`: the original column name
-
-- `New name`: the new column name
+- `Columns to rename`: you can specify one or more columns to rename, with their
+  corresponding new column name
 
 #### Example
 
