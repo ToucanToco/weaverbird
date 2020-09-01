@@ -16,10 +16,24 @@ import Vue, { VueConstructor } from 'vue';
 
 import DefaultCodeEditor from '@/components/stepforms/widgets/DefaultCodeEditor.vue';
 
-let CodeEditor = DefaultCodeEditor;
+export type CustomCodeEditor = VueConstructor<Vue>;
+let CodeEditor: CustomCodeEditor = DefaultCodeEditor;
 
-export function setCodeEditor(CustomCodeEditor: VueConstructor<Vue>) {
+export function setCodeEditor(CustomCodeEditor: CustomCodeEditor) {
   CodeEditor = CustomCodeEditor;
 }
 
-export { CodeEditor };
+/*
+Use setAvailableCodeEditors to provide a list of custom codeEditor config
+Each config must be associate to a lang key
+Then in a codeEditorWidget use the lang param to get the associated config
+It won't replace the default setCodeEditor
+*/
+type CustomCodeEditorList = { [lang: string]: CustomCodeEditor };
+let AvailableCodeEditors: CustomCodeEditorList = {};
+
+export function setAvailableCodeEditors(CustomCodeEditors: CustomCodeEditorList) {
+  AvailableCodeEditors = CustomCodeEditors;
+}
+
+export { CodeEditor, AvailableCodeEditors };
