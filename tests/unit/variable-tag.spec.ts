@@ -75,6 +75,12 @@ describe('Variable Tag', () => {
     expect(wrapper.emitted().removed).toBeTruthy();
   });
 
+  it('should do nothing when clicking on the name', async () => {
+    wrapper.find('.widget-variable__tag-name').trigger('mousedown');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted().edited).toBeFalsy();
+  });
+
   describe('if the variable is an advanced variable', () => {
     beforeEach(() => {
       wrapper.setProps({
@@ -90,6 +96,11 @@ describe('Variable Tag', () => {
     });
     it('should have specific style', () => {
       expect(wrapper.classes()).toContain('widget-variable__tag--advanced');
+    });
+    it('should edit advanced variable when clicking on the name', async () => {
+      wrapper.find('.widget-variable__tag-name').trigger('mousedown');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().edited).toBeTruthy();
     });
   });
 });
