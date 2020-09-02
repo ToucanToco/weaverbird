@@ -13,6 +13,8 @@ import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/t
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
+import { version } from '../../../package.json';
+
 type VqbError = Partial<ErrorObject>;
 /**
  * ValidatorProxy emulates the interpolate + ajv-validation combo.
@@ -81,6 +83,8 @@ function componentProxyBoundOn(self: Vue) {
   },
 })
 export default class BaseStepForm<StepType> extends Vue {
+  version = version; // display the current version of the package
+
   @Prop({ type: Boolean, default: true })
   isStepCreation!: boolean;
 
