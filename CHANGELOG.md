@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- CodeEditor: replace `setCodeEditor` by `setAvailableCodeEditors` to set specific config for a CodeEditor
+
 ## [0.24.0] - 2020-08-31
 
 ### Added

@@ -2,7 +2,7 @@
   <div class="widget-code-editor__container" :class="toggleClassErrorWarning">
     <label v-if="name">{{ name }}</label>
     <component
-      :is="CodeEditor"
+      :is="codeEditor"
       :class="elementClass"
       :placeholder="placeholder"
       v-model="editedValue"
@@ -21,7 +21,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
-import { CodeEditor } from '@/components/code-editor';
+import { CodeEditor, CodeEditorConfig, CodeEditorConfigs } from '@/components/code-editor';
 
 import FormWidget from './FormWidget.vue';
 
@@ -38,12 +38,15 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
   @Prop({ default: '' })
   value!: string;
 
+  @Prop({ type: String, default: '' })
+  config!: string;
+
   editedValue = this.value;
 
   isFocused = false;
 
-  CodeEditor = CodeEditor;
   // Code editor is set through a responsive data so it can be change after import
+  codeEditor: CodeEditorConfig = CodeEditor;
 
   @Watch('editedValue')
   updateValue(newValue: string) {
@@ -55,6 +58,19 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
       'widget-code-editor': true,
       'widget-code-editor--focused': this.isFocused,
     };
+  }
+
+  created() {
+    this.setEditorConfig();
+  }
+
+  /*
+  Use a specific config of AvailableCodeEditors
+  */
+  setEditorConfig() {
+    if (this.config && CodeEditorConfigs[this.config]) {
+      this.codeEditor = CodeEditorConfigs[this.config];
+    }
   }
 
   blur() {

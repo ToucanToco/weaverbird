@@ -9,35 +9,50 @@ const {
   dereferencePipelines,
   servicePluginFactory,
   registerModule,
-  setCodeEditor,
+  setAvailableCodeEditors,
 } = vqb;
 
 const TRANSLATOR = 'mongo40';
 
 const mongo40translator = getTranslator(TRANSLATOR);
 
-// Example to set a custom editor:
-// This one is quite simple. It customizes the placeholder.
-setCodeEditor({
-  props:['value', 'placeholder'],
-  render(createElement) {
-    return createElement("textarea", {
-      domProps: {
-        value: this.value,
-        placeholder: "OMG I have to write code in here",
-      },
-      attrs: {
-        type: "text"
-      },
-      on: {
-        input: (event) => {this.$emit('input', event.target.value)},
-        blur: (event) => {this.$emit('blur')},
-        focus: (event) => {this.$emit('focus')},
-      },
-    })
+// Create a code editor config for a specific lang
+const codeEditorForLang = function(lang) {
+  return {
+    props: ['value', 'placeholder'],
+    render(createElement) {
+      return createElement('textarea', {
+        domProps: {
+          value: this.value,
+          placeholder: `OMG I have to write code in ${lang} in here`,
+        },
+        attrs: {
+          type: 'text',
+        },
+        on: {
+          input: event => {
+            this.$emit('input', event.target.value);
+          },
+          blur: event => {
+            this.$emit('blur');
+          },
+          focus: event => {
+            this.$emit('focus');
+          },
+        },
+      });
+    },
+  };
+};
+
+// Example to provide custom configs for codeEditor
+setAvailableCodeEditors({
+  defaultConfig: 'json',
+  configs: {
+    javascript: codeEditorForLang('javascript'),
+    json: codeEditorForLang('json'),
   },
 });
-
 
 const CASTERS = {
   date: val => new Date(val),
@@ -126,7 +141,7 @@ class MongoService {
       return { data: dataset };
     } else {
       return {
-        error: [{type: 'error', message: responseContent.errmsg}],
+        error: [{ type: 'error', message: responseContent.errmsg }],
       };
     }
   }
@@ -201,7 +216,7 @@ async function buildVueApp() {
                 operator: 'ge',
                 value: 1200,
               },
-            }
+            },
           ],
           pipelineAmex: [
             {
@@ -215,7 +230,7 @@ async function buildVueApp() {
                 operator: 'eq',
                 value: 'Amex',
               },
-            }
+            },
           ],
           pipelineVisa: [
             {
@@ -229,7 +244,7 @@ async function buildVueApp() {
                 operator: 'eq',
                 value: 'Visa',
               },
-            }
+            },
           ],
           pipelineMastercard: [
             {
@@ -243,7 +258,7 @@ async function buildVueApp() {
                 operator: 'eq',
                 value: 'Mastercard',
               },
-            }
+            },
           ],
         },
         currentDomain: 'sales',
@@ -261,7 +276,7 @@ async function buildVueApp() {
       store.dispatch(VQBnamespace('updateDataset'));
     },
     computed: {
-      activePipeline: function(){
+      activePipeline: function() {
         let activePipeline = this.$store.getters[VQBnamespace('activePipeline')];
         if (!activePipeline) {
           return undefined;
@@ -270,14 +285,14 @@ async function buildVueApp() {
         if (pipelines) {
           return dereferencePipelines(activePipeline, pipelines);
         } else {
-          return activePipeline
+          return activePipeline;
         }
       },
       mongoQueryAsJSON: function() {
         const query = mongo40translator.translate(this.activePipeline);
         return JSON.stringify(query, null, 2);
       },
-      pipelineAsJSON: function(){
+      pipelineAsJSON: function() {
         return JSON.stringify(this.activePipeline, null, 2);
       },
       thereIsABackendError: function() {
@@ -287,10 +302,10 @@ async function buildVueApp() {
         return this.$store.state[VQB_MODULE_NAME].backendMessages;
       },
       backendErrors: function() {
-        return this.backendMessages.filter(({type}) => type === 'error');
+        return this.backendMessages.filter(({ type }) => type === 'error');
       },
       backendWarnings: function() {
-        return this.backendMessages.filter(({type}) => type === 'warning');
+        return this.backendMessages.filter(({ type }) => type === 'warning');
       },
     },
     methods: {
