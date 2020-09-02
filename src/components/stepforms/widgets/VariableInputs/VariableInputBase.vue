@@ -118,6 +118,7 @@ export default class VariableInputBase extends Vue {
 
   closeAdvancedVariableModal() {
     this.isAdvancedVariableModalOpened = false;
+    this.$emit('resetEditedAdvancedVariable');
   }
 
   /**
