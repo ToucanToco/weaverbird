@@ -7,6 +7,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="true"
+      :edited-advanced-variable="editedAdvancedVariable"
       @input="updateStringValue"
     >
       <multiselect
@@ -37,6 +38,7 @@
             :variable-delimiters="variableDelimiters"
             :value="customLabel(option)"
             @removed="remove(option)"
+            @edited="editAdvancedVariable"
           />
           <span class="multiselect__tag widget-multiselect__tag" v-else>
             <span v-html="customLabel(option)" />
@@ -76,6 +78,8 @@ import MultiVariableInput from './MultiVariableInput.vue';
   },
 })
 export default class MultiselectWidget extends Mixins(FormWidget) {
+  editedAdvancedVariable = '';
+
   @Prop({ type: String, default: '' })
   name!: string;
 
@@ -164,6 +168,13 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
     } else {
       return option;
     }
+  }
+
+  /*
+  Select the advanced variable to edit
+  */
+  editAdvancedVariable(value: string) {
+    this.editedAdvancedVariable = value;
   }
 }
 </script>

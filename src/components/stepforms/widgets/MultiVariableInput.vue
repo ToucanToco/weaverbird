@@ -6,6 +6,7 @@
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
+      :edited-advanced-variable="editedAdvancedVariable"
       @chooseAdvancedVariable="toggleVariable"
       @input="toggleVariable"
     >
@@ -36,6 +37,9 @@ export default class MultiVariableInput extends Vue {
 
   @Prop()
   variableDelimiters!: VariableDelimiters;
+
+  @Prop({ default: () => '' })
+  editedAdvancedVariable!: string;
 
   @Prop({ default: false })
   hasArrow?: boolean; //move variable-chooser button to the left if parent has an expand arrow

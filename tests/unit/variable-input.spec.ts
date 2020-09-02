@@ -84,7 +84,7 @@ describe('Variable Input', () => {
     });
 
     it('should not display the regular input slot', () => {
-      expect(wrapper.find('VariableInputBase-stub').exists()).toBe(false);
+      expect(wrapper.find("input[type='text']").exists()).toBe(false);
     });
 
     it('should display the tag of the variable', () => {
@@ -102,6 +102,21 @@ describe('Variable Input', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0]).toEqual([undefined]);
       });
+    });
+  });
+
+  describe('when editing an advanced variable', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        value: '{{ a }}',
+        variableDelimiters: { start: '{{', end: '}}' },
+      });
+      await wrapper.vm.$nextTick();
+    });
+    it('should select the advanced variable to edit', async () => {
+      wrapper.find('VariableTag-stub').vm.$emit('edited', '{{ a }}');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableInputBase-stub').props().editedAdvancedVariable).toBe('{{ a }}');
     });
   });
 
