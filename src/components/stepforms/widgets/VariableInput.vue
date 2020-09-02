@@ -15,6 +15,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="hasArrow"
+      @chooseAdvancedVariable="chooseVariable"
       @input="chooseVariable"
     >
       <slot />

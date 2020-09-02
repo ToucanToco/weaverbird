@@ -104,4 +104,18 @@ describe('Variable Input', () => {
       });
     });
   });
+
+  it('should emit the new value when choosing a variable', async () => {
+    wrapper.find('VariableInputBase-stub').vm.$emit('input', '{{ a }}');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('input')).toHaveLength(1);
+    expect(wrapper.emitted('input')[0]).toEqual(['{{ a }}']);
+  });
+
+  it('should emit the new value when choosing an advanced variable', async () => {
+    wrapper.find('VariableInputBase-stub').vm.$emit('chooseAdvancedVariable', '{{ a }}');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.emitted('input')).toHaveLength(1);
+    expect(wrapper.emitted('input')[0]).toEqual(['{{ a }}']);
+  });
 });

@@ -6,6 +6,7 @@
       :has-arrow="hasArrow"
       :is-multiple="true"
       :value="value"
+      @chooseAdvancedVariable="toggleVariable"
       @input="toggleVariable"
     >
       <slot />
