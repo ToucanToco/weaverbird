@@ -195,4 +195,12 @@ describe('Variable Input', () => {
       expect(wrapper.find('.widget-variable__toggle--parent-arrow').exists()).toBe(true);
     });
   });
+
+  describe('when selecting an advanced variable to edit', () => {
+    it('should open the advanced variable modal', async () => {
+      wrapper.setProps({ editedAdvancedVariable: '{{ a }}' });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+    });
+  });
 });

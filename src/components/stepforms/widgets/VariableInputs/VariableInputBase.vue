@@ -31,6 +31,8 @@
     />
     <AdvancedVariableModal
       :is-opened="isAdvancedVariableModalOpened"
+      :variable="editedAdvancedVariable"
+      :variable-delimiters="variableDelimiters"
       @input="chooseAdvancedVariable"
       @closed="closeAdvancedVariableModal"
     />
@@ -38,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
@@ -69,12 +71,20 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: () => '' })
+  editedAdvancedVariable!: string;
+
   @Prop({ default: false })
   hasArrow!: boolean;
 
   isChoosingVariable = false;
 
   isAdvancedVariableModalOpened = false;
+
+  @Watch('editedAdvancedVariable')
+  editAdvancedVariable() {
+    if (this.editedAdvancedVariable) this.openAdvancedVariableModal();
+  }
 
   /**
    * Find variables in value array
