@@ -1,6 +1,7 @@
 <template>
   <div
     class="widget-variable__tag"
+    :class="{ 'widget-variable__tag--advanced': isAdvancedVariable }"
     v-tooltip="{
       targetClasses: 'has-weaverbird__tooltip',
       classes: 'weaverbird__tooltip',
@@ -57,6 +58,13 @@ export default class VariableTag extends Vue {
     return this.availableVariables.find(aV => aV.identifier === this.variableIdentifier);
   }
 
+  /*
+  TO_FIX: every variable not found in availableVariables is an advanced variable
+  */
+  get isAdvancedVariable() {
+    return !this.variable;
+  }
+
   /**
    * Display label rather than identifier if available.
    */
@@ -64,7 +72,7 @@ export default class VariableTag extends Vue {
     if (this.variable) {
       return this.variable.label;
     } else {
-      return this.variableIdentifier;
+      return 'AdVariable';
     }
   }
 
@@ -110,5 +118,11 @@ export default class VariableTag extends Vue {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.widget-variable__tag--advanced {
+  &:hover .widget-variable__tag-name {
+    cursor: pointer;
+    text-decoration: underline;
+  }
 }
 </style>
