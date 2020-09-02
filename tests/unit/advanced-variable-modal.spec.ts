@@ -73,12 +73,14 @@ describe('Variable Chooser', () => {
   describe('when clicking on the save button', () => {
     beforeEach(async () => {
       wrapper.setProps({ isOpened: true });
+      wrapper.setData({ value: 'Test' });
       wrapper.find('.vqb-modal__action--primary').trigger('click');
       await wrapper.vm.$nextTick();
     });
 
-    it('should emit close', () => {
-      expect(wrapper.emitted().closed).toBeTruthy();
+    it('should emit input with the value', () => {
+      expect(wrapper.emitted().input).toBeTruthy();
+      expect(wrapper.emitted().input[0][0]).toBe('Test');
     });
   });
 });

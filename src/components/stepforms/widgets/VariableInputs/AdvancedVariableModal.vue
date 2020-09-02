@@ -12,8 +12,7 @@
             class="codeInput"
             v-model="value"
             placeholder="Write your custom variable here"
-            :errors="errors"
-            data-path=".code"
+            config="javascript"
           />
         </div>
         <div class="vqb-modal__footer">
@@ -30,7 +29,6 @@
 </template>
 
 <script lang="ts">
-import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
@@ -44,9 +42,6 @@ import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vu
 export default class AdvancedVariableModal extends Vue {
   value = '';
 
-  @Prop({ type: Array, default: () => [] })
-  errors!: ErrorObject[];
-
   @Prop({ default: false })
   isOpened!: boolean;
 
@@ -55,7 +50,7 @@ export default class AdvancedVariableModal extends Vue {
   }
 
   save() {
-    this.close();
+    this.$emit('input', this.value);
   }
 }
 </script>
