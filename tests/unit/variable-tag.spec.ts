@@ -75,17 +75,21 @@ describe('Variable Tag', () => {
     expect(wrapper.emitted().removed).toBeTruthy();
   });
 
-  describe('if the variable is not listed in available variables', () => {
+  describe('if the variable is an advanced variable', () => {
     beforeEach(() => {
       wrapper.setProps({
         value: '{{ toto }}',
       });
     });
-    it('should display the identifier instead of the human-friendly label', () => {
-      expect(wrapper.find('.widget-variable__tag-name').text()).toBe('toto');
+    it('should display "AdVariable" as label', () => {
+      expect((wrapper.vm as any).variableLabel).toBe('AdVariable');
+      expect(wrapper.find('.widget-variable__tag-name').text()).toBe('AdVariable');
     });
     it('should display nothing instead of the human-friendly value', () => {
       expect((wrapper as any).vm.variableValue).toBe('');
+    });
+    it('should have specific style', () => {
+      expect(wrapper.classes()).toContain('widget-variable__tag--advanced');
     });
   });
 });
