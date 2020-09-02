@@ -31,6 +31,7 @@
     />
     <AdvancedVariableModal
       :is-opened="isAdvancedVariableModalOpened"
+      @input="chooseAdvancedVariable"
       @closed="closeAdvancedVariableModal"
     />
   </div>
@@ -118,6 +119,15 @@ export default class VariableInputBase extends Vue {
     if (!this.isMultiple) {
       this.stopChoosingVariable(); // keep list open with multiVariable mode
     }
+  }
+
+  /**
+   * Emit the choosen advanced variable and close the modal
+   */
+  chooseAdvancedVariable(variableIdentifier: string) {
+    const value = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+    this.$emit('chooseAdvancedVariable', value);
+    this.closeAdvancedVariableModal();
   }
 }
 </script>

@@ -175,6 +175,14 @@ describe('Variable Input', () => {
           await wrapper.vm.$nextTick();
           expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
         });
+
+        it('it should emit the value with delimiters and close the modal on input', async () => {
+          wrapper.find('AdvancedVariableModal-stub').vm.$emit('input', 'Test');
+          await wrapper.vm.$nextTick();
+          expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
+          expect(wrapper.emitted('chooseAdvancedVariable')).toHaveLength(1);
+          expect(wrapper.emitted('chooseAdvancedVariable')[0]).toEqual(['{{ Test }}']);
+        });
       });
     });
   });
