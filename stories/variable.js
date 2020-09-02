@@ -52,7 +52,7 @@ const SAMPLE_VARIABLES = [
 stories.add('wrapping a text input', () => ({
   template: `
     <div>
-      <VariableInput v-model="value" :available-variables="availableVariables">
+      <VariableInput v-model="value" :available-variables="availableVariables" :variableDelimiters="variableDelimiters">
         <input type="text" v-model="value" />
       </VariableInput>
       <pre>{{ value }}</pre>
@@ -67,6 +67,7 @@ stories.add('wrapping a text input', () => ({
     return {
       value: undefined,
       availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));
@@ -74,7 +75,7 @@ stories.add('wrapping a text input', () => ({
 stories.add('wrapping a MultiInputText', () => ({
   template: `
     <div>
-      <VariableInput v-model="value" :available-variables="availableVariables">
+      <VariableInput v-model="value" :available-variables="availableVariables" :variableDelimiters="variableDelimiters">
         <MultiInputText v-model="value"></MultiInputText>
       </VariableInput>
       <pre>{{ value }}</pre>
@@ -90,6 +91,7 @@ stories.add('wrapping a MultiInputText', () => ({
     return {
       value: undefined,
       availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));
@@ -122,7 +124,12 @@ stories.add('wrapping a MultiInputText with multi variable', () => ({
 stories.add('wrapping a Autocomplete', () => ({
   template: `
     <div>
-      <Autocomplete v-model="value" :available-variables="availableVariables" :options="options"></Autocomplete>
+      <Autocomplete 
+        v-model="value" 
+        :available-variables="availableVariables"
+        :variable-delimiters="variableDelimiters"
+        :options="options"
+      />
       <pre>{{ value }}</pre>
     </div>
   `,
@@ -137,6 +144,7 @@ stories.add('wrapping a Autocomplete', () => ({
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
       availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));
@@ -175,6 +183,7 @@ stories.add('wrapping a List', () => ({
         v-model="value"
         :widget="widget"
         :available-variables="availableVariables"
+        :variable-delimiters="variableDelimiters
         :automatic-new-field="false"
         defaultItem=""
       ></List>
@@ -190,6 +199,7 @@ stories.add('wrapping a List', () => ({
       value: undefined,
       widget: InputText,
       availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));
@@ -197,7 +207,11 @@ stories.add('wrapping a List', () => ({
 stories.add('wrapping a InputNumber', () => ({
   template: `
     <div>
-      <InputNumber v-model="value" :available-variables="availableVariables"></InputNumber>
+      <InputNumber 
+        v-model="value" 
+        :available-variables="availableVariables" 
+        :variable-delimiters="variableDelimiters
+      />
       <pre>{{ value }}</pre>
     </div>
   `,
@@ -210,6 +224,7 @@ stories.add('wrapping a InputNumber', () => ({
     return {
       value: undefined,
       availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));
@@ -232,7 +247,7 @@ stories.add('wrapping a widget with advanced variable and no variables', () => (
     return {
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
-      availableVariables: [],
+      variableDelimiters: { start: '{{', end: '}}' },
     };
   },
 }));
