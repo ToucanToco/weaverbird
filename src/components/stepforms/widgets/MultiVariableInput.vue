@@ -7,7 +7,7 @@
       :is-multiple="true"
       :value="value"
       :edited-advanced-variable="editedAdvancedVariable"
-      @chooseAdvancedVariable="toggleVariable"
+      @chooseAdvancedVariable="chooseAdvancedVariable"
       @input="toggleVariable"
     >
       <slot />
@@ -55,6 +55,22 @@ export default class MultiVariableInput extends Vue {
       );
     } else {
       this.$emit('input', [...this.value, value]);
+    }
+  }
+
+  /**
+   * Add advanced variable to value or edit it if editAdvancedVariable value is provided
+   */
+  chooseAdvancedVariable(value: string) {
+    // remove potential duplicated value
+    const values = [...this.value].filter(v => v !== value);
+
+    const index = values.indexOf(this.editedAdvancedVariable);
+    if (index !== -1) {
+      values.splice(index, 1, value);
+      this.$emit('input', values);
+    } else {
+      this.$emit('input', [...values, value]);
     }
   }
 }

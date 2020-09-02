@@ -59,6 +59,7 @@ describe('Variable Input', () => {
 
   describe('when choosing an advanced variable', () => {
     it('should add the value to the list ...', async () => {
+      wrapper.setProps({ editedAdvancedVariable: '', value: [] });
       wrapper
         .find('VariableInputBase-stub')
         .vm.$emit('chooseAdvancedVariable', '{{ appRequesters.view }}');
@@ -67,14 +68,27 @@ describe('Variable Input', () => {
       expect(wrapper.emitted('input')[0][0]).toEqual(['{{ appRequesters.view }}']);
     });
 
-    it('... or remove it if already in', async () => {
-      wrapper.setProps({ value: ['{{ appRequesters.view }}'] });
+    it('... remove duplicated values ...', async () => {
+      wrapper.setProps({ editedAdvancedVariable: '', value: ['{{ appRequesters.view }}'] });
       wrapper
         .find('VariableInputBase-stub')
         .vm.$emit('chooseAdvancedVariable', '{{ appRequesters.view }}');
       await wrapper.vm.$nextTick();
       expect(wrapper.emitted('input')).toHaveLength(1);
-      expect(wrapper.emitted('input')[0][0]).toEqual([]);
+      expect(wrapper.emitted('input')[0][0]).toEqual(['{{ appRequesters.view }}']);
+    });
+
+    it('... or update it if an advanced variable is edited', async () => {
+      wrapper.setProps({
+        editedAdvancedVariable: '{{ appRequesters.view }}',
+        value: ['{{ appRequesters.view }}'],
+      });
+      wrapper
+        .find('VariableInputBase-stub')
+        .vm.$emit('chooseAdvancedVariable', '{{ appRequesters.view | number }}');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      expect(wrapper.emitted('input')[0][0]).toEqual(['{{ appRequesters.view | number }}']);
     });
   });
 });
