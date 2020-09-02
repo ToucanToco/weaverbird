@@ -17,6 +17,7 @@
       :has-arrow="hasArrow"
       :edited-advanced-variable="editedAdvancedVariable"
       @chooseAdvancedVariable="chooseVariable"
+      @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
       @input="chooseVariable"
     >
       <slot v-if="!isVariable" />
@@ -79,8 +80,18 @@ export default class VariableInput extends Vue {
     this.$emit('input', undefined);
   }
 
+  /*
+  Select the advanced variable to edit
+  */
   editAdvancedVariable(value: string) {
     this.editedAdvancedVariable = value;
+  }
+
+  /*
+  Reset the advanced variable to edit
+  */
+  resetEditedAdvancedVariable() {
+    this.editedAdvancedVariable = '';
   }
 }
 </script>

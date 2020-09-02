@@ -6,6 +6,7 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :edited-advanced-variable="editedAdvancedVariable"
+      @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
       @input="updateValue"
     >
       <multiselect
@@ -127,6 +128,13 @@ export default class MultiInputTextWidget extends Vue {
   */
   editAdvancedVariable(value: string) {
     this.editedAdvancedVariable = value;
+  }
+
+  /*
+  Reset the advanced variable to edit
+  */
+  resetEditedAdvancedVariable() {
+    this.editedAdvancedVariable = '';
   }
 }
 </script>

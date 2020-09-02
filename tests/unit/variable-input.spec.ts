@@ -133,4 +133,11 @@ describe('Variable Input', () => {
     expect(wrapper.emitted('input')).toHaveLength(1);
     expect(wrapper.emitted('input')[0]).toEqual(['{{ a }}']);
   });
+
+  it('should reset the advanced variable to edit when modal close', async () => {
+    wrapper.setData({ editedAdvancedVariable: '{{ a }}' });
+    wrapper.find('VariableInputBase-stub').vm.$emit('resetEditedAdvancedVariable');
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('VariableInputBase-stub').props().editedAdvancedVariable).toBe('');
+  });
 });

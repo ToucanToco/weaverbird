@@ -90,5 +90,10 @@ describe('Variable Input', () => {
       expect(wrapper.emitted('input')).toHaveLength(1);
       expect(wrapper.emitted('input')[0][0]).toEqual(['{{ appRequesters.view | number }}']);
     });
+    it('should reset the advanced variable to edit when modal close', async () => {
+      wrapper.find('VariableInputBase-stub').vm.$emit('resetEditedAdvancedVariable');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted('resetEditedAdvancedVariable')).toHaveLength(1);
+    });
   });
 });

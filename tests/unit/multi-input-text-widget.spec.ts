@@ -200,5 +200,11 @@ describe('Widget MultiInputText', () => {
       await wrapper.vm.$nextTick();
       expect(wrapper.find(MultiVariableInput).props().editedAdvancedVariable).toBe('{{ a }}');
     });
+    it('should reset the advanced variable to edit when modal close', async () => {
+      wrapper.setData({ editedAdvancedVariable: '{{ a }}' });
+      wrapper.find(MultiVariableInput).vm.$emit('resetEditedAdvancedVariable');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(MultiVariableInput).props().editedAdvancedVariable).toBe('');
+    });
   });
 });

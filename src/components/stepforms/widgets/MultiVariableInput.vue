@@ -8,6 +8,7 @@
       :value="value"
       :edited-advanced-variable="editedAdvancedVariable"
       @chooseAdvancedVariable="chooseAdvancedVariable"
+      @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
       @input="toggleVariable"
     >
       <slot />
@@ -72,6 +73,13 @@ export default class MultiVariableInput extends Vue {
     } else {
       this.$emit('input', [...values, value]);
     }
+  }
+
+  /*
+  Reset the advanced variable to edit
+  */
+  resetEditedAdvancedVariable() {
+    this.$emit('resetEditedAdvancedVariable');
   }
 }
 </script>
