@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/code-editor/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-09-02T10:03:39+02:00" />
+<meta property="article:published_time" content="2020-09-02T11:45:07+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/code-editor/","headline":"Custom code editor","datePublished":"2020-09-02T10:03:39+02:00","dateModified":"2020-09-02T10:03:39+02:00","description":"Customize the code editor","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/code-editor/","headline":"Custom code editor","datePublished":"2020-09-02T11:45:07+02:00","dateModified":"2020-09-02T11:45:07+02:00","description":"Customize the code editor","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -392,36 +392,55 @@
         <div class="col-md-8">
             <div id="markdown-content-container"><h1 id="customize-the-code-editor">Customize the code editor</h1>
 
-<p>The <code class="highlighter-rouge">custom step</code> allows user to write their own query step. It uses by default a basic textarea, but you might want to customize the code editor with the <code class="highlighter-rouge">setCodeEditor</code> interface.</p>
+<p>The <code class="highlighter-rouge">custom step</code> allows user to write their own query step. It uses by default a basic textarea, but you might want to customize the code editor with the <code class="highlighter-rouge">setAvailableCodeEditors</code> interface.</p>
 
 <h2 id="example">Example</h2>
 
 <p>Here is a simple example, on how to provide a textarea with a fix placeholder:</p>
 
-<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setCodeEditor</span><span class="p">({</span>
-  <span class="na">props</span><span class="p">:[</span><span class="s1">'value'</span><span class="p">,</span> <span class="s1">'placeholder'</span><span class="p">],</span>
-  <span class="nx">render</span><span class="p">(</span><span class="nx">createElement</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">createElement</span><span class="p">(</span><span class="s2">"textarea"</span><span class="p">,</span> <span class="p">{</span>
-      <span class="na">domProps</span><span class="p">:</span> <span class="p">{</span>
-        <span class="na">value</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
-        <span class="na">placeholder</span><span class="p">:</span> <span class="s2">"OMG I have to write code in here"</span><span class="p">,</span>
+<div class="language-js highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">setAvailableCodeEditors</span><span class="p">({</span>
+  <span class="na">defaultConfig</span><span class="p">:</span> <span class="s1">'javascript'</span><span class="p">,</span>
+  <span class="na">configs</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">javascript</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">props</span><span class="p">:</span> <span class="p">[</span><span class="s1">'value'</span><span class="p">,</span> <span class="s1">'placeholder'</span><span class="p">],</span>
+      <span class="nx">render</span><span class="p">(</span><span class="nx">createElement</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="nx">createElement</span><span class="p">(</span><span class="s1">'textarea'</span><span class="p">,</span> <span class="p">{</span>
+          <span class="na">domProps</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">value</span><span class="p">:</span> <span class="k">this</span><span class="p">.</span><span class="nx">value</span><span class="p">,</span>
+            <span class="na">placeholder</span><span class="p">:</span> <span class="s1">'OMG I have to write code in javascript here'</span><span class="p">,</span>
+          <span class="p">},</span>
+          <span class="na">attrs</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">type</span><span class="p">:</span> <span class="s1">'text'</span><span class="p">,</span>
+          <span class="p">},</span>
+          <span class="na">on</span><span class="p">:</span> <span class="p">{</span>
+            <span class="na">input</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="p">{</span>
+              <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">);</span>
+            <span class="p">},</span>
+            <span class="na">blur</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="p">{</span>
+              <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'blur'</span><span class="p">);</span>
+            <span class="p">},</span>
+            <span class="na">focus</span><span class="p">:</span> <span class="nx">event</span> <span class="o">=&gt;</span> <span class="p">{</span>
+              <span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'focus'</span><span class="p">);</span>
+            <span class="p">},</span>
+          <span class="p">},</span>
+        <span class="p">});</span>
       <span class="p">},</span>
-      <span class="na">attrs</span><span class="p">:</span> <span class="p">{</span>
-        <span class="na">type</span><span class="p">:</span> <span class="s2">"text"</span>
-      <span class="p">},</span>
-      <span class="na">on</span><span class="p">:</span> <span class="p">{</span>
-        <span class="na">input</span><span class="p">:</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'input'</span><span class="p">,</span> <span class="nx">event</span><span class="p">.</span><span class="nx">target</span><span class="p">.</span><span class="nx">value</span><span class="p">)},</span>
-        <span class="na">blur</span><span class="p">:</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'blur'</span><span class="p">)},</span>
-        <span class="na">focus</span><span class="p">:</span> <span class="p">(</span><span class="nx">event</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span><span class="k">this</span><span class="p">.</span><span class="nx">$emit</span><span class="p">(</span><span class="s1">'focus'</span><span class="p">)},</span>
-      <span class="p">},</span>
-    <span class="p">})</span>
+    <span class="p">},</span>
+    <span class="na">json</span><span class="p">:</span> <span class="p">{</span> <span class="p">...</span><span class="nx">config</span> <span class="p">},</span>
+    <span class="na">html</span><span class="p">:</span> <span class="p">{</span> <span class="p">...</span><span class="nx">config</span> <span class="p">},</span>
   <span class="p">},</span>
 <span class="p">});</span>
 </code></pre></div></div>
 
 <h2 id="api">API</h2>
 
-<p><code class="highlighter-rouge">setCodeEditor</code>’s argument is a Vue component with the following requirements:</p>
+<p><code class="highlighter-rouge">setAvailableCodeEditors</code>’s argument is an object:</p>
+<ul>
+  <li><em>defaultConfig</em> (opt): the config to use as default one</li>
+  <li><em>configs</em>: a list of configs associated to their lang key</li>
+</ul>
+
+<p>A config is a Vue components with the following requirements:</p>
 <ul>
   <li>
     <p>It must accept a <code class="highlighter-rouge">value</code> property and emit an <code class="highlighter-rouge">input</code> event
@@ -435,6 +454,8 @@ as it will be used with a <code class="highlighter-rouge">v-model</code></p>
     </ul>
   </li>
 </ul>
+
+<p>After instanciation you can call a codeEditorWidget with the choosen <code class="highlighter-rouge">config</code> param to apply the associated config.</p>
 </div>
             
 
