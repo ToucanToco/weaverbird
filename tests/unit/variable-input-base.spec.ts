@@ -169,17 +169,30 @@ describe('Variable Input', () => {
         it('should open the advanced variable modal', () => {
           expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
         });
+      });
 
-        it('... and close it on closed emit', async () => {
+      describe('when closing the advanced variable modal', () => {
+        beforeEach(async () => {
           wrapper.find('AdvancedVariableModal-stub').vm.$emit('closed');
           await wrapper.vm.$nextTick();
+        });
+
+        it('should close the modal', () => {
           expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
         });
 
-        it('it should emit the value with delimiters and close the modal on input', async () => {
+        it('should reset the selected advanced variable to edit', () => {
+          expect(wrapper.emitted('resetEditedAdvancedVariable')).toHaveLength(1);
+        });
+      });
+
+      describe('when saving an advanced variable', () => {
+        beforeEach(async () => {
           wrapper.find('AdvancedVariableModal-stub').vm.$emit('input', 'Test');
           await wrapper.vm.$nextTick();
-          expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
+        });
+
+        it('should emit the new value with delimiters', () => {
           expect(wrapper.emitted('chooseAdvancedVariable')).toHaveLength(1);
           expect(wrapper.emitted('chooseAdvancedVariable')[0]).toEqual(['{{ Test }}']);
         });
@@ -193,6 +206,14 @@ describe('Variable Input', () => {
     });
     it('should move the variable chooser toggle button away from arrow', () => {
       expect(wrapper.find('.widget-variable__toggle--parent-arrow').exists()).toBe(true);
+    });
+  });
+
+  describe('when selecting an advanced variable to edit', () => {
+    it('should open the advanced variable modal', async () => {
+      wrapper.setProps({ editedAdvancedVariable: '{{ a }}' });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
     });
   });
 });

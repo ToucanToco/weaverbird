@@ -153,4 +153,28 @@ describe('Widget Multiselect', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().input[0][0]).toStrictEqual([{ name: 'a' }]);
   });
+
+  describe('when editing an advanced variable', () => {
+    let wrapper: any;
+    beforeEach(() => {
+      wrapper = mount(MultiSelectWidget, {
+        propsData: {
+          value: ['{{ var1 }}'],
+          variableDelimiters: { start: '{{', end: '}}' },
+        },
+      });
+    });
+    it('should select the advanced variable to edit', async () => {
+      const tag = wrapper.findAll(VariableTag).at(0);
+      tag.vm.$emit('edited', '{{ a }}');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(MultiVariableInput).props().editedAdvancedVariable).toBe('{{ a }}');
+    });
+    it('should reset the advanced variable to edit when modal close', async () => {
+      wrapper.setData({ editedAdvancedVariable: '{{ a }}' });
+      wrapper.find(MultiVariableInput).vm.$emit('resetEditedAdvancedVariable');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find(MultiVariableInput).props().editedAdvancedVariable).toBe('');
+    });
+  });
 });

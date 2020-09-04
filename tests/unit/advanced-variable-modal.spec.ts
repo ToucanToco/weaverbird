@@ -44,6 +44,47 @@ describe('Variable Chooser', () => {
     it('should have a code editor input', () => {
       expect(wrapper.find('CodeEditorWidget-stub').exists()).toBe(true);
     });
+
+    it('should populate code editor with empty value', () => {
+      expect((wrapper.vm as any).variableIdentifier).toBe('');
+      expect(wrapper.find('CodeEditorWidget-stub').props().value).toBe('');
+    });
+
+    it('should disable the save button', () => {
+      expect(wrapper.find('.vqb-modal__action--primary').classes()).toContain(
+        'vqb-modal__action--disabled',
+      );
+    });
+  });
+
+  describe('with selected variable to update', () => {
+    beforeEach(async () => {
+      wrapper.setProps({ variable: '{{ a }}', isOpened: true });
+      await wrapper.vm.$nextTick();
+    });
+    it('should init code editor with variable value without delimiters', () => {
+      expect((wrapper.vm as any).variableIdentifier).toBe('a');
+      expect(wrapper.find('CodeEditorWidget-stub').props().value).toBe('a');
+    });
+    it('should keep previous value on close', async () => {
+      wrapper.setProps({ variable: '', isOpened: false });
+      await wrapper.vm.$nextTick();
+      expect((wrapper.vm as any).value).toBe('a');
+    });
+  });
+
+  describe('when updating the value', () => {
+    beforeEach(async () => {
+      wrapper.setProps({ isOpened: true });
+      wrapper.find('CodeEditorWidget-stub').vm.$emit('input', '{{ a }}');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should enable the save button', () => {
+      expect(wrapper.find('.vqb-modal__action--primary').classes()).not.toContain(
+        'vqb-modal__action--disabled',
+      );
+    });
   });
 
   describe('when clicking on the close button', () => {
@@ -71,16 +112,30 @@ describe('Variable Chooser', () => {
   });
 
   describe('when clicking on the save button', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
       wrapper.setProps({ isOpened: true });
       wrapper.setData({ value: 'Test' });
-      wrapper.find('.vqb-modal__action--primary').trigger('click');
-      await wrapper.vm.$nextTick();
     });
 
-    it('should emit input with the value', () => {
+    it('should emit input with the value', async () => {
+      wrapper.find('.vqb-modal__action--primary').trigger('click');
+      await wrapper.vm.$nextTick();
       expect(wrapper.emitted().input).toBeTruthy();
       expect(wrapper.emitted().input[0][0]).toBe('Test');
+    });
+
+    it('.. unless value has not be updated ...', async () => {
+      wrapper.setProps({ variable: '{{ Test }}' });
+      wrapper.find('.vqb-modal__action--primary').trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toBeFalsy();
+    });
+
+    it('.. or is empty', async () => {
+      wrapper.setData({ value: '' });
+      wrapper.find('.vqb-modal__action--primary').trigger('click');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toBeFalsy();
     });
   });
 });

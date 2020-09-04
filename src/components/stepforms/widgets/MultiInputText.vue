@@ -5,6 +5,8 @@
       :value="value"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :edited-advanced-variable="editedAdvancedVariable"
+      @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
       @input="updateValue"
     >
       <multiselect
@@ -32,6 +34,7 @@
             :variable-delimiters="variableDelimiters"
             :value="option"
             @removed="remove(option)"
+            @edited="editAdvancedVariable"
           />
           <span class="multiselect__tag widget-multiinputtext__tag" @click.prevent.stop="" v-else>
             <span v-html="option" />
@@ -66,6 +69,8 @@ import VariableInput from './VariableInput.vue';
   },
 })
 export default class MultiInputTextWidget extends Vue {
+  editedAdvancedVariable = '';
+
   @Prop({ type: String, default: '' })
   name!: string;
 
@@ -116,6 +121,20 @@ export default class MultiInputTextWidget extends Vue {
   isVariable(value: string) {
     const identifier = extractVariableIdentifier(value, this.variableDelimiters);
     return identifier != null;
+  }
+
+  /*
+  Select the advanced variable to edit
+  */
+  editAdvancedVariable(value: string) {
+    this.editedAdvancedVariable = value;
+  }
+
+  /*
+  Reset the advanced variable to edit
+  */
+  resetEditedAdvancedVariable() {
+    this.editedAdvancedVariable = '';
   }
 }
 </script>

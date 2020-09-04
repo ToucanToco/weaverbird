@@ -183,7 +183,7 @@ stories.add('wrapping a List', () => ({
         v-model="value"
         :widget="widget"
         :available-variables="availableVariables"
-        :variable-delimiters="variableDelimiters
+        :variable-delimiters="variableDelimiters"
         :automatic-new-field="false"
         defaultItem=""
       ></List>
@@ -210,7 +210,7 @@ stories.add('wrapping a InputNumber', () => ({
       <InputNumber 
         v-model="value" 
         :available-variables="availableVariables" 
-        :variable-delimiters="variableDelimiters
+        :variable-delimiters="variableDelimiters"
       />
       <pre>{{ value }}</pre>
     </div>
@@ -235,6 +235,7 @@ stories.add('wrapping a widget with advanced variable and no variables', () => (
       <Multiselect 
         v-model="value" 
         :variable-delimiters="variableDelimiters"
+        :available-variables="availableVariables"
         :options="options"
       />
       <pre>{{ value }}</pre>
@@ -247,6 +248,7 @@ stories.add('wrapping a widget with advanced variable and no variables', () => (
     return {
       value: undefined,
       options: ['foo', 'bar', 'helloworld'],
+      availableVariables: [],
       variableDelimiters: { start: '{{', end: '}}' },
     };
   },

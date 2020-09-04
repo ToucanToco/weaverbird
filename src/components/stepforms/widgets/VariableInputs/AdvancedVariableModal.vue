@@ -19,7 +19,11 @@
           <div class="vqb-modal__action vqb-modal__action--secondary" @click="close">
             cancel
           </div>
-          <div class="vqb-modal__action vqb-modal__action--primary" @click="save">
+          <div
+            class="vqb-modal__action vqb-modal__action--primary"
+            :class="{ 'vqb-modal__action--disabled': !canSave }"
+            @click="save"
+          >
             save
           </div>
         </div>
@@ -29,9 +33,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
+import { extractVariableIdentifier, VariableDelimiters } from '@/lib/variables';
 /**
  * This component allow to add an advanced variable
  */
@@ -45,12 +50,35 @@ export default class AdvancedVariableModal extends Vue {
   @Prop({ default: false })
   isOpened!: boolean;
 
+  @Prop({ default: '' })
+  variable!: string;
+
+  @Prop({ default: () => ({ start: '{{', end: '}}' }) })
+  variableDelimiters!: VariableDelimiters;
+
+  get variableIdentifier() {
+    return extractVariableIdentifier(this.variable, this.variableDelimiters) || '';
+  }
+
+  get canSave() {
+    return this.value && this.variableIdentifier !== this.value;
+  }
+
+  @Watch('isOpened')
+  setValue(isOpened: boolean) {
+    if (isOpened) {
+      this.value = this.variableIdentifier;
+    }
+  }
+
   close() {
     this.$emit('closed');
   }
 
   save() {
-    this.$emit('input', this.value);
+    if (this.canSave) {
+      this.$emit('input', this.value);
+    }
   }
 }
 </script>
@@ -165,6 +193,11 @@ strong.vqb-modal__text {
   background-color: $active-color;
   color: #fff;
   border: none;
+}
+
+.vqb-modal__action--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .codeInput {

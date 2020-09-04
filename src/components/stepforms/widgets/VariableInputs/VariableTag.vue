@@ -10,7 +10,12 @@
     }"
   >
     <span class="widget-variable__tag-icon">{}</span>
-    <span class="widget-variable__tag-name">{{ variableLabel }}</span>
+    <span
+      class="widget-variable__tag-name"
+      @keypress.enter.prevent="editAdvancedVariable"
+      @mousedown.prevent="editAdvancedVariable"
+      >{{ variableLabel }}</span
+    >
     <i
       class="widget-variable__tag-close fa fa-times"
       tabindex="1"
@@ -86,6 +91,12 @@ export default class VariableTag extends Vue {
 
   removeVariableTag() {
     this.$emit('removed');
+  }
+
+  editAdvancedVariable() {
+    if (this.isAdvancedVariable) {
+      this.$emit('edited', this.value);
+    }
   }
 }
 </script>
