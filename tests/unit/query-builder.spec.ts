@@ -5,6 +5,7 @@ import Vuex, { Store } from 'vuex';
 import QueryBuilder from '@/components/QueryBuilder.vue';
 import { VQBnamespace } from '@/store';
 
+import { version } from '../../package.json';
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
@@ -15,6 +16,11 @@ describe('Query Builder', () => {
     const wrapper = shallowMount(QueryBuilder, { store: setupMockStore(), localVue });
     expect(wrapper.exists()).toBeTruthy();
     expect(wrapper.vm.$store.state.isEditingStep).toBeFalsy();
+  });
+
+  it('should display the current version of the package', () => {
+    const wrapper = shallowMount(QueryBuilder, { store: setupMockStore(), localVue });
+    expect(wrapper.find('.documentation-help__content').attributes('data-version')).toBe(version);
   });
 
   it('should display an empty state is no pipeline is selected', () => {

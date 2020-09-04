@@ -1,6 +1,6 @@
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="this.editedStep.name" />
+    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
     <MultiselectWidget
       class="hierarchyColumnsInput"
       v-model="editedStep.hierarchy"

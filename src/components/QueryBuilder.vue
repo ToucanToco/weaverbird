@@ -19,6 +19,7 @@
             target="_blank"
             rel="noopener"
             class="documentation-help__content"
+            :data-version="version"
           >
             <i class="fas fa-question-circle" />
             <p>Need help?</p>
@@ -41,6 +42,7 @@ import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { VQBState } from '@/store/state';
 
+import { version } from '../../package.json';
 import { STEPFORM_REGISTRY } from './formlib';
 
 @Component({
@@ -50,6 +52,8 @@ import { STEPFORM_REGISTRY } from './formlib';
   },
 })
 export default class QueryBuilder extends Vue {
+  version = version; // display the current version of the package
+
   @VQBModule.State currentStepFormName!: PipelineStepName;
   @VQBModule.State stepFormInitialValue!: object;
   @VQBModule.State stepFormDefaults!: object;

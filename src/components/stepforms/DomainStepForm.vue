@@ -1,6 +1,6 @@
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="editedStep.name" />
+    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
     <AutocompleteWidget
       class="domainInput"
       v-model="editedStep.domain"

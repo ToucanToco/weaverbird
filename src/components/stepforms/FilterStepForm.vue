@@ -1,6 +1,6 @@
 <template>
   <div class="filter-form">
-    <StepFormHeader :title="title" :stepName="this.editedStep.name" />
+    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
     <div class="filter-form__info">Filter rows matching this condition:</div>
     <FilterEditor
       :filter-tree="this.editedStep.condition"

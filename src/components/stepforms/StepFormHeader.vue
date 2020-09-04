@@ -10,6 +10,7 @@
         :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`"
         target="_blank"
         rel="noopener"
+        :data-version="props.version"
       >
         <i class="fas fa-question-circle" />
       </a>
