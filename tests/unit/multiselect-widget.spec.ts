@@ -154,6 +154,31 @@ describe('Widget Multiselect', () => {
     expect(wrapper.emitted().input[0][0]).toStrictEqual([{ name: 'a' }]);
   });
 
+  describe('when editing a variable', () => {
+    let wrapper: any;
+    beforeEach(() => {
+      wrapper = mount(MultiSelectWidget, {
+        propsData: {
+          value: ['{{ var1 }}'],
+          variableDelimiters: { start: '{{', end: '}}' },
+        },
+      });
+    });
+    it('should update value ...', async () => {
+      const variableInput = wrapper.find(MultiVariableInput);
+      variableInput.vm.$emit('input', ['{{ var1 }}', '{{ var2 }}']);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input[0][0]).toStrictEqual(['{{ var1 }}', '{{ var2 }}']);
+    });
+    it('... even if previous value is undefined', async () => {
+      wrapper.setProps({ value: undefined });
+      const variableInput = wrapper.find(MultiVariableInput);
+      variableInput.vm.$emit('input', ['{{ var1 }}']);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input[0][0]).toStrictEqual(['{{ var1 }}']);
+    });
+  });
+
   describe('when editing an advanced variable', () => {
     let wrapper: any;
     beforeEach(() => {
