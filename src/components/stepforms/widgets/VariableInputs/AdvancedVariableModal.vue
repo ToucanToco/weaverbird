@@ -199,18 +199,4 @@ strong.vqb-modal__text {
   opacity: 0.5;
   cursor: not-allowed;
 }
-
-.codeInput {
-  height: 200px;
-  margin: 0;
-
-  /deep/ .view-lines,
-  /deep/ .margin {
-    background: #fafafa;
-  }
-
-  /deep/ .glyph-margin {
-    background: #eeeeee;
-  }
-}
 </style>
