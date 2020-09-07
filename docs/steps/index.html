@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-09-07T14:37:38+02:00" />
+<meta property="article:published_time" content="2020-09-07T17:10:26+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-09-07T14:37:38+02:00","dateModified":"2020-09-07T14:37:38+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-09-07T17:10:26+02:00","dateModified":"2020-09-07T17:10:26+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -4268,12 +4268,35 @@ always increases by 1 at most).</p>
 
 <h3 id="rename-step"><code class="highlighter-rouge">rename</code> step</h3>
 
-<p>Rename a column.,</p>
+<p>Rename one or several columns.
+The <code class="highlighter-rouge">toRename</code> parameter takes as input a list of 2-elements lists in the form
+[‘oldColumnName’, ‘newColumnName’].</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
     <span class="nl">name</span><span class="p">:</span> <span class="s1">'rename'</span><span class="p">,</span>
-    <span class="nx">oldname</span><span class="p">:</span> <span class="s1">'old-column-name'</span><span class="p">,</span>
-    <span class="nx">newname</span><span class="p">:</span> <span class="s1">'new-column-name'</span>
+    <span class="nx">toRename</span><span class="p">:</span> <span class="p">[</span>
+      <span class="p">[</span><span class="s1">'oldCol1'</span><span class="p">,</span> <span class="s1">'newCol1'</span><span class="p">]</span> <span class="c1">// The first value is the column to be renamed, the second is the new column name</span>
+      <span class="p">[</span><span class="s1">'oldCol2'</span><span class="p">,</span> <span class="s1">'newCol2'</span><span class="p">]</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>Deprecated note:</strong></p>
+
+<p>The <code class="highlighter-rouge">oldname</code> and <code class="highlighter-rouge">newnname</code> parameters are deprecated and are support only for
+retrocompatibility purposes.
+When this step was first created, only 1 column at a time could be renamed, and
+the step was configured via 2 parameters, <code class="highlighter-rouge">oldname</code> and <code class="highlighter-rouge">newnname</code>, that are now
+deprecated and supported only for retrocompatibility purposes.
+An old-fashioned step with <code class="highlighter-rouge">oldname</code> set to ‘old’ and <code class="highlighter-rouge">newname</code> set to ‘new’
+is equivalent to a new-fashioned step with <code class="highlighter-rouge">toRename</code> parameter set to [‘old’, ‘new’].</p>
+
+<p>So an old-fashioned step looks like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="nl">name</span><span class="p">:</span> <span class="s1">'rename'</span><span class="p">,</span>
+    <span class="nx">oldname</span><span class="p">:</span> <span class="s1">'old-column-name'</span><span class="p">,</span> <span class="c1">// optional and deprecated</span>
+    <span class="nx">newname</span><span class="p">:</span> <span class="s1">'new-column-name'</span>  <span class="c1">// optional and deprecated</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
