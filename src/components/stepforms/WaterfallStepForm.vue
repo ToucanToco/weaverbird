@@ -119,9 +119,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class WaterfallStepForm extends BaseStepForm<WaterfallStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

@@ -71,10 +71,10 @@ export default class InputNumberWidget extends Mixins(FormWidget) {
   max!: number;
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   isFocused = false;
 

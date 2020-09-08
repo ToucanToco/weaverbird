@@ -103,9 +103,9 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
   withExample!: boolean;
 
   @Prop()
-  availableVariables!: VariablesBucket[];
+  availableVariables?: VariablesBucket;
 
-  @Prop()
+  @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
   editedValue: string[] | object[] = [];

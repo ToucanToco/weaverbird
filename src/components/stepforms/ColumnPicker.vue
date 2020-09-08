@@ -40,10 +40,10 @@ export default class ColumnPicker extends Vue {
   value!: string;
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   // Whether the column data of ColumnPicker should react to a change of
   // selected column

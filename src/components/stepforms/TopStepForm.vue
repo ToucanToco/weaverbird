@@ -70,9 +70,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class TopStepForm extends BaseStepForm<TopStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'top', rank_on: '', sort: 'asc' }) })
   initialStepValue!: TopStep;

@@ -49,10 +49,10 @@ export default class AggregationWidget extends Vue {
   errors!: ErrorObject[];
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   @VQBModule.Getter columnNames!: string[];
 

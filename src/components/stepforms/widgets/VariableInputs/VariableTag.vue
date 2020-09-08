@@ -46,7 +46,7 @@ export default class VariableTag extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop()
+  @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
   /**

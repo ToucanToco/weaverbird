@@ -60,10 +60,10 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   docUrl!: string | undefined;
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   updateValue(newValue?: string) {
     this.$emit('input', newValue);

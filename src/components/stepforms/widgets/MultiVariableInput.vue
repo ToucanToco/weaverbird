@@ -34,10 +34,10 @@ export default class MultiVariableInput extends Vue {
   value!: any[];
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   @Prop({ default: () => '' })
   editedAdvancedVariable!: string;
