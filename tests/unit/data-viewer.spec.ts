@@ -304,48 +304,73 @@ describe('Data Viewer', () => {
       expect(wrapper.findAll('DataTypesMenu-stub').at(0).vm.$props.visible).toBeFalsy();
     });
 
-    it('should close the menu when the dataset is changed', async () => {
-      const store = setupMockStore(
-        buildStateWithOnePipeline([], {
+    describe('changing columns', () => {
+      let store: any, wrapper: any;
+      const createWrapper = () => {
+        store = setupMockStore(
+          buildStateWithOnePipeline([], {
+            dataset: {
+              headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+              data: [
+                ['value1', 'value2', 'value3'],
+                ['value4', 'value5', 'value6'],
+                ['value7', 'value8', 'value9'],
+                ['value10', 'value11', 'value12'],
+                ['value13', 'value14', 'value15'],
+              ],
+              paginationContext: {
+                totalCount: 50,
+                pagesize: 10,
+                pageno: 1,
+              },
+            },
+          }),
+        );
+        wrapper = shallowMount(DataViewer, { store, localVue });
+      };
+
+      it('should close the menu when the dataset is changed ...', async () => {
+        createWrapper();
+        const actionMenuWrapperArray = wrapper.findAll('.data-viewer__header-action');
+        expect(actionMenuWrapperArray.length).toEqual(3);
+
+        const oneActionMenuIcon = actionMenuWrapperArray.at(0);
+        // there is no ActionMenu visible yet:
+        expect(oneActionMenuIcon.find('ActionMenu-stub').exists()).toBeFalsy;
+        // on click on icon:
+        await oneActionMenuIcon.trigger('click');
+        // it should display ActionMenu:
+        const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
+        expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
+        // change the dataset
+        store.commit('vqb/setDataset', {
           dataset: {
             headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-            data: [
-              ['value1', 'value2', 'value3'],
-              ['value4', 'value5', 'value6'],
-              ['value7', 'value8', 'value9'],
-              ['value10', 'value11', 'value12'],
-              ['value13', 'value14', 'value15'],
-            ],
-            paginationContext: {
-              totalCount: 50,
-              pagesize: 10,
-              pageno: 1,
-            },
+            data: [['value1', 'value2', 'value3']],
           },
-        }),
-      );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
-
-      const actionMenuWrapperArray = wrapper.findAll('.data-viewer__header-action');
-      expect(actionMenuWrapperArray.length).toEqual(3);
-
-      const oneActionMenuIcon = actionMenuWrapperArray.at(0);
-      // there is no ActionMenu visible yet:
-      expect(oneActionMenuIcon.find('ActionMenu-stub').exists()).toBeFalsy;
-      // on click on icon:
-      await oneActionMenuIcon.trigger('click');
-      // it should display ActionMenu:
-      const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
-      expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
-      // change the dataset
-      store.commit('vqb/setDataset', {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [['value1', 'value2', 'value3']],
-        },
+        });
+        // the Action menu disappear:
+        expect(actionMenuOpened.vm.$props.visible).toBeFalsy();
       });
-      // the Action menu disappear:
-      expect(actionMenuOpened.vm.$props.visible).toBeFalsy();
+
+      it('... but not when headers are not modified', async () => {
+        createWrapper();
+        await wrapper
+          .findAll('.data-viewer__header-action')
+          .at(0)
+          .trigger('click');
+        const actionMenuOpened = wrapper.findAll('ActionMenu-stub').at(0);
+        expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
+        // load the values for columnA
+        store.commit('vqb/setDataset', {
+          dataset: {
+            headers: [{ name: 'columnA', loaded: true }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [['value1', 'value2', 'value3']],
+          },
+        });
+        // the action menu is still opened:
+        expect(actionMenuOpened.vm.$props.visible).toBeTruthy();
+      });
     });
 
     it('should not have an icon "data type menu" for not supported backends', () => {
