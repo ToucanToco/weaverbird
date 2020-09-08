@@ -45,9 +45,9 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'text', new_column: '', text: '' }) })
   initialStepValue!: AddTextColumnStep;

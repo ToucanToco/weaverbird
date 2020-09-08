@@ -69,9 +69,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'cumsum', valueColumn: '', referenceColumn: '' }) })
   initialStepValue!: CumSumStep;

@@ -74,9 +74,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class RankStepForm extends BaseStepForm<RankStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

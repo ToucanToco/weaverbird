@@ -52,10 +52,10 @@ export default class FilterEditor extends Vue {
   columnNames!: string[];
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Boolean, default: true })
   multiVariable!: boolean; // display multiInputText as multiVariableInput

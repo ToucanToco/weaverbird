@@ -47,9 +47,9 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class ArgminStepForm extends BaseStepForm<ArgminStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'argmin', column: '' }) })
   initialStepValue!: ArgminStep;

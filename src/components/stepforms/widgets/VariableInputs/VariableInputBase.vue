@@ -65,7 +65,7 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: () => [] })
   value!: string[];
 
-  @Prop()
+  @Prop({ default: undefined })
   availableVariables!: VariablesBucket;
 
   @Prop({ default: () => ({ start: '{{', end: '}}' }) })

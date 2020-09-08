@@ -45,9 +45,9 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
 
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   readonly title: string = 'Filter';
 

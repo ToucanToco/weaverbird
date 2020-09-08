@@ -53,9 +53,9 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class SplitStepForm extends BaseStepForm<SplitStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

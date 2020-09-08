@@ -91,10 +91,10 @@ export default class ListWidget extends Mixins(FormWidget) {
   dataPath!: string;
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   get children() {
     const valueCopy = [...this.value];

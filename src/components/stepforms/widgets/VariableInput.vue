@@ -50,9 +50,9 @@ export default class VariableInput extends Vue {
   value!: any;
 
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
-  @Prop()
+  @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
   @Prop({ default: false })

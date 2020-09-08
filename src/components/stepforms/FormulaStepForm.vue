@@ -45,9 +45,9 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({ type: Object, default: () => ({ name: 'formula', new_column: '', formula: '' }) })
   initialStepValue!: FormulaStep;

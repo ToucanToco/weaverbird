@@ -133,10 +133,10 @@ import { VQBModule } from '@/store';
 })
 export default class IfThenElseWidget extends Vue {
   @Prop()
-  availableVariables!: VariablesBucket;
+  availableVariables?: VariablesBucket;
 
   @Prop()
-  variableDelimiters!: VariableDelimiters;
+  variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,

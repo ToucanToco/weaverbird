@@ -58,9 +58,9 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class ConcatenateStepForm extends BaseStepForm<ConcatenateStep> {
-  @VQBModule.State availableVariables!: VariablesBucket;
+  @VQBModule.State availableVariables?: VariablesBucket;
 
-  @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
 
   @Prop({
     type: Object,
