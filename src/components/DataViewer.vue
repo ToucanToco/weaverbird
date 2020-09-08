@@ -58,6 +58,7 @@
   <div class="data-viewer data-viewer--no-pipeline" v-else />
 </template>
 <script lang="ts">
+import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
@@ -210,9 +211,19 @@ export default class DataViewer extends Vue {
    * It makes sense to close them when the headers change.
    */
   @Watch('columnHeaders')
-  onSelectedColumnsChange() {
-    this.closeMenu();
-    this.closeDataTypeMenu();
+  onSelectedColumnsChange(before: any, after: any) {
+    // we compare old header to new header
+    const columnsDifferences: DataSetColumn[] = _.differenceWith(before, after, _.isEqual);
+    // if the difference is only on one column with same name that active one ...
+    const isModifyingTheSameColumn =
+      columnsDifferences.length === 1 &&
+      columnsDifferences[0].name === this.activeActionMenuColumnName;
+    // ... we won't close the menu because we are just editing a col (ex: loadAllValues )
+    if (!isModifyingTheSameColumn) {
+      // but we close it if changing the headers
+      this.closeMenu();
+      this.closeDataTypeMenu();
+    }
   }
 }
 </script>
