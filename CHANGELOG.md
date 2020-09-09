@@ -1,14 +1,22 @@
 # Changelog
 
+## [0.25.1] - 2020-09-09
+
+### Fixes
+
+- CodeEditor: rework the `setAvailableCodeEditors` public export
+
 ## [0.25.0] - 2020-09-08
 
 ### Added
+
 - CodeEditor: replace `setCodeEditor` by `setAvailableCodeEditors` to set specific config for a CodeEditor
 - Rename step: allow multiple columns renaming at once
 - Variables: use advanced variables in variable inputs
 - Version: display current version of package in documentation link
 
 ### Fixes
+
 - Templating: add support in various steps
 - Action menu: keep menu open when using `load all values`
 
@@ -432,6 +440,7 @@
 
 - Initial version, showtime!
 
+[0.25.1]: https://github.com/ToucanToco/weaverbird/compare/v0.25.0...v0.25.1
 [0.25.0]: https://github.com/ToucanToco/weaverbird/compare/v0.24.0...v0.25.0
 [0.24.0]: https://github.com/ToucanToco/weaverbird/compare/v0.23.2...v0.24.0
 [0.23.2]: https://github.com/ToucanToco/weaverbird/compare/v0.23.1...v0.23.2

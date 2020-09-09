@@ -25,7 +25,7 @@ let CodeEditor: CodeEditorConfig = DefaultCodeEditor;
 type CodeEditorConfigs = { [name: string]: CodeEditorConfig };
 let CodeEditorConfigs: CodeEditorConfigs = {};
 
-export function setAvailableCodeEditors({
+function setAvailableCodeEditors({
   configs,
   defaultConfig,
 }: {
@@ -40,4 +40,4 @@ export function setAvailableCodeEditors({
       : Object.values(CodeEditorConfigs)[0];
 }
 
-export { CodeEditor, CodeEditorConfigs };
+export { CodeEditor, CodeEditorConfigs, setAvailableCodeEditors };
