@@ -4,8 +4,6 @@
 
 import _ from 'lodash';
 
-import { ColumnTypeMapping, DataSetColumnType } from '@/lib/dataset';
-import { castFromString } from '@/lib/helpers';
 import { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
@@ -25,17 +23,9 @@ type ConditionType = S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboO
  * @param context the bag of variables
  * @param columnType if specified, the expected output type
  */
-function _interpolate(
-  interpolate: InterpolateFunction,
-  value: any,
-  context: ScopeContext,
-  columnType?: DataSetColumnType,
-) {
+function _interpolate(interpolate: InterpolateFunction, value: any, context: ScopeContext) {
   if (typeof value === 'string') {
-    let interpolated = interpolate(value, context);
-    if (columnType) {
-      interpolated = castFromString(interpolated, columnType);
-    }
+    const interpolated = interpolate(value, context);
     return interpolated;
   }
   return value;
@@ -45,22 +35,16 @@ function interpolateFilterCondition(
   condition: ConditionType,
   interpolate: InterpolateFunction,
   context: ScopeContext,
-  columnTypes?: ColumnTypeMapping,
 ): ConditionType {
   if (S.isFilterComboAnd(condition)) {
     return {
-      and: condition.and.map(cond =>
-        interpolateFilterCondition(cond, interpolate, context, columnTypes),
-      ),
+      and: condition.and.map(cond => interpolateFilterCondition(cond, interpolate, context)),
     };
   } else if (S.isFilterComboOr(condition)) {
     return {
-      or: condition.or.map(cond =>
-        interpolateFilterCondition(cond, interpolate, context, columnTypes),
-      ),
+      or: condition.or.map(cond => interpolateFilterCondition(cond, interpolate, context)),
     };
   } else {
-    const columnType = columnTypes === undefined ? undefined : columnTypes[condition.column];
     switch (condition.operator) {
       case 'eq':
       case 'ne':
@@ -71,14 +55,14 @@ function interpolateFilterCondition(
         return {
           ...condition,
           column: _interpolate(interpolate, condition.column, context),
-          value: _interpolate(interpolate, condition.value, context, columnType),
+          value: _interpolate(interpolate, condition.value, context),
         };
       case 'in':
       case 'nin':
         return {
           ...condition,
           column: _interpolate(interpolate, condition.column, context),
-          value: condition.value.map(v => _interpolate(interpolate, v, context, columnType)),
+          value: condition.value.map(v => _interpolate(interpolate, v, context)),
         };
       case 'isnull':
       case 'notnull':
@@ -97,10 +81,9 @@ function interpolateIfThenElse(
   ifthenelse: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
   interpolateFunc: InterpolateFunction,
   context: ScopeContext,
-  columnTypes?: ColumnTypeMapping,
 ): Omit<S.IfThenElseStep, 'name' | 'newColumn'> {
   const ret = {
-    if: interpolateFilterCondition(ifthenelse.if, interpolateFunc, context, columnTypes),
+    if: interpolateFilterCondition(ifthenelse.if, interpolateFunc, context),
     then: _interpolate(interpolateFunc, ifthenelse.then, context),
   };
   if (typeof ifthenelse.else === 'string') {
@@ -111,7 +94,7 @@ function interpolateIfThenElse(
   }
   return {
     ...ret,
-    else: interpolateIfThenElse(ifthenelse.else, interpolateFunc, context, columnTypes),
+    else: interpolateIfThenElse(ifthenelse.else, interpolateFunc, context),
   };
 }
 
@@ -129,17 +112,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
    * known column types: will be used to automatically cast interpolated values
    * if column type matches.
    */
-  columnTypes: ColumnTypeMapping;
   interpolateFunc: InterpolateFunction;
 
-  constructor(
-    interpolateFunc: InterpolateFunction,
-    context: ScopeContext,
-    columnTypes: ColumnTypeMapping = {},
-  ) {
+  constructor(interpolateFunc: InterpolateFunction, context: ScopeContext) {
     this.interpolateFunc = interpolateFunc;
     this.context = context;
-    this.columnTypes = columnTypes;
   }
 
   append(step: Readonly<S.AppendStep>) {
@@ -242,24 +219,14 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   fillna(step: Readonly<S.FillnaStep>) {
     return {
       ...step,
-      value: _interpolate(
-        this.interpolateFunc,
-        step.value,
-        this.context,
-        this.columnTypes[step.column],
-      ),
+      value: _interpolate(this.interpolateFunc, step.value, this.context),
     };
   }
 
   filter(step: Readonly<S.FilterStep>) {
     return {
       ...step,
-      condition: interpolateFilterCondition(
-        step.condition,
-        this.interpolateFunc,
-        this.context,
-        this.columnTypes,
-      ),
+      condition: interpolateFilterCondition(step.condition, this.interpolateFunc, this.context),
     };
   }
 
@@ -281,7 +248,6 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
         _.omit(step, ['name', 'newColumn']),
         this.interpolateFunc,
         this.context,
-        this.columnTypes,
       ),
     };
   }
@@ -322,10 +288,9 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   replace(step: Readonly<S.ReplaceStep>) {
-    const coltype = this.columnTypes[step.search_column];
     const toReplace = step.to_replace.map(([oldvalue, newvalue]) => [
-      _interpolate(this.interpolateFunc, oldvalue, this.context, coltype),
-      _interpolate(this.interpolateFunc, newvalue, this.context, coltype),
+      _interpolate(this.interpolateFunc, oldvalue, this.context),
+      _interpolate(this.interpolateFunc, newvalue, this.context),
     ]);
     return { ...step, to_replace: toReplace };
   }

@@ -297,7 +297,18 @@ async function buildVueApp() {
         currentDomain: 'sales',
         translator: TRANSLATOR,
         // use lodash interpolate
-        interpolateFunc: (value, context) => _.template(value)(context),
+        interpolateFunc: (value, context) => {
+          if (typeof(value) === 'string' && value.match(new RegExp('^' + _.templateSettings.interpolate.source + '$'))) {
+            let result;
+            with (context) {
+              // Unsafe! but fine for this simple playground
+              result = eval(value.match(new RegExp('^' + _.templateSettings.interpolate.source + '$'))[0]);
+            }
+            return result;
+          } else {
+            return _.template(value)(context);
+          }
+        },
         variables: {
           value1: 2,
           value2: 13,

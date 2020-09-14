@@ -1,8 +1,6 @@
 /**
  * define what the application state looks like.
  */
-import _fromPairs from 'lodash/fromPairs';
-
 import { BackendError, BackendWarning } from '@/lib/backend-response';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
@@ -199,8 +197,7 @@ export function preparePipeline(pipeline: Pipeline, state: VQBState) {
     pipeline = dereferencePipelines(pipeline, pipelines);
   }
   if (interpolateFunc && variables && Object.keys(variables).length) {
-    const columnTypes = _fromPairs(state.dataset.headers.map(col => [col.name, col.type]));
-    const interpolator = new PipelineInterpolator(interpolateFunc, variables, columnTypes);
+    const interpolator = new PipelineInterpolator(interpolateFunc, variables);
     pipeline = interpolator.interpolate(pipeline);
   }
   return pipeline;
