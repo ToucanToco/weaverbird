@@ -1,6 +1,5 @@
 import _ from 'lodash';
 
-import { ColumnTypeMapping } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { PipelineInterpolator, ScopeContext } from '@/lib/templating';
 
@@ -16,12 +15,8 @@ describe('Pipeline interpolator', () => {
     age: 42,
   };
 
-  function translate(
-    pipeline: Pipeline,
-    context = defaultContext,
-    columnTypes?: ColumnTypeMapping,
-  ) {
-    const pipelineInterpolator = new PipelineInterpolator(interpolate, context, columnTypes);
+  function translate(pipeline: Pipeline, context = defaultContext) {
+    const pipelineInterpolator = new PipelineInterpolator(interpolate, context);
     return pipelineInterpolator.interpolate(pipeline);
   }
 
@@ -286,11 +281,7 @@ describe('Pipeline interpolator', () => {
         value: '<%= age %>',
       },
     ];
-    expect(
-      translate(pipeline, defaultContext, {
-        column1: 'integer',
-      }),
-    ).toEqual([
+    expect(translate(pipeline, defaultContext)).toEqual([
       {
         name: 'fillna',
         column: 'column1',
@@ -350,7 +341,7 @@ describe('Pipeline interpolator', () => {
         },
       },
     ];
-    expect(translate(step, defaultContext, { foo: 'integer' })).toEqual([
+    expect(translate(step, defaultContext)).toEqual([
       {
         name: 'filter',
         condition: {
@@ -645,13 +636,7 @@ describe('Pipeline interpolator', () => {
         },
       },
     ];
-    expect(
-      translate(
-        step,
-        { ...defaultContext, truth: 'true' },
-        { column1: 'integer', column2: 'boolean' },
-      ),
-    ).toEqual([
+    expect(translate(step, { ...defaultContext, truth: 'true' })).toEqual([
       {
         name: 'filter',
         condition: {
@@ -753,13 +738,7 @@ describe('Pipeline interpolator', () => {
         },
       },
     ];
-    expect(
-      translate(
-        step,
-        { ...defaultContext, truth: 'true' },
-        { column1: 'integer', column2: 'boolean' },
-      ),
-    ).toEqual([
+    expect(translate(step, { ...defaultContext, truth: 'true' })).toEqual([
       {
         name: 'filter',
         condition: {
@@ -922,7 +901,7 @@ describe('Pipeline interpolator', () => {
         ],
       },
     ];
-    expect(translate(pipeline, defaultContext, { column1: 'integer' })).toEqual([
+    expect(translate(pipeline, defaultContext)).toEqual([
       {
         name: 'replace',
         search_column: 'column1',
