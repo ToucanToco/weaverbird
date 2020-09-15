@@ -398,3 +398,31 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return callback.bind(this)(step);
   }
 }
+
+const aloneVarsRegExp = new RegExp('^' + (_.templateSettings.interpolate as RegExp).source + '$');
+
+/**
+ * A simple interpolate function, provided as an example.
+ *
+ * It's based on lodash templates (which looks like embedded Ruby, but executes JavaScript),
+ * with an important twist: if a variable is provided "alone", i.e. with no surrounding
+ * characters, then it returns the variable value untouched and not coerced to a string.
+ *
+ * Examples:
+ * - `exampleInterpolateFunc('<%= count %>', { count: 42 })` returns `42`
+ * - `exampleInterpolateFunc('<%= 2 > 1 %>', {})` returns `true`
+ * - `exampleInterpolateFunc('There is <%= count %> bananas', { count: 42 })` returns `'There is 42 bananas'`
+ */
+export const exampleInterpolateFunc: InterpolateFunction = function(
+  value: string,
+  context: ScopeContext,
+) {
+  if (typeof value === 'string' && value.match(aloneVarsRegExp)) {
+    return Function(
+      'context',
+      `with(context) { return ${(value.match(aloneVarsRegExp) as string[])[1]} }`,
+    )(context);
+  } else {
+    return _.template(value)(context);
+  }
+};

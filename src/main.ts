@@ -36,3 +36,6 @@ export {
   // Utility components
   FilterEditor,
 };
+
+// export helpers/utils
+export { exampleInterpolateFunc } from '@/lib/templating';
