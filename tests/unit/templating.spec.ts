@@ -1,12 +1,5 @@
-import _ from 'lodash';
-
 import { Pipeline } from '@/lib/steps';
-import { PipelineInterpolator, ScopeContext } from '@/lib/templating';
-
-function interpolate(value: string, context: ScopeContext) {
-  const compiled = _.template(value);
-  return compiled(context);
-}
+import { exampleInterpolateFunc, PipelineInterpolator, ScopeContext } from '@/lib/templating';
 
 describe('Pipeline interpolator', () => {
   const defaultContext: ScopeContext = {
@@ -16,7 +9,7 @@ describe('Pipeline interpolator', () => {
   };
 
   function translate(pipeline: Pipeline, context = defaultContext) {
-    const pipelineInterpolator = new PipelineInterpolator(interpolate, context);
+    const pipelineInterpolator = new PipelineInterpolator(exampleInterpolateFunc, context);
     return pipelineInterpolator.interpolate(pipeline);
   }
 
@@ -268,7 +261,7 @@ describe('Pipeline interpolator', () => {
       {
         name: 'fillna',
         column: '<%= foo %>',
-        value: '42',
+        value: 42,
       },
     ]);
   });
@@ -323,7 +316,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: '42',
+          value: 42,
           operator: 'eq',
         },
       },
@@ -369,7 +362,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: '42',
+          value: 42,
           operator: 'ne',
         },
       },
@@ -392,7 +385,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: '42',
+          value: 42,
           operator: 'lt',
         },
       },
@@ -415,7 +408,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: '42',
+          value: 42,
           operator: 'le',
         },
       },
@@ -438,7 +431,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: '42',
+          value: 42,
           operator: 'gt',
         },
       },
@@ -461,7 +454,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: '42',
+          value: 42,
           operator: 'ge',
         },
       },
@@ -484,7 +477,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: [11, '42', 'spam', 'hola'],
+          value: [11, 42, 'spam', 'hola'],
           operator: 'in',
         },
       },
@@ -507,7 +500,7 @@ describe('Pipeline interpolator', () => {
         name: 'filter',
         condition: {
           column: 'bar',
-          value: [11, '42', 'spam', 'hola'],
+          value: [11, 42, 'spam', 'hola'],
           operator: 'nin',
         },
       },
@@ -592,7 +585,7 @@ describe('Pipeline interpolator', () => {
           and: [
             {
               column: 'bar',
-              value: [11, '42', 'spam', 'hola'],
+              value: [11, 42, 'spam', 'hola'],
               operator: 'nin',
             },
             {
@@ -636,14 +629,14 @@ describe('Pipeline interpolator', () => {
         },
       },
     ];
-    expect(translate(step, { ...defaultContext, truth: 'true' })).toEqual([
+    expect(translate(step, { ...defaultContext, truth: true })).toEqual([
       {
         name: 'filter',
         condition: {
           and: [
             {
               column: 'bar',
-              value: [11, '42', 'spam', 'hola'],
+              value: [11, 42, 'spam', 'hola'],
               operator: 'nin',
             },
             {
@@ -694,7 +687,7 @@ describe('Pipeline interpolator', () => {
           or: [
             {
               column: 'bar',
-              value: [11, '42', 'spam', 'hola'],
+              value: [11, 42, 'spam', 'hola'],
               operator: 'nin',
             },
             {
@@ -738,14 +731,14 @@ describe('Pipeline interpolator', () => {
         },
       },
     ];
-    expect(translate(step, { ...defaultContext, truth: 'true' })).toEqual([
+    expect(translate(step, { ...defaultContext, truth: true })).toEqual([
       {
         name: 'filter',
         condition: {
           or: [
             {
               column: 'bar',
-              value: [11, '42', 'spam', 'hola'],
+              value: [11, 42, 'spam', 'hola'],
               operator: 'nin',
             },
             {
@@ -873,7 +866,7 @@ describe('Pipeline interpolator', () => {
         name: 'replace',
         search_column: '<%= age %>',
         to_replace: [
-          ['<%= age %>', '12'],
+          ['<%= age %>', 12],
           ['what?', '<%= age %>'],
         ],
       },
@@ -883,8 +876,8 @@ describe('Pipeline interpolator', () => {
         name: 'replace',
         search_column: '<%= age %>',
         to_replace: [
-          ['42', '12'],
-          ['what?', '42'],
+          [42, 12],
+          ['what?', 42],
         ],
       },
     ]);
@@ -896,8 +889,8 @@ describe('Pipeline interpolator', () => {
         name: 'replace',
         search_column: 'column1',
         to_replace: [
-          ['<%= age %>', '12'],
-          ['13', '<%= age %>'],
+          ['<%= age %>', 12],
+          [13, '<%= age %>'],
         ],
       },
     ];
@@ -1170,9 +1163,9 @@ describe('Pipeline interpolator', () => {
       {
         name: 'ifthenelse',
         newColumn: '<%= foo %>',
-        if: { and: [{ column: 'bar', operator: 'eq', value: '42' }] },
+        if: { and: [{ column: 'bar', operator: 'eq', value: 42 }] },
         then: 'bar',
-        else: '42',
+        else: 42,
       },
     ]);
   });
@@ -1195,12 +1188,12 @@ describe('Pipeline interpolator', () => {
       {
         name: 'ifthenelse',
         newColumn: '<%= foo %>',
-        if: { and: [{ column: 'bar', operator: 'eq', value: '42' }] },
+        if: { and: [{ column: 'bar', operator: 'eq', value: 42 }] },
         then: 'bar',
         else: {
-          if: { and: [{ column: 'bar', operator: 'eq', value: '42' }] },
+          if: { and: [{ column: 'bar', operator: 'eq', value: 42 }] },
           then: 'bar',
-          else: '42',
+          else: 42,
         },
       },
     ]);
