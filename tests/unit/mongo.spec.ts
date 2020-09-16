@@ -1201,7 +1201,7 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a fillna step', () => {
+  it('can generate a fillna  old fashion', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
@@ -1212,6 +1212,27 @@ describe('Pipeline to mongo translator', () => {
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a fillna  new fashion', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'fillna',
+        column: ['foo', 'toto', 'tata'],
+        value: 'bar',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: { $ifNull: ['$foo', 'bar'] },
+          toto: { $ifNull: ['$toto', 'bar'] },
+          tata: { $ifNull: ['$tata', 'bar'] },
+        },
+      },
       { $project: { _id: 0 } },
     ]);
   });

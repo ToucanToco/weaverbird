@@ -544,6 +544,21 @@ function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
   ];
 }
 
+/** transform a 'fillna' step into corresponding mongo steps */
+function transformFillna(step: Readonly<S.FillnaStep>): MongoStep {
+  let cols: string[] = [];
+  if (typeof step.column === 'string') {
+    // For retrocompatibility with old configurations
+    cols = [step.column];
+  } else {
+    cols = [...step.column];
+  }
+
+  const addFields = Object.fromEntries(cols.map(x => [x, { $ifNull: [$$(x), step.value] }]));
+
+  return { $addFields: addFields };
+}
+
 /** transform a 'filter' step into corresponding mongo step */
 function transformFilterStep(step: Readonly<S.FilterStep>): MongoStep {
   const condition = step.condition;
@@ -1475,13 +1490,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     $addFields: { [step.new_column_name]: $$(step.column) },
   }),
   evolution: transformEvolution,
-  fillna: (step: Readonly<S.FillnaStep>) => ({
-    $addFields: {
-      [step.column]: {
-        $ifNull: [$$(step.column), step.value],
-      },
-    },
-  }),
+  fillna: transformFillna,
   filter: transformFilterStep,
   formula: (step: Readonly<S.FormulaStep>) => {
     return {

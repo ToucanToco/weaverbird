@@ -8,13 +8,25 @@ export default {
       enum: ['fillna'],
     },
     column: {
-      type: 'string',
-      minLength: 1,
-      title: 'Column in which to fill null values',
-      description: 'Column in which to fill null values',
-      attrs: {
-        placeholder: 'Enter a column',
-      },
+      anyOf: [
+        {
+          type: 'string',
+          minLength: 1,
+          title: 'Column in which to fill null values',
+          description: 'Column in which to fill null values',
+          attrs: { placeholder: 'Enter a column' },
+        },
+        {
+          type: 'array',
+          items: {
+            type: 'string',
+            minLength: 1,
+          },
+          title: 'Columns in which to fill null values',
+          description: 'Columns in which to fill null values',
+          attrs: { placeholder: 'Select a column' },
+        },
+      ],
     },
     value: {
       type: ['string', 'number', 'boolean'],
