@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-09-15T13:26:36+02:00" />
+<meta property="article:published_time" content="2020-09-16T12:40:39+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-09-15T13:26:36+02:00","dateModified":"2020-09-15T13:26:36+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-09-16T12:40:39+02:00","dateModified":"2020-09-16T12:40:39+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -2627,14 +2627,20 @@ prohibited.</p>
 
 <h3 id="fillna-step"><code class="highlighter-rouge">fillna</code> step</h3>
 
-<p>Replace null values by a given value in a column.</p>
+<p>Replace null values by a given value in specified columns.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
     <span class="nl">name</span><span class="p">:</span> <span class="s1">'fillna'</span><span class="p">,</span>
-    <span class="nx">column</span><span class="p">:</span> <span class="s2">"foo"</span><span class="p">,</span>
+    <span class="nx">column</span><span class="p">:</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">],</span>
     <span class="nx">value</span><span class="p">:</span> <span class="s2">"bar"</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
+<p><strong>Deprecation note:</strong></p>
+
+<p>The <code class="highlighter-rouge">column</code> parameter can be a simple string as when the step was first created,
+only one column could be specified. Simple strings are supported only for
+retrocompatibility purposes.</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
@@ -2653,6 +2659,7 @@ prohibited.</p>
       <th>Company</th>
       <th>Group</th>
       <th>Value</th>
+      <th>KPI</th>
     </tr>
   </thead>
   <tbody>
@@ -2660,31 +2667,37 @@ prohibited.</p>
       <td>Company 1</td>
       <td>Group 1</td>
       <td>13</td>
+      <td> </td>
     </tr>
     <tr>
       <td>Company 2</td>
       <td>Group 1</td>
       <td> </td>
+      <td>12</td>
     </tr>
     <tr>
       <td>Company 3</td>
       <td>Group 1</td>
       <td>20</td>
+      <td>40</td>
     </tr>
     <tr>
       <td>Company 4</td>
       <td>Group 2</td>
       <td>1</td>
+      <td> </td>
     </tr>
     <tr>
       <td>Company 5</td>
       <td>Group 2</td>
       <td> </td>
+      <td>38</td>
     </tr>
     <tr>
       <td>Company 6</td>
       <td>Group 2</td>
       <td>5</td>
+      <td>4</td>
     </tr>
   </tbody>
 </table>
@@ -2693,7 +2706,7 @@ prohibited.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
   <span class="nl">name</span><span class="p">:</span> <span class="s1">'fillna'</span><span class="p">,</span>
-  <span class="nx">column</span><span class="p">:</span> <span class="s2">"Value"</span><span class="p">,</span>
+  <span class="nx">column</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Value"</span><span class="p">,</span> <span class="s2">"KPI"</span><span class="p">],</span>
   <span class="nx">value</span><span class="p">:</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -2706,6 +2719,7 @@ prohibited.</p>
       <th>Company</th>
       <th>Group</th>
       <th>Value</th>
+      <th>KPI</th>
     </tr>
   </thead>
   <tbody>
@@ -2713,31 +2727,37 @@ prohibited.</p>
       <td>Company 1</td>
       <td>Group 1</td>
       <td>13</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Company 2</td>
       <td>Group 1</td>
       <td>0</td>
+      <td>12</td>
     </tr>
     <tr>
       <td>Company 3</td>
       <td>Group 1</td>
       <td>20</td>
+      <td>40</td>
     </tr>
     <tr>
       <td>Company 4</td>
       <td>Group 2</td>
       <td>1</td>
+      <td>0</td>
     </tr>
     <tr>
       <td>Company 5</td>
       <td>Group 2</td>
       <td>0</td>
+      <td>38</td>
     </tr>
     <tr>
       <td>Company 6</td>
       <td>Group 2</td>
       <td>5</td>
+      <td>4</td>
     </tr>
   </tbody>
 </table>
@@ -4281,9 +4301,9 @@ The <code class="highlighter-rouge">toRename</code> parameter takes as input a l
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p><strong>Deprecated note:</strong></p>
+<p><strong>Deprecation note:</strong></p>
 
-<p>The <code class="highlighter-rouge">oldname</code> and <code class="highlighter-rouge">newnname</code> parameters are deprecated and are support only for
+<p>The <code class="highlighter-rouge">oldname</code> and <code class="highlighter-rouge">newnname</code> parameters are deprecated and are supported only for
 retrocompatibility purposes.
 When this step was first created, only 1 column at a time could be renamed, and
 the step was configured via 2 parameters, <code class="highlighter-rouge">oldname</code> and <code class="highlighter-rouge">newnname</code>, that are now
