@@ -140,7 +140,7 @@ export type EvolutionStep = {
 
 export type FillnaStep = {
   name: 'fillna';
-  column: string;
+  column: string | string[];
   value: PrimitiveType;
 };
 

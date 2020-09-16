@@ -1,5 +1,4 @@
 import FillnaStepForm from '@/components/stepforms/FillnaStepForm.vue';
-import { VQBnamespace } from '@/store';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
@@ -8,7 +7,7 @@ describe('Fillna Step Form', () => {
   runner.testInstantiate();
   runner.testExpectedComponents({
     'inputtextwidget-stub': 1,
-    'columnpicker-stub': 1,
+    'multiselectwidget-stub': 1,
   });
 
   runner.testValidationErrors([
@@ -35,12 +34,71 @@ describe('Fillna Step Form', () => {
       },
     }),
     props: {
-      initialStepValue: { name: 'fillna', column: 'foo', value: 'bar' },
+      initialStepValue: { name: 'fillna', column: ['foo', 'toto'], value: 'bar' },
     },
   });
 
   runner.testCancel();
   runner.testResetSelectedIndex();
+
+  it('should update editedStep at creation depending on the selected column', async () => {
+    const initialState = {
+      dataset: {
+        headers: [{ name: 'toto' }, { name: 'foo' }],
+        data: [],
+      },
+      selectedColumns: ['toto'],
+    };
+    const wrapper = runner.shallowMount(initialState, {
+      propsData: {
+        initialStepValue: {
+          name: 'fillna',
+          column: [''],
+        },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.column).toEqual(['toto']);
+  });
+
+  it('should return an error if trying to set a null column', async () => {
+    const initialState = {
+      dataset: {
+        headers: [{ name: 'toto' }, { name: 'foo' }],
+        data: [],
+      },
+      selectedColumns: [null],
+    };
+    try {
+      const wrapper = runner.shallowMount(initialState, {
+        propsData: {
+          initialStepValue: {
+            name: 'fillna',
+            column: [''],
+          },
+        },
+      });
+      await wrapper.vm.$nextTick();
+    } catch (error) {
+      expect(error.message).toBe('should not try to set null on fillna "column" field');
+    }
+  });
+
+  it('should convert editedStep from old configurations to new configuration', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        propsData: {
+          initialStepValue: {
+            name: 'fillna',
+            column: 'hello',
+          },
+        },
+      },
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.column).toEqual(['hello']);
+  });
 
   it('should pass down the value prop to widget value prop', async () => {
     const wrapper = runner.shallowMount();
@@ -59,14 +117,14 @@ describe('Fillna Step Form', () => {
       },
       {
         data: {
-          editedStep: { name: 'fillna', column: 'columnA', value: '42' },
+          editedStep: { name: 'fillna', column: ['columnA'], value: '42' },
         },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', column: 'columnA', value: 42 }]],
+      formSaved: [[{ name: 'fillna', column: ['columnA'], value: 42 }]],
     });
   });
 
@@ -80,14 +138,14 @@ describe('Fillna Step Form', () => {
       },
       {
         data: {
-          editedStep: { name: 'fillna', column: 'columnA', value: '42.3' },
+          editedStep: { name: 'fillna', column: ['columnA'], value: '42.3' },
         },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', column: 'columnA', value: 42.3 }]],
+      formSaved: [[{ name: 'fillna', column: ['columnA'], value: 42.3 }]],
     });
   });
 
@@ -101,18 +159,18 @@ describe('Fillna Step Form', () => {
       },
       {
         data: {
-          editedStep: { name: 'fillna', column: 'columnA', value: 'true' },
+          editedStep: { name: 'fillna', column: ['columnA'], value: 'true' },
         },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    wrapper.setData({ editedStep: { name: 'fillna', column: 'columnA', value: 'false' } });
+    wrapper.setData({ editedStep: { name: 'fillna', column: ['columnA'], value: 'false' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
       formSaved: [
-        [{ name: 'fillna', column: 'columnA', value: true }],
-        [{ name: 'fillna', column: 'columnA', value: false }],
+        [{ name: 'fillna', column: ['columnA'], value: true }],
+        [{ name: 'fillna', column: ['columnA'], value: false }],
       ],
     });
   });
@@ -129,49 +187,13 @@ describe('Fillna Step Form', () => {
         },
       },
       {
-        data: { editedStep: { name: 'fillna', column: 'foo', value: '<%= foo %>' } },
+        data: { editedStep: { name: 'fillna', column: ['foo'], value: '<%= foo %>' } },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', column: 'foo', value: '<%= foo %>' }]],
+      formSaved: [[{ name: 'fillna', column: ['foo'], value: '<%= foo %>' }]],
     });
-  });
-
-  it('should update step when selectedColumn is changed', async () => {
-    const wrapper = runner.shallowMount({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-    });
-    expect(wrapper.vm.$data.editedStep.column).toEqual('');
-    wrapper.vm.$store.commit(VQBnamespace('toggleColumnSelection'), { column: 'columnB' });
-    await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$data.editedStep.column).toEqual('columnB');
-  });
-
-  it('should keep the focus on the column modified after rename validation', async () => {
-    const wrapper = runner.mount(
-      {
-        dataset: {
-          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-          data: [],
-        },
-      },
-      {
-        propsData: {
-          initialStepValue: {
-            name: 'fillna',
-            column: 'columnA',
-            value: '',
-          },
-        },
-      },
-    );
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['columnA']);
   });
 });

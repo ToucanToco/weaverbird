@@ -1,5 +1,12 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- Allow to select multiple columns in fillna step (to fill null values in several
+  columns at once)
+
 ## [0.25.2] - 2020-09-15
 
 ### Fixes

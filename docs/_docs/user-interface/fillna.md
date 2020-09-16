@@ -5,8 +5,8 @@ permalink: /docs/fillna/
 
 ### Fill null values
 
-You can use this step to fill null values in a column with a value of your
-choice.
+You can use this step to fill null values in specified columns with a value of
+your choice.
 
 **This step is supported by the following backends:**
 
@@ -22,7 +22,7 @@ choice.
 
 <img src="../../img/docs/user-interface/fillna_step_form.jpg" width="350" />
 
-- `Replace null values in...`: the target column
+- `Replace null values in...`: the target columns
 
 - `With...`: the value that will replace null values
 

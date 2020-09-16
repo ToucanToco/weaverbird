@@ -972,15 +972,21 @@ prohibited.
 
 ### `fillna` step
 
-Replace null values by a given value in a column.
+Replace null values by a given value in specified columns.
 
 ```javascript
 {
     name: 'fillna',
-    column: "foo",
+    column: ["foo"],
     value: "bar"
 }
 ```
+
+**Deprecation note:**
+
+The `column` parameter can be a simple string as when the step was first created,
+only one column could be specified. Simple strings are supported only for
+retrocompatibility purposes.
 
 **This step is supported by the following backends:**
 
@@ -991,35 +997,35 @@ Replace null values by a given value in a column.
 
 **Input dataset:**
 
-| Company   | Group   | Value |
-| --------- | ------- | ----- |
-| Company 1 | Group 1 | 13    |
-| Company 2 | Group 1 |       |
-| Company 3 | Group 1 | 20    |
-| Company 4 | Group 2 | 1     |
-| Company 5 | Group 2 |       |
-| Company 6 | Group 2 | 5     |
+| Company   | Group   | Value | KPI |
+| --------- | ------- | ----- | --- |
+| Company 1 | Group 1 | 13    |     |
+| Company 2 | Group 1 |       | 12  |
+| Company 3 | Group 1 | 20    | 40  |
+| Company 4 | Group 2 | 1     |     |
+| Company 5 | Group 2 |       | 38  |
+| Company 6 | Group 2 | 5     | 4   |
 
 **Step configuration:**
 
 ```javascript
 {
   name: 'fillna',
-  column: "Value",
+  column: ["Value", "KPI"],
   value: 0
 }
 ```
 
 **Output dataset:**
 
-| Company   | Group   | Value |
-| --------- | ------- | ----- |
-| Company 1 | Group 1 | 13    |
-| Company 2 | Group 1 | 0     |
-| Company 3 | Group 1 | 20    |
-| Company 4 | Group 2 | 1     |
-| Company 5 | Group 2 | 0     |
-| Company 6 | Group 2 | 5     |
+| Company   | Group   | Value | KPI |
+| --------- | ------- | ----- | --- |
+| Company 1 | Group 1 | 13    | 0   |
+| Company 2 | Group 1 | 0     | 12  |
+| Company 3 | Group 1 | 20    | 40  |
+| Company 4 | Group 2 | 1     | 0   |
+| Company 5 | Group 2 | 0     | 38  |
+| Company 6 | Group 2 | 5     | 4   |
 
 ### `filter` step
 
@@ -1755,9 +1761,9 @@ The `toRename` parameter takes as input a list of 2-elements lists in the form
 }
 ```
 
-**Deprecated note:**
+**Deprecation note:**
 
-The `oldname` and `newnname` parameters are deprecated and are support only for
+The `oldname` and `newnname` parameters are deprecated and are supported only for
 retrocompatibility purposes.
 When this step was first created, only 1 column at a time could be renamed, and
 the step was configured via 2 parameters, `oldname` and `newnname`, that are now

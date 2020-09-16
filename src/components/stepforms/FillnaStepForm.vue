@@ -1,11 +1,12 @@
 <template>
   <div>
     <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
-    <ColumnPicker
-      v-model="editedStep.column"
+    <MultiselectWidget
       class="columnInput"
+      v-model="editedStep.column"
       name="Replace null values in..."
-      placeholder="Enter a column"
+      :options="columnNames"
+      placeholder="Select columns"
       data-path=".column"
       :errors="errors"
     />
@@ -25,7 +26,6 @@
 import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
@@ -33,38 +33,59 @@ import { FillnaStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
+import MultiselectWidget from './widgets/Multiselect.vue';
 
 @StepFormComponent({
   vqbstep: 'fillna',
   name: 'fillna-step-form',
   components: {
-    ColumnPicker,
     InputTextWidget,
+    MultiselectWidget,
   },
 })
 export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
-  @Prop({ type: Object, default: () => ({ name: 'fillna', column: '', value: '' }) })
+  @Prop({ type: Object, default: () => ({ name: 'fillna', column: [''], value: '' }) })
   initialStepValue!: FillnaStep;
 
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Fill null values';
 
+  /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
+   *  as we have to manage historical configurations where only one column at a time could be
+   * filled */
+  editedStep = {
+    ...this.initialStepValue,
+    ...this.stepFormDefaults,
+    column:
+      typeof this.initialStepValue.column === 'string'
+        ? [this.initialStepValue.column]
+        : this.initialStepValue.column,
+  };
+
   get stepSelectedColumn() {
-    return this.editedStep.column;
+    return null;
   }
 
   set stepSelectedColumn(colname: string | null) {
     if (colname === null) {
       throw new Error('should not try to set null on fillna "column" field');
     }
-    if (colname !== null) {
-      this.editedStep.column = colname;
-    }
+    // if (
+    //   (typeof this.editedStep.column === 'string' && this.editedStep.column === '') ||
+    //   this.editedStep.column[0] === ''
+    // ) {
+    //   this.editedStep.column = [colname];
+    // }
+    this.editedStep.column = [colname];
   }
 
   submit() {
-    const type = this.columnTypes[this.editedStep.column];
+    // if (typeof this.editedStep.column === 'string') {
+    //   // For retrocompatibility purposes
+    //   this.editedStep.column = [this.editedStep.column];
+    // }
+    const type = this.columnTypes[this.editedStep.column[0]];
     if (type !== undefined) {
       this.editedStep.value = castFromString(this.editedStep.value as string, type);
     }
