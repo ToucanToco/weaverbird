@@ -1,12 +1,12 @@
 <template>
   <fieldset class="widget-aggregation__container">
-    <AutocompleteWidget
-      class="columnInput"
+    <MultiselectWidget
+      class="columnsInput"
       :options="columnNames"
-      v-model="aggregationColumn"
-      name="Column:"
-      placeholder="Enter a column"
-      :data-path="`${dataPath}.column`"
+      v-model="aggregationColumns"
+      name="Columns:"
+      placeholder="Select columns"
+      :data-path="`${dataPath}.columns`"
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -31,18 +31,20 @@ import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import AutocompleteWidget from './Autocomplete.vue';
+import MultiselectWidget from './Multiselect.vue';
 
 @Component({
   name: 'aggregation-widget',
   components: {
     AutocompleteWidget,
+    MultiselectWidget,
   },
 })
 export default class AggregationWidget extends Vue {
   @Prop({ type: String, default: null })
   dataPath!: string;
 
-  @Prop({ type: Object, default: () => ({ column: '', aggfunction: 'sum', newcolumn: '' }) })
+  @Prop({ type: Object, default: () => ({ columns: [], aggfunctions: 'sum', newcolumns: [] }) })
   value!: AggFunctionStep;
 
   @Prop({ type: Array, default: () => [] })
@@ -56,15 +58,12 @@ export default class AggregationWidget extends Vue {
 
   @VQBModule.Getter columnNames!: string[];
 
-  get aggregationColumn() {
-    return this.value.column;
+  get aggregationColumns() {
+    return this.value.columns;
   }
 
-  set aggregationColumn(newAggregationColumn) {
-    this.$emit('input', {
-      ...this.value,
-      column: newAggregationColumn,
-    });
+  set aggregationColumns(newAggregationColumns) {
+    this.$emit('input', { ...this.value, columns: newAggregationColumns });
   }
 
   get aggregationFunction() {
@@ -102,5 +101,10 @@ export default class AggregationWidget extends Vue {
   align-items: center;
   flex-direction: row;
   margin-bottom: 8px;
+}
+
+.widget-multiselect__container {
+  align-items: center;
+  flex-direction: row;
 }
 </style>

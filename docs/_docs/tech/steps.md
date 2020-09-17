@@ -22,11 +22,16 @@ An aggreation step has the following strucure:
    name: 'aggregate',
    on: ['column1', 'column2'],
    aggregations:  [
-      {
-          newcolumn: 'sum_value1',
-          aggfunction: 'sum',
-          column: 'value1'
-      }
+    {
+      newcolumns: ['sum_value1', 'sum_value2'], // same length as 'columns'
+      aggfunction: 'sum', // the aggregation function that will be applied to the specified columns
+      columns: ['value1', 'value2']
+    }
+    {
+      newcolumns: ['avg_value1'],
+      aggfunction: 'avg',
+      columns: ['value1']
+    }
     // ...
   ]
   keepOriginalGranularity: false, // whether to keep the original granularity, in that
@@ -39,18 +44,54 @@ An aggreation step has the following strucure:
 - Mongo 4.0
 - Mongo 3.6
 
+**Deprecation note:**
+
+The `column` and `newcolumn` (in the singular) properties of the `aggregation`
+parameter are deprecated and are supported only for retrocompatibility purposes.
+When this step was first created, only 1 column at a time could be aggregated for
+a given aggregation.
+Now `columns` and `newcolumns` are lists of columns, allowing to apply the same
+aggregation function to several columns at once.
+
+An old-fashioned step looked like this:
+
+```javascript
+{
+   name: 'aggregate',
+   on: ['column1', 'column2'],
+   aggregations:  [
+    {
+      newcolumn: 'sum_value1'
+      aggfunction: 'sum',
+      column: 'value1'
+    }
+    {
+      newcolumn: 'sum_value2',
+      aggfunction: 'sum',
+      column: 'value2'
+    }
+    {
+      newcolumn: 'avg_value1',
+      aggfunction: 'avg',
+      column: 'value1'
+    }
+    // ...
+  ]
+}
+```
+
 #### Example 1: keepOriginalGranularity set to false
 
 **Input dataset:**
 
-| Label   | Group   | Value |
-| ------- | ------- | ----- |
-| Label 1 | Group 1 | 13    |
-| Label 2 | Group 1 | 7     |
-| Label 3 | Group 1 | 20    |
-| Label 4 | Group 2 | 1     |
-| Label 5 | Group 2 | 10    |
-| Label 6 | Group 2 | 5     |
+| Label   | Group   | Value1 | Value2 |
+| ------- | ------- | ------ | ------ |
+| Label 1 | Group 1 | 13     | 10     |
+| Label 2 | Group 1 | 7      | 21     |
+| Label 3 | Group 1 | 20     | 4      |
+| Label 4 | Group 2 | 1      | 17     |
+| Label 5 | Group 2 | 9      | 12     |
+| Label 6 | Group 2 | 5      | 2      |
 
 **Step configuration:**
 
@@ -60,9 +101,14 @@ An aggreation step has the following strucure:
    on: ['Group'],
    aggregations:  [
     {
-      newcolumn: 'Total',
+      newcolumns: ['Sum-Value1', 'Sum-Value2'],
       aggfunction: 'sum',
-      column: 'Value'
+      columns: ['Value1', 'Value2']
+    }
+    {
+      newcolumns: ['Avg-Value1'],
+      aggfunction: 'sum',
+      columns: ['Value1']
     }
   ],
   keepOriginalGranularity: false,
@@ -71,10 +117,10 @@ An aggreation step has the following strucure:
 
 **Output dataset:**
 
-| Group   | Total |
-| ------- | ----- |
-| Group 1 | 30    |
-| Group 2 | 16    |
+| Group   | Sum-Value1 | Sum-Value2 | Avg-Value1 |
+| ------- | ---------- | ---------- | ---------- |
+| Group 1 | 30         | 35         | 10         |
+| Group 2 | 15         | 31         | 5          |
 
 #### Example 2: keepOriginalGranularity set to true
 
@@ -97,9 +143,9 @@ An aggreation step has the following strucure:
    on: ['Group'],
    aggregations:  [
     {
-      newcolumn: 'Total',
+      newcolumns: ['Total'],
       aggfunction: 'sum',
-      column: 'Value'
+      columns: ['Value']
     }
   ],
   keepOriginalGranularity: true,

@@ -21,11 +21,13 @@ describe('Widget AggregationWidget', () => {
 
   it('should have exactly two AutocompleteWidget components', () => {
     const wrapper = shallowMount(AggregationWidget, { store: emptyStore, localVue });
-    const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
-    expect(widgetWrappers.length).toEqual(2);
+    const autocompletetWrappers = wrapper.findAll('autocompletewidget-stub');
+    const multiselectWrappers = wrapper.findAll('multiselectwidget-stub');
+    expect(autocompletetWrappers.length).toEqual(1);
+    expect(multiselectWrappers.length).toEqual(1);
   });
 
-  it('should instantiate an widgetAutocomplete widget with proper options from the store', () => {
+  it('should instantiate a MultiselectWidget widget with proper options from the store', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -33,18 +35,18 @@ describe('Widget AggregationWidget', () => {
       },
     });
     const wrapper = shallowMount(AggregationWidget, { store, localVue });
-    const widgetWrappers = wrapper.findAll('autocompletewidget-stub');
-    expect(widgetWrappers.at(0).attributes('options')).toEqual('columnA,columnB,columnC');
+    const widgetMultiselect = wrapper.find('multiselectwidget-stub');
+    expect(widgetMultiselect.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
-  it('should pass down the "column" prop to the first AutocompleteWidget value prop', () => {
+  it('should pass down the props to the MultiselectWidget value prop', async () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+      propsData: { value: { columns: ['foo', 'bar'], newcolumns: [''], aggfunction: 'sum' } },
     });
-    const widgetWrappers = wrapper.findAll('AutocompleteWidget-stub');
-    expect(widgetWrappers.at(0).props().value).toEqual('foo');
+    const widgetMultiselect = wrapper.find('multiselectwidget-stub');
+    expect(widgetMultiselect.props().value).toEqual(['foo', 'bar']);
   });
 
   it('should pass down the "aggfunction" prop to the second AutocompleteWidget value prop', () => {
@@ -53,20 +55,20 @@ describe('Widget AggregationWidget', () => {
       localVue,
       propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'avg' } },
     });
-    const widgetWrappers = wrapper.findAll('AutocompleteWidget-stub');
-    expect(widgetWrappers.at(1).props().value).toEqual('avg');
+    const autocompleteWrapper = wrapper.find('AutocompleteWidget-stub');
+    expect(autocompleteWrapper.props().value).toEqual('avg');
   });
 
   it('should emit "input" event on aggregation column update', async () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+      propsData: { value: { columns: ['foo'], newcolumns: [''], aggfunction: 'sum' } },
     });
-    wrapper.find('AutocompleteWidget-stub.columnInput').vm.$emit('input', 'plop');
+    wrapper.find('multiselectwidget-stub').vm.$emit('input', ['plop']);
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
-      { column: 'plop', newcolumn: '', aggfunction: 'sum' },
+      { columns: ['plop'], newcolumns: [''], aggfunction: 'sum' },
     ]);
   });
 
@@ -74,12 +76,12 @@ describe('Widget AggregationWidget', () => {
     const wrapper = shallowMount(AggregationWidget, {
       store: emptyStore,
       localVue,
-      propsData: { value: { column: 'foo', newcolumn: '', aggfunction: 'sum' } },
+      propsData: { value: { columns: ['foo'], newcolumns: [''], aggfunction: 'sum' } },
     });
-    wrapper.find('AutocompleteWidget-stub.aggregationFunctionInput').vm.$emit('input', 'avg');
+    wrapper.find('AutocompleteWidget-stub').vm.$emit('input', 'avg');
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([
-      { column: 'foo', newcolumn: '', aggfunction: 'avg' },
+      { columns: ['foo'], newcolumns: [''], aggfunction: 'avg' },
     ]);
   });
 });

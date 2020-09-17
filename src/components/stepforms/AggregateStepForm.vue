@@ -77,20 +77,31 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   readonly title: string = 'Aggregate';
   widgetAggregation = AggregationWidget;
 
-  /** Overload the definition of editedStep in BaseStepForm, to manage the
-   * keepOriginalGranularity parameter which may be undefined and has to be treated
-   * specifically to guarantee retrocompatibility (as this parameter did not exist
-   *  when this step was first created) */
-  editedStep = {
+  /** Overload the definition of editedStep in BaseStepForm, to manage retrocompatibility:
+   *
+   *  - the keepOriginalGranularity parameter which may be undefined and has to be treated
+   *    specifically to guarantee retrocompatibility (as this parameter did not exist
+   *    when this step was first created)
+   *  - column and newcolumn (simple strings parameters) are deprecated and replaced by
+   *    columns and newcolumns (list if strings)
+   */
+  editedStep: AggregationStep = {
     ...this.initialStepValue,
     ...this.stepFormDefaults,
+    aggregations: this.initialStepValue.aggregations.map(x => ({
+      ...x,
+      columns: x.column ? [x.column] : x.columns,
+      newcolumns: x.newcolumn ? [x.newcolumn] : x.newcolumns,
+      column: undefined,
+      newcolumn: undefined,
+    })),
     keepOriginalGranularity: this.initialStepValue.keepOriginalGranularity ?? false,
   };
 
   get defaultAggregation() {
     const agg: AggFunctionStep = {
-      column: '',
-      newcolumn: '',
+      columns: [],
+      newcolumns: [],
       aggfunction: 'sum',
     };
     return agg;
@@ -115,19 +126,23 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
      */
     const newcolumnOccurences: { [prop: string]: number } = {};
     for (const agg of this.editedStep.aggregations) {
-      agg.newcolumn = agg.column;
-      newcolumnOccurences[agg.newcolumn] = (newcolumnOccurences[agg.newcolumn] || 0) + 1;
+      agg.newcolumns = [...agg.columns];
+      for (const c of agg.newcolumns) {
+        newcolumnOccurences[c] = (newcolumnOccurences[c] || 0) + 1;
+      }
     }
     for (const agg of this.editedStep.aggregations) {
-      /**
-       * If we keep the original granularity, we keep the original value columns
-       * and add the aggregation results in new columns, so we need to suffix those
-       */
-      if (newcolumnOccurences[agg.newcolumn] > 1 || this.editedStep.keepOriginalGranularity) {
-        agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
-      }
-      if (this.editedStep.on.includes(agg.newcolumn)) {
-        agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
+      for (let i = 0; i < agg.newcolumns.length; i++) {
+        /**
+         * If we keep the original granularity, we keep the original value columns
+         * and add the aggregation results in new columns, so we need to suffix those
+         */
+        if (newcolumnOccurences[agg.newcolumns[i]] > 1 || this.editedStep.keepOriginalGranularity) {
+          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
+        }
+        if (this.editedStep.on.includes(agg.newcolumns[i])) {
+          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
+        }
       }
     }
     this.$$super.submit();

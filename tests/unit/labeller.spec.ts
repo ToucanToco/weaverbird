@@ -10,8 +10,8 @@ describe('Labeller', () => {
       aggregations: [
         {
           aggfunction: 'avg',
-          column: 'column3',
-          newcolumn: 'averaged3',
+          columns: ['column3'],
+          newcolumns: ['averaged3'],
         },
       ],
       keepOriginalGranularity: false,
@@ -26,18 +26,37 @@ describe('Labeller', () => {
       aggregations: [
         {
           aggfunction: 'avg',
-          column: 'column3',
-          newcolumn: 'averaged3',
+          columns: ['column3', 'column4'],
+          newcolumns: ['averaged3', 'averaged4'],
         },
         {
           aggfunction: 'sum',
-          column: 'column4',
-          newcolumn: 'sum4',
+          columns: ['column3', 'column4'],
+          newcolumns: ['sum3', 'sum4'],
         },
       ],
       keepOriginalGranularity: false,
     };
     expect(hrl(step)).toEqual('Aggregate "column3", "column4" grouped by "column1", "column2"');
+  });
+
+  it('generates label for old fashioned aggregation', () => {
+    // Test for retrocompatibility purposes
+    const step: S.AggregationStep = {
+      name: 'aggregate',
+      on: ['column1', 'column2'],
+      aggregations: [
+        {
+          aggfunction: 'avg',
+          column: 'column3',
+          newcolumn: 'averaged3',
+          columns: [],
+          newcolumns: [],
+        },
+      ],
+      keepOriginalGranularity: false,
+    };
+    expect(hrl(step)).toEqual('Average of "column3" grouped by "column1", "column2"');
   });
 
   it('generates label for append steps', () => {
