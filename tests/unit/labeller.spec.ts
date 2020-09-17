@@ -578,9 +578,9 @@ describe('Labeller', () => {
       hierarchy: ['city', 'country', 'continent'],
       aggregations: [
         {
-          newcolumn: 'value1',
+          newcolumns: ['value1'],
           aggfunction: 'sum',
-          column: 'value1',
+          columns: ['value1'],
         },
       ],
     };

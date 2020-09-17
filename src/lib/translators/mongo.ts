@@ -1070,18 +1070,25 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
   const labelCol = step.labelCol ?? 'label';
   const levelCol = step.levelCol ?? 'level';
   const parentLabelCol = step.parentLabelCol ?? 'parent';
+
   for (const [idx, elem] of step.hierarchy.entries()) {
     const id = columnMap([...step.hierarchy.slice(0, idx + 1), ...(step.groupby ?? [])]);
     const aggs: { [id: string]: {} } = {};
     for (const aggfStep of step.aggregations) {
+      // We support simple string sfor retrocompatibility purposes
+      const cols = aggfStep.column ? [aggfStep.column] : aggfStep.columns;
+      const newcols = aggfStep.newcolumn ? [aggfStep.newcolumn] : aggfStep.newcolumns;
+
       if (aggfStep.aggfunction === 'count') {
-        aggs[aggfStep.newcolumn] = {
-          $sum: 1,
-        };
+        for (let i = 0; i < cols.length; i++) {
+          // cols and newcols are always of same length
+          aggs[newcols[i]] = { $sum: 1 };
+        }
       } else {
-        aggs[aggfStep.newcolumn] = {
-          [$$(aggfStep.aggfunction)]: $$(aggfStep.column),
-        };
+        for (let i = 0; i < cols.length; i++) {
+          // cols and newcols are always of same length
+          aggs[newcols[i]] = { [$$(aggfStep.aggfunction)]: $$(cols[i]) };
+        }
       }
     }
     const project: { [id: string]: string | number } = {

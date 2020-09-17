@@ -30,9 +30,10 @@ specifying for every row the label, level and parent in dedicated columns.
 
 - `Columns to aggregate`: Here you must specify one or more columns to
   aggregate, with the corresponding aggregation function to be applied. You can
-  add a columnn to aggregate by clicking on the button `Add aggregation`.
+  add a column to aggregate by clicking on the button `Add aggregation`.
 
-  - `Column`: the columnn to be aggregated.
+  - `Columns`: the columns to be aggregated (you can apply the same aggregation
+    function to several columns at once)
 
   - `Function` the aggregation function to be applied (sum, average, count, min
     or max).
