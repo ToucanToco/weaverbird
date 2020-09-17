@@ -124,10 +124,21 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   aggregate(step: Readonly<S.AggregationStep>) {
-    const aggregations = step.aggregations.map(aggfunc => ({
-      ...aggfunc,
-      column: _interpolate(this.interpolateFunc, aggfunc.column, this.context),
-    }));
+    const aggregations = [];
+    for (const agg of step.aggregations) {
+      if (agg.column) {
+        // For retrocompatibility purposes
+        aggregations.push({
+          ...agg,
+          column: _interpolate(this.interpolateFunc, agg.column, this.context),
+        });
+      } else {
+        aggregations.push({
+          ...agg,
+          columns: agg.columns.map(c => _interpolate(this.interpolateFunc, c, this.context)),
+        });
+      }
+    }
     return {
       name: step.name,
       on: step.on.map(col => _interpolate(this.interpolateFunc, col, this.context)),

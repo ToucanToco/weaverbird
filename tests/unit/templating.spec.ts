@@ -21,8 +21,8 @@ describe('Pipeline interpolator', () => {
         aggregations: [
           {
             aggfunction: 'avg',
-            column: 'spam',
-            newcolumn: '<%= egg %>',
+            columns: ['spam'],
+            newcolumns: ['<%= egg %>'],
           },
         ],
         keepOriginalGranularity: false,
@@ -39,13 +39,53 @@ describe('Pipeline interpolator', () => {
         aggregations: [
           {
             aggfunction: 'avg',
-            column: '<%= foo %>',
-            newcolumn: '<%= egg %>',
+            columns: ['<%= foo %>', '<%= egg %>'],
+            newcolumns: ['<%= egg %>'],
           },
           {
             aggfunction: 'sum',
+            columns: ['<%= foo %>', '<%= egg %>'],
+            newcolumns: ['<%= egg %>'],
+          },
+        ],
+        keepOriginalGranularity: false,
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'aggregate',
+        on: ['column1', 'bar'],
+        aggregations: [
+          {
+            aggfunction: 'avg',
+            columns: ['bar', 'spam'],
+            newcolumns: ['<%= egg %>'],
+          },
+          {
+            aggfunction: 'sum',
+            columns: ['bar', 'spam'],
+            newcolumns: ['<%= egg %>'],
+          },
+        ],
+        keepOriginalGranularity: false,
+      },
+    ]);
+  });
+
+  it('should interpolate aggregation steps old-fashioned if needed', () => {
+    // Test for retrocompatibility purposes
+    const pipeline: Pipeline = [
+      {
+        name: 'aggregate',
+        on: ['column1', '<%= foo %>'],
+        aggregations: [
+          {
+            aggfunction: 'avg',
             column: '<%= foo %>',
             newcolumn: '<%= egg %>',
+            columns: [],
+            newcolumns: [],
           },
         ],
         keepOriginalGranularity: false,
@@ -61,11 +101,8 @@ describe('Pipeline interpolator', () => {
             aggfunction: 'avg',
             column: 'bar',
             newcolumn: '<%= egg %>',
-          },
-          {
-            aggfunction: 'sum',
-            column: 'bar',
-            newcolumn: '<%= egg %>',
+            columns: [],
+            newcolumns: [],
           },
         ],
         keepOriginalGranularity: false,

@@ -99,13 +99,25 @@ function capitalize(label: string) {
 class StepLabeller implements StepMatcher<string> {
   aggregate(step: Readonly<S.AggregationStep>) {
     const dimensions = formatMulticol(step.on);
-    if (step.aggregations.length === 1) {
+    const columns: string[] = [];
+    for (const agg of step.aggregations) {
+      if (agg.column) {
+        // For retrocompatibility purposes
+        columns.push(agg.column);
+      } else {
+        for (const c of agg.columns) {
+          if (!columns.includes(c)) {
+            columns.push(c);
+          }
+        }
+      }
+    }
+    if (columns.length === 1) {
       const [aggstep] = step.aggregations;
       return `${capitalize(AGGFUNCTION_LABELS[aggstep.aggfunction])} of "${
-        aggstep.column
+        columns[0]
       }" grouped by ${dimensions}`;
     } else {
-      const columns = step.aggregations.map(aggstep => aggstep.column);
       return `Aggregate ${formatMulticol(columns)} grouped by ${dimensions}`;
     }
   }

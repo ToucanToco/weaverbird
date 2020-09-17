@@ -13,12 +13,16 @@ export type AddTextColumnStep = {
 };
 
 export type AggFunctionStep = {
-  /** Name of the output column */
-  newcolumn: string;
+  // Supported for retrocompatibility only
+  newcolumn?: string;
+  // Name of the output columns
+  newcolumns: string[];
   /** the aggregation operation (e.g. `sum` or `count`) */
   aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max' | 'first' | 'last';
-  /** the column the aggregation function is working on */
-  column: string;
+  // Supported for retrocompatibility only
+  column?: string;
+  // Columns to aggregate
+  columns: string[];
 };
 
 export type AggregationStep = {

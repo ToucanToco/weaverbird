@@ -788,29 +788,32 @@ describe('Pipeline to mongo translator', () => {
         on: ['col_agg1', 'col_agg2'],
         aggregations: [
           {
-            newcolumn: 'sum',
+            newcolumns: ['sum', 'foo'],
             aggfunction: 'sum',
-            column: 'col1',
+            columns: ['col1', 'bar'],
           },
           {
-            newcolumn: 'average',
+            newcolumns: ['average'],
             aggfunction: 'avg',
-            column: 'col2',
+            columns: ['col2'],
           },
           {
-            newcolumn: 'minimum',
+            newcolumns: ['minimum'],
             aggfunction: 'min',
-            column: 'col1',
+            columns: ['col1'],
           },
           {
-            newcolumn: 'maximum',
+            newcolumns: ['maximum'],
             aggfunction: 'max',
-            column: 'col3',
+            columns: ['col3'],
           },
+          // It should support old fashion configs
           {
             newcolumn: 'number_rows',
             aggfunction: 'count',
             column: 'col3',
+            newcolumns: [],
+            columns: [],
           },
         ],
         keepOriginalGranularity: false,
@@ -823,6 +826,7 @@ describe('Pipeline to mongo translator', () => {
         $group: {
           _id: { col_agg1: '$col_agg1', col_agg2: '$col_agg2' },
           sum: { $sum: '$col1' },
+          foo: { $sum: '$bar' },
           average: { $avg: '$col2' },
           minimum: { $min: '$col1' },
           maximum: { $max: '$col3' },
@@ -834,6 +838,7 @@ describe('Pipeline to mongo translator', () => {
           col_agg1: '$_id.col_agg1',
           col_agg2: '$_id.col_agg2',
           sum: 1,
+          foo: 1,
           average: 1,
           minimum: 1,
           maximum: 1,
@@ -852,9 +857,9 @@ describe('Pipeline to mongo translator', () => {
         on: ['col_agg1', 'col_agg2'],
         aggregations: [
           {
-            newcolumn: 'col1',
+            newcolumns: ['col1'],
+            columns: ['col1'],
             aggfunction: 'sum',
-            column: 'col1',
           },
         ],
         keepOriginalGranularity: true,
@@ -2695,9 +2700,9 @@ describe('Pipeline to mongo translator', () => {
         hierarchy: ['continent', 'country', 'city'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newcolumns: ['value1'],
             aggfunction: 'sum',
-            column: 'value1',
+            columns: ['value1'],
           },
         ],
       },

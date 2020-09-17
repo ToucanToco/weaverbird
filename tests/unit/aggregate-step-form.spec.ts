@@ -109,25 +109,26 @@ describe('Aggregate Step Form', () => {
 
     it('should have expected default aggregation parameters', () => {
       const wrapper = runner.mount();
-      const widgetWrappers = wrapper.findAll(AutocompleteWidget);
-      expect(widgetWrappers.at(0).props().value).toEqual('');
-      expect(widgetWrappers.at(1).props().value).toEqual('sum');
+      const autocompleteWrapper = wrapper.find(AutocompleteWidget);
+      const multiselectWrappers = wrapper.findAll(MultiselectWidget);
+      expect(autocompleteWrapper.props().value).toEqual('sum');
+      expect(multiselectWrappers.at(1).props().value).toEqual([]);
     });
   });
 
   describe('Validation', () => {
     runner.testValidationErrors([
       {
-        testlabel: '"on" parameter is an empty string',
+        testlabel: '"on" parameter includes an empty string',
         props: {
           initialStepValue: {
             name: 'aggregate',
             on: [''],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newcolumns: ['sum_col1'],
                 aggfunction: 'sum',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
             keepOriginalGranularity: false,
@@ -136,24 +137,23 @@ describe('Aggregate Step Form', () => {
         errors: [{ keyword: 'minLength', dataPath: '.on[0]' }],
       },
       {
-        testlabel: '"column" parameter is an empty string',
+        testlabel: '"columns" and "newcolumns" parameters include empty strings',
         props: {
           initialStepValue: {
             name: 'aggregate',
             on: ['column1'],
             aggregations: [
               {
-                newcolumn: '',
+                newcolumns: [''],
                 aggfunction: 'sum',
-                column: '',
+                columns: [''],
               },
             ],
           },
         },
         errors: [
-          { keyword: 'minLength', dataPath: '.aggregations[0].column' },
-          // newcolumn is computed based on column so an error is also returned for this parameter
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumn' },
+          { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
+          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
         ],
       },
       {
@@ -164,9 +164,9 @@ describe('Aggregate Step Form', () => {
             on: ['column1'],
             aggregations: [
               {
-                newcolumn: 'foo_col1',
+                newcolumns: ['foo_col1'],
                 aggfunction: 'foo',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
           },
@@ -181,60 +181,62 @@ describe('Aggregate Step Form', () => {
         initialStepValue: {
           name: 'aggregate',
           on: ['foo'],
-          aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
+          aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
           keepOriginalGranularity: false,
         },
       },
     });
+  });
 
-    it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
-      const wrapper = runner.mount(undefined, {
-        data: {
-          editedStep: {
-            name: 'aggregate',
-            on: ['foo'],
-            aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
-          },
+  it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
+    const wrapper = runner.mount(undefined, {
+      data: {
+        editedStep: {
+          name: 'aggregate',
+          on: ['foo'],
+          aggregations: [{ columns: ['bar'], newcolumns: [''], aggfunction: 'sum' }],
         },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar');
+      },
     });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar');
+  });
 
-    it('should set newcolumn cleverly if several aggregations are performed on the same column', () => {
-      const wrapper = runner.mount(undefined, {
-        data: {
-          editedStep: {
-            name: 'aggregate',
-            on: ['foo'],
-            aggregations: [
-              { column: 'bar', newcolumn: '', aggfunction: 'sum' },
-              { column: 'bar', newcolumn: '', aggfunction: 'avg' },
-            ],
-          },
+  it('should set newcolumn cleverly if several aggregations are performed on the same column', () => {
+    const wrapper = runner.mount(undefined, {
+      data: {
+        editedStep: {
+          name: 'aggregate',
+          on: ['foo'],
+          aggregations: [
+            { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'sum' },
+            { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'avg' },
+          ],
         },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
-      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).toEqual('bar-avg');
+      },
     });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar-sum');
+    expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[0]).toEqual('bar-avg');
+    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[1]).toEqual('test-sum');
+    expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[1]).toEqual('test-avg');
+  });
 
-    it('should set newcolumn cleverly if the an aggregation is perform on an id column', () => {
-      const wrapper = runner.mount(undefined, {
-        data: {
-          editedStep: {
-            name: 'aggregate',
-            on: ['foo'],
-            aggregations: [{ column: 'foo', newcolumn: '', aggfunction: 'count' }],
-          },
+  it('should set newcolumn cleverly if the an aggregation is perform on an id column', () => {
+    const wrapper = runner.mount(undefined, {
+      data: {
+        editedStep: {
+          name: 'aggregate',
+          on: ['foo'],
+          aggregations: [{ columns: ['foo'], newcolumns: [''], aggfunction: 'count' }],
         },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('foo-count');
+      },
     });
+    wrapper.find('.widget-form-action__button--validate').trigger('click');
+    expect(wrapper.vm.$data.errors).toBeNull();
+    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('foo-count');
   });
 
   it('should set newcolumn cleverly if we keep the original granularity', () => {
@@ -243,14 +245,14 @@ describe('Aggregate Step Form', () => {
         editedStep: {
           name: 'aggregate',
           on: ['foo'],
-          aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
+          aggregations: [{ columns: ['bar'], newcolumns: [''], aggfunction: 'sum' }],
           keepOriginalGranularity: true,
         },
       },
     });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
+    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar-sum');
   });
 
   runner.testCancel();
@@ -264,5 +266,30 @@ describe('Aggregate Step Form', () => {
     wrapper.find(MultiselectWidget).trigger('input');
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
+  });
+
+  it('should convert editedStep from old configurations to new configuration', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        propsData: {
+          initialStepValue: {
+            name: 'aggregate',
+            on: ['index'],
+            aggregations: [
+              { column: 'foo', newcolumn: 'foo', aggregation: 'sum' },
+              { column: 'bar', newcolumn: 'bar', aggregation: 'sum' },
+              { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
+            ],
+          },
+        },
+      },
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.aggregations).toEqual([
+      { columns: ['foo'], newcolumns: ['foo'], aggregation: 'sum' },
+      { columns: ['bar'], newcolumns: ['bar'], aggregation: 'sum' },
+      { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
+    ]);
   });
 });

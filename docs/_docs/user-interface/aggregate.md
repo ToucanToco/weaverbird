@@ -31,10 +31,11 @@ aggregation pipeline.
 - `And aggregate...`: in this section of the form you can specify one or more
   columns to aggregate, with the corresponding aggregation function to be
   applied (equivalent to `SUM(MY_COLUMN)` for example in SQL, or to
-  `my_column: { $sum: { $my_column } }` in Mongo). You can add a columnn to
+  `my_column: { $sum: { $my_column } }` in Mongo). You can add columns to
   aggregate by clicking on the button `Add aggregation`.
 
-  - `Column`: the columnn to be aggregated
+  - `Columns`: the columns to be aggregated (you can apply the same aggregation
+    function to several columns at once)
 
   - `Function` the aggregation function to be applied (sum, average, count, min
     or max)

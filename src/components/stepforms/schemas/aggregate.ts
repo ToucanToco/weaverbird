@@ -1,3 +1,4 @@
+import aggregations from './aggregations';
 import { addNotInColumnNamesConstraint, StepFormType } from './utils';
 
 const schema = {
@@ -21,31 +22,7 @@ const schema = {
         placeholder: 'Add columns',
       },
     },
-    aggregations: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          column: {
-            type: 'string',
-            minLength: 1,
-          },
-          aggfunction: {
-            type: 'string',
-            enum: ['sum', 'avg', 'count', 'min', 'max', 'first', 'last'],
-          },
-          newcolumn: {
-            type: 'string',
-            minLength: 1,
-          },
-        },
-        required: ['column', 'aggfunction', 'newcolumn'],
-        additionalProperties: false,
-      },
-      minItems: 1,
-      title: 'Aggregations',
-      description: 'The aggregations to be performed',
-    },
+    aggregations,
     keepOriginalGranularity: {
       type: 'boolean',
       description:

@@ -313,16 +313,22 @@ function transformAggregate(step: Readonly<S.AggregationStep>): MongoStep[] {
   group._id = idblock;
 
   for (const aggfStep of step.aggregations) {
+    // We support simple string sfor retrocompatibility purposes
+    const cols = aggfStep.column ? [aggfStep.column] : aggfStep.columns;
+    const newcols = aggfStep.newcolumn ? [aggfStep.newcolumn] : aggfStep.newcolumns;
+
     if (aggfStep.aggfunction === 'count') {
       // There is no `$count` operator in Mongo, we have to `$sum` 1s to get
       // an equivalent result
-      group[aggfStep.newcolumn] = {
-        $sum: 1,
-      };
+      for (let i = 0; i < cols.length; i++) {
+        // cols and newcols are always of same length
+        group[newcols[i]] = { $sum: 1 };
+      }
     } else {
-      group[aggfStep.newcolumn] = {
-        [$$(aggfStep.aggfunction)]: $$(aggfStep.column),
-      };
+      for (let i = 0; i < cols.length; i++) {
+        // cols and newcols are always of same length (checked at validation)
+        group[newcols[i]] = { [$$(aggfStep.aggfunction)]: $$(cols[i]) };
+      }
     }
   }
 

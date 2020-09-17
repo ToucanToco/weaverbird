@@ -181,6 +181,14 @@ export default class ListWidget extends Mixins(FormWidget) {
 .widget-list__component {
   background-color: #f8f8f8;
   width: 98%;
+
+  /deep/ label {
+    width: 40%;
+  }
+
+  /deep/ label + div {
+    width: 60%;
+  }
 }
 .widget-list__component-sep {
   font-size: 14px;
@@ -203,13 +211,6 @@ export default class ListWidget extends Mixins(FormWidget) {
   top: calc(50% - 16px);
   cursor: pointer;
 }
-.widget-list__component /deep/ .widget-input-variable,
-.widget-list__component /deep/ .widget-multi-input-variable {
-  width: 60%;
-  /deep/ .multiselect {
-    width: 100%;
-  }
-}
 </style>
 <style lang="scss">
 .widget-list__container .widget-autocomplete__container {
@@ -221,8 +222,5 @@ export default class ListWidget extends Mixins(FormWidget) {
 .widget-list__container .widget-autocomplete__label {
   margin-bottom: 0px;
   width: 40%;
-}
-.widget-list__component .multiselect {
-  width: 60%;
 }
 </style>
