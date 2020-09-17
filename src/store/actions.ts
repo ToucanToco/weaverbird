@@ -73,9 +73,9 @@ class Actions {
         name: 'aggregate',
         aggregations: [
           {
-            column,
+            columns: [column],
             aggfunction: 'count',
-            newcolumn: '__vqb_count__',
+            newcolumns: ['__vqb_count__'],
           },
         ],
         on: [column],

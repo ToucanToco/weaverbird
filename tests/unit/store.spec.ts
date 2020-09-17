@@ -843,9 +843,9 @@ describe('action tests', () => {
           name: 'aggregate',
           aggregations: [
             {
-              column: 'city',
+              columns: ['city'],
               aggfunction: 'count' as 'count',
-              newcolumn: '__vqb_count__',
+              newcolumns: ['__vqb_count__'],
             },
           ],
           on: ['city'],
