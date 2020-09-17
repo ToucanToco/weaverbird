@@ -1,3 +1,5 @@
+import aggregations from './aggregations';
+
 export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Rollup step',
@@ -19,31 +21,7 @@ export default {
         placeholder: 'Add columns',
       },
     },
-    aggregations: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          column: {
-            type: 'string',
-            minLength: 1,
-          },
-          aggfunction: {
-            type: 'string',
-            enum: ['sum', 'avg', 'count', 'min', 'max'],
-          },
-          newcolumn: {
-            type: 'string',
-            minLength: 1,
-          },
-        },
-        required: ['column', 'aggfunction', 'newcolumn'],
-        additionalProperties: false,
-      },
-      minItems: 1,
-      title: 'Aggregations',
-      description: 'The aggregations to be performed',
-    },
+    aggregations,
     groupby: {
       type: 'array',
       items: {

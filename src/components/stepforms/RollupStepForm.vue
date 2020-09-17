@@ -88,10 +88,26 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   readonly title: string = 'Hierarchical rollup';
   widgetAggregation = AggregationWidget;
 
+  /** Overload the definition of editedStep in BaseStepForm, to manage retrocompatibility:
+   *   column and newcolumn (simple strings parameters) are deprecated and replaced by
+   *   columns and newcolumns (list if strings)
+   */
+  editedStep: RollupStep = {
+    ...this.initialStepValue,
+    ...this.stepFormDefaults,
+    aggregations: this.initialStepValue.aggregations.map(x => ({
+      ...x,
+      columns: x.column ? [x.column] : x.columns,
+      newcolumns: x.newcolumn ? [x.newcolumn] : x.newcolumns,
+      column: undefined,
+      newcolumn: undefined,
+    })),
+  };
+
   get defaultAggregation() {
     const agg: AggFunctionStep = {
-      column: '',
-      newcolumn: '',
+      columns: [],
+      newcolumns: [],
       aggfunction: 'sum',
     };
     return agg;
@@ -116,12 +132,16 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
      */
     const newcolumnOccurences: { [prop: string]: number } = {};
     for (const agg of this.editedStep.aggregations) {
-      agg.newcolumn = agg.column;
-      newcolumnOccurences[agg.newcolumn] = (newcolumnOccurences[agg.newcolumn] || 0) + 1;
+      agg.newcolumns = [...agg.columns];
+      for (const c of agg.newcolumns) {
+        newcolumnOccurences[c] = (newcolumnOccurences[c] || 0) + 1;
+      }
     }
     for (const agg of this.editedStep.aggregations) {
-      if (newcolumnOccurences[agg.newcolumn] > 1) {
-        agg.newcolumn = `${agg.newcolumn}-${agg.aggfunction}`;
+      for (let i = 0; i < agg.newcolumns.length; i++) {
+        if (newcolumnOccurences[agg.newcolumns[i]] > 1) {
+          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
+        }
       }
     }
     this.$$super.submit();

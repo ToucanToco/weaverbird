@@ -1078,9 +1078,9 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['<%= foo %>', '<%= foo %>'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newcolumns: ['value1'],
             aggfunction: 'sum',
-            column: '<%= foo %>',
+            columns: ['<%= foo %>'],
           },
         ],
       },
@@ -1092,9 +1092,9 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['bar', 'bar'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newcolumns: ['value1'],
             aggfunction: 'sum',
-            column: 'bar',
+            columns: ['bar'],
           },
         ],
       },
@@ -1108,9 +1108,9 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['<%= foo %>', '<%= foo %>'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newcolumns: ['value1', 'value2'],
             aggfunction: 'sum',
-            column: '<%= foo %>',
+            columns: ['<%= foo %>', '<%= egg %>'],
           },
         ],
         groupby: ['<%= foo %>'],
@@ -1126,15 +1126,49 @@ describe('Pipeline interpolator', () => {
         hierarchy: ['bar', 'bar'],
         aggregations: [
           {
-            newcolumn: 'value1',
+            newcolumns: ['value1', 'value2'],
             aggfunction: 'sum',
-            column: 'bar',
+            columns: ['bar', 'spam'],
           },
         ],
         groupby: ['bar'],
         labelCol: 'bar',
         levelCol: 'bar',
         parentLabelCol: 'bar',
+      },
+    ]);
+  });
+
+  it('should interpolate old fashioned rollup steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['<%= foo %>', '<%= foo %>'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: '<%= foo %>',
+            columns: [],
+            newcolumns: [],
+          },
+        ],
+      },
+    ];
+
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'rollup',
+        hierarchy: ['bar', 'bar'],
+        aggregations: [
+          {
+            newcolumn: 'value1',
+            aggfunction: 'sum',
+            column: 'bar',
+            columns: [],
+            newcolumns: [],
+          },
+        ],
       },
     ]);
   });

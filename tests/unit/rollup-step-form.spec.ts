@@ -1,5 +1,6 @@
 import RollupStepForm from '@/components/stepforms/RollupStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
@@ -67,21 +68,22 @@ describe('Rollup Step Form', () => {
           editedStep: {
             name: 'rollup',
             hierarchy: [],
-            aggregations: [{ column: 'foo', newcolumn: 'bar', aggfunction: 'sum' }],
+            aggregations: [{ columns: ['foo'], newcolumns: ['bar'], aggfunction: 'sum' }],
           },
         },
       });
       await wrapper.vm.$nextTick();
       expect(wrapper.find('listwidget-stub').props().value).toEqual([
-        { column: 'foo', newcolumn: 'bar', aggfunction: 'sum' },
+        { columns: ['foo'], newcolumns: ['bar'], aggfunction: 'sum' },
       ]);
     });
 
     it('should have expected default aggregation parameters', () => {
       const wrapper = runner.mount();
-      const widgetWrappers = wrapper.findAll(AutocompleteWidget);
-      expect(widgetWrappers.at(0).props().value).toEqual('');
-      expect(widgetWrappers.at(1).props().value).toEqual('sum');
+      const autocompleteWrapper = wrapper.find(AutocompleteWidget);
+      const multiselectWrappers = wrapper.findAll(MultiselectWidget);
+      expect(autocompleteWrapper.props().value).toEqual('sum');
+      expect(multiselectWrappers.at(1).props().value).toEqual([]);
     });
   });
 
@@ -95,9 +97,9 @@ describe('Rollup Step Form', () => {
             hierarchy: [''],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newcolumns: ['sum_col1'],
                 aggfunction: 'sum',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
           },
@@ -112,9 +114,9 @@ describe('Rollup Step Form', () => {
             hierarchy: ['foo'],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newcolumns: ['sum_col1'],
                 aggfunction: 'sum',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
             groupby: [''],
@@ -123,24 +125,23 @@ describe('Rollup Step Form', () => {
         errors: [{ keyword: 'minLength', dataPath: '.groupby[0]' }],
       },
       {
-        testlabel: '"column" parameter is an empty string',
+        testlabel: '"columns" and "newcolumns" parameters include empty strings',
         props: {
           initialStepValue: {
             name: 'rollup',
             hierarchy: ['column1'],
             aggregations: [
               {
-                newcolumn: '',
+                newcolumns: [''],
                 aggfunction: 'sum',
-                column: '',
+                columns: [''],
               },
             ],
           },
         },
         errors: [
-          { keyword: 'minLength', dataPath: '.aggregations[0].column' },
-          // newcolumn is computed based on column so an error is also returned for this parameter
-          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumn' },
+          { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
+          { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
         ],
       },
       {
@@ -151,9 +152,9 @@ describe('Rollup Step Form', () => {
             hierarchy: ['column1'],
             aggregations: [
               {
-                newcolumn: 'foo_col1',
+                newcolumns: ['foo_col1'],
                 aggfunction: 'foo',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
           },
@@ -168,9 +169,9 @@ describe('Rollup Step Form', () => {
             hierarchy: ['column1'],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newcolumns: ['sum_col1'],
                 aggfunction: 'sum',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
             labelCol: '',
@@ -186,9 +187,9 @@ describe('Rollup Step Form', () => {
             hierarchy: ['column1'],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newcolumns: ['sum_col1'],
                 aggfunction: 'sum',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
             levelCol: '',
@@ -204,9 +205,9 @@ describe('Rollup Step Form', () => {
             hierarchy: ['column1'],
             aggregations: [
               {
-                newcolumn: 'sum_col1',
+                newcolumns: ['sum_col1'],
                 aggfunction: 'sum',
-                column: 'col1',
+                columns: ['col1'],
               },
             ],
             parentLabelCol: '',
@@ -222,7 +223,7 @@ describe('Rollup Step Form', () => {
         initialStepValue: {
           name: 'rollup',
           hierarchy: ['foo'],
-          aggregations: [{ column: 'bar', newcolumn: 'bar', aggfunction: 'sum' }],
+          aggregations: [{ columns: ['bar'], newcolumns: ['bar'], aggfunction: 'sum' }],
           labelCol: 'label',
           levelCol: 'label',
           parentLabelCol: 'label',
@@ -236,13 +237,13 @@ describe('Rollup Step Form', () => {
           editedStep: {
             name: 'rollup',
             hierarchy: ['foo'],
-            aggregations: [{ column: 'bar', newcolumn: '', aggfunction: 'sum' }],
+            aggregations: [{ columns: ['bar'], newcolumns: [''], aggfunction: 'sum' }],
           },
         },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar');
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar');
     });
 
     it('should set newcolumn cleverly if several aggregations are performed o, the same column', () => {
@@ -252,19 +253,46 @@ describe('Rollup Step Form', () => {
             name: 'rollup',
             hierarchy: ['foo'],
             aggregations: [
-              { column: 'bar', newcolumn: '', aggfunction: 'sum' },
-              { column: 'bar', newcolumn: '', aggfunction: 'avg' },
+              { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'sum' },
+              { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'avg' },
             ],
           },
         },
       });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
       expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumn).toEqual('bar-sum');
-      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumn).toEqual('bar-avg');
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar-sum');
+      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[0]).toEqual('bar-avg');
+      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[1]).toEqual('test-sum');
+      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[1]).toEqual('test-avg');
     });
   });
 
   runner.testCancel();
   runner.testResetSelectedIndex();
+
+  it('should convert editedStep from old configurations to new configuration', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        propsData: {
+          initialStepValue: {
+            name: 'rollup',
+            hierarchy: ['foo'],
+            aggregations: [
+              { column: 'foo', newcolumn: 'foo', aggregation: 'sum' },
+              { column: 'bar', newcolumn: 'bar', aggregation: 'sum' },
+              { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
+            ],
+          },
+        },
+      },
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.aggregations).toEqual([
+      { columns: ['foo'], newcolumns: ['foo'], aggregation: 'sum' },
+      { columns: ['bar'], newcolumns: ['bar'], aggregation: 'sum' },
+      { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggregation: 'sum' },
+    ]);
+  });
 });
