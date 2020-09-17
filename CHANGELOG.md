@@ -6,6 +6,8 @@
 
 - Allow to select multiple columns in fillna step (to fill null values in several
   columns at once)
+- Allow to select multiple columns in aggregations (the same aggregation function
+  can be applied to several columns easily)
 
 ## [0.25.2] - 2020-09-15
 
