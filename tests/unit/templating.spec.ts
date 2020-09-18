@@ -253,14 +253,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
-        column: '<%= foo %>',
+        columns: ['<%= foo %>'],
         value: '<%= age %>',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'fillna',
-        column: '<%= foo %>',
+        columns: ['<%= foo %>'],
         value: 42,
       },
     ]);
@@ -270,14 +270,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
-        column: 'column1',
+        columns: ['column1'],
         value: '<%= age %>',
       },
     ];
     expect(translate(pipeline, defaultContext)).toEqual([
       {
         name: 'fillna',
-        column: 'column1',
+        columns: ['column1'],
         value: 42,
       },
     ]);
@@ -287,14 +287,14 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
-        column: 'foo',
+        columns: ['foo'],
         value: 'hola',
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'fillna',
-        column: 'foo',
+        columns: ['foo'],
         value: 'hola',
       },
     ]);

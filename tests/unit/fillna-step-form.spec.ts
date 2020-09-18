@@ -20,7 +20,7 @@ describe('Fillna Step Form', () => {
         },
       }),
       data: {
-        editedStep: { name: 'fillna', column: 'columnA', value: { foo: 'bar' } },
+        editedStep: { name: 'fillna', columns: ['columnA'], value: { foo: 'bar' } },
       },
       errors: [{ dataPath: '.value', keyword: 'type' }],
     },
@@ -34,7 +34,7 @@ describe('Fillna Step Form', () => {
       },
     }),
     props: {
-      initialStepValue: { name: 'fillna', column: ['foo', 'toto'], value: 'bar' },
+      initialStepValue: { name: 'fillna', columns: ['foo', 'toto'], value: 'bar' },
     },
   });
 
@@ -53,12 +53,12 @@ describe('Fillna Step Form', () => {
       propsData: {
         initialStepValue: {
           name: 'fillna',
-          column: [''],
+          columns: [''],
         },
       },
     });
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$data.editedStep.column).toEqual(['toto']);
+    expect(wrapper.vm.$data.editedStep.columns).toEqual(['toto']);
   });
 
   it('should return an error if trying to set a null column', async () => {
@@ -74,7 +74,7 @@ describe('Fillna Step Form', () => {
         propsData: {
           initialStepValue: {
             name: 'fillna',
-            column: [''],
+            columns: [''],
           },
         },
       });
@@ -92,17 +92,27 @@ describe('Fillna Step Form', () => {
           initialStepValue: {
             name: 'fillna',
             column: 'hello',
+            value: 0,
           },
         },
       },
     );
     await wrapper.vm.$nextTick();
-    expect(wrapper.vm.$data.editedStep.column).toEqual(['hello']);
+    expect(wrapper.vm.$data.editedStep.column).toBeUndefined;
+    expect(wrapper.vm.$data.editedStep.columns).toBeDefined;
+    expect(wrapper.vm.$data.editedStep.columns).toEqual(['hello']);
+  });
+
+  it('should pass down the value prop to widget multiselect', async () => {
+    const wrapper = runner.shallowMount();
+    wrapper.setData({ editedStep: { columns: ['foo'], value: '' } });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('multiselectwidget-stub').props('value')).toEqual(['foo']);
   });
 
   it('should pass down the value prop to widget value prop', async () => {
     const wrapper = runner.shallowMount();
-    wrapper.setData({ editedStep: { column: '', value: 'foo' } });
+    wrapper.setData({ editedStep: { columns: [''], value: 'foo' } });
     await wrapper.vm.$nextTick();
     expect(wrapper.find('inputtextwidget-stub').props('value')).toEqual('foo');
   });
@@ -117,14 +127,14 @@ describe('Fillna Step Form', () => {
       },
       {
         data: {
-          editedStep: { name: 'fillna', column: ['columnA'], value: '42' },
+          editedStep: { name: 'fillna', columns: ['columnA'], value: '42' },
         },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', column: ['columnA'], value: 42 }]],
+      formSaved: [[{ name: 'fillna', columns: ['columnA'], value: 42 }]],
     });
   });
 
@@ -138,14 +148,14 @@ describe('Fillna Step Form', () => {
       },
       {
         data: {
-          editedStep: { name: 'fillna', column: ['columnA'], value: '42.3' },
+          editedStep: { name: 'fillna', columns: ['columnA'], value: '42.3' },
         },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', column: ['columnA'], value: 42.3 }]],
+      formSaved: [[{ name: 'fillna', columns: ['columnA'], value: 42.3 }]],
     });
   });
 
@@ -159,18 +169,18 @@ describe('Fillna Step Form', () => {
       },
       {
         data: {
-          editedStep: { name: 'fillna', column: ['columnA'], value: 'true' },
+          editedStep: { name: 'fillna', columns: ['columnA'], value: 'true' },
         },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    wrapper.setData({ editedStep: { name: 'fillna', column: ['columnA'], value: 'false' } });
+    wrapper.setData({ editedStep: { name: 'fillna', columns: ['columnA'], value: 'false' } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
       formSaved: [
-        [{ name: 'fillna', column: ['columnA'], value: true }],
-        [{ name: 'fillna', column: ['columnA'], value: false }],
+        [{ name: 'fillna', columns: ['columnA'], value: true }],
+        [{ name: 'fillna', columns: ['columnA'], value: false }],
       ],
     });
   });
@@ -187,13 +197,13 @@ describe('Fillna Step Form', () => {
         },
       },
       {
-        data: { editedStep: { name: 'fillna', column: ['foo'], value: '<%= foo %>' } },
+        data: { editedStep: { name: 'fillna', columns: ['foo'], value: '<%= foo %>' } },
       },
     );
     wrapper.find('.widget-form-action__button--validate').trigger('click');
     expect(wrapper.vm.$data.errors).toBeNull();
     expect(wrapper.emitted()).toEqual({
-      formSaved: [[{ name: 'fillna', column: ['foo'], value: '<%= foo %>' }]],
+      formSaved: [[{ name: 'fillna', columns: ['foo'], value: '<%= foo %>' }]],
     });
   });
 });

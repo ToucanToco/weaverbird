@@ -977,21 +977,30 @@ Replace null values by a given value in specified columns.
 ```javascript
 {
     name: 'fillna',
-    column: ["foo"],
-    value: "bar"
+    columns: ["foo", "bar"],
+    value: 0
 }
 ```
-
-**Deprecation note:**
-
-The `column` parameter can be a simple string as when the step was first created,
-only one column could be specified. Simple strings are supported only for
-retrocompatibility purposes.
 
 **This step is supported by the following backends:**
 
 - Mongo 4.0
 - Mongo 3.6
+
+**Deprecation note:**
+
+The `column` (in the singular) parameter is deprecated and is supported only for
+retrocompatibility purposes.
+
+An old-fashioned step looks like this:
+
+```javascript
+{
+    name: 'fillna',
+    column: 'foo',
+    value: 0
+}
+```
 
 #### Example
 
@@ -1011,7 +1020,7 @@ retrocompatibility purposes.
 ```javascript
 {
   name: 'fillna',
-  column: ["Value", "KPI"],
+  columns: ["Value", "KPI"],
   value: 0
 }
 ```
@@ -1761,6 +1770,11 @@ The `toRename` parameter takes as input a list of 2-elements lists in the form
 }
 ```
 
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
 **Deprecation note:**
 
 The `oldname` and `newnname` parameters are deprecated and are supported only for
@@ -1776,15 +1790,10 @@ So an old-fashioned step looks like this:
 ```javascript
 {
     name: 'rename',
-    oldname: 'old-column-name', // optional and deprecated
-    newname: 'new-column-name'  // optional and deprecated
+    oldname: 'old-column-name',
+    newname: 'new-column-name'
 }
 ```
-
-**This step is supported by the following backends:**
-
-- Mongo 4.0
-- Mongo 3.6
 
 #### Example:
 

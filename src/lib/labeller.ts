@@ -159,7 +159,10 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   fillna(step: Readonly<S.FillnaStep>) {
-    return `Replace null values in "${step.column}" with ${step.value}`;
+    if (step.column) {
+      return `Replace null values in "${step.column}" with ${step.value}`;
+    }
+    return `Replace null values in ${formatMulticol(step.columns)} with ${step.value}`;
   }
 
   filter(step: Readonly<S.FilterStep>) {
