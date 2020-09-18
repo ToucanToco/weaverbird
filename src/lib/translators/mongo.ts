@@ -547,11 +547,11 @@ function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
 /** transform a 'fillna' step into corresponding mongo steps */
 function transformFillna(step: Readonly<S.FillnaStep>): MongoStep {
   let cols: string[] = [];
-  if (typeof step.column === 'string') {
+  if (step.column) {
     // For retrocompatibility with old configurations
     cols = [step.column];
   } else {
-    cols = [...step.column];
+    cols = [...step.columns];
   }
 
   const addFields = Object.fromEntries(cols.map(x => [x, { $ifNull: [$$(x), step.value] }]));

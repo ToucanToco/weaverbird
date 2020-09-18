@@ -1207,6 +1207,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'fillna',
         column: 'foo',
         value: 'bar',
+        columns: [],
       },
     ];
     const querySteps = mongo36translator.translate(pipeline);
@@ -1220,7 +1221,7 @@ describe('Pipeline to mongo translator', () => {
     const pipeline: Pipeline = [
       {
         name: 'fillna',
-        column: ['foo', 'toto', 'tata'],
+        columns: ['foo', 'toto', 'tata'],
         value: 'bar',
       },
     ];

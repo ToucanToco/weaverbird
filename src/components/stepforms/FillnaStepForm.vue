@@ -3,11 +3,11 @@
     <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
     <MultiselectWidget
       class="columnInput"
-      v-model="editedStep.column"
+      v-model="editedStep.columns"
       name="Replace null values in..."
       :options="columnNames"
       placeholder="Select columns"
-      data-path=".column"
+      data-path=".columns"
       :errors="errors"
     />
     <InputTextWidget
@@ -57,10 +57,10 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   editedStep = {
     ...this.initialStepValue,
     ...this.stepFormDefaults,
-    column:
-      typeof this.initialStepValue.column === 'string'
-        ? [this.initialStepValue.column]
-        : this.initialStepValue.column,
+    columns: this.initialStepValue.column
+      ? [this.initialStepValue.column]
+      : this.initialStepValue.columns,
+    column: undefined,
   };
 
   get stepSelectedColumn() {
@@ -71,21 +71,11 @@ export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
     if (colname === null) {
       throw new Error('should not try to set null on fillna "column" field');
     }
-    // if (
-    //   (typeof this.editedStep.column === 'string' && this.editedStep.column === '') ||
-    //   this.editedStep.column[0] === ''
-    // ) {
-    //   this.editedStep.column = [colname];
-    // }
-    this.editedStep.column = [colname];
+    this.editedStep.columns = [colname];
   }
 
   submit() {
-    // if (typeof this.editedStep.column === 'string') {
-    //   // For retrocompatibility purposes
-    //   this.editedStep.column = [this.editedStep.column];
-    // }
-    const type = this.columnTypes[this.editedStep.column[0]];
+    const type = this.columnTypes[this.editedStep.columns[0]];
     if (type !== undefined) {
       this.editedStep.value = castFromString(this.editedStep.value as string, type);
     }

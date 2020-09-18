@@ -130,8 +130,19 @@ describe('Labeller', () => {
   it('generates label for fillna steps', () => {
     const step: S.FillnaStep = {
       name: 'fillna',
+      columns: ['column1', 'column2'],
+      value: '20',
+    };
+    expect(hrl(step)).toEqual('Replace null values in "column1", "column2" with 20');
+  });
+
+  it('generates label for fillna steps old-fashioned', () => {
+    // Test for retrocompatibility
+    const step: S.FillnaStep = {
+      name: 'fillna',
       column: 'column1',
       value: '20',
+      columns: [],
     };
     expect(hrl(step)).toEqual('Replace null values in "column1" with 20');
   });
