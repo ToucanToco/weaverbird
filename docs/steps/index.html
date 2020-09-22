@@ -21,9 +21,9 @@
 <meta property="og:url" content="https://weaverbird.toucantoco.com/docs/steps/" />
 <meta property="og:site_name" content="Weaverbird" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2020-09-16T12:40:39+02:00" />
+<meta property="article:published_time" content="2020-09-22T11:21:42+02:00" />
 <script type="application/ld+json">
-{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-09-16T12:40:39+02:00","dateModified":"2020-09-16T12:40:39+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
+{"url":"https://weaverbird.toucantoco.com/docs/steps/","headline":"Steps","datePublished":"2020-09-22T11:21:42+02:00","dateModified":"2020-09-22T11:21:42+02:00","description":"Steps definition","@type":"WebPage","@context":"http://schema.org"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -2631,16 +2631,10 @@ prohibited.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
     <span class="nl">name</span><span class="p">:</span> <span class="s1">'fillna'</span><span class="p">,</span>
-    <span class="nx">column</span><span class="p">:</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">],</span>
-    <span class="nx">value</span><span class="p">:</span> <span class="s2">"bar"</span>
+    <span class="nx">columns</span><span class="p">:</span> <span class="p">[</span><span class="s2">"foo"</span><span class="p">,</span> <span class="s2">"bar"</span><span class="p">],</span>
+    <span class="nx">value</span><span class="p">:</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre></div></div>
-
-<p><strong>Deprecation note:</strong></p>
-
-<p>The <code class="highlighter-rouge">column</code> parameter can be a simple string as when the step was first created,
-only one column could be specified. Simple strings are supported only for
-retrocompatibility purposes.</p>
 
 <p><strong>This step is supported by the following backends:</strong></p>
 
@@ -2648,6 +2642,20 @@ retrocompatibility purposes.</p>
   <li>Mongo 4.0</li>
   <li>Mongo 3.6</li>
 </ul>
+
+<p><strong>Deprecation note:</strong></p>
+
+<p>The <code class="highlighter-rouge">column</code> (in the singular) parameter is deprecated and is supported only for
+retrocompatibility purposes.</p>
+
+<p>An old-fashioned step looks like this:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
+    <span class="nl">name</span><span class="p">:</span> <span class="s1">'fillna'</span><span class="p">,</span>
+    <span class="nx">column</span><span class="p">:</span> <span class="s1">'foo'</span><span class="p">,</span>
+    <span class="nx">value</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></div></div>
 
 <h4 id="example-6">Example</h4>
 
@@ -2706,7 +2714,7 @@ retrocompatibility purposes.</p>
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
   <span class="nl">name</span><span class="p">:</span> <span class="s1">'fillna'</span><span class="p">,</span>
-  <span class="nx">column</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Value"</span><span class="p">,</span> <span class="s2">"KPI"</span><span class="p">],</span>
+  <span class="nx">columns</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Value"</span><span class="p">,</span> <span class="s2">"KPI"</span><span class="p">],</span>
   <span class="nx">value</span><span class="p">:</span> <span class="mi">0</span>
 <span class="p">}</span>
 </code></pre></div></div>
@@ -4301,6 +4309,13 @@ The <code class="highlighter-rouge">toRename</code> parameter takes as input a l
 <span class="p">}</span>
 </code></pre></div></div>
 
+<p><strong>This step is supported by the following backends:</strong></p>
+
+<ul>
+  <li>Mongo 4.0</li>
+  <li>Mongo 3.6</li>
+</ul>
+
 <p><strong>Deprecation note:</strong></p>
 
 <p>The <code class="highlighter-rouge">oldname</code> and <code class="highlighter-rouge">newnname</code> parameters are deprecated and are supported only for
@@ -4315,17 +4330,10 @@ is equivalent to a new-fashioned step with <code class="highlighter-rouge">toRen
 
 <div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">{</span>
     <span class="nl">name</span><span class="p">:</span> <span class="s1">'rename'</span><span class="p">,</span>
-    <span class="nx">oldname</span><span class="p">:</span> <span class="s1">'old-column-name'</span><span class="p">,</span> <span class="c1">// optional and deprecated</span>
-    <span class="nx">newname</span><span class="p">:</span> <span class="s1">'new-column-name'</span>  <span class="c1">// optional and deprecated</span>
+    <span class="nx">oldname</span><span class="p">:</span> <span class="s1">'old-column-name'</span><span class="p">,</span>
+    <span class="nx">newname</span><span class="p">:</span> <span class="s1">'new-column-name'</span>
 <span class="p">}</span>
 </code></pre></div></div>
-
-<p><strong>This step is supported by the following backends:</strong></p>
-
-<ul>
-  <li>Mongo 4.0</li>
-  <li>Mongo 3.6</li>
-</ul>
 
 <h4 id="example-13">Example:</h4>
 
