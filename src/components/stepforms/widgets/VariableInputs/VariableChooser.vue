@@ -23,7 +23,7 @@
           v-tooltip="{
             targetClasses: 'has-weaverbird__tooltip',
             classes: 'weaverbird__tooltip',
-            content: readableValue(availableVariable.value),
+            content: makeValueReadable(availableVariable.value),
             placement: 'bottom-center',
           }"
           @click="chooseVariable(availableVariable.identifier)"
@@ -101,7 +101,7 @@ export default class VariableChooser extends Vue {
   /**
   Return a readable value to display as tooltip
   **/
-  readableValue(value: any): string {
+  makeValueReadable(value: any): string {
     return JSON.stringify(value);
   }
 

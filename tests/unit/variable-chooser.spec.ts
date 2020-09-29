@@ -1,4 +1,5 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
+import { VTooltip } from 'v-tooltip';
 
 import VariableChooser from '@/components/stepforms/widgets/VariableInputs/VariableChooser.vue';
 
@@ -8,6 +9,9 @@ describe('Variable Chooser', () => {
   beforeEach(() => {
     wrapper = shallowMount(VariableChooser, {
       sync: false,
+      directives: {
+        tooltip: VTooltip,
+      },
       propsData: {
         isOpened: false,
         availableVariables: [
@@ -88,11 +92,11 @@ describe('Variable Chooser', () => {
     });
 
     it('should display readable value in tooltip', () => {
-      expect((wrapper.vm as any).readableValue([])).toStrictEqual('[]');
-      expect((wrapper.vm as any).readableValue([1, 2])).toStrictEqual('[1,2]');
-      expect((wrapper.vm as any).readableValue(1)).toStrictEqual('1');
-      expect((wrapper.vm as any).readableValue('1')).toStrictEqual('"1"');
-      expect((wrapper.vm as any).readableValue(undefined)).toStrictEqual(undefined);
+      expect((wrapper.vm as any).makeValueReadable([])).toStrictEqual('[]');
+      expect((wrapper.vm as any).makeValueReadable([1, 2])).toStrictEqual('[1,2]');
+      expect((wrapper.vm as any).makeValueReadable(1)).toStrictEqual('1');
+      expect((wrapper.vm as any).makeValueReadable('1')).toStrictEqual('"1"');
+      expect((wrapper.vm as any).makeValueReadable(undefined)).toStrictEqual(undefined);
     });
   });
 
