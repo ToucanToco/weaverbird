@@ -80,6 +80,19 @@ describe('Variable Chooser', () => {
     });
   });
 
+  describe('tooltip', () => {
+    it('should display a value tooltip for each variable', () => {
+      wrapper.findAll('.widget-variable-chooser__option').wrappers.forEach(w => {
+        expect(w.classes()).toContain('has-weaverbird__tooltip');
+      });
+    });
+
+    it('should display readable value in tooltip', () => {
+      expect((wrapper.vm as any).readableValue([])).toStrictEqual('[]');
+      expect((wrapper.vm as any).readableValue([1, 2])).toStrictEqual('[1,2]');
+    });
+  });
+
   describe('when is advanced', () => {
     it('should display an "Advanced variable" option ...', () => {
       expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);

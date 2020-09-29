@@ -20,6 +20,12 @@
           :class="{ 'widget-variable-chooser__option--selected': availableVariable.selected }"
           v-for="availableVariable in category.variables"
           :key="availableVariable.identifier"
+          v-tooltip="{
+            targetClasses: 'has-weaverbird__tooltip',
+            classes: 'weaverbird__tooltip',
+            content: readableValue(availableVariable.value),
+            placement: 'bottom-center',
+          }"
           @click="chooseVariable(availableVariable.identifier)"
         >
           <div class="widget-variable-chooser__option-container">
@@ -37,12 +43,14 @@
 </template>
 
 <script lang="ts">
+import VTooltip from 'v-tooltip';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import { VariablesBucket, VariablesCategory } from '@/lib/variables';
 
+Vue.use(VTooltip);
 /**
  * This component list all the available variables to use as value in VariableInputs
  */
@@ -88,6 +96,13 @@ export default class VariableChooser extends Vue {
       }
       return categories;
     }, []);
+  }
+
+  /**
+  Return a readable value to display as tooltip
+  **/
+  readableValue(value: any) {
+    return typeof value === 'string' ? value : JSON.stringify(value);
   }
 
   /**
@@ -160,6 +175,7 @@ export default class VariableChooser extends Vue {
   }
   display: flex;
   justify-content: space-between;
+  align-items: center;
   cursor: pointer;
 }
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+- Display a tooltip with value when hovering a variable in variables dropdown
+
 ## [0.26.0] - 2020-09-23
 
 ### Changed
