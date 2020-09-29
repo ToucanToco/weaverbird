@@ -90,6 +90,9 @@ describe('Variable Chooser', () => {
     it('should display readable value in tooltip', () => {
       expect((wrapper.vm as any).readableValue([])).toStrictEqual('[]');
       expect((wrapper.vm as any).readableValue([1, 2])).toStrictEqual('[1,2]');
+      expect((wrapper.vm as any).readableValue(1)).toStrictEqual('1');
+      expect((wrapper.vm as any).readableValue('1')).toStrictEqual('"1"');
+      expect((wrapper.vm as any).readableValue(undefined)).toStrictEqual(undefined);
     });
   });
 

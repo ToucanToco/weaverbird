@@ -101,8 +101,8 @@ export default class VariableChooser extends Vue {
   /**
   Return a readable value to display as tooltip
   **/
-  readableValue(value: any) {
-    return typeof value === 'string' ? value : JSON.stringify(value);
+  readableValue(value: any): string {
+    return JSON.stringify(value);
   }
 
   /**
