@@ -11,30 +11,34 @@ declare namespace mathjs {
   /**
    * Math nodes interfaces to build formula logical trees
    */
-  interface OperatorNode {
+  class BaseNode {
+    traverse: function;
+    transform: function;
+    type: string;
+  }
+
+  class OperatorNode extends BaseNode {
     type: 'OperatorNode';
     fn: string;
     op: string;
     args: MathNode[];
-    traverse: function;
   }
 
-  interface ConstantNode {
+  class ConstantNode extends BaseNode {
+    constructor(value: number | string);
+
     type: 'ConstantNode';
-    value: number;
-    traverse: function;
+    value: number | string;
   }
 
-  interface SymbolNode {
+  class SymbolNode extends BaseNode {
     type: 'SymbolNode';
     name: string;
-    traverse: function;
   }
 
-  interface ParenthesisNode {
+  class ParenthesisNode extends BaseNode{
     type: 'ParenthesisNode';
     content: MathNode;
-    traverse: function;
   }
 
   type MathNode = OperatorNode | ConstantNode | SymbolNode | ParenthesisNode;
