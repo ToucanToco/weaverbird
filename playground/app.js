@@ -186,31 +186,31 @@ async function buildVueApp() {
     {
       category: 'App variables',
       label: 'view',
-      identifier: 'appRequesters.view',
+      identifier: 'view',
       value: 'Product 123',
     },
     {
       category: 'App variables',
       label: 'date.month',
-      identifier: 'appRequesters.date.month',
+      identifier: 'date.month',
       value: 'Apr',
     },
     {
       category: 'App variables',
       label: 'date.year',
-      identifier: 'appRequesters.date.year',
+      identifier: 'date.year',
       value: 2020,
     },
     {
       category: 'Story variables',
       label: 'country',
-      identifier: 'requestersManager.country',
+      identifier: 'country',
       value: 'New Zealand',
     },
     {
       category: 'Story variables',
       label: 'city',
-      identifier: 'appRequesters.city',
+      identifier: 'city',
       value: 'New York',
     },
   ];
@@ -319,7 +319,7 @@ async function buildVueApp() {
         availableVariables: AVAILABLE_VARIABLES,
       });
       store.commit(VQBnamespace('setVariableDelimiters'), {
-        variableDelimiters: { start: '{{', end: '}}' },
+        variableDelimiters: { start: '<%=', end: '%>' },
       });
       const collections = await mongoservice.listCollections();
       store.commit(VQBnamespace('setDomains'), { domains: collections });
