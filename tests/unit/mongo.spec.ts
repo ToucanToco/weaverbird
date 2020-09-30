@@ -1,6 +1,6 @@
 import { Pipeline } from '@/lib/steps';
 import { getTranslator, setVariableDelimiters } from '@/lib/translators';
-import { MongoStep } from '@/lib/translators/mongo';
+import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
 
 const smallMonthReplace = {
   $switch: {

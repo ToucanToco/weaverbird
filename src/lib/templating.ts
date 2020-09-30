@@ -243,7 +243,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   formula(step: Readonly<S.FormulaStep>) {
     return {
       ...step,
-      formula: _interpolate(this.interpolateFunc, ' ' + step.formula, this.context),
+      formula: String(_interpolate(this.interpolateFunc, step.formula, this.context)),
     };
   }
 

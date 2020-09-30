@@ -1,6 +1,7 @@
 import {
   FilterCondition,
   FilterSimpleCondition,
+  Formula,
   IfThenElseStep,
   isFilterComboAnd,
   isFilterComboOr,
@@ -94,10 +95,13 @@ function _conditionToHumanString(condition: FilterCondition, isOnTopLevel: boole
  * @param {String} prefix
  * @param {FilterCondition} condition
  */
-function _ifThenElseStepToHumanFormat(prefix: string, condition: FilterCondition | string): string {
+function _ifThenElseStepToHumanFormat(
+  prefix: string,
+  condition: FilterCondition | Formula,
+): string {
   if (!condition) {
     return prefix + EMPTY_CONDITION_SIGN;
-  } else if (typeof condition === 'string') {
+  } else if (typeof condition === 'string' || typeof condition === 'number') {
     return prefix + _valueToHumanString(condition);
   } else {
     return prefix + _conditionToHumanString(condition, true);
