@@ -199,13 +199,13 @@ async function buildVueApp() {
       category: 'App variables',
       label: 'date.year',
       identifier: 'appRequesters.date.year',
-      value: '2020',
+      value: 2020,
     },
     {
       category: 'Story variables',
       label: 'country',
       identifier: 'requestersManager.country',
-      value: '2020',
+      value: 'New Zealand',
     },
     {
       category: 'Story variables',
@@ -214,6 +214,19 @@ async function buildVueApp() {
       value: 'New York',
     },
   ];
+  const VARIABLES = {
+    view: 'Product 123',
+    date: {
+      year: 2020,
+      month: 'Apr',
+    },
+    city: 'New York',
+    country: 'New Zealand',
+
+    value1: 2,
+    value2: 13,
+    groupname: 'Group 1',
+  }
 
   Vue.use(Vuex);
   const store = new Vuex.Store({
@@ -299,11 +312,7 @@ async function buildVueApp() {
         translator: TRANSLATOR,
         // based on lodash templates (ERB syntax)
         interpolateFunc: (value, context) => exampleInterpolateFunc(value, context),
-        variables: {
-          value1: 2,
-          value2: 13,
-          groupname: 'Group 1',
-        },
+        variables: VARIABLES,
       });
       // Add variables
       store.commit(VQBnamespace('setAvailableVariables'), {
