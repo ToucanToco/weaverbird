@@ -1508,6 +1508,11 @@ describe('Pipeline to mongo translator', () => {
       },
       {
         name: 'formula',
+        new_column: 'with_var',
+        formula: '<%= var %>',
+      },
+      {
+        name: 'formula',
         new_column: 'with_parentheses',
         formula: '(test)',
       },
@@ -1516,6 +1521,7 @@ describe('Pipeline to mongo translator', () => {
     expect(querySteps).toEqual([
       { $addFields: { foo: '$bar' } },
       { $addFields: { constant: 42 } },
+      { $addFields: { with_var: '<%= var %>' } },
       { $addFields: { with_parentheses: '$test' } },
       { $project: { _id: 0 } },
     ]);
