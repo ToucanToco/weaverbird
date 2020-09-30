@@ -21,7 +21,6 @@ type ConditionType = S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboO
  * @param interpolate the actual interpolate function
  * @param value the value to be interpolated
  * @param context the bag of variables
- * @param columnType if specified, the expected output type
  */
 function _interpolate(interpolate: InterpolateFunction, value: any, context: ScopeContext) {
   if (typeof value === 'string') {
@@ -86,15 +85,15 @@ function interpolateIfThenElse(
     if: interpolateFilterCondition(ifthenelse.if, interpolateFunc, context),
     then: _interpolate(interpolateFunc, ifthenelse.then, context),
   };
-  if (typeof ifthenelse.else === 'string') {
+  if (typeof ifthenelse.else === 'object') {
     return {
       ...ret,
-      else: _interpolate(interpolateFunc, ifthenelse.else, context),
+      else: interpolateIfThenElse(ifthenelse.else, interpolateFunc, context),
     };
   }
   return {
     ...ret,
-    else: interpolateIfThenElse(ifthenelse.else, interpolateFunc, context),
+    else: _interpolate(interpolateFunc, ifthenelse.else, context),
   };
 }
 
@@ -244,7 +243,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   formula(step: Readonly<S.FormulaStep>) {
     return {
       ...step,
-      formula: _interpolate(this.interpolateFunc, step.formula, this.context),
+      formula: _interpolate(this.interpolateFunc, ' ' + step.formula, this.context),
     };
   }
 

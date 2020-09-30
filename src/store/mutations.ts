@@ -7,6 +7,7 @@ import { MutationTree } from 'vuex';
 
 import { BackendError, BackendWarning } from '@/lib/backend-response';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
+import { setVariableDelimiters } from '@/lib/translators';
 
 import { currentPipeline, VQBState } from './state';
 
@@ -332,6 +333,9 @@ class Mutations {
     { variableDelimiters }: Pick<VQBState, 'variableDelimiters'>,
   ) {
     state.variableDelimiters = variableDelimiters;
+
+    // Forward them to translators
+    setVariableDelimiters(variableDelimiters);
   }
 }
 

@@ -187,10 +187,12 @@ export type FilterStep = {
   condition: FilterCondition;
 };
 
+export type Formula = string | number;
+
 export type FormulaStep = {
   name: 'formula';
   new_column: string;
-  formula: string;
+  formula: Formula;
 };
 
 export type FromDateStep = {
@@ -203,8 +205,8 @@ export type IfThenElseStep = {
   name: 'ifthenelse';
   newColumn: string;
   if: FilterCondition;
-  then: string;
-  else: string | Omit<IfThenElseStep, 'name' | 'newColumn'>;
+  then: Formula;
+  else: Formula | Omit<IfThenElseStep, 'name' | 'newColumn'>;
 };
 
 export type JoinStep = {

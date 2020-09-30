@@ -1,5 +1,6 @@
 import { Pipeline } from '@/lib/steps';
-import { getTranslator } from '@/lib/translators';
+import { getTranslator, setVariableDelimiters } from '@/lib/translators';
+import { BaseTranslator } from '@/lib/translators/base';
 import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
 
 const smallMonthReplace = {
@@ -1495,6 +1496,11 @@ describe('Pipeline to mongo translator', () => {
   });
 
   it('can generate a formula step with a single column or constant', () => {
+    setVariableDelimiters({
+      start: '<%=',
+      end: '%>',
+    });
+
     const pipeline: Pipeline = [
       {
         name: 'formula',

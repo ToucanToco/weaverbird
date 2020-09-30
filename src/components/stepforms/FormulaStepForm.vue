@@ -31,7 +31,8 @@ import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { FormulaStep } from '@/lib/steps';
+import { escapeForUseInRegExp } from '@/lib/helpers';
+import { Formula, FormulaStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -72,9 +73,29 @@ export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
   validate() {
     let ret = this.validator({ ...this.editedStep });
     let errors: ErrorObject[] = [];
+    // Prevent formula to be interpolated with another type than string
+    const formula: Formula = this.editedStep.formula;
     try {
-      parse(this.editedStep.formula.replace(/\[.*?\]/g, 'var'));
-    } catch {
+      if (typeof formula === 'string') {
+        let formulaEscaped = formula;
+        const regexCols = new RegExp(
+          `${escapeForUseInRegExp('[')}(.*?)${escapeForUseInRegExp(']')}`,
+          'g',
+        );
+        formulaEscaped = formulaEscaped.replace(regexCols, 'col');
+        if (this.variableDelimiters) {
+          const regexVars = new RegExp(
+            `${escapeForUseInRegExp(this.variableDelimiters.start)}(.*?)${escapeForUseInRegExp(
+              this.variableDelimiters.end,
+            )}`,
+            'g',
+          );
+          formulaEscaped = formulaEscaped.replace(regexVars, 'var');
+        }
+        parse(formulaEscaped);
+      }
+    } catch (e) {
+      console.error('Error while parsing formula:', formula, e);
       ret = false;
       errors.push({
         dataPath: '.formula',

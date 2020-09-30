@@ -98,3 +98,8 @@ export function keepCurrentValueIfArrayType(
 ): ValueType[] {
   return Array.isArray(value) ? value : defaultValue;
 }
+
+// From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
+export function escapeForUseInRegExp(string: string): string {
+  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}

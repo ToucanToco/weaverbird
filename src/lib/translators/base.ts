@@ -14,6 +14,8 @@
 import { OutputStep, StepMatcher, TransformStep } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
+import { VariableDelimiters } from '../variables';
+
 export interface ValidationError {
   dataPath: string;
   keyword: string;
@@ -70,6 +72,8 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * `label` will be displayed to the user
    */
   static label: string;
+
+  static variableDelimiters?: VariableDelimiters;
 
   /**
    * `supportedSteps` returns the list of steps supported by this translator class.

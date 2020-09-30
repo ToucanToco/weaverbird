@@ -48,7 +48,7 @@ function castIfThenElse(
 ) {
   const newObj = { ...ifThenElseObj };
   newObj.if = castFilterStepTreeValue(newObj.if, columnTypes);
-  if (typeof newObj.else !== 'string') {
+  if (typeof newObj.else === 'object') {
     // then it's a nested if...then...else object
     newObj.else = castIfThenElse(newObj.else, columnTypes);
   }

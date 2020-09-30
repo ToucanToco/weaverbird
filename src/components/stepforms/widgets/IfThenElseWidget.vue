@@ -119,7 +119,7 @@ import FilterEditor from '@/components/FilterEditor.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterCondition, IfThenElseStep } from '@/lib/steps';
+import { FilterCondition, Formula, FormulaStep, IfThenElseStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -183,14 +183,14 @@ export default class IfThenElseWidget extends Vue {
     });
   }
 
-  updateThenFormula(formula: string) {
+  updateThenFormula(formula: Formula) {
     this.$emit('input', {
       ...this.value,
       then: formula,
     });
   }
 
-  updateElseFormula(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | string) {
+  updateElseFormula(elseObject: Omit<IfThenElseStep, 'name' | 'newColumn'> | Formula) {
     this.$emit('input', {
       ...this.value,
       else: elseObject || '',
@@ -206,11 +206,11 @@ export default class IfThenElseWidget extends Vue {
   }
 
   transformElseIfIntoElse() {
-    if (typeof this.value.else === 'string') {
-      return;
-    } else {
+    if (typeof this.value.else === 'object') {
       this.collapsed = false;
       this.updateElseFormula(this.value.else.else);
+    } else {
+      return;
     }
   }
 
