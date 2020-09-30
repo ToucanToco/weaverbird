@@ -119,7 +119,7 @@ import FilterEditor from '@/components/FilterEditor.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterCondition, Formula, FormulaStep, IfThenElseStep } from '@/lib/steps';
+import { FilterCondition, Formula, IfThenElseStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 

@@ -6,8 +6,8 @@
  *
  */
 import { PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters } from '../variables';
 
+import { VariableDelimiters } from '../variables';
 import { BaseTranslator } from './base';
 import { Mongo36Translator } from './mongo';
 import { Mongo40Translator } from './mongo4';
