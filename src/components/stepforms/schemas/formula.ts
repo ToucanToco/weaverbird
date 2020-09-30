@@ -8,7 +8,7 @@ export default {
       enum: ['formula'],
     },
     formula: {
-      type: 'string',
+      type: ['string', 'number'],
       minLength: 1,
       title: 'Formula',
       description: 'Formula',

@@ -1,12 +1,14 @@
 /** This module contains mongo specific translation operations */
 
-import _ from 'lodash';
+import _, { NumericDictionary } from 'lodash';
 import * as math from 'mathjs';
 
-import { $$ } from '@/lib/helpers';
+import { $$, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
+import { VariableDelimiters } from '@/lib/variables';
+import { Formula } from '@/lib/steps';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -179,18 +181,27 @@ function getOperator(op: string) {
   2. Parse the formula into a MathNode
   3. Replace all pseudo into MathNode by there original name
 */
-function buildFormulaTree(formula: string): math.MathNode {
+function buildFormulaTree(
+  formula: string | number,
+  variableDelimiters?: VariableDelimiters,
+): math.MathNode {
+  // Formulas other than strings contains only one value
+  if (typeof formula !== 'string') {
+    return new math.ConstantNode(formula);
+  }
+
   const COLS_ESCAPE_OPEN = '[';
   const COLS_ESCAPE_CLOSE = ']';
-  const VARS_ESCAPE_OPEN = '<%=';
-  const VARS_ESCAPE_CLOSE = '%>';
 
   // 1. Replace in formula some elements by a "pseudo"
   let formulaPseudotised = formula;
   // 1a. Column names between `[]`
   const pseudoCols: Record<string, string> = {};
   let indexCols = 0;
-  const regexCols = new RegExp(`\\${COLS_ESCAPE_OPEN}(.*?)\\${COLS_ESCAPE_CLOSE}`, 'g');
+  const regexCols = new RegExp(
+    `${escapeForUseInRegExp(COLS_ESCAPE_OPEN)}(.*?)${escapeForUseInRegExp(COLS_ESCAPE_CLOSE)}`,
+    'g',
+  );
   for (const match of formula.match(regexCols) || []) {
     pseudoCols[`__vqb_col_${indexCols}__`] = match;
     formulaPseudotised = formulaPseudotised.replace(match, `__vqb_col_${indexCols}__`);
@@ -198,12 +209,19 @@ function buildFormulaTree(formula: string): math.MathNode {
   }
   // 1b. Variables
   const pseudoVars: Record<string, string> = {};
-  let indexVars = 0;
-  const regexVars = new RegExp(`\\${VARS_ESCAPE_OPEN}(.*?)\\${VARS_ESCAPE_CLOSE}`, 'g');
-  for (const match of formula.match(regexVars) || []) {
-    pseudoVars[`__vqb_var_${indexVars}__`] = match;
-    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_var_${indexVars}__`);
-    indexVars++;
+  if (variableDelimiters) {
+    let indexVars = 0;
+    const regexVars = new RegExp(
+      `${escapeForUseInRegExp(variableDelimiters.start)}(.*?)\\${escapeForUseInRegExp(
+        variableDelimiters.end,
+      )}`,
+      'g',
+    );
+    for (const match of formula.match(regexVars) || []) {
+      pseudoVars[`__vqb_var_${indexVars}__`] = match;
+      formulaPseudotised = formulaPseudotised.replace(match, `__vqb_var_${indexVars}__`);
+      indexVars++;
+    }
   }
 
   // 2. Parse the formula into a MathNode
@@ -217,7 +235,7 @@ function buildFormulaTree(formula: string): math.MathNode {
           .replace(COLS_ESCAPE_OPEN, '')
           .replace(COLS_ESCAPE_CLOSE, '');
       }
-      if (pseudoVars[node.name]) {
+      if (variableDelimiters && pseudoVars[node.name]) {
         // Variables should be considered as constants, and not columns, by the parser
         return new math.ConstantNode(pseudoVars[node.name]);
       }
@@ -819,14 +837,15 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
 /** transform an 'ifthenelse' step into corresponding mongo step */
 function transformIfThenElseStep(
   step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
+  variableDelimiters?: VariableDelimiters,
 ): MongoStep {
   const ifExpr: MongoStep = buildCondExpression(step.if);
-  const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then));
+  const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
   let elseExpr: MongoStep | string | number;
-  if (typeof step.else === 'string') {
-    elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else));
+  if (typeof step.else === 'object') {
+    elseExpr = transformIfThenElseStep(step.else, variableDelimiters);
   } else {
-    elseExpr = transformIfThenElseStep(step.else);
+    elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
   }
   return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
 }
@@ -1521,17 +1540,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   evolution: transformEvolution,
   fillna: transformFillna,
   filter: transformFilterStep,
-  formula: (step: Readonly<S.FormulaStep>) => {
-    return {
-      $addFields: {
-        [step.new_column]: buildMongoFormulaTree(buildFormulaTree(step.formula)),
-      },
-    };
-  },
   fromdate: transformFromDate,
-  ifthenelse: (step: Readonly<S.IfThenElseStep>) => ({
-    $addFields: { [step.newColumn]: transformIfThenElseStep(_.omit(step, ['name', 'newColumn'])) },
-  }),
   lowercase: (step: Readonly<S.ToLowerStep>) => ({
     $addFields: { [step.column]: { $toLower: $$(step.column) } },
   }),
@@ -1610,6 +1619,27 @@ export class Mongo36Translator extends BaseTranslator {
       { $unwind: '$_vqbPipelinesUnion' },
       { $replaceRoot: { newRoot: '$_vqbPipelinesUnion' } },
     ];
+  }
+
+  formula(step: Readonly<S.FormulaStep>): MongoStep {
+    return {
+      $addFields: {
+        [step.new_column]: buildMongoFormulaTree(
+          buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
+        ),
+      },
+    };
+  }
+
+  ifthenelse(step: Readonly<S.IfThenElseStep>): MongoStep {
+    return {
+      $addFields: {
+        [step.newColumn]: transformIfThenElseStep(
+          _.omit(step, ['name', 'newColumn']),
+          BaseTranslator.variableDelimiters,
+        ),
+      },
+    };
   }
 
   /** transform a 'join' step into corresponding mongo steps */

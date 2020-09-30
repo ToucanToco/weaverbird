@@ -6,6 +6,7 @@
  *
  */
 import { PipelineStepName } from '@/lib/steps';
+import { VariableDelimiters } from '../variables';
 
 import { BaseTranslator } from './base';
 import { Mongo36Translator } from './mongo';
@@ -59,3 +60,10 @@ export function availableTranslators() {
 
 registerTranslator('mongo36', Mongo36Translator);
 registerTranslator('mongo40', Mongo40Translator);
+
+/**
+ * Initialize variable delimiters for all translators
+ */
+export function setVariableDelimiters(variableDelimiters?: VariableDelimiters) {
+  BaseTranslator.variableDelimiters = variableDelimiters;
+}
