@@ -7,7 +7,6 @@ import { $$ } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
-import { MathNode } from '@/typings/mathjs';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -176,38 +175,55 @@ function getOperator(op: string) {
 
 /**
   Transform a formula expression into a MathNode
-  1. Replace in formula all column name between `[]` by a "pseudo"
+  1. Replace in formula all column name between `[]` and variables by a "pseudo"
   2. Parse the formula into a MathNode
   3. Replace all pseudo into MathNode by there original name
 */
-function buildFormulaTree(formula: string): MathNode {
-  const ESCAPE_OPEN = '[';
-  const ESCAPE_CLOSE = ']';
+function buildFormulaTree(formula: string): math.MathNode {
+  const COLS_ESCAPE_OPEN = '[';
+  const COLS_ESCAPE_CLOSE = ']';
+  const VARS_ESCAPE_OPEN = '<%=';
+  const VARS_ESCAPE_CLOSE = '%>';
 
-  // 1. Replace in formula all column name between `[]` by a "pseudo"
+  // 1. Replace in formula some elements by a "pseudo"
   let formulaPseudotised = formula;
-  const pseudo: Record<string, string> = {};
-  let index = 0;
-  const regex = new RegExp(`\\${ESCAPE_OPEN}(.*?)\\${ESCAPE_CLOSE}`, 'g');
-  for (const match of formula.match(regex) || []) {
-    pseudo[`__vqb_col_${index}__`] = match;
-    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_col_${index}__`);
-    index++;
+  // 1a. Column names between `[]`
+  const pseudoCols: Record<string, string> = {};
+  let indexCols = 0;
+  const regexCols = new RegExp(`\\${COLS_ESCAPE_OPEN}(.*?)\\${COLS_ESCAPE_CLOSE}`, 'g');
+  for (const match of formula.match(regexCols) || []) {
+    pseudoCols[`__vqb_col_${indexCols}__`] = match;
+    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_col_${indexCols}__`);
+    indexCols++;
+  }
+  // 1b. Variables
+  const pseudoVars: Record<string, string> = {};
+  let indexVars = 0;
+  const regexVars = new RegExp(`\\${VARS_ESCAPE_OPEN}(.*?)\\${VARS_ESCAPE_CLOSE}`, 'g');
+  for (const match of formula.match(regexVars) || []) {
+    pseudoVars[`__vqb_var_${indexVars}__`] = match;
+    formulaPseudotised = formulaPseudotised.replace(match, `__vqb_var_${indexVars}__`);
+    indexVars++;
   }
 
   // 2. Parse the formula into a MathNode
-  const mathjsTree: MathNode = math.parse(formulaPseudotised);
+  const mathjsTree: math.MathNode = math.parse(formulaPseudotised);
 
   // 3. Replace all pseudo into MathNode by there original name
-  mathjsTree.traverse(function(node: MathNode): MathNode {
+  return mathjsTree.transform(function(node: math.MathNode): math.MathNode {
     if (node.type === 'SymbolNode') {
-      if (pseudo[node.name]) {
-        node.name = pseudo[node.name].replace(ESCAPE_OPEN, '').replace(ESCAPE_CLOSE, '');
+      if (pseudoCols[node.name]) {
+        node.name = pseudoCols[node.name]
+          .replace(COLS_ESCAPE_OPEN, '')
+          .replace(COLS_ESCAPE_CLOSE, '');
+      }
+      if (pseudoVars[node.name]) {
+        // Variables should be considered as constants, and not columns, by the parser
+        return new math.ConstantNode(pseudoVars[node.name]);
       }
     }
     return node;
   });
-  return mathjsTree;
 }
 
 function buildCondExpression(
@@ -282,7 +298,7 @@ function buildMatchTree(
  * @param node a mathjs node object (usually received after parsing an string expression)
  * This node is the root node of the logical tree describing the formula
  */
-function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
+function buildMongoFormulaTree(node: math.MathNode): MongoStep | string | number {
   switch (node.type) {
     case 'OperatorNode':
       if (node.args.length === 1) {
@@ -295,7 +311,7 @@ function buildMongoFormulaTree(node: MathNode): MongoStep | string | number {
         [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
       };
     case 'SymbolNode':
-      // Re-put the name back
+      // For column names
       return $$(node.name);
     case 'ConstantNode':
       return node.value;
