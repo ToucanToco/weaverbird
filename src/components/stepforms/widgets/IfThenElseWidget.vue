@@ -206,6 +206,9 @@ export default class IfThenElseWidget extends Vue {
   }
 
   transformElseIfIntoElse() {
+    // This else case should never happen, "else if" being always an object
+    //but is necessary for TypeScript completeness
+    /* istanbul ignore else */
     if (typeof this.value.else === 'object') {
       this.collapsed = false;
       this.updateElseFormula(this.value.else.else);

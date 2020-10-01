@@ -1,6 +1,6 @@
 import FormulaStepForm from '@/components/stepforms/FormulaStepForm.vue';
 
-import { BasicStepFormTestRunner } from './utils';
+import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
 describe('Formula Step Form', () => {
   const runner = new BasicStepFormTestRunner(FormulaStepForm, 'formula');
@@ -18,11 +18,41 @@ describe('Formula Step Form', () => {
     },
   ]);
 
+  runner.testValidationErrors([
+    {
+      testlabel: 'submitted formula is not valid',
+      props: {
+        initialStepValue: { name: 'formula', formula: '= 3', new_column: 'foo' },
+      },
+      errors: [{ keyword: 'parsing', dataPath: '.formula' }],
+    },
+  ]);
+
   runner.testValidate({
-    testlabel: 'submitted data is valid',
+    testlabel: 'submitted data is valid with string formula',
     props: {
       initialStepValue: { name: 'formula', formula: 'ColumnA * 2', new_column: 'foo' },
     },
+  });
+
+  runner.testValidate({
+    testlabel: 'submitted data is valid with non string formula',
+    props: {
+      initialStepValue: { name: 'formula', formula: 42, new_column: 'foo' },
+    },
+  });
+
+  runner.testValidate({
+    testlabel: 'submitted formula contains variables',
+    props: {
+      initialStepValue: { name: 'formula', formula: '<%= some_var %>', new_column: 'foo' },
+    },
+    store: setupMockStore({
+      variableDelimiters: {
+        start: '<%=',
+        end: '%>',
+      },
+    }),
   });
 
   runner.testCancel();
