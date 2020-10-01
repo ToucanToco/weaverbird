@@ -211,7 +211,7 @@ function buildFormulaTree(
   if (variableDelimiters) {
     let indexVars = 0;
     const regexVars = new RegExp(
-      `${escapeForUseInRegExp(variableDelimiters.start)}(.*?)\\${escapeForUseInRegExp(
+      `${escapeForUseInRegExp(variableDelimiters.start)}(.*?)${escapeForUseInRegExp(
         variableDelimiters.end,
       )}`,
       'g',
