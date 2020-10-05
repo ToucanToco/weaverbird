@@ -110,7 +110,7 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should leave append steps untouched', () => {
+  it('should leave append steps untouched if pipeline are not dereferenced', () => {
     const pipeline: Pipeline = [
       {
         name: 'append',
@@ -118,6 +118,69 @@ describe('Pipeline interpolator', () => {
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should interpolate pipelines of append step, if they are dereferenced', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'append',
+        pipelines: [
+          [
+            {
+              name: 'domain',
+              domain: 'zorro',
+            },
+            {
+              name: 'argmin',
+              column: '<%= foo %>',
+              groups: ['<%= egg %>', 'column3', '<%= foo %>'],
+            },
+          ],
+          [
+            {
+              name: 'domain',
+              domain: 'dondiego',
+            },
+            {
+              name: 'concatenate',
+              columns: ['<%= foo %>', '<%= egg %>'],
+              separator: '<%= foo %>',
+              new_column_name: '<%= foo %>',
+            },
+          ],
+        ],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'append',
+        pipelines: [
+          [
+            {
+              name: 'domain',
+              domain: 'zorro',
+            },
+            {
+              name: 'argmin',
+              column: 'bar',
+              groups: ['spam', 'column3', 'bar'],
+            },
+          ],
+          [
+            {
+              name: 'domain',
+              domain: 'dondiego',
+            },
+            {
+              name: 'concatenate',
+              columns: ['bar', 'spam'],
+              separator: '<%= foo %>', // NB: separator and new column are not templated in concatenate
+              new_column_name: '<%= foo %>',
+            },
+          ],
+        ],
+      },
+    ]);
   });
 
   it('should interpolate argmax steps', () => {
