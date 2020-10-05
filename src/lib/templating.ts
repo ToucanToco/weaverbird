@@ -119,7 +119,15 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   append(step: Readonly<S.AppendStep>) {
-    return { ...step };
+    const pipelines = [];
+    for (const pipeline of step.pipelines) {
+      if (S.isNotDeReferenced(pipeline)) {
+        pipelines.push(pipeline);
+      } else {
+        pipelines.push(this.interpolate(pipeline));
+      }
+    }
+    return { ...step, pipelines };
   }
 
   aggregate(step: Readonly<S.AggregationStep>) {
