@@ -838,7 +838,7 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave join steps untouched', () => {
+  it('should leave join steps untouched if right pipeline is not dereferenced', () => {
     const pipeline: Pipeline = [
       {
         name: 'join',
@@ -848,6 +848,47 @@ describe('Pipeline interpolator', () => {
       },
     ];
     expect(translate(pipeline)).toEqual(pipeline);
+  });
+
+  it('should template the joined right pipeline if it is dereferenced', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'join',
+        right_pipeline: [
+          {
+            name: 'domain',
+            domain: 'dondiego',
+          },
+          {
+            name: 'concatenate',
+            columns: ['<%= foo %>', '<%= egg %>'],
+            separator: '<%= foo %>',
+            new_column_name: '<%= foo %>',
+          },
+        ],
+        type: 'left',
+        on: [['<%= col %>', '<%= col %>']],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'join',
+        right_pipeline: [
+          {
+            name: 'domain',
+            domain: 'dondiego',
+          },
+          {
+            name: 'concatenate',
+            columns: ['bar', 'spam'],
+            separator: '<%= foo %>', // NB: separator and new column are not templated in concatenate
+            new_column_name: '<%= foo %>',
+          },
+        ],
+        type: 'left',
+        on: [['<%= col %>', '<%= col %>']],
+      },
+    ]);
   });
 
   it('should leave percentage steps untouched', () => {

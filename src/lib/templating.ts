@@ -263,7 +263,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   join(step: Readonly<S.JoinStep>) {
-    return { ...step };
+    if (S.isNotDeReferenced(step.right_pipeline)) {
+      return { ...step };
+    } else {
+      return { ...step, right_pipeline: this.interpolate(step.right_pipeline) };
+    }
   }
 
   lowercase(step: Readonly<S.ToLowerStep>) {
