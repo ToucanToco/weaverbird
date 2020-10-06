@@ -1,9 +1,12 @@
 # Changelog
 
-## UNRELEASED
+## [0.27.0] - 2020-10-06
 
 ### Changed
 - Display a tooltip with value when hovering a variable in variables dropdown
+
+### Fixes
+- Formula / IfThenElse Steps: allow to use variable
 
 ## [0.26.0] - 2020-09-23
 
@@ -460,6 +463,7 @@
 
 - Initial version, showtime!
 
+[0.27.0]: https://github.com/ToucanToco/weaverbird/compare/v0.26.0...v0.27.0
 [0.26.0]: https://github.com/ToucanToco/weaverbird/compare/v0.25.2...v0.26.0
 [0.25.2]: https://github.com/ToucanToco/weaverbird/compare/v0.25.1...v0.25.2
 [0.25.1]: https://github.com/ToucanToco/weaverbird/compare/v0.25.0...v0.25.1
