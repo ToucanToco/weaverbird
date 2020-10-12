@@ -122,8 +122,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     const pipelines = [];
     for (const pipeline of step.pipelines) {
       if (S.isReference(pipeline)) {
+        // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
         pipelines.push(pipeline);
       } else {
+        // the pipeline is dereferenced in: `preparePipeline` function in `src/store/state.ts`
         pipelines.push(this.interpolate(pipeline));
       }
     }
@@ -272,8 +274,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
 
   join(step: Readonly<S.JoinStep>) {
     if (S.isReference(step.right_pipeline)) {
+      // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
       return { ...step };
     } else {
+      // the pipeline is dereferenced in: `preparePipeline` function in `src/store/state.ts`
       return { ...step, right_pipeline: this.interpolate(step.right_pipeline) };
     }
   }
