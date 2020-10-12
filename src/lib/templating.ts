@@ -121,7 +121,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   append(step: Readonly<S.AppendStep>) {
     const pipelines = [];
     for (const pipeline of step.pipelines) {
-      if (S.isNotDeReferenced(pipeline)) {
+      if (S.isReference(pipeline)) {
         pipelines.push(pipeline);
       } else {
         pipelines.push(this.interpolate(pipeline));
@@ -271,7 +271,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   join(step: Readonly<S.JoinStep>) {
-    if (S.isNotDeReferenced(step.right_pipeline)) {
+    if (S.isReference(step.right_pipeline)) {
       return { ...step };
     } else {
       return { ...step, right_pipeline: this.interpolate(step.right_pipeline) };
