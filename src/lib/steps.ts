@@ -6,7 +6,12 @@ type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
 export type Reference = Pipeline | string;
 
-export function isNotDeReferenced(pipelineOrReference: Reference): pipelineOrReference is string {
+/**
+ * Some step can contains either:
+ * - a reference to the pipeline i.e. the name of the pipeline, then a string
+ * - the pipeline itself
+ */
+export function isReference(pipelineOrReference: Reference): pipelineOrReference is string {
   return typeof pipelineOrReference === 'string';
 }
 
