@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.27.1] - 2020-10-13
+
+### Fixes
+- Templating: translate append and join steps
+
 ## [0.27.0] - 2020-10-06
 
 ### Changed
@@ -463,6 +468,7 @@
 
 - Initial version, showtime!
 
+[0.27.1]: https://github.com/ToucanToco/weaverbird/compare/v0.27.0...v0.27.1
 [0.27.0]: https://github.com/ToucanToco/weaverbird/compare/v0.26.0...v0.27.0
 [0.26.0]: https://github.com/ToucanToco/weaverbird/compare/v0.25.2...v0.26.0
 [0.25.2]: https://github.com/ToucanToco/weaverbird/compare/v0.25.1...v0.25.2
