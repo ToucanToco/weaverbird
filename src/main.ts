@@ -39,3 +39,6 @@ export {
 
 // export helpers/utils
 export { exampleInterpolateFunc } from '@/lib/templating';
+
+//export types
+export { FilterCondition } from './lib/steps'
