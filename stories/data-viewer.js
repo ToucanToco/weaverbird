@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/vue';
 import Vuex from 'vuex';
 import Vue from 'vue';
 
-import { DataViewer, registerModule } from '../dist/storybook/components';
+import { DataViewer, registerModule, resizable } from '../dist/storybook/components';
 
 const stories = storiesOf('DataViewer', module);
 Vue.use(Vuex)
@@ -25,6 +25,7 @@ stories.add('empty', () => ({
     })
   },
   components: { DataViewer },
+  directives: { resizable },
   template: `
     <data-viewer>
     </data-viewer>
@@ -60,6 +61,7 @@ stories.add('simple', () => ({
     });
   },
   components: { DataViewer },
+  directives: { resizable },
   template: `
       <data-viewer>
       </data-viewer>
