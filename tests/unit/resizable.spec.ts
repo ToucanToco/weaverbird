@@ -30,9 +30,12 @@ describe('Resizable directive', () => {
   });
 
   describe('default', () => {
-    let ResizableColHandlerStub: jest.SpyInstance, handler: Wrapper<any>;
+    let ResizableColHandlerStub: { [methodName: string]: jest.SpyInstance }, handler: Wrapper<any>;
     beforeEach(() => {
-      ResizableColHandlerStub = jest.spyOn(ResizableColHandler.prototype, 'create');
+      ResizableColHandlerStub = {
+        create: jest.spyOn(ResizableColHandler.prototype, 'create'),
+        startDragging: jest.spyOn(ResizableColHandler.prototype, 'startDragging'),
+      };
       wrapper = shallowMount(FakeTableComponent);
       handler = wrapper.findAll('.table__handler').at(0);
     });
@@ -44,7 +47,7 @@ describe('Resizable directive', () => {
     });
 
     it('should add handlers to cols', () => {
-      expect(ResizableColHandlerStub).toHaveBeenCalledTimes(3);
+      expect(ResizableColHandlerStub.create).toHaveBeenCalledTimes(3);
       expect(wrapper.findAll('.table__handler')).toHaveLength(3);
     });
 
@@ -61,6 +64,11 @@ describe('Resizable directive', () => {
 
     it('should allow to target col handler on all table height', () => {
       expect(handler.element.offsetHeight).toBe(wrapper.element.offsetHeight);
+    });
+
+    it('should save resizing width when dragging a col handler', () => {
+      handler.trigger('mousedown');
+      expect(ResizableColHandlerStub.startDragging).toHaveBeenCalledTimes(1);
     });
   });
 });
