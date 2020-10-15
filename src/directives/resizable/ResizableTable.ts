@@ -41,6 +41,8 @@ export default class ResizableTable {
   setColHandlers(): void {
     for (const col of this.cols) {
       const colElement = col as HTMLElement;
+      // there is sometimes an issue with small table that is solved by adding width to col (otherwise min-width is not set correctly)
+      colElement.style.width = `${colElement.offsetWidth}px`;
       // minWidth override maxWidth css property so we use it to expand table and cols without having to touch to table width
       colElement.style.minWidth = `${colElement.offsetWidth}px`;
 
