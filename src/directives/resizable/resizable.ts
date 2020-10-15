@@ -5,8 +5,10 @@
 import { DirectiveOptions } from 'vue';
 
 const directive: DirectiveOptions = {
-  inserted() {
-    // directive
+  inserted(el: HTMLElement) {
+    // directive should only work with a table
+    if (el.nodeName != 'TABLE') return;
+    // TODO: if it is the case instantiate a ResizableTable class
   },
 };
 
