@@ -9,10 +9,16 @@ export interface ResizableColHandlerOptions {
 export default class ResizableColHandler {
   handler: HTMLElement;
   options: ResizableColHandlerOptions;
+  col: HTMLElement | undefined; // define if col is selected or not (drag/drop)
+  colWidth: number; // keep the wanted col width when dragging the handler
+  pageX: number; // apply correct width after dropping the handler
 
   constructor(options: ResizableColHandlerOptions) {
     this.options = options;
     this.handler = this.create();
+    this.colWidth = 0;
+    this.pageX = 0;
+    this.col = undefined;
   }
 
   // create a handler DOM element
