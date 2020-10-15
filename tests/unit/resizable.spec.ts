@@ -86,11 +86,12 @@ describe('Resizable directive', () => {
 
     it('should reset col size when doubleClicking on a col handler', () => {
       const col = wrapper.findAll('th').at(0);
+      expect(col.element.style.minWidth).toBe('0px');
       col.element.style.minWidth = '300px';
       expect(col.element.style.minWidth).toBe('300px');
       handler.trigger('dblclick');
       expect(ResizableColHandlerStub.reset).toHaveBeenCalledTimes(1);
-      expect(col.element.style.minWidth).toBe('1px');
+      expect(col.element.style.minWidth).toBe('0px');
     });
   });
 });
@@ -98,7 +99,10 @@ describe('Resizable directive', () => {
 describe('ResizableColHandler', () => {
   describe('getColPadding', () => {
     let col: HTMLElement, computedStyleStub: jest.SpyInstance;
-    const resizableColHandler: ResizableColHandler = new ResizableColHandler({ height: 100 });
+    const resizableColHandler: ResizableColHandler = new ResizableColHandler({
+      height: 100,
+      minWidth: 120,
+    });
     beforeEach(() => {
       computedStyleStub = jest.spyOn(window, 'getComputedStyle');
       col = document.createElement('div');

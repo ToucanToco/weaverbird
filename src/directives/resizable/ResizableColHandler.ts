@@ -4,6 +4,7 @@
 
 export interface ResizableColHandlerOptions {
   height: number; // the table height to make handler accessible on every td/th
+  minWidth: number; // the min width col can handle
 }
 
 export default class ResizableColHandler {
@@ -82,8 +83,10 @@ export default class ResizableColHandler {
     const diffX = e.pageX - this.pageX;
     if (this.col) {
       const newWidth = this.colWidth + diffX;
+      // applied width should never go down min width
+      const currWidth = newWidth > this.options.minWidth ? newWidth : this.options.minWidth;
       // use minWidth rather than width will extend col and table automatically (no need to resize table width)
-      this.col.style.minWidth = `${newWidth}px`;
+      this.col.style.minWidth = `${currWidth}px`;
     }
   }
 
@@ -92,8 +95,7 @@ export default class ResizableColHandler {
     const target = e.target as HTMLElement;
     const currCol: HTMLElement | null = target.parentElement;
     if (currCol) {
-      // TODO: for now we apply a 1px width but we will replace with min col width (start width) in next commit
-      currCol.style.minWidth = `1px`;
+      currCol.style.minWidth = `${this.options.minWidth}px`;
     }
   }
 }
