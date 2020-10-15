@@ -32,7 +32,9 @@ describe('Resizable directive', () => {
   });
 
   describe('default', () => {
-    let ResizableColHandlerStub: { [methodName: string]: jest.SpyInstance }, handler: Wrapper<any>;
+    let ResizableColHandlerStub: { [methodName: string]: jest.SpyInstance },
+      ResizableTableDestroyStub: jest.SpyInstance,
+      handler: Wrapper<any>;
     beforeEach(() => {
       ResizableColHandlerStub = {
         create: jest.spyOn(ResizableColHandler.prototype, 'create'),
@@ -40,7 +42,9 @@ describe('Resizable directive', () => {
         stopDragging: jest.spyOn(ResizableColHandler.prototype, 'stopDragging'),
         resize: jest.spyOn(ResizableColHandler.prototype, 'resize'),
         reset: jest.spyOn(ResizableColHandler.prototype, 'reset'),
+        destroy: jest.spyOn(ResizableColHandler.prototype, 'destroy'),
       };
+      ResizableTableDestroyStub = jest.spyOn(ResizableTable.prototype, 'destroy');
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
       handler = wrapper.findAll(defaultHandlerClass).at(0);
     });
@@ -94,6 +98,23 @@ describe('Resizable directive', () => {
       handler.trigger('dblclick');
       expect(ResizableColHandlerStub.reset).toHaveBeenCalledTimes(1);
       expect(col.element.style.minWidth).toBe('0px');
+    });
+
+    describe('destroy', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+        wrapper.destroy();
+      });
+      it('should remove all listener', () => {
+        expect(ResizableColHandlerStub.destroy).toHaveBeenCalledTimes(3);
+        expect(ResizableTableDestroyStub).toHaveBeenCalledTimes(1);
+      });
+      it('should not call col handler methods when drag/drop on document', async () => {
+        await wrapper.trigger('mouseup');
+        expect(ResizableColHandlerStub.stopDragging).not.toHaveBeenCalled();
+        await wrapper.trigger('mousemove');
+        expect(ResizableColHandlerStub.resize).not.toHaveBeenCalled();
+      });
     });
   });
 

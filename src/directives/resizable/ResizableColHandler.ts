@@ -40,6 +40,14 @@ export default class ResizableColHandler {
     return handler;
   }
 
+  destroy(): void {
+    this.handler.removeEventListener('mousedown', this.startDragging, true);
+    document.removeEventListener('mouseup', this.stopDragging, true);
+    document.removeEventListener('mousemove', this.resize, true);
+    this.handler.removeEventListener('dblclick', this.reset, true);
+    this.handler.remove();
+  }
+
   // return the created handler to parent
   render(): HTMLElement {
     return this.handler;

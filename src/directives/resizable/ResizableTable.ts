@@ -21,14 +21,21 @@ export interface ResizableTableOptions {
 export default class ResizableTable {
   table: HTMLElement;
   cols: HTMLCollection;
+  colHandlers: ResizableColHandler[];
   options: ResizableTableOptions;
 
   constructor(table: HTMLElement, customOptions?: ResizableTableOptions) {
     this.options = customOptions || DEFAULT_OPTIONS;
     this.table = table;
+    this.colHandlers = [];
     this.cols = this.getCols(table);
     this.setColHandlers();
     this.addTableClass();
+  }
+
+  destroy(): void {
+    this.colHandlers.forEach((colHandler: ResizableColHandler) => colHandler.destroy());
+    this.colHandlers = [];
   }
 
   // Get ths of current table in DOM
@@ -39,6 +46,7 @@ export default class ResizableTable {
 
   // apply default style and add handler to each DOM col
   setColHandlers(): void {
+    this.destroy(); // remove all previous handlers before adding new ones
     for (const col of this.cols) {
       const colElement = col as HTMLElement;
       // there is sometimes an issue with small table that is solved by adding width to col (otherwise min-width is not set correctly)
@@ -51,9 +59,10 @@ export default class ResizableTable {
         minWidth: colElement.offsetWidth,
         className: this.options.classes.handler,
       };
-      const colHandler: HTMLElement = new ResizableColHandler(colHandlerOptions).render();
+      const colHandler: ResizableColHandler = new ResizableColHandler(colHandlerOptions);
       // add the handler to referent DOM col
-      col.appendChild(colHandler);
+      col.appendChild(colHandler.render());
+      this.colHandlers.push(colHandler);
     }
   }
 
