@@ -5,6 +5,7 @@
 export interface ResizableColHandlerOptions {
   height: number; // the table height to make handler accessible on every td/th
   minWidth: number; // the min width col can handle
+  className: string; // css class applied on handler
 }
 
 export default class ResizableColHandler {
@@ -35,8 +36,7 @@ export default class ResizableColHandler {
     handler.style.userSelect = 'none';
     // as we want the selector to be accessible on all table height, your header col should not be overflow: hidden
     handler.style.height = `${this.options.height}px`;
-    // this default class is used for tests now be will be replaced with custom one in futures commit
-    handler.classList.add('table__handler');
+    handler.classList.add(this.options.className);
     return handler;
   }
 

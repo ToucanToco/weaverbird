@@ -1,5 +1,5 @@
 <template>
-  <table v-resizable>
+  <table v-resizable="options">
     <thead>
       <tr>
         <th>Col 1</th>
@@ -18,14 +18,21 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import Vue, { PropType } from 'vue';
 import { Component } from 'vue-property-decorator';
 
 import resizable from '@/directives/resizable/resizable';
+import { ResizableTableOptions } from '@/directives/resizable/ResizableTable';
 @Component({
   name: 'FakeTableComponent',
   directives: {
     resizable,
+  },
+  props: {
+    options: {
+      type: Object as PropType<ResizableTableOptions>,
+      default: undefined,
+    },
   },
 })
 export default class FakeTableComponent extends Vue {}

@@ -1,19 +1,30 @@
 /*
  * ResizableDirective allow to resize columns width of a table
+ *
  * ResizableDirective add handlers to all cell of first row of the selected table enabling events
  * Table will be resize automatically to fit container or expand if cols width are wider than available width
+ *
+ * Default options can be overrided after directive name (check ResizableTableOptions interface):
+ * ex: `v-resizable="{
+ *     classes: {
+ *       table: 'data-viewer-table--resizable',
+ *       handler: 'data-viewer-table__handler',
+ *      },
+ *   }"`
  */
 
 import { DirectiveOptions } from 'vue';
+import { DirectiveBinding } from 'vue/types/options';
 
-import ResizableTable from './ResizableTable';
+import ResizableTable, { ResizableTableOptions } from './ResizableTable';
 
 const directive: DirectiveOptions = {
-  inserted(el: HTMLElement) {
+  inserted(el: HTMLElement, node: DirectiveBinding) {
     // directive should only work with a table
     if (el.nodeName != 'TABLE') return;
     // instantiate resizable table
-    new ResizableTable(el);
+    const options: ResizableTableOptions = node.value;
+    new ResizableTable(el, options);
   },
 };
 

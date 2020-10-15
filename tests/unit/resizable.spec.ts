@@ -3,10 +3,12 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import FakeOtherComponent from '../../src/directives/resizable/__mocks__/FakeOtherComponent.vue';
 import FakeTableComponent from '../../src/directives/resizable/__mocks__/FakeTableComponent.vue';
 import ResizableColHandler from '../../src/directives/resizable/ResizableColHandler';
-import ResizableTable from '../../src/directives/resizable/ResizableTable';
+import ResizableTable, { DEFAULT_OPTIONS } from '../../src/directives/resizable/ResizableTable';
 
 describe('Resizable directive', () => {
   let wrapper: Wrapper<FakeTableComponent | FakeTableComponent>;
+  const defaultTableClass: string = DEFAULT_OPTIONS.classes?.table as string,
+    defaultHandlerClass = `.${DEFAULT_OPTIONS.classes?.handler}`;
 
   afterEach(() => {
     jest.restoreAllMocks();
@@ -40,7 +42,7 @@ describe('Resizable directive', () => {
         reset: jest.spyOn(ResizableColHandler.prototype, 'reset'),
       };
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
-      handler = wrapper.findAll('.table__handler').at(0);
+      handler = wrapper.findAll(defaultHandlerClass).at(0);
     });
 
     it('should assign min-width to cols', () => {
@@ -51,7 +53,7 @@ describe('Resizable directive', () => {
 
     it('should add handlers to cols', () => {
       expect(ResizableColHandlerStub.create).toHaveBeenCalledTimes(3);
-      expect(wrapper.findAll('.table__handler')).toHaveLength(3);
+      expect(wrapper.findAll(defaultHandlerClass)).toHaveLength(3);
     });
 
     it('should apply the right style to a col handler', () => {
@@ -94,6 +96,39 @@ describe('Resizable directive', () => {
       expect(col.element.style.minWidth).toBe('0px');
     });
   });
+
+  describe('custom options', () => {
+    describe('without custom options', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(FakeTableComponent);
+      });
+      it('should add the default class to table', () => {
+        expect(wrapper.classes()).toContain(defaultTableClass);
+      });
+      it('should add the default class to handlers', () => {
+        expect(wrapper.findAll(defaultHandlerClass)).toHaveLength(3);
+      });
+    });
+    describe('with custom options', () => {
+      beforeEach(() => {
+        wrapper = shallowMount(FakeTableComponent, {
+          propsData: {
+            options: {
+              classes: { table: 'test', handler: 'test__handler' },
+            },
+          },
+        });
+      });
+      it('should add the custom class to table', () => {
+        expect(wrapper.classes()).not.toContain(defaultTableClass);
+        expect(wrapper.classes()).toContain('test');
+      });
+      it('should add the custom class to handlers', () => {
+        expect(wrapper.findAll(defaultHandlerClass)).toHaveLength(0);
+        expect(wrapper.findAll('.test__handler')).toHaveLength(3);
+      });
+    });
+  });
 });
 
 describe('ResizableColHandler', () => {
@@ -102,6 +137,7 @@ describe('ResizableColHandler', () => {
     const resizableColHandler: ResizableColHandler = new ResizableColHandler({
       height: 100,
       minWidth: 120,
+      className: 'my_custom__hander_class',
     });
     beforeEach(() => {
       computedStyleStub = jest.spyOn(window, 'getComputedStyle');
