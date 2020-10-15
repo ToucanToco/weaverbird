@@ -37,6 +37,7 @@ describe('Resizable directive', () => {
         startDragging: jest.spyOn(ResizableColHandler.prototype, 'startDragging'),
         stopDragging: jest.spyOn(ResizableColHandler.prototype, 'stopDragging'),
         resize: jest.spyOn(ResizableColHandler.prototype, 'resize'),
+        reset: jest.spyOn(ResizableColHandler.prototype, 'reset'),
       };
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
       handler = wrapper.findAll('.table__handler').at(0);
@@ -81,6 +82,15 @@ describe('Resizable directive', () => {
     it('should resize col width when mouse move a col handler', () => {
       wrapper.trigger('mousemove');
       expect(ResizableColHandlerStub.resize).toHaveBeenCalled();
+    });
+
+    it('should reset col size when doubleClicking on a col handler', () => {
+      const col = wrapper.findAll('th').at(0);
+      col.element.style.minWidth = '300px';
+      expect(col.element.style.minWidth).toBe('300px');
+      handler.trigger('dblclick');
+      expect(ResizableColHandlerStub.reset).toHaveBeenCalledTimes(1);
+      expect(col.element.style.minWidth).toBe('1px');
     });
   });
 });

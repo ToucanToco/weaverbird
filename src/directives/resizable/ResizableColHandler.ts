@@ -49,6 +49,7 @@ export default class ResizableColHandler {
     this.handler.addEventListener('mousedown', (e: MouseEvent) => this.startDragging(e));
     document.addEventListener('mouseup', () => this.stopDragging());
     document.addEventListener('mousemove', (e: MouseEvent) => this.resize(e));
+    this.handler.addEventListener('dblclick', (e: MouseEvent) => this.reset(e));
   }
 
   // retrieve padding of selected col
@@ -83,6 +84,16 @@ export default class ResizableColHandler {
       const newWidth = this.colWidth + diffX;
       // use minWidth rather than width will extend col and table automatically (no need to resize table width)
       this.col.style.minWidth = `${newWidth}px`;
+    }
+  }
+
+  // reapply default instantiation width to referent col
+  reset(e: Event): void {
+    const target = e.target as HTMLElement;
+    const currCol: HTMLElement | null = target.parentElement;
+    if (currCol) {
+      // TODO: for now we apply a 1px width but we will replace with min col width (start width) in next commit
+      currCol.style.minWidth = `1px`;
     }
   }
 }
