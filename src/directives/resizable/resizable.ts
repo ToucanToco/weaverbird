@@ -1,6 +1,6 @@
 /*
  * ResizableDirective allow to resize columns width of a table
- *
+ * ResizableDirective add handlers to all cell of first row of the selected table enabling events
  * Table will be resize automatically to fit container or expand if cols width are wider than available width
  */
 
