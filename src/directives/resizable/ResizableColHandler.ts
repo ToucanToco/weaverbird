@@ -2,10 +2,16 @@
  * Create a col handler which will be add to a col to enable resize
  */
 
+export interface ResizableColHandlerOptions {
+  height: number; // the table height to make handler accessible on every td/th
+}
+
 export default class ResizableColHandler {
   handler: HTMLElement;
+  options: ResizableColHandlerOptions;
 
-  constructor() {
+  constructor(options: ResizableColHandlerOptions) {
+    this.options = options;
     this.handler = this.create();
   }
 
@@ -19,7 +25,8 @@ export default class ResizableColHandler {
     handler.style.cursor = 'col-resize';
     handler.style.zIndex = '1';
     handler.style.userSelect = 'none';
-    handler.style.height = `10px`;
+    // as we want the selector to be accessible on all table height, your header col should not be overflow: hidden
+    handler.style.height = `${this.options.height}px`;
     // this default class is used for tests now be will be replaced with custom one in futures commit
     handler.classList.add('table__handler');
     return handler;

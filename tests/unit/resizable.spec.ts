@@ -30,10 +30,11 @@ describe('Resizable directive', () => {
   });
 
   describe('default', () => {
-    let ResizableColHandlerStub: jest.SpyInstance;
+    let ResizableColHandlerStub: jest.SpyInstance, handler: Wrapper<any>;
     beforeEach(() => {
       ResizableColHandlerStub = jest.spyOn(ResizableColHandler.prototype, 'create');
       wrapper = shallowMount(FakeTableComponent);
+      handler = wrapper.findAll('.table__handler').at(0);
     });
 
     it('should assign min-width to cols', () => {
@@ -48,16 +49,18 @@ describe('Resizable directive', () => {
     });
 
     it('should apply the right style to a col handler', () => {
-      const handlerElement: HTMLElement = wrapper.findAll('.table__handler').at(0).element;
-      expect(handlerElement.nodeName).toBe('DIV');
-      expect(handlerElement.style.top).toBe('0px');
-      expect(handlerElement.style.right).toBe('-4px');
-      expect(handlerElement.style.width).toBe('7px');
-      expect(handlerElement.style.position).toBe('absolute');
-      expect(handlerElement.style.cursor).toBe('col-resize');
-      expect(handlerElement.style.zIndex).toBe('1');
-      expect(handlerElement.style.userSelect).toBe('none');
-      expect(handlerElement.style.height).toBe('10px');
+      expect(handler.element.nodeName).toBe('DIV');
+      expect(handler.element.style.top).toBe('0px');
+      expect(handler.element.style.right).toBe('-4px');
+      expect(handler.element.style.width).toBe('7px');
+      expect(handler.element.style.position).toBe('absolute');
+      expect(handler.element.style.cursor).toBe('col-resize');
+      expect(handler.element.style.zIndex).toBe('1');
+      expect(handler.element.style.userSelect).toBe('none');
+    });
+
+    it('should allow to target col handler on all table height', () => {
+      expect(handler.element.offsetHeight).toBe(wrapper.element.offsetHeight);
     });
   });
 });

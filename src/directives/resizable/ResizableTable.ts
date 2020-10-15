@@ -2,7 +2,7 @@
  * Create handlers for each table header cols to enable resize
  */
 
-import ResizableColHandler from './ResizableColHandler';
+import ResizableColHandler, { ResizableColHandlerOptions } from './ResizableColHandler';
 
 export default class ResizableTable {
   table: HTMLElement;
@@ -26,7 +26,9 @@ export default class ResizableTable {
       const colElement = col as HTMLElement;
       // minWidth override maxWidth css property so we use it to expand table and cols without having to touch to table width
       colElement.style.minWidth = `${colElement.offsetWidth}px`;
-      const colHandler: HTMLElement = new ResizableColHandler().render();
+
+      const colHandlerOptions: ResizableColHandlerOptions = { height: this.table.offsetHeight };
+      const colHandler: HTMLElement = new ResizableColHandler(colHandlerOptions).render();
       // add the handler to referent DOM col
       col.appendChild(colHandler);
     }
