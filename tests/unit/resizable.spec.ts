@@ -27,4 +27,16 @@ describe('Resizable directive', () => {
       expect(ResizableTableStub).not.toHaveBeenCalled();
     });
   });
+
+  describe('default', () => {
+    beforeEach(() => {
+      wrapper = shallowMount(FakeTableComponent);
+    });
+
+    it('should assign min-width to cols', () => {
+      wrapper.findAll('th').wrappers.map((col: Wrapper<any>) => {
+        expect(col.element.style.minWidth).not.toBeUndefined();
+      });
+    });
+  });
 });

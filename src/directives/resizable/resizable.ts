@@ -1,5 +1,7 @@
 /*
  * ResizableDirective allow to resize columns width of a table
+ *
+ * Table will be resize automatically to fit container or expand if cols width are wider than available width
  */
 
 import { DirectiveOptions } from 'vue';
