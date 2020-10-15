@@ -49,6 +49,13 @@ export default class ResizableColHandler {
     this.handler.addEventListener('mousedown', (e: MouseEvent) => this.startDragging(e));
   }
 
+  // retrieve padding of selected col
+  getColPadding(col: HTMLElement): number {
+    const paddLeft = window.getComputedStyle(col, null).getPropertyValue('padding-left');
+    const paddRight = window.getComputedStyle(col, null).getPropertyValue('padding-right');
+    return parseInt(paddLeft) + parseInt(paddRight);
+  }
+
   // keep values of selected col to resize
   startDragging(e: MouseEvent): void {
     const target = e.target as HTMLElement;
@@ -56,7 +63,7 @@ export default class ResizableColHandler {
     if (target.parentElement) {
       this.pageX = e.pageX;
       this.col = target.parentElement;
-      this.colWidth = this.col.offsetWidth;
+      this.colWidth = this.col.offsetWidth - this.getColPadding(this.col);
     }
   }
 }

@@ -72,3 +72,31 @@ describe('Resizable directive', () => {
     });
   });
 });
+
+describe('ResizableColHandler', () => {
+  describe('getColPadding', () => {
+    let col: HTMLElement, computedStyleStub: jest.SpyInstance;
+    const resizableColHandler: ResizableColHandler = new ResizableColHandler({ height: 100 });
+    beforeEach(() => {
+      computedStyleStub = jest.spyOn(window, 'getComputedStyle');
+      col = document.createElement('div');
+      col.style.paddingLeft = '4px';
+      col.style.paddingRight = '4px';
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it('should retrieve col left and right padding', () => {
+      resizableColHandler.getColPadding(col);
+      expect(computedStyleStub).toHaveBeenNthCalledWith(1, col, null);
+      expect(computedStyleStub).toHaveBeenNthCalledWith(2, col, null);
+    });
+
+    it('should return sum of col padding', () => {
+      const padding = resizableColHandler.getColPadding(col);
+      expect(padding).toBe(8);
+    });
+  });
+});
