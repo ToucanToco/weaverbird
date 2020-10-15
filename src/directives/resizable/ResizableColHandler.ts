@@ -47,6 +47,7 @@ export default class ResizableColHandler {
   // assign events to handler
   setEvents(): void {
     this.handler.addEventListener('mousedown', (e: MouseEvent) => this.startDragging(e));
+    document.addEventListener('mouseup', () => this.stopDragging());
   }
 
   // retrieve padding of selected col
@@ -65,5 +66,12 @@ export default class ResizableColHandler {
       this.col = target.parentElement;
       this.colWidth = this.col.offsetWidth - this.getColPadding(this.col);
     }
+  }
+
+  // reset values of selected col to resize
+  stopDragging(): void {
+    this.col = undefined;
+    this.colWidth = 0;
+    this.pageX = 0;
   }
 }
