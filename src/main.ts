@@ -39,3 +39,6 @@ export {
 
 // export helpers/utils
 export { exampleInterpolateFunc } from '@/lib/templating';
+
+// export directives
+export { resizable } from '@/directives/resizable/resizable';

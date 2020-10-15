@@ -27,7 +27,7 @@ import ResizableTable, { ResizableTableOptions } from './ResizableTable';
 // stock table to destroy referent listeners when component is destroyed
 export let resizableTable: ResizableTable | null;
 
-const directive: DirectiveOptions = {
+export const resizable: DirectiveOptions = {
   inserted(el: HTMLElement, node: DirectiveBinding) {
     // directive should only work with a table
     if (el.nodeName != 'TABLE') return;
@@ -49,4 +49,4 @@ const directive: DirectiveOptions = {
   },
 };
 
-export default directive;
+export default resizable;
