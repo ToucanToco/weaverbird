@@ -4,11 +4,14 @@
 
 import { DirectiveOptions } from 'vue';
 
+import ResizableTable from './ResizableTable';
+
 const directive: DirectiveOptions = {
   inserted(el: HTMLElement) {
     // directive should only work with a table
     if (el.nodeName != 'TABLE') return;
-    // TODO: if it is the case instantiate a ResizableTable class
+    // instantiate resizable table
+    new ResizableTable(el);
   },
 };
 
