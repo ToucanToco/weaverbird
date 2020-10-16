@@ -5,6 +5,7 @@
     <div v-if="!isEmpty && !isLoading.dataset" class="data-viewer-container">
       <div class="data-viewer-table-container">
         <table
+          aria-hidden="true"
           class="data-viewer-table"
           v-resizable="{
             columns: columnNames,

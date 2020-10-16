@@ -1,5 +1,5 @@
 <template>
-  <div v-resizable>
+  <div v-resizable aria-hidden="true">
     Resizable directive should not work with something else than a table
   </div>
 </template>

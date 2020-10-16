@@ -42,10 +42,9 @@ export const resizable: DirectiveOptions = {
   },
   unbind() {
     // removeListener for selected table to avoid memory leaks
-    if (resizableTable) {
-      resizableTable.destroy();
-      resizableTable = null;
-    }
+    /* istanbul ignore next */
+    resizableTable?.destroy();
+    resizableTable = null;
   },
 };
 

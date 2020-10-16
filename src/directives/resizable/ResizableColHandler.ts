@@ -77,7 +77,7 @@ export default class ResizableColHandler {
   // keep values of selected col to resize
   startDragging(e: MouseEvent): void {
     const target = e.target as HTMLElement;
-
+    /* istanbul ignore next */
     if (target.parentElement) {
       this.pageX = e.pageX;
       this.col = target.parentElement;
@@ -95,6 +95,7 @@ export default class ResizableColHandler {
   // apply new min width to selected col
   resize(e: MouseEvent): void {
     const diffX = e.pageX - this.pageX;
+    /* istanbul ignore next  */
     if (this.col) {
       const newWidth = this.colWidth + diffX;
       // applied width should never go down min width
@@ -108,6 +109,7 @@ export default class ResizableColHandler {
   reset(e: Event): void {
     const target = e.target as HTMLElement;
     const currCol: HTMLElement | null = target.parentElement;
+    /* istanbul ignore next */
     if (currCol) {
       currCol.style.minWidth = `${this.options.minWidth}px`;
     }
