@@ -2,16 +2,12 @@
   <table v-resizable="options">
     <thead>
       <tr>
-        <th>Col 1</th>
-        <th>Col 2</th>
-        <th>Col 3</th>
+        <th v-for="name in columnNames" scope="row" :key="name">{{ name }}</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>1</td>
-        <td>2</td>
-        <td>3</td>
+      <tr v-for="(row, i) in rows" :key="i">
+        <td v-for="name in columnNames" :key="`${name}_${i}`">{{ row[name] }}</td>
       </tr>
     </tbody>
   </table>
@@ -19,7 +15,7 @@
 
 <script lang="ts">
 import Vue, { PropType } from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Prop } from 'vue-property-decorator';
 
 import resizable from '@/directives/resizable/resizable';
 import { ResizableTableOptions } from '@/directives/resizable/ResizableTable';
@@ -28,12 +24,22 @@ import { ResizableTableOptions } from '@/directives/resizable/ResizableTable';
   directives: {
     resizable,
   },
-  props: {
-    options: {
-      type: Object as PropType<ResizableTableOptions>,
-      default: undefined,
-    },
-  },
 })
-export default class FakeTableComponent extends Vue {}
+export default class FakeTableComponent extends Vue {
+  @Prop({
+    type: Object,
+    default: undefined,
+  })
+  options?: PropType<ResizableTableOptions>;
+
+  @Prop({
+    type: Array,
+    default: () => [{ Col1: '1', Col2: '2', Col3: '3' }],
+  })
+  rows?: Array<{ [name: string]: string }>;
+
+  get columnNames(): string[] {
+    return this.rows ? Object.keys(this.rows[0]) : [];
+  }
+}
 </script>

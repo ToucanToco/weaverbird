@@ -38,6 +38,20 @@ export default class ResizableTable {
     this.colHandlers = [];
   }
 
+  // resize cols handlers height if rows has been updated
+  update(): void {
+    if (this.table.offsetHeight !== this.colHandlers[0].options.height) {
+      this.updateRows();
+    }
+  }
+
+  // Resize handlers height to fit current number of table rows
+  updateRows(): void {
+    this.colHandlers.forEach((colHandler: ResizableColHandler) =>
+      colHandler.update({ ...colHandler.options, height: this.table.offsetHeight }),
+    );
+  }
+
   // Get ths of current table in DOM
   getCols(table: HTMLElement): HTMLCollection {
     const rows: HTMLCollection = table.getElementsByTagName('tr');

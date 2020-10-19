@@ -2,6 +2,7 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import FakeOtherComponent from '../../src/directives/resizable/__mocks__/FakeOtherComponent.vue';
 import FakeTableComponent from '../../src/directives/resizable/__mocks__/FakeTableComponent.vue';
+import { resizableTable } from '../../src/directives/resizable/resizable';
 import ResizableColHandler from '../../src/directives/resizable/ResizableColHandler';
 import ResizableTable, { DEFAULT_OPTIONS } from '../../src/directives/resizable/ResizableTable';
 
@@ -33,7 +34,7 @@ describe('Resizable directive', () => {
 
   describe('default', () => {
     let ResizableColHandlerStub: { [methodName: string]: jest.SpyInstance },
-      ResizableTableDestroyStub: jest.SpyInstance,
+      ResizableTableStub: { [methodName: string]: jest.SpyInstance },
       handler: Wrapper<any>;
     beforeEach(() => {
       ResizableColHandlerStub = {
@@ -43,8 +44,13 @@ describe('Resizable directive', () => {
         resize: jest.spyOn(ResizableColHandler.prototype, 'resize'),
         reset: jest.spyOn(ResizableColHandler.prototype, 'reset'),
         destroy: jest.spyOn(ResizableColHandler.prototype, 'destroy'),
+        update: jest.spyOn(ResizableColHandler.prototype, 'update'),
       };
-      ResizableTableDestroyStub = jest.spyOn(ResizableTable.prototype, 'destroy');
+      ResizableTableStub = {
+        destroy: jest.spyOn(ResizableTable.prototype, 'destroy'),
+        update: jest.spyOn(ResizableTable.prototype, 'update'),
+        updateRows: jest.spyOn(ResizableTable.prototype, 'updateRows'),
+      };
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
       handler = wrapper.findAll(defaultHandlerClass).at(0);
     });
@@ -107,13 +113,59 @@ describe('Resizable directive', () => {
       });
       it('should remove all listener', () => {
         expect(ResizableColHandlerStub.destroy).toHaveBeenCalledTimes(3);
-        expect(ResizableTableDestroyStub).toHaveBeenCalledTimes(1);
+        expect(ResizableTableStub.destroy).toHaveBeenCalledTimes(1);
       });
       it('should not call col handler methods when drag/drop on document', async () => {
         await wrapper.trigger('mouseup');
         expect(ResizableColHandlerStub.stopDragging).not.toHaveBeenCalled();
         await wrapper.trigger('mousemove');
         expect(ResizableColHandlerStub.resize).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('update', () => {
+      beforeEach(() => {
+        jest.clearAllMocks();
+        jest.useFakeTimers();
+      });
+
+      describe('with exact same data (other props has changed so component is still updated)', () => {
+        beforeEach(() => {
+          wrapper.setProps({ rows: [{ Col1: '1', Col2: '2', Col3: '3' }] });
+          jest.advanceTimersByTime(1);
+        });
+        it('should not update rows', () => {
+          expect(ResizableTableStub.update).toHaveBeenCalled();
+          expect(ResizableTableStub.updateRows).not.toHaveBeenCalled();
+        });
+      });
+      describe('update rows', () => {
+        beforeEach(() => {
+          if (resizableTable) {
+            // fake resize table
+            resizableTable.colHandlers[0].options.height = 100;
+          }
+          wrapper.setProps({
+            rows: [
+              { Col1: '1', Col2: '2', Col3: '3' },
+              { Col1: '4', Col2: '5', Col3: '6' },
+            ],
+          });
+          jest.advanceTimersByTime(1);
+        });
+
+        it('should update rows', () => {
+          expect(ResizableTableStub.update).toHaveBeenCalled();
+          expect(ResizableTableStub.updateRows).toHaveBeenCalledTimes(1);
+        });
+        it('should update cols handlers', () => {
+          resizableTable?.colHandlers.forEach((colHandler: ResizableColHandler, i: number) => {
+            expect(ResizableColHandlerStub.update).toHaveBeenNthCalledWith(i + 1, {
+              ...colHandler.options,
+              height: 0,
+            });
+          });
+        });
       });
     });
   });

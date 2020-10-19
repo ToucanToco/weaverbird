@@ -48,6 +48,12 @@ export default class ResizableColHandler {
     this.handler.remove();
   }
 
+  // update options and height of the handler
+  update(options: ResizableColHandlerOptions): void {
+    this.options = options;
+    this.handler.style.height = `${this.options.height}px`;
+  }
+
   // return the created handler to parent
   render(): HTMLElement {
     return this.handler;

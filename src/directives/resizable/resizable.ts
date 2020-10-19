@@ -19,7 +19,7 @@ import { DirectiveBinding } from 'vue/types/options';
 import ResizableTable, { ResizableTableOptions } from './ResizableTable';
 
 // stock table to destroy referent listeners when component is destroyed
-let resizableTable: ResizableTable | null;
+export let resizableTable: ResizableTable | null;
 
 const directive: DirectiveOptions = {
   inserted(el: HTMLElement, node: DirectiveBinding) {
@@ -28,6 +28,10 @@ const directive: DirectiveOptions = {
     // instantiate resizable table
     const options: ResizableTableOptions = node.value;
     resizableTable = new ResizableTable(el, options);
+  },
+  async componentUpdated() {
+    /* istanbul ignore next */
+    setTimeout(() => resizableTable?.update(), 1); // we need to wait 1 frame for the table to get it's new height
   },
   unbind() {
     // removeListener for selected table to avoid memory leaks
