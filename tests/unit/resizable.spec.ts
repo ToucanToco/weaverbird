@@ -49,6 +49,7 @@ describe('Resizable directive', () => {
       ResizableTableStub = {
         destroy: jest.spyOn(ResizableTable.prototype, 'destroy'),
         update: jest.spyOn(ResizableTable.prototype, 'update'),
+        updateCols: jest.spyOn(ResizableTable.prototype, 'updateCols'),
         updateRows: jest.spyOn(ResizableTable.prototype, 'updateRows'),
       };
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
@@ -134,8 +135,9 @@ describe('Resizable directive', () => {
           wrapper.setProps({ rows: [{ Col1: '1', Col2: '2', Col3: '3' }] });
           jest.advanceTimersByTime(1);
         });
-        it('should not update rows', () => {
+        it('should not update cols or rows', () => {
           expect(ResizableTableStub.update).toHaveBeenCalled();
+          expect(ResizableTableStub.updateCols).not.toHaveBeenCalled();
           expect(ResizableTableStub.updateRows).not.toHaveBeenCalled();
         });
       });
@@ -165,6 +167,24 @@ describe('Resizable directive', () => {
               height: 0,
             });
           });
+        });
+      });
+      describe('update cols', () => {
+        beforeEach(() => {
+          wrapper.setProps({ rows: [{ Col1: '1', Col2: '2' }] });
+          jest.advanceTimersByTime(1);
+        });
+        it('should update cols', () => {
+          expect(ResizableTableStub.update).toHaveBeenCalled();
+          expect(ResizableTableStub.updateCols).toHaveBeenCalledTimes(1);
+        });
+        it('should destroy previous cols handlers', () => {
+          expect(ResizableTableStub.destroy).toHaveBeenCalledTimes(1);
+          expect(ResizableColHandlerStub.destroy).toHaveBeenCalledTimes(3);
+        });
+        it('should add new cols handlers', () => {
+          expect(ResizableColHandlerStub.create).toHaveBeenCalledTimes(2);
+          expect(wrapper.findAll(defaultHandlerClass)).toHaveLength(2);
         });
       });
     });

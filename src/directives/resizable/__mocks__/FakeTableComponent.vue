@@ -1,5 +1,5 @@
 <template>
-  <table v-resizable="options">
+  <table v-resizable="directiveOptions" aria-hidden="true">
     <thead>
       <tr>
         <th v-for="name in columnNames" scope="row" :key="name">{{ name }}</th>
@@ -40,6 +40,9 @@ export default class FakeTableComponent extends Vue {
 
   get columnNames(): string[] {
     return this.rows ? Object.keys(this.rows[0]) : [];
+  }
+  get directiveOptions(): any {
+    return { columns: this.columnNames, ...this.options };
   }
 }
 </script>

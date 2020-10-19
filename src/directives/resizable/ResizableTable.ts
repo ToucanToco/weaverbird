@@ -2,6 +2,8 @@
  * Create handlers for each table header cols to enable resize
  */
 
+import isEqual from 'lodash/isEqual';
+
 import ResizableColHandler, { ResizableColHandlerOptions } from './ResizableColHandler';
 
 export const DEFAULT_OPTIONS: ResizableTableOptions = {
@@ -9,6 +11,7 @@ export const DEFAULT_OPTIONS: ResizableTableOptions = {
     table: 'table--resizable',
     handler: 'table__handler',
   },
+  columns: [],
 };
 
 export interface ResizableTableOptions {
@@ -16,6 +19,7 @@ export interface ResizableTableOptions {
     table: string; // class applied to table
     handler: string; // class applied to col handler
   };
+  columns: string[] | number[]; // the columns associated to cols handlers
 }
 
 export default class ResizableTable {
@@ -25,7 +29,7 @@ export default class ResizableTable {
   options: ResizableTableOptions;
 
   constructor(table: HTMLElement, customOptions?: ResizableTableOptions) {
-    this.options = customOptions || DEFAULT_OPTIONS;
+    this.options = { ...DEFAULT_OPTIONS, ...customOptions };
     this.table = table;
     this.colHandlers = [];
     this.cols = this.getCols(table);
@@ -38,9 +42,12 @@ export default class ResizableTable {
     this.colHandlers = [];
   }
 
+  // reset cols handlers if cols has been updated
   // resize cols handlers height if rows has been updated
-  update(): void {
-    if (this.table.offsetHeight !== this.colHandlers[0].options.height) {
+  update(options: ResizableTableOptions): void {
+    if (!isEqual(this.options.columns.sort(), options.columns.sort())) {
+      this.updateCols(options);
+    } else if (this.table.offsetHeight !== this.colHandlers[0].options.height) {
       this.updateRows();
     }
   }
@@ -51,13 +58,25 @@ export default class ResizableTable {
       colHandler.update({ ...colHandler.options, height: this.table.offsetHeight }),
     );
   }
+  // Reset handlers to fit current table cols
+  updateCols(options: ResizableTableOptions): void {
+    this.options = { ...this.options, ...options };
+
+    for (const col of this.cols) {
+      const colElement = col as HTMLElement;
+      // reset col widths
+      colElement.style.width = '';
+      colElement.style.minWidth = '';
+    }
+
+    this.setColHandlers();
+  }
 
   // Get ths of current table in DOM
   getCols(table: HTMLElement): HTMLCollection {
     const rows: HTMLCollection = table.getElementsByTagName('tr');
     return rows[0].children;
   }
-
   // apply default style and add handler to each DOM col
   setColHandlers(): void {
     this.destroy(); // remove all previous handlers before adding new ones
