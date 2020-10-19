@@ -88,6 +88,5 @@ export default class MultiVariableInput extends Vue {
 .widget-multi-variable-input {
   position: relative;
   width: 100%;
-  z-index: 1;
 }
 </style>
