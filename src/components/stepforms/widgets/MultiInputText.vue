@@ -153,7 +153,7 @@ export default class MultiInputTextWidget extends Vue {
   isolation: isolate;
 
   &.multiselect--active {
-    z-index: 0;
+    z-index: 1;
   }
 }
 
@@ -183,6 +183,9 @@ export default class MultiInputTextWidget extends Vue {
 .multiselect--active {
   & > .multiselect__tags {
     @extend %form-widget__field--focused;
+  }
+  + .widget-variable__toggle {
+    z-index: 1; //keep variable toggle button display even when dropdown is opened
   }
 }
 .multiselect__option {
