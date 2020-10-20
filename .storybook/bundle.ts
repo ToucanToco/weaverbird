@@ -66,3 +66,4 @@ export {
   WaterfallStepForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
+export { resizable } from '../src/directives/resizable/resizable';

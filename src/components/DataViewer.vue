@@ -4,7 +4,17 @@
     <div v-if="isLoading.dataset" class="data-viewer-loader-spinner" />
     <div v-if="!isEmpty && !isLoading.dataset" class="data-viewer-container">
       <div class="data-viewer-table-container">
-        <table class="data-viewer-table">
+        <table
+          aria-hidden="true"
+          class="data-viewer-table"
+          v-resizable="{
+            columns: columnNames,
+            classes: {
+              table: 'data-viewer-table--resizable',
+              handler: 'data-viewer__header-cell--resizable',
+            },
+          }"
+        >
           <thead class="data-viewer__header">
             <tr>
               <td
@@ -63,6 +73,7 @@ import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
 import Pagination from '@/components/Pagination.vue';
+import { resizable } from '@/directives/resizable/resizable';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
@@ -88,6 +99,7 @@ import DataViewerCell from './DataViewerCell.vue';
     DataViewerCell,
     Pagination,
   },
+  directives: { resizable },
 })
 export default class DataViewer extends Vue {
   @VQBModule.State dataset!: DataSet;
@@ -132,6 +144,10 @@ export default class DataViewer extends Vue {
         },
       };
     });
+  }
+
+  get columnNames(): string[] {
+    return this.formattedColumns.map(({ name }: { name: string }) => name);
   }
 
   get buttons() {
@@ -279,15 +295,16 @@ export default class DataViewer extends Vue {
   font-size: 13px;
   text-align: left;
   text-overflow: ellipsis;
-  overflow: hidden;
-  white-space: pre;
   //firefox hack for border-collapse issue
   background-clip: padding-box;
+  max-width: 140px;
+  min-width: 140px;
 }
 
 .data-viewer-cell {
   background-color: #fafafa;
   white-space: normal;
+  overflow: hidden;
 }
 
 .data-viewer__header-cell--active,
@@ -330,8 +347,10 @@ export default class DataViewer extends Vue {
 }
 
 .data-viewer__header-label {
+  display: inline-block;
+  vertical-align: text-bottom;
   text-overflow: ellipsis;
-  max-width: 200px;
+  max-width: calc(100% - 40px);
   overflow: hidden;
   padding-right: 23px;
 }
@@ -376,6 +395,18 @@ export default class DataViewer extends Vue {
 @keyframes spin {
   to {
     transform: rotate(1turn);
+  }
+}
+</style>
+
+<style lang="scss">
+@import '../styles/_variables';
+.data-viewer__header-cell--resizable {
+  border-left: 1px solid transparent;
+  border-right: 1px solid transparent;
+  &:hover {
+    border-left-color: $data-viewer-border-color;
+    border-right-color: $data-viewer-border-color;
   }
 }
 </style>
