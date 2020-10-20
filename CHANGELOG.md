@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.28.1] - 2020-10-20
+
+### Added
+- Resizable: doesn't sort the columns options anymore
+
 ## [0.28.0] - 2020-10-20
 
 ### Added
@@ -479,6 +484,7 @@
 
 - Initial version, showtime!
 
+[0.28.1]: https://github.com/ToucanToco/weaverbird/compare/v0.28.0...v0.28.1
 [0.28.0]: https://github.com/ToucanToco/weaverbird/compare/v0.27.2...v0.28.0
 [0.27.2]: https://github.com/ToucanToco/weaverbird/compare/v0.27.1...v0.27.2
 [0.27.1]: https://github.com/ToucanToco/weaverbird/compare/v0.27.0...v0.27.1
