@@ -45,7 +45,7 @@ export default class ResizableTable {
   // reset cols handlers if cols has been updated
   // resize cols handlers height if rows has been updated
   update(options: ResizableTableOptions): void {
-    if (!isEqual(this.options.columns.sort(), options.columns.sort())) {
+    if (!isEqual(this.options.columns, options.columns)) {
       this.updateCols(options);
     } else if (this.table.offsetHeight !== this.colHandlers[0].options.height) {
       this.updateRows();
