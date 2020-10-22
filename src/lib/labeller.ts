@@ -271,6 +271,11 @@ class StepLabeller implements StepMatcher<string> {
     return `Keep top ${step.limit} values in column "${step.rank_on}"`;
   }
 
+  totals(step: Readonly<S.AddTotalRowsStep>) {
+    const columns = step.totalDimensions.map(c => c.totalColumn);
+    return `Add total rows in columns ${formatMulticol(columns)}`;
+  }
+
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
     return `Get unique groups/values in columns ${formatMulticol(step.on)}`;
   }
