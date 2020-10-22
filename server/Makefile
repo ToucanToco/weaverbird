@@ -23,6 +23,7 @@ lint:
 	$(flake8)
 	$(isort) --check-only
 	$(black) --check
+	mypy .
 
 .PHONY: test
 test:
