@@ -10,7 +10,9 @@ Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
 import json
 
 import pandas as pd
-from flask import Flask, request
+from flask import Flask, Response, request
+
+from weaverbird.pipeline_executor import PipelineExecutor
 
 app = Flask(__name__)
 
@@ -32,4 +34,6 @@ def get_available_domains():
 
 
 def execute_pipeline(pipeline):
-    raise NotImplemented
+    executor = PipelineExecutor(lambda domain: DOMAINS[domain])
+    df = executor.execute_pipeline(pipeline)
+    return Response(df.to_json(orient='records'), mimetype='application/json')
