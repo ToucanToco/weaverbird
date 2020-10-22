@@ -19,3 +19,7 @@ Main commands are available through `make`:
     make publish # Publish on pypi
 
     make test # Execute the test suite and produce reports
+
+### Playground server
+
+See `playground.py`. It provides a very simple server to test the module.
