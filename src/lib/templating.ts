@@ -371,7 +371,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   split(step: Readonly<S.SplitStep>) {
-    return { ...step, column: _interpolate(this.interpolateFunc, step.column, this.context) };
+    return {
+      ...step,
+      column: _interpolate(this.interpolateFunc, step.column, this.context),
+    };
   }
 
   substring(step: Readonly<S.SubstringStep>) {
@@ -398,6 +401,21 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       ...step,
       limit: Number(_interpolate(this.interpolateFunc, step.limit, this.context)),
       rank_on: _interpolate(this.interpolateFunc, step.rank_on, this.context),
+      groups,
+    };
+  }
+
+  totals(step: Readonly<S.AddTotalRowsStep>) {
+    const aggregations = step.aggregations.map(agg => ({
+      ...agg,
+      columns: agg.columns.map(c => _interpolate(this.interpolateFunc, c, this.context)),
+    }));
+    const groups = step.groups
+      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      : undefined;
+    return {
+      ...step,
+      aggregations,
       groups,
     };
   }
