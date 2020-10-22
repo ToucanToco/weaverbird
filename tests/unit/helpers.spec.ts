@@ -1,6 +1,7 @@
 import {
   $$,
   castFromString,
+  combinations,
   enumerate,
   generateNewColumnName,
   keepCurrentValueIfArrayType,
@@ -131,6 +132,23 @@ describe('castFromString', () => {
     });
     it('should return selected value if its type is an array', () => {
       expect(keepCurrentValueIfArrayType(['a'], [])).toEqual(['a']);
+    });
+  });
+
+  describe('combinations', () => {
+    it('should return an empty array if input array is empty', () => {
+      expect(combinations([])).toEqual([]);
+    });
+    it('should return the right sorted array of combinations', () => {
+      expect(combinations(['A', 'B', 'C'])).toEqual([
+        ['A', 'B', 'C'],
+        ['A', 'B'],
+        ['A', 'C'],
+        ['B', 'C'],
+        ['A'],
+        ['B'],
+        ['C'],
+      ]);
     });
   });
 });

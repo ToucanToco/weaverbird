@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import * as math from 'mathjs';
 
-import { $$, escapeForUseInRegExp } from '@/lib/helpers';
+import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
@@ -1340,6 +1340,83 @@ function transformTop(step: Readonly<S.TopStep>): MongoStep[] {
   ];
 }
 
+/** transform a 'totals' step into corresponding mongo pipeline steps */
+function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
+  const facet: { [id: string]: MongoStep[] } = {};
+  const groups: string[] = step.groups ?? [];
+  const addFields: MongoStep = {};
+  const project: MongoStep = { _id: 0 }; // ensures $project stage will never be empty
+  // list of columns to combine
+  const toCombine: string[] = [...step.totalDimensions.map(c => c.totalColumn)];
+  // get combinations, remove first combo (most granular combination of columns
+  // so not useful to compute total rows) and add[](to compute the grand total)
+  const combos: string[][] = combinations(toCombine).slice(1);
+  combos.push([]);
+
+  //Keep original data in first facet
+  for (const aggfStep of step.aggregations) {
+    for (let i = 0; i < aggfStep.columns.length; i++) {
+      addFields[aggfStep.newcolumns[i]] = $$(aggfStep.columns[i]);
+      if (aggfStep.newcolumns[i] !== aggfStep.columns[i]) {
+        project[aggfStep.columns[i]] = 0;
+      }
+    }
+  }
+  facet['originalData'] = [{ $addFields: addFields }, { $project: project }];
+
+  for (let i = 0; i < combos.length; i++) {
+    const comb = combos[i];
+    // List of columns that that will be used to group the aggregations computation
+    // i.e. we will compute total rows for dimensions not included in this group id
+    const id = columnMap([...comb, ...groups]);
+    const aggs: { [id: string]: {} } = {};
+    // get columns not in aggregation, i.e. columns that will hold the total rows labels
+    const totalColumns: string[] = toCombine.filter(x => !comb.includes(x));
+    for (const aggfStep of step.aggregations) {
+      for (let j = 0; j < aggfStep.columns.length; j++) {
+        const valueCol = aggfStep.columns[j];
+        const aggregatedCol = aggfStep.newcolumns[j];
+        const aggFunc = aggfStep.aggfunction;
+        aggs[aggregatedCol] = aggFunc == 'count' ? { $sum: 1 } : { [$$(aggFunc)]: $$(valueCol) };
+      }
+    }
+    facet[`combo_${i}`] = [
+      {
+        $group: {
+          _id: id,
+          ...aggs,
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          // Return id fields (untouched)
+          ...Object.fromEntries(Object.keys(id).map(c => [c, `$_id.${c}`])),
+          // Return computed aggregation fields
+          ...Object.fromEntries(Object.keys(aggs).map(c => [c, 1])),
+          // Project the label of total rows for those columns
+          ...Object.fromEntries(
+            step.totalDimensions
+              .filter(x => totalColumns.includes(x.totalColumn))
+              .map(t => [t.totalColumn, t.totalRowsLabel]),
+          ),
+        },
+      },
+    ];
+  }
+
+  return [
+    { $facet: facet },
+    {
+      $project: {
+        _vqbCombos: { $concatArrays: Object.keys(facet).map(col => $$(col)) },
+      },
+    },
+    { $unwind: '$_vqbCombos' },
+    { $replaceRoot: { newRoot: '$_vqbCombos' } },
+  ];
+}
+
 /** transform an 'uniquegroups' step into corresponding mongo steps */
 function transformUniqueGroups(step: Readonly<S.UniqueGroupsStep>): MongoStep[] {
   const id = columnMap(step.on);
@@ -1566,6 +1643,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
     $addFields: { [step.column]: { $dateFromString: { dateString: $$(step.column) } } },
   }),
   top: transformTop,
+  totals: transformTotals,
   uniquegroups: transformUniqueGroups,
   unpivot: transformUnpivot,
   uppercase: (step: Readonly<S.ToUpperStep>) => ({

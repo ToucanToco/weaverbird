@@ -5,6 +5,7 @@
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
 export type Reference = Pipeline | string;
+export type TotalDimension = { totalColumn: string; totalRowsLabel: string };
 
 /**
  * Some step can contains either:
@@ -19,6 +20,16 @@ export type AddTextColumnStep = {
   name: 'text';
   text: string;
   new_column: string;
+};
+
+export type AddTotalRowsStep = {
+  name: 'totals';
+  // an array of objects: { totalColumn: <column to add total rows in>, totalRowsLabel: <the label of the added total rows>}
+  totalDimensions: TotalDimension[];
+  // an array of columns used for groupby logic
+  groups?: string[];
+  // the list of columnns to aggregate, with related aggregation function to use
+  aggregations: Aggregation[];
 };
 
 export type Aggregation = {
@@ -366,6 +377,7 @@ export type WaterfallStep = {
 
 export type PipelineStep =
   | AddTextColumnStep
+  | AddTotalRowsStep
   | AggregateStep
   | AppendStep
   | ArgmaxStep

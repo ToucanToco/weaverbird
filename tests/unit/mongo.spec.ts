@@ -4023,4 +4023,144 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _vqbOrder: 0, _id: 0 } },
     ]);
   });
+
+  it('can generate simple totals steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'totals',
+        totalDimensions: [{ totalColumn: 'COUNTRY', totalRowsLabel: 'All countries' }],
+        aggregations: [{ columns: ['VALUE'], newcolumns: ['VALUE'], aggfunction: 'sum' }],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          originalData: [{ $addFields: { VALUE: '$VALUE' } }, { $project: { _id: 0 } }],
+          combo_0: [
+            {
+              $group: {
+                _id: {},
+                VALUE: { $sum: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                VALUE: 1,
+                COUNTRY: 'All countries',
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbCombos: { $concatArrays: ['$originalData', '$combo_0'] },
+        },
+      },
+      { $unwind: '$_vqbCombos' },
+      { $replaceRoot: { newRoot: '$_vqbCombos' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate complex totals steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'totals',
+        totalDimensions: [
+          { totalColumn: 'COUNTRY', totalRowsLabel: 'All countries' },
+          { totalColumn: 'PRODUCT', totalRowsLabel: 'All products' },
+        ],
+        aggregations: [
+          { columns: ['VALUE', 'DIFF'], newcolumns: ['VALUE-sum', 'DIFF'], aggfunction: 'sum' },
+          { columns: ['VALUE'], newcolumns: ['VALUE-count'], aggfunction: 'count' },
+        ],
+        groups: ['DATE'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          originalData: [
+            { $addFields: { 'VALUE-sum': '$VALUE', 'VALUE-count': '$VALUE', DIFF: '$DIFF' } },
+            { $project: { _id: 0, VALUE: 0 } },
+          ],
+          combo_0: [
+            {
+              $group: {
+                _id: { COUNTRY: '$COUNTRY', DATE: '$DATE' },
+                'VALUE-sum': { $sum: '$VALUE' },
+                DIFF: { $sum: '$DIFF' },
+                'VALUE-count': { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                COUNTRY: '$_id.COUNTRY',
+                DATE: '$_id.DATE',
+                'VALUE-sum': 1,
+                DIFF: 1,
+                'VALUE-count': 1,
+                PRODUCT: 'All products',
+              },
+            },
+          ],
+          combo_1: [
+            {
+              $group: {
+                _id: { PRODUCT: '$PRODUCT', DATE: '$DATE' },
+                'VALUE-sum': { $sum: '$VALUE' },
+                DIFF: { $sum: '$DIFF' },
+                'VALUE-count': { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                PRODUCT: '$_id.PRODUCT',
+                DATE: '$_id.DATE',
+                'VALUE-sum': 1,
+                DIFF: 1,
+                'VALUE-count': 1,
+                COUNTRY: 'All countries',
+              },
+            },
+          ],
+          combo_2: [
+            {
+              $group: {
+                _id: { DATE: '$DATE' },
+                'VALUE-sum': { $sum: '$VALUE' },
+                DIFF: { $sum: '$DIFF' },
+                'VALUE-count': { $sum: 1 },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                DATE: '$_id.DATE',
+                'VALUE-sum': 1,
+                DIFF: 1,
+                'VALUE-count': 1,
+                COUNTRY: 'All countries',
+                PRODUCT: 'All products',
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbCombos: { $concatArrays: ['$originalData', '$combo_0', '$combo_1', '$combo_2'] },
+        },
+      },
+      { $unwind: '$_vqbCombos' },
+      { $replaceRoot: { newRoot: '$_vqbCombos' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });
