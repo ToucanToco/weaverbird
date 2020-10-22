@@ -8,6 +8,8 @@
       :options="columnNames"
       placeholder="Add columns"
       data-path=".index"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
       :errors="errors"
     />
     <ColumnPicker
@@ -16,6 +18,8 @@
       name="Pivot column..."
       placeholder="Enter a column"
       data-path=".column_to_pivot"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
       :errors="errors"
     />
     <AutocompleteWidget
@@ -25,6 +29,8 @@
       :options="columnNames"
       placeholder="Select a column"
       data-path=".value_column"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
       :errors="errors"
     />
     <AutocompleteWidget
@@ -47,6 +53,8 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { PivotStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -60,6 +68,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class PivotStepForm extends BaseStepForm<PivotStep> {
+  @VQBModule.State availableVariables?: VariablesBucket;
+
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({
