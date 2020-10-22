@@ -291,7 +291,12 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   pivot(step: Readonly<S.PivotStep>) {
-    return { ...step };
+    return {
+      ...step,
+      index: step.index.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      column_to_pivot: _interpolate(this.interpolateFunc, step.column_to_pivot, this.context),
+      value_column: _interpolate(this.interpolateFunc, step.value_column, this.context),
+    };
   }
 
   rank(step: Readonly<S.RankStep>) {

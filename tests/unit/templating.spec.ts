@@ -964,17 +964,25 @@ describe('Pipeline interpolator', () => {
     expect(translate(pipeline)).toEqual(pipeline);
   });
 
-  it('should leave pivot steps untouched', () => {
+  it('should interpolate pivot steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'pivot',
-        index: ['column1', 'column2'],
+        index: ['<%= foo %>', 'column2'],
         column_to_pivot: '<%= foo %>',
-        value_column: '<%= age %>',
+        value_column: '<%= egg %>',
         agg_function: 'sum',
       },
     ];
-    expect(translate(pipeline)).toEqual(pipeline);
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'pivot',
+        index: ['bar', 'column2'],
+        column_to_pivot: 'bar',
+        value_column: 'spam',
+        agg_function: 'sum',
+      },
+    ]);
   });
 
   it('should leave rename steps untouched', () => {

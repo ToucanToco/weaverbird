@@ -1,32 +1,44 @@
 # Changelog
 
+## UNRELEASED
+
+### Changed
+
+- pivot step: support variables interpolation
+
 ## [0.28.1] - 2020-10-20
 
 ### Added
+
 - Resizable: doesn't sort the columns options anymore
 
 ## [0.28.0] - 2020-10-20
 
 ### Added
+
 - Resizable: use v-resizable directive to resize columns of a table
 - DataViewer: add resizable directive to table
 
 ## [0.27.2] - 2020-10-19
 
 ### Fixes
+
 - Multiinputext: avoid inputs to overlap value dropdown
 
 ## [0.27.1] - 2020-10-13
 
 ### Fixes
+
 - Templating: translate append and join steps
 
 ## [0.27.0] - 2020-10-06
 
 ### Changed
+
 - Display a tooltip with value when hovering a variable in variables dropdown
 
 ### Fixes
+
 - Formula / IfThenElse Steps: allow to use variable
 
 ## [0.26.0] - 2020-09-23
