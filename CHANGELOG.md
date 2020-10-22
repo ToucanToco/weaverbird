@@ -5,6 +5,7 @@
 ### Changed
 
 - pivot step: support variables interpolation
+- pivot step: allow for empty index parameter
 
 ## [0.28.1] - 2020-10-20
 
