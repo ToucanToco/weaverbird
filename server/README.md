@@ -8,4 +8,14 @@ You can see it as a [translator](../docs/_docs/tech/translators.md) for Python.
 
 We use [poetry](https://python-poetry.org/) for managing dependencies.
 
-    poetry install
+Main commands are available through `make`:
+
+    make install # Install dependecies
+
+    make format # Fix formatting issues using black and isort
+    make lint # Execute various checks
+
+    make build # Build the project prior to publication
+    make publish # Publish on pypi
+
+    make test # Execute the test suite and produce reports
