@@ -103,3 +103,17 @@ export function keepCurrentValueIfArrayType(
 export function escapeForUseInRegExp(string: string): string {
   return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
 }
+
+/**
+ * Returns all the combinations of elements in an array.
+ * e.g. combinations(['A', 'B', 'C']) => [['A', 'B', 'C'], ['A', 'B'], ['A', 'C'], ['B', 'C'], ['A'], ['B'], ['C']]
+ *
+ * @param arr the array of elements
+ *
+ */
+export function combinations(arr: any[]): any[][] {
+  if (arr.length == 0) return [];
+  const rest = arr.slice(1);
+  const comb: any[] = combinations(rest);
+  return [[arr[0]], ...comb.map(d => [arr[0], ...d]), ...comb].sort((a, b) => b.length - a.length);
+}

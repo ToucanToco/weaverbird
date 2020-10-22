@@ -205,6 +205,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   todate(step: Readonly<S.ToDateStep>) {}
 
   @unsupported
+  totals(step: Readonly<S.AddTotalRowsStep>) {}
+
+  @unsupported
   top(step: Readonly<S.TopStep>) {}
 
   @unsupported
