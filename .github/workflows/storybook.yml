@@ -1,6 +1,10 @@
 # From https://docs.featurepeek.com/github-actions/
 name: Build storybook
-on: push
+on:
+  push:
+    path-ignore:
+      - 'doc/**'
+      - 'server/**'
 jobs:
   build:
     runs-on: ubuntu-latest

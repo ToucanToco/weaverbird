@@ -1,0 +1,60 @@
+name: CI (server)
+
+on:
+  # Trigger analysis when pushing in master or pull requests, and when creating
+  # a pull request, only if `server/` files are modified
+  push:
+    branches:
+      - master
+    paths:
+      - 'server/**'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'server/**'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: [3.8]
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install Poetry
+      uses: dschep/install-poetry-action@v1.2
+
+    - name: Cache Poetry virtualenv
+      uses: actions/cache@v1
+      with:
+        path: ~/.virtualenvs
+        key: poetry-${{ hashFiles('**/poetry.lock') }}
+        restore-keys: poetry-${{ hashFiles('**/poetry.lock') }}
+
+    - name: Configure poetry
+      run: |
+        poetry config virtualenvs.in-project false
+        poetry config virtualenvs.path ~/.virtualenvs
+
+    - name: Install dependencies
+      run: |
+        poetry check
+        poetry install
+
+    - name: Lint
+      run: poetry run make lint
+
+    - name: Test
+      run: poetry run make test
