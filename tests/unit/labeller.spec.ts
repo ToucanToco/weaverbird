@@ -649,6 +649,19 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Compute waterfall of "value" from "2019" to "2020"');
   });
 
+  it('generates label for totals steps', () => {
+    const step: S.AddTotalRowsStep = {
+      name: 'totals',
+      totalDimensions: [
+        { totalColumn: 'COUNTRY', totalRowsLabel: 'All countries' },
+        { totalColumn: 'PRODUCT', totalRowsLabel: 'All products' },
+      ],
+      aggregations: [{ columns: ['VALUE'], newcolumns: ['VALUE'], aggfunction: 'sum' }],
+      groups: ['DATE'],
+    };
+    expect(hrl(step)).toEqual('Add total rows in columns "COUNTRY", "PRODUCT"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };
