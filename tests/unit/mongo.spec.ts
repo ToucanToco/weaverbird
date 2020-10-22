@@ -1685,7 +1685,52 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('can generate a pivot step', () => {
+  it('can generate a pivot step without index columns', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'pivot',
+        index: [],
+        column_to_pivot: 'column_3',
+        value_column: 'column_4',
+        agg_function: 'sum',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $group: {
+          _id: {
+            column_3: '$column_3',
+          },
+          column_4: { $sum: '$column_4' },
+        },
+      },
+      {
+        $group: {
+          _id: {},
+          _vqbAppArray: {
+            $addToSet: {
+              column_3: '$_id.column_3',
+              column_4: '$column_4',
+            },
+          },
+        },
+      },
+      {
+        $project: {
+          _vqbAppTmpObj: {
+            $arrayToObject: {
+              $zip: { inputs: ['$_vqbAppArray.column_3', '$_vqbAppArray.column_4'] },
+            },
+          },
+        },
+      },
+      { $replaceRoot: { newRoot: '$_vqbAppTmpObj' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a pivot step with index columns', () => {
     const pipeline: Pipeline = [
       {
         name: 'pivot',

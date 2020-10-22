@@ -28,7 +28,6 @@ describe('Pivot Step Form', () => {
       testlabel: 'submitted data is not valid',
       errors: [
         { keyword: 'minLength', dataPath: '.column_to_pivot' },
-        { keyword: 'minItems', dataPath: '.index' },
         { keyword: 'minLength', dataPath: '.value_column' },
       ],
     },

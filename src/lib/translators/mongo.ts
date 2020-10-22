@@ -889,7 +889,7 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
     addFieldsStep[`_vqbAppTmpObj.${col}`] = `$_id.${col}`;
   }
 
-  return [
+  const pivotMongoAggStages: MongoStep[] = [
     /**
      * First we perform the aggregation with the _id including the column to pivot
      */
@@ -932,17 +932,22 @@ function transformPivot(step: Readonly<S.PivotStep>): MongoStep[] {
         },
       },
     },
+  ];
+
+  if (Object.keys(addFieldsStep).length > 0) {
     /**
-     * Then we include back in every document created in the previous step the index columns
+     * Then we include the index columns back in every document created in the previous step
      * (still accessible in the _id object)
      */
-    { $addFields: addFieldsStep },
-    /**
-     * Then we replace the root of the documents tree to get our columns ready for
-     * our needed table-like, unnested format
-     */
-    { $replaceRoot: { newRoot: '$_vqbAppTmpObj' } },
-  ];
+    pivotMongoAggStages.push({ $addFields: addFieldsStep });
+  }
+  /**
+   * Then we replace the root of the documents tree to get our columns ready for
+   * our needed table-like, unnested format
+   */
+  pivotMongoAggStages.push({ $replaceRoot: { newRoot: '$_vqbAppTmpObj' } });
+
+  return pivotMongoAggStages;
 }
 
 /** transform a 'rank' step into corresponding mongo steps */
