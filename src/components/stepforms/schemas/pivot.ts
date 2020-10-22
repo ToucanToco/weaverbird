@@ -9,7 +9,6 @@ export default {
     },
     index: {
       type: 'array',
-      minItems: 1,
       items: {
         type: 'string',
         minLength: 1,
