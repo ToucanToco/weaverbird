@@ -1,0 +1,11 @@
+[run]
+relative_files = True
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't cover NotImplemented methods (specially useful for abstract classes)
+    raise NotImplementedError
