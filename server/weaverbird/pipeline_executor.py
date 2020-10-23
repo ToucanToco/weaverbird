@@ -19,6 +19,6 @@ class PipelineExecutor:
         # TODO validate the pipeline, e.g. the first step should always be a domain step
         # self.validate_pipeline()
         domain_step = DomainStep(**pipeline[0])
-        df = self.retrieve_domain(domain_step.domain)
+        df = domain_step.execute(None, domain_retriever=self.retrieve_domain)
         # TODO validate and apply all other steps
         return df
