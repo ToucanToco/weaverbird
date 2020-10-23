@@ -1143,18 +1143,27 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should leave unpivot steps untouched', () => {
+  it('should interpolate unpivot steps', () => {
     const pipeline: Pipeline = [
       {
         name: 'unpivot',
-        keep: ['<%= foo %>', 'column2'],
-        unpivot: ['<%= egg %>', 'column4'],
-        unpivot_column_name: 'column5',
-        value_column_name: 'column6',
+        keep: ['<%= foo %>', '<%= egg %>', 'column2'],
+        unpivot: ['<%= foo %>', '<%= egg %>', 'column4'],
+        unpivot_column_name: '<%= foo %>',
+        value_column_name: '<%= foo %>',
         dropna: true,
       },
     ];
-    expect(translate(pipeline)).toEqual(pipeline);
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'unpivot',
+        keep: ['bar', 'spam', 'column2'],
+        unpivot: ['bar', 'spam', 'column4'],
+        unpivot_column_name: '<%= foo %>',
+        value_column_name: '<%= foo %>',
+        dropna: true,
+      },
+    ]);
   });
 
   it('should leave uppercase steps untouched', () => {

@@ -10,6 +10,8 @@
       placeholder="Add columns to keep"
       data-path=".keep"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <MultiselectWidget
       class="unpivotColumnInput"
@@ -20,6 +22,8 @@
       placeholder="Add columns to unpivot"
       data-path=".unpivot"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <CheckboxWidget class="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna" />
     <StepFormButtonbar />
@@ -34,6 +38,8 @@ import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { generateNewColumnName } from '@/lib/helpers';
 import { UnpivotStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -46,6 +52,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
+  @VQBModule.State availableVariables?: VariablesBucket;
+
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
+
   @Prop({
     type: Object,
     default: () => ({

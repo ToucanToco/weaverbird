@@ -410,7 +410,11 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   unpivot(step: Readonly<S.UnpivotStep>) {
-    return { ...step };
+    return {
+      ...step,
+      keep: step.keep.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+      unpivot: step.unpivot.map(col => _interpolate(this.interpolateFunc, col, this.context)),
+    };
   }
 
   uppercase(step: Readonly<S.ToUpperStep>) {
