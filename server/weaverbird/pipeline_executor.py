@@ -1,8 +1,9 @@
-from typing import Callable, List
+from typing import List
 
 import pandas as pd
 
-from weaverbird.steps import Pipeline
+from weaverbird.pipeline import Pipeline
+from weaverbird.types import DomainRetriever
 
 
 class PipelineExecutor:
@@ -12,7 +13,7 @@ class PipelineExecutor:
     Its domain retriever will be use to retrieve data needed from `domains` steps.
     """
 
-    def __init__(self, domain_retriever: Callable[[str], pd.DataFrame]):
+    def __init__(self, domain_retriever: DomainRetriever):
         self.retrieve_domain = domain_retriever
 
     def execute_pipeline(self, pipeline_steps: List[dict]) -> pd.DataFrame:
