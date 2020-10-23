@@ -92,3 +92,31 @@ def test_simple_le_filter(sample_df):
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
     )
+
+
+def test_simple_in_filter(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'column': 'colA',
+            'operator': 'in',
+            'value': ['toto', 'tutu'],
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(
+        df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
+    )
+
+
+def test_simple_nin_filter(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'column': 'colA',
+            'operator': 'nin',
+            'value': ['toto', 'tutu'],
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
