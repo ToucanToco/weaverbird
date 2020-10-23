@@ -130,3 +130,27 @@ def test_simple_nin_filter(sample_df):
     ).execute(sample_df, domain_retriever=None)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
+
+
+def test_simple_null_filter(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'column': 'colA',
+            'operator': 'null',
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert df_result.empty
+
+
+def test_simple_notnull_filter(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'column': 'colA',
+            'operator': 'notnull',
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(df_result, sample_df)
