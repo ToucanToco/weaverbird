@@ -52,7 +52,14 @@ import { VQBModule } from '@/store';
 import BaseStepForm from './StepForm.vue';
 import Multiselect from './widgets/Multiselect.vue';
 
-const joinTypes = JoinStepFormSchema.properties.type.enum;
+const joinTypes = JoinStepFormSchema.properties.type.enum as JoinStep['type'][];
+
+interface DropdownOption {
+  label: string;
+  trackBy: string;
+  $isDisabled?: boolean;
+  tooltip?: string;
+}
 
 @StepFormComponent({
   vqbstep: 'join',
@@ -77,14 +84,14 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
   joinColumns = JoinColumns;
   joinTypes: JoinStep['type'][] = joinTypes;
 
-  get rightPipeline(): object {
+  get rightPipeline(): DropdownOption {
     return {
-      label: this.editedStep.right_pipeline,
-      trackBy: this.editedStep.right_pipeline,
+      label: this.editedStep.right_pipeline as string,
+      trackBy: this.editedStep.right_pipeline as string,
     };
   }
 
-  set rightPipeline(value: object) {
+  set rightPipeline(value: DropdownOption) {
     /* istanbul ignore next */
     this.editedStep.right_pipeline = value.label;
   }
@@ -105,10 +112,10 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
     return this.availableDatasetNames.map(name => {
       const option = { label: name, trackBy: name };
       if (this.referencingPipelines.includes(name)) {
-        option['$isDisabled'] = true;
-        option[
-          'tooltip'
-        ] = `Circular reference: you cannot combine ${name} because it references the current dataset.`;
+        Object.assign(option, {
+          $isDisabled: true,
+          tooltip: `Circular reference: you cannot combine ${name} because it references the current dataset.`,
+        });
       }
       return option;
     });
