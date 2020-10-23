@@ -1,4 +1,5 @@
-from typing import Any, Literal, Union
+from abc import ABC, abstractmethod
+from typing import Any, List, Literal, Union
 
 from pandas import DataFrame, Series
 from pydantic import Field
@@ -11,11 +12,40 @@ ColumnName = Union[str, int, float]
 DataValue = Any  # FIXME use Any to prevent pydantic cast
 
 
-class SimpleCondition(BaseModel):
+class BaseSimpleCondition(BaseModel, ABC):
     column: ColumnName
     # TODO support all operators (missing in, nin, matches, matches, null, notnull)
+
+    @abstractmethod
+    def filter(self, df: DataFrame) -> Series:
+        ...
+
+
+class ComparisonCondition(BaseSimpleCondition):
     operator: Literal['eq', 'ne', 'lt', 'le', 'gt', 'ge']
     value: DataValue
+
+    def filter(self, df: DataFrame) -> Series:
+        return getattr(df[self.column], self.operator)(self.value)
+
+
+class InCondition(BaseSimpleCondition):
+    operator: Literal['in']
+    value: List[DataValue]
+
+    def filter(self, df: DataFrame) -> Series:
+        return df[self.column].isin(self.value)
+
+
+class NotInCondition(BaseSimpleCondition):
+    operator: Literal['nin']
+    value: List[DataValue]
+
+    def filter(self, df: DataFrame) -> Series:
+        return ~df[self.column].isin(self.value)
+
+
+SimpleCondition = Union[ComparisonCondition, InCondition, NotInCondition]
 
 
 class FilterStep(BaseStep):
@@ -24,16 +54,4 @@ class FilterStep(BaseStep):
     condition: SimpleCondition
 
     def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
-        return df[binary_operator_filter(df, **self.condition.dict())]
-
-
-BINARY_OPERATORS = ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-
-
-def binary_operator_filter(
-    df: DataFrame,
-    operator: Literal['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
-    column: ColumnName,
-    value: DataValue,
-) -> Series:
-    return getattr(df[column], operator)(value)
+        return df[self.condition.filter(df)]
