@@ -14,10 +14,31 @@ def pipeline_executor():
     return PipelineExecutor(domain_retriever=lambda name: DOMAINS[name])
 
 
+def assert_dataframes_equals(left: pd.DataFrame, right: pd.DataFrame):
+    """
+    Compare two dataframes columns and values, not their index.
+    """
+    assert_frame_equal(left.reset_index(drop=True), right.reset_index(drop=True))
+
+
 def test_extract_domain(pipeline_executor: PipelineExecutor):
     df = pipeline_executor.execute_pipeline([{'name': 'domain', 'domain': 'domain_a'}])
 
     assert_frame_equal(
         df,
         pd.DataFrame({'colA': ['toto', 'tutu', 'tata'], 'colB': [1, 2, 3], 'colC': [100, 50, 25]}),
+    )
+
+
+def test_filter(pipeline_executor):
+    df = pipeline_executor.execute_pipeline(
+        [
+            {'name': 'domain', 'domain': 'domain_a'},
+            {'name': 'filter', 'condition': {'column': 'colA', 'operator': 'eq', 'value': 'tutu'}},
+        ]
+    )
+
+    assert_dataframes_equals(
+        df,
+        pd.DataFrame({'colA': ['tutu'], 'colB': [2], 'colC': [50]}),
     )
