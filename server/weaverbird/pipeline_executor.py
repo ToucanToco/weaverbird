@@ -2,7 +2,7 @@ from typing import Callable, List
 
 import pandas as pd
 
-from weaverbird.steps import DomainStep, PipelineStep
+from weaverbird.steps import DomainStep
 
 
 class PipelineExecutor:
