@@ -41,7 +41,18 @@ class InclusionCondition(BaseSimpleCondition):
             return f
 
 
-SimpleCondition = Union[ComparisonCondition, InclusionCondition]
+class NullCondition(BaseSimpleCondition):
+    operator: Literal['null', 'notnull']
+
+    def filter(self, df: DataFrame) -> Series:
+        f = df[self.column].isnull()
+        if self.operator.startswith('not'):
+            return ~f
+        else:
+            return f
+
+
+SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition]
 
 
 class FilterStep(BaseStep):
