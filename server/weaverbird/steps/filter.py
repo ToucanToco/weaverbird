@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, List, Literal, Union
 
+from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series
 from pydantic import Field
 from pydantic.main import BaseModel
@@ -12,9 +13,7 @@ ColumnName = Union[str, int, float]
 DataValue = Any  # FIXME use Any to prevent pydantic cast
 
 
-class BaseSimpleCondition(BaseModel, ABC):
-    column: ColumnName
-
+class BaseCondition(BaseModel, ABC):
     @abstractmethod
     def filter(self, df: DataFrame) -> Series:
         """
@@ -26,7 +25,8 @@ class BaseSimpleCondition(BaseModel, ABC):
         """
 
 
-class ComparisonCondition(BaseSimpleCondition):
+class ComparisonCondition(BaseCondition):
+    column: ColumnName
     operator: Literal['eq', 'ne', 'lt', 'le', 'gt', 'ge']
     value: DataValue
 
@@ -34,7 +34,8 @@ class ComparisonCondition(BaseSimpleCondition):
         return getattr(df[self.column], self.operator)(self.value)
 
 
-class InclusionCondition(BaseSimpleCondition):
+class InclusionCondition(BaseCondition):
+    column: ColumnName
     operator: Literal['in', 'nin']
     value: List[DataValue]
 
@@ -46,7 +47,8 @@ class InclusionCondition(BaseSimpleCondition):
             return f
 
 
-class NullCondition(BaseSimpleCondition):
+class NullCondition(BaseCondition):
+    column: ColumnName
     operator: Literal['null', 'notnull']
 
     def filter(self, df: DataFrame) -> Series:
@@ -57,7 +59,8 @@ class NullCondition(BaseSimpleCondition):
             return f
 
 
-class MatchCondition(BaseSimpleCondition):
+class MatchCondition(BaseCondition):
+    column: ColumnName
     operator: Literal['matches', 'notmatches']
     value: str
 
@@ -72,10 +75,37 @@ class MatchCondition(BaseSimpleCondition):
 SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition, MatchCondition]
 
 
+class BaseConditionCombo(BaseCondition, ABC):
+    class Config:
+        allow_population_by_field_name = True
+
+    def to_dict(self):
+        return self.dict(by_alias=True)
+
+
+class ConditionComboAnd(BaseConditionCombo):
+    and_: List['Condition'] = Field(..., alias='and')
+
+    def filter(self, df: DataFrame) -> Series:
+        return logical_and.reduce([c.filter(df) for c in self.and_])
+
+
+class ConditionComboOr(BaseConditionCombo):
+    or_: List['Condition'] = Field(..., alias='or')
+
+    def filter(self, df: DataFrame) -> Series:
+        return logical_or.reduce([c.filter(df) for c in self.or_])
+
+
+Condition = Union[ConditionComboAnd, ConditionComboOr, SimpleCondition]
+ConditionComboOr.update_forward_refs()
+ConditionComboAnd.update_forward_refs()
+
+
 class FilterStep(BaseStep):
     name = Field('filter', const=True)
     # TODO support and/or nesting
-    condition: SimpleCondition
+    condition: Condition
 
     def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
         return df[self.condition.filter(df)]
