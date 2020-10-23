@@ -29,23 +29,19 @@ class ComparisonCondition(BaseSimpleCondition):
         return getattr(df[self.column], self.operator)(self.value)
 
 
-class InCondition(BaseSimpleCondition):
-    operator: Literal['in']
+class InclusionCondition(BaseSimpleCondition):
+    operator: Literal['in', 'nin']
     value: List[DataValue]
 
     def filter(self, df: DataFrame) -> Series:
-        return df[self.column].isin(self.value)
+        f = df[self.column].isin(self.value)
+        if self.operator.startswith('n'):
+            return ~f
+        else:
+            return f
 
 
-class NotInCondition(BaseSimpleCondition):
-    operator: Literal['nin']
-    value: List[DataValue]
-
-    def filter(self, df: DataFrame) -> Series:
-        return ~df[self.column].isin(self.value)
-
-
-SimpleCondition = Union[ComparisonCondition, InCondition, NotInCondition]
+SimpleCondition = Union[ComparisonCondition, InclusionCondition]
 
 
 class FilterStep(BaseStep):
