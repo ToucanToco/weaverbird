@@ -1,10 +1,12 @@
+from os import path
+
 import pandas as pd
 import pytest
 from pandas.testing import assert_frame_equal
 
 from weaverbird.pipeline_executor import PipelineExecutor
 
-DOMAINS = {'domain_a': pd.read_csv('./fixtures/domain_a.csv')}
+DOMAINS = {'domain_a': pd.read_csv(path.join(path.dirname(__file__), 'fixtures/domain_a.csv'))}
 
 
 @pytest.fixture
