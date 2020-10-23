@@ -1,3 +1,7 @@
+"""
+This file contain end-to-end tests for pipeline execution
+"""
+
 from os import path
 
 import pandas as pd
