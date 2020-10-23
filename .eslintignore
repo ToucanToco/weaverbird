@@ -3,3 +3,6 @@
 
 # Ignore node modules
 node_modules/*
+
+# Ignore server module files
+server/*
