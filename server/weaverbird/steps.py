@@ -1,9 +1,10 @@
+from abc import ABC
 from typing import Union
 
 from pydantic import BaseModel, Field
 
 
-class BaseStep(BaseModel):
+class BaseStep(BaseModel, ABC):
     name: str
 
 
