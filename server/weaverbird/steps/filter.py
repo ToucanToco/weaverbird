@@ -14,7 +14,6 @@ DataValue = Any  # FIXME use Any to prevent pydantic cast
 
 class BaseSimpleCondition(BaseModel, ABC):
     column: ColumnName
-    # TODO support all operators (missing in, nin, matches, matches, null, notnull)
 
     @abstractmethod
     def filter(self, df: DataFrame) -> Series:
@@ -52,7 +51,19 @@ class NullCondition(BaseSimpleCondition):
             return f
 
 
-SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition]
+class MatchCondition(BaseSimpleCondition):
+    operator: Literal['matches', 'notmatches']
+    value: str
+
+    def filter(self, df: DataFrame) -> Series:
+        f = df[self.column].str.match(self.value)
+        if self.operator.startswith('not'):
+            return ~f
+        else:
+            return f
+
+
+SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition, MatchCondition]
 
 
 class FilterStep(BaseStep):
