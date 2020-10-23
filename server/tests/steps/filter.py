@@ -154,3 +154,31 @@ def test_simple_notnull_filter(sample_df):
     ).execute(sample_df, domain_retriever=None)
 
     assert_dataframes_equals(df_result, sample_df)
+
+
+def test_simple_matches_filter(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'column': 'colA',
+            'operator': 'matches',
+            'value': 'tat*',
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
+
+
+def test_simple_notmatches_filter(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'column': 'colA',
+            'operator': 'notmatches',
+            'value': 'tat*',
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(
+        df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
+    )
