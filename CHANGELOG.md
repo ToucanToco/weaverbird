@@ -6,6 +6,7 @@
 
 - pivot step: support variables interpolation
 - pivot step: allow for empty index parameter
+- unpivot step: support variables interpolation
 
 ## [0.28.1] - 2020-10-20
 
