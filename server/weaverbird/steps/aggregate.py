@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Literal, Union, Dict, Tuple, Iterator
+from typing import List, Literal, Union, Dict
 
 from mypy.applytype import Optional
 from numpy.ma import logical_and, logical_or
@@ -32,17 +32,9 @@ class AggregateStep(BaseStep):
         for aggregation in self.aggregations:
             aggregation_result = grouped_by_df.agg(
                 {column_name: aggregation.agg_function for column_name in aggregation.columns})
-            rename_columns(aggregation_result, zip(aggregation.columns, aggregation.new_columns))
-            add_to_results(aggregation_result, all_results)
+            for (old_column_name, new_column_name) in zip(aggregation.columns, aggregation.new_columns):
+                aggregation_result[new_column_name] = aggregation_result[old_column_name]
+                del aggregation_result[old_column_name]
+            for column in aggregation_result.columns:
+                all_results[column] = aggregation_result[column]
         return all_results
-
-
-def add_to_results(aggregation_result, all_results):
-    for column in aggregation_result.columns:
-        all_results[column] = aggregation_result[column]
-
-
-def rename_columns(aggregation_result: DataFrame, renames: Iterator[Tuple[ColumnName, ColumnName]]):
-    for (old_column_name, new_column_name) in renames:
-        aggregation_result[new_column_name] = aggregation_result[old_column_name]
-        del aggregation_result[old_column_name]
