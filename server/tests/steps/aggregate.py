@@ -22,16 +22,26 @@ def test_simple_aggregate(sample_df):
         )]
     ).execute(sample_df, domain_retriever=None)
 
-    assert_dataframes_equals(df_result, DataFrame({'colA': ['toto', 'tutu', 'tata'], 'sum_colB': [5, 2, 3]}))
+    assert_dataframes_equals(df_result.sort_values(by=['colA']),
+                             DataFrame({'colA': ['toto', 'tutu', 'tata'], 'sum_colB': [5, 2, 3]})
+                             .sort_values(by=['colA']))
 
 
 def test_multiple_aggregate(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        operations={
-            'colC': 'sum',
-            'colB': 'min'
-        }
+        on=['colA'],
+        aggregations=[Aggregation(
+            agg_function='sum',
+            columns=['colB'],
+            new_columns=['sum_colB']
+        ),
+            Aggregation(
+                agg_function='min',
+                columns=['colB'],
+                new_columns=['sum_colB']
+            )
+        ]
     ).execute(sample_df, domain_retriever=None)
 
     assert_dataframes_equals(df_result, DataFrame({'colC': [175], 'colB': [1]}))
