@@ -31,7 +31,7 @@ class AggregateStep(BaseStep):
             aggregation_result = grouped_by_df.agg(
                 {column_name: aggregation.agg_function for column_name in aggregation.columns}
             )
-            rename_columns(aggregation_result, zip(aggregation.columns, aggregation.new_columns))
+            aggregation_result = rename_columns(aggregation_result, zip(aggregation.columns, aggregation.new_columns))
             add_to_results(aggregation_result, all_results)
         return all_results
 
@@ -42,6 +42,4 @@ def add_to_results(aggregation_result, all_results):
 
 
 def rename_columns(aggregation_result: DataFrame, renames: Iterator[Tuple[ColumnName, ColumnName]]):
-    for (old_column_name, new_column_name) in renames:
-        aggregation_result[new_column_name] = aggregation_result[old_column_name]
-        del aggregation_result[old_column_name]
+    return aggregation_result.rename(columns={old_col_name: new_col_name for (old_col_name, new_col_name) in renames})
