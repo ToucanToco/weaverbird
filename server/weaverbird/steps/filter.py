@@ -1,4 +1,4 @@
-from typing import Literal, Union
+from typing import Any, Literal, Union
 
 from pandas import DataFrame
 from pydantic import Field
@@ -7,7 +7,8 @@ from pydantic.main import BaseModel
 from weaverbird.steps.base import BaseStep
 
 ColumnName = Union[str, int, float]
-DataValue = Union[bool, float, int, str, list, None]
+# DataValue = Union[bool, float, int, str, list, None]
+DataValue = Any  # FIXME use Any to prevent pydantic cast
 
 
 class SimpleCondition(BaseModel):
