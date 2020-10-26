@@ -25,14 +25,20 @@ class AggregateStep(BaseStep):
     keepOriginalGranularity: Optional[bool] = False
 
     def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
+        if len(self.aggregations) == 0:
+            return DataFrame()
         grouped_by_df = df.groupby(self.on, as_index=False)
-        for idx, aggregation in enumerate(self.aggregations):
-            aggs = {column_name: aggregation.agg_function for column_name in aggregation.columns}
-            if idx == 0:
-                # creation of the dataframe
-                all_results = grouped_by_df.agg(aggs).rename(
-                    columns={col: new_col for col, new_col in zip(aggregation.columns, aggregation.new_columns)})
-            else:
-                # assignation of new columns in the existing dataframe
-                all_results[aggregation.new_columns] = grouped_by_df.agg(aggs)[aggregation.columns]
+        # the first aggregation. we create the result set
+        first_aggregation = self.aggregations[0]
+        aggs = self.make_aggregation(first_aggregation)
+        all_results = grouped_by_df.agg(aggs).rename(
+            columns={col: new_col for col, new_col in zip(first_aggregation.columns, first_aggregation.new_columns)})
+
+        # for remaining aggregations, we concatenate the results.
+        for idx, aggregation in enumerate(self.aggregations[1:]):
+            aggs = self.make_aggregation(aggregation)
+            all_results[aggregation.new_columns] = grouped_by_df.agg(aggs)[aggregation.columns]
         return all_results
+
+    def make_aggregation(self, aggregation):
+        return {column_name: aggregation.agg_function for column_name in aggregation.columns}
