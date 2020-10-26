@@ -27,6 +27,21 @@ def test_simple_aggregate(sample_df):
     )
 
 
+def test_avg(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        on=['colA'],
+        aggregations=[Aggregation(agg_function='avg', columns=['colB'], new_columns=['avg_colB'])],
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(
+        df_result.sort_values(by=['colA']),
+        DataFrame({'colA': ['toto', 'tutu', 'tata'], 'avg_colB': [2.5, 2.0, 3.0]}).sort_values(
+            by=['colA']
+        ),
+    )
+
+
 def test_aggregate_is_no_valid_without_on(sample_df):
     with pytest.raises(ValueError):
         AggregateStep(
