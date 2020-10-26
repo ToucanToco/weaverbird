@@ -29,11 +29,11 @@ def get_aggregate_fn(agg_function: str) -> str:
 
 class AggregateStep(BaseStep):
     name = Field('aggregate', const=True)
-    on: List[ColumnName]
+    on: List[ColumnName] = Field(min_items=1)
     aggregations: List[Aggregation]
     keepOriginalGranularity: Optional[bool] = False
 
-    def group_by(self, df: DataFrame) -> DataFrame:
+    def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
         grouped_by_df = df.groupby(self.on, as_index=False)
         first_aggregation = self.aggregations[0]
         aggs = self.make_aggregation(first_aggregation)
@@ -45,22 +45,6 @@ class AggregateStep(BaseStep):
             aggs = self.make_aggregation(aggregation)
             all_results[self.on + aggregation.new_columns] = grouped_by_df.agg(aggs)[self.on + aggregation.columns]
         return all_results
-
-    def simple_aggregate(self, df: DataFrame) -> DataFrame:
-        first_aggregation = self.aggregations[0]
-        aggs = self.make_aggregation(first_aggregation)
-        aggregated_results = df.agg(aggs)
-        all_results = DataFrame({column_name: [aggregated_results[column_name]] for column_name in first_aggregation.columns}) \
-            .rename(
-            columns={col: new_col for col, new_col in
-                     zip(first_aggregation.columns, first_aggregation.new_columns)})
-        return all_results
-
-    def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
-        if len(self.aggregations) == 0:
-            return self.simple_aggregate(df)
-        if len(self.on) > 0:
-            return self.group_by(df)
 
     def make_aggregation(self, aggregation):
         return {column_name: get_aggregate_fn(aggregation.agg_function) for column_name in aggregation.columns}
