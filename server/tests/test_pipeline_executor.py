@@ -14,7 +14,7 @@ def pipeline_executor():
     return PipelineExecutor(domain_retriever=lambda name: DOMAINS[name])
 
 
-def test_extract_domain(pipeline_executor):
+def test_extract_domain(pipeline_executor: PipelineExecutor):
     df = pipeline_executor.execute_pipeline([{'name': 'domain', 'domain': 'domain_a'}])
 
     assert_frame_equal(

@@ -15,7 +15,7 @@ class PipelineExecutor:
     def __init__(self, domain_retriever: Callable[[str], pd.DataFrame]):
         self.retrieve_domain = domain_retriever
 
-    def execute_pipeline(self, pipeline: List[dict]):
+    def execute_pipeline(self, pipeline: List[dict]) -> pd.DataFrame:
         # TODO validate the pipeline, e.g. the first step should always be a domain step
         # self.validate_pipeline()
         domain_step = DomainStep(**pipeline[0])
