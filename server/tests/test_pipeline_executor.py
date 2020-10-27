@@ -39,3 +39,19 @@ def test_filter(pipeline_executor):
         df,
         pd.DataFrame({'colA': ['tutu'], 'colB': [2], 'colC': [50]}),
     )
+
+
+def test_rename(pipeline_executor):
+    df = pipeline_executor.execute_pipeline(
+        [
+            {'name': 'domain', 'domain': 'domain_a'},
+            {'name': 'rename', 'toRename': [['colA', 'col_a'], ['colB', 'col_b']]},
+        ]
+    )
+
+    assert_dataframes_equals(
+        df,
+        pd.DataFrame(
+            {'col_a': ['toto', 'tutu', 'tata'], 'col_b': [1, 2, 3], 'colC': [100, 50, 25]}
+        ),
+    )
