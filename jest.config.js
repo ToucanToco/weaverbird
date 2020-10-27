@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'jsdom',
   testURL: 'http://localhost/',
   testResultsProcessor: 'jest-sonar-reporter',
-  testMatch: ['<rootDir>/tests/unit/*.spec.ts'],
+  testMatch: ['<rootDir>/tests/unit/**/*.spec.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
