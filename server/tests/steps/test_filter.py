@@ -182,3 +182,76 @@ def test_simple_notmatches_filter(sample_df):
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
     )
+
+
+def test_and_logical_conditions(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'and': [
+                {
+                    'column': 'colB',
+                    'operator': 'le',
+                    'value': 2,
+                },
+                {
+                    'column': 'colC',
+                    'operator': 'gt',
+                    'value': 75,
+                },
+            ]
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(df_result, DataFrame({'colA': ['toto'], 'colB': [1], 'colC': [100]}))
+
+
+def test_or_logical_conditions(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'or': [
+                {
+                    'column': 'colA',
+                    'operator': 'eq',
+                    'value': 'toto',
+                },
+                {
+                    'column': 'colC',
+                    'operator': 'lt',
+                    'value': 33,
+                },
+            ]
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(
+        df_result, DataFrame({'colA': ['toto', 'tata'], 'colB': [1, 3], 'colC': [100, 25]})
+    )
+
+
+def test_nested_logical_conditions(sample_df):
+    df_result = FilterStep(
+        name='filter',
+        condition={
+            'and': [
+                {
+                    'or': [
+                        {
+                            'column': 'colA',
+                            'operator': 'eq',
+                            'value': 'toto',
+                        },
+                        {
+                            'column': 'colC',
+                            'operator': 'lt',
+                            'value': 33,
+                        },
+                    ]
+                },
+                {'column': 'colB', 'operator': 'gt', 'value': 2},
+            ]
+        },
+    ).execute(sample_df, domain_retriever=None)
+
+    assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
