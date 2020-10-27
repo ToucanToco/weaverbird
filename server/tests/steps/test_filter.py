@@ -162,7 +162,7 @@ def test_simple_matches_filter(sample_df):
         condition={
             'column': 'colA',
             'operator': 'matches',
-            'value': 'tat*',
+            'value': 'a.a',
         },
     ).execute(sample_df, domain_retriever=None)
 
@@ -175,7 +175,7 @@ def test_simple_notmatches_filter(sample_df):
         condition={
             'column': 'colA',
             'operator': 'notmatches',
-            'value': 'tat*',
+            'value': 'a.a',
         },
     ).execute(sample_df, domain_retriever=None)
 

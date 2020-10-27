@@ -62,7 +62,7 @@ class MatchCondition(BaseSimpleCondition):
     value: str
 
     def filter(self, df: DataFrame) -> Series:
-        f = df[self.column].str.match(self.value)
+        f = df[self.column].str.contains(self.value)
         if self.operator.startswith('not'):
             return ~f
         else:
