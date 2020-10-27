@@ -17,7 +17,13 @@ class BaseSimpleCondition(BaseModel, ABC):
 
     @abstractmethod
     def filter(self, df: DataFrame) -> Series:
-        ...
+        """
+        Returns a boolean Series, that will be used to filter a DataFrame.
+
+        Example:
+            filter = condition.filter(df)
+            df[filter]  # The filtered DataFrame
+        """
 
 
 class ComparisonCondition(BaseSimpleCondition):
