@@ -13,9 +13,10 @@ const {
   exampleInterpolateFunc,
 } = vqb;
 
-const TRANSLATOR = 'mongo40';
+const TRANSLATOR = 'pandas';
 
-const mongo40translator = getTranslator(TRANSLATOR);
+const mongo40translator = getTranslator('mongo40');
+const pandasTranslator = getTranslator('pandas');
 
 // Create a code editor config for a specific lang
 const codeEditorForLang = function(lang) {
