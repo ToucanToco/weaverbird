@@ -36,4 +36,4 @@ def get_available_domains():
 def execute_pipeline(pipeline):
     executor = PipelineExecutor(lambda domain: DOMAINS[domain])
     df = executor.execute_pipeline(pipeline)
-    return Response(df.to_json(orient='records'), mimetype='application/json')
+    return Response(df.to_json(orient='table'), mimetype='application/json')
