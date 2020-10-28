@@ -8,6 +8,7 @@ POST: execute the pipeline in the body of the request and returns the transforme
 Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
 """
 import json
+from typing import List
 
 import pandas as pd
 from flask import Flask, Response, request
@@ -30,7 +31,7 @@ def handle_request():
     if request.method == 'GET':
         return json.dumps(get_available_domains())
     elif request.method == 'POST':
-        return execute_pipeline(request.get_json())
+        return execute_pipeline(request.get_json(), **request.args)
 
 
 # Load domains in memory
@@ -41,7 +42,6 @@ def get_available_domains():
     return list(DOMAINS.keys())
 
 
-def execute_pipeline(pipeline):
+def execute_pipeline(*args, **kwargs) -> dict:
     executor = PipelineExecutor(lambda domain: DOMAINS[domain])
-    df = executor.execute_pipeline(pipeline)
-    return Response(df.to_json(orient='table'), mimetype='application/json')
+    return Response(executor.preview_pipeline(*args, **kwargs), mimetype='application/json')
