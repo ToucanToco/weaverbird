@@ -29,7 +29,7 @@ def after_request(response):
 @app.route('/', methods=['GET', 'POST'])
 def handle_request():
     if request.method == 'GET':
-        return json.dumps(get_available_domains())
+        return get_available_domains()
     elif request.method == 'POST':
         return execute_pipeline(request.get_json(), **request.args)
 
