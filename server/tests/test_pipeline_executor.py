@@ -1,7 +1,6 @@
 """
 This file contain end-to-end tests for pipeline execution
 """
-import json
 from os import path
 
 import pandas as pd
@@ -25,16 +24,18 @@ def test_preview_pipeline(pipeline_executor):
             {'name': 'domain', 'domain': 'domain_a'},
         ]
     )
-    result_loaded = json.loads(result)
-    assert 'data' in result_loaded
-    assert len(result_loaded['data']) == 3  # rows
-    assert len(result_loaded['data'][0]) == 4  # columns
-    assert result_loaded['schema']['fields'] == [
-        {'name': 'index', 'type': 'integer'},
+    assert 'data' in result
+    print(result)
+    assert len(result['data']) == 3  # rows
+    assert len(result['data'][0]) == 3  # columns
+    assert result['schema']['fields'] == [
         {'name': 'colA', 'type': 'string'},
         {'name': 'colB', 'type': 'integer'},
         {'name': 'colC', 'type': 'integer'},
     ]
+    assert result['offset'] == 0
+    assert result['limit'] == 50
+    assert result['total'] == 3
 
 
 def test_preview_pipeline_limit(pipeline_executor):
@@ -44,9 +45,8 @@ def test_preview_pipeline_limit(pipeline_executor):
         ],
         limit=1,
     )
-    result_loaded = json.loads(result)
-    assert result_loaded['data'] == [
-        {'colA': 'toto', 'colB': 1, 'colC': 100, 'index': 0}
+    assert result['data'] == [
+        {'colA': 'toto', 'colB': 1, 'colC': 100}
     ]  # first row of the data frame
 
 
@@ -58,9 +58,8 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
         limit=3,
         offset=2,
     )
-    result_loaded = json.loads(result)
-    assert result_loaded['data'] == [
-        {'colA': 'tata', 'colB': 3, 'colC': 25, 'index': 2}  # third row of the data frame
+    assert result['data'] == [
+        {'colA': 'tata', 'colB': 3, 'colC': 25}  # third row of the data frame
         # no other row after that one
     ]
 
