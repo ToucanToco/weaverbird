@@ -310,3 +310,5 @@ An alternative back-end for the playground is a small server running in python, 
 
 Run the sever in `server/playground.py`: `cd server; FLASK_APP=playground FLASK_ENV=development flask run`.
 Go to `http://localhost:3000?backend=pandas` to see it in action.
+
+> To ease these process, the front-end and the pandas back-end can be run in a container. See the `Dockerfile`.
