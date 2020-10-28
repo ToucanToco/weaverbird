@@ -557,7 +557,7 @@ Transaction_date,Product,Price,Payment_Type,Name,City,State,Country,Account_Crea
 1/25/09 16:17,Product1,1200,Amex,Mareike,Cumming                     ,GA,United States,1/24/09 18:06,2/7/09 11:28,34.20722,-84.14028
 1/15/09 10:37,Product1,1200,Visa,lamia,Little Compton              ,RI,United States,6/28/08 11:04,2/7/09 12:00,41.51,-71.17167
 1/20/09 15:28,Product1,1200,Visa,Madhu,Centennial                  ,CO,United States,12/2/06 23:24,2/7/09 15:18,39.57917,-104.87639
-1/28/09 18:00,Product1,"13,000",Visa,sandhya,Centennial                  ,CO,United States,12/2/06 23:24,2/7/09 15:18,39.57917,-104.87639
+1/28/09 18:00,Product1,13000,Visa,sandhya,Centennial                  ,CO,United States,12/2/06 23:24,2/7/09 15:18,39.57917,-104.87639
 1/29/09 5:06,Product1,1200,Amex,Kimberly,Herndon                     ,VA,United States,1/23/08 10:05,2/7/09 15:23,38.96944,-77.38639
 1/6/09 18:53,Product1,1200,Visa,Tania,Vista                       ,CA,United States,1/5/09 22:37,2/7/09 15:48,33.2,-117.24167
 1/21/09 6:55,Product1,1200,Visa,andrea,Oostburg                    ,WI,United States,1/20/09 13:33,2/7/09 16:48,43.62278,-87.79444
