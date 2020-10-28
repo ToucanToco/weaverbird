@@ -19,6 +19,8 @@ describe('pandasDataTableToDataset', () => {
         }, {
           label: 'B',
           value: 69
+        }, {
+          label: 'C'
         }
       ]
     }
@@ -33,7 +35,8 @@ describe('pandasDataTableToDataset', () => {
         }],
       data: [
         ['A', 42],
-        ['B', 69]
+        ['B', 69],
+        ['C', null]
       ]
     });
   });
