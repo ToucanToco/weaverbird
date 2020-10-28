@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- Add a "totals" step (to compute and append total rows)
+
 ## [0.29.0] - 2020-11-02
 
 ### Changed
