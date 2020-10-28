@@ -10,6 +10,7 @@ import * as S from '@/lib/steps';
 
 import { BaseTranslator } from './base';
 
+/* istanbul ignore next */
 export class PandasTranslator extends BaseTranslator {
   static label = 'Pandas';
 
