@@ -193,25 +193,30 @@ class PandasService {
   async executePipeline(_store, pipeline, limit, offset = 0) {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(pipeline);
+    const url = new URL('http://localhost:5000');
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
 
-    const response = await fetch('http://localhost:5000', {
+    const response = await fetch(url.toString(), {
       method: 'POST',
       body: JSON.stringify(pipeline),
       headers: {
         'Content-Type': 'application/json',
       },
+      parameters: {
+        limit: limit,
+        offset: offset
+      }
     });
     const result = await response.json();
 
     if (response.ok) {
-      // const [{ count, data: rset, types }] = result;
       let dataset = pandasDataTableToDataset(result);
-      // TODO Handle pagination context (should be done server-side)
-      // dataset.paginationContext = {
-      //   totalCount: count,
-      //   pagesize: limit,
-      //   pageno: Math.floor(offset / limit) + 1,
-      // };
+      dataset.paginationContext = {
+        totalCount: result.total,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
       dataset = autocastDataset(dataset);
       return { data: dataset };
     } else {

@@ -44,4 +44,11 @@ def get_available_domains():
 
 def execute_pipeline(*args, **kwargs) -> dict:
     executor = PipelineExecutor(lambda domain: DOMAINS[domain])
+
+    # Url parameters are only strings, these two must be understood as numbers
+    if 'limit' in kwargs:
+        kwargs['limit'] = int(kwargs['limit'])
+    if 'offset' in kwargs:
+        kwargs['offset'] = int(kwargs['offset'])
+
     return executor.preview_pipeline(*args, **kwargs)
