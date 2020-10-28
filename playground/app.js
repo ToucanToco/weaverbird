@@ -14,7 +14,9 @@ const {
   exampleInterpolateFunc,
 } = vqb;
 
-const TRANSLATOR = 'pandas';
+const args = new URLSearchParams(location.search)
+
+const TRANSLATOR = args.get('backend') || 'mongo40';
 
 const mongo40translator = getTranslator('mongo40');
 const pandasTranslator = getTranslator('pandas');
@@ -180,8 +182,7 @@ class MongoService {
   }
 }
 
-const mongoservice = new MongoService();
-const mongoBackendPlugin = servicePluginFactory(mongoservice);
+const mongoService = new MongoService();
 
 
 class PandasService {
@@ -226,10 +227,10 @@ class PandasService {
     }
   }
 }
-
-
 const pandasService = new PandasService();
-const pandasBackendPlugin = servicePluginFactory(pandasService);
+
+const backendService = TRANSLATOR === 'pandas' ? pandasService : mongoService
+
 
 async function buildVueApp() {
   const AVAILABLE_VARIABLES = [
@@ -280,8 +281,7 @@ async function buildVueApp() {
 
   Vue.use(Vuex);
   const store = new Vuex.Store({
-    // plugins: [mongoBackendPlugin],
-    plugins: [pandasBackendPlugin],
+    plugins: [ servicePluginFactory(backendService) ],
   });
 
   new Vue({
@@ -372,7 +372,7 @@ async function buildVueApp() {
       store.commit(VQBnamespace('setVariableDelimiters'), {
         variableDelimiters: { start: '<%=', end: '%>' },
       });
-      const collections = await mongoservice.listCollections();
+      const collections = await backendService.listCollections();
       store.commit(VQBnamespace('setDomains'), { domains: collections });
       store.dispatch(VQBnamespace('updateDataset'));
     },
@@ -439,7 +439,7 @@ async function buildVueApp() {
         this.draggedover = false;
         event.preventDefault();
         // For the moment, only take one file and we should also test event.target
-        const { collection: domain } = await mongoservice.loadCSV(event.dataTransfer.files[0]);
+        const { collection: domain } = await mongoService.loadCSV(event.dataTransfer.files[0]);
         await setupInitialData(store, domain);
         event.target.value = null;
       },
