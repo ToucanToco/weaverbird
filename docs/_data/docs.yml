@@ -2,6 +2,7 @@
   docs:
     - general-principles
     - text
+    - totals
     - aggregate
     - append
     - argmax
