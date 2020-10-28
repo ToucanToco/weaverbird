@@ -44,4 +44,4 @@ def get_available_domains():
 
 def execute_pipeline(*args, **kwargs) -> dict:
     executor = PipelineExecutor(lambda domain: DOMAINS[domain])
-    return Response(executor.preview_pipeline(*args, **kwargs), mimetype='application/json')
+    return executor.preview_pipeline(*args, **kwargs)

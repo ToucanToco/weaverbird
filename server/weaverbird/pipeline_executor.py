@@ -1,6 +1,7 @@
 from typing import List
 
 from pandas import DataFrame
+from pandas.io.json import build_table_schema
 
 from weaverbird.pipeline import Pipeline
 from weaverbird.types import DomainRetriever
@@ -29,16 +30,21 @@ class PipelineExecutor:
         # TODO validate and apply all other steps
         return df
 
-    def preview_pipeline(self, pipeline_steps: List[dict], limit: int = 50, offset: int = 0) -> str:
+    def preview_pipeline(
+        self, pipeline_steps: List[dict], limit: int = 50, offset: int = 0
+    ) -> dict:
         """
-        Execute a pipeline but returns only a slice of the results, determined by `limit` and `offset` parameters, in
-        JSON.
+        Execute a pipeline but returns only a slice of the results, determined by `limit` and `offset` parameters, as dict.
 
         Return format follows the 'table' JSON table schema used by pandas (see
         https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#orient-options), with a few addition related to
         pagination.
         """
         df = self.execute_pipeline(pipeline_steps)
-        df = df[offset : offset + limit]
-        # TODO Add total count to the result
-        return df.to_json(orient='table')
+        return {
+            'schema': build_table_schema(df, index=False),
+            'offset': offset,
+            'limit': limit,
+            'total': df.shape[0],
+            'data': df[offset : offset + limit].to_dict(orient='records'),
+        }
