@@ -1,0 +1,17 @@
+node_modules
+
+docs
+dist
+stories
+tests
+
+.git
+.idea
+.vscode
+.circleci
+.github
+.storybook
+
+server/.mypy_cache
+server/.pytest_cache
+server/tests
