@@ -2650,6 +2650,147 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 | Label 3 | Group 1 | 20    |
 | Label 5 | Group 2 | 10    |
 
+### `totals` step
+
+Append "total" rows to the dataset for specified dimensions.
+
+```javascript
+{
+  name: 'totals',
+  // an array of objects: { totalColumn: <column to add total rows in>, totalRowsLabel: <the label of the added total rows>}
+  totalDimensions: [
+    { totalColumn: 'foo', totalRowsLabel: 'Total foos' },
+    { totalColumn: 'bar', totalRowsLabel: 'Total bars' }
+  ],
+  aggregations: [ // The columns to be aggregated, and how
+    {
+      columns: ['value1', 'value2']
+      aggfunction: 'sum', // the aggregation function that will be applied to the specified columns
+      newcolumns: ['sum_value1', 'sum_value2'], // same length as 'columns'
+    },
+    {
+      columns: ['value1']
+      aggfunction: 'avg',
+      newcolumns: ['avg_value1'],
+    }
+   ],
+  groups: ['someDimension']// specify columns if the totals computation needs to be scoped by group of rows
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: basic usage
+
+**Input dataset:**
+
+| COUNTRY | PRODUCT   | YEAR | VALUE |
+| ------- | --------- | ---- | ----- |
+| France  | product A | 2019 | 5     |
+| USA     | product A | 2019 | 10    |
+| France  | product B | 2019 | 10    |
+| USA     | product B | 2019 | 15    |
+| France  | product A | 2020 | 20    |
+| USA     | product A | 2020 | 20    |
+| France  | product B | 2020 | 30    |
+| USA     | product B | 2020 | 25    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'totals',
+  totalDimensions: [{ totalColumn: 'COUNTRY', totalRowsLabel: 'All countries' }],
+  aggregations: [
+    {
+      columns: ['VALUE']
+      aggfunction: 'sum',
+      newcolumns: ['VALUE'],
+    }
+   ]
+}
+```
+
+**Output dataset:**
+
+| COUNTRY       | PRODUCT   | YEAR | VALUE |
+| ------------- | --------- | ---- | ----- |
+| France        | product A | 2019 | 5     |
+| USA           | product A | 2019 | 10    |
+| France        | product B | 2019 | 10    |
+| USA           | product B | 2019 | 15    |
+| France        | product A | 2020 | 20    |
+| USA           | product A | 2020 | 20    |
+| France        | product B | 2020 | 30    |
+| USA           | product B | 2020 | 25    |
+| All countries | null      | null | 135   |
+
+#### Example 2: With several totals and groups
+
+**Input dataset:**
+
+| COUNTRY | PRODUCT   | YEAR | VALUE_1 | VALUE_2 |
+| ------- | --------- | ---- | ------- | ------- |
+| France  | product A | 2019 | 5       | 50      |
+| USA     | product A | 2019 | 10      | 100     |
+| France  | product B | 2019 | 10      | 100     |
+| USA     | product B | 2019 | 15      | 150     |
+| France  | product A | 2020 | 20      | 200     |
+| USA     | product A | 2020 | 20      | 200     |
+| France  | product B | 2020 | 30      | 300     |
+| USA     | product B | 2020 | 25      | 250     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'totals',
+  totalDimensions: [
+    {totalColumn: 'COUNTRY', totalRowsLabel: 'All countries'},
+    {totalColumn: 'PRODUCT', totalRowsLabel: 'All products'}
+  ],
+  aggregations: [
+    {
+      columns: ['VALUE_1-sum', 'VALUE_2']
+      aggfunction: 'sum',
+      newcolumns: ['VALUE_1', 'VALUE_2'],
+    },
+    {
+      columns: ['VALUE_1-avg']
+      aggfunction: 'avg',
+      newcolumns: ['VALUE_1'],
+    }
+   ],
+   groups: ['YEAR']
+}
+```
+
+**Output dataset:**
+
+| COUNTRY       | PRODUCT      | YEAR | VALUE_2 | VALUE_1-sum | VALUE_1-avg |
+| ------------- | ------------ | ---- | ------- | ----------- | ----------- |
+| France        | product A    | 2019 | 50      | 5           | 5           |
+| USA           | product A    | 2019 | 100     | 10          | 10          |
+| France        | product B    | 2019 | 100     | 10          | 10          |
+| USA           | product B    | 2019 | 150     | 15          | 15          |
+| France        | product A    | 2020 | 200     | 20          | 20          |
+| USA           | product A    | 2020 | 200     | 20          | 20          |
+| France        | product B    | 2020 | 300     | 30          | 30          |
+| USA           | product B    | 2020 | 250     | 25          | 25          |
+| USA           | All products | 2020 | 450     | 45          | 22.5        |
+| France        | All products | 2020 | 500     | 50          | 25          |
+| USA           | All products | 2019 | 250     | 25          | 12.5        |
+| France        | All products | 2019 | 150     | 15          | 7.5         |
+| All countries | product B    | 2020 | 550     | 55          | 27.5        |
+| All countries | product A    | 2020 | 400     | 40          | 20          |
+| All countries | product B    | 2019 | 250     | 25          | 12.5        |
+| All countries | product A    | 2019 | 150     | 15          | 7.5         |
+| All countries | All products | 2020 | 950     | 95          | 23.75       |
+| All countries | All products | 2019 | 400     | 40          | 10          |
+
 ### `unpivot` step
 
 Unpivot a list of columns to rows.
