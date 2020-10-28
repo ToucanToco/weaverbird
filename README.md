@@ -252,6 +252,10 @@ node playground/server.js
 Once the server is started, you should be able to open the
 `http://localhost:3000` in your favorite browser and enjoy!
 
+### Mongo back-end
+
+The default back-end for the playground is a small server passing queries to MongoDB.
+
 The `server.js` script reads the `playground/playground.config.json` config file
 to know which database should be queried or which http port should be used. If
 you want to customize these values, either edit this json file or override each
@@ -299,3 +303,10 @@ the `--dburi` flag.
 > `MONGODB_DL_URI=https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.0.13.tgz node playground/server.js --automongo`
 > or
 > `MONGODB_DL_URI=https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.13.tgz node playground/server.js --automongo`
+
+### Pandas back-end
+
+An alternative back-end for the playground is a small server running in python, executing pipelines with pandas.
+
+Run the sever in `server/playground.py`: `cd server; FLASK_APP=playground FLASK_ENV=development flask run`.
+Go to `http://localhost:3000?backend=pandas` to see it in action.
