@@ -6,6 +6,7 @@ const {
   filterOutDomain,
   getTranslator,
   mongoResultsToDataset,
+  pandasDataTableToDataset,
   dereferencePipelines,
   servicePluginFactory,
   registerModule,
@@ -182,6 +183,49 @@ class MongoService {
 const mongoservice = new MongoService();
 const mongoBackendPlugin = servicePluginFactory(mongoservice);
 
+
+class PandasService {
+  async listCollections(_store) {
+    const response = await fetch('http://localhost:5000');
+    return response.json();
+  }
+
+  async executePipeline(_store, pipeline, limit, offset = 0) {
+    // This does not modify the pipeline, but checks if all steps are supported
+    pandasTranslator.translate(pipeline);
+
+    const response = await fetch('http://localhost:5000', {
+      method: 'POST',
+      body: JSON.stringify(pipeline),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      // const [{ count, data: rset, types }] = result;
+      let dataset = pandasDataTableToDataset(result);
+      // TODO Handle pagination context (should be done server-side)
+      // dataset.paginationContext = {
+      //   totalCount: count,
+      //   pagesize: limit,
+      //   pageno: Math.floor(offset / limit) + 1,
+      // };
+      dataset = autocastDataset(dataset);
+      return { data: dataset };
+    } else {
+      return {
+        error: [{ type: 'error', message: result }],
+      };
+    }
+  }
+}
+
+
+const pandasService = new PandasService();
+const pandasBackendPlugin = servicePluginFactory(pandasService);
+
 async function buildVueApp() {
   const AVAILABLE_VARIABLES = [
     {
@@ -231,7 +275,8 @@ async function buildVueApp() {
 
   Vue.use(Vuex);
   const store = new Vuex.Store({
-    plugins: [mongoBackendPlugin],
+    // plugins: [mongoBackendPlugin],
+    plugins: [pandasBackendPlugin],
   });
 
   new Vue({
