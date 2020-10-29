@@ -184,17 +184,19 @@ class MongoService {
 
 const mongoService = new MongoService();
 
-
+const pandasBackendBaseUrl = location.origin + '/pandas-backend/';
 class PandasService {
+
+
   async listCollections(_store) {
-    const response = await fetch('http://localhost:5000');
+    const response = await fetch(pandasBackendBaseUrl);
     return response.json();
   }
 
   async executePipeline(_store, pipeline, limit, offset = 0) {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(pipeline);
-    const url = new URL('http://localhost:5000');
+    const url = new URL(pandasBackendBaseUrl);
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 

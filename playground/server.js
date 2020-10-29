@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 const csv = require('csvtojson');
 const multer = require('multer');
 const { startMongo } = require('./mongo-server');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const meow = require('meow');
 const upload = multer();
@@ -258,6 +259,13 @@ function setupApp(config) {
     loadCSVInDatabaseFromFile(config.defaultDataset, config, client, console.error);
   }
   const app = express();
+
+  // Reverse proxy to pandas backend
+  // Should be done *before* applying the bodyparser
+  app.use(createProxyMiddleware('/pandas-backend', {
+    target: 'http://localhost:5000',
+    pathRewrite: {'^/pandas-backend': ''},
+  }));
 
   // parse application/x-www-form-urlencoded
   app.use(bodyParser.urlencoded({ extended: false }));

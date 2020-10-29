@@ -71,6 +71,7 @@
     "eslint-plugin-vue": "^5.0.0",
     "express": "^4.16.4",
     "flush-promises": "^1.0.2",
+    "http-proxy-middleware": "^1.0.6",
     "jest": "^24.8.0",
     "jest-serializer-html": "^7.0.0",
     "jest-serializer-vue": "^2.0.2",
