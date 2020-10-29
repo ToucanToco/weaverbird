@@ -33,6 +33,6 @@ jobs:
     - name: Build storybook
       run: yarn storybook:build
     - name: Ping FeaturePeek
-      run: bash <(curl -s https://peek.run/ci)
+      run: bash <(curl -s https://peek.run/ci) -a storybook
       env:
         CI: true
