@@ -26,8 +26,11 @@ class PipelineExecutor:
         steps = Pipeline(steps=pipeline_steps).steps
         df = None
         for step in steps:
-            df = step.execute(df, domain_retriever=self.retrieve_domain)
-        # TODO validate and apply all other steps
+            df = step.execute(
+                df,
+                domain_retriever=self.retrieve_domain,
+                execute_pipeline=lambda p: self.execute_pipeline(p),
+            )
         return df
 
     def preview_pipeline(
