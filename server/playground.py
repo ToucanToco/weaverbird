@@ -8,7 +8,8 @@ POST: execute the pipeline in the body of the request and returns the transforme
 Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
 """
 import json
-from typing import List
+from glob import glob
+from os.path import basename, splitext
 
 import pandas as pd
 from flask import Flask, Response, request
@@ -34,8 +35,9 @@ def handle_request():
         return execute_pipeline(request.get_json(), **request.args)
 
 
-# Load domains in memory
-DOMAINS = {'sales': pd.read_csv('../playground/datastore/sales.csv')}
+# Load all csv in playground's datastore
+csv_files = glob('../playground/datastore/*.csv')
+DOMAINS = {splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files}
 
 
 def get_available_domains():
