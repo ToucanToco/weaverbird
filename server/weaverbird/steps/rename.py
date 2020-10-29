@@ -13,5 +13,5 @@ class RenameStep(BaseStep):
     class Config:
         allow_population_by_field_name = True
 
-    def execute(self, df: DataFrame, domain_retriever, execute_pipeline=None) -> DataFrame:
+    def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         return df.rename(columns=dict(self.to_rename))
