@@ -7,11 +7,11 @@ on:
     branches:
       - master
     path-ignore:
-      - 'doc/**'
+      - 'docs/**'
   pull_request:
     types: [opened, synchronize, reopened]
     path-ignore:
-      - 'doc/**'
+      - 'docs/**'
 
 jobs:
   build:

@@ -3,7 +3,7 @@ name: Build storybook
 on:
   push:
     path-ignore:
-      - 'doc/**'
+      - 'docs/**'
       - 'server/**'
 jobs:
   build:
