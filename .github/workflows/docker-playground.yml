@@ -1,13 +1,7 @@
 name: Playground docker image
 
 on:
-  # Trigger analysis when pushing in master or pull requests, and when creating
-  # a pull request, only if `server/` files are modified
-  push:
-    branches:
-      - master
-    path-ignore:
-      - 'docs/**'
+  # Trigger analysis when pushing pull requests
   pull_request:
     types: [opened, synchronize, reopened]
     path-ignore:
@@ -34,7 +28,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: false
-        tags: toucantoco/weaverbird-playground:${GITHUB_REF##*/}
+        tags: toucantoco/weaverbird-playground:${{ github.head_ref }}
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
