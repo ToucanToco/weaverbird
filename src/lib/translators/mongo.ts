@@ -338,7 +338,7 @@ function buildMongoFormulaTree(node: math.MathNode): MongoStep | string | number
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
-function transformAggregate(step: Readonly<S.AggregationStep>): MongoStep[] {
+function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};

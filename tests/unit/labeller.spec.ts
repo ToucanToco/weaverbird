@@ -4,7 +4,7 @@ import { VariableDelimiters } from '@/lib/variables';
 
 describe('Labeller', () => {
   it('generates label for single aggregation', () => {
-    const step: S.AggregationStep = {
+    const step: S.AggregateStep = {
       name: 'aggregate',
       on: ['column1', 'column2'],
       aggregations: [
@@ -20,7 +20,7 @@ describe('Labeller', () => {
   });
 
   it('generates label for multiple aggregations', () => {
-    const step: S.AggregationStep = {
+    const step: S.AggregateStep = {
       name: 'aggregate',
       on: ['column1', 'column2'],
       aggregations: [
@@ -42,7 +42,7 @@ describe('Labeller', () => {
 
   it('generates label for old fashioned aggregation', () => {
     // Test for retrocompatibility purposes
-    const step: S.AggregationStep = {
+    const step: S.AggregateStep = {
       name: 'aggregate',
       on: ['column1', 'column2'],
       aggregations: [

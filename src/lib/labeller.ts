@@ -97,7 +97,7 @@ function capitalize(label: string) {
  * The `Labeller` class provides a human-readable label for each step.
  */
 class StepLabeller implements StepMatcher<string> {
-  aggregate(step: Readonly<S.AggregationStep>) {
+  aggregate(step: Readonly<S.AggregateStep>) {
     const dimensions = formatMulticol(step.on);
     const columns: string[] = [];
     for (const agg of step.aggregations) {

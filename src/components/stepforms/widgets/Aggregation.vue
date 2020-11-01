@@ -26,7 +26,7 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { AggFunctionStep } from '@/lib/steps';
+import { Aggregation } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -45,7 +45,7 @@ export default class AggregationWidget extends Vue {
   dataPath!: string;
 
   @Prop({ type: Object, default: () => ({ columns: [], aggfunctions: 'sum', newcolumns: [] }) })
-  value!: AggFunctionStep;
+  value!: Aggregation;
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
@@ -77,7 +77,7 @@ export default class AggregationWidget extends Vue {
     });
   }
 
-  aggregationFunctions: AggFunctionStep['aggfunction'][] = [
+  aggregationFunctions: Aggregation['aggfunction'][] = [
     'sum',
     'avg',
     'count',
