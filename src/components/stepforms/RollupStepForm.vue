@@ -65,7 +65,7 @@ import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { AggFunctionStep, RollupStep } from '@/lib/steps';
+import { Aggregation, RollupStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
@@ -105,7 +105,7 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   };
 
   get defaultAggregation() {
-    const agg: AggFunctionStep = {
+    const agg: Aggregation = {
       columns: [],
       newcolumns: [],
       aggfunction: 'sum',

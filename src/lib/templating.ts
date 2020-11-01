@@ -132,7 +132,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, pipelines };
   }
 
-  aggregate(step: Readonly<S.AggregationStep>) {
+  aggregate(step: Readonly<S.AggregateStep>) {
     const aggregations = [];
     for (const agg of step.aggregations) {
       if (agg.column) {

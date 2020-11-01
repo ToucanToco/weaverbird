@@ -21,7 +21,7 @@ export type AddTextColumnStep = {
   new_column: string;
 };
 
-export type AggFunctionStep = {
+export type Aggregation = {
   // Supported for retrocompatibility only
   newcolumn?: string;
   // Name of the output columns
@@ -34,12 +34,12 @@ export type AggFunctionStep = {
   columns: string[];
 };
 
-export type AggregationStep = {
+export type AggregateStep = {
   name: 'aggregate';
   /** the list columns we want to aggregate on */
   on: string[];
   /** the list of aggregation operations to perform */
-  aggregations: AggFunctionStep[];
+  aggregations: Aggregation[];
   /** optional to guarantee retrocompatibility as this parameter did not exist
    *  when this step was first created */
   keepOriginalGranularity?: boolean;
@@ -272,7 +272,7 @@ export type RollupStep = {
   /** the list of hierarchical columns from lowest to highest level */
   hierarchy: string[];
   /** the list of columnns to aggregate, with related aggregation function to use */
-  aggregations: AggFunctionStep[];
+  aggregations: Aggregation[];
   /** Groupby columns if rollup has to be performed by groups */
   groupby?: string[];
   /** To give a custom name to the output label column */
@@ -366,7 +366,7 @@ export type WaterfallStep = {
 
 export type PipelineStep =
   | AddTextColumnStep
-  | AggregationStep
+  | AggregateStep
   | AppendStep
   | ArgmaxStep
   | ArgminStep
