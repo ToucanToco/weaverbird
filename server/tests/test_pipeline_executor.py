@@ -74,11 +74,7 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
 def test_extract_domain(pipeline_executor: PipelineExecutor):
     df = pipeline_executor.execute_pipeline([{'name': 'domain', 'domain': 'domain_a'}])
 
-    assert_frame_equal(
-        df,
-        pd.DataFrame(df_domain_a),    name: str
-
-    )
+    assert_dataframes_equals(df, pd.DataFrame(df_domain_a))
 
 
 def test_filter(pipeline_executor):

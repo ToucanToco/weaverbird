@@ -1,9 +1,7 @@
-from typing import Iterator, List, Literal, Tuple, Union, Any
+from typing import List, Literal, Union
 
-import pandas as pd
 from mypy.applytype import Optional
 from pandas import DataFrame
-from pandas.core.groupby import DataFrameGroupBy
 from pydantic import Field
 from pydantic.main import BaseModel
 
@@ -38,13 +36,21 @@ class AggregateStep(BaseStep):
         first_aggregation = self.aggregations[0]
         aggs = self.make_aggregation(first_aggregation)
         all_results = grouped_by_df.agg(aggs).rename(
-            columns={col: new_col for col, new_col in
-                     zip(first_aggregation.columns, first_aggregation.new_columns)})
+            columns={
+                col: new_col
+                for col, new_col in zip(first_aggregation.columns, first_aggregation.new_columns)
+            }
+        )
 
         for idx, aggregation in enumerate(self.aggregations[1:]):
             aggs = self.make_aggregation(aggregation)
-            all_results[self.on + aggregation.new_columns] = grouped_by_df.agg(aggs)[self.on + aggregation.columns]
+            all_results[self.on + aggregation.new_columns] = grouped_by_df.agg(aggs)[
+                self.on + aggregation.columns
+            ]
         return all_results
 
     def make_aggregation(self, aggregation):
-        return {column_name: get_aggregate_fn(aggregation.agg_function) for column_name in aggregation.columns}
+        return {
+            column_name: get_aggregate_fn(aggregation.agg_function)
+            for column_name in aggregation.columns
+        }
