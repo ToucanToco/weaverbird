@@ -52,7 +52,7 @@ def test_preview_pipeline_limit(pipeline_executor):
         ],
         limit=1,
     )
-    assert result['data'] == [
+    assert json.loads(result)['data'] == [
         {'colA': 'toto', 'colB': 1, 'colC': 100}
     ]  # first row of the data frame
 
@@ -65,7 +65,7 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
         limit=3,
         offset=2,
     )
-    assert result['data'] == [
+    assert json.loads(result)['data'] == [
         {'colA': 'tata', 'colB': 3, 'colC': 25}  # third row of the data frame
         # no other row after that one
     ]
