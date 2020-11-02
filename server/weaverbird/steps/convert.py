@@ -20,9 +20,14 @@ def cast_to_int(s: Series) -> Series:
     return s_integer.append(s_nan).sort_index()
 
 
+def cast_to_str(s: Series) -> Series:
+    return s.astype(str)
+
+
 CAST_FUNCTIONS = {
     'integer': cast_to_int,
     'float': cast_to_float,
+    'text': cast_to_str,
 }
 
 
