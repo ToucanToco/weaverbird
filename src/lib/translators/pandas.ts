@@ -30,6 +30,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }
