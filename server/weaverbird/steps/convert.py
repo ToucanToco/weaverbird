@@ -28,11 +28,16 @@ def cast_to_datetime(s: Series) -> Series:
     return to_datetime(s, errors='coerce')  # cast errors will result in NaT values
 
 
+def cast_to_bool(s: Series) -> Series:
+    return s.astype(bool)
+
+
 CAST_FUNCTIONS = {
     'integer': cast_to_int,
     'float': cast_to_float,
     'text': cast_to_str,
     'date': cast_to_datetime,
+    'boolean': cast_to_bool,
 }
 
 

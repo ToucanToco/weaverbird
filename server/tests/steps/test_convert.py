@@ -61,3 +61,13 @@ def test_convert_to_datetime():
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_convert_to_bool():
+    input_df = DataFrame({'value': ['plop', 0, 0.0, 1, '', None]})
+    df_result = ConvertStep(name='convert', columns=['value'], data_type='boolean').execute(
+        input_df
+    )
+
+    expected_result = DataFrame({'value': [True, False, False, True, False, False]})
+    assert_dataframes_equals(df_result, expected_result)
