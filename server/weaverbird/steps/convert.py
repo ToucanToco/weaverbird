@@ -1,6 +1,6 @@
 from typing import List, Literal
 
-from pandas import DataFrame, Series, to_numeric
+from pandas import DataFrame, Series, to_datetime, to_numeric
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
@@ -24,10 +24,15 @@ def cast_to_str(s: Series) -> Series:
     return s.astype(str)
 
 
+def cast_to_datetime(s: Series) -> Series:
+    return to_datetime(s, errors='coerce')  # cast errors will result in NaT values
+
+
 CAST_FUNCTIONS = {
     'integer': cast_to_int,
     'float': cast_to_float,
     'text': cast_to_str,
+    'date': cast_to_datetime,
 }
 
 
