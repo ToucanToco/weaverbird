@@ -2,9 +2,9 @@ from typing import List, Union
 
 from pydantic import BaseModel
 
-from weaverbird.steps import DomainStep, FilterStep, RenameStep
+from weaverbird.steps import DomainStep, FilterStep, JoinStep, RenameStep
 
-PipelineStep = Union[DomainStep, FilterStep, RenameStep]
+PipelineStep = Union[DomainStep, FilterStep, JoinStep, RenameStep]
 
 
 class Pipeline(BaseModel):

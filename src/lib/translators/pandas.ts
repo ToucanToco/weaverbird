@@ -21,4 +21,8 @@ export class PandasTranslator extends BaseTranslator {
   filter(step: Readonly<S.FilterStep>) {
     return step;
   }
+
+  join(step: Readonly<S.JoinStep>) {
+    return step;
+  }
 }

@@ -28,7 +28,7 @@ def test_simple_eq_filter(sample_df):
             'operator': 'eq',
             'value': 'tutu',
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tutu'], 'colB': [2], 'colC': [50]}))
 
@@ -41,7 +41,7 @@ def test_simple_ne_filter(sample_df):
             'operator': 'ne',
             'value': 'tutu',
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tata'], 'colB': [1, 3], 'colC': [100, 25]})
@@ -56,7 +56,7 @@ def test_simple_gt_filter(sample_df):
             'operator': 'gt',
             'value': 2,
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
 
@@ -69,7 +69,7 @@ def test_simple_ge_filter(sample_df):
             'operator': 'ge',
             'value': 2,
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['tutu', 'tata'], 'colB': [2, 3], 'colC': [50, 25]})
@@ -84,7 +84,7 @@ def test_simple_lt_filter(sample_df):
             'operator': 'lt',
             'value': 2,
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['toto'], 'colB': [1], 'colC': [100]}))
 
@@ -97,7 +97,7 @@ def test_simple_le_filter(sample_df):
             'operator': 'le',
             'value': 2,
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
@@ -112,7 +112,7 @@ def test_simple_in_filter(sample_df):
             'operator': 'in',
             'value': ['toto', 'tutu'],
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
@@ -127,7 +127,7 @@ def test_simple_nin_filter(sample_df):
             'operator': 'nin',
             'value': ['toto', 'tutu'],
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
 
@@ -139,7 +139,7 @@ def test_simple_null_filter(sample_df):
             'column': 'colA',
             'operator': 'null',
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert df_result.empty
 
@@ -151,7 +151,7 @@ def test_simple_notnull_filter(sample_df):
             'column': 'colA',
             'operator': 'notnull',
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, sample_df)
 
@@ -164,7 +164,7 @@ def test_simple_matches_filter(sample_df):
             'operator': 'matches',
             'value': 'a.a',
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
 
@@ -177,7 +177,7 @@ def test_simple_notmatches_filter(sample_df):
             'operator': 'notmatches',
             'value': 'a.a',
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tutu'], 'colB': [1, 2], 'colC': [100, 50]})
@@ -201,7 +201,7 @@ def test_and_logical_conditions(sample_df):
                 },
             ]
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['toto'], 'colB': [1], 'colC': [100]}))
 
@@ -223,7 +223,7 @@ def test_or_logical_conditions(sample_df):
                 },
             ]
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'colA': ['toto', 'tata'], 'colB': [1, 3], 'colC': [100, 25]})
@@ -252,6 +252,6 @@ def test_nested_logical_conditions(sample_df):
                 {'column': 'colB', 'operator': 'gt', 'value': 2},
             ]
         },
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))

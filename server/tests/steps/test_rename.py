@@ -17,7 +17,7 @@ def test_rename(sample_df: DataFrame):
             ['NAME', 'name'],
             ['AGE', 'age'],
         ],
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     expected_result = DataFrame({'name': ['foo', 'bar'], 'age': [42, 43], 'SCORE': [100, 200]})
     assert_dataframes_equals(df_result, expected_result)

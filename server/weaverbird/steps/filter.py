@@ -107,5 +107,5 @@ class FilterStep(BaseStep):
     # TODO support and/or nesting
     condition: Condition
 
-    def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
+    def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         return df[self.condition.filter(df)]
