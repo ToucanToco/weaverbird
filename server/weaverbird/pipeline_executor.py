@@ -1,3 +1,4 @@
+import json
 from typing import List
 
 from pandas import DataFrame
@@ -33,21 +34,23 @@ class PipelineExecutor:
             )
         return df
 
-    def preview_pipeline(
-        self, pipeline_steps: List[dict], limit: int = 50, offset: int = 0
-    ) -> dict:
+    def preview_pipeline(self, pipeline_steps: List[dict], limit: int = 50, offset: int = 0) -> str:
         """
-        Execute a pipeline but returns only a slice of the results, determined by `limit` and `offset` parameters, as dict.
+        Execute a pipeline but returns only a slice of the results, determined by `limit` and `offset` parameters, as JSON.
 
         Return format follows the 'table' JSON table schema used by pandas (see
         https://pandas.pydata.org/pandas-docs/stable/user_guide/io.html#orient-options), with a few addition related to
         pagination.
+
+        Note: it's required to use pandas `to_json` methods, as it convert NaN and dates to an appropriate format.
         """
         df = self.execute_pipeline(pipeline_steps)
-        return {
-            'schema': build_table_schema(df, index=False),
-            'offset': offset,
-            'limit': limit,
-            'total': df.shape[0],
-            'data': df[offset : offset + limit].to_dict(orient='records'),
-        }
+        return json.dumps(
+            {
+                'schema': build_table_schema(df, index=False),
+                'offset': offset,
+                'limit': limit,
+                'total': df.shape[0],
+                'data': json.loads(df[offset : offset + limit].to_json(orient='records')),
+            }
+        )

@@ -30,9 +30,11 @@ def after_request(response):
 @app.route('/', methods=['GET', 'POST'])
 def handle_request():
     if request.method == 'GET':
-        return json.dumps(get_available_domains())
+        return Response(json.dumps(get_available_domains()), mimetype='application/json')
     elif request.method == 'POST':
-        return execute_pipeline(request.get_json(), **request.args)
+        return Response(
+            execute_pipeline(request.get_json(), **request.args), mimetype='application/json'
+        )
 
 
 # Load all csv in playground's datastore
@@ -44,7 +46,7 @@ def get_available_domains():
     return list(DOMAINS.keys())
 
 
-def execute_pipeline(*args, **kwargs) -> dict:
+def execute_pipeline(*args, **kwargs) -> str:
     executor = PipelineExecutor(lambda domain: DOMAINS[domain])
 
     # Url parameters are only strings, these two must be understood as numbers

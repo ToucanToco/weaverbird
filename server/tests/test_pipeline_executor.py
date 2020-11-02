@@ -1,10 +1,12 @@
 """
 This file contain end-to-end tests for pipeline execution
 """
+import json
 from os import path
 
 import pandas as pd
 import pytest
+from pytest_mock import MockFixture
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.pipeline_executor import PipelineExecutor
@@ -18,14 +20,16 @@ def pipeline_executor():
     return PipelineExecutor(domain_retriever=lambda name: DOMAINS[name])
 
 
-def test_preview_pipeline(pipeline_executor):
-    result = pipeline_executor.preview_pipeline(
-        [
-            {'name': 'domain', 'domain': 'domain_a'},
-        ]
+def test_preview_pipeline(mocker: MockFixture, pipeline_executor):
+    df_to_json_spy = mocker.spy(pd.DataFrame, 'to_json')
+    result = json.loads(
+        pipeline_executor.preview_pipeline(
+            [
+                {'name': 'domain', 'domain': 'domain_a'},
+            ]
+        )
     )
     assert 'data' in result
-    print(result)
     assert len(result['data']) == 3  # rows
     assert len(result['data'][0]) == 3  # columns
     assert result['schema']['fields'] == [
@@ -37,6 +41,9 @@ def test_preview_pipeline(pipeline_executor):
     assert result['limit'] == 50
     assert result['total'] == 3
 
+    # DataFrames must be exported with pandas' method to ensure NaN and dates are correctly converted
+    df_to_json_spy.assert_called_once()
+
 
 def test_preview_pipeline_limit(pipeline_executor):
     result = pipeline_executor.preview_pipeline(
@@ -45,7 +52,7 @@ def test_preview_pipeline_limit(pipeline_executor):
         ],
         limit=1,
     )
-    assert result['data'] == [
+    assert json.loads(result)['data'] == [
         {'colA': 'toto', 'colB': 1, 'colC': 100}
     ]  # first row of the data frame
 
@@ -58,7 +65,7 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
         limit=3,
         offset=2,
     )
-    assert result['data'] == [
+    assert json.loads(result)['data'] == [
         {'colA': 'tata', 'colB': 3, 'colC': 25}  # third row of the data frame
         # no other row after that one
     ]
