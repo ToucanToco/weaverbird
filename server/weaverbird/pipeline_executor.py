@@ -29,7 +29,7 @@ class PipelineExecutor:
             df = step.execute(
                 df,
                 domain_retriever=self.retrieve_domain,
-                execute_pipeline=lambda p: self.execute_pipeline(p),
+                execute_pipeline=self.execute_pipeline,
             )
         return df
 
