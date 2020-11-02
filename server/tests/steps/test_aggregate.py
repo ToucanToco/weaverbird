@@ -63,5 +63,7 @@ def test_multiple_aggregate(sample_df):
         ],
     ).execute(sample_df, domain_retriever=None)
 
-    assert_dataframes_equals(df_result, DataFrame(
-        {'colA': ['tata', 'toto', 'tutu'], 'min_colB': [3, 1, 2], 'max_colB': [3, 4, 2]}))
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'colA': ['tata', 'toto', 'tutu'], 'min_colB': [3, 1, 2], 'max_colB': [3, 4, 2]}),
+    )
