@@ -312,3 +312,7 @@ Run the sever in `server/playground.py`: `cd server; FLASK_APP=playground FLASK_
 Go to `http://localhost:3000?backend=pandas` to see it in action.
 
 > To ease these process, the front-end and the pandas back-end can be run in a container. See the `Dockerfile`.
+> It's also published on Docker Hub, and can be run directly with:
+> `docker run --rm -p 3000:3000 toucantoco/weaverbird-playground:master`
+> And then visit http://localhost:3000?backend=pandas
+> Note: add `-v /path/to/your/folder/with/csv:/weaverbird/playground/datastore` to use your own set of csv instead of the default ones
