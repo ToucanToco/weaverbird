@@ -38,9 +38,8 @@ class AggregateStep(BaseStep):
     aggregations: List[Aggregation]
     keepOriginalGranularity: Optional[bool] = False
 
-    def execute(self, df: DataFrame, domain_retriever) -> DataFrame:
-        if self.keepOriginalGranularity:
-            return self.execute_with_original_granularity(df, domain_retriever)
+
+    def execute(self, df, domain_retriever):
         grouped_by_df = df.groupby(self.on, as_index=False)
         first_aggregation = self.aggregations[0]
         aggs = self.make_aggregation(first_aggregation)
@@ -56,36 +55,10 @@ class AggregateStep(BaseStep):
             all_results[self.on + aggregation.new_columns] = grouped_by_df.agg(aggs)[
                 self.on + aggregation.columns
                 ]
-
-        return all_results
-
-    def execute_merge(self, df, domain_retriever):
-        grouped_by_df = df.groupby(self.on, as_index=False)
-        first_aggregation = self.aggregations[0]
-        aggs = self.make_aggregation(first_aggregation)
-        all_results = grouped_by_df.agg(aggs).rename(
-            columns={
-                col: new_col
-                for col, new_col in zip(first_aggregation.columns, first_aggregation.new_columns)
-            }
-        )
-
-        for idx, aggregation in enumerate(self.aggregations[1:]):
-            aggs = self.make_aggregation(aggregation)
-            all_results[self.on + aggregation.new_columns] = grouped_by_df.agg(aggs)[
-                self.on + aggregation.columns
-                ]
+        # it is faster this way, than to trasnform the original df
         if self.keepOriginalGranularity:
             return df.merge(all_results, on=self.on, how='left')
         return all_results
-
-    def execute_with_original_granularity(self, df, domain_retriever):
-        grouped_by_df = df.groupby(self.on, as_index=False)
-
-        for aggregation in self.aggregations:
-            df[aggregation.new_columns] = grouped_by_df[aggregation.columns].transform(
-                get_aggregate_fn(aggregation.agg_function))
-        return df
 
     def make_aggregation(self, aggregation):
         return {
