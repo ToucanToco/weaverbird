@@ -6,6 +6,11 @@ on:
     types: [opened, synchronize, reopened]
     path-ignore:
       - 'docs/**'
+  push:
+    branches:
+      - master
+    path-ignore:
+      - 'docs/**'
 
 jobs:
   build:
