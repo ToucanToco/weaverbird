@@ -67,3 +67,38 @@ def test_multiple_aggregate(sample_df):
         df_result,
         DataFrame({'colA': ['tata', 'toto', 'tutu'], 'min_colB': [3, 1, 2], 'max_colB': [3, 4, 2]}),
     )
+
+
+def test_with_original_granularity(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keepOriginalGranularity=True,
+        on=['colA'],
+        aggregations=[
+            Aggregation(agg_function='min', columns=['colB'], new_columns=['min_colB']),
+        ],
+    ).execute(sample_df, domain_retriever=None)
+
+    print(df_result)
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'colA':['toto', 'tutu', 'tata', 'toto'], 'colB':[1, 2, 3, 4], 'colC':[100, 50, 25, 0], 'min_colB': [1, 2, 3, 1]}),
+    )
+
+
+def test_with_original_granularity_multiple_aggregations(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keepOriginalGranularity=True,
+        on=['colA'],
+        aggregations=[
+            Aggregation(agg_function='min', columns=['colB'], new_columns=['min_colB']),
+            Aggregation(agg_function='max', columns=['colC'], new_columns=['max_colC']),
+        ],
+    ).execute(sample_df, domain_retriever=None)
+
+    print(df_result)
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'colA':['toto', 'tutu', 'tata', 'toto'], 'colB':[1, 2, 3, 4], 'colC':[100, 50, 25, 0], 'min_colB': [1, 2, 3, 1]}),
+    )
