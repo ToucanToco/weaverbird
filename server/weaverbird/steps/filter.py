@@ -1,4 +1,5 @@
-from typing import Literal, Union
+from abc import ABC, abstractmethod
+from typing import Any, List, Literal, Union
 
 from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series
