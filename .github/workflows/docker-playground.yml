@@ -36,10 +36,14 @@ jobs:
         username: toucantoco
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    - name: Branch name
+      id: branch_name
+      run: echo "git rev-parse --abbrev-ref ${{ github.head_ref || github.ref }}"
+
     # `/` char is not authorized in docker images tags
     - name: Sanitize branch name
       id: sanitize_branch_name
-      run: echo "::set-output name=value::$(echo ${{ github.head_ref }} | tr '/' '-')"
+      run: echo "::set-output name=value::$(echo ${{ steps.branch_name.outputs.value }} | tr '/' '-')"
 
     - name: Build
       id: docker_build
