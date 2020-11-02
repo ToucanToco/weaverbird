@@ -92,13 +92,13 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
       id: 'mongo36',
       label: 'Mongo 3.6',
       doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
     {
       id: 'mongo40',
       label: 'Mongo 4.0',
       doc:
-        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+        'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
   ];
 
