@@ -6,7 +6,9 @@ import {
   generateNewColumnName,
   keepCurrentValueIfArrayType,
   keepCurrentValueIfCompatibleType,
+  setAggregationsNewColumnsInStep,
 } from '@/lib/helpers';
+import { AddTotalRowsStep } from '@/lib/steps';
 
 describe('castFromString', () => {
   it('should cast numeric string to number type', () => {
@@ -149,6 +151,48 @@ describe('castFromString', () => {
         ['B'],
         ['C'],
       ]);
+    });
+  });
+
+  describe('setAggregationsNewColumnsInStep', () => {
+    it('should use the input column names as new column names if no clever renaming is required', () => {
+      const step: AddTotalRowsStep = {
+        name: 'totals',
+        totalDimensions: [{ totalColumn: 'foo', totalRowsLabel: 'bar' }],
+        aggregations: [
+          { columns: ['foo', 'bar'], newcolumns: ['', ''], aggfunction: 'sum' },
+          { columns: ['toto', 'tata'], newcolumns: ['', ''], aggfunction: 'avg' },
+        ],
+      };
+      const expected = {
+        ...step,
+        aggregations: [
+          { columns: ['foo', 'bar'], newcolumns: ['foo', 'bar'], aggfunction: 'sum' },
+          { columns: ['toto', 'tata'], newcolumns: ['toto', 'tata'], aggfunction: 'avg' },
+        ],
+      };
+      setAggregationsNewColumnsInStep(step);
+      expect(step).toEqual(expected);
+    });
+
+    it('should set new column names cleverly if sevral aggregations have to be performed on the same input clumn', () => {
+      const step: AddTotalRowsStep = {
+        name: 'totals',
+        totalDimensions: [{ totalColumn: 'foo', totalRowsLabel: 'bar' }],
+        aggregations: [
+          { columns: ['foo', 'bar'], newcolumns: ['', ''], aggfunction: 'sum' },
+          { columns: ['foo', 'bar'], newcolumns: ['', ''], aggfunction: 'avg' },
+        ],
+      };
+      const expected = {
+        ...step,
+        aggregations: [
+          { columns: ['foo', 'bar'], newcolumns: ['foo-sum', 'bar-sum'], aggfunction: 'sum' },
+          { columns: ['foo', 'bar'], newcolumns: ['foo-avg', 'bar-avg'], aggfunction: 'avg' },
+        ],
+      };
+      setAggregationsNewColumnsInStep(step);
+      expect(step).toEqual(expected);
     });
   });
 });

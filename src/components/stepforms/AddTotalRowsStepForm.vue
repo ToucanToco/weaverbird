@@ -42,6 +42,7 @@ import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import TotalDimensionsWidget from '@/components/stepforms/widgets/TotalDimensions.vue';
+import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 import { AddTotalRowsStep, Aggregation, TotalDimension } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
@@ -106,24 +107,7 @@ export default class AddTotalRowsStepForm extends BaseStepForm<AddTotalRowsStep>
   }
 
   submit() {
-    /**
-     * If different aggregations have to be performed on the same column, add a suffix
-     * to the automatically generated newcolumn name
-     */
-    const newcolumnOccurences: { [prop: string]: number } = {};
-    for (const agg of this.editedStep.aggregations) {
-      agg.newcolumns = [...agg.columns];
-      for (const c of agg.newcolumns) {
-        newcolumnOccurences[c] = (newcolumnOccurences[c] || 0) + 1;
-      }
-    }
-    for (const agg of this.editedStep.aggregations) {
-      for (let i = 0; i < agg.newcolumns.length; i++) {
-        if (newcolumnOccurences[agg.newcolumns[i]] > 1) {
-          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
-        }
-      }
-    }
+    setAggregationsNewColumnsInStep(this.editedStep);
     this.$$super.submit();
   }
 }

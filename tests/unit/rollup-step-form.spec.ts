@@ -1,6 +1,9 @@
+jest.mock('@/lib/helpers');
+
 import RollupStepForm from '@/components/stepforms/RollupStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
+import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
 
@@ -231,40 +234,19 @@ describe('Rollup Step Form', () => {
       },
     });
 
-    it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
-      const wrapper = runner.mount(undefined, {
-        data: {
-          editedStep: {
-            name: 'rollup',
-            hierarchy: ['foo'],
-            aggregations: [{ columns: ['bar'], newcolumns: [''], aggfunction: 'sum' }],
-          },
-        },
-      });
+    it('should call teh setAggregationsNewColumnsInStep function with editedStep as input', () => {
+      const editedStep = {
+        name: 'rollup',
+        hierarchy: ['foo'],
+        aggregations: [
+          { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'sum' },
+          { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'avg' },
+        ],
+      };
+      const wrapper = runner.mount(undefined, { data: { editedStep } });
       wrapper.find('.widget-form-action__button--validate').trigger('click');
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar');
-    });
-
-    it('should set newcolumn cleverly if several aggregations are performed o, the same column', () => {
-      const wrapper = runner.mount(undefined, {
-        data: {
-          editedStep: {
-            name: 'rollup',
-            hierarchy: ['foo'],
-            aggregations: [
-              { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'sum' },
-              { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'avg' },
-            ],
-          },
-        },
-      });
-      wrapper.find('.widget-form-action__button--validate').trigger('click');
-      expect(wrapper.vm.$data.errors).toBeNull();
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar-sum');
-      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[0]).toEqual('bar-avg');
-      expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[1]).toEqual('test-sum');
-      expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[1]).toEqual('test-avg');
+      expect(setAggregationsNewColumnsInStep).toHaveBeenCalled();
+      expect(setAggregationsNewColumnsInStep).toHaveBeenCalledWith(editedStep);
     });
   });
 

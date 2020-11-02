@@ -1,7 +1,10 @@
+jest.mock('@/lib/helpers');
+
 import AddTotalRowsStepForm from '@/components/stepforms/AddTotalRowsStepForm.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
+import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
 
@@ -238,39 +241,18 @@ describe('Add Total Rows Step Form', () => {
     });
   });
 
-  it('should keep the same column name as newcolumn if only one aggregation is performed', () => {
-    const wrapper = runner.mount(undefined, {
-      data: {
-        editedStep: {
-          name: 'totals',
-          totalDimensions: [{ totalColumn: 'foo', totalRowsLabel: 'bar' }],
-          aggregations: [{ newcolumns: [''], aggfunction: 'sum', columns: ['bar'] }],
-        },
-      },
-    });
+  it('should call teh setAggregationsNewColumnsInStep function with editedStep as input', () => {
+    const editedStep = {
+      name: 'totals',
+      totalDimensions: [{ totalColumn: 'foo', totalRowsLabel: 'bar' }],
+      aggregations: [
+        { columns: ['bar', 'test'], newcolumns: ['', ''], aggfunction: 'sum' },
+        { columns: ['bar', 'test'], newcolumns: ['', ''], aggfunction: 'avg' },
+      ],
+    };
+    const wrapper = runner.mount(undefined, { data: { editedStep } });
     wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar');
-  });
-
-  it('should set newcolumn cleverly if several aggregations are performed on the same column', () => {
-    const wrapper = runner.mount(undefined, {
-      data: {
-        editedStep: {
-          name: 'totals',
-          totalDimensions: [{ totalColumn: 'foo', totalRowsLabel: 'bar' }],
-          aggregations: [
-            { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'sum' },
-            { columns: ['bar', 'test'], newcolumns: [''], aggfunction: 'avg' },
-          ],
-        },
-      },
-    });
-    wrapper.find('.widget-form-action__button--validate').trigger('click');
-    expect(wrapper.vm.$data.errors).toBeNull();
-    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[0]).toEqual('bar-sum');
-    expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[0]).toEqual('bar-avg');
-    expect(wrapper.vm.$data.editedStep.aggregations[0].newcolumns[1]).toEqual('test-sum');
-    expect(wrapper.vm.$data.editedStep.aggregations[1].newcolumns[1]).toEqual('test-avg');
+    expect(setAggregationsNewColumnsInStep).toHaveBeenCalled();
+    expect(setAggregationsNewColumnsInStep).toHaveBeenCalledWith(editedStep);
   });
 });
