@@ -34,6 +34,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  delete(step: Readonly<S.DeleteStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }
