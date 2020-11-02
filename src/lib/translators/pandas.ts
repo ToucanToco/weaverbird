@@ -22,6 +22,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  convert(step: Readonly<S.ConvertStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }
