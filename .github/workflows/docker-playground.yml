@@ -37,20 +37,23 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
     - name: Branch name
-      id: branch_name
-      run: echo "git rev-parse --abbrev-ref ${{ github.head_ref || github.ref }}"
+      if: ${{ !github.head_ref }}
+      run: echo "branch_name=$(git rev-parse --abbrev-ref ${{ github.ref }})" >> $GITHUB_ENV
+
+    - name: Branch name for PRs
+      if: ${{ github.head_ref }}
+      run: echo "branch_name=${{ github.head_ref }}" >> $GITHUB_ENV
 
     # `/` char is not authorized in docker images tags
     - name: Sanitize branch name
-      id: sanitize_branch_name
-      run: echo "::set-output name=value::$(echo ${{ steps.branch_name.outputs.value }} | tr '/' '-')"
+      run: echo "docker_image_tag=$(echo $branch_name | tr '/' '-')"  >> $GITHUB_ENV
 
     - name: Build
       id: docker_build
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: toucantoco/weaverbird-playground:${{ steps.sanitize_branch_name.outputs.value }}
+        tags: toucantoco/weaverbird-playground:${{ env.docker_image_tag }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -58,7 +61,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
     - name: Ping FeaturePeek
-      run: bash <(curl -s https://peek.run/ci) -a playground -p docker.io/toucantoco/weaverbird-playground:${{ steps.sanitize_branch_name.outputs.value }}
+      run: bash <(curl -s https://peek.run/ci) -a playground -p docker.io/toucantoco/weaverbird-playground:$docker_image_tag
       env:
         CI: true
         # The image is public, so any user can retrieve it (like our service account toucantokar)
