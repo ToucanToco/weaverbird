@@ -26,18 +26,23 @@ def test_simple_aggregate(sample_df):
         ),
     )
 
+
 def test_simple_aggregate_multiple_columns(sample_df):
     df_result = AggregateStep(
         name='aggregate',
         on=['colA'],
-        aggregations=[Aggregation(agg_function='sum', columns=['colB', 'colC'], new_columns=['sum_colB', 'sum_colC'])],
+        aggregations=[
+            Aggregation(
+                agg_function='sum', columns=['colB', 'colC'], new_columns=['sum_colB', 'sum_colC']
+            )
+        ],
     ).execute(sample_df, domain_retriever=None)
 
     assert_dataframes_equals(
         df_result.sort_values(by=['colA']),
-        DataFrame({'colA': ['toto', 'tutu', 'tata'], 'sum_colB': [5, 2, 3], 'sum_colC':[100, 50, 25]}).sort_values(
-            by=['colA']
-        ),
+        DataFrame(
+            {'colA': ['toto', 'tutu', 'tata'], 'sum_colB': [5, 2, 3], 'sum_colC': [100, 50, 25]}
+        ).sort_values(by=['colA']),
     )
 
 
@@ -96,8 +101,14 @@ def test_with_original_granularity(sample_df):
     print(df_result)
     assert_dataframes_equals(
         df_result,
-        DataFrame({'colA': ['toto', 'tutu', 'tata', 'toto'], 'colB': [1, 2, 3, 4], 'colC': [100, 50, 25, 0],
-                   'min_colB': [1, 2, 3, 1]}),
+        DataFrame(
+            {
+                'colA': ['toto', 'tutu', 'tata', 'toto'],
+                'colB': [1, 2, 3, 4],
+                'colC': [100, 50, 25, 0],
+                'min_colB': [1, 2, 3, 1],
+            }
+        ),
     )
 
 
@@ -115,8 +126,15 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
     print(df_result)
     assert_dataframes_equals(
         df_result,
-        DataFrame({'colA': ['toto', 'tutu', 'tata', 'toto'], 'colB': [1, 2, 3, 4], 'colC': [100, 50, 25, 0],
-                   'min_colB': [1, 2, 3, 1], 'max_colC':[100, 50, 25, 100]}),
+        DataFrame(
+            {
+                'colA': ['toto', 'tutu', 'tata', 'toto'],
+                'colB': [1, 2, 3, 4],
+                'colC': [100, 50, 25, 0],
+                'min_colB': [1, 2, 3, 1],
+                'max_colC': [100, 50, 25, 100],
+            }
+        ),
     )
 
 
@@ -126,7 +144,9 @@ def test_with_original_granularity_multiple_aggregations_multiple_columns(sample
         keepOriginalGranularity=True,
         on=['colA'],
         aggregations=[
-            Aggregation(agg_function='min', columns=['colB', 'colC'], new_columns=['min_colB', 'min_colC']),
+            Aggregation(
+                agg_function='min', columns=['colB', 'colC'], new_columns=['min_colB', 'min_colC']
+            ),
             Aggregation(agg_function='max', columns=['colC'], new_columns=['max_colC']),
         ],
     ).execute(sample_df, domain_retriever=None)
@@ -134,6 +154,14 @@ def test_with_original_granularity_multiple_aggregations_multiple_columns(sample
     print(df_result)
     assert_dataframes_equals(
         df_result,
-        DataFrame({'colA': ['toto', 'tutu', 'tata', 'toto'], 'colB': [1, 2, 3, 4], 'colC': [100, 50, 25, 0],
-                   'min_colB': [1, 2, 3, 1], 'max_colC':[100, 50, 25, 100], 'min_colC':[0, 50, 25, 0]}),
+        DataFrame(
+            {
+                'colA': ['toto', 'tutu', 'tata', 'toto'],
+                'colB': [1, 2, 3, 4],
+                'colC': [100, 50, 25, 0],
+                'min_colB': [1, 2, 3, 1],
+                'max_colC': [100, 50, 25, 100],
+                'min_colC': [0, 50, 25, 0],
+            }
+        ),
     )
