@@ -25,4 +25,8 @@ export class PandasTranslator extends BaseTranslator {
   join(step: Readonly<S.JoinStep>) {
     return step;
   }
+
+  rename(step: Readonly<S.RenameStep>) {
+    return step;
+  }
 }
