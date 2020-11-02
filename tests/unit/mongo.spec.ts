@@ -34,7 +34,7 @@ const fullMonthReplace = {
       { case: { $eq: ['$_vqbTempMonth', '08'] }, then: 'August' },
       { case: { $eq: ['$_vqbTempMonth', '09'] }, then: 'September' },
       { case: { $eq: ['$_vqbTempMonth', '10'] }, then: 'October' },
-      { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'December' },
+      { case: { $eq: ['$_vqbTempMonth', '11'] }, then: 'November' },
       { case: { $eq: ['$_vqbTempMonth', '12'] }, then: 'December' },
     ],
   },
