@@ -1,7 +1,6 @@
 from typing import List, Literal, Union
 
 from mypy.applytype import Optional
-from pandas import DataFrame
 from pydantic import Field
 from pydantic.main import BaseModel
 
