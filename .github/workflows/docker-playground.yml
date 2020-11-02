@@ -31,12 +31,17 @@ jobs:
         username: toucantoco
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+    # `/` char is not authorized in docker images tags
+    - name: Sanitize branch name
+      id: sanitize_branch_name
+      run: echo "::set-output name=value::$(echo ${{ github.head_ref }} | tr '/' '-')"
+
     - name: Build
       id: docker_build
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: toucantoco/weaverbird-playground:${{ github.head_ref }}
+        tags: toucantoco/weaverbird-playground:${{ steps.sanitize_branch_name.outputs.value }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -44,7 +49,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
 
     - name: Ping FeaturePeek
-      run: bash <(curl -s https://peek.run/ci) -a playground -p docker.io/toucantoco/weaverbird-playground:${{ github.head_ref }}
+      run: bash <(curl -s https://peek.run/ci) -a playground -p docker.io/toucantoco/weaverbird-playground:${{ steps.sanitize_branch_name.outputs.value }}
       env:
         CI: true
         # The image is public, so any user can retrieve it (like our service account toucantokar)
