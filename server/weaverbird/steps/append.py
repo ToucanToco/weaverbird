@@ -19,7 +19,5 @@ class AppendStep(BaseStep):
         domain_retriever,
         execute_pipeline: PipelineExecutor,
     ) -> DataFrame:
-        for pipeline in self.pipelines:
-            other_df = execute_pipeline(pipeline)
-            df = df.append(other_df, ignore_index=True)
-        return df
+        other_dfs = [execute_pipeline(pipeline) for pipeline in self.pipelines]
+        return df.append(other_dfs, ignore_index=True)
