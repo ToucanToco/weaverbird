@@ -14,6 +14,10 @@ import { BaseTranslator } from './base';
 export class PandasTranslator extends BaseTranslator {
   static label = 'Pandas';
 
+  concatenate(step: Readonly<S.ConcatenateStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }
