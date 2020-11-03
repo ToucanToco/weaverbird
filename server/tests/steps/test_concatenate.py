@@ -10,7 +10,7 @@ def sample_df():
     return DataFrame({'NAME': ['foo', 'bar'], 'AGE': [42, 43], 'SCORE': [100, 200]})
 
 
-def test_rename(sample_df: DataFrame):
+def test_concatenate(sample_df: DataFrame):
     df_result = ConcatenateStep(
         name='concatenate',
         columns=['NAME', 'AGE', 'SCORE'],
