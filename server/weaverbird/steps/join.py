@@ -4,9 +4,8 @@ from pandas import DataFrame, merge
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import PipelineExecutor
+from weaverbird.types import ColumnName, PipelineExecutor
 
-ColumnName = str
 JoinColumnsPair = Tuple[ColumnName, ColumnName]
 
 

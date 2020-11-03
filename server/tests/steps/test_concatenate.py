@@ -1,16 +1,12 @@
-import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps import ConcatenateStep
 
 
-@pytest.fixture
-def sample_df():
-    return DataFrame({'NAME': ['foo', 'bar'], 'AGE': [42, 43], 'SCORE': [100, 200]})
+def test_concatenate():
+    sample_df = DataFrame({'NAME': ['foo', 'bar'], 'AGE': [42, 43], 'SCORE': [100, 200]})
 
-
-def test_concatenate(sample_df: DataFrame):
     df_result = ConcatenateStep(
         name='concatenate',
         columns=['NAME', 'AGE', 'SCORE'],
