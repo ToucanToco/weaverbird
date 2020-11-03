@@ -14,6 +14,10 @@ import { BaseTranslator } from './base';
 export class PandasTranslator extends BaseTranslator {
   static label = 'Pandas';
 
+  append(step: Readonly<S.AppendStep>) {
+    return step;
+  }
+
   concatenate(step: Readonly<S.ConcatenateStep>) {
     return step;
   }

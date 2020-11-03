@@ -1,3 +1,4 @@
+from .append import AppendStep
 from .base import BaseStep
 from .concatenate import ConcatenateStep
 from .domain import DomainStep

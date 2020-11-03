@@ -210,7 +210,7 @@ of the application. You can then call them by their unique names in this step.
 ```javascript
 {
   name: 'append',
-  datasets: ['dataset1', 'dataset2']
+  pipelines: ['dataset1', 'dataset2']
 }
 ```
 
