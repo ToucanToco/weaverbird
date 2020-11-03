@@ -1,7 +1,7 @@
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import CumsumStep
+from weaverbird.steps import CumSumStep
 
 
 def test_cumsum():
@@ -12,7 +12,7 @@ def test_cumsum():
         }
     )
 
-    df_result = CumsumStep(name='cumsum', value_column='value', reference_column='date').execute(
+    df_result = CumSumStep(name='cumsum', value_column='value', reference_column='date').execute(
         sample_df
     )
 
@@ -35,7 +35,7 @@ def test_cumsum_with_groups():
         }
     )
 
-    df_result = CumsumStep(
+    df_result = CumSumStep(
         name='cumsum',
         value_column='value',
         reference_column='date',

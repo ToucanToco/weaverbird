@@ -8,7 +8,7 @@ from weaverbird.steps.base import BaseStep
 ColumnName = str
 
 
-class CumsumStep(BaseStep):
+class CumSumStep(BaseStep):
     name = Field('cumsum', const=True)
     value_column: ColumnName = Field(..., alias='valueColumn')
     reference_column: ColumnName = Field(..., alias='referenceColumn')

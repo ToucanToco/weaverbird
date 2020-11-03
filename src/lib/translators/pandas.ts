@@ -26,7 +26,7 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  cumsum(step: Readonly<S.CumsumStep>) {
+  cumsum(step: Readonly<S.CumSumStep>) {
     return step;
   }
 
