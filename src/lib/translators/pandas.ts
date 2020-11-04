@@ -37,4 +37,8 @@ export class PandasTranslator extends BaseTranslator {
   rename(step: Readonly<S.RenameStep>) {
     return step;
   }
+
+  argmax(step: Readonly<S.ArgmaxStep>) {
+    return step;
+  }
 }
