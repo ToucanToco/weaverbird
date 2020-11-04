@@ -6,7 +6,7 @@ from pydantic import Field
 from weaverbird.steps.base import BaseStep
 
 
-class ArgMaxStep(BaseStep):
+class ArgmaxStep(BaseStep):
     name = Field('argmax', const=True)
     column: str
     groups: List[str] = []

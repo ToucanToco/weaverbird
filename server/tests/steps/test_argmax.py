@@ -2,7 +2,7 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.argmax import ArgMaxStep
+from weaverbird.steps.argmax import ArgmaxStep
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def sample_df():
 
 
 def test_simple_argmax(sample_df):
-    step = ArgMaxStep(name='argmax', column='colB')
+    step = ArgmaxStep(name='argmax', column='colB')
     result = step.execute(sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
@@ -28,7 +28,7 @@ def test_simple_argmax(sample_df):
 
 
 def test_argmax_with_group(sample_df):
-    step = ArgMaxStep(name='argmax', column='colB', groups=['colA'])
+    step = ArgmaxStep(name='argmax', column='colB', groups=['colA'])
     result = step.execute(sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
