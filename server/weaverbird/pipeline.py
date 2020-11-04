@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from weaverbird.steps import (
     AppendStep,
     ArgmaxStep,
+    ArgminStep,
     ConcatenateStep,
     ConvertStep,
     CumSumStep,
@@ -18,6 +19,7 @@ from weaverbird.steps import (
 PipelineStep = Union[
     AppendStep,
     ArgmaxStep,
+    ArgminStep,
     ConcatenateStep,
     ConvertStep,
     CumSumStep,
