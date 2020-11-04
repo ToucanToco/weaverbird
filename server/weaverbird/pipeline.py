@@ -6,6 +6,7 @@ from weaverbird.steps import (
     AppendStep,
     ConcatenateStep,
     ConvertStep,
+    CumSumStep,
     DomainStep,
     FilterStep,
     JoinStep,
@@ -13,7 +14,14 @@ from weaverbird.steps import (
 )
 
 PipelineStep = Union[
-    AppendStep, ConcatenateStep, ConvertStep, DomainStep, FilterStep, JoinStep, RenameStep
+    AppendStep,
+    ConcatenateStep,
+    ConvertStep,
+    CumSumStep,
+    DomainStep,
+    FilterStep,
+    JoinStep,
+    RenameStep,
 ]
 
 
