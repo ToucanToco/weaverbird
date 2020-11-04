@@ -9,4 +9,5 @@ from .date_extract import DateExtractStep
 from .domain import DomainStep
 from .filter import FilterStep
 from .join import JoinStep
+from .lowercase import LowercaseStep
 from .rename import RenameStep
