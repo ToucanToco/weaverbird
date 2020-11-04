@@ -28,7 +28,9 @@ class AggregateStep(BaseStep):
     name = Field('aggregate', const=True)
     on: List[ColumnName] = Field(min_items=1)
     aggregations: List[Aggregation]
-    keepOriginalGranularity: Optional[bool] = False
+    keep_original_granularity: Optional[bool] = Field(
+        default=False, alias='keepOriginalGranularity'
+    )
 
     def execute(self, df, domain_retriever=None, execute_pipeline=None):
         grouped_by_df = df.groupby(self.on, as_index=False)
@@ -47,7 +49,7 @@ class AggregateStep(BaseStep):
                 self.on + aggregation.columns
             ]
         # it is faster this way, than to trasnform the original df
-        if self.keepOriginalGranularity:
+        if self.keep_original_granularity:
             return df.merge(all_results, on=self.on, how='left')
         return all_results
 
