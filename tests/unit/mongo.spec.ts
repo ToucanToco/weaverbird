@@ -4184,6 +4184,24 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate dateFromParts mongo stage based on a date field and granularity', () => {
+    const withDayGranularity = _generateDateFromParts('DATE', 'day');
+    const withMonthGranularity = _generateDateFromParts('DATE', 'month');
+    const withYearGranularity = _generateDateFromParts('DATE', 'year');
+    expect(withDayGranularity).toEqual({
+      year: { $year: 'DATE' },
+      month: { $month: 'DATE' },
+      day: { $dayOfMonth: 'DATE' },
+    });
+    expect(withMonthGranularity).toEqual({
+      year: { $year: 'DATE' },
+      month: { $month: 'DATE' },
+    });
+    expect(withYearGranularity).toEqual({
+      year: { $year: 'DATE' },
+    });
+  });
+
   it('can generate addmissingdates steps with year granularity', () => {
     const pipeline: Pipeline = [
       {
@@ -4289,24 +4307,6 @@ describe('Pipeline to mongo translator', () => {
       { $replaceRoot: { newRoot: '$_vqbAllDates' } },
       { $project: { _id: 0, _vqbYear: 0 } },
     ]);
-  });
-
-  it('can generate dateFromParts mongo stage based on a date field and granularity', () => {
-    const withDayGranularity = _generateDateFromParts('DATE', 'day');
-    const withMonthGranularity = _generateDateFromParts('DATE', 'month');
-    const withYearGranularity = _generateDateFromParts('DATE', 'year');
-    expect(withDayGranularity).toEqual({
-      year: { $year: 'DATE' },
-      month: { $month: 'DATE' },
-      day: { $dayOfMonth: 'DATE' },
-    });
-    expect(withMonthGranularity).toEqual({
-      year: { $year: 'DATE' },
-      month: { $month: 'DATE' },
-    });
-    expect(withYearGranularity).toEqual({
-      year: { $year: 'DATE' },
-    });
   });
 
   it('can generate addmissingdates steps with day granularity', () => {
@@ -4493,6 +4493,107 @@ describe('Pipeline to mongo translator', () => {
       { $unwind: '$_vqbAllDates' },
       { $replaceRoot: { newRoot: '$_vqbAllDates' } },
       { $project: { _id: 0, _vqbDay: 0 } },
+    ]);
+  });
+
+  it('can translate movingaverage steps without groups nor specified newColumnName', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'movingaverage',
+        valueColumn: 'VALUE',
+        columnToSort: 'DATE',
+        movingWindow: 12,
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
+      { $group: { _id: null, _vqbArray: { $push: '$$ROOT' } } },
+      {
+        $addFields: {
+          _vqbArray: {
+            $map: {
+              input: { $range: [0, { $size: '$_vqbArray' }] },
+              as: 'idx',
+              in: {
+                $cond: [
+                  { $lt: ['$$idx', 11] },
+                  { $arrayElemAt: ['$_vqbArray', '$$idx'] },
+                  {
+                    $mergeObjects: [
+                      { $arrayElemAt: ['$_vqbArray', '$$idx'] },
+                      {
+                        VALUE_MOVING_AVG: {
+                          $avg: {
+                            $slice: [`$_vqbArray.VALUE`, { $subtract: ['$$idx', 11] }, 12],
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbArray' },
+      { $replaceRoot: { newRoot: '$_vqbArray' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can translate movingaverage steps with groups and custom newColumnName', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'movingaverage',
+        valueColumn: 'VALUE',
+        columnToSort: 'DATE',
+        movingWindow: 12,
+        groups: ['COUNTRY', 'PRODUCT'],
+        newColumnName: 'MOVING_AVERAGE',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
+      {
+        $group: {
+          _id: { COUNTRY: '$COUNTRY', PRODUCT: '$PRODUCT' },
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      {
+        $addFields: {
+          _vqbArray: {
+            $map: {
+              input: { $range: [0, { $size: '$_vqbArray' }] },
+              as: 'idx',
+              in: {
+                $cond: [
+                  { $lt: ['$$idx', 11] },
+                  { $arrayElemAt: ['$_vqbArray', '$$idx'] },
+                  {
+                    $mergeObjects: [
+                      { $arrayElemAt: ['$_vqbArray', '$$idx'] },
+                      {
+                        MOVING_AVERAGE: {
+                          $avg: {
+                            $slice: [`$_vqbArray.VALUE`, { $subtract: ['$$idx', 11] }, 12],
+                          },
+                        },
+                      },
+                    ],
+                  },
+                ],
+              },
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbArray' },
+      { $replaceRoot: { newRoot: '$_vqbArray' } },
+      { $project: { _id: 0 } },
     ]);
   });
 });

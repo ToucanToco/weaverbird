@@ -243,6 +243,15 @@ export type JoinStep = {
   on: string[][];
 };
 
+export type MovingAverageStep = {
+  name: 'movingaverage';
+  valueColumn: string;
+  columnToSort: string;
+  movingWindow: Templatable<number>;
+  groups?: string[];
+  newColumnName?: string;
+};
+
 export type PercentageStep = {
   name: 'percentage';
   column: string;
@@ -405,6 +414,7 @@ export type PipelineStep =
   | FromDateStep
   | IfThenElseStep
   | JoinStep
+  | MovingAverageStep
   | PercentageStep
   | PivotStep
   | RankStep

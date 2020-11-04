@@ -169,6 +169,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   lowercase(step: Readonly<S.ToLowerStep>) {}
 
   @unsupported
+  movingaverage(step: Readonly<S.MovingAverageStep>) {}
+
+  @unsupported
   percentage(step: Readonly<S.PercentageStep>) {}
 
   @unsupported
