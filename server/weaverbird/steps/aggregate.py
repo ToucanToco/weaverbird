@@ -5,8 +5,8 @@ from pydantic import Field
 from pydantic.main import BaseModel
 
 from weaverbird.steps.base import BaseStep
+from weaverbird.types import ColumnName
 
-ColumnName = Union[str, int, float]
 AggregateFn = Literal['avg', 'sum', 'min', 'max']
 
 functions_aliases = {'avg': 'mean'}
