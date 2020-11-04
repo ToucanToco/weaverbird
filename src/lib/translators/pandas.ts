@@ -78,6 +78,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
+    return step
+  }
+
   argmin(step: Readonly<S.ArgminStep>) {
     return step;
   }
