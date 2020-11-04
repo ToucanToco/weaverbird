@@ -4,11 +4,12 @@ from pandas import DataFrame
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
+from weaverbird.types import ColumnName
 
 
 class ArgminStep(BaseStep):
     name = Field('argmin', const=True)
-    column: str
+    column: ColumnName
     groups: List[str] = []
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
