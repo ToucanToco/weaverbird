@@ -11,13 +11,6 @@ AggregateFn = Literal['avg', 'sum', 'min', 'max']
 
 functions_aliases = {'avg': 'mean'}
 
-lambdas = {
-    'sum': lambda x: x.sum(),
-    'mean': lambda x: x.mean(),
-    'min': lambda x: x.min(),
-    'max': lambda x: x.max(),
-}
-
 
 class Aggregation(BaseModel):
     new_columns: List[ColumnName]
