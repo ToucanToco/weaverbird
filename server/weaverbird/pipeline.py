@@ -11,6 +11,7 @@ from weaverbird.steps import (
     DateExtractStep,
     DomainStep,
     FilterStep,
+    FormulaStep,
     JoinStep,
     RenameStep,
 )
@@ -24,6 +25,7 @@ PipelineStep = Union[
     DateExtractStep,
     DomainStep,
     FilterStep,
+    FormulaStep,
     JoinStep,
     RenameStep,
 ]

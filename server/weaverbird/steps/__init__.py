@@ -7,5 +7,6 @@ from .cumsum import CumSumStep
 from .date_extract import DateExtractStep
 from .domain import DomainStep
 from .filter import FilterStep
+from .formula import FormulaStep
 from .join import JoinStep
 from .rename import RenameStep
