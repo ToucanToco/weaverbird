@@ -27,6 +27,7 @@
     - ifthenelse
     - join
     - select
+    - movingaverage
     - percentage
     - pivot
     - rank
