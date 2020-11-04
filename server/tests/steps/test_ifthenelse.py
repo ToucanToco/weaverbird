@@ -13,11 +13,13 @@ def sample_df() -> DataFrame:
 
 def test_simple_condition(sample_df):
     result_df = IfthenelseStep(
-        name='ifthenelse',
-        newColumn='result',
-        condition=ComparisonCondition(column='a_bool', value=True, operator='eq'),
-        then=10,
-        else_value=0,
+        **{
+            'name': 'ifthenelse',
+            'newColumn': 'result',
+            'if': ComparisonCondition(column='a_bool', value=True, operator='eq'),
+            'then': 10,
+            'else': 0,
+        }
     ).execute(sample_df)
 
     expected_df = DataFrame({'a_bool': [True, True, False], 'result': [10, 10, 0]})

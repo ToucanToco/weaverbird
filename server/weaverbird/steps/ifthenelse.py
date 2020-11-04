@@ -10,9 +10,9 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 class IfthenelseStep(BaseStep):
     new_column: ColumnName = Field(alias='newColumn')
-    condition: Condition
+    condition: Condition = Field(alias='if')
     then: Any
-    else_value: Any
+    else_value: Any = Field(alias='else')
 
     def execute(
         self,
