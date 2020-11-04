@@ -1714,6 +1714,117 @@ Converts a string `column` to lowercase.
 | label 2 | Group 1 | 7     |
 | label 3 | Group 1 | 20    |
 
+### `movingaverage` step
+
+Compute the moving average based on a value column, a reference column to sort
+(usually a date column) and a moving window (in number of rows i.e. data points).
+If needed, the computation can be performed by group of rows.
+The computation result is added in a new column.
+
+```javascript
+{
+  name: 'movingaverage',
+  valueColumn: 'value',
+  columnToSort: 'dates'
+  movingWindow: 12,
+  groups: ['foo', 'bar'] // optional
+  newColumName: 'myNewColumn' // optional, <originalColumname>_PCT by default
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: Basic usage
+
+**Input dataset:**
+
+| DATE       | VALUE |
+| ---------- | ----- |
+| 2018-01-01 | 75    |
+| 2018-01-02 | 80    |
+| 2018-01-03 | 82    |
+| 2018-01-04 | 83    |
+| 2018-01-05 | 80    |
+| 2018-01-06 | 86    |
+| 2018-01-07 | 79    |
+| 2018-01-08 | 76    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'movingaverage',
+  valueColumn: 'VALUE',
+  columnToSort: 'DATE'
+  movingWindow: 2,
+}
+```
+
+**Output dataset:**
+
+| DATE       | VALUE | VALUE_MOVING_AVG |
+| ---------- | ----- | ---------------- |
+| 2018-01-01 | 75    | null             |
+| 2018-01-02 | 80    | 77.5             |
+| 2018-01-03 | 82    | 81               |
+| 2018-01-04 | 83    | 82.5             |
+| 2018-01-05 | 80    | 81.5             |
+| 2018-01-06 | 86    | 83               |
+| 2018-01-07 | 79    | 82.5             |
+| 2018-01-08 | 76    | 77.5             |
+
+#### Example 2: with groups and custom newColumnName
+
+**Input dataset:**
+
+| COUNTRY | DATE       | VALUE |
+| ------- | ---------- | ----- |
+| France  | 2018-01-01 | 75    |
+| France  | 2018-01-02 | 80    |
+| France  | 2018-01-03 | 82    |
+| France  | 2018-01-04 | 83    |
+| France  | 2018-01-05 | 80    |
+| France  | 2018-01-06 | 86    |
+| USA     | 2018-01-01 | 69    |
+| USA     | 2018-01-02 | 73    |
+| USA     | 2018-01-03 | 73    |
+| USA     | 2018-01-04 | 75    |
+| USA     | 2018-01-05 | 70    |
+| USA     | 2018-01-06 | 76    |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'movingaverage',
+  valueColumn: 'VALUE',
+  columnToSort: 'DATE'
+  movingWindow: 2,
+  groups: ['COUNTRY']
+  newColumName: 'ROLLING_AVERAGE'
+}
+```
+
+**Output dataset:**
+
+| COUNTRY | DATE       | VALUE | ROLLING_AVERAGE |
+| ------- | ---------- | ----- | --------------- |
+| France  | 2018-01-01 | 75    | null            |
+| France  | 2018-01-02 | 80    | null            |
+| France  | 2018-01-03 | 82    | 79              |
+| France  | 2018-01-04 | 83    | 81.7            |
+| France  | 2018-01-05 | 80    | 81.7            |
+| France  | 2018-01-06 | 86    | 83              |
+| USA     | 2018-01-01 | 69    | null            |
+| USA     | 2018-01-02 | 73    | null            |
+| USA     | 2018-01-03 | 73    | 71.7            |
+| USA     | 2018-01-04 | 75    | 73.7            |
+| USA     | 2018-01-05 | 70    | 72.7            |
+| USA     | 2018-01-06 | 76    | 73.7            |
+
 ### `percentage` step
 
 Compute the percentage of total, i.e. for every row the value in `column` divided
