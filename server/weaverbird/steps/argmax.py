@@ -12,7 +12,7 @@ class ArgmaxStep(BaseStep):
     column: ColumnName
     groups: List[str] = []
 
-    def execute(self, df: DataFrame, domain_retriever=None, pipeline_executor=None) -> DataFrame:
+    def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         if len(self.groups) == 0:
             return df.assign(**{self.column: df[self.column].max()})
         else:
