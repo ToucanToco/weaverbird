@@ -5,13 +5,16 @@ from pydantic import BaseModel
 from weaverbird.steps import (
     AppendStep,
     ConcatenateStep,
+    ConvertStep,
     DomainStep,
     FilterStep,
     JoinStep,
     RenameStep,
 )
 
-PipelineStep = Union[AppendStep, ConcatenateStep, DomainStep, FilterStep, JoinStep, RenameStep]
+PipelineStep = Union[
+    AppendStep, ConcatenateStep, ConvertStep, DomainStep, FilterStep, JoinStep, RenameStep
+]
 
 
 class Pipeline(BaseModel):
