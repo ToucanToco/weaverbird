@@ -672,6 +672,18 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Add missing dates in "DATE"');
   });
 
+  it('generates label for movingaverage steps', () => {
+    const step: S.MovingAverageStep = {
+      name: 'movingaverage',
+      valueColumn: 'VALUE',
+      columnToSort: 'DATE',
+      movingWindow: 12,
+      groups: ['COUNTRY', 'PRODUCT'],
+      newColumnName: 'MOVING_AVERAGE',
+    };
+    expect(hrl(step)).toEqual('Compute moving average of "VALUE"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };
