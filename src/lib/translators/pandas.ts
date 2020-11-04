@@ -22,6 +22,18 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  convert(step: Readonly<S.ConvertStep>) {
+    return step;
+  }
+
+  cumsum(step: Readonly<S.CumSumStep>) {
+    return step;
+  }
+
+  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }
