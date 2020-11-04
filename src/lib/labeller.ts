@@ -205,6 +205,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert column "${step.column}" to lowercase`;
   }
 
+  movingaverage(step: Readonly<S.MovingAverageStep>) {
+    return `Compute moving average of "${step.valueColumn}"`;
+  }
+
   percentage(step: Readonly<S.PercentageStep>) {
     return `Compute the row-level percentage of "${step.column}"`;
   }
