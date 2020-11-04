@@ -28,7 +28,7 @@ def test_simple_condition(sample_df):
 
 
 def test_then_should_support_formulas():
-    base_df = DataFrame({'a_bool': [True, True, False], 'a_number': [1, 2, 3]})
+    base_df = DataFrame({'a_bool': [True, False, True], 'a_number': [1, 2, 3]})
     result_df = IfthenelseStep(
         **{
             'name': 'ifthenelse',
@@ -40,7 +40,7 @@ def test_then_should_support_formulas():
     ).execute(base_df)
 
     expected_df = DataFrame(
-        {'a_bool': [True, True, False], 'a_number': [1, 2, 3], 'result': [1, 2, -3]}
+        {'a_bool': [True, False, True], 'a_number': [1, 2, 3], 'result': [1, -2, 3]}
     )
 
     assert_dataframes_equals(result_df, expected_df)
