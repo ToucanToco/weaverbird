@@ -70,6 +70,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  fillna(step: Readonly<S.FillnaStep>) {
+    return step;
+  }
+
   lowercase(step: Readonly<S.ToLowerStep>) {
     return step;
   }
