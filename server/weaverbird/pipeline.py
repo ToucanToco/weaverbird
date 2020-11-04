@@ -12,13 +12,13 @@ from weaverbird.steps import (
     DateExtractStep,
     DeleteStep,
     DomainStep,
+    FillnaStep,
     DuplicateStep,
     FilterStep,
     FormulaStep,
     JoinStep,
     LowercaseStep,
     RenameStep,
-    FillnaStep
 )
 
 PipelineStep = Union[
