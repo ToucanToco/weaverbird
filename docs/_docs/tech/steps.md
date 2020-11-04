@@ -658,7 +658,6 @@ Here's an example of such a step:
     column: 'date',
     operation: 'day',
     new_column_name: 'date_day',
-    format: '%Y-%m-%d',
 }
 ```
 
@@ -688,7 +687,6 @@ Here's an example of such a step:
     column: 'Date',
     operation: 'day',
     new_column_name: 'Date_day',
-    format: '%Y-%m-%d',
 }
 ```
 
