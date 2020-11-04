@@ -30,7 +30,7 @@ class AggregateStep(BaseStep):
     aggregations: List[Aggregation]
     keepOriginalGranularity: Optional[bool] = False
 
-    def execute(self, df, domain_retriever):
+    def execute(self, df, domain_retriever, execute_pipeline):
         grouped_by_df = df.groupby(self.on, as_index=False)
         first_aggregation = self.aggregations[0]
         aggs = self.make_aggregation(first_aggregation)
