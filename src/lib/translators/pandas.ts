@@ -41,4 +41,8 @@ export class PandasTranslator extends BaseTranslator {
   aggregate(step: Readonly<S.AggregationStep>) {
     return step
   }
+
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
+    return step
+  }
 }
