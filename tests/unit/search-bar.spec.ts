@@ -65,6 +65,7 @@ describe('SearchBar', () => {
       'waterfall',
       'totals',
       'addmissingdates',
+      'movingaverage',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -119,6 +120,7 @@ describe('SearchBar', () => {
       'waterfall',
       'totals',
       'addmissingdates',
+      'movingaverage',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });

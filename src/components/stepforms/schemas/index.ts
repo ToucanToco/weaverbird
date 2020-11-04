@@ -18,6 +18,7 @@ import formulaSchema from './formula';
 import fromDateSchema from './fromdate';
 import ifthenelseSchema from './ifthenelse';
 import joinSchema from './join';
+import movingAverageBuildSchema from './movingaverage';
 import percentageBuildSchema from './percentage';
 import pivotSchema from './pivot';
 import rankSchema from './rank';
@@ -63,6 +64,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   ifthenelse: ifthenelseSchema,
   join: joinSchema,
   lowercase: toLowerSchema,
+  movingaverage: movingAverageBuildSchema,
   percentage: percentageBuildSchema,
   pivot: pivotSchema,
   rank: rankSchema,

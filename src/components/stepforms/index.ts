@@ -19,6 +19,7 @@ import './IfThenElseStepForm.vue';
 import './FormulaStepForm.vue';
 import './FromDateStepForm.vue';
 import './JoinStepForm.vue';
+import './MovingAverageStepForm.vue';
 import './PercentageStepForm.vue';
 import './PivotStepForm.vue';
 import './RankStepForm.vue';

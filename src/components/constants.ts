@@ -56,6 +56,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'cumsum', label: 'Cumulated sum' },
     { name: 'percentage', label: 'Percentage of total' },
     { name: 'rank', label: 'Rank' },
+    { name: 'movingaverage', label: 'Moving average' },
     { name: 'statistics', label: 'Statistics' },
   ],
   text: [
