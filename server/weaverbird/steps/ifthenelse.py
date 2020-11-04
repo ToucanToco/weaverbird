@@ -1,5 +1,6 @@
 from typing import Any
 
+import numpy
 from pandas import DataFrame
 from pydantic import Field
 
@@ -21,9 +22,11 @@ class IfthenelseStep(BaseStep):
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
         # first, I make a series with the True / False result of the condition
-        boolean_results = self.condition.filter(df)
-        # then I replace all True values by the 'then' and all False values by the 'else'
-        new_values = boolean_results.replace({True: self.then, False: self.else_value})
-        # finally, I add this new column to the dataframe
-        return df.assign(**{self.new_column: new_values})
 
+        return df.assign(
+            **{
+                self.new_column: numpy.where(
+                    self.condition.filter(df), df.eval(self.then), df.eval(self.else_value)
+                )
+            }
+        )

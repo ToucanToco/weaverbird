@@ -25,3 +25,22 @@ def test_simple_condition(sample_df):
     expected_df = DataFrame({'a_bool': [True, True, False], 'result': [10, 10, 0]})
 
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_then_should_support_formulas():
+    base_df = DataFrame({'a_bool': [True, True, False], 'a_number': [1, 2, 3]})
+    result_df = IfthenelseStep(
+        **{
+            'name': 'ifthenelse',
+            'newColumn': 'result',
+            'if': ComparisonCondition(column='a_bool', value=True, operator='eq'),
+            'then': 'a_number',
+            'else': 'a_number * -1',
+        }
+    ).execute(base_df)
+
+    expected_df = DataFrame(
+        {'a_bool': [True, True, False], 'a_number': [1, 2, 3], 'result': [1, 2, -3]}
+    )
+
+    assert_dataframes_equals(result_df, expected_df)
