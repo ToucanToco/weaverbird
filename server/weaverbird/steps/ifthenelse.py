@@ -26,3 +26,4 @@ class IfthenelseStep(BaseStep):
         new_values = boolean_results.replace({True: self.then, False: self.else_value})
         # finally, I add this new column to the dataframe
         return df.assign(**{self.new_column: new_values})
+
