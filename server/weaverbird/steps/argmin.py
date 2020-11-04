@@ -6,7 +6,7 @@ from pydantic import Field
 from weaverbird.steps.base import BaseStep
 
 
-class ArgMinStep(BaseStep):
+class ArgminStep(BaseStep):
     name = Field('argmin', const=True)
     column: str
     groups: List[str] = []
