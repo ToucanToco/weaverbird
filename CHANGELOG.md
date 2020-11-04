@@ -6,6 +6,7 @@
 
 - Add an "addmissingdates" step (to add mising dates as new rows in a dates column)
 - Add a "totals" step (to compute and append total rows)
+- Add a "movingaverage" step (to compute a moving average in a new column)
 - templating support in rename step
 
 ## [0.29.0] - 2020-11-02
