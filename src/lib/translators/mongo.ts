@@ -1055,6 +1055,65 @@ function transformIfThenElseStep(
   return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
 }
 
+/** transform a 'movingaverage' step into corresponding mongo steps */
+function transformMovingAverage(step: Readonly<S.MovingAverageStep>): MongoStep[] {
+  return [
+    // Ensure the reference column is sorted to prepare for the moving average computation
+    { $sort: { [step.columnToSort]: 1 } },
+    // If needing to group the computation, provide for the columns, else _id is set to null
+    {
+      $group: { _id: step.groups ? columnMap(step.groups) : null, _vqbArray: { $push: '$$ROOT' } },
+    },
+    // Prepare an array of documents with a new moving average field. One array per group (if any)
+    {
+      $addFields: {
+        _vqbArray: {
+          // We use $map to apply operations while looping over the _vqbArray documents
+          $map: {
+            // We create an index ("idx") variable that will go from 0 to the size of _vqbArray
+            input: { $range: [0, { $size: '$_vqbArray' }] },
+            as: 'idx',
+            // We will use the idx variable in the following stages
+            in: {
+              $cond: [
+                // If the index is less than the moving window minus 1...
+                { $lt: ['$$idx', (step.movingWindow as number) - 1] }, // explicit type for typescript
+                //... then we cannot apply the moving average computation, and
+                // we just keep the original document without any new field...
+                { $arrayElemAt: ['$_vqbArray', '$$idx'] },
+                //... else we compute the value average over the last N documents starting
+                // from the current index document, N being equal to the moving window)
+                {
+                  $mergeObjects: [
+                    // Keep track of original document
+                    { $arrayElemAt: ['$_vqbArray', '$$idx'] },
+                    // and add the new moving average column
+                    {
+                      [step.newColumnName ?? `${step.valueColumn}_MOVING_AVG`]: {
+                        $avg: {
+                          $slice: [
+                            `$_vqbArray.${step.valueColumn}`,
+                            { $subtract: ['$$idx', (step.movingWindow as number) - 1] }, // explicit type for typescript
+                            step.movingWindow as number,
+                          ],
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          },
+        },
+      },
+    },
+    // Flatten the array(s) to get back to 1 row per document (at this stage in the field "_vqbArray")
+    { $unwind: '$_vqbArray' },
+    // Set the _vqbArray field as the new root to get back to the original document granularity
+    { $replaceRoot: { newRoot: '$_vqbArray' } },
+  ];
+}
+
 /** transform an 'percentage' step into corresponding mongo steps */
 function transformPercentage(step: Readonly<S.PercentageStep>): MongoStep[] {
   return [
@@ -1832,6 +1891,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   lowercase: (step: Readonly<S.ToLowerStep>) => ({
     $addFields: { [step.column]: { $toLower: $$(step.column) } },
   }),
+  movingaverage: transformMovingAverage,
   percentage: transformPercentage,
   pivot: transformPivot,
   rank: transformRank,
