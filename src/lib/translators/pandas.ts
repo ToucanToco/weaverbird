@@ -8,7 +8,7 @@
 
 import * as S from '@/lib/steps';
 
-import { BaseTranslator } from './base';
+import {BaseTranslator} from './base';
 
 /* istanbul ignore next */
 export class PandasTranslator extends BaseTranslator {
@@ -48,5 +48,9 @@ export class PandasTranslator extends BaseTranslator {
 
   rename(step: Readonly<S.RenameStep>) {
     return step;
+  }
+
+  aggregate(step: Readonly<S.AggregationStep>) {
+    return step
   }
 }
