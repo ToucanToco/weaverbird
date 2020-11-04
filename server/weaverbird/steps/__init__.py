@@ -13,6 +13,7 @@ from .evolution import EvolutionStep
 from .fillna import FillnaStep
 from .filter import FilterStep
 from .formula import FormulaStep
+from .fromdate import FromdateStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
 from .rename import RenameStep
