@@ -7,7 +7,7 @@ from weaverbird.steps import BaseStep
 from weaverbird.types import DomainRetriever, PipelineExecutor, ColumnName
 
 
-class FillNaStep(BaseStep):
+class FillnaStep(BaseStep):
     name = Field('fillna', const=True)
     columns: List[ColumnName] = Field(min_items=1)
     value: Any

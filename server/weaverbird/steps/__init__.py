@@ -14,4 +14,4 @@ from .formula import FormulaStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
 from .rename import RenameStep
-from .fillna import FillNaStep
+from .fillna import FillnaStep

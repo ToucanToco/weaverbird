@@ -2,7 +2,7 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.fillna import FillNaStep
+from weaverbird.steps.fillna import FillnaStep
 
 
 @pytest.fixture
@@ -13,7 +13,7 @@ def sample_df():
 
 
 def test_simple_fillna(sample_df):
-    step = FillNaStep(name='fillna', columns=['colB'], value=-1)
+    step = FillnaStep(name='fillna', columns=['colB'], value=-1)
     result = step.execute(sample_df, None, None)
     assert_dataframes_equals(
         result,
@@ -22,7 +22,7 @@ def test_simple_fillna(sample_df):
 
 
 def test_fillna_multi_columns(sample_df):
-    step = FillNaStep(name='fillna', columns=['colB', 'colC'], value=-1)
+    step = FillnaStep(name='fillna', columns=['colB', 'colC'], value=-1)
     result = step.execute(sample_df, None, None)
     assert_dataframes_equals(
         result,
@@ -31,7 +31,7 @@ def test_fillna_multi_columns(sample_df):
 
 
 def test_fillna_multi_columns_incompatible_types(sample_df):
-    step = FillNaStep(name='fillna', columns=['colA', 'colB', 'colC'], value=-1)
+    step = FillnaStep(name='fillna', columns=['colA', 'colB', 'colC'], value=-1)
     result = step.execute(sample_df, None, None)
     assert_dataframes_equals(
         result, DataFrame({'colA': ['toto', 'tutu', -1], 'colB': [1, 2, -1], 'colC': [100, 50, -1]})
