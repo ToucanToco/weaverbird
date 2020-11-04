@@ -50,8 +50,8 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  argmin(step: Readonly<ArgminStep>) {
-    return step
+  argmin(step: Readonly<S.ArgminStep>) {
+    return step;
   }
 
   argmax(step: Readonly<S.ArgmaxStep>) {
