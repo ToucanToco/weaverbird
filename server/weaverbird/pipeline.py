@@ -8,12 +8,20 @@ from weaverbird.steps import (
     ConcatenateStep,
     DomainStep,
     FilterStep,
+    IfthenelseStep,
     JoinStep,
     RenameStep,
 )
 
 PipelineStep = Union[
-    AppendStep, ConcatenateStep, DomainStep, FilterStep, JoinStep, RenameStep, AggregateStep
+    AppendStep,
+    ConcatenateStep,
+    DomainStep,
+    FilterStep,
+    JoinStep,
+    RenameStep,
+    AggregateStep,
+    IfthenelseStep,
 ]
 
 

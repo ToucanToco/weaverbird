@@ -18,7 +18,7 @@ class IfthenelseStep(BaseStep):
         self,
         df: DataFrame,
         domain_retriever: DomainRetriever = None,
-        pipeline_executor: PipelineExecutor = None,
+        execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
         # first, I make a series with the True / False result of the condition
         boolean_results = self.condition.filter(df)
