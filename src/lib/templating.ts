@@ -297,6 +297,19 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  movingaverage(step: Readonly<S.MovingAverageStep>) {
+    const groups = step.groups
+      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      : undefined;
+    return {
+      ...step,
+      valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
+      columnToSort: _interpolate(this.interpolateFunc, step.columnToSort, this.context),
+      movingWindow: Number(_interpolate(this.interpolateFunc, step.movingWindow, this.context)),
+      groups,
+    };
+  }
+
   percentage(step: Readonly<S.PercentageStep>) {
     return { ...step };
   }

@@ -1521,4 +1521,27 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate waterfall steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'movingaverage',
+        valueColumn: '<%= foo %>',
+        columnToSort: '<%= foo %>',
+        movingWindow: '<%= age %>',
+        groups: ['<%= foo %>', '<%= egg %>'],
+        newColumnName: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'movingaverage',
+        valueColumn: 'bar',
+        columnToSort: 'bar',
+        movingWindow: 42,
+        groups: ['bar', 'spam'],
+        newColumnName: '<%= foo %>',
+      },
+    ]);
+  });
 });
