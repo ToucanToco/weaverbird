@@ -4,9 +4,7 @@ from pandas import DataFrame
 from pydantic import Field
 
 from weaverbird.steps import BaseStep
-from weaverbird.types import DomainRetriever, PipelineExecutor
-
-ColumnName = Union[str, int, float]
+from weaverbird.types import DomainRetriever, PipelineExecutor, ColumnName
 
 
 class FillNaStep(BaseStep):
