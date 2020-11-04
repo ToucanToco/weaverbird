@@ -46,6 +46,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  evolution(step: Readonly<S.EvolutionStep>) {
+    return step;
+  }
+
   filter(step: Readonly<S.FilterStep>) {
     return step;
   }
