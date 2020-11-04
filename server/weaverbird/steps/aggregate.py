@@ -1,4 +1,4 @@
-from typing import List, Literal, Union
+from typing import List, Literal
 
 from mypy.applytype import Optional
 from pydantic import Field
@@ -30,7 +30,7 @@ class AggregateStep(BaseStep):
     aggregations: List[Aggregation]
     keepOriginalGranularity: Optional[bool] = False
 
-    def execute(self, df, domain_retriever, execute_pipeline):
+    def execute(self, df, domain_retriever=None, execute_pipeline=None):
         grouped_by_df = df.groupby(self.on, as_index=False)
         first_aggregation = self.aggregations[0]
         aggs = self.make_aggregation(first_aggregation)
