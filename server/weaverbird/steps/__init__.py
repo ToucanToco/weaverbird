@@ -1,5 +1,6 @@
 from .append import AppendStep
 from .argmax import ArgmaxStep
+from .argmin import ArgminStep
 from .base import BaseStep
 from .concatenate import ConcatenateStep
 from .convert import ConvertStep
