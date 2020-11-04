@@ -8,7 +8,7 @@
 
 import * as S from '@/lib/steps';
 
-import {BaseTranslator} from './base';
+import { BaseTranslator } from './base';
 
 /* istanbul ignore next */
 export class PandasTranslator extends BaseTranslator {
@@ -51,6 +51,6 @@ export class PandasTranslator extends BaseTranslator {
   }
 
   aggregate(step: Readonly<S.AggregationStep>) {
-    return step
+    return step;
   }
 }
