@@ -9,6 +9,7 @@ from .date_extract import DateExtractStep
 from .delete import DeleteStep
 from .domain import DomainStep
 from .duplicate import DuplicateStep
+from .fillna import FillnaStep
 from .filter import FilterStep
 from .formula import FormulaStep
 from .join import JoinStep
