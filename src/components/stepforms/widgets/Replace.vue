@@ -6,6 +6,8 @@
       placeholder="Value to replace"
       :data-path="`${dataPath}[0]`"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <InputTextWidget
       class="newValue"
@@ -13,6 +15,8 @@
       placeholder="New value"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
   </div>
 </template>
@@ -20,6 +24,8 @@
 import { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import InputTextWidget from './InputText.vue';
 
@@ -41,6 +47,12 @@ export default class ReplaceWidget extends Vue {
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];
+
+  @Prop()
+  availableVariables?: VariablesBucket;
+
+  @Prop()
+  variableDelimiters?: VariableDelimiters;
 
   created() {
     if (isEqual(this.value, ['', ''])) {
