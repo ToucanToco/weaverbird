@@ -14,4 +14,5 @@ from .filter import FilterStep
 from .formula import FormulaStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
+from .rank import RankStep
 from .rename import RenameStep
