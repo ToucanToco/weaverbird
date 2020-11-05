@@ -826,13 +826,8 @@ absolute value, the other for the evolution in percentage.
 
 You must be careful that the computation is scoped so that there are no dates
 duplicates (so that any date finds no more than one previous date). That means
-that you may need to specify index columns to make any date unique by index. You
-should use the `indexColumns` parameter to specifiy what series of columns
-allows to build a unique index (by concatenation with the date column).
-If index is not unique and more than one previous date is found, you will get
-an error at row level ("Error: More than one previous date found for the
-specified index columns"). Please refere to example 3 and 4 below for a concrete
-illustration.
+that you may need to specify "group by" columns to make any date unique inside
+each group. You should specify those columns in the `indexColumns` parameter.
 
 ```javascript
 {
@@ -929,9 +924,9 @@ illustration.
 
 #### Example 3: Error on duplicate dates
 
-If 'COUNTRY' is not specified as index column, the computation will not be
+If 'COUNTRY' is not specified as indexColumn, the computation will not be
 scoped by country. Then there are duplicate dates in the "DATE" columns which is
-prohibited.
+prohibited and will lead to an error.
 
 **Input dataset:**
 
@@ -961,6 +956,8 @@ prohibited.
 
 **Output dataset:**
 
+With the mongo translator, you will get an error at row-level as shown below:
+
 | DATE    | COUNTRY | VALUE | MY_EVOL   |
 | ------- | ------- | ----- | --------- |
 | 2014-12 | France  | 79    |           |
@@ -971,6 +968,8 @@ prohibited.
 | 2015-12 | USA     | 74    | Error ... |
 | 2016-12 | USA     | 73    | Error ... |
 | 2017-12 | USA     | 72    | Error ... |
+
+The pandas translator will just return an error, and you will not get any data.
 
 #### Example 4: Complete configuration with index columns
 
