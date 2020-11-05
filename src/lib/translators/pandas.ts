@@ -62,6 +62,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  pivot(step: Readonly<S.PivotStep>) {
+    return step;
+  }
+
   rename(step: Readonly<S.RenameStep>) {
     return step;
   }

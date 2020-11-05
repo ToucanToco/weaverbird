@@ -16,4 +16,5 @@ from .formula import FormulaStep
 from .fromdate import FromdateStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
+from .pivot import PivotStep
 from .rename import RenameStep
