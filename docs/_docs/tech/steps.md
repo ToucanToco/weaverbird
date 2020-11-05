@@ -181,6 +181,7 @@ of the application. You can then call them by their unique names in this step.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -394,6 +395,7 @@ This step allows to concatenate several `columns` using a `separator`.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -446,6 +448,7 @@ This step allows to convert `columns` data types.
 **This step is supported by the following backends:**
 
 - Mongo 4.0
+- Pandas (python)
 
 #### Example
 
@@ -665,6 +668,7 @@ Here's an example of such a step:
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -716,6 +720,7 @@ Delete a column.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -765,6 +770,7 @@ This step is meant to select a specific domain (using MongoDB terminology).
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 ### `duplicate` step
 
@@ -782,6 +788,7 @@ This step is meant to duplicate a column.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -844,6 +851,7 @@ illustration.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: Basic configuration - evolution in absolute value
 
@@ -1030,6 +1038,7 @@ Replace null values by a given value in specified columns.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 **Deprecation note:**
 
@@ -1144,6 +1153,7 @@ Conditions can be grouped and nested with logical operators `and` and `or`.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 ### `formula` step
 
@@ -1326,6 +1336,7 @@ of the application. You can then call them by their unique names in this step.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: Left join with one column couple as `on` parameter
 
@@ -1480,6 +1491,7 @@ Converts a string `column` to lowercase.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example:
 
@@ -1818,6 +1830,7 @@ The `toRename` parameter takes as input a list of 2-elements lists in the form
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 **Deprecation note:**
 
