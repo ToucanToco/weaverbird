@@ -4163,4 +4163,19 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate text steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'text',
+        new_column: 'TEXT',
+        text: 'plop',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { TEXT: { $literal: 'plop' } } },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });
