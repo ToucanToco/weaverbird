@@ -50,6 +50,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  formula(step: Readonly<S.FormulaStep>) {
+    return step;
+  }
+
   join(step: Readonly<S.JoinStep>) {
     return step;
   }
