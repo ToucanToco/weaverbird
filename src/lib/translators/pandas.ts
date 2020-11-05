@@ -57,4 +57,8 @@ export class PandasTranslator extends BaseTranslator {
   argmax(step: Readonly<S.ArgmaxStep>) {
     return step;
   }
+
+  replace(step: Readonly<S.ReplaceStep>) {
+    return step;
+  }
 }
