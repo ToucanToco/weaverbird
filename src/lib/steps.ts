@@ -113,8 +113,8 @@ export type DeleteStep = {
 export type Statistics = 'count' | 'max' | 'min' | 'average' | 'variance' | 'standard deviation';
 export type Quantile = {
   label?: string;
-  nth: any;
-  order: any;
+  nth: number;
+  order: number;
 };
 export type StatisticsStep = {
   name: 'statistics';
