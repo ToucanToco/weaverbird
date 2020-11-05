@@ -311,7 +311,13 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   rename(step: Readonly<S.RenameStep>) {
-    return { ...step };
+    return {
+      ...step,
+      toRename: step.toRename.map(([oldname, newname]) => [
+        _interpolate(this.interpolateFunc, oldname, this.context),
+        _interpolate(this.interpolateFunc, newname, this.context),
+      ]),
+    };
   }
 
   statistics(step: Readonly<S.StatisticsStep>) {
