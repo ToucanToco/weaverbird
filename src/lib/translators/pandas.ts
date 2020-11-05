@@ -81,4 +81,8 @@ export class PandasTranslator extends BaseTranslator {
   lowercase(step: Readonly<S.ToLowerStep>) {
     return step;
   }
+
+  fromdate(step: Readonly<S.FromDateStep>) {
+    return step;
+  }
 }
