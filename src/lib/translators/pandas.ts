@@ -42,6 +42,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  duplicate(step: Readonly<S.DuplicateColumnStep>) {
+    return step;
+  }
+
   filter(step: Readonly<S.FilterStep>) {
     return step;
   }
