@@ -20,6 +20,8 @@ export interface MongoStep {
 
 type ComboOperator = 'and' | 'or';
 
+export type DateGranularity = 'day' | 'month' | 'year';
+
 type DateOperationMap = {
   [OP in S.DateExtractPropertyStep['operation']]: string;
 };
@@ -335,6 +337,210 @@ function buildMongoFormulaTree(node: math.MathNode): MongoStep | string | number
     case 'ParenthesisNode':
       return buildMongoFormulaTree(node.content);
   }
+}
+
+/** Takes a mongo date as input and returns a new date object at the specified granularity */
+export function _generateDateFromParts(mongoDate: string, granularity: DateGranularity) {
+  const dateFromParts: MongoStep = { year: { $year: mongoDate } };
+  if (granularity === 'day' || granularity === 'month') {
+    dateFromParts['month'] = { $month: mongoDate };
+  }
+  if (granularity === 'day') {
+    dateFromParts['day'] = { $dayOfMonth: mongoDate };
+  }
+  return dateFromParts;
+}
+
+/** specific function to translate addmissingdates at year granularity (for performance gains) */
+function addMissingDatesYear(step: Readonly<S.AddMissingDatesStep>): MongoStep[] {
+  const groups: Array<string> = step.groups ?? [];
+
+  // add missing dates by looping over the unique dates array and adding a given date
+  // if it's not already present in the original dataset
+  const addMissingYearsAsDates: MongoStep = {
+    $map: {
+      // loop over a sorted array of all years between min and max year
+      input: { $range: ['$_vqbMinYear', { $add: ['$_vqbMaxYear', 1] }] },
+      // use a variable "currentYear" as cursor
+      as: 'currentYear',
+      // and apply the following expression to every "currentYear"
+      in: {
+        $let: {
+          // use a variable yearIndex that represents the index of the "currentYear"
+          // cursor in the original array
+          vars: {
+            yearIndex: { $indexOfArray: ['$_vqbArray._vqbYear', '$$currentYear'] },
+          },
+          in: {
+            $cond: [
+              // if "currentYear" is found in the original array
+              { $ne: ['$$yearIndex', -1] },
+              // just get the original document in the original array
+              { $arrayElemAt: ['$_vqbArray', '$$yearIndex'] },
+              // else add a new document with the missing date (we convert the year back to a date object)
+              // and the group fields (every other field will be undefined)
+              {
+                ...Object.fromEntries(groups.map(col => [col, `$_id.${col}`])),
+                [step.datesColumn]: { $dateFromParts: { year: '$$currentYear' } },
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+
+  return [
+    // Extract the year of the date in a new column
+    { $addFields: { _vqbYear: { $year: $$(step.datesColumn) } } },
+    // Group by logic to create an array with all original documents, and get the
+    // min and max date of all documents confounded
+    {
+      $group: {
+        _id: step.groups ? columnMap(groups) : null,
+        _vqbArray: { $push: '$$ROOT' },
+        _vqbMinYear: { $min: '$_vqbYear' },
+        _vqbMaxYear: { $max: '$_vqbYear' },
+      },
+    },
+    // That at this stage that all the magic happens (cf. supra)
+    { $addFields: { _vqbAllDates: addMissingYearsAsDates } },
+  ];
+}
+
+/** specific function to translate addmissingdates at day or month granularity */
+function addMissingDatesDayOrMonth(step: Readonly<S.AddMissingDatesStep>): MongoStep[] {
+  const groups: Array<string> = step.groups ?? [];
+
+  // Create a sorted array of all dates (in days) ranging from min to max dates found in the whole dataset.
+  // At this stage for the month granularity, we will get duplicate dates because we need to first generate
+  // all days one by one to increment the calendar safely, before converting every day of a given
+  // month to the 1st of this month (via the $dateFromPart expression). We take care of making month dates
+  // unique in a '$reduce' stage explained later
+  const allDaysRange: MongoStep = {
+    $map: {
+      // create a array of integers ranging from 0 to the number of days separating the min and max date
+      input: { $range: [0, { $add: ['$_vqbMinMaxDiffInDays', 1] }] },
+      // use a cursor 'currentDurationInDays' that will loop over the array
+      as: 'currentDurationInDays',
+      // apply the following operations to every element of the array via the cursor 'currentDurationInDays'
+      in: {
+        $let: {
+          // create a variable 'currentDay' that will correspond to the day resulting from the addition of the
+          // duration 'currentDurationInDays' (converted back to milliseconds) to the min date.
+          vars: {
+            currentDay: {
+              $add: [
+                '$_vqbMinDay',
+                { $multiply: ['$$currentDurationInDays', 60 * 60 * 24 * 1000] },
+              ],
+            },
+          },
+          // use the variable in the following expression, in which we recreate a date which granularity will
+          // depend on the user-specified granularity
+          in: {
+            $dateFromParts: _generateDateFromParts('$$currentDay', step.datesGranularity),
+          },
+        },
+      },
+    },
+  };
+
+  // For the month granularity only, use a $reduce stage to reduce the allDaysRange
+  // array into an array of unique days.
+  const uniqueDaysForMonthGranularity: MongoStep = {
+    $reduce: {
+      input: allDaysRange,
+      initialValue: [],
+      in: {
+        $cond: [
+          // if the date is not found in the reduced array
+          { $eq: [{ $indexOfArray: ['$$value', '$$this'] }, -1] },
+          // then add the date to it
+          { $concatArrays: ['$$value', ['$$this']] },
+          // else add nothing to it
+          { $concatArrays: ['$$value', []] },
+        ],
+      },
+    },
+  };
+
+  // add missing dates by looping over the unique dates array and adding a given date
+  // if it's not already present in the original dataset
+  const addMissingDates: MongoStep = {
+    $map: {
+      // loop over unique dates array
+      input: step.datesGranularity === 'day' ? allDaysRange : uniqueDaysForMonthGranularity,
+      // use a variable "date" as cursor
+      as: 'date',
+      // and apply the following expression to every "date"
+      in: {
+        $let: {
+          // use a variable dateIndex that represents the index of the "date" cursor in the original array of documents
+          vars: { dateIndex: { $indexOfArray: ['$_vqbArray._vqbDay', '$$date'] } },
+          in: {
+            $cond: [
+              // if "date" is found in the original array
+              { $ne: ['$$dateIndex', -1] },
+              // just get the original document in the original array
+              { $arrayElemAt: ['$_vqbArray', '$$dateIndex'] },
+              // else add a new document with the missing date and the group fieldds (every other field will be undefined)
+              {
+                ...Object.fromEntries(groups.map(col => [col, `$_id.${col}`])),
+                [step.datesColumn]: '$$date',
+              },
+            ],
+          },
+        },
+      },
+    },
+  };
+
+  return [
+    {
+      $addFields: {
+        _vqbDay: {
+          $dateFromParts: _generateDateFromParts($$(step.datesColumn), step.datesGranularity),
+        },
+      },
+    },
+    // Group by logic to create an array with all original documents, and get the
+    // min and max date of all documents confounded
+    {
+      $group: {
+        _id: step.groups ? columnMap(groups) : null,
+        _vqbArray: { $push: '$$ROOT' },
+        _vqbMinDay: { $min: '$_vqbDay' },
+        _vqbMaxDay: { $max: '$_vqbDay' },
+      },
+    },
+    // Compute the time difference between the min and max date in days (the
+    // subtraction between two dates in mongo gives a duration in milliseconds)
+    {
+      $addFields: {
+        _vqbMinMaxDiffInDays: {
+          $divide: [{ $subtract: ['$_vqbMaxDay', '$_vqbMinDay'] }, 60 * 60 * 24 * 1000],
+        },
+      },
+    },
+    // That at this stage that all the magic happens (cf. supra)
+    { $addFields: { _vqbAllDates: addMissingDates } },
+  ];
+}
+
+/** transform a 'addmissingdates' step into corresponding mongo steps */
+function transformAddMissingDates(step: Readonly<S.AddMissingDatesStep>): MongoStep[] {
+  return [
+    ...(step.datesGranularity === 'year'
+      ? addMissingDatesYear(step)
+      : addMissingDatesDayOrMonth(step)),
+    // Get back to 1 row per document
+    { $unwind: '$_vqbAllDates' },
+    // Change the root to get back to the document granularity
+    { $replaceRoot: { newRoot: '$_vqbAllDates' } },
+    // Remove remaining temporary column
+    { $project: { [step.datesGranularity === 'year' ? '_vqbYear' : '_vqbDay']: 0 } },
+  ];
 }
 
 /** transform an 'aggregate' step into corresponding mongo steps */
@@ -1598,6 +1804,7 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
 }
 
 const mapper: Partial<StepMatcher<MongoStep>> = {
+  addmissingdates: transformAddMissingDates,
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,

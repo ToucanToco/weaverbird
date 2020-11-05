@@ -16,6 +16,13 @@ export function isReference(pipelineOrReference: Reference): pipelineOrReference
   return typeof pipelineOrReference === 'string';
 }
 
+export type AddMissingDatesStep = {
+  name: 'addmissingdates';
+  datesColumn: string;
+  datesGranularity: 'day' | 'month' | 'year';
+  groups?: string[];
+};
+
 export type AddTextColumnStep = {
   name: 'text';
   text: string;
@@ -376,6 +383,7 @@ export type WaterfallStep = {
 };
 
 export type PipelineStep =
+  | AddMissingDatesStep
   | AddTextColumnStep
   | AddTotalRowsStep
   | AggregateStep

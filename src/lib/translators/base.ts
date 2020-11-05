@@ -106,6 +106,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   /* eslint-disable no-unused-vars, @typescript-eslint/no-unused-vars, @typescript-eslint/no-unused-vars-experimental, @typescript-eslint/no-empty-function */
   @unsupported
+  addmissingdates(step: Readonly<S.AddMissingDatesStep>) {}
+
+  @unsupported
   aggregate(step: Readonly<S.AggregateStep>) {}
 
   @unsupported

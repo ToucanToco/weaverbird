@@ -1,6 +1,11 @@
 import { Pipeline } from '@/lib/steps';
 import { getTranslator, setVariableDelimiters } from '@/lib/translators';
-import { _simplifyAndCondition, _simplifyMongoPipeline, MongoStep } from '@/lib/translators/mongo';
+import {
+  _generateDateFromParts,
+  _simplifyAndCondition,
+  _simplifyMongoPipeline,
+  MongoStep,
+} from '@/lib/translators/mongo';
 
 const smallMonthReplace = {
   $switch: {
@@ -4176,6 +4181,318 @@ describe('Pipeline to mongo translator', () => {
     expect(querySteps).toEqual([
       { $addFields: { TEXT: { $literal: 'plop' } } },
       { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate addmissingdates steps with year granularity', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'addmissingdates',
+        datesColumn: 'DATE',
+        datesGranularity: 'year',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { _vqbYear: { $year: '$DATE' } } },
+      {
+        $group: {
+          _id: null,
+          _vqbArray: { $push: '$$ROOT' },
+          _vqbMinYear: { $min: '$_vqbYear' },
+          _vqbMaxYear: { $max: '$_vqbYear' },
+        },
+      },
+      {
+        $addFields: {
+          _vqbAllDates: {
+            $map: {
+              input: { $range: ['$_vqbMinYear', { $add: ['$_vqbMaxYear', 1] }] },
+              as: 'currentYear',
+              in: {
+                $let: {
+                  vars: {
+                    yearIndex: {
+                      $indexOfArray: ['$_vqbArray._vqbYear', '$$currentYear'],
+                    },
+                  },
+                  in: {
+                    $cond: [
+                      { $ne: ['$$yearIndex', -1] },
+                      { $arrayElemAt: ['$_vqbArray', '$$yearIndex'] },
+                      { DATE: { $dateFromParts: { year: '$$currentYear' } } },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbAllDates' },
+      { $replaceRoot: { newRoot: '$_vqbAllDates' } },
+      { $project: { _id: 0, _vqbYear: 0 } },
+    ]);
+  });
+
+  it('can generate addmissingdates steps with year granularity with groups', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'addmissingdates',
+        datesColumn: 'DATE',
+        datesGranularity: 'year',
+        groups: ['COUNTRY', 'PRODUCT'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $addFields: { _vqbYear: { $year: '$DATE' } } },
+      {
+        $group: {
+          _id: { COUNTRY: '$COUNTRY', PRODUCT: '$PRODUCT' },
+          _vqbArray: { $push: '$$ROOT' },
+          _vqbMinYear: { $min: '$_vqbYear' },
+          _vqbMaxYear: { $max: '$_vqbYear' },
+        },
+      },
+      {
+        $addFields: {
+          _vqbAllDates: {
+            $map: {
+              input: { $range: ['$_vqbMinYear', { $add: ['$_vqbMaxYear', 1] }] },
+              as: 'currentYear',
+              in: {
+                $let: {
+                  vars: {
+                    yearIndex: {
+                      $indexOfArray: ['$_vqbArray._vqbYear', '$$currentYear'],
+                    },
+                  },
+                  in: {
+                    $cond: [
+                      { $ne: ['$$yearIndex', -1] },
+                      { $arrayElemAt: ['$_vqbArray', '$$yearIndex'] },
+                      {
+                        COUNTRY: '$_id.COUNTRY',
+                        PRODUCT: '$_id.PRODUCT',
+                        DATE: { $dateFromParts: { year: '$$currentYear' } },
+                      },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbAllDates' },
+      { $replaceRoot: { newRoot: '$_vqbAllDates' } },
+      { $project: { _id: 0, _vqbYear: 0 } },
+    ]);
+  });
+
+  it('can generate dateFromParts mongo stage based on a date field and granularity', () => {
+    const withDayGranularity = _generateDateFromParts('DATE', 'day');
+    const withMonthGranularity = _generateDateFromParts('DATE', 'month');
+    const withYearGranularity = _generateDateFromParts('DATE', 'year');
+    expect(withDayGranularity).toEqual({
+      year: { $year: 'DATE' },
+      month: { $month: 'DATE' },
+      day: { $dayOfMonth: 'DATE' },
+    });
+    expect(withMonthGranularity).toEqual({
+      year: { $year: 'DATE' },
+      month: { $month: 'DATE' },
+    });
+    expect(withYearGranularity).toEqual({
+      year: { $year: 'DATE' },
+    });
+  });
+
+  it('can generate addmissingdates steps with day granularity', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'addmissingdates',
+        datesColumn: 'DATE',
+        datesGranularity: 'day',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          _vqbDay: {
+            $dateFromParts: {
+              year: { $year: '$DATE' },
+              month: { $month: '$DATE' },
+              day: { $dayOfMonth: '$DATE' },
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          _vqbArray: { $push: '$$ROOT' },
+          _vqbMinDay: { $min: '$_vqbDay' },
+          _vqbMaxDay: { $max: '$_vqbDay' },
+        },
+      },
+      {
+        $addFields: {
+          _vqbMinMaxDiffInDays: {
+            $divide: [{ $subtract: ['$_vqbMaxDay', '$_vqbMinDay'] }, 60 * 60 * 24 * 1000],
+          },
+        },
+      },
+      {
+        $addFields: {
+          _vqbAllDates: {
+            $map: {
+              input: {
+                $map: {
+                  input: { $range: [0, { $add: ['$_vqbMinMaxDiffInDays', 1] }] },
+                  as: 'currentDurationInDays',
+                  in: {
+                    $let: {
+                      vars: {
+                        currentDay: {
+                          $add: [
+                            '$_vqbMinDay',
+                            { $multiply: ['$$currentDurationInDays', 60 * 60 * 24 * 1000] },
+                          ],
+                        },
+                      },
+                      in: {
+                        $dateFromParts: {
+                          year: { $year: '$$currentDay' },
+                          month: { $month: '$$currentDay' },
+                          day: { $dayOfMonth: '$$currentDay' },
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+              as: 'date',
+              in: {
+                $let: {
+                  vars: { dateIndex: { $indexOfArray: ['$_vqbArray._vqbDay', '$$date'] } },
+                  in: {
+                    $cond: [
+                      { $ne: ['$$dateIndex', -1] },
+                      { $arrayElemAt: ['$_vqbArray', '$$dateIndex'] },
+                      { DATE: '$$date' },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbAllDates' },
+      { $replaceRoot: { newRoot: '$_vqbAllDates' } },
+      { $project: { _id: 0, _vqbDay: 0 } },
+    ]);
+  });
+
+  it('can generate addmissingdates steps with month granularity and groups', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'addmissingdates',
+        datesColumn: 'DATE',
+        datesGranularity: 'month',
+        groups: ['COUNTRY', 'PRODUCT'],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          _vqbDay: {
+            $dateFromParts: {
+              year: { $year: '$DATE' },
+              month: { $month: '$DATE' },
+            },
+          },
+        },
+      },
+      {
+        $group: {
+          _id: { COUNTRY: '$COUNTRY', PRODUCT: '$PRODUCT' },
+          _vqbArray: { $push: '$$ROOT' },
+          _vqbMinDay: { $min: '$_vqbDay' },
+          _vqbMaxDay: { $max: '$_vqbDay' },
+        },
+      },
+      {
+        $addFields: {
+          _vqbMinMaxDiffInDays: {
+            $divide: [{ $subtract: ['$_vqbMaxDay', '$_vqbMinDay'] }, 60 * 60 * 24 * 1000],
+          },
+        },
+      },
+      {
+        $addFields: {
+          _vqbAllDates: {
+            $map: {
+              input: {
+                $reduce: {
+                  input: {
+                    $map: {
+                      input: { $range: [0, { $add: ['$_vqbMinMaxDiffInDays', 1] }] },
+                      as: 'currentDurationInDays',
+                      in: {
+                        $let: {
+                          vars: {
+                            currentDay: {
+                              $add: [
+                                '$_vqbMinDay',
+                                { $multiply: ['$$currentDurationInDays', 60 * 60 * 24 * 1000] },
+                              ],
+                            },
+                          },
+                          in: {
+                            $dateFromParts: {
+                              year: { $year: '$$currentDay' },
+                              month: { $month: '$$currentDay' },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  initialValue: [],
+                  in: {
+                    $cond: [
+                      { $eq: [{ $indexOfArray: ['$$value', '$$this'] }, -1] },
+                      { $concatArrays: ['$$value', ['$$this']] },
+                      { $concatArrays: ['$$value', []] },
+                    ],
+                  },
+                },
+              },
+              as: 'date',
+              in: {
+                $let: {
+                  vars: { dateIndex: { $indexOfArray: ['$_vqbArray._vqbDay', '$$date'] } },
+                  in: {
+                    $cond: [
+                      { $ne: ['$$dateIndex', -1] },
+                      { $arrayElemAt: ['$_vqbArray', '$$dateIndex'] },
+                      { COUNTRY: '$_id.COUNTRY', PRODUCT: '$_id.PRODUCT', DATE: '$$date' },
+                    ],
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      { $unwind: '$_vqbAllDates' },
+      { $replaceRoot: { newRoot: '$_vqbAllDates' } },
+      { $project: { _id: 0, _vqbDay: 0 } },
     ]);
   });
 });
