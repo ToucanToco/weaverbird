@@ -113,4 +113,8 @@ export class PandasTranslator extends BaseTranslator {
   text(step: Readonly<S.AddTextColumnStep>) {
     return step;
   }
+
+  percentage(step: Readonly<S.PercentageStep>) {
+    return step;
+  }
 }
