@@ -18,6 +18,7 @@ from .fromdate import FromdateStep
 from .ifthenelse import IfthenelseStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
+from .percentage import PercentageStep
 from .pivot import PivotStep
 from .rank import RankStep
 from .rename import RenameStep
