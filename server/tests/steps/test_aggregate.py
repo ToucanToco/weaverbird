@@ -16,7 +16,7 @@ def test_simple_aggregate(sample_df):
     df_result = AggregateStep(
         name='aggregate',
         on=['colA'],
-        aggregations=[Aggregation(agg_function='sum', columns=['colB'], new_columns=['sum_colB'])],
+        aggregations=[Aggregation(aggfunction='sum', columns=['colB'], newcolumns=['sum_colB'])],
     ).execute(sample_df, domain_retriever=None)
 
     assert_dataframes_equals(
@@ -33,7 +33,7 @@ def test_simple_aggregate_multiple_columns(sample_df):
         on=['colA'],
         aggregations=[
             Aggregation(
-                agg_function='sum', columns=['colB', 'colC'], new_columns=['sum_colB', 'sum_colC']
+                aggfunction='sum', columns=['colB', 'colC'], newcolumns=['sum_colB', 'sum_colC']
             )
         ],
     ).execute(sample_df, domain_retriever=None)
@@ -50,7 +50,7 @@ def test_avg(sample_df):
     df_result = AggregateStep(
         name='aggregate',
         on=['colA'],
-        aggregations=[Aggregation(agg_function='avg', columns=['colB'], new_columns=['avg_colB'])],
+        aggregations=[Aggregation(aggfunction='avg', columns=['colB'], newcolumns=['avg_colB'])],
     ).execute(sample_df, domain_retriever=None)
 
     assert_dataframes_equals(
@@ -67,7 +67,7 @@ def test_aggregate_is_no_valid_without_on(sample_df):
             name='aggregate',
             on=[],
             aggregations=[
-                Aggregation(agg_function='min', columns=['colB'], new_columns=['min_colB']),
+                Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
             ],
         )
 
@@ -77,8 +77,8 @@ def test_multiple_aggregate(sample_df):
         name='aggregate',
         on=['colA'],
         aggregations=[
-            Aggregation(agg_function='min', columns=['colB'], new_columns=['min_colB']),
-            Aggregation(agg_function='max', columns=['colB'], new_columns=['max_colB']),
+            Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
+            Aggregation(aggfunction='max', columns=['colB'], newcolumns=['max_colB']),
         ],
     ).execute(sample_df, domain_retriever=None)
 
@@ -94,7 +94,7 @@ def test_with_original_granularity(sample_df):
         keepOriginalGranularity=True,
         on=['colA'],
         aggregations=[
-            Aggregation(agg_function='min', columns=['colB'], new_columns=['min_colB']),
+            Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
         ],
     ).execute(sample_df, domain_retriever=None)
 
@@ -118,8 +118,8 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
         keepOriginalGranularity=True,
         on=['colA'],
         aggregations=[
-            Aggregation(agg_function='min', columns=['colB'], new_columns=['min_colB']),
-            Aggregation(agg_function='max', columns=['colC'], new_columns=['max_colC']),
+            Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
+            Aggregation(aggfunction='max', columns=['colC'], newcolumns=['max_colC']),
         ],
     ).execute(sample_df, domain_retriever=None)
 
@@ -145,9 +145,9 @@ def test_with_original_granularity_multiple_aggregations_multiple_columns(sample
         on=['colA'],
         aggregations=[
             Aggregation(
-                agg_function='min', columns=['colB', 'colC'], new_columns=['min_colB', 'min_colC']
+                aggfunction='min', columns=['colB', 'colC'], newcolumns=['min_colB', 'min_colC']
             ),
-            Aggregation(agg_function='max', columns=['colC'], new_columns=['max_colC']),
+            Aggregation(aggfunction='max', columns=['colC'], newcolumns=['max_colC']),
         ],
     ).execute(sample_df, domain_retriever=None)
 

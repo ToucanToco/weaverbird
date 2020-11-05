@@ -13,8 +13,8 @@ functions_aliases = {'avg': 'mean'}
 
 
 class Aggregation(BaseModel):
-    new_columns: List[ColumnName]
-    agg_function: AggregateFn
+    new_columns: List[ColumnName] = Field(alias='newcolumns')
+    agg_function: AggregateFn = Field(alias='aggfunction')
     columns: List[ColumnName]
 
 
