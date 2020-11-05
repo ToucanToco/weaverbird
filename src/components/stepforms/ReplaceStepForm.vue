@@ -19,6 +19,8 @@
       :automatic-new-field="false"
       data-path=".to_replace"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -34,6 +36,7 @@ import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
 import { ReplaceStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -47,6 +50,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
+  @VQBModule.State availableVariables?: VariablesBucket;
+
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'replace', search_column: '', to_replace: [[]] }) })
   initialStepValue!: ReplaceStep;
 
