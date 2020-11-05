@@ -12,6 +12,7 @@ current dataset
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 
