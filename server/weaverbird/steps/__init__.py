@@ -8,8 +8,8 @@ from .cumsum import CumSumStep
 from .date_extract import DateExtractStep
 from .delete import DeleteStep
 from .domain import DomainStep
-from .evolution import EvolutionStep
 from .duplicate import DuplicateStep
+from .evolution import EvolutionStep
 from .fillna import FillnaStep
 from .filter import FilterStep
 from .formula import FormulaStep
