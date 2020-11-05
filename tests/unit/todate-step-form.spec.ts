@@ -19,6 +19,10 @@ describe('Convert String to Date Step Form', () => {
     { 'columnpicker-stub': 1, 'autocompletewidget-stub': 1, 'inputtextwidget-stub': 0 },
     { translator: 'mongo40' },
   );
+  runner.testExpectedComponents(
+    { 'columnpicker-stub': 1, 'autocompletewidget-stub': 1, 'inputtextwidget-stub': 0 },
+    { translator: 'pandas' },
+  );
 
   it('should have 1 inputtext when custom format is selected', () => {
     const wrapper = shallowMount(ToDateStepForm, {
