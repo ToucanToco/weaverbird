@@ -7,8 +7,8 @@ from weaverbird.steps import CumSumStep
 def test_cumsum():
     sample_df = DataFrame(
         {
-            'date': ['2019-01', '2019-02', '2019-03', '2019-04', '2019-05', '2019-06'],
-            'value': [2, 5, 3, 8, 9, 6],
+            'date': ['2019-06', '2019-01', '2019-02', '2019-03', '2019-04', '2019-05'],
+            'value': [6, 2, 5, 3, 8, 9],
         }
     )
 
