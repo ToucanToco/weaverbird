@@ -69,4 +69,8 @@ export class PandasTranslator extends BaseTranslator {
   argmax(step: Readonly<S.ArgmaxStep>) {
     return step;
   }
+
+  lowercase(step: Readonly<S.ToLowerStep>) {
+    return step;
+  }
 }

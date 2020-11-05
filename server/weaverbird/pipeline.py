@@ -16,6 +16,7 @@ from weaverbird.steps import (
     FilterStep,
     FormulaStep,
     JoinStep,
+    LowercaseStep,
     RenameStep,
 )
 
@@ -34,6 +35,7 @@ PipelineStep = Union[
     FormulaStep,
     JoinStep,
     RenameStep,
+    LowercaseStep,
 ]
 
 

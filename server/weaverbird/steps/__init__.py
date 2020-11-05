@@ -12,4 +12,5 @@ from .duplicate import DuplicateStep
 from .filter import FilterStep
 from .formula import FormulaStep
 from .join import JoinStep
+from .lowercase import LowercaseStep
 from .rename import RenameStep
