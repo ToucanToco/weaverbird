@@ -51,4 +51,4 @@ def test_cumsum_with_groups():
             'my_cumsum': [2, 7, 10, 18, 27, 33] + [10, 16, 22, 26, 34, 41],
         }
     )
-    assert_dataframes_equals(df_result, expected_result)
+    assert_dataframes_equals(df_result, expected_result.sort_values('date'))

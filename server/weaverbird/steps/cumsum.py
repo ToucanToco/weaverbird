@@ -19,7 +19,7 @@ class CumSumStep(BaseStep):
         allow_population_by_field_name = True
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
-        df = df.sort_values(self.groupby or [] + [self.reference_column])  # type: ignore
+        df = df.sort_values(self.reference_column)
         dst_column = self.new_column or f'{self.value_column}_CUMSUM'
         df_grouped = df.groupby(self.groupby) if self.groupby else df
         cumsum_serie = df_grouped[self.value_column].cumsum()
