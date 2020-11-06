@@ -78,6 +78,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  replace(step: Readonly<S.ReplaceStep>) {
+    return step;
+  }
+
   fillna(step: Readonly<S.FillnaStep>) {
     return step;
   }
