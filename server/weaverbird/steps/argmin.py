@@ -14,7 +14,7 @@ class ArgminStep(BaseStep):
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         if len(self.groups) == 0:
-            return df.assign(**{self.column: df[self.column].min()})
+            return df.sort_values(self.column, ascending=True)[0:1]
         else:
             grouped_by_df = df.groupby(self.groups, as_index=False)
             return df.assign(**{self.column: grouped_by_df[self.column].transform('min')})

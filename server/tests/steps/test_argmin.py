@@ -19,9 +19,9 @@ def test_simple_argmax(sample_df):
         result,
         DataFrame(
             {
-                'colA': ['toto', 'tutu', 'tata', 'toto'],
-                'colB': [1, 1, 1, 1],
-                'colC': [100, 50, 25, 0],
+                'colA': ['toto'],
+                'colB': [1],
+                'colC': [100],
             }
         ),
     )
