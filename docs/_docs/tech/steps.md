@@ -346,7 +346,7 @@ is specified.
 
 | Label   | Group   | Value |
 | ------- | ------- | ----- |
-| Label 2 | Group 1 | 7     |
+| Label 4 | Group 2 | 1     |
 
 #### Example 2: with `groups`
 
