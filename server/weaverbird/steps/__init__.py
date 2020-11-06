@@ -23,3 +23,4 @@ from .rename import RenameStep
 from .replace import ReplaceStep
 from .statistics import StatisticsStep
 from .text import TextStep
+from .uppercase import UppercaseStep
