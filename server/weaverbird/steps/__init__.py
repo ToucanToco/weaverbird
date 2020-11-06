@@ -1,3 +1,4 @@
+from .aggregate import AggregateStep
 from .append import AppendStep
 from .argmax import ArgmaxStep
 from .argmin import ArgminStep

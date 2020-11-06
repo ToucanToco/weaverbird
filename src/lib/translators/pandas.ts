@@ -70,6 +70,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  aggregate(step: Readonly<S.AggregationStep>) {
+    return step;
+  }
+
   argmin(step: Readonly<S.ArgminStep>) {
     return step;
   }
