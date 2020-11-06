@@ -8,9 +8,11 @@ from weaverbird.steps.argmin import ArgminStep
 @pytest.fixture
 def sample_df():
     return DataFrame(
-        {'label': ['label1', 'label2', 'label3', 'label4', 'label5', 'label6'],
-         'group': ['group 1', 'group 1', 'group 1', 'group 2', 'group 2', 'group 2'],
-         'value': [13, 7, 20, 1, 10, 5]}
+        {
+            'label': ['label1', 'label2', 'label3', 'label4', 'label5', 'label6'],
+            'group': ['group 1', 'group 1', 'group 1', 'group 2', 'group 2', 'group 2'],
+            'value': [13, 7, 20, 1, 10, 5],
+        }
     )
 
 
