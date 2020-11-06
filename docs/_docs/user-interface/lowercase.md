@@ -11,6 +11,7 @@ You can use this step to convert a text column to lowercase.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 

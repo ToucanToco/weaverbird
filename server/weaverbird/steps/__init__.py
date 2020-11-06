@@ -6,8 +6,16 @@ from .concatenate import ConcatenateStep
 from .convert import ConvertStep
 from .cumsum import CumSumStep
 from .date_extract import DateExtractStep
+from .delete import DeleteStep
 from .domain import DomainStep
+from .duplicate import DuplicateStep
+from .evolution import EvolutionStep
+from .fillna import FillnaStep
 from .filter import FilterStep
+from .formula import FormulaStep
+from .fromdate import FromdateStep
 from .join import JoinStep
+from .lowercase import LowercaseStep
+from .pivot import PivotStep
 from .rename import RenameStep
 from .replace import ReplaceStep

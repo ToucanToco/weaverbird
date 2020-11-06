@@ -100,6 +100,11 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
       doc:
         'https://docs.mongodb.com/manual/reference/operator/aggregation/dateToString/#format-specifiers',
     },
+    {
+      id: 'pandas',
+      label: 'Pandas',
+      doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
+    },
   ];
 
   get selectedFormat(): FormatOption {
