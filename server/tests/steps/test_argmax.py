@@ -8,35 +8,37 @@ from weaverbird.steps.argmax import ArgmaxStep
 @pytest.fixture
 def sample_df():
     return DataFrame(
-        {'colA': ['toto', 'tutu', 'tata', 'toto'], 'colB': [1, 2, 3, 4], 'colC': [100, 50, 25, 0]}
+        {'label': ['label1', 'label2', 'label3', 'label4', 'label5', 'label6'],
+         'group': ['group 1', 'group 1', 'group 1', 'group 2', 'group 2', 'group 2'],
+         'value': [13, 7, 20, 1, 10, 5]}
     )
 
 
 def test_simple_argmax(sample_df):
-    step = ArgmaxStep(name='argmax', column='colB')
+    step = ArgmaxStep(name='argmax', column='value')
     result = step.execute(sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
         DataFrame(
             {
-                'colA': ['toto'],
-                'colB': [4],
-                'colC': [0],
+                'label': ['label3'],
+                'group': ['group 1'],
+                'value': [20],
             }
         ),
     )
 
 
 def test_argmax_with_group(sample_df):
-    step = ArgmaxStep(name='argmax', column='colB', groups=['colA'])
+    step = ArgmaxStep(name='argmax', column='value', groups=['group'])
     result = step.execute(sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
         DataFrame(
             {
-                'colA': ['tutu', 'tata', 'toto'],
-                'colB': [2, 3, 4],
-                'colC': [50, 25, 0],
+                'label': ['label3', 'label5'],
+                'group': ['group 1', 'group 2'],
+                'value': [20, 10],
             }
         ),
     )
