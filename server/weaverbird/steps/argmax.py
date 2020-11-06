@@ -14,7 +14,7 @@ class ArgmaxStep(BaseStep):
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         if len(self.groups) == 0:
-            return df.assign(**{self.column: df[self.column].max()})
+            return df.sort_values(self.column, ascending=False)[0:1]  # we only want the top result
         else:
             grouped_by_df = df.groupby(self.groups, as_index=False)
             return df.assign(**{self.column: grouped_by_df[self.column].transform('max')})
