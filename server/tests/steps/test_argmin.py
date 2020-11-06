@@ -12,7 +12,7 @@ def sample_df():
     )
 
 
-def test_simple_argmax(sample_df):
+def test_simple_argmin(sample_df):
     step = ArgminStep(name='argmin', column='colB')
     result = step.execute(sample_df, domain_retriever=None)
     assert_dataframes_equals(
@@ -27,16 +27,16 @@ def test_simple_argmax(sample_df):
     )
 
 
-def test_argmax_with_group(sample_df):
+def test_argmin_with_group(sample_df):
     step = ArgminStep(name='argmin', column='colB', groups=['colA'])
     result = step.execute(sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
         DataFrame(
             {
-                'colA': ['toto', 'tutu', 'tata', 'toto'],
-                'colB': [1, 2, 3, 1],
-                'colC': [100, 50, 25, 0],
+                'colA': ['toto', 'tutu', 'tata'],
+                'colB': [1, 2, 3],
+                'colC': [100, 50, 25],
             }
         ),
     )
