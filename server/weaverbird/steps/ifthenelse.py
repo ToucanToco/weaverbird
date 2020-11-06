@@ -22,7 +22,6 @@ class IfthenelseStep(BaseStep):
         domain_retriever: DomainRetriever = None,
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
-        # first, I make a series with the True / False result of the condition
 
         return df.assign(
             **{
