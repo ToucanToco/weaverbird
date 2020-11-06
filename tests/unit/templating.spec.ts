@@ -1502,4 +1502,23 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate addmissingdates steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'addmissingdates',
+        datesColumn: '<%= foo %>',
+        datesGranularity: 'day',
+        groups: ['<%= foo %>', '<%= egg %>'],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'addmissingdates',
+        datesColumn: 'bar',
+        datesGranularity: 'day',
+        groups: ['bar', 'spam'],
+      },
+    ]);
+  });
 });

@@ -118,6 +118,17 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     this.context = context;
   }
 
+  addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
+    const groups = step.groups
+      ? step.groups.map(col => _interpolate(this.interpolateFunc, col, this.context))
+      : undefined;
+    return {
+      ...step,
+      datesColumn: _interpolate(this.interpolateFunc, step.datesColumn, this.context),
+      groups,
+    };
+  }
+
   append(step: Readonly<S.AppendStep>) {
     const pipelines = [];
     for (const pipeline of step.pipelines) {
