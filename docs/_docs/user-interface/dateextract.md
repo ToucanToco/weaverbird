@@ -19,11 +19,11 @@ The following properties can be extracted:
 - `dayOfWeek'`: extract 'day of week' from date,
 - `week'`: extract 'week number' from date.
 
-
 **This step is supported by the following backends:**
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 

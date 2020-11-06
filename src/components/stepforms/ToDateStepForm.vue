@@ -10,9 +10,10 @@
       data-path=".column"
       :errors="errors"
     />
-    <!-- We display format options only for mongo40 translator as this is not supported in Mongo 3.6 -->
+    <!-- We display format options only for mongo40 and pandas translators as 
+    this is not supported in Mongo 3.6 -->
     <AutocompleteWidget
-      v-if="translator === 'mongo40'"
+      v-if="translator === 'mongo40' || translator === 'pandas'"
       name="Date format:"
       class="format"
       :value="selectedFormat"
@@ -25,7 +26,7 @@
     />
     <InputTextWidget
       v-if="
-        translator === 'mongo40' &&
+        (translator === 'mongo40' || translator === 'pandas') &&
           editedStep.format !== undefined &&
           !datePresets.includes(editedStep.format)
       "
@@ -108,6 +109,11 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       label: 'Mongo 4.0',
       doc:
         'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
+    },
+    {
+      id: 'pandas',
+      label: 'Pandas',
+      doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
     },
   ];
 

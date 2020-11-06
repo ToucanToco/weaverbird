@@ -14,6 +14,7 @@ columns correspondance. It is similar to a `JOIN` clause in SQL, or to a
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 

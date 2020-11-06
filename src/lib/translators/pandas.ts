@@ -34,7 +34,19 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  delete(step: Readonly<S.DeleteStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
+    return step;
+  }
+
+  duplicate(step: Readonly<S.DuplicateColumnStep>) {
+    return step;
+  }
+
+  evolution(step: Readonly<S.EvolutionStep>) {
     return step;
   }
 
@@ -42,7 +54,15 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  formula(step: Readonly<S.FormulaStep>) {
+    return step;
+  }
+
   join(step: Readonly<S.JoinStep>) {
+    return step;
+  }
+
+  pivot(step: Readonly<S.PivotStep>) {
     return step;
   }
 
@@ -51,6 +71,30 @@ export class PandasTranslator extends BaseTranslator {
   }
 
   aggregate(step: Readonly<S.AggregationStep>) {
+    return step;
+  }
+
+  argmin(step: Readonly<S.ArgminStep>) {
+    return step;
+  }
+
+  argmax(step: Readonly<S.ArgmaxStep>) {
+    return step;
+  }
+
+  replace(step: Readonly<S.ReplaceStep>) {
+    return step;
+  }
+
+  fillna(step: Readonly<S.FillnaStep>) {
+    return step;
+  }
+
+  lowercase(step: Readonly<S.ToLowerStep>) {
+    return step;
+  }
+
+  fromdate(step: Readonly<S.FromDateStep>) {
     return step;
   }
 }
