@@ -34,9 +34,9 @@ def test_argmax_with_group(sample_df):
         result,
         DataFrame(
             {
-                'colA': ['toto', 'tutu', 'tata', 'toto'],
-                'colB': [4, 2, 3, 4],
-                'colC': [100, 50, 25, 0],
+                'colA': ['tutu', 'tata', 'toto'],
+                'colB': [2, 3, 4],
+                'colC': [50, 25, 0],
             }
         ),
     )
