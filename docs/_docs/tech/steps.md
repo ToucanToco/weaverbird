@@ -1961,8 +1961,8 @@ specifying for every row the label, level and parent in dedicated columns.
    ],
    groupby: ['date'], // optional, if needing to segment the rollup computation by group
    labelCol: 'label', // optional, name of the output label column, 'label' by default
-   levelCol: 'label', // optional, name of the output level column, 'level' by default
-   parentLabelCol: 'label', // optional, name of the output parent column, 'parent' by default
+   levelCol: 'level', // optional, name of the output level column, 'level' by default
+   parentLabelCol: 'parent', // optional, name of the output parent column, 'parent' by default
 }
 ```
 
@@ -1970,6 +1970,7 @@ specifying for every row the label, level and parent in dedicated columns.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 **Deprecation note:**
 
@@ -2050,7 +2051,7 @@ An old-fashioned step looked like this:
 
 | CITY      | COUNTRY | CONTINENT     | label         | level     | parent        | VALUE |
 | --------- | ------- | ------------- | ------------- | --------- | ------------- | ----- |
-|           |         | North America | Europe        | CONTINENT |               | 64    |
+|           |         | Europe        | Europe        | CONTINENT |               | 64    |
 |           |         | North America | North America | CONTINENT |               | 112   |
 |           | France  | Europe        | France        | COUNTRY   | Europe        | 36    |
 |           | Spain   | Europe        | Spain         | COUNTRY   | Europe        | 28    |
@@ -2106,10 +2107,10 @@ An old-fashioned step looked like this:
       column: 'VALUE'
     }
    ],
-   groupby: ['date'],
-   labelCol: 'label',
-   levelCol: 'label',
-   parentLabelCol: 'label',
+   groupby: ['YEAR'],
+   labelCol: 'MY_LABEL',
+   levelCol: 'MY_LEVEL',
+   parentLabelCol: 'MY_PARENT',
 }
 ```
 
