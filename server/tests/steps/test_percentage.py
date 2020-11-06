@@ -1,16 +1,11 @@
 import pandas as pd
-import pytest
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.percentage import PercentageStep
 
 
-@pytest.fixture()
-def sample_df():
-    return pd.DataFrame({'values': [10, 50, 25, 15]})
-
-
-def test_simple_percentage(sample_df):
+def test_simple_percentage():
+    sample_df = pd.DataFrame({'values': [10, 50, 25, 15]})
     step = PercentageStep(name='percentage', column='values', newColumnName='result')
     result = step.execute(sample_df)
     expected_df = pd.DataFrame({'values': [10, 50, 25, 15], 'result': [10.0, 50.0, 25.0, 15.0]})
