@@ -2,8 +2,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.conditions import ComparisonCondition
 from weaverbird.steps import FilterStep
-from weaverbird.steps.filter import ComparisonCondition
 
 
 @pytest.fixture
