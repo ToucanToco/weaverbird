@@ -2,7 +2,7 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.filter import ComparisonCondition
+from weaverbird.conditions import ComparisonCondition
 from weaverbird.steps.ifthenelse import IfthenelseStep
 
 

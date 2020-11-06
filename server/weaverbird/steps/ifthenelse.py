@@ -3,9 +3,10 @@ from typing import Any
 import numpy
 from pandas import DataFrame
 from pydantic import Field
+from weaverbird.conditions import Condition
 
 from weaverbird.steps import BaseStep
-from weaverbird.steps.filter import Condition
+
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 
