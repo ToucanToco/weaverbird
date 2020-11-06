@@ -117,4 +117,8 @@ export class PandasTranslator extends BaseTranslator {
   percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
+
+  rollup(step: Readonly<S.RollupStep>) {
+    return step;
+  }
 }
