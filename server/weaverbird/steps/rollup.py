@@ -1,10 +1,12 @@
 from typing import List, Optional
 
-from pandas import DataFrame
+from pandas import DataFrame, concat
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName
+
+from .aggregate import AggregateStep, Aggregation
 
 
 class RollupStep(BaseStep):
@@ -25,4 +27,37 @@ class RollupStep(BaseStep):
         allow_population_by_field_name = True
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
-        return df
+        label_col = self.label_col or 'label'
+        level_col = self.level_col or 'level'
+        parent_label_col = self.parent_label_col or 'parent'
+
+        full_current_hierarchy = []
+        all_results = []
+        previous_level = None
+
+        for current_level in self.hierarchy:
+            full_current_hierarchy.append(current_level)
+            aggregate_on_cols = (self.groupby or []) + full_current_hierarchy
+            results_for_this_level = AggregateStep(
+                name='aggregate',
+                on=aggregate_on_cols,
+                aggregations=self.aggregations,
+                keep_original_granularity=False,
+            ).execute(df)
+
+            results_for_this_level[level_col] = current_level
+            results_for_this_level[label_col] = results_for_this_level[current_level]
+            if previous_level is not None:
+                results_for_this_level[parent_label_col] = results_for_this_level[previous_level]
+
+            all_results.append(results_for_this_level)
+            previous_level = current_level
+
+        columns = (
+            self.hierarchy[::-1]
+            + (self.groupby or [])
+            + [label_col, level_col, parent_label_col]
+            + sum([agg.new_columns for agg in self.aggregations], start=[])
+        )  # type: ignore
+
+        return concat(all_results)[columns]
