@@ -65,7 +65,8 @@ import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { AggFunctionStep, RollupStep } from '@/lib/steps';
+import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
+import { Aggregation, RollupStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
@@ -105,7 +106,7 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   };
 
   get defaultAggregation() {
-    const agg: AggFunctionStep = {
+    const agg: Aggregation = {
       columns: [],
       newcolumns: [],
       aggfunction: 'sum',
@@ -126,24 +127,7 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
   }
 
   submit() {
-    /**
-     * If different aggregations have to be performed on the same column, add a suffix
-     * to the automatically generated newcolumn name
-     */
-    const newcolumnOccurences: { [prop: string]: number } = {};
-    for (const agg of this.editedStep.aggregations) {
-      agg.newcolumns = [...agg.columns];
-      for (const c of agg.newcolumns) {
-        newcolumnOccurences[c] = (newcolumnOccurences[c] || 0) + 1;
-      }
-    }
-    for (const agg of this.editedStep.aggregations) {
-      for (let i = 0; i < agg.newcolumns.length; i++) {
-        if (newcolumnOccurences[agg.newcolumns[i]] > 1) {
-          agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
-        }
-      }
-    }
+    setAggregationsNewColumnsInStep(this.editedStep);
     this.$$super.submit();
   }
 }

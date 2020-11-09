@@ -32,6 +32,7 @@ import './SubstringStepForm.vue';
 import './ToDateStepForm.vue';
 import './ToLowerStepForm.vue';
 import './TopStepForm.vue';
+import './AddTotalRowsStepForm.vue';
 import './ToUpperStepForm.vue';
 import './UniqueGroupsStepForm.vue';
 import './UnpivotStepForm.vue';

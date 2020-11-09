@@ -12,6 +12,7 @@ moment, we only support `and` as logical link between conditions.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 

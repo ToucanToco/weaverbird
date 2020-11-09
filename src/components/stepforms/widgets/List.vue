@@ -41,6 +41,7 @@ import { VueConstructor } from 'vue';
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { TotalDimension } from '@/lib/steps.ts';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
@@ -82,7 +83,7 @@ export default class ListWidget extends Mixins(FormWidget) {
   automaticNewField!: boolean;
 
   @Prop({ default: null })
-  defaultItem!: string | RepeatableField;
+  defaultItem!: string | RepeatableField | TotalDimension;
 
   @Prop({ type: Array, default: () => [] })
   errors!: ErrorObject[];

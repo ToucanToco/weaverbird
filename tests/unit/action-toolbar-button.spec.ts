@@ -172,7 +172,7 @@ describe('ActionToolbarButton active', () => {
       localVue,
     });
     expect(wrapper.exists()).toBeTruthy();
-    assertMenuEmitsExpected(wrapper, ['aggregate', 'rollup', 'uniquegroups']);
+    assertMenuEmitsExpected(wrapper, ['aggregate', 'totals', 'rollup', 'uniquegroups']);
   });
 
   it('should instantiate a Reshape button with the right list of actions', () => {

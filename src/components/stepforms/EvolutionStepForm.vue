@@ -40,7 +40,7 @@
     <MultiselectWidget
       class="indexColumnsInput"
       v-model="editedStep.indexColumns"
-      name="(Optional) Index columns (labels):"
+      name="(Optional) Group by:"
       :options="columnNames"
       placeholder="Add columns"
       data-path=".indexColumns"

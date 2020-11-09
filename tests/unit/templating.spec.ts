@@ -1444,4 +1444,51 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate totals steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'totals',
+        totalDimensions: [
+          { totalColumn: '<%= foo %>', totalRowsLabel: '<%= egg %>' },
+          { totalColumn: '<%= foo %>', totalRowsLabel: '<%= egg %>' },
+        ],
+        aggregations: [
+          {
+            columns: ['<%= foo %>', '<%= egg %>'],
+            newcolumns: ['<%= foo %>', '<%= egg %>'],
+            aggfunction: 'sum',
+          },
+          {
+            columns: ['<%= foo %>', '<%= egg %>'],
+            newcolumns: ['<%= foo %>', '<%= egg %>'],
+            aggfunction: 'avg',
+          },
+        ],
+        groups: ['<%= foo %>', '<%= egg %>'],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'totals',
+        totalDimensions: [
+          { totalColumn: '<%= foo %>', totalRowsLabel: '<%= egg %>' },
+          { totalColumn: '<%= foo %>', totalRowsLabel: '<%= egg %>' },
+        ],
+        aggregations: [
+          {
+            columns: ['bar', 'spam'],
+            newcolumns: ['<%= foo %>', '<%= egg %>'],
+            aggfunction: 'sum',
+          },
+          {
+            columns: ['bar', 'spam'],
+            newcolumns: ['<%= foo %>', '<%= egg %>'],
+            aggfunction: 'avg',
+          },
+        ],
+        groups: ['bar', 'spam'],
+      },
+    ]);
+  });
 });

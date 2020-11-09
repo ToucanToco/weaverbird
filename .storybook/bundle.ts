@@ -32,6 +32,8 @@ import CumSumStepForm from '../src/components/stepforms/CumSumStepForm.vue';
 import ConcatenateStepForm from '../src/components/stepforms/ConcatenateStepForm.vue';
 import SplitStepForm from '../src/components/stepforms/SplitStepForm.vue';
 import WaterfallStepForm from '../src/components/stepforms/WaterfallStepForm.vue';
+import AddTotalRowsStepForm from '../src/components/stepforms/AddTotalRowsStepForm.vue';
+import TotalDimensions from '../src/components/stepforms/widgets/TotalDimensions.vue';
 
 
 export {
@@ -64,6 +66,8 @@ export {
   ConcatenateStepForm,
   SplitStepForm,
   WaterfallStepForm,
+  AddTotalRowsStepForm,
+  TotalDimensions
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';

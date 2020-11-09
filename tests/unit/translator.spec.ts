@@ -71,7 +71,7 @@ describe('base translator class', () => {
 describe('translator registration', () => {
   it('should be possible to register backends', () => {
     registerTranslator('dummy', DummyStringTranslator);
-    expect(backendsSupporting('aggregate')).toEqual(['mongo36', 'mongo40']);
+    expect(backendsSupporting('aggregate')).toEqual(['mongo36', 'mongo40', 'pandas']);
     expect(backendsSupporting('domain')).toEqual(['dummy', 'mongo36', 'mongo40', 'pandas']);
   });
 
