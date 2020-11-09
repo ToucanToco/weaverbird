@@ -121,4 +121,8 @@ export class PandasTranslator extends BaseTranslator {
   percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
+
+  top(step: Readonly<S.TopStep>) {
+    return step;
+  }
 }
