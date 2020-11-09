@@ -29,6 +29,7 @@ from weaverbird.steps import (
     ReplaceStep,
     StatisticsStep,
     TextStep,
+    UppercaseStep,
 )
 
 PipelineStep = Union[
@@ -59,6 +60,7 @@ PipelineStep = Union[
     PivotStep,
     ReplaceStep,
     TextStep,
+    UppercaseStep,
 ]
 
 
