@@ -32,6 +32,7 @@ import textSchema from './text';
 import toDateSchema from './todate';
 import toLowerSchema from './tolower';
 import topBuildSchema from './top';
+import totalsSchema from './totals';
 import toUpperSchema from './toupper';
 import uniqueGroupsSchema from './uniquegroups';
 import unpivotSchema from './unpivot';
@@ -74,6 +75,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   text: textSchema,
   todate: toDateSchema,
   top: topBuildSchema,
+  totals: totalsSchema,
   unpivot: unpivotSchema,
   uniquegroups: uniqueGroupsSchema,
   uppercase: toUpperSchema,

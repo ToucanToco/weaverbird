@@ -15,9 +15,15 @@ from .fillna import FillnaStep
 from .filter import FilterStep
 from .formula import FormulaStep
 from .fromdate import FromdateStep
+from .ifthenelse import IfthenelseStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
+from .percentage import PercentageStep
 from .pivot import PivotStep
+from .rank import RankStep
 from .rename import RenameStep
 from .replace import ReplaceStep
 from .select import SelectStep
+from .statistics import StatisticsStep
+from .text import TextStep
+from .uppercase import UppercaseStep

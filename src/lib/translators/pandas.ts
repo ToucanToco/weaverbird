@@ -66,11 +66,19 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  rank(step: Readonly<S.RankStep>) {
+    return step;
+  }
+
   rename(step: Readonly<S.RenameStep>) {
     return step;
   }
 
-  aggregate(step: Readonly<S.AggregationStep>) {
+  aggregate(step: Readonly<S.AggregateStep>) {
+    return step;
+  }
+
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
     return step;
   }
 
@@ -79,6 +87,10 @@ export class PandasTranslator extends BaseTranslator {
   }
 
   argmax(step: Readonly<S.ArgmaxStep>) {
+    return step;
+  }
+
+  statistics(step: Readonly<S.StatisticsStep>) {
     return step;
   }
 
@@ -99,6 +111,18 @@ export class PandasTranslator extends BaseTranslator {
   }
 
   select(step: Readonly<S.SelectStep>) {
+    return step;
+  }
+
+  uppercase(step: Readonly<S.ToUpperStep>) {
+    return step;
+  }
+
+  text(step: Readonly<S.AddTextColumnStep>) {
+    return step;
+  }
+
+  percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
 }

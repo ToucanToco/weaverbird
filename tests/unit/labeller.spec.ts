@@ -4,7 +4,7 @@ import { VariableDelimiters } from '@/lib/variables';
 
 describe('Labeller', () => {
   it('generates label for single aggregation', () => {
-    const step: S.AggregationStep = {
+    const step: S.AggregateStep = {
       name: 'aggregate',
       on: ['column1', 'column2'],
       aggregations: [
@@ -20,7 +20,7 @@ describe('Labeller', () => {
   });
 
   it('generates label for multiple aggregations', () => {
-    const step: S.AggregationStep = {
+    const step: S.AggregateStep = {
       name: 'aggregate',
       on: ['column1', 'column2'],
       aggregations: [
@@ -42,7 +42,7 @@ describe('Labeller', () => {
 
   it('generates label for old fashioned aggregation', () => {
     // Test for retrocompatibility purposes
-    const step: S.AggregationStep = {
+    const step: S.AggregateStep = {
       name: 'aggregate',
       on: ['column1', 'column2'],
       aggregations: [
@@ -647,6 +647,19 @@ describe('Labeller', () => {
       order: 'desc',
     };
     expect(hrl(step)).toEqual('Compute waterfall of "value" from "2019" to "2020"');
+  });
+
+  it('generates label for totals steps', () => {
+    const step: S.AddTotalRowsStep = {
+      name: 'totals',
+      totalDimensions: [
+        { totalColumn: 'COUNTRY', totalRowsLabel: 'All countries' },
+        { totalColumn: 'PRODUCT', totalRowsLabel: 'All products' },
+      ],
+      aggregations: [{ columns: ['VALUE'], newcolumns: ['VALUE'], aggfunction: 'sum' }],
+      groups: ['DATE'],
+    };
+    expect(hrl(step)).toEqual('Add total rows in columns "COUNTRY", "PRODUCT"');
   });
 
   describe('labelWithReadeableVariables', () => {
