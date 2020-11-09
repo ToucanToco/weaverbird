@@ -109,4 +109,8 @@ export class PandasTranslator extends BaseTranslator {
   text(step: Readonly<S.AddTextColumnStep>) {
     return step;
   }
+
+  sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
 }
