@@ -9,6 +9,9 @@ from weaverbird.types import DomainRetriever, PipelineExecutor
 class BaseStep(BaseModel, ABC):
     name: str
 
+    class Config:
+        extra = 'forbid'
+
     @abstractmethod
     def execute(
         self, df: DataFrame, domain_retriever: DomainRetriever, pipeline_executor: PipelineExecutor

@@ -1,6 +1,11 @@
 import { DataSetColumnType } from './dataset';
+import { AddTotalRowsStep, RollupStep } from './steps';
 
 type ValueType = number | boolean | string | null;
+/** We do not include AggregateStep as this step has some specifities that do
+ *  not factorize well in the setAggregationsNewColumnsInStep helper function
+ *  defined below */
+type StepWithAggregations = AddTotalRowsStep | RollupStep;
 
 function isBooleanString(string: string): boolean {
   return (
@@ -102,4 +107,43 @@ export function keepCurrentValueIfArrayType(
 // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
 export function escapeForUseInRegExp(string: string): string {
   return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
+/**
+ * Returns all the combinations of elements in an array.
+ * e.g. combinations(['A', 'B', 'C']) => [['A', 'B', 'C'], ['A', 'B'], ['A', 'C'], ['B', 'C'], ['A'], ['B'], ['C']]
+ *
+ * @param arr the array of elements
+ *
+ */
+export function combinations(arr: any[]): any[][] {
+  if (arr.length == 0) return [];
+  const rest = arr.slice(1);
+  const comb: any[] = combinations(rest);
+  return [[arr[0]], ...comb.map(d => [arr[0], ...d]), ...comb].sort((a, b) => b.length - a.length);
+}
+
+/**
+ * Modifies inplace a step that includes aggregations to set the parameter
+ * `newcolumns` cleverly: if different aggregations have to be performed on the
+ * same column, the new column name will be suffixed accordingly.
+ *
+ * @param step a step that includes an aggregation parameter of the form:
+ *  { columns: ['A', 'B'], aggfunction: 'sum', newcolumns: []}
+ */
+export function setAggregationsNewColumnsInStep(step: StepWithAggregations) {
+  const newcolumnOccurences: { [prop: string]: number } = {};
+  for (const agg of step.aggregations) {
+    agg.newcolumns = [...agg.columns];
+    for (const c of agg.newcolumns) {
+      newcolumnOccurences[c] = (newcolumnOccurences[c] || 0) + 1;
+    }
+  }
+  for (const agg of step.aggregations) {
+    for (let i = 0; i < agg.newcolumns.length; i++) {
+      if (newcolumnOccurences[agg.newcolumns[i]] > 1) {
+        agg.newcolumns.splice(i, 1, `${agg.newcolumns[i]}-${agg.aggfunction}`);
+      }
+    }
+  }
 }

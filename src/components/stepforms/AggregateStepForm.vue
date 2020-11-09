@@ -40,7 +40,7 @@ import { Prop } from 'vue-property-decorator';
 
 import { StepFormComponent } from '@/components/formlib';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
-import { AggFunctionStep, AggregationStep } from '@/lib/steps';
+import { AggregateStep, Aggregation } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -58,7 +58,7 @@ import MultiselectWidget from './widgets/Multiselect.vue';
     MultiselectWidget,
   },
 })
-export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
+export default class AggregateStepForm extends BaseStepForm<AggregateStep> {
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
@@ -72,7 +72,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
       keepOriginalGranularity: false,
     }),
   })
-  initialStepValue!: AggregationStep;
+  initialStepValue!: AggregateStep;
 
   readonly title: string = 'Aggregate';
   widgetAggregation = AggregationWidget;
@@ -85,7 +85,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
    *  - column and newcolumn (simple strings parameters) are deprecated and replaced by
    *    columns and newcolumns (list if strings)
    */
-  editedStep: AggregationStep = {
+  editedStep: AggregateStep = {
     ...this.initialStepValue,
     ...this.stepFormDefaults,
     aggregations: this.initialStepValue.aggregations.map(x => ({
@@ -99,7 +99,7 @@ export default class AggregateStepForm extends BaseStepForm<AggregationStep> {
   };
 
   get defaultAggregation() {
-    const agg: AggFunctionStep = {
+    const agg: Aggregation = {
       columns: [],
       newcolumns: [],
       aggfunction: 'sum',
