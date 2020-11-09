@@ -18,6 +18,7 @@ from .fromdate import FromdateStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
 from .pivot import PivotStep
+from .rank import RankStep
 from .rename import RenameStep
 from .replace import ReplaceStep
 from .text import TextStep

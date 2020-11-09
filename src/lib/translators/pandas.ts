@@ -66,6 +66,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  rank(step: Readonly<S.RankStep>) {
+    return step;
+  }
+
   rename(step: Readonly<S.RenameStep>) {
     return step;
   }
