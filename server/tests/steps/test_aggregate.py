@@ -91,7 +91,7 @@ def test_multiple_aggregate(sample_df):
 def test_with_original_granularity(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
+        keep_original_granularity=True,
         on=['colA'],
         aggregations=[
             Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
@@ -115,7 +115,7 @@ def test_with_original_granularity(sample_df):
 def test_with_original_granularity_multiple_aggregations(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
+        keep_original_granularity=True,
         on=['colA'],
         aggregations=[
             Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
@@ -141,7 +141,7 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
 def test_with_original_granularity_multiple_aggregations_multiple_columns(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
+        keep_original_granularity=True,
         on=['colA'],
         aggregations=[
             Aggregation(
