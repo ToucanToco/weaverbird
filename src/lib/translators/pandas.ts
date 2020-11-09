@@ -86,6 +86,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  statistics(step: Readonly<S.StatisticsStep>) {
+    return step;
+  }
+
   replace(step: Readonly<S.ReplaceStep>) {
     return step;
   }

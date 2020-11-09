@@ -25,6 +25,7 @@ from weaverbird.steps import (
     RankStep,
     RenameStep,
     ReplaceStep,
+    StatisticsStep,
     TextStep,
 )
 
@@ -48,6 +49,7 @@ PipelineStep = Union[
     JoinStep,
     RankStep,
     RenameStep,
+    StatisticsStep,
     LowercaseStep,
     PivotStep,
     ReplaceStep,
