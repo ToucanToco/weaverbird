@@ -20,3 +20,4 @@ from .lowercase import LowercaseStep
 from .pivot import PivotStep
 from .rename import RenameStep
 from .replace import ReplaceStep
+from .text import TextStep
