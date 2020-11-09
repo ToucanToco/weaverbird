@@ -26,3 +26,22 @@ def test_todate(sample_df: DataFrame):
             }
         ),
     )
+
+
+def test_todate_automatic_guess(sample_df: DataFrame):
+    step = ToDateStep(name='todate', column='a_date')
+    result = step.execute(sample_df)
+    assert_dataframes_equals(
+        result,
+        DataFrame(
+            {
+                'a_date': [
+                    # Pandas thinks the format is '%m/%d/%Y':
+                    Timestamp(year=2019, month=6, day=10),
+                    Timestamp(year=2019, month=7, day=10),
+                    Timestamp(year=2019, month=8, day=10),
+                    None,
+                ]
+            }
+        ),
+    )

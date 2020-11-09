@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pandas import DataFrame, to_datetime
 from pydantic import Field
 
@@ -8,7 +10,7 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 class ToDateStep(BaseStep):
     name = Field('todate', const=True)
     column: ColumnName
-    format: str
+    format: Optional[str]
 
     def execute(
         self,
