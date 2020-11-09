@@ -70,7 +70,7 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  aggregate(step: Readonly<S.AggregationStep>) {
+  aggregate(step: Readonly<S.AggregateStep>) {
     return step;
   }
 
