@@ -97,4 +97,8 @@ export class PandasTranslator extends BaseTranslator {
   fromdate(step: Readonly<S.FromDateStep>) {
     return step;
   }
+
+  text(step: Readonly<S.AddTextColumnStep>) {
+    return step;
+  }
 }
