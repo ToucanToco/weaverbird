@@ -662,6 +662,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Add total rows in columns "COUNTRY", "PRODUCT"');
   });
 
+  it('generates label for addmissingdates steps', () => {
+    const step: S.AddMissingDatesStep = {
+      name: 'addmissingdates',
+      datesColumn: 'DATE',
+      datesGranularity: 'day',
+      groups: ['COUNTRY'],
+    };
+    expect(hrl(step)).toEqual('Add missing dates in "DATE"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };

@@ -97,6 +97,10 @@ function capitalize(label: string) {
  * The `Labeller` class provides a human-readable label for each step.
  */
 class StepLabeller implements StepMatcher<string> {
+  addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
+    return `Add missing dates in "${step.datesColumn}"`;
+  }
+
   aggregate(step: Readonly<S.AggregateStep>) {
     const dimensions = formatMulticol(step.on);
     const columns: string[] = [];
