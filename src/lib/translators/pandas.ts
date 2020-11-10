@@ -122,6 +122,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
+
   percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
