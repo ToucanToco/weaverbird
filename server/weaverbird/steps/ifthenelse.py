@@ -13,17 +13,13 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 class IfThenElse(BaseModel):
     condition: Condition = Field(alias='if')
     then: str
-    else_value: Union[Any, 'IfThenElse'] = Field(alias='else')
+    else_value: Union['IfThenElse', Any] = Field(alias='else')
 
     def execute(self, df, new_column):
-        # pydantic seems to have issue with this recursive field. At some point, we juste have a dict.
-        if isinstance(self.else_value, dict):
-            else_branch = IfThenElse(**self.else_value).execute(df, new_column)[new_column]
+        if isinstance(self.else_value, IfThenElse):
+            else_branch = self.else_value.execute(df, new_column)[new_column]
         else:
-            if isinstance(self.else_value, IfThenElse):
-                else_branch = self.else_value.execute(df, new_column)[new_column]
-            else:
-                else_branch = df.eval(clean_if_formula(self.else_value))
+            else_branch = df.eval(clean_if_formula(self.else_value))
 
         return df.assign(
             **{
