@@ -16,15 +16,14 @@ class IfThenElse(BaseModel):
     else_value: Union[Any, 'IfThenElse'] = Field(alias='else')
 
     def execute(self, df, new_column):
-
-        if isinstance(self.else_value, str):
-            else_branch = df.eval(clean_if_formula(self.else_value))
+        # pydantic seems to have issue with this recursive field. At some point, we juste have a dict.
+        if isinstance(self.else_value, dict):
+            else_branch = IfThenElse(**self.else_value).execute(df, new_column)[new_column]
         else:
-            # pydantic seems to have issue with this recursive field. At some point, we juste have a dict.
-            if isinstance(self.else_value, dict):
-                else_branch = IfThenElse(**self.else_value).execute(df, new_column)[new_column]
-            else:
+            if isinstance(self.else_value, IfThenElse):
                 else_branch = self.else_value.execute(df, new_column)[new_column]
+            else:
+                else_branch = df.eval(clean_if_formula(self.else_value))
 
         return df.assign(
             **{
@@ -43,7 +42,7 @@ class IfthenelseStep(BaseStep):
     new_column: ColumnName = Field(alias='newColumn')
     condition: Condition = Field(alias='if')
     then: Any
-    else_value: Union[str, IfThenElse] = Field(alias='else')
+    else_value: Union[Any, IfThenElse] = Field(alias='else')
 
     def execute(
         self,
