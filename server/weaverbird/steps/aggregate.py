@@ -1,6 +1,5 @@
-from typing import List, Literal
+from typing import List, Literal, Optional
 
-from mypy.applytype import Optional
 from pydantic import Field
 from pydantic.main import BaseModel
 
