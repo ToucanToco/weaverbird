@@ -12,8 +12,8 @@ declare namespace mathjs {
    * Math nodes interfaces to build formula logical trees
    */
   class BaseNode {
-    traverse: function;
-    transform: function;
+    traverse: Function;
+    transform: Function;
     type: string;
   }
 
@@ -36,7 +36,7 @@ declare namespace mathjs {
     name: string;
   }
 
-  class ParenthesisNode extends BaseNode{
+  class ParenthesisNode extends BaseNode {
     type: 'ParenthesisNode';
     content: MathNode;
   }
