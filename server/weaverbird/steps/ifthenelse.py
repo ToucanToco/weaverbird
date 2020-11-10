@@ -20,7 +20,7 @@ class IfThenElse(BaseModel):
         if isinstance(self.else_value, str):
             else_branch = df.eval(clean_if_formula(self.else_value))
         else:
-            # pydantic
+            # pydantic seems to have issue with this recursive field. At some point, we juste have a dict.
             if isinstance(self.else_value, dict):
                 else_branch = IfThenElse(**self.else_value).execute(df, new_column)[new_column]
             else:
