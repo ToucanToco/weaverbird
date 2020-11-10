@@ -78,6 +78,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
+    return step;
+  }
+
   argmin(step: Readonly<S.ArgminStep>) {
     return step;
   }
@@ -106,11 +110,23 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  select(step: Readonly<S.SelectStep>) {
+    return step;
+  }
+
+  uppercase(step: Readonly<S.ToUpperStep>) {
+    return step;
+  }
+
   text(step: Readonly<S.AddTextColumnStep>) {
     return step;
   }
 
   sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
+
+  percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
 }

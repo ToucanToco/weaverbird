@@ -19,15 +19,19 @@ from weaverbird.steps import (
     FilterStep,
     FormulaStep,
     FromdateStep,
+    IfthenelseStep,
     JoinStep,
     LowercaseStep,
+    PercentageStep,
     PivotStep,
     RankStep,
     RenameStep,
     ReplaceStep,
+    SelectStep,
     SortStep,
     StatisticsStep,
     TextStep,
+    UppercaseStep,
 )
 
 PipelineStep = Union[
@@ -50,12 +54,17 @@ PipelineStep = Union[
     JoinStep,
     RankStep,
     RenameStep,
+    PercentageStep,
     StatisticsStep,
+    IfthenelseStep,
+    FromdateStep,
     LowercaseStep,
+    SelectStep,
     PivotStep,
     ReplaceStep,
     SortStep,
     TextStep,
+    UppercaseStep,
 ]
 
 
