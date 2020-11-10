@@ -28,4 +28,4 @@ class PercentageStep(BaseStep):
             sums = df.groupby(self.group)[self.column].transform('sum')
         else:
             sums = df[self.column].sum()
-        return df.assign(**{new_column_name: df[self.column] / sums * 100})
+        return df.assign(**{new_column_name: df[self.column] / sums})
