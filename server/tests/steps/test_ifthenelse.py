@@ -44,3 +44,30 @@ def test_then_should_support_formulas():
     )
 
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_then_should_support_nested_else():
+    base_df = DataFrame({'a_bool': [True, False, False], 'a_number': [1, 2, 3]})
+    result_df = IfthenelseStep(
+        **{
+            'name': 'ifthenelse',
+            'newColumn': 'result',
+            'if': ComparisonCondition(column='a_bool', value=True, operator='eq'),
+            'then': '3',
+            'else': {
+                'if': ComparisonCondition(column='a_number', value=3, operator='eq'),
+                'then': '1',
+                'else': {
+                    'if': ComparisonCondition(column='a_number', value=2, operator='eq'),
+                    'then': '2',
+                    'else': '0',
+                },
+            },
+        }
+    ).execute(base_df)
+
+    expected_df = DataFrame(
+        {'a_bool': [True, False, False], 'a_number': [1, 2, 3], 'result': [3, 2, 1]}
+    )
+
+    assert_dataframes_equals(result_df, expected_df)
