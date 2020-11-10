@@ -39,7 +39,7 @@ export default class CheckboxWidget extends Vue {
   &:focus,
   &:hover {
     &::after {
-      opacity: 1;
+      opacity: .3;
     }
   }
 
@@ -61,7 +61,7 @@ export default class CheckboxWidget extends Vue {
     margin-left: -18px;
     margin-right: 6px;
     margin-top: -3px;
-    opacity: 0.25;
+    opacity: .1;
     transform: rotate(-45deg);
     width: 12px;
   }
@@ -75,6 +75,14 @@ export default class CheckboxWidget extends Vue {
   &::after {
     box-shadow: 3px -3px 0 0 $base-color inset;
     opacity: 1;
+  }
+
+  &:active,
+  &:focus,
+  &:hover {
+    &::after {
+      opacity: 1;
+    }
   }
 }
 
