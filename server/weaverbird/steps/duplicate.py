@@ -2,8 +2,7 @@ from pandas import DataFrame
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
-
-ColumnName = str
+from weaverbird.types import ColumnName
 
 
 class DuplicateStep(BaseStep):
