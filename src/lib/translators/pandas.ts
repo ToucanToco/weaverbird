@@ -110,6 +110,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
+    return step;
+  }
+
   select(step: Readonly<S.SelectStep>) {
     return step;
   }

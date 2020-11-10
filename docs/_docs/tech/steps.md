@@ -2942,6 +2942,7 @@ Allow to get unique groups of values from one or several columns.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example:
 

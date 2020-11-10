@@ -27,4 +27,5 @@ from .select import SelectStep
 from .sort import SortStep
 from .statistics import StatisticsStep
 from .text import TextStep
+from .uniquegroups import UniqueGroupsStep
 from .uppercase import UppercaseStep
