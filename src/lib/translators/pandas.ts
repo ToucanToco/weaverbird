@@ -110,6 +110,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  select(step: Readonly<S.SelectStep>) {
+    return step;
+  }
+
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
   }
