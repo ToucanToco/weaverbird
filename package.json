@@ -20,7 +20,7 @@
     "lint:ci": "yarn lint --output-file lint-report.json --format json",
     "build": "yarn build-bundle",
     "build-bundle": "rollup -c",
-    "build-doc": "typedoc --readme README.md --out dist/docs src/",
+    "build-doc": "typedoc --tsconfig tsconfig.json --readme README.md --out dist/docs src/",
     "playground": "concurrently \"yarn:build-bundle --watch\" \"node playground/server.js\"",
     "start": "node playground/server.js",
     "storybook": "concurrently \"yarn storybook:bundle --watch\" \"start-storybook -p 9001 -c .storybook\"",
