@@ -1,3 +1,4 @@
+import './AddMissingDatesStepForm.vue';
 import './AddTextColumnStepForm.vue';
 import './AggregateStepForm.vue';
 import './AppendStepForm.vue';
