@@ -107,7 +107,7 @@ An old-fashioned step looked like this:
     }
     {
       newcolumns: ['Avg-Value1'],
-      aggfunction: 'sum',
+      aggfunction: 'avg',
       columns: ['Value1']
     }
   ],
@@ -119,8 +119,8 @@ An old-fashioned step looked like this:
 
 | Group   | Sum-Value1 | Sum-Value2 | Avg-Value1 |
 | ------- | ---------- | ---------- | ---------- |
-| Group 1 | 30         | 35         | 10         |
-| Group 2 | 15         | 31         | 5          |
+| Group 1 | 40         | 35         | 13.333333  |
+| Group 2 | 16         | 31         | 5.333333   |
 
 #### Example 2: keepOriginalGranularity set to true
 
@@ -156,9 +156,9 @@ An old-fashioned step looked like this:
 
 | Label   | Group   | Value |
 | ------- | ------- | ----- |
-| Label 1 | Group 1 | 30    |
-| Label 2 | Group 1 | 30    |
-| Label 3 | Group 1 | 30    |
+| Label 1 | Group 1 | 40    |
+| Label 2 | Group 1 | 40    |
+| Label 3 | Group 1 | 40    |
 | Label 4 | Group 2 | 16    |
 | Label 5 | Group 2 | 16    |
 | Label 6 | Group 2 | 16    |
