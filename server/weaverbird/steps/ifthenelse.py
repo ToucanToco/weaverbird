@@ -1,8 +1,8 @@
-from typing import Any
+from typing import Any, Union
 
 import numpy
 from pandas import DataFrame
-from pydantic import Field
+from pydantic import BaseModel, Field
 
 from weaverbird.conditions import Condition
 from weaverbird.formula import clean_formula
@@ -10,11 +10,38 @@ from weaverbird.steps import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 
-class IfthenelseStep(BaseStep):
-    new_column: ColumnName = Field(alias='newColumn')
+class IfThenElse(BaseModel):
     condition: Condition = Field(alias='if')
-    then: Any
-    else_value: Any = Field(alias='else')
+    then: str
+    else_value: Union['IfThenElse', Any] = Field(alias='else')
+
+    class Config:
+        allow_population_by_field_name = True
+
+    def execute_ifthenelse(self, df, new_column):
+        if isinstance(self.else_value, IfThenElse):
+            else_branch = self.else_value.execute_ifthenelse(df, new_column)[new_column]
+        else:
+            else_branch = df.eval(clean_if_formula(self.else_value))
+
+        return df.assign(
+            **{
+                new_column: numpy.where(
+                    self.condition.filter(df), df.eval(clean_if_formula(self.then)), else_branch
+                )
+            }
+        )
+
+
+IfThenElse.update_forward_refs()
+
+
+class IfthenelseStep(BaseStep, IfThenElse):
+    name = Field('ifthenelse', const=True)
+    new_column: ColumnName = Field(alias='newColumn')
+
+    class Config:
+        allow_population_by_field_name = True
 
     def execute(
         self,
@@ -22,16 +49,7 @@ class IfthenelseStep(BaseStep):
         domain_retriever: DomainRetriever = None,
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
-
-        return df.assign(
-            **{
-                self.new_column: numpy.where(
-                    self.condition.filter(df),
-                    df.eval(clean_if_formula(self.then)),
-                    df.eval(clean_if_formula(self.else_value)),
-                )
-            }
-        )
+        return self.execute_ifthenelse(df, self.new_column)
 
 
 # ifthenelse can take as a parameter either a formula, or a value

@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -8,56 +9,39 @@ from weaverbird.steps.aggregate import AggregateStep, Aggregation
 @pytest.fixture
 def sample_df():
     return DataFrame(
-        {'colA': ['toto', 'tutu', 'tata', 'toto'], 'colB': [1, 2, 3, 4], 'colC': [100, 50, 25, 0]}
+        {
+            'Label': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
+            'Group': ['Group 1'] * 3 + ['Group 2'] * 3,
+            'Value1': [13, 7, 20, 1, 10, 5],
+            'Value2': [10, 21, 4, 17, 12, 2],
+        }
     )
 
 
 def test_simple_aggregate(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        on=['colA'],
-        aggregations=[Aggregation(aggfunction='sum', columns=['colB'], newcolumns=['sum_colB'])],
-    ).execute(sample_df, domain_retriever=None)
-
-    assert_dataframes_equals(
-        df_result.sort_values(by=['colA']),
-        DataFrame({'colA': ['toto', 'tutu', 'tata'], 'sum_colB': [5, 2, 3]}).sort_values(
-            by=['colA']
-        ),
-    )
-
-
-def test_simple_aggregate_multiple_columns(sample_df):
-    df_result = AggregateStep(
-        name='aggregate',
-        on=['colA'],
+        on=['Group'],
         aggregations=[
             Aggregation(
-                aggfunction='sum', columns=['colB', 'colC'], newcolumns=['sum_colB', 'sum_colC']
-            )
+                aggfunction='sum',
+                columns=['Value1', 'Value2'],
+                newcolumns=['Sum-Value1', 'Sum-Value2'],
+            ),
+            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg-Value1']),
         ],
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
     assert_dataframes_equals(
-        df_result.sort_values(by=['colA']),
+        df_result.sort_values(by=['Group']),
         DataFrame(
-            {'colA': ['toto', 'tutu', 'tata'], 'sum_colB': [5, 2, 3], 'sum_colC': [100, 50, 25]}
-        ).sort_values(by=['colA']),
-    )
-
-
-def test_avg(sample_df):
-    df_result = AggregateStep(
-        name='aggregate',
-        on=['colA'],
-        aggregations=[Aggregation(aggfunction='avg', columns=['colB'], newcolumns=['avg_colB'])],
-    ).execute(sample_df, domain_retriever=None)
-
-    assert_dataframes_equals(
-        df_result.sort_values(by=['colA']),
-        DataFrame({'colA': ['toto', 'tutu', 'tata'], 'avg_colB': [2.5, 2.0, 3.0]}).sort_values(
-            by=['colA']
-        ),
+            {
+                'Group': ['Group 1', 'Group 2'],
+                'Sum-Value1': [40, 16],
+                'Sum-Value2': [35, 31],
+                'Avg-Value1': [np.average([13, 7, 20]), np.average([1, 10, 5])],
+            }
+        ).sort_values(by=['Group']),
     )
 
 
@@ -72,41 +56,25 @@ def test_aggregate_is_no_valid_without_on(sample_df):
         )
 
 
-def test_multiple_aggregate(sample_df):
-    df_result = AggregateStep(
-        name='aggregate',
-        on=['colA'],
-        aggregations=[
-            Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
-            Aggregation(aggfunction='max', columns=['colB'], newcolumns=['max_colB']),
-        ],
-    ).execute(sample_df, domain_retriever=None)
-
-    assert_dataframes_equals(
-        df_result,
-        DataFrame({'colA': ['tata', 'toto', 'tutu'], 'min_colB': [3, 1, 2], 'max_colB': [3, 4, 2]}),
-    )
-
-
 def test_with_original_granularity(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
-        on=['colA'],
+        keep_original_granularity=True,
+        on=['Group'],
         aggregations=[
-            Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
+            Aggregation(aggfunction='sum', columns=['Value1'], newcolumns=['Total']),
         ],
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
-    print(df_result)
     assert_dataframes_equals(
         df_result,
         DataFrame(
             {
-                'colA': ['toto', 'tutu', 'tata', 'toto'],
-                'colB': [1, 2, 3, 4],
-                'colC': [100, 50, 25, 0],
-                'min_colB': [1, 2, 3, 1],
+                'Label': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
+                'Group': ['Group 1'] * 3 + ['Group 2'] * 3,
+                'Value1': [13, 7, 20, 1, 10, 5],
+                'Total': [40] * 3 + [16] * 3,
+                'Value2': [10, 21, 4, 17, 12, 2],
             }
         ),
     )
@@ -115,24 +83,24 @@ def test_with_original_granularity(sample_df):
 def test_with_original_granularity_multiple_aggregations(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
-        on=['colA'],
+        keep_original_granularity=True,
+        on=['Group'],
         aggregations=[
-            Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
-            Aggregation(aggfunction='max', columns=['colC'], newcolumns=['max_colC']),
+            Aggregation(aggfunction='min', columns=['Value1'], newcolumns=['min_Value1']),
+            Aggregation(aggfunction='max', columns=['Value2'], newcolumns=['max_Value2']),
         ],
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
-    print(df_result)
     assert_dataframes_equals(
         df_result,
         DataFrame(
             {
-                'colA': ['toto', 'tutu', 'tata', 'toto'],
-                'colB': [1, 2, 3, 4],
-                'colC': [100, 50, 25, 0],
-                'min_colB': [1, 2, 3, 1],
-                'max_colC': [100, 50, 25, 100],
+                'Label': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
+                'Group': ['Group 1'] * 3 + ['Group 2'] * 3,
+                'Value1': [13, 7, 20, 1, 10, 5],
+                'min_Value1': [7] * 3 + [1] * 3,
+                'Value2': [10, 21, 4, 17, 12, 2],
+                'max_Value2': [21] * 3 + [17] * 3,
             }
         ),
     )
@@ -141,27 +109,81 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
 def test_with_original_granularity_multiple_aggregations_multiple_columns(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
-        on=['colA'],
+        keep_original_granularity=True,
+        on=['Group'],
         aggregations=[
             Aggregation(
-                aggfunction='min', columns=['colB', 'colC'], newcolumns=['min_colB', 'min_colC']
+                aggfunction='min',
+                columns=['Value1', 'Value2'],
+                newcolumns=['min_Value1', 'min_Value2'],
             ),
-            Aggregation(aggfunction='max', columns=['colC'], newcolumns=['max_colC']),
+            Aggregation(
+                aggfunction='max',
+                columns=['Value1', 'Value2'],
+                newcolumns=['max_Value1', 'max_Value2'],
+            ),
         ],
-    ).execute(sample_df, domain_retriever=None)
+    ).execute(sample_df)
 
-    print(df_result)
     assert_dataframes_equals(
         df_result,
         DataFrame(
             {
-                'colA': ['toto', 'tutu', 'tata', 'toto'],
-                'colB': [1, 2, 3, 4],
-                'colC': [100, 50, 25, 0],
-                'min_colB': [1, 2, 3, 1],
-                'max_colC': [100, 50, 25, 100],
-                'min_colC': [0, 50, 25, 0],
+                'Label': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
+                'Group': ['Group 1'] * 3 + ['Group 2'] * 3,
+                'Value1': [13, 7, 20, 1, 10, 5],
+                'min_Value1': [7] * 3 + [1] * 3,
+                'max_Value1': [20] * 3 + [10] * 3,
+                'Value2': [10, 21, 4, 17, 12, 2],
+                'min_Value2': [4] * 3 + [2] * 3,
+                'max_Value2': [21] * 3 + [17] * 3,
             }
         ),
+    )
+
+
+def test_count(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keep_original_granularity=False,
+        on=['Group'],
+        aggregations=[
+            Aggregation(aggfunction='count', columns=['Label'], newcolumns=['count']),
+        ],
+    ).execute(sample_df)
+
+    assert_dataframes_equals(
+        df_result, DataFrame({'Group': ['Group 1', 'Group 2'], 'count': [3, 3]})
+    )
+
+
+def test_last(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keep_original_granularity=False,
+        on=['Group'],
+        aggregations=[
+            Aggregation(aggfunction='last', columns=['Label'], newcolumns=['last_Label']),
+        ],
+    ).execute(sample_df)
+
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'Group': ['Group 1', 'Group 2'], 'last_Label': ['Label 3', 'Label 6']}),
+    )
+
+
+def test_first(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keep_original_granularity=False,
+        on=['Group'],
+        aggregations=[
+            Aggregation(aggfunction='first', columns=['Label'], newcolumns=['first_Label']),
+        ],
+    ).execute(sample_df)
+
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'Group': ['Group 1', 'Group 2'], 'first_Label': ['Label 1', 'Label 4']}),
     )
