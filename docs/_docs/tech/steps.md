@@ -11,6 +11,199 @@ builder.
 
 Unless explicitly specified, all steps are supported by all backends.
 
+### `addmissingdates` step
+
+Add missing dates as new rows in a dates column. Exhaustive dates will range
+between the minimum and maximum date found in the dataset (or in each group if
+a group by logic is applied - see thereafter).
+
+You should make sure to use a group by logic if you want to add missing dates in
+independent groups of rows (e.g. you may need to add missing rows for every
+country found in a "COUNTRY" column). And you should ensure that every date is
+unique in every group of rows at the specified granularity, else you may get
+inconsistent results. You can specify "group by" columns in the `groups`
+parameter.
+
+An addmissingdates step has the following structure:
+
+```javascript
+{
+  name: 'addmissingdates',
+  datesColumn: 'DATE', // the dates columns with missing rows
+  datesGranularity: 'day', // the granularity of the date column (day, month or year)
+  groups: ['COUNTRY'] // (optional) columns used for group by logic if necessary
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: day granularity without groups
+
+**Input dataset:**
+
+| DATE                       | VALUE |
+| -------------------------- | ----- |
+| "2018-01-01T00:00:00.000Z" | 75    |
+| "2018-01-02T00:00:00.000Z" | 80    |
+| "2018-01-03T00:00:00.000Z" | 82    |
+| "2018-01-04T00:00:00.000Z" | 83    |
+| "2018-01-05T00:00:00.000Z" | 80    |
+| "2018-01-07T00:00:00.000Z" | 86    |
+| "2018-01-08T00:00:00.000Z" | 79    |
+| "2018-01-09T00:00:00.000Z" | 76    |
+| "2018-01-10T00:00:00.000Z" | 79    |
+| "2018-01-11T00:00:00.000Z" | 75    |
+
+Here the day "2018-01-06" is missing.
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'addmissingdates',
+  datesColumn: 'DATE',
+  datesGranularity: 'day'
+}
+```
+
+**Output dataset:**
+
+| DATE                       | VALUE |
+| -------------------------- | ----- |
+| "2018-01-01T00:00:00.000Z" | 75    |
+| "2018-01-02T00:00:00.000Z" | 80    |
+| "2018-01-03T00:00:00.000Z" | 82    |
+| "2018-01-04T00:00:00.000Z" | 83    |
+| "2018-01-05T00:00:00.000Z" | 80    |
+| "2018-01-06T00:00:00.000Z" |       |
+| "2018-01-07T00:00:00.000Z" | 86    |
+| "2018-01-08T00:00:00.000Z" | 79    |
+| "2018-01-09T00:00:00.000Z" | 76    |
+| "2018-01-10T00:00:00.000Z" | 79    |
+| "2018-01-11T00:00:00.000Z" | 75    |
+
+#### Example 2: day granularity with groups
+
+**Input dataset:**
+
+| COUNTRY | DATE                       | VALUE |
+| ------- | -------------------------- | ----- |
+| France  | "2018-01-01T00:00:00.000Z" | 75    |
+| France  | "2018-01-02T00:00:00.000Z" | 80    |
+| France  | "2018-01-03T00:00:00.000Z" | 82    |
+| France  | "2018-01-04T00:00:00.000Z" | 83    |
+| France  | "2018-01-05T00:00:00.000Z" | 80    |
+| France  | "2018-01-07T00:00:00.000Z" | 86    |
+| France  | "2018-01-08T00:00:00.000Z" | 79    |
+| France  | "2018-01-09T00:00:00.000Z" | 76    |
+| France  | "2018-01-10T00:00:00.000Z" | 79    |
+| France  | "2018-01-11T00:00:00.000Z" | 85    |
+| USA     | "2018-01-01T00:00:00.000Z" | 69    |
+| USA     | "2018-01-02T00:00:00.000Z" | 73    |
+| USA     | "2018-01-03T00:00:00.000Z" | 73    |
+| USA     | "2018-01-05T00:00:00.000Z" | 75    |
+| USA     | "2018-01-06T00:00:00.000Z" | 70    |
+| USA     | "2018-01-07T00:00:00.000Z" | 76    |
+| USA     | "2018-01-08T00:00:00.000Z" | 73    |
+| USA     | "2018-01-09T00:00:00.000Z" | 70    |
+| USA     | "2018-01-10T00:00:00.000Z" | 72    |
+| USA     | "2018-01-12T00:00:00.000Z" | 78    |
+
+Here the day "2018-01-06" is missing for "France" rows, and "2018-01-11" and
+"2018-01-11" are missing for "USA" rows.
+
+Note that "2018-01-12" will not be considered as a missing row for "France" rows,
+because the latest date found for this group of rows is "2018-01-11" (even though
+"2018-01-12" is the latest date found for "USA" rows).
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'addmissingdates',
+  datesColumn: 'DATE',
+  datesGranularity: 'day',
+  groups: 'COUNTRY'
+}
+```
+
+**Output dataset:**
+
+| COUNTRY | DATE                       | VALUE |
+| ------- | -------------------------- | ----- |
+| France  | "2018-01-01T00:00:00.000Z" | 75    |
+| France  | "2018-01-02T00:00:00.000Z" | 80    |
+| France  | "2018-01-03T00:00:00.000Z" | 82    |
+| France  | "2018-01-04T00:00:00.000Z" | 83    |
+| France  | "2018-01-05T00:00:00.000Z" | 80    |
+| France  | "2018-01-06T00:00:00.000Z" |       |
+| France  | "2018-01-07T00:00:00.000Z" | 86    |
+| France  | "2018-01-08T00:00:00.000Z" | 79    |
+| France  | "2018-01-09T00:00:00.000Z" | 76    |
+| France  | "2018-01-10T00:00:00.000Z" | 79    |
+| France  | "2018-01-11T00:00:00.000Z" | 85    |
+| USA     | "2018-01-01T00:00:00.000Z" | 69    |
+| USA     | "2018-01-02T00:00:00.000Z" | 73    |
+| USA     | "2018-01-03T00:00:00.000Z" | 73    |
+| USA     | "2018-01-04T00:00:00.000Z" |       |
+| USA     | "2018-01-05T00:00:00.000Z" | 75    |
+| USA     | "2018-01-06T00:00:00.000Z" | 70    |
+| USA     | "2018-01-07T00:00:00.000Z" | 76    |
+| USA     | "2018-01-08T00:00:00.000Z" | 73    |
+| USA     | "2018-01-09T00:00:00.000Z" | 70    |
+| USA     | "2018-01-10T00:00:00.000Z" | 72    |
+| USA     | "2018-01-11T00:00:00.000Z" |       |
+| USA     | "2018-01-12T00:00:00.000Z" | 78    |
+
+#### Example 3: month granularity
+
+**Input dataset:**
+
+| DATE                       | VALUE |
+| -------------------------- | ----- |
+| "2019-01-01T00:00:00.000Z" | 74    |
+| "2019-02-01T00:00:00.000Z" | 73    |
+| "2019-03-01T00:00:00.000Z" | 68    |
+| "2019-04-01T00:00:00.000Z" | 71    |
+| "2019-06-01T00:00:00.000Z" | 74    |
+| "2019-07-01T00:00:00.000Z" | 74    |
+| "2019-08-01T00:00:00.000Z" | 73    |
+| "2019-09-01T00:00:00.000Z" | 72    |
+| "2019-10-01T00:00:00.000Z" | 75    |
+| "2019-12-01T00:00:00.000Z" | 76    |
+
+Here "2019-05" and "2019-11" are missing.
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'addmissingdates',
+  datesColumn: 'DATE',
+  datesGranularity: 'month',
+}
+```
+
+**Output dataset:**
+
+| DATE                       | VALUE |
+| -------------------------- | ----- |
+| "2019-01-01T00:00:00.000Z" | 74    |
+| "2019-02-01T00:00:00.000Z" | 73    |
+| "2019-03-01T00:00:00.000Z" | 68    |
+| "2019-04-01T00:00:00.000Z" | 71    |
+| "2019-05-01T00:00:00.000Z" |       |
+| "2019-06-01T00:00:00.000Z" | 74    |
+| "2019-07-01T00:00:00.000Z" | 74    |
+| "2019-08-01T00:00:00.000Z" | 73    |
+| "2019-09-01T00:00:00.000Z" | 72    |
+| "2019-10-01T00:00:00.000Z" | 75    |
+| "2019-11-01T00:00:00.000Z" |       |
+| "2019-12-01T00:00:00.000Z" | 76    |
+
 ### `aggregate` step
 
 Perform aggregations on one or several columns.
