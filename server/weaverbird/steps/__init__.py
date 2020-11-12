@@ -24,5 +24,9 @@ from .rank import RankStep
 from .rename import RenameStep
 from .replace import ReplaceStep
 from .rollup import RollupStep
+from .select import SelectStep
+from .sort import SortStep
 from .statistics import StatisticsStep
 from .text import TextStep
+from .uniquegroups import UniqueGroupsStep
+from .uppercase import UppercaseStep

@@ -1,13 +1,12 @@
-from typing import List, Literal
+from typing import List, Literal, Optional
 
-from mypy.applytype import Optional
 from pydantic import Field
 from pydantic.main import BaseModel
 
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName
 
-AggregateFn = Literal['avg', 'sum', 'min', 'max']
+AggregateFn = Literal['avg', 'sum', 'min', 'max', 'count', 'first', 'last']
 
 functions_aliases = {'avg': 'mean'}
 
