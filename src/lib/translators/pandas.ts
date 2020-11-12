@@ -134,6 +134,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  unpivot(step: Readonly<S.UnpivotStep>) {
+    return step;
+  }
+
   top(step: Readonly<S.TopStep>) {
     return step;
   }

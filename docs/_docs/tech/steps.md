@@ -2814,6 +2814,7 @@ Unpivot a list of columns to rows.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: with `dropna`parameter to true
 
