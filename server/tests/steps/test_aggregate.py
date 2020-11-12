@@ -59,7 +59,7 @@ def test_aggregate_is_no_valid_without_on(sample_df):
 def test_with_original_granularity(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
+        keep_original_granularity=True,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='sum', columns=['Value1'], newcolumns=['Total']),
@@ -83,7 +83,7 @@ def test_with_original_granularity(sample_df):
 def test_with_original_granularity_multiple_aggregations(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
+        keep_original_granularity=True,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='min', columns=['Value1'], newcolumns=['min_Value1']),
@@ -109,7 +109,7 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
 def test_with_original_granularity_multiple_aggregations_multiple_columns(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=True,
+        keep_original_granularity=True,
         on=['Group'],
         aggregations=[
             Aggregation(
@@ -145,7 +145,7 @@ def test_with_original_granularity_multiple_aggregations_multiple_columns(sample
 def test_count(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=False,
+        keep_original_granularity=False,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='count', columns=['Label'], newcolumns=['count']),
@@ -160,7 +160,7 @@ def test_count(sample_df):
 def test_last(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=False,
+        keep_original_granularity=False,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='last', columns=['Label'], newcolumns=['last_Label']),
@@ -176,7 +176,7 @@ def test_last(sample_df):
 def test_first(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        keepOriginalGranularity=False,
+        keep_original_granularity=False,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='first', columns=['Label'], newcolumns=['first_Label']),

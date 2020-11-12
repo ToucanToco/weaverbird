@@ -23,6 +23,7 @@ from .pivot import PivotStep
 from .rank import RankStep
 from .rename import RenameStep
 from .replace import ReplaceStep
+from .rollup import RollupStep
 from .select import SelectStep
 from .sort import SortStep
 from .statistics import StatisticsStep
