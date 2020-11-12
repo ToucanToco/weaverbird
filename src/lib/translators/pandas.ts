@@ -110,6 +110,14 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
+    return step;
+  }
+
+  select(step: Readonly<S.SelectStep>) {
+    return step;
+  }
+
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
   }
@@ -118,11 +126,23 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
+
   percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
 
   top(step: Readonly<S.TopStep>) {
+    return step;
+  }
+
+  todate(step: Readonly<S.ToDateStep>) {
+    return step;
+  }
+
+  rollup(step: Readonly<S.RollupStep>) {
     return step;
   }
 }

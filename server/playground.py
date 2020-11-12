@@ -7,16 +7,16 @@ POST: execute the pipeline in the body of the request and returns the transforme
 
 Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
 """
-import json
 from glob import glob
 from os.path import basename, splitext
 
 import pandas as pd
-from flask import Flask, Response, request
+from flask import Flask, Response, jsonify, request
 
 from weaverbird.pipeline_executor import PipelineExecutor
 
 app = Flask(__name__)
+
 
 # CORS
 @app.after_request
@@ -30,11 +30,15 @@ def after_request(response):
 @app.route('/', methods=['GET', 'POST'])
 def handle_request():
     if request.method == 'GET':
-        return Response(json.dumps(get_available_domains()), mimetype='application/json')
+        return jsonify(get_available_domains())
     elif request.method == 'POST':
-        return Response(
-            execute_pipeline(request.get_json(), **request.args), mimetype='application/json'
-        )
+        try:
+            return Response(
+                execute_pipeline(request.get_json(), **request.args), mimetype='application/json'
+            )
+        except Exception as e:
+            errmsg = f'{e.__class__.__name__}: {e}'
+            return jsonify(errmsg), 400
 
 
 # Load all csv in playground's datastore
