@@ -2485,6 +2485,7 @@ specified `text`.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -2533,6 +2534,7 @@ Converts a string `column` into a date column based on a specified `format`.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 

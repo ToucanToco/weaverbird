@@ -28,5 +28,6 @@ from .select import SelectStep
 from .sort import SortStep
 from .statistics import StatisticsStep
 from .text import TextStep
+from .todate import ToDateStep
 from .uniquegroups import UniqueGroupsStep
 from .uppercase import UppercaseStep
