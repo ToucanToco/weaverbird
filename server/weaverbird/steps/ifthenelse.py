@@ -18,9 +18,9 @@ class IfThenElse(BaseModel):
     class Config:
         allow_population_by_field_name = True
 
-    def execute(self, df, new_column):
+    def execute_ifthenelse(self, df, new_column):
         if isinstance(self.else_value, IfThenElse):
-            else_branch = self.else_value.execute(df, new_column)[new_column]
+            else_branch = self.else_value.execute_ifthenelse(df, new_column)[new_column]
         else:
             else_branch = df.eval(clean_if_formula(self.else_value))
 
@@ -36,12 +36,9 @@ class IfThenElse(BaseModel):
 IfThenElse.update_forward_refs()
 
 
-class IfthenelseStep(BaseStep):
+class IfthenelseStep(BaseStep, IfThenElse):
     name = Field('ifthenelse', const=True)
     new_column: ColumnName = Field(alias='newColumn')
-    condition: Condition = Field(alias='if')
-    then: Any
-    else_value: Union[Any, IfThenElse] = Field(alias='else')
 
     class Config:
         allow_population_by_field_name = True
@@ -52,9 +49,7 @@ class IfthenelseStep(BaseStep):
         domain_retriever: DomainRetriever = None,
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
-        return IfThenElse(
-            **{'if': self.condition, 'then': self.then, 'else': self.else_value}
-        ).execute(df, self.new_column)
+        return self.execute_ifthenelse(df, self.new_column)
 
 
 # ifthenelse can take as a parameter either a formula, or a value
