@@ -15,6 +15,9 @@ class IfThenElse(BaseModel):
     then: str
     else_value: Union['IfThenElse', Any] = Field(alias='else')
 
+    class Config:
+        allow_population_by_field_name = True
+
     def execute(self, df, new_column):
         if isinstance(self.else_value, IfThenElse):
             else_branch = self.else_value.execute(df, new_column)[new_column]
@@ -39,6 +42,9 @@ class IfthenelseStep(BaseStep):
     condition: Condition = Field(alias='if')
     then: Any
     else_value: Union[Any, IfThenElse] = Field(alias='else')
+
+    class Config:
+        allow_population_by_field_name = True
 
     def execute(
         self,
