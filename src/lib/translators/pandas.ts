@@ -134,6 +134,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  top(step: Readonly<S.TopStep>) {
+    return step;
+  }
+
   todate(step: Readonly<S.ToDateStep>) {
     return step;
   }

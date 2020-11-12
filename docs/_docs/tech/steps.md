@@ -2588,6 +2588,7 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: top without `groups`, ascending order
 
