@@ -24,7 +24,7 @@ def test_substring_positive_start_end_idx(sample_df):
         {
             'Label': ['foo', 'overflow', 'some_text', 'a_word', 'toucan', 'toco'],
             'Value:': [13, 7, 20, 1, 10, 5],
-            'Label_PCT': ['foo', 'over', 'some', 'a_wo', 'touc', 'toco'],
+            'Label_SUBSTR': ['foo', 'over', 'some', 'a_wo', 'touc', 'toco'],
         }
     )
     assert_dataframes_equals(result_df, expected_df)
@@ -39,7 +39,7 @@ def test_substring_positive_start_negative_end(sample_df):
         {
             'Label': ['foo', 'overflow', 'some_text', 'a_word', 'toucan', 'toco'],
             'Value:': [13, 7, 20, 1, 10, 5],
-            'Label_PCT': ['o', 'verflo', 'ome_tex', '_wor', 'ouca', 'oc'],
+            'Label_SUBSTR': ['o', 'verflo', 'ome_tex', '_wor', 'ouca', 'oc'],
         }
     )
     assert_dataframes_equals(result_df, expected_df)
@@ -54,7 +54,7 @@ def test_substring_negative_start_negative_end(sample_df):
         {
             'Label': ['foo', 'overflow', 'some_text', 'a_word', 'toucan', 'toco'],
             'Value:': [13, 7, 20, 1, 10, 5],
-            'Label_PCT': ['foo', 'low', 'ext', 'ord', 'can', 'oco'],
+            'Label_SUBSTR': ['foo', 'low', 'ext', 'ord', 'can', 'oco'],
         }
     )
     assert_dataframes_equals(result_df, expected_df)

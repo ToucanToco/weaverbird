@@ -20,7 +20,7 @@ class SubstringStep(BaseStep):
         domain_retriever: DomainRetriever = None,
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
-        new_column_name = self.new_column_name or f'{self.column}SUBSTR'
+        new_column_name = self.new_column_name or f'{self.column}_SUBSTR'
         # Weaverbird indexes start at one
         start_index = self.start_index - 1
         # Weaverbird substring end_index is inclusive. in python, it is exclusive. therefore, no need to substract one
