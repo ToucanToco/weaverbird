@@ -1,8 +1,4 @@
-ARG JEKYLL_BASEURL=''
-
-####################################
-
-FROM alpine:3.7 as builder
+FROM ruby:2-alpine as builder
 
 ENV LANGUAGE en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -26,15 +22,13 @@ WORKDIR /jekyll
 ADD . /jekyll
 RUN bundle install
 
-ARG JEKYLL_BASEURL
-RUN jekyll build --baseurl $JEKYLL_BASEURL
+RUN jekyll build
 
 ####################################
 
 FROM nginx:alpine
 
-ARG JEKYLL_BASEURL
-COPY --from=builder /jekyll/_site /usr/share/nginx/html/$JEKYLL_BASEURL
+COPY --from=builder /jekyll/_site /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 80
