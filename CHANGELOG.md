@@ -4,6 +4,7 @@
 
 ### Added
 
+- Add an "addmissingdates" step (to add mising dates as new rows in a dates column)
 - Add a "totals" step (to compute and append total rows)
 - templating support in rename step
 
