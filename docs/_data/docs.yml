@@ -1,6 +1,7 @@
 - title: User interface
   docs:
     - general-principles
+    - addmissingdates
     - text
     - totals
     - aggregate
