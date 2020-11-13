@@ -17,6 +17,8 @@ Add missing dates as new rows in a dates column. Exhaustive dates will range
 between the minimum and maximum date found in the dataset (or in each group if
 a group by logic is applied - see thereafter).
 
+Added rows will be set to null in columns not referenced in the step configuration.
+
 You should make sure to use a group by logic if you want to add missing dates in
 independent groups of rows (e.g. you may need to add missing rows for every
 country found in a "COUNTRY" column). And you should ensure that every date is
