@@ -158,6 +158,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Extract ${step.operation} from "${step.column}"`;
   }
 
+  delete(step: Readonly<S.DeleteStep>) {
+    return `Delete columns ${formatMulticol(step.columns)}`;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return `Use domain "${step.domain}"`;
   }
@@ -166,8 +170,8 @@ class StepLabeller implements StepMatcher<string> {
     return `Duplicate "${step.column}" in "${step.new_column_name}"`;
   }
 
-  delete(step: Readonly<S.DeleteStep>) {
-    return `Delete columns ${formatMulticol(step.columns)}`;
+  duration(step: Readonly<S.ComputeDurationStep>) {
+    return `Compute duration between "${step.startDateColumn}" and "${step.endDateColumn}"`;
   }
 
   evolution(step: Readonly<S.EvolutionStep>) {
