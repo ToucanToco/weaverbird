@@ -149,4 +149,8 @@ export class PandasTranslator extends BaseTranslator {
   rollup(step: Readonly<S.RollupStep>) {
     return step;
   }
+
+  split(step: Readonly<S.SplitStep>) {
+    return step;
+  }
 }
