@@ -11,6 +11,7 @@ You can use this step to exctract a sustring of characters in a text column.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas
 
 #### Where to find this step?
 
