@@ -32,7 +32,7 @@ def make_aggregation(aggregation: Aggregation) -> dict:
 
 class AggregateStep(BaseStep):
     name = Field('aggregate', const=True)
-    on: List[ColumnName] = Field(min_items=0)
+    on: List[ColumnName] = []
     aggregations: List[Aggregation]
     keep_original_granularity: Optional[bool] = Field(
         default=False, alias='keepOriginalGranularity'
