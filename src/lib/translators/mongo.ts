@@ -26,6 +26,10 @@ type DateOperationMap = {
   [OP in S.DateExtractPropertyStep['operation']]: string;
 };
 
+type DurationMultiplierMap = {
+  [D in S.ComputeDurationStep['durationIn']]: number;
+};
+
 type FilterComboAndMongo = {
   $and: MongoStep[];
 };
@@ -41,6 +45,14 @@ const DATE_EXTRACT_MAP: DateOperationMap = {
   dayOfYear: '$dayOfYear',
   dayOfWeek: '$dayOfWeek',
   week: '$week',
+};
+
+// A mapping of multiplier to apply to convert milliseconds in days, hours, minutes or seconds
+const DURATION_MULTIPLIER_MAP: DurationMultiplierMap = {
+  days: 24 * 60 * 60 * 1000,
+  hours: 60 * 60 * 1000,
+  minutes: 60 * 1000,
+  seconds: 1000,
 };
 
 /**
@@ -1883,6 +1895,17 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
     $addFields: { [step.new_column_name]: $$(step.column) },
+  }),
+  duration: (step: Readonly<S.ComputeDurationStep>) => ({
+    $addFields: {
+      [step.newColumnName]: {
+        $divide: [
+          // a time difference between dates is returned in milliseconds by Mongo
+          { $subtract: [$$(step.endDateColumn), $$(step.startDateColumn)] },
+          DURATION_MULTIPLIER_MAP[step.durationIn],
+        ],
+      },
+    },
   }),
   evolution: transformEvolution,
   fillna: transformFillna,

@@ -4596,4 +4596,96 @@ describe('Pipeline to mongo translator', () => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate duration steps with duration in days', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'duration',
+        newColumnName: 'NEW',
+        startDateColumn: 'START',
+        endDateColumn: 'END',
+        durationIn: 'days',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW: {
+            $divide: [{ $subtract: ['$END', '$START'] }, 24 * 60 * 60 * 1000],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate duration steps with duration in hours', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'duration',
+        newColumnName: 'NEW',
+        startDateColumn: 'START',
+        endDateColumn: 'END',
+        durationIn: 'hours',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW: {
+            $divide: [{ $subtract: ['$END', '$START'] }, 60 * 60 * 1000],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate duration steps with duration in minutes', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'duration',
+        newColumnName: 'NEW',
+        startDateColumn: 'START',
+        endDateColumn: 'END',
+        durationIn: 'minutes',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW: {
+            $divide: [{ $subtract: ['$END', '$START'] }, 60 * 1000],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate duration steps with duration in seconds', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'duration',
+        newColumnName: 'NEW',
+        startDateColumn: 'START',
+        endDateColumn: 'END',
+        durationIn: 'seconds',
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW: {
+            $divide: [{ $subtract: ['$END', '$START'] }, 1000],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });
