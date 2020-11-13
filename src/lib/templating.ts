@@ -223,6 +223,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  delete(step: Readonly<S.DeleteStep>) {
+    return { ...step };
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return { ...step };
   }
@@ -231,8 +235,12 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
-  delete(step: Readonly<S.DeleteStep>) {
-    return { ...step };
+  duration(step: Readonly<S.ComputeDurationStep>) {
+    return {
+      ...step,
+      startDateColumn: _interpolate(this.interpolateFunc, step.startDateColumn, this.context),
+      endDateColumn: _interpolate(this.interpolateFunc, step.endDateColumn, this.context),
+    };
   }
 
   evolution(step: Readonly<S.EvolutionStep>) {
