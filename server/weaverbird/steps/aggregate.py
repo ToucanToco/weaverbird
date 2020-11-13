@@ -32,7 +32,7 @@ def make_aggregation(aggregation: Aggregation) -> dict:
 
 class AggregateStep(BaseStep):
     name = Field('aggregate', const=True)
-    on: List[ColumnName] = Field(min_items=1)
+    on: List[ColumnName] = Field(min_items=0)
     aggregations: List[Aggregation]
     keep_original_granularity: Optional[bool] = Field(
         default=False, alias='keepOriginalGranularity'
@@ -42,7 +42,14 @@ class AggregateStep(BaseStep):
         allow_population_by_field_name = True
 
     def execute(self, df, domain_retriever=None, execute_pipeline=None):
-        grouped_by_df = df.groupby(self.on, as_index=False)
+        group_by_columns = self.on
+
+        # if no group is specified, we create a pseudo column with a single value
+        if len(group_by_columns) == 0:
+            group_by_columns = ['__VQB__GROUP_BY__']
+            df[group_by_columns[0]] = True
+
+        grouped_by_df = df.groupby(group_by_columns, as_index=False)
         first_aggregation = self.aggregations[0]
         aggs = make_aggregation(first_aggregation)
         all_results = grouped_by_df.agg(aggs).rename(
@@ -51,13 +58,18 @@ class AggregateStep(BaseStep):
                 for col, new_col in zip(first_aggregation.columns, first_aggregation.new_columns)
             }
         )
+        # we do not want the pseudo column to ever leave this function
+        if len(self.on) == 0:
+            del df[group_by_columns[0]]
+            del all_results[group_by_columns[0]]
 
         for idx, aggregation in enumerate(self.aggregations[1:]):
             aggs = make_aggregation(aggregation)
-            all_results[self.on + aggregation.new_columns] = grouped_by_df.agg(aggs)[
-                self.on + aggregation.columns
+            all_results[group_by_columns + aggregation.new_columns] = grouped_by_df.agg(aggs)[
+                group_by_columns + aggregation.columns
             ]
+
         # it is faster this way, than to trasnform the original df
         if self.keep_original_granularity:
-            return df.merge(all_results, on=self.on, how='left')
+            return df.merge(all_results, on=group_by_columns, how='left')
         return all_results

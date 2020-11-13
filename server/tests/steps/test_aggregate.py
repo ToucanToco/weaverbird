@@ -45,17 +45,6 @@ def test_simple_aggregate(sample_df):
     )
 
 
-def test_aggregate_is_no_valid_without_on(sample_df):
-    with pytest.raises(ValueError):
-        AggregateStep(
-            name='aggregate',
-            on=[],
-            aggregations=[
-                Aggregation(aggfunction='min', columns=['colB'], newcolumns=['min_colB']),
-            ],
-        )
-
-
 def test_with_original_granularity(sample_df):
     df_result = AggregateStep(
         name='aggregate',
@@ -186,4 +175,20 @@ def test_first(sample_df):
     assert_dataframes_equals(
         df_result,
         DataFrame({'Group': ['Group 1', 'Group 2'], 'first_Label': ['Label 1', 'Label 4']}),
+    )
+
+
+def test_without_on(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keep_original_granularity=False,
+        on=[],
+        aggregations=[
+            Aggregation(aggfunction='sum', columns=['Value1'], newcolumns=['sum_value']),
+        ],
+    ).execute(sample_df)
+
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'sum_value': [56]}),
     )
