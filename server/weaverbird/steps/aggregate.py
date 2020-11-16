@@ -1,5 +1,6 @@
 from typing import List, Literal, Optional
 
+from pandas import DataFrame
 from pydantic import Field
 from pydantic.main import BaseModel
 
@@ -41,13 +42,13 @@ class AggregateStep(BaseStep):
     class Config:
         allow_population_by_field_name = True
 
-    def execute(self, df, domain_retriever=None, execute_pipeline=None):
+    def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None):
         group_by_columns = self.on
 
         # if no group is specified, we create a pseudo column with a single value
         if len(group_by_columns) == 0:
             group_by_columns = ['__VQB__GROUP_BY__']
-            df[group_by_columns[0]] = True
+            df = df.assign(**{group_by_columns[0]: True})
 
         grouped_by_df = df.groupby(group_by_columns, as_index=False)
         first_aggregation = self.aggregations[0]
