@@ -36,9 +36,9 @@ def test_keep_all_col(sample_df):
                 'Label 5 - Groupe 2 - Spain',
                 'Label 6 - Groupe 2 - USA',
             ],
-            'Label_1': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
-            'Label_2': ['Groupe 1'] * 3 + ['Groupe 2'] * 3,
-            'Label_3': ['France', 'Spain', 'USA'] * 2,
+            'Label_1': ['Label 1 ', 'Label 2 ', 'Label 3 ', 'Label 4 ', 'Label 5 ', 'Label 6 '],
+            'Label_2': [' Groupe 1 '] * 3 + [' Groupe 2 '] * 3,
+            'Label_3': [' France', ' Spain', ' USA'] * 2,
             'Values': [13, 7, 20, 1, 10, 5],
         }
     )
@@ -59,8 +59,8 @@ def test_keep_less_columns(sample_df):
                 'Label 5 - Groupe 2 - Spain',
                 'Label 6 - Groupe 2 - USA',
             ],
-            'Label_1': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
-            'Label_2': ['Groupe 1'] * 3 + ['Groupe 2'] * 3,
+            'Label_1': ['Label 1 ', 'Label 2 ', 'Label 3 ', 'Label 4 ', 'Label 5 ', 'Label 6 '],
+            'Label_2': [' Groupe 1 '] * 3 + [' Groupe 2 '] * 3,
             'Values': [13, 7, 20, 1, 10, 5],
         }
     )

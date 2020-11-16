@@ -21,5 +21,5 @@ class SplitStep(BaseStep):
         all_new_col = {}
         new_serie = df[self.column].str.split(self.delimiter)
         for i in range(self.number_cols_to_keep):
-            all_new_col[f'{self.column}_{i + 1}'] = new_serie.str[i].str.strip()
+            all_new_col[f'{self.column}_{i + 1}'] = new_serie.str[i]
         return df.assign(**all_new_col)
