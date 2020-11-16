@@ -13,6 +13,8 @@
       :automatic-new-field="false"
       data-path=".toRename"
       :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
     />
     <StepFormButtonbar />
   </div>
@@ -25,6 +27,8 @@ import { StepFormComponent } from '@/components/formlib';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
 import { RenameStep } from '@/lib/steps';
+import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -36,6 +40,10 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class RenameStepForm extends BaseStepForm<RenameStep> {
+  @VQBModule.State availableVariables?: VariablesBucket;
+
+  @VQBModule.State variableDelimiters?: VariableDelimiters;
+
   @Prop({ type: Object, default: () => ({ name: 'rename', toRename: [['', '']] }) })
   initialStepValue!: RenameStep;
 

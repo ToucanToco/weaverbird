@@ -32,6 +32,7 @@ from weaverbird.steps import (
     SortStep,
     SplitStep,
     StatisticsStep,
+    SubstringStep,
     TextStep,
     ToDateStep,
     TopStep,
@@ -77,6 +78,7 @@ PipelineStep = Union[
     UniqueGroupsStep,
     UppercaseStep,
     SplitStep,
+    SubstringStep,
 ]
 
 

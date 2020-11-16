@@ -5,6 +5,7 @@
 ### Added
 
 - Add a "totals" step (to compute and append total rows)
+- templating support in rename step
 
 ## [0.29.0] - 2020-11-02
 
