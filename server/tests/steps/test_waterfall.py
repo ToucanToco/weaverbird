@@ -80,9 +80,14 @@ def test_with_groups():
             + ['parent'] * 2
             + ['child'] * 4
             + ['parent']
-            + ['parent', None, None] * 2,
-            'product': ['product1', 'product2'] * 8,
+            + ['parent', None, None],
+            'product': ['product1', 'product2'] * 3
+            + ['product2', 'product1']
+            + ['product1', 'product2'] * 2
+            + ['product2', 'product1'] * 2,
             'revenue': [358, 473, 27, 10, 35, -5, 40, 62, 5, 7, 35, 30, 2, 40, 515, 460],
         }
     )
-    assert_dataframes_equals(expected_df, result_df)
+    assert_dataframes_equals(
+        expected_df.sort_values(by='revenue'), result_df.sort_values(by='revenue')
+    )
