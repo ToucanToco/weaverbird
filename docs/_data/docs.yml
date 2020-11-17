@@ -16,6 +16,7 @@
     - custom
     - delete
     - duplicate
+    - duration
     - evolution
     - dateextract
     - substring
