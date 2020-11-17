@@ -12,6 +12,7 @@ delimiter.
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas
 
 #### Where to find this step?
 

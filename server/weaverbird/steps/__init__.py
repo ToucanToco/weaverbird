@@ -26,6 +26,7 @@ from .replace import ReplaceStep
 from .rollup import RollupStep
 from .select import SelectStep
 from .sort import SortStep
+from .split import SplitStep
 from .statistics import StatisticsStep
 from .substring import SubstringStep
 from .text import TextStep

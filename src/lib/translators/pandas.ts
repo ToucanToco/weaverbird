@@ -150,6 +150,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  split(step: Readonly<S.SplitStep>) {
+    return step;
+  }
+
   substring(step: Readonly<S.SubstringStep>) {
     return step;
   }
