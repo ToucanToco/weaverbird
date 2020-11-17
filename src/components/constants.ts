@@ -76,6 +76,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'dateextract', label: 'Extract week', defaults: { operation: 'week' } },
     { name: 'dateextract', label: 'Extract other', defaults: { operation: 'hour' } },
     { name: 'addmissingdates', label: 'Add missing dates' },
+    { name: 'duration', label: 'Compute duration' },
   ],
   reshape: [
     { name: 'pivot', label: 'Pivot' },

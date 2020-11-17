@@ -4,6 +4,7 @@ import './AggregateStepForm.vue';
 import './AppendStepForm.vue';
 import './ArgminStepForm.vue';
 import './ArgmaxStepForm.vue';
+import './ComputeDurationStepForm.vue';
 import './ConcatenateStepForm.vue';
 import './ConvertStepForm.vue';
 import './CumSumStepForm.vue';

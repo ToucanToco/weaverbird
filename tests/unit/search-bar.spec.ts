@@ -66,6 +66,7 @@ describe('SearchBar', () => {
       'totals',
       'addmissingdates',
       'movingaverage',
+      'duration',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });
@@ -121,6 +122,7 @@ describe('SearchBar', () => {
       'totals',
       'addmissingdates',
       'movingaverage',
+      'duration',
     ]);
     expect(multiselectOptions).toEqual(expectedOptions);
   });

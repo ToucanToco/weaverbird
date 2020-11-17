@@ -155,6 +155,7 @@ describe('ActionToolbarButton active', () => {
       '!dateextract', // week
       ['dateextract', { operation: 'hour' }], // other
       'addmissingdates',
+      'duration',
     ]);
     const wrappers = actionsWrappers.wrappers.map(w => w.text());
     expect(wrappers).toEqual([
@@ -166,6 +167,7 @@ describe('ActionToolbarButton active', () => {
       'Extract week',
       'Extract other',
       'Add missing dates',
+      'Compute duration',
     ]);
   });
 
