@@ -8,10 +8,12 @@ on:
       - master
     paths:
       - 'server/**'
+      - '.github/workflows/ci-server.yml'
   pull_request:
     types: [opened, synchronize, reopened]
     paths:
       - 'server/**'
+      - '.github/workflows/ci-server.yml'
 
 jobs:
   run:
