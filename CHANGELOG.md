@@ -1,5 +1,11 @@
 # Changelog
 
+### UNRELEASED
+
+## Changed
+
+- Checkboxes: hovered and checked states are more distinct visually
+
 ## [0.30.0] - 2020-11-12
 
 ### Added
