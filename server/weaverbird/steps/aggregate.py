@@ -50,19 +50,24 @@ class AggregateStep(BaseStep):
             group_by_columns = ['__VQB__GROUP_BY__']
             df = df.assign(**{group_by_columns[0]: True})
 
-        grouped_by_df = df.groupby(group_by_columns, as_index=False)
-        first_aggregation = self.aggregations[0]
-        aggs = make_aggregation(first_aggregation)
-        all_results = grouped_by_df.agg(aggs).rename(
-            columns={
-                col: new_col
-                for col, new_col in zip(first_aggregation.columns, first_aggregation.new_columns)
-            }
-        )
+        grouped_by_df = df.groupby(group_by_columns)
+        aggregated_cols = []
+        for aggregation in self.aggregations:
+            for col, new_col in zip(aggregation.columns, aggregation.new_columns):
+                agg_serie = (
+                    grouped_by_df[col]
+                    .agg(get_aggregate_fn(aggregation.agg_function))
+                    .rename(new_col)
+                )
+                aggregated_cols.append(agg_serie)
+
+        df_result = DataFrame(aggregated_cols).transpose().reset_index()
+
         # we do not want the pseudo column to ever leave this function
         if len(self.on) == 0:
-            del df[group_by_columns[0]]
-            del all_results[group_by_columns[0]]
+            del df_result[group_by_columns[0]]
+
+        return df_result
 
         for idx, aggregation in enumerate(self.aggregations[1:]):
             aggs = make_aggregation(aggregation)
