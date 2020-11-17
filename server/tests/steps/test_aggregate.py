@@ -203,9 +203,7 @@ def test_count_unique_values(sample_df):
         ],
     ).execute(sample_df)
 
-    print(df_result)
     assert_dataframes_equals(
         df_result,
         DataFrame({'Group': ['Group 1', 'Group 2'], '__vqb_count__': [3, 3]}),
     )
-

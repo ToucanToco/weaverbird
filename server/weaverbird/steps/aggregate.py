@@ -67,15 +67,8 @@ class AggregateStep(BaseStep):
         if len(self.on) == 0:
             del df_result[group_by_columns[0]]
 
-        return df_result
-
-        for idx, aggregation in enumerate(self.aggregations[1:]):
-            aggs = make_aggregation(aggregation)
-            all_results[group_by_columns + aggregation.new_columns] = grouped_by_df.agg(aggs)[
-                group_by_columns + aggregation.columns
-            ]
-
-        # it is faster this way, than to trasnform the original df
+        # it is faster this way, than to transform the original df
         if self.keep_original_granularity:
-            return df.merge(all_results, on=group_by_columns, how='left')
-        return all_results
+            return df.merge(df_result, on=group_by_columns, how='left')
+
+        return df_result
