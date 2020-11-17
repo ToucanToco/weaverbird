@@ -10,7 +10,7 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 class SubstringStep(BaseStep):
     name = Field('substring', const=True)
     column: ColumnName
-    new_column_name: Optional[ColumnName]
+    new_column_name: Optional[ColumnName] = Field(alias='newColumnName')
     start_index: int
     end_index: int
 
