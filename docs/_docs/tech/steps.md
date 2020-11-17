@@ -1013,6 +1013,82 @@ This step is meant to duplicate a column.
 | Company 2 | 0     | Company 2    |
 | Company 3 | 20    | Company 3    |
 
+### `duration` step
+
+Compute the duration (in days, hours, minutes or seconds) between 2 dates in a
+new column.
+
+```javascript
+{
+  name: 'duration',
+  newColumnName: 'DURATION', // new column name
+  startDateColumn: 'START_DATE', // start date
+  endDateColumn: 'END_DATE', // end date
+  durationIn: 'days', // duration units (days, hours, minutes or seconds)
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.0
+- Mongo 3.6
+
+#### Example 1: duration in days
+
+**Input dataset:**
+
+| START_DATE                 | END_DATE                   |
+| -------------------------- | -------------------------- |
+| "2020-01-01T00:00:00.000Z" | "2020-01-31T00:00:00.000Z" |
+| "2020-01-01T00:00:00.000Z" | "2020-12-31T00:00:00.000Z" |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'duration',
+  newColumnName: 'DURATION',
+  startDateColumn: 'START_DATE',
+  endDateColumn: 'END_DATE',
+  durationIn: 'days',
+}
+```
+
+**Output dataset:**
+
+| START_HOUR                 | END_HOUR                   | DURATION |
+| -------------------------- | -------------------------- | -------- |
+| "2020-01-01T00:00:00.000Z" | "2020-01-31T00:00:00.000Z" | 30       |
+| "2020-01-01T00:00:00.000Z" | "2020-12-31T00:00:00.000Z" | 365      |
+
+#### Example 2: duration in minutes
+
+**Input dataset:**
+
+| START_HOUR                 | END_HOUR                   |
+| -------------------------- | -------------------------- |
+| "2020-01-01T14:00:00.000Z" | "2020-01-31T15:00:00.000Z" |
+| "2020-01-01T15:00:00.000Z" | "2020-12-31T20:00:00.000Z" |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'duration',
+  newColumnName: 'DURATION',
+  startDateColumn: 'START_HOUR',
+  endDateColumn: 'END_HOUR',
+  durationIn: 'minutes',
+}
+```
+
+**Output dataset:**
+
+| START_HOUR                 | END_HOUR                   | DURATION |
+| -------------------------- | -------------------------- | -------- |
+| "2020-01-01T14:00:00.000Z" | "2020-01-31T15:00:00.000Z" | 60       |
+| "2020-01-01T15:00:00.000Z" | "2020-12-31T20:00:00.000Z" | 300      |
+
 ### `evolution` step
 
 Use this step if you need to compute the row-by-row evolution of a value column,
