@@ -157,4 +157,8 @@ export class PandasTranslator extends BaseTranslator {
   substring(step: Readonly<S.SubstringStep>) {
     return step;
   }
+
+  waterfall(step: Readonly<S.WaterfallStep>) {
+    return step;
+  }
 }
