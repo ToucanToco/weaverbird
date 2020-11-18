@@ -1,29 +1,16 @@
-from typing import List, Union
+from typing import List
 
 from pandas import DataFrame
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
+from weaverbird.steps.combination import PipelineOrDomainName, resolve_pipeline_for_combination
 from weaverbird.types import DomainRetriever, PipelineExecutor
-
-
-def resolve_pipeline(
-    pipeline: Union[List[dict], str],
-    domain_retriever: DomainRetriever,
-    execute_pipeline: PipelineExecutor,
-) -> DataFrame:
-    """
-    Combined pipelines can be either single domains (str), or complete pipeline (list of steps)
-    """
-    if isinstance(pipeline, str):
-        return domain_retriever(pipeline)
-    else:
-        return execute_pipeline(pipeline)
 
 
 class AppendStep(BaseStep):
     name = Field('append', const=True)
-    pipelines: List[Union[List[dict], str]]
+    pipelines: List[PipelineOrDomainName]
 
     def execute(
         self,
@@ -32,7 +19,7 @@ class AppendStep(BaseStep):
         execute_pipeline: PipelineExecutor,
     ) -> DataFrame:
         other_dfs = [
-            resolve_pipeline(
+            resolve_pipeline_for_combination(
                 pipeline,
                 domain_retriever,
                 execute_pipeline,
