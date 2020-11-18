@@ -3,7 +3,7 @@ from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps import JoinStep
-from weaverbird.types import PipelineExecutor
+from weaverbird.types import DomainRetriever, PipelineExecutor
 
 
 @pytest.fixture
@@ -16,7 +16,16 @@ def mock_execute_pipeline() -> PipelineExecutor:
     return lambda p: DataFrame({'name': ['bar', 'baz'], 'score': [100, 200]})
 
 
-def test_join_left(sample_df: DataFrame, mock_execute_pipeline: PipelineExecutor):
+@pytest.fixture
+def mock_domain_retriever() -> DomainRetriever:
+    return lambda p: DataFrame({'name': ['bar', 'baz'], 'score': [1, 2]})
+
+
+def test_join_left(
+    sample_df: DataFrame,
+    mock_domain_retriever: DomainRetriever,
+    mock_execute_pipeline: PipelineExecutor,
+):
     df_result = JoinStep(
         name='join',
         right_pipeline=[{}],
@@ -24,7 +33,9 @@ def test_join_left(sample_df: DataFrame, mock_execute_pipeline: PipelineExecutor
             ['NAME', 'name'],
         ],
         type='left',
-    ).execute(sample_df, domain_retriever=None, execute_pipeline=mock_execute_pipeline)
+    ).execute(
+        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
 
     expected_result = DataFrame(
         {'NAME': ['foo', 'bar'], 'name': [None, 'bar'], 'AGE': [42, 43], 'score': [None, 100]}
@@ -32,7 +43,11 @@ def test_join_left(sample_df: DataFrame, mock_execute_pipeline: PipelineExecutor
     assert_dataframes_equals(df_result, expected_result)
 
 
-def test_join_outer(sample_df: DataFrame, mock_execute_pipeline: PipelineExecutor):
+def test_join_outer(
+    sample_df: DataFrame,
+    mock_domain_retriever: DomainRetriever,
+    mock_execute_pipeline: PipelineExecutor,
+):
     df_result = JoinStep(
         name='join',
         right_pipeline=[{}],
@@ -40,7 +55,9 @@ def test_join_outer(sample_df: DataFrame, mock_execute_pipeline: PipelineExecuto
             ['NAME', 'name'],
         ],
         type='left outer',
-    ).execute(sample_df, domain_retriever=None, execute_pipeline=mock_execute_pipeline)
+    ).execute(
+        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
 
     expected_result = DataFrame(
         {
@@ -53,7 +70,11 @@ def test_join_outer(sample_df: DataFrame, mock_execute_pipeline: PipelineExecuto
     assert_dataframes_equals(df_result, expected_result)
 
 
-def test_join_inner(sample_df: DataFrame, mock_execute_pipeline: PipelineExecutor):
+def test_join_inner(
+    sample_df: DataFrame,
+    mock_domain_retriever: DomainRetriever,
+    mock_execute_pipeline: PipelineExecutor,
+):
     df_result = JoinStep(
         name='join',
         right_pipeline=[{}],
@@ -61,7 +82,9 @@ def test_join_inner(sample_df: DataFrame, mock_execute_pipeline: PipelineExecuto
             ['NAME', 'name'],
         ],
         type='inner',
-    ).execute(sample_df, domain_retriever=None, execute_pipeline=mock_execute_pipeline)
+    ).execute(
+        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
 
     expected_result = DataFrame(
         {
@@ -70,5 +93,30 @@ def test_join_inner(sample_df: DataFrame, mock_execute_pipeline: PipelineExecuto
             'AGE': [43],
             'score': [100],
         }
+    )
+    assert_dataframes_equals(df_result, expected_result)
+
+
+def test_join_domain_name(
+    sample_df: DataFrame,
+    mock_domain_retriever: DomainRetriever,
+    mock_execute_pipeline: PipelineExecutor,
+):
+    """
+    It should accept a domain name instead of a complete pipeline
+    """
+    df_result = JoinStep(
+        name='join',
+        right_pipeline='plop',
+        on=[
+            ['NAME', 'name'],
+        ],
+        type='left',
+    ).execute(
+        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
+
+    expected_result = DataFrame(
+        {'NAME': ['foo', 'bar'], 'name': [None, 'bar'], 'AGE': [42, 43], 'score': [None, 1]}
     )
     assert_dataframes_equals(df_result, expected_result)
