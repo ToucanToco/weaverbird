@@ -62,7 +62,7 @@ def test_substring_negative_start_negative_end(sample_df):
 
 def test_substring_new_column_name(sample_df):
     result_df = SubstringStep(
-        name='substring', column='Label', start_index=-3, end_index=-1, newColumnName='FOO'
+        name='substring', column='Label', start_index=-3, end_index=-1, new_column_name='FOO'
     ).execute(sample_df)
 
     expected_df = pd.DataFrame(
