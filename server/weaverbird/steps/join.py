@@ -4,6 +4,7 @@ from pandas import DataFrame, merge
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
+from weaverbird.steps.combination import PipelineOrDomainName, resolve_pipeline_for_combination
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 JoinColumnsPair = Tuple[ColumnName, ColumnName]
@@ -11,7 +12,7 @@ JoinColumnsPair = Tuple[ColumnName, ColumnName]
 
 class JoinStep(BaseStep):
     name = Field('join', const=True)
-    right_pipeline: Union[List[dict], str]
+    right_pipeline: Union[PipelineOrDomainName]
     type: Literal['left', 'inner', 'left outer']
     on: List[JoinColumnsPair] = Field(..., min_items=1)
 
@@ -21,12 +22,9 @@ class JoinStep(BaseStep):
         domain_retriever: DomainRetriever,
         execute_pipeline: PipelineExecutor,
     ) -> DataFrame:
-        if isinstance(self.right_pipeline, str):
-            # right_pipeline can be a domain name...
-            right_df = domain_retriever(self.right_pipeline)
-        else:
-            # ...or a complete pipeline
-            right_df = execute_pipeline(self.right_pipeline)
+        right_df = resolve_pipeline_for_combination(
+            self.right_pipeline, domain_retriever, execute_pipeline
+        )
 
         if self.type == 'left outer':
             how = 'outer'
