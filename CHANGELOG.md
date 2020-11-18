@@ -1,12 +1,13 @@
 # Changelog
 
-## UNRELEASED
+## [0.30.0] - 2020-11-12
 
 ### Added
 
 - Add an "addmissingdates" step (to add mising dates as new rows in a dates column)
 - Add a "totals" step (to compute and append total rows)
 - Add a "movingaverage" step (to compute a moving average in a new column)
+- Add a "duration" step (to compute a a duration between 2 dates)
 - templating support in rename step
 
 ## [0.29.0] - 2020-11-02
@@ -507,6 +508,7 @@
 
 - Initial version, showtime!
 
+[0.30.0]: https://github.com/ToucanToco/weaverbird/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/ToucanToco/weaverbird/compare/v0.28.1...v0.29.0
 [0.28.1]: https://github.com/ToucanToco/weaverbird/compare/v0.28.0...v0.28.1
 [0.28.0]: https://github.com/ToucanToco/weaverbird/compare/v0.27.2...v0.28.0

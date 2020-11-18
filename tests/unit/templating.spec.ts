@@ -1544,4 +1544,25 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate duration steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'duration',
+        newColumnName: '<%= foo %>',
+        startDateColumn: '<%= foo %>',
+        endDateColumn: '<%= foo %>',
+        durationIn: 'seconds',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'duration',
+        newColumnName: '<%= foo %>',
+        startDateColumn: 'bar',
+        endDateColumn: 'bar',
+        durationIn: 'seconds',
+      },
+    ]);
+  });
 });

@@ -136,13 +136,16 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   dateextract(step: Readonly<S.DateExtractPropertyStep>) {}
 
   @unsupported
+  delete(step: Readonly<S.DeleteStep>) {}
+
+  @unsupported
   domain(step: Readonly<S.DomainStep>) {}
 
   @unsupported
   duplicate(step: Readonly<S.DuplicateColumnStep>) {}
 
   @unsupported
-  delete(step: Readonly<S.DeleteStep>) {}
+  duration(step: Readonly<S.ComputeDurationStep>) {}
 
   @unsupported
   evolution(step: Readonly<S.EvolutionStep>) {}

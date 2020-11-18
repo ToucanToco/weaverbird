@@ -11,6 +11,7 @@ import dateextractSchema from './dateextract';
 import deleteSchema from './delete';
 import domainSchema from './domain';
 import duplicateSchema from './duplicate';
+import durationSchema from './duration';
 import evolutionSchema from './evolution';
 import fillnaSchema from './fillna';
 import filterSchema from './filter';
@@ -54,8 +55,9 @@ const factories: { [stepname: string]: buildSchemaType } = {
   custom: customSchema,
   dateextract: dateextractSchema,
   delete: deleteSchema,
-  duplicate: duplicateSchema,
   domain: domainSchema,
+  duplicate: duplicateSchema,
+  duration: durationSchema,
   evolution: evolutionSchema,
   fillna: fillnaSchema,
   filter: filterSchema,

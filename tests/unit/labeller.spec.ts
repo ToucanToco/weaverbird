@@ -684,6 +684,17 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Compute moving average of "VALUE"');
   });
 
+  it('generates label for duration steps', () => {
+    const step: S.ComputeDurationStep = {
+      name: 'duration',
+      newColumnName: 'NEW',
+      startDateColumn: 'START',
+      endDateColumn: 'END',
+      durationIn: 'seconds',
+    };
+    expect(hrl(step)).toEqual('Compute duration between "START" and "END"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };

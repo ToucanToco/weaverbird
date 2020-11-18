@@ -80,6 +80,14 @@ export type ArgminStep = {
   groups?: string[]; // if specified, will search for a max in every group
 };
 
+export type ComputeDurationStep = {
+  name: 'duration';
+  newColumnName: string;
+  startDateColumn: string;
+  endDateColumn: string;
+  durationIn: 'days' | 'hours' | 'minutes' | 'seconds';
+};
+
 export type ConcatenateStep = {
   name: 'concatenate';
   columns: string[];
@@ -399,6 +407,7 @@ export type PipelineStep =
   | AppendStep
   | ArgmaxStep
   | ArgminStep
+  | ComputeDurationStep
   | ConcatenateStep
   | ConvertStep
   | CumSumStep
