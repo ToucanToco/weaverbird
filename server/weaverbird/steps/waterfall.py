@@ -27,18 +27,6 @@ class WaterfallStep(BaseStep):
     parentsColumn: Optional[ColumnName]
     groupby: List[ColumnName] = []
 
-    def get_sort_column(self):
-        if self.sortBy == 'value':
-            return _RESULT_COLUMN
-        else:
-            return self.labelsColumn
-
-    def get_join_key(self):
-        if self.parentsColumn is None:
-            return [self.labelsColumn] + self.groupby
-        else:
-            return [self.labelsColumn, self.parentsColumn] + self.groupby
-
     def execute(
         self,
         df: DataFrame,
@@ -53,6 +41,20 @@ class WaterfallStep(BaseStep):
         end_df = df[df[self.milestonesColumn] == self.end].rename(
             columns={self.valueColumn: f'{self.valueColumn}_end'}
         )
+
+        upper = self.compute_agg_milestone(
+            df, start_df.rename(columns={f'{self.valueColumn}_start': self.valueColumn}), self.start
+        )
+        mid = self.compute_mid(self.merge(start_df, end_df), df)
+        downer = self.compute_agg_milestone(
+            df, end_df.rename(columns={f'{self.valueColumn}_end': self.valueColumn}), self.end
+        )
+        return pd.concat([upper, mid, downer])
+
+    # start_df is the base dataframe filtered to contains only result at the start of the waterfall
+    # end_df is the base dataframe filtered to contains only result at the start of the waterfall
+    # this methods compute the difference for the value value of every label between the end and the start
+    def merge(self, start_df, end_df):
         # we join the result to compare them
         merged_df = start_df.merge(end_df, on=self.get_join_key())
         merged_df[_RESULT_COLUMN] = (
@@ -73,18 +75,13 @@ class WaterfallStep(BaseStep):
                 self.groupby + [self.parentsColumn], as_index=False
             ).agg({_RESULT_COLUMN: 'sum'})
             parents_results[self.labelsColumn] = parents_results[self.parentsColumn]
-            merged_df = pd.concat([merged_df, parents_results])
+            return pd.concat([merged_df, parents_results])
+        return merged_df
 
-        upper = self.compute_agg_milestone(
-            df, start_df.rename(columns={f'{self.valueColumn}_start': self.valueColumn}), self.start
-        )
-        mid = self.compute_mid(merged_df, df)
-        downer = self.compute_agg_milestone(
-            df, end_df.rename(columns={f'{self.valueColumn}_end': self.valueColumn}), self.end
-        )
-        return pd.concat([upper, mid, downer])
-
-    def compute_agg_milestone(self, df, start_df, milestone):
+    # the waterfall has a very specific structure.
+    # this methods create the top / bottom rows.
+    # these contains the sum of values for the whole milestone, regardless of label.
+    def compute_agg_milestone(self, df, start_df, milestone) -> pd.DataFrame:
         if len(self.groupby) > 0:
             groups = df[self.groupby].drop_duplicates()
             group_by = self.groupby
@@ -115,6 +112,7 @@ class WaterfallStep(BaseStep):
             del agg['_VQB_GROUP']
         return agg
 
+    # this method shapes the merged DF so it matches the waterfall format
     def compute_mid(self, merged_df, df):
         result_df = DataFrame(
             {
@@ -141,3 +139,15 @@ class WaterfallStep(BaseStep):
             by=self.get_sort_column(), ascending=self.order == 'asc'
         )[_RESULT_COLUMN]
         return result_df
+
+    def get_sort_column(self):
+        if self.sortBy == 'value':
+            return _RESULT_COLUMN
+        else:
+            return self.labelsColumn
+
+    def get_join_key(self):
+        if self.parentsColumn is None:
+            return [self.labelsColumn] + self.groupby
+        else:
+            return [self.labelsColumn, self.parentsColumn] + self.groupby
