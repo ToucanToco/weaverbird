@@ -33,19 +33,18 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { SplitStep } from '@/lib/steps';
+import { PipelineStepName, SplitStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'split',
+@Component({
   name: 'split-step-form',
   components: {
     ColumnPicker,
@@ -53,6 +52,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class SplitStepForm extends BaseStepForm<SplitStep> {
+  stepname: PipelineStepName = 'split';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

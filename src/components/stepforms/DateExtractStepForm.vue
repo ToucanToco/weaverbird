@@ -35,14 +35,14 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { generateNewColumnName } from '@/lib/helpers';
-import { DateExtractPropertyStep } from '@/lib/steps';
+import { DateExtractPropertyStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
@@ -51,8 +51,7 @@ type OperationOption = {
   label: string;
 };
 
-@StepFormComponent({
-  vqbstep: 'dateextract',
+@Component({
   name: 'dateextract-step-form',
   components: {
     AutocompleteWidget,
@@ -61,6 +60,8 @@ type OperationOption = {
   },
 })
 export default class DateExtractStepForm extends BaseStepForm<DateExtractPropertyStep> {
+  stepname: PipelineStepName = 'dateextract';
+
   @Prop({ type: Object, default: () => ({ name: 'dateextract', column: '' }) })
   initialStepValue!: DateExtractPropertyStep;
 

@@ -31,18 +31,17 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { PercentageStep } from '@/lib/steps';
+import { PercentageStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import InputTextWidget from './widgets/InputText.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'percentage',
+@Component({
   name: 'percentage-step-form',
   components: {
     ColumnPicker,
@@ -51,6 +50,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class PercentageStepForm extends BaseStepForm<PercentageStep> {
+  stepname: PipelineStepName = 'percentage';
+
   @Prop({ type: Object, default: () => ({ name: 'percentage', column: '' }) })
   initialStepValue!: PercentageStep;
 

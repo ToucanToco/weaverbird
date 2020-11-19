@@ -36,13 +36,13 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { FromDateStep } from '@/lib/steps';
+import { FromDateStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -53,8 +53,7 @@ type FormatOption = {
   example: string;
 };
 
-@StepFormComponent({
-  vqbstep: 'fromdate',
+@Component({
   name: 'fromdate-step-form',
   components: {
     AutocompleteWidget,
@@ -63,6 +62,8 @@ type FormatOption = {
   },
 })
 export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
+  stepname: PipelineStepName = 'fromdate';
+
   @Prop({ type: Object, default: () => ({ name: 'fromdate', column: '', format: '%Y-%m-%d' }) })
   initialStepValue!: FromDateStep;
 

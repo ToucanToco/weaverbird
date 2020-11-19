@@ -13,23 +13,24 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import { DomainStep } from '@/lib/steps';
+import { DomainStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'domain',
+@Component({
   name: 'domain-step-form',
   components: {
     AutocompleteWidget,
   },
 })
 export default class DomainStepForm extends BaseStepForm<DomainStep> {
+  stepname: PipelineStepName = 'domain';
+
   @Prop({
     type: Object,
     default: () => ({

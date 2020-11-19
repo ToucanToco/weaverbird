@@ -25,17 +25,16 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { ConvertStep } from '@/lib/steps';
+import { ConvertStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'convert',
+@Component({
   name: 'convert-step-form',
   components: {
     AutocompleteWidget,
@@ -43,6 +42,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class ConvertStepForm extends BaseStepForm<ConvertStep> {
+  stepname: PipelineStepName = 'convert';
+
   @Prop({ type: Object, default: () => ({ name: 'convert', columns: [], data_type: '' }) })
   initialStepValue!: ConvertStep;
 

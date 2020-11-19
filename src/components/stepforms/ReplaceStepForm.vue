@@ -27,22 +27,21 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
-import { ReplaceStep } from '@/lib/steps';
+import { PipelineStepName, ReplaceStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'replace',
+@Component({
   name: 'replace-step-form',
   components: {
     ColumnPicker,
@@ -50,6 +49,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class ReplaceStepForm extends BaseStepForm<ReplaceStep> {
+  stepname: PipelineStepName = 'replace';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

@@ -22,17 +22,16 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { DuplicateColumnStep } from '@/lib/steps';
+import { DuplicateColumnStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'duplicate',
+@Component({
   name: 'duplicate-step-form',
   components: {
     ColumnPicker,
@@ -40,6 +39,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class DuplicateColumnForm extends BaseStepForm<DuplicateColumnStep> {
+  stepname: PipelineStepName = 'duplicate';
+
   @Prop({ type: Object, default: () => ({ name: 'duplicate', column: '', new_column_name: '' }) })
   initialStepValue!: DuplicateColumnStep;
 

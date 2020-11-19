@@ -60,14 +60,14 @@
   </div>
 </template>
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { EvolutionStep } from '@/lib/steps';
+import { EvolutionStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -83,8 +83,7 @@ type EvolutionType = {
   label: string;
 };
 
-@StepFormComponent({
-  vqbstep: 'evolution',
+@Component({
   name: 'evolution-step-form',
   components: {
     ColumnPicker,
@@ -94,6 +93,8 @@ type EvolutionType = {
   },
 })
 export default class EvolutionStepForm extends BaseStepForm<EvolutionStep> {
+  stepname: PipelineStepName = 'evolution';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

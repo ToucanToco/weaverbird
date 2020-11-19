@@ -311,15 +311,14 @@ Here could be a step form implementation:
 ```typescript
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
+import Component from 'vue-class-component';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnSumStep } from '@/lib/steps';
+import { ColumnSumStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'columnsum',
+@Component({
   name: 'columnsum-step-form',
   components: {
     ColumnPicker,
@@ -327,7 +326,9 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class ColumnSumForm extends BaseStepForm<ColumnSumStep> {
-  @Prop({ type: Object, default: () => ({ name: 'columnsun', column1: '', column2: '', newColumn: '' }) })
+   stepname: PipelineStepName = 'columnsum';
+
+  @Prop({ type: Object, default: () => ({ name: 'columnsum', column1: '', column2: '', newColumn: '' }) })
   initialStepValue!: ColumnSumStep;
 
   readonly title: string = 'Sum columns';
@@ -337,14 +338,11 @@ export default class ColumnSumForm extends BaseStepForm<ColumnSumStep> {
 Most of the code above is just a boilerplate with lots of imports but here are
 the few important things you should pay attention to:
 
-- the `@StepFormComponent` decorator will register your form component and
-  associate it to the step name defined in the `vqbstep` property (i.e.
-  `columnsum` in our
-  case),
-
 - you should extend `BaseStepForm` that provides some standard basic behaviour
   such as form validation. It is a parametrized type that should be
-  parametrized with your step type,
+  parametrized with your step type.
+
+- the `stepname` attribute should be filled with your step type.
 
 - the `initialStepValue` data property should be typed with your step type.
 
@@ -390,6 +388,21 @@ Again, this is pretty straightforward. We use our step fields as `v-model` for o
 form inputs. Please make sure to use the `data-path` property on your inputs to
 specify which step property the input is associated to. This will allow errors
 returned by `ajv` to be associated to the corresponding input in the UI.
+
+### Associate the form with its step name
+
+In `src/components/stepforms/index.ts`, import your component and associate it with its step name.
+This way, the `QueryBuilder` component will be able to display your step form when someone creates or edit such a step.
+
+```typescript
+import ColumnSumStepForm from './ColumnSumStepForm.vue';
+
+const StepFormsComponents = {
+    //...
+    columnsum: ColumnSumStepForm,
+    //...
+}
+```
 
 ### Make it available through the UI
 

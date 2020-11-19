@@ -58,20 +58,19 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { MovingAverageStep } from '@/lib/steps';
+import { MovingAverageStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'movingaverage',
+@Component({
   name: 'moving-average-step-form',
   components: {
     ColumnPicker,
@@ -80,6 +79,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class MovingAverageStepForm extends BaseStepForm<MovingAverageStep> {
+  stepname: PipelineStepName = 'movingaverage';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
