@@ -90,18 +90,18 @@ export default class JoinColumns extends Vue {
   width: 100%;
 }
 
-.widget-join-column__container /deep/ .widget-autocomplete__container {
+.widget-join-column__container ::v-deep .widget-autocomplete__container {
   width: 50%;
 }
 
-.widget-join-column__container /deep/ .widget-input-text__container {
+.widget-join-column__container ::v-deep .widget-input-text__container {
   margin-bottom: 0px;
   margin-left: 10px;
   margin-right: 5px;
   width: 50%;
 }
 
-.widget-join-column__container /deep/ .multiselect {
+.widget-join-column__container ::v-deep .multiselect {
   width: 100%;
   margin-right: 10px;
   width: 100%;

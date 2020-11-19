@@ -112,17 +112,17 @@ export default class QueryBuilder extends Vue {
 
 .query-builder {
   @extend %main-font-style;
-  /deep/ *,
-  /deep/ ::after,
-  /deep/ ::before {
+  ::v-deep *,
+  ::v-deep ::after,
+  ::v-deep ::before {
     box-sizing: border-box;
   }
 
-  /deep/ button {
+  ::v-deep button {
     outline: none;
   }
 
-  /deep/ fieldset {
+  ::v-deep fieldset {
     border: none;
   }
 }

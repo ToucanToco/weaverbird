@@ -89,18 +89,18 @@ export default class TotalDimensionsWidget extends Vue {
   width: 100%;
 }
 
-.widget-totals__container /deep/ .widget-autocomplete__container {
+.widget-totals__container ::v-deep .widget-autocomplete__container {
   width: 50%;
 }
 
-.widget-totals__container /deep/ .widget-input-text__container {
+.widget-totals__container ::v-deep .widget-input-text__container {
   margin-bottom: 0px;
   margin-left: 10px;
   margin-right: 5px;
   width: 50%;
 }
 
-.widget-totals__container /deep/ .multiselect {
+.widget-totals__container ::v-deep .multiselect {
   width: 100%;
   margin-right: 10px;
 }

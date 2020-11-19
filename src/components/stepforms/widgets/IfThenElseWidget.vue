@@ -254,23 +254,23 @@ export default class IfThenElseWidget extends Vue {
     border: 1px solid $grey;
     border-radius: 5px;
   }
-  /deep/ .widget-input-text {
+  ::v-deep .widget-input-text {
     background: white;
   }
-  /deep/ .filter-editor {
+  ::v-deep .filter-editor {
     width: 100%;
   }
-  /deep/ .conditions-group {
+  ::v-deep .conditions-group {
     padding-bottom: 0;
   }
-  /deep/ .conditions-group:not(.conditions-group--with-switch) {
+  ::v-deep .conditions-group:not(.conditions-group--with-switch) {
     padding-top: 0;
   }
-  /deep/ .condition-row {
+  ::v-deep .condition-row {
     background-color: #e9eff5;
   }
-  /deep/ .multiselect,
-  /deep/ .widget-variable__toggle {
+  ::v-deep .multiselect,
+  ::v-deep .widget-variable__toggle {
     z-index: 1; // prevent inputs to be over multiselect dropdown
   }
 }
@@ -376,11 +376,11 @@ export default class IfThenElseWidget extends Vue {
   text-overflow: ellipsis;
   overflow: hidden;
 
-  /deep/ strong {
+  ::v-deep strong {
     font-size: 10px;
   }
 
-  /deep/ .empty {
+  ::v-deep .empty {
     color: $grey-medium;
   }
 }

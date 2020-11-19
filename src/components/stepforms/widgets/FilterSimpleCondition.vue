@@ -225,8 +225,8 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 }
 
-.filter-form-simple-condition__container /deep/ .widget-input-text,
-.filter-form-simple-condition__container /deep/ .multiselect {
+.filter-form-simple-condition__container ::v-deep .widget-input-text,
+.filter-form-simple-condition__container ::v-deep .multiselect {
   background-color: white;
 
   &::placeholder {
@@ -235,7 +235,7 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 }
 
-.filter-form-simple-condition__container /deep/ .multiselect__tags {
+.filter-form-simple-condition__container ::v-deep .multiselect__tags {
   border-radius: 0;
   border: none;
 }
