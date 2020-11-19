@@ -4,6 +4,7 @@
 import _ from 'lodash';
 import { GetterTree } from 'vuex';
 
+import { getTranslator } from '@/lib/translators';
 import { getPipelineNamesReferencing } from '@/store/utils/dereference-pipeline';
 
 import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
@@ -129,6 +130,10 @@ const getters: GetterTree<VQBState, any> = {
    * Return the app translator name
    */
   translator: (state: VQBState) => state.translator,
+  /**
+   * Return the unsupported steps by the current translator
+   */
+  unsupportedSteps: (state: VQBState) => getTranslator(state.translator).unsupportedSteps,
 };
 
 export default getters;
