@@ -39,6 +39,7 @@ from weaverbird.steps import (
     UniqueGroupsStep,
     UnpivotStep,
     UppercaseStep,
+    WaterfallStep,
 )
 
 PipelineStep = Union[
@@ -79,6 +80,7 @@ PipelineStep = Union[
     UppercaseStep,
     SplitStep,
     SubstringStep,
+    WaterfallStep,
 ]
 
 
