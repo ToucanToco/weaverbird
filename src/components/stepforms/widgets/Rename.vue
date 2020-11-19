@@ -108,7 +108,7 @@ export default class RenameWidget extends Vue {
 .widget-autocomplete__container {
   width: 50%;
 
-  /deep/ .widget-input-variable {
+  ::v-deep .widget-input-variable {
     width: 90%;
   }
 }
@@ -119,7 +119,7 @@ export default class RenameWidget extends Vue {
   margin-right: 5px;
   width: 50%;
 
-  /deep/ .widget-input-variable {
+  ::v-deep .widget-input-variable {
     width: 90%;
   }
 }

@@ -152,7 +152,7 @@ export default class ListWidget extends Mixins(FormWidget) {
 
 .widget-list__container {
   @extend %form-widget__container;
-  /deep/.multiselect__tags {
+  ::v-deep.multiselect__tags {
     @extend %form-widget__field;
     background: #fff;
   }
@@ -183,11 +183,11 @@ export default class ListWidget extends Mixins(FormWidget) {
   background-color: #f8f8f8;
   width: 98%;
 
-  /deep/ label {
+  ::v-deep label {
     width: 40%;
   }
 
-  /deep/ label + div {
+  ::v-deep label + div {
     width: 60%;
   }
 }

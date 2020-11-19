@@ -324,21 +324,21 @@ export default class MultiInputTextWidget extends Vue {
 <style scoped lang="scss">
 .widget-multiinputtext__multiselect {
   &:not(.multiselect--active) {
-    /deep/ .multiselect__tags-wrap {
+    ::v-deep .multiselect__tags-wrap {
       padding-right: 40px;
     }
   }
-  /deep/ .widget-variable__tag {
+  ::v-deep .widget-variable__tag {
     display: inline-flex;
     vertical-align: top;
     margin-bottom: 12px;
     margin-right: 10px;
     padding: 0;
   }
-  /deep/ .widget-variable__tag-icon {
+  ::v-deep .widget-variable__tag-icon {
     margin: 0 0.5em;
   }
-  /deep/ .widget-variable__tag-close {
+  ::v-deep .widget-variable__tag-close {
     font-size: 10px;
     padding: 0.6em 0.5em;
   }

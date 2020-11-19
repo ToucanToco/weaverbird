@@ -95,7 +95,7 @@ export default class ReplaceWidget extends Vue {
   margin-right: 5px;
   width: 50%;
 
-  /deep/ .widget-input-variable {
+  ::v-deep .widget-input-variable {
     width: 90%;
   }
 }

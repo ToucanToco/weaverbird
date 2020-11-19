@@ -203,11 +203,11 @@ export default class ListUniqueValues extends Vue {
   margin: 10px 0px;
 }
 
-/deep/ .widget-checkbox__label {
+::v-deep .widget-checkbox__label {
   font-size: 12px !important;
 }
 
-/deep/ .widget-checkbox {
+::v-deep .widget-checkbox {
   margin-bottom: 10px !important;
 }
 
