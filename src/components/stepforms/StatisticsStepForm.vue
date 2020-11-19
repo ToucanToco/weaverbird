@@ -110,19 +110,18 @@
 <script lang="ts">
 import Ajv from 'ajv';
 import _intersection from 'lodash/intersection';
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import Checkbox from '@/components/stepforms/widgets/Checkbox.vue';
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { Quantile, Statistics, StatisticsStep } from '@/lib/steps';
+import { PipelineStepName, Quantile, Statistics, StatisticsStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'statistics',
+@Component({
   name: 'statistics-step-form',
   components: {
     ColumnPicker,
@@ -132,6 +131,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
+  stepname: PipelineStepName = 'statistics';
+
   @Prop({
     type: Object,
     default: (): StatisticsStep => ({

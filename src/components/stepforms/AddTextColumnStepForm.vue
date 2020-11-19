@@ -27,24 +27,25 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { AddTextColumnStep } from '@/lib/steps';
+import { AddTextColumnStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'text',
+@Component({
   name: 'text-step-form',
   components: {
     InputTextWidget,
   },
 })
 export default class AddTextColumnStepForm extends BaseStepForm<AddTextColumnStep> {
+  stepname: PipelineStepName = 'text';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

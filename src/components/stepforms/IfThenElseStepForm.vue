@@ -24,14 +24,14 @@
 
 <script lang="ts">
 import _omit from 'lodash/omit';
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
 import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { IfThenElseStep } from '@/lib/steps';
+import { IfThenElseStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -55,8 +55,7 @@ function castIfThenElse(
   return newObj;
 }
 
-@StepFormComponent({
-  vqbstep: 'ifthenelse',
+@Component({
   name: 'ifthenelse-step-form',
   components: {
     IfThenElseWidget,
@@ -64,6 +63,8 @@ function castIfThenElse(
   },
 })
 export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
+  stepname: PipelineStepName = 'ifthenelse';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

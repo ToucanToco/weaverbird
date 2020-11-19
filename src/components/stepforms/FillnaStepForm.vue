@@ -23,20 +23,19 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { castFromString } from '@/lib/helpers';
-import { FillnaStep } from '@/lib/steps';
+import { FillnaStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'fillna',
+@Component({
   name: 'fillna-step-form',
   components: {
     InputTextWidget,
@@ -44,6 +43,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
+  stepname: PipelineStepName = 'fillna';
+
   @Prop({ type: Object, default: () => ({ name: 'fillna', column: [''], value: '' }) })
   initialStepValue!: FillnaStep;
 

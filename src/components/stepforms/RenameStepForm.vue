@@ -21,25 +21,26 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
 import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
-import { RenameStep } from '@/lib/steps';
+import { PipelineStepName, RenameStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'rename',
+@Component({
   name: 'rename-step-form',
   components: {
     ListWidget,
   },
 })
 export default class RenameStepForm extends BaseStepForm<RenameStep> {
+  stepname: PipelineStepName = 'rename';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

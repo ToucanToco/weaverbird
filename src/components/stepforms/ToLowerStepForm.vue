@@ -14,22 +14,23 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { ToLowerStep } from '@/lib/steps';
+import { PipelineStepName, ToLowerStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'lowercase',
+@Component({
   name: 'tolower-step-form',
   components: {
     ColumnPicker,
   },
 })
 export default class ToLowerStepForm extends BaseStepForm<ToLowerStep> {
+  stepname: PipelineStepName = 'lowercase';
+
   @Prop({ type: Object, default: () => ({ name: 'lowercase', column: '' }) })
   initialStepValue!: ToLowerStep;
 

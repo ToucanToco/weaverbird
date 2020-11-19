@@ -61,20 +61,19 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
-import { Aggregation, RollupStep } from '@/lib/steps';
+import { Aggregation, PipelineStepName, RollupStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'rollup',
+@Component({
   name: 'rollup-step-form',
   components: {
     InputTextWidget,
@@ -83,6 +82,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class RollupStepForm extends BaseStepForm<RollupStep> {
+  stepname: PipelineStepName = 'rollup';
+
   @Prop({ type: Object, default: () => ({ name: 'rollup', hierarchy: [], aggregations: [] }) })
   initialStepValue!: RollupStep;
 

@@ -17,17 +17,16 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
-import { SortStep } from '@/lib/steps';
+import { PipelineStepName, SortStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import ListWidget from './widgets/List.vue';
 import SortColumnWidget from './widgets/SortColumn.vue';
 
-@StepFormComponent({
-  vqbstep: 'sort',
+@Component({
   name: 'sort-step-form',
   components: {
     ListWidget,
@@ -35,6 +34,8 @@ import SortColumnWidget from './widgets/SortColumn.vue';
   },
 })
 export default class SortStepForm extends BaseStepForm<SortStep> {
+  stepname: PipelineStepName = 'sort';
+
   @Prop({
     type: Object,
     default: () => ({ name: 'sort', columns: [{ column: '', order: 'asc' }] }),

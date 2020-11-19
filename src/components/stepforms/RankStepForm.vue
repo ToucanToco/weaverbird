@@ -50,12 +50,12 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { RankStep } from '@/lib/steps';
+import { PipelineStepName, RankStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -63,8 +63,7 @@ import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'rank',
+@Component({
   name: 'rank-step-form',
   components: {
     AutocompleteWidget,
@@ -74,6 +73,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class RankStepForm extends BaseStepForm<RankStep> {
+  stepname: PipelineStepName = 'rank';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

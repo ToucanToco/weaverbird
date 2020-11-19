@@ -40,17 +40,16 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { SubstringStep } from '@/lib/steps';
+import { PipelineStepName, SubstringStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'substring',
+@Component({
   name: 'substring-step-form',
   components: {
     ColumnPicker,
@@ -58,6 +57,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class SubstringStepForm extends BaseStepForm<SubstringStep> {
+  stepname: PipelineStepName = 'substring';
+
   @Prop({
     type: Object,
     default: () => ({ name: 'substring', column: '', start_index: 1, end_index: -1 }),

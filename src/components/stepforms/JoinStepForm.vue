@@ -39,14 +39,14 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import JoinStepFormSchema from '@/components/stepforms/schemas/join.ts';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import JoinColumns from '@/components/stepforms/widgets/JoinColumns.vue';
 import ListWidget from '@/components/stepforms/widgets/List.vue';
-import { JoinStep } from '@/lib/steps';
+import { JoinStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -61,8 +61,7 @@ interface DropdownOption {
   tooltip?: string;
 }
 
-@StepFormComponent({
-  vqbstep: 'join',
+@Component({
   name: 'join-step-form',
   components: {
     AutocompleteWidget,
@@ -71,6 +70,8 @@ interface DropdownOption {
   },
 })
 export default class JoinStepForm extends BaseStepForm<JoinStep> {
+  stepname: PipelineStepName = 'join';
+
   @Prop({
     type: Object,
     default: () => ({ name: 'join', right_pipeline: '', type: joinTypes[0], on: [['', '']] }),

@@ -38,20 +38,19 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import TotalDimensionsWidget from '@/components/stepforms/widgets/TotalDimensions.vue';
 import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
-import { AddTotalRowsStep, Aggregation, TotalDimension } from '@/lib/steps';
+import { AddTotalRowsStep, Aggregation, PipelineStepName, TotalDimension } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'totals',
+@Component({
   name: 'totals-step-form',
   components: {
     ListWidget,
@@ -59,6 +58,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class AddTotalRowsStepForm extends BaseStepForm<AddTotalRowsStep> {
+  stepname: PipelineStepName = 'totals';
+
   @Prop({
     type: Object,
     default: () => ({ name: 'totals', totalDimensions: [], aggregations: [] }),

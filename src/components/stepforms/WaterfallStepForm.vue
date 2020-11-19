@@ -95,12 +95,12 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { WaterfallStep } from '@/lib/steps';
+import { PipelineStepName, WaterfallStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -108,8 +108,7 @@ import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'waterfall',
+@Component({
   name: 'waterfall-step-form',
   components: {
     AutocompleteWidget,
@@ -119,6 +118,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class WaterfallStepForm extends BaseStepForm<WaterfallStep> {
+  stepname: PipelineStepName = 'waterfall';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

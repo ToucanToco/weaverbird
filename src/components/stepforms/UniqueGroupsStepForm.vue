@@ -16,22 +16,23 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
-import { UniqueGroupsStep } from '@/lib/steps';
+import { PipelineStepName, UniqueGroupsStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'uniquegroups',
+@Component({
   name: 'uniquegroups-step-form',
   components: {
     MultiselectWidget,
   },
 })
 export default class UniqueGroupsStepForm extends BaseStepForm<UniqueGroupsStep> {
+  stepname: PipelineStepName = 'uniquegroups';
+
   @Prop({ type: Object, default: () => ({ name: 'uniquegroups', on: [] }) })
   initialStepValue!: UniqueGroupsStep;
 

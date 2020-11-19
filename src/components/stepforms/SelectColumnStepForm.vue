@@ -16,22 +16,23 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { SelectStep } from '@/lib/steps';
+import { PipelineStepName, SelectStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'select',
+@Component({
   name: 'select-step-form',
   components: {
     MultiselectWidget,
   },
 })
 export default class SelectStepForm extends BaseStepForm<SelectStep> {
+  stepname: PipelineStepName = 'select';
+
   @Prop({ type: Object, default: () => ({ name: 'select', columns: [] }) })
   initialStepValue!: SelectStep;
 

@@ -10,7 +10,7 @@
       data-path=".column"
       :errors="errors"
     />
-    <!-- We display format options only for mongo40 and pandas translators as 
+    <!-- We display format options only for mongo40 and pandas translators as
     this is not supported in Mongo 3.6 -->
     <AutocompleteWidget
       v-if="translator === 'mongo40' || translator === 'pandas'"
@@ -43,13 +43,13 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ToDateStep } from '@/lib/steps';
+import { PipelineStepName, ToDateStep } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -60,8 +60,7 @@ type FormatOption = {
   example: string;
 };
 
-@StepFormComponent({
-  vqbstep: 'todate',
+@Component({
   name: 'todate-step-form',
   components: {
     AutocompleteWidget,
@@ -70,6 +69,8 @@ type FormatOption = {
   },
 })
 export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
+  stepname: PipelineStepName = 'todate';
+
   @Prop({ type: Object, default: () => ({ name: 'todate', column: '', format: undefined }) })
   initialStepValue!: ToDateStep;
 

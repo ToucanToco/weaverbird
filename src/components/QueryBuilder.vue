@@ -32,8 +32,6 @@
   <div class="query-builder query-builder--no-pipeline" v-else>Select a pipeline...</div>
 </template>
 <script lang="ts">
-import '@/components/stepforms'; // required to load all step forms
-
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
@@ -43,7 +41,7 @@ import { VQBModule } from '@/store';
 import { VQBState } from '@/store/state';
 
 import { version } from '../../package.json';
-import { STEPFORM_REGISTRY } from './formlib';
+import StepFormsComponents from './stepforms';
 
 @Component({
   name: 'query-builder',
@@ -77,7 +75,7 @@ export default class QueryBuilder extends Vue {
   }
 
   get formComponent() {
-    return STEPFORM_REGISTRY[this.currentStepFormName];
+    return StepFormsComponents[this.currentStepFormName];
   }
 
   editStep(params: PipelineStep, index: number) {

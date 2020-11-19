@@ -27,25 +27,26 @@
 <script lang="ts">
 import { ErrorObject } from 'ajv';
 import { parse } from 'mathjs';
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { escapeForUseInRegExp } from '@/lib/helpers';
-import { Formula, FormulaStep } from '@/lib/steps';
+import { Formula, FormulaStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'formula',
+@Component({
   name: 'formula-step-form',
   components: {
     InputTextWidget,
   },
 })
 export default class FormulaStepForm extends BaseStepForm<FormulaStep> {
+  stepname: PipelineStepName = 'formula';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

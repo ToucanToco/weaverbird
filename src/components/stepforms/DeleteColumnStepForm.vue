@@ -16,22 +16,23 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { DeleteStep } from '@/lib/steps';
+import { DeleteStep, PipelineStepName } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'delete',
+@Component({
   name: 'delete-step-form',
   components: {
     MultiselectWidget,
   },
 })
 export default class DeleteStepForm extends BaseStepForm<DeleteStep> {
+  stepname: PipelineStepName = 'delete';
+
   @Prop({ type: Object, default: () => ({ name: 'delete', columns: [] }) })
   initialStepValue!: DeleteStep;
 

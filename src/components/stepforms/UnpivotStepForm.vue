@@ -31,20 +31,19 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { generateNewColumnName } from '@/lib/helpers';
-import { UnpivotStep } from '@/lib/steps';
+import { PipelineStepName, UnpivotStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'unpivot',
+@Component({
   name: 'unpivot-step-form',
   components: {
     CheckboxWidget,
@@ -52,6 +51,8 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
+  stepname: PipelineStepName = 'unpivot';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

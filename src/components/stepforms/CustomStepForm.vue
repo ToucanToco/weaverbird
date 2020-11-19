@@ -13,22 +13,23 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
-import { CustomStep } from '@/lib/steps';
+import { CustomStep, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 
-@StepFormComponent({
-  vqbstep: 'custom',
+@Component({
   name: 'custom-step-form',
   components: { CodeEditorWidget },
 })
 export default class CustomStepForm extends BaseStepForm<CustomStep> {
+  stepname: PipelineStepName = 'custom';
+
   @VQBModule.Getter translator!: string;
   @Prop({
     type: Object,

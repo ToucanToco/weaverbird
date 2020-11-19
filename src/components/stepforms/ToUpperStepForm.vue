@@ -14,22 +14,23 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { ToUpperStep } from '@/lib/steps';
+import { PipelineStepName, ToUpperStep } from '@/lib/steps';
 
 import BaseStepForm from './StepForm.vue';
 
-@StepFormComponent({
-  vqbstep: 'uppercase',
+@Component({
   name: 'toupper-step-form',
   components: {
     ColumnPicker,
   },
 })
 export default class ToUpperStepForm extends BaseStepForm<ToUpperStep> {
+  stepname: PipelineStepName = 'uppercase';
+
   @Prop({ type: Object, default: () => ({ name: 'uppercase', column: '' }) })
   initialStepValue!: ToUpperStep;
 

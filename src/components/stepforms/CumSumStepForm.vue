@@ -45,11 +45,11 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { CumSumStep } from '@/lib/steps';
+import { CumSumStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -58,8 +58,7 @@ import BaseStepForm from './StepForm.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'cumsum',
+@Component({
   name: 'cumsum-step-form',
   components: {
     ColumnPicker,
@@ -69,6 +68,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
+  stepname: PipelineStepName = 'cumsum';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

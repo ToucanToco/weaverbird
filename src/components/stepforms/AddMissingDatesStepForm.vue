@@ -34,13 +34,13 @@
   </div>
 </template>
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { AddMissingDatesStep } from '@/lib/steps';
+import { AddMissingDatesStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -48,8 +48,7 @@ import BaseStepForm from './StepForm.vue';
 
 type DateGranularity = 'day' | 'month' | 'year';
 
-@StepFormComponent({
-  vqbstep: 'addmissingdates',
+@Component({
   name: 'add-missing-dates-step-form',
   components: {
     ColumnPicker,
@@ -58,6 +57,8 @@ type DateGranularity = 'day' | 'month' | 'year';
   },
 })
 export default class AddMissingDatesStepForm extends BaseStepForm<AddMissingDatesStep> {
+  stepname: PipelineStepName = 'addmissingdates';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

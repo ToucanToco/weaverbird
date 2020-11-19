@@ -27,19 +27,18 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { ArgmaxStep } from '@/lib/steps';
+import { ArgmaxStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'argmax',
+@Component({
   name: 'argmax-step-form',
   components: {
     ColumnPicker,
@@ -47,6 +46,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class ArgmaxStepForm extends BaseStepForm<ArgmaxStep> {
+  stepname: PipelineStepName = 'argmax';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

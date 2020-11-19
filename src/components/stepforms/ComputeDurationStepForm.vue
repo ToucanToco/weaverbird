@@ -45,13 +45,13 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ComputeDurationStep } from '@/lib/steps';
+import { ComputeDurationStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -59,7 +59,7 @@ import BaseStepForm from './StepForm.vue';
 
 type DurationUnit = 'days' | 'hours' | 'minutes' | 'seconds';
 
-@StepFormComponent({
+@Component({
   vqbstep: 'duration',
   name: 'duration-step-form',
   components: {
@@ -69,6 +69,8 @@ type DurationUnit = 'days' | 'hours' | 'minutes' | 'seconds';
   },
 })
 export default class ComputeDurationStepForm extends BaseStepForm<ComputeDurationStep> {
+  stepname: PipelineStepName = 'duration';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;

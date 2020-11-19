@@ -36,11 +36,11 @@
 </template>
 
 <script lang="ts">
+import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { StepFormComponent } from '@/components/formlib';
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
-import { AggregateStep, Aggregation } from '@/lib/steps';
+import { AggregateStep, Aggregation, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
@@ -49,8 +49,7 @@ import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
-@StepFormComponent({
-  vqbstep: 'aggregate',
+@Component({
   name: 'aggregate-step-form',
   components: {
     CheckboxWidget,
@@ -59,6 +58,8 @@ import MultiselectWidget from './widgets/Multiselect.vue';
   },
 })
 export default class AggregateStepForm extends BaseStepForm<AggregateStep> {
+  stepname: PipelineStepName = 'aggregate';
+
   @VQBModule.State availableVariables?: VariablesBucket;
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
