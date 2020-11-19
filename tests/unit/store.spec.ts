@@ -342,6 +342,13 @@ describe('getter tests', () => {
       expect(getters.translator(state, {}, {}, {})).toEqual('mongo40');
     });
   });
+
+  describe('unsupportedSteps', () => {
+    it('should return the list of steps not supported by the translator', () => {
+      const state = buildState({ translator: 'mongo36' });
+      expect(getters.unsupportedSteps(state, {}, {}, {})).toEqual(['convert']);
+    });
+  });
 });
 
 describe('mutation tests', () => {
