@@ -509,7 +509,7 @@ const aloneVarsRegExp = new RegExp('^' + (_.templateSettings.interpolate as RegE
  *
  * It's based on lodash templates (which looks like embedded Ruby, but executes JavaScript),
  * with two important twists designed to avoid type-induced headaches to final users:
- * 1. If a variable is provided "alone", i.e. with no surrounding characters, then it returns the variable value untouched and not coerced to a string. 
+ * 1. If a variable is provided "alone", i.e. with no surrounding characters, then it returns the variable value untouched and not coerced to a string.
  * Examples:
  * - `exampleInterpolateFunc('<%= count %>', { count: 42 })` returns `42`
  * - `exampleInterpolateFunc('<%= 2 > 1 %>', {})` returns `true`
