@@ -1,12 +1,11 @@
 import { createLocalVue, mount } from '@vue/test-utils';
 import flushPromises from 'flush-promises';
-import _ from 'lodash';
 import Vuex, { Store } from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
 import { DataSet } from '@/lib/dataset/';
 import { Pipeline } from '@/lib/steps';
-import { ScopeContext } from '@/lib/templating';
+import { exampleInterpolateFunc } from '@/lib/templating';
 import { VQBnamespace } from '@/store';
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 import { BackendService, backendService, servicePluginFactory } from '@/store/backend-plugin';
@@ -15,11 +14,6 @@ import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
-
-function lodashInterpolate(value: string, context: ScopeContext) {
-  const compiled = _.template(value);
-  return compiled(context);
-}
 
 class DummyService implements BackendService {
   listCollections(_store: Store<any>) {
@@ -394,7 +388,7 @@ describe('backend service plugin tests', () => {
           who: 'john',
           what: 'king',
         },
-        interpolateFunc: lodashInterpolate,
+        interpolateFunc: exampleInterpolateFunc,
       }),
       [servicePluginFactory(service)],
     );
@@ -425,7 +419,7 @@ describe('backend service plugin tests', () => {
     const store = setupMockStore(
       buildStateWithOnePipeline(pipeline, {
         variables: {},
-        interpolateFunc: lodashInterpolate,
+        interpolateFunc: exampleInterpolateFunc,
       }),
       [servicePluginFactory(service)],
     );
