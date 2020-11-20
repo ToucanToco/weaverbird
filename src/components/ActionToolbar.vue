@@ -19,13 +19,13 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component } from 'vue-property-decorator';
 
 import { PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import ActionToolbarButton from './ActionToolbarButton.vue';
-import { ButtonDef } from './constants';
+import { ACTION_CATEGORIES, ButtonDef, CATEGORY_BUTTONS } from './constants';
 import SearchBar from './SearchBar.vue';
 
 @Component({
@@ -36,8 +36,8 @@ import SearchBar from './SearchBar.vue';
   },
 })
 export default class ActionToolbar extends Vue {
-  @Prop(Array) readonly buttons!: ButtonDef[];
   @VQBModule.State selectedColumns!: string[];
+  @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   isActiveActionToolbarButton = -1;
 
@@ -49,8 +49,17 @@ export default class ActionToolbar extends Vue {
     this.isActiveActionToolbarButton = index;
   }
 
+  // Filter buttons that contains at least one supported step
+  get supportedButtons(): ButtonDef[] {
+    return CATEGORY_BUTTONS.filter(categoryButton =>
+      ACTION_CATEGORIES[categoryButton.category].some(
+        action => !this.unsupportedSteps.includes(action.name),
+      ),
+    );
+  }
+
   get formattedButtons() {
-    return this.buttons.map((d, index) => {
+    return this.supportedButtons.map((d, index) => {
       let isActionToolbarMenuOpened = false;
 
       if (index === this.isActiveActionToolbarButton) {
