@@ -11,7 +11,7 @@ export type ScopeContext = {
   [varname: string]: any;
 };
 
-export type InterpolateFunction = (template: string, context: ScopeContext) => any;
+export type InterpolateFunction = (template: string | any[], context: ScopeContext) => any;
 type StepInterpolator = (step: S.PipelineStep) => S.PipelineStep;
 type ConditionType = S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr;
 
@@ -23,7 +23,7 @@ type ConditionType = S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboO
  * @param context the bag of variables
  */
 function _interpolate(interpolate: InterpolateFunction, value: any, context: ScopeContext) {
-  if (typeof value === 'string') {
+  if (typeof value === 'string' || Array.isArray(value)) {
     const interpolated = interpolate(value, context);
     return interpolated;
   }
@@ -61,7 +61,7 @@ function interpolateFilterCondition(
         return {
           ...condition,
           column: _interpolate(interpolate, condition.column, context),
-          value: condition.value.map(v => _interpolate(interpolate, v, context)),
+          value: _interpolate(interpolate, condition.value, context),
         };
       case 'isnull':
       case 'notnull':
@@ -517,7 +517,7 @@ const aloneVarsRegExp = new RegExp('^' + (_.templateSettings.interpolate as RegE
  * - `exampleInterpolateFunc('There is <%= count %> bananas', { count: 42 })` returns `'There is 42 bananas'`
  */
 export const exampleInterpolateFunc: InterpolateFunction = function(
-  value: string,
+  value: string | any[],
   context: ScopeContext,
 ) {
   if (typeof value === 'string' && value.match(aloneVarsRegExp)) {
@@ -525,6 +525,20 @@ export const exampleInterpolateFunc: InterpolateFunction = function(
       'context',
       `with(context) { return ${(value.match(aloneVarsRegExp) as string[])[1]} }`,
     )(context);
+  } else if (Array.isArray(value)) {
+    // TODO: make doc
+    return value.reduce((values, v) => {
+      if (typeof v === 'string') {
+        const templatedValue = exampleInterpolateFunc(v, context);
+        if (Array.isArray(templatedValue) && v.match(aloneVarsRegExp)) {
+          return [...values, ...templatedValue];
+        } else {
+          return [...values, templatedValue];
+        }
+      } else {
+        return [...values, v];
+      }
+    }, []);
   } else {
     return _.template(value)(context);
   }

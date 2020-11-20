@@ -6,6 +6,7 @@ describe('Pipeline interpolator', () => {
     foo: 'bar',
     egg: 'spam',
     age: 42,
+    array: [1, 2],
   };
 
   function translate(pipeline: Pipeline, context = defaultContext) {
@@ -602,6 +603,29 @@ describe('Pipeline interpolator', () => {
           column: 'bar',
           value: [11, 42, 'spam', 'hola'],
           operator: 'nin',
+        },
+      },
+    ]);
+  });
+
+  it('interpolates simple filter steps / operator "in" or "nin" with array variables flatten', () => {
+    const step: Pipeline = [
+      {
+        name: 'filter',
+        condition: {
+          column: '<%= foo %>',
+          value: [11, '<%= array %>', '<%= egg %>', 'hola'],
+          operator: 'in',
+        },
+      },
+    ];
+    expect(translate(step)).toEqual([
+      {
+        name: 'filter',
+        condition: {
+          column: 'bar',
+          value: [11, 1, 2, 'spam', 'hola'],
+          operator: 'in',
         },
       },
     ]);
