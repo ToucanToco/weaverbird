@@ -5,6 +5,7 @@
 ## Changed
 
 - Checkboxes: hovered and checked states are more distinct visually
+- Hide actions corresponding to steps that are not supported by the current translator
 
 ## [0.30.0] - 2020-11-12
 
