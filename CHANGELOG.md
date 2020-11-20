@@ -2,6 +2,9 @@
 
 ### UNRELEASED
 
+### Added
+- FilterStep: enable filtering with array variables in in/notin comparison
+
 ## Changed
 
 - Checkboxes: hovered and checked states are more distinct visually
