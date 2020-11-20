@@ -69,6 +69,7 @@ describe('ActionToolbarButton not active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { category: 'add', label: 'toto', icon: 'plop' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.find('.action-toolbar__btn-txt').text()).toEqual('toto');
     expect(wrapper.find('.fa-plop').exists()).toBeTruthy();
@@ -78,6 +79,7 @@ describe('ActionToolbarButton not active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { category: 'add' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.find(Popover).vm.$props.visible).toBeFalsy();
   });
@@ -88,6 +90,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'add' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['text', 'formula', 'ifthenelse', 'custom']);
@@ -97,6 +100,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'filter' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['delete', 'select', 'filter', 'top', 'argmax', 'argmin']);
@@ -106,6 +110,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'compute' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
@@ -136,6 +141,25 @@ describe('ActionToolbarButton active', () => {
       'substring',
       '!lowercase',
       '!uppercase',
+    ]);
+  });
+
+  it('should not display unsupported steps', () => {
+    // the pandas translator doesn't support custom steps
+    const store = setupMockStore(
+      buildStateWithOnePipeline([], { selectedColumns: ['foo'], translator: 'pandas' }),
+    );
+    const wrapper = mount(ActionToolbarButton, {
+      propsData: { isActive: true, category: 'add' },
+      localVue,
+      store,
+    });
+    expect(wrapper.exists()).toBeTruthy();
+    assertMenuEmitsExpected(wrapper, [
+      'text',
+      'formula',
+      'ifthenelse',
+      // not 'custom'
     ]);
   });
 
@@ -175,6 +199,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'aggregate' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['aggregate', 'totals', 'rollup', 'uniquegroups']);
@@ -184,6 +209,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'reshape' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot', 'waterfall']);
@@ -193,6 +219,7 @@ describe('ActionToolbarButton active', () => {
     const wrapper = mount(ActionToolbarButton, {
       propsData: { isActive: true, category: 'combine' },
       localVue,
+      store: setupMockStore(),
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['append', 'join']);

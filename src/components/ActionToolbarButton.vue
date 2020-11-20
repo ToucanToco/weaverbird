@@ -63,6 +63,7 @@ export default class ActionToolbarButton extends Vue {
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: S.Pipeline;
   @VQBModule.Getter selectedColumns!: string[];
+  @VQBModule.Getter unsupportedSteps!: S.PipelineStepName[];
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
@@ -104,8 +105,11 @@ export default class ActionToolbarButton extends Vue {
     this.selectStep({ index });
   }
 
+  // Filter out unsupported steps
   get items() {
-    return ACTION_CATEGORIES[this.category];
+    return ACTION_CATEGORIES[this.category].filter(
+      action => !this.unsupportedSteps.includes(action.name),
+    );
   }
 }
 </script>

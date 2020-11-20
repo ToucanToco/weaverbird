@@ -16,8 +16,8 @@ describe('ActionToolbar', () => {
       propsData: {
         buttons: CATEGORY_BUTTONS,
       },
-      store: setupMockStore({}),
       localVue,
+      store: setupMockStore({}),
     });
     const actionButtons = wrapper.findAll(ActionToolbarButton);
     expect(actionButtons.length).toEqual(8);
@@ -50,6 +50,8 @@ describe('ActionToolbar', () => {
           },
         ],
       },
+      localVue,
+      store: setupMockStore(),
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button = actionButtons.at(0);
@@ -67,6 +69,8 @@ describe('ActionToolbar', () => {
           },
         ],
       },
+      localVue,
+      store: setupMockStore(),
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button = actionButtons.at(0);
@@ -92,6 +96,8 @@ describe('ActionToolbar', () => {
           },
         ],
       },
+      localVue,
+      store: setupMockStore(),
     });
     const actionButtons = wrapper.findAll('action-toolbar-button-stub');
     const button1 = actionButtons.at(0);
@@ -115,6 +121,8 @@ describe('ActionToolbar', () => {
           },
         ],
       },
+      localVue,
+      store: setupMockStore(),
     });
     const searchBar = wrapper.findAll('search-bar-stub');
     expect(searchBar.exists()).toBeTruthy();

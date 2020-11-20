@@ -1,6 +1,6 @@
 <template>
   <div class="data-viewer" v-if="pipeline">
-    <ActionToolbar :buttons="buttons" @actionClicked="openStepForm" />
+    <ActionToolbar @actionClicked="openStepForm" />
     <div v-if="isLoading.dataset" class="data-viewer-loader-spinner" />
     <div v-if="!isEmpty && !isLoading.dataset" class="data-viewer-container">
       <div class="data-viewer-table-container">
@@ -81,7 +81,6 @@ import { VQBModule } from '@/store';
 
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
-import { CATEGORY_BUTTONS } from './constants';
 import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
 
@@ -148,10 +147,6 @@ export default class DataViewer extends Vue {
 
   get columnNames(): string[] {
     return this.formattedColumns.map(({ name }: { name: string }) => name);
-  }
-
-  get buttons() {
-    return CATEGORY_BUTTONS;
   }
 
   get iconClass() {
