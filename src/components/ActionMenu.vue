@@ -4,16 +4,37 @@
       <transition name="slide-left" mode="out-in">
         <div v-if="visiblePanel == 1">
           <div class="action-menu__panel">
-            <div class="action-menu__option" @click="openStep('rename')">Rename column</div>
-            <div class="action-menu__option" @click="openStep('duplicate')">Duplicate column</div>
-            <div class="action-menu__option" @click="createDeleteColumnStep">Delete column</div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('rename')"
+              @click="openStep('rename')"
+            >
+              Rename column
+            </div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('duplicate')"
+              @click="openStep('duplicate')"
+            >
+              Duplicate column
+            </div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('delete')"
+              @click="createDeleteColumnStep"
+            >
+              Delete column
+            </div>
             <div
               class="action-menu__option action-menu__option--top-bordered"
               @click="visiblePanel = 2"
             >
               Other operations
             </div>
-            <div class="action-menu__option--top-bordered">
+            <div
+              class="action-menu__option--top-bordered"
+              v-if="isStepSupported('filter') && isStepSupported('uniquegroups')"
+            >
               <ListUniqueValues
                 v-if="currentUnique"
                 :options="currentUnique.values"
@@ -40,15 +61,44 @@
             </div>
             <div
               class="action-menu__option action-menu__option--top-bordered"
+              v-if="isStepSupported('filter')"
               @click="openStep('filter')"
             >
               Filter values
             </div>
-            <div class="action-menu__option" @click="openStep('fillna')">Fill null values</div>
-            <div class="action-menu__option" @click="openStep('replace')">Replace values</div>
-            <div class="action-menu__option" @click="openStep('sort')">Sort values</div>
-            <div class="action-menu__option" @click="createUniqueGroupsStep">Get unique values</div>
-            <div class="action-menu__option" @click="openStep('statistics')">
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('fillna')"
+              @click="openStep('fillna')"
+            >
+              Fill null values
+            </div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('replace')"
+              @click="openStep('replace')"
+            >
+              Replace values
+            </div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('sort')"
+              @click="openStep('sort')"
+            >
+              Sort values
+            </div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('uniquegroups')"
+              @click="createUniqueGroupsStep"
+            >
+              Get unique values
+            </div>
+            <div
+              class="action-menu__option"
+              v-if="isStepSupported('statistics')"
+              @click="openStep('statistics')"
+            >
               Compute Statistics
             </div>
           </div>
@@ -100,9 +150,14 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter isEditingStep!: boolean;
   @VQBModule.Getter pipeline!: Pipeline;
   @VQBModule.Getter columnHeaders!: Pipeline;
+  @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   get currentUnique() {
     return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as DataSetColumn).uniques;
+  }
+
+  get isStepSupported() {
+    return (stepName: PipelineStepName): boolean => !this.unsupportedSteps.includes(stepName);
   }
 
   @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
