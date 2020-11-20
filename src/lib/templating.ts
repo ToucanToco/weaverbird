@@ -508,13 +508,16 @@ const aloneVarsRegExp = new RegExp('^' + (_.templateSettings.interpolate as RegE
  * A simple interpolate function, provided as an example.
  *
  * It's based on lodash templates (which looks like embedded Ruby, but executes JavaScript),
- * with an important twist: if a variable is provided "alone", i.e. with no surrounding
- * characters, then it returns the variable value untouched and not coerced to a string.
- *
+ * with two important twists designed to avoid type-induced headaches to final users:
+ * 1. If a variable is provided "alone", i.e. with no surrounding characters, then it returns the variable value untouched and not coerced to a string. 
  * Examples:
  * - `exampleInterpolateFunc('<%= count %>', { count: 42 })` returns `42`
  * - `exampleInterpolateFunc('<%= 2 > 1 %>', {})` returns `true`
  * - `exampleInterpolateFunc('There is <%= count %> bananas', { count: 42 })` returns `'There is 42 bananas'`
+ *
+ * 2. Inside arrays, variables that are also arrays are expanded
+ * Examples:
+ * - `exampleInterpolateFunc(['<%= roles %>'], { group: ['crewmate', 'impostor'] })` returns `['crewmate', 'impostor']` (and not `[['crewmate', 'impostor']]`)
  */
 export const exampleInterpolateFunc: InterpolateFunction = function(
   value: string | any[],
@@ -526,7 +529,7 @@ export const exampleInterpolateFunc: InterpolateFunction = function(
       `with(context) { return ${(value.match(aloneVarsRegExp) as string[])[1]} }`,
     )(context);
   } else if (Array.isArray(value)) {
-    // TODO: make doc
+    // Expand variables that are also arrays into their parent array
     return value.reduce((values, v) => {
       if (typeof v === 'string') {
         const templatedValue = exampleInterpolateFunc(v, context);
