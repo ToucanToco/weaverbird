@@ -137,7 +137,7 @@ export function emptyState(): VQBState {
     isRequestOnGoing: false,
     variables: {},
     translator: 'mongo40',
-    interpolateFunc: (x: string, _context: ScopeContext) => x,
+    interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
   };
 }
 
