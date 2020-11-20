@@ -16,7 +16,7 @@ describe('SearchBar', () => {
     expect(multiselect.length).toEqual(1);
   });
 
-  it('should have the right options for mong36 translator', () => {
+  it('should have the right options for mongo36 translator', () => {
     const store = setupMockStore({ translator: 'mongo36' });
     const wrapper = shallowMount(SearchBar, {
       store,
@@ -26,53 +26,11 @@ describe('SearchBar', () => {
     const multiselectOptions = new Set(
       multiselect.props('options').flatMap((e: ActionCategories) => e.actions.map(e => e.name)),
     );
-    const expectedOptions = new Set([
-      'delete',
-      'select',
-      'filter',
-      'top',
-      'argmax',
-      'argmin',
-      'dateextract',
-      'formula',
-      'percentage',
-      'aggregate',
-      'todate',
-      'fromdate',
-      'pivot',
-      'unpivot',
-      'concatenate',
-      'split',
-      'statistics',
-      'substring',
-      'text',
-      'lowercase',
-      'uppercase',
-      'duplicate',
-      'fillna',
-      'rename',
-      'replace',
-      'sort',
-      'append',
-      'join',
-      'custom',
-      'uniquegroups',
-      'rollup',
-      'evolution',
-      'cumsum',
-      'ifthenelse',
-      'rank',
-      'waterfall',
-      'totals',
-      'addmissingdates',
-      'movingaverage',
-      'duration',
-    ]);
-    expect(multiselectOptions).toEqual(expectedOptions);
+    expect(multiselectOptions).not.toContain('cast');
   });
 
-  it('should have the right options for mongo40 translator', () => {
-    const store = setupMockStore({ translator: 'mongo40' });
+  it('should have the right options for pandas translator', () => {
+    const store = setupMockStore({ translator: 'pandas' });
     const wrapper = shallowMount(SearchBar, {
       store,
       localVue,
@@ -81,50 +39,7 @@ describe('SearchBar', () => {
     const multiselectOptions = new Set(
       multiselect.props('options').flatMap((e: ActionCategories) => e.actions.map(e => e.name)),
     );
-    const expectedOptions = new Set([
-      'delete',
-      'select',
-      'filter',
-      'top',
-      'argmax',
-      'argmin',
-      'dateextract',
-      'formula',
-      'percentage',
-      'aggregate',
-      'todate',
-      'fromdate',
-      'pivot',
-      'unpivot',
-      'concatenate',
-      'split',
-      'statistics',
-      'substring',
-      'text',
-      'lowercase',
-      'uppercase',
-      'duplicate',
-      'fillna',
-      'rename',
-      'replace',
-      'sort',
-      'convert',
-      'append',
-      'join',
-      'custom',
-      'uniquegroups',
-      'rollup',
-      'evolution',
-      'cumsum',
-      'ifthenelse',
-      'rank',
-      'waterfall',
-      'totals',
-      'addmissingdates',
-      'movingaverage',
-      'duration',
-    ]);
-    expect(multiselectOptions).toEqual(expectedOptions);
+    expect(multiselectOptions).not.toContain('custom');
   });
 
   it('should display the right option into multiselect', () => {

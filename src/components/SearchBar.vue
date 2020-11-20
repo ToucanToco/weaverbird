@@ -18,9 +18,8 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Vue } from 'vue-property-decorator';
 
-import { getTranslator } from '@/lib/translators';
+import { PipelineStepName } from '@/lib/steps';
 
-import { PipelineStepName } from '../lib/steps';
 import { VQBModule } from '../store';
 import { SEARCH_ACTION } from './constants';
 
@@ -32,12 +31,12 @@ import { SEARCH_ACTION } from './constants';
 })
 export default class SearchBar extends Vue {
   @VQBModule.Getter translator!: string;
+  @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   get actionOptions() {
-    const unsupportedSteps = getTranslator(this.translator).unsupportedSteps;
     return SEARCH_ACTION.map(e => ({
       ...e,
-      actions: e.actions.filter(a => !unsupportedSteps.includes(a.name)),
+      actions: e.actions.filter(a => !this.unsupportedSteps.includes(a.name)),
     }));
   }
 
