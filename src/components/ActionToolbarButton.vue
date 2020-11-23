@@ -65,7 +65,7 @@ export default class ActionToolbarButton extends Vue {
   @VQBModule.Getter selectedColumns!: string[];
   @VQBModule.Getter unsupportedSteps!: S.PipelineStepName[];
 
-  @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Action selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
 

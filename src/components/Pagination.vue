@@ -27,7 +27,6 @@ import Paginate from 'vuejs-paginate';
 import { DataSet } from '@/lib/dataset';
 import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
 
 @Component({
   name: 'pagination',
@@ -38,7 +37,7 @@ import { MutationCallbacks } from '@/store/mutations';
 export default class Pagination extends Vue {
   @VQBModule.State dataset!: DataSet;
 
-  @VQBModule.Mutation setCurrentPage!: MutationCallbacks['setCurrentPage'];
+  @VQBModule.Action setCurrentPage;
 
   get showPager(): boolean {
     return this.pageCount > 1;

@@ -38,7 +38,6 @@ import { humanReadableLabel, labelWithReadeableVariables } from '@/lib/labeller'
 import { PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 
@@ -75,7 +74,7 @@ export default class Step extends Vue {
 
   deleteConfirmationModalIsOpened = false;
 
-  @VQBModule.Mutation deleteStep!: MutationCallbacks['deleteStep'];
+  @VQBModule.Action deleteStep;
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 

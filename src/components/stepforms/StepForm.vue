@@ -52,7 +52,7 @@ function componentProxyBoundOn(self: Vue) {
  * need in your concrete step form implementation:
  * - `@VQBModule.State selectedStepIndex`
  * - `@VQBModule.Getter pipeline`
- * - `@VQBModule.Mutation selectStep`
+ * - `@VQBModule.Action selectStep`
  * - `@VQBModule.Mutation setSelectedColumns`.
  *
  * This class provides a default `mounted()` hook that is used to bind the `Ajv`
@@ -98,7 +98,7 @@ export default class BaseStepForm<StepType> extends Vue {
   @VQBModule.State selectedStepIndex!: number;
   @VQBModule.State variables!: ScopeContext;
 
-  @VQBModule.Mutation selectStep!: (payload: { index: number }) => void;
+  @VQBModule.Action selectStep!: (payload: { index: number }) => void;
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   @VQBModule.Getter columnNames!: string[];

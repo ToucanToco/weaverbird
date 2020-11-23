@@ -50,7 +50,7 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
   @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
-  @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Action selectStep!: MutationCallbacks['selectStep'];
 
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);
