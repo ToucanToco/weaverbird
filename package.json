@@ -27,7 +27,7 @@
     "storybook:build": "build-storybook -o .storybook/dist -c .storybook",
     "storybook:bundle": "rollup -c .storybook/rollup.config.js",
     "test:quick": "VQB_QUICKTEST=1 jest",
-    "test:unit": "jest",
+    "test:unit": "NODE_ENV=test jest",
     "tdd": "jest --watchAll"
   },
   "devDependencies": {

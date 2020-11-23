@@ -61,13 +61,14 @@ class Actions {
     } catch (error) {
       const response = { error: [{ type: 'error', message: error.toString() }] };
       // Avoid spamming tests results with errors, but could be useful in production
+      /* istanbul ignore if */
       if (process.env.NODE_ENV !== 'test') {
         console.error(error);
+        throw error;
       }
       commit('logBackendMessages', {
         backendMessages: response.error,
       });
-      throw error;
     } finally {
       commit('toggleRequestOnGoing', { isRequestOnGoing: false });
     }
