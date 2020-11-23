@@ -5,7 +5,7 @@
 import Vue from 'vue';
 import { MutationTree } from 'vuex';
 
-import { BackendError, BackendWarning } from '@/lib/backend-response';
+import { BackendError, BackendWarning } from '@/lib/backend';
 import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
 import { setVariableDelimiters } from '@/lib/translators';
 
@@ -307,6 +307,13 @@ class Mutations {
    */
   setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {
     state.translator = translator;
+  }
+
+  /**
+   * Update backend service.
+   */
+  setBackendService(state: VQBState, { backendService }: Pick<VQBState, 'backendService'>) {
+    state.backendService = backendService;
   }
 
   /**
