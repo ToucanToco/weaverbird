@@ -750,16 +750,15 @@ describe('action tests', () => {
       // call 2 :
       expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
       expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
-      expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
       // call 3 :
       expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('logBackendMessages'));
       expect(commitSpy.mock.calls[2][1]).toEqual({ backendMessages: [] });
       // call 4 :
-      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[3][1]).toEqual({ isRequestOnGoing: false });
+      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('setDataset'));
+      expect(commitSpy.mock.calls[3][1]).toEqual({ dataset: dummyDatasetWithUniqueComputed });
       // call 5 :
-      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setDataset'));
-      expect(commitSpy.mock.calls[4][1]).toEqual({ dataset: dummyDatasetWithUniqueComputed });
+      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[4][1]).toEqual({ isRequestOnGoing: false });
       // call 6 :
       expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('setLoading'));
       expect(commitSpy.mock.calls[5][1]).toEqual({ type: 'dataset', isLoading: false });
@@ -869,23 +868,14 @@ describe('action tests', () => {
       ];
       const commitSpy = jest.spyOn(store, 'commit');
       await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
-      expect(dummyService.executePipeline).toHaveBeenCalledWith(store, expectedPipeline, 10000, 0);
-      expect(commitSpy).toHaveBeenCalledTimes(6);
+      expect(dummyService.executePipeline).toHaveBeenCalledWith(expectedPipeline, 10000, 0);
+      expect(commitSpy).toHaveBeenCalledTimes(3);
       // call 1:
       expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
       expect(commitSpy.mock.calls[0][1]).toEqual({ type: 'uniqueValues', isLoading: true });
       // call 2:
-      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
-      // call 3:
-      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('logBackendMessages'));
-      expect(commitSpy.mock.calls[2][1]).toEqual({ backendMessages: [] });
-      // call 4:
-      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
-      expect(commitSpy.mock.calls[3][1]).toEqual({ isRequestOnGoing: false });
-      // call 5:
-      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setDataset'));
-      expect(commitSpy.mock.calls[4][1]).toEqual({
+      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('setDataset'));
+      expect(commitSpy.mock.calls[1][1]).toEqual({
         dataset: {
           headers: [
             {
@@ -903,9 +893,9 @@ describe('action tests', () => {
           data: [['Lyon']],
         },
       });
-      // call 5:
-      expect(commitSpy.mock.calls[5][0]).toEqual(VQBnamespace('setLoading'));
-      expect(commitSpy.mock.calls[5][1]).toEqual({ type: 'uniqueValues', isLoading: false });
+      // call 3:
+      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[2][1]).toEqual({ type: 'uniqueValues', isLoading: false });
     });
   });
 
