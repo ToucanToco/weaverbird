@@ -1,6 +1,6 @@
 ---
 title: UI components
-permalink: /docs/ui-components
+permalink: /docs/ui-components/
 ---
 
 # UI components
