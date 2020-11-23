@@ -82,15 +82,20 @@ generate the corresponding documentation in the `dist/docs` directory.
 
 > The web documentation is powered by [Jekyll](https://jekyllrb.com).
 
-> You can find all the sources into the `doc-build` folder.
+> You can find all the sources into the `docs` folder.
 
 > To build and locally launch the documentation you need Ruby and gem before starting, then:
 
 ```bash
+# install ruby
+sudo apt install ruby ruby-dev
+
 # install bundler
 gem install bundler
 
 # run jekyll and a local server with dependencies :
+cd docs
+bundle install
 bundle exec jekyll serve
 ```
 
