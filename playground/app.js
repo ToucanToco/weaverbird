@@ -8,7 +8,6 @@ const {
   mongoResultsToDataset,
   pandasDataTableToDataset,
   dereferencePipelines,
-  servicePluginFactory,
   registerModule,
   setAvailableCodeEditors,
   exampleInterpolateFunc,
@@ -121,12 +120,12 @@ function autocastDataset(dataset) {
 }
 
 class MongoService {
-  async listCollections(_store) {
+  async listCollections() {
     const response = await fetch('/collections');
     return response.json();
   }
 
-  async executePipeline(_store, pipeline, limit, offset = 0) {
+  async executePipeline(pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
     const query = mongo40translator.translate(subpipeline);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
@@ -188,12 +187,12 @@ const pandasBackendBaseUrl = location.origin + '/pandas-backend/';
 class PandasService {
 
 
-  async listCollections(_store) {
+  async listCollections() {
     const response = await fetch(pandasBackendBaseUrl);
     return response.json();
   }
 
-  async executePipeline(_store, pipeline, limit, offset = 0) {
+  async executePipeline(pipeline, limit, offset = 0) {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(pipeline);
     const url = new URL(pandasBackendBaseUrl);
@@ -282,9 +281,7 @@ async function buildVueApp() {
   }
 
   Vue.use(Vuex);
-  const store = new Vuex.Store({
-    plugins: [ servicePluginFactory(backendService) ],
-  });
+  const store = new Vuex.Store({});
 
   new Vue({
     el: '#app',
@@ -363,6 +360,7 @@ async function buildVueApp() {
         },
         currentDomain: 'sales',
         translator: TRANSLATOR,
+        backendService: backendService,
         // based on lodash templates (ERB syntax)
         interpolateFunc: (value, context) => exampleInterpolateFunc(value, context),
         variables: VARIABLES,
