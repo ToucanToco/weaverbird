@@ -11,7 +11,7 @@ For use in your own application, Weaverbird exports a bunch of Vue components:
 
 The `Vqb` component contains the full UI of Weaverbird.
 
-To run correctly, it assumes the Vqb Vuex store module is present. The helper `registerModule` take care of this part: provide it its initial state and the translator you wish to use. 
+To run correctly, it assumes the Vqb Vuex store module is present. The helper `registerModule` take care of this part: provide it its initial state, the translator and the BackendService you wish to use. 
 
 ```js
 import { registerModule, Vqb } from 'weaverbird';
@@ -28,6 +28,7 @@ new Vue({
         pipeline: [ ...]
       },
       translator: 'mongo40',
+      backendService: YourBackendService,
     });
   }
 });
@@ -35,6 +36,8 @@ new Vue({
 ```
 
 > An example of such integration is provided in `playground/dist/app.js`.
+
+> The `backendService` should expose two methods: `loadCollections` and `executePipeline`. Check their signature in `src/lib/backend.ts`.
 
 ## Main sub-components
 
