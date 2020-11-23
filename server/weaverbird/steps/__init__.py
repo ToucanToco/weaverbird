@@ -32,6 +32,7 @@ from .substring import SubstringStep
 from .text import TextStep
 from .todate import ToDateStep
 from .top import TopStep
+from .totals import TotalsStep
 from .uniquegroups import UniqueGroupsStep
 from .unpivot import UnpivotStep
 from .uppercase import UppercaseStep
