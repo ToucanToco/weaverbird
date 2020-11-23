@@ -1,6 +1,6 @@
 # Changelog
 
-### UNRELEASED
+## [0.31.0] - 2020-11-23
 
 ### Added
 - FilterStep: enable filtering with array variables in in/notin comparison
@@ -518,6 +518,7 @@
 
 - Initial version, showtime!
 
+[0.31.0]: https://github.com/ToucanToco/weaverbird/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/ToucanToco/weaverbird/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/ToucanToco/weaverbird/compare/v0.28.1...v0.29.0
 [0.28.1]: https://github.com/ToucanToco/weaverbird/compare/v0.28.0...v0.28.1
