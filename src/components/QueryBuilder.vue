@@ -66,8 +66,8 @@ export default class QueryBuilder extends Vue {
     initialValue: object;
   }) => void;
   @VQBModule.Mutation resetStepFormInitialValue!: () => void;
-  @VQBModule.Mutation setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
-  @VQBModule.Mutation selectStep!: (payload: { index: number }) => void;
+  @VQBModule.Action setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
+  @VQBModule.Action selectStep!: (payload: { index: number }) => void;
   @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
 
   get isStepCreation() {

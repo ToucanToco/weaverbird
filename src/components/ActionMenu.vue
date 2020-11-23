@@ -160,7 +160,7 @@ export default class ActionMenu extends Vue {
     return (stepName: PipelineStepName): boolean => !this.unsupportedSteps.includes(stepName);
   }
 
-  @VQBModule.Mutation selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Action selectStep!: MutationCallbacks['selectStep'];
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
   @VQBModule.Mutation closeStepForm!: () => void;
 
