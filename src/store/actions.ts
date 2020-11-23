@@ -36,6 +36,9 @@ class Actions {
 
     // Reset selected step to last one
     context.commit('selectStep', { index: -1 });
+
+    // Update the preview
+    context.dispatch('updateDataset');
   }
 
   @loading('dataset')
@@ -68,6 +71,33 @@ class Actions {
     } finally {
       commit('toggleRequestOnGoing', { isRequestOnGoing: false });
     }
+  }
+
+  // Following actions are the one that have an impact on the preview, and therefore must update the dataset each time their are called
+  selectStep({ commit, dispatch }: ActionContext<VQBState, any>, { index }: { index: number }) {
+    commit('selectStep', { index });
+    dispatch('updateDataset');
+  }
+
+  deleteStep({ commit, dispatch }: ActionContext<VQBState, any>, { index }: { index: number }) {
+    commit('deleteStep', { index });
+    dispatch('updateDataset');
+  }
+
+  setCurrentDomain(
+    { commit, dispatch }: ActionContext<VQBState, any>,
+    payload: Pick<VQBState, 'currentDomain'>,
+  ) {
+    commit('setCurrentDomain', payload);
+    dispatch('updateDataset');
+  }
+
+  setCurrentPage(
+    { commit, dispatch }: ActionContext<VQBState, any>,
+    { pageno }: { pageno: number },
+  ) {
+    commit('setCurrentPage', { pageno });
+    dispatch('updateDataset');
   }
 
   /**
