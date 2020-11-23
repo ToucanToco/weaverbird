@@ -1,7 +1,7 @@
 /**
  * define what the application state looks like.
  */
-import { BackendError, BackendWarning } from '@/lib/backend-response';
+import { BackendError, BackendService, BackendWarning, UnsetBackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
@@ -103,6 +103,10 @@ export interface VQBState {
    */
   translator: string;
   /**
+   * Backend service: contains the necessary methods to preview pipeline results and fetch available data collections
+   */
+  backendService: BackendService;
+  /**
    * variable delimiter for templating
    */
   variableDelimiters?: VariableDelimiters;
@@ -137,6 +141,7 @@ export function emptyState(): VQBState {
     isRequestOnGoing: false,
     variables: {},
     translator: 'mongo40',
+    backendService: UnsetBackendService,
     interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
   };
 }

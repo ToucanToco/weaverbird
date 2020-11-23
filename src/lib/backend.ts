@@ -32,3 +32,15 @@ export interface BackendService {
    */
   executePipeline(pipeline: Pipeline, limit: number, offset: number): BackendResponse<DataSet>;
 }
+
+/**
+ * While no backend service is set, this will throw errors if we try to call its methods
+ */
+export const UnsetBackendService: BackendService = {
+  listCollections() {
+    throw new Error("Can't list collections because no backend service has been set");
+  },
+  executePipeline() {
+    throw new Error("Can't preview data because no backend service has been set");
+  },
+};
