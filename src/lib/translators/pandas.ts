@@ -161,4 +161,8 @@ export class PandasTranslator extends BaseTranslator {
   waterfall(step: Readonly<S.WaterfallStep>) {
     return step;
   }
+
+  totals(step: Readonly<S.AddTotalRowsStep>) {
+    return step;
+  }
 }
