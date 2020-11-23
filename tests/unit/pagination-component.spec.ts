@@ -1,9 +1,9 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import Vuex, { Store } from 'vuex';
+import Vuex from 'vuex';
 
 import Pagination from '@/components/Pagination.vue';
+import { BackendService } from '@/lib/backend';
 import { Pipeline } from '@/lib/steps';
-import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
@@ -13,11 +13,11 @@ localVue.use(Vuex);
 const executePipelineMock = jest.fn();
 
 class DummyService implements BackendService {
-  listCollections(_store: Store<any>) {
+  listCollections() {
     return Promise.resolve({ data: ['foo', 'bar'] });
   }
 
-  executePipeline(_store: Store<any>, _pipeline: Pipeline, limit: number, offset: number) {
+  executePipeline(_pipeline: Pipeline, limit: number, offset: number) {
     executePipelineMock(limit, offset);
     return Promise.resolve({ data: { headers: [], data: [] } });
   }
@@ -62,8 +62,8 @@ describe('Pagination Component', () => {
 
   it('should call executePipeline with limit / offset on backend service', () => {
     const pagesize = 2;
-    const store = setupMockStore(
-      buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
+    const store = setupMockStore({
+      ...buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
         dataset: {
           headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
           data: [
@@ -78,8 +78,8 @@ describe('Pagination Component', () => {
         },
         pagesize,
       }),
-      [servicePluginFactory(new DummyService())],
-    );
+      backendService: new DummyService(),
+    });
     const wrapper = mount(Pagination, { localVue, store });
     wrapper
       .findAll('.pagination__list li a')

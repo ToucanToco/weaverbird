@@ -37,11 +37,8 @@ export function buildStateWithOnePipeline(pipeline: Pipeline, customState?: Part
   });
 }
 
-export function setupMockStore(
-  initialState: object = buildStateWithOnePipeline([]),
-  plugins: any[] = [],
-) {
-  const store: Store<RootState> = new Vuex.Store({ plugins });
+export function setupMockStore(initialState: object = buildStateWithOnePipeline([])) {
+  const store: Store<RootState> = new Vuex.Store({});
   registerModule(store, initialState);
 
   return store;
