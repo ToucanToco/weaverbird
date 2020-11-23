@@ -4,7 +4,6 @@ import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
 
-import { backendService } from './backend-plugin';
 import { preparePipeline, VQBState } from './state';
 
 /**
@@ -40,16 +39,34 @@ class Actions {
   }
 
   @loading('dataset')
-  async updateDataset(context: ActionContext<VQBState, any>) {
-    const response = await backendService.executePipeline(
-      preparePipeline(context.getters.activePipeline, context.state),
-      context.state.pagesize,
-      pageOffset(context.state.pagesize, context.getters.pageno),
-    );
-    if (!response.error) {
-      context.commit('setDataset', {
-        dataset: addLocalUniquesToDataset(response.data),
+  async updateDataset({ commit, getters, state }: ActionContext<VQBState, any>) {
+    try {
+      commit('toggleRequestOnGoing', { isRequestOnGoing: true });
+      const response = await state.backendService.executePipeline(
+        preparePipeline(getters.activePipeline, state),
+        state.pagesize,
+        pageOffset(state.pagesize, getters.pageno),
+      );
+      const backendMessages = response.error || response.warning || [];
+      commit('logBackendMessages', { backendMessages });
+      if (response.data) {
+        commit('setDataset', {
+          dataset: addLocalUniquesToDataset(response.data),
+        });
+      }
+      return response;
+    } catch (error) {
+      const response = { error: [{ type: 'error', message: error.toString() }] };
+      // Avoid spamming tests results with errors, but could be useful in production
+      if (process.env.NODE_ENV !== 'test') {
+        console.error(error);
+      }
+      commit('logBackendMessages', {
+        backendMessages: response.error,
       });
+      throw error;
+    } finally {
+      commit('toggleRequestOnGoing', { isRequestOnGoing: false });
     }
   }
 
@@ -81,7 +98,7 @@ class Actions {
         on: [column],
       },
     ];
-    const response = await backendService.executePipeline(
+    const response = await context.state.backendService.executePipeline(
       preparePipeline(loadUniqueValuesPipeline, context.state),
       10000, // FIXME: limit is hard-coded
       0,
