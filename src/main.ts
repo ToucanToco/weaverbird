@@ -6,7 +6,6 @@ export { pandasDataTableToDataset } from './lib/dataset/pandas';
 export { setAvailableCodeEditors } from './components/code-editor';
 
 // export store entrypoints
-export { servicePluginFactory } from '@/store/backend-plugin';
 export {
   dereferencePipelines,
   getPipelineNamesReferencing,

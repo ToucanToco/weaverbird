@@ -8,7 +8,8 @@
 ## Changed
 
 - Checkboxes: hovered and checked states are more distinct visually
-- Hide actions corresponding to steps that are not supported by the current translator
+- Hide actions corresponding to steps that are not supported by the current 
+- The BackendService is not anymore included in a Vuex plugin. It's now in the state of the Vuex module. This allow changing it after the store has been instantiated.
 
 ## [0.30.0] - 2020-11-12
 
