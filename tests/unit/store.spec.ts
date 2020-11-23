@@ -1,7 +1,7 @@
+import { BackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
-import { BackendService, servicePluginFactory } from '@/store/backend-plugin';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
 import { currentPipeline, emptyState } from '@/store/state';
@@ -659,14 +659,18 @@ describe('action tests', () => {
   it('selectPipeline', () => {
     const store = setupMockStore();
     const commitSpy = jest.spyOn(store, 'commit');
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
     store.dispatch(VQBnamespace('selectPipeline'), { name: 'chapopointu' });
-    expect(commitSpy).toHaveBeenCalledTimes(2);
-    // call 1 :
-    expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setCurrentPipelineName'));
-    expect(commitSpy.mock.calls[0][1]).toEqual({ name: 'chapopointu' });
-    // call 2 :
-    expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('selectStep'));
-    expect(commitSpy.mock.calls[1][1]).toEqual({ index: -1 });
+    // It should update the current selected pipeline
+    expect(commitSpy).toHaveBeenCalledWith(
+      VQBnamespace('setCurrentPipelineName'),
+      { name: 'chapopointu' },
+      undefined,
+    );
+    // It should select the last step of that pipeline
+    expect(commitSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: -1 }, undefined);
+    // It should update the preview of the dataset
+    expect(dispatchSpy).toHaveBeenLastCalledWith(VQBnamespace('updateDataset'), undefined);
   });
 
   describe('updateDataset', () => {
@@ -713,9 +717,10 @@ describe('action tests', () => {
       });
     });
     it('should trow an error if pipeline is empty if pipeline is empty', async () => {
-      const store = setupMockStore(buildStateWithOnePipeline([] as Pipeline), [
-        servicePluginFactory(instantiateDummyService()),
-      ]);
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline([] as Pipeline),
+        backendService: instantiateDummyService(),
+      });
       let error: any;
       try {
         await store.dispatch(VQBnamespace('updateDataset'));
@@ -731,9 +736,10 @@ describe('action tests', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
-        servicePluginFactory(instantiateDummyService()),
-      ]);
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline(pipeline),
+        backendService: instantiateDummyService(),
+      });
       const commitSpy = jest.spyOn(store, 'commit');
 
       await store.dispatch(VQBnamespace('updateDataset'));
@@ -765,14 +771,15 @@ describe('action tests', () => {
         { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline), [
-        servicePluginFactory({
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline(pipeline),
+        backendService: {
           listCollections: jest.fn(),
           executePipeline: jest.fn().mockResolvedValue({
             error: [{ type: 'error' as 'error', message: 'OMG an error happens' }],
           }),
-        } as BackendService),
-      ]);
+        },
+      });
       const commitSpy = jest.spyOn(store, 'commit');
 
       await store.dispatch(VQBnamespace('updateDataset'));
@@ -822,9 +829,10 @@ describe('action tests', () => {
 
     it('should not call anything if pipeline is empty', async () => {
       const dummyService = instantiateDummyService();
-      const store = setupMockStore(buildStateWithOnePipeline([], { dataset: dummyDataset }), [
-        servicePluginFactory(dummyService),
-      ]);
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline([], { dataset: dummyDataset }),
+        backendService: dummyService,
+      });
       const commitSpy = jest.spyOn(store, 'commit');
       await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
       expect(commitSpy).toHaveBeenCalledTimes(2);
@@ -841,9 +849,10 @@ describe('action tests', () => {
     it('should commit a new dataset with headers updated', async () => {
       const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
       const dummyService = instantiateDummyService();
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline, { dataset: dummyDataset }), [
-        servicePluginFactory(dummyService),
-      ]);
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline(pipeline, { dataset: dummyDataset }),
+        backendService: dummyService,
+      });
       const expectedPipeline: Pipeline = [
         ...pipeline,
         {
