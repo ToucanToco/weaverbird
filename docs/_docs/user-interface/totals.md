@@ -12,6 +12,7 @@ your current dataset (see examples below for more details).
 
 - Mongo 4.0
 - Mongo 3.6
+- Pandas
 
 #### Where to find this step?
 
