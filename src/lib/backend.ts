@@ -38,9 +38,11 @@ export interface BackendService {
  */
 export const UnsetBackendService: BackendService = {
   listCollections() {
+    /* istanbul ignore next */
     throw new Error("Can't list collections because no backend service has been set");
   },
   executePipeline() {
+    /* istanbul ignore next */
     throw new Error("Can't preview data because no backend service has been set");
   },
 };

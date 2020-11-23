@@ -920,4 +920,16 @@ describe('action tests', () => {
       expect(state.variableDelimiters).toEqual(variableDelimiters);
     });
   });
+
+  describe('setBackendService', function() {
+    it('set the backend service', () => {
+      const state = buildState({});
+      const backendService = {
+        listCollections: jest.fn(),
+        executePipeline: jest.fn(),
+      } as BackendService;
+      mutations.setBackendService(state, { backendService });
+      expect(state.backendService).toEqual(backendService);
+    });
+  });
 });
