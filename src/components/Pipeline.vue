@@ -30,7 +30,6 @@ import { Component } from 'vue-property-decorator';
 import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
 
 import Step from './Step.vue';
 
@@ -50,7 +49,7 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
   @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
-  @VQBModule.Action selectStep!: MutationCallbacks['selectStep'];
+  @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
 
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);
