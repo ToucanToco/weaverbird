@@ -194,16 +194,14 @@ def test_without_on(sample_df):
     )
 
 
-def test_count_unique_values(sample_df):
+def test_keep_original_granularity_empty_on(sample_df):
     df_result = AggregateStep(
         name='aggregate',
-        on=['Group'],
+        on=[],
+        keep_original_granularity=True,
         aggregations=[
             Aggregation(aggfunction='count', columns=['Group'], newcolumns=['__vqb_count__']),
         ],
     ).execute(sample_df)
 
-    assert_dataframes_equals(
-        df_result,
-        DataFrame({'Group': ['Group 1', 'Group 2'], '__vqb_count__': [3, 3]}),
-    )
+    assert_dataframes_equals(df_result, sample_df.assign(__vqb_count__=6))
