@@ -4,10 +4,13 @@ from pandas import DataFrame
 from pydantic import BaseModel, Field
 
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
 
 
 class ColumnSort(BaseModel):
+    class Config(PopulatedWithFieldnames):
+        ...
+
     column: ColumnName
     order: Literal['asc', 'desc']
 

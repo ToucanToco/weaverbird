@@ -23,9 +23,6 @@ class RollupStep(BaseStep):
     # To give a custom name to the output parent column:
     parent_label_col: Optional[ColumnName] = Field(alias='parentLabelCol')
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         label_col = self.label_col or 'label'
         level_col = self.level_col or 'level'
@@ -42,7 +39,7 @@ class RollupStep(BaseStep):
                 name='aggregate',
                 on=aggregate_on_cols,
                 aggregations=self.aggregations,
-                keep_original_granularity=False,
+                keepOriginalGranularity=False,
             ).execute(df)
 
             results_for_this_level[level_col] = current_level

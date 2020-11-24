@@ -13,7 +13,7 @@ def sample_df():
 def test_rename(sample_df: DataFrame):
     df_result = RenameStep(
         name='rename',
-        to_rename=[
+        toRename=[
             ['NAME', 'name'],
             ['AGE', 'age'],
         ],

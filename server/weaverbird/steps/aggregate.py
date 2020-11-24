@@ -5,7 +5,7 @@ from pydantic import Field
 from pydantic.main import BaseModel
 
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName
+from weaverbird.types import ColumnName, PopulatedWithFieldnames
 
 AggregateFn = Literal['avg', 'sum', 'min', 'max', 'count', 'first', 'last']
 
@@ -13,6 +13,9 @@ functions_aliases = {'avg': 'mean'}
 
 
 class Aggregation(BaseModel):
+    class Config(PopulatedWithFieldnames):
+        ...
+
     new_columns: List[ColumnName] = Field(alias='newcolumns')
     agg_function: AggregateFn = Field(alias='aggfunction')
     columns: List[ColumnName]
@@ -39,8 +42,8 @@ class AggregateStep(BaseStep):
         default=False, alias='keepOriginalGranularity'
     )
 
-    class Config:
-        allow_population_by_field_name = True
+    class Config(PopulatedWithFieldnames):
+        ...
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None):
         group_by_columns = self.on

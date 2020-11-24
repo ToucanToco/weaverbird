@@ -13,9 +13,6 @@ class PercentageStep(BaseStep):
     group: List[ColumnName] = Field(default=[])
     new_column_name: ColumnName = Field(alias='newColumnName', default=None)
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute(
         self,
         df: DataFrame,

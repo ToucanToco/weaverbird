@@ -12,7 +12,7 @@ def test_cumsum():
         }
     )
 
-    df_result = CumSumStep(name='cumsum', value_column='value', reference_column='date').execute(
+    df_result = CumSumStep(name='cumsum', valueColumn='value', referenceColumn='date').execute(
         sample_df
     )
 
@@ -37,10 +37,10 @@ def test_cumsum_with_groups():
 
     df_result = CumSumStep(
         name='cumsum',
-        value_column='value',
-        reference_column='date',
+        valueColumn='value',
+        referenceColumn='date',
         groupby=['country'],
-        new_column='my_cumsum',
+        newColumn='my_cumsum',
     ).execute(sample_df)
 
     expected_result = DataFrame(

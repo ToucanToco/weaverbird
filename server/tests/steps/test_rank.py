@@ -15,7 +15,7 @@ def sample_df():
 def test_rank(sample_df: DataFrame):
     df_result = RankStep(
         name='rank',
-        value_col='VALUE',
+        valueCol='VALUE',
         order='asc',
         method='standard',
     ).execute(sample_df)
@@ -33,11 +33,11 @@ def test_rank(sample_df: DataFrame):
 def test_rank_with_groups(sample_df: DataFrame):
     df_result = RankStep(
         name='rank',
-        value_col='VALUE',
+        valueCol='VALUE',
         groupby=['COUNTRY'],
         order='desc',
         method='dense',
-        new_column_name='rank',
+        newColumnName='rank',
     ).execute(sample_df)
 
     expected_result = DataFrame(

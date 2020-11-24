@@ -73,9 +73,9 @@ def test_complex_rollup(sample_df: DataFrame):
             {'newcolumns': ['VALUE-avg'], 'aggfunction': 'avg', 'columns': ['VALUE']},
         ],
         groupby=['YEAR'],
-        label_col='MY_LABEL',
-        level_col='MY_LEVEL',
-        parent_label_col='MY_PARENT',
+        labelCol='MY_LABEL',
+        levelCol='MY_LEVEL',
+        parentLabelCol='MY_PARENT',
     ).execute(sample_df)
 
     columns = [
