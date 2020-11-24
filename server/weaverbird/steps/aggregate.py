@@ -63,12 +63,11 @@ class AggregateStep(BaseStep):
 
         df_result = DataFrame(aggregated_cols).transpose().reset_index()
 
+        # it is faster this way, than to transform the original df
+        if self.keep_original_granularity:
+            df_result = df.merge(df_result, on=group_by_columns, how='left')
+
         # we do not want the pseudo column to ever leave this function
         if len(self.on) == 0:
             del df_result[group_by_columns[0]]
-
-        # it is faster this way, than to transform the original df
-        if self.keep_original_granularity:
-            return df.merge(df_result, on=group_by_columns, how='left')
-
         return df_result
