@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.32.0] - 2020-11-24
+
+## Changed
+
+- **Breaking** The BackendService is not anymore included in a Vuex plugin. It's now in the state of the Vuex module. This allow changing it after the store has been instantiated.
+
+### Fixed
+
+- docs: missing slash was breaking a link in the nav
+- The preview does not throw an error when the edited pipeline is empty (instead, show an empty dataset)
+
 ## [0.31.0] - 2020-11-23
 
 ### Added
@@ -9,7 +20,6 @@
 
 - Checkboxes: hovered and checked states are more distinct visually
 - Hide actions corresponding to steps that are not supported by the current 
-- The BackendService is not anymore included in a Vuex plugin. It's now in the state of the Vuex module. This allow changing it after the store has been instantiated.
 
 ## [0.30.0] - 2020-11-12
 
@@ -519,6 +529,7 @@
 
 - Initial version, showtime!
 
+[0.32.0]: https://github.com/ToucanToco/weaverbird/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/ToucanToco/weaverbird/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/ToucanToco/weaverbird/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/ToucanToco/weaverbird/compare/v0.28.1...v0.29.0
