@@ -54,4 +54,29 @@ describe('FilterEditor', () => {
       },
     ]);
   });
+
+  it('should cast the values depending on the column types', () => {
+    const wrapper = shallowMount(FilterEditor, {
+      propsData: {
+        filterTree: {
+          and: [
+            { column: 'string', operator: 'eq', value: 'foo' },
+            { column: 'integer', operator: 'eq', value: '10' },
+          ],
+        },
+        columnTypes: {
+          string: 'string',
+          integer: 'integer',
+        },
+      },
+    });
+    expect((wrapper.vm as any).conditionsTree).toEqual({
+      conditions: [
+        { column: 'string', operator: 'eq', value: 'foo' },
+        { column: 'integer', operator: 'eq', value: 10 },
+      ],
+      groups: [],
+      operator: 'and',
+    });
+  });
 });
