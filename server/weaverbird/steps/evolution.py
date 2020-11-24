@@ -27,9 +27,6 @@ class EvolutionStep(BaseStep):
     index_columns: List[str] = Field([], alias='indexColumns')
     new_column: Optional[str] = Field(alias='newColumn')
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         new_column = self.new_column or f'{self.value_col}_EVOL_{self.evolution_format.upper()}'
 

@@ -15,9 +15,6 @@ class RankStep(BaseStep):
     groupby: List[ColumnName] = []
     new_column_name: Optional[ColumnName] = Field(None, alias='newColumnName')
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         new_column_name = self.new_column_name or f'{self.value_col}_RANK'
         rank_method = 'min' if self.method == 'standard' else self.method

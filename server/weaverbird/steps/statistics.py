@@ -5,7 +5,7 @@ from pandas import DataFrame
 from pydantic import BaseModel, Field
 
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName
+from weaverbird.types import ColumnName, PopulatedWithFieldnames
 
 DUMB_GROUPBY_COLUMN_NAME = '__dumb_groupby_column_name__'
 
@@ -36,6 +36,9 @@ def percentile(nth, order):
 
 
 class StatisticsStep(BaseStep):
+    class Config(PopulatedWithFieldnames):
+        ...
+
     name = Field('statistics', const=True)
     column: ColumnName
     groupby_columns: List[ColumnName] = Field([], alias='groupbyColumns')
@@ -44,9 +47,6 @@ class StatisticsStep(BaseStep):
     # - median is 1rst quantile of order 2
     # - last decile is 9th quantile of order 10
     quantiles: List[Quantile]
-
-    class Config:
-        allow_population_by_field_name = True
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         groupby_columns = self.groupby_columns

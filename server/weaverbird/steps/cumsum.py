@@ -14,9 +14,6 @@ class CumSumStep(BaseStep):
     groupby: Optional[List[ColumnName]]
     new_column: Optional[ColumnName] = Field(None, alias='newColumn')
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         df = df.sort_values(self.reference_column)
         dst_column = self.new_column or f'{self.value_column}_CUMSUM'

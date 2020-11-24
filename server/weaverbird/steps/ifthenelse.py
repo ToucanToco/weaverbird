@@ -15,9 +15,6 @@ class IfThenElse(BaseModel):
     then: str
     else_value: Union['IfThenElse', Any] = Field(alias='else')
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute_ifthenelse(self, df, new_column):
         if isinstance(self.else_value, IfThenElse):
             else_branch = self.else_value.execute_ifthenelse(df, new_column)[new_column]
@@ -39,9 +36,6 @@ IfThenElse.update_forward_refs()
 class IfthenelseStep(BaseStep, IfThenElse):
     name = Field('ifthenelse', const=True)
     new_column: ColumnName = Field(alias='newColumn')
-
-    class Config:
-        allow_population_by_field_name = True
 
     def execute(
         self,

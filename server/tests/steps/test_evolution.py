@@ -19,10 +19,10 @@ def sample_df():
 def test_evolution_absolute(sample_df: DataFrame):
     step = EvolutionStep(
         name='evolution',
-        date_col='DATE',
-        value_col='VALUE',
-        evolution_type='vsLastMonth',
-        evolution_format='abs',
+        dateCol='DATE',
+        valueCol='VALUE',
+        evolutionType='vsLastMonth',
+        evolutionFormat='abs',
     )
     df_result = step.execute(sample_df)
 
@@ -33,10 +33,10 @@ def test_evolution_absolute(sample_df: DataFrame):
 def test_evolution_percentage(sample_df: DataFrame):
     step = EvolutionStep(
         name='evolution',
-        date_col='DATE',
-        value_col='VALUE',
-        evolution_type='vsLastMonth',
-        evolution_format='pct',
+        dateCol='DATE',
+        valueCol='VALUE',
+        evolutionType='vsLastMonth',
+        evolutionFormat='pct',
     )
     df_result = step.execute(sample_df)
 
@@ -75,12 +75,12 @@ def df_with_groups():
 def test_evolution_with_groups(df_with_groups: DataFrame):
     step = EvolutionStep(
         name='evolution',
-        date_col='DATE',
-        value_col='VALUE',
-        evolution_type='vsLastYear',
-        evolution_format='abs',
-        index_columns=['COUNTRY'],
-        new_column='MY_EVOL',
+        dateCol='DATE',
+        valueCol='VALUE',
+        evolutionType='vsLastYear',
+        evolutionFormat='abs',
+        indexColumns=['COUNTRY'],
+        newColumn='MY_EVOL',
     )
     df_result = step.execute(df_with_groups)
 
@@ -93,11 +93,11 @@ def test_evolution_with_groups(df_with_groups: DataFrame):
 def test_evolution_with_duplicate_dates(df_with_groups: DataFrame):
     step = EvolutionStep(
         name='evolution',
-        date_col='DATE',
-        value_col='VALUE',
-        evolution_type='vsLastYear',
-        evolution_format='abs',
-        new_column='MY_EVOL',
+        dateCol='DATE',
+        valueCol='VALUE',
+        evolutionType='vsLastYear',
+        evolutionFormat='abs',
+        newColumn='MY_EVOL',
     )
     with pytest.raises(DuplicateError):
         step.execute(df_with_groups)

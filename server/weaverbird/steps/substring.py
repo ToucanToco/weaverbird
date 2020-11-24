@@ -14,9 +14,6 @@ class SubstringStep(BaseStep):
     start_index: int
     end_index: int
 
-    class Config:
-        allow_population_by_field_name = True
-
     def execute(
         self,
         df: DataFrame,

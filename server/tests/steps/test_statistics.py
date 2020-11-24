@@ -20,7 +20,7 @@ def test_statistics(sample_df: DataFrame):
     df_result = StatisticsStep(
         name='statistics',
         column='Value',
-        groupby_columns=[],
+        groupbyColumns=[],
         statistics=['average', 'count'],
         quantiles=[{'label': 'median', 'nth': 1, 'order': 2}],
     ).execute(sample_df)
@@ -33,7 +33,7 @@ def test_statistics_with_groups(sample_df: DataFrame):
     df_result = StatisticsStep(
         name='statistics',
         column='Value',
-        groupby_columns=['Group'],
+        groupbyColumns=['Group'],
         statistics=['average', 'count'],
         quantiles=[{'label': 'median', 'nth': 1, 'order': 2}],
     ).execute(sample_df)
