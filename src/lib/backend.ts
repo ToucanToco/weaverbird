@@ -37,11 +37,21 @@ export interface BackendService {
  * While no backend service is set, this will throw errors if we try to call its methods
  */
 export const UnsetBackendService: BackendService = {
-  listCollections() {
+  listCollections(): BackendResponse<string[]> {
+    /* istanbul ignore next */
+    if (process.env.NODE_ENV === 'test') {
+      // Act like a mock during tests
+      return Promise.resolve({ data: [] });
+    }
     /* istanbul ignore next */
     throw new Error("Can't list collections because no backend service has been set");
   },
-  executePipeline() {
+  executePipeline(): BackendResponse<DataSet> {
+    /* istanbul ignore next */
+    if (process.env.NODE_ENV === 'test') {
+      // Act like a mock during tests
+      return Promise.resolve({ data: { headers: [], data: [] } });
+    }
     /* istanbul ignore next */
     throw new Error("Can't preview data because no backend service has been set");
   },
