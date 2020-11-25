@@ -56,7 +56,7 @@ class WaterfallStep(BaseStep):
     # this methods compute the difference for the value value of every label between the end and the start
     def merge(self, start_df, end_df):
         def get_group_by(*columns):
-            return [column for column in columns if column is not None]
+            return [column for column in columns]
 
         group_by_columns = get_group_by(self.labelsColumn, *self.groupby)
         start_df = (
