@@ -716,7 +716,7 @@ describe('action tests', () => {
         executePipeline: jest.fn().mockResolvedValue({ data: dummyDataset }),
       });
     });
-    it('should throw an error if pipeline is empty if pipeline is empty', async () => {
+    it('should reset the preview if the pipeline is empty', async () => {
       const store = setupMockStore({
         ...buildStateWithOnePipeline([] as Pipeline),
         backendService: instantiateDummyService(),
@@ -724,9 +724,12 @@ describe('action tests', () => {
       const commitSpy = jest.spyOn(store, 'commit');
       await store.dispatch(VQBnamespace('updateDataset'));
       expect(commitSpy).toHaveBeenCalledWith(
-        VQBnamespace('logBackendMessages'),
+        VQBnamespace('setDataset'),
         {
-          backendMessages: [{ message: 'Error: pipeline should not be empty', type: 'error' }],
+          dataset: {
+            headers: [],
+            data: [],
+          },
         },
         undefined,
       );
