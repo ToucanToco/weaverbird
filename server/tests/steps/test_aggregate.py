@@ -198,7 +198,7 @@ def test_keep_original_granularity_empty_on(sample_df):
     df_result = AggregateStep(
         name='aggregate',
         on=[],
-        keep_original_granularity=True,
+        keepOriginalGranularity=True,
         aggregations=[
             Aggregation(aggfunction='count', columns=['Group'], newcolumns=['__vqb_count__']),
         ],
