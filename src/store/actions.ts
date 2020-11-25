@@ -45,6 +45,17 @@ class Actions {
   async updateDataset({ commit, getters, state }: ActionContext<VQBState, any>) {
     try {
       commit('toggleRequestOnGoing', { isRequestOnGoing: true });
+      // No pipeline or an empty pipeline
+      if (!getters.activePipeline?.length) {
+        // Reset preview to an empty state
+        commit('setDataset', {
+          dataset: {
+            headers: [],
+            data: [],
+          },
+        });
+        return;
+      }
       const response = await state.backendService.executePipeline(
         preparePipeline(getters.activePipeline, state),
         state.pagesize,
@@ -61,14 +72,16 @@ class Actions {
     } catch (error) {
       const response = { error: [{ type: 'error', message: error.toString() }] };
       // Avoid spamming tests results with errors, but could be useful in production
-      /* istanbul ignore if */
+      /* istanbul ignore next */
       if (process.env.NODE_ENV !== 'test') {
         console.error(error);
-        throw error;
       }
+      /* istanbul ignore next */
       commit('logBackendMessages', {
         backendMessages: response.error,
       });
+      /* istanbul ignore next */
+      throw error;
     } finally {
       commit('toggleRequestOnGoing', { isRequestOnGoing: false });
     }
@@ -129,6 +142,7 @@ class Actions {
         on: [column],
       },
     ];
+
     const response = await context.state.backendService.executePipeline(
       preparePipeline(loadUniqueValuesPipeline, context.state),
       10000, // FIXME: limit is hard-coded
