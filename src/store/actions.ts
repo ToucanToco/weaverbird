@@ -41,9 +41,9 @@ class Actions {
     context.dispatch('updateDataset');
   }
 
-  @loading('dataset')
   async updateDataset({ commit, getters, state }: ActionContext<VQBState, any>) {
     try {
+      commit('setLoading', { type: 'dataset', isLoading: true });
       commit('toggleRequestOnGoing', { isRequestOnGoing: true });
       // No pipeline or an empty pipeline
       if (!getters.activePipeline?.length) {
@@ -84,6 +84,7 @@ class Actions {
       throw error;
     } finally {
       commit('toggleRequestOnGoing', { isRequestOnGoing: false });
+      commit('setLoading', { type: 'dataset', isLoading: false });
     }
   }
 
