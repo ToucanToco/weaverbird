@@ -70,6 +70,7 @@ class Actions {
       }
       return response;
     } catch (error) {
+      /* istanbul ignore next */
       const response = { error: [{ type: 'error', message: error.toString() }] };
       // Avoid spamming tests results with errors, but could be useful in production
       /* istanbul ignore next */
