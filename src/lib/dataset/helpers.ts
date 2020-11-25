@@ -47,7 +47,8 @@ function localUniqueStats(dataset: DataSet) {
   const columnValuesCount: Record<string, ColumnStat> = Object.fromEntries(
     colnames.map(c => [c, {}]),
   );
-  for (const [, record] of enumerate(iterateRecords(dataset))) {
+  const allRecords = enumerate(iterateRecords(dataset)) || []; // If there is no record, the enumaration will return undefined
+  for (const [, record] of allRecords) {
     for (const [colname, value] of Object.entries(record)) {
       const colRecord = columnValuesCount[colname];
       const valueStringified = JSON.stringify(value);
@@ -147,7 +148,7 @@ export function _prepareColumnStats(uniqueStatsDataset: DataSet): [string, Colum
  * incoming statistics, override the local ones.
  *
  * @param {DataSet} dataset the dataset to update
- * @param {object} uniqueStats a mapping columnname → dataset that
+ * @param {DataSet} uniqueStats a mapping columnname → dataset that
  * supposedly come from a backend.
  *
  * @return the _new_ dataset. The original one is left untouched.
