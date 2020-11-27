@@ -2,7 +2,7 @@
   "name": "weaverbird",
   "version": "0.32.0",
   "description": "A generic Visual Query Builder built in Vue.js",
-  "types": "dist/weaverbird.d.ts",
+  "types": "dist/types/main.d.ts",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
     "email": "dev+vqb@toucantoco.com"
@@ -19,9 +19,9 @@
     "codecov": "codecov --token=8e0bf2da-c4b9-435f-958e-446849d0d60e --file=./coverage/coverage-final.json",
     "lint": "eslint --no-error-on-unmatched-pattern src/{components,lib,store}/**/*.{ts,vue} tests/**/*.ts",
     "lint:ci": "yarn lint --output-file lint-report.json --format json",
-    "build": "yarn build-bundle && yarn build-declarations",
+    "build": "yarn build-bundle && yarn move-declarations",
     "build-bundle": "rollup -c",
-    "build-declarations": "api-extractor run --local",
+    "move-declarations": "cp -R .tmp/types/src dist/types",
     "build-doc": "typedoc --tsconfig tsconfig.json --readme README.md --out dist/docs src/",
     "playground": "concurrently \"yarn:build-bundle --watch\" \"node playground/server.js\"",
     "start": "node playground/server.js",
