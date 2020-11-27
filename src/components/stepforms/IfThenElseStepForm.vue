@@ -27,33 +27,13 @@ import _omit from 'lodash/omit';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
 import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnTypeMapping } from '@/lib/dataset';
 import { IfThenElseStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
-
-/**
-Applies the castFilterStepTreeValue function recursively to every condition
-object found in "if" keys of an if...then...else data structure, which can be
-nested.
-*/
-function castIfThenElse(
-  ifThenElseObj: Omit<IfThenElseStep, 'name' | 'newColumn'>,
-  columnTypes: ColumnTypeMapping,
-) {
-  const newObj = { ...ifThenElseObj };
-  newObj.if = castFilterStepTreeValue(newObj.if, columnTypes);
-  if (typeof newObj.else === 'object') {
-    // then it's a nested if...then...else object
-    newObj.else = castIfThenElse(newObj.else, columnTypes);
-  }
-  return newObj;
-}
 
 @Component({
   name: 'ifthenelse-step-form',
@@ -81,8 +61,6 @@ export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
   })
   initialStepValue!: IfThenElseStep;
 
-  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
-
   readonly title: string = 'Add a conditional column';
 
   ifthenelse = _omit({ ...this.initialStepValue }, ['name', 'newColumn']);
@@ -96,13 +74,9 @@ export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
   }
 
   submit() {
-    const ifThenElseCast = castIfThenElse(
-      _omit(this.editedStep, ['name', 'newColumn']),
-      this.columnTypes,
-    );
     this.editedStep = {
       ...this.editedStep,
-      ...ifThenElseCast,
+      ..._omit(this.editedStep, ['name', 'newColumn']),
     };
     this.$$super.submit();
   }
