@@ -24,12 +24,11 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ListWidget from '@/components/stepforms/widgets/List.vue';
-import RenameWidget from '@/components/stepforms/widgets/Rename.vue';
-import { PipelineStepName, RenameStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { PipelineStepName, RenameStep } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import ListWidget from '..//stepforms/widgets/List.vue';
+import RenameWidget from '..//stepforms/widgets/Rename.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

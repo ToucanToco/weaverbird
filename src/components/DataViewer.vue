@@ -72,17 +72,16 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
-import Pagination from '@/components/Pagination.vue';
-import { resizable } from '@/directives/resizable/resizable';
-import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
-import { Pipeline, PipelineStepName } from '@/lib/steps';
-import { getTranslator } from '@/lib/translators';
-import { VQBModule } from '@/store';
-
+import { resizable } from '../directives/resizable/resizable';
+import { DataSet, DataSetColumn, DataSetColumnType } from '../lib/dataset';
+import { Pipeline, PipelineStepName } from '../lib/steps';
+import { getTranslator } from '../lib/translators';
+import { VQBModule } from '../store';
 import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
 import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
+import Pagination from './Pagination.vue';
 
 /**
  * @name DataViewer

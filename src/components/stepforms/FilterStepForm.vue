@@ -17,13 +17,17 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import FilterEditor from '@/components/FilterEditor.vue';
-import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
-import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterCondition, FilterSimpleCondition, FilterStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { ColumnTypeMapping } from '../../lib/dataset';
+import {
+  FilterCondition,
+  FilterSimpleCondition,
+  FilterStep,
+  PipelineStepName,
+} from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import FilterEditor from '..//FilterEditor.vue';
+import { castFilterStepTreeValue } from '..//stepforms/convert-filter-step-tree.ts';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

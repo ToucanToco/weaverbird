@@ -1,8 +1,7 @@
 import { VueConstructor } from 'vue';
 
-import StepForm from '@/components/stepforms/StepForm.vue';
-import { PipelineStepName } from '@/lib/steps';
-
+import { PipelineStepName } from '../../lib/steps';
+import StepForm from '..//stepforms/StepForm.vue';
 import AddMissingDatesStepForm from './AddMissingDatesStepForm.vue';
 import AddTextColumnStepForm from './AddTextColumnStepForm.vue';
 import AddTotalRowsStepForm from './AddTotalRowsStepForm.vue';

@@ -1,4 +1,4 @@
-import { Pipeline, PipelineStep, Reference } from '@/lib/steps';
+import { Pipeline, PipelineStep, Reference } from '../../lib/steps';
 
 export type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;

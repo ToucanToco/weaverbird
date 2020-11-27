@@ -30,11 +30,10 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { ArgminStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { ArgminStep, PipelineStepName } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 

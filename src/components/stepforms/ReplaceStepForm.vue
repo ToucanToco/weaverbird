@@ -30,15 +30,14 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import ListWidget from '@/components/stepforms/widgets/List.vue';
-import ReplaceWidget from '@/components/stepforms/widgets/Replace.vue';
-import { ColumnTypeMapping } from '@/lib/dataset';
-import { castFromString } from '@/lib/helpers';
-import { PipelineStepName, ReplaceStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { ColumnTypeMapping } from '../../lib/dataset';
+import { castFromString } from '../../lib/helpers';
+import { PipelineStepName, ReplaceStep } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import ListWidget from '..//stepforms/widgets/List.vue';
+import ReplaceWidget from '..//stepforms/widgets/Replace.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

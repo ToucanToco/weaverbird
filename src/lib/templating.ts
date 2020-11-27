@@ -4,8 +4,8 @@
 
 import _ from 'lodash';
 
-import { StepMatcher } from '@/lib/matcher';
-import * as S from '@/lib/steps';
+import { StepMatcher } from './matcher';
+import * as S from './steps';
 
 export type ScopeContext = {
   [varname: string]: any;

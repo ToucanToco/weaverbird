@@ -29,7 +29,11 @@
 import VTooltip from 'v-tooltip';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import {
+  extractVariableIdentifier,
+  VariableDelimiters,
+  VariablesBucket,
+} from '../../../../lib/variables';
 
 Vue.use(VTooltip);
 

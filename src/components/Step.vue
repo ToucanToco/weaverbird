@@ -34,11 +34,10 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { humanReadableLabel, labelWithReadeableVariables } from '@/lib/labeller';
-import { PipelineStep } from '@/lib/steps';
-import { VariableDelimiters } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { humanReadableLabel, labelWithReadeableVariables } from '../lib/labeller';
+import { PipelineStep } from '../lib/steps';
+import { VariableDelimiters } from '../lib/variables';
+import { VQBModule } from '../store';
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 
 @Component({

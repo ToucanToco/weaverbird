@@ -3,11 +3,11 @@
 import _ from 'lodash';
 import * as math from 'mathjs';
 
-import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
-import { OutputStep, StepMatcher } from '@/lib/matcher';
-import * as S from '@/lib/steps';
-import { BaseTranslator, ValidationError } from '@/lib/translators/base';
-import { VariableDelimiters } from '@/lib/variables';
+import { $$, combinations, escapeForUseInRegExp } from '../helpers';
+import { OutputStep, StepMatcher } from '../matcher';
+import * as S from '../steps';
+import { BaseTranslator, ValidationError } from '../translators/base';
+import { VariableDelimiters } from '../variables';
 
 type PropMap<T> = { [prop: string]: T };
 

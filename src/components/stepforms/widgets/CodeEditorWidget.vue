@@ -21,8 +21,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
-import { CodeEditor, CodeEditorConfig, CodeEditorConfigs } from '@/components/code-editor';
-
+import { CodeEditor, CodeEditorConfig, CodeEditorConfigs } from '../../code-editor';
 import FormWidget from './FormWidget.vue';
 
 @Component({

@@ -28,9 +28,13 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/VariableInputBase.vue';
-import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
-import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import {
+  extractVariableIdentifier,
+  VariableDelimiters,
+  VariablesBucket,
+} from '../../../lib/variables';
+import VariableInputBase from './/VariableInputs/VariableInputBase.vue';
+import VariableTag from './/VariableInputs/VariableTag.vue';
 
 /**
  * This component wraps an input of any type and allow replacing its value by a variable chosen from a list or an

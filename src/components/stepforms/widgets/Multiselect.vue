@@ -64,9 +64,12 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
-import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
-import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
+import {
+  extractVariableIdentifier,
+  VariableDelimiters,
+  VariablesBucket,
+} from '../../../lib/variables';
+import VariableTag from './/VariableInputs/VariableTag.vue';
 import FormWidget from './FormWidget.vue';
 import MultiVariableInput from './MultiVariableInput.vue';
 

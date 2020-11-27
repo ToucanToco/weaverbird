@@ -36,12 +36,11 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { PipelineStepName, SplitStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { PipelineStepName, SplitStep } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

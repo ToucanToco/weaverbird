@@ -20,9 +20,8 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { AppendStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-
+import { AppendStep, PipelineStepName } from '../../lib/steps';
+import { VQBModule } from '../../store';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 

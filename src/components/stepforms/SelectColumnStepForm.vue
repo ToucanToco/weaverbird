@@ -19,9 +19,8 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { PipelineStepName, SelectStep } from '@/lib/steps';
-
+import { PipelineStepName, SelectStep } from '../../lib/steps';
+import MultiselectWidget from '..//stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

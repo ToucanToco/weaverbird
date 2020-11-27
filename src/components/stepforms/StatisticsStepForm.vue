@@ -113,12 +113,11 @@ import _intersection from 'lodash/intersection';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import Checkbox from '@/components/stepforms/widgets/Checkbox.vue';
-import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { PipelineStepName, Quantile, Statistics, StatisticsStep } from '@/lib/steps';
-
+import { PipelineStepName, Quantile, Statistics, StatisticsStep } from '../../lib/steps';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import Checkbox from '..//stepforms/widgets/Checkbox.vue';
+import InputNumberWidget from '..//stepforms/widgets/InputNumber.vue';
+import MultiselectWidget from '..//stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

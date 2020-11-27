@@ -19,8 +19,7 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { PipelineStepName, UniqueGroupsStep } from '@/lib/steps';
-
+import { PipelineStepName, UniqueGroupsStep } from '../../lib/steps';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 

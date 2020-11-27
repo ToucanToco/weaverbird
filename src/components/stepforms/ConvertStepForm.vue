@@ -28,10 +28,9 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { ConvertStep, PipelineStepName } from '@/lib/steps';
-
+import { ConvertStep, PipelineStepName } from '../../lib/steps';
+import AutocompleteWidget from '..//stepforms/widgets/Autocomplete.vue';
+import MultiselectWidget from '..//stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

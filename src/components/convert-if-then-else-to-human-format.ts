@@ -5,7 +5,7 @@ import {
   IfThenElseStep,
   isFilterComboAnd,
   isFilterComboOr,
-} from '@/lib/steps';
+} from '../lib/steps';
 
 export const EMPTY_CONDITION_SIGN = '<span class="empty">[null]</span>';
 

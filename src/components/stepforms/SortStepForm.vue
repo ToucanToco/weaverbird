@@ -20,8 +20,7 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { PipelineStepName, SortStep } from '@/lib/steps';
-
+import { PipelineStepName, SortStep } from '../../lib/steps';
 import BaseStepForm from './StepForm.vue';
 import ListWidget from './widgets/List.vue';
 import SortColumnWidget from './widgets/SortColumn.vue';

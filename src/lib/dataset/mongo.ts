@@ -2,7 +2,7 @@
  * mongo specific helpers for dataset manipulation.
  */
 
-import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
+import { DataSet, DataSetColumn, DataSetColumnType } from '../dataset';
 
 type MongoDocument = { [k: string]: any };
 export type MongoResults = MongoDocument[];

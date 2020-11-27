@@ -30,11 +30,10 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { AddTextColumnStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { AddTextColumnStep, PipelineStepName } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

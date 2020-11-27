@@ -64,10 +64,9 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
-import { Aggregation, PipelineStepName, RollupStep } from '@/lib/steps';
-
+import { setAggregationsNewColumnsInStep } from '../../lib/helpers';
+import { Aggregation, PipelineStepName, RollupStep } from '../../lib/steps';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';

@@ -1,5 +1,5 @@
-import { DataSet } from '@/lib/dataset';
-import { Pipeline } from '@/lib/steps';
+import { DataSet } from './dataset';
+import { Pipeline } from './steps';
 
 export type BackendError = {
   type: 'error';

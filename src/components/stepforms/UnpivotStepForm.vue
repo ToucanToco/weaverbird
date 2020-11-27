@@ -34,13 +34,12 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { generateNewColumnName } from '@/lib/helpers';
-import { PipelineStepName, UnpivotStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { generateNewColumnName } from '../../lib/helpers';
+import { PipelineStepName, UnpivotStep } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import CheckboxWidget from '..//stepforms/widgets/Checkbox.vue';
+import MultiselectWidget from '..//stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

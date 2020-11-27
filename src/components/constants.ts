@@ -1,4 +1,4 @@
-import { PipelineStepName } from '@/lib/steps';
+import { PipelineStepName } from '../lib/steps';
 
 export type ButtonDef = Readonly<{
   icon: string;

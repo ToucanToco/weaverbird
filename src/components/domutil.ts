@@ -2,7 +2,7 @@
  * This module contains DOM / browser utility functions, e.g. positioning
  * helpers used by the Popover.
  */
-import { Alignment, POPOVER_SHADOW_GAP } from '@/components/constants';
+import { Alignment, POPOVER_SHADOW_GAP } from './constants';
 
 /**
  * `WindowDimensions` represents the subpart of the `Window` object that is needed

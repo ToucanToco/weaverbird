@@ -13,7 +13,7 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import { VQBModule } from '@/store';
+import { VQBModule } from '../store';
 
 @Component({
   name: 'PipelineSelector',

@@ -61,12 +61,11 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { MovingAverageStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { MovingAverageStep, PipelineStepName } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 

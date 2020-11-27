@@ -26,10 +26,9 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { Aggregation } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { Aggregation } from '../../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
+import { VQBModule } from '../../../store';
 import AutocompleteWidget from './Autocomplete.vue';
 import MultiselectWidget from './Multiselect.vue';
 

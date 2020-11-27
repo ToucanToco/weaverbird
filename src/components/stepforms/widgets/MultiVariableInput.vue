@@ -19,8 +19,8 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import VariableInputBase from '@/components/stepforms/widgets/VariableInputs/VariableInputBase.vue';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
+import VariableInputBase from './/VariableInputs/VariableInputBase.vue';
 
 /**
  * This component wraps an input (multiselect) and toggle variables in value array

@@ -16,10 +16,9 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import { DomainStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-
+import { DomainStep, PipelineStepName } from '../../lib/steps';
+import { VQBModule } from '../../store';
+import AutocompleteWidget from '..//stepforms/widgets/Autocomplete.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

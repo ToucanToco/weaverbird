@@ -2,8 +2,8 @@
  * helper functions to manipulate datasets
  */
 
-import { DataSet } from '@/lib/dataset';
-import { enumerate } from '@/lib/helpers';
+import { DataSet } from '../dataset';
+import { enumerate } from '../helpers';
 
 function datasetColumnNames(dataset: DataSet) {
   return dataset.headers.map(coldef => coldef.name);

@@ -40,10 +40,9 @@ import _ from 'lodash';
 import { VueConstructor } from 'vue';
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { TotalDimension } from '@/lib/steps.ts';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
+import { TotalDimension } from '../../../lib/steps.ts';
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
+import InputTextWidget from './/InputText.vue';
 import FormWidget from './FormWidget.vue';
 
 type Field = {

@@ -46,12 +46,11 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { PipelineStepName, ToDateStep } from '@/lib/steps';
-import { VQBModule } from '@/store';
-
+import { PipelineStepName, ToDateStep } from '../../lib/steps';
+import { VQBModule } from '../../store';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import AutocompleteWidget from '..//stepforms/widgets/Autocomplete.vue';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 
 type FormatOption = {

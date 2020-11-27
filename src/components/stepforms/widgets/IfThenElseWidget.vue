@@ -114,14 +114,15 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import convertIfThenElseToHumanFormat from '@/components/convert-if-then-else-to-human-format';
-import FilterEditor from '@/components/FilterEditor.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
-import { FilterCondition, Formula, IfThenElseStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
+
+import { FilterCondition, Formula, IfThenElseStep } from '../../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
+import { VQBModule } from '../../../store';
+import convertIfThenElseToHumanFormat from '../../convert-if-then-else-to-human-format';
+import FilterEditor from '../../FilterEditor.vue';
+import AutocompleteWidget from './/Autocomplete.vue';
+import InputTextWidget from './/InputText.vue';
 
 @Component({
   name: 'ifthenelse-widget',

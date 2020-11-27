@@ -1,7 +1,6 @@
 import fs from 'fs';
 import path from 'path';
 
-import alias from '@rollup/plugin-alias';
 import commonjs from '@rollup/plugin-commonjs';
 import css from 'rollup-plugin-css-only';
 import json from '@rollup/plugin-json';
@@ -37,11 +36,6 @@ export default [{
   ],
   external: ['vue', 'vuex'],
   plugins: [
-    alias({
-      entries: [
-        { find: '@', replacement: path.join(packageDir(), '/src') }
-      ]
-    }),
     resolve(),
     json(),
     commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'] } }),

@@ -2,7 +2,7 @@
  * Pandas specific helpers for dataset manipulation
  */
 
-import { DataSet, DataSetColumnType } from '@/lib/dataset';
+import { DataSet, DataSetColumnType } from '../dataset';
 
 type ColumnIdentifier = string;
 type PandasRecord = Record<ColumnIdentifier, any>;

@@ -37,8 +37,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
 import FormWidget from './FormWidget.vue';
 import VariableInput from './VariableInput.vue';
 

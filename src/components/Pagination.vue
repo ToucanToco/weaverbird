@@ -24,9 +24,9 @@
 import { Component, Vue } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
 
-import { DataSet } from '@/lib/dataset';
-import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
-import { VQBModule } from '@/store';
+import { DataSet } from '../lib/dataset';
+import { numberOfPages, pageMinMax } from '../lib/dataset/pagination';
+import { VQBModule } from '../store';
 
 @Component({
   name: 'pagination',

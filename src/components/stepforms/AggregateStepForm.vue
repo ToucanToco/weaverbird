@@ -39,11 +39,10 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
-import { AggregateStep, Aggregation, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { AggregateStep, Aggregation, PipelineStepName } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import CheckboxWidget from '..//stepforms/widgets/Checkbox.vue';
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';

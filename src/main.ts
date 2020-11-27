@@ -2,6 +2,7 @@
 export { filterOutDomain, mongoToPipe } from './lib/pipeline';
 export { getTranslator } from './lib/translators';
 export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo';
+export { BackendService, BackendError, BackendResponse, BackendWarning } from './lib/backend';
 export { pandasDataTableToDataset } from './lib/dataset/pandas';
 export { setAvailableCodeEditors } from './components/code-editor';
 
@@ -9,7 +10,7 @@ export { setAvailableCodeEditors } from './components/code-editor';
 export {
   dereferencePipelines,
   getPipelineNamesReferencing,
-} from '@/store/utils/dereference-pipeline';
+} from './store/utils/dereference-pipeline';
 export {
   setupStore,
   registerModule,
@@ -17,14 +18,14 @@ export {
   VQBModule,
   VQBnamespace,
   VQB_MODULE_NAME,
-} from '@/store';
+} from './store';
 
 // export Vue components
-import DataViewer from '@/components/DataViewer.vue';
-import FilterEditor from '@/components/FilterEditor.vue';
-import PipelineSelector from '@/components/PipelineSelector.vue';
-import QueryBuilder from '@/components/QueryBuilder.vue';
-import Vqb from '@/components/Vqb.vue';
+import DataViewer from './components/DataViewer.vue';
+import FilterEditor from './components/FilterEditor.vue';
+import PipelineSelector from './components/PipelineSelector.vue';
+import QueryBuilder from './components/QueryBuilder.vue';
+import Vqb from './components/Vqb.vue';
 
 export {
   // All-in-one component
@@ -38,7 +39,7 @@ export {
 };
 
 // export helpers/utils
-export { exampleInterpolateFunc } from '@/lib/templating';
+export { exampleInterpolateFunc } from './lib/templating';
 
 // export directives
-export { resizable } from '@/directives/resizable/resizable';
+export { resizable } from './directives/resizable/resizable';

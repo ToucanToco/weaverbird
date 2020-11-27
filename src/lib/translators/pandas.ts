@@ -6,8 +6,7 @@
  * steps unchanged.
  * */
 
-import * as S from '@/lib/steps';
-
+import * as S from '../steps';
 import { BaseTranslator } from './base';
 
 /* istanbul ignore next */

@@ -18,8 +18,7 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Vue } from 'vue-property-decorator';
 
-import { PipelineStepName } from '@/lib/steps';
-
+import { PipelineStepName } from '../lib/steps';
 import { VQBModule } from '../store';
 import { SEARCH_ACTION } from './constants';
 

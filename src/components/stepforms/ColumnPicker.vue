@@ -17,10 +17,10 @@ import { ErrorObject } from 'ajv';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import { MutationCallbacks } from '../../store/mutations';
+import AutocompleteWidget from '..//stepforms/widgets/Autocomplete.vue';
 
 @Component({ components: { AutocompleteWidget } })
 export default class ColumnPicker extends Vue {

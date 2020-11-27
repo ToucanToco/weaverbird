@@ -27,10 +27,9 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
-import { VariableDelimiters } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { DomainStep, Pipeline, PipelineStep } from '../lib/steps';
+import { VariableDelimiters } from '../lib/variables';
+import { VQBModule } from '../store';
 import Step from './Step.vue';
 
 @Component({

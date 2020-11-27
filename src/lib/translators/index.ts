@@ -5,8 +5,7 @@
  * backend name as input and returns the corresponding translator.
  *
  */
-import { PipelineStepName } from '@/lib/steps';
-
+import { PipelineStepName } from '../steps';
 import { VariableDelimiters } from '../variables';
 import { BaseTranslator } from './base';
 import { Mongo36Translator } from './mongo';

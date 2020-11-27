@@ -12,10 +12,10 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import DataViewer from '@/components/DataViewer.vue';
-import PipelineSelector from '@/components/PipelineSelector.vue';
-import QueryBuilder from '@/components/QueryBuilder.vue';
-import ResizablePanels from '@/components/ResizablePanels.vue';
+import DataViewer from './DataViewer.vue';
+import PipelineSelector from './PipelineSelector.vue';
+import QueryBuilder from './QueryBuilder.vue';
+import ResizablePanels from './ResizablePanels.vue';
 
 @Component({
   name: 'vqb',

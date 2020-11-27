@@ -17,7 +17,7 @@
 */
 import Vue, { VueConstructor } from 'vue';
 
-import DefaultCodeEditor from '@/components/stepforms/widgets/DefaultCodeEditor.vue';
+import DefaultCodeEditor from './stepforms/widgets/DefaultCodeEditor.vue';
 
 export type CodeEditorConfig = VueConstructor<Vue>;
 let CodeEditor: CodeEditorConfig = DefaultCodeEditor;

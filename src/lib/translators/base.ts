@@ -11,8 +11,8 @@
  *
  */
 // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
-import { OutputStep, StepMatcher, TransformStep } from '@/lib/matcher';
-import * as S from '@/lib/steps';
+import { OutputStep, StepMatcher, TransformStep } from '../matcher';
+import * as S from '../steps';
 
 import { VariableDelimiters } from '../variables';
 

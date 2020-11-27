@@ -4,16 +4,15 @@
  *
  * Example usage:
  * ```typescript
- * import { humanReadableLabel } from '@/lib/labellers';
+ * import { humanReadableLabel } from './labellers';
  * const step: FilterStep: {
  *  // ...
  * }
  * const label = humanReadableLabel(step);
  * ```
  */
-import { StepMatcher } from '@/lib/matcher';
-import * as S from '@/lib/steps';
-
+import { StepMatcher } from './matcher';
+import * as S from './steps';
 import { VariableDelimiters } from './variables';
 
 /**

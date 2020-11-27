@@ -28,10 +28,9 @@ import { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
+import { VQBModule } from '../../../store';
+import ColumnPicker from '../ColumnPicker.vue';
 import InputTextWidget from './InputText.vue';
 
 @Component({

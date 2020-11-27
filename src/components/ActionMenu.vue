@@ -111,13 +111,12 @@
 import _isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { POPOVER_ALIGN } from '@/components/constants';
-import ListUniqueValues from '@/components/ListUniqueValues.vue';
-import { DataSetColumn } from '@/lib/dataset/index.ts';
-import { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
-
+import { DataSetColumn } from '../lib/dataset/index.ts';
+import { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '../lib/steps';
+import { VQBModule } from '../store';
+import { MutationCallbacks } from '../store/mutations';
+import { POPOVER_ALIGN } from './constants';
+import ListUniqueValues from './ListUniqueValues.vue';
 import Popover from './Popover.vue';
 
 enum VisiblePanel {

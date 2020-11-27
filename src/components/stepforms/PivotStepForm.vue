@@ -49,13 +49,12 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
-import { PipelineStepName, PivotStep } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { PipelineStepName, PivotStep } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import AutocompleteWidget from '..//stepforms/widgets/Autocomplete.vue';
+import MultiselectWidget from '..//stepforms/widgets/Multiselect.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

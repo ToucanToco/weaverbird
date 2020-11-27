@@ -35,12 +35,11 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
-import PipelineComponent from '@/components/Pipeline.vue';
-import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { VQBState } from '@/store/state';
-
 import { version } from '../../package.json';
+import { Pipeline, PipelineStep, PipelineStepName } from '../lib/steps';
+import { VQBModule } from '../store';
+import { VQBState } from '../store/state';
+import PipelineComponent from './Pipeline.vue';
 import StepFormsComponents from './stepforms';
 
 @Component({

@@ -1,12 +1,12 @@
 /**
  * define what the application state looks like.
  */
-import { BackendError, BackendService, BackendWarning, UnsetBackendService } from '@/lib/backend';
-import { DataSet } from '@/lib/dataset';
-import { Pipeline, PipelineStepName } from '@/lib/steps';
-import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { dereferencePipelines } from '@/store/utils/dereference-pipeline';
+import { BackendError, BackendService, BackendWarning, UnsetBackendService } from '../lib/backend';
+import { DataSet } from  '../lib/dataset';
+import { Pipeline, PipelineStepName } from '../lib/steps';
+import { InterpolateFunction, PipelineInterpolator, ScopeContext }from  '../lib/templating';
+import { VariableDelimiters, VariablesBucket }from  '../lib/variables';
+import { dereferencePipelines } from './utils/dereference-pipeline';
 
 export interface VQBState {
   /**

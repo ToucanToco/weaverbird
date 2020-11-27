@@ -21,15 +21,15 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
-import { AbstractFilterTree } from '@/components/ConditionsEditor/tree-types';
+import { FilterCondition } from '../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../lib/variables';
+import ConditionsEditor from './ConditionsEditor/ConditionsEditor.vue';
+import { AbstractFilterTree } from './ConditionsEditor/tree-types';
 import {
   buildConditionsEditorTree,
   buildFilterStepTree,
-} from '@/components/stepforms/convert-filter-step-tree.ts';
-import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
-import { FilterCondition } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
+} from './stepforms/convert-filter-step-tree.ts';
+import FilterSimpleConditionWidget from './stepforms/widgets/FilterSimpleCondition.vue';
 
 @Component({
   name: 'filter-editor',

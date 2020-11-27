@@ -41,10 +41,9 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import TotalDimensionsWidget from '@/components/stepforms/widgets/TotalDimensions.vue';
-import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
-import { AddTotalRowsStep, Aggregation, PipelineStepName, TotalDimension } from '@/lib/steps';
-
+import { setAggregationsNewColumnsInStep } from '../../lib/helpers';
+import { AddTotalRowsStep, Aggregation, PipelineStepName, TotalDimension } from '../../lib/steps';
+import TotalDimensionsWidget from '..//stepforms/widgets/TotalDimensions.vue';
 import BaseStepForm from './StepForm.vue';
 import AggregationWidget from './widgets/Aggregation.vue';
 import ListWidget from './widgets/List.vue';

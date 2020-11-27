@@ -1,9 +1,11 @@
 import { ActionContext, ActionTree } from 'vuex';
 
-import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers.ts';
-import { pageOffset } from '@/lib/dataset/pagination';
-import { Pipeline } from '@/lib/steps';
-
+import {
+  addLocalUniquesToDataset,
+  updateLocalUniquesFromDatabase,
+} from '../lib/dataset/helpers';
+import { pageOffset } from '../lib/dataset/pagination';
+import { Pipeline } from '../lib/steps';
 import { preparePipeline, VQBState } from './state';
 
 /**

@@ -4,9 +4,8 @@
  * This module define the mongo → standard pipeline steps implementation.
  */
 
-import { MongoStep } from '@/lib/translators/mongo';
-
 import { Pipeline } from './steps';
+import { MongoStep } from './translators/mongo';
 
 /**
  * extract the requested domain from the first step and return the rest of the

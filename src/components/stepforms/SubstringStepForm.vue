@@ -43,10 +43,9 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { PipelineStepName, SubstringStep } from '@/lib/steps';
-
+import { PipelineStepName, SubstringStep } from '../../lib/steps';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 
 @Component({

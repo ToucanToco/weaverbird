@@ -34,9 +34,8 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
-import { PercentageStep, PipelineStepName } from '@/lib/steps';
-
+import { PercentageStep, PipelineStepName } from '../../lib/steps';
+import ColumnPicker from '..//stepforms/ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
 import InputTextWidget from './widgets/InputText.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';

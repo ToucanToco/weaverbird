@@ -46,9 +46,9 @@
 import VTooltip from 'v-tooltip';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { POPOVER_ALIGN } from '@/components/constants';
-import Popover from '@/components/Popover.vue';
-import { VariablesBucket, VariablesCategory } from '@/lib/variables';
+import { VariablesBucket, VariablesCategory } from '../../../../lib/variables';
+import { POPOVER_ALIGN } from '../../../constants';
+import Popover from '../../../Popover.vue';
 
 Vue.use(VTooltip);
 /**

@@ -24,10 +24,9 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { SortColumnType } from '@/lib/steps';
-import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
-
+import { SortColumnType } from '../../../lib/steps';
+import { VQBModule } from '../../../store';
+import { MutationCallbacks } from '../../../store/mutations';
 import AutocompleteWidget from './Autocomplete.vue';
 
 @Component({

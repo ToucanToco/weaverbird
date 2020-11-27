@@ -8,8 +8,8 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
-import { Alignment } from '@/components/constants';
-import * as DOMUtil from '@/components/domutil';
+import { Alignment } from './constants';
+import * as DOMUtil from './domutil';
 
 /**
  * We use weak typing as it is used to define CSS rules

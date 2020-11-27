@@ -16,10 +16,9 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { CustomStep, PipelineStepName } from '@/lib/steps';
-import { getTranslator } from '@/lib/translators';
-import { VQBModule } from '@/store';
-
+import { CustomStep, PipelineStepName } from '../../lib/steps';
+import { getTranslator } from '../../lib/translators';
+import { VQBModule } from '../../store';
 import BaseStepForm from './StepForm.vue';
 import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 

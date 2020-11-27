@@ -25,10 +25,9 @@
 import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
+import { VQBModule } from '../../../store';
+import AutocompleteWidget from './/Autocomplete.vue';
 import InputTextWidget from './InputText.vue';
 
 @Component({

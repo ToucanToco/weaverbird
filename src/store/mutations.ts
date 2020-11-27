@@ -5,10 +5,9 @@
 import Vue from 'vue';
 import { MutationTree } from 'vuex';
 
-import { BackendError, BackendWarning } from '@/lib/backend';
-import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
-import { setVariableDelimiters } from '@/lib/translators';
-
+import { BackendError, BackendWarning } from '../lib/backend';
+import { DomainStep, Pipeline, PipelineStepName } from '../lib/steps';
+import { setVariableDelimiters } from '../lib/translators';
 import { currentPipeline, VQBState } from './state';
 
 // provide types for each possible mutations' payloads

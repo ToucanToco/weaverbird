@@ -27,14 +27,13 @@ import _omit from 'lodash/omit';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
-import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
-import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnTypeMapping } from '@/lib/dataset';
-import { IfThenElseStep, PipelineStepName } from '@/lib/steps';
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
-
+import { ColumnTypeMapping } from '../../lib/dataset';
+import { IfThenElseStep, PipelineStepName } from '../../lib/steps';
+import { VariableDelimiters, VariablesBucket } from '../../lib/variables';
+import { VQBModule } from '../../store';
+import { castFilterStepTreeValue } from '..//stepforms/convert-filter-step-tree.ts';
+import IfThenElseWidget from '..//stepforms/widgets/IfThenElseWidget.vue';
+import InputTextWidget from '..//stepforms/widgets/InputText.vue';
 import BaseStepForm from './StepForm.vue';
 
 /**

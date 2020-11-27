@@ -35,8 +35,9 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
-import { extractVariableIdentifier, VariableDelimiters } from '@/lib/variables';
+import { extractVariableIdentifier, VariableDelimiters } from '../../../../lib/variables';
+
+import CodeEditorWidget from '../../../stepforms/widgets/CodeEditorWidget.vue';
 /**
  * This component allow to add an advanced variable
  */

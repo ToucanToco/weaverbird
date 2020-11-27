@@ -4,16 +4,15 @@ import _ from 'lodash';
 import Vue from 'vue';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 
-import schemaFactory from '@/components/stepforms/schemas';
-import { addAjvKeywords } from '@/components/stepforms/schemas/utils';
-import StepFormButtonbar from '@/components/stepforms/StepFormButtonbar.vue';
-import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
-import { Pipeline, PipelineStep } from '@/lib/steps';
-import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
-import { VQBModule } from '@/store';
-import { MutationCallbacks } from '@/store/mutations';
-
 import { version } from '../../../package.json';
+import { Pipeline, PipelineStep } from '../../lib/steps';
+import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '../../lib/templating';
+import { VQBModule } from '../../store';
+import { MutationCallbacks } from '../../store/mutations';
+import schemaFactory from '..//stepforms/schemas';
+import { addAjvKeywords } from '..//stepforms/schemas/utils';
+import StepFormButtonbar from '..//stepforms/StepFormButtonbar.vue';
+import StepFormHeader from '..//stepforms/StepFormHeader.vue';
 
 type VqbError = Partial<ErrorObject>;
 /**

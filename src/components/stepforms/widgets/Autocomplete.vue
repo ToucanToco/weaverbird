@@ -18,7 +18,7 @@
         openDirection="bottom"
         @input="updateValue"
       >
-        <!-- If you want to use those templates you should provide a 'label' and 
+        <!-- If you want to use those templates you should provide a 'label' and
       'example' key in the options-->
         <template v-if="withExample" slot="singleLabel" slot-scope="props">
           <span class="option__title">{{ props.option.label }}</span>
@@ -42,8 +42,7 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
-import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-
+import { VariableDelimiters, VariablesBucket } from '../../../lib/variables';
 import FormWidget from './FormWidget.vue';
 import VariableInput from './VariableInput.vue';
 
