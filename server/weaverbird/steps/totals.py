@@ -54,7 +54,7 @@ class TotalsStep(BaseStep):
     def get_total_for_group(self, df, group) -> pd.DataFrame:
         aggregation = AggregateStep(
             name='aggregate',
-            keep_original_granularity=False,
+            keepOriginalGranularity=False,
             aggregations=self.aggregations,
             on=group,
         )
@@ -73,7 +73,7 @@ class TotalsStep(BaseStep):
         ]
         aggregation = AggregateStep(
             name='aggregate',
-            keep_original_granularity=False,
+            keepOriginalGranularity=False,
             aggregations=self.aggregations,
             on=group_by_columns,
         )
