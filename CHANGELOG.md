@@ -1,5 +1,9 @@
 # Changelog
 
+## [0.33.0] - 2020-11-27
+
+- **Breaking** FilterEditor now takes a `columnTypes` props instead of a `columnNames` props and handles casting
+
 ## [0.32.0] - 2020-11-24
 
 ## Changed
