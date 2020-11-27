@@ -90,6 +90,7 @@ describe('Variable Chooser', () => {
   describe('when clicking on the close button', () => {
     beforeEach(async () => {
       wrapper.setProps({ isOpened: true });
+      await wrapper.vm.$nextTick();
       wrapper.find('.vqb-modal__close').trigger('click');
       await wrapper.vm.$nextTick();
     });
@@ -102,6 +103,7 @@ describe('Variable Chooser', () => {
   describe('when clicking on the cancel button', () => {
     beforeEach(async () => {
       wrapper.setProps({ isOpened: true });
+      await wrapper.vm.$nextTick();
       wrapper.find('.vqb-modal__action--secondary').trigger('click');
       await wrapper.vm.$nextTick();
     });

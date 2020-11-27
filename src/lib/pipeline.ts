@@ -19,7 +19,7 @@ import { Pipeline } from './steps';
  * @return an object with 2 keys: `domain` for the domain of the first step and
  * `pipeline` for the rest of the pipeline.
  */
-export function filterOutDomain(pipeline: Pipeline) {
+export function filterOutDomain(pipeline: Pipeline): { domain: string; pipeline: Pipeline } {
   if (pipeline.length === 0) {
     throw new Error('pipeline should like [DomainStep, ...otherSteps]');
   }
