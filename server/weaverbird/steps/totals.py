@@ -3,8 +3,8 @@ from typing import List
 import pandas as pd
 from pydantic import BaseModel, Field
 
-from weaverbird.steps import BaseStep
-from weaverbird.steps.aggregate import Aggregation, get_aggregate_fn
+from weaverbird.steps import AggregateStep, BaseStep
+from weaverbird.steps.aggregate import Aggregation
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 
@@ -52,7 +52,13 @@ class TotalsStep(BaseStep):
         return result
 
     def get_total_for_group(self, df, group) -> pd.DataFrame:
-        df_result = self.do_groupby(df, group)
+        aggregation = AggregateStep(
+            name='aggregate',
+            keep_original_granularity=False,
+            aggregations=self.aggregations,
+            on=group,
+        )
+        df_result = aggregation.execute(df)
         for total_dimension in self.total_dimensions:
             df_result[total_dimension.total_column] = total_dimension.total_rows_label
         return df_result
@@ -65,26 +71,15 @@ class TotalsStep(BaseStep):
             for group_column in self.total_dimensions
             if group_column != total_dimension
         ]
+        aggregation = AggregateStep(
+            name='aggregate',
+            keep_original_granularity=False,
+            aggregations=self.aggregations,
+            on=group_by_columns,
+        )
+        df_result = aggregation.execute(df)
 
-        if len(group_by_columns) == 0:
-            group_by_columns = ['VQB_GROUP_BY']
-            df = df.assign(VQB_GROUP_BY=True)
-        df_result = self.do_groupby(df, group_by_columns)
         df_result[total_dimension.total_column] = total_dimension.total_rows_label
         if 'VQB_GROUP_BY' in df_result:
             del df_result['VQB_GROUP_BY']
-        return df_result
-
-    def do_groupby(self, df, group_by_columns):
-        grouped_by_df = df.groupby(group_by_columns)
-        aggregated_cols = []
-        for aggregation in self.aggregations:
-            for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-                agg_serie = (
-                    grouped_by_df[col]
-                    .agg(get_aggregate_fn(aggregation.agg_function))
-                    .rename(new_col)
-                )
-                aggregated_cols.append(agg_serie)
-        df_result = pd.DataFrame(aggregated_cols).transpose().reset_index()
         return df_result
