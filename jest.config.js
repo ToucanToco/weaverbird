@@ -1,3 +1,6 @@
+/** @typedef {import('ts-jest/dist/types')} */
+/** @type {import('@jest/types').Config.InitialOptions} */
+
 module.exports = {
   moduleFileExtensions: ['js', 'json', 'vue', 'ts', 'd.ts'],
   testEnvironment: 'jsdom',
@@ -15,4 +18,12 @@ module.exports = {
   collectCoverage: true,
   coveragePathIgnorePatterns: ['/node_modules/', 'playground/', 'tests/', 'src/typings/'],
   coverageDirectory: 'coverage',
+  // FIXME :scream:
+  globals: {
+    'ts-jest': {
+      diagnostics: {
+        warnOnly: true
+      }
+    }
+  }
 };
