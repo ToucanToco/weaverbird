@@ -55,10 +55,8 @@ class WaterfallStep(BaseStep):
     # end_df is the base dataframe filtered to contains only result at the start of the waterfall
     # this methods compute the difference for the value value of every label between the end and the start
     def merge(self, start_df, end_df):
-        def get_group_by(*columns):
-            return [column for column in columns]
 
-        group_by_columns = get_group_by(self.labelsColumn, *self.groupby)
+        group_by_columns = [self.labelsColumn] + self.groupby
         start_df = (
             start_df.groupby(by=group_by_columns)
             .agg({self.valueColumn + '_start': 'sum'})
