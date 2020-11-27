@@ -1,5 +1,9 @@
 {
   "compilerOptions": {
+    "outDir": "dist/tsc",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": ".tmp/types",
     "target": "es5",
     "types": [ "ajv", "jest", "lodash", "node" ],
     "module": "esnext",
@@ -20,6 +24,6 @@
     "lib": ["es5", "esnext", "dom", "dom.iterable", "scripthost"],
     "resolveJsonModule": true
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue",  "tests/**/*.ts", "tests/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.vue",  "tests/**/*.ts"],
   "exclude": ["node_modules"]
 }
