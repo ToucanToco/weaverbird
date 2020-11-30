@@ -45,7 +45,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class FillnaStepForm extends BaseStepForm<FillnaStep> {
   stepname: PipelineStepName = 'fillna';
 
-  @Prop({ type: Object, default: () => ({ name: 'fillna', column: [''], value: '' }) })
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'fillna', column: undefined, value: '', columns: [] }),
+  })
   initialStepValue!: FillnaStep;
 
   @VQBModule.Getter columnTypes!: ColumnTypeMapping;
