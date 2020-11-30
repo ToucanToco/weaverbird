@@ -5,7 +5,7 @@
         <FilterSimpleConditionWidget
           :value="slotProps.condition || undefined"
           @input="slotProps.updateCondition"
-          :columnNamesProp="columnNames"
+          :columnNamesProp="Object.keys(columnTypes)"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
           :data-path="slotProps.dataPath"
@@ -26,8 +26,10 @@ import { AbstractFilterTree } from '@/components/ConditionsEditor/tree-types';
 import {
   buildConditionsEditorTree,
   buildFilterStepTree,
+  castFilterStepTreeValue,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
 import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
+import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
 import { FilterCondition } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
@@ -46,10 +48,10 @@ export default class FilterEditor extends Vue {
   filterTree!: FilterCondition;
 
   @Prop({
-    type: Array,
-    default: () => [],
+    type: Object,
+    default: () => ({}),
   })
-  columnNames!: string[];
+  columnTypes!: ColumnTypeMapping;
 
   @Prop()
   availableVariables?: VariablesBucket;
@@ -67,7 +69,7 @@ export default class FilterEditor extends Vue {
   errors!: ErrorObject[];
 
   get conditionsTree() {
-    return buildConditionsEditorTree(this.filterTree);
+    return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes));
   }
 
   updateFilterTree(newConditionsTree: AbstractFilterTree) {

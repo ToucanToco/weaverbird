@@ -18,8 +18,6 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import FilterEditor from '@/components/FilterEditor.vue';
-import { castFilterStepTreeValue } from '@/components/stepforms/convert-filter-step-tree.ts';
-import { ColumnTypeMapping } from '@/lib/dataset';
 import { FilterCondition, FilterSimpleCondition, FilterStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
@@ -43,8 +41,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
     }),
   })
   initialStepValue!: FilterStep;
-
-  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   @VQBModule.State availableVariables?: VariablesBucket;
 
@@ -71,10 +67,6 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   }
 
   submit() {
-    this.editedStep.condition = castFilterStepTreeValue(
-      this.editedStep.condition,
-      this.columnTypes,
-    );
     this.$$super.submit();
   }
 

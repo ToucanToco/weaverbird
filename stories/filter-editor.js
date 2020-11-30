@@ -8,7 +8,11 @@ const stories = storiesOf('FilterEditor', module);
 stories.add('FilterEditor', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
-      <FilterEditor :filter-tree="filterTree" @filterTreeUpdated="updateFilterTree">
+      <FilterEditor
+        :filterTree="filterTree"
+        :columnTypes="columnTypes"
+        @filterTreeUpdated="updateFilterTree"
+      />
       <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
     </div>
   `,
@@ -22,34 +26,22 @@ stories.add('FilterEditor', () => ({
   data() {
     return {
       filterTree: {
-        'and': [
+        and: [
+          { column: 'name', operator: 'eq', value: 'John' },
+          { column: 'status', operator: 'ne', value: 'disabled' },
           {
-            column: 'my_col',
-            operator: 'eq',
-            value: 'my_value',
-          },
-          {
-            column: 'my_col',
-            operator: 'eq',
-            value: 'my_value',
-          },
-          {
-            'or':
-              [
-                {
-                  column: 'my_sub_col',
-                  operator: 'eq',
-                  value: 'my_value',
-                },
-                {
-                  column: 'my_sub_col',
-                  operator: 'eq',
-                  value: 'my_value',
-                },
-              ],
-          },
-        ],
+            or: [
+              { column: 'age', operator: 'ge', value: '10' },
+              { column: 'age', operator: 'le', value: '20' },
+            ]
+          }
+        ]
       },
+      columnTypes: {
+        name: 'string',
+        status: 'string',
+        age: 'integer',
+      }
     };
   },
 
@@ -161,4 +153,3 @@ stories.add('Condition editor (empty slot)', () => ({
     },
   },
 }));
-
