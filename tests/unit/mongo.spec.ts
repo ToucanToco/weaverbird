@@ -2728,6 +2728,57 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('can generate a join step with a domain string as right pipeline', () => {
+    const rightPipeline = 'test_ref';
+    const pipeline: Pipeline = [
+      {
+        name: 'domain',
+        domain: 'test',
+      },
+      {
+        name: 'rename',
+        toRename: [['old', 'new']],
+      },
+      {
+        name: 'join',
+        right_pipeline: rightPipeline,
+        type: 'left',
+        on: [['id', 'id']],
+      },
+    ];
+    const querySteps = mongo36translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'test',
+        },
+      },
+      {
+        $addFields: {
+          new: '$old',
+        },
+      },
+      {
+        $project: {
+          old: 0,
+        },
+      },
+      {
+        $lookup: {
+          from: 'test_ref',
+          let: { vqb_id: '$id' },
+          pipeline: [
+            { $match: { $expr: { $and: [{ $eq: ['$id', '$$vqb_id'] }] } } },
+          ],
+          as: '_vqbJoinKey',
+        },
+      },
+      { $unwind: { path: '$_vqbJoinKey', preserveNullAndEmptyArrays: true } },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } } },
+      { $project: { _vqbJoinKey: 0, _id: 0 } },
+    ]);
+  });
+
   it('validate any custom query has json valid', () => {
     const correctQuery = '[{"$match": {"domain": "test"}}]';
     expect(mongo36translator.validate({ name: 'custom', query: correctQuery })).toBeNull();

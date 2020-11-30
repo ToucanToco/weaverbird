@@ -2032,9 +2032,19 @@ export class Mongo36Translator extends BaseTranslator {
   /** transform a 'join' step into corresponding mongo steps */
   join(step: Readonly<S.JoinStep>): MongoStep[] {
     const mongoPipeline: MongoStep[] = [];
-    const right = step.right_pipeline as S.Pipeline;
-    const rightDomain = right[0] as S.DomainStep;
-    const rightWithoutDomain = right.slice(1);
+    const rightPipeline = step.right_pipeline;
+
+    let rightDomain!: string;
+    let rightPipelineWithoutDomain!: S.Pipeline;
+
+    if (typeof rightPipeline === 'string') {
+      rightDomain = rightPipeline;
+      rightPipelineWithoutDomain = [];
+    } else {
+      rightDomain = (rightPipeline[0] as S.DomainStep).domain;
+      rightPipelineWithoutDomain = rightPipeline.slice(1);
+    }
+
     const mongoLet: { [k: string]: string } = {};
     const mongoExprAnd: { [k: string]: object }[] = [];
     for (const [leftOn, rightOn] of step.on) {
@@ -2045,10 +2055,10 @@ export class Mongo36Translator extends BaseTranslator {
     }
     mongoPipeline.push({
       $lookup: {
-        from: this.domainToCollection(rightDomain.domain),
+        from: this.domainToCollection(rightDomain),
         let: mongoLet,
         pipeline: [
-          ...this.translate(rightWithoutDomain),
+          ...this.translate(rightPipelineWithoutDomain),
           { $match: { $expr: { $and: mongoExprAnd } } },
         ],
         as: '_vqbJoinKey',
