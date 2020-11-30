@@ -26,6 +26,22 @@ describe('Fillna Step Form', () => {
     },
   ]);
 
+  runner.testValidationErrors([
+    {
+      testlabel: 'should NOT have fewer than 1 items',
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }],
+          data: [[null]],
+        },
+      }),
+      data: {
+        editedStep: { name: 'fillna', columns: [], value: 'bar' },
+      },
+      errors: [{ dataPath: '.columns', keyword: 'minItems' }],
+    },
+  ]);
+
   runner.testValidate({
     store: setupMockStore({
       dataset: {
@@ -102,7 +118,6 @@ describe('Fillna Step Form', () => {
     expect(wrapper.vm.$data.editedStep.columns).toBeDefined;
     expect(wrapper.vm.$data.editedStep.columns).toEqual(['hello']);
   });
-
   it('should pass down the value prop to widget multiselect', async () => {
     const wrapper = runner.shallowMount();
     wrapper.setData({ editedStep: { columns: ['foo'], value: '' } });
