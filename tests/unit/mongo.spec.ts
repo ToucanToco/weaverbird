@@ -1,4 +1,4 @@
-import { Pipeline } from '@/lib/steps';
+import { AppendStep, Pipeline } from '@/lib/steps';
 import { getTranslator, setVariableDelimiters } from '@/lib/translators';
 import {
   _generateDateFromParts,
@@ -2308,6 +2308,13 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_ter' },
       { name: 'select', columns: ['useful'] },
     ];
+    const pipelineRef = 'test_ref';
+
+    const appendStep: AppendStep = {
+      name: 'append',
+      pipelines: [pipelineBis, pipelineTer, pipelineRef],
+    };
+
     const pipeline: Pipeline = [
       {
         name: 'domain',
@@ -2317,10 +2324,7 @@ describe('Pipeline to mongo translator', () => {
         name: 'rename',
         toRename: [['old', 'new']],
       },
-      {
-        name: 'append',
-        pipelines: [pipelineBis, pipelineTer],
-      },
+      appendStep,
     ];
     const querySteps = mongo36translator.translate(pipeline);
     expect(querySteps).toEqual([
@@ -2355,12 +2359,20 @@ describe('Pipeline to mongo translator', () => {
         },
       },
       {
+        $lookup: {
+          from: 'test_ref',
+          pipeline: [],
+          as: '_vqbPipelineToAppend_2',
+        },
+      },
+      {
         $project: {
           _vqbPipelinesUnion: {
             $concatArrays: [
               '$_vqbPipelineInline',
               '$_vqbPipelineToAppend_0',
               '$_vqbPipelineToAppend_1',
+              '$_vqbPipelineToAppend_2',
             ],
           },
         },

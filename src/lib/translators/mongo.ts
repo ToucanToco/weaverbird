@@ -1971,12 +1971,25 @@ export class Mongo36Translator extends BaseTranslator {
 
   /** transform an 'append' step into corresponding mongo steps */
   append(step: Readonly<S.AppendStep>): MongoStep[] {
-    const pipelines = step.pipelines as S.Pipeline[];
+    const pipelines = step.pipelines;
     const pipelinesNames: string[] = ['$_vqbPipelineInline'];
     const lookups: MongoStep[] = [];
     for (let i = 0; i < pipelines.length; i++) {
-      const domainStep = pipelines[i][0] as S.DomainStep;
-      const pipelineWithoutDomain = pipelines[i].slice(1);
+      const pipeline = pipelines[i];
+      let domainStep!: S.DomainStep;
+      let pipelineWithoutDomain: S.Pipeline;
+      if (typeof pipeline === 'string') {
+        // if pipeline is a domain or a reference
+        domainStep = {
+          name: 'domain',
+          domain: pipeline,
+        };
+        pipelineWithoutDomain = [];
+      } else {
+        // if pipeline is a full pipeline
+        domainStep = pipeline[0] as S.DomainStep;
+        pipelineWithoutDomain = pipeline.slice(1);
+      }
       lookups.push({
         $lookup: {
           from: this.domainToCollection(domainStep.domain),
