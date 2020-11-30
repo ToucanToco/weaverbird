@@ -21,6 +21,7 @@ export default {
         type: 'string',
         minLength: 1,
       },
+      minItems: 1,
       title: 'Columns in which to fill null values',
       description: 'Columns in which to fill null values',
       attrs: { placeholder: 'Select a column' },
