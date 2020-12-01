@@ -4,7 +4,14 @@
 import { ColumnValueStat } from './helpers';
 import { PaginationContext } from './pagination';
 
-export type DataSetColumnType = 'integer' | 'float' | 'boolean' | 'string' | 'date' | 'object';
+export type DataSetColumnType =
+  | 'integer'
+  | 'float'
+  | 'long'
+  | 'boolean'
+  | 'string'
+  | 'date'
+  | 'object';
 export type ColumnTypeMapping = {
   [col: string]: DataSetColumnType | undefined;
 };

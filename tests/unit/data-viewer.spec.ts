@@ -187,11 +187,12 @@ describe('Data Viewer', () => {
             headers: [
               { name: 'columnA', type: 'string' },
               { name: 'columnB', type: 'integer' },
-              { name: 'columnC', type: 'float' },
-              { name: 'columnD', type: 'date' },
-              { name: 'columnE', type: 'object' },
-              { name: 'columnF', type: 'boolean' },
-              { name: 'columnG', type: undefined },
+              { name: 'columnC', type: 'long' },
+              { name: 'columnD', type: 'float' },
+              { name: 'columnE', type: 'date' },
+              { name: 'columnF', type: 'object' },
+              { name: 'columnG', type: 'boolean' },
+              { name: 'columnH', type: undefined },
             ],
             data: [['value1', 42, 3.14, date, { obj: 'value' }, true]],
             paginationContext: {
@@ -207,21 +208,22 @@ describe('Data Viewer', () => {
       const headerIconsWrapper = wrapper.findAll('.data-viewer__header-icon');
       expect(headerIconsWrapper.at(0).text()).toEqual('ABC');
       expect(headerIconsWrapper.at(1).text()).toEqual('123');
-      expect(headerIconsWrapper.at(2).text()).toEqual('1.2');
+      expect(headerIconsWrapper.at(2).text()).toEqual('123');
+      expect(headerIconsWrapper.at(3).text()).toEqual('1.2');
       expect(
         headerIconsWrapper
-          .at(3)
+          .at(4)
           .find('i')
           .classes(),
       ).toEqual(['fas', 'fa-calendar-alt']);
-      expect(headerIconsWrapper.at(4).text()).toEqual('{ }');
+      expect(headerIconsWrapper.at(5).text()).toEqual('{ }');
       expect(
         headerIconsWrapper
-          .at(5)
+          .at(6)
           .find('i')
           .classes(),
       ).toEqual(['fas', 'fa-check']);
-      expect(headerIconsWrapper.at(6).text()).toEqual('???');
+      expect(headerIconsWrapper.at(7).text()).toEqual('???');
     });
 
     it('should have a action menu for each column', async () => {
