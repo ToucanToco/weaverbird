@@ -186,6 +186,8 @@ export default class DataViewer extends Vue {
         return 'ABC';
       case 'integer':
         return '123';
+      case 'long':
+        return '123';
       case 'float':
         return '1.2';
       case 'date':
