@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.33.2] - 2020-12-02
+
+### Fixed
+
+- FilterStep: define default value rather than using undefined to avoid cast issues
+
+
+## [0.33.1] - 2020-12-01
+
+### Added
+
+- FilterEditor: add `long` as available number type 
+
+
 ## [0.33.0] - 2020-11-27
 
 - **Breaking** FilterEditor now takes a `columnTypes` props instead of a `columnNames` props and handles casting
@@ -533,6 +547,9 @@
 
 - Initial version, showtime!
 
+[0.33.2]: https://github.com/ToucanToco/weaverbird/compare/v0.33.1...v0.33.2
+[0.33.1]: https://github.com/ToucanToco/weaverbird/compare/v0.33.0...v0.33.1
+[0.33.0]: https://github.com/ToucanToco/weaverbird/compare/v0.32.0...v0.33.0
 [0.32.0]: https://github.com/ToucanToco/weaverbird/compare/v0.31.0...v0.32.0
 [0.31.0]: https://github.com/ToucanToco/weaverbird/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/ToucanToco/weaverbird/compare/v0.29.0...v0.30.0
