@@ -1,6 +1,10 @@
 <template>
   <div class="filter-editor">
-    <ConditionsEditor :conditions-tree="conditionsTree" @conditionsTreeUpdated="updateFilterTree">
+    <ConditionsEditor
+      :conditions-tree="conditionsTree"
+      @conditionsTreeUpdated="updateFilterTree"
+      :defaultValue="defaultValue"
+    >
       <template v-slot:default="slotProps">
         <FilterSimpleConditionWidget
           :value="slotProps.condition || undefined"
@@ -28,7 +32,9 @@ import {
   buildFilterStepTree,
   castFilterStepTreeValue,
 } from '@/components/stepforms/convert-filter-step-tree.ts';
-import FilterSimpleConditionWidget from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
+import FilterSimpleConditionWidget, {
+  DEFAULT_FILTER,
+} from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
 import { FilterCondition } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -67,6 +73,8 @@ export default class FilterEditor extends Vue {
     default: () => [],
   })
   errors!: ErrorObject[];
+
+  readonly defaultValue = DEFAULT_FILTER;
 
   get conditionsTree() {
     return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes));

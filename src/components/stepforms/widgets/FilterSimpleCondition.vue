@@ -78,7 +78,7 @@ type OperatorOption = {
   inputWidget?: VueConstructor<Vue>;
 };
 
-const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
+export const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
 
 @Component({
   name: 'filter-simple-condition-widget',
