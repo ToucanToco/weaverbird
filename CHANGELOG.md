@@ -35,6 +35,12 @@
 - docs: missing slash was breaking a link in the nav
 - The preview does not throw an error when the edited pipeline is empty (instead, show an empty dataset)
 
+## [0.31.1] - 2020-12-02
+
+### Fixes
+
+- FillnaStep: use undefined as `column` default (retrompatibility) and display errors if there is less than one item selected in `columns`
+
 ## [0.31.0] - 2020-11-23
 
 ### Added
@@ -558,6 +564,7 @@
 [0.33.1]: https://github.com/ToucanToco/weaverbird/compare/v0.33.0...v0.33.1
 [0.33.0]: https://github.com/ToucanToco/weaverbird/compare/v0.32.0...v0.33.0
 [0.32.0]: https://github.com/ToucanToco/weaverbird/compare/v0.31.0...v0.32.0
+[0.31.1]: https://github.com/ToucanToco/weaverbird/compare/v0.31.0...v0.31.1
 [0.31.0]: https://github.com/ToucanToco/weaverbird/compare/v0.30.0...v0.31.0
 [0.30.0]: https://github.com/ToucanToco/weaverbird/compare/v0.29.0...v0.30.0
 [0.29.0]: https://github.com/ToucanToco/weaverbird/compare/v0.28.1...v0.29.0
