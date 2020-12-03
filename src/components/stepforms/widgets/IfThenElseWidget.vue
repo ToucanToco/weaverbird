@@ -163,7 +163,11 @@ export default class IfThenElseWidget extends Vue {
   })
   errors!: ErrorObject[];
 
-  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
+  @Prop({
+    type: Object,
+    default: () => {},
+  })
+  columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Add a conditional column';
   collapsed = false;
