@@ -9,7 +9,7 @@ import pytest
 from pytest_mock import MockFixture
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.pipeline_executor import PipelineExecutor
+from weaverbird.pipeline_executor import PipelineExecutionFailure, PipelineExecutor
 
 df_domain_a = pd.read_csv(path.join(path.dirname(__file__), 'fixtures/domain_a.csv'))
 DOMAINS = {'domain_a': df_domain_a}
@@ -105,3 +105,26 @@ def test_rename(pipeline_executor):
             {'col_a': ['toto', 'tutu', 'tata'], 'col_b': [1, 2, 3], 'colC': [100, 50, 25]}
         ),
     )
+
+
+def test_errors(pipeline_executor):
+    """
+    It should provide helpful information when the pipeline execution fails, such as:
+    - the step that encountered an error (nth and type)
+    - the original exception message
+    """
+    with pytest.raises(PipelineExecutionFailure) as excinfo:
+        pipeline_executor.execute_pipeline(
+            [
+                {'name': 'domain', 'domain': 'domain_a'},
+                {
+                    'name': 'delete',
+                    'columns': ['columnThatDoesNotExist', 'whatever'],
+                },
+            ]
+        )
+    exception_message = excinfo.value.message
+    assert 'Step #2' in exception_message
+    assert 'delete' in exception_message
+    assert 'columnThatDoesNotExist' in exception_message
+    assert 'whatever' in exception_message
