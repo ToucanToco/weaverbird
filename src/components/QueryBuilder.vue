@@ -21,7 +21,7 @@
             class="documentation-help__content"
             :data-version="version"
           >
-            <i class="fas fa-question-circle" />
+            <i class="fas fa-question-circle" aria-hidden="true" />
             <p>Need help?</p>
           </a>
         </div>

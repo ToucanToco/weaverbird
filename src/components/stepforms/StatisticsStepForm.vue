@@ -21,8 +21,8 @@
     />
     <div class="statistic-section-header" @click="isBasicStatisticsOpen = !isBasicStatisticsOpen">
       Basic Statistics ({{ basicStatisticsCheckedCount }})
-      <i v-if="isBasicStatisticsOpen" class="fas fa-angle-down" />
-      <i v-else class="fas fa-angle-right" />
+      <i v-if="isBasicStatisticsOpen" class="fas fa-angle-down" aria-hidden="true" />
+      <i v-else class="fas fa-angle-right" aria-hidden="true" />
     </div>
     <div class="statistic-section" v-if="isBasicStatisticsOpen">
       <div v-for="statistic in statistics" :key="statistic">
@@ -45,8 +45,8 @@
       @click="isAdvancedStatisticsOpen = !isAdvancedStatisticsOpen"
     >
       Advanced Statistics ({{ advancedStatisticsCheckedCount }})
-      <i v-if="isAdvancedStatisticsOpen" class="fas fa-angle-down" />
-      <i v-else class="fas fa-angle-right" />
+      <i v-if="isAdvancedStatisticsOpen" class="fas fa-angle-down" aria-hidden="true" />
+      <i v-else class="fas fa-angle-right" aria-hidden="true" />
     </div>
     <div class="statistic-section" v-if="isAdvancedStatisticsOpen">
       <div v-for="statistic in advancedStatistics" :key="statistic">
@@ -66,8 +66,8 @@
     </div>
     <div class="statistic-section-header" @click="isCustomQuantileOpen = !isCustomQuantileOpen">
       Custom quantiles ({{ customQuantilesCheckedCount }})
-      <i v-if="isCustomQuantileOpen" class="fas fa-angle-down" />
-      <i v-else class="fas fa-angle-right" />
+      <i v-if="isCustomQuantileOpen" class="fas fa-angle-down" aria-hidden="true" />
+      <i v-else class="fas fa-angle-right" aria-hidden="true" />
     </div>
     <div class="statistic-section" v-if="isCustomQuantileOpen">
       <div

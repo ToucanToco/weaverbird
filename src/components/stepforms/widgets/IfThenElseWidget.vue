@@ -8,7 +8,7 @@
         <span class="ifthenelse-widget__collapse-button" @click="toggle" />
         <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
         <div v-if="!isRoot && !collapsed" class="ifthenelse-widget__remove" @click="deleteElseIf">
-          <i class="far fa-trash-alt" />
+          <i class="far fa-trash-alt" aria-hidden="true" />
         </div>
         <template v-if="collapsed">
           <div class="ifthenelse-widget__collapse-description" v-html="formulaToHumanFormat" />

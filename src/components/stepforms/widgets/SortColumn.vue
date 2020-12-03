@@ -1,5 +1,6 @@
 <template>
   <fieldset class="widget-sort__container">
+    <legend>Sort column</legend>
     <AutocompleteWidget
       class="columnInput"
       :options="columnNames"
@@ -83,3 +84,8 @@ export default class SortColumnWidget extends Vue {
   }
 }
 </script>
+<style scoped>
+.widget-sort__container > legend {
+  display: none;
+}
+</style>

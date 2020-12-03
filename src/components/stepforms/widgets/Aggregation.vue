@@ -1,5 +1,6 @@
 <template>
   <fieldset class="widget-aggregation__container">
+    <legend>Aggregate columns</legend>
     <MultiselectWidget
       class="columnsInput"
       :options="columnNames"
@@ -106,5 +107,8 @@ export default class AggregationWidget extends Vue {
 .widget-multiselect__container {
   align-items: center;
   flex-direction: row;
+}
+.widget-aggregation__container > legend {
+  display: none;
 }
 </style>

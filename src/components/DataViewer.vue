@@ -44,7 +44,7 @@
                     @closed="closeMenu"
                     @actionClicked="openStepForm"
                   />
-                  <i class="fas fa-angle-down" />
+                  <i class="fas fa-angle-down" aria-hidden="true" />
                 </span>
               </td>
             </tr>
@@ -191,9 +191,9 @@ export default class DataViewer extends Vue {
       case 'float':
         return '1.2';
       case 'date':
-        return '<i class="fas fa-calendar-alt"></i>';
+        return '<i class="fas fa-calendar-alt" aria-hidden="true"></i>';
       case 'boolean':
-        return '<i class="fas fa-check"></i>';
+        return '<i class="fas fa-check" aria-hidden="true"></i>';
       case 'object':
         return '{ }';
       default:

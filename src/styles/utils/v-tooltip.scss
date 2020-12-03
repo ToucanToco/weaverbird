@@ -3,10 +3,9 @@
 }
 
 .weaverbird__tooltip {
-  display: block !important;
+  display: block;
   padding: 4px;
   z-index: 10000;
-  display: none;
   pointer-events: none;
 
   &[aria-hidden='true'] {

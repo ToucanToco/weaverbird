@@ -57,7 +57,7 @@
         <div v-if="visiblePanel == 2">
           <div class="action-menu__panel">
             <div class="action-menu__option--back" @click="visiblePanel = 1">
-              <i class="fas fa-angle-left" /> BACK
+              <i class="fas fa-angle-left" aria-hidden="true" /> BACK
             </div>
             <div
               class="action-menu__option action-menu__option--top-bordered"

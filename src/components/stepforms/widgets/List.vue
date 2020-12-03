@@ -19,7 +19,7 @@
           />
         </div>
         <div class="widget-list__icon" v-if="child.isRemovable" @click="removeChild(index)">
-          <i class="far fa-trash-alt" />
+          <i class="far fa-trash-alt" aria-hidden="true" />
         </div>
       </div>
       <div v-if="messageError" class="field__msg-error">
@@ -27,7 +27,7 @@
         {{ messageError }}
       </div>
       <button v-if="!automaticNewField" class="widget-list__add-fieldset" @click="addFieldSet">
-        <i class="fas fa-plus-circle" />
+        <i class="fas fa-plus-circle" aria-hidden="true" />
         {{ addFieldName }}
       </button>
     </div>

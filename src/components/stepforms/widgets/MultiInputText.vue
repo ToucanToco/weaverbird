@@ -197,9 +197,8 @@ export default class MultiInputTextWidget extends Vue {
 }
 .multiselect__option--selected {
   background-color: $active-color;
-  color: $base-color-light;
-  font-weight: normal;
   color: #fff;
+  font-weight: normal;
 }
 .multiselect__option--selected.multiselect__option--highlight {
   background-color: $active-color;
@@ -302,7 +301,7 @@ export default class MultiInputTextWidget extends Vue {
 .multiselect__select:before {
   border: 0;
   content: '\f078';
-  font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free';
+  font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free', sans-serif;
   font-weight: 900;
   line-height: 1;
   top: 8px;
