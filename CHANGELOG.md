@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.3] - 2020-12-03
+
+### Fixed
+
+- FilterStep, IfThenElseStep: fix `columnTypes` forwarding to FilterEditor
+
 ## [0.33.2] - 2020-12-02
 
 ### Fixed
@@ -547,6 +553,7 @@
 
 - Initial version, showtime!
 
+[0.33.3]: https://github.com/ToucanToco/weaverbird/compare/v0.33.2...v0.33.3
 [0.33.2]: https://github.com/ToucanToco/weaverbird/compare/v0.33.1...v0.33.2
 [0.33.1]: https://github.com/ToucanToco/weaverbird/compare/v0.33.0...v0.33.1
 [0.33.0]: https://github.com/ToucanToco/weaverbird/compare/v0.32.0...v0.33.0
