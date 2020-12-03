@@ -52,7 +52,7 @@ $grey-dark: #585858;
     font-size: 12px;
     color: $grey-dark;
   }
-
+  // NOSONAR
   box-size &::placeholder {
     color: $grey-dark;
   }
