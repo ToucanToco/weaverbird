@@ -23,13 +23,13 @@
           @click="openToDateStep()"
         >
           <span class="data-types-menu__icon">
-            <i class="fas fa-calendar-alt" />
+            <i class="fas fa-calendar-alt" aria-hidden="true" />
           </span>
           <span>Date</span>
         </div>
         <div class="data-types-menu__option--active" @click="createConvertStep('boolean')">
           <span class="data-types-menu__icon">
-            <i class="fas fa-check" />
+            <i class="fas fa-check" aria-hidden="true" />
           </span>
           <span>Boolean</span>
         </div>

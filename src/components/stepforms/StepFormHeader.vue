@@ -1,7 +1,7 @@
 <template functional>
   <div class="step-edit-form">
     <button class="step-edit-form__back-button" @click="parent.cancelEdition">
-      <i class="fas fa-angle-left" />
+      <i class="fas fa-angle-left" aria-hidden="true" />
       BACK
     </button>
     <div class="step-edit-form__title-container">
@@ -12,7 +12,7 @@
         rel="noopener"
         :data-version="props.version"
       >
-        <i class="fas fa-question-circle" />
+        <i class="fas fa-question-circle" aria-hidden="true" />
       </a>
     </div>
     <div class="step-edit-form__empty" />

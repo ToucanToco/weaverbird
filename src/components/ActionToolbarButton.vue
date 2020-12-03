@@ -1,6 +1,6 @@
 <template>
   <button type="button" class="action-toolbar__btn">
-    <i :class="`action-toolbar__btn-icon fas fa-${icon}`" />
+    <i :class="`action-toolbar__btn-icon fas fa-${icon}`" aria-hidden="true" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
     <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
       <div class="action-menu__body">

@@ -3,7 +3,11 @@
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body" style="width: 500px;">
-        <i class="vqb-modal__close fas fa-times" @click="listeners['cancelDelete']" />
+        <i
+          class="vqb-modal__close fas fa-times"
+          @click="listeners['cancelDelete']"
+          aria-hidden="true"
+        />
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Delete this step?</div>
         </div>

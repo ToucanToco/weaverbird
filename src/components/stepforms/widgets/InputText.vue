@@ -3,7 +3,7 @@
     <div class="widget-input-text__label">
       <label v-if="name" @click="$refs.input.focus()">{{ name }}</label>
       <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
-        <i class="fas fa-question-circle" />
+        <i class="fas fa-question-circle" aria-hidden="true" />
       </a>
     </div>
 

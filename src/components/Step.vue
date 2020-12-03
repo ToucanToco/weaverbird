@@ -12,14 +12,14 @@
       <div class="query-pipeline-step__actions">
         <!-- @click.stop is used to avoid to trigger select event when editing a step -->
         <div class="query-pipeline-step__action" @click.stop="editStep()">
-          <i class="fas fa-cog" />
+          <i class="fas fa-cog" aria-hidden="true" />
         </div>
         <div
           v-if="!isFirst"
           class="query-pipeline-step__action"
           @click="toggleDeleteConfirmationModal"
         >
-          <i class="fas fa-trash-alt" />
+          <i class="fas fa-trash-alt" aria-hidden="true" />
         </div>
       </div>
     </div>
