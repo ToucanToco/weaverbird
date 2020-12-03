@@ -16,6 +16,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :column-types="columnTypes"
       @input="updateIfThenElse"
     />
     <StepFormButtonbar />
@@ -29,6 +30,7 @@ import { Prop } from 'vue-property-decorator';
 
 import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { ColumnTypeMapping } from '@/lib/dataset';
 import { IfThenElseStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
@@ -46,8 +48,9 @@ export default class IfThenElseStepForm extends BaseStepForm<IfThenElseStep> {
   stepname: PipelineStepName = 'ifthenelse';
 
   @VQBModule.State availableVariables?: VariablesBucket;
-
   @VQBModule.State variableDelimiters?: VariableDelimiters;
+
+  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   @Prop({
     type: Object,

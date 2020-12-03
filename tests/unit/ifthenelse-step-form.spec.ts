@@ -132,6 +132,18 @@ describe.only('If...Then...Else Step Form', () => {
     });
   });
 
+  it('should pass the column types to the IfThenElse widget', () => {
+    const wrapper = runner.shallowMount({
+      dataset: {
+        headers: [{ name: 'foo', type: 'string' }],
+        data: [],
+      },
+    });
+    expect(wrapper.find('IfThenElseWidget-stub').props().columnTypes).toStrictEqual({
+      foo: 'string',
+    });
+  });
+
   it('should update editedStep with the if...then...else object', () => {
     const wrapper = runner.shallowMount(undefined, {
       data: {
