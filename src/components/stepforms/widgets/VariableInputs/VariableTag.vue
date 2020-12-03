@@ -21,6 +21,7 @@
       tabindex="1"
       @keypress.enter.prevent="removeVariableTag"
       @mousedown.prevent="removeVariableTag"
+      aria-hidden="true"
     />
   </div>
 </template>
