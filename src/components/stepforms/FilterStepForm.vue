@@ -7,6 +7,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :columnTypes="columnTypes"
       @filterTreeUpdated="updateFilterTree"
     />
     <StepFormButtonbar />
@@ -18,6 +19,7 @@ import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
 import FilterEditor from '@/components/FilterEditor.vue';
+import { ColumnTypeMapping } from '@/lib/dataset';
 import { FilterCondition, FilterSimpleCondition, FilterStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
@@ -43,8 +45,9 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
   initialStepValue!: FilterStep;
 
   @VQBModule.State availableVariables?: VariablesBucket;
-
   @VQBModule.State variableDelimiters?: VariableDelimiters;
+
+  @VQBModule.Getter columnTypes!: ColumnTypeMapping;
 
   readonly title: string = 'Filter';
 
