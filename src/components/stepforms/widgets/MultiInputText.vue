@@ -43,6 +43,7 @@
               class="multiselect__tag-icon"
               @keypress.enter.prevent="remove(option)"
               @mousedown.prevent="remove(option)"
+              aria-hidden="true"
             />
           </span>
         </template>
