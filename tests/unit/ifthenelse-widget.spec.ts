@@ -1,4 +1,4 @@
-import { shallowMount } from '@vue/test-utils';
+import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import IfThenElseWidget from '@/components/stepforms/widgets/IfThenElseWidget.vue';
 
@@ -15,6 +15,43 @@ describe('IfThenElseWidget', () => {
       expect(filtereditorWrappers.length).toEqual(1);
       const inputtextWrappers = wrapper.findAll('inputtextwidget-stub');
       expect(inputtextWrappers.length).toEqual(2);
+    });
+
+    describe('columnTypes', () => {
+      let wrapper: Wrapper<IfThenElseWidget>;
+
+      beforeEach(() => {
+        wrapper = shallowMount(IfThenElseWidget, {
+          propsData: {
+            columnTypes: {
+              plop: 'string',
+              yop: 'integer',
+            },
+          },
+        });
+      });
+
+      it('should forward its columnTypes to the FilterEditor', () => {
+        expect(wrapper.find('FilterEditor-stub').props().columnTypes).toStrictEqual({
+          plop: 'string',
+          yop: 'integer',
+        });
+      });
+
+      it('should forward its columnTypes to the nested IfThenElse widgets', async () => {
+        wrapper.setProps({
+          value: {
+            if: { column: '', value: '', operator: 'eq' },
+            then: '',
+            else: { if: { column: '', value: '', operator: 'eq' }, then: '', else: '' },
+          },
+        });
+        await wrapper.vm.$nextTick();
+        expect(wrapper.find('IfThenElse-Widget-stub').props().columnTypes).toStrictEqual({
+          plop: 'string',
+          yop: 'integer',
+        });
+      });
     });
 
     it('should be able to nest itself', () => {
