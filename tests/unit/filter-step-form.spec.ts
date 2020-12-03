@@ -1,3 +1,5 @@
+import { Wrapper } from '@vue/test-utils';
+
 import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
@@ -54,20 +56,39 @@ describe('Filter Step Form', () => {
   runner.testResetSelectedIndex();
 
   describe('FilterEditor', () => {
-    it('should pass down the "filter-tree" prop to the FilterEditor value prop', async () => {
-      const wrapper = runner.shallowMount(undefined, {
-        data: {
-          editedStep: {
-            name: 'filter',
-            condition: { column: 'foo', value: 'bar', operator: 'gt' },
+    let wrapper: Wrapper<FilterStepForm>;
+
+    beforeEach(async () => {
+      wrapper = runner.shallowMount(
+        {
+          dataset: {
+            headers: [{ name: 'foo', type: 'string' }],
+            data: [[null]],
           },
         },
-      });
+        {
+          data: {
+            editedStep: {
+              name: 'filter',
+              condition: { column: 'foo', value: 'bar', operator: 'gt' },
+            },
+          },
+        },
+      );
       await wrapper.vm.$nextTick();
+    });
+
+    it('should pass down the "filter-tree" prop to the FilterEditor value prop', () => {
       expect(wrapper.find('FilterEditor-stub').props().filterTree).toEqual({
         column: 'foo',
         value: 'bar',
         operator: 'gt',
+      });
+    });
+
+    it('should pass down the columnTypes to the FilterEditor', () => {
+      expect(wrapper.find('FilterEditor-stub').props().columnTypes).toStrictEqual({
+        foo: 'string',
       });
     });
   });
