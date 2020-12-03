@@ -233,9 +233,8 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
 .multiselect__option--selected {
   background-color: $active-color;
-  color: $base-color-light;
-  font-weight: normal;
   color: #fff;
+  font-weight: normal;
 }
 
 .multiselect__option--selected.multiselect__option--highlight {
