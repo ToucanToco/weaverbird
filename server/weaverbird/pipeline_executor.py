@@ -4,7 +4,7 @@ from typing import List
 from pandas import DataFrame
 from pandas.io.json import build_table_schema
 
-from weaverbird.pipeline import Pipeline
+from weaverbird.pipeline import Pipeline, PipelineStep
 from weaverbird.types import DomainRetriever
 
 
@@ -26,12 +26,15 @@ class PipelineExecutor:
         # self.validate_pipeline()
         steps = Pipeline(steps=pipeline_steps).steps
         df = None
-        for step in steps:
-            df = step.execute(
-                df,
-                domain_retriever=self.retrieve_domain,
-                execute_pipeline=self.execute_pipeline,
-            )
+        for index, step in enumerate(steps):
+            try:
+                df = step.execute(
+                    df,
+                    domain_retriever=self.retrieve_domain,
+                    execute_pipeline=self.execute_pipeline,
+                )
+            except Exception as e:
+                raise PipelineExecutionFailure(step, index, e) from e
         return df
 
     def preview_pipeline(self, pipeline_steps: List[dict], limit: int = 50, offset: int = 0) -> str:
@@ -54,3 +57,13 @@ class PipelineExecutor:
                 'data': json.loads(df[offset : offset + limit].to_json(orient='records')),
             }
         )
+
+
+class PipelineExecutionFailure(Exception):
+    """ Raised when a error happens during the execution of the pipeline """
+
+    def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
+        self.step = step
+        self.index = index
+        self.original_exception = original_exception
+        self.message = f'Step #{index + 1} ({step.name}) failed: {original_exception}'
