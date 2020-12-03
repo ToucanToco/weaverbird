@@ -116,7 +116,6 @@ export default class Pagination extends Vue {
   cursor: not-allowed;
   background-color: #2665a3;
   color: #fff;
-  cursor: not-allowed;
 }
 .pagination-counter {
   background: #999;

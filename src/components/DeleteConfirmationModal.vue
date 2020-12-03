@@ -106,12 +106,11 @@ export default {
 }
 
 .vqb-modal__title {
-  font-size: 12px;
+  font-size: 18px;
   letter-spacing: 0.25px;
   line-height: 20px;
   color: #4c4c4c;
   font-weight: 700;
-  font-size: 18px;
 }
 
 .vqb-modal__section {

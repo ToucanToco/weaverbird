@@ -104,6 +104,5 @@ export default class JoinColumns extends Vue {
 .widget-join-column__container ::v-deep .multiselect {
   width: 100%;
   margin-right: 10px;
-  width: 100%;
 }
 </style>

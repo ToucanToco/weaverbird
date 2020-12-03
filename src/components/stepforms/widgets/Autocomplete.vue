@@ -103,10 +103,9 @@ export default class AutocompleteWidget extends Mixins(FormWidget) {
 }
 
 .multiselect .multiselect__placeholder {
-  color: $grey-dark;
+  color: $base-color;
   font-size: 12px;
   margin-bottom: 0;
-  color: $base-color;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
