@@ -29,6 +29,7 @@
           :data-path="`${dataPath}.if`"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :column-types="columnTypes"
           @filterTreeUpdated="updateFilterTree"
         />
       </div>
@@ -93,6 +94,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      :column-types="columnTypes"
       @input="updateElseFormula"
       @deletedElseIf="transformElseIfIntoElse"
     />
@@ -121,7 +123,6 @@ import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset';
 import { FilterCondition, Formula, IfThenElseStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { VQBModule } from '@/store';
 
 @Component({
   name: 'ifthenelse-widget',
