@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.4] - 2020-12-07
+
+### Fixed
+
+- ConditionsEditor: pass the default value to ConditionsGroup
+
 ## [0.33.3] - 2020-12-03
 
 ### Fixed
