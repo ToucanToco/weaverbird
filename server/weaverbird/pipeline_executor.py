@@ -1,4 +1,5 @@
 import json
+import logging
 from typing import List
 
 from pandas import DataFrame
@@ -6,6 +7,9 @@ from pandas.io.json import build_table_schema
 
 from weaverbird.pipeline import Pipeline, PipelineStep
 from weaverbird.types import DomainRetriever
+from weaverbird.utils import StopWatch, convert_size
+
+logger = logging.getLogger(__name__)
 
 
 class PipelineExecutor:
@@ -26,12 +30,17 @@ class PipelineExecutor:
         # self.validate_pipeline()
         steps = Pipeline(steps=pipeline_steps).steps
         df = None
+        stopwatch = StopWatch()
         for index, step in enumerate(steps):
             try:
-                df = step.execute(
-                    df,
-                    domain_retriever=self.retrieve_domain,
-                    execute_pipeline=self.execute_pipeline,
+                with stopwatch:
+                    df = step.execute(
+                        df,
+                        domain_retriever=self.retrieve_domain,
+                        execute_pipeline=self.execute_pipeline,
+                    )
+                logger.info(
+                    f'step {step} used {convert_size(df.memory_usage().sum())}, took {stopwatch.interval}s to execute'
                 )
             except Exception as e:
                 raise PipelineExecutionFailure(step, index, e) from e
