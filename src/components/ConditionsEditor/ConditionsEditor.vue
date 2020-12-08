@@ -3,7 +3,8 @@
     <ConditionsGroup
       data-path=".condition"
       :conditionsTree="conditionsTree"
-      :is-root-group="true"
+      :defaultValue="defaultValue"
+      :isRootGroup="true"
       @conditionsTreeUpdated="updateConditionsTree"
     >
       <template v-slot:default="slotProps">
