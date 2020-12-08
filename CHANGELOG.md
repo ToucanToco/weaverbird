@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.33.5] - 2020-12-08
+
+### Fixed
+
+- ConditionsEditor, ConditionsGroup: pass the default value everywhere
+
 ## [0.33.4] - 2020-12-07
 
 ### Fixed
@@ -565,6 +571,7 @@
 
 - Initial version, showtime!
 
+[0.33.5]: https://github.com/ToucanToco/weaverbird/compare/v0.33.4...v0.33.5
 [0.33.4]: https://github.com/ToucanToco/weaverbird/compare/v0.33.3...v0.33.4
 [0.33.3]: https://github.com/ToucanToco/weaverbird/compare/v0.33.2...v0.33.3
 [0.33.2]: https://github.com/ToucanToco/weaverbird/compare/v0.33.1...v0.33.2
