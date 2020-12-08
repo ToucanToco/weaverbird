@@ -69,6 +69,7 @@
       <ConditionsGroup
         :conditions-tree="groupConditionTree"
         :dataPath="`${dataPath}.${operator}[${groupIndex + conditions.length}]`"
+        :defaultValue="defaultValue"
         @conditionsTreeUpdated="updateGroup(groupIndex, $event)"
       >
         <template v-slot:default="slotProps">
