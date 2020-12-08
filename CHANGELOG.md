@@ -23,7 +23,7 @@
 
 ### Added
 
-- FilterEditor: add `long` as available number type 
+- FilterEditor: add `long` as available number type
 
 
 ## [0.33.0] - 2020-11-27
@@ -55,7 +55,7 @@
 ## Changed
 
 - Checkboxes: hovered and checked states are more distinct visually
-- Hide actions corresponding to steps that are not supported by the current 
+- Hide actions corresponding to steps that are not supported by the current
 
 ## [0.30.0] - 2020-11-12
 
@@ -565,6 +565,7 @@
 
 - Initial version, showtime!
 
+[0.33.4]: https://github.com/ToucanToco/weaverbird/compare/v0.33.3...v0.33.4
 [0.33.3]: https://github.com/ToucanToco/weaverbird/compare/v0.33.2...v0.33.3
 [0.33.2]: https://github.com/ToucanToco/weaverbird/compare/v0.33.1...v0.33.2
 [0.33.1]: https://github.com/ToucanToco/weaverbird/compare/v0.33.0...v0.33.1
