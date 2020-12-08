@@ -63,7 +63,9 @@ export default class ConditionsEditor extends Vue {
   })
   conditionsTree!: AbstractFilterTree;
 
-  @Prop()
+  @Prop({
+    required: true,
+  })
   defaultValue!: any;
 
   updateConditionsTree(newConditionsTree: AbstractFilterTree) {

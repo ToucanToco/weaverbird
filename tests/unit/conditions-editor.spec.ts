@@ -2,9 +2,11 @@ import { shallowMount } from '@vue/test-utils';
 
 import ConditionsEditor from '@/components/ConditionsEditor/ConditionsEditor.vue';
 
+const defaultValue = { column: '', operator: 'eq', value: '' };
+
 describe('ConditionsEditor', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(ConditionsEditor);
+    const wrapper = shallowMount(ConditionsEditor, { propsData: { defaultValue } });
     expect(wrapper.exists()).toBeTruthy();
   });
 
@@ -12,6 +14,7 @@ describe('ConditionsEditor', () => {
     const wrapper = shallowMount(ConditionsEditor, {
       propsData: {
         conditionsTree: { column: 'foo', value: 'bar', operator: 'gt' },
+        defaultValue,
       },
     });
     (wrapper.vm as any).updateConditionsTree({
