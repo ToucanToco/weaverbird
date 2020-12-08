@@ -90,6 +90,7 @@ stories.add('with some variables available', () => ({
         operator: 'in',
         value: '{{ someArray }}',
       },
+      defaultValue: { column: '', value: '', operator: 'eq' },
     };
   },
 
@@ -110,8 +111,11 @@ stories.add('with some variables available', () => ({
 stories.add('Condition editor (empty slot)', () => ({
   template: `
     <div style="margin: 30px; overflow: auto">
-      <ConditionsEditor :conditions-tree="conditionsTree"
-                        @conditionsTreeUpdated="updateConditionsTree"></ConditionsEditor>
+      <ConditionsEditor
+        :conditions-tree="conditionsTree"
+        :defaultValue="defaultValue"
+        @conditionsTreeUpdated="updateConditionsTree"
+      />
       <pre style="margin-top: 30px;">{{ conditionsStringify }}</pre>
     </div>
   `,
