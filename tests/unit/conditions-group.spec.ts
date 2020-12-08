@@ -7,17 +7,17 @@ let wrapper: Wrapper<Vue>;
 
 describe('ConditionsGroup', () => {
   it('should instantiate', () => {
-    const wrapper = shallowMount(ConditionsGroup);
+    wrapper = shallowMount(ConditionsGroup);
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should not have the class "conditions-group--root"', () => {
-    const wrapper = shallowMount(ConditionsGroup);
+    wrapper = shallowMount(ConditionsGroup);
     expect(wrapper.find('.conditions-group').classes()).not.toContain('conditions-group--root');
   });
 
   it('should not display the trash button for a row when there is only one condition', () => {
-    const wrapper = shallowMount(ConditionsGroup, {
+    wrapper = shallowMount(ConditionsGroup, {
       propsData: {
         conditionsTree: {
           operator: '',
@@ -30,7 +30,7 @@ describe('ConditionsGroup', () => {
   });
 
   it('should display the trash button for a row if there is at least a group', () => {
-    const wrapper = shallowMount(ConditionsGroup, {
+    wrapper = shallowMount(ConditionsGroup, {
       propsData: {
         conditionsTree: {
           operator: 'and',
@@ -52,7 +52,7 @@ describe('ConditionsGroup', () => {
   });
 
   it('should display the trash button for a row when there is more than one condition', () => {
-    const wrapper = shallowMount(ConditionsGroup, {
+    wrapper = shallowMount(ConditionsGroup, {
       propsData: {
         conditionsTree: {
           operator: 'and',
@@ -68,7 +68,7 @@ describe('ConditionsGroup', () => {
   });
 
   it('should have the class "conditions-group__switch-button--active" on the right switch button', () => {
-    const wrapper = shallowMount(ConditionsGroup, {
+    wrapper = shallowMount(ConditionsGroup, {
       propsData: {
         conditionsTree: {
           operator: 'or',
@@ -583,7 +583,7 @@ describe('ConditionsGroup', () => {
   });
 
   it('should set the operator to "and" when the operator is empty (when setOperatorIfNecessaryAndUpdateConditionTree is called)', () => {
-    const wrapper = shallowMount(ConditionsGroup);
+    wrapper = shallowMount(ConditionsGroup);
     const newConditionsTree = {
       operator: '',
       conditions: [
