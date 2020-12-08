@@ -130,7 +130,9 @@ export default class ConditionsGroup extends Vue {
   })
   conditionsTree!: AbstractFilterTree;
 
-  @Prop()
+  @Prop({
+    required: true,
+  })
   defaultValue!: any;
 
   @Prop({
