@@ -4,15 +4,16 @@ import Vue from 'vue';
 import ConditionsGroup from '@/components/ConditionsEditor/ConditionsGroup.vue';
 
 let wrapper: Wrapper<Vue>;
+const defaultValue = { column: '', operator: 'eq', value: '' };
 
 describe('ConditionsGroup', () => {
   it('should instantiate', () => {
-    wrapper = shallowMount(ConditionsGroup);
+    wrapper = shallowMount(ConditionsGroup, { propsData: { defaultValue } });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should not have the class "conditions-group--root"', () => {
-    wrapper = shallowMount(ConditionsGroup);
+    wrapper = shallowMount(ConditionsGroup, { propsData: { defaultValue } });
     expect(wrapper.find('.conditions-group').classes()).not.toContain('conditions-group--root');
   });
 
@@ -21,9 +22,10 @@ describe('ConditionsGroup', () => {
       propsData: {
         conditionsTree: {
           operator: '',
-          conditions: [{ column: '', operator: 'eq', value: '' }],
+          conditions: [defaultValue],
           groups: [],
         },
+        defaultValue,
       },
     });
     expect(wrapper.find('.condition-row__delete').exists()).toBeFalsy();
@@ -34,18 +36,16 @@ describe('ConditionsGroup', () => {
       propsData: {
         conditionsTree: {
           operator: 'and',
-          conditions: [{ column: '', operator: 'eq', value: '' }],
+          conditions: [defaultValue],
           groups: [
             {
               operator: 'or',
-              conditions: [
-                { column: '', operator: 'eq', value: '' },
-                { column: '', operator: 'eq', value: '' },
-              ],
+              conditions: [defaultValue, defaultValue],
               groups: [],
             },
           ],
         },
+        defaultValue,
       },
     });
     expect(wrapper.find('.condition-row__delete').exists()).toBeTruthy();
@@ -56,12 +56,10 @@ describe('ConditionsGroup', () => {
       propsData: {
         conditionsTree: {
           operator: 'and',
-          conditions: [
-            { column: '', operator: 'eq', value: '' },
-            { column: '', operator: 'eq', value: '' },
-          ],
+          conditions: [defaultValue, defaultValue],
           groups: [],
         },
+        defaultValue,
       },
     });
     expect(wrapper.find('.condition-row__delete').exists()).toBeTruthy();
@@ -75,6 +73,7 @@ describe('ConditionsGroup', () => {
           conditions: [undefined],
           groups: [],
         },
+        defaultValue,
       },
     });
     expect(wrapper.find('.conditions-group__switch-button--or').classes()).toContain(
@@ -91,6 +90,7 @@ describe('ConditionsGroup', () => {
             conditions: ['only condition'],
             groups: [undefined],
           },
+          defaultValue,
         },
       });
     });
@@ -113,6 +113,7 @@ describe('ConditionsGroup', () => {
             conditions: ['only condition'],
             groups: [undefined],
           },
+          defaultValue,
         },
       });
     });
@@ -133,6 +134,7 @@ describe('ConditionsGroup', () => {
           conditionsTree: {
             conditions: ['condition A', 'condition B'],
           },
+          defaultValue,
         },
       });
     });
@@ -182,6 +184,7 @@ describe('ConditionsGroup', () => {
               },
             ],
           },
+          defaultValue,
         },
       });
     });
@@ -267,6 +270,7 @@ describe('ConditionsGroup', () => {
               },
             ],
           },
+          defaultValue,
         },
       });
     });
@@ -292,7 +296,7 @@ describe('ConditionsGroup', () => {
               comparison: 'eq',
               value: 'tata',
             },
-            undefined,
+            defaultValue,
           ],
           groups: [
             {
@@ -334,7 +338,7 @@ describe('ConditionsGroup', () => {
               comparison: 'eq',
               value: 'toto',
             },
-            undefined,
+            defaultValue,
           ],
           groups: [],
         },
@@ -371,7 +375,7 @@ describe('ConditionsGroup', () => {
             },
             {
               operator: 'and',
-              conditions: [undefined],
+              conditions: [defaultValue],
               groups: [],
             },
           ],
@@ -408,7 +412,7 @@ describe('ConditionsGroup', () => {
           groups: [
             {
               operator: 'and',
-              conditions: [undefined],
+              conditions: [defaultValue],
               groups: [],
             },
           ],
@@ -583,7 +587,7 @@ describe('ConditionsGroup', () => {
   });
 
   it('should set the operator to "and" when the operator is empty (when setOperatorIfNecessaryAndUpdateConditionTree is called)', () => {
-    wrapper = shallowMount(ConditionsGroup);
+    wrapper = shallowMount(ConditionsGroup, { propsData: { defaultValue } });
     const newConditionsTree = {
       operator: '',
       conditions: [
@@ -646,7 +650,8 @@ describe('ConditionsGroup', () => {
     };
     wrapper = shallowMount(ConditionsGroup, {
       propsData: {
-        conditionsTree: conditionsTree,
+        conditionsTree,
+        defaultValue,
       },
     });
 
@@ -691,6 +696,7 @@ describe('ConditionsGroup', () => {
           ],
           groups: [],
         },
+        defaultValue,
       },
     });
     await (wrapper.vm as any).resetOperatorIfNecessary();
@@ -729,6 +735,7 @@ describe('ConditionsGroup', () => {
           ],
           groups: [],
         },
+        defaultValue,
       },
     });
     (wrapper.vm as any).resetOperatorIfNecessary();
@@ -755,6 +762,7 @@ describe('ConditionsGroup', () => {
             },
           ],
         },
+        defaultValue,
       },
     });
     (wrapper.vm as any).resetOperatorIfNecessary();
