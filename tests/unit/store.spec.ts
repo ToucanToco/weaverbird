@@ -935,4 +935,13 @@ describe('action tests', () => {
       expect(state.backendService).toEqual(backendService);
     });
   });
+
+  describe('setMagicConfig', function() {
+    it('set magic config', () => {
+      const state = buildState({});
+      const magicConfig = { 'appRequesters.report': 'col2' };
+      mutations.setMagicConfig(state, { magicConfig });
+      expect(state.magicConfig).toEqual(magicConfig);
+    });
+  });
 });

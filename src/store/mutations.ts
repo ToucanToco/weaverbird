@@ -32,6 +32,11 @@ type DomainsMutation = {
   payload: Pick<VQBState, 'domains'>;
 };
 
+type MagicConfigMutation = {
+  type: 'setMagicConfig';
+  payload: Pick<VQBState, 'magicConfig'>;
+};
+
 type PipelineMutation = {
   type: 'setPipeline';
   payload: { pipeline: Pipeline };
@@ -88,6 +93,7 @@ export type StateMutation =
   | DatasetMutation
   | DeleteStepMutation
   | DomainsMutation
+  | MagicConfigMutation
   | PipelineMutation
   | SetCurrentPipelineNameMutation
   | SelectedColumnsMutation
@@ -343,6 +349,12 @@ class Mutations {
 
     // Forward them to translators
     setVariableDelimiters(variableDelimiters);
+  }
+  /**
+   * set the magic config to generate filter steps automatically based on variable/column association
+   */
+  setMagicConfig(state: VQBState, { magicConfig }: Pick<VQBState, 'magicConfig'>) {
+    state.magicConfig = magicConfig;
   }
 }
 
