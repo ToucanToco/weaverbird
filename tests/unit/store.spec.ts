@@ -936,12 +936,50 @@ describe('action tests', () => {
     });
   });
 
-  describe('setMagicConfig', function() {
-    it('set magic config', () => {
-      const state = buildState({});
-      const magicConfig = { 'appRequesters.report': 'col2' };
-      mutations.setMagicConfig(state, { magicConfig });
-      expect(state.magicConfig).toEqual(magicConfig);
+  describe('MagicSteps', function() {
+    let store: any;
+    const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
+    const attendedPipeline: Pipeline = [
+      { name: 'domain', domain: 'foo' },
+      {
+        name: 'filter',
+        condition: { column: 'value', value: 'Lyon', operator: 'eq' },
+        isMagic: true,
+      },
+    ];
+
+    describe('setMagicSteps', function() {
+      let commitSpy: any;
+      beforeEach(async function() {
+        store = setupMockStore(buildStateWithOnePipeline(pipeline));
+        commitSpy = jest.spyOn(store, 'commit');
+      });
+      it('does nothing if magic config is empty', async function() {
+        await store.dispatch(VQBnamespace('setMagicSteps'), { magicConfig: undefined });
+        expect(commitSpy).not.toHaveBeenCalled;
+      });
+      it('does not change pipeline if magic config is empty', async function() {
+        await store.dispatch(VQBnamespace('setMagicSteps'), { magicConfig: {} });
+        expect(store.getters[VQBnamespace('pipeline')]).toStrictEqual(pipeline);
+      });
+      it('create a new pipeline with filter steps based on magic config', async function() {
+        expect(store.getters[VQBnamespace('pipeline')]).toStrictEqual(pipeline);
+        await store.dispatch(VQBnamespace('setMagicSteps'), {
+          magicConfig: { value: 'Lyon' },
+        });
+        expect(store.getters[VQBnamespace('pipeline')]).toStrictEqual(attendedPipeline);
+      });
+    });
+
+    describe('deleteMagicSteps', function() {
+      beforeEach(function() {
+        store = setupMockStore(buildStateWithOnePipeline(attendedPipeline));
+      });
+      it('remove magic steps for current pipeline', async function() {
+        expect(store.getters[VQBnamespace('pipeline')]).toStrictEqual(attendedPipeline);
+        await store.dispatch(VQBnamespace('deleteMagicSteps'));
+        expect(store.getters[VQBnamespace('pipeline')]).toStrictEqual(pipeline);
+      });
     });
   });
 });

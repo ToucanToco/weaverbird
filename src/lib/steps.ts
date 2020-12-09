@@ -16,6 +16,18 @@ export function isReference(pipelineOrReference: Reference): pipelineOrReference
   return typeof pipelineOrReference === 'string';
 }
 
+/**
+ * Some step can be magic (added automatically):
+ * For now only the FilterStep
+ */
+export function isMagicStep(pipelineStep: PipelineStep): boolean {
+  if ('isMagic' in pipelineStep === false) {
+    return false;
+  } else {
+    return (pipelineStep as FilterStep).isMagic === true;
+  }
+}
+
 export type AddMissingDatesStep = {
   name: 'addmissingdates';
   datesColumn: string;
@@ -219,6 +231,7 @@ export type FilterConditionInclusion = {
 
 export type FilterStep = {
   name: 'filter';
+  isMagic?: boolean;
   condition: FilterCondition;
 };
 

@@ -2,7 +2,7 @@ import { ActionContext, ActionTree } from 'vuex';
 
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers.ts';
 import { pageOffset } from '@/lib/dataset/pagination';
-import { Pipeline } from '@/lib/steps';
+import { FilterStep, isMagicStep, Pipeline, PipelineStep } from '@/lib/steps';
 
 import { preparePipeline, VQBState } from './state';
 
@@ -113,6 +113,29 @@ class Actions {
   ) {
     commit('setCurrentPage', { pageno });
     dispatch('updateDataset');
+  }
+
+  setMagicSteps(
+    { commit, getters }: ActionContext<VQBState, any>,
+    { magicConfig }: { [name: string]: string },
+  ) {
+    const pipeline = getters.pipeline;
+    if (!pipeline || !pipeline.length || !magicConfig) return;
+    const magicSteps: FilterStep[] = Object.entries(magicConfig).map(([column, value]) => ({
+      name: 'filter',
+      isMagic: true,
+      condition: { column, value, operator: 'eq' },
+    }));
+    const newPipeline = [...pipeline];
+    newPipeline.splice(1, 0, ...magicSteps);
+    commit('setPipeline', { pipeline: newPipeline });
+  }
+
+  deleteMagicSteps({ commit, getters }: ActionContext<VQBState, any>) {
+    const pipeline = getters.pipeline;
+    if (!pipeline || !pipeline.length) return;
+    const newPipeline = pipeline.filter((step: PipelineStep) => !isMagicStep(step));
+    commit('setPipeline', { pipeline: newPipeline });
   }
 
   /**
