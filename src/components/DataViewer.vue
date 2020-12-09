@@ -37,6 +37,16 @@
                   <span v-html="getIconType(column.type)" />
                 </span>
                 <span class="data-viewer__header-label">{{ column.name }}</span>
+                <span class="data-viewer__header-action-filter" @click.stop="openVariablesMenu(column.name)">
+                  <VariableChooser
+                    :available-variables="availableVariables"
+                    :is-opened="activeVariablesMenuColumnName == column.name"
+                    :value="filterValue"
+                    @input="setFilterWithVariable($event, column.name)"
+                    @closed="closeVariablesMenu"
+                  />
+                  <i class="fas fa-filter" aria-hidden="true" />
+                </span>
                 <span class="data-viewer__header-action" @click.stop="openMenu(column.name)">
                   <ActionMenu
                     :column-name="column.name"
@@ -75,7 +85,7 @@ import { Component, Watch } from 'vue-property-decorator';
 import Pagination from '@/components/Pagination.vue';
 import { resizable } from '@/directives/resizable/resizable';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
-import { Pipeline, PipelineStepName } from '@/lib/steps';
+import { Pipeline, PipelineStepName, FilterStep } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
 
@@ -83,6 +93,8 @@ import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
 import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
+import VariableChooser from './stepforms/widgets/VariableInputs/VariableChooser.vue';
+import { VariablesBucket, AvailableVariable, VariableDelimiters } from '@/lib/variables';
 
 /**
  * @name DataViewer
@@ -97,17 +109,21 @@ import DataViewerCell from './DataViewerCell.vue';
     DataTypesMenu,
     DataViewerCell,
     Pagination,
+    VariableChooser,
   },
   directives: { resizable },
 })
 export default class DataViewer extends Vue {
+  @VQBModule.State availableVariables!: VariablesBucket;
   @VQBModule.State dataset!: DataSet;
   @VQBModule.State isLoading!: boolean;
   @VQBModule.State pagesize!: number;
   @VQBModule.State selectedColumns!: string[];
+  @VQBModule.State variableDelimiters!: VariableDelimiters;
 
   @VQBModule.Getter('isDatasetEmpty') isEmpty!: boolean;
   @VQBModule.Getter isDatasetComplete!: boolean;
+  @VQBModule.Getter computedActiveStepIndex!: number;
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
   @VQBModule.Getter translator!: string;
   @VQBModule.Getter pipeline?: Pipeline;
@@ -122,8 +138,13 @@ export default class DataViewer extends Vue {
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
 
+  @VQBModule.Action selectStep!: (payload: { index: number }) => void;
+  @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
+
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';
+  activeVariablesMenuColumnName = '';
+  filterValue = '';
 
   /**
    * @description Get our columns with their names and linked classes
@@ -154,6 +175,31 @@ export default class DataViewer extends Vue {
       return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': true };
     } else {
       return { 'data-viewer__header-icon': true, 'data-viewer__header-icon--active': false };
+    }
+  }
+
+  /**
+   * @description Create filter step with selected variable
+   *
+   * @param {AvailableVariable} - variable
+   * @param {string} - column name
+   */
+  setFilterWithVariable(variable: AvailableVariable, columnName: string) {
+    const filterWithVariableStep: FilterStep = {
+      name: 'filter',
+      condition: {
+        column: columnName,
+        operator: 'eq',
+        value: `${this.variableDelimiters.start} ${variable} ${this.variableDelimiters.end}`
+      }
+    };
+
+    if (this.pipeline) {
+      const newPipeline: Pipeline = [...this.pipeline];
+      const index =  this.computedActiveStepIndex + 1;
+      newPipeline.splice(index, 0, filterWithVariableStep);
+      this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
     }
   }
 
@@ -217,6 +263,15 @@ export default class DataViewer extends Vue {
 
   closeMenu() {
     this.activeActionMenuColumnName = '';
+  }
+
+  openVariablesMenu(name: string) {
+    this.activeVariablesMenuColumnName = name;
+    this.setSelectedColumns({ column: name });
+  }
+
+  closeVariablesMenu(name: string) {
+    this.activeVariablesMenuColumnName = '';
   }
 
   /**
@@ -368,6 +423,18 @@ export default class DataViewer extends Vue {
   width: 18px;
   height: 18px;
   border-radius: 4px;
+  justify-content: center;
+}
+
+.data-viewer__header-action-filter {
+  position: absolute;
+  font-size: 12px;
+  right: 32px;
+  top: 9px;
+  transition: opacity 300ms ease;
+  display: flex;
+  width: 12px;
+  height: 12px;
   justify-content: center;
 }
 
