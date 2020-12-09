@@ -402,7 +402,7 @@ export default class DataViewer extends Vue {
   display: inline-block;
   vertical-align: text-bottom;
   text-overflow: ellipsis;
-  max-width: calc(100% - 40px);
+  max-width: calc(100% - 45px);
   overflow: hidden;
   padding-right: 23px;
 }
