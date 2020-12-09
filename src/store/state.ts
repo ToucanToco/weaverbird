@@ -40,11 +40,6 @@ export interface VQBState {
   selectedStepIndex: number;
 
   /**
-   * magic config to automatically create filter steps for requester id / selected column association
-   */
-  magicConfig: { [name: string]: string };
-
-  /**
    * saved pipelines, with unique name as key and pipeline as value
    */
   pipelines: { [name: string]: Pipeline };
@@ -148,7 +143,6 @@ export function emptyState(): VQBState {
     translator: 'mongo40',
     backendService: UnsetBackendService,
     interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
-    magicConfig: {},
   };
 }
 
