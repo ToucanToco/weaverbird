@@ -29,7 +29,7 @@ def test_convert_to_integer(sample_df: DataFrame):
 def test_convert_to_text(sample_df: DataFrame):
     df_result = ConvertStep(name='convert', columns=['value'], data_type='text').execute(sample_df)
 
-    expected_result = DataFrame({'value': ['41', '42', '43.5', '43.6', 'nan', 'meh']})
+    expected_result = DataFrame({'value': ['41', '42', '43.5', '43.6', 'None', 'meh']})
     assert_dataframes_equals(df_result, expected_result)
 
 
