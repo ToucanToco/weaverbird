@@ -106,7 +106,7 @@ function _getPipelineNamesReferencedBy(
         );
       }
       // we retreive the result
-      referenceNames.push(...cachedResults.get(pipelineName));
+      referenceNames.push(...(cachedResults.get(pipelineName) || []));
     }
   } else {
     // if reference is a Pipeline
