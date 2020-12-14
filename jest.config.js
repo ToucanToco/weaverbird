@@ -15,11 +15,4 @@ module.exports = {
   collectCoverage: true,
   coveragePathIgnorePatterns: ['/node_modules/', 'playground/', 'tests/', 'src/typings/'],
   coverageDirectory: 'coverage',
-  globals: {
-    'ts-jest': {
-      tsconfig: {
-        target: 'es6',
-      }
-    }
-  }
 };
