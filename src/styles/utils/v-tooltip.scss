@@ -6,7 +6,6 @@
   display: block;
   padding: 4px;
   z-index: 10000;
-  pointer-events: none;
 
   &[aria-hidden='true'] {
     visibility: hidden;
@@ -42,6 +41,7 @@
     line-height: 21px;
     font-size: 13px;
     font-family: 'Montserrat', sans-serif;
+    text-align: center;
   }
 
   .tooltip-inner::first-letter {

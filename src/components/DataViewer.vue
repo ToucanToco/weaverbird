@@ -36,7 +36,18 @@
                   />
                   <span v-html="getIconType(column.type)" />
                 </span>
-                <span class="data-viewer__header-label">{{ column.name }}</span>
+                <span
+                  class="data-viewer__header-label"
+                  v-tooltip.top="{
+                    targetClasses: 'has-weaverbird__tooltip',
+                    classes: 'weaverbird__tooltip',
+                    content: column.name,
+                    autoHide: false,
+                    boundariesElement: 'td',
+                    delay: { show: 500, hide: 100 },
+                  }"
+                  >{{ column.name }}</span
+                >
                 <span class="data-viewer__header-action" @click.stop="openMenu(column.name)">
                   <ActionMenu
                     :column-name="column.name"
@@ -69,6 +80,7 @@
 </template>
 <script lang="ts">
 import _ from 'lodash';
+import VTooltip from 'v-tooltip';
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
@@ -83,6 +95,8 @@ import ActionMenu from './ActionMenu.vue';
 import ActionToolbar from './ActionToolbar.vue';
 import DataTypesMenu from './DataTypesMenu.vue';
 import DataViewerCell from './DataViewerCell.vue';
+
+Vue.use(VTooltip);
 
 /**
  * @name DataViewer
