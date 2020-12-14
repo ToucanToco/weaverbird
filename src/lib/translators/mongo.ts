@@ -6,6 +6,7 @@ import * as math from 'mathjs';
 import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
+import { FilterSimpleCondition } from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 import { VariableDelimiters } from '@/lib/variables';
 
@@ -259,6 +260,7 @@ function buildFormulaTree(
 
 function buildCondExpression(
   cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
+  unsupportedOperators: FilterSimpleCondition['operator'][] = [],
 ): MongoStep {
   const operatorMapping = {
     eq: '$eq',
@@ -271,24 +273,36 @@ function buildCondExpression(
     nin: '$nin',
     isnull: '$eq',
     notnull: '$ne',
+    matches: '$regexMatch',
+    notmatches: '$regexMatch',
   };
+
   if (S.isFilterComboAnd(cond)) {
     if (cond.and.length == 1) {
-      return buildCondExpression(cond.and[0]);
+      return buildCondExpression(cond.and[0], unsupportedOperators);
     } else {
       // if cond.and.length > 1 we need to bind conditions in a $and operator,
-      // as we need a unnique document to be used as the first argument of the
+      // as we need a unique document to be used as the first argument of the
       // $cond operator
-      return { $and: cond.and.map(buildCondExpression) };
+      return { $and: cond.and.map(elem => buildCondExpression(elem, unsupportedOperators)) };
     }
   }
   if (S.isFilterComboOr(cond)) {
-    return { $or: cond.or.map(elem => buildCondExpression(elem)) };
+    return { $or: cond.or.map(elem => buildCondExpression(elem, unsupportedOperators)) };
   }
-  if (cond.operator === 'matches' || cond.operator === 'notmatches') {
+
+  if (unsupportedOperators.includes(cond.operator)) {
     throw new Error(`Unsupported operator ${cond.operator} in conditions`);
   }
-  return { [operatorMapping[cond.operator]]: [$$(cond.column), cond.value] };
+
+  let condExpression: MongoStep = {
+    [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
+  };
+  // There is not 'regexNotMatch' operator
+  if (cond.operator == 'notmatches') {
+    condExpression = { $not: condExpression };
+  }
+  return condExpression;
 }
 
 function buildMatchTree(
@@ -1055,12 +1069,17 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
 function transformIfThenElseStep(
   step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
   variableDelimiters?: VariableDelimiters,
+  unsupportedOperatorsInConditions?: FilterSimpleCondition['operator'][],
 ): MongoStep {
-  const ifExpr: MongoStep = buildCondExpression(step.if);
+  const ifExpr: MongoStep = buildCondExpression(step.if, unsupportedOperatorsInConditions);
   const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
   let elseExpr: MongoStep | string | number;
   if (typeof step.else === 'object') {
-    elseExpr = transformIfThenElseStep(step.else, variableDelimiters);
+    elseExpr = transformIfThenElseStep(
+      step.else,
+      variableDelimiters,
+      unsupportedOperatorsInConditions,
+    );
   } else {
     elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
   }
@@ -2011,6 +2030,7 @@ export class Mongo36Translator extends BaseTranslator {
         [step.newColumn]: transformIfThenElseStep(
           _.omit(step, ['name', 'newColumn']),
           BaseTranslator.variableDelimiters,
+          ['matches', 'notmatches'],
         ),
       },
     };
