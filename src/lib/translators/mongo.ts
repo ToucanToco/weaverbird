@@ -6,7 +6,6 @@ import * as math from 'mathjs';
 import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
-import { FilterSimpleCondition } from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 import { VariableDelimiters } from '@/lib/variables';
 
@@ -260,7 +259,7 @@ function buildFormulaTree(
 
 function buildCondExpression(
   cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
-  unsupportedOperators: FilterSimpleCondition['operator'][] = [],
+  unsupportedOperators: S.FilterSimpleCondition['operator'][] = [],
 ): MongoStep {
   const operatorMapping = {
     eq: '$eq',
@@ -1069,7 +1068,7 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
 function transformIfThenElseStep(
   step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
   variableDelimiters?: VariableDelimiters,
-  unsupportedOperatorsInConditions?: FilterSimpleCondition['operator'][],
+  unsupportedOperatorsInConditions?: S.FilterSimpleCondition['operator'][],
 ): MongoStep {
   const ifExpr: MongoStep = buildCondExpression(step.if, unsupportedOperatorsInConditions);
   const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
@@ -2024,13 +2023,19 @@ export class Mongo36Translator extends BaseTranslator {
     };
   }
 
+  // The $regexMatch operator is not supported until mongo 4.2
+  protected unsupportedOperatorsInConditions: S.FilterSimpleCondition['operator'][] = [
+    'matches',
+    'notmatches',
+  ];
+
   ifthenelse(step: Readonly<S.IfThenElseStep>): MongoStep {
     return {
       $addFields: {
         [step.newColumn]: transformIfThenElseStep(
           _.omit(step, ['name', 'newColumn']),
           BaseTranslator.variableDelimiters,
-          ['matches', 'notmatches'],
+          this.unsupportedOperatorsInConditions,
         ),
       },
     };
