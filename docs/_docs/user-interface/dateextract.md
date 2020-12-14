@@ -21,6 +21,7 @@ The following properties can be extracted:
 
 **This step is supported by the following backends:**
 
+- Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
 - Pandas (python)
