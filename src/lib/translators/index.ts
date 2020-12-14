@@ -11,6 +11,7 @@ import { VariableDelimiters } from '../variables';
 import { BaseTranslator } from './base';
 import { Mongo36Translator } from './mongo';
 import { Mongo40Translator } from './mongo4';
+import { Mongo42Translator } from './mongo42';
 import { PandasTranslator } from './pandas';
 
 const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
@@ -61,6 +62,7 @@ export function availableTranslators() {
 
 registerTranslator('mongo36', Mongo36Translator);
 registerTranslator('mongo40', Mongo40Translator);
+registerTranslator('mongo42', Mongo42Translator);
 registerTranslator('pandas', PandasTranslator);
 
 /**

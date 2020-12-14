@@ -15,9 +15,9 @@ const {
 
 const args = new URLSearchParams(location.search)
 
-const TRANSLATOR = args.get('backend') || 'mongo40';
+const TRANSLATOR = args.get('backend') || 'mongo42';
 
-const mongo40translator = getTranslator('mongo40');
+const mongoTranslator = getTranslator('mongo42');
 const pandasTranslator = getTranslator('pandas');
 
 // Create a code editor config for a specific lang
@@ -127,7 +127,7 @@ class MongoService {
 
   async executePipeline(pipeline, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
-    const query = mongo40translator.translate(subpipeline);
+    const query = mongoTranslator.translate(subpipeline);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
@@ -390,7 +390,7 @@ async function buildVueApp() {
         }
       },
       mongoQueryAsJSON: function() {
-        const query = mongo40translator.translate(this.activePipeline);
+        const query = mongoTranslator.translate(this.activePipeline);
         return JSON.stringify(query, null, 2);
       },
       pipelineAsJSON: function() {
