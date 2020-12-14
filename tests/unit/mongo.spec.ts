@@ -3657,6 +3657,32 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
+  it('should fail if regexes are used in conditions', () => {
+    expect(() =>
+      mongo36translator.translate([
+        {
+          name: 'ifthenelse',
+          newColumn: 'NEW_COL',
+          if: { column: 'TEST_COL', operator: 'matches', value: '^a' },
+          then: '"True"',
+          else: '"False"',
+        },
+      ]),
+    ).toThrow('Unsupported operator');
+
+    expect(() =>
+      mongo36translator.translate([
+        {
+          name: 'ifthenelse',
+          newColumn: 'NEW_COL',
+          if: { column: 'TEST_COL', operator: 'notmatches', value: '^a' },
+          then: '"True"',
+          else: '"False"',
+        },
+      ]),
+    ).toThrow('Unsupported operator');
+  });
+
   it('can generate basic rank steps', () => {
     const pipeline: Pipeline = [
       {

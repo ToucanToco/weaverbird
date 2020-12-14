@@ -286,7 +286,7 @@ function buildCondExpression(
     return { $or: cond.or.map(elem => buildCondExpression(elem)) };
   }
   if (cond.operator === 'matches' || cond.operator === 'notmatches') {
-    throw new Error(`Unsupported operator ${cond.operator}`);
+    throw new Error(`Unsupported operator ${cond.operator} in conditions`);
   }
   return { [operatorMapping[cond.operator]]: [$$(cond.column), cond.value] };
 }
