@@ -35,7 +35,7 @@ function portFromuri(dburi) {
   return match[2];
 }
 
-async function startMongo({ dburi = 'mongodb://localhost:27017', version = '4.0.13' } = {}) {
+async function startMongo({ dburi = 'mongodb://localhost:27017', version = '4.2.11' } = {}) {
   const port = portFromuri(dburi);
   if (port === null) {
     throw new Error(
