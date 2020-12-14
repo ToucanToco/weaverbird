@@ -259,7 +259,7 @@ function buildFormulaTree(
 
 function buildCondExpression(
   cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
-  unsupportedOperators: S.FilterSimpleCondition['operator'][] = [],
+  unsupportedOperators: S.FilterSimpleCondition['operator'][],
 ): MongoStep {
   const operatorMapping = {
     eq: '$eq',
@@ -1067,8 +1067,8 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
 /** transform an 'ifthenelse' step into corresponding mongo step */
 function transformIfThenElseStep(
   step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
+  unsupportedOperatorsInConditions: S.FilterSimpleCondition['operator'][],
   variableDelimiters?: VariableDelimiters,
-  unsupportedOperatorsInConditions?: S.FilterSimpleCondition['operator'][],
 ): MongoStep {
   const ifExpr: MongoStep = buildCondExpression(step.if, unsupportedOperatorsInConditions);
   const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
@@ -1076,8 +1076,8 @@ function transformIfThenElseStep(
   if (typeof step.else === 'object') {
     elseExpr = transformIfThenElseStep(
       step.else,
-      variableDelimiters,
       unsupportedOperatorsInConditions,
+      variableDelimiters,
     );
   } else {
     elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
@@ -2034,8 +2034,8 @@ export class Mongo36Translator extends BaseTranslator {
       $addFields: {
         [step.newColumn]: transformIfThenElseStep(
           _.omit(step, ['name', 'newColumn']),
-          BaseTranslator.variableDelimiters,
           this.unsupportedOperatorsInConditions,
+          BaseTranslator.variableDelimiters,
         ),
       },
     };
