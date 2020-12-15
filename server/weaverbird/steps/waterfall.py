@@ -57,10 +57,12 @@ class WaterfallStep(BaseStep):
     def merge(self, start_df, end_df):
 
         group_by_columns = [self.labelsColumn] + self.groupby
+        if self.parentsColumn is not None:
+            group_by_columns = group_by_columns + [self.parentsColumn]
         start_df = (
             start_df.groupby(by=group_by_columns)
             .agg({self.valueColumn + '_start': 'sum'})
-            .merge(start_df.drop(self.valueColumn + '_start', axis=1), on=group_by_columns)
+            .merge(start_df[group_by_columns], on=group_by_columns)
             .rename(columns={self.labelsColumn + '_x': self.labelsColumn})
             .drop_duplicates()
         )
@@ -68,7 +70,7 @@ class WaterfallStep(BaseStep):
         end_df = (
             end_df.groupby(by=group_by_columns)
             .agg({self.valueColumn + '_end': 'sum'})
-            .merge(end_df.drop(self.valueColumn + '_end', axis=1), on=group_by_columns)
+            .merge(end_df[group_by_columns], on=group_by_columns)
             .rename(columns={self.labelsColumn + '_x': self.labelsColumn})
             .drop_duplicates()
         )
