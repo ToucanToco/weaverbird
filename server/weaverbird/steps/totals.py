@@ -9,8 +9,11 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 
 class TotalDimension(BaseModel):
-    total_column: ColumnName
-    total_rows_label: str
+    class Config:
+        allow_population_by_field_name = True
+
+    total_column: ColumnName = Field(alias='totalColumn')
+    total_rows_label: str = Field(alias='totalRowsLabel')
 
 
 class TotalsStep(BaseStep):
