@@ -120,3 +120,36 @@ def test_with_groups():
     assert_dataframes_equals(
         expected_df.sort_values(by='revenue'), result_df.sort_values(by='revenue')
     )
+
+
+def test_bug_duplicate_rows():
+    sample_df = pd.DataFrame(
+        {
+            'city': (['Bordeaux'] * 2 + ['Paris'] * 2 + ['Boston'] * 2 + ['New-York'] * 2) * 2,
+            'country': (['France'] * 4 + ['USA'] * 4) * 2,
+            'product': ['product1', 'product2'] * 8,
+            'year': [2019] * 8 + [2018] * 8,
+            'revenue': [65, 70, 210, 240, 130, 145, 55, 60, 38, 60, 175, 210, 95, 150, 50, 53],
+        }
+    )
+
+    result_df = WaterfallStep(
+        name='waterfall',
+        valueColumn='revenue',
+        milestonesColumn='year',
+        start=2018,
+        end=2019,
+        labelsColumn='country',
+        sortBy='label',
+        order='asc',
+    ).execute(sample_df)
+
+    expected_df = pd.DataFrame(
+        {
+            'LABEL_waterfall': ['2018', 'France', 'USA', '2019'],
+            'revenue': [831, 102, 42, 975],
+            'TYPE_waterfall': [None, 'Parent', 'Parent', None],
+        }
+    )
+
+    assert_dataframes_equals(result_df, expected_df)
