@@ -20,7 +20,7 @@ class TotalsStep(BaseStep):
     name = Field('totals', const=True)
     total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
     aggregations: List[Aggregation] = Field(min_items=1)
-    groups: List[ColumnName] = Field(min_items=0)
+    groups: List[ColumnName] = Field(min_items=0, default=[])
 
     class Config:
         allow_population_by_field_name = True
