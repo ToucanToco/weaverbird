@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Tooltip for column names in DataViewer (useful for long ones that needs to be copied easily)
+
 ## [0.33.5] - 2020-12-08
 
 ### Fixed
