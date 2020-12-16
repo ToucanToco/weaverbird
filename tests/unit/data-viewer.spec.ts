@@ -117,32 +117,55 @@ describe('Data Viewer', () => {
       expect(headerCellsWrapper.length).toEqual(3);
     });
 
-    it("should contains column's names", () => {
-      const store = setupMockStore(
-        buildStateWithOnePipeline([], {
-          dataset: {
-            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-            data: [
-              ['value1', 'value2', 'value3'],
-              ['value4', 'value5', 'value6'],
-              ['value7', 'value8', 'value9'],
-              ['value10', 'value11', 'value12'],
-              ['value13', 'value14', 'value15'],
-            ],
-            paginationContext: {
-              totalCount: 50,
-              pagesize: 10,
-              pageno: 1,
+    describe('column names', () => {
+      let wrapper: Wrapper<DataViewer>;
+      const vTooltipStub = jest.fn();
+
+      beforeEach(() => {
+        const store = setupMockStore(
+          buildStateWithOnePipeline([], {
+            dataset: {
+              headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+              data: [
+                ['value1', 'value2', 'value3'],
+                ['value4', 'value5', 'value6'],
+                ['value7', 'value8', 'value9'],
+                ['value10', 'value11', 'value12'],
+                ['value13', 'value14', 'value15'],
+              ],
+              paginationContext: {
+                totalCount: 50,
+                pagesize: 10,
+                pageno: 1,
+              },
+            },
+          }),
+        );
+        wrapper = shallowMount(DataViewer, {
+          store,
+          localVue,
+          directives: {
+            tooltip: {
+              bind: vTooltipStub,
             },
           },
-        }),
-      );
-      const wrapper = shallowMount(DataViewer, { store, localVue });
+        });
+      });
 
-      const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
-      expect(headerCellsWrapper.at(0).text()).toContain('columnA');
-      expect(headerCellsWrapper.at(1).text()).toContain('columnB');
-      expect(headerCellsWrapper.at(2).text()).toContain('columnC');
+      afterEach(() => {
+        vTooltipStub.mockReset();
+      });
+
+      it("should contains column's names", () => {
+        const headerCellsWrapper = wrapper.findAll('.data-viewer__header-cell');
+        expect(headerCellsWrapper.at(0).text()).toContain('columnA');
+        expect(headerCellsWrapper.at(1).text()).toContain('columnB');
+        expect(headerCellsWrapper.at(2).text()).toContain('columnC');
+      });
+
+      it('should have a tooltip for each column', () => {
+        expect(vTooltipStub).toHaveBeenCalledTimes(3);
+      });
     });
 
     it("should contains column's names even if not on every rows", () => {
