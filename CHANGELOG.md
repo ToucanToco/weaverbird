@@ -1,16 +1,13 @@
 # Changelog
 
-## Unreleased
+## [0.34.0] - 2020-12-17
 
 ### Added
 
 - Tooltip for column names in DataViewer (useful for long ones that needs to be copied easily)
+- Mongo 4.2 translator, with support of regex in filtering conditions
 
 ## [0.33.5] - 2020-12-08
-
-### Added
-
-- Mongo 4.2 translator, with support of regex in filtering conditions
 
 ### Fixed
 
@@ -581,6 +578,7 @@
 
 - Initial version, showtime!
 
+[0.34.0]: https://github.com/ToucanToco/weaverbird/compare/v0.33.5...v0.34.0
 [0.33.5]: https://github.com/ToucanToco/weaverbird/compare/v0.33.4...v0.33.5
 [0.33.4]: https://github.com/ToucanToco/weaverbird/compare/v0.33.3...v0.33.4
 [0.33.3]: https://github.com/ToucanToco/weaverbird/compare/v0.33.2...v0.33.3
