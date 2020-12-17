@@ -45,20 +45,12 @@ const fullMonthReplace = {
   },
 };
 
-describe('Mongo translator support tests', () => {
-  const mongo36translator = getTranslator('mongo36');
-
-  it('should not support "convert" operation', () => {
-    expect(mongo36translator.unsupportedSteps).toEqual(['convert']);
-  });
-});
-
-describe('Pipeline to mongo translator', () => {
-  const mongo36translator = getTranslator('mongo36');
+describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
+  const translator = getTranslator(`mongo${version}`);
 
   it('can generate domain steps', () => {
     const pipeline: Pipeline = [{ name: 'domain', domain: 'test_cube' }];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }, { $project: { _id: 0 } }]);
   });
 
@@ -67,7 +59,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'select', columns: ['Manager', 'Region'] },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -85,7 +77,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'delete', columns: ['Manager', 'Region'] },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -104,7 +96,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'domain', domain: 'test_cube' },
       { name: 'rename', oldname: 'Region', newname: 'zone', toRename: [] },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -132,7 +124,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -169,7 +161,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] } } },
@@ -235,7 +227,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] } } },
@@ -297,7 +289,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] }, sea: 1 } },
@@ -361,7 +353,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind', column_square: { $pow: [`$wind`, 2] }, sea: 1 } },
@@ -423,7 +415,7 @@ describe('Pipeline to mongo translator', () => {
           quantiles: [],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind', sea: 1 } },
@@ -456,7 +448,7 @@ describe('Pipeline to mongo translator', () => {
           quantiles: [],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind', sea: 1, column_square: { $pow: [`$wind`, 2] } } },
@@ -499,7 +491,7 @@ describe('Pipeline to mongo translator', () => {
           ],
         },
       ];
-      const querySteps = mongo36translator.translate(pipeline);
+      const querySteps = translator.translate(pipeline);
       expect(querySteps).toEqual([
         { $match: { domain: 'test_cube' } },
         { $project: { column: '$wind' } },
@@ -584,7 +576,7 @@ describe('Pipeline to mongo translator', () => {
       { name: 'filter', condition: { column: 'IsNull', value: null, operator: 'isnull' } },
       { name: 'filter', condition: { column: 'NotNull', value: null, operator: 'notnull' } },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -652,7 +644,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -715,7 +707,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -764,7 +756,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -824,7 +816,7 @@ describe('Pipeline to mongo translator', () => {
         keepOriginalGranularity: false,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -870,7 +862,7 @@ describe('Pipeline to mongo translator', () => {
         keepOriginalGranularity: true,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube' } },
       {
@@ -912,7 +904,7 @@ describe('Pipeline to mongo translator', () => {
         query: '{"$group": {"_id": "$Country", "Population": {"$sum": "$Population"}}}',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { domain: 'test_cube', Manager: { $eq: 'Pierre' } } },
       {
@@ -1152,7 +1144,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1178,7 +1170,7 @@ describe('Pipeline to mongo translator', () => {
         columns: [{ column: 'foo', order: 'desc' }],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $sort: {
@@ -1199,7 +1191,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $sort: {
@@ -1220,7 +1212,7 @@ describe('Pipeline to mongo translator', () => {
         columns: [],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $ifNull: ['$foo', 'bar'] } } },
       { $project: { _id: 0 } },
@@ -1235,7 +1227,7 @@ describe('Pipeline to mongo translator', () => {
         value: 'bar',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1258,7 +1250,7 @@ describe('Pipeline to mongo translator', () => {
         limit: 10,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { bar: -1 } },
       {
@@ -1285,7 +1277,7 @@ describe('Pipeline to mongo translator', () => {
         limit: 3,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { bar: 1 } },
       {
@@ -1309,7 +1301,7 @@ describe('Pipeline to mongo translator', () => {
         group: ['foo'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1344,7 +1336,7 @@ describe('Pipeline to mongo translator', () => {
         newColumnName: 'newCol',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1378,7 +1370,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'bar',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1421,7 +1413,7 @@ describe('Pipeline to mongo translator', () => {
         groups: ['foo'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1464,7 +1456,7 @@ describe('Pipeline to mongo translator', () => {
         groups: ['foo', 'bar'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1532,7 +1524,7 @@ describe('Pipeline to mongo translator', () => {
         formula: '(test)',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: '$bar' } },
       { $addFields: { constant: 42 } },
@@ -1561,7 +1553,7 @@ describe('Pipeline to mongo translator', () => {
         formula: 'column_1 + column_2 + column_3 * 10',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1630,7 +1622,7 @@ describe('Pipeline to mongo translator', () => {
         formula: '-column_1 + 10',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1656,7 +1648,7 @@ describe('Pipeline to mongo translator', () => {
         formula: '[column with space and + and, oh a - and_also *] + [an other ^column]',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1677,7 +1669,7 @@ describe('Pipeline to mongo translator', () => {
         formula: '[column with space and + and, oh a - and_also *] + A',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1700,7 +1692,7 @@ describe('Pipeline to mongo translator', () => {
         agg_function: 'sum',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1745,7 +1737,7 @@ describe('Pipeline to mongo translator', () => {
         agg_function: 'sum',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -1802,7 +1794,7 @@ describe('Pipeline to mongo translator', () => {
         dropna: true,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $project: {
@@ -1847,7 +1839,7 @@ describe('Pipeline to mongo translator', () => {
         dropna: false,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $project: {
@@ -1884,7 +1876,7 @@ describe('Pipeline to mongo translator', () => {
         new_column_name: 'bar',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([{ $addFields: { bar: '$foo' } }, { $project: { _id: 0 } }]);
   });
 
@@ -1895,7 +1887,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $toLower: '$foo' } } },
       { $project: { _id: 0 } },
@@ -1909,7 +1901,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $toUpper: '$foo' } } },
       { $project: { _id: 0 } },
@@ -1925,7 +1917,7 @@ describe('Pipeline to mongo translator', () => {
         new_column_name: 'concat',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { concat: { $concat: ['$foo'] } } },
       { $project: { _id: 0 } },
@@ -1941,7 +1933,7 @@ describe('Pipeline to mongo translator', () => {
         new_column_name: 'concat',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { concat: { $concat: ['$foo', ' - ', '$bar', ' - ', '$again'] } } },
       { $project: { _id: 0 } },
@@ -1957,7 +1949,7 @@ describe('Pipeline to mongo translator', () => {
         end_index: 6,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -1991,7 +1983,7 @@ describe('Pipeline to mongo translator', () => {
         newColumnName: 'bar',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2046,7 +2038,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
       { $project: { _id: 0 } },
@@ -2061,7 +2053,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%Y-%m-%d',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { foo: { $dateToString: { date: '$foo', format: '%Y-%m-%d' } } } },
       { $project: { _id: 0 } },
@@ -2076,7 +2068,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%d %b %Y',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2115,7 +2107,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%d-%b-%Y',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2154,7 +2146,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%d %B %Y',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2193,7 +2185,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%b %Y',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2231,7 +2223,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%b-%Y',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2269,7 +2261,7 @@ describe('Pipeline to mongo translator', () => {
         format: '%B %Y',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2322,7 +2314,7 @@ describe('Pipeline to mongo translator', () => {
         pipelines: [pipelineBis, pipelineTer],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -2380,7 +2372,7 @@ describe('Pipeline to mongo translator', () => {
       },
     ];
     try {
-      mongo36translator.translate(pipeline);
+      translator.translate(pipeline);
     } catch (e) {
       expect(e.message).toBe('Unsupported step <convert>');
     }
@@ -2394,7 +2386,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2414,7 +2406,7 @@ describe('Pipeline to mongo translator', () => {
         new_column_name: 'bar',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2433,7 +2425,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2452,7 +2444,7 @@ describe('Pipeline to mongo translator', () => {
         column: 'foo',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -2484,7 +2476,7 @@ describe('Pipeline to mongo translator', () => {
         on: [['id', 'id']],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -2542,7 +2534,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -2606,7 +2598,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $match: {
@@ -2673,7 +2665,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toStrictEqual([
       {
         $match: {
@@ -2718,9 +2710,9 @@ describe('Pipeline to mongo translator', () => {
 
   it('validate any custom query has json valid', () => {
     const correctQuery = '[{"$match": {"domain": "test"}}]';
-    expect(mongo36translator.validate({ name: 'custom', query: correctQuery })).toBeNull();
+    expect(translator.validate({ name: 'custom', query: correctQuery })).toBeNull();
     const failedQuery = 'a[{"$match": {"domain": "test"}}]';
-    expect(mongo36translator.validate({ name: 'custom', query: failedQuery })).toEqual([
+    expect(translator.validate({ name: 'custom', query: failedQuery })).toEqual([
       {
         keyword: 'json',
         dataPath: '.query',
@@ -2736,7 +2728,7 @@ describe('Pipeline to mongo translator', () => {
         on: ['col1', 'col2'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $group: {
@@ -2774,7 +2766,7 @@ describe('Pipeline to mongo translator', () => {
         ],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $facet: {
@@ -2890,7 +2882,7 @@ describe('Pipeline to mongo translator', () => {
         parentLabelCol: 'myParent',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $facet: {
@@ -3015,7 +3007,7 @@ describe('Pipeline to mongo translator', () => {
         indexColumns: [],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3103,7 +3095,7 @@ describe('Pipeline to mongo translator', () => {
         newColumn: 'DIFF',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3206,7 +3198,7 @@ describe('Pipeline to mongo translator', () => {
         indexColumns: [],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3296,7 +3288,7 @@ describe('Pipeline to mongo translator', () => {
         indexColumns: [],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3376,7 +3368,7 @@ describe('Pipeline to mongo translator', () => {
         referenceColumn: 'DATE',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { DATE: 1 } },
       {
@@ -3408,7 +3400,7 @@ describe('Pipeline to mongo translator', () => {
         newColumn: 'MY_NEW_COLUMN',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { DATE: 1 } },
       {
@@ -3445,7 +3437,7 @@ describe('Pipeline to mongo translator', () => {
         else: '"False"',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3472,7 +3464,7 @@ describe('Pipeline to mongo translator', () => {
         else: 'BASIC_COL * 100',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3504,7 +3496,7 @@ describe('Pipeline to mongo translator', () => {
         else: '"False"',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3541,7 +3533,7 @@ describe('Pipeline to mongo translator', () => {
         else: '"False"',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3583,7 +3575,7 @@ describe('Pipeline to mongo translator', () => {
         else: '"False"',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3628,7 +3620,7 @@ describe('Pipeline to mongo translator', () => {
         },
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -3657,31 +3649,85 @@ describe('Pipeline to mongo translator', () => {
     ]);
   });
 
-  it('should fail if regexes are used in conditions', () => {
-    expect(() =>
-      mongo36translator.translate([
-        {
-          name: 'ifthenelse',
-          newColumn: 'NEW_COL',
-          if: { column: 'TEST_COL', operator: 'matches', value: '^a' },
-          then: '"True"',
-          else: '"False"',
-        },
-      ]),
-    ).toThrow('Unsupported operator');
+  if (version <= '40') {
+    it('should fail if regexes are used in conditions', () => {
+      expect(() =>
+        translator.translate([
+          {
+            name: 'ifthenelse',
+            newColumn: 'NEW_COL',
+            if: { column: 'TEST_COL', operator: 'matches', value: '^a' },
+            then: '"True"',
+            else: '"False"',
+          },
+        ]),
+      ).toThrow('Unsupported operator');
 
-    expect(() =>
-      mongo36translator.translate([
+      expect(() =>
+        translator.translate([
+          {
+            name: 'ifthenelse',
+            newColumn: 'NEW_COL',
+            if: { column: 'TEST_COL', operator: 'notmatches', value: '^a' },
+            then: '"True"',
+            else: '"False"',
+          },
+        ]),
+      ).toThrow('Unsupported operator');
+    });
+  } else {
+    it('should support regexes in conditions', () => {
+      expect(
+        translator.translate([
+          {
+            name: 'ifthenelse',
+            newColumn: 'NEW_COL',
+            if: { column: 'TEST_COL', operator: 'matches', value: '^a' },
+            then: '"True"',
+            else: '"False"',
+          },
+        ]),
+      ).toStrictEqual([
         {
-          name: 'ifthenelse',
-          newColumn: 'NEW_COL',
-          if: { column: 'TEST_COL', operator: 'notmatches', value: '^a' },
-          then: '"True"',
-          else: '"False"',
+          $addFields: {
+            NEW_COL: {
+              $cond: {
+                else: 'False',
+                if: { $regexMatch: ['$TEST_COL', '^a'] },
+                then: 'True',
+              },
+            },
+          },
         },
-      ]),
-    ).toThrow('Unsupported operator');
-  });
+        { $project: { _id: 0 } },
+      ]);
+
+      expect(
+        translator.translate([
+          {
+            name: 'ifthenelse',
+            newColumn: 'NEW_COL',
+            if: { column: 'TEST_COL', operator: 'notmatches', value: '^a' },
+            then: '"True"',
+            else: '"False"',
+          },
+        ]),
+      ).toStrictEqual([
+        {
+          $addFields: {
+            NEW_COL: {
+              $cond: {
+                else: 'False',
+                if: { $not: { $regexMatch: ['$TEST_COL', '^a'] } },
+                then: 'True',
+              },
+            },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    });
+  }
 
   it('can generate basic rank steps', () => {
     const pipeline: Pipeline = [
@@ -3692,7 +3738,7 @@ describe('Pipeline to mongo translator', () => {
         method: 'standard',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { VALUE: 1 } },
       {
@@ -3765,7 +3811,7 @@ describe('Pipeline to mongo translator', () => {
         newColumnName: 'RANK',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { VALUE: -1 } },
       {
@@ -3846,7 +3892,7 @@ describe('Pipeline to mongo translator', () => {
         order: 'desc',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { DATE: { $in: ['2019', '2020'] } } },
       {
@@ -3930,7 +3976,7 @@ describe('Pipeline to mongo translator', () => {
         order: 'asc',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $match: { DATE: { $in: ['2019', '2020'] } } },
       {
@@ -4063,7 +4109,7 @@ describe('Pipeline to mongo translator', () => {
         aggregations: [{ columns: ['VALUE'], newcolumns: ['VALUE'], aggfunction: 'sum' }],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $facet: {
@@ -4111,7 +4157,7 @@ describe('Pipeline to mongo translator', () => {
         groups: ['DATE'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $facet: {
@@ -4203,7 +4249,7 @@ describe('Pipeline to mongo translator', () => {
         text: 'plop',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { TEXT: { $literal: 'plop' } } },
       { $project: { _id: 0 } },
@@ -4236,7 +4282,7 @@ describe('Pipeline to mongo translator', () => {
         datesGranularity: 'year',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { _vqbYear: { $year: '$DATE' } } },
       {
@@ -4288,7 +4334,7 @@ describe('Pipeline to mongo translator', () => {
         groups: ['COUNTRY', 'PRODUCT'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $addFields: { _vqbYear: { $year: '$DATE' } } },
       {
@@ -4343,7 +4389,7 @@ describe('Pipeline to mongo translator', () => {
         datesGranularity: 'day',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -4432,7 +4478,7 @@ describe('Pipeline to mongo translator', () => {
         groups: ['COUNTRY', 'PRODUCT'],
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -4531,7 +4577,7 @@ describe('Pipeline to mongo translator', () => {
         movingWindow: 12,
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { DATE: 1 } },
       { $group: { _id: null, _vqbArray: { $push: '$$ROOT' } } },
@@ -4580,7 +4626,7 @@ describe('Pipeline to mongo translator', () => {
         newColumnName: 'MOVING_AVERAGE',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       { $sort: { DATE: 1 } },
       {
@@ -4633,7 +4679,7 @@ describe('Pipeline to mongo translator', () => {
         durationIn: 'days',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -4656,7 +4702,7 @@ describe('Pipeline to mongo translator', () => {
         durationIn: 'hours',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -4679,7 +4725,7 @@ describe('Pipeline to mongo translator', () => {
         durationIn: 'minutes',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -4702,7 +4748,7 @@ describe('Pipeline to mongo translator', () => {
         durationIn: 'seconds',
       },
     ];
-    const querySteps = mongo36translator.translate(pipeline);
+    const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
       {
         $addFields: {
@@ -4713,5 +4759,497 @@ describe('Pipeline to mongo translator', () => {
       },
       { $project: { _id: 0 } },
     ]);
+  });
+
+  describe('convert', () => {
+    if (version <= '36') {
+      it('should not support "convert" operation', () => {
+        expect(translator.unsupportedSteps).toContain('convert');
+      });
+      return;
+    } else {
+      it('should support "convert" operation', () => {
+        expect(translator.unsupportedSteps).not.toContain('convert');
+      });
+
+      const monthReplace = {
+        $switch: {
+          branches: [
+            {
+              case: {
+                $in: ['$_vqbTempMonth', ['jan', 'jan.', 'january', 'janv', 'janv.', 'janvier']],
+              },
+              then: '01',
+            },
+            {
+              case: {
+                $in: [
+                  '$_vqbTempMonth',
+                  ['feb', 'feb.', 'february', 'fév', 'fev', 'févr.', 'fevr.', 'février'],
+                ],
+              },
+              then: '02',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['mar', 'mar.', 'march', 'mars']] },
+              then: '03',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['apr', 'apr.', 'april', 'avr', 'avr.', 'avril']] },
+              then: '04',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['may', 'mai']] },
+              then: '05',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['june', 'jun.', 'june', 'juin']] },
+              then: '06',
+            },
+            {
+              case: {
+                $in: ['$_vqbTempMonth', ['jul', 'jul.', 'july', 'juil', 'juil.', 'juillet']],
+              },
+              then: '07',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['aug', 'aug.', 'august', 'août', 'aout']] },
+              then: '08',
+            },
+            {
+              case: {
+                $in: ['$_vqbTempMonth', ['sep', 'sep.', 'september', 'sept', 'sept.', 'septembre']],
+              },
+              then: '09',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['oct', 'oct.', 'october', 'octobre']] },
+              then: '10',
+            },
+            {
+              case: { $in: ['$_vqbTempMonth', ['nov', 'nov.', 'november', 'novembre']] },
+              then: '11',
+            },
+            {
+              case: {
+                $in: ['$_vqbTempMonth', ['dec', 'dec.', 'december', 'déc', 'déc.', 'décembre']],
+              },
+              then: '12',
+            },
+          ],
+        },
+      };
+      it('can generate a convert step', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'convert',
+            columns: ['foo', 'bar'],
+            data_type: 'boolean',
+          },
+          {
+            name: 'convert',
+            columns: ['date'],
+            data_type: 'date',
+          },
+          {
+            name: 'convert',
+            columns: ['float'],
+            data_type: 'float',
+          },
+          {
+            name: 'convert',
+            columns: ['int'],
+            data_type: 'integer',
+          },
+          {
+            name: 'convert',
+            columns: ['text'],
+            data_type: 'text',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          {
+            $addFields: {
+              foo: { $convert: { input: '$foo', to: 'bool' } },
+              bar: { $convert: { input: '$bar', to: 'bool' } },
+            },
+          },
+          {
+            $addFields: {
+              date: { $convert: { input: '$date', to: 'date' } },
+            },
+          },
+          {
+            $addFields: {
+              float: { $convert: { input: '$float', to: 'double' } },
+            },
+          },
+          {
+            $addFields: {
+              int: { $convert: { input: '$int', to: 'int' } },
+            },
+          },
+          {
+            $addFields: {
+              text: { $convert: { input: '$text', to: 'string' } },
+            },
+          },
+          { $project: { _id: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step without specified format ("guess")', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with a custom format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%Y-%m-%d',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { foo: { $dateFromString: { dateString: '$foo', format: '%Y-%m-%d' } } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%d %b %Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%d %b %Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+              _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 1] } },
+              _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+            },
+          },
+          {
+            $addFields: { _vqbTempMonth: monthReplace },
+          },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $concat: ['$_vqbTempDay', '-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+                  },
+                  format: '%d-%m-%Y',
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              _vqbTempArray: 0,
+              _vqbTempDay: 0,
+              _vqbTempMonth: 0,
+              _vqbTempYear: 0,
+            },
+          },
+        ]);
+      });
+
+      it('can generate a todate step with "%d-%b-%Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%d-%b-%Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+          {
+            $addFields: {
+              _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+              _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 1] } },
+              _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+            },
+          },
+          {
+            $addFields: { _vqbTempMonth: monthReplace },
+          },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $concat: ['$_vqbTempDay', '-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+                  },
+                  format: '%d-%m-%Y',
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              _vqbTempArray: 0,
+              _vqbTempDay: 0,
+              _vqbTempMonth: 0,
+              _vqbTempYear: 0,
+            },
+          },
+        ]);
+      });
+
+      it('can generate a todate step with "%d %B %Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%d %B %Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
+              _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 1] } },
+              _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 2] },
+            },
+          },
+          {
+            $addFields: { _vqbTempMonth: monthReplace },
+          },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $concat: ['$_vqbTempDay', '-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+                  },
+                  format: '%d-%m-%Y',
+                },
+              },
+            },
+          },
+          {
+            $project: {
+              _id: 0,
+              _vqbTempArray: 0,
+              _vqbTempDay: 0,
+              _vqbTempMonth: 0,
+              _vqbTempYear: 0,
+            },
+          },
+        ]);
+      });
+
+      it('can generate a todate step with "%b %Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%b %Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
+              _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+            },
+          },
+          {
+            $addFields: { _vqbTempMonth: monthReplace },
+          },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $concat: ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+                  },
+                  format: '%d-%m-%Y',
+                },
+              },
+            },
+          },
+          { $project: { _id: 0, _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%b-%Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%b-%Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+          {
+            $addFields: {
+              _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
+              _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+            },
+          },
+          {
+            $addFields: { _vqbTempMonth: monthReplace },
+          },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $concat: ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+                  },
+                  format: '%d-%m-%Y',
+                },
+              },
+            },
+          },
+          { $project: { _id: 0, _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%B %Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%B %Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
+              _vqbTempYear: { $arrayElemAt: ['$_vqbTempArray', 1] },
+            },
+          },
+          {
+            $addFields: { _vqbTempMonth: monthReplace },
+          },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $concat: ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear'],
+                  },
+                  format: '%d-%m-%Y',
+                },
+              },
+            },
+          },
+          { $project: { _id: 0, _vqbTempArray: 0, _vqbTempMonth: 0, _vqbTempYear: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%Y-%m" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%Y-%m',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempDate: { $concat: ['$foo', '-01'] } } },
+          {
+            $addFields: {
+              foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y-%m-%d' } },
+            },
+          },
+          { $project: { _id: 0, _vqbTempDate: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%Y %m" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%Y/%m',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempDate: { $concat: ['$foo', '/01'] } } },
+          {
+            $addFields: {
+              foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y/%m/%d' } },
+            },
+          },
+          { $project: { _id: 0, _vqbTempDate: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%m-%Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%m-%Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempDate: { $concat: ['01-', '$foo'] } } },
+          {
+            $addFields: {
+              foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d-%m-%Y' } },
+            },
+          },
+          { $project: { _id: 0, _vqbTempDate: 0 } },
+        ]);
+      });
+
+      it('can generate a todate step with "%m/%Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%m/%Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempDate: { $concat: ['01/', '$foo'] } } },
+          {
+            $addFields: {
+              foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
+            },
+          },
+          { $project: { _id: 0, _vqbTempDate: 0 } },
+        ]);
+      });
+    }
   });
 });
