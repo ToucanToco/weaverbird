@@ -8,6 +8,10 @@
 
 ## [0.33.5] - 2020-12-08
 
+### Added
+
+- Mongo 4.2 translator, with support of regex in filtering conditions
+
 ### Fixed
 
 - ConditionsEditor, ConditionsGroup: pass the default value everywhere
