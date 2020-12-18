@@ -34,6 +34,16 @@ def test_single_totals_without_groups():
     assert_dataframes_equals(real_result, expected_result)
 
 
+def test_alias():
+    TotalsStep(
+        **{
+            "name": "totals",
+            "totalDimensions": [{"totalColumn": "CITY", "totalRowsLabel": "All cities"}],
+            "aggregations": [{"columns": ["VALUE"], "newcolumns": ["VALUE"], "aggfunction": "sum"}],
+        }
+    )
+
+
 def test_totals_2():
     sample_df = pd.DataFrame(
         {
@@ -86,3 +96,37 @@ def test_totals_2():
     real_sorted = real_result.sort_values(by=real_result.columns.tolist())
     expected_sorted = expected_result.sort_values(by=expected_result.columns.tolist())
     assert_dataframes_equals(real_sorted, expected_sorted)
+
+
+def test_totals_nogroup_3_dimensions():
+    sample_df = pd.DataFrame(
+        {
+            'COUNTRY': ['France', 'USA'] * 4,
+            'PRODUCT': (['product A'] * 2 + ['product B'] * 2) * 2,
+            'YEAR': ['2019'] * 4 + ['2020'] * 4,
+            'VALUE_1': [5, 10, 10, 15, 20, 20, 30, 25],
+        }
+    )
+    step = TotalsStep(
+        name='totals',
+        total_dimensions=[
+            TotalDimension(total_column='COUNTRY', total_rows_label='All countries'),
+            TotalDimension(total_column='PRODUCT', total_rows_label='All products'),
+            TotalDimension(total_column='YEAR', total_rows_label='All years'),
+        ],
+        aggregations=[
+            Aggregation(
+                columns=['VALUE_1'],
+                aggfunction='sum',
+                newcolumns=['VALUE_1-sum'],
+            ),
+            Aggregation(columns=['VALUE_1'], aggfunction='avg', newcolumns=['VALUE_1-avg']),
+        ],
+    )
+
+    real_result = step.execute(sample_df)
+    assert real_result[real_result['YEAR'] == 'All years'].count()['YEAR'] == 9
+    assert real_result[real_result['COUNTRY'] == 'All countries'].count()['COUNTRY'] == 9
+    assert real_result[real_result['PRODUCT'] == 'All products'].count()['PRODUCT'] == 9
+    # could be any column
+    assert real_result.count()['YEAR'] == 27
