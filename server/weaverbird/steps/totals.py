@@ -36,9 +36,6 @@ class TotalsStep(BaseStep):
         # for total_dimension in self.total_dimensions:
         total_rows.append(self.get_total_for_dimensions(df))
 
-        if len(self.groups) > 0:
-            total_rows.append(self.get_total_for_group(df, self.groups))
-
         # rename columns in the base df, so it will match with the total in schema
         col_to_rm = set()
         for aggregation in self.aggregations:
@@ -50,19 +47,7 @@ class TotalsStep(BaseStep):
             del df[col]
 
         result = pd.concat([df] + total_rows)
-        return result.drop_duplicates()
-
-    def get_total_for_group(self, df, group) -> pd.DataFrame:
-        aggregation = AggregateStep(
-            name='aggregate',
-            keepOriginalGranularity=False,
-            aggregations=self.aggregations,
-            on=group,
-        )
-        df_result = aggregation.execute(df)
-        for total_dimension in self.total_dimensions:
-            df_result[total_dimension.total_column] = total_dimension.total_rows_label
-        return df_result
+        return result
 
     def get_total_for_dimensions(self, df):
         group_by_columns = self.groups + [dim.total_column for dim in self.total_dimensions]
@@ -80,7 +65,7 @@ class TotalsStep(BaseStep):
             result_df = pd.concat(
                 [result_df, self.get_total_for_dimension(aggregated_df, dimension, [])]
             )
-        return result_df.drop_duplicates()
+        return result_df
 
     def get_total_for_dimension(
         self, df, total_dimension: TotalDimension, dimensions_to_skip
@@ -108,17 +93,16 @@ class TotalsStep(BaseStep):
 
         aggregated_df[total_dimension.total_column] = total_dimension.total_rows_label
         full_aggregation = aggregated_df.copy()
-        for dimension in self.total_dimensions:
-            if dimension not in dimensions_to_skip and dimension != total_dimension:
-                full_aggregation = pd.concat(
-                    [
-                        full_aggregation,
-                        self.get_total_for_dimension(
-                            aggregated_df, dimension, dimensions_to_skip + [dimension]
-                        ),
-                    ]
-                )
-
-        if 'VQB_GROUP_BY' in full_aggregation:
-            del full_aggregation['VQB_GROUP_BY']
-        return full_aggregation.drop_duplicates()
+        # if we are the last dimension, we already computed all combinations
+        if total_dimension != self.total_dimensions[-1]:
+            for dimension in self.total_dimensions[self.total_dimensions.index(total_dimension) :]:
+                if dimension not in dimensions_to_skip and dimension != total_dimension:
+                    full_aggregation = pd.concat(
+                        [
+                            full_aggregation,
+                            self.get_total_for_dimension(
+                                aggregated_df, dimension, dimensions_to_skip + [dimension]
+                            ),
+                        ]
+                    )
+        return full_aggregation
