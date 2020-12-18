@@ -1,9 +1,10 @@
 # Changelog
 
-## Unreleased
+## [0.34.1] - 2020-12-18
 
 ### Fixed
 
+- Only one request to preview data when changing the domain (two were fired previously)
 - Mongo 4.2: fix parameters passed to `$regexMatch`
 
 ## [0.34.0] - 2020-12-17
@@ -584,6 +585,7 @@
 
 - Initial version, showtime!
 
+[0.34.1]: https://github.com/ToucanToco/weaverbird/compare/v0.34.0...v0.34.1
 [0.34.0]: https://github.com/ToucanToco/weaverbird/compare/v0.33.5...v0.34.0
 [0.33.5]: https://github.com/ToucanToco/weaverbird/compare/v0.33.4...v0.33.5
 [0.33.4]: https://github.com/ToucanToco/weaverbird/compare/v0.33.3...v0.33.4
