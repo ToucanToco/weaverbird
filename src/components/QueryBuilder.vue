@@ -97,8 +97,8 @@ export default class QueryBuilder extends Vue {
       this.setCurrentDomain({ currentDomain: step.domain });
     } else {
       this.setPipeline({ pipeline: newPipeline });
+      this.selectStep({ index });
     }
-    this.selectStep({ index });
     this.closeStepForm();
     // Reset value from DataViewer
     this.resetStepFormInitialValue();
