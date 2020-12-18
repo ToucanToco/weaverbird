@@ -294,14 +294,25 @@ function buildCondExpression(
     throw new Error(`Unsupported operator ${cond.operator} in conditions`);
   }
 
-  let condExpression: MongoStep = {
-    [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
-  };
-  // There is not 'regexNotMatch' operator
-  if (cond.operator == 'notmatches') {
-    condExpression = { $not: condExpression };
+  // $regexMatch arguments are provided differently from the others operators
+  // https://docs.mongodb.com/manual/reference/operator/aggregation/regexMatch/
+  if (cond.operator === 'matches' || cond.operator === 'notmatches') {
+    let condExpression: MongoStep = {
+      $regexMatch: {
+        input: $$(cond.column),
+        regex: cond.value,
+      },
+    };
+    // There is not 'regexNotMatch' operator
+    if (cond.operator === 'notmatches') {
+      condExpression = { $not: condExpression };
+    }
+    return condExpression;
+  } else {
+    return {
+      [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
+    };
   }
-  return condExpression;
 }
 
 function buildMatchTree(

@@ -3693,7 +3693,7 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
             NEW_COL: {
               $cond: {
                 else: 'False',
-                if: { $regexMatch: ['$TEST_COL', '^a'] },
+                if: { $regexMatch: { input: '$TEST_COL', regex: '^a' } },
                 then: 'True',
               },
             },
@@ -3718,7 +3718,7 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
             NEW_COL: {
               $cond: {
                 else: 'False',
-                if: { $not: { $regexMatch: ['$TEST_COL', '^a'] } },
+                if: { $not: { $regexMatch: { input: '$TEST_COL', regex: '^a' } } },
                 then: 'True',
               },
             },

@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Mongo 4.2: fix parameters passed to `$regexMatch`
+
 ## [0.34.0] - 2020-12-17
 
 ### Added
