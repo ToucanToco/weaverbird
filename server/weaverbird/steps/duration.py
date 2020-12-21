@@ -23,7 +23,7 @@ class DurationStep(BaseStep):
         self,
         df: DataFrame,
         domain_retriever: DomainRetriever = None,
-        pipeline_executor: PipelineExecutor = None,
+        execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
         assert self.duration_in in durations_in_second
 

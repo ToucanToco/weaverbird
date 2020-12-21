@@ -10,6 +10,7 @@ from .date_extract import DateExtractStep
 from .delete import DeleteStep
 from .domain import DomainStep
 from .duplicate import DuplicateStep
+from .duration import DurationStep
 from .evolution import EvolutionStep
 from .fillna import FillnaStep
 from .filter import FilterStep
