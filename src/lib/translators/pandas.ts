@@ -46,6 +46,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  duration(step: Readonly<S.ComputeDurationStep>) {
+    return step;
+  }
+
   evolution(step: Readonly<S.EvolutionStep>) {
     return step;
   }
