@@ -1,6 +1,6 @@
 from typing import List, Literal, Optional
 
-from pandas import DataFrame
+from pandas import DataFrame, concat
 from pydantic import Field
 from pydantic.main import BaseModel
 
@@ -64,7 +64,7 @@ class AggregateStep(BaseStep):
                 )
                 aggregated_cols.append(agg_serie)
 
-        df_result = DataFrame(aggregated_cols).transpose().reset_index()
+        df_result = concat(aggregated_cols, axis=1).reset_index()
 
         # it is faster this way, than to transform the original df
         if self.keep_original_granularity:
