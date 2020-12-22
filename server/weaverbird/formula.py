@@ -1,5 +1,7 @@
 import re
 
+from pandas import DataFrame
+
 COLUMN_PATTERN = re.compile(r'(\`[^\`]*\`)')
 
 
@@ -24,3 +26,11 @@ def clean_formula(formula: str) -> str:
     """
     formula_splitted = COLUMN_PATTERN.split(formula)
     return ''.join(clean_formula_element(elem) for elem in formula_splitted)
+
+
+def eval_formula(df: DataFrame, formula: str) -> DataFrame:
+    try:
+        return df.eval(formula)
+    except Exception:
+        # for all cases not handled by NumExpr
+        return df.eval(formula, engine='python')
