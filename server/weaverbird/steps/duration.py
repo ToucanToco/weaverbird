@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pandas import DataFrame
 from pydantic import Field
 
@@ -9,7 +11,7 @@ _MINUTE = _SECOND * 60
 _HOUR = _MINUTE * 60
 _DAY = _HOUR * 24
 
-durations_in_second = {'seconds': _SECOND, 'minutes': _MINUTE, 'hours': _HOUR, 'days': _DAY}
+DURATIONS_IN_SECOND = {'seconds': _SECOND, 'minutes': _MINUTE, 'hours': _HOUR, 'days': _DAY}
 
 
 class DurationStep(BaseStep):
@@ -17,7 +19,7 @@ class DurationStep(BaseStep):
     new_column_name: ColumnName = Field(alias='newColumnName')
     start_date_column: ColumnName = Field(alias='startDateColumn')
     end_date_column: ColumnName = Field(alias='endDateColumn')
-    duration_in: ColumnName = Field(alias='durationIn')
+    duration_in: Literal['seconds', 'minutes', 'hours', 'days'] = Field(alias='durationIn')
 
     def execute(
         self,
@@ -25,12 +27,10 @@ class DurationStep(BaseStep):
         domain_retriever: DomainRetriever = None,
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
-        assert self.duration_in in durations_in_second
-
         duration_serie_in_seconds = (df[self.end_date_column] - df[self.start_date_column]).astype(
             'timedelta64[s]'
         )
         duration_serie_in_given_unit = (
-            duration_serie_in_seconds / durations_in_second[self.duration_in]
+            duration_serie_in_seconds / DURATIONS_IN_SECOND[self.duration_in]
         )
         return df.assign(**{self.new_column_name: duration_serie_in_given_unit})
