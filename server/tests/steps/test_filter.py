@@ -137,7 +137,7 @@ def test_simple_null_filter(sample_df):
         name='filter',
         condition={
             'column': 'colA',
-            'operator': 'null',
+            'operator': 'isnull',
         },
     ).execute(sample_df)
 

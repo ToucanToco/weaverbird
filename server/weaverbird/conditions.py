@@ -44,7 +44,7 @@ class InclusionCondition(BaseCondition):
 
 class NullCondition(BaseCondition):
     column: ColumnName
-    operator: Literal['null', 'notnull']
+    operator: Literal['isnull', 'notnull']
 
     def filter(self, df: DataFrame) -> Series:
         f = df[self.column].isnull()
