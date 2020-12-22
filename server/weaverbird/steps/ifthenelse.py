@@ -18,7 +18,6 @@ class IfThenElse(BaseModel):
     def execute_ifthenelse(self, df, new_column):
         if isinstance(self.else_value, IfThenElse):
             else_branch = self.else_value.execute_ifthenelse(df, new_column)[new_column]
-        # df.eval('"a_string"') does not work when numExpr is present. this is a dirty workaround
         else:
             else_branch = eval_formula(df, clean_if_formula(self.else_value))
 
