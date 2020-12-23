@@ -16,7 +16,7 @@ RUN yarn
 
 WORKDIR /weaverbird/server
 # Install back-end package dependencies
-COPY server/poetry.lock server/pyproject.toml ./
+COPY server/pyproject.toml ./
 RUN poetry install
 
 WORKDIR /weaverbird
