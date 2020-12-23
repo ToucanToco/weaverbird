@@ -5,7 +5,7 @@ from pandas import DataFrame
 from pydantic import BaseModel, Field
 
 from weaverbird.conditions import Condition
-from weaverbird.formula import clean_formula
+from weaverbird.formula import clean_formula, eval_formula
 from weaverbird.steps import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
@@ -19,14 +19,12 @@ class IfThenElse(BaseModel):
         if isinstance(self.else_value, IfThenElse):
             else_branch = self.else_value.execute_ifthenelse(df, new_column)[new_column]
         else:
-            else_branch = df.eval(clean_if_formula(self.else_value))
+            else_branch = eval_formula(df, clean_if_formula(self.else_value))
+
+        then_branch = eval_formula(df, clean_if_formula(self.then))
 
         return df.assign(
-            **{
-                new_column: numpy.where(
-                    self.condition.filter(df), df.eval(clean_if_formula(self.then)), else_branch
-                )
-            }
+            **{new_column: numpy.where(self.condition.filter(df), then_branch, else_branch)}
         )
 
 
