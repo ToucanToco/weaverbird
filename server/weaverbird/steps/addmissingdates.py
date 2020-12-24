@@ -3,7 +3,7 @@ from typing import List, Literal, Union
 import pandas as pd
 from pydantic import Field
 
-from weaverbird.steps import BaseStep
+from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 # cf. https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
