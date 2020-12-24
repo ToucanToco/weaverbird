@@ -32,7 +32,7 @@ class AddMissingDatesStep(BaseStep):
             group_with_missing_dates = group.groupby(
                 pd.Grouper(key=self.dates_column, freq=_FREQUENCIES[self.granularity])
             ).agg('first')
-            group_with_missing_dates[self.dates_column] = group_with_missing_dates.index
+            group_with_missing_dates = group_with_missing_dates.reset_index()
             group_with_missing_dates[self.groups] = key
             result = pd.concat([result, group_with_missing_dates])
         return result
