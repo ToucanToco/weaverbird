@@ -3,6 +3,7 @@ from typing import List, Union
 from pydantic import BaseModel
 
 from weaverbird.steps import (
+    AddMissingDatesStep,
     AggregateStep,
     AppendStep,
     ArgmaxStep,
@@ -45,6 +46,7 @@ from weaverbird.steps import (
 )
 
 PipelineStep = Union[
+    AddMissingDatesStep,
     AggregateStep,
     AppendStep,
     ArgmaxStep,

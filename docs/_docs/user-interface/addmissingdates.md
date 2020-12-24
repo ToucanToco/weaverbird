@@ -24,6 +24,7 @@ parameter as shown below. Please see example 2 below for illustration.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas
 
 #### Where to find this step?
 

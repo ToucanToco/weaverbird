@@ -1,3 +1,4 @@
+from .addmissingdates import AddMissingDatesStep
 from .aggregate import AggregateStep
 from .append import AppendStep
 from .argmax import ArgmaxStep
