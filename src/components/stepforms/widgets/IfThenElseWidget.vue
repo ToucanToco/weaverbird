@@ -274,7 +274,6 @@ export default class IfThenElseWidget extends Vue {
   ::v-deep .condition-row {
     background-color: #e9eff5;
   }
-  ::v-deep .multiselect,
   ::v-deep .widget-variable__toggle {
     z-index: 1; // prevent inputs to be over multiselect dropdown
   }
