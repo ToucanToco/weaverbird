@@ -2,7 +2,6 @@ from typing import List, Literal, Union
 
 import pandas as pd
 from pydantic import Field
-
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
@@ -13,7 +12,7 @@ _FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M'}
 class AddMissingDatesStep(BaseStep):
     name = Field('addmissingdates', const=True)
     dates_column: ColumnName = Field(alias='datesColumn')
-    granularity: Union[Literal['day']]
+    dates_granularity: Union[Literal['day'], Literal['week'], Literal['month']] = Field(alias='datesGranularity')
     groups: List[ColumnName] = []
 
     def execute(
@@ -30,7 +29,7 @@ class AddMissingDatesStep(BaseStep):
         result = pd.DataFrame()
         for (key, group) in groups:
             group_with_missing_dates = group.groupby(
-                pd.Grouper(key=self.dates_column, freq=_FREQUENCIES[self.granularity])
+                pd.Grouper(key=self.dates_column, freq=_FREQUENCIES[self.dates_granularity])
             ).agg('first')
             group_with_missing_dates = group_with_missing_dates.reset_index()
             group_with_missing_dates[self.groups] = key
