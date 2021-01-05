@@ -1,18 +1,22 @@
 from typing import List, Literal, Union
 
+import numpy as np
 import pandas as pd
 from pydantic import Field
+
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 # cf. https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
-_FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M'}
+_FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M', 'year': 'Y'}
 
 
 class AddMissingDatesStep(BaseStep):
     name = Field('addmissingdates', const=True)
     dates_column: ColumnName = Field(alias='datesColumn')
-    dates_granularity: Union[Literal['day'], Literal['week'], Literal['month']] = Field(alias='datesGranularity')
+    dates_granularity: Union[
+        Literal['day'], Literal['week'], Literal['month'], Literal['year']
+    ] = Field(alias='datesGranularity')
     groups: List[ColumnName] = []
 
     def execute(
@@ -28,10 +32,20 @@ class AddMissingDatesStep(BaseStep):
 
         result = pd.DataFrame()
         for (key, group) in groups:
+            # this is used to keep the real date, if it exists, instead of the computed one by pd.Grouper
+            group = group.assign(_old_date=group[self.dates_column])
+
             group_with_missing_dates = group.groupby(
                 pd.Grouper(key=self.dates_column, freq=_FREQUENCIES[self.dates_granularity])
             ).agg('first')
+
             group_with_missing_dates = group_with_missing_dates.reset_index()
             group_with_missing_dates[self.groups] = key
+            group_with_missing_dates[self.dates_column] = np.where(
+                pd.isna(group_with_missing_dates['_old_date']),
+                group_with_missing_dates[self.dates_column],
+                group_with_missing_dates['_old_date'],
+            )
+            del group_with_missing_dates['_old_date']
             result = pd.concat([result, group_with_missing_dates])
         return result
