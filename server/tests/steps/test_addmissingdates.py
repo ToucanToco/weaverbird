@@ -2,14 +2,19 @@ import datetime
 from datetime import timedelta
 
 import pandas as pd
+import pytest
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.addmissingdates import AddMissingDatesStep
 
 
-def test_missing_date():
+@pytest.fixture()
+def today():
     now = datetime.datetime.today()
-    today = datetime.datetime(year=now.year, month=now.month, day=now.day)
+    return datetime.datetime(year=now.year, month=now.month, day=now.day)
+
+
+def test_missing_date(today):
     dates = [today + timedelta(days=nb_day) for nb_day in list(range(1, 10)) + list(range(12, 20))]
     missing_dates = [today + timedelta(days=10), today + timedelta(days=11)]
 
@@ -25,7 +30,7 @@ def test_missing_date():
     )
 
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', granularity='day', groups=[]
+        name='addmissingdates', datesColumn='date', datesGranularity='day', groups=[]
     )
 
     result = step.execute(df)
@@ -36,9 +41,7 @@ def test_missing_date():
     assert_dataframes_equals(result, expected_result)
 
 
-def test_missing_date_with_groups():
-    now = datetime.datetime.today()
-    today = datetime.datetime(year=now.year, month=now.month, day=now.day)
+def test_missing_date_with_groups(today):
     dates = [today + timedelta(days=nb_day) for nb_day in list(range(1, 10)) + list(range(12, 20))]
     missing_dates = [today + timedelta(days=10), today + timedelta(days=11)]
 
@@ -52,7 +55,7 @@ def test_missing_date_with_groups():
     )
     print(df)
     step = AddMissingDatesStep(
-        name='addmissingdates', datesColumn='date', granularity='day', groups=['country']
+        name='addmissingdates', datesColumn='date', datesGranularity='day', groups=['country']
     )
     result = step.execute(df)
     expected_result = pd.concat(
