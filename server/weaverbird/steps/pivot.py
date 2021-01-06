@@ -14,9 +14,11 @@ class PivotStep(BaseStep):
     agg_function: Literal['sum', 'avg', 'count', 'min', 'max']
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
-        return df.pivot_table(
+        pivoted_df = df.pivot_table(
             values=self.value_column,
             index=self.index,
             columns=self.column_to_pivot,
             aggfunc='mean' if self.agg_function == 'avg' else self.agg_function,
         ).reset_index()
+        pivoted_df.columns.name = None
+        return pivoted_df
