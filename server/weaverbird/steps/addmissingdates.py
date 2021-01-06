@@ -2,6 +2,7 @@ from typing import List, Literal, Union
 
 import numpy as np
 import pandas as pd
+from pandas import Series
 from pydantic import Field
 
 from weaverbird.steps.base import BaseStep
@@ -9,6 +10,11 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
 # cf. https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
 _FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M', 'year': 'Y'}
+
+
+# the .apply is expected to be slow :(
+def at_begin_period(timestamps: Series, dates_granularity: str):
+    return timestamps.dt.to_period(_FREQUENCIES[dates_granularity]).apply(lambda r: r.start_time)
 
 
 class AddMissingDatesStep(BaseStep):
@@ -41,9 +47,12 @@ class AddMissingDatesStep(BaseStep):
 
             group_with_missing_dates = group_with_missing_dates.reset_index()
             group_with_missing_dates[self.groups] = key
+
             group_with_missing_dates[self.dates_column] = np.where(
                 pd.isna(group_with_missing_dates['_old_date']),
-                group_with_missing_dates[self.dates_column],
+                at_begin_period(
+                    group_with_missing_dates[self.dates_column], self.dates_granularity
+                ),
                 group_with_missing_dates['_old_date'],
             )
             del group_with_missing_dates['_old_date']
