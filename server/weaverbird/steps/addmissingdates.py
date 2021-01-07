@@ -12,7 +12,6 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 _FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M', 'year': 'Y'}
 
 
-# the .apply is expected to be slow :(
 def at_begin_period(timestamps: Series, dates_granularity: str):
     return timestamps.dt.to_period(_FREQUENCIES[dates_granularity]).dt.start_time
 
