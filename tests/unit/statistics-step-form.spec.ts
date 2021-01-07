@@ -45,7 +45,7 @@ describe('statistics Step Form', () => {
         },
       ],
     },
-    selectedStepIndex: 2,
+    selectedStepIndex: 1,
   });
 
   runner.testResetSelectedIndex();
