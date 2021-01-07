@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Bound active step to pipeline size to avoid ending up with no step selected in some specific cases
+
 ## [0.34.1] - 2020-12-18
 
 ### Fixed
