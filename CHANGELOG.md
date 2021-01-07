@@ -1,10 +1,11 @@
 # Changelog
 
-## Unreleased
+## [0.35.0] - 2021-01-07
 
 ### Fixed
 
 - Bound active step to pipeline size to avoid ending up with no step selected in some specific cases
+- IfThenElseWidget: display opened dropdown correctly when there is conditions
 
 ## [0.34.1] - 2020-12-18
 
@@ -591,6 +592,7 @@
 
 - Initial version, showtime!
 
+[0.35.0]: https://github.com/ToucanToco/weaverbird/compare/v0.34.1...v0.35.0
 [0.34.1]: https://github.com/ToucanToco/weaverbird/compare/v0.34.0...v0.34.1
 [0.34.0]: https://github.com/ToucanToco/weaverbird/compare/v0.33.5...v0.34.0
 [0.33.5]: https://github.com/ToucanToco/weaverbird/compare/v0.33.4...v0.33.5
