@@ -168,6 +168,18 @@ describe('getter tests', () => {
       expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
     });
 
+    it('should bound active step index if selectedIndex is out of bound', () => {
+      // This can happen when we externally load a pipeline smaller than the current one
+      // and selectedStepIndex !== -1 because we played with the current pipeline
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+      ];
+      const state = buildStateWithOnePipeline(pipeline, { selectedStepIndex: 8396 });
+      expect(getters.computedActiveStepIndex(state, {}, {}, {})).toEqual(2);
+    });
+
     it('should compute active step index if selectedIndex is specified', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },

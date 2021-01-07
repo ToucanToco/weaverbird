@@ -39,7 +39,10 @@ const getters: GetterTree<VQBState, any> = {
     if (!pipeline) {
       return;
     }
-    return state.selectedStepIndex === -1 ? pipeline.length - 1 : state.selectedStepIndex;
+    const lastStepIndex = pipeline.length - 1;
+    return state.selectedStepIndex === -1 || state.selectedStepIndex > lastStepIndex
+      ? lastStepIndex
+      : state.selectedStepIndex;
   },
   /**
    * the first step of the pipeline. Since it's handled differently in the UI,
