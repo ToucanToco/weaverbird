@@ -1,7 +1,7 @@
 from typing import List, Literal, Optional
 
 from pandas import DataFrame, concat
-from pydantic import Field
+from pydantic import Field, root_validator
 from pydantic.main import BaseModel
 
 from weaverbird.steps.base import BaseStep
@@ -19,6 +19,14 @@ class Aggregation(BaseModel):
     new_columns: List[ColumnName] = Field(alias='newcolumns')
     agg_function: AggregateFn = Field(alias='aggfunction')
     columns: List[ColumnName]
+
+    @root_validator(pre=True)
+    def handle_legacy_syntax(cls, values):
+        if 'column' in values:
+            values['columns'] = [values.pop('column')]
+        if 'newcolumn' in values:
+            values['new_columns'] = [values.pop('newcolumn')]
+        return values
 
 
 def get_aggregate_fn(agg_function: str) -> str:
