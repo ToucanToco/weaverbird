@@ -205,3 +205,19 @@ def test_keep_original_granularity_empty_on(sample_df):
     ).execute(sample_df)
 
     assert_dataframes_equals(df_result, sample_df.assign(__vqb_count__=6))
+
+
+def test_legacy_syntax(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keepOriginalGranularity=False,
+        on=[],
+        aggregations=[
+            Aggregation(**{'aggfunction': 'sum', 'column': 'Value1', 'newcolumn': 'sum_value'}),
+        ],
+    ).execute(sample_df)
+
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'sum_value': [56]}),
+    )
