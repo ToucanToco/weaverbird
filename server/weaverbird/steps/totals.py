@@ -5,12 +5,12 @@ from pydantic import BaseModel, Field
 
 from weaverbird.steps import AggregateStep, BaseStep
 from weaverbird.steps.aggregate import Aggregation
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
 
 
 class TotalDimension(BaseModel):
-    class Config:
-        allow_population_by_field_name = True
+    class Config(PopulatedWithFieldnames):
+        ...
 
     total_column: ColumnName = Field(alias='totalColumn')
     total_rows_label: str = Field(alias='totalRowsLabel')
@@ -21,9 +21,6 @@ class TotalsStep(BaseStep):
     total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
     aggregations: List[Aggregation] = Field(min_items=1)
     groups: List[ColumnName] = Field(min_items=0, default=[])
-
-    class Config:
-        allow_population_by_field_name = True
 
     def execute(
         self,
