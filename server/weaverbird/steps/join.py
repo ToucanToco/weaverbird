@@ -6,6 +6,7 @@ from pydantic import Field
 from weaverbird.steps.base import BaseStep
 from weaverbird.steps.combination import PipelineOrDomainName, resolve_pipeline_for_combination
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.utils import rename_duplicated_columns
 
 JoinColumnsPair = Tuple[ColumnName, ColumnName]
 
@@ -31,10 +32,12 @@ class JoinStep(BaseStep):
         else:
             how = self.type
 
-        return merge(
+        result = merge(
             df,
             right_df,
             left_on=[o[0] for o in self.on],
             right_on=[o[1] for o in self.on],
             how=how,
+            suffixes=('', '_JOIN'),
         )
+        return rename_duplicated_columns(result)
