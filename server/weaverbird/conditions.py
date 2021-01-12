@@ -5,7 +5,7 @@ from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series
 from pydantic import BaseModel, Field
 
-from weaverbird.types import ColumnName
+from weaverbird.types import ColumnName, PopulatedWithFieldnames
 
 
 class BaseCondition(BaseModel, ABC):
@@ -71,8 +71,8 @@ SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition, 
 
 
 class BaseConditionCombo(BaseCondition, ABC):
-    class Config:
-        allow_population_by_field_name = True
+    class Config(PopulatedWithFieldnames):
+        ...
 
     def to_dict(self):
         return self.dict(by_alias=True)

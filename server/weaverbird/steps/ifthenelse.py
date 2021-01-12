@@ -7,10 +7,13 @@ from pydantic import BaseModel, Field
 from weaverbird.conditions import Condition
 from weaverbird.formula import clean_formula, eval_formula
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
 
 
 class IfThenElse(BaseModel):
+    class Config(PopulatedWithFieldnames):
+        ...
+
     condition: Condition = Field(alias='if')
     then: str
     else_value: Union['IfThenElse', Any] = Field(alias='else')
@@ -32,6 +35,9 @@ IfThenElse.update_forward_refs()
 
 
 class IfthenelseStep(BaseStep, IfThenElse):
+    class Config(PopulatedWithFieldnames):
+        ...
+
     name = Field('ifthenelse', const=True)
     new_column: ColumnName = Field(alias='newColumn')
 

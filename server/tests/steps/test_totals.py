@@ -16,7 +16,7 @@ def test_single_totals_without_groups():
     )
     step = TotalsStep(
         name='totals',
-        total_dimensions=[TotalDimension(total_column='COUNTRY', total_rows_label='All countries')],
+        totalDimensions=[TotalDimension(total_column='COUNTRY', total_rows_label='All countries')],
         aggregations=[Aggregation(columns=['VALUE'], aggfunction='sum', newcolumns=['VALUE'])],
         groups=[],
     )
@@ -56,7 +56,7 @@ def test_totals_2():
     )
     step = TotalsStep(
         name='totals',
-        total_dimensions=[
+        totalDimensions=[
             TotalDimension(total_column='COUNTRY', total_rows_label='All countries'),
             TotalDimension(total_column='PRODUCT', total_rows_label='All products'),
         ],
@@ -109,7 +109,7 @@ def test_totals_nogroup_3_dimensions():
     )
     step = TotalsStep(
         name='totals',
-        total_dimensions=[
+        totalDimensions=[
             TotalDimension(total_column='COUNTRY', total_rows_label='All countries'),
             TotalDimension(total_column='PRODUCT', total_rows_label='All products'),
             TotalDimension(total_column='YEAR', total_rows_label='All years'),
