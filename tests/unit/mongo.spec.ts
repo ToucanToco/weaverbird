@@ -3454,6 +3454,35 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can generate an ifthenelse step with `not in` operator', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: {
+          and: [{ column: 'TEST_COL', operator: 'nin', value: ['TEST_VALUE_1', 'TEST_VALUE_2'] }],
+        },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: { $not: { $in: ['$TEST_COL', ['TEST_VALUE_1', 'TEST_VALUE_2']] } },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate an ifthenelse step with formulas', () => {
     const pipeline: Pipeline = [
       {

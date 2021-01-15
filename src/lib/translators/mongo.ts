@@ -269,7 +269,7 @@ function buildCondExpression(
     gt: '$gt',
     ge: '$gte',
     in: '$in',
-    nin: '$nin',
+    nin: '$in',
     isnull: '$eq',
     notnull: '$ne',
     matches: '$regexMatch',
@@ -309,9 +309,14 @@ function buildCondExpression(
     }
     return condExpression;
   } else {
-    return {
+    let condExpression: MongoStep = {
       [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
     };
+    // There is not 'not in' operator
+    if (cond.operator === 'nin') {
+      condExpression = { $not: condExpression };
+    }
+    return condExpression;
   }
 }
 

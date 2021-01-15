@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- Mongo: Fix operator "not in" (`nin`) in if/then/else conditions
+
 ## [0.35.0] - 2021-01-07
 
 ### Fixed
