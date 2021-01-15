@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.35.1] - 2021-01-15
 
 ### Fixed
 
@@ -598,6 +598,7 @@
 
 - Initial version, showtime!
 
+[0.35.1]: https://github.com/ToucanToco/weaverbird/compare/v0.35.0...v0.35.1
 [0.35.0]: https://github.com/ToucanToco/weaverbird/compare/v0.34.1...v0.35.0
 [0.34.1]: https://github.com/ToucanToco/weaverbird/compare/v0.34.0...v0.34.1
 [0.34.0]: https://github.com/ToucanToco/weaverbird/compare/v0.33.5...v0.34.0
