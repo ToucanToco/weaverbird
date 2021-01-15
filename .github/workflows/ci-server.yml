@@ -38,13 +38,6 @@ jobs:
     - name: Install Poetry
       uses: abatilo/actions-poetry@v2.0.0
 
-    - name: Cache Poetry virtualenv
-      uses: actions/cache@v1
-      with:
-        path: ~/.virtualenvs
-        key: poetry-${{ hashFiles('**/poetry.lock') }}
-        restore-keys: poetry-${{ hashFiles('**/poetry.lock') }}
-
     - name: Configure poetry
       run: |
         poetry config virtualenvs.in-project false
