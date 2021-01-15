@@ -42,10 +42,10 @@ describe('Data Types Menu', () => {
     expect(options.at(4).html()).toContain('Boolean');
   });
 
-  it('should deactivate the date option when the column is not a string', () => {
+  it('should deactivate the date option when the column is not a string or an integer', () => {
     const store = setupMockStore({
       dataset: {
-        headers: [{ name: 'columnA', type: 'integer' }],
+        headers: [{ name: 'columnA', type: 'float' }],
       },
     });
     const wrapper = shallowMount(DataTypesMenu, {
@@ -60,6 +60,44 @@ describe('Data Types Menu', () => {
     const deactivatedOptions = wrapper.findAll('.data-types-menu__option--deactivated');
     expect(deactivatedOptions.length).toEqual(1);
     expect(deactivatedOptions.at(0).html()).toContain('Date');
+  });
+
+  it('should have the date option when the column is an integer', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'integer' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: {
+        columnName: 'columnA',
+      },
+    });
+    const activatedOptions = wrapper.findAll('.data-types-menu__option--active');
+    expect(activatedOptions.length).toEqual(5);
+    const deactivatedOptions = wrapper.findAll('.data-types-menu__option--deactivated');
+    expect(deactivatedOptions.length).toEqual(0);
+  });
+
+  it('should have the date option when the column is a date', () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'date' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: {
+        columnName: 'columnA',
+      },
+    });
+    const activatedOptions = wrapper.findAll('.data-types-menu__option--active');
+    expect(activatedOptions.length).toEqual(5);
+    const deactivatedOptions = wrapper.findAll('.data-types-menu__option--deactivated');
+    expect(deactivatedOptions.length).toEqual(0);
   });
 
   describe('when clicking on a data type', () => {
@@ -118,7 +156,7 @@ describe('Data Types Menu', () => {
     it('should not emit a close event if clicking on a deactivated option', async () => {
       const store = setupMockStore({
         dataset: {
-          headers: [{ name: 'columnA', type: 'integer' }],
+          headers: [{ name: 'columnA', type: 'float' }],
         },
       });
       const wrapper = shallowMount(DataTypesMenu, {
@@ -134,7 +172,8 @@ describe('Data Types Menu', () => {
     });
   });
 
-  it('should emit "closed" and actionClicked" with "todate" as payload when clicking on "date"', () => {
+  it('should emit "closed" and actionClicked" with "todate" as payload when clicking \
+  on "date" on a string column', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'string' }],
@@ -152,5 +191,61 @@ describe('Data Types Menu', () => {
     expect(wrapper.emitted().closed).toBeTruthy();
     expect(wrapper.emitted().actionClicked).toBeTruthy();
     expect(wrapper.emitted().actionClicked[0][0]).toEqual('todate');
+  });
+
+  it('should call createConvertStep when clicking on "date" on a date column', async () => {
+    const createConvertStepStub = jest.fn();
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'date' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: { columnName: 'columnA' },
+    });
+    wrapper.setMethods({ createConvertStep: createConvertStepStub });
+    const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
+    actionsWrapper.at(3).trigger('click');
+    await localVue.nextTick();
+    expect(createConvertStepStub).toBeCalledWith('date');
+  });
+
+  it('should call createConvertStep when clicking on "date" on a integer column', async () => {
+    const createConvertStepStub = jest.fn();
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'integer' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: { columnName: 'columnA' },
+    });
+    wrapper.setMethods({ createConvertStep: createConvertStepStub });
+    const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
+    actionsWrapper.at(3).trigger('click');
+    await localVue.nextTick();
+    expect(createConvertStepStub).toBeCalledWith('date');
+  });
+
+  it('should not call createConvertStep when clicking on "date" on a float column', async () => {
+    const createConvertStepStub = jest.fn();
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA', type: 'float' }],
+      },
+    });
+    const wrapper = shallowMount(DataTypesMenu, {
+      store,
+      localVue,
+      propsData: { columnName: 'columnA' },
+    });
+    wrapper.setMethods({ createConvertStep: createConvertStepStub });
+    wrapper.find('.data-types-menu__option--deactivated').trigger('click');
+    await localVue.nextTick();
+    expect(createConvertStepStub).not.toHaveBeenCalled();
   });
 });

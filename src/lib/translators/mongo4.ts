@@ -20,12 +20,18 @@ function transformConvert(step: Readonly<ConvertStep>): MongoStep {
     boolean: 'bool',
     date: 'date',
     float: 'double',
-    integer: 'int',
+    integer: 'long', // better to cast into 64-bit integers. 32-bit integers ('int') cannot be casted to dates
     text: 'string',
   };
   const mongoType = typeMap[step.data_type] ?? '';
   for (const column of step.columns) {
-    mongoAddFields[column] = { $convert: { input: $$(column), to: mongoType } };
+    // mongo cannot cast integers into date but only long into date, so we
+    // manage the cast from int to long when nedded
+    const input =
+      mongoType === 'date'
+        ? { $cond: [{ $eq: [{ $type: $$(column) }, 'int'] }, { $toLong: $$(column) }, $$(column)] }
+        : $$(column);
+    mongoAddFields[column] = { $convert: { input, to: mongoType } };
   }
   return { $addFields: mongoAddFields };
 }

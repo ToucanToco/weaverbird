@@ -16,10 +16,10 @@
         </div>
         <div
           :class="{
-            'data-types-menu__option--active': columnTypes[columnName] === 'string',
-            'data-types-menu__option--deactivated': !(columnTypes[columnName] === 'string'),
+            'data-types-menu__option--active': isCastableToDate,
+            'data-types-menu__option--deactivated': !isCastableToDate,
           }"
-          title="Only string columns can be converted to date"
+          title="Cannot be converted to date"
           @click="openToDateStep()"
         >
           <span class="data-types-menu__icon">
@@ -81,34 +81,50 @@ export default class DataTypesMenu extends Vue {
 
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
+  get isCastableToDate() {
+    return (
+      this.columnTypes[this.columnName] === 'date' ||
+      this.columnTypes[this.columnName] === 'string' ||
+      this.columnTypes[this.columnName] === 'integer'
+    );
+  }
+
   close() {
     this.$emit('closed');
   }
 
   createConvertStep(dataType: dataType) {
-    if (dataType !== 'date' || this.columnTypes[this.columnName] === 'string') {
-      const newPipeline: Pipeline = [...this.pipeline];
-      const index = this.computedActiveStepIndex + 1;
-      const convertStep: ConvertStep = {
-        name: 'convert',
-        columns: [this.columnName],
-        data_type: dataType,
-      };
-      // If a step edition form is already open, close it so that the left panel
-      // displays the pipeline with the new delete step inserted
-      if (this.isEditingStep) {
-        this.closeStepForm();
-      }
-      newPipeline.splice(index, 0, convertStep);
-      this.setPipeline({ pipeline: newPipeline });
-      this.selectStep({ index });
-      this.close();
+    const newPipeline: Pipeline = [...this.pipeline];
+    const index = this.computedActiveStepIndex + 1;
+    const convertStep: ConvertStep = {
+      name: 'convert',
+      columns: [this.columnName],
+      data_type: dataType,
+    };
+    // If a step edition form is already open, close it so that the left panel
+    // displays the pipeline with the new delete step inserted
+    if (this.isEditingStep) {
+      this.closeStepForm();
     }
+    newPipeline.splice(index, 0, convertStep);
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
+    this.close();
   }
+
   openToDateStep() {
+    // if string, we want to open the dedicated todate step where the user can
+    // specify string formats
     if (this.columnTypes[this.columnName] === 'string') {
       this.$emit('actionClicked', 'todate');
       this.close();
+    }
+    // if date or integer, we can convert the column directly
+    if (
+      this.columnTypes[this.columnName] === 'date' ||
+      this.columnTypes[this.columnName] === 'integer'
+    ) {
+      this.createConvertStep('date');
     }
   }
 }

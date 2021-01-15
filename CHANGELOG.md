@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- convert step: support cast from integer to date and from date to integer
+
 ## [0.35.1] - 2021-01-15
 
 ### Fixed
