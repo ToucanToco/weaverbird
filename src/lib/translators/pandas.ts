@@ -173,4 +173,8 @@ export class PandasTranslator extends BaseTranslator {
   totals(step: Readonly<S.AddTotalRowsStep>) {
     return step;
   }
+
+  movingaverage(step: Readonly<S.MovingAverageStep>) {
+    return step;
+  }
 }

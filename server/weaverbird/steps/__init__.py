@@ -20,6 +20,7 @@ from .fromdate import FromdateStep
 from .ifthenelse import IfthenelseStep
 from .join import JoinStep
 from .lowercase import LowercaseStep
+from .moving_average import MovingAverageStep
 from .percentage import PercentageStep
 from .pivot import PivotStep
 from .rank import RankStep
