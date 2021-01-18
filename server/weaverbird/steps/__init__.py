@@ -14,7 +14,7 @@ from .duplicate import DuplicateStep
 from .duration import DurationStep
 from .evolution import EvolutionStep
 from .fillna import FillnaStep
-from .filter import FilterStep
+from .filter import FilterStep, FilterStepWithVariables
 from .formula import FormulaStep
 from .fromdate import FromdateStep
 from .ifthenelse import IfthenelseStep
@@ -33,7 +33,7 @@ from .statistics import StatisticsStep
 from .substring import SubstringStep
 from .text import TextStep
 from .todate import ToDateStep
-from .top import TopStep
+from .top import TopStep, TopStepWithVariables
 from .totals import TotalsStep
 from .uniquegroups import UniqueGroupsStep
 from .unpivot import UnpivotStep

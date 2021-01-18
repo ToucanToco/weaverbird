@@ -2,6 +2,7 @@ from pandas import DataFrame
 from pydantic import Field
 
 from weaverbird.conditions import Condition
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
 
 
@@ -12,3 +13,7 @@ class FilterStep(BaseStep):
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         return df[self.condition.filter(df)]
+
+
+class FilterStepWithVariables(FilterStep, StepWithVariablesMixin):
+    pass

@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 from pydantic import BaseModel
 
@@ -19,6 +19,7 @@ from weaverbird.steps import (
     EvolutionStep,
     FillnaStep,
     FilterStep,
+    FilterStepWithVariables,
     FormulaStep,
     FromdateStep,
     IfthenelseStep,
@@ -38,6 +39,7 @@ from weaverbird.steps import (
     TextStep,
     ToDateStep,
     TopStep,
+    TopStepWithVariables,
     TotalsStep,
     UniqueGroupsStep,
     UnpivotStep,
@@ -92,3 +94,18 @@ PipelineStep = Union[
 
 class Pipeline(BaseModel):
     steps: List[PipelineStep]
+
+
+PipelineStepWithVariables = Union[
+    FilterStepWithVariables,
+    TopStepWithVariables,
+]
+
+
+class PipelineWithVariables(BaseModel):
+    steps: List[PipelineStepWithVariables]
+
+    def render(self, variables: Dict[str, Any]) -> Pipeline:
+        # TODO it must be more efficient to render the full pipeline once
+        steps_rendered = [step.render(variables) for step in self.steps]
+        return Pipeline(steps=steps_rendered)
