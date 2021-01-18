@@ -4906,7 +4906,14 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
           },
           {
             $addFields: {
-              date: { $convert: { input: '$date', to: 'date' } },
+              date: {
+                $convert: {
+                  input: {
+                    $cond: [{ $eq: [{ $type: '$date' }, 'int'] }, { $toLong: '$date' }, '$date'],
+                  },
+                  to: 'date',
+                },
+              },
             },
           },
           {
@@ -4916,7 +4923,7 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
           },
           {
             $addFields: {
-              int: { $convert: { input: '$int', to: 'int' } },
+              int: { $convert: { input: '$int', to: 'long' } },
             },
           },
           {
