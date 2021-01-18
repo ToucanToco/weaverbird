@@ -1,8 +1,9 @@
-from typing import List, Literal
+from typing import Any, List, Literal
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
@@ -29,3 +30,8 @@ class TopStep(BaseStep):
             )
         else:
             return getattr(df, pandas_method)(self.limit, self.rank_on)
+
+
+class TopStepWithVariables(TopStep, StepWithVariablesMixin):
+    sort: Any
+    limit: Any
