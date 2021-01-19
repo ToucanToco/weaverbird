@@ -1835,6 +1835,7 @@ The computation result is added in a new column.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: Basic usage
 

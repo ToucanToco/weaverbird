@@ -24,6 +24,7 @@ from weaverbird.steps import (
     IfthenelseStep,
     JoinStep,
     LowercaseStep,
+    MovingAverageStep,
     PercentageStep,
     PivotStep,
     RankStep,
@@ -87,6 +88,7 @@ PipelineStep = Union[
     SubstringStep,
     WaterfallStep,
     TotalsStep,
+    MovingAverageStep,
 ]
 
 
