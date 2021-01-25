@@ -1,11 +1,12 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Sequence
 
 from pandas import DataFrame, concat
 from pydantic import Field, root_validator
 from pydantic.main import BaseModel
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName, PopulatedWithFieldnames
+from weaverbird.types import ColumnName, PopulatedWithFieldnames, TemplatedVariable
 
 AggregateFn = Literal['avg', 'sum', 'min', 'max', 'count', 'first', 'last']
 
@@ -45,7 +46,7 @@ def make_aggregation(aggregation: Aggregation) -> dict:
 class AggregateStep(BaseStep):
     name = Field('aggregate', const=True)
     on: List[ColumnName] = []
-    aggregations: List[Aggregation]
+    aggregations: Sequence[Aggregation]
     keep_original_granularity: Optional[bool] = Field(
         default=False, alias='keepOriginalGranularity'
     )
@@ -82,3 +83,16 @@ class AggregateStep(BaseStep):
         if len(self.on) == 0:
             del df_result[group_by_columns[0]]
         return df_result
+
+
+class AggregationWithVariables(Aggregation):
+    class Config(PopulatedWithFieldnames):
+        ...
+
+    new_columns: List[TemplatedVariable] = Field(alias='newcolumns')
+    agg_function: TemplatedVariable = Field(alias='aggfunction')
+    columns: List[TemplatedVariable]
+
+
+class AggregateStepWithVariables(AggregateStep, StepWithVariablesMixin):
+    aggregations: Sequence[AggregationWithVariables]
