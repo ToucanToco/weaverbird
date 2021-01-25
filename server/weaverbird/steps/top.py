@@ -1,11 +1,11 @@
-from typing import Any, List, Literal
+from typing import List, Literal
 
 from pandas import DataFrame
 from pydantic import Field
 
 from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, TemplatedVariable
 
 
 class TopStep(BaseStep):
@@ -33,5 +33,5 @@ class TopStep(BaseStep):
 
 
 class TopStepWithVariables(TopStep, StepWithVariablesMixin):
-    sort: Any
-    limit: Any
+    sort: TemplatedVariable
+    limit: TemplatedVariable
