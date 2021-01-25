@@ -47,6 +47,7 @@ from weaverbird.steps import (
     UppercaseStep,
     WaterfallStep,
 )
+from weaverbird.steps.aggregate import AggregateStepWithVariables
 
 PipelineStep = Union[
     AddMissingDatesStep,
@@ -99,6 +100,7 @@ class Pipeline(BaseModel):
 
 
 PipelineStepWithVariables = Union[
+    AggregateStepWithVariables,
     FilterStepWithVariables,
     TopStepWithVariables,
 ]
