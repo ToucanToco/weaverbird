@@ -47,6 +47,7 @@ from weaverbird.steps import (
     WaterfallStep,
 )
 from weaverbird.steps.aggregate import AggregateStepWithVariables
+from weaverbird.steps.ifthenelse import IfThenElseWithVariables
 
 PipelineStep = Union[
     AddMissingDatesStep,
@@ -101,6 +102,7 @@ PipelineStepWithVariables = Union[
     AggregateStepWithVariables,
     FilterStepWithVariables,
     TopStepWithVariables,
+    IfThenElseWithVariables,
 ]
 
 

@@ -6,6 +6,7 @@ from pydantic import BaseModel, Field
 
 from weaverbird.conditions import Condition
 from weaverbird.formula import clean_formula, eval_formula
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
 
@@ -15,7 +16,7 @@ class IfThenElse(BaseModel):
         ...
 
     condition: Condition = Field(alias='if')
-    then: str
+    then: Any
     else_value: Union['IfThenElse', Any] = Field(alias='else')
 
     def execute_ifthenelse(self, df, new_column):
@@ -56,3 +57,7 @@ def clean_if_formula(formula_or_value: Any) -> Any:
         return clean_formula(formula_or_value)
     else:
         return formula_or_value
+
+
+class IfThenElseWithVariables(IfthenelseStep, StepWithVariablesMixin):
+    ...
