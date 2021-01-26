@@ -1,0 +1,64 @@
+[
+  [
+    {
+      "steps": [
+        {
+          "name": "aggregate",
+          "on": [],
+          "aggregations": [
+            {
+              "columns": [
+                "{{ base_column }}"
+              ],
+              "aggfunction": "{{ agg_fn }}",
+              "newcolumns": [
+                "{{ result_column }}"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "base_column": "foo",
+      "agg_fn": "sum",
+      "result_column": "new_foo"
+    },
+    [
+      {
+        "name": "aggregate",
+        "on": [],
+        "aggregations": [
+          {
+            "columns": [
+              "foo"
+            ],
+            "aggfunction": "sum",
+            "newcolumns": [
+              "new_foo"
+            ]
+          }
+        ]
+      }
+    ]
+  ],
+  [
+    {
+        "steps": [
+            {"name": "top", "rank_on": "{{ bar }}", "sort": "desc", "limit": "{{ foo }}"},
+            {
+                "name": "filter",
+                "condition": {"column": "foo", "operator": "lt", "value": "{{ foo }}"}
+            }
+        ]
+    },
+    {"foo": 42, "bar": "price"},
+     [
+            {"name": "top", "rank_on": "price", "sort": "desc", "limit": 42},
+            {
+                "name": "filter",
+                "condition": {"column": "foo", "operator": "lt", "value": 42}
+            }
+        ]
+  ]
+]
