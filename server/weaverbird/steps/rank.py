@@ -1,10 +1,11 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Union
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName
+from weaverbird.types import ColumnName, TemplatedVariable
 
 
 class RankStep(BaseStep):
@@ -25,3 +26,7 @@ class RankStep(BaseStep):
             serie = df[self.value_col]
         rank_serie = serie.rank(method=rank_method, ascending=ascending)
         return df.assign(**{new_column_name: rank_serie}).sort_values(new_column_name)
+
+
+class RankStepWithVariable(RankStep, StepWithVariablesMixin):
+    groupby: Union[TemplatedVariable, List[TemplatedVariable]]

@@ -1,0 +1,15 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "duration", "startDateColumn": "{{ column }}", "endDateColumn":"{{ column }}",
+              "newColumnName":  "result", "durationIn": "{{ granularity }}"}
+        ]
+    },
+    {"column": "a_column", "granularity": "days"},
+     [
+          {"name": "duration", "startDateColumn": "a_column", "endDateColumn":"a_column",
+              "newColumnName":  "result", "durationIn": "days"}
+     ]
+  ]
+]

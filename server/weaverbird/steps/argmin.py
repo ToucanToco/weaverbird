@@ -1,10 +1,11 @@
-from typing import List
+from typing import List, Union
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName
+from weaverbird.types import ColumnName, TemplatedVariable
 
 _TMP_GROUP_COL_NAME = '__TMP_COL_NAME'
 
@@ -30,3 +31,7 @@ class ArgminStep(BaseStep):
             del aggregated_df[_TMP_GROUP_COL_NAME]
 
         return df.merge(aggregated_df, on=[self.column] + self.groups)
+
+
+class ArgminStepWithVariable(ArgminStep, StepWithVariablesMixin):
+    groups: Union[TemplatedVariable, List[TemplatedVariable]]

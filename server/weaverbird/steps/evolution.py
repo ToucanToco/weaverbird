@@ -1,10 +1,12 @@
-from typing import List, Literal, Optional
+from typing import List, Literal, Optional, Union
 
 from pandas import DataFrame, DateOffset
 from pydantic import Field
 
 from weaverbird.exceptions import DuplicateError
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
+from weaverbird.types import TemplatedVariable
 
 EVOLUTION_TYPE = Literal['vsLastYear', 'vsLastMonth', 'vsLastWeek', 'vsLastDay']
 EVOLUTION_FORMAT = Literal['abs', 'pct']
@@ -45,3 +47,9 @@ class EvolutionStep(BaseStep):
             evolution = value_date / value_prev_date - 1
 
         return df.assign(**{new_column: evolution})
+
+
+class EvolutionStepWithVariable(EvolutionStep, StepWithVariablesMixin):
+    index_columns: Union[TemplatedVariable, List[TemplatedVariable]] = Field(
+        [], alias='indexColumns'
+    )

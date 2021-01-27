@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "argmin", "groups": "{{ groups }}",  "column": "{{ column }}"}
+        ]
+    },
+    {"groups": ["foo", "bar"], "column": "a_column"},
+     [
+        {"name": "argmin", "groups": ["foo", "bar"],  "column": "a_column"}
+     ]
+  ]
+]

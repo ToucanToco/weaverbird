@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "rename", "toRename": [["col_1", "{{ col }}"]]}
+        ]
+    },
+    {"col": "the_col"},
+     [
+       {"name": "rename", "toRename": [["col_1", "the_col"]]}
+     ]
+  ]
+]

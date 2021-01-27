@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "text", "new_column": "{{ col }}", "text": "{{ foo }}"}
+        ]
+    },
+    {"col": "the_col", "foo":  "bar"},
+     [
+       {"name": "text", "new_column": "the_col", "text": "bar"}
+     ]
+  ]
+]

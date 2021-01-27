@@ -3,8 +3,9 @@ from typing import Literal
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, TemplatedVariable
 
 _SECOND = 1
 _MINUTE = _SECOND * 60
@@ -34,3 +35,7 @@ class DurationStep(BaseStep):
             duration_serie_in_seconds / DURATIONS_IN_SECOND[self.duration_in]
         )
         return df.assign(**{self.new_column_name: duration_serie_in_given_unit})
+
+
+class DurationStepWithVariable(DurationStep, StepWithVariablesMixin):
+    duration_in: TemplatedVariable = Field(alias='durationIn')

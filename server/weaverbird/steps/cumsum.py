@@ -3,6 +3,7 @@ from typing import List, Optional
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName
 
@@ -20,3 +21,7 @@ class CumSumStep(BaseStep):
         df_grouped = df.groupby(self.groupby) if self.groupby else df
         cumsum_serie = df_grouped[self.value_column].cumsum()
         return df.assign(**{dst_column: cumsum_serie})
+
+
+class CumSumStepWithVariable(CumSumStep, StepWithVariablesMixin):
+    ...

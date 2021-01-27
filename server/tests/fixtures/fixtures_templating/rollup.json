@@ -1,0 +1,47 @@
+[
+  [
+    {
+        "steps": [
+          {
+            "name": "rollup",
+            "hierarchy": "{{ foo }}",
+            "groupby": "{{ foo }}",
+            "labelCol": "{{ base_column }}",
+            "parentLabelCol": "{{ base_column }}",
+            "levelCol": "{{ base_column }}",
+            "aggregations": [
+              {
+                "columns": [
+                  "{{ base_column }}"
+                ],
+                "aggfunction": "{{ agg_fn }}",
+                "newcolumns": [
+                  "{{ base_column }}"
+                ]
+              }
+            ]
+          }]
+    },
+    {"base_column": "the_col", "agg_fn":  "sum", "foo":  ["col_1", "col_2"]},
+     [
+       {
+            "name": "rollup",
+            "hierarchy":  ["col_1", "col_2"],
+            "groupby":  ["col_1", "col_2"],
+            "labelCol": "the_col",
+            "parentLabelCol": "the_col",
+            "levelCol": "the_col",
+            "aggregations": [
+              {
+                "columns": [
+                  "the_col"
+                ],
+                "aggfunction": "sum",
+                "newcolumns": [
+                  "the_col"
+                ]
+              }
+            ]
+          }]
+  ]
+]

@@ -1,10 +1,11 @@
-from typing import List
+from typing import List, Union
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, TemplatedVariable
 
 
 class UnpivotStep(BaseStep):
@@ -28,3 +29,8 @@ class UnpivotStep(BaseStep):
             value_name=self.value_column_name,
         )
         return df_melted.dropna(subset=[self.value_column_name]) if self.dropna else df_melted
+
+
+class UnpivotStepWithVariable(UnpivotStep, StepWithVariablesMixin):
+    keep: Union[TemplatedVariable, List[TemplatedVariable]]
+    unpivot: Union[TemplatedVariable, List[TemplatedVariable]]

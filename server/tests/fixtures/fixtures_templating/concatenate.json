@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "concatenate", "columns": ["column_1", "{{ other_column }}"], "new_column_name":"foo", "separator":  " - "}
+        ]
+    },
+    {"other_column": "a_column"},
+     [
+          {"name": "concatenate", "columns": ["column_1", "a_column"], "separator":  " - ", "new_column_name": "foo"}
+     ]
+  ]
+]

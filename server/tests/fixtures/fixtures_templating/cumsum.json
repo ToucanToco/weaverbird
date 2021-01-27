@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "cumsum", "valueColumn": "{{ column }}", "newColumn":"{{ result_column }}", "referenceColumn":  "{{column }}", "groupby":  ["{{ column }}", "{{ result_column }}"]}
+        ]
+    },
+    {"column": "a_column", "result_column":  "another_column"},
+     [
+          {"name": "cumsum", "valueColumn": "a_column", "newColumn":"another_column", "referenceColumn":  "a_column", "groupby":  ["a_column", "another_column"]}
+     ]
+  ]
+]

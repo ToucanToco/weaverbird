@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "dateextract", "column": "{{ column }}", "operation":"day", "new_column_name":  "result"}
+        ]
+    },
+    {"column": "a_column"},
+     [
+          {"name": "dateextract", "column": "a_column", "operation":"day", "new_column_name":  "result"}
+     ]
+  ]
+]

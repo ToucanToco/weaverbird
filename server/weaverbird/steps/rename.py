@@ -1,9 +1,11 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from pandas import DataFrame
 from pydantic import Field, root_validator
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
+from weaverbird.types import TemplatedVariable
 
 
 class RenameStep(BaseStep):
@@ -18,3 +20,9 @@ class RenameStep(BaseStep):
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         return df.rename(columns=dict(self.to_rename))
+
+
+class RenameStepWithVariable(RenameStep, StepWithVariablesMixin):
+    to_rename: Union[TemplatedVariable, List[Tuple[TemplatedVariable, TemplatedVariable]]] = Field(
+        ..., alias='toRename'
+    )

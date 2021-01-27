@@ -1,9 +1,11 @@
-from typing import List, Literal
+from typing import List, Literal, Union
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
+from weaverbird.types import TemplatedVariable
 
 
 class PivotStep(BaseStep):
@@ -22,3 +24,7 @@ class PivotStep(BaseStep):
         ).reset_index()
         pivoted_df.columns.name = None
         return pivoted_df
+
+
+class PivotStepWithVariable(PivotStep, StepWithVariablesMixin):
+    index: Union[TemplatedVariable, List[TemplatedVariable]]

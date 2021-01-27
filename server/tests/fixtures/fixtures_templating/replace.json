@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "replace", "search_column": "foo", "to_replace": [["col_1", "{{ col }}"]]}
+        ]
+    },
+    {"col": "the_col"},
+     [
+       {"name": "replace", "search_column": "foo", "to_replace": [["col_1", "the_col"]]}
+     ]
+  ]
+]

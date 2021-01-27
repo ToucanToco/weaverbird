@@ -3,6 +3,7 @@ from typing import List, Literal, Tuple, Union
 from pandas import DataFrame, merge
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
 from weaverbird.steps.combination import PipelineOrDomainName, resolve_pipeline_for_combination
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
@@ -41,3 +42,7 @@ class JoinStep(BaseStep):
             suffixes=('', '_JOIN'),
         )
         return rename_duplicated_columns(result)
+
+
+class JoinStepWithVariable(JoinStep, StepWithVariablesMixin):
+    ...

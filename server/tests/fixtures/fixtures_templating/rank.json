@@ -1,0 +1,15 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "rank", "valueCol": "{{ col }}", "groupby": ["{{ col }}"], "newColumnName":  "{{ col }}",
+              "order": "asc", "method": "dense"}
+        ]
+    },
+    {"col": "the_col"},
+     [
+       {"name": "rank", "valueCol": "the_col", "groupby": ["the_col"], "newColumnName":  "the_col",
+         "order": "asc", "method": "dense"}
+     ]
+  ]
+]
