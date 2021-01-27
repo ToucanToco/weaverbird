@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.37.0] - 2021-01-26
+
+### Added
+
+- movingaverage step: now supported in pandas backend
+
 ## [0.36.0] - 2021-01-18
 
 ### Added
@@ -604,6 +610,7 @@
 
 - Initial version, showtime!
 
+[0.37.0]: https://github.com/ToucanToco/weaverbird/compare/v0.36.0...v0.37.0
 [0.36.0]: https://github.com/ToucanToco/weaverbird/compare/v0.35.1...v0.36.0
 [0.35.1]: https://github.com/ToucanToco/weaverbird/compare/v0.35.0...v0.35.1
 [0.35.0]: https://github.com/ToucanToco/weaverbird/compare/v0.34.1...v0.35.0
