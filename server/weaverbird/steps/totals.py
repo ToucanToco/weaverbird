@@ -26,7 +26,7 @@ class TotalDimension(BaseModel):
 class TotalsStep(BaseStep):
     name = Field('totals', const=True)
     total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
-    aggregations: Sequence[Aggregation] = Field(min_items=1)
+    aggregations: Sequence[Aggregation]
     groups: List[ColumnName] = Field(min_items=0, default=[])
 
     def execute(
