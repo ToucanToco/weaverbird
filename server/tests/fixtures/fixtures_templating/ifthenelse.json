@@ -4,7 +4,7 @@
       "name": "ifthenelse",
       "if": {"column":  "a_bool", "operator":  "eq", "value":  "{{ test_value }}"},
       "newColumn": "result",
-      "then": 1,
+      "then": "{{ test_value }}",
       "else": {
         "if": {"column":  "a_bool", "operator":  "eq", "value":  "{{ other_value }}"},
         "then": "{{ nested_value }}",
@@ -15,7 +15,7 @@
     [{"name": "ifthenelse",
       "if": {"column":  "a_bool", "operator":  "eq", "value":  false},
       "newColumn": "result",
-      "then": 1,
+      "then": false,
       "else": {
         "if": {"column":  "a_bool", "operator":  "eq", "value":  true},
         "then": 21,

@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "addmissingdates", "groups": "{{ groups }}",  "datesColumn": "{{ column }}", "datesGranularity": "month"}
+        ]
+    },
+    {"groups": ["foo", "bar"], "column": "a_column"},
+     [
+        {"name": "addmissingdates", "groups": ["foo", "bar"],  "datesColumn": "a_column", "datesGranularity": "month"}
+     ]
+  ]
+]

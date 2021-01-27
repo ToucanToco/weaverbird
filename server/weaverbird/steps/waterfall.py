@@ -1,12 +1,13 @@
-from typing import Any, List, Literal, Optional
+from typing import Any, List, Literal, Optional, Union
 
 import numpy
 import pandas as pd
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, TemplatedVariable
 
 TYPE_WATERFALL_COLUMN = 'TYPE_waterfall'
 LABEL_WATERFALL_COLUMN = 'LABEL_waterfall'
@@ -168,3 +169,7 @@ class WaterfallStep(BaseStep):
             return [self.labelsColumn] + self.groupby
         else:
             return [self.labelsColumn, self.parentsColumn] + self.groupby
+
+
+class WaterfallStepWithVariable(WaterfallStep, StepWithVariablesMixin):
+    groupby: Union[TemplatedVariable, List[TemplatedVariable]]

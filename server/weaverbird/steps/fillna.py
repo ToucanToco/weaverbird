@@ -3,6 +3,7 @@ from typing import Any, List
 from pandas import DataFrame
 from pydantic import Field, root_validator
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
 from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
 
@@ -25,3 +26,7 @@ class FillnaStep(BaseStep):
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
         return df.fillna({col_name: self.value for col_name in self.columns})
+
+
+class FillnaStepWithVariable(FillnaStep, StepWithVariablesMixin):
+    ...

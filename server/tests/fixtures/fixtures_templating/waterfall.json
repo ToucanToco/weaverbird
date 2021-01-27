@@ -1,0 +1,17 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "waterfall", "valueColumn": "{{ col }}", "milestonesColumn":  "{{ col }}",
+              "groupby":  "{{ cols }}", "start": "{{ value }}", "end":  "{{ value }}",
+            "labelsColumn":  "{{ col }}", "parentsColumn" :  "{{ col }}", "sortBy":  "label", "order": "desc"}
+        ]
+    },
+    {"cols": ["the_col"], "col":  "foo", "value":  42},
+     [
+         {"name": "waterfall", "valueColumn":  "foo", "milestonesColumn":  "foo",
+              "groupby":  ["the_col"], "start": 42, "end":  42,
+            "labelsColumn":  "foo", "parentsColumn" : "foo", "sortBy":  "label", "order": "desc"}
+     ]
+  ]
+]

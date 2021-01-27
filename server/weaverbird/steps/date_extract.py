@@ -3,6 +3,7 @@ from typing import Literal, Optional
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
 
 OPERATIONS_MAPPING = {
@@ -45,3 +46,7 @@ class DateExtractStep(BaseStep):
             result = getattr(serie_dt, operation)
 
         return df.assign(**{dst_column: result})
+
+
+class DateExtractStepWithVariable(DateExtractStep, StepWithVariablesMixin):
+    ...

@@ -59,5 +59,6 @@ def clean_if_formula(formula_or_value: Any) -> Any:
         return formula_or_value
 
 
-class IfThenElseWithVariables(IfthenelseStep, StepWithVariablesMixin):
-    ...
+class IfThenElseStepWithVariables(IfthenelseStep, StepWithVariablesMixin):
+    class Config(PopulatedWithFieldnames):
+        ...

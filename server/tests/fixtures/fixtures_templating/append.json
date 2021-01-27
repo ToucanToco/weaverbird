@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "append", "pipelines": ["{{ origin }}"]}
+        ]
+    },
+    {"origin": "other_pipeline"},
+     [
+        {"name": "append", "pipelines": ["other_pipeline"]}
+     ]
+  ]
+]

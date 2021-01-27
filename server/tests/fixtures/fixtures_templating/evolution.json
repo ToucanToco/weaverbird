@@ -1,0 +1,17 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "evolution", "valueCol": "{{ column }}", "dateCol":"{{ column }}",
+              "newColumn":  "result", "indexColumns": "{{ indexes }}",
+              "evolutionType": "vsLastDay", "evolutionFormat": "abs"}
+        ]
+    },
+    {"column": "a_column", "indexes": ["col_1", "col_2"]},
+     [
+          {"name": "evolution", "valueCol": "a_column", "dateCol":"a_column",
+              "newColumn":  "result", "indexColumns": ["col_1", "col_2"],
+              "evolutionType": "vsLastDay", "evolutionFormat": "abs"}
+     ]
+  ]
+]

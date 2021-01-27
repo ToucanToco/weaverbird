@@ -1,0 +1,41 @@
+[
+  [
+    {
+        "steps": [
+            {
+              "name": "totals",
+              "groups": ["{{ col }}"],
+              "totalDimensions": [{"total_column":  "foo", "total_rows_label": "ALL_FOO"}],
+             "aggregations": [
+              {
+                "columns": [
+                  "{{ col }}"
+                ],
+                "aggfunction": "{{ agg_fn }}",
+                "newcolumns": [
+                  "{{ col }}"
+                ]
+              }
+            ]}
+        ]
+    },
+    {"col": "the_col", "agg_fn":  "sum"},
+     [
+       {
+              "name": "totals",
+              "groups": ["the_col"],
+              "totalDimensions": [{"total_column":  "foo", "total_rows_label": "ALL_FOO"}],
+             "aggregations": [
+              {
+                "columns": [
+                  "the_col"
+                ],
+                "aggfunction": "sum",
+                "newcolumns": [
+                  "the_col"
+                ]
+              }
+            ]}
+     ]
+  ]
+]

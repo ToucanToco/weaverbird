@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "top", "limit":  "{{ limit }}", "rank_on":  "{{ col }}", "sort":  "desc"}
+        ]
+    },
+    {"col": "the_col", "rank_on":  "bar", "limit":  42},
+     [
+       {"name": "top", "limit":  42, "rank_on":  "the_col", "sort":  "desc"}
+     ]
+  ]
+]

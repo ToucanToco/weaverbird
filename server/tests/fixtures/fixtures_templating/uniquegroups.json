@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "uniquegroups", "on":  "{{ cols }}"}
+        ]
+    },
+    {"cols": ["the_col"]},
+     [
+       {"name": "uniquegroups", "on":  ["the_col"]}
+     ]
+  ]
+]

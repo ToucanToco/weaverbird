@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "pivot", "index": "{{ index }}", "column_to_pivot":  "{{ pivot }}", "value_column":  "{{ value_column }}", "agg_function": "sum"}
+        ]
+    },
+    {"index": ["the_index"], "pivot": "the_pivot", "value_column":  "values"},
+     [
+          {"name": "pivot", "index": ["the_index"], "column_to_pivot":  "the_pivot", "value_column":  "values", "agg_function": "sum"}
+     ]
+  ]
+]

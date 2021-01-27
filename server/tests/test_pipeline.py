@@ -1,6 +1,8 @@
-import json
 import glob
+import json
+
 import pytest
+
 from weaverbird.pipeline import Pipeline, PipelineWithVariables
 
 

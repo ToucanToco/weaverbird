@@ -1,11 +1,18 @@
-from typing import List
+from typing import List, Sequence, Union
 
 import pandas as pd
 from pydantic import BaseModel, Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import AggregateStep, BaseStep
-from weaverbird.steps.aggregate import Aggregation
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
+from weaverbird.steps.aggregate import Aggregation, AggregationWithVariables
+from weaverbird.types import (
+    ColumnName,
+    DomainRetriever,
+    PipelineExecutor,
+    PopulatedWithFieldnames,
+    TemplatedVariable,
+)
 
 
 class TotalDimension(BaseModel):
@@ -19,7 +26,7 @@ class TotalDimension(BaseModel):
 class TotalsStep(BaseStep):
     name = Field('totals', const=True)
     total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
-    aggregations: List[Aggregation] = Field(min_items=1)
+    aggregations: Sequence[Aggregation] = Field(min_items=1)
     groups: List[ColumnName] = Field(min_items=0, default=[])
 
     def execute(
@@ -103,3 +110,8 @@ class TotalsStep(BaseStep):
                         ]
                     )
         return full_aggregation
+
+
+class TotalsStepWithVariable(TotalsStep, StepWithVariablesMixin):
+    aggregations: Sequence[AggregationWithVariables]
+    groups: Union[TemplatedVariable, List[TemplatedVariable]]

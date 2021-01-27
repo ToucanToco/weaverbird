@@ -1,10 +1,11 @@
-from typing import Any, List, Tuple
+from typing import Any, List, Tuple, Union
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, TemplatedVariable
 
 
 class ReplaceStep(BaseStep):
@@ -25,3 +26,7 @@ class ReplaceStep(BaseStep):
                 )
             }
         )
+
+
+class ReplaceStepWithVariable(ReplaceStep, StepWithVariablesMixin):
+    to_replace: Union[TemplatedVariable, List[Tuple[TemplatedVariable, TemplatedVariable]]]

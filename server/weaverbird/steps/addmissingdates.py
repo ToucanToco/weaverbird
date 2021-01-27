@@ -5,8 +5,9 @@ import pandas as pd
 from pandas import Series
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor
+from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, TemplatedVariable
 
 # cf. https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#offset-aliases
 _FREQUENCIES = {'day': 'D', 'week': 'W', 'month': 'M', 'year': 'Y'}
@@ -57,3 +58,8 @@ class AddMissingDatesStep(BaseStep):
             del group_with_missing_dates['_old_date']
             result = pd.concat([result, group_with_missing_dates])
         return result
+
+
+class AddMissingDatesStepWithVariable(AddMissingDatesStep, StepWithVariablesMixin):
+    groups: Union[List[TemplatedVariable], TemplatedVariable]
+    dates_column: TemplatedVariable = Field(alias='datesColumn')

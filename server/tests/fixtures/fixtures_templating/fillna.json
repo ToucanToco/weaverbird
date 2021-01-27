@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "fillna", "columns": ["column"], "value" : "{{ the_value }}"}
+        ]
+    },
+    {"the_value":  42},
+     [
+          {"name": "fillna", "columns": ["column"], "value" : 42}
+     ]
+  ]
+]

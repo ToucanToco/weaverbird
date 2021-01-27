@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "formula", "new_column": "column", "formula" : "{{ the_formula }}"}
+        ]
+    },
+    {"the_formula":  "21 + 21"},
+     [
+          {"name": "formula", "new_column": "column", "formula" : "21 + 21"}
+     ]
+  ]
+]

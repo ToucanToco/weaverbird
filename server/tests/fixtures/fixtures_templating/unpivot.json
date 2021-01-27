@@ -1,0 +1,15 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "unpivot", "keep": "{{ cols }}", "unpivot":  "{{ cols }}",
+              "unpivot_column_name":  "foo", "value_column_name": "bar", "dropna":  true}
+        ]
+    },
+    {"cols": ["the_col"]},
+     [
+       {"name": "unpivot", "keep": ["the_col"], "unpivot":  ["the_col"],
+              "unpivot_column_name":  "foo", "value_column_name": "bar", "dropna":  true}
+     ]
+  ]
+]

@@ -1,10 +1,11 @@
-from typing import List
+from typing import List, Union
 
 from pandas import DataFrame
 from pydantic import Field
 
+from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
-from weaverbird.types import ColumnName
+from weaverbird.types import ColumnName, TemplatedVariable
 
 
 class ConcatenateStep(BaseStep):
@@ -18,3 +19,7 @@ class ConcatenateStep(BaseStep):
         for col_name in self.columns[1:]:
             new_col = new_col.str.cat(df[col_name].astype(str), sep=self.separator)
         return df.assign(**{self.new_column_name: new_col})
+
+
+class ConcatenateStepWithVariable(ConcatenateStep, StepWithVariablesMixin):
+    columns: Union[TemplatedVariable, List[TemplatedVariable]]

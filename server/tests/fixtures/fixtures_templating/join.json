@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "join", "right_pipeline": "{{ a_dataset }}", "type" : "left", "on": [["col_1", "col_2"]]}
+        ]
+    },
+    {"a_dataset":  "foobar"},
+     [
+          {"name": "join", "right_pipeline": "foobar", "type" : "left", "on": [["col_1", "col_2"]]}
+     ]
+  ]
+]

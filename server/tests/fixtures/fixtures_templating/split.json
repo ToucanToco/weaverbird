@@ -1,0 +1,13 @@
+[
+  [
+    {
+        "steps": [
+            {"name": "split", "column": "{{ col }}", "delimiter": "-", "number_cols_to_keep":  3}
+        ]
+    },
+    {"col": "the_col"},
+     [
+       {"name": "split", "column": "the_col", "delimiter": "-", "number_cols_to_keep":  3}
+     ]
+  ]
+]
