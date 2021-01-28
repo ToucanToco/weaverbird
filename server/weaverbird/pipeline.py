@@ -155,9 +155,9 @@ PipelineStepWithVariables = Union[
 class PipelineWithVariables(BaseModel):
     steps: List[Union[PipelineStepWithVariables, PipelineStep]]
 
-    def render(self, variables: Dict[str, Any]) -> Pipeline:
+    def render(self, variables: Dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
         steps_rendered = [
-            step.render(variables) if hasattr(step, 'render') else step for step in self.steps  # type: ignore
+            step.render(variables, renderer) if hasattr(step, 'render') else step for step in self.steps  # type: ignore
         ]
         return Pipeline(steps=steps_rendered)
