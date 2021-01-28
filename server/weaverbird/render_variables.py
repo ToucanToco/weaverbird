@@ -1,6 +1,4 @@
-from typing import Any, Dict, Callable
-
-from toucan_connectors.common import nosql_apply_parameters_to_query
+from typing import Any, Callable, Dict
 
 from weaverbird.steps.base import BaseStep
 

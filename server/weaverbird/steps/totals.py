@@ -31,11 +31,9 @@ class TotalsStep(BaseStep):
 
     @validator('aggregations')
     def aggregation_must_not_be_empty(cls, value):
-        l = len(value)
-        if l < 1:
+        if len(value) < 1:
             raise ValueError('aggregations must contain at least one item')
         return value
-
 
     def execute(
         self,
