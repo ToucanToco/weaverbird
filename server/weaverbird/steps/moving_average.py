@@ -23,7 +23,7 @@ class MovingAverageStep(BaseStep):
         execute_pipeline: PipelineExecutor = None,
     ) -> DataFrame:
         new_column_name = self.new_column_name or f'{self.value_column}_MOVING_AVG'
-        df = df.reset_index(drop=True).sort_values(by=self.column_to_sort)
+        df = df.sort_values(by=self.groups + [self.column_to_sort]).reset_index(drop=True)
         if self.groups:
             df_grouped = df.groupby(self.groups)
         else:
@@ -31,4 +31,4 @@ class MovingAverageStep(BaseStep):
         serie = (
             df_grouped.rolling(self.moving_window).mean()[self.value_column].reset_index(drop=True)
         )
-        return df.assign(**{new_column_name: serie}).sort_index()
+        return df.assign(**{new_column_name: serie})
