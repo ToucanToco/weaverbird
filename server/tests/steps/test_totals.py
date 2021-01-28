@@ -137,7 +137,9 @@ def test_total_must_contains_aggregation():
     with pytest.raises(ValueError):
         TotalsStep(
             name='totals',
-            totalDimensions=[TotalDimension(total_column='COUNTRY', total_rows_label='All countries')],
+            totalDimensions=[
+                TotalDimension(total_column='COUNTRY', total_rows_label='All countries')
+            ],
             aggregations=[],
             groups=[],
         )
