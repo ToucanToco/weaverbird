@@ -1,7 +1,7 @@
 from typing import List, Sequence, Union
 
 import pandas as pd
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 
 from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps import AggregateStep, BaseStep
@@ -28,6 +28,14 @@ class TotalsStep(BaseStep):
     total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
     aggregations: Sequence[Aggregation]
     groups: List[ColumnName] = Field(min_items=0, default=[])
+
+    @validator('aggregations')
+    def aggregation_must_not_be_empty(cls, value):
+        l = len(value)
+        if l < 1:
+            raise ValueError('aggregations must contain at least one item')
+        return value
+
 
     def execute(
         self,

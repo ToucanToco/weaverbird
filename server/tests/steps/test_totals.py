@@ -1,4 +1,5 @@
 import pandas as pd
+import pytest
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.aggregate import Aggregation
@@ -130,3 +131,13 @@ def test_totals_nogroup_3_dimensions():
     assert real_result[real_result['PRODUCT'] == 'All products'].count()['PRODUCT'] == 9
     # could be any column
     assert real_result.count()['YEAR'] == 27
+
+
+def test_total_must_contains_aggregation():
+    with pytest.raises(ValueError):
+        TotalsStep(
+            name='totals',
+            totalDimensions=[TotalDimension(total_column='COUNTRY', total_rows_label='All countries')],
+            aggregations=[],
+            groups=[],
+        )
