@@ -9,6 +9,7 @@ import pytest
 from pytest_mock import MockFixture
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.pipeline import Pipeline
 from weaverbird.pipeline_executor import PipelineExecutionFailure, PipelineExecutor
 
 df_domain_a = pd.read_csv(path.join(path.dirname(__file__), 'fixtures/domain_a.csv'))
@@ -24,9 +25,11 @@ def test_preview_pipeline(mocker: MockFixture, pipeline_executor):
     df_to_json_spy = mocker.spy(pd.DataFrame, 'to_json')
     result = json.loads(
         pipeline_executor.preview_pipeline(
-            [
-                {'name': 'domain', 'domain': 'domain_a'},
-            ]
+            Pipeline(
+                steps=[
+                    {'name': 'domain', 'domain': 'domain_a'},
+                ]
+            )
         )
     )
     assert 'data' in result
@@ -47,9 +50,11 @@ def test_preview_pipeline(mocker: MockFixture, pipeline_executor):
 
 def test_preview_pipeline_limit(pipeline_executor):
     result = pipeline_executor.preview_pipeline(
-        [
-            {'name': 'domain', 'domain': 'domain_a'},
-        ],
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+            ]
+        ),
         limit=1,
     )
     assert json.loads(result)['data'] == [
@@ -59,9 +64,11 @@ def test_preview_pipeline_limit(pipeline_executor):
 
 def test_preview_pipeline_limit_offset(pipeline_executor):
     result = pipeline_executor.preview_pipeline(
-        [
-            {'name': 'domain', 'domain': 'domain_a'},
-        ],
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+            ]
+        ),
         limit=3,
         offset=2,
     )
@@ -72,17 +79,24 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
 
 
 def test_extract_domain(pipeline_executor: PipelineExecutor):
-    df = pipeline_executor.execute_pipeline([{'name': 'domain', 'domain': 'domain_a'}])
+    df = pipeline_executor.execute_pipeline(
+        Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}])
+    )
 
     assert_dataframes_equals(df, pd.DataFrame(df_domain_a))
 
 
 def test_filter(pipeline_executor):
     df = pipeline_executor.execute_pipeline(
-        [
-            {'name': 'domain', 'domain': 'domain_a'},
-            {'name': 'filter', 'condition': {'column': 'colA', 'operator': 'eq', 'value': 'tutu'}},
-        ]
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+                {
+                    'name': 'filter',
+                    'condition': {'column': 'colA', 'operator': 'eq', 'value': 'tutu'},
+                },
+            ]
+        )
     )
 
     assert_dataframes_equals(
@@ -93,10 +107,12 @@ def test_filter(pipeline_executor):
 
 def test_rename(pipeline_executor):
     df = pipeline_executor.execute_pipeline(
-        [
-            {'name': 'domain', 'domain': 'domain_a'},
-            {'name': 'rename', 'toRename': [['colA', 'col_a'], ['colB', 'col_b']]},
-        ]
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+                {'name': 'rename', 'toRename': [['colA', 'col_a'], ['colB', 'col_b']]},
+            ]
+        )
     )
 
     assert_dataframes_equals(
@@ -115,13 +131,15 @@ def test_errors(pipeline_executor):
     """
     with pytest.raises(PipelineExecutionFailure) as excinfo:
         pipeline_executor.execute_pipeline(
-            [
-                {'name': 'domain', 'domain': 'domain_a'},
-                {
-                    'name': 'delete',
-                    'columns': ['columnThatDoesNotExist', 'whatever'],
-                },
-            ]
+            Pipeline(
+                steps=[
+                    {'name': 'domain', 'domain': 'domain_a'},
+                    {
+                        'name': 'delete',
+                        'columns': ['columnThatDoesNotExist', 'whatever'],
+                    },
+                ]
+            )
         )
     exception_message = excinfo.value.message
     assert 'Step #2' in exception_message
