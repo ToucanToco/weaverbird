@@ -28,7 +28,7 @@ def test_join_left(
 ):
     df_result = JoinStep(
         name='join',
-        right_pipeline=[{}],
+        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
             ['NAME', 'name'],
         ],
@@ -50,7 +50,7 @@ def test_join_outer(
 ):
     df_result = JoinStep(
         name='join',
-        right_pipeline=[{}],
+        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
             ['NAME', 'name'],
         ],
@@ -77,7 +77,7 @@ def test_join_inner(
 ):
     df_result = JoinStep(
         name='join',
-        right_pipeline=[{}],
+        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
             ['NAME', 'name'],
         ],

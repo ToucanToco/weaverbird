@@ -1,6 +1,5 @@
 import json
 import logging
-from typing import List
 
 from pandas import DataFrame
 from pandas.io.json import build_table_schema
