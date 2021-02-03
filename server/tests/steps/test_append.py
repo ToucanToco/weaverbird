@@ -26,7 +26,11 @@ def test_append(
     mock_domain_retriever: DomainRetriever,
     mock_execute_pipeline: PipelineExecutor,
 ):
-    df_result = AppendStep(name='append', pipelines=[[{}], [{}]],).execute(
+
+    df_result = AppendStep(
+        name='append',
+        pipelines=[[{'name': 'domain', 'domain': 'buzz'}], [{'name': 'domain', 'domain': 'buzz'}]],
+    ).execute(
         sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
     )
 

@@ -1,11 +1,11 @@
-from typing import Any, Callable, List
+from typing import Any, Callable
 
 from pandas import DataFrame
 
 ColumnName = str
-Pipeline = List[dict]
+# Pipeline = List[dict]
 DomainRetriever = Callable[[str], DataFrame]
-PipelineExecutor = Callable[[List[dict]], DataFrame]
+PipelineExecutor = Callable[[Any], DataFrame]
 TemplatedVariable = Any
 
 
