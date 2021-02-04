@@ -36,7 +36,7 @@ describe('Data Viewer', () => {
       ),
       localVue,
     });
-    const wrapperLoaderSpinner = wrapper.find('.data-viewer-loader-spinner');
+    const wrapperLoaderSpinner = wrapper.find('.data-viewer__loading-spinner');
     const wrapperDataViewerContainer = wrapper.find('.data-viewer-container');
     expect(wrapperLoaderSpinner.exists()).toBeTruthy();
     expect(wrapperDataViewerContainer.exists()).toBeFalsy();
