@@ -32,6 +32,34 @@ stories.add('empty', () => ({
   `,
 }));
 
+stories.add('loading', () => ({
+  store: new Vuex.Store({}),
+  created: function() {
+    registerModule(this.$store, {
+      isLoading: {
+        dataset: true,
+      },
+      dataset: {
+        headers:[],
+        data: [],
+        paginationContext: {
+          pagesize: 50,
+          pageno: 1,
+          totalCount: 50,
+        },
+      },
+      currentPipelineName: "test",
+      pipelines: {test: []}
+    })
+  },
+  components: { DataViewer },
+  directives: { resizable },
+  template: `
+    <data-viewer>
+    </data-viewer>
+  `,
+}));
+
 stories.add('simple', () => ({
   store: new Vuex.Store({}),
   created: function() {

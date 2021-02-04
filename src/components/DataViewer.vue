@@ -1,8 +1,11 @@
 <template>
   <div class="data-viewer" v-if="pipeline">
     <ActionToolbar @actionClicked="openStepForm" />
-    <div v-if="isLoading.dataset" class="data-viewer-loader-spinner" />
-    <div v-if="!isEmpty && !isLoading.dataset" class="data-viewer-container">
+    <div v-if="isLoading.dataset" class="data-viewer__loading">
+      <div class="data-viewer__loading-spinner" />
+      <div class="data-viewer__loading-text">Stay with us! Your data is on the way...</div>
+    </div>
+    <div v-else-if="!isEmpty" class="data-viewer-container">
       <div class="data-viewer-table-container">
         <table
           aria-hidden="true"
@@ -393,20 +396,34 @@ export default class DataViewer extends Vue {
   color: $base-color;
 }
 
-.data-viewer-loader-spinner {
+.data-viewer__loading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.data-viewer__loading-spinner {
   border-radius: 50%;
   border: 4px solid #efefef;
   border-top-color: $active-color;
   width: 50px;
   height: 50px;
   animation: spin 1500ms ease-in-out infinite;
-  margin: 50px auto;
 }
 
 @keyframes spin {
   to {
     transform: rotate(1turn);
   }
+}
+
+.data-viewer__loading-text {
+  font-family: 'Roboto Slab', serif;
+  margin-top: 30px;
+  text-align: center;
+  color: $active-color;
 }
 </style>
 
