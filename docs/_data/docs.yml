@@ -6,6 +6,7 @@
     - totals
     - aggregate
     - append
+    - strcmp
     - argmax
     - argmin
     - concatenate
