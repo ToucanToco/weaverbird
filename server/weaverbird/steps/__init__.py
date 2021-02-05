@@ -31,6 +31,7 @@ from .select import SelectStep
 from .sort import SortStep
 from .split import SplitStep, SplitStepWithVariable
 from .statistics import StatisticsStep
+from .strcmp import CompareTextStep, CompareTextStepWithVariables
 from .substring import SubstringStep
 from .text import TextStep, TextStepWithVariable
 from .todate import ToDateStep

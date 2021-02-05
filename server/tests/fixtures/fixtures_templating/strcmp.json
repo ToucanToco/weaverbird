@@ -1,0 +1,26 @@
+[
+  [
+    {
+      "steps": [
+        {
+          "name": "strcmp",
+          "newColumnName": "RESULT",
+          "strCol1": "{{ column_1 }}",
+          "strCol2": "{{ column_2 }}"
+        }
+      ]
+    },
+    {
+      "column_1": "foo",
+      "column_2": "bar"
+    },
+    [
+      {
+        "name": "strcmp",
+        "newColumnName": "RESULT",
+        "strCol1": "foo",
+        "strCol2": "bar"
+      }
+    ]
+  ]
+]
