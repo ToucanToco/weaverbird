@@ -66,6 +66,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'substring', label: 'Extract substring' },
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
+    { name: 'strcmp', label: 'Compare text columns' },
   ],
   date: [
     { name: 'todate', label: 'Convert text to date' },
