@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.38.0] - 2021-02-05
+
+### Added
+
+- Waiting text accompanying the loading spinner
+
+### Fixed
+
+- No data message doesn't appear below the loading spinner
+
+### Added
+
+- convert step: support cast from integer to date and from date to integer
+
 ## [0.36.1] - 2021-02-01
 
 ### Fixed
@@ -616,6 +630,7 @@
 
 - Initial version, showtime!
 
+[0.38.0]: https://github.com/ToucanToco/weaverbird/compare/v0.37.0...v0.38.0
 [0.37.0]: https://github.com/ToucanToco/weaverbird/compare/v0.36.0...v0.37.0
 [0.36.1]: https://github.com/ToucanToco/weaverbird/compare/v0.36.0...v0.36.1
 [0.36.0]: https://github.com/ToucanToco/weaverbird/compare/v0.35.1...v0.36.0
