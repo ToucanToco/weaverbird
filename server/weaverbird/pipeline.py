@@ -4,7 +4,7 @@ from pydantic import BaseModel
 
 from weaverbird.steps import (
     AddMissingDatesStep,
-    AddMissingDatesStepWithVariable,
+    AddMissingDatesStepWithVariables,
     AggregateStep,
     AggregateStepWithVariables,
     AppendStep,
@@ -126,7 +126,7 @@ PipelineStepWithVariables = Union[
     FilterStepWithVariables,
     TopStepWithVariables,
     IfThenElseStepWithVariables,
-    AddMissingDatesStepWithVariable,
+    AddMissingDatesStepWithVariables,
     AppendStepWithVariable,
     ArgmaxStepWithVariable,
     ArgminStepWithVariable,
