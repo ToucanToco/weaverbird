@@ -42,6 +42,7 @@ An addmissingdates step has the following structure:
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: day granularity without groups
 
@@ -240,6 +241,7 @@ An aggreation step has the following strucure:
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 **Deprecation note:**
 
@@ -442,6 +444,7 @@ is specified.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: without `groups`
 
@@ -519,6 +522,7 @@ is specified.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: without `groups`
 
@@ -707,6 +711,7 @@ of the computation. The computation can be scoped by group if needed.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: Basic usage
 
@@ -1046,7 +1051,7 @@ new column.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
-- Pandas
+- Pandas (python)
 
 #### Example 1: duration in days
 
@@ -1550,6 +1555,7 @@ supports either a string that will be interpreted as a formula (cf.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -1732,6 +1738,7 @@ Converts a date `column` into a string column based on a specified `format`.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -1945,6 +1952,7 @@ by `group` if specified. The result is written in a new column.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example:
 
@@ -2005,6 +2013,7 @@ among `sum`, `avg`, `count`, `min` or `max`.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example:
 
@@ -2059,6 +2068,7 @@ Compute statistics of a column.,
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example:
 
@@ -2122,6 +2132,7 @@ always increases by 1 at most).
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: Basic usage
 
@@ -2318,6 +2329,7 @@ A replace step has the following strucure:
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -2577,6 +2589,7 @@ the `select` is used, it will only keep selected columns in the output.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -2630,6 +2643,7 @@ When sorting on several columns, order of columns specified in `columns` matters
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example
 
@@ -2683,6 +2697,7 @@ Split a string `column` into several columns based on a `delimiter`.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1
 
@@ -2756,8 +2771,9 @@ Split a string `column` into several columns based on a `delimiter`.
 
 ### `strcmp` step
 
-Compares 2 string columns and returns the result in a new column.
-The comparison is case-insensitive (see examples below).
+Compares 2 string columns and returns true if the string values are equal, 
+and false oteherwise.
+The comparison is case-sensitive (see examples below).
 
 ```javascript
 {
@@ -2802,11 +2818,11 @@ The comparison is case-insensitive (see examples below).
 
 | TEXT_1  | TEXT_2  | RESULT |
 | ------- | ------- | ------ |
-| France  | Fr      | 1      |
-| France  | France  | 0      |
-| France  | france  | 0      |
-| France  | England | 1      |
-| France  | USA     | -1     |
+| France  | Fr      | false  |
+| France  | France  | true   |
+| France  | france  | false  |
+| France  | England | false  |
+| France  | USA     | false  |
 
 ### `substring` step
 
@@ -2832,6 +2848,7 @@ Neither `start_index` nor `end_index` can be equal to 0.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: positive `start_index` and `end_index`
 
@@ -3161,6 +3178,7 @@ Append "total" rows to the dataset for specified dimensions.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: basic usage
 
@@ -3381,6 +3399,7 @@ Converts a string `column` to uppercase.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example:
 
@@ -3488,6 +3507,7 @@ purposes.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Example 1: Basic usage
 
