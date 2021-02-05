@@ -60,6 +60,6 @@ class AddMissingDatesStep(BaseStep):
         return result
 
 
-class AddMissingDatesStepWithVariable(AddMissingDatesStep, StepWithVariablesMixin):
+class AddMissingDatesStepWithVariables(AddMissingDatesStep, StepWithVariablesMixin):
     groups: Union[List[TemplatedVariable], TemplatedVariable]
     dates_column: TemplatedVariable = Field(alias='datesColumn')
