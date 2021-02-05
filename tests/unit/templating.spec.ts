@@ -1589,4 +1589,23 @@ describe('Pipeline interpolator', () => {
       },
     ]);
   });
+
+  it('should interpolate strcmp steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'strcmp',
+        newColumnName: '<%= foo %>',
+        strCol1: '<%= foo %>',
+        strCol2: '<%= foo %>',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'strcmp',
+        newColumnName: '<%= foo %>',
+        strCol1: 'bar',
+        strCol2: 'bar',
+      },
+    ]);
+  });
 });

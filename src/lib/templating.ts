@@ -415,6 +415,14 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  strcmp(step: Readonly<S.CompareTextStep>) {
+    return {
+      ...step,
+      strCol1: _interpolate(this.interpolateFunc, step.strCol1, this.context),
+      strCol2: _interpolate(this.interpolateFunc, step.strCol2, this.context),
+    };
+  }
+
   substring(step: Readonly<S.SubstringStep>) {
     return { ...step };
   }
