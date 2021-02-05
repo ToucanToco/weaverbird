@@ -2754,6 +2754,60 @@ Split a string `column` into several columns based on a `delimiter`.
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
 
+### `strcmp` step
+
+Compares 2 string columns and returns the result in a new column.
+The comparison is case-insensitive (see examples below).
+
+```javascript
+{
+  name: 'strcmp',
+  newColumnName: 'NEW', // new column to be created, with the comparison result
+  strCol1: 'TEXT_1', // first string column to compare
+  strCol2: 'TEXT_2', // second string column to compare
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.2
+- Mongo 4.0
+- Mongo 3.6
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| TEXT_1  | TEXT_2  |
+| ------- | ------- |
+| France  | Fr      |
+| France  | France  |
+| France  | france  |
+| France  | England |
+| France  | USA     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'split',
+  newColumnName: 'RESULT',
+  ctrCol1: 'TEXT_1',
+  ctrCol2: 'TEXT_2',
+}
+```
+
+**Output dataset:**
+
+| TEXT_1  | TEXT_2  | RESULT |
+| ------- | ------- | ------ |
+| France  | Fr      | 1      |
+| France  | France  | 0      |
+| France  | france  | 0      |
+| France  | England | 1      |
+| France  | USA     | -1     |
+
 ### `substring` step
 
 Extract a substring in a string `column`. The substring begins at index
