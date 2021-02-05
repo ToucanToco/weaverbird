@@ -1,5 +1,11 @@
 # Changelog
 
+## UNRELEASED
+
+### Added
+
+- strcmp step: compares 2 text columns and returns true if text matches, false otherwise
+
 ## [0.38.0] - 2021-02-05
 
 ### Added
@@ -83,13 +89,11 @@
 
 - FilterStep: define default value rather than using undefined to avoid cast issues
 
-
 ## [0.33.1] - 2020-12-01
 
 ### Added
 
 - FilterEditor: add `long` as available number type
-
 
 ## [0.33.0] - 2020-11-27
 
@@ -115,6 +119,7 @@
 ## [0.31.0] - 2020-11-23
 
 ### Added
+
 - FilterStep: enable filtering with array variables in in/notin comparison
 
 ## Changed
