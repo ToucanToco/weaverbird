@@ -18,7 +18,19 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  aggregate(step: Readonly<S.AggregateStep>) {
+    return step;
+  }
+
   append(step: Readonly<S.AppendStep>) {
+    return step;
+  }
+
+  argmax(step: Readonly<S.ArgmaxStep>) {
+    return step;
+  }
+
+  argmin(step: Readonly<S.ArgminStep>) {
     return step;
   }
 
@@ -58,6 +70,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  fillna(step: Readonly<S.FillnaStep>) {
+    return step;
+  }
+
   filter(step: Readonly<S.FilterStep>) {
     return step;
   }
@@ -66,7 +82,27 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  fromdate(step: Readonly<S.FromDateStep>) {
+    return step;
+  }
+
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
+    return step;
+  }
+
   join(step: Readonly<S.JoinStep>) {
+    return step;
+  }
+
+  lowercase(step: Readonly<S.ToLowerStep>) {
+    return step;
+  }
+
+  movingaverage(step: Readonly<S.MovingAverageStep>) {
+    return step;
+  }
+
+  percentage(step: Readonly<S.PercentageStep>) {
     return step;
   }
 
@@ -82,75 +118,7 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  aggregate(step: Readonly<S.AggregateStep>) {
-    return step;
-  }
-
-  ifthenelse(step: Readonly<S.IfThenElseStep>) {
-    return step;
-  }
-
-  argmin(step: Readonly<S.ArgminStep>) {
-    return step;
-  }
-
-  argmax(step: Readonly<S.ArgmaxStep>) {
-    return step;
-  }
-
-  statistics(step: Readonly<S.StatisticsStep>) {
-    return step;
-  }
-
   replace(step: Readonly<S.ReplaceStep>) {
-    return step;
-  }
-
-  fillna(step: Readonly<S.FillnaStep>) {
-    return step;
-  }
-
-  lowercase(step: Readonly<S.ToLowerStep>) {
-    return step;
-  }
-
-  fromdate(step: Readonly<S.FromDateStep>) {
-    return step;
-  }
-
-  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
-    return step;
-  }
-
-  select(step: Readonly<S.SelectStep>) {
-    return step;
-  }
-
-  uppercase(step: Readonly<S.ToUpperStep>) {
-    return step;
-  }
-
-  text(step: Readonly<S.AddTextColumnStep>) {
-    return step;
-  }
-
-  sort(step: Readonly<S.SortStep>) {
-    return step;
-  }
-
-  percentage(step: Readonly<S.PercentageStep>) {
-    return step;
-  }
-
-  unpivot(step: Readonly<S.UnpivotStep>) {
-    return step;
-  }
-
-  top(step: Readonly<S.TopStep>) {
-    return step;
-  }
-
-  todate(step: Readonly<S.ToDateStep>) {
     return step;
   }
 
@@ -158,7 +126,19 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  select(step: Readonly<S.SelectStep>) {
+    return step;
+  }
+
+  sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
+
   split(step: Readonly<S.SplitStep>) {
+    return step;
+  }
+
+  statistics(step: Readonly<S.StatisticsStep>) {
     return step;
   }
 
@@ -166,7 +146,15 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  waterfall(step: Readonly<S.WaterfallStep>) {
+  text(step: Readonly<S.AddTextColumnStep>) {
+    return step;
+  }
+
+  todate(step: Readonly<S.ToDateStep>) {
+    return step;
+  }
+
+  top(step: Readonly<S.TopStep>) {
     return step;
   }
 
@@ -174,7 +162,19 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  movingaverage(step: Readonly<S.MovingAverageStep>) {
+  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
+    return step;
+  }
+
+  unpivot(step: Readonly<S.UnpivotStep>) {
+    return step;
+  }
+
+  uppercase(step: Readonly<S.ToUpperStep>) {
+    return step;
+  }
+
+  waterfall(step: Readonly<S.WaterfallStep>) {
     return step;
   }
 }
