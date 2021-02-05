@@ -66,6 +66,7 @@ export default class CompareTextStepForm extends BaseStepForm<CompareTextStep> {
     type: Object,
     default: () => ({
       name: 'strcmp',
+      newColumnName: '',
       strCol1: '',
       strCol2: '',
     }),

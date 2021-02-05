@@ -142,6 +142,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  strcmp(step: Readonly<S.CompareTextStep>) {
+    return step;
+  }
+
   substring(step: Readonly<S.SubstringStep>) {
     return step;
   }
