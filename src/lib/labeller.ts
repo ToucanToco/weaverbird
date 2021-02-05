@@ -267,6 +267,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Compute statistics of "${step.column}"`;
   }
 
+  strcmp(step: Readonly<S.CompareTextStep>) {
+    return `Compare string columns "${step.strCol1}" and "${step.strCol2}"`;
+  }
+
   substring(step: Readonly<S.SubstringStep>) {
     return `Extract substring from "${step.column}"`;
   }

@@ -695,6 +695,16 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Compute duration between "START" and "END"');
   });
 
+  it('generates label for strcmp steps', () => {
+    const step: S.CompareTextStep = {
+      name: 'strcmp',
+      newColumnName: 'NEW',
+      strCol1: 'C1',
+      strCol2: 'C2',
+    };
+    expect(hrl(step)).toEqual('Compare string columns "C1" and "C2"');
+  });
+
   describe('labelWithReadeableVariables', () => {
     const variableDelimiters: VariableDelimiters = { start: '{{ ', end: ' }}' };
     const replaceDelimiters: VariableDelimiters = { start: '<em>', end: '</em>' };
