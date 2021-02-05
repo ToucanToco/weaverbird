@@ -10,6 +10,7 @@ import AggregateStepForm from './AggregateStepForm.vue';
 import AppendStepForm from './AppendStepForm.vue';
 import ArgmaxStepForm from './ArgmaxStepForm.vue';
 import ArgminStepForm from './ArgminStepForm.vue';
+import CompareTextStepForm from './CompareTextStepForm.vue';
 import ComputeDurationStepForm from './ComputeDurationStepForm.vue';
 import ConcatenateStepForm from './ConcatenateStepForm.vue';
 import ConvertStepForm from './ConvertStepForm.vue';
@@ -82,6 +83,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   split: SplitStepForm,
   sort: SortStepForm,
   statistics: StatisticsStepForm,
+  strcmp: CompareTextStepForm,
   substring: SubstringStepForm,
   todate: ToDateStepForm,
   lowercase: ToLowerStepForm,
