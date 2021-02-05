@@ -1961,6 +1961,13 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   split: transformSplit,
   sort: transformSort,
   statistics: transformStatistics,
+  strcmp: (step: Readonly<S.CompareTextStep>) => ({
+    $addFields: {
+      [step.newColumnName]: {
+        $cond: [{ $eq: [$$(step.strCol1), $$(step.strCol2)] }, true, false],
+      },
+    },
+  }),
   substring: transformSubstring,
   text: (step: Readonly<S.AddTextColumnStep>) => ({
     $addFields: { [step.new_column]: { $literal: step.text } },

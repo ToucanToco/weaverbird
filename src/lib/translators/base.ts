@@ -205,6 +205,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   statistics(step: Readonly<S.StatisticsStep>) {}
 
   @unsupported
+  strcmp(step: Readonly<S.CompareTextStep>) {}
+
+  @unsupported
   substring(step: Readonly<S.SubstringStep>) {}
 
   @unsupported
