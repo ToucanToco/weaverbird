@@ -5288,4 +5288,24 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       });
     }
   });
+
+  it('can generate strcmp steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'strcmp',
+        newColumnName: 'NEW',
+        strCol1: 'C1',
+        strCol2: 'C2',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW: { $cond: [{ $eq: ['$C1', '$C2'] }, true, false] },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
 });

@@ -80,6 +80,13 @@ export type ArgminStep = {
   groups?: string[]; // if specified, will search for a max in every group
 };
 
+export type CompareTextStep = {
+  name: 'strcmp';
+  newColumnName: string;
+  strCol1: string;
+  strCol2: string;
+};
+
 export type ComputeDurationStep = {
   name: 'duration';
   newColumnName: string;
@@ -407,6 +414,7 @@ export type PipelineStep =
   | AppendStep
   | ArgmaxStep
   | ArgminStep
+  | CompareTextStep
   | ComputeDurationStep
   | ConcatenateStep
   | ConvertStep
