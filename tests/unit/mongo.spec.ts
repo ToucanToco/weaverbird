@@ -4357,6 +4357,54 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can generate totals steps with count distinct as aggregation function', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'totals',
+        totalDimensions: [{ totalColumn: 'COUNTRY', totalRowsLabel: 'All countries' }],
+        aggregations: [
+          { columns: ['VALUE'], newcolumns: ['VALUE'], aggfunction: 'count distinct' },
+        ],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          originalData: [{ $addFields: { VALUE: '$VALUE' } }, { $project: { _id: 0 } }],
+          combo_0: [
+            {
+              $group: {
+                _id: {},
+                VALUE: { $addToSet: '$VALUE' },
+              },
+            },
+            {
+              $addFields: {
+                VALUE: { $size: '$VALUE' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                VALUE: 1,
+                COUNTRY: 'All countries',
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbCombos: { $concatArrays: ['$originalData', '$combo_0'] },
+        },
+      },
+      { $unwind: '$_vqbCombos' },
+      { $replaceRoot: { newRoot: '$_vqbCombos' } },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate text steps', () => {
     const pipeline: Pipeline = [
       {

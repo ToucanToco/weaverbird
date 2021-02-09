@@ -40,8 +40,8 @@ your current dataset (see examples below for more details).
   - `Columns`: the columns to be aggregated (you can apply the same aggregation
     function to several columns at once)
 
-  - `Function` the aggregation function to be applied (sum, average, count, min
-    or max)
+  - `Function` the aggregation function to be applied (sum, average, count,
+    count distinct, min, max, first or last)
 
 - `(Optional) Group by`: Optional, if you need to apply the total rows
   computation by group of rows (see the second example below for illustration)

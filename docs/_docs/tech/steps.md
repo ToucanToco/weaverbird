@@ -3149,6 +3149,8 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 ### `totals` step
 
 Append "total" rows to the dataset for specified dimensions.
+Computed rows result from an aggregation (either sum, average, count, count distinct,
+min, max, first or last)
 
 ```javascript
 {
