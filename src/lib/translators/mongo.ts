@@ -1695,14 +1695,30 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
     const aggs: { [id: string]: {} } = {};
     // get columns not in aggregation, i.e. columns that will hold the total rows labels
     const totalColumns: string[] = toCombine.filter(x => !comb.includes(x));
+    const countDistinctAddFields: PropMap<any> = {};
+
     for (const aggfStep of step.aggregations) {
       for (let j = 0; j < aggfStep.columns.length; j++) {
         const valueCol = aggfStep.columns[j];
         const aggregatedCol = aggfStep.newcolumns[j];
         const aggFunc = aggfStep.aggfunction;
-        aggs[aggregatedCol] = aggFunc == 'count' ? { $sum: 1 } : { [$$(aggFunc)]: $$(valueCol) };
+        if (aggFunc == 'count') {
+          aggs[aggregatedCol] = { $sum: 1 };
+        } else if (aggFunc == 'count distinct') {
+          // build a set of unique values
+          aggs[aggregatedCol] = { $addToSet: $$(valueCol) };
+          // count the number of items in the set
+          countDistinctAddFields[aggregatedCol] = { $size: $$(aggregatedCol) };
+        } else {
+          aggs[aggregatedCol] = { [$$(aggFunc)]: $$(valueCol) };
+        }
       }
     }
+
+    const addFieldsToAddToPipeline = Object.keys(countDistinctAddFields).length
+      ? [{ $addFields: countDistinctAddFields }]
+      : [];
+
     facet[`combo_${i}`] = [
       {
         $group: {
@@ -1710,6 +1726,7 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
           ...aggs,
         },
       },
+      ...addFieldsToAddToPipeline,
       {
         $project: {
           _id: 0,
