@@ -82,6 +82,7 @@ export default class AggregationWidget extends Vue {
     'sum',
     'avg',
     'count',
+    'count distinct',
     'min',
     'max',
     'first',

@@ -210,9 +210,10 @@ Here "2019-05" and "2019-11" are missing.
 
 ### `aggregate` step
 
-Perform aggregations on one or several columns.
+Perform aggregations on one or several columns. Available aggregation functions
+are sum, average, count, count distinct, min, max, first, last.
 
-An aggreation step has the following strucure:
+An aggreation step has the following structure:
 
 ```javascript
 {

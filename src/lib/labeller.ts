@@ -23,6 +23,7 @@ const AGGFUNCTION_LABELS = {
   sum: 'sum',
   avg: 'average',
   count: 'count',
+  'count distinct': 'count distinct values',
   min: 'min',
   max: 'max',
   first: 'first',

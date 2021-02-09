@@ -221,3 +221,23 @@ def test_legacy_syntax(sample_df):
         df_result,
         DataFrame({'sum_value': [56]}),
     )
+
+
+def test_count_distinct(sample_df):
+    df_result = AggregateStep(
+        name='aggregate',
+        keepOriginalGranularity=False,
+        on=[],
+        aggregations=[
+            Aggregation(
+                aggfunction='count distinct',
+                columns=['Group'],
+                newcolumns=['Group_CD'],
+            )
+        ],
+    ).execute(sample_df)
+
+    assert_dataframes_equals(
+        df_result,
+        DataFrame({'Group_CD': [2]}),
+    )

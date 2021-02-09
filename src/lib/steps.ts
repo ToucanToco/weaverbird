@@ -45,7 +45,7 @@ export type Aggregation = {
   // Name of the output columns
   newcolumns: string[];
   /** the aggregation operation (e.g. `sum` or `count`) */
-  aggfunction: 'sum' | 'avg' | 'count' | 'min' | 'max' | 'first' | 'last';
+  aggfunction: 'sum' | 'avg' | 'count' | 'count distinct' | 'min' | 'max' | 'first' | 'last';
   // Supported for retrocompatibility only
   column?: string;
   // Columns to aggregate

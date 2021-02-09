@@ -18,7 +18,7 @@ export default {
       },
       aggfunction: {
         type: 'string',
-        enum: ['sum', 'avg', 'count', 'min', 'max', 'first', 'last'],
+        enum: ['sum', 'avg', 'count', 'count distinct', 'min', 'max', 'first', 'last'],
       },
       newcolumns: {
         type: 'array',

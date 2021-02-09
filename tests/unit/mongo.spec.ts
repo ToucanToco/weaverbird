@@ -846,6 +846,56 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can translate aggregation steps with count distinct and keepOriginalGranularity to false', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'aggregate',
+        on: ['col_agg1', 'col_agg2'],
+        aggregations: [
+          {
+            newcolumns: ['sum', 'foo'],
+            aggfunction: 'sum',
+            columns: ['col1', 'bar'],
+          },
+          {
+            newcolumns: ['nunique'],
+            aggfunction: 'count distinct',
+            columns: ['id'],
+          },
+        ],
+        keepOriginalGranularity: false,
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $group: {
+          _id: { col_agg1: '$col_agg1', col_agg2: '$col_agg2' },
+          sum: { $sum: '$col1' },
+          foo: { $sum: '$bar' },
+          nunique: { $addToSet: '$id' },
+        },
+      },
+      {
+        $addFields: {
+          nunique: { $size: '$nunique' },
+        },
+      },
+      {
+        $project: {
+          col_agg1: '$_id.col_agg1',
+          col_agg2: '$_id.col_agg2',
+          sum: 1,
+          foo: 1,
+          nunique: 1,
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can translate aggregation steps with keepOriginalGranularity to true', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
@@ -870,6 +920,43 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
           _id: { col_agg1: '$col_agg1', col_agg2: '$col_agg2' },
           col1: { $sum: '$col1' },
           _vqbDocsArray: { $push: '$$ROOT' },
+        },
+      },
+      { $unwind: '$_vqbDocsArray' },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
+      { $project: { _vqbDocsArray: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can translate aggregation steps with count distinct and keepOriginalGranularity to true', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'test_cube' },
+      {
+        name: 'aggregate',
+        on: ['col_agg1', 'col_agg2'],
+        aggregations: [
+          {
+            newcolumns: ['nunique'],
+            aggfunction: 'count distinct',
+            columns: ['id'],
+          },
+        ],
+        keepOriginalGranularity: true,
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $match: { domain: 'test_cube' } },
+      {
+        $group: {
+          _id: { col_agg1: '$col_agg1', col_agg2: '$col_agg2' },
+          nunique: { $addToSet: '$id' },
+          _vqbDocsArray: { $push: '$$ROOT' },
+        },
+      },
+      {
+        $addFields: {
+          nunique: { $size: '$nunique' },
         },
       },
       { $unwind: '$_vqbDocsArray' },

@@ -14,6 +14,7 @@ aggregation pipeline.
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 
@@ -38,8 +39,8 @@ aggregation pipeline.
   - `Columns`: the columns to be aggregated (you can apply the same aggregation
     function to several columns at once)
 
-  - `Function` the aggregation function to be applied (sum, average, count, min
-    or max)
+  - `Function` the aggregation function to be applied (sum, average, count,
+    count distinct, min, max, first or last)
 
 - `Keep original granularity and add aggregation(s) in new column(s)`: whether
   to keep the original granularity, in that case computed aggregations will be
