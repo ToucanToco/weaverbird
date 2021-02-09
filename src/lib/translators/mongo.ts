@@ -589,6 +589,7 @@ function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
   const idblock: PropMap<string> = columnMap(step.on);
   const group: { [id: string]: {} } = {};
   const project: PropMap<any> = {};
+  const addFields: PropMap<any> = {};
 
   group._id = idblock;
 
@@ -604,6 +605,14 @@ function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
         // cols and newcols are always of same length
         group[newcols[i]] = { $sum: 1 };
       }
+    } else if (aggfStep.aggfunction === 'count distinct') {
+      // specific step needed to count distinct values
+      for (let i = 0; i < cols.length; i++) {
+        // build a set of unique values
+        group[newcols[i]] = { $addToSet: $$(cols[i]) };
+        // count the number of items in the set
+        addFields[newcols[i]] = { $size: $$(newcols[i]) };
+      }
     } else {
       for (let i = 0; i < cols.length; i++) {
         // cols and newcols are always of same length (checked at validation)
@@ -612,11 +621,14 @@ function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
     }
   }
 
+  const addFieldsToAddToPipeline = Object.keys(addFields).length ? [{ $addFields: addFields }] : [];
+
   if (step.keepOriginalGranularity) {
     // we keep track of all columns
     group['_vqbDocsArray'] = { $push: '$$ROOT' };
     return [
       { $group: group },
+      ...addFieldsToAddToPipeline,
       { $unwind: '$_vqbDocsArray' },
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbDocsArray', '$$ROOT'] } } },
       { $project: { _vqbDocsArray: 0 } },
@@ -631,7 +643,7 @@ function transformAggregate(step: Readonly<S.AggregateStep>): MongoStep[] {
         project[groupKey] = 1;
       }
     }
-    return [{ $group: group }, { $project: project }];
+    return [{ $group: group }, ...addFieldsToAddToPipeline, { $project: project }];
   }
 }
 
