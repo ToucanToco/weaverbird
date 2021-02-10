@@ -138,6 +138,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Keep row with minimum in column "${step.column}"`;
   }
 
+  comparetext(step: Readonly<S.CompareTextStep>) {
+    return `Compare string columns "${step.strCol1}" and "${step.strCol2}"`;
+  }
+
   concatenate(step: Readonly<S.ConcatenateStep>) {
     return `Concatenate columns ${formatMulticol(step.columns)}`;
   }
@@ -265,10 +269,6 @@ class StepLabeller implements StepMatcher<string> {
 
   statistics(step: Readonly<S.StatisticsStep>) {
     return `Compute statistics of "${step.column}"`;
-  }
-
-  strcmp(step: Readonly<S.CompareTextStep>) {
-    return `Compare string columns "${step.strCol1}" and "${step.strCol2}"`;
   }
 
   substring(step: Readonly<S.SubstringStep>) {

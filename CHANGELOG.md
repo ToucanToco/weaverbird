@@ -4,7 +4,7 @@
 
 ### Added
 
-- strcmp step: compares 2 text columns and returns true if text matches, false otherwise
+- comparetext step: compares 2 text columns and returns true if text matches, false otherwise
 
 ## [0.38.0] - 2021-02-05
 

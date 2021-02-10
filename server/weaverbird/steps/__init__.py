@@ -4,6 +4,7 @@ from .append import AppendStep, AppendStepWithVariable
 from .argmax import ArgmaxStep, ArgmaxStepWithVariable
 from .argmin import ArgminStep, ArgminStepWithVariable
 from .base import BaseStep
+from .comparetext import CompareTextStep, CompareTextStepWithVariables
 from .concatenate import ConcatenateStep, ConcatenateStepWithVariable
 from .convert import ConvertStep
 from .cumsum import CumSumStep, CumSumStepWithVariable
@@ -31,7 +32,6 @@ from .select import SelectStep
 from .sort import SortStep
 from .split import SplitStep, SplitStepWithVariable
 from .statistics import StatisticsStep
-from .strcmp import CompareTextStep, CompareTextStepWithVariables
 from .substring import SubstringStep
 from .text import TextStep, TextStepWithVariable
 from .todate import ToDateStep

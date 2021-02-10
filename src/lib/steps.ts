@@ -81,7 +81,7 @@ export type ArgminStep = {
 };
 
 export type CompareTextStep = {
-  name: 'strcmp';
+  name: 'comparetext';
   newColumnName: string;
   strCol1: string;
   strCol2: string;

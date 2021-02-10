@@ -5,7 +5,7 @@ export default {
   properties: {
     name: {
       type: 'string',
-      enum: ['strcmp'],
+      enum: ['comparetext'],
     },
     newColumnName: {
       type: 'string',

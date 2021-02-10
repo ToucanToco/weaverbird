@@ -7,7 +7,7 @@ from weaverbird.types import ColumnName, DomainRetriever, PipelineExecutor, Temp
 
 
 class CompareTextStep(BaseStep):
-    name: str = Field('strcmp', const=True)
+    name: str = Field('comparetext', const=True)
     new_column_name: ColumnName = Field(alias='newColumnName')
     str_col_1: ColumnName = Field(alias='strCol1')
     str_col_2: ColumnName = Field(alias='strCol2')

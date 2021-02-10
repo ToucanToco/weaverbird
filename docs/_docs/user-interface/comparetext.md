@@ -1,6 +1,6 @@
 ---
 title: Compare Text Columns
-permalink: /docs/strcmp/
+permalink: /docs/comparetext/
 ---
 
 ### Compute Duration
@@ -23,7 +23,7 @@ The comparison is case-sensitive (see example below).
 
 #### Options reference
 
-<img src="../../img/docs/user-interface/strcmp_step_form.jpg" width="350" />
+<img src="../../img/docs/user-interface/comparetext_step_form.jpg" width="350" />
 
 - `New column name`: the new column to be created for the comparison result
 
@@ -33,8 +33,8 @@ The comparison is case-sensitive (see example below).
 
 #### Example
 
-<img src="../../img/docs/user-interface/strcmp_example_conf.jpg" width="750" />
+<img src="../../img/docs/user-interface/comparetext_example_conf.jpg" width="750" />
 
 This configuration results in:
 
-<img src="../../img/docs/user-interface/strcmp_example_result.jpg" width="500" />
+<img src="../../img/docs/user-interface/comparetext_example_result.jpg" width="500" />

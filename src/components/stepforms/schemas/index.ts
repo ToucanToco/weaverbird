@@ -3,6 +3,7 @@ import aggregateBuildSchema from './aggregate';
 import appendSchema from './append';
 import argmaxSchema from './argmax';
 import argminSchema from './argmin';
+import comparetextSchema from './comparetext';
 import concatenateBuildSchema from './concatenate';
 import convertSchema from './convert';
 import cumsumSchema from './cumsum';
@@ -30,7 +31,6 @@ import selectSchema from './select';
 import sortSchema from './sort';
 import splitSchema from './split';
 import statisticsSchema from './statistics';
-import strcmpSchema from './strcmp';
 import substringSchema from './substring';
 import textSchema from './text';
 import toDateSchema from './todate';
@@ -50,6 +50,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   append: appendSchema,
   argmax: argmaxSchema,
   argmin: argminSchema,
+  comparetext: comparetextSchema,
   concatenate: concatenateBuildSchema,
   convert: convertSchema,
   cumsum: cumsumSchema,
@@ -78,7 +79,6 @@ const factories: { [stepname: string]: buildSchemaType } = {
   sort: sortSchema,
   split: splitSchema,
   statistics: statisticsSchema,
-  strcmp: strcmpSchema,
   substring: substringSchema,
   text: textSchema,
   todate: toDateSchema,

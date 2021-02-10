@@ -1590,10 +1590,10 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should interpolate strcmp steps', () => {
+  it('should interpolate comparetext steps', () => {
     const pipeline: Pipeline = [
       {
-        name: 'strcmp',
+        name: 'comparetext',
         newColumnName: '<%= foo %>',
         strCol1: '<%= foo %>',
         strCol2: '<%= foo %>',
@@ -1601,7 +1601,7 @@ describe('Pipeline interpolator', () => {
     ];
     expect(translate(pipeline)).toEqual([
       {
-        name: 'strcmp',
+        name: 'comparetext',
         newColumnName: '<%= foo %>',
         strCol1: 'bar',
         strCol2: 'bar',
