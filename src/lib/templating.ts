@@ -189,6 +189,14 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  comparetext(step: Readonly<S.CompareTextStep>) {
+    return {
+      ...step,
+      strCol1: _interpolate(this.interpolateFunc, step.strCol1, this.context),
+      strCol2: _interpolate(this.interpolateFunc, step.strCol2, this.context),
+    };
+  }
+
   concatenate(step: Readonly<S.ConcatenateStep>) {
     return {
       ...step,
@@ -412,14 +420,6 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return {
       ...step,
       column: _interpolate(this.interpolateFunc, step.column, this.context),
-    };
-  }
-
-  strcmp(step: Readonly<S.CompareTextStep>) {
-    return {
-      ...step,
-      strCol1: _interpolate(this.interpolateFunc, step.strCol1, this.context),
-      strCol2: _interpolate(this.interpolateFunc, step.strCol2, this.context),
     };
   }
 

@@ -1913,6 +1913,13 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   aggregate: transformAggregate,
   argmax: transformArgmaxArgmin,
   argmin: transformArgmaxArgmin,
+  comparetext: (step: Readonly<S.CompareTextStep>) => ({
+    $addFields: {
+      [step.newColumnName]: {
+        $cond: [{ $eq: [$$(step.strCol1), $$(step.strCol2)] }, true, false],
+      },
+    },
+  }),
   concatenate: transformConcatenate,
   cumsum: transformCumSum,
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
@@ -1961,13 +1968,6 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   split: transformSplit,
   sort: transformSort,
   statistics: transformStatistics,
-  strcmp: (step: Readonly<S.CompareTextStep>) => ({
-    $addFields: {
-      [step.newColumnName]: {
-        $cond: [{ $eq: [$$(step.strCol1), $$(step.strCol2)] }, true, false],
-      },
-    },
-  }),
   substring: transformSubstring,
   text: (step: Readonly<S.AddTextColumnStep>) => ({
     $addFields: { [step.new_column]: { $literal: step.text } },

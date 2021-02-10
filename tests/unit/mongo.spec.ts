@@ -5289,10 +5289,10 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     }
   });
 
-  it('can generate strcmp steps', () => {
+  it('can generate comparetext steps', () => {
     const pipeline: Pipeline = [
       {
-        name: 'strcmp',
+        name: 'comparetext',
         newColumnName: 'NEW',
         strCol1: 'C1',
         strCol2: 'C2',

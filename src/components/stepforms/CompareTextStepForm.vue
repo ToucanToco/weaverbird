@@ -56,7 +56,7 @@ import BaseStepForm from './StepForm.vue';
   },
 })
 export default class CompareTextStepForm extends BaseStepForm<CompareTextStep> {
-  stepname: PipelineStepName = 'strcmp';
+  stepname: PipelineStepName = 'comparetext';
 
   @VQBModule.State availableVariables?: VariablesBucket;
 
@@ -65,7 +65,7 @@ export default class CompareTextStepForm extends BaseStepForm<CompareTextStep> {
   @Prop({
     type: Object,
     default: () => ({
-      name: 'strcmp',
+      name: 'comparetext',
       newColumnName: '',
       strCol1: '',
       strCol2: '',

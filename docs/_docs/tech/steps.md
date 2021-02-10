@@ -582,6 +582,61 @@ is specified.
 | Label 2 | Group 1 | 7     |
 | Label 4 | Group 2 | 1     |
 
+### `comparetext` step
+
+Compares 2 string columns and returns true if the string values are equal, 
+and false oteherwise.
+The comparison is case-sensitive (see examples below).
+
+```javascript
+{
+  name: 'comparetext',
+  newColumnName: 'NEW', // new column to be created, with the comparison result
+  strCol1: 'TEXT_1', // first string column to compare
+  strCol2: 'TEXT_2', // second string column to compare
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.2
+- Mongo 4.0
+- Mongo 3.6
+- Pandas (python)
+
+#### Example
+
+**Input dataset:**
+
+| TEXT_1  | TEXT_2  |
+| ------- | ------- |
+| France  | Fr      |
+| France  | France  |
+| France  | france  |
+| France  | England |
+| France  | USA     |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'split',
+  newColumnName: 'RESULT',
+  ctrCol1: 'TEXT_1',
+  ctrCol2: 'TEXT_2',
+}
+```
+
+**Output dataset:**
+
+| TEXT_1  | TEXT_2  | RESULT |
+| ------- | ------- | ------ |
+| France  | Fr      | false  |
+| France  | France  | true   |
+| France  | france  | false  |
+| France  | England | false  |
+| France  | USA     | false  |
+
 ### `concatenate` step
 
 This step allows to concatenate several `columns` using a `separator`.
@@ -2768,61 +2823,6 @@ Split a string `column` into several columns based on a `delimiter`.
 | Label 4 | Group 2 | 1     |
 | Label 5 | Group 2 | 10    |
 | Label 6 | Group 2 | 5     |
-
-### `strcmp` step
-
-Compares 2 string columns and returns true if the string values are equal, 
-and false oteherwise.
-The comparison is case-sensitive (see examples below).
-
-```javascript
-{
-  name: 'strcmp',
-  newColumnName: 'NEW', // new column to be created, with the comparison result
-  strCol1: 'TEXT_1', // first string column to compare
-  strCol2: 'TEXT_2', // second string column to compare
-}
-```
-
-**This step is supported by the following backends:**
-
-- Mongo 4.2
-- Mongo 4.0
-- Mongo 3.6
-- Pandas (python)
-
-#### Example
-
-**Input dataset:**
-
-| TEXT_1  | TEXT_2  |
-| ------- | ------- |
-| France  | Fr      |
-| France  | France  |
-| France  | france  |
-| France  | England |
-| France  | USA     |
-
-**Step configuration:**
-
-```javascript
-{
-  name: 'split',
-  newColumnName: 'RESULT',
-  ctrCol1: 'TEXT_1',
-  ctrCol2: 'TEXT_2',
-}
-```
-
-**Output dataset:**
-
-| TEXT_1  | TEXT_2  | RESULT |
-| ------- | ------- | ------ |
-| France  | Fr      | false  |
-| France  | France  | true   |
-| France  | france  | false  |
-| France  | England | false  |
-| France  | USA     | false  |
 
 ### `substring` step
 

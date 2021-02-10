@@ -121,6 +121,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   argmin(step: Readonly<S.ArgminStep>) {}
 
   @unsupported
+  comparetext(step: Readonly<S.CompareTextStep>) {}
+
+  @unsupported
   concatenate(step: Readonly<S.ConcatenateStep>) {}
 
   @unsupported
@@ -203,9 +206,6 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
 
   @unsupported
   statistics(step: Readonly<S.StatisticsStep>) {}
-
-  @unsupported
-  strcmp(step: Readonly<S.CompareTextStep>) {}
 
   @unsupported
   substring(step: Readonly<S.SubstringStep>) {}

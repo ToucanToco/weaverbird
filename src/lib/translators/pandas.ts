@@ -34,6 +34,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  comparetext(step: Readonly<S.CompareTextStep>) {
+    return step;
+  }
+
   concatenate(step: Readonly<S.ConcatenateStep>) {
     return step;
   }
@@ -139,10 +143,6 @@ export class PandasTranslator extends BaseTranslator {
   }
 
   statistics(step: Readonly<S.StatisticsStep>) {
-    return step;
-  }
-
-  strcmp(step: Readonly<S.CompareTextStep>) {
     return step;
   }
 

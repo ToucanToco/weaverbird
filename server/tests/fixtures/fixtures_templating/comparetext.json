@@ -3,7 +3,7 @@
     {
       "steps": [
         {
-          "name": "strcmp",
+          "name": "comparetext",
           "newColumnName": "RESULT",
           "strCol1": "{{ column_1 }}",
           "strCol2": "{{ column_2 }}"
@@ -16,7 +16,7 @@
     },
     [
       {
-        "name": "strcmp",
+        "name": "comparetext",
         "newColumnName": "RESULT",
         "strCol1": "foo",
         "strCol2": "bar"

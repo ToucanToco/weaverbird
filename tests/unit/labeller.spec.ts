@@ -695,9 +695,9 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Compute duration between "START" and "END"');
   });
 
-  it('generates label for strcmp steps', () => {
+  it('generates label for comparetext steps', () => {
     const step: S.CompareTextStep = {
-      name: 'strcmp',
+      name: 'comparetext',
       newColumnName: 'NEW',
       strCol1: 'C1',
       strCol2: 'C2',

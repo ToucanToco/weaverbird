@@ -3,7 +3,7 @@ import CompareTextStepForm from '@/components/stepforms/CompareTextStepForm.vue'
 import { BasicStepFormTestRunner } from './utils';
 
 describe('Compute Text Columns Step Form', () => {
-  const runner = new BasicStepFormTestRunner(CompareTextStepForm, 'strcmp');
+  const runner = new BasicStepFormTestRunner(CompareTextStepForm, 'comparetext');
   runner.testInstantiate();
   runner.testExpectedComponents({
     'columnpicker-stub': 2,
@@ -25,7 +25,7 @@ describe('Compute Text Columns Step Form', () => {
     testlabel: 'submitted data is valid',
     props: {
       initialStepValue: {
-        name: 'strcmp',
+        name: 'comparetext',
         newColumnName: 'NEW',
         strCol1: 'C1',
         strCol2: 'C2',
@@ -40,7 +40,7 @@ describe('Compute Text Columns Step Form', () => {
     const wrapper = runner.shallowMount();
     wrapper.setData({
       editedStep: {
-        name: 'strcmp',
+        name: 'comparetext',
         newColumnName: 'NEW',
         strCol1: 'C1',
         strCol2: 'C2',
@@ -62,7 +62,7 @@ describe('Compute Text Columns Step Form', () => {
     const wrapper = runner.mount(initialState);
     wrapper.setData({
       editedStep: {
-        name: 'strcmp',
+        name: 'comparetext',
         newColumnName: 'NEW',
         strCol1: 'C1',
         strCol2: 'C2',
@@ -83,7 +83,7 @@ describe('Compute Text Columns Step Form', () => {
     const wrapper = runner.mount(initialState, {
       data: {
         editedStep: {
-          name: 'strcmp',
+          name: 'comparetext',
           newColumnName: '',
           strCol1: '',
           strCol2: '',
@@ -105,7 +105,7 @@ describe('Compute Text Columns Step Form', () => {
       const wrapper = runner.shallowMount(initialState);
       wrapper.setData({
         editedStep: {
-          name: 'strcmp',
+          name: 'comparetext',
           newColumnName: 'NEW',
           strCol1: 'C1',
           strCol2: 'C2',
@@ -127,7 +127,7 @@ describe('Compute Text Columns Step Form', () => {
       const wrapper = runner.shallowMount(initialState);
       wrapper.setData({
         editedStep: {
-          name: 'strcmp',
+          name: 'comparetext',
           newColumnName: 'TEST',
           strCol1: 'C1',
           strCol2: 'C2',
