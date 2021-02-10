@@ -2423,6 +2423,9 @@ Use this step if you need to compute aggregated data at every level of a
 The output data structure stacks the data of every level of the hierarchy,
 specifying for every row the label, level and parent in dedicated columns.
 
+Aggregated rows can be computed with using either sum, average, count, count distinct,
+min, max, first or last.
+
 ```javascript
 {
    name: 'rollup',

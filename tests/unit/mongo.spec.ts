@@ -3083,6 +3083,125 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can generate rollup steps with count distinct as aggregation function', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['continent', 'country', 'city'],
+        aggregations: [
+          {
+            newcolumns: ['value1'],
+            aggfunction: 'count distinct',
+            columns: ['value1'],
+          },
+        ],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          level_0: [
+            {
+              $group: {
+                _id: {
+                  continent: '$continent',
+                },
+                value1: { $addToSet: '$value1' },
+              },
+            },
+            {
+              $addFields: {
+                value1: { $size: '$value1' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                continent: '$_id.continent',
+                label: '$_id.continent',
+                level: 'continent',
+                value1: 1,
+              },
+            },
+          ],
+          level_1: [
+            {
+              $group: {
+                _id: {
+                  country: '$country',
+                  continent: '$continent',
+                },
+                value1: { $addToSet: '$value1' },
+              },
+            },
+            {
+              $addFields: {
+                value1: { $size: '$value1' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.country',
+                parent: '$_id.continent',
+                level: 'country',
+                value1: 1,
+              },
+            },
+          ],
+          level_2: [
+            {
+              $group: {
+                _id: {
+                  city: '$city',
+                  country: '$country',
+                  continent: '$continent',
+                },
+                value1: { $addToSet: '$value1' },
+              },
+            },
+            {
+              $addFields: {
+                value1: { $size: '$value1' },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.city',
+                parent: '$_id.country',
+                level: 'city',
+                value1: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbRollupLevels: { $concatArrays: ['$level_0', '$level_1', '$level_2'] },
+        },
+      },
+      {
+        $unwind: '$_vqbRollupLevels',
+      },
+      {
+        $replaceRoot: { newRoot: '$_vqbRollupLevels' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
   it('can generate a basic evolution step vs. last year in absolute value', () => {
     const pipeline: Pipeline = [
       {

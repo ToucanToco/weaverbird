@@ -10,11 +10,15 @@ hierarchy, specified as a series of columns from top to bottom level.
 The output data structure stacks the data of every level of the hierarchy,
 specifying for every row the label, level and parent in dedicated columns.
 
+Aggregated rows can be computed with using either sum, average, count, count distinct,
+min, max, first or last.
+
 **This step is supported by the following backends:**
 
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
+- Pandas (python)
 
 #### Where to find this step?
 
@@ -36,8 +40,8 @@ specifying for every row the label, level and parent in dedicated columns.
   - `Columns`: the columns to be aggregated (you can apply the same aggregation
     function to several columns at once)
 
-  - `Function` the aggregation function to be applied (sum, average, count, min
-    or max).
+  - `Function` the aggregation function to be applied (sum, average, count, count distinct,
+    min, max, first or last).
 
 - `(Optional) Group rollup by`: Optional, if you need to apply the rollup
   computation by groups of rows, you may specify here columns used to constitute
