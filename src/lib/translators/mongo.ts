@@ -1432,6 +1432,7 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
   const labelCol = step.labelCol ?? 'label';
   const levelCol = step.levelCol ?? 'level';
   const parentLabelCol = step.parentLabelCol ?? 'parent';
+  const addFields: PropMap<any> = {};
 
   for (const [idx, elem] of step.hierarchy.entries()) {
     const id = columnMap([...step.hierarchy.slice(0, idx + 1), ...(step.groupby ?? [])]);
@@ -1446,6 +1447,14 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
           // cols and newcols are always of same length
           aggs[newcols[i]] = { $sum: 1 };
         }
+      } else if (aggfStep.aggfunction === 'count distinct') {
+        // specific step needed to count distinct values
+        for (let i = 0; i < cols.length; i++) {
+          // build a set of unique values
+          aggs[newcols[i]] = { $addToSet: $$(cols[i]) };
+          // count the number of items in the set
+          addFields[newcols[i]] = { $size: $$(newcols[i]) };
+        }
       } else {
         for (let i = 0; i < cols.length; i++) {
           // cols and newcols are always of same length
@@ -1453,6 +1462,7 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
         }
       }
     }
+
     const project: { [id: string]: string | number } = {
       _id: 0,
       ...Object.fromEntries(Object.keys(id).map(col => [col, `$_id.${col}`])),
@@ -1460,9 +1470,15 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
       [labelCol]: `$_id.${elem}`,
       [levelCol]: elem,
     };
+
     if (idx > 0) {
       project[parentLabelCol] = `$_id.${step.hierarchy[idx - 1]}`;
     }
+
+    const addFieldsToAddToPipeline = Object.keys(addFields).length
+      ? [{ $addFields: addFields }]
+      : [];
+
     facet[`level_${idx}`] = [
       {
         $group: {
@@ -1470,11 +1486,13 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
           ...aggs,
         },
       },
+      ...addFieldsToAddToPipeline,
       {
         $project: project,
       },
     ];
   }
+
   return [
     { $facet: facet },
     {
