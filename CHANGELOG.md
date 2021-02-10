@@ -5,6 +5,8 @@
 ### Added
 
 - comparetext step: compares 2 text columns and returns true if text matches, false otherwise
+- Support the count distinct aggregation function in aggregate, rollup and totals
+  step
 
 ## [0.38.0] - 2021-02-05
 
