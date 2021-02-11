@@ -18,7 +18,7 @@ class CumSumStep(BaseStep):
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         df = df.sort_values(self.reference_column)
         dst_column = self.new_column or f'{self.value_column}_CUMSUM'
-        df_grouped = df.groupby(self.groupby) if self.groupby else df
+        df_grouped = df.groupby(self.groupby, dropna=False) if self.groupby else df
         cumsum_serie = df_grouped[self.value_column].cumsum()
         return df.assign(**{dst_column: cumsum_serie})
 

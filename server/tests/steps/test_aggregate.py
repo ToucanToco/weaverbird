@@ -237,7 +237,35 @@ def test_count_distinct(sample_df):
         ],
     ).execute(sample_df)
 
+    assert_dataframes_equals(df_result, DataFrame({'Group_CD': [2]}))
+
+
+def test_simple_aggregate_with_null():
+    df = DataFrame(
+        {
+            'Label': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
+            'Group': ['Group 1'] * 3 + [None] * 3,  # type: ignore
+            'Value1': [13, 7, 20, 1, 10, 5],
+        }
+    )
+    df_result = AggregateStep(
+        name='aggregate',
+        on=['Group'],
+        aggregations=[
+            Aggregation(
+                aggfunction='sum',
+                columns=['Value1'],
+                newcolumns=['Sum-Value1'],
+            ),
+        ],
+    ).execute(df)
+
     assert_dataframes_equals(
-        df_result,
-        DataFrame({'Group_CD': [2]}),
+        df_result.sort_values(by=['Group']),
+        DataFrame(
+            {
+                'Group': ['Group 1', None],
+                'Sum-Value1': [40, 16],
+            }
+        ).sort_values(by=['Group']),
     )

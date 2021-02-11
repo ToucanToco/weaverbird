@@ -25,7 +25,7 @@ class MovingAverageStep(BaseStep):
         new_column_name = self.new_column_name or f'{self.value_column}_MOVING_AVG'
         df = df.sort_values(by=self.groups + [self.column_to_sort]).reset_index(drop=True)
         if self.groups:
-            df_grouped = df.groupby(self.groups)
+            df_grouped = df.groupby(self.groups, dropna=False)
         else:
             df_grouped = df
         serie = (
