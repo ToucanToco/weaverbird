@@ -21,7 +21,7 @@ class RankStep(BaseStep):
         rank_method = 'min' if self.method == 'standard' else self.method
         ascending = self.order == 'asc'
         if self.groupby:
-            serie = df.groupby(self.groupby)[self.value_col]
+            serie = df.groupby(self.groupby, dropna=False)[self.value_col]
         else:
             serie = df[self.value_col]
         rank_serie = serie.rank(method=rank_method, ascending=ascending)

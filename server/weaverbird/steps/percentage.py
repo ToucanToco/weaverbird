@@ -22,7 +22,7 @@ class PercentageStep(BaseStep):
         new_column_name = self.new_column_name or f'{self.column}_PCT'
 
         if len(self.group) > 0:
-            sums = df.groupby(self.group)[self.column].transform('sum')
+            sums = df.groupby(self.group, dropna=False)[self.column].transform('sum')
         else:
             sums = df[self.column].sum()
         return df.assign(**{new_column_name: df[self.column] / sums})

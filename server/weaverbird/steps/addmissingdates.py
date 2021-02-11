@@ -32,7 +32,7 @@ class AddMissingDatesStep(BaseStep):
         execute_pipeline: PipelineExecutor = None,
     ) -> pd.DataFrame:
         if len(self.groups) > 0:
-            groups = df.groupby(self.groups, as_index=False)
+            groups = df.groupby(self.groups, as_index=False, dropna=False)
         else:
             groups = [('', df)]
 

@@ -23,7 +23,7 @@ class ArgminStep(BaseStep):
             df[_TMP_GROUP_COL_NAME] = 1
             group = [_TMP_GROUP_COL_NAME]
 
-        aggregated_df = df.groupby(group, as_index=False).agg({self.column: 'min'})
+        aggregated_df = df.groupby(group, as_index=False, dropna=False).agg({self.column: 'min'})
 
         if len(self.groups) == 0:
             # we now remove the ugly temp column that we grouped on

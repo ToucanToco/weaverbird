@@ -62,7 +62,7 @@ class AggregateStep(BaseStep):
             group_by_columns = ['__VQB__GROUP_BY__']
             df = df.assign(**{group_by_columns[0]: True})
 
-        grouped_by_df = df.groupby(group_by_columns)
+        grouped_by_df = df.groupby(group_by_columns, dropna=False)
         aggregated_cols = []
         for aggregation in self.aggregations:
             for col, new_col in zip(aggregation.columns, aggregation.new_columns):
