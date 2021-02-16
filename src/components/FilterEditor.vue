@@ -15,6 +15,7 @@
           :data-path="slotProps.dataPath"
           :errors="errors"
           :multi-variable="multiVariable"
+          :columnTypes="columnTypes"
         />
       </template>
     </ConditionsEditor>

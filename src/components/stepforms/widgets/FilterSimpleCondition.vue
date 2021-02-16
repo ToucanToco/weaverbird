@@ -55,6 +55,8 @@ import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 import MultiInputTextWidget from './MultiInputText.vue';
+import InputDateWidget from './InputDate.vue';
+import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
 
 type LiteralOperator =
   | 'equals'
@@ -108,6 +110,12 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @Prop({ type: Boolean, default: true })
   multiVariable!: boolean; // display multiInputText as multiVariableInput
+
+  @Prop({
+    type: Object,
+    default: () => ({}),
+  })
+  columnTypes!: ColumnTypeMapping;
 
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
@@ -165,6 +173,10 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
+    if (this.$store.state.vqb.feature_flags.QUERYBUILDER_ESJSON == 'enabled' && this.columnTypes[this.value.column] == 'date') {
+      return InputDateWidget;
+    }
+
     const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
     if (widget) {
       return widget;
