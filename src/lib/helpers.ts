@@ -20,12 +20,12 @@ function isBooleanString(string: string): boolean {
   );
 }
 
-export function castFromString(value: string, type: DataSetColumnType) {
+export function castFromString(value: string, type: DataSetColumnType, esJsonEnabled = false) {
   if (['integer', 'float', 'long'].includes(type) && value !== null && !isNaN(Number(value))) {
     return Number(value);
   } else if (type === 'boolean' && isBooleanString(value)) {
     return value === 'true' || value === 'True' || value === 'TRUE' || value === '1';
-  } else if (type === 'date') {
+  } else if (type === 'date' && esJsonEnabled) {
     return new Date(value);
   }
   return value;
