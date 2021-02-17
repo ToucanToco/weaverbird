@@ -173,7 +173,12 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
-    if (this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enabled' && this.value.operator == 'eq' && this.columnTypes[this.value.column] == 'date') {
+    const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
+    if (
+      this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enabled' &&
+      widget === InputTextWidget &&
+      this.columnTypes[this.value.column] == 'date'
+    ) {
       return InputDateWidget;
     }
 
