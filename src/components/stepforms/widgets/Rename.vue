@@ -99,7 +99,6 @@ export default class RenameWidget extends Vue {
 </script>
 <style lang="scss" scoped>
 .widget-to-rename__container {
-  background-color: white;
   display: flex;
   min-height: 45px;
   width: 100%;

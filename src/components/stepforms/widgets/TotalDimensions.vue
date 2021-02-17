@@ -83,7 +83,6 @@ export default class TotalDimensionsWidget extends Vue {
 </script>
 <style lang="scss" scoped>
 .widget-totals__container {
-  background-color: white;
   display: flex;
   min-height: 45px;
   width: 100%;
