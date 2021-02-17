@@ -84,6 +84,7 @@ export default class JoinColumns extends Vue {
 </script>
 <style lang="scss" scoped>
 .widget-join-column__container {
+  background-color: white;
   display: flex;
   min-height: 45px;
   width: 100%;
