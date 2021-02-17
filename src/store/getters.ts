@@ -102,11 +102,15 @@ const getters: GetterTree<VQBState, any> = {
   /**
    * Return all available dataset (including pipelines but excluding currentPipelineName)
    */
-  availableDatasetNames: (state: VQBState) =>
-    Object.keys(state.pipelines)
-      .concat(state.domains)
+  availableDatasetNames: (state: VQBState) => {
+    const pipelineNames = Object.keys(state.pipelines)
       .filter((name: string) => name !== state.currentPipelineName)
-      .sort((a, b) => a.localeCompare(b)),
+      .sort((a, b) => a.localeCompare(b));
+
+    const domainNames = state.domains.sort((a, b) => a.localeCompare(b));
+
+    return [...pipelineNames, ...domainNames];
+  },
   /**
    * Return the pipelines referencing the current pipeline
    */

@@ -111,7 +111,7 @@ describe('getter tests', () => {
         'domain2',
       ]);
     });
-    it('should sort the result', () => {
+    it('should sort the result: first pipelines ordered alphabetically, then domains ordered alphabetically', () => {
       const state = buildState({
         pipelines: {
           abc: [],
@@ -121,9 +121,9 @@ describe('getter tests', () => {
       });
       expect(getters.availableDatasetNames(state, {}, {}, {})).toEqual([
         'abc',
+        'xyz',
         'dataset1',
         'mno',
-        'xyz',
       ]);
     });
   });
