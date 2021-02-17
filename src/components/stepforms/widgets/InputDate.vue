@@ -98,7 +98,6 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   }
 
   updateValue(newValue: string) {
-    console.log('new value = ', newValue);
     this.$emit('input', newValue);
   }
 }
