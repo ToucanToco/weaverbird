@@ -182,6 +182,7 @@ export default class ListWidget extends Mixins(FormWidget) {
 .widget-list__component {
   background-color: #f8f8f8;
   width: 98%;
+  padding: 8px 8px 0;
 
   ::v-deep label {
     width: 40%;
