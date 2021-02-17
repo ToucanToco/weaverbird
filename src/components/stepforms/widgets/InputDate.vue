@@ -85,8 +85,8 @@ export default class InputDateWidget extends Mixins(FormWidget) {
 
   get elementClass() {
     return {
-      'widget-input-number': true,
-      'widget-input-number--focused': this.isFocused,
+      'widget-input-date': true,
+      'widget-input-date--focused': this.isFocused,
     };
   }
 
