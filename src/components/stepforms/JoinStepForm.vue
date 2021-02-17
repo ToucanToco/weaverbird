@@ -33,6 +33,7 @@
       :automatic-new-field="false"
       data-path=".on"
       :errors="errors"
+      unstyled-items
     />
     <StepFormButtonbar />
   </div>

@@ -28,6 +28,21 @@ describe('Widget List', () => {
       expect(widgetInputWrapper.exists()).toBeTruthy();
     });
 
+    it('should add a colored box around items, except when unstyledItems props is set', async () => {
+      const wrapper = shallowMount(ListWidget);
+      expect(wrapper.find('.widget-list__component').classes()).toContain(
+        'widget-list__component--colored',
+      );
+
+      wrapper.setProps({
+        unstyledItems: true,
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.widget-list__component').classes()).not.toContain(
+        'widget-list__component--colored',
+      );
+    });
+
     it('should instantiate a widget aggregation', () => {
       const wrapper = shallowMount(ListWidget, {
         propsData: {
