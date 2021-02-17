@@ -11,6 +11,7 @@
       :automatic-new-field="false"
       data-path=".totalDimensions"
       :errors="errors"
+      unstyled-items
     />
     <ListWidget
       class="aggregationsInput"

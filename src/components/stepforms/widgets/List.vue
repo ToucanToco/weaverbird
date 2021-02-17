@@ -6,7 +6,10 @@
         <span class="widget-list__component-sep" v-if="index > 0 && separatorLabel">{{
           separatorLabel
         }}</span>
-        <div class="widget-list__component">
+        <div
+          class="widget-list__component"
+          :class="{ 'widget-list__component--colored': !unstyledItems }"
+        >
           <component
             :is="widget"
             v-bind="componentProps"
@@ -97,6 +100,10 @@ export default class ListWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters?: VariableDelimiters;
 
+  // Remove gray box and padding around list elements
+  @Prop({ type: Boolean, default: false })
+  unstyledItems!: boolean;
+
   get children() {
     const valueCopy = [...this.value];
     if (this.automaticNewField) {
@@ -180,9 +187,7 @@ export default class ListWidget extends Mixins(FormWidget) {
 }
 
 .widget-list__component {
-  background-color: #f8f8f8;
   width: 98%;
-  padding: 8px 8px 0;
 
   ::v-deep label {
     width: 40%;
@@ -192,6 +197,12 @@ export default class ListWidget extends Mixins(FormWidget) {
     width: 60%;
   }
 }
+
+.widget-list__component--colored {
+  background-color: #f8f8f8;
+  padding: 8px 8px 0;
+}
+
 .widget-list__component-sep {
   font-size: 14px;
 }

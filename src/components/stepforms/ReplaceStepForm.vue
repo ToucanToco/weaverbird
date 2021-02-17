@@ -21,6 +21,7 @@
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      unstyled-items
     />
     <StepFormButtonbar />
   </div>
