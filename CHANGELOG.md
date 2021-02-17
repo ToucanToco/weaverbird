@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+## Changed
+
+- Order of datasets in combination steps forms: first pipelines, then other domains
+
 ## [0.39.0] - 2021-02-11
 
 ### Added
