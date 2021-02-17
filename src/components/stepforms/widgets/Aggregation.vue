@@ -95,8 +95,7 @@ export default class AggregationWidget extends Vue {
 .widget-aggregation__container {
   @extend %form-widget__container;
   margin-bottom: 0;
-  padding-top: 12px;
-  padding-bottom: 4px;
+  padding: 0;
 }
 
 .widget-autocomplete__container {

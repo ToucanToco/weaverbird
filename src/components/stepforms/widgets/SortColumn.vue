@@ -85,6 +85,10 @@ export default class SortColumnWidget extends Vue {
 }
 </script>
 <style scoped>
+.widget-sort__container {
+  padding: 0;
+}
+
 .widget-sort__container > legend {
   display: none;
 }
