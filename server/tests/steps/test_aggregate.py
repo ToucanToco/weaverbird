@@ -269,3 +269,34 @@ def test_simple_aggregate_with_null():
             }
         ).sort_values(by=['Group']),
     )
+
+
+def test_count_with_null():
+    df = DataFrame(
+        {
+            'Label': ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5', 'Label 6'],
+            'Group': ['Group 1'] * 3 + [None] * 3,  # type: ignore
+            'Value1': [13, 7, 20, 1, 10, 5],
+        }
+    )
+    df_result = AggregateStep(
+        name='aggregate',
+        on=['Group'],
+        aggregations=[
+            Aggregation(
+                aggfunction='count_even_null',
+                columns=['Group'],
+                newcolumns=['__VQB_COUNT']
+            ),
+        ],
+    ).execute(df)
+
+    assert_dataframes_equals(
+        df_result.sort_values(by=['Group']),
+        DataFrame(
+            {
+                'Group': ['Group 1', np.nan],
+                '__VQB_COUNT': [3, 3],
+            }
+        ).sort_values(by=['Group']),
+    )
