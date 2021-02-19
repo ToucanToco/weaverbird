@@ -1,4 +1,4 @@
-from typing import List, Literal, Optional, Sequence, Union, Callable, Any
+from typing import Any, List, Literal, Optional, Sequence
 
 from pandas import DataFrame, concat
 from pydantic import Field, root_validator
@@ -8,12 +8,12 @@ from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName, PopulatedWithFieldnames, TemplatedVariable
 
-
-
-
-AggregateFn = Literal['avg', 'sum', 'min', 'max', 'count', 'count distinct', 'first', 'last', 'count_even_null']
+AggregateFn = Literal[
+    'avg', 'sum', 'min', 'max', 'count', 'count distinct', 'first', 'last', 'count_even_null'
+]
 
 functions_aliases = {'avg': 'mean', 'count distinct': 'nunique', 'count_even_null': len}
+
 
 class Aggregation(BaseModel):
     class Config(PopulatedWithFieldnames):
@@ -32,7 +32,7 @@ class Aggregation(BaseModel):
         return values
 
 
-def get_aggregate_fn(agg_function: str) -> Union[str, Callable[[Any], Any]]:
+def get_aggregate_fn(agg_function: str) -> Any:
     if agg_function in functions_aliases:
         return functions_aliases[agg_function]
     return agg_function
@@ -63,7 +63,6 @@ class AggregateStep(BaseStep):
         if len(group_by_columns) == 0:
             group_by_columns = ['__VQB__GROUP_BY__']
             df = df.assign(**{group_by_columns[0]: True})
-
 
         grouped_by_df = df.groupby(group_by_columns, dropna=False)
         aggregated_cols = []
