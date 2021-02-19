@@ -2,9 +2,13 @@
 
 ## Unreleased
 
-## Changed
+### Changed
 
 - Order of datasets in combination steps forms: first pipelines, then other domains
+
+### Fixed
+
+- Style of widgets inside ListWidget
 
 ## [0.39.0] - 2021-02-11
 
