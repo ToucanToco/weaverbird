@@ -50,9 +50,11 @@ export default class CheckboxWidget extends Vue {
   }
 
   &::before {
+    flex: 0 auto;
     box-shadow: 0 0 0 2px $base-color inset;
     height: 24px;
     width: 24px;
+    min-width: 24px;
   }
 
   &::after {
@@ -88,6 +90,7 @@ export default class CheckboxWidget extends Vue {
 
 .widget-checkbox__label {
   @extend %form-widget__label;
+  flex: 1;
   margin-top: 0;
   margin-bottom: 0;
   align-self: center;
