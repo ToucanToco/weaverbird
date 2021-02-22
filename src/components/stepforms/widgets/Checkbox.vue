@@ -1,6 +1,6 @@
 <template>
   <div :class="toggleCheckedClass" @click="toggleValue">
-    <label :for="label" class="widget-checkbox__label">{{ label }}</label>
+    <label :title="title" :for="label" class="widget-checkbox__label">{{ label }}</label>
   </div>
 </template>
 
@@ -14,11 +14,22 @@ export default class CheckboxWidget extends Vue {
   @Prop({ type: String, default: null })
   label!: string;
 
+  @Prop({ type: Boolean, default: false })
+  croppedLabel?: boolean;
+
   @Prop({ type: Boolean, default: true })
   value!: boolean;
 
   get toggleCheckedClass() {
-    return { 'widget-checkbox': true, 'widget-checkbox--checked': this.value };
+    return {
+      'widget-checkbox': true,
+      'widget-checkbox--checked': this.value,
+      'widget-checkbox--cropped': this.croppedLabel,
+    };
+  }
+
+  get title(): string | undefined {
+    return this.croppedLabel ? this.label : undefined;
   }
 
   toggleValue() {
@@ -96,5 +107,12 @@ export default class CheckboxWidget extends Vue {
   align-self: center;
   margin-left: 8px;
   cursor: pointer;
+}
+
+.widget-checkbox--cropped {
+  .widget-checkbox__label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 }
 </style>

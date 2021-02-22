@@ -1,4 +1,4 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
 
 import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
@@ -50,5 +50,28 @@ describe('Widget Checkbox', () => {
     wrapper.trigger('click');
     await localVue.nextTick();
     expect(wrapper.emitted()).toEqual({ input: [[false]] });
+  });
+
+  it('should have no title', async () => {
+    const wrapper = mount(CheckboxWidget, {
+      propsData: { value: true },
+    });
+    expect(wrapper.find('.widget-checkbox__label').attributes('title')).toBeUndefined();
+  });
+
+  describe('when cropped', () => {
+    let wrapper: Wrapper<CheckboxWidget>;
+    beforeEach(() => {
+      wrapper = mount(CheckboxWidget, {
+        propsData: { croppedLabel: true, label: 'Title' },
+      });
+    });
+    it('should add specific class to wrapper', async () => {
+      expect(wrapper.classes()).toContain('widget-checkbox--cropped');
+    });
+
+    it('should display the label as title', async () => {
+      expect(wrapper.find('.widget-checkbox__label').attributes('title')).toBe('Title');
+    });
   });
 });
