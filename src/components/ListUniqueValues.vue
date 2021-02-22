@@ -14,6 +14,7 @@
       >
         <CheckboxWidget
           :label="`${stringify(option.value)} (${option.count})`"
+          :croppedLabel="true"
           :value="isChecked(option)"
           @input="toggleCheck(option)"
         />
@@ -197,7 +198,6 @@ export default class ListUniqueValues extends Vue {
 }
 
 .list-unique-values__checkbox {
-  min-width: fit-content;
   border-bottom: 2px #ededed solid;
   font-weight: 600;
   margin: 10px 0px;
