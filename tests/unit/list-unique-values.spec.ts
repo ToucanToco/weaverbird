@@ -66,10 +66,14 @@ describe('List Unique Value', () => {
     expect(wrapper.exists()).toBeTruthy();
     const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
     expect(CheckboxWidgetArray.length).toEqual(4);
-    expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
-    expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
-    expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('UK (4)');
-    expect(CheckboxWidgetArray.at(3).vm.$props.label).toEqual('Spain (2)');
+    expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France');
+    expect(CheckboxWidgetArray.at(0).vm.$props.info).toEqual('(10)');
+    expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise');
+    expect(CheckboxWidgetArray.at(1).vm.$props.info).toEqual('(9)');
+    expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('UK');
+    expect(CheckboxWidgetArray.at(2).vm.$props.info).toEqual('(4)');
+    expect(CheckboxWidgetArray.at(3).vm.$props.label).toEqual('Spain');
+    expect(CheckboxWidgetArray.at(3).vm.$props.info).toEqual('(2)');
   });
 
   it('should instantiate with correct value checked', () => {
@@ -85,10 +89,14 @@ describe('List Unique Value', () => {
     expect(wrapper.exists()).toBeTruthy();
     const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
     expect(CheckboxWidgetArray.length).toEqual(4);
-    expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
-    expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
-    expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('UK (4)');
-    expect(CheckboxWidgetArray.at(3).vm.$props.label).toEqual('Spain (2)');
+    expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France');
+    expect(CheckboxWidgetArray.at(0).vm.$props.info).toEqual('(10)');
+    expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise');
+    expect(CheckboxWidgetArray.at(1).vm.$props.info).toEqual('(9)');
+    expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('UK');
+    expect(CheckboxWidgetArray.at(2).vm.$props.info).toEqual('(4)');
+    expect(CheckboxWidgetArray.at(3).vm.$props.label).toEqual('Spain');
+    expect(CheckboxWidgetArray.at(3).vm.$props.info).toEqual('(2)');
   });
 
   it('should instantiate with correct value checked (with "nin" operator)', () => {
@@ -189,8 +197,10 @@ describe('List Unique Value', () => {
       it('should filter the unique value when search on the searchbox', async () => {
         const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
         expect(CheckboxWidgetArray.length).toEqual(2);
-        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
-        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France');
+        expect(CheckboxWidgetArray.at(0).vm.$props.info).toEqual('(10)');
+        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise');
+        expect(CheckboxWidgetArray.at(1).vm.$props.info).toEqual('(9)');
       });
 
       it('should emit new value when click "select all" button (with "in" operator)', async () => {
@@ -225,8 +235,10 @@ describe('List Unique Value', () => {
       it('should filter the unique value when search on the searchbox', async () => {
         const CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
         expect(CheckboxWidgetArray.length).toEqual(2);
-        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France (10)');
-        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise (9)');
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('France');
+        expect(CheckboxWidgetArray.at(0).vm.$props.info).toEqual('(10)');
+        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('Framboise');
+        expect(CheckboxWidgetArray.at(1).vm.$props.info).toEqual('(9)');
       });
 
       it('should emit new value when click "select all" button (with "nin" operator)', async () => {
@@ -276,15 +288,19 @@ describe('List Unique Value', () => {
         });
         let CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
         expect(CheckboxWidgetArray.length).toEqual(3);
-        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('{"population":10} (12)');
-        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('{"population":2} (9)');
-        expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('{"population":3} (4)');
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('{"population":10}');
+        expect(CheckboxWidgetArray.at(0).vm.$props.info).toEqual('(12)');
+        expect(CheckboxWidgetArray.at(1).vm.$props.label).toEqual('{"population":2}');
+        expect(CheckboxWidgetArray.at(1).vm.$props.info).toEqual('(9)');
+        expect(CheckboxWidgetArray.at(2).vm.$props.label).toEqual('{"population":3}');
+        expect(CheckboxWidgetArray.at(2).vm.$props.info).toEqual('(4)');
         const input = wrapper.find('.list-unique-values__search-box').element as HTMLInputElement;
         input.value = '2'; // "Fr" like the start of "France" and "Framboise"
         await wrapper.find('.list-unique-values__search-box').trigger('input');
         CheckboxWidgetArray = wrapper.findAll('CheckboxWidget-stub');
         expect(CheckboxWidgetArray.length).toEqual(1);
-        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('{"population":2} (9)');
+        expect(CheckboxWidgetArray.at(0).vm.$props.label).toEqual('{"population":2}');
+        expect(CheckboxWidgetArray.at(0).vm.$props.info).toEqual('(9)');
       });
     });
   });
