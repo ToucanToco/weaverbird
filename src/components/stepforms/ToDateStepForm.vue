@@ -93,6 +93,7 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     { format: '%Y/%m', label: '%Y/%m', example: '1970/12' },
     { format: '%m-%Y', label: '%m-%Y', example: '12-1970' },
     { format: '%m/%Y', label: '%m/%Y', example: '12/1970' },
+    { format: '%Y', label: '%Y', example: '1970' },
   ];
   readonly datePresets = this.formatOptions
     .filter(d => d.format !== 'guess' && d.format !== 'custom')

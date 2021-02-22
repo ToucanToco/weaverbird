@@ -262,6 +262,19 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
         },
         { $project: { _vqbTempDate: 0 } },
       ];
+    case '%Y':
+      // Mongo does not support "incomplete" date string where the day or month is missing
+      // so we add the first day of the month and of the first month of the year and use the format %d/%m/%Y
+      // WARNING: this format cannot be guess by mongo himself
+      return [
+        { $addFields: { _vqbTempDate: { $concat: ['01/01/', $$(step.column)] } } },
+        {
+          $addFields: {
+            [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
+          },
+        },
+        { $project: { _vqbTempDate: 0 } },
+      ];
     default:
       return [
         {

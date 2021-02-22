@@ -5540,6 +5540,26 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
           { $project: { _id: 0, _vqbTempDate: 0 } },
         ]);
       });
+
+      it('can generate a todate step with "%Y" format', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'todate',
+            column: 'foo',
+            format: '%Y',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { _vqbTempDate: { $concat: ['01/01/', '$foo'] } } },
+          {
+            $addFields: {
+              foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
+            },
+          },
+          { $project: { _id: 0, _vqbTempDate: 0 } },
+        ]);
+      });
     }
   });
 
