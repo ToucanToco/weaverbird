@@ -13,7 +13,8 @@
         :key="stringify(option.value)"
       >
         <CheckboxWidget
-          :label="`${stringify(option.value)} (${option.count})`"
+          :label="stringify(option.value)"
+          :info="`(${option.count})`"
           :croppedLabel="true"
           :value="isChecked(option)"
           @input="toggleCheck(option)"
