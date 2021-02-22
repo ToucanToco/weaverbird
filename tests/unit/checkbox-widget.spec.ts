@@ -66,12 +66,35 @@ describe('Widget Checkbox', () => {
         propsData: { croppedLabel: true, label: 'Title' },
       });
     });
-    it('should add specific class to wrapper', async () => {
+    it('should add specific class to wrapper', () => {
       expect(wrapper.classes()).toContain('widget-checkbox--cropped');
     });
 
-    it('should display the label as title', async () => {
+    it('should display the label as title', () => {
       expect(wrapper.find('.widget-checkbox__label').attributes('title')).toBe('Title');
+    });
+  });
+
+  describe('with info', () => {
+    let wrapper: Wrapper<CheckboxWidget>;
+    beforeEach(() => {
+      wrapper = mount(CheckboxWidget, {
+        propsData: { croppedLabel: true, label: 'Title', info: '(info)' },
+      });
+    });
+
+    it('should add a wrapper for info', () => {
+      expect(wrapper.find('.widget-checkbox__label-info').exists()).toBe(true);
+      expect(wrapper.find('.widget-checkbox__label-info').text()).toBe('(info)');
+    });
+
+    it('should add a wrapper for label', () => {
+      expect(wrapper.find('.widget-checkbox__label-content').exists()).toBe(true);
+      expect(wrapper.find('.widget-checkbox__label-content').text()).toBe('Title');
+    });
+
+    it('should concatenate label and info into title', async () => {
+      expect(wrapper.find('.widget-checkbox__label').attributes('title')).toBe('Title(info)');
     });
   });
 });

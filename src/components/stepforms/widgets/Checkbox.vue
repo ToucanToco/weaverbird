@@ -1,6 +1,12 @@
 <template>
   <div :class="toggleCheckedClass" @click="toggleValue">
-    <label :title="title" :for="label" class="widget-checkbox__label">{{ label }}</label>
+    <label :title="title" :for="label" class="widget-checkbox__label">
+      <template v-if="info">
+        <span class="widget-checkbox__label-content">{{ label }}</span>
+        <span class="widget-checkbox__label-info">{{ info }}</span>
+      </template>
+      <template v-else>{{ label }}</template>
+    </label>
   </div>
 </template>
 
@@ -13,6 +19,9 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 export default class CheckboxWidget extends Vue {
   @Prop({ type: String, default: null })
   label!: string;
+
+  @Prop({ type: String, default: undefined })
+  info?: string;
 
   @Prop({ type: Boolean, default: false })
   croppedLabel?: boolean;
@@ -29,7 +38,13 @@ export default class CheckboxWidget extends Vue {
   }
 
   get title(): string | undefined {
-    return this.croppedLabel ? this.label : undefined;
+    if (!this.croppedLabel) {
+      return undefined;
+    } else if (this.info) {
+      return `${this.label}${this.info}`;
+    } else {
+      return this.label;
+    }
   }
 
   toggleValue() {
@@ -111,8 +126,17 @@ export default class CheckboxWidget extends Vue {
 
 .widget-checkbox--cropped {
   .widget-checkbox__label {
+    display: flex;
+    overflow: hidden;
+  }
+  .widget-checkbox__label-content {
+    flex: 0 auto;
+    max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+  .widget-checkbox__label-info {
+    flex: 0 auto;
   }
 }
 </style>
