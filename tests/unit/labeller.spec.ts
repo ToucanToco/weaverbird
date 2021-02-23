@@ -126,7 +126,7 @@ describe('Labeller', () => {
       name: 'domain',
       domain: 'the-domain',
     };
-    expect(hrl(step)).toEqual('Use domain "the-domain"');
+    expect(hrl(step)).toEqual('Source: "the-domain"');
   });
 
   it('generates label for duplicate steps', () => {
