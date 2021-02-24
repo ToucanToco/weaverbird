@@ -168,7 +168,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   domain(step: Readonly<S.DomainStep>) {
-    return `Use domain "${step.domain}"`;
+    return `Source: "${step.domain}"`;
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {

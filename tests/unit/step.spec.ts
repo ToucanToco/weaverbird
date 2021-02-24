@@ -132,7 +132,7 @@ describe('Step.vue', () => {
         variableDelimiters: { start: '{{ ', end: ' }}' },
       },
     });
-    expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Use domain "user.username"');
+    expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Source: "user.username"');
   });
 
   describe('Delete confirmation modal', () => {
