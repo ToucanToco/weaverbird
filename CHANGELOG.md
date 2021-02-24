@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Domain step label from "Use domain" to "Source:"
+
 ## [0.41.0] - 2021-02-23
 
 ### Added
