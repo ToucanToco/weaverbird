@@ -58,16 +58,16 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   placeholder!: string;
 
   @Prop({ default: '' })
-  value!: string | number | boolean | Date;
+  value!: Date;
 
   @Prop({ default: undefined })
   docUrl!: string | undefined;
 
   @Prop({ type: Number, default: undefined })
-  min!: number;
+  min!: Date;
 
   @Prop({ type: Number, default: undefined })
-  max!: number;
+  max!: Date;
 
   @Prop()
   availableVariables?: VariablesBucket;
@@ -78,9 +78,11 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   isFocused = false;
 
   mounted() {
-    const input: any = this.$refs.input;
-    // we receive back as value the full date. but the input value NEEDS to be a string
-    input.value = this.value.toISOString().substr(0, 10);
+    if (this.value) {
+      const input: any = this.$refs.input;
+      // we receive back as value the full date. but the input value NEEDS to be a string
+      input.value = this.value.toISOString().substr(0, 10);
+    }
   }
 
   get elementClass() {
