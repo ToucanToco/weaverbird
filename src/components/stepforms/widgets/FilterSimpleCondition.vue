@@ -224,6 +224,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 }
 
 .widget-autocomplete__container,
+.widget-input-date__container,
 .widget-input-text__container {
   margin: 0;
 }
@@ -231,7 +232,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 .filter-form-simple-condition-column-input,
 .filter-form-simple-condition-operator-input,
 .filter-form-simple-condition__container .widget-input-text__container,
-.filter-form-simple-condition__container .widget-input-text__container,
+.filter-form-simple-condition__container .widget-input-date__container,
 .filter-form-simple-condition__container .widget-multiinputtext__container {
   margin: 4px;
   margin-right: 0;
@@ -243,6 +244,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 }
 
 .filter-form-simple-condition__container ::v-deep .widget-input-text,
+.filter-form-simple-condition__container ::v-deep .widget-input-date,
 .filter-form-simple-condition__container ::v-deep .multiselect {
   background-color: white;
 

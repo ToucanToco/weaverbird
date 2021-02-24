@@ -1,6 +1,6 @@
 <template>
   <div class="widget-input-date__container" :class="toggleClassErrorWarning">
-    <div class="widget-input-date__container">
+    <div class="widget-input-date__label">
       <label v-if="name" @click="$refs.input.focus()">{{ name }}</label>
       <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
         <i class="fas fa-question-circle" aria-hidden="true" />
@@ -107,27 +107,26 @@ export default class InputDateWidget extends Mixins(FormWidget) {
 <style lang="scss" scoped>
 @import '../../../styles/_variables';
 
-.widget-input-number__container {
+.widget-input-date__container {
   @extend %form-widget__container;
 }
 
-.widget-input-number {
+.widget-input-date {
   @extend %form-widget__field;
-  padding: 8px;
+
+  &:focus-within {
+    @extend %form-widget__field--focused;
+  }
 }
 
-.widget-input-number--focused {
-  @extend %form-widget__field--focused;
-}
-
-.widget-input-number__container {
+.widget-input-date__label {
   align-items: flex-start;
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.widget-input-number__container label {
+.widget-input-date__label label {
   @extend %form-widget__label;
 }
 
