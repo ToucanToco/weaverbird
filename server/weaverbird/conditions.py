@@ -4,7 +4,7 @@ from typing import Any, List, Literal, Union
 
 from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series, to_datetime
-from pydantic import BaseModel, Field, root_validator, validator
+from pydantic import BaseModel, Field, validator
 
 from weaverbird.types import ColumnName, PopulatedWithFieldnames
 
