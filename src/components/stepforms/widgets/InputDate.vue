@@ -92,14 +92,6 @@ export default class InputDateWidget extends Mixins(FormWidget) {
     };
   }
 
-  blur() {
-    this.isFocused = false;
-  }
-
-  focus() {
-    this.isFocused = true;
-  }
-
   updateValue(newValue: string) {
     this.$emit('input', newValue);
   }
