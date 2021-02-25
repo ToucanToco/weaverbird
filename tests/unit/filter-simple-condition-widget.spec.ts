@@ -275,4 +275,27 @@ describe('Widget FilterSimpleCondition', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.emitted().input[0]).toEqual([{ column: 'columnA', value: [], operator: 'in' }]);
   });
+
+  it("should have a date input if the column type is 'Date' and the featureflag is enabled", async () => {
+    const store = setupMockStore({
+      dataset: {
+        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+        data: [],
+      },
+      selectedColumns: ['columnA'],
+    });
+    store.state.vqb.featureFlags = {};
+    store.state.vqb.featureFlags.QUERYBUILDER_ESJSON = 'enable';
+    const wrapper = mount(FilterSimpleConditionWidget, {
+      propsData: {
+        value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+        columnTypes: { columnA: 'date' },
+      },
+      store,
+      localVue,
+      sync: false,
+    });
+    const widgetWrappers = wrapper.findAll('.filterValue');
+    expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
+  });
 });
