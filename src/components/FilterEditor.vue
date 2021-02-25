@@ -78,8 +78,10 @@ export default class FilterEditor extends Vue {
   readonly defaultValue = DEFAULT_FILTER;
 
   get conditionsTree() {
-    const esJsonEnabled = this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enabled'
-    return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes, esJsonEnabled));
+    const esJsonEnabled = this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enable';
+    return buildConditionsEditorTree(
+      castFilterStepTreeValue(this.filterTree, this.columnTypes, esJsonEnabled),
+    );
   }
 
   updateFilterTree(newConditionsTree: AbstractFilterTree) {

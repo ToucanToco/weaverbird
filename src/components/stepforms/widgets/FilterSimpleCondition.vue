@@ -48,15 +48,15 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
 import { keepCurrentValueIfArrayType, keepCurrentValueIfCompatibleType } from '@/lib/helpers';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
-import MultiInputTextWidget from './MultiInputText.vue';
 import InputDateWidget from './InputDate.vue';
-import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
+import MultiInputTextWidget from './MultiInputText.vue';
 
 type LiteralOperator =
   | 'equals'

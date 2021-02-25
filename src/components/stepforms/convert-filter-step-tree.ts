@@ -194,7 +194,9 @@ export function castFilterStepTreeValue(
     const type = columnTypes[filterStepTree.column];
     if (type !== undefined) {
       if (Array.isArray(filterStepTree.value)) {
-        filterStepTree.value = filterStepTree.value.map(v => castFromString(v, type, esJsonEnabled));
+        filterStepTree.value = filterStepTree.value.map(v =>
+          castFromString(v, type, esJsonEnabled),
+        );
       } else {
         filterStepTree.value = castFromString(filterStepTree.value, type, esJsonEnabled);
       }
