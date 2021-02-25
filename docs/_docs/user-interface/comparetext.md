@@ -3,7 +3,7 @@ title: Compare Text Columns
 permalink: /docs/comparetext/
 ---
 
-### Compute Duration
+### Compare Text Columns
 
 Compares 2 string columns and returns true if the string values are equal,
 and false oteherwise.
