@@ -63,19 +63,11 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   @Prop({ default: undefined })
   docUrl!: string | undefined;
 
-  @Prop({ type: Number, default: undefined })
-  min!: Date;
-
-  @Prop({ type: Number, default: undefined })
-  max!: Date;
-
   @Prop()
   availableVariables?: VariablesBucket;
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
-
-  isFocused = false;
 
   mounted() {
     if (this.value) {
