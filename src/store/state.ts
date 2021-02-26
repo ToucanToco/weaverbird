@@ -110,7 +110,7 @@ export interface VQBState {
    * variable delimiter for templating
    */
   variableDelimiters?: VariableDelimiters;
-  featureFlags: any;
+  featureFlags?: Record<string, boolean | undefined>;
 }
 
 /**
