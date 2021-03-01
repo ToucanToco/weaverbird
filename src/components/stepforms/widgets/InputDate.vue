@@ -73,6 +73,7 @@ export default class InputDateWidget extends Mixins(FormWidget) {
     if (this.value) {
       const input: any = this.$refs.input;
       // we receive back as value the full date. but the input value NEEDS to be a string
+      // 10 characters gives us YYYY-MM-DD
       input.value = this.value.toISOString().substr(0, 10);
     }
   }
