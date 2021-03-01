@@ -48,12 +48,14 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
+import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
 import { keepCurrentValueIfArrayType, keepCurrentValueIfCompatibleType } from '@/lib/helpers';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
+import InputDateWidget from './InputDate.vue';
 import MultiInputTextWidget from './MultiInputText.vue';
 
 type LiteralOperator =
@@ -108,6 +110,12 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @Prop({ type: Boolean, default: true })
   multiVariable!: boolean; // display multiInputText as multiVariableInput
+
+  @Prop({
+    type: Object,
+    default: () => ({}),
+  })
+  columnTypes!: ColumnTypeMapping;
 
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
@@ -166,6 +174,14 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   get inputWidget(): VueConstructor<Vue> | undefined {
     const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
+    if (
+      this.$store.state?.vqb?.featureFlags != undefined &&
+      this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enable' &&
+      widget === InputTextWidget &&
+      this.columnTypes[this.value.column] == 'date'
+    ) {
+      return InputDateWidget;
+    }
     if (widget) {
       return widget;
     } else {
@@ -207,6 +223,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 }
 
 .widget-autocomplete__container,
+.widget-input-date__container,
 .widget-input-text__container {
   margin: 0;
 }
@@ -214,7 +231,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 .filter-form-simple-condition-column-input,
 .filter-form-simple-condition-operator-input,
 .filter-form-simple-condition__container .widget-input-text__container,
-.filter-form-simple-condition__container .widget-input-text__container,
+.filter-form-simple-condition__container .widget-input-date__container,
 .filter-form-simple-condition__container .widget-multiinputtext__container {
   margin: 4px;
   margin-right: 0;
@@ -226,6 +243,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 }
 
 .filter-form-simple-condition__container ::v-deep .widget-input-text,
+.filter-form-simple-condition__container ::v-deep .widget-input-date,
 .filter-form-simple-condition__container ::v-deep .multiselect {
   background-color: white;
 

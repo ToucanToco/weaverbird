@@ -1,9 +1,10 @@
 from abc import ABC, abstractmethod
+from datetime import datetime
 from typing import Any, List, Literal, Union
 
 from numpy.ma import logical_and, logical_or
-from pandas import DataFrame, Series
-from pydantic import BaseModel, Field
+from pandas import DataFrame, Series, to_datetime
+from pydantic import BaseModel, Field, validator
 
 from weaverbird.types import ColumnName, PopulatedWithFieldnames
 
@@ -24,6 +25,14 @@ class ComparisonCondition(BaseCondition):
     column: ColumnName
     operator: Literal['eq', 'ne', 'lt', 'le', 'gt', 'ge']
     value: Any
+
+    @validator('value')
+    def value_must_have_compatible_type_pandas(cls, v):
+        print(f'validating value {cls=} {v=} ')
+        if isinstance(v, datetime):
+            print(f'converting {v} to pandas datetime')
+            return to_datetime(v.replace(tzinfo=None), utc=False)
+        return v
 
     def filter(self, df: DataFrame) -> Series:
         return getattr(df[self.column], self.operator)(self.value)

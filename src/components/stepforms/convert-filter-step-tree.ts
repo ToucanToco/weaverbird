@@ -176,16 +176,17 @@ into:
 export function castFilterStepTreeValue(
   filterStepTree: FilterCondition,
   columnTypes: ColumnTypeMapping,
+  esJsonEnabled = false,
 ) {
   if (isFilterCombo(filterStepTree)) {
     if (isFilterComboOr(filterStepTree)) {
       for (let condition of filterStepTree.or) {
-        condition = castFilterStepTreeValue(condition, columnTypes);
+        condition = castFilterStepTreeValue(condition, columnTypes, esJsonEnabled);
       }
     }
     if (isFilterComboAnd(filterStepTree)) {
       for (let condition of filterStepTree.and) {
-        condition = castFilterStepTreeValue(condition, columnTypes);
+        condition = castFilterStepTreeValue(condition, columnTypes, esJsonEnabled);
       }
     }
     return filterStepTree;
@@ -193,9 +194,11 @@ export function castFilterStepTreeValue(
     const type = columnTypes[filterStepTree.column];
     if (type !== undefined) {
       if (Array.isArray(filterStepTree.value)) {
-        filterStepTree.value = filterStepTree.value.map(v => castFromString(v, type));
+        filterStepTree.value = filterStepTree.value.map(v =>
+          castFromString(v, type, esJsonEnabled),
+        );
       } else {
-        filterStepTree.value = castFromString(filterStepTree.value, type);
+        filterStepTree.value = castFromString(filterStepTree.value, type, esJsonEnabled);
       }
     }
     return filterStepTree;

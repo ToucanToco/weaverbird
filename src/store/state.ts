@@ -110,6 +110,7 @@ export interface VQBState {
    * variable delimiter for templating
    */
   variableDelimiters?: VariableDelimiters;
+  featureFlags?: Record<string, boolean | string | undefined>;
 }
 
 /**
@@ -143,6 +144,7 @@ export function emptyState(): VQBState {
     translator: 'mongo40',
     backendService: UnsetBackendService,
     interpolateFunc: (x: string | any[], _context: ScopeContext) => x,
+    featureFlags: undefined,
   };
 }
 

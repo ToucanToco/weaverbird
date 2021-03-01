@@ -18,6 +18,11 @@ describe('castFromString', () => {
     expect(castFromString(string2, 'float')).toEqual(4.2);
   });
 
+  it('should cast date string to dates, if ejson is enabled', () => {
+    const string1 = '2021-01-01';
+    expect(castFromString(string1, 'date', true)).toEqual(new Date(string1));
+  });
+
   it('should not cast a string that does not convert to number type', () => {
     const string = 'Hey';
     expect(castFromString(string, 'integer')).toEqual('Hey');

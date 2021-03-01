@@ -15,6 +15,7 @@
           :data-path="slotProps.dataPath"
           :errors="errors"
           :multi-variable="multiVariable"
+          :columnTypes="columnTypes"
         />
       </template>
     </ConditionsEditor>
@@ -77,7 +78,12 @@ export default class FilterEditor extends Vue {
   readonly defaultValue = DEFAULT_FILTER;
 
   get conditionsTree() {
-    return buildConditionsEditorTree(castFilterStepTreeValue(this.filterTree, this.columnTypes));
+    const esJsonEnabled =
+      this.$store?.state?.vqb?.featureFlags != undefined &&
+      this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enable';
+    return buildConditionsEditorTree(
+      castFilterStepTreeValue(this.filterTree, this.columnTypes, esJsonEnabled),
+    );
   }
 
   updateFilterTree(newConditionsTree: AbstractFilterTree) {
