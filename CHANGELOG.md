@@ -1,10 +1,14 @@
 # Changelog
 
-## Unreleased
+## [0.42.0] - 2021-03-02
+
+### Added
+
+- Date input field for filter step on date column
 
 ### Changed
 
-- Domain step label from "Use domain" to "Source:"
+- Rename domain step label, from "Use domain" to "Source:"
 
 ## [0.41.0] - 2021-02-23
 
@@ -665,6 +669,7 @@
 
 - Initial version, showtime!
 
+[0.41.0]: https://github.com/ToucanToco/weaverbird/compare/v0.41.0...v0.42.0
 [0.41.0]: https://github.com/ToucanToco/weaverbird/compare/v0.40.0...v0.41.0
 [0.40.0]: https://github.com/ToucanToco/weaverbird/compare/v0.39.0...v0.40.0
 [0.39.0]: https://github.com/ToucanToco/weaverbird/compare/v0.38.0...v0.39.0
