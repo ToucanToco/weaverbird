@@ -443,7 +443,6 @@ $condition-row-border-width: 1px;
   display: flex;
   margin: $condition-row-margin 0;
   position: relative;
-  overflow-y: hidden;
 }
 
 .condition-row__content {
