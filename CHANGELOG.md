@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.42.1] - 2021-03-05
+
+### Fixed
+
+- Unfortunate css rules was preventing dropdown visibility in condition groups (use in filter step)
+
 ## [0.42.0] - 2021-03-02
 
 ### Added
@@ -669,7 +675,8 @@
 
 - Initial version, showtime!
 
-[0.41.0]: https://github.com/ToucanToco/weaverbird/compare/v0.41.0...v0.42.0
+[0.42.1]: https://github.com/ToucanToco/weaverbird/compare/v0.42.0...v0.42.1
+[0.42.0]: https://github.com/ToucanToco/weaverbird/compare/v0.41.0...v0.42.0
 [0.41.0]: https://github.com/ToucanToco/weaverbird/compare/v0.40.0...v0.41.0
 [0.40.0]: https://github.com/ToucanToco/weaverbird/compare/v0.39.0...v0.40.0
 [0.39.0]: https://github.com/ToucanToco/weaverbird/compare/v0.38.0...v0.39.0
