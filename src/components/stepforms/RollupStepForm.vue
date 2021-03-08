@@ -84,7 +84,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class RollupStepForm extends BaseStepForm<RollupStep> {
   stepname: PipelineStepName = 'rollup';
 
-  @Prop({ type: Object, default: () => ({ name: 'rollup', hierarchy: [], aggregations: [] }) })
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'rollup', hierarchy: [], aggregations: [], groupby: [] }),
+  })
   initialStepValue!: RollupStep;
 
   readonly title: string = 'Hierarchical rollup';
