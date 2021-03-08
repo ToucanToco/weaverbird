@@ -97,6 +97,9 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
    *   columns and newcolumns (list if strings)
    */
   editedStep: RollupStep = {
+    labelCol: undefined,
+    levelCol: undefined,
+    parentLabelCol: undefined,
     ...this.initialStepValue,
     ...this.stepFormDefaults,
     aggregations: this.initialStepValue.aggregations.map(x => ({
