@@ -35,7 +35,7 @@ export default {
       },
     },
     labelCol: {
-      type: 'string',
+      type: ['null', 'string'],
       minLength: 1,
       title: 'Label column name',
       description: 'The name of the label column that will be created',
@@ -44,7 +44,7 @@ export default {
       },
     },
     levelCol: {
-      type: 'string',
+      type: ['null', 'string'],
       minLength: 1,
       title: 'Level column name',
       description: 'The name of the level column that will be created',
@@ -53,7 +53,7 @@ export default {
       },
     },
     parentLabelCol: {
-      type: 'string',
+      type: ['null', 'string'],
       minLength: 1,
       title: 'Parent column name',
       description: 'The name of the parent column that will be created',
