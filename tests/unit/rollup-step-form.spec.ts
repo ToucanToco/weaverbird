@@ -153,60 +153,6 @@ describe('Rollup Step Form', () => {
         },
         errors: [{ keyword: 'enum', dataPath: '.aggregations[0].aggfunction' }],
       },
-      {
-        testlabel: '"labelCol" parameter is an empty string',
-        props: {
-          initialStepValue: {
-            name: 'rollup',
-            hierarchy: ['column1'],
-            aggregations: [
-              {
-                newcolumns: ['sum_col1'],
-                aggfunction: 'sum',
-                columns: ['col1'],
-              },
-            ],
-            labelCol: '',
-          },
-        },
-        errors: [{ keyword: 'minLength', dataPath: '.labelCol' }],
-      },
-      {
-        testlabel: '"levelCol" parameter is an empty string',
-        props: {
-          initialStepValue: {
-            name: 'rollup',
-            hierarchy: ['column1'],
-            aggregations: [
-              {
-                newcolumns: ['sum_col1'],
-                aggfunction: 'sum',
-                columns: ['col1'],
-              },
-            ],
-            levelCol: '',
-          },
-        },
-        errors: [{ keyword: 'minLength', dataPath: '.levelCol' }],
-      },
-      {
-        testlabel: '"parentLabelCol" parameter is an empty string',
-        props: {
-          initialStepValue: {
-            name: 'rollup',
-            hierarchy: ['column1'],
-            aggregations: [
-              {
-                newcolumns: ['sum_col1'],
-                aggfunction: 'sum',
-                columns: ['col1'],
-              },
-            ],
-            parentLabelCol: '',
-          },
-        },
-        errors: [{ keyword: 'minLength', dataPath: '.parentLabelCol' }],
-      },
     ]);
 
     runner.testValidate({
