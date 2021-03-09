@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.42.2] - 2021-03-09
+
+### Fixed
+
+- RollupStep: enable to use empty value in optionnal fields when editing step
+
 ## [0.42.1] - 2021-03-05
 
 ### Fixed
@@ -675,6 +681,7 @@
 
 - Initial version, showtime!
 
+[0.42.2]: https://github.com/ToucanToco/weaverbird/compare/v0.42.1...v0.42.2
 [0.42.1]: https://github.com/ToucanToco/weaverbird/compare/v0.42.0...v0.42.1
 [0.42.0]: https://github.com/ToucanToco/weaverbird/compare/v0.41.0...v0.42.0
 [0.41.0]: https://github.com/ToucanToco/weaverbird/compare/v0.40.0...v0.41.0
