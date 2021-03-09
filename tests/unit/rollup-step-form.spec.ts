@@ -45,17 +45,6 @@ describe('Rollup Step Form', () => {
       expect(widgetMultiselects.at(0).props().value).toEqual(['foo', 'bar']);
       expect(widgetMultiselects.at(1).props().value).toEqual(['test']);
     });
-
-    it('should call the setColumnMutation on input', async () => {
-      const wrapper = runner.mount(undefined, {
-        data: { editedStep: { name: 'rollup', hierarchy: ['foo'], aggregations: [] } },
-      });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['foo']);
-      wrapper.setData({ editedStep: { name: 'rollup', on: ['foo'], groupby: ['bar'] } });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.vm.$store.state.vqb.selectedColumns).toEqual(['bar']);
-    });
   });
 
   describe('ListWidget', () => {

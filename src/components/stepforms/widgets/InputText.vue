@@ -53,8 +53,8 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
   placeholder!: string;
 
-  @Prop({ default: '' })
-  value!: string | number | boolean;
+  @Prop({ default: undefined })
+  value!: string | number | boolean | undefined;
 
   @Prop({ default: undefined })
   docUrl!: string | undefined;
@@ -65,8 +65,8 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters?: VariableDelimiters;
 
-  updateValue(newValue?: string) {
-    this.$emit('input', newValue);
+  updateValue(newValue: string | undefined) {
+    this.$emit('input', newValue || undefined);
   }
 }
 </script>

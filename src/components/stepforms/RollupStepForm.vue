@@ -24,10 +24,9 @@
     />
     <MultiselectWidget
       class="groupbyColumnsInput"
-      v-model="editedStep.groupby"
+      v-model="groupby"
       name="(Optional) Group rollup by:"
       :options="columnNames"
-      @input="setSelectedColumns({ column: editedStep.groupby[editedStep.groupby.length - 1] })"
       placeholder="Add columns"
       data-path=".groupby"
       :errors="errors"
@@ -84,7 +83,10 @@ import MultiselectWidget from './widgets/Multiselect.vue';
 export default class RollupStepForm extends BaseStepForm<RollupStep> {
   stepname: PipelineStepName = 'rollup';
 
-  @Prop({ type: Object, default: () => ({ name: 'rollup', hierarchy: [], aggregations: [] }) })
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'rollup', hierarchy: [], aggregations: [] }),
+  })
   initialStepValue!: RollupStep;
 
   readonly title: string = 'Hierarchical rollup';
@@ -125,6 +127,14 @@ export default class RollupStepForm extends BaseStepForm<RollupStep> {
 
   set aggregations(newval) {
     this.editedStep.aggregations = [...newval];
+  }
+
+  get groupby() {
+    return this.editedStep.groupby ?? [];
+  }
+
+  set groupby(groupby: any[]) {
+    this.editedStep.groupby = groupby.length ? groupby : undefined;
   }
 
   submit() {
