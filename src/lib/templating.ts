@@ -223,7 +223,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, query: _interpolate(this.interpolateFunc, step.query, this.context) };
   }
 
-  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
+  dateextract(step: Readonly<S.DateExtractStep>) {
     return {
       ...step,
       column: _interpolate(this.interpolateFunc, step.column, this.context),
