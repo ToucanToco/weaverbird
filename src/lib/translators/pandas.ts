@@ -50,7 +50,7 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
-  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
+  dateextract(step: Readonly<S.DateExtractStep>) {
     return step;
   }
 
