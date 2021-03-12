@@ -1,5 +1,3 @@
-import { initial } from 'lodash';
-
 import DateExtractStepForm from '@/components/stepforms/DateExtractStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
