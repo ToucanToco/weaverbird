@@ -1,6 +1,4 @@
-import { addNotInColumnNamesConstraint, StepFormType } from './utils';
-
-const schema = {
+export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
   title: 'Extract date propperty from date step',
   type: 'object',
@@ -18,22 +16,76 @@ const schema = {
         placeholder: 'Select a column',
       },
     },
+    dateInfo: {
+      type: 'array',
+      items: {
+        type: 'string',
+        enum: [
+          'year',
+          'month',
+          'day',
+          'week',
+          'quarter',
+          'dayOfWeek',
+          'dayOfYear',
+          'isoYear',
+          'isoWeek',
+          'isoDayOfWeek',
+          'firstDayOfYear',
+          'firstDayOfMonth',
+          'firstDayOfWeek',
+          'firstDayOfQuarter',
+          'firstDayOfIsoWeek',
+          'previousDay',
+          'firstDayOfPreviousYear',
+          'firstDayOfPreviousMonth',
+          'firstDayOfPreviousWeek',
+          'firstDayOfPreviousQuarter',
+          'firstDayOfPreviousIsoWeek',
+          'previousYear',
+          'previousMonth',
+          'previousWeek',
+          'previousQuarter',
+          'previousIsoWeek',
+          'hour',
+          'minutes',
+          'seconds',
+          'milliseconds',
+        ],
+      },
+      minItems: 1,
+      title: 'Date information to extract',
+      description: 'A list of all the information to extract from the date column',
+    },
+    newColumns: {
+      type: 'array',
+      items: {
+        type: 'string',
+        minLength: 1,
+      },
+      minItems: 1,
+      title: 'New column(s) name',
+      description: 'The name of the date information column(s) that will be created',
+    },
     operation: {
       type: 'string',
       enum: [
         'year',
         'month',
         'day',
+        'week',
+        'dayOfWeek',
+        'dayOfYear',
+        'isoYear',
+        'isoWeek',
+        'isoDayOfWeek',
         'hour',
         'minutes',
         'seconds',
         'milliseconds',
-        'dayOfYear',
-        'dayOfWeek',
-        'week',
       ],
       title: 'Operation',
-      description: 'The name of the property to extract',
+      description: '(LEGACY) The name of the property to extract',
       attrs: {
         placeholder: 'Choose the property to extract',
       },
@@ -41,16 +93,12 @@ const schema = {
     new_column_name: {
       type: 'string',
       title: 'New column name',
-      description: 'The new column that will be created after extraction',
+      description: '(LEGACY) The new column that will be created after extraction',
       attrs: {
         placeholder: 'Enter a column name',
       },
     },
   },
-  required: ['name', 'column', 'operation'],
+  required: ['name', 'column', 'dateInfo', 'newColumns'],
   additionalProperties: false,
 };
-
-export default function buildSchema(form: StepFormType) {
-  return addNotInColumnNamesConstraint(schema, 'new_column_name', form.columnNames);
-}

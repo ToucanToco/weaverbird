@@ -174,11 +174,7 @@ describe('ActionToolbarButton active', () => {
     const actionsWrappers = assertMenuEmitsExpected(wrapper, [
       'todate',
       'fromdate',
-      '!dateextract', // year
-      '!dateextract', // month
-      '!dateextract', // day
-      '!dateextract', // week
-      ['dateextract', { operation: 'hour' }], // other
+      'dateextract',
       'addmissingdates',
       'duration',
     ]);
@@ -186,11 +182,7 @@ describe('ActionToolbarButton active', () => {
     expect(wrappers).toEqual([
       'Convert text to date',
       'Convert date to text',
-      'Extract year',
-      'Extract month',
-      'Extract day',
-      'Extract week',
-      'Extract other',
+      'Extract date information',
       'Add missing dates',
       'Compute duration',
     ]);
@@ -367,44 +359,4 @@ describe('ActionToolbarButton active', () => {
       expect(wrapper.emitted().closed).toBeTruthy();
     });
   });
-
-  for (const [idx, operation] of Object.entries(['year', 'month', 'day', 'week'])) {
-    describe(`When clicking on the "Extract ${operation} from" operation`, () => {
-      it('should insert a todate step in pipeline', async () => {
-        const store = setupMockStore(
-          buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
-            selectedColumns: ['foo'],
-          }),
-        );
-        const wrapper = mount(ActionToolbarButton, {
-          propsData: { isActive: true, category: 'date' },
-          store,
-          localVue,
-        });
-        const actionsWrappers = wrapper.findAll('.action-menu__option');
-        await actionsWrappers.at(Number(idx) + 2).trigger('click');
-        expect(store.getters[VQBnamespace('pipeline')]).toEqual([
-          { name: 'domain', domain: 'myDomain' },
-          { name: 'dateextract', column: 'foo', operation },
-        ]);
-        expect(store.state.vqb.selectedStepIndex).toEqual(1);
-      });
-
-      it('should emit a close event', async () => {
-        const store = setupMockStore(
-          buildStateWithOnePipeline([{ name: 'domain', domain: 'myDomain' }], {
-            selectedColumns: ['foo'],
-          }),
-        );
-        const wrapper = mount(ActionToolbarButton, {
-          propsData: { isActive: true, category: 'date' },
-          store,
-          localVue,
-        });
-        const actionsWrappers = wrapper.findAll('.action-menu__option');
-        await actionsWrappers.at(Number(idx) + 2).trigger('click');
-        expect(wrapper.emitted().closed).toBeTruthy();
-      });
-    });
-  }
 });

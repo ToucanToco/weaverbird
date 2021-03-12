@@ -71,11 +71,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
   date: [
     { name: 'todate', label: 'Convert text to date' },
     { name: 'fromdate', label: 'Convert date to text' },
-    { name: 'dateextract', label: 'Extract year', defaults: { operation: 'year' } },
-    { name: 'dateextract', label: 'Extract month', defaults: { operation: 'month' } },
-    { name: 'dateextract', label: 'Extract day', defaults: { operation: 'day' } },
-    { name: 'dateextract', label: 'Extract week', defaults: { operation: 'week' } },
-    { name: 'dateextract', label: 'Extract other', defaults: { operation: 'hour' } },
+    { name: 'dateextract', label: 'Extract date information' },
     { name: 'addmissingdates', label: 'Add missing dates' },
     { name: 'duration', label: 'Compute duration' },
   ],
