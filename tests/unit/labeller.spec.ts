@@ -113,12 +113,13 @@ describe('Labeller', () => {
   });
 
   it('generates label for date extraction steps', () => {
-    const step: S.DateExtractPropertyStep = {
+    const step: S.DateExtractStep = {
       name: 'dateextract',
-      operation: 'year',
       column: 'foo',
+      dateInfo: ['year'],
+      newColumns: ['foo_year'],
     };
-    expect(hrl(step)).toEqual('Extract year from "foo"');
+    expect(hrl(step)).toEqual('Extract date information from "foo"');
   });
 
   it('generates label for domain steps', () => {

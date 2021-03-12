@@ -159,8 +159,8 @@ class StepLabeller implements StepMatcher<string> {
     return 'Custom step';
   }
 
-  dateextract(step: Readonly<S.DateExtractPropertyStep>) {
-    return `Extract ${step.operation} from "${step.column}"`;
+  dateextract(step: Readonly<S.DateExtractStep>) {
+    return `Extract date information from "${step.column}"`;
   }
 
   delete(step: Readonly<S.DeleteStep>) {
