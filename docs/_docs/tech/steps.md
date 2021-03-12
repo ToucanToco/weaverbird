@@ -585,7 +585,7 @@ is specified.
 
 ### `comparetext` step
 
-Compares 2 string columns and returns true if the string values are equal, 
+Compares 2 string columns and returns true if the string values are equal,
 and false oteherwise.
 The comparison is case-sensitive (see examples below).
 
@@ -904,28 +904,52 @@ other existing steps.
 
 ### `dateextract` step
 
-Extract a part of a date (e.g. _day_, _week_, _year_) `column`. The following properties
-can be extracted:
+Extract date information (eg. _day_, _week_, _year_ etc.). The following
+information can be extracted:
 
-- `year'`: extract 'year' from date,
-- `month'`: extract 'month' from date,
-- `day'`: extract 'day of month' from date,
-- `hour'`: extract 'hour' from date,
-- `minutes'`: extract 'minutes' from date,
-- `seconds'`: extract 'seconds' from date,
-- `milliseconds'`: extract 'milliseconds' from date,
-- `dayOfYear'`: extract 'day of year' from date,
-- `dayOfWeek'`: extract 'day of week' from date,
-- `week'`: extract 'week number' from date.
+- `year`: extract 'year' from date,
+- `month`: extract 'month' from date,
+- `day`: extract 'day of month' from date,
+- `week'`: extract 'week number' (ranging from 0 to 53) from date,
+- `quarter`: extract 'quarter number' from date (1 for Jan-Feb-Mar)
+- `dayOfWeek`: extract 'day of week' (ranging from 1 for Sunday to 7 for
+  Staurday) from date,
+- `dayOfYear`: extract 'day of year' from date,
+- `isoYear`: extract 'year number' in ISO 8601 format (ranging from 1 to 53)
+  from date.
+- `isoWeek`: extract 'week number' in ISO 8601 format (ranging from 1 to 53)
+  from date.
+- `isoDayOfWeek`: extract 'day of week' in ISO 8601 format (ranging from 1 for
+  Monday to 7 for Sunday) from date,
+- `firstDayOfYear`: calendar dat corresponding to the first day (1st of January) of the year ,
+- `firstDayOfMonth`: calendar dat corresponding to the first day of the month,
+- `firstDayOfWeek`: calendar dat corresponding to the first day of the week,
+- `firstDayOfQuarter`: calendar dat corresponding to the first day of the quarter,
+- `firstDayOfIsoWeek`: calendar dat corresponding to the first day of the week in ISO 8601 format,
+- `previousDay`: calendar date one day before the target date,
+- `firstDayOfPreviousYear`: calendar dat corresponding to the first day (1st of January) of the previous year,
+- `firstDayOfPreviousMonth`: calendar dat corresponding to the first day of the previous month,
+- `firstDayOfPreviousWeek`: calendar dat corresponding to the first day of the previous week,
+- `firstDayOfPreviousQuarter`: calendar dat corresponding to the first day of the previous quarter,
+- `firstDayOfPreviousISOWeek`: calendar dat corresponding to the first day of the previous ISO week,
+- `previousYear`: extract previous 'year number' from date
+- `previousMonth`: extract previous 'month number' from date
+- `previousWeek`: extract previous 'week number' from date
+- `previousQuarter`: extract previous 'quarter number' from date
+- `previousISOWeek`: extract previous 'week number' in ISO 8601 format (ranging from 1 for Monday to 7 for Sunday) from date
+- `hour`: extract 'hour' from date,
+- `minutes`: extract 'minutes' from date,
+- `seconds`: extract 'seconds' from date,
+- `milliseconds`: extract 'milliseconds' from date,
 
 Here's an example of such a step:
 
 ```javascript
 {
-    name: 'dateextract',
-    column: 'date',
-    operation: 'day',
-    new_column_name: 'date_day',
+  name: 'dateextract',
+  column: 'date',
+  dateInfo: ['year', 'month', 'day'],
+  newColumns: ['date_year', 'date_month', 'date_day'],
 }
 ```
 
@@ -936,40 +960,56 @@ Here's an example of such a step:
 - Mongo 3.6
 - Pandas (python)
 
+**Deprecation note:**
+
+The `operation` and `new_column_name` parameters are deprecated and are
+supported for retrocompatibility purposes only.
+
+An old-fashioned step looks like this:
+
+```javascript
+{
+  name: 'dateextract',
+  column: 'date',
+  operation: 'day',
+  new_column_name: 'date_day',
+}
+```
+
 #### Example
 
 **Input dataset:**
 
-| Company   | Date                     |
-| --------- | ------------------------ |
-| Company 1 | 2019-10-06T00:00:00.000Z |
-| Company 1 | 2019-10-07T00:00:00.000Z |
-| Company 1 | 2019-10-08T00:00:00.000Z |
-| Company 2 | 2019-10-06T00:00:00.000Z |
-| Company 2 | 2019-10-07T00:00:00.000Z |
-| Company 2 | 2019-10-08T00:00:00.000Z |
+| Date                     |
+| ------------------------ |
+| 2019-10-30T00:00:00.000Z |
+| 2019-10-15T00:00:00.000Z |
+| 2019-10-01T00:00:00.000Z |
+| 2019-09-30T00:00:00.000Z |
+| 2019-09-15T00:00:00.000Z |
+| 2019-09-01T00:00:00.000Z |
 
 **Step configuration:**
 
 ```javascript
 {
-    name: 'dateextract',
-    column: 'Date',
-    operation: 'day',
-    new_column_name: 'Date_day',
+  name: 'dateextract',
+  column: 'Date',
+  dateInfo: ['year', 'month', 'day'],
+  newColumns: ['Date_year', 'Date_month', 'Date_day'],
 }
 ```
 
 **Output dataset:**
 
-| Company   | Date                     | Date_day |
-| --------- | ------------------------ | -------- |
-| Company 1 | 2019-10-06T00:00:00.000Z | 6        |
-| Company 1 | 2019-10-07T00:00:00.000Z | 7        |
-| Company 1 | 2019-10-08T00:00:00.000Z | 8        |
-| Company 2 | 2019-10-06T00:00:00.000Z | 6        |
-| Company 2 | 2019-10-07T00:00:00.000Z | 7        |
-| Company 2 | 2019-10-08T00:00:00.000Z | 8        |
+| Date                     | Date_year | Date_month | Date_day |
+| ------------------------ | --------- | ---------- | -------- |
+| 2019-10-30T00:00:00.000Z | 2019      | 10         | 30       |
+| 2019-10-15T00:00:00.000Z | 2019      | 10         | 15       |
+| 2019-10-01T00:00:00.000Z | 2019      | 10         | 1        |
+| 2019-09-30T00:00:00.000Z | 2020      | 10         | 30       |
+| 2019-09-15T00:00:00.000Z | 2020      | 10         | 15       |
+| 2019-09-01T00:00:00.000Z | 2020      | 10         | 1        |
 
 ### `delete` step
 
