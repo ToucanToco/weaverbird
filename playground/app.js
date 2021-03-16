@@ -126,7 +126,8 @@ class MongoService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+    const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
     const query = mongoTranslator.translate(subpipeline);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
@@ -193,15 +194,18 @@ class PandasService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+
     // This does not modify the pipeline, but checks if all steps are supported
-    pandasTranslator.translate(pipeline);
+    pandasTranslator.translate(dereferencedPipeline);
+
     const url = new URL(pandasBackendBaseUrl);
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(pipeline),
+      body: JSON.stringify(dereferencedPipeline),
       headers: {
         'Content-Type': 'application/json',
       },
