@@ -5,6 +5,7 @@ from pydantic import Field
 
 from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
+from weaverbird.types import ColumnName
 
 BASIC_DATE_PARTS = Literal[
     'year',
@@ -56,13 +57,13 @@ class DateExtractStep(BaseStep):
     name = Field('dateextract', const=True)
     column: str
     date_info: List[DATE_INFO] = Field([], alias=('dateInfo'))
-    new_columns: List[str] = Field([], alias='newColumns')
+    new_columns: List[ColumnName] = Field([], alias='newColumns')
     operation: Optional[BASIC_DATE_PARTS]
-    new_column_name: Optional[str]
+    new_column_name: Optional[ColumnName]
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
-        # For retrocompatibility
-        if self.operation and self.new_column_name:
+        date_info: List[DATE_INFO]
+        if self.operation and self.new_column_name:  # for retrocompatibility
             date_info = [self.operation]
             new_columns = [self.new_column_name]
         else:
