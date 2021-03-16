@@ -136,7 +136,6 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
         // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
         pipelines.push(pipeline);
       } else {
-        // the pipeline is dereferenced in: `preparePipeline` function in `src/store/state.ts`
         pipelines.push(this.interpolate(pipeline));
       }
     }
@@ -304,7 +303,6 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
       // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
       return { ...step };
     } else {
-      // the pipeline is dereferenced in: `preparePipeline` function in `src/store/state.ts`
       return { ...step, right_pipeline: this.interpolate(step.right_pipeline) };
     }
   }

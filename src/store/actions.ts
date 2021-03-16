@@ -4,7 +4,7 @@ import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
 
-import { preparePipeline, VQBState } from './state';
+import { VQBState } from './state';
 
 /**
  * Action wrapper so that the state loading is set to true at the start of
