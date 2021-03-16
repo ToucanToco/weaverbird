@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import Pagination from '@/components/Pagination.vue';
 import { BackendService } from '@/lib/backend';
 import { Pipeline } from '@/lib/steps';
+import { PipelinesScopeContext } from '@/store/utils/dereference-pipeline';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
@@ -19,7 +20,7 @@ class DummyService implements BackendService {
 
   executePipeline(
     _pipeline: Pipeline,
-    _pipelines: { [k: string]: Pipeline },
+    _pipelines: PipelinesScopeContext,
     limit: number,
     offset: number,
   ) {
