@@ -9,10 +9,10 @@ from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName, PopulatedWithFieldnames, TemplatedVariable
 
 AggregateFn = Literal[
-    'avg', 'sum', 'min', 'max', 'count', 'count distinct', 'first', 'last', 'count_even_null'
+    'avg', 'sum', 'min', 'max', 'count', 'count distinct', 'first', 'last', 'count distinct including empty'
 ]
 
-functions_aliases = {'avg': 'mean', 'count distinct': 'nunique', 'count_even_null': len}
+functions_aliases = {'avg': 'mean', 'count distinct': 'nunique', 'count distinct including empty': len}
 
 
 class Aggregation(BaseModel):
