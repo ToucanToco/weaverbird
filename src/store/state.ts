@@ -3,9 +3,8 @@
  */
 import { BackendError, BackendService, BackendWarning, UnsetBackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
-import { dereferencePipelines } from '@/lib/dereference-pipeline';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
-import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
+import { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 export interface VQBState {
@@ -188,24 +187,4 @@ export function activePipeline(state: VQBState) {
 export function inactivePipeline(state: VQBState) {
   const pipeline = currentPipeline(state);
   return pipeline?.slice(firstNonSelectedIndex(pipeline, state.selectedStepIndex));
-}
-/**
- * `preparePipeline` responsibility is to prepare the pipeline so as to be ready for direct translation.
- * Specifically, this consists in 2 things:
- *   - dereferencePipelines
- *   - interpolate if an `interpolateFunc` has been set
- */
-export function preparePipeline(pipeline: Pipeline, state: VQBState) {
-  if (!pipeline || !(pipeline.length > 0)) {
-    throw new Error('pipeline should not be empty');
-  }
-  const { interpolateFunc, variables, pipelines } = state;
-  if (pipelines && Object.keys(pipelines).length) {
-    pipeline = dereferencePipelines(pipeline, pipelines);
-  }
-  if (interpolateFunc && variables && Object.keys(variables).length) {
-    const interpolator = new PipelineInterpolator(interpolateFunc, variables);
-    pipeline = interpolator.interpolate(pipeline);
-  }
-  return pipeline;
 }
