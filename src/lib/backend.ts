@@ -1,6 +1,6 @@
 import { DataSet } from '@/lib/dataset';
+import { PipelinesScopeContext } from '@/lib/dereference-pipeline';
 import { Pipeline } from '@/lib/steps';
-import { PipelinesScopeContext } from '@/store/utils/dereference-pipeline';
 
 export type BackendError = {
   type: 'error';

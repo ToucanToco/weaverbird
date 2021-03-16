@@ -3,10 +3,10 @@
  */
 import { BackendError, BackendService, BackendWarning, UnsetBackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
+import { dereferencePipelines } from '@/lib/dereference-pipeline';
 import { Pipeline, PipelineStepName } from '@/lib/steps';
 import { InterpolateFunction, PipelineInterpolator, ScopeContext } from '@/lib/templating';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import { dereferencePipelines } from '@/store/utils/dereference-pipeline';
 
 export interface VQBState {
   /**

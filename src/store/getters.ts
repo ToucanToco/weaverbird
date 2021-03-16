@@ -4,8 +4,8 @@
 import _ from 'lodash';
 import { GetterTree } from 'vuex';
 
+import { getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
 import { getTranslator } from '@/lib/translators';
-import { getPipelineNamesReferencing } from '@/store/utils/dereference-pipeline';
 
 import { activePipeline, currentPipeline, inactivePipeline, VQBState } from './state';
 

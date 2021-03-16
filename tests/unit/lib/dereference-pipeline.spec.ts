@@ -1,10 +1,10 @@
-import { Pipeline } from '@/lib/steps';
 import {
   dereferencePipelines,
   getPipelineNamesReferencedBy,
   getPipelineNamesReferencing,
   PipelinesScopeContext,
-} from '@/store/utils/dereference-pipeline';
+} from '@/lib/dereference-pipeline';
+import { Pipeline } from '@/lib/steps';
 
 describe('dereferencePipelines', () => {
   it('should let unmodified pipeline that are not referenced', () => {
