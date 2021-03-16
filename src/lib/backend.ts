@@ -1,5 +1,6 @@
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
+import { PipelinesScopeContext } from '@/store/utils/dereference-pipeline';
 
 export type BackendError = {
   type: 'error';
@@ -33,7 +34,7 @@ export interface BackendService {
    */
   executePipeline(
     pipeline: Pipeline,
-    pipelines: { [k: string]: Pipeline },
+    pipelines: PipelinesScopeContext,
     limit: number,
     offset: number,
   ): BackendResponse<DataSet>;
