@@ -57,7 +57,8 @@ class Actions {
         return;
       }
       const response = await state.backendService.executePipeline(
-        preparePipeline(getters.activePipeline, state),
+        getters.activePipeline,
+        state.pipelines,
         state.pagesize,
         pageOffset(state.pagesize, getters.pageno),
       );
@@ -146,7 +147,8 @@ class Actions {
     ];
 
     const response = await context.state.backendService.executePipeline(
-      preparePipeline(loadUniqueValuesPipeline, context.state),
+      loadUniqueValuesPipeline,
+      context.state.pipelines,
       10000, // FIXME: limit is hard-coded
       0,
     );

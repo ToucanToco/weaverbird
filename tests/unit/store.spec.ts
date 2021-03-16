@@ -884,7 +884,12 @@ describe('action tests', () => {
       ];
       const commitSpy = jest.spyOn(store, 'commit');
       await store.dispatch(VQBnamespace('loadColumnUniqueValues'), { column: 'city' });
-      expect(dummyService.executePipeline).toHaveBeenCalledWith(expectedPipeline, 10000, 0);
+      expect(dummyService.executePipeline).toHaveBeenCalledWith(
+        expectedPipeline,
+        expect.objectContaining({ default_pipeline: pipeline }),
+        10000,
+        0,
+      );
       expect(commitSpy).toHaveBeenCalledTimes(3);
       // call 1:
       expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
