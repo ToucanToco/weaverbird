@@ -1,5 +1,14 @@
 # Changelog
 
+## UNRELEASED
+
+## Changed
+
+- BREAKING: backendService method `executePipeline` signature and scope changes:
+  - this method should now dereference pipelines and interpolate variables, it is not done beforehand
+  - to do this, the library of all pipelines is provided as second argument
+  - the `dereferencePipeline` has move in the lib/ folder and is still exposed to help with this
+
 ## [0.42.2] - 2021-03-09
 
 ### Fixed
