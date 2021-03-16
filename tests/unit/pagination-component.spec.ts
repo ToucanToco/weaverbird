@@ -3,8 +3,8 @@ import Vuex from 'vuex';
 
 import Pagination from '@/components/Pagination.vue';
 import { BackendService } from '@/lib/backend';
+import { PipelinesScopeContext } from '@/lib/dereference-pipeline';
 import { Pipeline } from '@/lib/steps';
-import { PipelinesScopeContext } from '@/store/utils/dereference-pipeline';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
