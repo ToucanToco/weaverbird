@@ -125,7 +125,7 @@ class MongoService {
     return response.json();
   }
 
-  async executePipeline(pipeline, limit, offset = 0) {
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const { domain, pipeline: subpipeline } = filterOutDomain(pipeline);
     const query = mongoTranslator.translate(subpipeline);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
@@ -192,7 +192,7 @@ class PandasService {
     return response.json();
   }
 
-  async executePipeline(pipeline, limit, offset = 0) {
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(pipeline);
     const url = new URL(pandasBackendBaseUrl);

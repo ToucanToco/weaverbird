@@ -22,6 +22,7 @@ export interface BackendService {
   listCollections(): BackendResponse<string[]>;
   /**
    * @param pipeline the pipeline to translate and execute on the backend
+   * @param pipelines other pipelines, useful to resolve combination steps
    * @param limit if specified, a limit to be applied on the results. How is limit
    * is applied is up to the concrete implementor (either in the toolchain, the query
    * or afterwards on the resultset)
@@ -30,7 +31,12 @@ export interface BackendService {
    * @return a promise that holds the result of the pipeline execution,
    * formatted as as `DataSet`
    */
-  executePipeline(pipeline: Pipeline, limit: number, offset: number): BackendResponse<DataSet>;
+  executePipeline(
+    pipeline: Pipeline,
+    pipelines: { [k: string]: Pipeline },
+    limit: number,
+    offset: number,
+  ): BackendResponse<DataSet>;
 }
 
 /**

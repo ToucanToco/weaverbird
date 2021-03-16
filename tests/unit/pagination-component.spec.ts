@@ -17,7 +17,12 @@ class DummyService implements BackendService {
     return Promise.resolve({ data: ['foo', 'bar'] });
   }
 
-  executePipeline(_pipeline: Pipeline, limit: number, offset: number) {
+  executePipeline(
+    _pipeline: Pipeline,
+    _pipelines: { [k: string]: Pipeline },
+    limit: number,
+    offset: number,
+  ) {
     executePipelineMock(limit, offset);
     return Promise.resolve({ data: { headers: [], data: [] } });
   }
