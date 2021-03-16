@@ -284,7 +284,9 @@ def test_count_with_null():
         on=['Group'],
         aggregations=[
             Aggregation(
-                aggfunction='count distinct including empty', columns=['Group'], newcolumns=['__VQB_COUNT']
+                aggfunction='count distinct including empty',
+                columns=['Group'],
+                newcolumns=['__VQB_COUNT'],
             ),
         ],
     ).execute(df)
