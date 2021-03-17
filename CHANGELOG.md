@@ -1,8 +1,8 @@
 # Changelog
 
-## UNRELEASED
+## [0.43.0] - 2021-03-17
 
-## Changed
+### Changed
 
 - BREAKING: backendService method `executePipeline` signature and scope changes:
   - this method should now dereference pipelines and interpolate variables, it is not done beforehand
@@ -690,6 +690,7 @@
 
 - Initial version, showtime!
 
+[0.43.0]: https://github.com/ToucanToco/weaverbird/compare/v0.42.2...v0.43.0
 [0.42.2]: https://github.com/ToucanToco/weaverbird/compare/v0.42.1...v0.42.2
 [0.42.1]: https://github.com/ToucanToco/weaverbird/compare/v0.42.0...v0.42.1
 [0.42.0]: https://github.com/ToucanToco/weaverbird/compare/v0.41.0...v0.42.0
