@@ -71,14 +71,26 @@ describe('base translator class', () => {
 describe('translator registration', () => {
   it('should be possible to register backends', () => {
     registerTranslator('dummy', DummyStringTranslator);
-    expect(backendsSupporting('aggregate')).toEqual(['mongo36', 'mongo40', 'mongo42', 'pandas']);
+  });
+
+  it('should provided backend supporting a specific step', () => {
+    expect(backendsSupporting('aggregate')).toEqual([
+      'mongo36',
+      'mongo40',
+      'mongo42',
+      'pandas',
+      'pandas-no_joins',
+    ]);
     expect(backendsSupporting('domain')).toEqual([
       'dummy',
       'mongo36',
       'mongo40',
       'mongo42',
       'pandas',
+      'pandas-no_joins',
     ]);
+    expect(backendsSupporting('append')).toEqual(['mongo36', 'mongo40', 'mongo42', 'pandas']);
+    expect(backendsSupporting('join')).toEqual(['mongo36', 'mongo40', 'mongo42', 'pandas']);
   });
 
   it('should throw an error if backend is not available', () => {
@@ -94,6 +106,7 @@ describe('translator registration', () => {
       'mongo40',
       'mongo42',
       'pandas',
+      'pandas-no_joins',
     ]);
   });
 });

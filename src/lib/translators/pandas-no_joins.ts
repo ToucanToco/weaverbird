@@ -19,10 +19,6 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
-  append(step: Readonly<S.AppendStep>) {
-    return step;
-  }
-
   argmax(step: Readonly<S.ArgmaxStep>) {
     return step;
   }
@@ -88,10 +84,6 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
   }
 
   ifthenelse(step: Readonly<S.IfThenElseStep>) {
-    return step;
-  }
-
-  join(step: Readonly<S.JoinStep>) {
     return step;
   }
 

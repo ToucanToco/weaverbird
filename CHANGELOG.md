@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- temporary `pandas-no_joins` translator
+
 ## [0.43.0] - 2021-03-17
 
 ### Changed

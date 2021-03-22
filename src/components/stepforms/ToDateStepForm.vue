@@ -122,6 +122,11 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       label: 'Pandas',
       doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
     },
+    {
+      id: 'pandas-no_joins',
+      label: 'Pandas',
+      doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
+    },
   ];
 
   get selectedFormat(): FormatOption {
