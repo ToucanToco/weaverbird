@@ -1,6 +1,6 @@
 export default {
   $schema: 'http://json-schema.org/draft-07/schema#',
-  title: 'Extract date propperty from date step',
+  title: 'Extract date property from date step',
   type: 'object',
   properties: {
     name: {
