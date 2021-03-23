@@ -13,6 +13,7 @@ import { Mongo36Translator } from './mongo';
 import { Mongo40Translator } from './mongo4';
 import { Mongo42Translator } from './mongo42';
 import { PandasTranslator } from './pandas';
+import { PandasNoJoinsTranslator } from './pandas-no_joins';
 
 const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
 
@@ -64,6 +65,7 @@ registerTranslator('mongo36', Mongo36Translator);
 registerTranslator('mongo40', Mongo40Translator);
 registerTranslator('mongo42', Mongo42Translator);
 registerTranslator('pandas', PandasTranslator);
+registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
 
 /**
  * Initialize variable delimiters for all translators
