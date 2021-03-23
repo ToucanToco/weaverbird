@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.44.0] - 2021-03-23
 
 ### Added
 
@@ -702,6 +702,7 @@
 
 - Initial version, showtime!
 
+[0.44.0]: https://github.com/ToucanToco/weaverbird/compare/v0.43.0...v0.44.0
 [0.43.0]: https://github.com/ToucanToco/weaverbird/compare/v0.42.2...v0.43.0
 [0.42.2]: https://github.com/ToucanToco/weaverbird/compare/v0.42.1...v0.42.2
 [0.42.1]: https://github.com/ToucanToco/weaverbird/compare/v0.42.0...v0.42.1
