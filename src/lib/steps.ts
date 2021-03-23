@@ -2,6 +2,41 @@
  * This module defines the supported unit-of-transformation steps.
  */
 
+export type BasicDatePart =
+  | 'year'
+  | 'month'
+  | 'day'
+  | 'week'
+  | 'dayOfWeek'
+  | 'dayOfYear'
+  | 'isoYear'
+  | 'isoWeek'
+  | 'isoDayOfWeek'
+  | 'hour'
+  | 'minutes'
+  | 'seconds'
+  | 'milliseconds';
+
+export type DateInfo =
+  | BasicDatePart
+  | 'quarter'
+  | 'firstDayOfYear'
+  | 'firstDayOfMonth'
+  | 'firstDayOfWeek'
+  | 'firstDayOfQuarter'
+  | 'firstDayOfIsoWeek'
+  | 'previousDay'
+  | 'firstDayOfPreviousYear'
+  | 'firstDayOfPreviousMonth'
+  | 'firstDayOfPreviousWeek'
+  | 'firstDayOfPreviousQuarter'
+  | 'firstDayOfPreviousIsoWeek'
+  | 'previousYear'
+  | 'previousMonth'
+  | 'previousWeek'
+  | 'previousQuarter'
+  | 'previousIsoWeek';
+
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
 export type Reference = Pipeline | string;
@@ -121,21 +156,13 @@ export type CustomStep = {
   query: string;
 };
 
-export type DateExtractPropertyStep = {
+export type DateExtractStep = {
   name: 'dateextract';
-  operation:
-    | 'year'
-    | 'month'
-    | 'day'
-    | 'hour'
-    | 'minutes'
-    | 'seconds'
-    | 'milliseconds'
-    | 'dayOfYear'
-    | 'dayOfWeek'
-    | 'week';
+  dateInfo: DateInfo[];
   column: string;
-  new_column_name?: string;
+  newColumns: string[];
+  operation?: BasicDatePart; // Supported for retrocompatibility only
+  new_column_name?: string; // Supported for retrocompatibility only
 };
 
 export type DeleteStep = {
@@ -420,7 +447,7 @@ export type PipelineStep =
   | ConvertStep
   | CumSumStep
   | CustomStep
-  | DateExtractPropertyStep
+  | DateExtractStep
   | DeleteStep
   | DuplicateColumnStep
   | DomainStep

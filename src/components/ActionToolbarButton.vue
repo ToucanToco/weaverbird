@@ -33,7 +33,7 @@ import Popover from './Popover.vue';
 /**
  * all steps that don't require form creation
  */
-type NoFormStep = S.DateExtractPropertyStep | S.ToLowerStep | S.ToDateStep | S.ToUpperStep;
+type NoFormStep = S.DateExtractStep | S.ToLowerStep | S.ToDateStep | S.ToUpperStep;
 
 @Component({
   name: 'action-toolbar-button',
@@ -73,15 +73,7 @@ export default class ActionToolbarButton extends Vue {
    * @description Emit an event with a PipelineStepName in order to open its form
    */
   actionClicked(stepName: S.PipelineStepName, defaults = {}) {
-    const noFormOperation = ['year', 'month', 'day', 'week'].includes(
-      (defaults as S.DateExtractPropertyStep).operation,
-    );
-    if (
-      ((stepName === 'dateextract' && noFormOperation) ||
-        stepName === 'lowercase' ||
-        stepName === 'uppercase') &&
-      this.selectedColumns.length > 0
-    ) {
+    if ((stepName === 'lowercase' || stepName === 'uppercase') && this.selectedColumns.length > 0) {
       this.createStep(stepName, defaults);
     } else {
       this.$emit('actionClicked', stepName, defaults);

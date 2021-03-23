@@ -5,6 +5,11 @@
 ### Added
 
 - temporary `pandas-no_joins` translator
+- dateextract step: add new date information to be extracted
+
+### Changed
+
+- dateextract step: several date information can be extracted at once
 
 ## [0.43.0] - 2021-03-17
 
@@ -36,6 +41,7 @@
 ### Changed
 
 - Rename domain step label, from "Use domain" to "Source:"
+- Domain step label from "Use domain" to "Source:"
 
 ## [0.41.0] - 2021-02-23
 

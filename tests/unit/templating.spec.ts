@@ -306,15 +306,17 @@ describe('Pipeline interpolator', () => {
     const pipeline: Pipeline = [
       {
         name: 'dateextract',
-        operation: 'year',
         column: '<%= foo %>',
+        dateInfo: ['year'],
+        newColumns: ['whatever'],
       },
     ];
     expect(translate(pipeline)).toEqual([
       {
         name: 'dateextract',
-        operation: 'year',
         column: 'bar',
+        dateInfo: ['year'],
+        newColumns: ['whatever'],
       },
     ]);
   });

@@ -136,7 +136,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported
-  dateextract(step: Readonly<S.DateExtractPropertyStep>) {}
+  dateextract(step: Readonly<S.DateExtractStep>) {}
 
   @unsupported
   delete(step: Readonly<S.DeleteStep>) {}

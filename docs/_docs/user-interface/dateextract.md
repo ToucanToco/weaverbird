@@ -1,23 +1,49 @@
 ---
-title: Extract date property
+title: Extract date information
 permalink: /docs/dateextract/
 ---
 
-### Extract date property
+### Extract date information
 
-Use this step if you need to extract a part of a date (e.g. the `year` or the `month`.
-The following properties can be extracted:
+Use this step if you need to extract date information from a date column (e.g.
+the `year` or the `month`).
+
+The following information can be extracted:
 
 - `year'`: extract 'year' from date,
-- `month'`: extract 'month' from date,
-- `day'`: extract 'day of month' from date,
-- `hour'`: extract 'hour' from date,
-- `minutes'`: extract 'minutes' from date,
-- `seconds'`: extract 'seconds' from date,
-- `milliseconds'`: extract 'milliseconds' from date,
-- `dayOfYear'`: extract 'day of year' from date,
-- `dayOfWeek'`: extract 'day of week' from date,
-- `week'`: extract 'week number' from date.
+- `month`: extract 'month' from date,
+- `day`: extract 'day of month' from date,
+- `week`: extract 'week number' (ranging from 0 to 53) from date,
+- `quarter`: extract 'quarter number' from date (1 for Jan-Feb-Mar)
+- `day of week`: extract 'day of week' (ranging from 1 for Sunday to 7 for
+  Staurday) from date,
+- `day of year`: extract 'day of year' from date,
+- `ISO year`: extract 'year number' in ISO 8601 format (ranging from 1 to 53)
+  from date.
+- `ISO week`: extract 'week number' in ISO 8601 format (ranging from 1 to 53)
+  from date.
+- `ISO day of week`: extract 'day of week' in ISO 8601 format (ranging from 1 for
+  Monday to 7 for Sunday) from date,
+- `first day of year`: calendar date corresponding to the first day (1st of January) of the year ,
+- `first day of month`: calendar date corresponding to the first day of the month,
+- `first day of week`: calendar date corresponding to the first day of the week,
+- `first day of quarter`: calendar date corresponding to the first day of the quarter,
+- `first day of ISO week`: calendar date corresponding to the first day of the week in ISO 8601 format,
+- `previous day`: calendar date one day before the target date,
+- `first day of previous year`: calendar date corresponding to the first day (1st of January) of the previous year,
+- `first day of previous month`: calendar date corresponding to the first day of the previous month,
+- `first day of previous week`: calendar date corresponding to the first day of the previous week,
+- `first day of previous ISO week`: calendar date corresponding to the first day of the previous ISO week,
+- `first day of previous quarter`: calendar date corresponding to the first day of the previous quarter,
+- `previous year number`: extract previous 'year number' from date,
+- `previous month number`: extract previous 'month number' from date,
+- `previous week number`: extract previous 'week number' from date,
+- `previous quarter number`: extract previous 'quarter number' from date,
+- `previous ISO week number`: extract previous 'week number' in ISO 8601 format (ranging from 1 for Monday to 7 for Sunday)from date,
+- `hour`: extract 'hour' from date,
+- `minutes`: extract 'minutes' from date,
+- `seconds`: extract 'seconds' from date,
+- `milliseconds`: extract 'milliseconds' from date,
 
 **This step is supported by the following backends:**
 
@@ -31,16 +57,15 @@ The following properties can be extracted:
 - Widget `Date`
 - Search bar
 
-<img src="../../img/docs/user-interface/dateextract_menu_example.jpg" width="750" />
-
 #### Options reference
 
-- `Column to work on...`: specify which column the extraction will operate on,
+<img src="../../img/docs/user-interface/dateextract_step_form.jpg" width="350" />
 
-- `Property to extract...`: the type of property the pipeline should extract (e.g. `year`, `month`)
+- `Date column:`: specify the date column to extract information from
+  (the column must be of date data type),
 
-- `New column name...`: the column where the result will be stored. If unspecified, the column
-  will be named after both the original date column and the type of operation (e.g. `mycolumn_hour`)
+- `Date information to extract...`: the type of information to extract (e.g.
+  `year`, `month`). You can select several information to extract at once.
 
 #### Example
 

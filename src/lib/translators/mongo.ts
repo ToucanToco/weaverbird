@@ -22,8 +22,8 @@ type ComboOperator = 'and' | 'or';
 
 export type DateGranularity = 'day' | 'month' | 'year';
 
-type DateOperationMap = {
-  [OP in S.DateExtractPropertyStep['operation']]: string;
+type BasicDateOperationMap = {
+  [OP in S.BasicDatePart]: string;
 };
 
 type DurationMultiplierMap = {
@@ -34,17 +34,20 @@ type FilterComboAndMongo = {
   $and: MongoStep[];
 };
 
-const DATE_EXTRACT_MAP: DateOperationMap = {
+const DATE_EXTRACT_MAP: BasicDateOperationMap = {
   year: '$year',
   month: '$month',
   day: '$dayOfMonth',
+  week: '$week',
+  dayOfYear: '$dayOfYear',
+  dayOfWeek: '$dayOfWeek',
+  isoYear: '$isoWeekYear',
+  isoWeek: '$isoWeek',
+  isoDayOfWeek: '$isoDayOfWeek',
   hour: '$hour',
   minutes: '$minute',
   seconds: '$second',
   milliseconds: '$millisecond',
-  dayOfYear: '$dayOfYear',
-  dayOfWeek: '$dayOfWeek',
-  week: '$week',
 };
 
 // A mapping of multiplier to apply to convert milliseconds in days, hours, minutes or seconds
@@ -720,6 +723,204 @@ function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
     concatArr.push(step.separator, $$(colname));
   }
   return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
+}
+
+/** transform a 'dateextracgt' step into corresponding mongo steps */
+function transformDateExtract(step: Readonly<S.DateExtractStep>): MongoStep {
+  let dateInfo: S.DateInfo[] = [];
+  let newColumns: string[] = [];
+  const addFields: MongoStep = {};
+
+  // For retrocompatibility
+  if (step.operation) {
+    dateInfo = step.operation ? [step.operation] : step.dateInfo;
+    newColumns = [`${step.new_column_name ?? step.column + '_' + step.operation}`];
+  } else {
+    dateInfo = [...step.dateInfo];
+    newColumns = [...step.newColumns];
+  }
+
+  for (let i = 0; i < dateInfo.length; i++) {
+    const d = dateInfo[i];
+    if (d === 'quarter') {
+      addFields[newColumns[i]] = {
+        $switch: {
+          branches: [
+            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 1 },
+            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 2 },
+            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 3 },
+          ],
+          default: 4,
+        },
+      };
+    } else if (d === 'firstDayOfYear') {
+      addFields[newColumns[i]] = {
+        $dateFromParts: { year: { $year: $$(step.column) }, month: 1, day: 1 },
+      };
+    } else if (d === 'firstDayOfMonth') {
+      addFields[newColumns[i]] = {
+        $dateFromParts: {
+          year: { $year: $$(step.column) },
+          month: { $month: $$(step.column) },
+          day: 1,
+        },
+      };
+    } else if (d === 'firstDayOfWeek') {
+      addFields[newColumns[i]] = {
+        // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
+        $subtract: [
+          $$(step.column),
+          {
+            $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      };
+    } else if (d === 'firstDayOfQuarter') {
+      addFields[newColumns[i]] = {
+        $dateFromParts: {
+          year: { $year: $$(step.column) },
+          month: {
+            $switch: {
+              branches: [
+                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 1 },
+                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 4 },
+                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 7 },
+              ],
+              default: 10,
+            },
+          },
+          day: 1,
+        },
+      };
+    } else if (d === 'firstDayOfIsoWeek') {
+      addFields[newColumns[i]] = {
+        // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
+        $subtract: [
+          $$(step.column),
+          {
+            $multiply: [
+              { $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] },
+              24 * 60 * 60 * 1000,
+            ],
+          },
+        ],
+      };
+    } else if (d === 'previousDay') {
+      // We subtract to the target date 1 day in milliseconds
+      addFields[newColumns[i]] = { $subtract: [$$(step.column), 24 * 60 * 60 * 1000] };
+    } else if (d === 'firstDayOfPreviousYear') {
+      addFields[newColumns[i]] = {
+        $dateFromParts: {
+          year: { $subtract: [{ $year: $$(step.column) }, 1] },
+          month: 1,
+          day: 1,
+        },
+      };
+    } else if (d === 'firstDayOfPreviousMonth') {
+      addFields[newColumns[i]] = {
+        $dateFromParts: {
+          year: {
+            $cond: [
+              { $eq: [{ $month: $$(step.column) }, 1] },
+              { $subtract: [{ $year: $$(step.column) }, 1] },
+              { $year: $$(step.column) },
+            ],
+          },
+          month: {
+            $cond: [
+              { $eq: [{ $month: $$(step.column) }, 1] },
+              12,
+              { $subtract: [{ $month: $$(step.column) }, 1] },
+            ],
+          },
+          day: 1,
+        },
+      };
+    } else if (d === 'firstDayOfPreviousWeek') {
+      addFields[newColumns[i]] = {
+        // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
+        $subtract: [
+          { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+          {
+            $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      };
+    } else if (d === 'firstDayOfPreviousQuarter') {
+      addFields[newColumns[i]] = {
+        $dateFromParts: {
+          year: {
+            $cond: [
+              { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] },
+              { $subtract: [{ $year: $$(step.column) }, 1] },
+              { $year: $$(step.column) },
+            ],
+          },
+          month: {
+            $switch: {
+              branches: [
+                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 10 },
+                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 1 },
+                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 4 },
+              ],
+              default: 7,
+            },
+          },
+          day: 1,
+        },
+      };
+    } else if (d === 'firstDayOfPreviousIsoWeek') {
+      addFields[newColumns[i]] = {
+        // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
+        $subtract: [
+          { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+          {
+            $multiply: [
+              { $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] },
+              24 * 60 * 60 * 1000,
+            ],
+          },
+        ],
+      };
+    } else if (d === 'previousYear') {
+      addFields[newColumns[i]] = { $subtract: [{ $year: $$(step.column) }, 1] };
+    } else if (d === 'previousMonth') {
+      addFields[newColumns[i]] = {
+        $cond: [
+          { $eq: [{ $month: $$(step.column) }, 1] },
+          12,
+          { $subtract: [{ $month: $$(step.column) }, 1] },
+        ],
+      };
+    } else if (d === 'previousWeek') {
+      // We subtract to the target date 7 days in milliseconds
+      addFields[newColumns[i]] = {
+        $week: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+      };
+    } else if (d === 'previousQuarter') {
+      addFields[newColumns[i]] = {
+        $switch: {
+          branches: [
+            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 4 },
+            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 1 },
+            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 2 },
+          ],
+          default: 3,
+        },
+      };
+    } else if (d === 'previousIsoWeek') {
+      // We subtract to the target date 7 days in milliseconds
+      addFields[newColumns[i]] = {
+        $isoWeek: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+      };
+    } else {
+      //
+      addFields[newColumns[i]] = {
+        [`${DATE_EXTRACT_MAP[d as S.BasicDatePart]}`]: $$(step.column),
+      };
+    }
+  }
+  return { $addFields: addFields };
 }
 
 /** transform an 'evolution' step into corresponding mongo steps */
@@ -1970,13 +2171,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   concatenate: transformConcatenate,
   cumsum: transformCumSum,
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
-  dateextract: (step: Readonly<S.DateExtractPropertyStep>) => ({
-    $addFields: {
-      [`${step.new_column_name ?? step.column + '_' + step.operation}`]: {
-        [`${DATE_EXTRACT_MAP[step.operation]}`]: `$${step.column}`,
-      },
-    },
-  }),
+  dateextract: transformDateExtract,
   delete: (step: Readonly<S.DeleteStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 0])),
   }),
