@@ -98,7 +98,7 @@ class DateExtractStep(BaseStep):
                 # we subtract a number of days corresponding to(dayOfWeek - 1)
                 result = df[self.column] - to_timedelta(dayofweek - 1, unit='d')
                 # the result should be returned with 0-ed time information
-                result = result.dt.date
+                result = to_datetime(result.dt.date)
             elif dt_info == 'firstDayOfQuarter':
                 result = to_datetime(
                     DataFrame(
@@ -114,11 +114,11 @@ class DateExtractStep(BaseStep):
                 # we subtract a number of days corresponding to(dayOfWeek - 1)
                 result = df[self.column] - to_timedelta(dayofweek - 1, unit='d')
                 # the result should be returned with 0-ed time information
-                result = result.dt.date
+                result = to_datetime(result.dt.date)
             elif dt_info == 'previousDay':
                 result = df[self.column] - to_timedelta(1, unit='d')
                 # the result should be returned with 0-ed time information
-                result = result.dt.date
+                result = to_datetime(result.dt.date)
             elif dt_info == 'firstDayOfPreviousYear':
                 result = to_datetime(DataFrame({'year': serie_dt.year - 1, 'month': 1, 'day': 1}))
             elif dt_info == 'firstDayOfPreviousMonth':
@@ -141,7 +141,7 @@ class DateExtractStep(BaseStep):
                 # we subtract a number of days corresponding to(dayOfWeek - 1)
                 result = prev_week_date - to_timedelta(dayofweek - 1, unit='d')
                 # the result should be returned with 0-ed time information
-                result = result.dt.date
+                result = to_datetime(result.dt.date)
             elif dt_info == 'firstDayOfPreviousQuarter':
                 first_month_of_quarter = 3 * ((serie_dt.month - 1) // 3) + 1
                 first_month_of_prev_q = first_month_of_quarter - 3
@@ -161,7 +161,7 @@ class DateExtractStep(BaseStep):
                 # we subtract a number of days corresponding to(dayOfWeek - 1)
                 result = prev_week_date - to_timedelta(dayofweek - 1, unit='d')
                 # the result should be returned with 0-ed time information
-                result = result.dt.date
+                result = to_datetime(result.dt.date)
             elif dt_info == 'previousYear':
                 result = serie_dt.year - 1
             elif dt_info == 'previousMonth':
