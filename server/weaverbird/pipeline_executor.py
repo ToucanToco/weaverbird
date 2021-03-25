@@ -10,6 +10,7 @@ from weaverbird.utils import StopWatch, convert_size
 
 logger = logging.getLogger(__name__)
 
+
 class PipelineExecutor:
     """
     The main class of the module.
@@ -74,7 +75,4 @@ class PipelineExecutionFailure(Exception):
         self.index = index
         self.original_exception = original_exception
         self.message = f'Step #{index + 1} ({step.name}) failed: {original_exception}'
-        self.details = {
-            'index': index,
-            'message': self.message
-        }
+        self.details = {'index': index, 'message': self.message}

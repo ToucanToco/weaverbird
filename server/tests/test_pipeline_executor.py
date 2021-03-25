@@ -146,3 +146,5 @@ def test_errors(pipeline_executor):
     assert 'delete' in exception_message
     assert 'columnThatDoesNotExist' in exception_message
     assert 'whatever' in exception_message
+    assert excinfo.value.details['index'] == 1
+    assert excinfo.value.details['message'] == exception_message
