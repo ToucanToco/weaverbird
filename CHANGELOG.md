@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.45.0] - 2021-03-31
+
+### Changed
+
+- pipeline_executor: Better structured exceptions
+
+
 ## [0.44.0] - 2021-03-23
 
 ### Added
@@ -702,6 +709,7 @@
 
 - Initial version, showtime!
 
+[0.45.0]: https://github.com/ToucanToco/weaverbird/compare/v0.44.0...v0.45.0
 [0.44.0]: https://github.com/ToucanToco/weaverbird/compare/v0.43.0...v0.44.0
 [0.43.0]: https://github.com/ToucanToco/weaverbird/compare/v0.42.2...v0.43.0
 [0.42.2]: https://github.com/ToucanToco/weaverbird/compare/v0.42.1...v0.42.2
