@@ -63,9 +63,9 @@ class DateExtractStep(BaseStep):
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         date_info: List[DATE_INFO]
-        if self.operation and self.new_column_name:  # for retrocompatibility
+        if self.operation:  # for retrocompatibility
             date_info = [self.operation]
-            new_columns = [self.new_column_name]
+            new_columns = [self.new_column_name or f'{self.column}_{self.operation}']
         else:
             date_info = self.date_info
             new_columns = self.new_columns

@@ -1,7 +1,7 @@
 import pytest
 from pandas import DataFrame, to_datetime
 
-from tests.utils import assert_dataframes_equals
+from tests.utils import assert_column_equals, assert_dataframes_equals
 from weaverbird.steps import DateExtractStep
 
 
@@ -30,6 +30,12 @@ def test_date_extract_legacy_config(sample_df: DataFrame):
     ).execute(sample_df)
     expected_result = DataFrame({'date': [29, 13, 29, 9, 2, 1, None]})
     assert_dataframes_equals(df_result, expected_result)
+
+    # Without column name
+    df_result = DateExtractStep(name='dateextract', column='date', operation='day').execute(
+        sample_df
+    )
+    assert_column_equals(df_result['date_day'], [29, 13, 29, 9, 2, 1, None])
 
 
 def test_date_extract_(sample_df: DataFrame):
