@@ -252,13 +252,13 @@ export default class Step extends Vue {
 
 .query-pipeline-step__container--last-active {
   .query-pipeline-step {
-    background: $active-color-faded-2;
-    border-color: $active-color-faded;
+    background: $active-color-faded-3;
+    border-color: $active-color-faded-2;
     color: $active-color;
   }
   .query-pipeline-step__action {
     color: $active-color-faded;
-    border-right-color: $active-color-faded;
+    border-right-color: $active-color-faded-2;
     &:hover {
       color: $active-color;
     }
