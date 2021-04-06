@@ -237,14 +237,12 @@ export default class Step extends Vue {
   color: $grey-medium;
   border-right: 1px solid $grey;
 
+  &:hover {
+    color: $grey-dark;
+  }
+
   &:last-child {
     border-right: none;
-  }
-}
-
-.query-pipeline-step__action:hover {
-  i {
-    color: $grey-dark;
   }
 }
 
@@ -259,8 +257,11 @@ export default class Step extends Vue {
     color: $active-color;
   }
   .query-pipeline-step__action {
-    color: $active-color;
+    color: $active-color-faded;
     border-right-color: $active-color-faded;
+    &:hover {
+      color: $active-color;
+    }
   }
   .query-pipeline-queue__dot {
     background-color: $active-color-faded-2;
