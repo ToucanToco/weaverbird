@@ -214,7 +214,7 @@ export default class Step extends Vue {
 
 .query-pipeline-step__name {
   cursor: pointer;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 500;
   white-space: nowrap;
   text-overflow: ellipsis;
