@@ -155,38 +155,6 @@ export default class Step extends Vue {
   flex-shrink: 0;
 }
 
-.query-pipeline-step__container--last-active,
-.query-pipeline-step__container--active {
-  .query-pipeline-queue__stroke {
-    background-color: $active-color-faded-2;
-  }
-
-  .query-pipeline-queue__dot {
-    background-color: $active-color-faded-2;
-    animation: scaler 0.3s;
-  }
-}
-
-.query-pipeline-step__container--last-active {
-  .query-pipeline-queue__dot-ink {
-    background-color: $active-color;
-  }
-}
-
-.query-pipeline-step__container--active {
-  .query-pipeline-queue__dot-ink {
-    background-color: $active-color-faded;
-  }
-}
-
-.query-pipeline-step__container--disabled {
-  .query-pipeline-queue__dot,
-  .query-pipeline-queue__dot-ink,
-  .query-pipeline-step {
-    opacity: 0.5;
-  }
-}
-
 .query-pipeline-queue {
   position: relative;
   margin-right: 20px;
@@ -198,7 +166,7 @@ export default class Step extends Vue {
 }
 
 .query-pipeline-queue__dot {
-  background-color: rgb(245, 245, 245);
+  background-color: $active-color-faded-2;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -211,7 +179,7 @@ export default class Step extends Vue {
 }
 
 .query-pipeline-queue__dot-ink {
-  background-color: rgb(154, 154, 154);
+  background-color: $active-color-faded;
   width: 8px;
   height: 8px;
   border-radius: 50%;
@@ -221,7 +189,7 @@ export default class Step extends Vue {
   width: 2px;
   flex-grow: 1;
   justify-self: end;
-  background-color: rgb(245, 245, 245);
+  background-color: $active-color-faded-2;
 }
 
 .query-pipeline-queue__stroke--hidden {
@@ -238,8 +206,8 @@ export default class Step extends Vue {
   padding-left: 12px;
   justify-content: space-between;
   align-items: center;
-  background-color: white;
-  border: 1px solid rgb(245, 245, 245);
+  background: white;
+  border: 1px solid $grey;
 }
 
 .query-pipeline-step__name {
@@ -264,17 +232,50 @@ export default class Step extends Vue {
   cursor: pointer;
   height: 100%;
   width: 40px;
-  background-color: rgb(239, 239, 239);
-  color: rgb(154, 154, 154);
+  color: $grey-medium;
 }
 
 .query-pipeline-step__action:hover {
   i {
-    color: rgb(71, 71, 71);
+    color: $grey-dark;
   }
 }
 
 .query-pipeline-step__action i {
   transition: color 0.3s ease;
+}
+
+.query-pipeline-step__container--last-active {
+  .query-pipeline-step {
+    background: $active-color-faded-2;
+    border-color: $active-color-faded;
+    color: $active-color;
+  }
+  .query-pipeline-step__action {
+    color: $active-color;
+  }
+  .query-pipeline-queue__dot {
+    background-color: $active-color-faded-2;
+  }
+  .query-pipeline-queue__dot-ink {
+    background-color: $active-color;
+  }
+}
+
+.query-pipeline-step__container--disabled {
+  .query-pipeline-step {
+    background: #f5f5f5;
+  }
+  .query-pipeline-queue__dot {
+    background-color: $grey;
+  }
+  .query-pipeline-queue__dot-ink {
+    background: $grey-dark;
+  }
+  .query-pipeline-queue__dot,
+  .query-pipeline-queue__dot-ink,
+  .query-pipeline-step {
+    opacity: 0.5;
+  }
 }
 </style>
