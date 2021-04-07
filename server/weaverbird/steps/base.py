@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Dict
 
 from pandas import DataFrame
 from pydantic.main import BaseModel
-from pydantic.typing import AbstractSetIntStr, DictStrAny, MappingIntStrAny
 
 from weaverbird.types import DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
 
@@ -23,14 +22,14 @@ class BaseStep(BaseModel, ABC):
     def dict(
         self,
         *,
-        include: Union['AbstractSetIntStr', 'MappingIntStrAny'] = None,
-        exclude: Union['AbstractSetIntStr', 'MappingIntStrAny'] = None,
+        include=None,
+        exclude=None,
         by_alias: bool = False,
         skip_defaults: bool = None,
         exclude_unset: bool = False,
         exclude_defaults: bool = False,
         exclude_none: bool = True,
-    ) -> 'DictStrAny':
+    ) -> Dict:
         return super().dict(
             include=include,
             exclude=exclude,
