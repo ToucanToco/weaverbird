@@ -336,6 +336,25 @@ describe('getter tests', () => {
     });
   });
 
+  describe('step errors', () => {
+    it('should return the error message if step index is found in errors', function() {
+      const state = buildState({
+        backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
+      });
+      expect(getters.stepConfig(state, {}, {}, {})(3)).toBeUndefined();
+    });
+    it('should return undefined if step index has no errors', function() {
+      const state = buildState({
+        backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
+      });
+      expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
+    });
+    it('should return undefined if pipeline has no errors', function() {
+      const state = buildState({});
+      expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
+    });
+  });
+
   describe('message error related test', () => {
     it('should return false if backendError is undefined', () => {
       const state = buildState({ backendMessages: [] });
