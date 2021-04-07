@@ -217,7 +217,6 @@ export default class Step extends Vue {
   border-radius: 5px;
   border: 1px solid $grey;
   background-color: white;
-  overflow: hidden;
 }
 
 .query-pipeline-step__body {
