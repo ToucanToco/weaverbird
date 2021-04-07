@@ -13,8 +13,23 @@ const localVue = createLocalVue();
 localVue.use(Vuex);
 
 describe('Step.vue', () => {
+  const createStepWrapper = ({ propsData = {} }) => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      { name: 'rename', toRename: [['region', 'kingdom']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+    ];
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+    return shallowMount(Step, {
+      propsData,
+      store,
+      localVue,
+    });
+  };
+
   it('emit selectedStep when clicking on a step "time travel" dot', async () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
@@ -31,7 +46,7 @@ describe('Step.vue', () => {
   });
 
   it('emit selectedStep when clicking on the step itself', async () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
@@ -48,7 +63,7 @@ describe('Step.vue', () => {
   });
 
   it('does not render a delete confirmation modal by default', () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
@@ -64,7 +79,7 @@ describe('Step.vue', () => {
   });
 
   it('renders a delete confirmation modal when clicking on the trash icon', async () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
@@ -82,7 +97,7 @@ describe('Step.vue', () => {
   });
 
   it('should render a delete confirmation modal when clicking on the button with the trash icon', async () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
@@ -103,7 +118,7 @@ describe('Step.vue', () => {
   });
 
   it('should not render a trash icon on domain step', () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
@@ -119,7 +134,7 @@ describe('Step.vue', () => {
   });
 
   it('should render a stepLabel with the variable names', () => {
-    const wrapper = shallowMount(Step, {
+    const wrapper = createStepWrapper({
       propsData: {
         key: 0,
         isActive: true,
