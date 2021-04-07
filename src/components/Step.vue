@@ -78,8 +78,14 @@ export default class Step extends Vue {
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
+  @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
+
   get stepName(): string {
     return humanReadableLabel(this.step);
+  }
+
+  get errorMessage(): string | undefined {
+    return this.stepErrors(this.indexInPipeline);
   }
 
   get stepTitle(): string {
@@ -98,6 +104,7 @@ export default class Step extends Vue {
       'query-pipeline-step__container--active': this.isActive,
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
+      'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
     };
   }
 
@@ -268,6 +275,26 @@ export default class Step extends Vue {
   }
   .query-pipeline-queue__dot-ink {
     background-color: $active-color;
+  }
+}
+.query-pipeline-step__container--errors {
+  .query-pipeline-step {
+    background: $error-light;
+    border-color: $error;
+    color: $grey-dark;
+  }
+  .query-pipeline-step__action {
+    color: $error;
+    border-right-color: $error;
+    &:hover {
+      color: $grey-dark;
+    }
+  }
+  .query-pipeline-queue__dot {
+    background-color: $error-light;
+  }
+  .query-pipeline-queue__dot-ink {
+    background-color: $error;
   }
 }
 

@@ -239,4 +239,46 @@ describe('Step.vue', () => {
       [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],
     ]);
   });
+
+  describe('with errors', () => {
+    it('should highlight the error step', async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      ];
+      const store = setupMockStore(
+        buildStateWithOnePipeline(pipeline, {
+          currentStepFormName: 'replace',
+          backendMessages: [
+            { index: 1, message: 'I am an error for the replace step', type: 'error' },
+          ],
+        }),
+      );
+      const wrapper = mount(PipelineComponent, { store, localVue });
+      const stepsArray = wrapper.findAll(Step);
+      const replaceStep = stepsArray.at(1);
+      expect(replaceStep.classes()).toContain('query-pipeline-step__container--errors');
+    });
+
+    it('should override with disabled style when disabled', async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      ];
+      const store = setupMockStore(
+        buildStateWithOnePipeline(pipeline, {
+          currentStepFormName: 'domain',
+          backendMessages: [
+            { index: 1, message: 'I am an error for the replace step', type: 'error' },
+          ],
+        }),
+      );
+      const wrapper = mount(PipelineComponent, { store, localVue });
+      const stepsArray = wrapper.findAll(Step);
+      stepsArray.at(0).trigger('click');
+      await localVue.nextTick();
+      const replaceStep = stepsArray.at(1);
+      expect(replaceStep.classes()).not.toContain('query-pipeline-step__container--errors');
+    });
+  });
 });
