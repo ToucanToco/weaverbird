@@ -164,7 +164,7 @@ export default class Step extends Vue {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 70px;
+  height: 60px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -306,7 +306,7 @@ export default class Step extends Vue {
   }
 }
 .query-pipeline-step__container--errors {
-  height: 100px;
+  height: 90px;
   .query-pipeline-step {
     background: $error-light;
     border-color: $error;

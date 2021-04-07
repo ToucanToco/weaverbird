@@ -64,6 +64,7 @@ export default class PipelineComponent extends Vue {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 20px;
 }
 
 .query-pipeline__tips-container {
