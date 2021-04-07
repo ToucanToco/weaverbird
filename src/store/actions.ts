@@ -71,8 +71,13 @@ class Actions {
       }
       return response;
     } catch (error) {
+      // format error to fit BackendError interface
+      const formattedError =
+        typeof error === 'string'
+          ? { type: 'error', message: error.toString() }
+          : { type: 'error', ...error };
       /* istanbul ignore next */
-      const response = { error: [{ type: 'error', message: error.toString() }] };
+      const response = { error: [formattedError] };
       // Avoid spamming tests results with errors, but could be useful in production
       /* istanbul ignore next */
       if (process.env.NODE_ENV !== 'test') {

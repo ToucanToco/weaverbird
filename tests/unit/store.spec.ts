@@ -817,6 +817,44 @@ describe('action tests', () => {
       expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
       expect(commitSpy.mock.calls[4][1]).toEqual({ type: 'dataset', isLoading: false });
     });
+
+    it('updateDataset with specific step error from service', async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline(pipeline),
+        backendService: {
+          listCollections: jest.fn(),
+          executePipeline: jest.fn().mockResolvedValue({
+            error: [{ type: 'error' as 'error', index: 1, message: 'Specific error for step' }],
+          }),
+        },
+      });
+      const commitSpy = jest.spyOn(store, 'commit');
+
+      await store.dispatch(VQBnamespace('updateDataset'));
+      expect(commitSpy).toHaveBeenCalledTimes(5);
+      // call 1 :
+      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[0][1]).toEqual({ type: 'dataset', isLoading: true });
+      // call 2 :
+      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
+      // call 3 :
+      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('logBackendMessages'));
+      expect(commitSpy.mock.calls[2][1]).toEqual({
+        backendMessages: [{ type: 'error', index: 1, message: 'Specific error for step' }],
+      });
+      // call 4 :
+      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[3][1]).toEqual({ isRequestOnGoing: false });
+      // call 5 :
+      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[4][1]).toEqual({ type: 'dataset', isLoading: false });
+    });
   });
 
   describe('loadColumnUniqueValues', () => {
