@@ -1,5 +1,6 @@
 import { ActionContext, ActionTree } from 'vuex';
 
+import { BackendError } from '@/lib/backend';
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers.ts';
 import { pageOffset } from '@/lib/dataset/pagination';
 import { Pipeline } from '@/lib/steps';
@@ -24,6 +25,13 @@ function loading(type: 'dataset' | 'uniqueValues') {
 
     return descriptor;
   };
+}
+
+// format error to fit BackendError interface props
+function formatError(error: any): BackendError {
+  return typeof error === 'string'
+    ? { type: 'error', message: error.toString() }
+    : { type: 'error', ...error };
 }
 
 /**
@@ -71,13 +79,8 @@ class Actions {
       }
       return response;
     } catch (error) {
-      // format error to fit BackendError interface
-      const formattedError =
-        typeof error === 'string'
-          ? { type: 'error', message: error.toString() }
-          : { type: 'error', ...error };
       /* istanbul ignore next */
-      const response = { error: [formattedError] };
+      const response = { error: [formatError(error)] };
       // Avoid spamming tests results with errors, but could be useful in production
       /* istanbul ignore next */
       if (process.env.NODE_ENV !== 'test') {
