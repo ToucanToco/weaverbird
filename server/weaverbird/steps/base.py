@@ -3,6 +3,7 @@ from typing import Union
 
 from pandas import DataFrame
 from pydantic.main import BaseModel
+from pydantic.typing import AbstractSetIntStr, DictStrAny, MappingIntStrAny
 
 from weaverbird.types import DomainRetriever, PipelineExecutor, PopulatedWithFieldnames
 
@@ -30,10 +31,12 @@ class BaseStep(BaseModel, ABC):
         exclude_defaults: bool = False,
         exclude_none: bool = True,
     ) -> 'DictStrAny':
-        return super().dict(include=include,
-                            exclude=exclude,
-                            by_alias=by_alias,
-                            skip_defaults=skip_defaults,
-                            exclude_unset=exclude_unset,
-                            exclude_defaults=exclude_defaults,
-                            exclude_none=exclude_none)
+        return super().dict(
+            include=include,
+            exclude=exclude,
+            by_alias=by_alias,
+            skip_defaults=skip_defaults,
+            exclude_unset=exclude_unset,
+            exclude_defaults=exclude_defaults,
+            exclude_none=exclude_none,
+        )
