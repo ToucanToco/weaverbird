@@ -125,6 +125,9 @@ PipelineStep = Union[
 class Pipeline(BaseModel):
     steps: List[PipelineStep]
 
+    def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:
+        return super().dict(exclude_none=exclude_none, **kwargs)
+
 
 PipelineStepWithVariables = Union[
     AggregateStepWithVariables,
