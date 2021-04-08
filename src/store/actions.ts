@@ -28,7 +28,7 @@ function loading(type: 'dataset' | 'uniqueValues') {
 }
 
 // format error to fit BackendError interface props
-function formatError(error: any): BackendError {
+export function formatError(error: any): BackendError {
   return typeof error === 'string'
     ? { type: 'error', message: error.toString() }
     : { type: 'error', ...error };

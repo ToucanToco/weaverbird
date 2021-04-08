@@ -2,6 +2,7 @@ import { BackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
+import { formatError } from '@/store/actions';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
 import { currentPipeline, emptyState } from '@/store/state';
@@ -1007,6 +1008,21 @@ describe('action tests', () => {
       } as BackendService;
       mutations.setBackendService(state, { backendService });
       expect(state.backendService).toEqual(backendService);
+    });
+  });
+
+  describe('formatError', () => {
+    it('should format a string error to a correct BackendError object', () => {
+      const error = 'global error message';
+      expect(formatError(error)).toStrictEqual({ type: 'error', message: 'global error message' });
+    });
+    it('should format an object error to a correct BackendError object', () => {
+      const error = { index: 1, message: 'Step specific error' };
+      expect(formatError(error)).toStrictEqual({
+        type: 'error',
+        index: 1,
+        message: 'Step specific error',
+      });
     });
   });
 });
