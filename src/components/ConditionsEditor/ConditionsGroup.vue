@@ -447,7 +447,7 @@ $condition-row-border-width: 1px;
 
 .condition-row__content {
   flex: 1;
-  // overflow: auto;
+  width: 100%;
 }
 
 .condition-row__delete {
