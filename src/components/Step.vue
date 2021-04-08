@@ -8,18 +8,25 @@
       <div :class="lastStrokeClass" />
     </div>
     <div class="query-pipeline-step">
-      <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
-      <div class="query-pipeline-step__actions">
-        <!-- @click.stop is used to avoid to trigger select event when editing a step -->
-        <div class="query-pipeline-step__action" @click.stop="editStep()">
-          <i class="far fa-cog" aria-hidden="true" />
+      <div class="query-pipeline-step__body">
+        <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
+        <div class="query-pipeline-step__actions">
+          <!-- @click.stop is used to avoid to trigger select event when editing a step -->
+          <div class="query-pipeline-step__action" @click.stop="editStep()">
+            <i class="far fa-cog" aria-hidden="true" />
+          </div>
+          <div
+            v-if="!isFirst"
+            class="query-pipeline-step__action"
+            @click="toggleDeleteConfirmationModal"
+          >
+            <i class="far fa-trash-alt" aria-hidden="true" />
+          </div>
         </div>
-        <div
-          v-if="!isFirst"
-          class="query-pipeline-step__action"
-          @click="toggleDeleteConfirmationModal"
-        >
-          <i class="far fa-trash-alt" aria-hidden="true" />
+      </div>
+      <div class="query-pipeline-step__footer" v-if="errorMessage && !isDisabled">
+        <div class="query-pipeline-step__error" :title="errorMessage">
+          <strong>ERROR</strong> - {{ errorMessage }}
         </div>
       </div>
     </div>
@@ -78,8 +85,14 @@ export default class Step extends Vue {
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
+  @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
+
   get stepName(): string {
     return humanReadableLabel(this.step);
+  }
+
+  get errorMessage(): string | undefined {
+    return this.stepErrors(this.indexInPipeline);
   }
 
   get stepTitle(): string {
@@ -98,6 +111,7 @@ export default class Step extends Vue {
       'query-pipeline-step__container--active': this.isActive,
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
+      'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
     };
   }
 
@@ -150,7 +164,7 @@ export default class Step extends Vue {
   display: flex;
   flex-direction: row;
   align-items: center;
-  height: 70px;
+  height: 60px;
   width: 100%;
   flex-shrink: 0;
 }
@@ -197,8 +211,16 @@ export default class Step extends Vue {
 }
 
 .query-pipeline-step {
-  cursor: pointer;
+  width: 100%;
   min-width: 0;
+  overflow: hidden;
+  border-radius: 5px;
+  border: 1px solid $grey;
+  background-color: white;
+}
+
+.query-pipeline-step__body {
+  cursor: pointer;
   width: 100%;
   height: 50px;
   display: flex;
@@ -206,10 +228,6 @@ export default class Step extends Vue {
   padding-left: 12px;
   justify-content: space-between;
   align-items: center;
-  background: white;
-  border: 1px solid $grey;
-  border-radius: 5px;
-  overflow: hidden;
 }
 
 .query-pipeline-step__name {
@@ -250,6 +268,22 @@ export default class Step extends Vue {
   transition: color 0.3s ease;
 }
 
+.query-pipeline-step__footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 12px;
+  height: 30px;
+}
+
+.query-pipeline-step__error {
+  font-size: 10px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width: 100%;
+}
+
 .query-pipeline-step__container--last-active {
   .query-pipeline-step {
     background: $active-color-faded-3;
@@ -268,6 +302,30 @@ export default class Step extends Vue {
   }
   .query-pipeline-queue__dot-ink {
     background-color: $active-color;
+  }
+}
+.query-pipeline-step__container--errors {
+  height: 90px;
+  .query-pipeline-step {
+    background: $error-light;
+    border-color: $error;
+    color: $grey-dark;
+  }
+  .query-pipeline-step__footer {
+    background-color: $error;
+  }
+  .query-pipeline-step__action {
+    color: $error;
+    border-right-color: $error;
+    &:hover {
+      color: $grey-dark;
+    }
+  }
+  .query-pipeline-queue__dot {
+    background-color: $error-light;
+  }
+  .query-pipeline-queue__dot-ink {
+    background-color: $error;
   }
 }
 

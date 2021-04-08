@@ -4,6 +4,7 @@
 import _ from 'lodash';
 import { GetterTree } from 'vuex';
 
+import { BackendError, BackendWarning } from '@/lib/backend';
 import { getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
 import { getTranslator } from '@/lib/translators';
 
@@ -132,6 +133,15 @@ const getters: GetterTree<VQBState, any> = {
   stepConfig: (state: VQBState) => (index: number) => {
     const pipeline = currentPipeline(state);
     return pipeline?.[index];
+  },
+  /**
+   * Filter errors to retrieve step ones based on its index
+   */
+  stepErrors: (state: VQBState) => (index: number) => {
+    const error = [...state.backendMessages].find(
+      (e: BackendError | BackendWarning) => e.type === 'error' && e.index === index,
+    );
+    return error?.message;
   },
   /**
    * Return the app translator name

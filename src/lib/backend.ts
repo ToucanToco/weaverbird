@@ -4,6 +4,7 @@ import { Pipeline } from '@/lib/steps';
 
 export type BackendError = {
   type: 'error';
+  index?: number; // step index if error target a specific step
   message: string;
 };
 

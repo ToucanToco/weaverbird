@@ -2,6 +2,7 @@ import { BackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
+import { formatError } from '@/store/actions';
 import getters from '@/store/getters';
 import mutations from '@/store/mutations';
 import { currentPipeline, emptyState } from '@/store/state';
@@ -333,6 +334,25 @@ describe('getter tests', () => {
     it('should not return anything if there is no selected pipeline', function() {
       const state = buildState({});
       expect(getters.stepConfig(state, {}, {}, {})(0)).toBeUndefined();
+    });
+  });
+
+  describe('step errors', () => {
+    it('should return the error message if step index is found in errors', function() {
+      const state = buildState({
+        backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
+      });
+      expect(getters.stepErrors(state, {}, {}, {})(3)).toStrictEqual('lalalolilol');
+    });
+    it('should return undefined if step index has no errors', function() {
+      const state = buildState({
+        backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
+      });
+      expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
+    });
+    it('should return undefined if pipeline has no errors', function() {
+      const state = buildState({});
+      expect(getters.stepErrors(state, {}, {}, {})(0)).toBeUndefined();
     });
   });
 
@@ -817,6 +837,85 @@ describe('action tests', () => {
       expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
       expect(commitSpy.mock.calls[4][1]).toEqual({ type: 'dataset', isLoading: false });
     });
+
+    it('updateDataset with uncaught error from service', async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline(pipeline),
+        backendService: {
+          listCollections: jest.fn(),
+          executePipeline: jest.fn().mockRejectedValue('Katastrophe!'),
+        },
+      });
+      const commitSpy = jest.spyOn(store, 'commit');
+
+      try {
+        await store.dispatch(VQBnamespace('updateDataset'));
+      } catch (e) {
+        expect(e).toEqual('Katastrophe!');
+      }
+
+      expect(commitSpy).toHaveBeenCalledTimes(5);
+      // call 1 :
+      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[0][1]).toEqual({ type: 'dataset', isLoading: true });
+      // call 2 :
+      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
+      // call 3 :
+      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('logBackendMessages'));
+      expect(commitSpy.mock.calls[2][1]).toEqual({
+        backendMessages: [{ message: 'Katastrophe!', type: 'error' }],
+      });
+      // call 4 :
+      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[3][1]).toEqual({ isRequestOnGoing: false });
+      // call 5 :
+      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[4][1]).toEqual({ type: 'dataset', isLoading: false });
+    });
+
+    it('updateDataset with specific step error from service', async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore({
+        ...buildStateWithOnePipeline(pipeline),
+        backendService: {
+          listCollections: jest.fn(),
+          executePipeline: jest.fn().mockResolvedValue({
+            error: [{ type: 'error' as 'error', index: 1, message: 'Specific error for step' }],
+          }),
+        },
+      });
+      const commitSpy = jest.spyOn(store, 'commit');
+
+      await store.dispatch(VQBnamespace('updateDataset'));
+      expect(commitSpy).toHaveBeenCalledTimes(5);
+      // call 1 :
+      expect(commitSpy.mock.calls[0][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[0][1]).toEqual({ type: 'dataset', isLoading: true });
+      // call 2 :
+      expect(commitSpy.mock.calls[1][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[1][1]).toEqual({ isRequestOnGoing: true });
+      // call 3 :
+      expect(commitSpy.mock.calls[2][0]).toEqual(VQBnamespace('logBackendMessages'));
+      expect(commitSpy.mock.calls[2][1]).toEqual({
+        backendMessages: [{ type: 'error', index: 1, message: 'Specific error for step' }],
+      });
+      // call 4 :
+      expect(commitSpy.mock.calls[3][0]).toEqual(VQBnamespace('toggleRequestOnGoing'));
+      expect(commitSpy.mock.calls[3][1]).toEqual({ isRequestOnGoing: false });
+      // call 5 :
+      expect(commitSpy.mock.calls[4][0]).toEqual(VQBnamespace('setLoading'));
+      expect(commitSpy.mock.calls[4][1]).toEqual({ type: 'dataset', isLoading: false });
+    });
   });
 
   describe('loadColumnUniqueValues', () => {
@@ -950,6 +1049,21 @@ describe('action tests', () => {
       } as BackendService;
       mutations.setBackendService(state, { backendService });
       expect(state.backendService).toEqual(backendService);
+    });
+  });
+
+  describe('formatError', () => {
+    it('should format a string error to a correct BackendError object', () => {
+      const error = 'global error message';
+      expect(formatError(error)).toStrictEqual({ type: 'error', message: 'global error message' });
+    });
+    it('should format an object error to a correct BackendError object', () => {
+      const error = { index: 1, message: 'Step specific error' };
+      expect(formatError(error)).toStrictEqual({
+        type: 'error',
+        index: 1,
+        message: 'Step specific error',
+      });
     });
   });
 });
