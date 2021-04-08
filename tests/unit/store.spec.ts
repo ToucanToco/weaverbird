@@ -342,7 +342,7 @@ describe('getter tests', () => {
       const state = buildState({
         backendMessages: [{ type: 'error', message: 'lalalolilol', index: 3 }],
       });
-      expect(getters.stepConfig(state, {}, {}, {})(3)).toBeUndefined();
+      expect(getters.stepErrors(state, {}, {}, {})(3)).toStrictEqual('lalalolilol');
     });
     it('should return undefined if step index has no errors', function() {
       const state = buildState({
