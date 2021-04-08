@@ -1,14 +1,26 @@
 import json
 import logging
+from typing import List
 
 from pandas import DataFrame
 from pandas.io.json import build_table_schema
+from pydantic import BaseModel, Field
 
 from weaverbird.pipeline import Pipeline, PipelineStep
 from weaverbird.types import DomainRetriever
 from weaverbird.utils import StopWatch, convert_size
 
 logger = logging.getLogger(__name__)
+
+
+class StepExecutionReport(BaseModel):
+    step_index: int
+    time_spent_in_ms: int
+    memory_used_in_bytes: int
+
+
+class PipelineExecutionReport(BaseModel):
+    steps_reports: List[StepExecutionReport] = Field(min_items=0)
 
 
 class PipelineExecutor:
@@ -21,7 +33,7 @@ class PipelineExecutor:
     def __init__(self, domain_retriever: DomainRetriever):
         self.retrieve_domain = domain_retriever
 
-    def execute_pipeline(self, pipeline: Pipeline) -> DataFrame:
+    def execute_pipeline(self, pipeline: Pipeline) -> (DataFrame, PipelineExecutionReport):
         """
         Execute a pipeline and returns the result as a pandas DataFrame
         """
@@ -30,6 +42,7 @@ class PipelineExecutor:
         steps = pipeline.steps
         df = None
         stopwatch = StopWatch()
+        step_reports = []
         for index, step in enumerate(steps):
             try:
                 with stopwatch:
@@ -41,9 +54,16 @@ class PipelineExecutor:
                 logger.info(
                     f'step {step} used {convert_size(df.memory_usage().sum())}, took {stopwatch.interval}s to execute'
                 )
+                step_reports.append(
+                    StepExecutionReport(
+                        step_index=index,
+                        memory_used_in_bytes=df.memory_usage().sum(),
+                        time_spent_in_ms=int(stopwatch.interval * 1000),
+                    )
+                )
             except Exception as e:
                 raise PipelineExecutionFailure(step, index, e) from e
-        return df
+        return df, PipelineExecutionReport(steps_reports=step_reports)
 
     def preview_pipeline(self, pipeline: Pipeline, limit: int = 50, offset: int = 0) -> str:
         """
@@ -55,7 +75,7 @@ class PipelineExecutor:
 
         Note: it's required to use pandas `to_json` methods, as it convert NaN and dates to an appropriate format.
         """
-        df = self.execute_pipeline(pipeline)
+        df, _ = self.execute_pipeline(pipeline)
         return json.dumps(
             {
                 'schema': build_table_schema(df, index=False),

@@ -79,7 +79,7 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
 
 
 def test_extract_domain(pipeline_executor: PipelineExecutor):
-    df = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor.execute_pipeline(
         Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}])
     )
 
@@ -87,7 +87,7 @@ def test_extract_domain(pipeline_executor: PipelineExecutor):
 
 
 def test_filter(pipeline_executor):
-    df = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor.execute_pipeline(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -106,7 +106,7 @@ def test_filter(pipeline_executor):
 
 
 def test_rename(pipeline_executor):
-    df = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor.execute_pipeline(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
