@@ -1,6 +1,11 @@
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
+    <StepFormHeader
+      :title="title"
+      :stepName="editedStep.name"
+      :version="version"
+      :backendError="backendError"
+    />
     <MultiselectWidget
       class="columnInput"
       v-model="editedStep.columns"

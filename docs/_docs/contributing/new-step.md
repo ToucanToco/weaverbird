@@ -354,7 +354,7 @@ Here is a possible template for your step:
 ```html
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
+    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" :backendError="backendError" />
     <ColumnPicker
       class="column1Input"
       v-model="editedStep.column1"

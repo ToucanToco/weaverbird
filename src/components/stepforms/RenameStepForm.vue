@@ -1,6 +1,11 @@
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="this.editedStep.name" :version="version" />
+    <StepFormHeader
+      :title="title"
+      :stepName="this.editedStep.name"
+      :version="version"
+      :backendError="backendError"
+    />
     <ListWidget
       addFieldName="Add column"
       class="toReplace"

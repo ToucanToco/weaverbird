@@ -1,6 +1,11 @@
 <template>
   <div class="ifthenelse-form">
-    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
+    <StepFormHeader
+      :title="title"
+      :stepName="editedStep.name"
+      :version="version"
+      :backendError="backendError"
+    />
     <InputTextWidget
       class="newColumnInput"
       v-model="editedStep.newColumn"
