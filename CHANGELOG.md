@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.45.0] - 2021-04-08
+
+### Added
+- Step: display error directly in Pipeline step by targetting its index, error must follow interface: `{ index: number; message: string; }`
+
+### Changed
+- Pipeline: update styles with new guidelines
+
+### Fixed
+- Filter step: display row correctly with long labels
+
 ## [0.44.0] - 2021-03-23
 
 ### Added
@@ -702,6 +713,7 @@
 
 - Initial version, showtime!
 
+[0.45.0]: https://github.com/ToucanToco/weaverbird/compare/v0.44.0...v0.45.0
 [0.44.0]: https://github.com/ToucanToco/weaverbird/compare/v0.43.0...v0.44.0
 [0.43.0]: https://github.com/ToucanToco/weaverbird/compare/v0.42.2...v0.43.0
 [0.42.2]: https://github.com/ToucanToco/weaverbird/compare/v0.42.1...v0.42.2
