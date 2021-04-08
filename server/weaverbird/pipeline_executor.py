@@ -1,6 +1,6 @@
 import json
 import logging
-from typing import List
+from typing import List, Tuple
 
 from pandas import DataFrame
 from pandas.io.json import build_table_schema
@@ -33,7 +33,7 @@ class PipelineExecutor:
     def __init__(self, domain_retriever: DomainRetriever):
         self.retrieve_domain = domain_retriever
 
-    def execute_pipeline(self, pipeline: Pipeline) -> (DataFrame, PipelineExecutionReport):
+    def execute_pipeline(self, pipeline: Pipeline) -> Tuple[DataFrame, PipelineExecutionReport]:
         """
         Execute a pipeline and returns the result as a pandas DataFrame
         """
