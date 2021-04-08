@@ -1,6 +1,11 @@
 <template>
   <div>
-    <StepFormHeader :title="title" :stepName="editedStep.name" :version="version" />
+    <StepFormHeader
+      :title="title"
+      :stepName="editedStep.name"
+      :version="version"
+      :backendError="backendError"
+    />
     <label v-if="name">{{ name }}</label>
     <CodeEditorWidget
       v-model="editedStep.query"
