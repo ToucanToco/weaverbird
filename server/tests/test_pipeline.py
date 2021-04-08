@@ -66,8 +66,9 @@ def test_to_dict():
             {
                 'name': 'rollup',
                 'hierarchy': ['a', 'b'],
-                'aggregations': [{'new_columns': ['a'], 'agg_function': 'sum', 'columns': ['a']}],
+                'aggregations': [{'newcolumns': ['a'], 'aggfunction': 'sum', 'columns': ['a']}],
             },
         ]
     }
     assert actual_dict == expected_dict
+    assert pipeline == Pipeline(**pipeline.dict())
