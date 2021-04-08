@@ -122,6 +122,39 @@ describe('Query Builder', () => {
       });
     });
 
+    describe('when editing a step', () => {
+      beforeEach(async () => {
+        store = setupMockStore(
+          buildStateWithOnePipeline([
+            { name: 'domain', domain: 'foo' },
+            { name: 'rename', toRename: [['baz', 'spam']] },
+            { name: 'replace', search_column: 'test', to_replace: [] },
+          ]),
+        );
+        wrapper = shallowMount(QueryBuilder, {
+          store,
+          localVue,
+          stubs: {
+            transition: true,
+          },
+        });
+        wrapper.vm.$store.commit(VQBnamespace('logBackendMessages'), {
+          backendMessages: [{ type: 'error', index: 1, message: 'anError' }],
+        });
+        await localVue.nextTick();
+      });
+      it('should pass the backendError to step component if any', async () => {
+        wrapper.find('Pipeline-stub').vm.$emit('editStep', { name: 'rename' }, 1);
+        await localVue.nextTick();
+        expect(wrapper.find({ ref: 'step' }).props('backendError')).toStrictEqual('anError');
+      });
+      it('should pass undefined to step component if there is no backendError', async () => {
+        wrapper.find('Pipeline-stub').vm.$emit('editStep', { name: 'replace' }, 2);
+        await localVue.nextTick();
+        expect(wrapper.find({ ref: 'step' }).props('backendError')).toBeUndefined();
+      });
+    });
+
     describe('when saving other steps', () => {
       beforeEach(async () => {
         store = setupMockStore(

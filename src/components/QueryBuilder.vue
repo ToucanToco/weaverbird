@@ -4,9 +4,11 @@
       <component
         key="stepForm"
         :is="formComponent"
+        ref="step"
         :initialStepValue="stepFormInitialValue"
         :stepFormDefaults="stepFormDefaults"
         :isStepCreation="isStepCreation"
+        :backendError="editedStepBackendError"
         @back="closeStepForm"
         @formSaved="saveStep"
       />
@@ -51,6 +53,7 @@ import StepFormsComponents from './stepforms';
 })
 export default class QueryBuilder extends Vue {
   version = version; // display the current version of the package
+  editedStepBackendError: string | undefined = undefined;
 
   @VQBModule.State currentStepFormName!: PipelineStepName;
   @VQBModule.State stepFormInitialValue!: object;
@@ -69,6 +72,7 @@ export default class QueryBuilder extends Vue {
   @VQBModule.Action setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
   @VQBModule.Action selectStep!: (payload: { index: number }) => void;
   @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
+  @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
 
   get isStepCreation() {
     return this.stepFormInitialValue === undefined;
@@ -79,6 +83,7 @@ export default class QueryBuilder extends Vue {
   }
 
   editStep(params: PipelineStep, index: number) {
+    this.editedStepBackendError = this.stepErrors(index);
     this.openStepForm({ stepName: params.name, initialValue: params });
     const prevIndex = Math.max(index - 1, 0);
     this.selectStep({ index: prevIndex });
