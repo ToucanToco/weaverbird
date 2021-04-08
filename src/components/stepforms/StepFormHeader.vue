@@ -1,21 +1,26 @@
 <template functional>
   <div class="step-edit-form">
-    <button class="step-edit-form__back-button" @click="parent.cancelEdition">
-      <i class="fas fa-angle-left" aria-hidden="true" />
-      BACK
-    </button>
-    <div class="step-edit-form__title-container">
-      <h1>{{ props.title }}</h1>
-      <a
-        :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`"
-        target="_blank"
-        rel="noopener"
-        :data-version="props.version"
-      >
-        <i class="fas fa-question-circle" aria-hidden="true" />
-      </a>
+    <div class="step-edit-form__container">
+      <button class="step-edit-form__back-button" @click="parent.cancelEdition">
+        <i class="fas fa-angle-left" aria-hidden="true" />
+        BACK
+      </button>
+      <div class="step-edit-form__title-container">
+        <h1>{{ props.title }}</h1>
+        <a
+          :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`"
+          target="_blank"
+          rel="noopener"
+          :data-version="props.version"
+        >
+          <i class="fas fa-question-circle" aria-hidden="true" />
+        </a>
+      </div>
+      <div class="step-edit-form__empty" />
     </div>
-    <div class="step-edit-form__empty" />
+    <div v-if="props.backendError" class="step-edit-form__error">
+      <strong>{{ props.backendError }}</strong>
+    </div>
   </div>
 </template>
 
@@ -23,11 +28,14 @@
 @import '../../styles/_variables';
 
 .step-edit-form {
-  border-bottom: 1px solid $grey;
+  margin: 10px 0 15px;
+}
+
+.step-edit-form__container {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
-  margin: 10px 0 15px;
+  border-bottom: 1px solid $grey;
   width: 100%;
 }
 
@@ -77,5 +85,13 @@
   &:hover {
     color: $active-color;
   }
+}
+
+.step-edit-form__error {
+  background-color: $error-light;
+  border-left: 2px solid $error;
+  padding: 15px;
+  font-size: 13px;
+  margin-top: 15px;
 }
 </style>

@@ -94,6 +94,9 @@ export default class BaseStepForm<StepType> extends Vue {
   @Prop({ type: Object, default: undefined })
   stepFormDefaults!: Partial<StepType>;
 
+  @Prop({ type: String, default: undefined })
+  backendError?: string;
+
   @VQBModule.State interpolateFunc!: InterpolateFunction;
   @VQBModule.State selectedStepIndex!: number;
   @VQBModule.State variables!: ScopeContext;
