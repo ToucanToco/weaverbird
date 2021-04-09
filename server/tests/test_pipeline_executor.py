@@ -148,3 +148,16 @@ def test_errors(pipeline_executor):
     assert 'whatever' in exception_message
     assert excinfo.value.details['index'] == 1
     assert excinfo.value.details['message'] == exception_message
+
+
+def test_report(pipeline_executor):
+    _, report = pipeline_executor.execute_pipeline(
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+                {'name': 'rename', 'toRename': [['colA', 'col_a'], ['colB', 'col_b']]},
+            ]
+        )
+    )
+    # there should be one step_report per step in the pipeline
+    assert len(report.steps_reports) == 2
