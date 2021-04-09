@@ -83,6 +83,7 @@ export default class QueryBuilder extends Vue {
   }
 
   editStep(params: PipelineStep, index: number) {
+    // save the selected edited step error to avoid store to be refreshed with new data and lose it when entering the step form
     this.editedStepBackendError = this.stepErrors(index);
     this.openStepForm({ stepName: params.name, initialValue: params });
     const prevIndex = Math.max(index - 1, 0);
