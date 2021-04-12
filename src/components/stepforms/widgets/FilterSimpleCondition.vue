@@ -168,18 +168,21 @@ export default class FilterSimpleConditionWidget extends Vue {
     return 'Enter a value';
   }
 
+  get hasDateSelectedColumn(): boolean {
+    return (
+      this.$store.state?.vqb?.featureFlags != undefined &&
+      this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enable' &&
+      this.columnTypes[this.value.column] == 'date'
+    );
+  }
+
   get operator(): OperatorOption {
     return this.operators.filter(d => d.operator === this.value.operator)[0];
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
     const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
-    if (
-      this.$store.state?.vqb?.featureFlags != undefined &&
-      this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enable' &&
-      widget === InputTextWidget &&
-      this.columnTypes[this.value.column] == 'date'
-    ) {
+    if (this.hasDateSelectedColumn && widget === InputTextWidget) {
       return InputDateWidget;
     }
     if (widget) {
