@@ -79,7 +79,7 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
 
 
 def test_extract_domain(pipeline_executor: PipelineExecutor):
-    df = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor.execute_pipeline(
         Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}])
     )
 
@@ -87,7 +87,7 @@ def test_extract_domain(pipeline_executor: PipelineExecutor):
 
 
 def test_filter(pipeline_executor):
-    df = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor.execute_pipeline(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -106,7 +106,7 @@ def test_filter(pipeline_executor):
 
 
 def test_rename(pipeline_executor):
-    df = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor.execute_pipeline(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -148,3 +148,16 @@ def test_errors(pipeline_executor):
     assert 'whatever' in exception_message
     assert excinfo.value.details['index'] == 1
     assert excinfo.value.details['message'] == exception_message
+
+
+def test_report(pipeline_executor):
+    _, report = pipeline_executor.execute_pipeline(
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+                {'name': 'rename', 'toRename': [['colA', 'col_a'], ['colB', 'col_b']]},
+            ]
+        )
+    )
+    # there should be one step_report per step in the pipeline
+    assert len(report.steps_reports) == 2
