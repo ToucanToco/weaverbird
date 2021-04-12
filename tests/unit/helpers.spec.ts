@@ -5,6 +5,7 @@ import {
   enumerate,
   generateNewColumnName,
   keepCurrentValueIfArrayType,
+  keepCurrentValueIfCompatibleDate,
   keepCurrentValueIfCompatibleType,
   setAggregationsNewColumnsInStep,
 } from '@/lib/helpers';
@@ -130,6 +131,21 @@ describe('castFromString', () => {
     });
     it('should return selected value if its type match default one', () => {
       expect(keepCurrentValueIfCompatibleType('3', '')).toEqual('3');
+    });
+  });
+
+  describe('keepCurrentValueIfCompatibleDate', () => {
+    it('should return default if selected value is not a date', () => {
+      expect(keepCurrentValueIfCompatibleDate(3, null)).toEqual(null);
+      expect(keepCurrentValueIfCompatibleDate(null, null)).toEqual(null);
+      expect(keepCurrentValueIfCompatibleDate('12/04/2021', null)).toEqual(null);
+    });
+    it('should return default if selected value is not a well formatted date', () => {
+      expect(keepCurrentValueIfCompatibleDate(new Date('toto'), null)).toEqual(null);
+    });
+    it('should return selected value if its a well formatted date', () => {
+      const value = new Date('12/04/2021');
+      expect(keepCurrentValueIfCompatibleDate(value, null)).toEqual(value);
     });
   });
 
