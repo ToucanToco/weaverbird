@@ -10,6 +10,27 @@ describe('extractVariableIdentifier', () => {
     ).toBe('hummus');
   });
 
+  it('should extract malformatted variable', () => {
+    expect(
+      extractVariableIdentifier('{{ malformatted}}', {
+        start: '{{',
+        end: '}}',
+      }),
+    ).toBe('malformatted');
+    expect(
+      extractVariableIdentifier('{{malformatted }}', {
+        start: '{{',
+        end: '}}',
+      }),
+    ).toBe('malformatted');
+    expect(
+      extractVariableIdentifier('{{malformatted}}', {
+        start: '{{',
+        end: '}}',
+      }),
+    ).toBe('malformatted');
+  });
+
   it('should extract variable names with dots', () => {
     expect(
       extractVariableIdentifier('{{ hummus.mtabal }}', {

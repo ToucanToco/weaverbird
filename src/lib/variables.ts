@@ -40,7 +40,7 @@ export function extractVariableIdentifier(
     // Removes delimiters
     variableIdentifier = variableIdentifier.slice(
       variableDelimiters.start.length,
-      variableIdentifier.length - 1,
+      variableIdentifier.length,
     );
     variableIdentifier = variableIdentifier.slice(
       0,
