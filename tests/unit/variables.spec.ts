@@ -10,7 +10,7 @@ describe('extractVariableIdentifier', () => {
     ).toBe('hummus');
   });
 
-  it('should extract malformatted variable', () => {
+  it('should extract the right variable identifier despite leading or trailing whitespace or their absence', () => {
     expect(
       extractVariableIdentifier('{{ malformatted}}', {
         start: '{{',
