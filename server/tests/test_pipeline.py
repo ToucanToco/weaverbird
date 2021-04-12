@@ -66,7 +66,7 @@ def test_to_dict():
             {
                 'name': 'rollup',
                 'hierarchy': ['a', 'b'],
-                'aggregations': [{'newcolumns': ['a'], 'aggfunction': 'sum', 'columns': ['a']}],
+                'aggregations': [{'new_columns': ['a'], 'agg_function': 'sum', 'columns': ['a']}],
             },
         ]
     }

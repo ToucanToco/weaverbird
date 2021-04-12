@@ -20,5 +20,5 @@ class BaseStep(BaseModel, ABC):
         ...
 
     # None values are excluded, to avoid triggering validation error in Tucana
-    def dict(self, *, exclude_none: bool = True, by_alias=True, **kwargs) -> Dict:
-        return super().dict(exclude_none=exclude_none, by_alias=True, **kwargs)
+    def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:
+        return super().dict(exclude_none=True, **kwargs)
