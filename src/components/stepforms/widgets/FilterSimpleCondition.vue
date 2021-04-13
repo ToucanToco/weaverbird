@@ -49,7 +49,11 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
-import { keepCurrentValueIfArrayType, keepCurrentValueIfCompatibleType } from '@/lib/helpers';
+import {
+  keepCurrentValueIfArrayType,
+  keepCurrentValueIfCompatibleDate,
+  keepCurrentValueIfCompatibleType,
+} from '@/lib/helpers';
 import { FilterSimpleCondition } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
@@ -199,6 +203,10 @@ export default class FilterSimpleConditionWidget extends Vue {
       updatedValue.value = keepCurrentValueIfArrayType(updatedValue.value, []);
     } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
       updatedValue.value = null;
+    } else if (this.hasDateSelectedColumn) {
+      // when using date widget, we need value to be a valid date
+      // null as date will become "01/01/1970" as default value for input
+      updatedValue.value = keepCurrentValueIfCompatibleDate(updatedValue.value, null);
     } else {
       updatedValue.value = keepCurrentValueIfCompatibleType(updatedValue.value, '');
     }
