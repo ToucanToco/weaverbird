@@ -24,6 +24,11 @@ describe('castFromString', () => {
     expect(castFromString(string1, 'date', true)).toEqual(new Date(string1));
   });
 
+  it('should cast date variable to string', () => {
+    const variable = '<%= lala %>';
+    expect(castFromString(variable, 'date', true)).toEqual(variable);
+  });
+
   it('should not cast a string that does not convert to number type', () => {
     const string = 'Hey';
     expect(castFromString(string, 'integer')).toEqual('Hey');
@@ -138,7 +143,6 @@ describe('castFromString', () => {
     it('should return default if selected value is not a date', () => {
       expect(keepCurrentValueIfCompatibleDate(3, null)).toEqual(null);
       expect(keepCurrentValueIfCompatibleDate(null, null)).toEqual(null);
-      expect(keepCurrentValueIfCompatibleDate('12/04/2021', null)).toEqual(null);
     });
     it('should return default if selected value is not a well formatted date', () => {
       expect(keepCurrentValueIfCompatibleDate(new Date('toto'), null)).toEqual(null);
@@ -146,6 +150,9 @@ describe('castFromString', () => {
     it('should return selected value if its a well formatted date', () => {
       const value = new Date('12/04/2021');
       expect(keepCurrentValueIfCompatibleDate(value, null)).toEqual(value);
+    });
+    it('should return selected value if its a string', () => {
+      expect(keepCurrentValueIfCompatibleDate('<%= lala %>', null)).toEqual('<%= lala %>');
     });
   });
 
