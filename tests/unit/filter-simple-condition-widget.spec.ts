@@ -351,11 +351,6 @@ describe('Widget FilterSimpleCondition', () => {
       expect(wrapper.emitted().input[0]).toEqual([
         { column: 'columnA', value: '', operator: 'eq' },
       ]);
-      wrapper.setProps({ columnTypes: { columnA: 'date' } });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.emitted().input[1]).toEqual([
-        { column: 'columnA', value: null, operator: 'eq' },
-      ]);
     });
   });
 });
