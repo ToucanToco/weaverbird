@@ -44,7 +44,7 @@
 import { ErrorObject } from 'ajv';
 import isEqual from 'lodash/isEqual';
 import { VueConstructor } from 'vue';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -130,6 +130,15 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Watch('hasDateSelectedColumn')
+  verifyIfValueIsStillValid() {
+    // when column change from date to another type or inverse,
+    // we need to reapply default widget value in case current value is not valid
+    // ex: [X] '' in string column will become an 'Invalid Date' in date column
+    // ex: [X] new Date() in date column will become an object in string column
+    this.updateStepOperator(this.operator);
+  }
 
   readonly operators: OperatorOption[] = [
     { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },

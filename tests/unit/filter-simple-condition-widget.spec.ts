@@ -341,5 +341,21 @@ describe('Widget FilterSimpleCondition', () => {
         { column: 'columnA', value: null, operator: 'eq' },
       ]);
     });
+    it('should transform invalid dates to valid date when changing the column type', async () => {
+      createWrapper(shallowMount, {
+        value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+      });
+      wrapper.setProps({ columnTypes: { columnA: 'string' } });
+      await wrapper.vm.$nextTick();
+      // relaunch operator validation automatically when changing the column type
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'eq' },
+      ]);
+      wrapper.setProps({ columnTypes: { columnA: 'date' } });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input[1]).toEqual([
+        { column: 'columnA', value: null, operator: 'eq' },
+      ]);
+    });
   });
 });
