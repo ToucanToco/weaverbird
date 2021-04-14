@@ -8,7 +8,7 @@ type ValueType = number | boolean | string | null | object | Date;
 type StepWithAggregations = AddTotalRowsStep | RollupStep;
 
 /**
- * Return false selected value is not a right formatted date
+ * Return false if selected value is not a right formatted date
  *
  * @param value the selected value
  */

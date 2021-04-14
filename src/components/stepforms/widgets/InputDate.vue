@@ -71,7 +71,7 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   }
 
   parseDateToString(date: Date): string {
-    // transform a date to the attended date input string with format (YYYY-MM-DD)
+    // transform a date to the expected date input string with format (YYYY-MM-DD)
     return date.toISOString().substr(0, 10);
   }
 
