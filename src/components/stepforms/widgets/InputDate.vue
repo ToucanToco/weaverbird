@@ -7,7 +7,7 @@
       </a>
     </div>
     <VariableInput
-      :value="value"
+      :value="parsedValue"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
       :has-arrow="true"
@@ -18,6 +18,7 @@
         class="widget-input-date"
         :placeholder="placeholder"
         type="date"
+        :value="parsedValue"
         @input="updateValue($event.target.value)"
       />
     </VariableInput>
@@ -54,7 +55,7 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   placeholder!: string;
 
   @Prop({ default: '' })
-  value!: Date;
+  value!: string | Date;
 
   @Prop({ default: undefined })
   docUrl!: string | undefined;
@@ -65,16 +66,16 @@ export default class InputDateWidget extends Mixins(FormWidget) {
   @Prop()
   variableDelimiters?: VariableDelimiters;
 
-  mounted() {
-    if (this.value) {
-      const input: any = this.$refs.input;
-      // we receive back as value the full date. but the input value NEEDS to be a string
-      // 10 characters gives us YYYY-MM-DD
-      input.value = this.value.toISOString().substr(0, 10);
-    }
+  get parsedValue(): string {
+    return this.value instanceof Date ? this.parseDateToString(this.value) : this.value;
   }
 
-  updateValue(newValue: string) {
+  parseDateToString(date: Date): string {
+    // transform a date to the expected date input string with format (YYYY-MM-DD)
+    return date.toISOString().substr(0, 10);
+  }
+
+  updateValue(newValue: string): void {
     this.$emit('input', newValue);
   }
 }

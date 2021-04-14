@@ -332,7 +332,7 @@ describe('Widget FilterSimpleCondition', () => {
     });
     it('should transform invalid dates to valid date when changing the operator', () => {
       createWrapper(shallowMount, {
-        value: { column: 'columnA', value: 'lolo', operator: 'matches' },
+        value: { column: 'columnA', value: 1, operator: 'matches' },
       });
       const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
       // eq operator

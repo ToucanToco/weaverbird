@@ -7,6 +7,15 @@ type ValueType = number | boolean | string | null | object | Date;
  *  defined below */
 type StepWithAggregations = AddTotalRowsStep | RollupStep;
 
+/**
+ * Return false if selected value is not a right formatted date
+ *
+ * @param value the selected value
+ */
+export function isDate(value: ValueType): boolean {
+  return value instanceof Date && !isNaN(value.getTime());
+}
+
 function isBooleanString(string: string): boolean {
   return (
     string === 'true' ||
@@ -26,7 +35,8 @@ export function castFromString(value: string, type: DataSetColumnType, esJsonEna
   } else if (type === 'boolean' && isBooleanString(value)) {
     return value === 'true' || value === 'True' || value === 'TRUE' || value === '1';
   } else if (type === 'date' && esJsonEnabled) {
-    return new Date(value);
+    const parsedValue = new Date(value);
+    return isDate(parsedValue) ? parsedValue : value;
   }
   return value;
 }
@@ -88,7 +98,7 @@ export function keepCurrentValueIfCompatibleType(
 }
 
 /**
- * Return default value if selected value is not a right formatted date
+ * Return default value if selected value is not a right formatted date or a string
  *
  * @param date the selected value
  * @param defaultValue the default to compare
@@ -97,7 +107,7 @@ export function keepCurrentValueIfCompatibleDate(
   value: ValueType,
   defaultValue: ValueType,
 ): ValueType {
-  return value instanceof Date && !isNaN(value.getTime()) ? value : defaultValue;
+  return isDate(value) || typeof value === 'string' ? value : defaultValue;
 }
 
 /**

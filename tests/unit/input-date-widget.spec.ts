@@ -68,13 +68,22 @@ describe('Widget Input Text', () => {
     expect(el.value).toEqual('');
   });
 
-  it('should have a non empty input', () => {
+  it('should have pass date value as string to input', () => {
     const wrapper = shallowMount(InputDateWidget, {
       propsData: { value: new Date('2021-01-01') },
     });
     const el = wrapper.find("input[type='date']").element as HTMLInputElement;
 
     expect(el.value).toEqual('2021-01-01');
+  });
+
+  it('should have pass date value as string to variable input', () => {
+    const wrapper = shallowMount(InputDateWidget, {
+      propsData: { value: new Date('2021-01-01') },
+    });
+    const el = wrapper.find('VariableInput-stub');
+
+    expect(el.props('value')).toEqual('2021-01-01');
   });
 
   it('should emit "input" event on update', () => {
@@ -121,5 +130,16 @@ describe('Widget Input Text', () => {
   it('should not display a warning message if messageError does not exist', () => {
     const wrapper = mount(InputDateWidget);
     expect(wrapper.find('.field__msg-warning').exists()).toBeFalsy();
+  });
+
+  it('should handle variables', () => {
+    const wrapper = shallowMount(InputDateWidget, {
+      propsData: {
+        value: '<%= my_variable %>',
+      },
+    });
+    const el = wrapper.find('VariableInput-stub');
+
+    expect(el.props('value')).toEqual('<%= my_variable %>');
   });
 });
