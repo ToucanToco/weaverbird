@@ -1,7 +1,7 @@
 import { DataSetColumnType } from './dataset';
 import { AddTotalRowsStep, RollupStep } from './steps';
 
-type ValueType = number | boolean | string | null;
+type ValueType = number | boolean | string | null | object | Date;
 /** We do not include AggregateStep as this step has some specifities that do
  *  not factorize well in the setAggregationsNewColumnsInStep helper function
  *  defined below */
@@ -85,6 +85,19 @@ export function keepCurrentValueIfCompatibleType(
 ): ValueType {
   if (Array.isArray(value)) return defaultValue;
   return typeof value === typeof defaultValue ? value : defaultValue;
+}
+
+/**
+ * Return default value if selected value is not a right formatted date
+ *
+ * @param date the selected value
+ * @param defaultValue the default to compare
+ */
+export function keepCurrentValueIfCompatibleDate(
+  value: ValueType,
+  defaultValue: ValueType,
+): ValueType {
+  return value instanceof Date && !isNaN(value.getTime()) ? value : defaultValue;
 }
 
 /**

@@ -1,4 +1,4 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex, { Store } from 'vuex';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -276,26 +276,81 @@ describe('Widget FilterSimpleCondition', () => {
     expect(wrapper.emitted().input[0]).toEqual([{ column: 'columnA', value: [], operator: 'in' }]);
   });
 
-  it("should have a date input if the column type is 'Date' and the featureflag is enabled", async () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
-        data: [],
-      },
-      selectedColumns: ['columnA'],
+  describe('date column and date featureflag enabled', () => {
+    let wrapper: Wrapper<FilterSimpleConditionWidget>;
+    const createWrapper = (mountType: Function, customProps: any = {}) => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [],
+        },
+        selectedColumns: ['columnA'],
+      });
+      store.state.vqb.featureFlags = {};
+      store.state.vqb.featureFlags.QUERYBUILDER_ESJSON = 'enable';
+      wrapper = mountType(FilterSimpleConditionWidget, {
+        propsData: {
+          value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+          columnTypes: { columnA: 'date' },
+          ...customProps,
+        },
+        store,
+        localVue,
+        sync: false,
+      });
+    };
+
+    it('should use the date input', () => {
+      createWrapper(mount);
+      const widgetWrappers = wrapper.findAll('.filterValue');
+      expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
     });
-    store.state.vqb.featureFlags = {};
-    store.state.vqb.featureFlags.QUERYBUILDER_ESJSON = 'enable';
-    const wrapper = mount(FilterSimpleConditionWidget, {
-      propsData: {
+
+    it('should emit a new condition with the correct type of value when changing the operator', () => {
+      createWrapper(shallowMount);
+      const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
+      // ne operator
+      operatorWrapper.vm.$emit('input', { operator: 'ne' });
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: new Date('2021-01-01'), operator: 'ne' },
+      ]);
+      // eq operator
+      operatorWrapper.vm.$emit('input', { operator: 'eq' });
+      expect(wrapper.emitted().input[1]).toEqual([
+        { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+      ]);
+      // in operator
+      operatorWrapper.vm.$emit('input', { operator: 'in' });
+      expect(wrapper.emitted().input[2]).toEqual([
+        { column: 'columnA', value: [], operator: 'in' },
+      ]);
+      // isnull operator
+      operatorWrapper.vm.$emit('input', { operator: 'isnull' });
+      expect(wrapper.emitted().input[3]).toEqual([
+        { column: 'columnA', value: null, operator: 'isnull' },
+      ]);
+    });
+    it('should transform invalid dates to valid date when changing the operator', () => {
+      createWrapper(shallowMount, {
+        value: { column: 'columnA', value: 'lolo', operator: 'matches' },
+      });
+      const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
+      // eq operator
+      operatorWrapper.vm.$emit('input', { operator: 'eq' });
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: null, operator: 'eq' },
+      ]);
+    });
+    it('should transform invalid dates to valid date when changing the column type', async () => {
+      createWrapper(shallowMount, {
         value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
-        columnTypes: { columnA: 'date' },
-      },
-      store,
-      localVue,
-      sync: false,
+      });
+      wrapper.setProps({ columnTypes: { columnA: 'string' } });
+      await wrapper.vm.$nextTick();
+      // relaunch operator validation automatically when changing the column type
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'eq' },
+      ]);
     });
-    const widgetWrappers = wrapper.findAll('.filterValue');
-    expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
   });
 });

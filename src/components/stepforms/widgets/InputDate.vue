@@ -15,13 +15,9 @@
     >
       <input
         ref="input"
-        :class="elementClass"
+        class="widget-input-date"
         :placeholder="placeholder"
         type="date"
-        :min="min"
-        :max="max"
-        @blur="blur()"
-        @focus="focus()"
         @input="updateValue($event.target.value)"
       />
     </VariableInput>
@@ -76,13 +72,6 @@ export default class InputDateWidget extends Mixins(FormWidget) {
       // 10 characters gives us YYYY-MM-DD
       input.value = this.value.toISOString().substr(0, 10);
     }
-  }
-
-  get elementClass() {
-    return {
-      'widget-input-date': true,
-      'widget-input-date--focused': this.isFocused,
-    };
   }
 
   updateValue(newValue: string) {
