@@ -123,8 +123,13 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
       doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
     },
   ];
+  selectedFormat?: FormatOption;
 
-  get selectedFormat(): FormatOption {
+  created() {
+    this.selectedFormat = this.getSelectedFormat();
+  }
+
+  getSelectedFormat(): FormatOption {
     if (this.datePresets.includes(this.editedStep.format)) {
       return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
     }
@@ -148,6 +153,7 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
     } else {
       this.editedStep.format = newFormat.format;
     }
+    this.selectedFormat = newFormat;
   }
 }
 </script>
