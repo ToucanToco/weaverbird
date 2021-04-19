@@ -125,17 +125,6 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
   ];
   selectedFormat?: FormatOption;
 
-  created() {
-    this.selectedFormat = this.getSelectedFormat();
-  }
-
-  getSelectedFormat(): FormatOption {
-    if (this.datePresets.includes(this.editedStep.format)) {
-      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
-    }
-    return this.formatOptions.filter(d => d.format === 'custom')[0];
-  }
-
   get stepSelectedColumn() {
     return this.editedStep.column;
   }
@@ -145,6 +134,17 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
       throw new Error('should not try to set null on "column" field');
     }
     this.editedStep.column = colname;
+  }
+
+  created() {
+    this.selectedFormat = this.getSelectedFormat();
+  }
+
+  getSelectedFormat(): FormatOption {
+    if (this.datePresets.includes(this.editedStep.format)) {
+      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
+    }
+    return this.formatOptions.filter(d => d.format === 'custom')[0];
   }
 
   updateStepFormat(newFormat: FormatOption) {

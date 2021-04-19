@@ -136,6 +136,17 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
 
   selectedFormat?: FormatOption;
 
+  get stepSelectedColumn() {
+    return this.editedStep.column;
+  }
+
+  set stepSelectedColumn(colname: string | null) {
+    if (colname === null) {
+      throw new Error('should not try to set null on "column" field');
+    }
+    this.editedStep.column = colname;
+  }
+
   created() {
     this.selectedFormat = this.getSelectedFormat();
   }
@@ -148,17 +159,6 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
     }
     return this.formatOptions.filter(d => d.format === 'custom')[0];
-  }
-
-  get stepSelectedColumn() {
-    return this.editedStep.column;
-  }
-
-  set stepSelectedColumn(colname: string | null) {
-    if (colname === null) {
-      throw new Error('should not try to set null on "column" field');
-    }
-    this.editedStep.column = colname;
   }
 
   updateStepFormat(newFormat: FormatOption) {
