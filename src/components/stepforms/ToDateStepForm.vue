@@ -134,7 +134,13 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     },
   ];
 
-  get selectedFormat(): FormatOption {
+  selectedFormat?: FormatOption;
+
+  created() {
+    this.selectedFormat = this.getSelectedFormat();
+  }
+
+  getSelectedFormat(): FormatOption {
     if (this.editedStep.format === undefined) {
       return this.formatOptions.filter(d => d.format === 'guess')[0];
     }
@@ -163,6 +169,7 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     } else {
       this.editedStep.format = newFormat.format;
     }
+    this.selectedFormat = newFormat;
   }
 }
 </script>

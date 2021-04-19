@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import ToDateStepForm from '@/components/stepforms/ToDateStepForm.vue';
@@ -71,18 +71,25 @@ describe('Convert String to Date Step Form', () => {
     expect(wrapper.vm.$data.editedStep.format).toEqual('%Y-%m');
   });
 
-  it('should pass downn the right value to autcomplete', () => {
-    const wrapper = shallowMount(ToDateStepForm, {
-      store: setupMockStore({}),
-      localVue,
-      propsData: {
-        initialStepValue: { name: 'todate', column: '' },
-      },
+  describe('on init', () => {
+    let wrapper: Wrapper<ToDateStepForm>;
+    const createWrapper = (format?: string) => {
+      if (wrapper) wrapper.destroy();
+      wrapper = shallowMount(ToDateStepForm, {
+        store: setupMockStore({}),
+        localVue,
+        propsData: {
+          initialStepValue: { name: 'todate', column: '', format },
+        },
+      });
+    };
+    it('should pass down the right value to autocomplete', () => {
+      createWrapper();
+      expect(wrapper.find('.format').vm.$props.value.format).toEqual('guess');
+      createWrapper('');
+      expect(wrapper.find('.format').vm.$props.value.format).toEqual('custom');
+      createWrapper('%Y-%m');
+      expect(wrapper.find('.format').vm.$props.value.format).toEqual('%Y-%m');
     });
-    expect(wrapper.find('.format').vm.$props.value.format).toEqual('guess');
-    wrapper.setData({ editedStep: { name: 'todate', column: '', format: '' } });
-    expect(wrapper.find('.format').vm.$props.value.format).toEqual('custom');
-    wrapper.setData({ editedStep: { name: 'todate', column: '', format: '%Y-%m' } });
-    expect(wrapper.find('.format').vm.$props.value.format).toEqual('%Y-%m');
   });
 });
