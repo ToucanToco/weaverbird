@@ -146,12 +146,14 @@ class WaterfallStep(BaseStep):
         if self.parentsColumn is None:
             result_df[TYPE_WATERFALL_COLUMN] = 'Parent'
         else:
-            result_df[TYPE_WATERFALL_COLUMN] = numpy.where(
-                result_df['LABEL_waterfall'].isin(df[self.labelsColumn]), ['child'], ['parent']
-            )
             result_df[GROUP_WATERFALL_COLUMN] = merged_df.sort_values(
                 by=self.get_sort_column(), ascending=self.order == 'asc'
             )[self.parentsColumn]
+            result_df[TYPE_WATERFALL_COLUMN] = numpy.where(
+                result_df['LABEL_waterfall'] == (result_df[GROUP_WATERFALL_COLUMN]),
+                ['parent'],
+                ['child'],
+            )
 
         result_df[self.valueColumn] = merged_df.sort_values(
             by=self.get_sort_column(), ascending=self.order == 'asc'

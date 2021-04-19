@@ -153,3 +153,58 @@ def test_bug_duplicate_rows():
     )
 
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_waterfall_bug_drill():
+    base_df = pd.DataFrame(
+        {
+            'grand parent': ['A', '1/A', 'i/1/A'] * 2,
+            'parent': ['1/A', 'i/1/A', 'U/i/1/A'] * 2,
+            'label': ['i/1/A', 'U/i/1/A', 'x/U/i/1/A'] * 2,
+            'variable': ['A'] * 3 + ['B'] * 3,
+            'value': [1, 2, 3, 11, 12, 13],
+        }
+    )
+    print(base_df)
+    waterfall_step = WaterfallStep(
+        name='waterfall',
+        valueColumn='value',
+        milestonesColumn='variable',
+        start='A',
+        end='B',
+        labelsColumn='label',
+        parentsColumn='parent',
+        groupby=['grand parent'],
+        sortBy='label',
+        order='asc',
+    )
+    result = waterfall_step.execute(base_df)
+    assert_dataframes_equals(
+        result,
+        pd.DataFrame(
+            {
+                'grand parent': ['A', '1/A', 'i/1/A'] * 4,
+                'LABEL_waterfall': ['A'] * 3
+                + ['1/A', 'U/i/1/A', 'U/i/1/A', 'i/1/A', 'i/1/A', 'x/U/i/1/A']
+                + ['B'] * 3,
+                'value': [1, 2, 3] + [10] * 6 + [11, 12, 13],
+                'GROUP_waterfall': ['A'] * 3
+                + ['1/A', 'i/1/A', 'U/i/1/A', '1/A', 'i/1/A', 'U/i/1/A']
+                + ['B'] * 3,
+                'TYPE_waterfall': [
+                    None,
+                    None,
+                    None,
+                    'parent',
+                    'child',
+                    'parent',
+                    'child',
+                    'parent',
+                    'child',
+                    None,
+                    None,
+                    None,
+                ],
+            }
+        ),
+    )
