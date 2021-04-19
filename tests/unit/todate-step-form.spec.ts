@@ -71,6 +71,25 @@ describe('Convert String to Date Step Form', () => {
     expect(wrapper.vm.$data.editedStep.format).toEqual('%Y-%m');
   });
 
+  it('should toggle custom format input correctly when switching selected format', () => {
+    const wrapper = shallowMount(ToDateStepForm, {
+      store: setupMockStore({}),
+      localVue,
+    });
+    wrapper
+      .find('autocompletewidget-stub')
+      .vm.$emit('input', { format: 'guess', label: '%Y-%m', example: '' });
+    expect(wrapper.find('.customFormat').exists()).toBe(false);
+    wrapper
+      .find('autocompletewidget-stub')
+      .vm.$emit('input', { format: 'custom', label: '%Y-%m', example: '' });
+    expect(wrapper.find('.customFormat').exists()).toBe(true);
+    wrapper
+      .find('autocompletewidget-stub')
+      .vm.$emit('input', { format: '%Y-%m', label: '%Y-%m', example: '1970-12' });
+    expect(wrapper.find('.customFormat').exists()).toBe(false);
+  });
+
   describe('on init', () => {
     let wrapper: Wrapper<ToDateStepForm>;
     const createWrapper = (format?: string) => {

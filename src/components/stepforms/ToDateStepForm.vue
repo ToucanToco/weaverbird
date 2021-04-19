@@ -29,11 +29,7 @@
       :withExample="true"
     />
     <InputTextWidget
-      v-if="
-        translator !== 'mongo36' &&
-          editedStep.format !== undefined &&
-          !datePresets.includes(editedStep.format)
-      "
+      v-if="translator !== 'mongo36' && editedStep.format !== undefined && useCustomFormat"
       class="customFormat"
       v-model="editedStep.format"
       name="Custom date format:"
@@ -134,7 +130,7 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     },
   ];
 
-  selectedFormat?: FormatOption;
+  selectedFormat: FormatOption = this.formatOptions[0];
 
   get stepSelectedColumn() {
     return this.editedStep.column;
@@ -145,6 +141,9 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       throw new Error('should not try to set null on "column" field');
     }
     this.editedStep.column = colname;
+  }
+  get useCustomFormat(): boolean {
+    return this.selectedFormat.format === 'custom';
   }
 
   created() {
