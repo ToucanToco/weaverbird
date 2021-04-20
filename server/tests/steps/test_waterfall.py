@@ -156,6 +156,9 @@ def test_bug_duplicate_rows():
 
 
 def test_waterfall_bug_drill():
+"""
+Tuple (label, parent) should be unique only among one "group by" sub-df.
+"""
     base_df = pd.DataFrame(
         {
             'grand parent': ['Food', 'Vegetarian', 'Fruits'] * 2,
