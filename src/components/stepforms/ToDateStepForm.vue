@@ -29,11 +29,7 @@
       :withExample="true"
     />
     <InputTextWidget
-      v-if="
-        translator !== 'mongo36' &&
-          editedStep.format !== undefined &&
-          !datePresets.includes(editedStep.format)
-      "
+      v-if="translator !== 'mongo36' && editedStep.format !== undefined && useCustomFormat"
       class="customFormat"
       v-model="editedStep.format"
       name="Custom date format:"
@@ -134,15 +130,7 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     },
   ];
 
-  get selectedFormat(): FormatOption {
-    if (this.editedStep.format === undefined) {
-      return this.formatOptions.filter(d => d.format === 'guess')[0];
-    }
-    if (this.datePresets.includes(this.editedStep.format)) {
-      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
-    }
-    return this.formatOptions.filter(d => d.format === 'custom')[0];
-  }
+  selectedFormat: FormatOption = this.formatOptions[0];
 
   get stepSelectedColumn() {
     return this.editedStep.column;
@@ -154,6 +142,23 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     }
     this.editedStep.column = colname;
   }
+  get useCustomFormat(): boolean {
+    return this.selectedFormat.format === 'custom';
+  }
+
+  created() {
+    this.selectedFormat = this.getSelectedFormat();
+  }
+
+  getSelectedFormat(): FormatOption {
+    if (this.editedStep.format === undefined) {
+      return this.formatOptions.filter(d => d.format === 'guess')[0];
+    }
+    if (this.datePresets.includes(this.editedStep.format)) {
+      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
+    }
+    return this.formatOptions.filter(d => d.format === 'custom')[0];
+  }
 
   updateStepFormat(newFormat: FormatOption) {
     if (newFormat.format === 'guess') {
@@ -163,6 +168,7 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
     } else {
       this.editedStep.format = newFormat.format;
     }
+    this.selectedFormat = newFormat;
   }
 }
 </script>

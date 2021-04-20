@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import FromDateStepForm from '@/components/stepforms/FromDateStepForm.vue';
@@ -55,17 +55,42 @@ describe('Convert Date to String Step Form', () => {
       .vm.$emit('input', { format: '%Y-%m', label: '%Y-%m', example: '1970-12' });
     expect(wrapper.vm.$data.editedStep.format).toEqual('%Y-%m');
   });
-
-  it('should pass down the right value to autcomplete', () => {
+  it('should toggle custom format input correctly when switching selected format', () => {
     const wrapper = shallowMount(FromDateStepForm, {
       store: setupMockStore({}),
       localVue,
-      propsData: {
-        initialStepValue: { name: 'fromdate', column: '', format: '' },
-      },
     });
-    expect(wrapper.find('.format').vm.$props.value.format).toEqual('custom');
-    wrapper.setData({ editedStep: { name: 'todate', column: '', format: '%Y-%m' } });
-    expect(wrapper.find('.format').vm.$props.value.format).toEqual('%Y-%m');
+    wrapper
+      .find('autocompletewidget-stub')
+      .vm.$emit('input', { format: '%Y-%m', label: '%Y-%m', example: '1970-12' });
+    expect(wrapper.find('.customFormat').exists()).toBe(false);
+    wrapper
+      .find('autocompletewidget-stub')
+      .vm.$emit('input', { format: 'custom', label: '%Y-%m', example: '' });
+    expect(wrapper.find('.customFormat').exists()).toBe(true);
+    wrapper
+      .find('autocompletewidget-stub')
+      .vm.$emit('input', { format: '%Y-%m', label: '%Y-%m', example: '1970-12' });
+    expect(wrapper.find('.customFormat').exists()).toBe(false);
+  });
+
+  describe('on init', () => {
+    let wrapper: Wrapper<FromDateStepForm>;
+    const createWrapper = (format: string) => {
+      if (wrapper) wrapper.destroy();
+      wrapper = shallowMount(FromDateStepForm, {
+        store: setupMockStore({}),
+        localVue,
+        propsData: {
+          initialStepValue: { name: 'fromdate', column: '', format },
+        },
+      });
+    };
+    it('should pass down the right value to autocomplete', () => {
+      createWrapper('');
+      expect(wrapper.find('.format').vm.$props.value.format).toEqual('custom');
+      createWrapper('%Y-%m');
+      expect(wrapper.find('.format').vm.$props.value.format).toEqual('%Y-%m');
+    });
   });
 });

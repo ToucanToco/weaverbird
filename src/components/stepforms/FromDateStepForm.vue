@@ -27,7 +27,7 @@
       :withExample="true"
     />
     <InputTextWidget
-      v-if="editedStep.format !== undefined && !datePresets.includes(editedStep.format)"
+      v-if="editedStep.format !== undefined && useCustomFormat"
       class="customFormat"
       v-model="editedStep.format"
       name="Custom date format:"
@@ -123,13 +123,7 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
       doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
     },
   ];
-
-  get selectedFormat(): FormatOption {
-    if (this.datePresets.includes(this.editedStep.format)) {
-      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
-    }
-    return this.formatOptions.filter(d => d.format === 'custom')[0];
-  }
+  selectedFormat: FormatOption = this.formatOptions[0];
 
   get stepSelectedColumn() {
     return this.editedStep.column;
@@ -142,12 +136,28 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
     this.editedStep.column = colname;
   }
 
+  get useCustomFormat(): boolean {
+    return this.selectedFormat.format === 'custom';
+  }
+
+  created() {
+    this.selectedFormat = this.getSelectedFormat();
+  }
+
+  getSelectedFormat(): FormatOption {
+    if (this.datePresets.includes(this.editedStep.format)) {
+      return this.formatOptions.filter(d => d.format === this.editedStep.format)[0];
+    }
+    return this.formatOptions.filter(d => d.format === 'custom')[0];
+  }
+
   updateStepFormat(newFormat: FormatOption) {
     if (newFormat.format === 'custom') {
       this.editedStep.format = '';
     } else {
       this.editedStep.format = newFormat.format;
     }
+    this.selectedFormat = newFormat;
   }
 }
 </script>
