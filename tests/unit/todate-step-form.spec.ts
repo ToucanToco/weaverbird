@@ -90,6 +90,21 @@ describe('Convert String to Date Step Form', () => {
     expect(wrapper.find('.customFormat').exists()).toBe(false);
   });
 
+  describe('when user delete content of custom format input', () => {
+    it('should return empty string as format', () => {
+      const wrapper = shallowMount(ToDateStepForm, {
+        store: setupMockStore({}),
+        localVue,
+        propsData: {
+          initialStepValue: { name: 'todate', format: '%Y %m %d %d', column: 'wdc' },
+        },
+      });
+      wrapper.find('.customFormat').vm.$emit('input', undefined); // fake remove input content
+      expect(wrapper.vm.$data.editedStep.format).toEqual('');
+      expect(wrapper.find('.format').vm.$props.value.format).toEqual('custom');
+    });
+  });
+
   describe('on init', () => {
     let wrapper: Wrapper<ToDateStepForm>;
     const createWrapper = (format?: string) => {

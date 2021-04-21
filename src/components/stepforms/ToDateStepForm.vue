@@ -29,9 +29,10 @@
       :withExample="true"
     />
     <InputTextWidget
-      v-if="translator !== 'mongo36' && editedStep.format !== undefined && useCustomFormat"
+      v-if="translator !== 'mongo36' && useCustomFormat"
       class="customFormat"
-      v-model="editedStep.format"
+      :value="editedStep.format"
+      @input="updateCustomFormat"
       name="Custom date format:"
       :placeholder="`Enter a ${translators.find(t => t.id === translator).label} date format`"
       data-path=".format"
@@ -169,6 +170,11 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       this.editedStep.format = newFormat.format;
     }
     this.selectedFormat = newFormat;
+  }
+
+  updateCustomFormat(format: string | undefined) {
+    // input text return undefined when user delete field content, we need an empty string to display custom format error
+    this.editedStep.format = format ?? '';
   }
 }
 </script>
