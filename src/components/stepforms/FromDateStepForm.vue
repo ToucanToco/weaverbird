@@ -27,7 +27,7 @@
       :withExample="true"
     />
     <InputTextWidget
-      v-if="editedStep.format !== undefined && useCustomFormat"
+      v-if="useCustomFormat"
       class="customFormat"
       v-model="editedStep.format"
       name="Custom date format:"

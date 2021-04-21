@@ -29,7 +29,7 @@
       :withExample="true"
     />
     <InputTextWidget
-      v-if="translator !== 'mongo36' && editedStep.format !== undefined && useCustomFormat"
+      v-if="translator !== 'mongo36' && useCustomFormat"
       class="customFormat"
       v-model="editedStep.format"
       name="Custom date format:"
