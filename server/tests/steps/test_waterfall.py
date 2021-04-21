@@ -153,3 +153,73 @@ def test_bug_duplicate_rows():
     )
 
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_waterfall_bug_drill():
+    """
+    Tuple (label, parent) should be unique only among one "group by" sub-df.
+    """
+    base_df = pd.DataFrame(
+        {
+            'grand parent': ['Food', 'Vegetarian', 'Fruits'] * 2,
+            'parent': ['Vegetarian', 'Fruits', 'Berries'] * 2,
+            'label': ['Fruits', 'Berries', 'Blueberries'] * 2,
+            'variable': ['A'] * 3 + ['B'] * 3,
+            'value': [1, 2, 3, 11, 12, 13],
+        }
+    )
+    waterfall_step = WaterfallStep(
+        name='waterfall',
+        valueColumn='value',
+        milestonesColumn='variable',
+        start='A',
+        end='B',
+        labelsColumn='label',
+        parentsColumn='parent',
+        groupby=['grand parent'],
+        sortBy='label',
+        order='asc',
+    )
+    result = waterfall_step.execute(base_df)
+    assert_dataframes_equals(
+        result,
+        pd.DataFrame(
+            {
+                'grand parent': [
+                    'Food',
+                    'Vegetarian',
+                    'Fruits',
+                    'Vegetarian',
+                    'Fruits',
+                    'Fruits',
+                    'Food',
+                    'Vegetarian',
+                    'Food',
+                    'Food',
+                    'Vegetarian',
+                    'Fruits',
+                ],
+                'LABEL_waterfall': ['A'] * 3
+                + ['Berries', 'Berries', 'Blueberries', 'Fruits', 'Fruits', 'Vegetarian']
+                + ['B'] * 3,
+                'value': [1, 2, 3] + [10] * 6 + [11, 12, 13],
+                'GROUP_waterfall': ['A'] * 3
+                + ['Fruits', 'Berries', 'Berries', 'Vegetarian', 'Fruits', 'Vegetarian']
+                + ['B'] * 3,
+                'TYPE_waterfall': [
+                    None,
+                    None,
+                    None,
+                    'child',
+                    'parent',
+                    'child',
+                    'child',
+                    'parent',
+                    'parent',
+                    None,
+                    None,
+                    None,
+                ],
+            }
+        ),
+    )
