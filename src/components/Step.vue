@@ -4,7 +4,7 @@
       <div :class="firstStrokeClass" />
       <div class="query-pipeline-queue__dot" :class="dotClass" @click="toggleDelete">
         <div class="query-pipeline-queue__dot-ink">
-          <i class="fas fa-check" />
+          <i class="fas fa-check" aria-hidden="true" />
         </div>
       </div>
       <div :class="lastStrokeClass" />
