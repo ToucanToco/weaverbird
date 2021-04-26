@@ -23,11 +23,6 @@
         </div>
       </div>
     </div>
-    <DeleteConfirmationModal
-      v-if="deleteConfirmationModalIsOpened"
-      @cancelDelete="toggleDeleteConfirmationModal"
-      @validateDelete="deleteThisStep"
-    />
   </div>
 </template>
 <script lang="ts">
@@ -39,13 +34,8 @@ import { PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
-import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
-
 @Component({
   name: 'step',
-  components: {
-    DeleteConfirmationModal,
-  },
 })
 export default class Step extends Vue {
   @Prop(Boolean)
@@ -74,10 +64,6 @@ export default class Step extends Vue {
 
   @Prop()
   readonly indexInPipeline!: number;
-
-  deleteConfirmationModalIsOpened = false;
-
-  @VQBModule.Action deleteStep;
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
@@ -125,21 +111,12 @@ export default class Step extends Vue {
     };
   }
 
-  deleteThisStep() {
-    this.toggleDeleteConfirmationModal();
-    this.deleteStep({ index: this.indexInPipeline });
-  }
-
   editStep() {
     this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
   }
 
   select() {
     this.$emit('selectedStep');
-  }
-
-  toggleDeleteConfirmationModal() {
-    this.deleteConfirmationModalIsOpened = !this.deleteConfirmationModalIsOpened;
   }
 
   toggleDelete(): void {

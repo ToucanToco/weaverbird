@@ -1,6 +1,7 @@
-import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 
+import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline } from '@/lib/steps';
 
@@ -96,6 +97,72 @@ describe('Pipeline.vue', () => {
       });
       it('should remove delete class from step', () => {
         expect(stepToDelete.props().toDelete).toBe(false);
+      });
+    });
+  });
+
+  it('does not render a delete confirmation modal by default', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'GoT' },
+      { name: 'rename', toRename: [['foo', 'bar']] },
+    ];
+    const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+    const wrapper = shallowMount(PipelineComponent, { store, localVue });
+    const modal = wrapper.find('deleteconfirmationmodal-stub');
+    expect(modal.exists()).toBe(false);
+  });
+
+  describe('clicking on the delete button', () => {
+    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>;
+    const stepsToDelete = [1];
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = mount(PipelineComponent, { store, localVue });
+      wrapper.setData({ stepsToDelete });
+      //TODO: update this line when delete button is enabled
+      (wrapper.vm as any).openDeleteConfirmationModal();
+      await wrapper.vm.$nextTick();
+      modal = wrapper.find(DeleteConfirmationModal);
+    });
+
+    it('should render a delete confirmation modal', async () => {
+      expect(modal.exists()).toBe(true);
+    });
+
+    describe('when cancel confirmation', () => {
+      //TODO: update this tests when delete logic is enabled
+      beforeEach(async () => {
+        modal.find('.vqb-modal__action--secondary').trigger('click');
+        await wrapper.vm.$nextTick();
+        modal = wrapper.find(DeleteConfirmationModal);
+      });
+      it('should close the confirmation modal', () => {
+        // close the modal
+        expect(modal.exists()).toBe(false);
+      });
+      it('should keep the selected steps unchanged', () => {
+        expect((wrapper.vm as any).stepsToDelete).toStrictEqual(stepsToDelete);
+      });
+    });
+
+    describe('when validate', () => {
+      //TODO: update this tests when delete logic is enabled
+      beforeEach(async () => {
+        modal.find('.vqb-modal__action--primary').trigger('click');
+        await wrapper.vm.$nextTick();
+        modal = wrapper.find(DeleteConfirmationModal);
+      });
+      it('should close the confirmation modal', () => {
+        // close the modal
+        expect(modal.exists()).toBe(false);
+      });
+      it('should clean the selected steps', () => {
+        expect((wrapper.vm as any).stepsToDelete).toStrictEqual([]);
       });
     });
   });

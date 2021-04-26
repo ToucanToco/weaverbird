@@ -22,6 +22,11 @@
       </div>
       <i class="fas fa-magic" aria-hidden="true" />
     </div>
+    <DeleteConfirmationModal
+      v-if="deleteConfirmationModalIsOpened"
+      @cancelDelete="closeDeleteConfirmationModal"
+      @validateDelete="deleteSelectedSteps"
+    />
   </div>
 </template>
 
@@ -34,17 +39,20 @@ import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
+import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 import Step from './Step.vue';
 
 @Component({
   name: 'pipeline',
   components: {
+    DeleteConfirmationModal,
     Step,
   },
 })
 export default class PipelineComponent extends Vue {
   // pipeline steps to delete based on their indexes
   stepsToDelete: number[] = [];
+  deleteConfirmationModalIsOpened = false;
 
   @VQBModule.State domains!: string[];
   @VQBModule.State variableDelimiters!: VariableDelimiters;
@@ -68,6 +76,21 @@ export default class PipelineComponent extends Vue {
   toggleStepToDelete({ index }: { index: number }): void {
     // toggle step to delete using its index in pipeline
     this.stepsToDelete = _xor(this.stepsToDelete, [index]);
+  }
+
+  openDeleteConfirmationModal(): void {
+    this.deleteConfirmationModalIsOpened = true;
+  }
+
+  closeDeleteConfirmationModal(): void {
+    this.deleteConfirmationModalIsOpened = false;
+  }
+
+  deleteSelectedSteps(): void {
+    // TODO: handle store logic
+    // clean steps to delete
+    this.stepsToDelete = [];
+    this.closeDeleteConfirmationModal();
   }
 }
 </script>
