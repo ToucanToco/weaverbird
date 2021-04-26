@@ -4,6 +4,7 @@ import Vuex from 'vuex';
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline } from '@/lib/steps';
+import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
@@ -140,7 +141,7 @@ describe('Pipeline.vue', () => {
   });
 
   describe('clicking on the delete button', () => {
-    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>;
+    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, dispatchSpy: jest.SpyInstance;
     const stepsToDelete = [1, 2];
 
     beforeEach(async () => {
@@ -150,6 +151,7 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      dispatchSpy = jest.spyOn(store, 'dispatch');
       wrapper = mount(PipelineComponent, { store, localVue });
       wrapper.setData({ stepsToDelete });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
@@ -162,7 +164,6 @@ describe('Pipeline.vue', () => {
     });
 
     describe('when cancel confirmation', () => {
-      //TODO: update this tests when delete logic is enabled
       beforeEach(async () => {
         modal.find('.vqb-modal__action--secondary').trigger('click');
         await wrapper.vm.$nextTick();
@@ -172,13 +173,15 @@ describe('Pipeline.vue', () => {
         // close the modal
         expect(modal.exists()).toBe(false);
       });
+      it('should not delete the selected steps', () => {
+        expect(dispatchSpy).not.toHaveBeenCalled();
+      });
       it('should keep the selected steps unchanged', () => {
         expect((wrapper.vm as any).stepsToDelete).toStrictEqual(stepsToDelete);
       });
     });
 
     describe('when validate', () => {
-      //TODO: update this tests when delete logic is enabled
       beforeEach(async () => {
         modal.find('.vqb-modal__action--primary').trigger('click');
         await wrapper.vm.$nextTick();
@@ -187,6 +190,11 @@ describe('Pipeline.vue', () => {
       it('should close the confirmation modal', () => {
         // close the modal
         expect(modal.exists()).toBe(false);
+      });
+      it('should delete the selected steps', () => {
+        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('deleteSteps'), {
+          indexes: stepsToDelete,
+        });
       });
       it('should clean the selected steps', () => {
         expect((wrapper.vm as any).stepsToDelete).toStrictEqual([]);

@@ -70,6 +70,7 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
+  @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
 
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);
@@ -93,7 +94,7 @@ export default class PipelineComponent extends Vue {
   }
 
   deleteSelectedSteps(): void {
-    // TODO: handle store logic
+    this.deleteSteps({ indexes: this.stepsToDelete });
     // clean steps to delete
     this.stepsToDelete = [];
     this.closeDeleteConfirmationModal();
