@@ -70,6 +70,7 @@ describe('Pipeline.vue', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
         { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       wrapper = shallowMount(PipelineComponent, { store, localVue });
@@ -97,6 +98,31 @@ describe('Pipeline.vue', () => {
       });
       it('should remove delete class from step', () => {
         expect(stepToDelete.props().toDelete).toBe(false);
+      });
+    });
+
+    describe('when there is steps selected', () => {
+      beforeEach(async () => {
+        wrapper.setData({ stepsToDelete: [1, 2] });
+        await wrapper.vm.$nextTick();
+      });
+      it('should show the delete steps button', () => {
+        expect(wrapper.find('.query-pipeline__delete-steps').exists()).toBe(true);
+      });
+      it('should display the number of selected steps into the delete steps button', () => {
+        expect(wrapper.find('.query-pipeline__delete-steps').text()).toStrictEqual(
+          'Delete [2] selected',
+        );
+      });
+    });
+
+    describe('when there is no steps to delete', () => {
+      beforeEach(async () => {
+        wrapper.setData({ stepsToDelete: [] });
+        await wrapper.vm.$nextTick();
+      });
+      it('should hide the delete steps button', () => {
+        expect(wrapper.find('.query-pipeline__delete-steps').exists()).toBe(false);
       });
     });
   });

@@ -16,6 +16,9 @@
       @editStep="editStep"
       @toggleDelete="toggleStepToDelete({ index })"
     />
+    <div class="query-pipeline__delete-steps" v-if="stepsToDelete.length">
+      Delete [{{ stepsToDelete.length }}] selected
+    </div>
     <div class="query-pipeline__tips-container">
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
