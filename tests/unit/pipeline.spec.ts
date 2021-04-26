@@ -1,4 +1,4 @@
-import { createLocalVue, shallowMount } from '@vue/test-utils';
+import { createLocalVue, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
@@ -28,6 +28,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: true,
       isLast: false,
+      toDelete: false,
       indexInPipeline: 0,
     });
     expect(step2).toEqual({
@@ -37,6 +38,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: false,
       isLast: false,
+      toDelete: false,
       indexInPipeline: 1,
     });
     expect(step3).toEqual({
@@ -46,6 +48,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: false,
       isLast: true,
+      toDelete: false,
       indexInPipeline: 2,
     });
   });
@@ -58,5 +61,42 @@ describe('Pipeline.vue', () => {
       'Interact with the widgets and table on the right to add steps',
     );
     expect(wrapper.find('.fa-magic').exists()).toBeTruthy();
+  });
+
+  describe('toggle delete step', () => {
+    let wrapper: Wrapper<PipelineComponent>, stepToDelete: Wrapper<any>;
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+      const steps = wrapper.findAll('step-stub');
+      stepToDelete = steps.at(1);
+      stepToDelete.vm.$emit('toggleDelete');
+      await wrapper.vm.$nextTick();
+    });
+
+    //TODO: make better tests when feature updates during PR
+    it('should add step to steps to delete', () => {
+      expect((wrapper.vm as any).stepsToDelete).toContain(1);
+    });
+    it('should apply delete class to step', () => {
+      expect(stepToDelete.props().toDelete).toBe(true);
+    });
+
+    describe('when already selected', () => {
+      beforeEach(async () => {
+        stepToDelete.vm.$emit('toggleDelete');
+        await wrapper.vm.$nextTick();
+      });
+      it('should remove step from step to delete', () => {
+        expect((wrapper.vm as any).stepsToDelete).not.toContain(1);
+      });
+      it('should remove delete class from step', () => {
+        expect(stepToDelete.props().toDelete).toBe(false);
+      });
+    });
   });
 });

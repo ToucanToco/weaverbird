@@ -63,6 +63,9 @@ export default class Step extends Vue {
   @Prop(Boolean)
   readonly isDisabled!: boolean;
 
+  @Prop(Boolean)
+  readonly toDelete!: boolean;
+
   @Prop()
   step!: PipelineStep;
 
