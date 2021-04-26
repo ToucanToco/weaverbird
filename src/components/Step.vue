@@ -15,13 +15,6 @@
           <div class="query-pipeline-step__action" @click.stop="editStep()">
             <i class="far fa-cog" aria-hidden="true" />
           </div>
-          <div
-            v-if="!isFirst"
-            class="query-pipeline-step__action"
-            @click="toggleDeleteConfirmationModal"
-          >
-            <i class="far fa-trash-alt" aria-hidden="true" />
-          </div>
         </div>
       </div>
       <div class="query-pipeline-step__footer" v-if="errorMessage && !isDisabled">
