@@ -2,8 +2,10 @@
   <div :class="classContainer">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass" />
-      <div class="query-pipeline-queue__dot" @click="toggleDelete">
-        <div class="query-pipeline-queue__dot-ink" />
+      <div class="query-pipeline-queue__dot" :class="dotClass" @click="toggleDelete">
+        <div class="query-pipeline-queue__dot-ink">
+          <i class="fas fa-check" />
+        </div>
       </div>
       <div :class="lastStrokeClass" />
     </div>
@@ -104,6 +106,13 @@ export default class Step extends Vue {
     };
   }
 
+  get dotClass() {
+    return {
+      'query-pipeline-queue__dot--togglable': !this.isFirst,
+      'query-pipeline-queue__dot--to-delete': this.toDelete,
+    };
+  }
+
   get lastStrokeClass() {
     return {
       'query-pipeline-queue__stroke': true,
@@ -148,6 +157,7 @@ export default class Step extends Vue {
 
 .query-pipeline-queue {
   position: relative;
+  padding: 0 4px;
   margin-right: 20px;
   height: 100%;
   flex-direction: column;
@@ -169,11 +179,42 @@ export default class Step extends Vue {
   transition: transform 0.2s;
 }
 
+.query-pipeline-queue__dot--togglable:hover,
+.query-pipeline-queue__dot--to-delete {
+  transform: scale(1.3);
+  .query-pipeline-queue__dot-ink {
+    width: 16px;
+    height: 16px;
+    border: 2px solid $active-color;
+  }
+}
+
+.query-pipeline-queue__dot--togglable:hover .query-pipeline-queue__dot-ink {
+  background-color: white;
+}
+
+.query-pipeline-queue__dot--to-delete .query-pipeline-queue__dot-ink,
+.query-pipeline-queue__dot--to-delete:hover .query-pipeline-queue__dot-ink {
+  background-color: $active-color;
+  i {
+    visibility: visible;
+  }
+}
+
 .query-pipeline-queue__dot-ink {
   background-color: $active-color-faded;
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: white;
+  transform: width 0.2s, height 0.2s;
+  i {
+    visibility: hidden;
+  }
 }
 
 .query-pipeline-queue__stroke {
@@ -304,6 +345,16 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink {
     background-color: $error;
   }
+
+  .query-pipeline-queue__dot--togglable:hover .query-pipeline-queue__dot-ink {
+    border-color: $error;
+  }
+
+  .query-pipeline-queue__dot--to-delete .query-pipeline-queue__dot-ink,
+  .query-pipeline-queue__dot--to-delete:hover .query-pipeline-queue__dot-ink {
+    background-color: $error;
+    border-color: $error;
+  }
 }
 
 .query-pipeline-step__container--disabled {
@@ -320,6 +371,16 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink,
   .query-pipeline-step {
     opacity: 0.5;
+  }
+
+  .query-pipeline-queue__dot--togglable:hover .query-pipeline-queue__dot-ink {
+    border-color: $grey-dark;
+  }
+
+  .query-pipeline-queue__dot--to-delete .query-pipeline-queue__dot-ink,
+  .query-pipeline-queue__dot--to-delete:hover .query-pipeline-queue__dot-ink {
+    background-color: $grey-dark;
+    border-color: $grey-dark;
   }
 }
 </style>
