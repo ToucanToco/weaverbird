@@ -16,12 +16,11 @@
       @editStep="editStep"
       @toggleDelete="toggleStepToDelete({ index })"
     />
-    <div
-      class="query-pipeline__delete-steps"
-      v-if="stepsToDelete.length"
-      @click="openDeleteConfirmationModal"
-    >
-      Delete [{{ stepsToDelete.length }}] selected
+    <div class="query-pipeline__delete-steps-container" v-if="stepsToDelete.length">
+      <div class="query-pipeline__delete-steps" @click="openDeleteConfirmationModal">
+        <i aria-hidden="true" class="fas fa-trash" />
+        Delete [{{ stepsToDelete.length }}] selected
+      </div>
     </div>
     <div class="query-pipeline__tips-container">
       <div class="query-pipeline__tips">
@@ -126,6 +125,26 @@ export default class PipelineComponent extends Vue {
   margin-top: 120px;
   margin-bottom: 40px;
   text-align: center;
+}
+
+.query-pipeline__delete-steps-container {
+  margin-top: 10px;
+  padding-left: 40px;
+  width: 100%;
+}
+
+.query-pipeline__delete-steps {
+  background: #b52519;
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 2px;
 }
 
 .fa-code {

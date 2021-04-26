@@ -107,10 +107,10 @@ describe('Pipeline.vue', () => {
         await wrapper.vm.$nextTick();
       });
       it('should show the delete steps button', () => {
-        expect(wrapper.find('.query-pipeline__delete-steps').exists()).toBe(true);
+        expect(wrapper.find('.query-pipeline__delete-steps-container').exists()).toBe(true);
       });
       it('should display the number of selected steps into the delete steps button', () => {
-        expect(wrapper.find('.query-pipeline__delete-steps').text()).toStrictEqual(
+        expect(wrapper.find('.query-pipeline__delete-steps').text()).toContain(
           'Delete [2] selected',
         );
       });
@@ -122,7 +122,7 @@ describe('Pipeline.vue', () => {
         await wrapper.vm.$nextTick();
       });
       it('should hide the delete steps button', () => {
-        expect(wrapper.find('.query-pipeline__delete-steps').exists()).toBe(false);
+        expect(wrapper.find('.qquery-pipeline__delete-steps-container').exists()).toBe(false);
       });
     });
   });
