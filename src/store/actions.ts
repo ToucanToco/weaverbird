@@ -104,8 +104,11 @@ class Actions {
     dispatch('updateDataset');
   }
 
-  deleteStep({ commit, dispatch }: ActionContext<VQBState, any>, { index }: { index: number }) {
-    commit('deleteStep', { index });
+  deleteSteps(
+    { commit, dispatch }: ActionContext<VQBState, any>,
+    { indexes }: { indexes: number[] },
+  ) {
+    commit('deleteSteps', { indexes });
     dispatch('updateDataset');
   }
 

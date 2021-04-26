@@ -6,7 +6,7 @@ import Vue from 'vue';
 import { MutationTree } from 'vuex';
 
 import { BackendError, BackendWarning } from '@/lib/backend';
-import { DomainStep, Pipeline, PipelineStepName } from '@/lib/steps';
+import { DomainStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { setVariableDelimiters } from '@/lib/translators';
 
 import { currentPipeline, VQBState } from './state';
@@ -185,16 +185,19 @@ class Mutations {
     }
   }
   /**
-   * Delete the step of index `index` in pipeline.
+   * Delete selected steps by indexes in pipeline.
    */
   @resetPagination
-  deleteStep(state: VQBState, { index }: { index: number }) {
+  deleteSteps(state: VQBState, { indexes }: { indexes: number[] }) {
     const pipeline = currentPipeline(state);
-    if (!pipeline) {
+    if (state.currentPipelineName === undefined || pipeline === undefined) {
       return;
     }
-    pipeline.splice(index, 1);
-    state.selectedStepIndex = index - 1;
+    const pipelineWithDeletedSteps = pipeline.filter(
+      (_: PipelineStep, index: number) => indexes.indexOf(index) === -1,
+    );
+    state.pipelines[state.currentPipelineName] = pipelineWithDeletedSteps;
+    state.selectedStepIndex = pipelineWithDeletedSteps.length - 1;
   }
   /**
    * change current selected domain and reset pipeline accordingly.
