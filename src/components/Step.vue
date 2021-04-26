@@ -290,15 +290,15 @@ export default class Step extends Vue {
 .query-pipeline-step__container--togglable:hover {
   .query-pipeline-queue__dot-ink {
     background-color: white;
-    border-color: $active-color;
+    border-color: $active-color-faded;
   }
 }
 
 .query-pipeline-step__container--to-delete,
 .query-pipeline-step__container--to-delete:hover {
   .query-pipeline-queue__dot-ink {
-    background-color: $active-color;
-    border-color: $active-color;
+    background-color: $active-color-faded;
+    border-color: $active-color-faded;
     i {
       visibility: visible;
     }
@@ -323,6 +323,19 @@ export default class Step extends Vue {
   }
   .query-pipeline-queue__dot-ink {
     background-color: $active-color;
+  }
+  &.query-pipeline-step__container--togglable:hover {
+    .query-pipeline-queue__dot-ink {
+      border-color: $active-color;
+    }
+  }
+
+  &.query-pipeline-step__container--to-delete,
+  &.query-pipeline-step__container--to-delete:hover {
+    .query-pipeline-queue__dot-ink {
+      background-color: $active-color;
+      border-color: $active-color;
+    }
   }
 }
 .query-pipeline-step__container--errors {
