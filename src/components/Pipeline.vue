@@ -16,7 +16,11 @@
       @editStep="editStep"
       @toggleDelete="toggleStepToDelete({ index })"
     />
-    <div class="query-pipeline__delete-steps" v-if="stepsToDelete.length">
+    <div
+      class="query-pipeline__delete-steps"
+      v-if="stepsToDelete.length"
+      @click="openDeleteConfirmationModal"
+    >
       Delete [{{ stepsToDelete.length }}] selected
     </div>
     <div class="query-pipeline__tips-container">

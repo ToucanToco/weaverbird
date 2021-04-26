@@ -131,6 +131,7 @@ describe('Pipeline.vue', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'GoT' },
       { name: 'rename', toRename: [['foo', 'bar']] },
+      { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupMockStore(buildStateWithOnePipeline(pipeline));
     const wrapper = shallowMount(PipelineComponent, { store, localVue });
@@ -140,18 +141,18 @@ describe('Pipeline.vue', () => {
 
   describe('clicking on the delete button', () => {
     let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>;
-    const stepsToDelete = [1];
+    const stepsToDelete = [1, 2];
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
         { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       wrapper = mount(PipelineComponent, { store, localVue });
       wrapper.setData({ stepsToDelete });
-      //TODO: update this line when delete button is enabled
-      (wrapper.vm as any).openDeleteConfirmationModal();
+      wrapper.find('.query-pipeline__delete-steps').trigger('click');
       await wrapper.vm.$nextTick();
       modal = wrapper.find(DeleteConfirmationModal);
     });
