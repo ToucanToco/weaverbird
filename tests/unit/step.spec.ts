@@ -28,23 +28,6 @@ describe('Step.vue', () => {
     });
   };
 
-  it('emit selectedStep when clicking on a step "time travel" dot', async () => {
-    const wrapper = createStepWrapper({
-      propsData: {
-        key: 0,
-        isActive: true,
-        isDisabled: false,
-        isFirst: false,
-        isLast: true,
-        step: { name: 'rename', toRename: [['foo', 'bar']] },
-        indexInPipeline: 2,
-      },
-    });
-    wrapper.find('.query-pipeline-queue__dot').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
-  });
-
   it('emit selectedStep when clicking on the step itself', async () => {
     const wrapper = createStepWrapper({
       propsData: {
@@ -76,6 +59,41 @@ describe('Step.vue', () => {
     });
     const modal = wrapper.find('deleteconfirmationmodal-stub');
     expect(modal.exists()).toBeFalsy();
+  });
+
+  it('emit toggleDelete when clicking on a step "time travel" dot', async () => {
+    const wrapper = createStepWrapper({
+      propsData: {
+        key: 0,
+        isActive: true,
+        isDisabled: false,
+        isFirst: false,
+        isLast: true,
+        step: { name: 'rename', toRename: [['foo', 'bar']] },
+        indexInPipeline: 2,
+      },
+    });
+    wrapper.find('.query-pipeline-queue__dot').trigger('click');
+    await localVue.nextTick();
+    expect(wrapper.emitted()).toEqual({ toggleDelete: [[]] });
+  });
+
+  it('should not enable to delete domain step', async () => {
+    const wrapper = createStepWrapper({
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: true,
+        isLast: true,
+        step: { name: 'domain', domain: 'GoT' },
+        indexInPipeline: 0,
+      },
+    });
+    wrapper.find('.query-pipeline-queue__dot').trigger('click');
+    await localVue.nextTick();
+    expect(wrapper.emitted().toggleDelete).toBeUndefined();
   });
 
   //TODO: update this tests with new delete multiple steps at once logic
@@ -265,7 +283,10 @@ describe('Step.vue', () => {
       );
       const wrapper = mount(PipelineComponent, { store, localVue });
       const stepsArray = wrapper.findAll(Step);
-      stepsArray.at(0).trigger('click');
+      stepsArray
+        .at(0)
+        .find('.query-pipeline-step')
+        .trigger('click');
       await localVue.nextTick();
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.find('.query-pipeline-step__footer').exists()).toBe(false);
