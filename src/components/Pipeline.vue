@@ -5,6 +5,7 @@
       v-model="orderedSteps"
       handle=".query-pipeline-step__action--handle"
       draggable=".query-pipeline-step__container--draggable"
+      @end="updateSelectedStep"
     >
       <Step
         v-for="(step, index) in orderedSteps"
@@ -73,6 +74,7 @@ export default class PipelineComponent extends Vue {
 
   @VQBModule.State domains!: string[];
   @VQBModule.State variableDelimiters!: VariableDelimiters;
+  @VQBModule.State selectedStepIndex!: number;
 
   @VQBModule.Getter('computedActiveStepIndex') activeStepIndex!: number;
   @VQBModule.Getter domainStep!: DomainStep;
@@ -94,6 +96,11 @@ export default class PipelineComponent extends Vue {
 
   get isDeletingSteps(): boolean {
     return this.stepsToDelete.length > 0;
+  }
+
+  get currentSelectedIndex(): number {
+    // selectedStepIndex for last step is -1 by default, we need to retrieve real index
+    return this.selectedStepIndex === -1 ? this.steps.length - 1 : this.selectedStepIndex;
   }
 
   editStep(step: PipelineStep, index: number) {
@@ -122,6 +129,14 @@ export default class PipelineComponent extends Vue {
     // clean steps to delete
     this.stepsToDelete = [];
     this.closeDeleteConfirmationModal();
+  }
+
+  updateSelectedStep(event: any): void {
+    // update selected step index only if dragged step is already current selected one
+    // (otherwise keep selected step unchanged)
+    if (event.oldIndex === this.currentSelectedIndex) {
+      this.selectStep({ index: event.newIndex });
+    }
   }
 }
 </script>

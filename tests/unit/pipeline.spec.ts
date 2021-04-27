@@ -209,7 +209,9 @@ describe('Pipeline.vue', () => {
   });
 
   describe('reorder steps', () => {
-    let wrapper: Wrapper<PipelineComponent>, commitSpy: jest.SpyInstance;
+    let wrapper: Wrapper<PipelineComponent>,
+      commitSpy: jest.SpyInstance,
+      dispatchSpy: jest.SpyInstance;
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
@@ -219,6 +221,7 @@ describe('Pipeline.vue', () => {
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       commitSpy = jest.spyOn(store, 'commit');
+      dispatchSpy = jest.spyOn(store, 'dispatch');
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
@@ -238,6 +241,14 @@ describe('Pipeline.vue', () => {
         { pipeline: reorderedPipeline },
         undefined,
       );
+    });
+    it('should reselect step based on new index if dropped step was already selected one', async () => {
+      wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 2, newIndex: 1 }); // fake drop end action
+      expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 1 });
+    });
+    it('should not reselect step if dropped step was not already selected one', async () => {
+      wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 1, newIndex: 2 }); // fake drop end action
+      expect(dispatchSpy).not.toHaveBeenCalled();
     });
   });
 });
