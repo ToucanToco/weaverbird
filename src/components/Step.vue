@@ -178,7 +178,7 @@ export default class Step extends Vue {
 }
 
 .query-pipeline-queue__dot {
-  background-color: $active-color-faded-2;
+  background-color: $active-color-faded-3;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -209,7 +209,7 @@ export default class Step extends Vue {
   width: 2px;
   flex-grow: 1;
   justify-self: end;
-  background-color: $active-color-faded-2;
+  background-color: $active-color-faded-3;
 }
 
 .query-pipeline-queue__stroke--hidden {
