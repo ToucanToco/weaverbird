@@ -1,26 +1,21 @@
 <template>
-  <div :class="classContainer" @click="select()">
+  <div :class="classContainer">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass" />
-      <div class="query-pipeline-queue__dot">
-        <div class="query-pipeline-queue__dot-ink" />
+      <div class="query-pipeline-queue__dot" @click="toggleDelete">
+        <div class="query-pipeline-queue__dot-ink">
+          <i class="fas fa-check" aria-hidden="true" />
+        </div>
       </div>
       <div :class="lastStrokeClass" />
     </div>
-    <div class="query-pipeline-step">
+    <div class="query-pipeline-step" @click="select()">
       <div class="query-pipeline-step__body">
         <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
         <div class="query-pipeline-step__actions">
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
           <div class="query-pipeline-step__action" @click.stop="editStep()">
             <i class="far fa-cog" aria-hidden="true" />
-          </div>
-          <div
-            v-if="!isFirst"
-            class="query-pipeline-step__action"
-            @click="toggleDeleteConfirmationModal"
-          >
-            <i class="far fa-trash-alt" aria-hidden="true" />
           </div>
         </div>
       </div>
@@ -30,11 +25,6 @@
         </div>
       </div>
     </div>
-    <DeleteConfirmationModal
-      v-if="deleteConfirmationModalIsOpened"
-      @cancelDelete="toggleDeleteConfirmationModal"
-      @validateDelete="deleteThisStep"
-    />
   </div>
 </template>
 <script lang="ts">
@@ -46,13 +36,8 @@ import { PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
-import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
-
 @Component({
   name: 'step',
-  components: {
-    DeleteConfirmationModal,
-  },
 })
 export default class Step extends Vue {
   @Prop(Boolean)
@@ -70,6 +55,9 @@ export default class Step extends Vue {
   @Prop(Boolean)
   readonly isDisabled!: boolean;
 
+  @Prop(Boolean)
+  readonly toDelete!: boolean;
+
   @Prop()
   step!: PipelineStep;
 
@@ -78,10 +66,6 @@ export default class Step extends Vue {
 
   @Prop()
   readonly indexInPipeline!: number;
-
-  deleteConfirmationModalIsOpened = false;
-
-  @VQBModule.Action deleteStep;
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
@@ -108,6 +92,8 @@ export default class Step extends Vue {
   get classContainer() {
     return {
       'query-pipeline-step__container': true,
+      'query-pipeline-step__container--togglable': !this.isFirst,
+      'query-pipeline-step__container--to-delete': this.toDelete,
       'query-pipeline-step__container--active': this.isActive,
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
@@ -129,11 +115,6 @@ export default class Step extends Vue {
     };
   }
 
-  deleteThisStep() {
-    this.toggleDeleteConfirmationModal();
-    this.deleteStep({ index: this.indexInPipeline });
-  }
-
   editStep() {
     this.$emit('editStep', this.stepConfig(this.indexInPipeline), this.indexInPipeline);
   }
@@ -142,8 +123,8 @@ export default class Step extends Vue {
     this.$emit('selectedStep');
   }
 
-  toggleDeleteConfirmationModal() {
-    this.deleteConfirmationModalIsOpened = !this.deleteConfirmationModalIsOpened;
+  toggleDelete(): void {
+    if (!this.isFirst) this.$emit('toggleDelete');
   }
 }
 </script>
@@ -171,6 +152,7 @@ export default class Step extends Vue {
 
 .query-pipeline-queue {
   position: relative;
+  padding: 0 4px;
   margin-right: 20px;
   height: 100%;
   flex-direction: column;
@@ -187,7 +169,6 @@ export default class Step extends Vue {
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: pointer;
   transform: scale(1);
   transition: transform 0.2s;
 }
@@ -197,6 +178,15 @@ export default class Step extends Vue {
   width: 8px;
   height: 8px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  color: white;
+  transform: width 0.2s, height 0.2s;
+  i {
+    visibility: hidden;
+  }
 }
 
 .query-pipeline-queue__stroke {
@@ -284,6 +274,37 @@ export default class Step extends Vue {
   width: 100%;
 }
 
+.query-pipeline-step__container--to-delete,
+.query-pipeline-step__container--togglable:hover {
+  .query-pipeline-queue__dot {
+    transform: scale(1.3);
+    cursor: pointer;
+  }
+  .query-pipeline-queue__dot-ink {
+    width: 16px;
+    height: 16px;
+    border: 2px solid;
+  }
+}
+
+.query-pipeline-step__container--togglable:hover {
+  .query-pipeline-queue__dot-ink {
+    background-color: white;
+    border-color: $active-color-faded;
+  }
+}
+
+.query-pipeline-step__container--to-delete,
+.query-pipeline-step__container--to-delete:hover {
+  .query-pipeline-queue__dot-ink {
+    background-color: $active-color-faded;
+    border-color: $active-color-faded;
+    i {
+      visibility: visible;
+    }
+  }
+}
+
 .query-pipeline-step__container--last-active {
   .query-pipeline-step {
     background: $active-color-faded-3;
@@ -302,6 +323,19 @@ export default class Step extends Vue {
   }
   .query-pipeline-queue__dot-ink {
     background-color: $active-color;
+  }
+  &.query-pipeline-step__container--togglable:hover {
+    .query-pipeline-queue__dot-ink {
+      border-color: $active-color;
+    }
+  }
+
+  &.query-pipeline-step__container--to-delete,
+  &.query-pipeline-step__container--to-delete:hover {
+    .query-pipeline-queue__dot-ink {
+      background-color: $active-color;
+      border-color: $active-color;
+    }
   }
 }
 .query-pipeline-step__container--errors {
@@ -327,6 +361,20 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink {
     background-color: $error;
   }
+
+  &.query-pipeline-step__container--togglable:hover {
+    .query-pipeline-queue__dot-ink {
+      border-color: $error;
+    }
+  }
+
+  &.query-pipeline-step__container--to-delete,
+  &.query-pipeline-step__container--to-delete:hover {
+    .query-pipeline-queue__dot-ink {
+      background-color: $error;
+      border-color: $error;
+    }
+  }
 }
 
 .query-pipeline-step__container--disabled {
@@ -343,6 +391,20 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink,
   .query-pipeline-step {
     opacity: 0.5;
+  }
+
+  &.query-pipeline-step__container--togglable:hover {
+    .query-pipeline-queue__dot-ink {
+      border-color: $grey-dark;
+    }
+  }
+
+  &.query-pipeline-step__container--to-delete,
+  &.query-pipeline-step__container--to-delete:hover {
+    .query-pipeline-queue__dot-ink {
+      background-color: $grey-dark;
+      border-color: $grey-dark;
+    }
   }
 }
 </style>

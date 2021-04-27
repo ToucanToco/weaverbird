@@ -1,11 +1,9 @@
 import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
 import Vuex from 'vuex';
 
-import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
 import { Pipeline } from '@/lib/steps';
-import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
@@ -28,23 +26,6 @@ describe('Step.vue', () => {
     });
   };
 
-  it('emit selectedStep when clicking on a step "time travel" dot', async () => {
-    const wrapper = createStepWrapper({
-      propsData: {
-        key: 0,
-        isActive: true,
-        isDisabled: false,
-        isFirst: false,
-        isLast: true,
-        step: { name: 'rename', toRename: [['foo', 'bar']] },
-        indexInPipeline: 2,
-      },
-    });
-    wrapper.find('.query-pipeline-queue__dot').trigger('click');
-    await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
-  });
-
   it('emit selectedStep when clicking on the step itself', async () => {
     const wrapper = createStepWrapper({
       propsData: {
@@ -62,7 +43,7 @@ describe('Step.vue', () => {
     expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
   });
 
-  it('does not render a delete confirmation modal by default', () => {
+  it('emit toggleDelete when clicking on a step "time travel" dot', async () => {
     const wrapper = createStepWrapper({
       propsData: {
         key: 0,
@@ -74,50 +55,12 @@ describe('Step.vue', () => {
         indexInPipeline: 2,
       },
     });
-    const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).toBeFalsy();
-  });
-
-  it('renders a delete confirmation modal when clicking on the trash icon', async () => {
-    const wrapper = createStepWrapper({
-      propsData: {
-        key: 0,
-        isActive: true,
-        isDisabled: false,
-        isFirst: false,
-        isLast: true,
-        step: { name: 'rename', toRename: [['foo', 'bar']] },
-        indexInPipeline: 2,
-      },
-    });
-    wrapper.find('.fa-trash-alt').trigger('click');
+    wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await localVue.nextTick();
-    const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).toBeTruthy();
+    expect(wrapper.emitted()).toEqual({ toggleDelete: [[]] });
   });
 
-  it('should render a delete confirmation modal when clicking on the button with the trash icon', async () => {
-    const wrapper = createStepWrapper({
-      propsData: {
-        key: 0,
-        isActive: true,
-        isDisabled: false,
-        isFirst: false,
-        isLast: true,
-        step: { name: 'rename', toRename: [['foo', 'bar']] },
-        indexInPipeline: 2,
-      },
-    });
-    wrapper
-      .findAll('.query-pipeline-step__action')
-      .at(1)
-      .trigger('click');
-    await localVue.nextTick();
-    const modal = wrapper.find('deleteconfirmationmodal-stub');
-    expect(modal.exists()).toBeTruthy();
-  });
-
-  it('should not render a trash icon on domain step', () => {
+  it('should not enable to delete domain step', async () => {
     const wrapper = createStepWrapper({
       propsData: {
         key: 0,
@@ -126,13 +69,14 @@ describe('Step.vue', () => {
         isDisabled: false,
         isFirst: true,
         isLast: true,
-        step: { name: 'domain', domain: 'test' },
+        step: { name: 'domain', domain: 'GoT' },
         indexInPipeline: 0,
       },
     });
-    expect(wrapper.find('.fa-trash-alt').exists()).toBeFalsy();
+    wrapper.find('.query-pipeline-queue__dot').trigger('click');
+    await localVue.nextTick();
+    expect(wrapper.emitted().toggleDelete).toBeUndefined();
   });
-
   it('should render a stepLabel with the variable names', () => {
     const wrapper = createStepWrapper({
       propsData: {
@@ -148,55 +92,6 @@ describe('Step.vue', () => {
       },
     });
     expect(wrapper.find('.query-pipeline-step__name').text()).toBe('Source: "user.username"');
-  });
-
-  describe('Delete confirmation modal', () => {
-    it('does not delete a step when clicking on cancel on the delete confirmation modal', async () => {
-      const pipeline: Pipeline = [
-        { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
-      ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      const wrapper = mount(PipelineComponent, { store, localVue });
-      const step = wrapper.findAll(Step).at(1);
-
-      // Test for clicking on the top-right cross
-      step.find('.fa-trash-alt').trigger('click');
-      await localVue.nextTick();
-      const modal = step.find(DeleteConfirmationModal);
-      modal.find('.fa-times').trigger('click');
-      await localVue.nextTick();
-      expect(store.getters[VQBnamespace('pipeline')].length).toEqual(3);
-      expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
-
-      // Test for clicking on the bottom-left cancel button
-      step.find('.fa-trash-alt').trigger('click');
-      await localVue.nextTick();
-      const modalBis = step.find(DeleteConfirmationModal);
-      modalBis.find('.vqb-modal__action--secondary').trigger('click');
-      await localVue.nextTick();
-      expect(store.getters[VQBnamespace('pipeline')].length).toEqual(3);
-      expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
-    });
-
-    it('deletes a step when clicking on validate on the delete confirmation modal', async () => {
-      const pipeline: Pipeline = [
-        { name: 'domain', domain: 'GoT' },
-        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
-        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
-      ];
-      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      const wrapper = mount(PipelineComponent, { store, localVue });
-      const step = wrapper.findAll(Step).at(1);
-      step.find('.fa-trash-alt').trigger('click');
-      await localVue.nextTick();
-      const modal = step.find(DeleteConfirmationModal);
-      modal.find('.vqb-modal__action--primary').trigger('click');
-      await localVue.nextTick();
-      expect(store.getters[VQBnamespace('pipeline')].length).toEqual(2);
-      expect(step.find(DeleteConfirmationModal).exists()).toBeFalsy();
-    });
   });
 
   it('should toggle the edit mode when clicking on the edit icon and emit editStep', () => {
@@ -297,7 +192,10 @@ describe('Step.vue', () => {
       );
       const wrapper = mount(PipelineComponent, { store, localVue });
       const stepsArray = wrapper.findAll(Step);
-      stepsArray.at(0).trigger('click');
+      stepsArray
+        .at(0)
+        .find('.query-pipeline-step')
+        .trigger('click');
       await localVue.nextTick();
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.find('.query-pipeline-step__footer').exists()).toBe(false);

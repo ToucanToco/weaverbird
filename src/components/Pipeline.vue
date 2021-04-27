@@ -8,22 +8,36 @@
       :is-disabled="isDisabled(index)"
       :is-first="index === 0"
       :is-last="index === steps.length - 1"
+      :toDelete="toDelete({ index })"
       :step="step"
       :indexInPipeline="index"
       :variable-delimiters="variableDelimiters"
       @selectedStep="selectStep({ index: index })"
       @editStep="editStep"
+      @toggleDelete="toggleStepToDelete({ index })"
     />
+    <div class="query-pipeline__delete-steps-container" v-if="stepsToDelete.length">
+      <div class="query-pipeline__delete-steps" @click="openDeleteConfirmationModal">
+        <i aria-hidden="true" class="fas fa-trash" />
+        Delete [{{ stepsToDelete.length }}] selected
+      </div>
+    </div>
     <div class="query-pipeline__tips-container">
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
       </div>
       <i class="fas fa-magic" aria-hidden="true" />
     </div>
+    <DeleteConfirmationModal
+      v-if="deleteConfirmationModalIsOpened"
+      @cancelDelete="closeDeleteConfirmationModal"
+      @validateDelete="deleteSelectedSteps"
+    />
   </div>
 </template>
 
 <script lang="ts">
+import _xor from 'lodash/xor';
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
@@ -31,15 +45,21 @@ import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
+import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
 import Step from './Step.vue';
 
 @Component({
   name: 'pipeline',
   components: {
+    DeleteConfirmationModal,
     Step,
   },
 })
 export default class PipelineComponent extends Vue {
+  // pipeline steps to delete based on their indexes
+  stepsToDelete: number[] = [];
+  deleteConfirmationModalIsOpened = false;
+
   @VQBModule.State domains!: string[];
   @VQBModule.State variableDelimiters!: VariableDelimiters;
 
@@ -50,9 +70,34 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
+  @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
 
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);
+  }
+
+  toDelete({ index }: { index: number }): boolean {
+    return this.stepsToDelete.indexOf(index) !== -1;
+  }
+
+  toggleStepToDelete({ index }: { index: number }): void {
+    // toggle step to delete using its index in pipeline
+    this.stepsToDelete = _xor(this.stepsToDelete, [index]);
+  }
+
+  openDeleteConfirmationModal(): void {
+    this.deleteConfirmationModalIsOpened = true;
+  }
+
+  closeDeleteConfirmationModal(): void {
+    this.deleteConfirmationModalIsOpened = false;
+  }
+
+  deleteSelectedSteps(): void {
+    this.deleteSteps({ indexes: this.stepsToDelete });
+    // clean steps to delete
+    this.stepsToDelete = [];
+    this.closeDeleteConfirmationModal();
   }
 }
 </script>
@@ -81,6 +126,26 @@ export default class PipelineComponent extends Vue {
   margin-top: 120px;
   margin-bottom: 40px;
   text-align: center;
+}
+
+.query-pipeline__delete-steps-container {
+  margin-top: 10px;
+  padding-left: 40px;
+  width: 100%;
+}
+
+.query-pipeline__delete-steps {
+  background: #b52519;
+  padding: 15px;
+  width: 100%;
+  text-align: center;
+  text-transform: uppercase;
+  color: white;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 2px;
 }
 
 .fa-code {

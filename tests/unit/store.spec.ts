@@ -410,14 +410,14 @@ describe('mutation tests', () => {
     spy.mockRestore();
   });
 
-  describe('deleteStep', function() {
+  describe('deleteSteps', function() {
     it('should do nothing if no pipeline is selected', () => {
       const state = buildState({});
-      mutations.deleteStep(state, { index: 1 });
+      mutations.deleteSteps(state, { indexes: [1] });
       expect(currentPipeline(state)).toBeUndefined();
     });
 
-    it('should delete a step on an existing pipeline and select the previous one', () => {
+    it('should delete selected steps on an existing pipeline and select the last available one', () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'foo' },
         { name: 'rename', toRename: [['foo', 'bar']] },
@@ -431,11 +431,10 @@ describe('mutation tests', () => {
           paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
         },
       });
-      mutations.deleteStep(state, { index: 2 });
+      mutations.deleteSteps(state, { indexes: [1, 3] });
       expect(currentPipeline(state)).toEqual([
         { name: 'domain', domain: 'foo' },
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'rename', toRename: [['clou', 'vis']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
       ]);
       expect(state.selectedStepIndex).toEqual(1);
       // make sure the pagination is reset
