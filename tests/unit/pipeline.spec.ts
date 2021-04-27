@@ -81,7 +81,7 @@ describe('Pipeline.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    it('should add step to steps to delete', () => {
+    it('should add step index to steps to delete', () => {
       expect((wrapper.vm as any).stepsToDelete).toContain(1);
     });
     it('should apply delete class to step', () => {
@@ -93,7 +93,7 @@ describe('Pipeline.vue', () => {
         stepToDelete.vm.$emit('toggleDelete');
         await wrapper.vm.$nextTick();
       });
-      it('should remove step from step to delete', () => {
+      it('should remove step index from step to delete', () => {
         expect((wrapper.vm as any).stepsToDelete).not.toContain(1);
       });
       it('should remove delete class from step', () => {
