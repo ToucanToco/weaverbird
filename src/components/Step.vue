@@ -22,6 +22,13 @@
           <div class="query-pipeline-step__action" @click.stop="editStep()">
             <i class="far fa-cog" aria-hidden="true" />
           </div>
+          <div
+            class="query-pipeline-step__action query-pipeline-step__action--handle"
+            v-if="!isFirst"
+            @click.stop
+          >
+            <i class="fa fa-align-justify" aria-hidden="true" />
+          </div>
         </div>
       </div>
       <div class="query-pipeline-step__footer" v-if="errorMessage && !isDisabled">
@@ -101,6 +108,7 @@ export default class Step extends Vue {
     return {
       'query-pipeline-step__container': true,
       'query-pipeline-step__container--togglable': !this.isFirst,
+      'query-pipeline-step__container--draggable': !this.isFirst,
       'query-pipeline-step__container--to-delete': this.toDelete,
       'query-pipeline-step__container--active': this.isActive,
       'query-pipeline-step__container--last-active': this.isLastActive,

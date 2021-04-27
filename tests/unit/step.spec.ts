@@ -60,6 +60,22 @@ describe('Step.vue', () => {
     expect(wrapper.emitted()).toEqual({ toggleDelete: [[]] });
   });
 
+  it('should enable to drag step to other pipeline index', async () => {
+    const wrapper = createStepWrapper({
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: false,
+        isLast: true,
+        step: { name: 'domain', domain: 'GoT' },
+        indexInPipeline: 0,
+      },
+    });
+    expect(wrapper.find('.query-pipeline-step__action--handle').exists()).toBe(true);
+  });
+
   it('should not enable to delete domain step', async () => {
     const wrapper = createStepWrapper({
       propsData: {
@@ -77,6 +93,23 @@ describe('Step.vue', () => {
     await localVue.nextTick();
     expect(wrapper.emitted().toggleDelete).toBeUndefined();
   });
+
+  it('should not enable to drag domain step to other pipeline index', async () => {
+    const wrapper = createStepWrapper({
+      propsData: {
+        key: 0,
+        isActive: true,
+        isLastActive: true,
+        isDisabled: false,
+        isFirst: true,
+        isLast: true,
+        step: { name: 'domain', domain: 'GoT' },
+        indexInPipeline: 0,
+      },
+    });
+    expect(wrapper.find('.query-pipeline-step__action--handle').exists()).toBe(false);
+  });
+
   it('should render a stepLabel with the variable names', () => {
     const wrapper = createStepWrapper({
       propsData: {
