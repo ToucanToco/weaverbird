@@ -207,4 +207,37 @@ describe('Pipeline.vue', () => {
       });
     });
   });
+
+  describe('reorder steps', () => {
+    let wrapper: Wrapper<PipelineComponent>, commitSpy: jest.SpyInstance;
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      commitSpy = jest.spyOn(store, 'commit');
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    it('should have a draggable steps list as pipeline', () => {
+      expect(wrapper.find('Draggable-stub').exists()).toBe(true);
+    });
+    it('should rerender pipeline when steps position are updated', async () => {
+      const reorderedPipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+      ];
+      wrapper.find('draggable-stub').vm.$emit('input', reorderedPipeline); // fake drag/drop step action
+      await wrapper.vm.$nextTick();
+      expect(commitSpy).toHaveBeenCalledWith(
+        VQBnamespace('setPipeline'),
+        { pipeline: reorderedPipeline },
+        undefined,
+      );
+    });
+  });
 });
