@@ -12,7 +12,12 @@
     <div class="query-pipeline-step" @click="select()">
       <div class="query-pipeline-step__body">
         <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
-        <div class="query-pipeline-step__actions">
+        <div
+          class="query-pipeline-step__actions"
+          :class="{
+            'query-pipeline-step__actions--disabled': !isEditable,
+          }"
+        >
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
           <div class="query-pipeline-step__action" @click.stop="editStep()">
             <i class="far fa-cog" aria-hidden="true" />
@@ -57,6 +62,9 @@ export default class Step extends Vue {
 
   @Prop(Boolean)
   readonly toDelete!: boolean;
+
+  @Prop({ type: Boolean, default: true })
+  readonly isEditable?: boolean;
 
   @Prop()
   step!: PipelineStep;
@@ -233,6 +241,16 @@ export default class Step extends Vue {
   display: flex;
   flex-direction: row;
   height: 100%;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.query-pipeline-step__actions--disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  .query-pipeline-step__action {
+    pointer-events: none;
+  }
 }
 
 .query-pipeline-step__action {

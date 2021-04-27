@@ -9,6 +9,7 @@
       :is-first="index === 0"
       :is-last="index === steps.length - 1"
       :toDelete="toDelete({ index })"
+      :isEditable="!isDeletingSteps"
       :step="step"
       :indexInPipeline="index"
       :variable-delimiters="variableDelimiters"
@@ -71,6 +72,10 @@ export default class PipelineComponent extends Vue {
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
   @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
+
+  get isDeletingSteps(): boolean {
+    return this.stepsToDelete.length > 0;
+  }
 
   editStep(step: PipelineStep, index: number) {
     this.$emit('editStep', step, index);

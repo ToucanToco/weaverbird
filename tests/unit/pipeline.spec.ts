@@ -31,6 +31,7 @@ describe('Pipeline.vue', () => {
       isFirst: true,
       isLast: false,
       toDelete: false,
+      isEditable: true,
       indexInPipeline: 0,
     });
     expect(step2).toEqual({
@@ -41,6 +42,7 @@ describe('Pipeline.vue', () => {
       isFirst: false,
       isLast: false,
       toDelete: false,
+      isEditable: true,
       indexInPipeline: 1,
     });
     expect(step3).toEqual({
@@ -51,6 +53,7 @@ describe('Pipeline.vue', () => {
       isFirst: false,
       isLast: true,
       toDelete: false,
+      isEditable: true,
       indexInPipeline: 2,
     });
   });
@@ -113,6 +116,10 @@ describe('Pipeline.vue', () => {
         expect(wrapper.find('.query-pipeline__delete-steps').text()).toContain(
           'Delete [2] selected',
         );
+      });
+      it('should make steps uneditable', () => {
+        const steps = wrapper.findAll('step-stub');
+        steps.wrappers.map(stub => expect(stub.props().isEditable).toBe(false));
       });
     });
 

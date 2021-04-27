@@ -1,4 +1,4 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
+import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
@@ -200,6 +200,29 @@ describe('Step.vue', () => {
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.find('.query-pipeline-step__footer').exists()).toBe(false);
       expect(replaceStep.classes()).not.toContain('query-pipeline-step__container--errors');
+    });
+  });
+
+  describe('when step is not editable (delete mode)', () => {
+    let wrapper: Wrapper<Step>;
+    beforeEach(() => {
+      wrapper = createStepWrapper({
+        propsData: {
+          key: 0,
+          isActive: true,
+          isDisabled: false,
+          isFirst: false,
+          isLast: true,
+          isEditable: false,
+          step: { name: 'rename', toRename: [['foo', 'bar']] },
+          indexInPipeline: 2,
+        },
+      });
+    });
+    it('should disable actions buttons', () => {
+      expect(wrapper.find('.query-pipeline-step__actions').classes()).toContain(
+        'query-pipeline-step__actions--disabled',
+      );
     });
   });
 });
