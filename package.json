@@ -143,6 +143,7 @@
   "dependencies": {
     "ajv": "^6.10.0",
     "lodash": "^4.17.11",
-    "mathjs": "^7.3.0"
+    "mathjs": "^7.3.0",
+    "vuedraggable": "^2.24.3"
   }
 }
