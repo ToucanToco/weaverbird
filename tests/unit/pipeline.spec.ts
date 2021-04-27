@@ -81,7 +81,6 @@ describe('Pipeline.vue', () => {
       await wrapper.vm.$nextTick();
     });
 
-    //TODO: make better tests when feature updates during PR
     it('should add step to steps to delete', () => {
       expect((wrapper.vm as any).stepsToDelete).toContain(1);
     });
