@@ -131,11 +131,29 @@ export default class PipelineComponent extends Vue {
     this.closeDeleteConfirmationModal();
   }
 
+  /**
+   * Find the new selected index to apply after steps reordering
+   * 1. If current selected step has been moved => we need to apply new index
+   * 2. If another step has been moved:
+   *  a. Amount of steps has changed before/after selected step => we need to balance to retrieve the correct index
+   *  b. Amount of steps has not changed before/after selected step => no impact on selected index
+   */
+  findCurrentSelectedIndex({ newIndex, oldIndex }: { newIndex: number; oldIndex: number }): number {
+    if (this.currentSelectedIndex === oldIndex) {
+      return newIndex;
+    } else if (oldIndex < this.currentSelectedIndex && newIndex >= this.currentSelectedIndex) {
+      return this.currentSelectedIndex - 1;
+    } else if (oldIndex > this.currentSelectedIndex && newIndex <= this.currentSelectedIndex) {
+      return this.currentSelectedIndex + 1;
+    } else {
+      return this.currentSelectedIndex;
+    }
+  }
+
   updateSelectedStep(event: any): void {
-    // update selected step index only if dragged step is already current selected one
-    // (otherwise keep selected step unchanged)
-    if (event.oldIndex === this.currentSelectedIndex) {
-      this.selectStep({ index: event.newIndex });
+    const index = this.findCurrentSelectedIndex(event);
+    if (index !== this.currentSelectedIndex) {
+      this.selectStep({ index });
     }
   }
 }
