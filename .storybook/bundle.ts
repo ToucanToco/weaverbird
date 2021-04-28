@@ -14,6 +14,7 @@ import FilterEditor from '../src/components/FilterEditor.vue';
 import ListUniqueValues from '../src/components/ListUniqueValues.vue';
 import VariableInput from '../src/components/stepforms/widgets/VariableInput.vue';
 import InputText from '../src/components/stepforms/widgets/InputText.vue';
+import InputDate from '../src/components/stepforms/widgets/InputDate.vue';
 import MultiInputText from '../src/components/stepforms/widgets/MultiInputText.vue';
 import Multiselect from '../src/components/stepforms/widgets/Multiselect.vue';
 import IfThenElseWidget from '../src/components/stepforms/widgets/IfThenElseWidget.vue';
@@ -44,6 +45,7 @@ export {
   RenameStepForm,
   Pipeline,
   InputText,
+  InputDate,
   ResizablePanels,
   Step,
   ListUniqueValues,
