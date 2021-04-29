@@ -229,51 +229,29 @@ describe('Pipeline.vue', () => {
     it('should have a draggable steps list as pipeline', () => {
       expect(wrapper.find('Draggable-stub').exists()).toBe(true);
     });
-    it('should rerender pipeline when steps position are updated', async () => {
-      const reorderedPipeline = [
+    describe('when steps position are arranged', () => {
+      const reorderedPipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
-        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
-      wrapper.find('draggable-stub').vm.$emit('input', reorderedPipeline); // fake drag/drop step action
-      await wrapper.vm.$nextTick();
-      expect(commitSpy).toHaveBeenCalledWith(
-        VQBnamespace('setPipeline'),
-        { pipeline: reorderedPipeline },
-        undefined,
-      );
-    });
-    it('should reselect step based on new index if dropped step was already selected one', async () => {
-      wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 3, newIndex: 1 }); // fake drop end action
-      expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 1 });
-    });
-    it('should not reselect step if selected step index has not changed', async () => {
-      wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 3, newIndex: 3 }); // fake drop end action
-      expect(dispatchSpy).not.toHaveBeenCalled();
-    });
-    describe('balance step index when amount of steps before/after has changed', () => {
-      beforeEach(() => {
-        // fake move current selected step to middle of pipeline
-        wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 3, newIndex: 1 });
+
+      beforeEach(async () => {
+        wrapper.find('draggable-stub').vm.$emit('input', reorderedPipeline); // fake drag/drop step action
+        await wrapper.vm.$nextTick();
       });
-      it('should balance with more items before selected step', () => {
-        // Before: [1, current, 3, 4] : current = 1
-        // After: [1, 3, current, 4] : current = 2
-        wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 2, newIndex: 1 });
+
+      it('should rerender pipeline', () => {
+        expect(commitSpy).toHaveBeenCalledWith(
+          VQBnamespace('setPipeline'),
+          { pipeline: reorderedPipeline },
+          undefined,
+        );
+      });
+
+      it('should update active step index', () => {
         expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 2 });
-      });
-      it('should balance with more items after selected step', () => {
-        // Before: [1, current, 3, 4] : current = 1
-        // After: [current, 3, 1, 4] : current = 0
-        wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 0, newIndex: 2 });
-        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 0 });
-      });
-      it('should keep unchanged with same quantity', () => {
-        // Before: [1, current, 3, 4] : current = 1
-        // After: [1, current, 4, 3] : current = 1
-        wrapper.find('draggable-stub').vm.$emit('end', { oldIndex: 2, newIndex: 3 });
-        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 1 });
       });
     });
   });

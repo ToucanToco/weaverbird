@@ -5,7 +5,6 @@
       v-model="arrangedSteps"
       handle=".query-pipeline-step__action--handle"
       draggable=".query-pipeline-step__container--draggable"
-      @end="updateSelectedStep"
     >
       <Step
         v-for="(step, index) in arrangedSteps"
@@ -74,7 +73,6 @@ export default class PipelineComponent extends Vue {
 
   @VQBModule.State domains!: string[];
   @VQBModule.State variableDelimiters!: VariableDelimiters;
-  @VQBModule.State selectedStepIndex!: number;
 
   @VQBModule.Getter('computedActiveStepIndex') activeStepIndex!: number;
   @VQBModule.Getter domainStep!: DomainStep;
@@ -91,16 +89,11 @@ export default class PipelineComponent extends Vue {
   }
 
   set arrangedSteps(pipeline: Pipeline) {
-    this.setPipeline({ pipeline });
+    this.updatePipeline({ pipeline });
   }
 
   get isDeletingSteps(): boolean {
     return this.stepsToDelete.length > 0;
-  }
-
-  get currentSelectedIndex(): number {
-    // selectedStepIndex for last step is -1 by default, we need to retrieve real index
-    return this.selectedStepIndex === -1 ? this.steps.length - 1 : this.selectedStepIndex;
   }
 
   editStep(step: PipelineStep, index: number) {
@@ -131,30 +124,16 @@ export default class PipelineComponent extends Vue {
     this.closeDeleteConfirmationModal();
   }
 
-  /**
-   * Find the new selected index to apply after steps reordering
-   * 1. If current selected step has been moved => we need to apply new index
-   * 2. If another step has been moved:
-   *  a. Amount of steps has changed before/after selected step => we need to balance to retrieve the correct index
-   *  b. Amount of steps has not changed before/after selected step => no impact on selected index
-   */
-  findCurrentSelectedIndex({ newIndex, oldIndex }: { newIndex: number; oldIndex: number }): number {
-    if (this.currentSelectedIndex === oldIndex) {
-      return newIndex;
-    } else if (oldIndex < this.currentSelectedIndex && newIndex >= this.currentSelectedIndex) {
-      return this.currentSelectedIndex - 1;
-    } else if (oldIndex > this.currentSelectedIndex && newIndex <= this.currentSelectedIndex) {
-      return this.currentSelectedIndex + 1;
-    } else {
-      return this.currentSelectedIndex;
-    }
-  }
-
-  updateSelectedStep(event: any): void {
-    const index = this.findCurrentSelectedIndex(event);
-    if (index !== this.currentSelectedIndex) {
-      this.selectStep({ index });
-    }
+  updatePipeline({ pipeline }: { pipeline: Pipeline }): void {
+    // keep active step content in memory to retrieve new index
+    const selectedStepContent = JSON.stringify(this.steps[this.activeStepIndex]);
+    // update pipeline
+    this.setPipeline({ pipeline });
+    // update index of active step based on old content
+    const newActiveStepIndex = this.steps.findIndex(
+      (step: PipelineStep) => JSON.stringify(step) === selectedStepContent,
+    );
+    this.selectStep({ index: newActiveStepIndex });
   }
 }
 </script>
