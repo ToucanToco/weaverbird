@@ -177,5 +177,6 @@ export default class Popover extends Vue {
   font-family: 'Montserrat', sans-serif;
   position: absolute;
   visibility: visible;
+  z-index: 2; 
 }
 </style>
