@@ -31,6 +31,7 @@ describe('Pipeline.vue', () => {
       isFirst: true,
       isLast: false,
       toDelete: false,
+      isEditable: true,
       indexInPipeline: 0,
     });
     expect(step2).toEqual({
@@ -41,6 +42,7 @@ describe('Pipeline.vue', () => {
       isFirst: false,
       isLast: false,
       toDelete: false,
+      isEditable: true,
       indexInPipeline: 1,
     });
     expect(step3).toEqual({
@@ -51,6 +53,7 @@ describe('Pipeline.vue', () => {
       isFirst: false,
       isLast: true,
       toDelete: false,
+      isEditable: true,
       indexInPipeline: 2,
     });
   });
@@ -113,6 +116,10 @@ describe('Pipeline.vue', () => {
         expect(wrapper.find('.query-pipeline__delete-steps').text()).toContain(
           'Delete [2] selected',
         );
+      });
+      it('should make steps uneditable', () => {
+        const steps = wrapper.findAll('step-stub');
+        steps.wrappers.map(stub => expect(stub.props().isEditable).toBe(false));
       });
     });
 
@@ -197,6 +204,54 @@ describe('Pipeline.vue', () => {
       });
       it('should clean the selected steps', () => {
         expect((wrapper.vm as any).stepsToDelete).toStrictEqual([]);
+      });
+    });
+  });
+
+  describe('reorder steps', () => {
+    let wrapper: Wrapper<PipelineComponent>,
+      commitSpy: jest.SpyInstance,
+      dispatchSpy: jest.SpyInstance;
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+        { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      commitSpy = jest.spyOn(store, 'commit');
+      dispatchSpy = jest.spyOn(store, 'dispatch');
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    it('should have a draggable steps list as pipeline', () => {
+      expect(wrapper.find('Draggable-stub').exists()).toBe(true);
+    });
+    describe('when steps position are arranged', () => {
+      const reorderedPipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+
+      beforeEach(async () => {
+        wrapper.find('draggable-stub').vm.$emit('input', reorderedPipeline); // fake drag/drop step action
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should rerender pipeline', () => {
+        expect(commitSpy).toHaveBeenCalledWith(
+          VQBnamespace('setPipeline'),
+          { pipeline: reorderedPipeline },
+          undefined,
+        );
+      });
+
+      it('should update active step index', () => {
+        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 2 });
       });
     });
   });

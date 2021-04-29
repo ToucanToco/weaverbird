@@ -12,10 +12,22 @@
     <div class="query-pipeline-step" @click="select()">
       <div class="query-pipeline-step__body">
         <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
-        <div class="query-pipeline-step__actions">
+        <div
+          class="query-pipeline-step__actions"
+          :class="{
+            'query-pipeline-step__actions--disabled': !isEditable,
+          }"
+        >
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
           <div class="query-pipeline-step__action" @click.stop="editStep()">
             <i class="far fa-cog" aria-hidden="true" />
+          </div>
+          <div
+            class="query-pipeline-step__action query-pipeline-step__action--handle"
+            v-if="!isFirst"
+            @click.stop
+          >
+            <i class="fa fa-align-justify" aria-hidden="true" />
           </div>
         </div>
       </div>
@@ -58,6 +70,9 @@ export default class Step extends Vue {
   @Prop(Boolean)
   readonly toDelete!: boolean;
 
+  @Prop({ type: Boolean, default: true })
+  readonly isEditable?: boolean;
+
   @Prop()
   step!: PipelineStep;
 
@@ -93,6 +108,7 @@ export default class Step extends Vue {
     return {
       'query-pipeline-step__container': true,
       'query-pipeline-step__container--togglable': !this.isFirst,
+      'query-pipeline-step__container--draggable': !this.isFirst,
       'query-pipeline-step__container--to-delete': this.toDelete,
       'query-pipeline-step__container--active': this.isActive,
       'query-pipeline-step__container--last-active': this.isLastActive,
@@ -162,7 +178,7 @@ export default class Step extends Vue {
 }
 
 .query-pipeline-queue__dot {
-  background-color: $active-color-faded-2;
+  background-color: $active-color-faded-3;
   width: 20px;
   height: 20px;
   border-radius: 50%;
@@ -193,7 +209,7 @@ export default class Step extends Vue {
   width: 2px;
   flex-grow: 1;
   justify-self: end;
-  background-color: $active-color-faded-2;
+  background-color: $active-color-faded-3;
 }
 
 .query-pipeline-queue__stroke--hidden {
@@ -233,6 +249,16 @@ export default class Step extends Vue {
   display: flex;
   flex-direction: row;
   height: 100%;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.query-pipeline-step__actions--disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  .query-pipeline-step__action {
+    pointer-events: none;
+  }
 }
 
 .query-pipeline-step__action {

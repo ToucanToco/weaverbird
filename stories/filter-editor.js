@@ -66,6 +66,7 @@ stories.add('with some variables available', () => ({
         :filter-tree="filterTree"
         @filterTreeUpdated="updateFilterTree"
         :available-variables="availableVariables"
+        :variableDelimiters="variableDelimiters"
       />
       <pre style="margin-top: 30px;">{{ filterTreeStringify }}</pre>
     </div>
@@ -88,8 +89,9 @@ stories.add('with some variables available', () => ({
       filterTree: {
         column: 'my_col',
         operator: 'in',
-        value: '{{ someArray }}',
+        value: ['{{ someArray }}'],
       },
+      variableDelimiters: { start: '{{', end: '}}' },
       defaultValue: { column: '', value: '', operator: 'eq' },
     };
   },

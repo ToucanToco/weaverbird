@@ -50,6 +50,7 @@ class Actions {
   }
 
   async updateDataset({ commit, getters, state }: ActionContext<VQBState, any>) {
+    commit('logBackendMessages', { backendMessages: [] }); // clear backendMessages
     try {
       commit('setLoading', { type: 'dataset', isLoading: true });
       commit('toggleRequestOnGoing', { isRequestOnGoing: true });
