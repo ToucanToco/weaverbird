@@ -2,13 +2,13 @@
   <div class="query-pipeline">
     <Draggable
       class="query-pipeline__draggable"
-      v-model="orderedSteps"
+      v-model="arrangedSteps"
       handle=".query-pipeline-step__action--handle"
       draggable=".query-pipeline-step__container--draggable"
       @end="updateSelectedStep"
     >
       <Step
-        v-for="(step, index) in orderedSteps"
+        v-for="(step, index) in arrangedSteps"
         :key="index"
         :is-active="index < activeStepIndex"
         :is-last-active="index === activeStepIndex"
@@ -86,11 +86,11 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
 
-  get orderedSteps(): Pipeline {
+  get arrangedSteps(): Pipeline {
     return this.steps;
   }
 
-  set orderedSteps(pipeline: Pipeline) {
+  set arrangedSteps(pipeline: Pipeline) {
     this.setPipeline({ pipeline });
   }
 
