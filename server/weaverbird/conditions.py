@@ -28,9 +28,7 @@ class ComparisonCondition(BaseCondition):
 
     @validator('value')
     def value_must_have_compatible_type_pandas(cls, v):
-        print(f'validating value {cls=} {v=} ')
         if isinstance(v, datetime):
-            print(f'converting {v} to pandas datetime')
             return to_datetime(v.replace(tzinfo=None), utc=False)
         return v
 
