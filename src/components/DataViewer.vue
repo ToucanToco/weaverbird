@@ -85,7 +85,7 @@
 import _ from 'lodash';
 import VTooltip from 'v-tooltip';
 import Vue from 'vue';
-import { Component, Watch } from 'vue-property-decorator';
+import { Component, Watch, ProvideReactive } from 'vue-property-decorator';
 
 import Pagination from '@/components/Pagination.vue';
 import { resizable } from '@/directives/resizable/resizable';
@@ -141,6 +141,12 @@ export default class DataViewer extends Vue {
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';
+
+  @ProvideReactive() rootContainer: Element = document.body;
+
+  mounted() {
+    this.rootContainer = this.$parent.$el;
+  }
 
   /**
    * @description Get our columns with their names and linked classes
@@ -264,6 +270,7 @@ export default class DataViewer extends Vue {
   height: 100%;
   display: flex;
   flex-direction: column;
+
   @extend %main-font-style;
   ::v-deep *,
   ::v-deep ::after,

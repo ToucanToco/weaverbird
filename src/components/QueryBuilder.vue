@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 import Vue from 'vue';
-import { Component } from 'vue-property-decorator';
+import { Component, ProvideReactive } from 'vue-property-decorator';
 
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
@@ -73,6 +73,12 @@ export default class QueryBuilder extends Vue {
   @VQBModule.Action selectStep!: (payload: { index: number }) => void;
   @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
   @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
+
+  @ProvideReactive() rootContainer: Element = document.body;
+
+  mounted() {
+    this.rootContainer = this.$parent.$el;
+  }
 
   get isStepCreation() {
     return this.stepFormInitialValue === undefined;

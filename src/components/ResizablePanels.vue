@@ -59,6 +59,7 @@ export default class ResizablePanels extends Vue {
   display: flex;
   max-height: 100%;
   height: 100%;
+  position: relative;
 }
 
 .resizable-panels__panel {

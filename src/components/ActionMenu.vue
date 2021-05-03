@@ -113,7 +113,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
-import { DataSetColumn } from '@/lib/dataset/index.ts';
+import { DataSetColumn } from '@/lib/dataset/index.js';
 import { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
