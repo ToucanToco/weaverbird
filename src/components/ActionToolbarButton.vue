@@ -1,5 +1,5 @@
 <template>
-  <button type="button" class="action-toolbar__btn">
+  <button type="button" class="action-toolbar__btn" data-cy="weaverbird-action-menu">
     <i :class="`action-toolbar__btn-icon fas fa-${icon}`" aria-hidden="true" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
     <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
@@ -9,6 +9,7 @@
             v-for="(item, index) in items"
             :key="index"
             class="action-menu__option"
+            data-cy="weaverbird-action-menu-option"
             @click="actionClicked(item.name, item.defaults)"
           >
             {{ item.label }}

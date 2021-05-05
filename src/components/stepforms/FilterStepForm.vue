@@ -1,5 +1,5 @@
 <template>
-  <div class="filter-form">
+  <div class="filter-form" data-cy="weaverbirder-filter-step-form">
     <StepFormHeader
       :title="title"
       :stepName="editedStep.name"

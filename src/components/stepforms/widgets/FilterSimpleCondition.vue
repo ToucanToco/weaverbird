@@ -1,6 +1,9 @@
 <template>
   <div class="filter-form-simple-condition__container">
-    <div class="filter-form-simple-condition-column-input">
+    <div
+      class="filter-form-simple-condition-column-input"
+      data-cy="weaverbird-filter-form-column-input"
+    >
       <AutocompleteWidget
         class="columnInput"
         :value="value.column"
@@ -13,7 +16,10 @@
         :errors="errors"
       />
     </div>
-    <div class="filter-form-simple-condition-operator-input">
+    <div
+      class="filter-form-simple-condition-operator-input"
+      data-cy="weaverbird-filter-form-operator-input"
+    >
       <AutocompleteWidget
         class="filterOperator"
         :value="operator"

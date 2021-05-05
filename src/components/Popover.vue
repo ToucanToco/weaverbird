@@ -1,5 +1,5 @@
 <template>
-  <span class="popover" :style="elementStyle" @click.stop>
+  <span class="popover" data-cy="weaverbird-popover" :style="elementStyle" @click.stop>
     <slot />
   </span>
 </template>
