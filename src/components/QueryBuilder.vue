@@ -1,5 +1,5 @@
 <template>
-  <div class="query-builder" v-if="pipeline">
+  <div class="query-builder" data-cy="weaverbird-query-builder" v-if="pipeline">
     <transition v-if="isEditingStep" name="slide-right" mode="out-in">
       <component
         key="stepForm"
