@@ -6,7 +6,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import { Component, InjectReactive, Prop, Watch } from 'vue-property-decorator';
+import { Component, Inject, Prop, Watch } from 'vue-property-decorator';
 
 import { Alignment } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
@@ -62,7 +62,7 @@ export default class Popover extends Vue {
   bottom!: boolean;
 
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
-  @InjectReactive({ default: document.body }) weaverbirdPopoverContainer!: Element;
+  @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
 
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
