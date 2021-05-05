@@ -61,7 +61,8 @@ export default class Popover extends Vue {
   })
   bottom!: boolean;
 
-  @InjectReactive() rootContainer!: Element;
+  // Inject any element as `weaverbirdPopoverContainer` in any parent component
+  @InjectReactive({ default: document.body }) weaverbirdPopoverContainer!: Element;
 
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
@@ -93,7 +94,7 @@ export default class Popover extends Vue {
     const parents = [];
     let { parent } = this;
 
-    while (parent !== this.rootContainer) {
+    while (parent !== this.weaverbirdPopoverContainer) {
       parents.push(parent);
       if (parent.parentElement) {
         parent = parent.parentElement;
@@ -122,7 +123,7 @@ export default class Popover extends Vue {
   }
 
   setupPositioning() {
-    this.rootContainer.appendChild(this.$el);
+    this.weaverbirdPopoverContainer.appendChild(this.$el);
     this.updatePosition();
     // Attach listeners
     window.addEventListener('click', this.clickListener);
@@ -156,13 +157,11 @@ export default class Popover extends Vue {
       }
 
       const positionContext = {
-        body: this.rootContainer.getBoundingClientRect(),
+        body: this.weaverbirdPopoverContainer.getBoundingClientRect(),
         parent: this.parent.getBoundingClientRect(),
         element: this.$el,
         window,
       };
-      console.log('positionContext.body =>', positionContext.body);
-      console.log('parent: this.parent.getBoundingClientRect() =>', this.parent.getBoundingClientRect());
       // Set alignment
       const elementStyle: ElementPosition = DOMUtil.align(this.align, positionContext);
       elementStyle.top = DOMUtil.computeTop(this.bottom, positionContext);
