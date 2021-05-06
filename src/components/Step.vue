@@ -11,7 +11,12 @@
     </div>
     <div class="query-pipeline-step" @click="select()">
       <div class="query-pipeline-step__body">
-        <span class="query-pipeline-step__name" :title="stepTitle" v-html="stepLabel" />
+        <span
+          class="query-pipeline-step__name"
+          data-cy="weaverbird-query-pipeline-step-name"
+          :title="stepTitle"
+          v-html="stepLabel"
+        />
         <div
           class="query-pipeline-step__actions"
           :class="{

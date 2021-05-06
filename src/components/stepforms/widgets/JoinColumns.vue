@@ -12,6 +12,7 @@
     />
     <InputTextWidget
       class="rightOn"
+      data-cy="weaverbird-join-column-right-on"
       v-model="rightOnColumn"
       placeholder="Right dataset column"
       :data-path="`${dataPath}[1]`"

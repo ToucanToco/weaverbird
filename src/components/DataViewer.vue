@@ -42,6 +42,7 @@
                 </span>
                 <span
                   class="data-viewer__header-label"
+                  data-cy="weaverbird-data-viewer-header-label"
                   v-tooltip.top="{
                     targetClasses: 'has-weaverbird__tooltip',
                     classes: 'weaverbird__tooltip',
