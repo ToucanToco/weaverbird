@@ -6,7 +6,7 @@
 <script lang="ts">
 import _ from 'lodash';
 import Vue from 'vue';
-import { Component, Prop, Watch } from 'vue-property-decorator';
+import { Component, Inject, Prop, Watch } from 'vue-property-decorator';
 
 import { Alignment } from '@/components/constants';
 import * as DOMUtil from '@/components/domutil';
@@ -61,6 +61,9 @@ export default class Popover extends Vue {
   })
   bottom!: boolean;
 
+  // Inject any element as `weaverbirdPopoverContainer` in any parent component
+  @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
+
   elementStyle: ElementPosition = {};
   parent: HTMLElement | null = null;
   element: HTMLElement | null = null;
@@ -91,7 +94,7 @@ export default class Popover extends Vue {
     const parents = [];
     let { parent } = this;
 
-    while (parent !== document.body) {
+    while (parent !== this.weaverbirdPopoverContainer) {
       parents.push(parent);
       if (parent.parentElement) {
         parent = parent.parentElement;
@@ -120,9 +123,7 @@ export default class Popover extends Vue {
   }
 
   setupPositioning() {
-    // Move the popover into the body to prevent its hiding by an
-    // `overflow: hidden` container
-    document.body.appendChild(this.$el);
+    this.weaverbirdPopoverContainer.appendChild(this.$el);
     this.updatePosition();
     // Attach listeners
     window.addEventListener('click', this.clickListener);
@@ -156,7 +157,7 @@ export default class Popover extends Vue {
       }
 
       const positionContext = {
-        body: document.body.getBoundingClientRect(),
+        body: this.weaverbirdPopoverContainer.getBoundingClientRect(),
         parent: this.parent.getBoundingClientRect(),
         element: this.$el,
         window,
