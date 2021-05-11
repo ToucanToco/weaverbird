@@ -51,6 +51,10 @@ export function isReference(pipelineOrReference: Reference): pipelineOrReference
   return typeof pipelineOrReference === 'string';
 }
 
+export function isPipelineStep(step: any): step is PipelineStep {
+  return typeof step === 'object' && 'name' in step;
+}
+
 export type AddMissingDatesStep = {
   name: 'addmissingdates';
   datesColumn: string;
