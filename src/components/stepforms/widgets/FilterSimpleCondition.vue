@@ -4,8 +4,8 @@
       <AutocompleteWidget
         class="columnInput"
         :value="value.column"
-        :available-variables="hideColumnVariables === true ? undefined : availableVariables"
-        :variable-delimiters="hideColumnVariables === true ? undefined : variableDelimiters"
+        :available-variables="hideColumnVariables ? undefined : availableVariables"
+        :variable-delimiters="hideColumnVariables ? undefined : variableDelimiters"
         :options="columnNames"
         @input="updateStepColumn"
         placeholder="Column"
