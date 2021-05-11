@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.47.1] - 2021-05-11
 
 ### Fixed
 - IfThenElseStep: enable to use dates in condition
@@ -751,6 +751,7 @@
 
 - Initial version, showtime!
 
+[0.47.1]: https://github.com/ToucanToco/weaverbird/compare/v0.47.0...v0.47.1
 [0.47.0]: https://github.com/ToucanToco/weaverbird/compare/v0.46.4...v0.47.0
 [0.46.4]: https://github.com/ToucanToco/weaverbird/compare/v0.46.2...v0.46.4
 [0.46.2]: https://github.com/ToucanToco/weaverbird/compare/v0.46.1...v0.46.2
