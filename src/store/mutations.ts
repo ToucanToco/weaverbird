@@ -208,9 +208,15 @@ class Mutations {
     if (state.currentPipelineName === undefined || pipeline === undefined) {
       return;
     }
-    const newPipeline = [...pipeline, ...steps];
+    const newPipeline = Array.from(pipeline);
+    // add steps just after selected steps
+    // but always after domain
+    const addIndex = state.selectedStepIndex >= 0 ? state.selectedStepIndex + 1 : 1;
+    newPipeline.splice(addIndex, 0, ...steps);
     state.pipelines[state.currentPipelineName] = newPipeline;
-    state.selectedStepIndex = newPipeline.length - 1;
+    const lastAddedStepIndex = addIndex + steps.length - 1;
+    // select last added step
+    state.selectedStepIndex = lastAddedStepIndex;
   }
   /**
    * change current selected domain and reset pipeline accordingly.

@@ -454,8 +454,14 @@ describe('mutation tests', () => {
       expect(currentPipeline(state)).toBeUndefined();
     });
 
-    it('should add selected steps to pipeline and select the last available one', () => {
-      const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
+    it('should add selected steps to pipeline at selected index and select the last added step', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['bobo', 'babar']] },
+        { name: 'rename', toRename: [['bibi', 'bubu']] },
+      ];
       const state = buildStateWithOnePipeline(pipeline, {
         dataset: {
           headers: [],
@@ -463,16 +469,57 @@ describe('mutation tests', () => {
           paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
         },
       });
+      mutations.selectStep(state, { index: 2 }); // select step 2
       mutations.addSteps(state, {
         steps: [
-          { name: 'rename', toRename: [['foo', 'bar']] },
-          { name: 'rename', toRename: [['baz', 'spam']] },
+          { name: 'rename', toRename: [['lalalolilol', 'lol']] },
+          { name: 'rename', toRename: [['trololol', 'lala']] },
         ],
       });
       expect(currentPipeline(state)).toEqual([
         { name: 'domain', domain: 'foo' },
         { name: 'rename', toRename: [['foo', 'bar']] },
         { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['lalalolilol', 'lol']] },
+        { name: 'rename', toRename: [['trololol', 'lala']] },
+        { name: 'rename', toRename: [['bobo', 'babar']] },
+        { name: 'rename', toRename: [['bibi', 'bubu']] },
+      ]);
+      expect(state.selectedStepIndex).toEqual(4);
+      // make sure the pagination is reset
+      expect(state.dataset.paginationContext?.pageno).toEqual(1);
+    });
+
+    it('should never add  selected steps before domain step', () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['bobo', 'babar']] },
+        { name: 'rename', toRename: [['bibi', 'bubu']] },
+      ];
+      const state = buildStateWithOnePipeline(pipeline, {
+        dataset: {
+          headers: [],
+          data: [],
+          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        },
+      });
+      mutations.selectStep(state, { index: -1 }); // select step 2
+      mutations.addSteps(state, {
+        steps: [
+          { name: 'rename', toRename: [['lalalolilol', 'lol']] },
+          { name: 'rename', toRename: [['trololol', 'lala']] },
+        ],
+      });
+      expect(currentPipeline(state)).toEqual([
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', toRename: [['lalalolilol', 'lol']] },
+        { name: 'rename', toRename: [['trololol', 'lala']] },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+        { name: 'rename', toRename: [['bobo', 'babar']] },
+        { name: 'rename', toRename: [['bibi', 'bubu']] },
       ]);
       expect(state.selectedStepIndex).toEqual(2);
       // make sure the pagination is reset
