@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
+import * as clipboardUtils from '@/lib/clipboard';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
 
@@ -252,6 +253,98 @@ describe('Pipeline.vue', () => {
 
       it('should update active step index', () => {
         expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 2 });
+      });
+    });
+  });
+
+  describe('copy steps', () => {
+    let wrapper: Wrapper<PipelineComponent>, copyToClipboardStub: jest.SpyInstance;
+    const ctrlC = () => {
+      (wrapper.vm as any).keyDownEventHandler({ keyCode: 67, ctrlKey: true }); // fake ctrl + c;
+    };
+
+    beforeEach(() => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      copyToClipboardStub = jest.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation();
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    it('should not copy selected steps content if empty', () => {
+      ctrlC();
+      expect(copyToClipboardStub).not.toHaveBeenCalled();
+    });
+
+    it('should copy selected steps content to clipboard', () => {
+      const selectedSteps = [1, 2];
+      wrapper.setData({ selectedSteps });
+      ctrlC();
+      const stringifiedStepsContent = JSON.stringify([
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ]);
+      expect(copyToClipboardStub).toHaveBeenCalledWith(stringifiedStepsContent);
+    });
+  });
+  describe('past steps', () => {
+    let wrapper: Wrapper<PipelineComponent>,
+      dispatchSpy: jest.SpyInstance,
+      pasteFromClipboardStub: jest.SpyInstance;
+    const ctrlV = () => {
+      (wrapper.vm as any).keyDownEventHandler({ keyCode: 86, ctrlKey: true }); // fake ctrl + v;
+    };
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+        { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      dispatchSpy = jest.spyOn(store, 'dispatch');
+      pasteFromClipboardStub = jest
+        .spyOn(clipboardUtils, 'pasteFromClipboard')
+        .mockImplementation();
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    describe('with valid steps', () => {
+      const stepsFromClipboard = [
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        ctrlV();
+      });
+      it('should retrieved selected steps from clipboard', () => {
+        expect(pasteFromClipboardStub).toHaveBeenCalled();
+      });
+      it('should add steps to pipeline', () => {
+        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
+      });
+    });
+
+    describe('with invalid steps', () => {
+      const stepsFromClipboard = [
+        'TOTO',
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        ctrlV();
+      });
+      it('should not add steps to pipeline', () => {
+        expect(dispatchSpy).not.toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
       });
     });
   });

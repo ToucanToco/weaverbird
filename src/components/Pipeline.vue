@@ -50,7 +50,8 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Draggable from 'vuedraggable';
 
-import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
+import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
+import { DomainStep, isPipelineStep, Pipeline, PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -82,6 +83,7 @@ export default class PipelineComponent extends Vue {
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
   @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
+  @VQBModule.Action addSteps!: (payload: { steps: PipelineStep[] }) => void;
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
 
   get arrangedSteps(): Pipeline {
@@ -94,6 +96,14 @@ export default class PipelineComponent extends Vue {
 
   get isDeletingSteps(): boolean {
     return this.selectedSteps.length > 0;
+  }
+
+  created() {
+    document.addEventListener('keydown', this.keyDownEventHandler);
+  }
+
+  destroyed() {
+    document.removeEventListener('keydown', this.keyDownEventHandler);
   }
 
   editStep(step: PipelineStep, index: number) {
@@ -134,6 +144,38 @@ export default class PipelineComponent extends Vue {
       (step: PipelineStep) => JSON.stringify(step) === selectedStepContent,
     );
     this.selectStep({ index: newActiveStepIndex });
+  }
+
+  keyDownEventHandler(event: KeyboardEvent): void {
+    const isPasting: boolean = event.keyCode == 86 && event.ctrlKey;
+    const isCopying: boolean = event.keyCode == 67 && event.ctrlKey;
+    if (isCopying) {
+      this.copySelectedSteps();
+    } else if (isPasting) {
+      this.pasteSelectedSteps();
+    }
+  }
+
+  async copySelectedSteps(): Promise<void> {
+    // make sure we have selected steps to copy
+    if (!this.selectedSteps.length) return;
+    // retrieve content of selected steps based on indexes
+    const selectedStepsContent: Pipeline = this.steps.filter(
+      (_, i: number) => this.selectedSteps.indexOf(i) !== -1,
+    );
+    // copy selected steps content to clipboard
+    await copyToClipboard(JSON.stringify(selectedStepsContent));
+  }
+
+  async pasteSelectedSteps(): Promise<void> {
+    // retrieve data from clipboard
+    const stepsFromClipBoard: string = await pasteFromClipboard();
+    // parse steps string
+    const parsedSteps: PipelineStep[] = JSON.parse(stepsFromClipBoard) ?? [];
+    // verify is steps object are well formatted
+    const checkStepFormat: boolean = parsedSteps.every(step => isPipelineStep(step));
+    // add new steps to pipeline
+    if (checkStepFormat) this.addSteps({ steps: parsedSteps });
   }
 }
 </script>
