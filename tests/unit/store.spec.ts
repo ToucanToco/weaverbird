@@ -442,6 +442,44 @@ describe('mutation tests', () => {
     });
   });
 
+  describe('addSteps', function() {
+    it('should do nothing if no pipeline is selected', () => {
+      const state = buildState({});
+      mutations.addSteps(state, {
+        steps: [
+          { name: 'rename', toRename: [['foo', 'bar']] },
+          { name: 'rename', toRename: [['baz', 'spam']] },
+        ],
+      });
+      expect(currentPipeline(state)).toBeUndefined();
+    });
+
+    it('should add selected steps to pipeline and select the last available one', () => {
+      const pipeline: Pipeline = [{ name: 'domain', domain: 'foo' }];
+      const state = buildStateWithOnePipeline(pipeline, {
+        dataset: {
+          headers: [],
+          data: [],
+          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
+        },
+      });
+      mutations.addSteps(state, {
+        steps: [
+          { name: 'rename', toRename: [['foo', 'bar']] },
+          { name: 'rename', toRename: [['baz', 'spam']] },
+        ],
+      });
+      expect(currentPipeline(state)).toEqual([
+        { name: 'domain', domain: 'foo' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'rename', toRename: [['baz', 'spam']] },
+      ]);
+      expect(state.selectedStepIndex).toEqual(2);
+      // make sure the pagination is reset
+      expect(state.dataset.paginationContext?.pageno).toEqual(1);
+    });
+  });
+
   it('sets current domain on empty pipeline', () => {
     const state = buildStateWithOnePipeline([], { currentDomain: 'foo' });
     expect(state.currentDomain).toEqual('foo');

@@ -3,7 +3,7 @@ import { ActionContext, ActionTree } from 'vuex';
 import { BackendError } from '@/lib/backend';
 import { addLocalUniquesToDataset, updateLocalUniquesFromDatabase } from '@/lib/dataset/helpers.ts';
 import { pageOffset } from '@/lib/dataset/pagination';
-import { Pipeline } from '@/lib/steps';
+import { Pipeline, PipelineStep } from '@/lib/steps';
 
 import { VQBState } from './state';
 
@@ -110,6 +110,14 @@ class Actions {
     { indexes }: { indexes: number[] },
   ) {
     commit('deleteSteps', { indexes });
+    dispatch('updateDataset');
+  }
+
+  addSteps(
+    { commit, dispatch }: ActionContext<VQBState, any>,
+    { steps }: { steps: PipelineStep[] },
+  ) {
+    commit('addSteps', { steps });
     dispatch('updateDataset');
   }
 
