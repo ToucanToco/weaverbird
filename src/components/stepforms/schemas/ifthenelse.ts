@@ -125,7 +125,7 @@ export default {
           },
         },
         value: {
-          type: ['string', 'number', 'boolean', 'null', 'array'],
+          type: ['string', 'number', 'boolean', 'null', 'array', 'object'],
           minLength: 1,
           title: 'Value',
           description: 'The value to compare',

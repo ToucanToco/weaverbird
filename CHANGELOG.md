@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- IfThenElseStep: enable to use dates in condition
+
 ## [0.47.0] - 2021-04-29
 
 ### Added
