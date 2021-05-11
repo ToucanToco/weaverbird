@@ -24,10 +24,10 @@
         @toggleDelete="toggleStepToDelete({ index })"
       />
     </Draggable>
-    <div class="query-pipeline__delete-steps-container" v-if="stepsToDelete.length">
+    <div class="query-pipeline__delete-steps-container" v-if="selectedSteps.length">
       <div class="query-pipeline__delete-steps" @click="openDeleteConfirmationModal">
         <i aria-hidden="true" class="fas fa-trash" />
-        Delete [{{ stepsToDelete.length }}] selected
+        Delete [{{ selectedSteps.length }}] selected
       </div>
     </div>
     <div class="query-pipeline__tips-container">
@@ -68,7 +68,7 @@ import Step from './Step.vue';
 })
 export default class PipelineComponent extends Vue {
   // pipeline steps to delete based on their indexes
-  stepsToDelete: number[] = [];
+  selectedSteps: number[] = [];
   deleteConfirmationModalIsOpened = false;
 
   @VQBModule.State domains!: string[];
@@ -93,7 +93,7 @@ export default class PipelineComponent extends Vue {
   }
 
   get isDeletingSteps(): boolean {
-    return this.stepsToDelete.length > 0;
+    return this.selectedSteps.length > 0;
   }
 
   editStep(step: PipelineStep, index: number) {
@@ -101,12 +101,12 @@ export default class PipelineComponent extends Vue {
   }
 
   toDelete({ index }: { index: number }): boolean {
-    return this.stepsToDelete.indexOf(index) !== -1;
+    return this.selectedSteps.indexOf(index) !== -1;
   }
 
   toggleStepToDelete({ index }: { index: number }): void {
     // toggle step to delete using its index in pipeline
-    this.stepsToDelete = _xor(this.stepsToDelete, [index]);
+    this.selectedSteps = _xor(this.selectedSteps, [index]);
   }
 
   openDeleteConfirmationModal(): void {
@@ -118,9 +118,9 @@ export default class PipelineComponent extends Vue {
   }
 
   deleteSelectedSteps(): void {
-    this.deleteSteps({ indexes: this.stepsToDelete });
+    this.deleteSteps({ indexes: this.selectedSteps });
     // clean steps to delete
-    this.stepsToDelete = [];
+    this.selectedSteps = [];
     this.closeDeleteConfirmationModal();
   }
 

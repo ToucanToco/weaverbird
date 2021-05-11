@@ -85,7 +85,7 @@ describe('Pipeline.vue', () => {
     });
 
     it('should add step index to steps to delete', () => {
-      expect((wrapper.vm as any).stepsToDelete).toContain(1);
+      expect((wrapper.vm as any).selectedSteps).toContain(1);
     });
     it('should apply delete class to step', () => {
       expect(stepToDelete.props().toDelete).toBe(true);
@@ -97,7 +97,7 @@ describe('Pipeline.vue', () => {
         await wrapper.vm.$nextTick();
       });
       it('should remove step index from step to delete', () => {
-        expect((wrapper.vm as any).stepsToDelete).not.toContain(1);
+        expect((wrapper.vm as any).selectedSteps).not.toContain(1);
       });
       it('should remove delete class from step', () => {
         expect(stepToDelete.props().toDelete).toBe(false);
@@ -106,7 +106,7 @@ describe('Pipeline.vue', () => {
 
     describe('when there is steps selected', () => {
       beforeEach(async () => {
-        wrapper.setData({ stepsToDelete: [1, 2] });
+        wrapper.setData({ selectedSteps: [1, 2] });
         await wrapper.vm.$nextTick();
       });
       it('should show the delete steps button', () => {
@@ -125,7 +125,7 @@ describe('Pipeline.vue', () => {
 
     describe('when there is no steps to delete', () => {
       beforeEach(async () => {
-        wrapper.setData({ stepsToDelete: [] });
+        wrapper.setData({ selectedSteps: [] });
         await wrapper.vm.$nextTick();
       });
       it('should hide the delete steps button', () => {
@@ -148,7 +148,7 @@ describe('Pipeline.vue', () => {
 
   describe('clicking on the delete button', () => {
     let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, dispatchSpy: jest.SpyInstance;
-    const stepsToDelete = [1, 2];
+    const selectedSteps = [1, 2];
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
@@ -159,7 +159,7 @@ describe('Pipeline.vue', () => {
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       dispatchSpy = jest.spyOn(store, 'dispatch');
       wrapper = mount(PipelineComponent, { store, localVue });
-      wrapper.setData({ stepsToDelete });
+      wrapper.setData({ selectedSteps });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
       await wrapper.vm.$nextTick();
       modal = wrapper.find(DeleteConfirmationModal);
@@ -183,7 +183,7 @@ describe('Pipeline.vue', () => {
         expect(dispatchSpy).not.toHaveBeenCalled();
       });
       it('should keep the selected steps unchanged', () => {
-        expect((wrapper.vm as any).stepsToDelete).toStrictEqual(stepsToDelete);
+        expect((wrapper.vm as any).selectedSteps).toStrictEqual(selectedSteps);
       });
     });
 
@@ -199,11 +199,11 @@ describe('Pipeline.vue', () => {
       });
       it('should delete the selected steps', () => {
         expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('deleteSteps'), {
-          indexes: stepsToDelete,
+          indexes: selectedSteps,
         });
       });
       it('should clean the selected steps', () => {
-        expect((wrapper.vm as any).stepsToDelete).toStrictEqual([]);
+        expect((wrapper.vm as any).selectedSteps).toStrictEqual([]);
       });
     });
   });
