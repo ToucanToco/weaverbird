@@ -12,6 +12,7 @@
           :columnNamesProp="Object.keys(columnTypes)"
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
+          :hideColumnVariables="hideColumnVariables"
           :data-path="slotProps.dataPath"
           :errors="errors"
           :multi-variable="multiVariable"
