@@ -4,8 +4,8 @@
       <AutocompleteWidget
         class="columnInput"
         :value="value.column"
-        :available-variables="availableVariables"
-        :variable-delimiters="variableDelimiters"
+        :available-variables="hideColumnVariables === true ? undefined : availableVariables"
+        :variable-delimiters="hideColumnVariables === true ? undefined : variableDelimiters"
         :options="columnNames"
         @input="updateStepColumn"
         placeholder="Column"
@@ -130,6 +130,9 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @Prop()
   variableDelimiters?: VariableDelimiters;
+
+  @Prop()
+  hideColumnVariables?: boolean;
 
   @Watch('hasDateSelectedColumn')
   verifyIfValueIsStillValid() {

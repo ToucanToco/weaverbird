@@ -66,6 +66,9 @@ export default class FilterEditor extends Vue {
   @Prop()
   variableDelimiters?: VariableDelimiters;
 
+  @Prop()
+  hideColumnVariables?: boolean;
+
   @Prop({ type: Boolean, default: true })
   multiVariable!: boolean; // display multiInputText as multiVariableInput
 
