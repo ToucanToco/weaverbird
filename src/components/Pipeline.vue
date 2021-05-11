@@ -99,10 +99,12 @@ export default class PipelineComponent extends Vue {
   }
 
   created() {
+    /* istanbul ignore next */
     document.addEventListener('keydown', this.keyDownEventHandler);
   }
 
   destroyed() {
+    /* istanbul ignore next */
     document.removeEventListener('keydown', this.keyDownEventHandler);
   }
 
