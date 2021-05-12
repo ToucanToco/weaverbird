@@ -505,7 +505,7 @@ describe('mutation tests', () => {
           paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
         },
       });
-      mutations.selectStep(state, { index: -1 }); // select step 2
+      mutations.selectStep(state, { index: -1 }); // select step -1
       mutations.addSteps(state, {
         steps: [
           { name: 'rename', toRename: [['lalalolilol', 'lol']] },
