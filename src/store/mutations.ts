@@ -200,7 +200,7 @@ class Mutations {
     state.selectedStepIndex = pipelineWithDeletedSteps.length - 1;
   }
   /**
-   * Add selected steps to pipeline.
+   * Add multiple steps to current pipeline.
    */
   @resetPagination
   addSteps(state: VQBState, { steps }: { steps: PipelineStep[] }) {
