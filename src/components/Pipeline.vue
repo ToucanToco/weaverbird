@@ -24,10 +24,10 @@
         @toggleDelete="toggleStepToDelete({ index })"
       />
     </Draggable>
-    <div class="query-pipeline__delete-steps-container" v-if="stepsToDelete.length">
+    <div class="query-pipeline__delete-steps-container" v-if="selectedSteps.length">
       <div class="query-pipeline__delete-steps" @click="openDeleteConfirmationModal">
         <i aria-hidden="true" class="fas fa-trash" />
-        Delete [{{ stepsToDelete.length }}] selected
+        Delete [{{ selectedSteps.length }}] selected
       </div>
     </div>
     <div class="query-pipeline__tips-container">
@@ -50,7 +50,8 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Draggable from 'vuedraggable';
 
-import { DomainStep, Pipeline, PipelineStep } from '@/lib/steps';
+import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
+import { DomainStep, isPipelineStep, Pipeline, PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -68,7 +69,7 @@ import Step from './Step.vue';
 })
 export default class PipelineComponent extends Vue {
   // pipeline steps to delete based on their indexes
-  stepsToDelete: number[] = [];
+  selectedSteps: number[] = [];
   deleteConfirmationModalIsOpened = false;
 
   @VQBModule.State domains!: string[];
@@ -82,6 +83,7 @@ export default class PipelineComponent extends Vue {
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
   @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
+  @VQBModule.Action addSteps!: (payload: { steps: PipelineStep[] }) => void;
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
 
   get arrangedSteps(): Pipeline {
@@ -93,7 +95,17 @@ export default class PipelineComponent extends Vue {
   }
 
   get isDeletingSteps(): boolean {
-    return this.stepsToDelete.length > 0;
+    return this.selectedSteps.length > 0;
+  }
+
+  created() {
+    /* istanbul ignore next */
+    document.addEventListener('keydown', this.keyDownEventHandler);
+  }
+
+  destroyed() {
+    /* istanbul ignore next */
+    document.removeEventListener('keydown', this.keyDownEventHandler);
   }
 
   editStep(step: PipelineStep, index: number) {
@@ -101,12 +113,12 @@ export default class PipelineComponent extends Vue {
   }
 
   toDelete({ index }: { index: number }): boolean {
-    return this.stepsToDelete.indexOf(index) !== -1;
+    return this.selectedSteps.indexOf(index) !== -1;
   }
 
   toggleStepToDelete({ index }: { index: number }): void {
     // toggle step to delete using its index in pipeline
-    this.stepsToDelete = _xor(this.stepsToDelete, [index]);
+    this.selectedSteps = _xor(this.selectedSteps, [index]);
   }
 
   openDeleteConfirmationModal(): void {
@@ -118,9 +130,9 @@ export default class PipelineComponent extends Vue {
   }
 
   deleteSelectedSteps(): void {
-    this.deleteSteps({ indexes: this.stepsToDelete });
+    this.deleteSteps({ indexes: this.selectedSteps });
     // clean steps to delete
-    this.stepsToDelete = [];
+    this.selectedSteps = [];
     this.closeDeleteConfirmationModal();
   }
 
@@ -134,6 +146,39 @@ export default class PipelineComponent extends Vue {
       (step: PipelineStep) => JSON.stringify(step) === selectedStepContent,
     );
     this.selectStep({ index: newActiveStepIndex });
+  }
+
+  keyDownEventHandler(event: KeyboardEvent): void {
+    const isPasting: boolean = event.keyCode == 86 && event.ctrlKey;
+    const isCopying: boolean = event.keyCode == 67 && event.ctrlKey;
+    if (isCopying) {
+      this.copySelectedSteps();
+    } else if (isPasting) {
+      this.pasteSelectedSteps();
+    }
+  }
+
+  async copySelectedSteps(): Promise<void> {
+    // make sure we have selected steps to copy
+    if (!this.selectedSteps.length) return;
+    // retrieve content of selected steps based on indexes
+    const selectedStepsContent: Pipeline = this.steps.filter(
+      (_, i: number) => this.selectedSteps.indexOf(i) !== -1,
+    );
+    // copy selected steps content to clipboard
+    await copyToClipboard(JSON.stringify(selectedStepsContent));
+  }
+
+  async pasteSelectedSteps(): Promise<void> {
+    // retrieve data from clipboard
+    const stepsFromClipBoard: string = await pasteFromClipboard();
+    // parse steps string
+    const parsedSteps: any = JSON.parse(stepsFromClipBoard) ?? [];
+    // verify is steps object are well formatted
+    if (Array.isArray(parsedSteps) && parsedSteps.every(step => isPipelineStep(step))) {
+      // add new steps to pipeline
+      this.addSteps({ steps: parsedSteps });
+    }
   }
 }
 </script>

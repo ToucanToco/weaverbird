@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import DeleteConfirmationModal from '@/components/DeleteConfirmationModal.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
+import * as clipboardUtils from '@/lib/clipboard';
 import { Pipeline } from '@/lib/steps';
 import { VQBnamespace } from '@/store';
 
@@ -85,7 +86,7 @@ describe('Pipeline.vue', () => {
     });
 
     it('should add step index to steps to delete', () => {
-      expect((wrapper.vm as any).stepsToDelete).toContain(1);
+      expect((wrapper.vm as any).selectedSteps).toContain(1);
     });
     it('should apply delete class to step', () => {
       expect(stepToDelete.props().toDelete).toBe(true);
@@ -97,7 +98,7 @@ describe('Pipeline.vue', () => {
         await wrapper.vm.$nextTick();
       });
       it('should remove step index from step to delete', () => {
-        expect((wrapper.vm as any).stepsToDelete).not.toContain(1);
+        expect((wrapper.vm as any).selectedSteps).not.toContain(1);
       });
       it('should remove delete class from step', () => {
         expect(stepToDelete.props().toDelete).toBe(false);
@@ -106,7 +107,7 @@ describe('Pipeline.vue', () => {
 
     describe('when there is steps selected', () => {
       beforeEach(async () => {
-        wrapper.setData({ stepsToDelete: [1, 2] });
+        wrapper.setData({ selectedSteps: [1, 2] });
         await wrapper.vm.$nextTick();
       });
       it('should show the delete steps button', () => {
@@ -125,7 +126,7 @@ describe('Pipeline.vue', () => {
 
     describe('when there is no steps to delete', () => {
       beforeEach(async () => {
-        wrapper.setData({ stepsToDelete: [] });
+        wrapper.setData({ selectedSteps: [] });
         await wrapper.vm.$nextTick();
       });
       it('should hide the delete steps button', () => {
@@ -148,7 +149,7 @@ describe('Pipeline.vue', () => {
 
   describe('clicking on the delete button', () => {
     let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>, dispatchSpy: jest.SpyInstance;
-    const stepsToDelete = [1, 2];
+    const selectedSteps = [1, 2];
 
     beforeEach(async () => {
       const pipeline: Pipeline = [
@@ -159,7 +160,7 @@ describe('Pipeline.vue', () => {
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       dispatchSpy = jest.spyOn(store, 'dispatch');
       wrapper = mount(PipelineComponent, { store, localVue });
-      wrapper.setData({ stepsToDelete });
+      wrapper.setData({ selectedSteps });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
       await wrapper.vm.$nextTick();
       modal = wrapper.find(DeleteConfirmationModal);
@@ -183,7 +184,7 @@ describe('Pipeline.vue', () => {
         expect(dispatchSpy).not.toHaveBeenCalled();
       });
       it('should keep the selected steps unchanged', () => {
-        expect((wrapper.vm as any).stepsToDelete).toStrictEqual(stepsToDelete);
+        expect((wrapper.vm as any).selectedSteps).toStrictEqual(selectedSteps);
       });
     });
 
@@ -199,11 +200,11 @@ describe('Pipeline.vue', () => {
       });
       it('should delete the selected steps', () => {
         expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('deleteSteps'), {
-          indexes: stepsToDelete,
+          indexes: selectedSteps,
         });
       });
       it('should clean the selected steps', () => {
-        expect((wrapper.vm as any).stepsToDelete).toStrictEqual([]);
+        expect((wrapper.vm as any).selectedSteps).toStrictEqual([]);
       });
     });
   });
@@ -252,6 +253,111 @@ describe('Pipeline.vue', () => {
 
       it('should update active step index', () => {
         expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('selectStep'), { index: 2 });
+      });
+    });
+  });
+
+  describe('copy steps', () => {
+    let wrapper: Wrapper<PipelineComponent>, copyToClipboardStub: jest.SpyInstance;
+    const ctrlC = () => {
+      (wrapper.vm as any).keyDownEventHandler({ keyCode: 67, ctrlKey: true }); // fake ctrl + c;
+    };
+
+    beforeEach(() => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      copyToClipboardStub = jest.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation();
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    it('should not copy selected steps content if empty', () => {
+      ctrlC();
+      expect(copyToClipboardStub).not.toHaveBeenCalled();
+    });
+
+    it('should copy selected steps content to clipboard', () => {
+      const selectedSteps = [1, 2];
+      wrapper.setData({ selectedSteps });
+      ctrlC();
+      const stringifiedStepsContent = JSON.stringify([
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ]);
+      expect(copyToClipboardStub).toHaveBeenCalledWith(stringifiedStepsContent);
+    });
+  });
+  describe('past steps', () => {
+    let wrapper: Wrapper<PipelineComponent>,
+      dispatchSpy: jest.SpyInstance,
+      pasteFromClipboardStub: jest.SpyInstance;
+    const ctrlV = () => {
+      (wrapper.vm as any).keyDownEventHandler({ keyCode: 86, ctrlKey: true }); // fake ctrl + v;
+    };
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+        { name: 'sort', columns: [{ column: 'death', order: 'desc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      dispatchSpy = jest.spyOn(store, 'dispatch');
+      pasteFromClipboardStub = jest
+        .spyOn(clipboardUtils, 'pasteFromClipboard')
+        .mockImplementation();
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    describe('with valid steps', () => {
+      const stepsFromClipboard = [
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        ctrlV();
+      });
+      it('should retrieved selected steps from clipboard', () => {
+        expect(pasteFromClipboardStub).toHaveBeenCalled();
+      });
+      it('should add steps to pipeline', () => {
+        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
+      });
+    });
+
+    describe('with invalid steps', () => {
+      const stepsFromClipboard = [
+        'TOTO',
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        ctrlV();
+      });
+      it('should not add steps to pipeline', () => {
+        expect(dispatchSpy).not.toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
+      });
+    });
+
+    describe('when passed steps are not an array', () => {
+      const stepsFromClipboard = 'TOTO';
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        ctrlV();
+      });
+      it('should not add steps to pipeline', () => {
+        expect(dispatchSpy).not.toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
       });
     });
   });

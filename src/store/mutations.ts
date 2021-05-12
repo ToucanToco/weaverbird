@@ -200,6 +200,25 @@ class Mutations {
     state.selectedStepIndex = pipelineWithDeletedSteps.length - 1;
   }
   /**
+   * Add multiple steps to current pipeline.
+   */
+  @resetPagination
+  addSteps(state: VQBState, { steps }: { steps: PipelineStep[] }) {
+    const pipeline = currentPipeline(state);
+    if (state.currentPipelineName === undefined || pipeline === undefined) {
+      return;
+    }
+    const newPipeline = Array.from(pipeline);
+    // add steps just after selected steps
+    // but always after domain
+    const addIndex = state.selectedStepIndex >= 0 ? state.selectedStepIndex + 1 : 1;
+    newPipeline.splice(addIndex, 0, ...steps);
+    state.pipelines[state.currentPipelineName] = newPipeline;
+    const lastAddedStepIndex = addIndex + steps.length - 1;
+    // select last added step
+    state.selectedStepIndex = lastAddedStepIndex;
+  }
+  /**
    * change current selected domain and reset pipeline accordingly.
    */
   @resetPagination
