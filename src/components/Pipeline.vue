@@ -173,11 +173,12 @@ export default class PipelineComponent extends Vue {
     // retrieve data from clipboard
     const stepsFromClipBoard: string = await pasteFromClipboard();
     // parse steps string
-    const parsedSteps: PipelineStep[] = JSON.parse(stepsFromClipBoard) ?? [];
+    const parsedSteps: any = JSON.parse(stepsFromClipBoard) ?? [];
     // verify is steps object are well formatted
-    const checkStepFormat: boolean = parsedSteps.every(step => isPipelineStep(step));
-    // add new steps to pipeline
-    if (checkStepFormat) this.addSteps({ steps: parsedSteps });
+    if (Array.isArray(parsedSteps) && parsedSteps.every(step => isPipelineStep(step))) {
+      // add new steps to pipeline
+      this.addSteps({ steps: parsedSteps });
+    }
   }
 }
 </script>

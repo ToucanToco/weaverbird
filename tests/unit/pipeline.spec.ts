@@ -347,5 +347,18 @@ describe('Pipeline.vue', () => {
         });
       });
     });
+
+    describe('when passed steps are not an array', () => {
+      const stepsFromClipboard = 'TOTO';
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        ctrlV();
+      });
+      it('should not add steps to pipeline', () => {
+        expect(dispatchSpy).not.toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
+      });
+    });
   });
 });
