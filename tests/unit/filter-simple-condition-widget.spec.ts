@@ -352,5 +352,18 @@ describe('Widget FilterSimpleCondition', () => {
         { column: 'columnA', value: '', operator: 'eq' },
       ]);
     });
+
+    it('should not pass the variables props if hideColumnVariables is true', () => {
+      const customProps = {
+        availableVariables: ['test'],
+        variableDelimiters: ['test'],
+        hideColumnVariables: true,
+      };
+      createWrapper(mount, customProps);
+      const widgetWrappers = wrapper.findAll('.columnInput');
+      const props = widgetWrappers.at(0).props();
+      expect(props.availableVariables).toBe(undefined);
+      expect(props.variableDelimiters).toBe(undefined);
+    });
   });
 });
