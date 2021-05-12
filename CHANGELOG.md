@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.48.0] - 2021-05-12
+
+### Added
+- FilterEditor: add a prop to make variables for the column hiddable
+- Pipeline: copy/paste steps with clipboard (chrome only)
+
 ## [0.47.1] - 2021-05-11
 
 ### Fixed
@@ -751,6 +757,7 @@
 
 - Initial version, showtime!
 
+[0.48.0]: https://github.com/ToucanToco/weaverbird/compare/v0.47.1...v0.48.0
 [0.47.1]: https://github.com/ToucanToco/weaverbird/compare/v0.47.0...v0.47.1
 [0.47.0]: https://github.com/ToucanToco/weaverbird/compare/v0.46.4...v0.47.0
 [0.46.4]: https://github.com/ToucanToco/weaverbird/compare/v0.46.2...v0.46.4
