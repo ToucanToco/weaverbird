@@ -156,7 +156,7 @@ export default {
           },
         },
       },
-      required: ['column', 'value', 'operator'],
+      required: ['column', 'operator'],
       additionalProperties: false,
     },
     formula: {
