@@ -119,7 +119,12 @@ function autocastDataset(dataset) {
   };
 }
 
+
+
+
+
 class MongoService {
+
   async listCollections() {
     const response = await fetch('/collections');
     return response.json();
@@ -233,8 +238,56 @@ class PandasService {
   }
 }
 const pandasService = new PandasService();
+let frontServiceWorker = new Worker('vqb-front-service-worker.js');
 
-const backendService = TRANSLATOR === 'pandas' ? pandasService : mongoService
+frontServiceWorker.onmessage = function(e) {
+  console.log(e);
+}
+
+class FrontService {
+
+  async listCollections() {
+    const response = await fetch(pandasBackendBaseUrl);
+    return response.json();
+  }
+
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    frontServiceWorker.postMessage([42, 42])
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+    console.log(pipeline, dereferencedPipeline, pipelines);
+
+    // This does not modify the pipeline, but checks if all steps are supported
+    pandasTranslator.translate(dereferencedPipeline);
+
+    const url = new URL(pandasBackendBaseUrl);
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
+
+    // the domain step need to be fetch from the back
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      body: JSON.stringify([dereferencedPipeline[0]]),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      parameters: {
+        limit: limit,
+        offset: offset
+      }
+    });
+
+    const result = await response.json();
+    console.log(result);
+    return {data: {}, headers:{}}
+  }
+}
+
+const services = {
+  'pandas': pandasService,
+  'mongo42': mongoService,
+  'front': new FrontService()
+}
+const backendService = services[TRANSLATOR];
 
 
 async function buildVueApp() {

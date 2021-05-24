@@ -66,6 +66,7 @@ registerTranslator('mongo40', Mongo40Translator);
 registerTranslator('mongo42', Mongo42Translator);
 registerTranslator('pandas', PandasTranslator);
 registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
+registerTranslator('front', PandasTranslator);
 
 /**
  * Initialize variable delimiters for all translators
