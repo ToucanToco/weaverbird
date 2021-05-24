@@ -1,5 +1,5 @@
 <template>
-  <div class="data-viewer" v-if="pipeline">
+  <div class="data-viewer" data-cy="weaverbird-data-viewer" v-if="pipeline">
     <ActionToolbar @actionClicked="openStepForm" />
     <div v-if="isLoading.dataset" class="data-viewer__loading">
       <div class="data-viewer__loading-spinner" />
@@ -10,6 +10,7 @@
         <table
           aria-hidden="true"
           class="data-viewer-table"
+          data-cy="weaverbird-data-viewer-table"
           v-resizable="{
             columns: columnNames,
             classes: {
@@ -41,6 +42,7 @@
                 </span>
                 <span
                   class="data-viewer__header-label"
+                  data-cy="weaverbird-data-viewer-header-label"
                   v-tooltip.top="{
                     targetClasses: 'has-weaverbird__tooltip',
                     classes: 'weaverbird__tooltip',

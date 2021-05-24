@@ -1,5 +1,8 @@
 <template functional>
-  <td :class="{ 'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }">
+  <td
+    :class="{ 'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }"
+    data-cy="weaverbird-data-viewer-cell"
+  >
     {{ $options.methods.getValue(props.value) }}
   </td>
 </template>

@@ -3,6 +3,7 @@
     <div class="widget-form-action">
       <button
         class="widget-form-action__button widget-form-action__button--validate"
+        data-cy="weaverbird-step-form-validate"
         @click="parent.submit()"
       >
         Save changes

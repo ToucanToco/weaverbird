@@ -16,6 +16,7 @@
       <input
         ref="input"
         class="widget-input-text"
+        data-cy="weaverbird-input-text"
         :placeholder="placeholder"
         type="text"
         :value="value"

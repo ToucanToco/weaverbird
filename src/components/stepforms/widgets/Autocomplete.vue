@@ -1,5 +1,9 @@
 <template>
-  <div class="widget-autocomplete__container" :class="toggleClassErrorWarning">
+  <div
+    class="widget-autocomplete__container"
+    data-cy="weaverbird-autocomplete"
+    :class="toggleClassErrorWarning"
+  >
     <label class="widget-autocomplete__label" v-if="name">{{ name }}</label>
     <VariableInput
       :value="value"
