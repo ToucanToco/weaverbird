@@ -29,11 +29,11 @@ function packageDir() {
 }
 
 export default {
-  input: 'src/main.ts',
+  input: 'src/main-worker.ts',
   output: [
-    { file: 'dist/weaverbird.common.js', format: 'cjs' },
-    { file: 'dist/weaverbird.esm.js', format: 'esm' },
-    { file: 'dist/weaverbird.browser.js', format: 'umd', name: 'vqb' },
+    { file: 'dist/weaverbird-worker.common.js', format: 'cjs' },
+    { file: 'dist/weaverbird-worker.esm.js', format: 'esm' },
+    { file: 'dist/weaverbird-worker.browser.js', format: 'umd', name: 'vqb' },
   ],
   external: ['vue', 'vuex'],
   plugins: [
