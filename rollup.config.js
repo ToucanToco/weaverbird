@@ -10,6 +10,7 @@ import resolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
 import { terser } from 'rollup-plugin-terser';
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 
 const production = process.env.NODE_ENV === 'production' || !process.env.ROLLUP_WATCH;
 /**
@@ -31,8 +32,9 @@ function packageDir() {
 export default {
   input: 'src/main.ts',
   output: [
-    { file: 'dist/weaverbird.common.js', format: 'cjs' },
+    //{ file: 'dist/weaverbird.common.js', format: 'cjs' },
     { file: 'dist/weaverbird.esm.js', format: 'esm' },
+    { file: 'dist/weaverbird.amd.js', format: 'amd' },
     { file: 'dist/weaverbird.browser.js', format: 'umd', name: 'vqb' },
   ],
   external: ['vue', 'vuex'],
@@ -48,6 +50,9 @@ export default {
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
     json(),
+    webWorkerLoader({
+      targetPlatform: 'browser'
+    }),
     production && terser(),
   ],
 };

@@ -99,6 +99,7 @@
     "rollup-plugin-terser": "^5.1.1",
     "rollup-plugin-typescript": "^1.0.0",
     "rollup-plugin-vue": "^5.0.0",
+    "rollup-plugin-web-worker-loader": "^1.6.1",
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
     "tmp": "^0.1.0",
@@ -141,9 +142,11 @@
   },
   "sideeffects": false,
   "dependencies": {
+    "@surma/rollup-plugin-off-main-thread": "^2.2.2",
     "ajv": "^6.10.0",
     "lodash": "^4.17.11",
     "mathjs": "^7.3.0",
+    "rollup-plugin-off-main-thread": "^1.1.0",
     "vega": "^5.20.2"
   }
 }

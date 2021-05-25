@@ -1,8 +1,6 @@
-import {transforms} from 'vega'
-import {DataSet} from "@/lib/dataset";
-
-
+import * as vega from "vega";
+//import {DataSet} from "@/lib/dataset";
 
 export function aggregate() {
-  console.log(transforms);
+  console.log('aggregate !');
 }

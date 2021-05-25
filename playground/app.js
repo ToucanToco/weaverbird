@@ -11,6 +11,7 @@ const {
   registerModule,
   setAvailableCodeEditors,
   exampleInterpolateFunc,
+  DataWorker,
 } = vqb;
 
 const args = new URLSearchParams(location.search)
@@ -238,12 +239,13 @@ class PandasService {
   }
 }
 const pandasService = new PandasService();
-let frontServiceWorker = new Worker('vqb-front-service-worker.js');
 
-frontServiceWorker.onmessage = function(e) {
-  console.log(e);
+
+
+let frontServiceWorker = new DataWorker();
+frontServiceWorker.onmessage = function (event) {
+  console.log(event);
 }
-
 class FrontService {
 
   async listCollections() {

@@ -34,6 +34,10 @@ export {
   FilterEditor,
 };
 
+// @ts-ignore
+import DataWorker from 'web-worker:./main-worker.ts';
+export {DataWorker}
+
 // export helpers/utils
 export { exampleInterpolateFunc } from '@/lib/templating';
 

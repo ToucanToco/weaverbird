@@ -33,9 +33,8 @@ export default {
   output: [
     { file: 'dist/weaverbird-worker.common.js', format: 'cjs' },
     { file: 'dist/weaverbird-worker.esm.js', format: 'esm' },
-    { file: 'dist/weaverbird-worker.browser.js', format: 'umd', name: 'vqb' },
+    { file: 'dist/weaverbird-worker.browser.js', format: 'umd', name: 'vbqWorker' },
   ],
-  external: ['vue', 'vuex'],
   plugins: [
     typescript({ module: 'es2015' }),
     resolve(),
@@ -48,7 +47,6 @@ export default {
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
     json(),
-    production && terser(),
   ],
 };
 
