@@ -8,5 +8,5 @@ export {aggregate} from './lib/front-engine'
 self.addEventListener('message', e => {
     console.log(e);
     aggregate();
-    postMessage('executing pipeline');
+    postMessage('executing pipeline', "origin");
 });

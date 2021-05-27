@@ -11,6 +11,7 @@ import typescript from 'rollup-plugin-typescript';
 import vue from 'rollup-plugin-vue';
 import { terser } from 'rollup-plugin-terser';
 import webWorkerLoader from 'rollup-plugin-web-worker-loader';
+import ignore from 'rollup-plugin-ignore';
 
 const production = process.env.NODE_ENV === 'production' || !process.env.ROLLUP_WATCH;
 /**
@@ -32,9 +33,8 @@ function packageDir() {
 export default {
   input: 'src/main.ts',
   output: [
-    //{ file: 'dist/weaverbird.common.js', format: 'cjs' },
+    { file: 'dist/weaverbird.common.js', format: 'cjs' },
     { file: 'dist/weaverbird.esm.js', format: 'esm' },
-    { file: 'dist/weaverbird.amd.js', format: 'amd' },
     { file: 'dist/weaverbird.browser.js', format: 'umd', name: 'vqb' },
   ],
   external: ['vue', 'vuex'],
@@ -45,14 +45,20 @@ export default {
       resolve: ['.vue', '.json'],
       '@': path.join(packageDir(), '/src'),
     }),
-    commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'] } }),
+    commonjs({
+      namedExports: {
+        'node_modules/mathjs/index.js': ['parse'],
+      }
+    }),
+    ignore(["vega-loader"]),
+    webWorkerLoader({
+      targetPlatform: 'browser',
+      preserveSource: true
+    }),
     css({ output: 'dist/weaverbird.css' }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
     json(),
-    webWorkerLoader({
-      targetPlatform: 'browser'
-    }),
     production && terser(),
   ],
 };
