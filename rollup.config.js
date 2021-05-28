@@ -39,8 +39,8 @@ export default {
   ],
   external: ['vue', 'vuex'],
   plugins: [
+    resolve({browser: true}),
     typescript({ module: 'es2015' }),
-    resolve(),
     alias({
       resolve: ['.vue', '.json'],
       '@': path.join(packageDir(), '/src'),
@@ -50,7 +50,6 @@ export default {
         'node_modules/mathjs/index.js': ['parse'],
       }
     }),
-    ignore(["vega-loader"]),
     webWorkerLoader({
       targetPlatform: 'browser',
       preserveSource: true
