@@ -52,3 +52,14 @@ def test_cumsum_with_groups():
         }
     )
     assert_dataframes_equals(df_result, expected_result.sort_values('date'))
+
+
+def test_benchmark_cumsum(benchmark):
+    big_df = DataFrame({'value': list(range(1000))})
+    step = CumSumStep(
+        name='cumsum',
+        referenceColumn='value',
+        valueColumn='value',
+        newColumn='my_cumsum',
+    )
+    benchmark(step.execute, big_df)

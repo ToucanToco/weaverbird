@@ -255,3 +255,10 @@ def test_nested_logical_conditions(sample_df):
     ).execute(sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'colA': ['tata'], 'colB': [3], 'colC': [25]}))
+
+
+def test_benchmark_filter(benchmark):
+    big_df = DataFrame({'value': list(range(1000))})
+    step = FilterStep(name='filter', condition={'column': 'value', 'operator': 'lt', 'value': 20})
+    result = benchmark(step.execute, big_df)
+    assert len(result) == 20

@@ -4,7 +4,7 @@ from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.aggregate import AggregateStep, Aggregation
-
+import numpy as np
 
 @pytest.fixture
 def sample_df():
@@ -300,3 +300,24 @@ def test_count_with_null():
             }
         ).sort_values(by=['Group']),
     )
+
+def test_benchmark_aggregate(benchmark):
+    sample_df = DataFrame(
+        {
+            'Group': ['Group 1'] * 500 + ['Group 2'] * 500,
+            'Value1': np.random.random(1000),
+            'Value2': np.random.random(1000),
+        }
+    )
+    step = AggregateStep(
+        name='aggregate',
+        on=['Group'],
+        aggregations=[
+            Aggregation(
+                aggfunction='avg',
+                columns=['Value1'],
+                newcolumns=['RESULT'],
+            ),
+        ],
+    )
+    benchmark(step.execute, sample_df)

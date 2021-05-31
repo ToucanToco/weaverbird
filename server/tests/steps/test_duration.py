@@ -3,6 +3,7 @@ from typing import Dict
 
 import pandas as pd
 import pytest
+from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.duration import DurationStep
@@ -40,3 +41,24 @@ def test_duration(time_delta_parameters: Dict[str, int], duration_in: str, expec
     )
 
     assert_dataframes_equals(result_df, expected_result)
+
+
+def test_benchmark_duration(benchmark):
+    dates = [datetime.today() + timedelta(days=nb_day) for nb_day in list(range(1, 2001))]
+    after_dates = [date + timedelta(days=1) for date in dates]
+
+    df = DataFrame(
+        {
+            'date': dates,
+            'date2': after_dates,
+        }
+    )
+    step = DurationStep(
+        name='duration',
+        newColumnName='DURATION',
+        startDateColumn='date',
+        endDateColumn='date2',
+        durationIn='days',
+    )
+
+    benchmark(step.execute, df)
