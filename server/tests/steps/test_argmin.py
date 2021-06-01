@@ -46,6 +46,7 @@ def test_argmin_with_group(sample_df):
         ),
     )
 
+
 def test_benchmark_argmin(benchmark):
     sample_df = DataFrame(
         {

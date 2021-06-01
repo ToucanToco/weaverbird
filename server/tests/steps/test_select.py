@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -33,3 +36,17 @@ def test_simple_select(sample_df):
         }
     )
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_benchmark_select(benchmark):
+    groups = ['group_1', 'group_2']
+    df = pd.DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = SelectStep(name='select', columns=['value', 'id'])
+    benchmark(step.execute, df)

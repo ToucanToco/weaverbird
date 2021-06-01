@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pandas as pd
 
 from tests.utils import assert_dataframes_equals
@@ -20,3 +23,17 @@ def test_utf8_uppercase():
     expected_df = pd.DataFrame({'values': ['FOOBAR', 'ÓÓ']})
 
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_benchmark_uppercase(benchmark):
+    groups = ['group_1', 'group_2']
+    df = pd.DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = UppercaseStep(name='uppercase', column='group')
+    benchmark(step.execute, df)

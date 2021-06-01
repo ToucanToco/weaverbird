@@ -105,3 +105,17 @@ def test_isnull():
 
     result = step.execute(df)
     assert_dataframes_equals(result, DataFrame({'a_bool': [True, False, None], 'test': [0, 0, 1]}))
+
+
+def test_benchmark_ifthenelse(benchmark):
+    big_df = DataFrame({'value': list(range(1000))})
+    step = IfthenelseStep(
+        **{
+            "name": "ifthenelse",
+            "if": {"column": "value", "operator": "eq", "value": 42},
+            "newColumn": "test",
+            "then": "1",
+            "else": "0",
+        }
+    )
+    benchmark(step.execute, big_df)

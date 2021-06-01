@@ -1,3 +1,5 @@
+from datetime import datetime, timedelta
+
 import pytest
 from pandas import DataFrame, to_datetime
 
@@ -28,3 +30,14 @@ def test_simple_fromdate(sample_df):
         result,
         DataFrame({'a_date': ['2019-10-06', '2019-10-07', '2020-11-16', None]}),
     )
+
+
+def test_benchmark_fromdate(benchmark):
+    dates = [datetime.today() + timedelta(days=nb_day) for nb_day in list(range(1, 2001))]
+    df = DataFrame(
+        {
+            'date': dates,
+        }
+    )
+    step = FromdateStep(name='fromdate', column='date', format='%Y-%m-%d')
+    benchmark(step.execute, df)

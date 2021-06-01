@@ -148,7 +148,7 @@ def test_benchmark_addmissingdate(benchmark, today):
     # we remove 100 random days, but not at the edges
     idx_to_remove = [random.randint(50, 1500) for _ in range(100)]
     for idx in idx_to_remove:
-        del(dates[idx])
+        del dates[idx]
 
     assert len(dates) == 1900
 
@@ -166,4 +166,3 @@ def test_benchmark_addmissingdate(benchmark, today):
 
     result = benchmark(step.execute, df)
     assert len(result) == 2000
-

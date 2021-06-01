@@ -26,10 +26,12 @@ def test_concatenate():
 
 
 def test_benchmark_concatenate(benchmark):
-    big_df = DataFrame({
-        'value': list(range(1000)),
-        'value2': list(range(1000)),
-    })
+    big_df = DataFrame(
+        {
+            'value': list(range(1000)),
+            'value2': list(range(1000)),
+        }
+    )
 
     step = ConcatenateStep(
         name='concatenate',
@@ -39,4 +41,3 @@ def test_benchmark_concatenate(benchmark):
     )
 
     benchmark(step.execute, big_df)
-

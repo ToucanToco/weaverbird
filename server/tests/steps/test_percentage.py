@@ -1,4 +1,6 @@
+import numpy as np
 import pandas as pd
+from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.percentage import PercentageStep
@@ -37,3 +39,9 @@ def test_default_column_name():
     step = PercentageStep(name='percentage', column='values')
     result = step.execute(sample_df)
     assert 'values_PCT' in result
+
+
+def test_benchmark_percentage(benchmark):
+    df = DataFrame({'value': np.random.random(1000), 'id': list(range(1000))})
+    step = PercentageStep(name='percentage', column='value')
+    benchmark(step.execute, df)

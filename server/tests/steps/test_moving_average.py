@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from pandas import DataFrame
 
@@ -50,3 +51,15 @@ def test_moving_average_with_groups():
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_moving_average(benchmark):
+    df = DataFrame({'value': np.random.random(1000), 'id': list(range(1000))})
+    step = MovingAverageStep(
+        name='movingaverage',
+        valueColumn='value',
+        columnToSort='id',
+        movingWindow=3,
+        newColumnName='rolling_average',
+    )
+    benchmark(step.execute, df)

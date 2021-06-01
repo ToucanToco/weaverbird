@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -143,3 +146,22 @@ def test_total_must_contains_aggregation():
             aggregations=[],
             groups=[],
         )
+
+
+def test_benchmark_totals(benchmark):
+    groups = ['group_1', 'group_2']
+    df = pd.DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = TotalsStep(
+        name='totals',
+        totalDimensions=[TotalDimension(total_column='group', total_rows_label='All groups')],
+        aggregations=[Aggregation(columns=['value'], aggfunction='sum', newcolumns=['value'])],
+        groups=[],
+    )
+    benchmark(step.execute, df)

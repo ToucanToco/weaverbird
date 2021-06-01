@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -44,3 +47,17 @@ def test_top_desc_with_groups(sample_df):
             }
         ),
     )
+
+
+def test_benchmark_top(benchmark):
+    groups = ['group_1', 'group_2']
+    df = DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = TopStep(name='top', rank_on='value', groups=['group'], sort='desc', limit=1)
+    benchmark(step.execute, df)

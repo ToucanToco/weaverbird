@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -30,3 +33,22 @@ def test_rename_legacy_syntax(sample_df: DataFrame):
 
     expected_result = DataFrame({'name': ['foo', 'bar'], 'AGE': [42, 43], 'SCORE': [100, 200]})
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_rename(benchmark):
+    groups = ['group_1', 'group_2']
+    df = DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = RenameStep(
+        name='rename',
+        toRename=[
+            ['group', 'GROUP'],
+        ],
+    )
+    benchmark(step.execute, df)

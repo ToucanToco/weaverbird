@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -52,3 +55,23 @@ def test_pivot_avg(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_pivot(benchmark):
+    groups = ['group_1', 'group_2']
+    df = DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = PivotStep(
+        name='pivot',
+        index=['group'],
+        column_to_pivot='group',
+        value_column='value',
+        agg_function='avg',
+    )
+    benchmark(step.execute, df)

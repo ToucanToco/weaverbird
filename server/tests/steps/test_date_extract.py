@@ -268,7 +268,10 @@ def test_date_extract_(sample_df: DataFrame):
 
 
 def test_benchmark_dateextract(benchmark):
-    dates = [datetime.datetime.today() + datetime.timedelta(days=nb_day) for nb_day in list(range(1, 2001))]
+    dates = [
+        datetime.datetime.today() + datetime.timedelta(days=nb_day)
+        for nb_day in list(range(1, 2001))
+    ]
     df = DataFrame(
         {
             'date': dates,

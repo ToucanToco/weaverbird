@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -48,3 +51,24 @@ def test_rank_with_groups(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_rank(benchmark):
+    groups = ['group_1', 'group_2']
+    df = DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = RankStep(
+        name='rank',
+        valueCol='value',
+        groupby=['group'],
+        order='desc',
+        method='dense',
+        newColumnName='rank',
+    )
+    benchmark(step.execute, df)

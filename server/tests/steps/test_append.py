@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import pytest
 from pandas import DataFrame
@@ -5,7 +6,7 @@ from pandas import DataFrame
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps import AppendStep
 from weaverbird.types import DomainRetriever, PipelineExecutor
-import numpy as np
+
 
 @pytest.fixture
 def sample_df():
@@ -75,5 +76,10 @@ def test_benchmark_append(benchmark):
 
     step = AppendStep(name='append', pipelines=['other'])
 
-    df_result = benchmark(step.execute, df_left, domain_retriever=lambda _:df_right, execute_pipeline=lambda _ :df_right)
+    df_result = benchmark(
+        step.execute,
+        df_left,
+        domain_retriever=lambda _: df_right,
+        execute_pipeline=lambda _: df_right,
+    )
     assert len(df_result) == 2000

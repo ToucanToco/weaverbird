@@ -1,5 +1,5 @@
-import string
 import random
+import string
 
 import pandas as pd
 
@@ -29,9 +29,12 @@ def test_comparetext():
 
 def test_benchmark_comparetext(benchmark):
     df = pd.DataFrame(
-        {'TEXT_1': [random_string() for _ in range(1000)], 'TEXT_2': [random_string() for _ in range(1000)]}
+        {
+            'TEXT_1': [random_string() for _ in range(1000)],
+            'TEXT_2': [random_string() for _ in range(1000)],
+        }
     )
-    step =  CompareTextStep(
+    step = CompareTextStep(
         name='comparetext',
         newColumnName='RESULT',
         strCol1='TEXT_1',
@@ -39,5 +42,3 @@ def test_benchmark_comparetext(benchmark):
     )
 
     benchmark(step.execute, df)
-
-
