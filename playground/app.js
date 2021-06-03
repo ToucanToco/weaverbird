@@ -11,7 +11,7 @@ const {
   registerModule,
   setAvailableCodeEditors,
   exampleInterpolateFunc,
-  DataWorker,
+  WorkerExecutor,
 } = vqb;
 
 const args = new URLSearchParams(location.search)
@@ -242,10 +242,9 @@ const pandasService = new PandasService();
 
 
 
-let frontServiceWorker = new DataWorker();
-frontServiceWorker.onmessage = function (event) {
-  console.log(event);
-}
+let frontServiceWorker = new WorkerExecutor();
+
+
 class FrontService {
 
   async listCollections() {
@@ -254,9 +253,8 @@ class FrontService {
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
-    frontServiceWorker.postMessage([42, 42])
+
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-    console.log(pipeline, dereferencedPipeline, pipelines);
 
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(dereferencedPipeline);
@@ -279,8 +277,8 @@ class FrontService {
     });
 
     const result = await response.json();
-    console.log(result);
-    return {data: {}, headers:{}}
+    frontServiceWorker.execute_pipeline(result, dereferencedPipeline)
+    return {data: pandasDataTableToDataset(result)}
   }
 }
 

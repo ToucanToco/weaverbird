@@ -146,11 +146,13 @@
     "ajv": "^6.10.0",
     "danfo": "^0.2.21",
     "danfojs": "^0.2.5",
-    "danfojs-node": "^0.2.6",
+    "danfojs-node": "^0.2.7",
+    "dataframe-js": "^1.4.4",
     "lodash": "^4.17.11",
     "mathjs": "^7.3.0",
     "rollup-plugin-ignore": "^1.0.9",
     "rollup-plugin-off-main-thread": "^1.1.0",
+    "vega": "^5.20.2",
     "vega-lite": "^5.1.0",
     "vega-transforms": "^4.9.4"
   }

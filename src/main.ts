@@ -35,8 +35,10 @@ export {
 };
 
 // @ts-ignore
-import DataWorker from 'web-worker:./main-worker.ts';
-export {DataWorker}
+
+
+import {WorkerExecutor} from "@/webworker/WorkerExecutor";
+export {WorkerExecutor}
 
 // export helpers/utils
 export { exampleInterpolateFunc } from '@/lib/templating';
