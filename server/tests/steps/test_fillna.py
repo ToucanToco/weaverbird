@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -45,3 +46,10 @@ def test_fillna_multi_columns_incompatible_types(sample_df):
     assert_dataframes_equals(
         result, DataFrame({'colA': ['toto', 'tutu', -1], 'colB': [1, 2, -1], 'colC': [100, 50, -1]})
     )
+
+
+def test_benchmark_evolution(benchmark):
+
+    df = DataFrame({'value': np.append(np.random.random(500), [None] * 500)})
+    step = FillnaStep(name='fillna', columns=['value'], value=-1)
+    benchmark(step.execute, df)

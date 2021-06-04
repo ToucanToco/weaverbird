@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -24,3 +27,17 @@ def test_text(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_text(benchmark):
+    groups = ['group_1', 'group_2']
+    df = DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = TextStep(name='text', new_column='BEST SINGER EVER', text='jean-jacques-goldman')
+    benchmark(step.execute, df)

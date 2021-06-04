@@ -1,3 +1,5 @@
+import numpy as np
+import pandas as pd
 import pytest
 from pandas import DataFrame
 
@@ -66,3 +68,18 @@ def test_append_with_domain_name(
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_append(benchmark):
+    df_left = pd.DataFrame({'values': np.random.random(1000)})
+    df_right = pd.DataFrame({'values': np.random.random(1000)})
+
+    step = AppendStep(name='append', pipelines=['other'])
+
+    df_result = benchmark(
+        step.execute,
+        df_left,
+        domain_retriever=lambda _: df_right,
+        execute_pipeline=lambda _: df_right,
+    )
+    assert len(df_result) == 2000

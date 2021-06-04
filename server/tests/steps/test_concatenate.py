@@ -23,3 +23,21 @@ def test_concatenate():
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_concatenate(benchmark):
+    big_df = DataFrame(
+        {
+            'value': list(range(1000)),
+            'value2': list(range(1000)),
+        }
+    )
+
+    step = ConcatenateStep(
+        name='concatenate',
+        columns=['value', 'value2'],
+        separator=' - ',
+        new_column_name='newcol',
+    )
+
+    benchmark(step.execute, big_df)

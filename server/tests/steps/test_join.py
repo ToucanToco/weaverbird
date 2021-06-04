@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -120,3 +121,22 @@ def test_join_domain_name(
         {'NAME': ['foo', 'bar'], 'name': [None, 'bar'], 'AGE': [42, 43], 'score': [None, 1]}
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_join(benchmark):
+    left_df = DataFrame({'value': np.random.random(1000), 'id': list(range(1000))})
+    right_df = DataFrame({'value': np.random.random(1000), 'id': list(range(1000))})
+
+    def domain_retriever(p):
+        return right_df
+
+    step = JoinStep(
+        name='join',
+        right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
+        on=[
+            ['id', 'id'],
+        ],
+        type='left',
+    )
+
+    benchmark(step.execute, left_df, domain_retriever, domain_retriever)

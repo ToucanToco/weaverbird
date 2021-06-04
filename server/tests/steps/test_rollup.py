@@ -1,3 +1,5 @@
+import random
+
 import pytest
 from pandas import DataFrame
 
@@ -122,3 +124,32 @@ def test_complex_rollup(sample_df: DataFrame):
     ]
     expected_result = DataFrame(expected_data, columns=columns)
     assert_dataframes_equals(df_result, expected_result)
+
+
+def _make_benchmark_data():
+    cities = {
+        'France': ['Paris', 'Bordeaux'],
+        'Spain': ['Barcelona', 'Madrid'],
+        'USA': ['Boston', 'New York'],
+    }
+    columns = ['CITY', 'COUNTRY', 'DAY', 'VALUE']
+    data = []
+    for country in cities.keys():
+        for city in cities[country]:
+            for i in range(1000):
+                row = [city, country, i, random.randint(0, 2000)]
+                data.append(row)
+    return DataFrame(data, columns=columns)
+
+
+def test_benchmark_rollup(benchmark):
+    df = _make_benchmark_data()
+
+    step = RollupStep(
+        name='rollup',
+        hierarchy=['COUNTRY', 'CITY'],
+        aggregations=[
+            {'newcolumns': ['VALUE'], 'aggfunction': 'sum', 'columns': ['VALUE']},
+        ],
+    )
+    benchmark(step.execute, df)

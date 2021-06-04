@@ -1,3 +1,5 @@
+import random
+
 import pytest
 from pandas import DataFrame
 
@@ -76,3 +78,31 @@ def test_unpivot_with_dropna_false(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(result.sort_values(['COUNTRY', 'COMPANY', 'KPI']), expected_result)
+
+
+def _make_benchmark_data():
+    countries = ['France', 'USA']
+    companies = ['Company_' + str(n) for n in range(1000)]
+    columns = ['COMPANY', 'COUNTRY', 'NB_CLIENTS', 'REVENUES']
+
+    data = []
+    for company in companies:
+        for country in countries:
+            row = [company, country, random.randint(0, 250), random.randint(0, 50000)]
+            data.append(row)
+
+    return DataFrame(data, columns=columns)
+
+
+def test_benchmark_unpivot(benchmark):
+    df = _make_benchmark_data()
+
+    step = UnpivotStep(
+        name='unpivot',
+        keep=['COMPANY', 'COUNTRY'],
+        unpivot=['NB_CLIENTS', 'REVENUES'],
+        unpivot_column_name='KPI',
+        value_column_name='VALUE',
+        dropna=False,
+    )
+    benchmark(step.execute, df)

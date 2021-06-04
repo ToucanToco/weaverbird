@@ -1,3 +1,6 @@
+from datetime import datetime, timedelta
+
+import numpy as np
 import pytest
 from pandas import DataFrame, to_datetime
 
@@ -101,3 +104,21 @@ def test_evolution_with_duplicate_dates(df_with_groups: DataFrame):
     )
     with pytest.raises(DuplicateError):
         step.execute(df_with_groups)
+
+
+def test_benchmark_evolution(benchmark):
+    dates = [datetime.today() + timedelta(days=nb_day) for nb_day in list(range(1, 2001))]
+
+    df = DataFrame({'date': dates, 'value': np.random.random(2000) * 100})
+
+    df['date'] = to_datetime(df['date'].dt.date)
+    step = EvolutionStep(
+        name='evolution',
+        dateCol='date',
+        valueCol='value',
+        evolutionType='vsLastDay',
+        evolutionFormat='abs',
+        newColumn='MY_EVOL',
+    )
+
+    benchmark(step.execute, df)

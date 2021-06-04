@@ -1,3 +1,5 @@
+import datetime
+
 import pytest
 from pandas import DataFrame, to_datetime
 
@@ -263,3 +265,20 @@ def test_date_extract_(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_dateextract(benchmark):
+    dates = [
+        datetime.datetime.today() + datetime.timedelta(days=nb_day)
+        for nb_day in list(range(1, 2001))
+    ]
+    df = DataFrame(
+        {
+            'date': dates,
+        }
+    )
+    step = DateExtractStep(
+        name='dateextract', column='date', operation='day', new_column_name='date'
+    )
+
+    benchmark(step.execute, df)

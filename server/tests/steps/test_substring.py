@@ -1,3 +1,6 @@
+import random
+
+import numpy as np
 import pandas as pd
 import pytest
 
@@ -73,3 +76,19 @@ def test_substring_new_column_name(sample_df):
         }
     )
     assert_dataframes_equals(result_df, expected_df)
+
+
+def test_benchmark_substring(benchmark):
+    groups = ['group_1', 'group_2']
+    df = pd.DataFrame(
+        {
+            'value': np.random.random(1000),
+            'id': list(range(1000)),
+            'group': [random.choice(groups) for _ in range(1000)],
+        }
+    )
+
+    step = SubstringStep(
+        name='substring', column='group', start_index=0, end_index=3, newColumnName='FOO'
+    )
+    benchmark(step.execute, df)

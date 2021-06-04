@@ -1,6 +1,7 @@
 import pandas as pd
 import pytest
 
+from tests.steps.test_comparetext import random_string
 from tests.utils import assert_dataframes_equals
 from weaverbird.steps.lowercase import LowercaseStep
 
@@ -21,3 +22,10 @@ def test_it_should_throw_if_applied_on_wrong_type(sample_df):
     with pytest.raises(AttributeError):
         step = LowercaseStep(name='lowercase', column='an_int')
         step.execute(sample_df)
+
+
+def test_benchmark_lowercase(benchmark):
+    df = pd.DataFrame({'TEXT_1': [random_string() for _ in range(1000)]})
+    step = LowercaseStep(name='lowercase', column='TEXT_1')
+
+    benchmark(step.execute, df)

@@ -1,4 +1,5 @@
 import datetime
+import random
 from datetime import timedelta
 from typing import Any, List, Optional, cast
 
@@ -140,3 +141,28 @@ def test_missing_date_with_groups_various_length(today):
         ]
     ).sort_values(by=['country', 'date'])
     assert_dataframes_equals(result, expected_result)
+
+
+def test_benchmark_addmissingdate(benchmark, today):
+    dates = [today + timedelta(days=nb_day) for nb_day in list(range(1, 2001))]
+    # we remove 100 random days, but not at the edges
+    idx_to_remove = [random.randint(50, 1500) for _ in range(100)]
+    for idx in idx_to_remove:
+        del dates[idx]
+
+    assert len(dates) == 1900
+
+    values = [idx for (idx, value) in enumerate(dates)]
+    df = pd.DataFrame(
+        {
+            'date': dates,
+            'value': values,
+        }
+    )
+
+    step = AddMissingDatesStep(
+        name='addmissingdates', datesColumn='date', datesGranularity='day', groups=[]
+    )
+
+    result = benchmark(step.execute, df)
+    assert len(result) == 2000

@@ -1,3 +1,5 @@
+import random
+
 import pandas as pd
 
 from tests.utils import assert_dataframes_equals
@@ -223,3 +225,41 @@ def test_waterfall_bug_drill():
             }
         ),
     )
+
+
+def _make_benchmark_data():
+    cities = {
+        'France': ['Paris', 'Bordeaux'],
+        'Spain': ['Barcelona', 'Madrid'],
+        'USA': ['Boston', 'New York'],
+    }
+    groups = ['A', 'B']
+    products = ['product_' + str(n) for n in range(1000)]
+
+    columns = ['country', 'city', 'group', 'product', 'value']
+    data = []
+    for country in cities.keys():
+        for city in cities[country]:
+            for group in groups:
+                for product in products:
+                    row = [country, city, group, product, random.randint(1, 250)]
+                    data.append(row)
+    return pd.DataFrame(data, columns=columns)
+
+
+def test_benchmark_waterfall(benchmark):
+    df = _make_benchmark_data()
+
+    step = WaterfallStep(
+        name='waterfall',
+        valueColumn='value',
+        milestonesColumn='group',
+        start='A',
+        end='B',
+        labelsColumn='city',
+        parentsColumn='country',
+        groupby=[],
+        sortBy='label',
+        order='asc',
+    )
+    benchmark(step.execute, df[0:1000])

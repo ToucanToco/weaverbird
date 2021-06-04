@@ -18,3 +18,12 @@ def test_delete(sample_df: DataFrame):
 
     expected_result = DataFrame({'AGE': [42, 43]})
     assert_dataframes_equals(df_result, expected_result)
+
+
+def test_benchmark_delete(benchmark):
+    big_df = DataFrame({'value': list(range(1000))})
+    step = DeleteStep(
+        name='delete',
+        columns=['value'],
+    )
+    benchmark(step.execute, big_df)
