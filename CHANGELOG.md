@@ -762,6 +762,7 @@
 
 - Initial version, showtime!
 
+[0.49.0]: https://github.com/ToucanToco/weaverbird/compare/v0.48.1...v0.49.0
 [0.48.1]: https://github.com/ToucanToco/weaverbird/compare/v0.48.0...v0.48.1
 [0.48.0]: https://github.com/ToucanToco/weaverbird/compare/v0.47.1...v0.48.0
 [0.47.1]: https://github.com/ToucanToco/weaverbird/compare/v0.47.0...v0.47.1
