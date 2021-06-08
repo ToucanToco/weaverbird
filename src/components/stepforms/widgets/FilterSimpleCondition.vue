@@ -32,6 +32,7 @@
     </div>
     <component
       class="filterValue"
+      data-cy="weaverbird-filter-form-filter-value"
       v-if="inputWidget"
       :is="inputWidget"
       :multi-variable="multiVariable"
