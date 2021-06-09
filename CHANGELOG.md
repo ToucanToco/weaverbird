@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.49.1] - 2021-06-09
+
+### Fixed
+- Tooltips: remove capitalization
+- Several security update to js dependencies
+- E2E tests: data-cy target for filtering component
+
+## [0.49.0] - 2021-06-04
+
+### Added
+- E2E tests: add data-cy properties for easy targeting with Cypress
+
 ## [0.48.1] - 2021-05-18
 
 ### Fixed
@@ -762,6 +774,7 @@
 
 - Initial version, showtime!
 
+[0.49.1]: https://github.com/ToucanToco/weaverbird/compare/v0.49.0...v0.49.1
 [0.49.0]: https://github.com/ToucanToco/weaverbird/compare/v0.48.1...v0.49.0
 [0.48.1]: https://github.com/ToucanToco/weaverbird/compare/v0.48.0...v0.48.1
 [0.48.0]: https://github.com/ToucanToco/weaverbird/compare/v0.47.1...v0.48.0
