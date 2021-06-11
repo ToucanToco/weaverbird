@@ -32,7 +32,9 @@
             <span v-if="isMultiple" class="widget-variable-chooser__option-toggle" />
             <span class="widget-variable-chooser__option-name">{{ availableVariable.label }}</span>
           </div>
-          <span class="widget-variable-chooser__option-value">{{ availableVariable.value }}</span>
+          <span class="widget-variable-chooser__option-value">{{
+            formatIfDate(availableVariable.value)
+          }}</span>
         </div>
       </div>
       <div class="widget-advanced-variable" @click="addAdvancedVariable">
@@ -96,6 +98,13 @@ export default class VariableChooser extends Vue {
       }
       return categories;
     }, []);
+  }
+
+  formatIfDate(value: any): any {
+    if (value instanceof Date) {
+      return value.toUTCString();
+    }
+    return value;
   }
 
   /**

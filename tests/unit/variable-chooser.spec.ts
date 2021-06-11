@@ -37,7 +37,7 @@ describe('Variable Chooser', () => {
             category: 'App variables',
             label: 'date.today',
             identifier: 'appRequesters.date.today',
-            value: new Date('2021/4/20'),
+            value: new Date(1623398957013),
           },
           {
             category: 'Story variables',
@@ -90,6 +90,16 @@ describe('Variable Chooser', () => {
     });
   });
 
+  it('should display dates values in UTC timezone', () => {
+    expect(
+      wrapper
+        .findAll('.widget-variable-chooser__option')
+        .at(3)
+        .find('.widget-variable-chooser__option-value')
+        .text(),
+    ).toStrictEqual('Fri, 11 Jun 2021 08:09:17 GMT');
+  });
+
   describe('tooltip', () => {
     it('should display a value tooltip for each variable', () => {
       wrapper.findAll('.widget-variable-chooser__option').wrappers.forEach(w => {
@@ -103,6 +113,9 @@ describe('Variable Chooser', () => {
       expect((wrapper.vm as any).makeValueReadable(1)).toStrictEqual('1');
       expect((wrapper.vm as any).makeValueReadable('1')).toStrictEqual('"1"');
       expect((wrapper.vm as any).makeValueReadable(undefined)).toStrictEqual(undefined);
+      expect((wrapper.vm as any).makeValueReadable(new Date(1623398957013))).toStrictEqual(
+        '"2021-06-11T08:09:17.013Z"',
+      );
     });
   });
 
