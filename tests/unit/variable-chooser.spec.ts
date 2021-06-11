@@ -34,6 +34,12 @@ describe('Variable Chooser', () => {
             value: '2020',
           },
           {
+            category: 'App variables',
+            label: 'date.today',
+            identifier: 'appRequesters.date.today',
+            value: new Date('2021/4/20'),
+          },
+          {
             category: 'Story variables',
             label: 'country',
             identifier: 'requestersManager.country',
@@ -74,7 +80,7 @@ describe('Variable Chooser', () => {
         .text(),
     ).toEqual('Story variables');
     const varsFromFirstSection = sections.at(0).findAll('.widget-variable-chooser__option');
-    expect(varsFromFirstSection).toHaveLength(3);
+    expect(varsFromFirstSection).toHaveLength(4);
   });
 
   it('should display variables current values along their names', () => {
@@ -155,7 +161,7 @@ describe('Variable Chooser', () => {
     });
 
     it('should display checkboxes before options', () => {
-      expect(wrapper.findAll('.widget-variable-chooser__option-toggle').length).toBe(5);
+      expect(wrapper.findAll('.widget-variable-chooser__option-toggle').length).toBe(6);
     });
 
     it('should highlight selected options', () => {
