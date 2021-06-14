@@ -167,6 +167,7 @@ export default class DataViewer extends Vue {
         isDataTypeMenuOpened: this.activeDataTypeMenuColumnName === d.name,
         class: {
           'data-viewer__header-cell': true,
+          'data-viewer__header-cell--disabled': !this.hasSupportedActions,
           'data-viewer__header-cell--active': this.isSelected(d.name),
         },
       };
@@ -369,6 +370,15 @@ export default class DataViewer extends Vue {
 
   .data-viewer__header-icon--active:hover {
     color: $active-color;
+  }
+}
+
+.data-viewer__header-cell--disabled {
+  .data-viewer__header-label {
+    white-space: nowrap;
+  }
+  .data-viewer__header-icon {
+    pointer-events: none;
   }
 }
 

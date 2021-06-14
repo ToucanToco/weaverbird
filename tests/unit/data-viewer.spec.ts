@@ -605,5 +605,12 @@ describe('Data Viewer', () => {
     it('should remove data viewer header actions', () => {
       expect(wrapper.findAll('.data-viewer__header-action')).toHaveLength(0);
     });
+
+    it('should add a specific class to disable data viewer header', () => {
+      const dataViewerHeaderCells = wrapper.findAll('.data-viewer__header-cell');
+      dataViewerHeaderCells.wrappers.forEach(wrapper => {
+        expect(wrapper.classes()).toContain('data-viewer__header-cell--disabled');
+      });
+    });
   });
 });
