@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Code editor: move static height to container to avoid css override
+
 ## [0.49.1] - 2021-06-09
 
 ### Fixed
