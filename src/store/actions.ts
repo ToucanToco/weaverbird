@@ -31,7 +31,7 @@ function loading(type: 'dataset' | 'uniqueValues') {
 export function formatError(error: any): BackendError {
   return typeof error === 'string'
     ? { type: 'error', message: error.toString() }
-    : { type: 'error', ...error };
+    : { type: 'error', ...error, message: error.message ?? error.errmsg };
 }
 
 /**

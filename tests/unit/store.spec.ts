@@ -1161,5 +1161,21 @@ describe('action tests', () => {
         message: 'Step specific error',
       });
     });
+    it('should format an object error with errmsg to a correct BackendError object', () => {
+      const error = {
+        code: 241,
+        codeName: 'ConversionFailure',
+        errmsg: 'global error message',
+        ok: 0,
+      };
+      expect(formatError(error)).toStrictEqual({
+        code: 241,
+        type: 'error',
+        codeName: 'ConversionFailure',
+        errmsg: 'global error message',
+        message: 'global error message', // use the same key object to retrieve error message than in other errors
+        ok: 0,
+      });
+    });
   });
 });

@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Backend errors: use `message` as returned key for all type of errors
+
 ## [0.49.1] - 2021-06-09
 
 ### Fixed
