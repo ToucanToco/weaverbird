@@ -361,4 +361,28 @@ describe('Pipeline.vue', () => {
       });
     });
   });
+  describe('without supported steps', () => {
+    let wrapper: Wrapper<PipelineComponent>;
+    beforeEach(() => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          translator: 'empty', // there is no supported actions in empty translator
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [['value1', 'value2', 'value3']],
+            paginationContext: {
+              totalCount: 10,
+              pagesize: 10,
+              pageno: 1,
+            },
+          },
+        }),
+      );
+      wrapper = shallowMount(PipelineComponent, { store, localVue });
+    });
+
+    it('should hide the pipeline tips', () => {
+      expect(wrapper.find('.query-pipeline__tips-container').exists()).toBeFalsy();
+    });
+  });
 });

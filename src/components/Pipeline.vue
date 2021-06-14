@@ -30,7 +30,7 @@
         Delete [{{ selectedSteps.length }}] selected
       </div>
     </div>
-    <div class="query-pipeline__tips-container">
+    <div class="query-pipeline__tips-container" v-if="hasSupportedSteps">
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
       </div>
@@ -51,7 +51,7 @@ import { Component } from 'vue-property-decorator';
 import Draggable from 'vuedraggable';
 
 import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
-import { DomainStep, isPipelineStep, Pipeline, PipelineStep } from '@/lib/steps';
+import { DomainStep, isPipelineStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -80,11 +80,16 @@ export default class PipelineComponent extends Vue {
   @VQBModule.Getter('pipeline') steps!: Pipeline;
   @VQBModule.Getter('isPipelineEmpty') onlyDomainStepIsPresent!: boolean;
   @VQBModule.Getter('isStepDisabled') isDisabled!: (index: number) => boolean;
+  @VQBModule.Getter supportedSteps!: PipelineStepName[];
 
   @VQBModule.Action selectStep!: ({ index }: { index: number }) => void;
   @VQBModule.Action deleteSteps!: (payload: { indexes: number[] }) => void;
   @VQBModule.Action addSteps!: (payload: { steps: PipelineStep[] }) => void;
   @VQBModule.Mutation setPipeline!: MutationCallbacks['setPipeline'];
+
+  get hasSupportedSteps(): boolean {
+    return this.supportedSteps.filter(step => step !== 'domain').length > 0;
+  }
 
   get arrangedSteps(): Pipeline {
     return this.steps;
