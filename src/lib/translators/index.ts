@@ -9,6 +9,7 @@ import { PipelineStepName } from '@/lib/steps';
 
 import { VariableDelimiters } from '../variables';
 import { BaseTranslator } from './base';
+import { EmptyTranslator } from './empty';
 import { Mongo36Translator } from './mongo';
 import { Mongo40Translator } from './mongo4';
 import { Mongo42Translator } from './mongo42';
@@ -66,6 +67,7 @@ registerTranslator('mongo40', Mongo40Translator);
 registerTranslator('mongo42', Mongo42Translator);
 registerTranslator('pandas', PandasTranslator);
 registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
+registerTranslator('empty', EmptyTranslator);
 
 /**
  * Initialize variable delimiters for all translators

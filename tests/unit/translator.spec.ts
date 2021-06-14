@@ -83,6 +83,7 @@ describe('translator registration', () => {
     ]);
     expect(backendsSupporting('domain')).toEqual([
       'dummy',
+      'empty',
       'mongo36',
       'mongo40',
       'mongo42',
@@ -102,6 +103,7 @@ describe('translator registration', () => {
     const translators = availableTranslators();
     expect(Object.keys(translators).sort()).toEqual([
       'dummy',
+      'empty',
       'mongo36',
       'mongo40',
       'mongo42',
