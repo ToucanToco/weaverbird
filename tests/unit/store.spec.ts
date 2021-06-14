@@ -381,6 +381,13 @@ describe('getter tests', () => {
       expect(getters.unsupportedSteps(state, {}, {}, {})).toEqual(['convert']);
     });
   });
+
+  describe('supportedSteps', () => {
+    it('should return the list of steps supported by the translator', () => {
+      const state = buildState({ translator: 'empty' });
+      expect(getters.supportedSteps(state, {}, {}, {})).toEqual(['domain']);
+    });
+  });
 });
 
 describe('mutation tests', () => {
