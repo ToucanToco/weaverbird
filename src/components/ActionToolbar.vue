@@ -1,19 +1,21 @@
 <template>
   <div class="action-toolbar__container">
     <div class="action-toolbar">
-      <action-toolbar-button
-        v-for="(button, index) in formattedButtons"
-        :icon="button.icon"
-        :label="button.label"
-        :key="button.icon"
-        :category="button.category"
-        :is-active="button.isActionToolbarMenuOpened"
-        :class="button.class"
-        @actionClicked="actionClicked"
-        @click.native.stop="openPopover(index)"
-        @closed="closePopover()"
-      />
-      <search-bar @actionClicked="actionClicked" />
+      <template v-if="hasSupportedButtons">
+        <action-toolbar-button
+          v-for="(button, index) in formattedButtons"
+          :icon="button.icon"
+          :label="button.label"
+          :key="button.icon"
+          :category="button.category"
+          :is-active="button.isActionToolbarMenuOpened"
+          :class="button.class"
+          @actionClicked="actionClicked"
+          @click.native.stop="openPopover(index)"
+          @closed="closePopover()"
+        />
+        <search-bar @actionClicked="actionClicked" />
+      </template>
     </div>
   </div>
 </template>
@@ -47,6 +49,10 @@ export default class ActionToolbar extends Vue {
 
   openPopover(index: number) {
     this.isActiveActionToolbarButton = index;
+  }
+
+  get hasSupportedButtons(): boolean {
+    return this.supportedButtons.length > 0;
   }
 
   // Filter buttons that contains at least one supported step

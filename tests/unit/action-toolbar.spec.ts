@@ -5,7 +5,7 @@ import ActionToolbar from '@/components/ActionToolbar.vue';
 import ActionToolbarButton from '@/components/ActionToolbarButton.vue';
 import { CATEGORY_BUTTONS } from '@/components/constants';
 
-import { setupMockStore } from './utils';
+import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -126,5 +126,37 @@ describe('ActionToolbar', () => {
     });
     const searchBar = wrapper.findAll('search-bar-stub');
     expect(searchBar.exists()).toBeTruthy();
+  });
+
+  it('should hide action toolbar content without supported actions', () => {
+    const store = setupMockStore(
+      buildStateWithOnePipeline([], {
+        translator: 'empty', // there is no supported actions in empty translator
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [['value1', 'value2', 'value3']],
+          paginationContext: {
+            totalCount: 10,
+            pagesize: 10,
+            pageno: 1,
+          },
+        },
+      }),
+    );
+    const wrapper = shallowMount(ActionToolbar, {
+      propsData: {
+        buttons: [
+          {
+            category: 'filter',
+            icon: 'filter',
+            label: 'Filter',
+          },
+        ],
+      },
+      localVue,
+      store,
+    });
+    expect(wrapper.find('search-bar-stub').exists()).toBeFalsy();
+    expect(wrapper.findAll('action-toolbar-button-stub')).toHaveLength(0);
   });
 });
