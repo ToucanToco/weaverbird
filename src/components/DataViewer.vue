@@ -53,7 +53,11 @@
                   }"
                   >{{ column.name }}</span
                 >
-                <span class="data-viewer__header-action" @click.stop="openMenu(column.name)">
+                <span
+                  class="data-viewer__header-action"
+                  @click.stop="openMenu(column.name)"
+                  v-if="hasSupportedActions"
+                >
                   <ActionMenu
                     :column-name="column.name"
                     :visible="column.isActionMenuOpened"
@@ -130,6 +134,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
   @VQBModule.Getter translator!: string;
   @VQBModule.Getter pipeline?: Pipeline;
+  @VQBModule.Getter supportedSteps!: PipelineStepName[];
 
   @VQBModule.Mutation createStepForm!: ({
     stepName,
@@ -143,6 +148,10 @@ export default class DataViewer extends Vue {
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';
+
+  get hasSupportedActions(): boolean {
+    return this.supportedSteps.filter(step => step !== 'domain').length > 0;
+  }
 
   /**
    * @description Get our columns with their names and linked classes
