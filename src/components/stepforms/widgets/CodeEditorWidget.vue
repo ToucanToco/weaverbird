@@ -88,6 +88,7 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
 
 .widget-code-editor__container {
   @extend %form-widget__container;
+  height: 300px;
 }
 
 .widget-code-editor {
@@ -95,7 +96,7 @@ export default class CodeEditorWidget extends Mixins(FormWidget) {
   transition: border 0.25s;
   margin: 5px 0px;
   width: 100%;
-  height: 300px;
+  height: 100%;
   resize: none;
   font-size: 15px;
 }
