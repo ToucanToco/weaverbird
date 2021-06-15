@@ -34,6 +34,12 @@ describe('Variable Chooser', () => {
             value: '2020',
           },
           {
+            category: 'App variables',
+            label: 'date.today',
+            identifier: 'appRequesters.date.today',
+            value: new Date(1623398957013),
+          },
+          {
             category: 'Story variables',
             label: 'country',
             identifier: 'requestersManager.country',
@@ -74,7 +80,7 @@ describe('Variable Chooser', () => {
         .text(),
     ).toEqual('Story variables');
     const varsFromFirstSection = sections.at(0).findAll('.widget-variable-chooser__option');
-    expect(varsFromFirstSection).toHaveLength(3);
+    expect(varsFromFirstSection).toHaveLength(4);
   });
 
   it('should display variables current values along their names', () => {
@@ -82,6 +88,16 @@ describe('Variable Chooser', () => {
       expect(w.find('.widget-variable-chooser__option-name').text()).not.toBe('');
       expect(w.find('.widget-variable-chooser__option-value').text()).not.toBe('');
     });
+  });
+
+  it('should display dates values in UTC timezone', () => {
+    expect(
+      wrapper
+        .findAll('.widget-variable-chooser__option')
+        .at(3)
+        .find('.widget-variable-chooser__option-value')
+        .text(),
+    ).toStrictEqual('Fri, 11 Jun 2021 08:09:17 GMT');
   });
 
   describe('tooltip', () => {
@@ -97,6 +113,9 @@ describe('Variable Chooser', () => {
       expect((wrapper.vm as any).makeValueReadable(1)).toStrictEqual('1');
       expect((wrapper.vm as any).makeValueReadable('1')).toStrictEqual('"1"');
       expect((wrapper.vm as any).makeValueReadable(undefined)).toStrictEqual(undefined);
+      expect((wrapper.vm as any).makeValueReadable(new Date(1623398957013))).toStrictEqual(
+        '"2021-06-11T08:09:17.013Z"',
+      );
     });
   });
 
@@ -155,7 +174,7 @@ describe('Variable Chooser', () => {
     });
 
     it('should display checkboxes before options', () => {
-      expect(wrapper.findAll('.widget-variable-chooser__option-toggle').length).toBe(5);
+      expect(wrapper.findAll('.widget-variable-chooser__option-toggle').length).toBe(6);
     });
 
     it('should highlight selected options', () => {
