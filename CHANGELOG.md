@@ -3,6 +3,7 @@
 ## Unreleased
 
 ### Fixed
+- Code editor: move static height to container to avoid css override
 - Variable chooser : stop displaying Date relative to user timezone
 
 ## [0.49.1] - 2021-06-09
