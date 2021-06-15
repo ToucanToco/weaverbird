@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.49.2] - 2021-06-15
 
 ### Fixed
 - Code editor: move static height to container to avoid css override
@@ -780,6 +780,7 @@
 
 - Initial version, showtime!
 
+[0.49.2]: https://github.com/ToucanToco/weaverbird/compare/v0.49.1...v0.49.2
 [0.49.1]: https://github.com/ToucanToco/weaverbird/compare/v0.49.0...v0.49.1
 [0.49.0]: https://github.com/ToucanToco/weaverbird/compare/v0.48.1...v0.49.0
 [0.48.1]: https://github.com/ToucanToco/weaverbird/compare/v0.48.0...v0.48.1
