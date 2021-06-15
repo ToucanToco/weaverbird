@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.50.0] - 2021-06-15
 
 ### Added
 - `empty` translator (domain only)
@@ -788,6 +788,7 @@
 
 - Initial version, showtime!
 
+[0.50.0]: https://github.com/ToucanToco/weaverbird/compare/v0.49.2...v0.50.0
 [0.49.2]: https://github.com/ToucanToco/weaverbird/compare/v0.49.1...v0.49.2
 [0.49.1]: https://github.com/ToucanToco/weaverbird/compare/v0.49.0...v0.49.1
 [0.49.0]: https://github.com/ToucanToco/weaverbird/compare/v0.48.1...v0.49.0
