@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- `empty` translator (domain only)
+
 ## [0.49.2] - 2021-06-15
 
 ### Fixed
