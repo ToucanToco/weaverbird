@@ -151,6 +151,10 @@ const getters: GetterTree<VQBState, any> = {
    * Return the unsupported steps by the current translator
    */
   unsupportedSteps: (state: VQBState) => getTranslator(state.translator).unsupportedSteps,
+  /**
+   * Return the supported steps by the current translator
+   */
+  supportedSteps: (state: VQBState) => getTranslator(state.translator).supportedSteps,
 };
 
 export default getters;

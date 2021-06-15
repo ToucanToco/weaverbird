@@ -4,6 +4,9 @@
 
 ### Added
 - `empty` translator (domain only)
+- Pipeline: hide pipeline tips when there is no supported steps
+- DataViewer: hide header cell actions when there is no supported steps
+- ActionToolbar: hide actions and search when there is no supported steps
 
 ## [0.49.2] - 2021-06-15
 

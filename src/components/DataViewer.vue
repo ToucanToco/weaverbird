@@ -53,7 +53,11 @@
                   }"
                   >{{ column.name }}</span
                 >
-                <span class="data-viewer__header-action" @click.stop="openMenu(column.name)">
+                <span
+                  class="data-viewer__header-action"
+                  @click.stop="openMenu(column.name)"
+                  v-if="hasSupportedActions"
+                >
                   <ActionMenu
                     :column-name="column.name"
                     :visible="column.isActionMenuOpened"
@@ -130,6 +134,7 @@ export default class DataViewer extends Vue {
   @VQBModule.Getter columnHeaders!: DataSetColumn[];
   @VQBModule.Getter translator!: string;
   @VQBModule.Getter pipeline?: Pipeline;
+  @VQBModule.Getter supportedSteps!: PipelineStepName[];
 
   @VQBModule.Mutation createStepForm!: ({
     stepName,
@@ -143,6 +148,10 @@ export default class DataViewer extends Vue {
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';
+
+  get hasSupportedActions(): boolean {
+    return this.supportedSteps.filter(step => step !== 'domain').length > 0;
+  }
 
   /**
    * @description Get our columns with their names and linked classes
@@ -158,6 +167,7 @@ export default class DataViewer extends Vue {
         isDataTypeMenuOpened: this.activeDataTypeMenuColumnName === d.name,
         class: {
           'data-viewer__header-cell': true,
+          'data-viewer__header-cell--disabled': !this.hasSupportedActions,
           'data-viewer__header-cell--active': this.isSelected(d.name),
         },
       };
@@ -360,6 +370,15 @@ export default class DataViewer extends Vue {
 
   .data-viewer__header-icon--active:hover {
     color: $active-color;
+  }
+}
+
+.data-viewer__header-cell--disabled {
+  .data-viewer__header-label {
+    white-space: nowrap;
+  }
+  .data-viewer__header-icon {
+    pointer-events: none;
   }
 }
 

@@ -577,4 +577,40 @@ describe('Data Viewer', () => {
       expect(openStepFormStub).toBeCalledWith({ stepName: 'rename' });
     });
   });
+
+  describe('without supported actions (empty supported steps)', () => {
+    let wrapper: Wrapper<DataViewer>;
+    beforeEach(() => {
+      const store = setupMockStore(
+        buildStateWithOnePipeline([], {
+          translator: 'empty', // there is no supported actions in empty translator
+          dataset: {
+            headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+            data: [['value1', 'value2', 'value3']],
+            paginationContext: {
+              totalCount: 10,
+              pagesize: 10,
+              pageno: 1,
+            },
+          },
+        }),
+      );
+      wrapper = shallowMount(DataViewer, { store, localVue });
+    });
+
+    afterEach(() => {
+      if (wrapper) wrapper.destroy();
+    });
+
+    it('should remove data viewer header actions', () => {
+      expect(wrapper.findAll('.data-viewer__header-action')).toHaveLength(0);
+    });
+
+    it('should add a specific class to disable data viewer header', () => {
+      const dataViewerHeaderCells = wrapper.findAll('.data-viewer__header-cell');
+      dataViewerHeaderCells.wrappers.forEach(wrapper => {
+        expect(wrapper.classes()).toContain('data-viewer__header-cell--disabled');
+      });
+    });
+  });
 });
