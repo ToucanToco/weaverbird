@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.51.0] - 2021-06-21
+
+### fixed
+- clearer date extract labels
+
 ## [0.50.0] - 2021-06-15
 
 ### Added
@@ -787,7 +792,7 @@
 ### Added
 
 - Initial version, showtime!
-
+[0.51.0]: https://github.com/ToucanToco/weaverbird/compare/v0.50.0...v0.51.0
 [0.50.0]: https://github.com/ToucanToco/weaverbird/compare/v0.49.2...v0.50.0
 [0.49.2]: https://github.com/ToucanToco/weaverbird/compare/v0.49.1...v0.49.2
 [0.49.1]: https://github.com/ToucanToco/weaverbird/compare/v0.49.0...v0.49.1
