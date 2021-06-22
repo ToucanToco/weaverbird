@@ -1,3 +1,4 @@
+from contextlib import suppress
 from typing import List, Literal, Optional, Union
 
 from pandas import DataFrame, to_datetime, to_timedelta
@@ -6,6 +7,8 @@ from pydantic import Field
 from weaverbird.render_variables import StepWithVariablesMixin
 from weaverbird.steps.base import BaseStep
 from weaverbird.types import ColumnName
+
+from .convert import cast_to_int
 
 BASIC_DATE_PARTS = Literal[
     'year',
@@ -182,6 +185,12 @@ class DateExtractStep(BaseStep):
             else:
                 operation = OPERATIONS_MAPPING.get(dt_info, dt_info)
                 result = getattr(serie_dt, operation)
+
+            # Handle unsigned integers:
+            with suppress(AttributeError):
+                if result.dtype.is_unsigned_integer:
+                    result = cast_to_int(result)
+
             df = df.assign(**{new_col: result})
 
         return df
