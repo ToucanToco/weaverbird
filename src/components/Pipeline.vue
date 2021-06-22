@@ -154,12 +154,16 @@ export default class PipelineComponent extends Vue {
   }
 
   keyDownEventHandler(event: KeyboardEvent): void {
-    const isPasting: boolean = event.keyCode == 86 && event.ctrlKey;
-    const isCopying: boolean = event.keyCode == 67 && event.ctrlKey;
+    const isPasting: boolean = event.key == 'v' && (event.ctrlKey || event.metaKey);
+    const isCopying: boolean = event.key == 'c' && (event.ctrlKey || event.metaKey);
+    const isDeleting: boolean = event.key === 'Backspace';
+
     if (isCopying) {
       this.copySelectedSteps();
     } else if (isPasting) {
       this.pasteSelectedSteps();
+    } else if (isDeleting) {
+      this.openDeleteConfirmationModal();
     }
   }
 
