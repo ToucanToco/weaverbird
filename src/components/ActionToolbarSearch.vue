@@ -2,17 +2,32 @@
   <div class="action-toolbar-search">
     <button type="button" class="action-toolbar-search__btn">
       <i class="action-toolbar-search__btn-icon fa fa-search" aria-hidden="true" />
+      <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
+        <div class="action-menu__body">
+          Todo : add multiselect here
+        </div>
+      </popover>
     </button>
   </div>
 </template>
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
+
+import Popover from './Popover.vue';
 
 @Component({
   name: 'action-toolbar-search',
-  components: {},
+  components: {
+    Popover,
+  },
 })
-export default class SearchActions extends Vue {}
+export default class SearchActions extends Vue {
+  @Prop({
+    type: Boolean,
+    default: () => false,
+  })
+  isActive!: boolean;
+}
 </script>
 <style lang="scss">
 @import '../styles/_variables';
