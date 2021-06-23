@@ -4,14 +4,15 @@
       <i class="action-toolbar-search__btn-icon fa fa-search" aria-hidden="true" />
       <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
         <div class="action-menu__body">
-          Todo : add multiselect here
+          <multiselect ref="searchComponent" :options="[1, 2, 3]" open-direction="bottom" />
         </div>
       </popover>
     </button>
   </div>
 </template>
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import Multiselect from 'vue-multiselect';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import Popover from './Popover.vue';
 
@@ -19,6 +20,7 @@ import Popover from './Popover.vue';
   name: 'action-toolbar-search',
   components: {
     Popover,
+    Multiselect,
   },
 })
 export default class SearchActions extends Vue {
@@ -27,6 +29,24 @@ export default class SearchActions extends Vue {
     default: () => false,
   })
   isActive!: boolean;
+
+  @Watch('isActive')
+  async onIsActiveChanged() {
+    if (this.isActive) {
+      await this.$nextTick();
+      this.focusSearchBar();
+    }
+  }
+
+  mounted() {
+    if (this.isActive) {
+      this.focusSearchBar();
+    }
+  }
+
+  focusSearchBar() {
+    this.$refs.searchComponent?.$el.focus();
+  }
 }
 </script>
 <style lang="scss">
@@ -54,5 +74,9 @@ export default class SearchActions extends Vue {
 
 .action-toolbar-search__btn-icon {
   font-size: 18px;
+}
+
+.action-menu__body {
+  min-height: 300px;
 }
 </style>

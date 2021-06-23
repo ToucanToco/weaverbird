@@ -1,4 +1,5 @@
 import { createLocalVue, mount, Wrapper } from '@vue/test-utils';
+import Multiselect from 'vue-multiselect';
 import Vuex from 'vuex';
 
 import ActionToolbarSearch from '@/components/ActionToolbarSearch.vue';
@@ -40,6 +41,33 @@ describe('ActionToolbarSearch', () => {
 
     it('should have a visible popover', () => {
       expect(wrapper.find(Popover).vm.$props.visible).toBeTruthy();
+    });
+
+    it('should have a opened multiselect', () => {
+      expect(wrapper.find(Multiselect).isVisible()).toBeTruthy();
+      expect(wrapper.find(Multiselect).vm.$data.isOpen).toBeTruthy();
+    });
+  });
+
+  describe('when switching from inactive to active', () => {
+    beforeEach(async () => {
+      wrapper = mount(ActionToolbarSearch, {
+        propsData: { isActive: false },
+        localVue,
+        store: setupMockStore(),
+      });
+      await wrapper.vm.$nextTick();
+      wrapper.setProps({ isActive: true });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should have a visible popover', () => {
+      expect(wrapper.find(Popover).vm.$props.visible).toBeTruthy();
+    });
+
+    it('should have a opened multiselect', () => {
+      expect(wrapper.find(Multiselect).isVisible()).toBeTruthy();
+      expect(wrapper.find(Multiselect).vm.$data.isOpen).toBeTruthy();
     });
   });
 });
