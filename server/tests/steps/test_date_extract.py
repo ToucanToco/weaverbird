@@ -2,6 +2,7 @@ import datetime
 
 import pytest
 from pandas import DataFrame, to_datetime
+from pandas.core.arrays.integer import UInt32Dtype
 
 from tests.utils import assert_column_equals, assert_dataframes_equals
 from weaverbird.steps import DateExtractStep
@@ -265,6 +266,9 @@ def test_date_extract_(sample_df: DataFrame):
         }
     )
     assert_dataframes_equals(df_result, expected_result)
+
+    # Ensure there are no unsigned int types in result:
+    assert UInt32Dtype() not in list(df_result.dtypes)
 
 
 def test_benchmark_dateextract(benchmark):
