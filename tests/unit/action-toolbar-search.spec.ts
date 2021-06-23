@@ -3,6 +3,7 @@ import Multiselect from 'vue-multiselect';
 import Vuex from 'vuex';
 
 import ActionToolbarSearch from '@/components/ActionToolbarSearch.vue';
+import { ActionCategories } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 
 import { setupMockStore } from './utils';
@@ -35,7 +36,7 @@ describe('ActionToolbarSearch', () => {
       wrapper = mount(ActionToolbarSearch, {
         propsData: { isActive: true },
         localVue,
-        store: setupMockStore(),
+        store: setupMockStore({ translator: 'mongo36' }),
       });
     });
 
@@ -46,6 +47,17 @@ describe('ActionToolbarSearch', () => {
     it('should have a opened multiselect', () => {
       expect(wrapper.find(Multiselect).isVisible()).toBeTruthy();
       expect(wrapper.find(Multiselect).vm.$data.isOpen).toBeTruthy();
+    });
+
+    it('should have a multiselect with option supported by the current translator', () => {
+      const multiselectOptions = new Set(
+        wrapper
+          .find(Multiselect)
+          .props('options')
+          .flatMap((e: ActionCategories) => e.actions.map(e => e.name)),
+      );
+      expect(multiselectOptions.size > 0).toBeTruthy();
+      expect(multiselectOptions).not.toContain('cast');
     });
   });
 

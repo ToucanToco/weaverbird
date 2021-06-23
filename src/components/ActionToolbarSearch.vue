@@ -4,7 +4,18 @@
       <i class="action-toolbar-search__btn-icon fa fa-search" aria-hidden="true" />
       <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
         <div class="action-menu__body">
-          <multiselect ref="searchComponent" :options="[1, 2, 3]" open-direction="bottom" />
+          <multiselect
+            ref="searchComponent"
+            :options="actionOptions"
+            label="label"
+            track-by="label"
+            :placeholder="'Search'"
+            :reset-after="true"
+            group-label="type"
+            group-values="actions"
+            :group-select="false"
+            open-direction="bottom"
+          />
         </div>
       </popover>
     </button>
@@ -14,6 +25,8 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+import { VQBModule } from '../store';
+import { SEARCH_ACTION } from './constants';
 import Popover from './Popover.vue';
 
 @Component({
@@ -24,6 +37,9 @@ import Popover from './Popover.vue';
   },
 })
 export default class SearchActions extends Vue {
+  @VQBModule.Getter translator!: string;
+  @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
+
   @Prop({
     type: Boolean,
     default: () => false,
@@ -36,6 +52,13 @@ export default class SearchActions extends Vue {
       await this.$nextTick();
       this.focusSearchBar();
     }
+  }
+
+  get actionOptions() {
+    return SEARCH_ACTION.map(e => ({
+      ...e,
+      actions: e.actions.filter(a => !this.unsupportedSteps.includes(a.name)),
+    }));
   }
 
   mounted() {
