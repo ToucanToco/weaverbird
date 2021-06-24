@@ -16,6 +16,7 @@
             :group-select="false"
             :maxHeight="300"
             open-direction="bottom"
+            @select="actionClicked"
           />
         </div>
       </popover>
@@ -25,6 +26,8 @@
 <script lang="ts">
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+
+import { PipelineStepName } from '@/lib/steps';
 
 import { VQBModule } from '../store';
 import { SEARCH_ACTION } from './constants';
@@ -70,6 +73,11 @@ export default class SearchActions extends Vue {
 
   focusSearchBar() {
     this.$refs.searchComponent?.$el.focus();
+  }
+
+  actionClicked(actionName: { name: PipelineStepName }) {
+    this.$emit('actionClicked', actionName.name);
+    this.$emit('closed');
   }
 }
 </script>

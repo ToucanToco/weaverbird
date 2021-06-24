@@ -59,6 +59,13 @@ describe('ActionToolbarSearch', () => {
       expect(multiselectOptions.size > 0).toBeTruthy();
       expect(multiselectOptions).not.toContain('cast');
     });
+
+    it('should emit "actionClicked" & "closed" when an option multiselect is clicked', () => {
+      const multiselectOption = wrapper.findAll('.multiselect__option');
+      multiselectOption.at(1).trigger('click');
+      expect(wrapper.emitted().actionClicked[0]).toEqual(['text']);
+      expect(wrapper.emitted().closed[0]).toBeDefined();
+    });
   });
 
   describe('when switching from inactive to active', () => {
