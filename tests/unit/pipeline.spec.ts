@@ -209,6 +209,29 @@ describe('Pipeline.vue', () => {
     });
   });
 
+  describe('clicking on backspace', () => {
+    let wrapper: Wrapper<PipelineComponent>, modal: Wrapper<any>;
+    const selectedSteps = [1, 2];
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      wrapper = mount(PipelineComponent, { store, localVue });
+      wrapper.setData({ selectedSteps });
+      (wrapper.vm as any).keyDownEventHandler({ key: 'Backspace' });
+      await wrapper.vm.$nextTick();
+      modal = wrapper.find(DeleteConfirmationModal);
+    });
+
+    it('should render a delete confirmation modal', async () => {
+      expect(modal.exists()).toBe(true);
+    });
+  });
+
   describe('reorder steps', () => {
     let wrapper: Wrapper<PipelineComponent>,
       commitSpy: jest.SpyInstance,
@@ -260,7 +283,10 @@ describe('Pipeline.vue', () => {
   describe('copy steps', () => {
     let wrapper: Wrapper<PipelineComponent>, copyToClipboardStub: jest.SpyInstance;
     const ctrlC = () => {
-      (wrapper.vm as any).keyDownEventHandler({ keyCode: 67, ctrlKey: true }); // fake ctrl + c;
+      (wrapper.vm as any).keyDownEventHandler({ key: 'c', ctrlKey: true }); // fake ctrl + c;
+    };
+    const cmdC = () => {
+      (wrapper.vm as any).keyDownEventHandler({ key: 'c', metaKey: true }); // fake cmd + c;
     };
 
     beforeEach(() => {
@@ -274,28 +300,55 @@ describe('Pipeline.vue', () => {
       wrapper = shallowMount(PipelineComponent, { store, localVue });
     });
 
-    it('should not copy selected steps content if empty', () => {
-      ctrlC();
-      expect(copyToClipboardStub).not.toHaveBeenCalled();
+    afterEach(() => {
+      jest.clearAllMocks();
     });
 
-    it('should copy selected steps content to clipboard', () => {
-      const selectedSteps = [1, 2];
-      wrapper.setData({ selectedSteps });
-      ctrlC();
-      const stringifiedStepsContent = JSON.stringify([
-        { name: 'rename', toRename: [['foo', 'bar']] },
-        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
-      ]);
-      expect(copyToClipboardStub).toHaveBeenCalledWith(stringifiedStepsContent);
+    describe('with ctrl + c', () => {
+      it('should not copy selected steps content if empty', () => {
+        ctrlC();
+        expect(copyToClipboardStub).not.toHaveBeenCalled();
+      });
+
+      it('should copy selected steps content to clipboard', () => {
+        const selectedSteps = [1, 2];
+        wrapper.setData({ selectedSteps });
+        ctrlC();
+        const stringifiedStepsContent = JSON.stringify([
+          { name: 'rename', toRename: [['foo', 'bar']] },
+          { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+        ]);
+        expect(copyToClipboardStub).toHaveBeenCalledWith(stringifiedStepsContent);
+      });
+    });
+
+    describe('with cmd + c', () => {
+      it('should not copy selected steps content if empty', () => {
+        cmdC();
+        expect(copyToClipboardStub).not.toHaveBeenCalled();
+      });
+
+      it('should copy selected steps content to clipboard', () => {
+        const selectedSteps = [1, 2];
+        wrapper.setData({ selectedSteps });
+        cmdC();
+        const stringifiedStepsContent = JSON.stringify([
+          { name: 'rename', toRename: [['foo', 'bar']] },
+          { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+        ]);
+        expect(copyToClipboardStub).toHaveBeenCalledWith(stringifiedStepsContent);
+      });
     });
   });
-  describe('past steps', () => {
+  describe('paste steps', () => {
     let wrapper: Wrapper<PipelineComponent>,
       dispatchSpy: jest.SpyInstance,
       pasteFromClipboardStub: jest.SpyInstance;
     const ctrlV = () => {
-      (wrapper.vm as any).keyDownEventHandler({ keyCode: 86, ctrlKey: true }); // fake ctrl + v;
+      (wrapper.vm as any).keyDownEventHandler({ key: 'v', ctrlKey: true }); // fake ctrl + v;
+    };
+    const cmdV = () => {
+      (wrapper.vm as any).keyDownEventHandler({ key: 'v', metaKey: true }); // fake cmd + v;
     };
 
     beforeEach(async () => {
@@ -321,6 +374,25 @@ describe('Pipeline.vue', () => {
       beforeEach(async () => {
         pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
         ctrlV();
+      });
+      it('should retrieved selected steps from clipboard', () => {
+        expect(pasteFromClipboardStub).toHaveBeenCalled();
+      });
+      it('should add steps to pipeline', () => {
+        expect(dispatchSpy).toHaveBeenCalledWith(VQBnamespace('addSteps'), {
+          steps: stepsFromClipboard,
+        });
+      });
+    });
+
+    describe('with cmd + v', () => {
+      const stepsFromClipboard = [
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      beforeEach(async () => {
+        pasteFromClipboardStub.mockResolvedValue(JSON.stringify(stepsFromClipboard));
+        cmdV();
       });
       it('should retrieved selected steps from clipboard', () => {
         expect(pasteFromClipboardStub).toHaveBeenCalled();
