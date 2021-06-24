@@ -32,7 +32,7 @@
             v-if="!isFirst"
             @click.stop
           >
-            <i class="fa fa-align-justify" aria-hidden="true" />
+            <i class="fa fa-grip-vertical" aria-hidden="true" />
           </div>
         </div>
       </div>
