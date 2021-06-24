@@ -124,7 +124,7 @@ export default class SearchActions extends Vue {
 }
 
 .action-toolbar-search__popover {
-  $multiselect__search_input-height: 40px;
+  $multiselect__search_input-height: 43px;
   $multiselect__dropdown_max-height: 300px;
 
   padding: 10px 10px;
@@ -183,14 +183,7 @@ export default class SearchActions extends Vue {
   padding: 0px;
   position: absolute;
 }
-.action-toolbar-search__popover .multiselect__content-wrapper {
-  border-radius: 5px;
-  width: 200px;
-  right: -20px;
-  top: 44px;
-  border: 0;
-  box-shadow: 0px 1px 20px 0px rgba(0, 0, 0, 0.2);
-}
+
 .action-toolbar-search__popover .multiselect__option {
   color: $base-color;
   font-size: 12px;
