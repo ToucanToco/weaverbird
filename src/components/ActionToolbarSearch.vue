@@ -131,4 +131,88 @@ export default class SearchActions extends Vue {
   min-width: 400px;
   min-height: $multiselect__search_input-height + $multiselect__dropdown_max-height;
 }
+
+/* Vue multiselect style overwrite */
+
+.action-toolbar-search__popover .multiselect {
+  box-sizing: border-box;
+  border: 0;
+  color: #999999;
+  margin: 0;
+}
+.action-toolbar-search__popover .multiselect__tags {
+  background: #fafafa;
+  border: 1px solid #f0f0f0;
+  border-radius: 5px;
+  box-shadow: none;
+  padding-left: 35px;
+  padding-right: 20px;
+  min-height: 43px;
+  &:before {
+    font-family: 'Font Awesome 5 Pro', 'Font Awesome 5 Free', sans-serif;
+    content: '\f002';
+    -webkit-font-smoothing: antialiased;
+    display: block;
+    font-style: normal;
+    font-variant: normal;
+    text-rendering: auto;
+    font-weight: 900;
+    line-height: 1;
+    font-size: 16px;
+    color: #999999;
+    position: absolute;
+    left: 10px;
+    top: 13px;
+    width: 16px;
+    height: 16px;
+  }
+}
+.action-toolbar-search__popover .multiselect--active .multiselect__tags {
+  box-shadow: none;
+  border-color: #2665a3;
+}
+.action-toolbar-search__popover .multiselect__placeholder {
+  padding: 0;
+}
+.action-toolbar-search__popover .multiselect__select {
+  display: none;
+}
+.action-toolbar-search__popover .multiselect__input {
+  font-size: 12px;
+  line-height: 25px;
+  padding: 0px;
+  position: absolute;
+}
+.action-toolbar-search__popover .multiselect__content-wrapper {
+  border-radius: 5px;
+  width: 200px;
+  right: -20px;
+  top: 44px;
+  border: 0;
+  box-shadow: 0px 1px 20px 0px rgba(0, 0, 0, 0.2);
+}
+.action-toolbar-search__popover .multiselect__option {
+  color: $base-color;
+  font-size: 12px;
+  padding: 10px 10px 10px 15px;
+  box-shadow: none;
+  min-height: 0;
+  &:focus {
+    outline: none;
+  }
+}
+.action-toolbar-search__popover .multiselect__option--group {
+  background: none !important;
+  color: $base-color !important;
+  border-top: 1px solid #e0e0e0;
+  font-weight: bold;
+  box-shadow: none;
+  min-height: 30px;
+  padding-bottom: 0;
+  padding-left: 12px;
+  text-transform: capitalize;
+}
+.action-toolbar-search__popover .multiselect__element:first-child .multiselect__option--group {
+  border: 0;
+}
 </style>
