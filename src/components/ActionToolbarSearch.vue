@@ -1,6 +1,12 @@
 <template>
   <div class="action-toolbar-search">
-    <button type="button" class="action-toolbar-search__btn">
+    <button
+      type="button"
+      :class="{
+        'action-toolbar-search__btn': true,
+        'action-toolbar-search__btn--active': isActive,
+      }"
+    >
       <i class="action-toolbar-search__btn-icon fa fa-search" aria-hidden="true" />
       <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
         <div class="action-menu__body action-toolbar-search__popover">
@@ -106,6 +112,15 @@ export default class SearchActions extends Vue {
 
 .action-toolbar-search__btn-icon {
   font-size: 18px;
+}
+
+.action-toolbar-search__btn--active {
+  background: $active-color;
+  color: #fff;
+  &:hover {
+    background: $active-color;
+    color: #fff;
+  }
 }
 
 .action-toolbar-search__popover {
