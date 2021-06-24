@@ -110,7 +110,7 @@ describe('ActionToolbar', () => {
     expect(button1.props('isActive')).toBeFalsy();
   });
 
-  it('should instantiate the search bar', () => {
+  it("should instantiate the search button & open it's popover when clicking on it", async () => {
     const wrapper = shallowMount(ActionToolbar, {
       propsData: {
         buttons: [
@@ -124,8 +124,13 @@ describe('ActionToolbar', () => {
       localVue,
       store: setupMockStore(),
     });
-    const searchBar = wrapper.findAll('search-bar-stub');
-    expect(searchBar.exists()).toBeTruthy();
+    const searchButton = wrapper.find('action-toolbar-search-stub');
+    expect(searchButton.exists()).toBeTruthy();
+
+    expect(searchButton.props('isActive')).toBeFalsy();
+    searchButton.trigger('click');
+    await localVue.nextTick();
+    expect(searchButton.props('isActive')).toBeTruthy();
   });
 
   it('should hide action toolbar content without supported actions', () => {
