@@ -3,7 +3,7 @@
     <button type="button" class="action-toolbar-search__btn">
       <i class="action-toolbar-search__btn-icon fa fa-search" aria-hidden="true" />
       <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
-        <div class="action-menu__body">
+        <div class="action-menu__body action-toolbar-search__popover">
           <multiselect
             ref="searchComponent"
             :options="actionOptions"
@@ -14,6 +14,7 @@
             group-label="type"
             group-values="actions"
             :group-select="false"
+            :maxHeight="300"
             open-direction="bottom"
           />
         </div>
@@ -99,7 +100,12 @@ export default class SearchActions extends Vue {
   font-size: 18px;
 }
 
-.action-menu__body {
-  min-height: 300px;
+.action-toolbar-search__popover {
+  $multiselect__search_input-height: 40px;
+  $multiselect__dropdown_max-height: 300px;
+
+  padding: 10px 10px;
+  min-width: 400px;
+  min-height: $multiselect__search_input-height + $multiselect__dropdown_max-height;
 }
 </style>
