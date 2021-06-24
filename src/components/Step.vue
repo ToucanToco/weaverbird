@@ -285,6 +285,10 @@ export default class Step extends Vue {
   }
 }
 
+.query-pipeline-step__action--handle {
+  cursor: move;
+}
+
 .query-pipeline-step__action i {
   transition: color 0.3s ease;
 }

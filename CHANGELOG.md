@@ -1,8 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+- Change icon and cursor for drag zone
+
 ## [0.51.0] - 2021-06-21
 
-### fixed
+### Fixed
 - clearer date extract labels
 
 ## [0.50.0] - 2021-06-15
