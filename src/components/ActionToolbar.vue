@@ -14,7 +14,12 @@
           @click.native.stop="openPopover(index)"
           @closed="closePopover()"
         />
-        <search-bar @actionClicked="actionClicked" />
+        <action-toolbar-search
+          :is-active="isActionToolbarSearchOpened"
+          @actionClicked="actionClicked"
+          @click.native.stop="openPopover(actionToolbarSearchIndex)"
+          @closed="closePopover()"
+        />
       </template>
     </div>
   </div>
@@ -27,14 +32,14 @@ import { PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
 
 import ActionToolbarButton from './ActionToolbarButton.vue';
+import ActionToolbarSearch from './ActionToolbarSearch.vue';
 import { ACTION_CATEGORIES, ButtonDef, CATEGORY_BUTTONS } from './constants';
-import SearchBar from './SearchBar.vue';
 
 @Component({
   name: 'action-toolbar',
   components: {
     ActionToolbarButton,
-    SearchBar,
+    ActionToolbarSearch,
   },
 })
 export default class ActionToolbar extends Vue {
@@ -81,6 +86,14 @@ export default class ActionToolbar extends Vue {
         isActionToolbarMenuOpened,
       };
     });
+  }
+
+  get actionToolbarSearchIndex() {
+    return this.formattedButtons.length;
+  }
+
+  get isActionToolbarSearchOpened() {
+    return this.isActiveActionToolbarButton === this.actionToolbarSearchIndex;
   }
 
   closePopover() {
