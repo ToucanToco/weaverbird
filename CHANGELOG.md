@@ -1,6 +1,11 @@
 # Changelog
 
-## Unreleased
+## [0.52.0] - 2021-06-30
+
+### Added
+
+- Pipeline copy & paste now support Macintosh keys
+- Moved the search bar in a popover for better toolbar integration
 
 ### Fixed
 - Change icon and cursor for drag zone
@@ -797,6 +802,7 @@
 ### Added
 
 - Initial version, showtime!
+[0.52.0]: https://github.com/ToucanToco/weaverbird/compare/v0.51.0...v0.52.0
 [0.51.0]: https://github.com/ToucanToco/weaverbird/compare/v0.50.0...v0.51.0
 [0.50.0]: https://github.com/ToucanToco/weaverbird/compare/v0.49.2...v0.50.0
 [0.49.2]: https://github.com/ToucanToco/weaverbird/compare/v0.49.1...v0.49.2
