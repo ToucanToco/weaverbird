@@ -16,7 +16,7 @@ Main commands are available through `make`:
     make lint # Execute various checks
 
     make build # Build the project prior to publication
-    make publish # Publish on pypi
+    make upload # Publish on pypi
 
     make test # Execute the test suite and produce reports
 

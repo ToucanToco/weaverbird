@@ -47,6 +47,7 @@
 - title: Technical documentation
   docs:
     - index
+    - packages
     - steps
     - new-step
     - known-limitations
@@ -54,3 +55,4 @@
     - variables
     - ui-components
     - code-editor
+    - python-package
