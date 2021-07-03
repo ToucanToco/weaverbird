@@ -5,24 +5,35 @@ permalink: /docs/python-package/
 
 # Weaverbird [python package](https://pypi.org/project/weaverbird/)
 
-The python module provide a way to run transformations described in a pipeline.
+The python module provide a way to turn pipelines into transformation functions or queries.
+
 
 ## Purpose
 
-This package provides utility functions to translate weaverbird's pipelines into Python functions, powered by [pandas](https://pandas.pydata.org/).
-It is meant as a building block to create servers capable of understanding and executing such pipelines, and returning results to clients.
+This package provides is meant as a building block to create servers capable of understanding and executing such pipelines, and returning results to clients.
+It provides several ways to understand and run weaverbird's pipelines, called _backends_.
+
+_Backends_ can either provide:
+- a way to execute pipelines directly (let's call them _executor backends_).
+- a way to translate pipelines into queries meant to be run against a database (let's call them _translator backends_).
+
 
 ## Installation
 
 `pip install weaverbird`
 
+
 ## Usage
+
+:warning: This doc is provisional, implementation pending
 
 The package exposes:
 - a [pydantic](https://pydantic-docs.helpmanual.io/) model `Pipeline` which mirror the pipeline definition used by the front-end
-- a `PipelineExcutor` class to turn pipelines into transformation functions
+- several `weaverbird.backends.xxxx` sub-modules, each exposing:
+  - either a `translate_pipeline` function (for _executor backends_),
+  - or an `execute_pipeline` function (for _translator backends_).
 
-### Validate a pipeline
+### `Pipeline` model: validation
 
 Using the pydantic model, one can validate that a series of pipeline steps are valid:
 ```python
@@ -49,11 +60,11 @@ steps -> 1 -> name
 [...]
 ```
 
-### Execute a pipeline
+### Executor backends: execute a pipeline
 
 ```python
 import pandas as pd
-from weaverbird.pipeline_executor import PipelineExecutor
+from weaverbird.backends.pandas_executor import execute_pipeline
 
 def domain_retriever(domain_name: str) -> pd.DataFrame:
     return pd.read_csv(f'./datasets/{domain_name}.csv')
@@ -67,8 +78,7 @@ pipeline = [
   }}
 ]
 
-executor = PipelineExecutor(domain_retriever)
-executor.execute_pipeline(pipeline)
+execute_pipeline(pipeline, domain_retriever)
 ```
 
 where:
@@ -78,6 +88,38 @@ where:
 The result of `execute_pipeline` is a tuple formed by:
 - the transformed `DataFrame`,
 - a `PipelineExecutionReport` with details about time and memory usage each of its steps.
+
+As of today, only one executor backend exists for python, based on pandas.
+
+### Translator backends: translate a pipeline into a query
+
+```python
+from weaverbird.backends.sqlite_translator import translate_pipeline
+
+def domain_to_table_identifier(domain_name: str) -> str:
+    return domain_name
+
+pipeline = [
+  {'name': 'domain', 'domain': 'example'},
+  {'name': 'filter', 'condition': {
+    'column': 'planet',
+    'operator': 'eq',
+    'value': 'Earth',
+  }}
+]
+
+translate_pipeline(pipeline, domain_to_table_identifier)
+# SELECT * FROM example WHERE planet='Earth'
+```
+
+where:
+- `pipeline` is an instance of the `Pipeline` model
+- `domain_to_table_identifier` is an optional function that, from an identifier, returns the corresponding identifier of the table in the targeted database
+
+The result of `translate_pipeline` is a query, generally a `str` (but other types could be possible, like a `list` or `dict` for MongoDB queries).
+
+As of today, no translator backend exists for python. We plan to implement one for MongoDB, and one for Snowflake SQL.
+
 
 ## Playground server
 
