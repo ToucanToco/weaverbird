@@ -10,7 +10,7 @@ The python module provide a way to turn pipelines into transformation functions 
 
 ## Purpose
 
-This package provides is meant as a building block to create servers capable of understanding and executing such pipelines, and returning results to clients.
+This package is meant as a building block to create servers capable of understanding and executing such pipelines, and returning results to clients.
 It provides several ways to understand and run weaverbird's pipelines, called _backends_.
 
 _Backends_ can either provide:
