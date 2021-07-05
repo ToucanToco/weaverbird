@@ -6,9 +6,9 @@ import pytest
 from pydantic.main import BaseModel
 from toucan_connectors.common import nosql_apply_parameters_to_query
 
-from weaverbird.pipeline import Pipeline, PipelineWithVariables
-from weaverbird.steps import DomainStep, RollupStep
-from weaverbird.steps.aggregate import Aggregation
+from weaverbird.pipeline.pipeline import Pipeline, PipelineWithVariables
+from weaverbird.pipeline.steps import DomainStep, RollupStep
+from weaverbird.pipeline.steps.aggregate import Aggregation
 
 
 class Case(BaseModel):
