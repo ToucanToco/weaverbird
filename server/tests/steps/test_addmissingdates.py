@@ -7,7 +7,8 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.addmissingdates import AddMissingDatesStep
+from weaverbird.backends.pandas_executor.steps.addmissingdates import execute_addmissingdates
+from weaverbird.pipeline.steps import AddMissingDatesStep
 
 
 @pytest.fixture()
@@ -32,7 +33,7 @@ def test_missing_date(today):
         name='addmissingdates', datesColumn='date', datesGranularity='day', groups=[]
     )
 
-    result = step.execute(df)
+    result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
         [df, pd.DataFrame({'date': missing_dates, 'value': [None, None]})]
     ).sort_values(by='date')
@@ -64,7 +65,7 @@ def test_missing_date_years(today):
         name='addmissingdates', datesColumn='date', datesGranularity='year', groups=[]
     )
 
-    result = step.execute(df)
+    result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
         [df, pd.DataFrame({'date': missing_dates, 'value': [None, None]})]
     ).sort_values(by='date')
@@ -88,7 +89,7 @@ def test_missing_date_with_groups(today):
     step = AddMissingDatesStep(
         name='addmissingdates', datesColumn='date', datesGranularity='day', groups=['country']
     )
-    result = step.execute(df)
+    result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
         [
             df,
@@ -124,7 +125,7 @@ def test_missing_date_with_groups_various_length(today):
     step = AddMissingDatesStep(
         name='addmissingdates', datesColumn='date', datesGranularity='month', groups=['country']
     )
-    result = step.execute(df)
+    result = execute_addmissingdates(step, df)
     expected_result = pd.concat(
         [
             df,
@@ -164,5 +165,5 @@ def test_benchmark_addmissingdate(benchmark, today):
         name='addmissingdates', datesColumn='date', datesGranularity='day', groups=[]
     )
 
-    result = benchmark(step.execute, df)
+    result = benchmark(execute_addmissingdates, step, df)
     assert len(result) == 2000
