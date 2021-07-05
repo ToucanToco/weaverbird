@@ -4,8 +4,6 @@ from pandas import DataFrame
 
 ColumnName = str
 # Pipeline = List[dict]
-DomainRetriever = Callable[[str], DataFrame]
-PipelineExecutor = Callable[[Any], DataFrame]
 TemplatedVariable = Any
 
 
