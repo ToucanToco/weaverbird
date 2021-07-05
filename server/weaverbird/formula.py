@@ -1,5 +1,6 @@
 import re
 
+import numpy as np
 from pandas import DataFrame
 
 COLUMN_PATTERN = re.compile(r'(\`[^\`]*\`)')
@@ -30,7 +31,12 @@ def clean_formula(formula: str) -> str:
 
 def eval_formula(df: DataFrame, formula: str) -> DataFrame:
     try:
-        return df.eval(formula)
+        result = df.eval(formula)
     except Exception:
         # for all cases not handled by NumExpr
-        return df.eval(formula, engine='python')
+        result = df.eval(formula, engine='python')
+
+    # eval can introduce Infinity values (when dividing by 0),
+    # which do not have a JSON representation.
+    # Let's replace them by NaN:
+    return result.replace([np.inf, -np.inf], np.nan)

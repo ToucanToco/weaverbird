@@ -1,3 +1,4 @@
+import numpy as np
 import pytest
 from pandas import DataFrame
 
@@ -34,3 +35,12 @@ def test_bad_formula(sample_df: DataFrame, bad_expression):
     bad_step = FormulaStep(name='formula', new_column='z', formula=bad_expression)
     with pytest.raises(Exception):
         bad_step.execute(sample_df)
+
+
+def test_formula_infinity(sample_df: DataFrame):
+    df_result = FormulaStep(name='formula', new_column='z', formula='`col B` / (colA - 1)').execute(
+        sample_df
+    )
+
+    expected_result = sample_df.assign(z=[np.nan, 20.0 / 9])
+    assert_dataframes_equals(df_result, expected_result)
