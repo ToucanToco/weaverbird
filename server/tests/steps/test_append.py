@@ -1,11 +1,14 @@
+from typing import Any
+
 import numpy as np
 import pandas as pd
 import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import AppendStep
-from weaverbird.types import DomainRetriever, PipelineExecutor
+from weaverbird.backends.pandas_executor.steps.append import execute_append
+from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
+from weaverbird.pipeline.steps import AppendStep
 
 
 @pytest.fixture
@@ -15,11 +18,11 @@ def sample_df():
 
 @pytest.fixture
 def mock_execute_pipeline() -> PipelineExecutor:
-    return lambda p: DataFrame({'name': ['plop'], 'score': [666], 'x': ['y']})
+    return lambda p, dr: (DataFrame({'name': ['plop'], 'score': [666], 'x': ['y']}), Any)
 
 
 @pytest.fixture
-def mock_domain_retriever() -> PipelineExecutor:
+def mock_domain_retriever() -> DomainRetriever:
     return lambda p: DataFrame({'name': ['miam'], 'score': [999], 'lambda': ['p']})
 
 
@@ -29,11 +32,15 @@ def test_append(
     mock_execute_pipeline: PipelineExecutor,
 ):
 
-    df_result = AppendStep(
+    step = AppendStep(
         name='append',
         pipelines=[[{'name': 'domain', 'domain': 'buzz'}], [{'name': 'domain', 'domain': 'buzz'}]],
-    ).execute(
-        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
+    df_result = execute_append(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
     )
 
     expected_result = DataFrame(
@@ -55,8 +62,15 @@ def test_append_with_domain_name(
     """
     It should accept a domain name instead of a complete pipeline
     """
-    df_result = AppendStep(name='append', pipelines=['miam'],).execute(
-        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    step = AppendStep(
+        name='append',
+        pipelines=['miam'],
+    )
+    df_result = execute_append(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
     )
 
     expected_result = DataFrame(
@@ -77,9 +91,10 @@ def test_benchmark_append(benchmark):
     step = AppendStep(name='append', pipelines=['other'])
 
     df_result = benchmark(
-        step.execute,
+        execute_append,
+        step,
         df_left,
-        domain_retriever=lambda _: df_right,
-        execute_pipeline=lambda _: df_right,
+        domain_retriever=lambda _p: df_right,
+        execute_pipeline=lambda _p, _dr: (df_right, Any),
     )
     assert len(df_result) == 2000

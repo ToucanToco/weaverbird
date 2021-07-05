@@ -1,11 +1,7 @@
-from typing import List, Union
-
 from pandas import DataFrame
 
-from weaverbird.steps.base import PipelineExecutor
-from weaverbird.types import DomainRetriever
-
-PipelineOrDomainName = Union[List[dict], str]  # can be either a domain name or a complete pipeline
+from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
+from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName
 
 
 def resolve_pipeline_for_combination(
@@ -21,4 +17,5 @@ def resolve_pipeline_for_combination(
     if isinstance(pipeline, str):
         return domain_retriever(pipeline)
     else:
-        return pipeline_executor(Pipeline(steps=pipeline))
+        # NOTE execution report of the sub-pipeline is discarded
+        return pipeline_executor(Pipeline(steps=pipeline), domain_retriever)[0]
