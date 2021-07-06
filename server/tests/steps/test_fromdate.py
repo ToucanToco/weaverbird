@@ -4,7 +4,8 @@ import pytest
 from pandas import DataFrame, to_datetime
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.fromdate import FromdateStep
+from weaverbird.backends.pandas_executor.steps.fromdate import execute_fromdate
+from weaverbird.pipeline.steps import FromdateStep
 
 
 @pytest.fixture
@@ -25,7 +26,7 @@ def sample_df():
 
 def test_simple_fromdate(sample_df):
     step = FromdateStep(name='fromdate', column='a_date', format='%Y-%m-%d')
-    result = step.execute(sample_df, domain_retriever=None, execute_pipeline=None)
+    result = execute_fromdate(step, sample_df, domain_retriever=None, execute_pipeline=None)
     assert_dataframes_equals(
         result,
         DataFrame({'a_date': ['2019-10-06', '2019-10-07', '2020-11-16', None]}),
@@ -40,4 +41,4 @@ def test_benchmark_fromdate(benchmark):
         }
     )
     step = FromdateStep(name='fromdate', column='date', format='%Y-%m-%d')
-    benchmark(step.execute, df)
+    benchmark(execute_fromdate, step, df)
