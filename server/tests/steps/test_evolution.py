@@ -5,8 +5,9 @@ import pytest
 from pandas import DataFrame, to_datetime
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.steps.evolution import execute_evolution
 from weaverbird.exceptions import DuplicateError
-from weaverbird.steps import EvolutionStep
+from weaverbird.pipeline.steps import EvolutionStep
 
 
 @pytest.fixture
@@ -27,7 +28,7 @@ def test_evolution_absolute(sample_df: DataFrame):
         evolutionType='vsLastMonth',
         evolutionFormat='abs',
     )
-    df_result = step.execute(sample_df)
+    df_result = execute_evolution(step, sample_df)
 
     expected_result = sample_df.assign(VALUE_EVOL_ABS=[None, 2, -4, -2, None, 10])
     assert_dataframes_equals(df_result, expected_result)
@@ -41,7 +42,7 @@ def test_evolution_percentage(sample_df: DataFrame):
         evolutionType='vsLastMonth',
         evolutionFormat='pct',
     )
-    df_result = step.execute(sample_df)
+    df_result = execute_evolution(step, sample_df)
 
     expected_result = sample_df.assign(
         VALUE_EVOL_PCT=[None, 0.0253164, -0.0493827, -0.025974, None, 0.1282051]
@@ -85,7 +86,7 @@ def test_evolution_with_groups(df_with_groups: DataFrame):
         indexColumns=['COUNTRY'],
         newColumn='MY_EVOL',
     )
-    df_result = step.execute(df_with_groups)
+    df_result = execute_evolution(step, df_with_groups)
 
     expected_result = df_with_groups.assign(
         MY_EVOL=[None, 2, -4, -2, None, 10, None, 0, -1, -1, 3, None]
@@ -103,7 +104,7 @@ def test_evolution_with_duplicate_dates(df_with_groups: DataFrame):
         newColumn='MY_EVOL',
     )
     with pytest.raises(DuplicateError):
-        step.execute(df_with_groups)
+        execute_evolution(step, df_with_groups)
 
 
 def test_benchmark_evolution(benchmark):
@@ -121,4 +122,4 @@ def test_benchmark_evolution(benchmark):
         newColumn='MY_EVOL',
     )
 
-    benchmark(step.execute, df)
+    benchmark(execute_evolution, step, df)
