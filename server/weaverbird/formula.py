@@ -36,7 +36,11 @@ def eval_formula(df: DataFrame, formula: str) -> DataFrame:
         # for all cases not handled by NumExpr
         result = df.eval(formula, engine='python')
 
-    # eval can introduce Infinity values (when dividing by 0),
-    # which do not have a JSON representation.
-    # Let's replace them by NaN:
-    return result.replace([np.inf, -np.inf], np.nan)
+    try:
+        # eval can introduce Infinity values (when dividing by 0),
+        # which do not have a JSON representation.
+        # Let's replace them by NaN:
+        return result.replace([np.inf, -np.inf], np.nan)
+    except Exception:
+        # `result` is not a Series
+        return result
