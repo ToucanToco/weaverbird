@@ -13,8 +13,8 @@ from .cumsum import execute_cumsum
 from .date_extract import execute_date_extract
 from .delete import execute_delete
 from .domain import execute_domain
+from .duplicate import execute_duplicate
 
-# from .duplicate import execute as execute_duplicate
 # from .duration import execute as execute_duration
 # from .evolution import execute as execute_evolution
 # from .fillna import execute as execute_fillna
@@ -58,7 +58,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'date_extract': execute_date_extract,
     'delete': execute_delete,
     'domain': execute_domain,
-    # 'duplicate': execute_duplicate,
+    'duplicate': execute_duplicate,
     # 'duration': execute_duration,
     # 'evolution': execute_evolution,
     # 'fillna': execute_fillna,
