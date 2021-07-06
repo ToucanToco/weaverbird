@@ -1,8 +1,8 @@
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.pipeline.steps import ConcatenateStep
 from weaverbird.backends.pandas_executor.steps.concatenate import execute_concatenate
+from weaverbird.pipeline.steps import ConcatenateStep
 
 
 def test_concatenate():

@@ -8,8 +8,8 @@ from .argmax import execute_argmax
 from .argmin import execute_argmin
 from .comparetext import execute_comparetext
 from .concatenate import execute_concatenate
+from .convert import execute_convert
 
-# from .convert import execute as execute_convert
 # from .cumsum import execute as execute_cumsum
 # from .date_extract import execute as execute_date_extract
 # from .delete import execute as execute_delete
@@ -53,7 +53,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'argmin': execute_argmin,
     'comparetext': execute_comparetext,
     'concatenate': execute_concatenate,
-    # 'convert': execute_convert,
+    'convert': execute_convert,
     # 'cumsum': execute_cumsum,
     # 'date_extract': execute_date_extract,
     # 'delete': execute_delete,

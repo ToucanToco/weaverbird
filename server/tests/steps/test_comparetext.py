@@ -4,8 +4,8 @@ import string
 import pandas as pd
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.pipeline.steps.comparetext import CompareTextStep
 from weaverbird.backends.pandas_executor.steps.comparetext import execute_comparetext
+from weaverbird.pipeline.steps.comparetext import CompareTextStep
 
 
 def random_string(size: int = 10) -> str:
