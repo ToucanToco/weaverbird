@@ -4,8 +4,8 @@ from ..types import StepExecutor
 from .addmissingdates import execute_addmissingdates
 from .aggregate import execute_aggregate
 from .append import execute_append
+from .argmax import execute_argmax
 
-# from .argmax import execute as execute_argmax
 # from .argmin import execute as execute_argmin
 # from .comparetext import execute as execute_comparetext
 # from .concatenate import execute as execute_concatenate
@@ -49,7 +49,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'addmissingdates': execute_addmissingdates,
     'aggregate': execute_aggregate,
     'append': execute_append,
-    # 'argmax': execute_argmax,
+    'argmax': execute_argmax,
     # 'argmin': execute_argmin,
     # 'comparetext': execute_comparetext,
     # 'concatenate': execute_concatenate,
