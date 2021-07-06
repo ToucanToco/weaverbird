@@ -1,8 +1,8 @@
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.pipeline.steps import CumSumStep
 from weaverbird.backends.pandas_executor.steps.cumsum import execute_cumsum
+from weaverbird.pipeline.steps import CumSumStep
 
 
 def test_cumsum():
