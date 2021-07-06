@@ -10,8 +10,8 @@ from .comparetext import execute_comparetext
 from .concatenate import execute_concatenate
 from .convert import execute_convert
 from .cumsum import execute_cumsum
+from .date_extract import execute_date_extract
 
-# from .date_extract import execute as execute_date_extract
 # from .delete import execute as execute_delete
 # from .domain import execute as execute_domain
 # from .duplicate import execute as execute_duplicate
@@ -55,7 +55,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'concatenate': execute_concatenate,
     'convert': execute_convert,
     'cumsum': execute_cumsum,
-    # 'date_extract': execute_date_extract,
+    'date_extract': execute_date_extract,
     # 'delete': execute_delete,
     # 'domain': execute_domain,
     # 'duplicate': execute_duplicate,
