@@ -18,8 +18,8 @@ from .duration import execute_duration
 from .evolution import execute_evolution
 from .fillna import execute_fillna
 from .filter import execute_filter
+from .formula import execute_formula
 
-# from .formula import execute as execute_formula
 # from .fromdate import execute as execute_fromdate
 # from .ifthenelse import execute as execute_ifthenelse
 # from .join import execute as execute_join
@@ -63,7 +63,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'evolution': execute_evolution,
     'fillna': execute_fillna,
     'filter': execute_filter,
-    # 'formula': execute_formula,
+    'formula': execute_formula,
     # 'fromdate': execute_fromdate,
     # 'ifthenelse': execute_ifthenelse,
     # 'join': execute_join,
