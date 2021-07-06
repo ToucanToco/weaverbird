@@ -19,8 +19,8 @@ from .evolution import execute_evolution
 from .fillna import execute_fillna
 from .filter import execute_filter
 from .formula import execute_formula
+from .fromdate import execute_fromdate
 
-# from .fromdate import execute as execute_fromdate
 # from .ifthenelse import execute as execute_ifthenelse
 # from .join import execute as execute_join
 # from .lowercase import execute as execute_lowercase
@@ -64,7 +64,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'fillna': execute_fillna,
     'filter': execute_filter,
     'formula': execute_formula,
-    # 'fromdate': execute_fromdate,
+    'fromdate': execute_fromdate,
     # 'ifthenelse': execute_ifthenelse,
     # 'join': execute_join,
     # 'lowercase': execute_lowercase,
