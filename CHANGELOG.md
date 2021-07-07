@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.53.0] - 2021-07-07
+
+## Added
+- Enforce unique column names in aggregation column for Aggregate Step
+
 ## [0.52.0] - 2021-06-30
 
 ### Added
@@ -802,6 +807,7 @@
 ### Added
 
 - Initial version, showtime!
+[0.53.0]: https://github.com/ToucanToco/weaverbird/compare/v0.52.0...v0.53.0
 [0.52.0]: https://github.com/ToucanToco/weaverbird/compare/v0.51.0...v0.52.0
 [0.51.0]: https://github.com/ToucanToco/weaverbird/compare/v0.50.0...v0.51.0
 [0.50.0]: https://github.com/ToucanToco/weaverbird/compare/v0.49.2...v0.50.0
