@@ -6,7 +6,8 @@ import pytest
 from pandas import DataFrame, Timestamp
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import ToDateStep
+from weaverbird.backends.pandas_executor.steps.todate import execute_todate
+from weaverbird.pipeline.steps import ToDateStep
 
 
 @pytest.fixture
@@ -16,7 +17,7 @@ def sample_df():
 
 def test_todate(sample_df: DataFrame):
     step = ToDateStep(name='todate', column='a_date', format='%d/%m/%Y')
-    result = step.execute(sample_df)
+    result = execute_todate(step, sample_df)
     assert_dataframes_equals(
         result,
         DataFrame(
@@ -34,7 +35,7 @@ def test_todate(sample_df: DataFrame):
 
 def test_todate_automatic_guess(sample_df: DataFrame):
     step = ToDateStep(name='todate', column='a_date')
-    result = step.execute(sample_df)
+    result = execute_todate(step, sample_df)
     assert_dataframes_equals(
         result,
         DataFrame(
@@ -69,4 +70,4 @@ def test_benchmark_sort(benchmark):
 
     step = ToDateStep(name='todate', column='date')
 
-    benchmark(step.execute, df)
+    benchmark(execute_todate, step, df)
