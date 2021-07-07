@@ -21,8 +21,8 @@ from .filter import execute_filter
 from .formula import execute_formula
 from .fromdate import execute_fromdate
 from .ifthenelse import execute_ifthenelse
+from .join import execute_join
 
-# from .join import execute as execute_join
 # from .lowercase import execute as execute_lowercase
 # from .moving_average import execute as execute_moving_average
 # from .percentage import execute as execute_percentage
@@ -66,7 +66,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'formula': execute_formula,
     'fromdate': execute_fromdate,
     'ifthenelse': execute_ifthenelse,
-    # 'join': execute_join,
+    'join': execute_join,
     # 'lowercase': execute_lowercase,
     # 'moving_average': execute_moving_average,
     # 'percentage': execute_percentage,

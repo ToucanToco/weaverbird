@@ -4,7 +4,7 @@ from typing import DefaultDict
 
 from pandas import DataFrame
 
-from weaverbird.types import ColumnName
+from weaverbird.pipeline.types import ColumnName
 
 REGEX_COLUMN_NAME_WITH_SUFFIX = re.compile(r'(.*)_(\d+)')
 
