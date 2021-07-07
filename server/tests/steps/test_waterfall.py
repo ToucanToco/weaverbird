@@ -3,7 +3,8 @@ import random
 import pandas as pd
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.waterfall import WaterfallStep
+from weaverbird.backends.pandas_executor.steps.waterfall import execute_waterfall
+from weaverbird.pipeline.steps.waterfall import WaterfallStep
 
 
 def test_simple():
@@ -14,7 +15,7 @@ def test_simple():
             'revenue': [135, 275, 115, 450, 98, 245, 103, 385],
         }
     )
-    result_df = WaterfallStep(
+    step = WaterfallStep(
         name='waterfall',
         valueColumn='revenue',
         milestonesColumn='year',
@@ -23,7 +24,8 @@ def test_simple():
         labelsColumn='city',
         sortBy='value',
         order='desc',
-    ).execute(sample_df)
+    )
+    result_df = execute_waterfall(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -44,7 +46,7 @@ def test_simple_with_aggregation():
             'revenue': [135, 275, 115, 450, 10, 98, 245, 103, 385, 10],
         }
     )
-    result_df = WaterfallStep(
+    step = WaterfallStep(
         name='waterfall',
         valueColumn='revenue',
         milestonesColumn='year',
@@ -53,7 +55,8 @@ def test_simple_with_aggregation():
         labelsColumn='city',
         sortBy='value',
         order='desc',
-    ).execute(sample_df)
+    )
+    result_df = execute_waterfall(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -75,7 +78,7 @@ def test_with_groups():
             'revenue': [65, 70, 210, 240, 130, 145, 55, 60, 38, 60, 175, 210, 95, 150, 50, 53],
         }
     )
-    result_df = WaterfallStep(
+    step = WaterfallStep(
         name='waterfall',
         valueColumn='revenue',
         milestonesColumn='year',
@@ -86,7 +89,8 @@ def test_with_groups():
         groupby=['product'],
         sortBy='label',
         order='asc',
-    ).execute(sample_df)
+    )
+    result_df = execute_waterfall(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -135,7 +139,7 @@ def test_bug_duplicate_rows():
         }
     )
 
-    result_df = WaterfallStep(
+    step = WaterfallStep(
         name='waterfall',
         valueColumn='revenue',
         milestonesColumn='year',
@@ -144,7 +148,8 @@ def test_bug_duplicate_rows():
         labelsColumn='country',
         sortBy='label',
         order='asc',
-    ).execute(sample_df)
+    )
+    result_df = execute_waterfall(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -170,7 +175,7 @@ def test_waterfall_bug_drill():
             'value': [1, 2, 3, 11, 12, 13],
         }
     )
-    waterfall_step = WaterfallStep(
+    step = WaterfallStep(
         name='waterfall',
         valueColumn='value',
         milestonesColumn='variable',
@@ -182,7 +187,7 @@ def test_waterfall_bug_drill():
         sortBy='label',
         order='asc',
     )
-    result = waterfall_step.execute(base_df)
+    result = execute_waterfall(step, base_df)
     assert_dataframes_equals(
         result,
         pd.DataFrame(
@@ -262,4 +267,4 @@ def test_benchmark_waterfall(benchmark):
         sortBy='label',
         order='asc',
     )
-    benchmark(step.execute, df[0:1000])
+    benchmark(execute_waterfall, step, df[0:1000])
