@@ -1,6 +1,4 @@
-from typing import Any, Callable
-
-from pandas import DataFrame
+from typing import Any
 
 ColumnName = str
 # Pipeline = List[dict]

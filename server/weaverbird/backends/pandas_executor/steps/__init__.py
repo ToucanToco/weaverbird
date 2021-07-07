@@ -47,7 +47,7 @@ from .waterfall import execute_waterfall
 steps_executors: Dict[str, StepExecutor] = {
     'addmissingdates': execute_addmissingdates,
     'aggregate': execute_aggregate,
-    'append': execute_append,
+    'append': execute_append,  # type: ignore
     'argmax': execute_argmax,
     'argmin': execute_argmin,
     'comparetext': execute_comparetext,
@@ -56,7 +56,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'cumsum': execute_cumsum,
     'date_extract': execute_date_extract,
     'delete': execute_delete,
-    'domain': execute_domain,
+    'domain': execute_domain,  # type: ignore
     'duplicate': execute_duplicate,
     'duration': execute_duration,
     'evolution': execute_evolution,
@@ -65,7 +65,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'formula': execute_formula,
     'fromdate': execute_fromdate,
     'ifthenelse': execute_ifthenelse,
-    'join': execute_join,
+    'join': execute_join,  # type: ignore
     'lowercase': execute_lowercase,
     'moving_average': execute_moving_average,
     'percentage': execute_percentage,

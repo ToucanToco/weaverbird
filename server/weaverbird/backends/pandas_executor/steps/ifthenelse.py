@@ -3,8 +3,8 @@ from typing import Any
 import numpy as np
 from pandas import DataFrame
 
+from weaverbird.backends.pandas_executor.steps.utils.formula import clean_formula, eval_formula
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
-from weaverbird.formula import clean_formula, eval_formula
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse, IfthenelseStep
 
 from .utils.condition import apply_condition
