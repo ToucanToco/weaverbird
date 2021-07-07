@@ -32,8 +32,8 @@ from .replace import execute_replace
 from .rollup import execute_rollup
 from .select import execute_select
 from .sort import execute_sort
+from .split import execute_split
 
-# from .split import execute as execute_split
 # from .statistics import execute as execute_statistics
 # from .substring import execute as execute_substring
 # from .text import execute as execute_text
@@ -77,7 +77,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'rollup': execute_rollup,
     'select': execute_select,
     'sort': execute_sort,
-    # 'split': execute_split,
+    'split': execute_split,
     # 'statistics': execute_statistics,
     # 'substring': execute_substring,
     # 'text': execute_text,
