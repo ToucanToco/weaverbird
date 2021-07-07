@@ -5,7 +5,8 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.substring import SubstringStep
+from weaverbird.backends.pandas_executor.steps.substring import execute_substring
+from weaverbird.pipeline.steps import SubstringStep
 
 
 @pytest.fixture()
@@ -19,9 +20,8 @@ def sample_df():
 
 
 def test_substring_positive_start_end_idx(sample_df):
-    result_df = SubstringStep(name='substring', column='Label', start_index=1, end_index=4).execute(
-        sample_df
-    )
+    step = SubstringStep(name='substring', column='Label', start_index=1, end_index=4)
+    result_df = execute_substring(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -34,9 +34,8 @@ def test_substring_positive_start_end_idx(sample_df):
 
 
 def test_substring_positive_start_negative_end(sample_df):
-    result_df = SubstringStep(
-        name='substring', column='Label', start_index=2, end_index=-2
-    ).execute(sample_df)
+    step = SubstringStep(name='substring', column='Label', start_index=2, end_index=-2)
+    result_df = execute_substring(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -49,9 +48,8 @@ def test_substring_positive_start_negative_end(sample_df):
 
 
 def test_substring_negative_start_negative_end(sample_df):
-    result_df = SubstringStep(
-        name='substring', column='Label', start_index=-3, end_index=-1
-    ).execute(sample_df)
+    step = SubstringStep(name='substring', column='Label', start_index=-3, end_index=-1)
+    result_df = execute_substring(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -64,9 +62,10 @@ def test_substring_negative_start_negative_end(sample_df):
 
 
 def test_substring_new_column_name(sample_df):
-    result_df = SubstringStep(
+    step = SubstringStep(
         name='substring', column='Label', start_index=-3, end_index=-1, newColumnName='FOO'
-    ).execute(sample_df)
+    )
+    result_df = execute_substring(step, sample_df)
 
     expected_df = pd.DataFrame(
         {
@@ -91,4 +90,4 @@ def test_benchmark_substring(benchmark):
     step = SubstringStep(
         name='substring', column='group', start_index=0, end_index=3, newColumnName='FOO'
     )
-    benchmark(step.execute, df)
+    benchmark(execute_substring, step, df)
