@@ -42,8 +42,7 @@ from .totals import execute_totals
 from .uniquegroups import execute_uniquegroups
 from .unpivot import execute_unpivot
 from .uppercase import execute_uppercase
-
-# from .waterfall import execute as execute_waterfall
+from .waterfall import execute_waterfall
 
 steps_executors: Dict[str, StepExecutor] = {
     'addmissingdates': execute_addmissingdates,
@@ -87,5 +86,5 @@ steps_executors: Dict[str, StepExecutor] = {
     'uniquegroups': execute_uniquegroups,
     'unpivot': execute_unpivot,
     'uppercase': execute_uppercase,
-    # 'waterfall': execute_waterfall,
+    'waterfall': execute_waterfall,
 }
