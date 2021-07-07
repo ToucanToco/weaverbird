@@ -5,8 +5,9 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.aggregate import Aggregation
-from weaverbird.steps.totals import TotalDimension, TotalsStep
+from weaverbird.backends.pandas_executor.steps.totals import execute_totals
+from weaverbird.pipeline.steps.aggregate import Aggregation
+from weaverbird.pipeline.steps.totals import TotalDimension, TotalsStep
 
 
 def test_single_totals_without_groups():
@@ -34,7 +35,7 @@ def test_single_totals_without_groups():
         ]
     )
 
-    real_result = step.execute(sample_df)
+    real_result = execute_totals(step, sample_df)
     assert_dataframes_equals(real_result, expected_result)
 
 
@@ -96,7 +97,7 @@ def test_totals_2():
         ]
     )
 
-    real_result = step.execute(sample_df)
+    real_result = execute_totals(step, sample_df)
     real_sorted = real_result.sort_values(by=real_result.columns.tolist())
     expected_sorted = expected_result.sort_values(by=expected_result.columns.tolist())
     assert_dataframes_equals(real_sorted, expected_sorted)
@@ -128,7 +129,7 @@ def test_totals_nogroup_3_dimensions():
         ],
     )
 
-    real_result = step.execute(sample_df)
+    real_result = execute_totals(step, sample_df)
     assert real_result[real_result['YEAR'] == 'All years'].count()['YEAR'] == 9
     assert real_result[real_result['COUNTRY'] == 'All countries'].count()['COUNTRY'] == 9
     assert real_result[real_result['PRODUCT'] == 'All products'].count()['PRODUCT'] == 9
@@ -164,4 +165,4 @@ def test_benchmark_totals(benchmark):
         aggregations=[Aggregation(columns=['value'], aggfunction='sum', newcolumns=['value'])],
         groups=[],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_totals, step, df)
