@@ -40,8 +40,8 @@ from .todate import execute_todate
 from .top import execute_top
 from .totals import execute_totals
 from .uniquegroups import execute_uniquegroups
+from .unpivot import execute_unpivot
 
-# from .unpivot import execute as execute_unpivot
 # from .uppercase import execute as execute_uppercase
 # from .waterfall import execute as execute_waterfall
 
@@ -85,7 +85,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'top': execute_top,
     'totals': execute_totals,
     'uniquegroups': execute_uniquegroups,
-    # 'unpivot': execute_unpivot,
+    'unpivot': execute_unpivot,
     # 'uppercase': execute_uppercase,
     # 'waterfall': execute_waterfall,
 }
