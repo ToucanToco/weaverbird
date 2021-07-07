@@ -5,7 +5,8 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.select import SelectStep
+from weaverbird.backends.pandas_executor.steps.select import execute_select
+from weaverbird.pipeline.steps import SelectStep
 
 
 @pytest.fixture()
@@ -28,7 +29,7 @@ def sample_df():
 
 def test_simple_select(sample_df):
     step = SelectStep(name='select', columns=['Value', 'Group'])
-    result_df = step.execute(sample_df)
+    result_df = execute_select(step, sample_df)
     expected_df = pd.DataFrame(
         {
             'Value': [13, 7, 20, 1, 10, 5],
@@ -49,4 +50,4 @@ def test_benchmark_select(benchmark):
     )
 
     step = SelectStep(name='select', columns=['value', 'id'])
-    benchmark(step.execute, df)
+    benchmark(execute_select, step, df)

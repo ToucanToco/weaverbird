@@ -30,8 +30,8 @@ from .rank import execute_rank
 from .rename import execute_rename
 from .replace import execute_replace
 from .rollup import execute_rollup
+from .select import execute_select
 
-# from .select import execute as execute_select
 # from .sort import execute as execute_sort
 # from .split import execute as execute_split
 # from .statistics import execute as execute_statistics
@@ -75,7 +75,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'rename': execute_rename,
     'replace': execute_replace,
     'rollup': execute_rollup,
-    # 'select': execute_select,
+    'select': execute_select,
     # 'sort': execute_sort,
     # 'split': execute_split,
     # 'statistics': execute_statistics,
