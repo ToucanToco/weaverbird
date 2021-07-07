@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import RankStep
+from weaverbird.backends.pandas_executor.steps.rank import execute_rank
+from weaverbird.pipeline.steps import RankStep
 
 
 @pytest.fixture
@@ -16,12 +17,13 @@ def sample_df():
 
 
 def test_rank(sample_df: DataFrame):
-    df_result = RankStep(
+    step = RankStep(
         name='rank',
         valueCol='VALUE',
         order='asc',
         method='standard',
-    ).execute(sample_df)
+    )
+    df_result = execute_rank(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -34,14 +36,15 @@ def test_rank(sample_df: DataFrame):
 
 
 def test_rank_with_groups(sample_df: DataFrame):
-    df_result = RankStep(
+    step = RankStep(
         name='rank',
         valueCol='VALUE',
         groupby=['COUNTRY'],
         order='desc',
         method='dense',
         newColumnName='rank',
-    ).execute(sample_df)
+    )
+    df_result = execute_rank(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -71,4 +74,4 @@ def test_benchmark_rank(benchmark):
         method='dense',
         newColumnName='rank',
     )
-    benchmark(step.execute, df)
+    benchmark(execute_rank, step, df)
