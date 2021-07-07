@@ -7,7 +7,11 @@ from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.append import execute_append
-from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
+from weaverbird.backends.pandas_executor.types import (
+    DomainRetriever,
+    PipelineExecutionReport,
+    PipelineExecutor,
+)
 from weaverbird.pipeline.steps import AppendStep
 
 
@@ -18,7 +22,10 @@ def sample_df():
 
 @pytest.fixture
 def mock_execute_pipeline() -> PipelineExecutor:
-    return lambda p, dr: (DataFrame({'name': ['plop'], 'score': [666], 'x': ['y']}), Any)
+    return lambda p, dr: (
+        DataFrame({'name': ['plop'], 'score': [666], 'x': ['y']}),
+        PipelineExecutionReport(steps_reports=[]),
+    )
 
 
 @pytest.fixture

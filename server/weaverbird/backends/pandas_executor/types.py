@@ -1,9 +1,9 @@
-from typing import Callable, List, Tuple
+from typing import Any, Callable, List, Optional, Tuple
 
 from pandas import DataFrame
 from pydantic import BaseModel, Field
 
-from weaverbird.pipeline import Pipeline, PipelineStep
+from weaverbird.pipeline import Pipeline
 
 
 class StepExecutionReport(BaseModel):
@@ -18,4 +18,6 @@ class PipelineExecutionReport(BaseModel):
 
 DomainRetriever = Callable[[str], DataFrame]
 PipelineExecutor = Callable[[Pipeline, DomainRetriever], Tuple[DataFrame, PipelineExecutionReport]]
-StepExecutor = Callable[[PipelineStep, DataFrame, DomainRetriever, PipelineExecutor], DataFrame]
+StepExecutor = Callable[
+    [Any, DataFrame, Optional[DomainRetriever], Optional[PipelineExecutor]], DataFrame
+]

@@ -1,10 +1,13 @@
-import numpy as np
 import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.join import execute_join
-from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
+from weaverbird.backends.pandas_executor.types import (
+    DomainRetriever,
+    PipelineExecutionReport,
+    PipelineExecutor,
+)
 from weaverbird.pipeline.steps import JoinStep
 
 
@@ -15,7 +18,10 @@ def sample_df():
 
 @pytest.fixture
 def mock_execute_pipeline() -> PipelineExecutor:
-    return lambda p, _: (DataFrame({'name': ['bar', 'baz'], 'score': [100, 200]}), None)
+    return lambda p, _: (
+        DataFrame({'name': ['bar', 'baz'], 'score': [100, 200]}),
+        PipelineExecutionReport(steps_reports=[]),
+    )
 
 
 @pytest.fixture
