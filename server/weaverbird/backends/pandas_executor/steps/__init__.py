@@ -28,8 +28,8 @@ from .percentage import execute_percentage
 from .pivot import execute_pivot
 from .rank import execute_rank
 from .rename import execute_rename
+from .replace import execute_replace
 
-# from .replace import execute as execute_replace
 # from .rollup import execute as execute_rollup
 # from .select import execute as execute_select
 # from .sort import execute as execute_sort
@@ -73,7 +73,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'pivot': execute_pivot,
     'rank': execute_rank,
     'rename': execute_rename,
-    # 'replace': execute_replace,
+    'replace': execute_replace,
     # 'rollup': execute_rollup,
     # 'select': execute_select,
     # 'sort': execute_sort,
