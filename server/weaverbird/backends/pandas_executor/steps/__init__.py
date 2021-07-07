@@ -38,8 +38,8 @@ from .substring import execute_substring
 from .text import execute_text
 from .todate import execute_todate
 from .top import execute_top
+from .totals import execute_totals
 
-# from .totals import execute as execute_totals
 # from .uniquegroups import execute as execute_uniquegroups
 # from .unpivot import execute as execute_unpivot
 # from .uppercase import execute as execute_uppercase
@@ -83,7 +83,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'text': execute_text,
     'todate': execute_todate,
     'top': execute_top,
-    # 'totals': execute_totals,
+    'totals': execute_totals,
     # 'uniquegroups': execute_uniquegroups,
     # 'unpivot': execute_unpivot,
     # 'uppercase': execute_uppercase,
