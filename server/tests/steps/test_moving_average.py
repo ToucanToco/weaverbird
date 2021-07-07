@@ -3,7 +3,8 @@ import pandas as pd
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import MovingAverageStep
+from weaverbird.backends.pandas_executor.steps.moving_average import execute_moving_average
+from weaverbird.pipeline.steps import MovingAverageStep
 
 
 def test_moving_average_basic():
@@ -12,12 +13,13 @@ def test_moving_average_basic():
     )
     df['date'] = pd.to_datetime(df['date'])
 
-    df_result = MovingAverageStep(
+    step = MovingAverageStep(
         name='movingaverage',
         valueColumn='value',
         columnToSort='date',
         movingWindow=2,
-    ).execute(df)
+    )
+    df_result = execute_moving_average(step, df)
 
     expected_result = df.assign(
         **{'value_MOVING_AVG': [None, 77.5, 81, 82.5, 81.5, 83, 82.5, 77.5]}
@@ -35,14 +37,15 @@ def test_moving_average_with_groups():
     )
     df['date'] = pd.to_datetime(df['date'])
 
-    df_result = MovingAverageStep(
+    step = MovingAverageStep(
         name='movingaverage',
         valueColumn='value',
         columnToSort='date',
         movingWindow=3,
         groups=['country'],
         newColumnName='rolling_average',
-    ).execute(df)
+    )
+    df_result = execute_moving_average(step, df)
 
     expected_result = df.assign(
         **{
@@ -62,4 +65,4 @@ def test_benchmark_moving_average(benchmark):
         movingWindow=3,
         newColumnName='rolling_average',
     )
-    benchmark(step.execute, df)
+    benchmark(execute_moving_average, step, df)
