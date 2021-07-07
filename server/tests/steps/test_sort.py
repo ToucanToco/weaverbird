@@ -5,7 +5,8 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.sort import ColumnSort, SortStep
+from weaverbird.backends.pandas_executor.steps.sort import execute_sort
+from weaverbird.pipeline.steps.sort import ColumnSort, SortStep
 
 
 @pytest.fixture
@@ -27,7 +28,7 @@ def test_simple_sort(sample_df):
             ColumnSort(column='Value', order='desc'),
         ],
     )
-    result_df = step.execute(sample_df)
+    result_df = execute_sort(step, sample_df)
     expected_df = pd.DataFrame(
         {
             'Company': ['Label 3', 'Label 1', 'Label 2', 'Label 5', 'Label 6', 'Label 4'],
@@ -55,4 +56,4 @@ def test_benchmark_sort(benchmark):
             ColumnSort(column='value', order='desc'),
         ],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_sort, step, df)
