@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import TextStep
+from weaverbird.backends.pandas_executor.steps.text import execute_text
+from weaverbird.pipeline.steps import TextStep
 
 
 @pytest.fixture
@@ -14,9 +15,8 @@ def sample_df():
 
 
 def test_text(sample_df: DataFrame):
-    df_result = TextStep(
-        name='text', new_column='BEST SINGER EVER', text='jean-jacques-goldman'
-    ).execute(sample_df)
+    step = TextStep(name='text', new_column='BEST SINGER EVER', text='jean-jacques-goldman')
+    df_result = execute_text(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -40,4 +40,4 @@ def test_benchmark_text(benchmark):
     )
 
     step = TextStep(name='text', new_column='BEST SINGER EVER', text='jean-jacques-goldman')
-    benchmark(step.execute, df)
+    benchmark(execute_text, step, df)

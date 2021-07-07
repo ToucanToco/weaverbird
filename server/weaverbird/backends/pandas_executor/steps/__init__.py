@@ -35,8 +35,8 @@ from .sort import execute_sort
 from .split import execute_split
 from .statistics import execute_statistics
 from .substring import execute_substring
+from .text import execute_text
 
-# from .text import execute as execute_text
 # from .todate import execute as execute_todate
 # from .top import execute as execute_top
 # from .totals import execute as execute_totals
@@ -80,7 +80,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'split': execute_split,
     'statistics': execute_statistics,
     'substring': execute_substring,
-    # 'text': execute_text,
+    'text': execute_text,
     # 'todate': execute_todate,
     # 'top': execute_top,
     # 'totals': execute_totals,
