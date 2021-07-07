@@ -1,7 +1,7 @@
 from typing import Any, List, Literal, Optional, Sequence
 
 from pandas import DataFrame, concat
-from pydantic import Field, root_validator
+from pydantic import Field, root_validator, validator
 from pydantic.main import BaseModel
 
 from weaverbird.render_variables import StepWithVariablesMixin
@@ -27,6 +27,17 @@ functions_aliases = {
 }
 
 
+class DuplicateColumnError(Exception):
+    """raised when duplicate column names in input"""
+
+
+def validate_columns(columns: Sequence[str]) -> Sequence[str]:
+    if len(set(columns)) < len(columns):
+        raise DuplicateColumnError
+    else:
+        return columns
+
+
 class Aggregation(BaseModel):
     class Config(PopulatedWithFieldnames):
         ...
@@ -34,6 +45,10 @@ class Aggregation(BaseModel):
     new_columns: List[ColumnName] = Field(alias='newcolumns')
     agg_function: AggregateFn = Field(alias='aggfunction')
     columns: List[ColumnName]
+
+    @validator('columns', pre=True)
+    def validate_unique_columns(cls, value):
+        return validate_columns(value)
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
