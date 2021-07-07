@@ -2,6 +2,7 @@
 This file contain end-to-end tests for pipeline execution
 """
 import json
+from functools import partial
 from os import path
 
 import pandas as pd
@@ -9,8 +10,12 @@ import pytest
 from pytest_mock import MockFixture
 
 from tests.utils import assert_dataframes_equals
+from weaverbird.backends.pandas_executor.pipeline_executor import (
+    PipelineExecutionFailure,
+    execute_pipeline,
+    preview_pipeline,
+)
 from weaverbird.pipeline import Pipeline
-from weaverbird.pipeline_executor import PipelineExecutionFailure, PipelineExecutor
 
 df_domain_a = pd.read_csv(path.join(path.dirname(__file__), 'fixtures/domain_a.csv'))
 DOMAINS = {'domain_a': df_domain_a}
@@ -18,13 +23,18 @@ DOMAINS = {'domain_a': df_domain_a}
 
 @pytest.fixture
 def pipeline_executor():
-    return PipelineExecutor(domain_retriever=lambda name: DOMAINS[name])
+    return partial(execute_pipeline, domain_retriever=lambda name: DOMAINS[name])
 
 
-def test_preview_pipeline(mocker: MockFixture, pipeline_executor):
+@pytest.fixture
+def pipeline_previewer():
+    return partial(preview_pipeline, domain_retriever=lambda name: DOMAINS[name])
+
+
+def test_preview_pipeline(mocker: MockFixture, pipeline_previewer):
     df_to_json_spy = mocker.spy(pd.DataFrame, 'to_json')
     result = json.loads(
-        pipeline_executor.preview_pipeline(
+        pipeline_previewer(
             Pipeline(
                 steps=[
                     {'name': 'domain', 'domain': 'domain_a'},
@@ -48,8 +58,8 @@ def test_preview_pipeline(mocker: MockFixture, pipeline_executor):
     df_to_json_spy.assert_called_once()
 
 
-def test_preview_pipeline_limit(pipeline_executor):
-    result = pipeline_executor.preview_pipeline(
+def test_preview_pipeline_limit(pipeline_previewer):
+    result = pipeline_previewer(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -62,8 +72,8 @@ def test_preview_pipeline_limit(pipeline_executor):
     ]  # first row of the data frame
 
 
-def test_preview_pipeline_limit_offset(pipeline_executor):
-    result = pipeline_executor.preview_pipeline(
+def test_preview_pipeline_limit_offset(pipeline_previewer):
+    result = pipeline_previewer(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -78,16 +88,14 @@ def test_preview_pipeline_limit_offset(pipeline_executor):
     ]
 
 
-def test_extract_domain(pipeline_executor: PipelineExecutor):
-    df, _ = pipeline_executor.execute_pipeline(
-        Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}])
-    )
+def test_extract_domain(pipeline_executor):
+    df, _ = pipeline_executor(Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}]))
 
     assert_dataframes_equals(df, pd.DataFrame(df_domain_a))
 
 
 def test_filter(pipeline_executor):
-    df, _ = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -106,7 +114,7 @@ def test_filter(pipeline_executor):
 
 
 def test_rename(pipeline_executor):
-    df, _ = pipeline_executor.execute_pipeline(
+    df, _ = pipeline_executor(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},
@@ -130,7 +138,7 @@ def test_errors(pipeline_executor):
     - the original exception message
     """
     with pytest.raises(PipelineExecutionFailure) as excinfo:
-        pipeline_executor.execute_pipeline(
+        pipeline_executor(
             Pipeline(
                 steps=[
                     {'name': 'domain', 'domain': 'domain_a'},
@@ -151,7 +159,7 @@ def test_errors(pipeline_executor):
 
 
 def test_report(pipeline_executor):
-    _, report = pipeline_executor.execute_pipeline(
+    _, report = pipeline_executor(
         Pipeline(
             steps=[
                 {'name': 'domain', 'domain': 'domain_a'},

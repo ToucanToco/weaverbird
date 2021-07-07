@@ -5,7 +5,7 @@ from typing import Tuple
 from pandas import DataFrame
 from pandas.io.json import build_table_schema
 
-import weaverbird.backends.pandas_executor.steps as pandas_steps
+from weaverbird.backends.pandas_executor.steps import steps_executors
 from weaverbird.backends.pandas_executor.types import (
     DomainRetriever,
     PipelineExecutionReport,
@@ -34,7 +34,7 @@ def execute_pipeline(
     for index, step in enumerate(steps):
         try:
             with stopwatch:
-                df = pandas_steps[step.name](
+                df = steps_executors[step.name](
                     step,
                     df,
                     domain_retriever=domain_retriever,
