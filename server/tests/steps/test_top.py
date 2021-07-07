@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import TopStep
+from weaverbird.backends.pandas_executor.steps.top import execute_top
+from weaverbird.pipeline.steps import TopStep
 
 
 @pytest.fixture
@@ -21,7 +22,7 @@ def sample_df():
 
 def test_top_asc(sample_df):
     step = TopStep(name='top', rank_on='Value', sort='asc', limit=3)
-    result = step.execute(sample_df)
+    result = execute_top(step, sample_df)
     assert_dataframes_equals(
         result,
         DataFrame(
@@ -36,7 +37,7 @@ def test_top_asc(sample_df):
 
 def test_top_desc_with_groups(sample_df):
     step = TopStep(name='top', rank_on='Value', groups=['Group'], sort='desc', limit=1)
-    result = step.execute(sample_df)
+    result = execute_top(step, sample_df)
     assert_dataframes_equals(
         result,
         DataFrame(
@@ -60,4 +61,4 @@ def test_benchmark_top(benchmark):
     )
 
     step = TopStep(name='top', rank_on='value', groups=['group'], sort='desc', limit=1)
-    benchmark(step.execute, df)
+    benchmark(execute_top, step, df)
