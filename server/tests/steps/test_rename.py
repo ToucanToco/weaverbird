@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import RenameStep
+from weaverbird.backends.pandas_executor.steps.rename import execute_rename
+from weaverbird.pipeline.steps import RenameStep
 
 
 @pytest.fixture
@@ -14,22 +15,22 @@ def sample_df():
 
 
 def test_rename(sample_df: DataFrame):
-    df_result = RenameStep(
+    step = RenameStep(
         name='rename',
         toRename=[
             ['NAME', 'name'],
             ['AGE', 'age'],
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_rename(step, sample_df)
 
     expected_result = DataFrame({'name': ['foo', 'bar'], 'age': [42, 43], 'SCORE': [100, 200]})
     assert_dataframes_equals(df_result, expected_result)
 
 
 def test_rename_legacy_syntax(sample_df: DataFrame):
-    df_result = RenameStep(name='rename', oldname='NAME', newname='name',).execute(  # type: ignore
-        sample_df
-    )
+    step = RenameStep(name='rename', oldname='NAME', newname='name')  # type: ignore
+    df_result = execute_rename(step, sample_df)
 
     expected_result = DataFrame({'name': ['foo', 'bar'], 'AGE': [42, 43], 'SCORE': [100, 200]})
     assert_dataframes_equals(df_result, expected_result)
@@ -51,4 +52,4 @@ def test_benchmark_rename(benchmark):
             ['group', 'GROUP'],
         ],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_rename, step, df)
