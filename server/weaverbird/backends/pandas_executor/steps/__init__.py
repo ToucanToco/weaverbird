@@ -24,8 +24,8 @@ from .ifthenelse import execute_ifthenelse
 from .join import execute_join
 from .lowercase import execute_lowercase
 from .moving_average import execute_moving_average
+from .percentage import execute_percentage
 
-# from .percentage import execute as execute_percentage
 # from .pivot import execute as execute_pivot
 # from .rank import execute as execute_rank
 # from .rename import execute as execute_rename
@@ -69,7 +69,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'join': execute_join,
     'lowercase': execute_lowercase,
     'moving_average': execute_moving_average,
-    # 'percentage': execute_percentage,
+    'percentage': execute_percentage,
     # 'pivot': execute_pivot,
     # 'rank': execute_rank,
     # 'rename': execute_rename,
