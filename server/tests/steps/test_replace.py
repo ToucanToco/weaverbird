@@ -5,7 +5,8 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.replace import ReplaceStep
+from weaverbird.backends.pandas_executor.steps.replace import execute_replace
+from weaverbird.pipeline.steps import ReplaceStep
 
 
 @pytest.fixture()
@@ -19,7 +20,7 @@ def test_simple_replace(sample_df):
         search_column='values',
         to_replace=[['FR', 'France'], ['US', 'UNITED STATES']],
     )
-    result = step.execute(sample_df)
+    result = execute_replace(step, sample_df)
     expected_df = pd.DataFrame({'values': ['France', 'UNITED STATES', 'UK']})
 
     assert_dataframes_equals(result, expected_df)
@@ -40,4 +41,4 @@ def test_benchmark_replace(benchmark):
         search_column='group',
         to_replace=[['group_1', 'Le groupe NUMER ONE'], ['group_2', 'Le deuxieme groupe !']],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_replace, step, df)
