@@ -26,8 +26,8 @@ from .lowercase import execute_lowercase
 from .moving_average import execute_moving_average
 from .percentage import execute_percentage
 from .pivot import execute_pivot
+from .rank import execute_rank
 
-# from .rank import execute as execute_rank
 # from .rename import execute as execute_rename
 # from .replace import execute as execute_replace
 # from .rollup import execute as execute_rollup
@@ -71,7 +71,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'moving_average': execute_moving_average,
     'percentage': execute_percentage,
     'pivot': execute_pivot,
-    # 'rank': execute_rank,
+    'rank': execute_rank,
     # 'rename': execute_rename,
     # 'replace': execute_replace,
     # 'rollup': execute_rollup,
