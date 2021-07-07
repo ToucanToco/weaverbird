@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import PivotStep
+from weaverbird.backends.pandas_executor.steps.pivot import execute_pivot
+from weaverbird.pipeline.steps import PivotStep
 
 
 @pytest.fixture
@@ -20,13 +21,14 @@ def sample_df():
 
 
 def test_pivot(sample_df: DataFrame):
-    df_result = PivotStep(
+    step = PivotStep(
         name='pivot',
         index=['Label'],
         column_to_pivot='Country',
         value_column='Value',
         agg_function='sum',
-    ).execute(sample_df)
+    )
+    df_result = execute_pivot(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -39,13 +41,14 @@ def test_pivot(sample_df: DataFrame):
 
 
 def test_pivot_avg(sample_df: DataFrame):
-    df_result = PivotStep(
+    step = PivotStep(
         name='pivot',
         index=['Label'],
         column_to_pivot='Country',
         value_column='Value',
         agg_function='avg',
-    ).execute(sample_df)
+    )
+    df_result = execute_pivot(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -74,4 +77,4 @@ def test_benchmark_pivot(benchmark):
         value_column='value',
         agg_function='avg',
     )
-    benchmark(step.execute, df)
+    benchmark(execute_pivot, step, df)
