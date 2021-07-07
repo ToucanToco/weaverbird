@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import StatisticsStep
+from weaverbird.backends.pandas_executor.steps.statistics import execute_statistics
+from weaverbird.pipeline.steps import StatisticsStep
 
 
 @pytest.fixture
@@ -20,26 +21,28 @@ def sample_df():
 
 
 def test_statistics(sample_df: DataFrame):
-    df_result = StatisticsStep(
+    step = StatisticsStep(
         name='statistics',
         column='Value',
         groupbyColumns=[],
         statistics=['average', 'count'],
         quantiles=[{'label': 'median', 'nth': 1, 'order': 2}],
-    ).execute(sample_df)
+    )
+    df_result = execute_statistics(step, sample_df)
 
     expected_result = DataFrame({'average': [9.33333], 'count': [6], 'median': [8.5]})
     assert_dataframes_equals(df_result, expected_result)
 
 
 def test_statistics_with_groups(sample_df: DataFrame):
-    df_result = StatisticsStep(
+    step = StatisticsStep(
         name='statistics',
         column='Value',
         groupbyColumns=['Group'],
         statistics=['average', 'count'],
         quantiles=[{'label': 'median', 'nth': 1, 'order': 2}],
-    ).execute(sample_df)
+    )
+    df_result = execute_statistics(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -69,4 +72,4 @@ def test_benchmark_statistics(benchmark):
         statistics=['average', 'count'],
         quantiles=[{'label': 'median', 'nth': 1, 'order': 2}],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_statistics, step, df)
