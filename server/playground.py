@@ -13,8 +13,10 @@ from os.path import basename, splitext
 import pandas as pd
 from flask import Flask, Response, jsonify, request
 
+from weaverbird.backends.pandas_executor.pipeline_executor import (
+    preview_pipeline as pandas_preview_pipeline,
+)
 from weaverbird.pipeline import Pipeline
-from weaverbird.pipeline_executor import PipelineExecutor
 
 app = Flask(__name__)
 
@@ -52,7 +54,8 @@ def get_available_domains():
 
 
 def execute_pipeline(pipeline_steps, **kwargs) -> str:
-    executor = PipelineExecutor(lambda domain: DOMAINS[domain])
+    # Validation
+    pipeline = Pipeline(steps=pipeline_steps)
 
     # Url parameters are only strings, these two must be understood as numbers
     if 'limit' in kwargs:
@@ -60,4 +63,8 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
     if 'offset' in kwargs:
         kwargs['offset'] = int(kwargs['offset'])
 
-    return executor.preview_pipeline(pipeline=Pipeline(steps=pipeline_steps), **kwargs)
+    return pandas_preview_pipeline(
+        pipeline=pipeline,
+        domain_retriever=lambda domain: DOMAINS[domain],
+        **kwargs,
+    )
