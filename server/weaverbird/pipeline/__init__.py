@@ -1,1 +1,1 @@
-from .pipeline import Pipeline, PipelineStep
+from .pipeline import Pipeline, PipelineStep, PipelineStepWithVariables, PipelineWithVariables

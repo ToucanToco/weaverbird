@@ -1,1 +1,1 @@
-from .pipeline_executor import execute_pipeline, preview_pipeline
+from .pipeline_executor import PipelineExecutionFailure, execute_pipeline, preview_pipeline
