@@ -1,5 +1,5 @@
 ---
-title: Python
+title: Python package
 permalink: /docs/python-package/
 ---
 
@@ -30,8 +30,8 @@ _Backends_ can either provide:
 The package exposes:
 - a [pydantic](https://pydantic-docs.helpmanual.io/) model `Pipeline` which mirror the pipeline definition used by the front-end
 - several `weaverbird.backends.xxxx` sub-modules, each exposing:
-  - either a `translate_pipeline` function (for _executor backends_),
-  - or an `execute_pipeline` function (for _translator backends_).
+  - either a `translate_pipeline` function (for _translator backends_),
+  - or an `execute_pipeline` function (for _executor backends_).
 
 ### `Pipeline` model: validation
 
@@ -83,11 +83,11 @@ execute_pipeline(pipeline, domain_retriever)
 
 where:
 - `pipeline` is an instance of the `Pipeline` model
-- `domain_retriever` is a function that, from an identifier, returns a corresponding `panda`'s `DataFrame` 
+- `domain_retriever` is a function that, from an identifier, returns a corresponding `panda`'s `DataFrame`
 
 The result of `execute_pipeline` is a tuple formed by:
 - the transformed `DataFrame`,
-- a `PipelineExecutionReport` with details about time and memory usage each of its steps.
+- a `PipelineExecutionReport` with details about time and memory usage for each of its steps.
 
 As of today, only one executor backend exists for python, based on pandas.
 
