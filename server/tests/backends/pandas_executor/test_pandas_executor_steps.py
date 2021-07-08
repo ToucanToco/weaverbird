@@ -9,11 +9,12 @@ from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor import execute_pipeline
 from weaverbird.pipeline import Pipeline
 
-step_cases_files = glob('../fixtures/*/*.step.json')
+fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures')
+step_cases_files = glob(path.join(fixtures_dir_path, '*/*.step.json'))
 
 test_cases = []
 for x in step_cases_files:
-    case_hierarchy = path.dirname(x)[len('../fixtures/') :]
+    case_hierarchy = path.dirname(x)[len(fixtures_dir_path) :]
     case_name = path.splitext(path.basename(x))[0].split('.')[0]
     case_id = case_hierarchy + '_' + case_name
 
