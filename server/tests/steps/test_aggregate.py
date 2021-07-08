@@ -4,6 +4,7 @@ from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps import execute_aggregate
+from weaverbird.exceptions import DuplicateColumnError
 from weaverbird.pipeline.steps import AggregateStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
 
@@ -337,3 +338,26 @@ def test_benchmark_aggregate(benchmark):
         ],
     )
     benchmark(execute_aggregate, step, sample_df)
+
+
+def test_duplicate_aggregation_columns():
+    df = DataFrame(
+        {
+            'Label': ['Label 1', 'Label 2', 'Label 3'],
+            'Group': ['Group 1'] * 3,  # type: ignore
+            'Value1': [13, 7, 20],
+        }
+    )
+    with pytest.raises(DuplicateColumnError):
+        step = AggregateStep(
+            name='aggregate',
+            on=['Group'],
+            aggregations=[
+                Aggregation(
+                    aggfunction='count distinct including empty',
+                    columns=['Group', 'Group'],
+                    newcolumns=['__VQB_COUNT'],
+                ),
+            ],
+        )
+        execute_aggregate(step, df)

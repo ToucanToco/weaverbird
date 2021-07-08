@@ -1,10 +1,11 @@
 from typing import List, Literal, Optional, Sequence
 
-from pydantic import Field, root_validator
+from pydantic import Field, root_validator, validator
 from pydantic.main import BaseModel
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
+from weaverbird.pipeline.steps.utils.validation import validate_unique_columns
 from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames, TemplatedVariable
 
 AggregateFn = Literal[
@@ -27,6 +28,10 @@ class Aggregation(BaseModel):
     new_columns: List[ColumnName] = Field(alias='newcolumns')
     agg_function: AggregateFn = Field(alias='aggfunction')
     columns: List[ColumnName]
+
+    @validator('columns', pre=True)
+    def validate_unique_columns(cls, value):
+        return validate_unique_columns(value)
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
