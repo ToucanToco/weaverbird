@@ -1,0 +1,17 @@
+{
+  "name": "append",
+  "pipelines": [
+    [
+      {
+        "name": "domain",
+        "domain": "buzz"
+      }
+    ],
+    [
+      {
+        "name": "domain",
+        "domain": "buzz"
+      }
+    ]
+  ]
+}

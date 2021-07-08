@@ -29,10 +29,17 @@ def test_case():
         indent=2,
         index=False,
     )
+
+    # Extract other input dataframes (for combinations)
+    mock_execute_pipeline([], '')[0].to_json(
+        '../backends/fixtures/<stepname>/<case_name>.in.<domain_name>.json',
+        orient='table',
+        indent=2,
+        index=False,
+    )
 ```
 
 TODO:
-- multiple input dataframes (combinations)
 when other backends will be available:
 - skip/only for a backend
 - specific out file for a backend
