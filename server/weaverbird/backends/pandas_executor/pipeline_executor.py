@@ -34,7 +34,7 @@ def execute_pipeline(
     for index, step in enumerate(steps):
         try:
             with stopwatch:
-                df = steps_executors[step.name](  # type: ignore
+                df = steps_executors[step.name](
                     step,
                     df,
                     domain_retriever=domain_retriever,
