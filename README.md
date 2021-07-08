@@ -144,7 +144,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 This library is published on npm under the name `weaverbird` automatically each time a release is created in GitHub.
 
-### Create a release
+### Create a release (frontend)
 
 - Define new version using [semantic versioning](https://semver.org/)
 
@@ -185,6 +185,17 @@ This library is published on npm under the name `weaverbird` automatically each 
 
 - Hit the release "publish release" button (this will automatically create a tag and trigger the [package publication](https://github.com/ToucanToco/weaverbird/actions?query=workflow%3A%22npm+publish%22) )
 
+### Create a release (backend)
+
+- Create a new local branch `chore/bump-server-version-x-x-x`
+
+- Edit `server/pyproject.toml` & increment the version in `[tool.poetry]` section
+
+- Push branch
+
+- Create a pull request into master from your branch
+
+- Once the PR is approved & merged in master publish the release in Pypi with `make build` & `make upload`
 
 ## Usage as library
 
