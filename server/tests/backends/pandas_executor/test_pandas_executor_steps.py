@@ -13,7 +13,7 @@ step_cases_files = glob('../fixtures/*/*.step.json')
 
 test_cases = []
 for x in step_cases_files:
-    case_hierarchy = path.dirname(x).removeprefix('../fixtures/')
+    case_hierarchy = path.dirname(x)[len('../fixtures/') :]
     case_name = path.splitext(path.basename(x))[0].split('.')[0]
     case_id = case_hierarchy + '_' + case_name
 
