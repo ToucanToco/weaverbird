@@ -120,6 +120,108 @@ The result of `translate_pipeline` is a query, generally a `str` (but other type
 
 As of today, no translator backend exists for python. We plan to implement one for MongoDB, and one for Snowflake SQL.
 
+### How to: add a new translator
+
+The only requirement is to create a dedicated sub-package inside the `weaverbird/backends/` directory,
+exposing a `translate_pipeline` function, following the signature already explained in the previous
+section.
+
+Example of what would look like a basic mongo translator implementing weaverbird's steps
+`domain`, `select`, `lowercase` and `join`:
+
+```python
+# weaverbird/backends/mongo_translator/__init__.py
+from typing import Callable, List
+from weaverbird.pipeline import Pipeline, steps
+
+
+def domain_to_table_identifier(domain_name: str) -> str:
+    return domain_name
+
+
+def translate_pipeline(
+    pipeline: Pipeline, domain_to_collection_identifier: Callable
+) -> List[dict]:
+    """Translate a weaverbird pipeline to a mongo aggregation pipeline"""
+    mongo_pipeline = []
+
+    # Iterate on all the steps of the pipeline, and translate them
+    # one by one:
+    for step in pipeline.steps:
+
+        if isinstance(step, DomainStep):
+            mongo_step = {"$match": {"domain": step.domain}}  # specific to toucan toco
+            mongo_pipeline.append(mongo_step)
+
+        elif isinstance(step, SelectStep):
+            mongo_step = {"$project": {col: 1 for col in step.columns}}
+            mongo_pipeline.append(mongo_step)
+
+        elif isinstance(step, LowercaseStep):
+            mongo_step = {"$addFields": {step.column: {"$toLower": f'${step.column}'}}}
+            mongo_pipeline.append(mongo_step)
+
+        elif isinstance(step, JoinStep):
+            mongo_let = {}
+            mongo_expr_and = []
+            for (left_on, right_on) in step.on:
+                mongo_let[slugify(left_on)] = f'${left_on}'
+                mongo_expr_and.push(
+                    {
+                        '$eq': [f'${right_on}', f'$${slugify(left_on)}'],
+                    }
+                )
+
+            right_domain = step.right_pipeline[0].domain
+            right_without_domain = step.right_pipeline[1:]
+            right_mongo_pipeline = translate_pipeline(right_without_domain)
+            right_mongo_pipeline.append({"$match": {"$expr": {"$and": mongo_expr_and}}})
+            mongo_step = {
+                "$lookup": {
+                    "from": domain_to_collection_identifier(right_domain),
+                    "let": mongo_let,
+                    "pipeline": right_mongo_pipeline,
+                    "as": '_vqbJoinKey',
+                },
+            }
+            mongo_pipeline.append(mongo_step)
+            mongo_pipeline.append({'$unwind': '$_vqbJoinKey'})
+            mongo_pipeline.append({
+                '$replaceRoot': {'newRoot': {'$mergeObjects': ['$_vqbJoinKey', '$$ROOT']}},
+            })
+            mongo_pipeline.append({'$project': {'_vqbJoinKey': 0}})
+
+        else:
+            raise NotImplementedError
+
+    return mongo_pipeline
+```
+
+Of course in a real case you would split the work in several functions and files.
+
+#### Test your translator
+
+(work in progress)
+
+For each weaverbird's step, we provide one or several JSON fixtures containing:
+- some input data
+- the configuration of the step
+- the expected output
+
+It is up to you to write a *test executor* which will read the input, execute the step,
+and check the output is the one expected.
+
+If your translator does not implement all weaverbird steps, you must declare which one
+are supported.
+
+For example, testing a mongo translator would require:
+- spawning a mongodb server
+- store the input data in a collection
+- translate the step with `translate_pipeline`
+- run the resulting query against the mongodb collection
+- compare the output with the expected one
+
+TODO: show some utils for spawning containers, reading input, comparing ouput
 
 ## Playground server
 
