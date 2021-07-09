@@ -3,6 +3,8 @@
 Add a few snippets to make fixtures from existing tests:
 
 ```python
+import json
+
 def test_case():
     df = ...
     expected_result = ...
@@ -10,33 +12,32 @@ def test_case():
     
     step = SomeStep(...)
     
-    # Extract step into a file
-    with open('../backends/fixtures/<stepname>/<case_name>.step.json', 'w') as f:
-        f.write(json.dumps(step.dict(by_alias=True), indent=2))
+    # Extract the test case into a JSON file
+    
+    with open('../backends/fixtures/<stepname>/<case_name>.json', 'w') as f:
+        test_case = {
+            'step': step.dict(by_alias=True),
+            'input': json.loads(
+                df.to_json(
+                    orient='table',
+                    index=False,
+                )
+            ),
+            'other_inputs': { # Extract other input dataframes (for combinations)
+              '<domain_name>': other_df.to_json(
+                    orient='table',
+                    index=False,
+                )
+            },
+            'expected': json.loads(
+                expected_result.to_json(
+                    orient='table',
+                    index=False,
+                )
+            ),
+        }
+        f.write(json.dumps(test_case, indent=2))
 
-    ...
-        
-    # Extract the dataframes
-    df.to_json(
-        '../backends/fixtures/<stepname>/<case_name>/missing_date.in.json',
-        orient='table',
-        indent=2,
-        index=False,
-    )
-    expected_result.to_json(
-        '../backends/fixtures/<stepname>/<case_name>/missing_date.out.json',
-        orient='table',
-        indent=2,
-        index=False,
-    )
-
-    # Extract other input dataframes (for combinations)
-    mock_execute_pipeline([], '')[0].to_json(
-        '../backends/fixtures/<stepname>/<case_name>.in.<domain_name>.json',
-        orient='table',
-        indent=2,
-        index=False,
-    )
 ```
 
 TODO:

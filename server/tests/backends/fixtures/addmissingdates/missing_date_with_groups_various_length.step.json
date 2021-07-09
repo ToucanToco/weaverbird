@@ -1,8 +1,0 @@
-{
-  "name": "addmissingdates",
-  "datesColumn": "date",
-  "datesGranularity": "month",
-  "groups": [
-    "country"
-  ]
-}
