@@ -1,7 +1,8 @@
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import CumSumStep
+from weaverbird.backends.pandas_executor.steps.cumsum import execute_cumsum
+from weaverbird.pipeline.steps import CumSumStep
 
 
 def test_cumsum():
@@ -12,9 +13,8 @@ def test_cumsum():
         }
     )
 
-    df_result = CumSumStep(name='cumsum', valueColumn='value', referenceColumn='date').execute(
-        sample_df
-    )
+    step = CumSumStep(name='cumsum', valueColumn='value', referenceColumn='date')
+    df_result = execute_cumsum(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -35,13 +35,14 @@ def test_cumsum_with_groups():
         }
     )
 
-    df_result = CumSumStep(
+    step = CumSumStep(
         name='cumsum',
         valueColumn='value',
         referenceColumn='date',
         groupby=['country'],
         newColumn='my_cumsum',
-    ).execute(sample_df)
+    )
+    df_result = execute_cumsum(step, sample_df)
 
     expected_result = DataFrame(
         {
@@ -62,4 +63,4 @@ def test_benchmark_cumsum(benchmark):
         valueColumn='value',
         newColumn='my_cumsum',
     )
-    benchmark(step.execute, big_df)
+    benchmark(execute_cumsum, step, big_df)

@@ -4,7 +4,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import UnpivotStep
+from weaverbird.backends.pandas_executor.steps.unpivot import execute_unpivot
+from weaverbird.pipeline.steps import UnpivotStep
 
 
 @pytest.fixture
@@ -28,7 +29,7 @@ def test_unpivot_with_dropna_true(sample_df: DataFrame):
         value_column_name='VALUE',
         dropna=True,
     )
-    result = step.execute(sample_df, domain_retriever=None, execute_pipeline=None)
+    result = execute_unpivot(step, sample_df, domain_retriever=None, execute_pipeline=None)
     expected_result = DataFrame(
         {
             'COMPANY': [
@@ -65,7 +66,7 @@ def test_unpivot_with_dropna_false(sample_df: DataFrame):
         value_column_name='VALUE',
         dropna=False,
     )
-    result = step.execute(sample_df, domain_retriever=None, execute_pipeline=None)
+    result = execute_unpivot(step, sample_df, domain_retriever=None, execute_pipeline=None)
     expected_result = DataFrame(
         {
             'COMPANY': ['Company 1'] * 2
@@ -105,4 +106,4 @@ def test_benchmark_unpivot(benchmark):
         value_column_name='VALUE',
         dropna=False,
     )
-    benchmark(step.execute, df)
+    benchmark(execute_unpivot, step, df)

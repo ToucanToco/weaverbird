@@ -5,7 +5,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import UniqueGroupsStep
+from weaverbird.backends.pandas_executor.steps.uniquegroups import execute_uniquegroups
+from weaverbird.pipeline.steps import UniqueGroupsStep
 
 
 @pytest.fixture
@@ -20,10 +21,11 @@ def sample_df():
 
 
 def test_uniquegroups(sample_df: DataFrame):
-    df_result = UniqueGroupsStep(
+    step = UniqueGroupsStep(
         name='uniquegroups',
         on=['NAME', 'AGE'],
-    ).execute(sample_df)
+    )
+    df_result = execute_uniquegroups(step, sample_df)
 
     expected_result = DataFrame({'NAME': ['foo', 'bar', 'foo'], 'AGE': [42, 43, 44]})
     assert_dataframes_equals(df_result, expected_result)
@@ -43,4 +45,4 @@ def test_benchmark_uniquegroups(benchmark):
         name='uniquegroups',
         on=['group', 'value'],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_uniquegroups, step, df)

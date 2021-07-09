@@ -3,7 +3,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.argmin import ArgminStep
+from weaverbird.backends.pandas_executor.steps.argmin import execute_argmin
+from weaverbird.pipeline.steps.argmin import ArgminStep
 
 
 @pytest.fixture
@@ -19,7 +20,7 @@ def sample_df():
 
 def test_simple_argmin(sample_df):
     step = ArgminStep(name='argmin', column='value')
-    result = step.execute(sample_df, domain_retriever=None)
+    result = execute_argmin(step, sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
         DataFrame(
@@ -34,7 +35,7 @@ def test_simple_argmin(sample_df):
 
 def test_argmin_with_group(sample_df):
     step = ArgminStep(name='argmin', column='value', groups=['group'])
-    result = step.execute(sample_df, domain_retriever=None)
+    result = execute_argmin(step, sample_df, domain_retriever=None)
     assert_dataframes_equals(
         result,
         DataFrame(
@@ -57,4 +58,4 @@ def test_benchmark_argmin(benchmark):
     )
     step = ArgminStep(name='argmin', column='Value1', groups=['Group'])
 
-    benchmark(step.execute, sample_df)
+    benchmark(execute_argmin, step, sample_df)

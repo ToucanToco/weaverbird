@@ -5,7 +5,8 @@ import pandas as pd
 import pytest
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.split import SplitStep
+from weaverbird.backends.pandas_executor.steps.split import execute_split
+from weaverbird.pipeline.steps import SplitStep
 
 
 @pytest.fixture()
@@ -26,9 +27,8 @@ def sample_df():
 
 
 def test_keep_all_col(sample_df):
-    result_df = SplitStep(
-        name='split', column='Label', delimiter='-', number_cols_to_keep=3
-    ).execute(sample_df)
+    step = SplitStep(name='split', column='Label', delimiter='-', number_cols_to_keep=3)
+    result_df = execute_split(step, sample_df)
     expected_df = pd.DataFrame(
         {
             'Label': [
@@ -49,9 +49,8 @@ def test_keep_all_col(sample_df):
 
 
 def test_keep_less_columns(sample_df):
-    result_df = SplitStep(
-        name='split', column='Label', delimiter='-', number_cols_to_keep=2
-    ).execute(sample_df)
+    step = SplitStep(name='split', column='Label', delimiter='-', number_cols_to_keep=2)
+    result_df = execute_split(step, sample_df)
     expected_df = pd.DataFrame(
         {
             'Label': [
@@ -81,4 +80,4 @@ def test_benchmark_split(benchmark):
     )
 
     step = SplitStep(name='split', column='group', delimiter='_', number_cols_to_keep=2)
-    benchmark(step.execute, df)
+    benchmark(execute_split, step, df)

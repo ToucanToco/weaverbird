@@ -3,7 +3,10 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps.aggregate import AggregateStep, Aggregation, DuplicateColumnError
+from weaverbird.backends.pandas_executor.steps import execute_aggregate
+from weaverbird.exceptions import DuplicateColumnError
+from weaverbird.pipeline.steps import AggregateStep
+from weaverbird.pipeline.steps.aggregate import Aggregation
 
 
 @pytest.fixture
@@ -19,7 +22,7 @@ def sample_df():
 
 
 def test_simple_aggregate(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         on=['Group'],
         aggregations=[
@@ -30,7 +33,8 @@ def test_simple_aggregate(sample_df):
             ),
             Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg-Value1']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result.sort_values(by=['Group']),
@@ -46,14 +50,15 @@ def test_simple_aggregate(sample_df):
 
 
 def test_with_original_granularity(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=True,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='sum', columns=['Value1'], newcolumns=['Total']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -70,7 +75,7 @@ def test_with_original_granularity(sample_df):
 
 
 def test_with_original_granularity_multiple_aggregations(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=True,
         on=['Group'],
@@ -78,7 +83,8 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
             Aggregation(aggfunction='min', columns=['Value1'], newcolumns=['min_Value1']),
             Aggregation(aggfunction='max', columns=['Value2'], newcolumns=['max_Value2']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -96,7 +102,7 @@ def test_with_original_granularity_multiple_aggregations(sample_df):
 
 
 def test_with_original_granularity_multiple_aggregations_multiple_columns(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=True,
         on=['Group'],
@@ -112,7 +118,8 @@ def test_with_original_granularity_multiple_aggregations_multiple_columns(sample
                 newcolumns=['max_Value1', 'max_Value2'],
             ),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -132,14 +139,15 @@ def test_with_original_granularity_multiple_aggregations_multiple_columns(sample
 
 
 def test_count(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=False,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='count', columns=['Label'], newcolumns=['count']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result, DataFrame({'Group': ['Group 1', 'Group 2'], 'count': [3, 3]})
@@ -147,14 +155,15 @@ def test_count(sample_df):
 
 
 def test_last(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=False,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='last', columns=['Label'], newcolumns=['last_Label']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -163,14 +172,15 @@ def test_last(sample_df):
 
 
 def test_first(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=False,
         on=['Group'],
         aggregations=[
             Aggregation(aggfunction='first', columns=['Label'], newcolumns=['first_Label']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -179,14 +189,15 @@ def test_first(sample_df):
 
 
 def test_without_on(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=False,
         on=[],
         aggregations=[
             Aggregation(aggfunction='sum', columns=['Value1'], newcolumns=['sum_value']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -195,27 +206,29 @@ def test_without_on(sample_df):
 
 
 def test_keep_original_granularity_empty_on(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         on=[],
         keepOriginalGranularity=True,
         aggregations=[
             Aggregation(aggfunction='count', columns=['Group'], newcolumns=['__vqb_count__']),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(df_result, sample_df.assign(__vqb_count__=6))
 
 
 def test_legacy_syntax(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=False,
         on=[],
         aggregations=[
             Aggregation(**{'aggfunction': 'sum', 'column': 'Value1', 'newcolumn': 'sum_value'}),
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(
         df_result,
@@ -224,7 +237,7 @@ def test_legacy_syntax(sample_df):
 
 
 def test_count_distinct(sample_df):
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         keepOriginalGranularity=False,
         on=[],
@@ -235,7 +248,8 @@ def test_count_distinct(sample_df):
                 newcolumns=['Group_CD'],
             )
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_aggregate(step, sample_df)
 
     assert_dataframes_equals(df_result, DataFrame({'Group_CD': [2]}))
 
@@ -248,7 +262,7 @@ def test_simple_aggregate_with_null():
             'Value1': [13, 7, 20, 1, 10, 5],
         }
     )
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         on=['Group'],
         aggregations=[
@@ -258,7 +272,8 @@ def test_simple_aggregate_with_null():
                 newcolumns=['Sum-Value1'],
             ),
         ],
-    ).execute(df)
+    )
+    df_result = execute_aggregate(step, df)
 
     assert_dataframes_equals(
         df_result.sort_values(by=['Group']),
@@ -279,7 +294,7 @@ def test_count_with_null():
             'Value1': [13, 7, 20, 1, 10, 5],
         }
     )
-    df_result = AggregateStep(
+    step = AggregateStep(
         name='aggregate',
         on=['Group'],
         aggregations=[
@@ -289,7 +304,8 @@ def test_count_with_null():
                 newcolumns=['__VQB_COUNT'],
             ),
         ],
-    ).execute(df)
+    )
+    df_result = execute_aggregate(step, df)
 
     assert_dataframes_equals(
         df_result.sort_values(by=['Group']),
@@ -321,7 +337,7 @@ def test_benchmark_aggregate(benchmark):
             ),
         ],
     )
-    benchmark(step.execute, sample_df)
+    benchmark(execute_aggregate, step, sample_df)
 
 
 def test_duplicate_aggregation_columns():
@@ -333,7 +349,7 @@ def test_duplicate_aggregation_columns():
         }
     )
     with pytest.raises(DuplicateColumnError):
-        AggregateStep(
+        step = AggregateStep(
             name='aggregate',
             on=['Group'],
             aggregations=[
@@ -343,4 +359,5 @@ def test_duplicate_aggregation_columns():
                     newcolumns=['__VQB_COUNT'],
                 ),
             ],
-        ).execute(df)
+        )
+        execute_aggregate(step, df)

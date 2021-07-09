@@ -5,7 +5,8 @@ from pandas import DataFrame, to_datetime
 from pandas.core.arrays.integer import UInt32Dtype
 
 from tests.utils import assert_column_equals, assert_dataframes_equals
-from weaverbird.steps import DateExtractStep
+from weaverbird.backends.pandas_executor.steps.date_extract import execute_date_extract
+from weaverbird.pipeline.steps import DateExtractStep
 
 
 @pytest.fixture
@@ -28,21 +29,21 @@ def sample_df():
 
 
 def test_date_extract_legacy_config(sample_df: DataFrame):
-    df_result = DateExtractStep(
+    step = DateExtractStep(
         name='dateextract', column='date', operation='day', new_column_name='date'
-    ).execute(sample_df)
+    )
+    df_result = execute_date_extract(step, sample_df)
     expected_result = DataFrame({'date': [29, 13, 29, 9, 2, 1, None]})
     assert_dataframes_equals(df_result, expected_result)
 
     # Without column name
-    df_result = DateExtractStep(name='dateextract', column='date', operation='day').execute(
-        sample_df
-    )
+    step = DateExtractStep(name='dateextract', column='date', operation='day')
+    df_result = execute_date_extract(step, sample_df)
     assert_column_equals(df_result['date_day'], [29, 13, 29, 9, 2, 1, None])
 
 
 def test_date_extract_(sample_df: DataFrame):
-    df_result = DateExtractStep(
+    step = DateExtractStep(
         name='dateextract',
         column='date',
         dateInfo=[
@@ -109,7 +110,8 @@ def test_date_extract_(sample_df: DataFrame):
             'date_seconds',
             'date_milliseconds',
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_date_extract(step, sample_df)
     expected_result = DataFrame(
         {
             'date': to_datetime(
@@ -285,4 +287,4 @@ def test_benchmark_dateextract(benchmark):
         name='dateextract', column='date', operation='day', new_column_name='date'
     )
 
-    benchmark(step.execute, df)
+    benchmark(execute_date_extract, step, df)

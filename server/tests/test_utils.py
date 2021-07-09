@@ -1,7 +1,7 @@
 import pytest
 from pandas import DataFrame
 
-from weaverbird.utils import rename_duplicated_columns
+from weaverbird.backends.pandas_executor.steps.utils.cleaning import rename_duplicated_columns
 
 
 @pytest.mark.parametrize(

@@ -4,7 +4,8 @@ import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import RollupStep
+from weaverbird.backends.pandas_executor.steps.rollup import execute_rollup
+from weaverbird.pipeline.steps import RollupStep
 
 
 @pytest.fixture
@@ -32,13 +33,14 @@ def sample_df():
 
 
 def test_rollup(sample_df: DataFrame):
-    df_result = RollupStep(
+    step = RollupStep(
         name='rollup',
         hierarchy=['CONTINENT', 'COUNTRY', 'CITY'],
         aggregations=[
             {'newcolumns': ['VALUE'], 'aggfunction': 'sum', 'columns': ['VALUE']},
         ],
-    ).execute(sample_df)
+    )
+    df_result = execute_rollup(step, sample_df)
 
     columns = ['CITY', 'COUNTRY', 'CONTINENT', 'label', 'level', 'parent', 'VALUE']
     expected_data = [
@@ -63,7 +65,7 @@ def test_rollup(sample_df: DataFrame):
 
 def test_complex_rollup(sample_df: DataFrame):
     sample_df = sample_df.assign(COUNT=1)
-    df_result = RollupStep(
+    step = RollupStep(
         name='rollup',
         hierarchy=['CONTINENT', 'COUNTRY', 'CITY'],
         aggregations=[
@@ -78,7 +80,8 @@ def test_complex_rollup(sample_df: DataFrame):
         labelCol='MY_LABEL',
         levelCol='MY_LEVEL',
         parentLabelCol='MY_PARENT',
-    ).execute(sample_df)
+    )
+    df_result = execute_rollup(step, sample_df)
 
     columns = [
         'CITY',
@@ -152,4 +155,4 @@ def test_benchmark_rollup(benchmark):
             {'newcolumns': ['VALUE'], 'aggfunction': 'sum', 'columns': ['VALUE']},
         ],
     )
-    benchmark(step.execute, df)
+    benchmark(execute_rollup, step, df)

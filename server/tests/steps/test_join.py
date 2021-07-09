@@ -1,10 +1,14 @@
-import numpy as np
 import pytest
 from pandas import DataFrame
 
 from tests.utils import assert_dataframes_equals
-from weaverbird.steps import JoinStep
-from weaverbird.types import DomainRetriever, PipelineExecutor
+from weaverbird.backends.pandas_executor.steps.join import execute_join
+from weaverbird.backends.pandas_executor.types import (
+    DomainRetriever,
+    PipelineExecutionReport,
+    PipelineExecutor,
+)
+from weaverbird.pipeline.steps import JoinStep
 
 
 @pytest.fixture
@@ -14,7 +18,10 @@ def sample_df():
 
 @pytest.fixture
 def mock_execute_pipeline() -> PipelineExecutor:
-    return lambda p: DataFrame({'name': ['bar', 'baz'], 'score': [100, 200]})
+    return lambda p, _: (
+        DataFrame({'name': ['bar', 'baz'], 'score': [100, 200]}),
+        PipelineExecutionReport(steps_reports=[]),
+    )
 
 
 @pytest.fixture
@@ -27,15 +34,19 @@ def test_join_left(
     mock_domain_retriever: DomainRetriever,
     mock_execute_pipeline: PipelineExecutor,
 ):
-    df_result = JoinStep(
+    step = JoinStep(
         name='join',
         right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
             ['NAME', 'name'],
         ],
         type='left',
-    ).execute(
-        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
+    df_result = execute_join(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
     )
 
     expected_result = DataFrame(
@@ -49,15 +60,19 @@ def test_join_outer(
     mock_domain_retriever: DomainRetriever,
     mock_execute_pipeline: PipelineExecutor,
 ):
-    df_result = JoinStep(
+    step = JoinStep(
         name='join',
         right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
             ['NAME', 'name'],
         ],
         type='left outer',
-    ).execute(
-        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
+    df_result = execute_join(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
     )
 
     expected_result = DataFrame(
@@ -76,15 +91,19 @@ def test_join_inner(
     mock_domain_retriever: DomainRetriever,
     mock_execute_pipeline: PipelineExecutor,
 ):
-    df_result = JoinStep(
+    step = JoinStep(
         name='join',
         right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
             ['NAME', 'name'],
         ],
         type='inner',
-    ).execute(
-        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
+    df_result = execute_join(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
     )
 
     expected_result = DataFrame(
@@ -106,15 +125,19 @@ def test_join_domain_name(
     """
     It should accept a domain name instead of a complete pipeline
     """
-    df_result = JoinStep(
+    step = JoinStep(
         name='join',
         right_pipeline='plop',
         on=[
             ['NAME', 'name'],
         ],
         type='left',
-    ).execute(
-        sample_df, domain_retriever=mock_domain_retriever, execute_pipeline=mock_execute_pipeline
+    )
+    df_result = execute_join(
+        step,
+        sample_df,
+        domain_retriever=mock_domain_retriever,
+        execute_pipeline=mock_execute_pipeline,
     )
 
     expected_result = DataFrame(
@@ -123,20 +146,18 @@ def test_join_domain_name(
     assert_dataframes_equals(df_result, expected_result)
 
 
-def test_benchmark_join(benchmark):
-    left_df = DataFrame({'value': np.random.random(1000), 'id': list(range(1000))})
-    right_df = DataFrame({'value': np.random.random(1000), 'id': list(range(1000))})
-
-    def domain_retriever(p):
-        return right_df
-
+def test_benchmark_join(
+    benchmark,
+    sample_df: DataFrame,
+    mock_domain_retriever: DomainRetriever,
+    mock_execute_pipeline: PipelineExecutor,
+):
     step = JoinStep(
         name='join',
         right_pipeline=[{'name': 'domain', 'domain': 'buzz'}],
         on=[
-            ['id', 'id'],
+            ['NAME', 'name'],
         ],
         type='left',
     )
-
-    benchmark(step.execute, left_df, domain_retriever, domain_retriever)
+    benchmark(execute_join, step, sample_df, mock_domain_retriever, mock_execute_pipeline)
