@@ -54,7 +54,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'concatenate': execute_concatenate,
     'convert': execute_convert,
     'cumsum': execute_cumsum,
-    'date_extract': execute_date_extract,
+    'dateextract': execute_date_extract,
     'delete': execute_delete,
     'domain': execute_domain,  # type: ignore
     'duplicate': execute_duplicate,
@@ -67,7 +67,7 @@ steps_executors: Dict[str, StepExecutor] = {
     'ifthenelse': execute_ifthenelse,
     'join': execute_join,  # type: ignore
     'lowercase': execute_lowercase,
-    'moving_average': execute_moving_average,
+    'movingaverage': execute_moving_average,
     'percentage': execute_percentage,
     'pivot': execute_pivot,
     'rank': execute_rank,
