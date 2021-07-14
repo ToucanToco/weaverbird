@@ -6,12 +6,19 @@
 
 !["Weaverbird Screenshot](docs/img/readme_screenshot.png)
 
-## General documentation
+Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it contains :
 
-The project's technical and user documentation is hosted on https://weaverbird.toucantoco.com
-The documentation's source files can be found in the `docs` directory.
+- a pipeline **Data Model**, currently supporting more than 40 transformation steps
+- a friendly **User Interface** for building those pipelines without writing any code,
+  made with TypeScript, VueJS & VueX
+- a set of **BackEnds** to use those pipelines :
+  - the MongoDB Translator that generate Mongo Queries, written in TypeScript
+  - the Pandas Executor that compute the result using Pandas dataframes, written in Python
 
-You can play with the online [playground](https://weaverbird.herokuapp.com)
+For in depth user & technical documentation, have a look at weaverbird.toucantoco.com  
+or at the documentation's source files in the `docs` directory.
+
+Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird.herokuapp.com)** !
 
 ## Project setup
 
