@@ -1,9 +1,0 @@
-version: 2
-
-storybook:
-  type: static
-  path: /.storybook/dist
-
-playground:
-  type: docker
-  port: 3000

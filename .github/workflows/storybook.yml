@@ -1,4 +1,3 @@
-# From https://docs.featurepeek.com/github-actions/
 name: Build storybook
 on:
   push:
@@ -32,7 +31,3 @@ jobs:
       run: yarn storybook:bundle
     - name: Build storybook
       run: yarn storybook:build
-    - name: Ping FeaturePeek
-      run: bash <(curl -s https://peek.run/ci) -a storybook
-      env:
-        CI: true
