@@ -2126,10 +2126,34 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       },
     ];
     const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
-      { $project: { _id: 0 } },
-    ]);
+    if (version < '40') {
+      expect(querySteps).toEqual([
+        { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
+        { $project: { _id: 0 } },
+      ]);
+    } else {
+      expect(querySteps).toEqual([
+        {
+          $addFields: {
+            foo: {
+              $dateFromString: {
+                dateString: '$foo',
+                // enable '%Y' format to be guessed
+                onError: {
+                  $dateFromString: {
+                    dateString: {
+                      $concat: ['01/01/', '$foo'],
+                    },
+                    format: '%d/%m/%Y',
+                  },
+                },
+              },
+            },
+          },
+        },
+        { $project: { _id: 0 } },
+      ]);
+    }
   });
 
   it('can generate a fromdate step with a custom format', () => {
@@ -5397,7 +5421,24 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { foo: { $dateFromString: { dateString: '$foo' } } } },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: '$foo',
+                  // enable '%Y' format to be guessed
+                  onError: {
+                    $dateFromString: {
+                      dateString: {
+                        $concat: ['01/01/', '$foo'],
+                      },
+                      format: '%d/%m/%Y',
+                    },
+                  },
+                },
+              },
+            },
+          },
           { $project: { _id: 0 } },
         ]);
       });

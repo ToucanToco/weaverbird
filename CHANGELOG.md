@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### Added
+- ToDateStep: try to guess now support '%Y'
+
 ## [0.52.0] - 2021-06-30
 
 ### Added
