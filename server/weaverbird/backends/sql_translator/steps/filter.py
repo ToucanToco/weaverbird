@@ -1,7 +1,6 @@
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import apply_condition
+from weaverbird.backends.sql_translator.types import PipelineTranslator, QueryRetriever
 from weaverbird.pipeline.steps import FilterStep
-
-from server.weaverbird.backends.pipeline_translator.steps.utils.query_transformation import apply_condition
-from server.weaverbird.backends.pipeline_translator import QueryRetriever, PipelineTranslator
 
 
 def translate_filter(

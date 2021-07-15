@@ -1,17 +1,16 @@
 from typing import Tuple
 
-from weaverbird.pipeline import PipelineWithVariables, Pipeline, PipelineStep
+from weaverbird.backends.sql_translator.types import StepTranslationReport
+from weaverbird.pipeline import Pipeline, PipelineStep
 
-from server.weaverbird.backends.pipeline_translator.types import QueryRetriever, PipelineTranslationReport, \
-    StepTranslationReport
-from server.weaverbird.backends.pipeline_translator.steps import steps_translators
+from .steps import steps_translators
+from .types import PipelineTranslationReport, QueryRetriever
 
 
 def translate_pipeline(
-    pipeline_to_translate: Pipeline,
-    query_retriever: QueryRetriever
+    pipeline_to_translate: Pipeline, query_retriever: QueryRetriever
 ) -> Tuple[str, PipelineTranslationReport]:
-    """ For now, steps_translators are only SQL steps translators """
+    """For now, steps_translators are only SQL steps translators"""
     query = ''
     translate_report = []
     for index, step in enumerate(pipeline_to_translate.steps):
@@ -22,18 +21,14 @@ def translate_pipeline(
                 query_retriever=query_retriever,
                 translate_pipeline=translate_pipeline,
             )
-            translate_report.append(
-                StepTranslationReport(
-                    step_index=index
-                )
-            )
+            translate_report.append(StepTranslationReport(step_index=index))
         except Exception as e:
             raise PipelineTranslationFailure(step, index, e) from e
     return query, PipelineTranslationReport(steps_translation_reports=translate_report)
 
 
 class PipelineTranslationFailure(Exception):
-    """ Raised when a error happens during the translation of the pipeline """
+    """Raised when a error happens during the translation of the pipeline"""
 
     def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
         self.step = step

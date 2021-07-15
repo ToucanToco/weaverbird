@@ -1,7 +1,4 @@
-from numpy import logical_and, logical_or
-
-from server.weaverbird.pipeline.conditions import Condition, ComparisonCondition, InclusionCondition, NullCondition, \
-    MatchCondition, ConditionComboAnd, ConditionComboOr
+from weaverbird.pipeline.conditions import ComparisonCondition, Condition
 
 
 def apply_condition(condition: Condition, query: str) -> str:
