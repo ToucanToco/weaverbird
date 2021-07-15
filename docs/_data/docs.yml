@@ -51,7 +51,7 @@
     - steps
     - new-step
     - known-limitations
-    - translators
+    - pipeline_translator
     - variables
     - ui-components
     - code-editor
