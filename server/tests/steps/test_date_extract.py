@@ -28,21 +28,7 @@ def sample_df():
     )
 
 
-def test_date_extract_legacy_config(sample_df: DataFrame):
-    step = DateExtractStep(
-        name='dateextract', column='date', operation='day', new_column_name='date'
-    )
-    df_result = execute_date_extract(step, sample_df)
-    expected_result = DataFrame({'date': [29, 13, 29, 9, 2, 1, None]})
-    assert_dataframes_equals(df_result, expected_result)
-
-    # Without column name
-    step = DateExtractStep(name='dateextract', column='date', operation='day')
-    df_result = execute_date_extract(step, sample_df)
-    assert_column_equals(df_result['date_day'], [29, 13, 29, 9, 2, 1, None])
-
-
-def test_date_extract_(sample_df: DataFrame):
+def test_date_extract_no_uint32(sample_df: DataFrame):
     step = DateExtractStep(
         name='dateextract',
         column='date',
