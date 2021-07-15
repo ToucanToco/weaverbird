@@ -1,6 +1,7 @@
-from typing import List, Callable, Tuple, Protocol, Any, Optional
+from typing import Any, Callable, List, Optional, Protocol, Tuple
 
 from pydantic import BaseModel
+
 from weaverbird.pipeline import Pipeline
 
 
@@ -22,7 +23,6 @@ class StepTranslator(Protocol):
         step: Any,
         query: str,
         query_retriever: Optional[QueryRetriever],
-        translate_pipeline: Optional[PipelineTranslator]
-
+        translate_pipeline: Optional[PipelineTranslator],
     ):
         ...
