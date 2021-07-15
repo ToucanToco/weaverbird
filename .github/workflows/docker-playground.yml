@@ -59,11 +59,3 @@ jobs:
 
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
-
-    - name: Ping FeaturePeek
-      run: bash <(curl -s https://peek.run/ci) -a playground -p docker.io/toucantoco/weaverbird-playground:$docker_image_tag
-      env:
-        CI: true
-        # The image is public, so any user can retrieve it (like our service account toucantokar)
-        DOCKER_USERNAME: toucantokar
-        DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOUCANTOKAR_PASSWORD }}
