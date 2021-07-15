@@ -116,7 +116,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
               $dateFromString: {
                 dateString: $$(step.column),
                 // Mongo does not support "incomplete" date string where the day or month is missing
-                // so we add the first day of the month and of the first month of the year and use the format %d/%m/%Y 
+                // so we add the first day of the month and of the first month of the year and use the format %d/%m/%Y
                 // to enable '%Y' format to be guessed
                 onError: {
                   $dateFromString: {
