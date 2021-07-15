@@ -1,6 +1,5 @@
+from weaverbird.backends.sql_translator.types import PipelineTranslator, QueryRetriever
 from weaverbird.pipeline.steps import DomainStep
-
-from server.weaverbird.backends.pipeline_translator import QueryRetriever, PipelineTranslator
 
 
 def translate_domain(
