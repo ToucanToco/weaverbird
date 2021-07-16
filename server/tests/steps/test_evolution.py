@@ -16,7 +16,8 @@ def sample_df():
         {
             'DATE': to_datetime(['2019-06', '2019-07', '2019-08', '2019-09', '2019-11', '2019-12']),
             'VALUE': [79, 81, 77, 75, 78, 88],
-        }
+        },
+        index=[1, 3, 2, 5, 6, 4],  # make sure the evolution handles mixed indexes
     )
 
 
