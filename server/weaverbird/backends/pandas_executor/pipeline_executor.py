@@ -80,7 +80,7 @@ def preview_pipeline(
 
 
 class PipelineExecutionFailure(Exception):
-    """ Raised when a error happens during the execution of the pipeline """
+    """Raised when a error happens during the execution of the pipeline"""
 
     def __init__(self, step: PipelineStep, index: int, original_exception: Exception):
         self.step = step
