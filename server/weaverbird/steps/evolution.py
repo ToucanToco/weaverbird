@@ -31,6 +31,7 @@ class EvolutionStep(BaseStep):
 
     def execute(self, df: DataFrame, domain_retriever=None, execute_pipeline=None) -> DataFrame:
         new_column = self.new_column or f'{self.value_col}_EVOL_{self.evolution_format.upper()}'
+        df = df.reset_index(drop=True)
 
         id_cols = [self.date_col] + self.index_columns
         if df.set_index(id_cols).index.duplicated().any():
