@@ -19,6 +19,7 @@ def execute_evolution(
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
     new_column = step.new_column or f'{step.value_col}_EVOL_{step.evolution_format.upper()}'
+    df = df.reset_index(drop=True)
 
     id_cols = [step.date_col] + step.index_columns
     if df.set_index(id_cols).index.duplicated().any():
