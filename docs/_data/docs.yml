@@ -51,7 +51,6 @@
     - steps
     - new-step
     - known-limitations
-    - sql_translator
     - variables
     - ui-components
     - code-editor

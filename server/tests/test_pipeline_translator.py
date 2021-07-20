@@ -2,8 +2,8 @@ from functools import partial
 
 import pytest
 
-from server.weaverbird.backends.sql_translator.pipeline_translator import (
-    PipelineTranslationFailure,
+from server.weaverbird.backends.sql_translator.sql_pipeline_translator import (
+    SQLPipelineTranslationFailure,
     translate_pipeline,
 )
 from server.weaverbird.pipeline import Pipeline
@@ -13,7 +13,7 @@ DOMAINS = {'domain_a': 'select title from books'}  # Any ";" would be removed by
 
 @pytest.fixture
 def pipeline_translator():
-    return partial(translate_pipeline, query_retriever=lambda name: DOMAINS[name])
+    return partial(translate_pipeline, sql_query_retriever=lambda name: DOMAINS[name])
 
 
 def test_extract_query(pipeline_translator):
@@ -29,7 +29,7 @@ def test_errors(pipeline_translator):
     - the step that encountered an error (nth and type)
     - the original exception message
     """
-    with pytest.raises(PipelineTranslationFailure) as trslinfo:
+    with pytest.raises(SQLPipelineTranslationFailure) as trslinfo:
         pipeline_translator(
             Pipeline(
                 steps=[
@@ -57,4 +57,4 @@ def test_report(pipeline_translator):
         )
     )
     # there should be one step_report per step in the pipeline
-    assert len(report.steps_translation_reports) == 1
+    assert len(report.sql_steps_translation_reports) == 1
