@@ -23,7 +23,7 @@ lint:
 	$(flake8)
 	$(isort) --check-only
 	$(black) --check
-	mypy .
+	mypy weaverbird/
 
 .PHONY: test
 test:

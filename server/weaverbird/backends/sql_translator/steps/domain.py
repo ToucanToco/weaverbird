@@ -1,11 +1,11 @@
-from weaverbird.backends.sql_translator.types import PipelineTranslator, QueryRetriever
+from weaverbird.backends.sql_translator.types import SQLPipelineTranslator, SQLQueryRetriever
 from weaverbird.pipeline.steps import DomainStep
 
 
 def translate_domain(
     step: DomainStep,
     query: str,
-    query_retriever: QueryRetriever,
-    translate_pipeline: PipelineTranslator = None,
+    sql_query_retriever: SQLQueryRetriever,
+    sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> str:
-    return query_retriever(step.domain)
+    return sql_query_retriever(step.domain)

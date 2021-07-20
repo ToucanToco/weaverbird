@@ -5,24 +5,26 @@ from pydantic import BaseModel
 from weaverbird.pipeline import Pipeline
 
 
-class StepTranslationReport(BaseModel):
+class SQLStepTranslationReport(BaseModel):
     step_index: int
 
 
-class PipelineTranslationReport(BaseModel):
-    steps_translation_reports: List[StepTranslationReport]
+class SQLPipelineTranslationReport(BaseModel):
+    sql_steps_translation_reports: List[SQLStepTranslationReport]
 
 
-QueryRetriever = Callable[[str], str]
-PipelineTranslator = Callable[[Pipeline, QueryRetriever], Tuple[str, PipelineTranslationReport]]
+SQLQueryRetriever = Callable[[str], str]
+SQLPipelineTranslator = Callable[
+    [Pipeline, SQLQueryRetriever], Tuple[str, SQLPipelineTranslationReport]
+]
 
 
-class StepTranslator(Protocol):
+class SQLStepTranslator(Protocol):
     def __call__(
         self,
         step: Any,
         query: str,
-        query_retriever: Optional[QueryRetriever],
-        translate_pipeline: Optional[PipelineTranslator],
-    ):
+        sql_query_retriever: Optional[SQLQueryRetriever],
+        sql_translate_pipeline: Optional[SQLPipelineTranslator],
+    ) -> str:
         ...
