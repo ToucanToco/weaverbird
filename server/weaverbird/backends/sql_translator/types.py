@@ -13,9 +13,15 @@ class SQLPipelineTranslationReport(BaseModel):
     sql_steps_translation_reports: List[SQLStepTranslationReport]
 
 
-SQLQueryRetriever = Callable[[str], str]
+class SQLQuery(BaseModel):
+    query_name: Optional[str]
+    transformed_query: Optional[str]
+    selection_query: Optional[str]
+
+
+SQLTableRetriever = Callable[[str], str]
 SQLPipelineTranslator = Callable[
-    [Pipeline, SQLQueryRetriever], Tuple[str, SQLPipelineTranslationReport]
+    [Pipeline, SQLTableRetriever], Tuple[str, SQLPipelineTranslationReport]
 ]
 
 
@@ -23,8 +29,9 @@ class SQLStepTranslator(Protocol):
     def __call__(
         self,
         step: Any,
-        query: str,
-        sql_query_retriever: Optional[SQLQueryRetriever],
+        query: SQLQuery,
+        index,
+        sql_query_retriever: Optional[SQLTableRetriever],
         sql_translate_pipeline: Optional[SQLPipelineTranslator],
     ) -> str:
         ...

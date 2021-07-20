@@ -8,19 +8,21 @@ from server.weaverbird.backends.sql_translator.sql_pipeline_translator import (
 )
 from server.weaverbird.pipeline import Pipeline
 
-DOMAINS = {'domain_a': 'select title from books'}  # Any ";" would be removed by laputa
+DOMAINS = {'domain_a': 'select title from books'}
 
 
 @pytest.fixture
 def pipeline_translator():
-    return partial(translate_pipeline, sql_query_retriever=lambda name: DOMAINS[name])
+    return partial(translate_pipeline, sql_table_retriever=lambda name: DOMAINS[name])
 
 
 def test_extract_query(pipeline_translator):
-    translated_query, _ = pipeline_translator(
-        Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}])
+    q, _ = pipeline_translator(Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}]))
+    assert (
+        f'{q.transformed_query}{q.selection_query}'
+        == 'with select_step_0 as (select title from books),select * '
+        'from select_step_0'
     )
-    assert translated_query == 'select title from books'
 
 
 def test_errors(pipeline_translator):

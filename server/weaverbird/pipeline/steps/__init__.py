@@ -34,6 +34,7 @@ from .sort import SortStep
 from .split import SplitStep, SplitStepWithVariable
 from .statistics import StatisticsStep
 from .substring import SubstringStep
+from .table import TableStep
 from .text import TextStep, TextStepWithVariable
 from .todate import ToDateStep
 from .top import TopStep, TopStepWithVariables

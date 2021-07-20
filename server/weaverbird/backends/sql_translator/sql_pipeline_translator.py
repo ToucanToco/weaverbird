@@ -1,26 +1,33 @@
 from typing import Tuple
 
-from weaverbird.backends.sql_translator.types import SQLStepTranslationReport
+from weaverbird.backends.sql_translator.types import SQLQuery, SQLStepTranslationReport
 from weaverbird.pipeline import Pipeline, PipelineStep
 
 from .steps import sql_steps_translators
-from .types import SQLPipelineTranslationReport, SQLQueryRetriever
+from .types import SQLPipelineTranslationReport, SQLTableRetriever
 
 
 def translate_pipeline(
-    pipeline_to_translate: Pipeline, sql_query_retriever: SQLQueryRetriever
-) -> Tuple[str, SQLPipelineTranslationReport]:
+    pipeline_to_translate: Pipeline, sql_table_retriever: SQLTableRetriever
+) -> Tuple[SQLQuery, SQLPipelineTranslationReport]:
     """
     The main function of the module. Translates a pipeline and returns the result as a transformed query.
+    For example, a Select step chained with a filter step will output a query string like this:
+
+    with select_step_1 as (select * from "DB"."SCHEMA"."TABLE" limit 100),
+    filter_step_2 as (select * from select_step_1 where ID > 2)
+    select * from filter_step_2
+
     """
-    query = ''
+    query = SQLQuery()
     translate_report = []
     for index, step in enumerate(pipeline_to_translate.steps):
         try:
             query = sql_steps_translators[step.name](
                 step,
                 query,
-                sql_query_retriever=sql_query_retriever,
+                index,
+                sql_table_retriever=sql_table_retriever,
                 sql_translate_pipeline=translate_pipeline,
             )
             translate_report.append(SQLStepTranslationReport(step_index=index))
