@@ -12,18 +12,18 @@ def translate_table(
     step: TableStep,
     query: SQLQuery,
     index: int,
-    sql_table_retriever: SQLTableRetriever,
+    sql_query_retriever: SQLTableRetriever,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> Union[str, SQLQuery]:
     """As it is always the first step add the with keyword"""
-    table_name = sql_table_retriever(
+    select_from_table = sql_query_retriever(
         step.domain
     )  # TODO in laputa, implement the table retrieval instead of query
 
     sql_query = SQLQuery(
-        current_query_name=f'select_step_{index}',
-        transformed_query=f'with select_step_{index} as ({table_name}),',
-        selection_query=f'select * from {f"select_step_{index}"}',
+        query_name=f'SELECT_STEP_{index}',
+        transformed_query=f'WITH SELECT_STEP_{index} AS ({select_from_table})',
+        selection_query=f'SELECT * FROM {f"SELECT_STEP_{index}"}',
     )
     # TODO adapt Laputa to directly return the SQLQuery
     return sql_query

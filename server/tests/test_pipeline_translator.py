@@ -2,42 +2,45 @@ from functools import partial
 
 import pytest
 
-from server.weaverbird.backends.sql_translator.sql_pipeline_translator import (
+from weaverbird.backends.sql_translator.sql_pipeline_translator import (
     SQLPipelineTranslationFailure,
     translate_pipeline,
 )
-from server.weaverbird.pipeline import Pipeline
+from weaverbird.pipeline import Pipeline
 
-DOMAINS = {'domain_a': 'select title from books'}
+DOMAINS = {'domain_a': 'SELECT title FROM books'}
 
 
 @pytest.fixture
 def pipeline_translator():
-    return partial(translate_pipeline, sql_table_retriever=lambda name: DOMAINS[name])
+    return partial(translate_pipeline, sql_query_retriever=lambda name: DOMAINS[name])
 
 
 def test_extract_query(pipeline_translator):
     q, _ = pipeline_translator(Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}]))
-    assert (
-        f'{q.transformed_query}{q.selection_query}'
-        == 'with select_step_0 as (select title from books),select * '
-        'from select_step_0'
-    )
+    assert q == 'WITH SELECT_STEP_0 AS (SELECT title FROM books) SELECT * FROM SELECT_STEP_0'
 
 
-def test_errors(pipeline_translator):
+def test_errors(pipeline_translator, mocker):
     """
     It should provide helpful information when the pipeline translation fails, such as:
     - the step that encountered an error (nth and type)
     - the original exception message
     """
+    mocker.patch(
+        'weaverbird.backends.sql_translator.steps.filter.apply_condition',
+        side_effect=Exception('comparison ' 'not ' 'implemented'),
+    )
     with pytest.raises(SQLPipelineTranslationFailure) as trslinfo:
         pipeline_translator(
             Pipeline(
                 steps=[
                     {
                         'name': 'filter',
-                        'condition': {'column': 'title', 'operator': 'isnull'},
+                        'condition': {
+                            'column': 'title',
+                            'operator': 'eq',
+                        },
                     },
                 ]
             )
@@ -60,3 +63,21 @@ def test_report(pipeline_translator):
     )
     # there should be one step_report per step in the pipeline
     assert len(report.sql_steps_translation_reports) == 1
+
+
+def test_translation_pipeline(pipeline_translator, mocker):
+    query_string, _ = pipeline_translator(
+        Pipeline(
+            steps=[
+                {'name': 'domain', 'domain': 'domain_a'},
+                {
+                    'name': 'filter',
+                    'condition': {'column': 'title', 'operator': 'isnull'},
+                },
+            ]
+        )
+    )
+    assert (
+        query_string
+        == 'WITH SELECT_STEP_0 AS (SELECT title FROM books), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE title IS NULL) SELECT * FROM FILTER_STEP_1'
+    )

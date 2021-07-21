@@ -8,7 +8,8 @@ from .types import SQLPipelineTranslationReport, SQLTableRetriever
 
 
 def translate_pipeline(
-    pipeline_to_translate: Pipeline, sql_table_retriever: SQLTableRetriever
+    pipeline_to_translate: Pipeline,
+    sql_query_retriever: SQLTableRetriever,  # TODO : rename it to sql_table_retriever when ready
 ) -> Tuple[SQLQuery, SQLPipelineTranslationReport]:
     """
     The main function of the module. Translates a pipeline and returns the result as a transformed query.
@@ -27,13 +28,17 @@ def translate_pipeline(
                 step,
                 query,
                 index,
-                sql_table_retriever=sql_table_retriever,
+                sql_query_retriever=sql_query_retriever,
                 sql_translate_pipeline=translate_pipeline,
             )
             translate_report.append(SQLStepTranslationReport(step_index=index))
         except Exception as e:
             raise SQLPipelineTranslationFailure(step, index, e) from e
-    return query, SQLPipelineTranslationReport(sql_steps_translation_reports=translate_report)
+
+    query_string = f'{query.transformed_query} {query.selection_query}'
+    return query_string, SQLPipelineTranslationReport(
+        sql_steps_translation_reports=translate_report
+    )
 
 
 class SQLPipelineTranslationFailure(Exception):
