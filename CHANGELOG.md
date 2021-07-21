@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [0.53.1] - 2021-07-21
 
 ### Fixed
 - Only enable current step delete shortcut when no other input is focused
@@ -813,6 +813,7 @@
 ### Added
 
 - Initial version, showtime!
+[0.53.1]: https://github.com/ToucanToco/weaverbird/compare/v0.53.0...v0.53.1
 [0.53.0]: https://github.com/ToucanToco/weaverbird/compare/v0.52.0...v0.53.0
 [0.52.0]: https://github.com/ToucanToco/weaverbird/compare/v0.51.0...v0.52.0
 [0.51.0]: https://github.com/ToucanToco/weaverbird/compare/v0.50.0...v0.51.0
