@@ -4,6 +4,8 @@
 
 ### Fixed
 - Only enable current step delete shortcut when no other input is focused
+- Display search correctly in chrome browser
+
 ## [0.53.0] - 2021-07-15
 
 ### Added
