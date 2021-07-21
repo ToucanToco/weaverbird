@@ -11,18 +11,16 @@ def translate_filter(
     step: FilterStep,
     query: SQLQuery,
     index: int,
-    sql_table_retriever: SQLTableRetriever,
+    sql_query_retriever: SQLTableRetriever = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     new_query = SQLQuery(
-        query_name=f'filter_step_{index}',
-        transformed_query=f"""{query.transformed_query} filter_step_{index} as ({
-                apply_condition(
-                step.condition,
-                f''''select * from {query.query_name}'''
-                )
-            }),""",
-        selection_query=f"""select * from {f'select_step_{index}'}""",
+        query_name=f'FILTER_STEP_{index}',
+        transformed_query=f"""{query.transformed_query}, FILTER_STEP_{index} AS ({
+        apply_condition(
+            step.condition,
+            f'''SELECT * FROM {query.query_name} WHERE '''
+        )})""",
+        selection_query=f"""SELECT * FROM {f'FILTER_STEP_{index}'}""",
     )
-
     return new_query

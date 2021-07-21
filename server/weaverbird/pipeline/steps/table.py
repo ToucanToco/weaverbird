@@ -4,5 +4,5 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 
 
 class TableStep(BaseStep):
-    name = Field('table', const=True)
+    name = Field('domain', const=True)
     domain: str
