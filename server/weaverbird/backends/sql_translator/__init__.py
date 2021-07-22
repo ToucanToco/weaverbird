@@ -1,5 +1,5 @@
 from .sql_pipeline_translator import (
     SQLPipelineTranslationFailure,
-    SQLTableRetriever,
+    SQLQueryRetriever,
     translate_pipeline,
 )

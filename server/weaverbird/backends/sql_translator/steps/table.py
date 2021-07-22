@@ -3,7 +3,7 @@ from typing import Union
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLTableRetriever,
+    SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import TableStep
 
@@ -12,7 +12,7 @@ def translate_table(
     step: TableStep,
     query: SQLQuery,
     index: int,
-    sql_query_retriever: SQLTableRetriever,
+    sql_query_retriever: SQLQueryRetriever,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> Union[str, SQLQuery]:
     """As it is always the first step add the with keyword"""

@@ -2,7 +2,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLTableRetriever,
+    SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import FilterStep
 
@@ -11,7 +11,7 @@ def translate_filter(
     step: FilterStep,
     query: SQLQuery,
     index: int,
-    sql_query_retriever: SQLTableRetriever = None,
+    sql_query_retriever: SQLQueryRetriever = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     new_query = SQLQuery(
