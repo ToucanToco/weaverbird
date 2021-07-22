@@ -4,12 +4,12 @@ from weaverbird.backends.sql_translator.types import SQLQuery, SQLStepTranslatio
 from weaverbird.pipeline import Pipeline, PipelineStep
 
 from .steps import sql_steps_translators
-from .types import SQLPipelineTranslationReport, SQLTableRetriever
+from .types import SQLPipelineTranslationReport, SQLQueryRetriever
 
 
 def translate_pipeline(
     pipeline_to_translate: Pipeline,
-    sql_query_retriever: SQLTableRetriever,  # TODO : rename it to sql_table_retriever when ready
+    sql_query_retriever: SQLQueryRetriever,  # TODO : rename it to sql_table_retriever when ready
 ) -> Tuple[SQLQuery, SQLPipelineTranslationReport]:
     """
     The main function of the module. Translates a pipeline and returns the result as a transformed query.
