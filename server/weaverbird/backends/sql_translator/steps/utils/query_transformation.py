@@ -23,8 +23,8 @@ SQL_NULLITY_OPERATORS = {
 }
 
 SQL_MATCH_OPERATORS = {
-    'matches': 'LIKE',
-    'notmatches': 'NOT LIKE',
+    'matches': 'RLIKE',
+    'notmatches': 'NOT RLIKE',
 }
 
 SQL_INCLUSION_OPERATORS = {
@@ -35,15 +35,15 @@ SQL_INCLUSION_OPERATORS = {
 
 def apply_condition(condition: Condition, query: str) -> str:
     if isinstance(condition, ComparisonCondition):
-        query += (
-            f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
-        )
+        try:
+            float(condition.value)
+            query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
+        except ValueError:
+            query += f"{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, NullCondition):
         query += f'{condition.column} {SQL_NULLITY_OPERATORS[condition.operator]}'
     elif isinstance(condition, MatchCondition):
-        query += (
-            f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '%{condition.value}%'"
-        )
+        query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
         query += f"{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}"
     elif isinstance(condition, ConditionComboAnd):
