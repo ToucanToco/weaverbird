@@ -1,0 +1,44 @@
+import pytest
+
+from weaverbird.backends.sql_translator.steps import translate_filter
+from weaverbird.backends.sql_translator.types import SQLQuery
+from weaverbird.pipeline.conditions import ComparisonCondition
+from weaverbird.pipeline.steps import FilterStep
+
+
+def test_translate_filter(mocker):
+    step = FilterStep(
+        name='filter', condition=ComparisonCondition(column='amount', operator='eq', value=10)
+    )
+    query = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT * FROM SELECT_STEP_0',
+    )
+    mocker.patch(
+        'weaverbird.backends.sql_translator.steps.utils.query_transformation.apply_condition',
+        return_value='SELECT * FROM SELECT_STEP_0 WHERE amount = 10',
+    )
+    res = translate_filter(step, query, index=1)
+    assert (
+        res.transformed_query
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE amount = 10)'
+    )
+    assert res.selection_query == 'SELECT * FROM FILTER_STEP_1'
+
+
+def test_translate_filter_error(mocker):
+    step = FilterStep(
+        name='filter', condition=ComparisonCondition(column='amount', operator='eq', value=10)
+    )
+    query = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products), SELECT * FROM SELECT_STEP_0',
+        selection_query='SELECT * FROM SELECT_STEP_0',
+    )
+    mocker.patch(
+        'weaverbird.backends.sql_translator.steps.filter.apply_condition',
+        side_effect=NotImplementedError,
+    )
+    with pytest.raises(NotImplementedError):
+        translate_filter(step, query, index=1)
