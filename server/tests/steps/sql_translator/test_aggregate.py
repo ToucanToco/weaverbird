@@ -24,15 +24,15 @@ def test_translate_aggregate(query):
             Aggregation(
                 aggfunction='sum',
                 columns=['Value1', 'Value2'],
-                newcolumns=['Sum-Value1', 'Sum-Value2'],
+                newcolumns=['Sum_Value1', 'Sum_Value2'],
             ),
-            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg-Value1']),
+            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg_Value1']),
         ],
     )
     sql_query = translate_aggregate(step, query, index=1)
     assert (
         sql_query.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(Value1) AS Sum-Value1, SUM(Value2) AS Sum-Value2, AVG(Value1) AS Avg-Value1 FROM SELECT_STEP_0)'
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(Value1) AS Sum_Value1, SUM(Value2) AS Sum_Value2, AVG(Value1) AS Avg_Value1 FROM SELECT_STEP_0)'
     )
 
 
@@ -44,15 +44,15 @@ def test_translate_aggregate_with_group_by(query):
             Aggregation(
                 aggfunction='sum',
                 columns=['Value1', 'Value2'],
-                newcolumns=['Sum-Value1', 'Sum-Value2'],
+                newcolumns=['Sum_Value1', 'Sum_Value2'],
             ),
-            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg-Value1']),
+            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg_Value1']),
         ],
     )
     sql_query = translate_aggregate(step, query, index=1)
     assert (
         sql_query.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(Value1) AS Sum-Value1, SUM(Value2) AS Sum-Value2, AVG(Value1) AS Avg-Value1, category FROM SELECT_STEP_0 GROUP BY category)'
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(Value1) AS Sum_Value1, SUM(Value2) AS Sum_Value2, AVG(Value1) AS Avg_Value1, category FROM SELECT_STEP_0 GROUP BY category)'
     )
 
 

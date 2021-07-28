@@ -18,6 +18,9 @@ def translate_aggregate(
     aggregated_string = ''
     first_last_string = ''
 
+    for agg in step.aggregations:  # TODO the front should restrict - usage in column names
+        agg.new_columns = [x.replace('-', '_') for x in agg.new_columns]
+
     for aggregation in [
         aggregation
         for aggregation in step.aggregations
