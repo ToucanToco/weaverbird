@@ -100,9 +100,9 @@ def translate_aggregate(
 
     if len(aggregated_string) and len(first_last_string):
         if len(step.on):
-            query_string = f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols] + [f'F.{s}' for s in step.on])} FROM ({aggregated_string}) A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])}"
+            query_string = f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string}) A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])}"
         else:
-            query_string = f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols] + [f'F.{s}' for s in step.on])} FROM ({aggregated_string}) A INNER JOIN ({first_last_string}) F"
+            query_string = f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string}) A INNER JOIN ({first_last_string}) F"
 
     elif len(aggregated_string):
         query_string = aggregated_string

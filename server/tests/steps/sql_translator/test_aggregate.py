@@ -204,7 +204,7 @@ def test_with_group_by_with_aggregation_with_last_with_first(query):
     sql_query = translate_aggregate(step, query, index=1)
     assert (
         sql_query.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT A.*, F.first_title, F.last_label, F.category FROM (SELECT SUM(title) AS sum_title, category FROM SELECT_STEP_0 GROUP BY category) A INNER JOIN (SELECT first_title, last_label, category FROM (SELECT title AS first_title, Label AS last_label, category, ROW_NUMBER() OVER (PARTITION BY category ORDER BY title, Label DESC) AS R FROM SELECT_STEP_0 QUALIFY R = 1)) F ON A.category=F.category)'
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT A.*, F.first_title, F.last_label FROM (SELECT SUM(title) AS sum_title, category FROM SELECT_STEP_0 GROUP BY category) A INNER JOIN (SELECT first_title, last_label, category FROM (SELECT title AS first_title, Label AS last_label, category, ROW_NUMBER() OVER (PARTITION BY category ORDER BY title, Label DESC) AS R FROM SELECT_STEP_0 QUALIFY R = 1)) F ON A.category=F.category)'
     )
 
 
