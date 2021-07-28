@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional, Protocol, Tuple
+from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple
 
 from pydantic import BaseModel
 
@@ -17,11 +17,14 @@ class SQLQuery(BaseModel):
     query_name: Optional[str]
     transformed_query: Optional[str]
     selection_query: Optional[str]
+    columns: Optional[Dict[str, str]]
 
 
 SQLQueryRetriever = Callable[[str], str]
+SQLQueryDescriber = Callable[[str], str]
+
 SQLPipelineTranslator = Callable[
-    [Pipeline, SQLQueryRetriever], Tuple[str, SQLPipelineTranslationReport]
+    [Pipeline, SQLQueryRetriever, SQLQueryDescriber], Tuple[str, SQLPipelineTranslationReport]
 ]
 
 
@@ -32,6 +35,7 @@ class SQLStepTranslator(Protocol):
         query: SQLQuery,
         index,
         sql_query_retriever: Optional[SQLQueryRetriever],
+        sql_query_describer: Optional[SQLQueryDescriber],
         sql_translate_pipeline: Optional[SQLPipelineTranslator],
     ) -> str:
         ...
