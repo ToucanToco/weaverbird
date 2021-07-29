@@ -3,6 +3,9 @@ Perform aggregations on one or several columns. Available aggregation functions
 are sum, average, count, count distinct, min, max, first, last.
 For detailed explanations on configuration in UI, refer to `user-interface/aggregate`.
 
+:warning: The **keep original granularity** option is not implemented for now in sql's aggregate step.
+
+
 An aggregation step has the following structure:
 
 ```javascript
