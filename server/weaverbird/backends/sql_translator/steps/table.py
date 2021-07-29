@@ -32,7 +32,7 @@ def translate_table(
 
     sql_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f'WITH SELECT_STEP_{index} AS ({select_from_table})',
+        transformed_query=f'WITH {query_name} AS ({select_from_table})',
         selection_query=build_selection_query(tables_metadata, query_name),
         metadata_manager=SqlQueryMetadataManager(tables_metadata=tables_metadata),
     )
