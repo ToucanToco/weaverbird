@@ -1,4 +1,7 @@
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import apply_condition, build_selection_query
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    apply_condition,
+    build_selection_query,
+)
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,

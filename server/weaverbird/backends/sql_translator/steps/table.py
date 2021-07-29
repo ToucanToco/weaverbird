@@ -1,5 +1,3 @@
-from typing import Union
-
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
 )
@@ -20,7 +18,7 @@ def translate_table(
     sql_query_retriever: SQLQueryRetriever,
     sql_query_describer: SQLQueryDescriber,
     sql_translate_pipeline: SQLPipelineTranslator = None,
-) -> Union[str, SQLQuery]:
+) -> SQLQuery:
     """As it is always the first step add the with keyword"""
     select_from_table = sql_query_retriever(
         step.domain
