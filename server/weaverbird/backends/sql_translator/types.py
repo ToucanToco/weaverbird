@@ -46,7 +46,7 @@ class SQLQuery(BaseModel):
 
 
 SQLQueryRetriever = Callable[[str], str]
-SQLQueryDescriber = Callable[[str], str]
+SQLQueryDescriber = Callable[[str, str], str]
 
 SQLPipelineTranslator = Callable[
     [Pipeline, SQLQueryRetriever, SQLQueryDescriber], Tuple[str, SQLPipelineTranslationReport]

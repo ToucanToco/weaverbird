@@ -65,7 +65,7 @@ def build_selection_query(tables_metadata: Dict[str, Dict[str, str]], query_name
     # TODO When graphical table selection will be implemented
     # build the column_string using ', '.join([f'{table}.{c}' for table in tables_metadata for c in tables_metadata[table].keys()])
     # for now only use the default table name
-    return f"SELECT {', '.join(tables_metadata['table1'].keys())} FROM {query_name}"
+    return f"SELECT {', '.join(tables_metadata[[*tables_metadata][0]].keys())} FROM {query_name}"
 
 
 def build_first_or_last_aggregation(aggregated_string, first_last_string, query, step):

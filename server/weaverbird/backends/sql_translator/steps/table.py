@@ -24,7 +24,7 @@ def translate_table(
         step.domain
     )  # TODO in laputa, implement the table retrieval instead of query
     tables_metadata = {
-        'table1': sql_query_describer(step.domain)
+        step.domain: sql_query_describer(step.domain)
     }  # TODO Here replace table1 by provided table name
     query_name = f'SELECT_STEP_{index}'
 
