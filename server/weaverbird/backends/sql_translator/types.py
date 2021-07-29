@@ -13,6 +13,10 @@ class SQLPipelineTranslationReport(BaseModel):
     sql_steps_translation_reports: List[SQLStepTranslationReport]
 
 
+class TableMetadataUpdateError(Exception):
+    ...
+
+
 class SqlQueryMetadataManager(BaseModel):
     tables_metadata: Dict[str, Dict[str, str]]
 
@@ -25,7 +29,10 @@ class SqlQueryMetadataManager(BaseModel):
         self.tables_metadata[table_name][column_name] = new_type
 
     def remove_column(self, table_name: str, column_name: str):
-        del self.tables_metadata[table_name][column_name]
+        try:
+            del self.tables_metadata[table_name][column_name]
+        except KeyError:
+            raise TableMetadataUpdateError
 
     def add_column(self, table_name: str, column_name: str, column_type: str):
         self.tables_metadata[table_name][column_name] = column_type

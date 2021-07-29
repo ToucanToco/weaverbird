@@ -1,6 +1,9 @@
 import pytest
 
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import apply_condition
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    apply_condition,
+    build_selection_query,
+)
 from weaverbird.pipeline.conditions import (
     BaseCondition,
     ComparisonCondition,
@@ -165,3 +168,14 @@ def test_apply_not_implemented():
 
     with pytest.raises(NotImplementedError):
         apply_condition(FakeCondition(), query='coucou')
+
+
+def test_build_selection_query():
+    assert (
+        build_selection_query({'table1': {'toto': 'tata'}}, 'SELECT_STEP_0')
+        == 'SELECT toto FROM SELECT_STEP_0'
+    )
+
+
+def test_build_selection_query_empty_cols():
+    assert build_selection_query({'table1': {}}, 'SELECT_STEP_0') == 'SELECT  FROM SELECT_STEP_0'
