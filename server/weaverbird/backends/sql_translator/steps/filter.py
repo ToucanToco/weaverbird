@@ -28,5 +28,6 @@ def translate_filter(
             f'''SELECT * FROM {query.query_name} WHERE '''
         )})""",
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        metadata_manager=query.metadata_manager,
     )
     return new_query
