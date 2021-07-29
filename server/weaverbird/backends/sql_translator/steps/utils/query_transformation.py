@@ -1,3 +1,5 @@
+from typing import Dict
+
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     Condition,
@@ -57,3 +59,10 @@ def apply_condition(condition: Condition, query: str) -> str:
     else:
         raise NotImplementedError('Only comparison conditions are implemented')
     return query
+
+
+def build_selection_query(tables_metadata: Dict[str, Dict[str, str]], query_name: str) -> str:
+    # TODO When graphical table selection will be implemented
+    # build the column_string using ', '.join([f'{table}.{c}' for table in tables_metadata for c in tables_metadata[table].keys()])
+    # for now only use the default table name
+    return f"SELECT {', '.join(tables_metadata['table1'].keys())} FROM {query_name}"
