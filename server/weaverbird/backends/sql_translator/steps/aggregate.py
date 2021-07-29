@@ -1,6 +1,7 @@
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
+    SQLQueryDescriber,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import AggregateStep
@@ -11,6 +12,7 @@ def translate_aggregate(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
+    sql_query_describer: SQLQueryDescriber = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     aggregated_cols = []
