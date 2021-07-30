@@ -5,7 +5,7 @@ from os import path
 import pandas as pd
 import pytest
 
-from tests.utils import assert_dataframes_equals
+from server.tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor import execute_pipeline
 from weaverbird.pipeline import Pipeline
 

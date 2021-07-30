@@ -1,0 +1,13 @@
+mysql:
+  image: mysql:latest
+  environment:
+    - MYSQL_DATABASE=mysql_db
+    - MYSQL_ROOT_PASSWORD=test
+    - MYSQL_USER=ubuntu
+    - MYSQL_PASSWORD=ilovetoucan
+    - MYSQL_ROOT_HOST="%".
+  command: --default-authentication-plugin=mysql_native_password
+  ports:
+    - 3306:3306
+  volumes:
+    - ./fixtures/world.sql:/docker-entrypoint-initdb.d/world.sql
