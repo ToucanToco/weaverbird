@@ -1,4 +1,5 @@
 from functools import partial
+from unittest.mock import Mock
 
 import pytest
 
@@ -12,13 +13,22 @@ DOMAINS = {'domain_a': 'SELECT title FROM books'}
 
 
 @pytest.fixture
+def sql_query_describer():
+    return Mock(return_value={'toto': 'int', 'raichu': 'str'})
+
+
+@pytest.fixture
 def pipeline_translator():
-    return partial(translate_pipeline, sql_query_retriever=lambda name: DOMAINS[name])
+    return partial(
+        translate_pipeline,
+        sql_query_retriever=lambda name: DOMAINS[name],
+        sql_query_describer=lambda x: {'title': 'str'},
+    )
 
 
 def test_extract_query(pipeline_translator):
     q, _ = pipeline_translator(Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}]))
-    assert q == 'WITH SELECT_STEP_0 AS (SELECT title FROM books) SELECT * FROM SELECT_STEP_0'
+    assert q == 'WITH SELECT_STEP_0 AS (SELECT title FROM books) SELECT title FROM SELECT_STEP_0'
 
 
 def test_errors(pipeline_translator, mocker):
@@ -79,5 +89,5 @@ def test_translation_pipeline(pipeline_translator, mocker):
     )
     assert (
         query_string
-        == 'WITH SELECT_STEP_0 AS (SELECT title FROM books), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE title IS NULL) SELECT * FROM FILTER_STEP_1'
+        == 'WITH SELECT_STEP_0 AS (SELECT title FROM books), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE title IS NULL) SELECT title FROM FILTER_STEP_1'
     )
