@@ -2,7 +2,7 @@ mysql:
   image: mysql:latest
   environment:
     - MYSQL_DATABASE=mysql_db
-    - MYSQL_ROOT_PASSWORD=test
+    - MYSQL_ROOT_PASSWORD=ilovetoucan
     - MYSQL_USER=ubuntu
     - MYSQL_PASSWORD=ilovetoucan
     - MYSQL_ROOT_HOST="%".
