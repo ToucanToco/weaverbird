@@ -1,9 +1,9 @@
-import json
+# import json
 from glob import glob
 from os import path
 
-import pytest
 import pymysql
+import pytest
 
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
@@ -15,9 +15,7 @@ step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
 @pytest.fixture(scope='module')
 def mysql_server(service_container):
     def check(host_port):
-        conn = pymysql.connect(
-            host='127.0.0.1', port=3306, user='ubuntu', password='ilovetoucan'
-        )
+        conn = pymysql.connect(host='127.0.0.1', port=3306, user='ubuntu', password='ilovetoucan')
         cur = conn.cursor()
         cur.execute('SELECT 1;')
         cur.close()
@@ -70,9 +68,9 @@ for x in step_cases_files:
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, mysql_connector):
-    spec_file = open(case_spec_file_path, 'r')
-    spec = json.loads(spec_file.read())
-    spec_file.close()
+    # spec_file = open(case_spec_file_path, 'r')
+    # spec = json.loads(spec_file.read())
+    # spec_file.close()
 
     # test = json.dumps(spec['input'])
     # pipeline = Pipeline(steps=[{'name': 'domain', 'domain': 'in'}, spec['step']])
