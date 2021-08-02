@@ -354,6 +354,7 @@ export default class DataViewer extends Vue {
   cursor: pointer;
   font-weight: bold;
   padding: 6px 8px;
+  padding-right: 23px;
 }
 
 .data-viewer__header-cell--active {
@@ -375,9 +376,6 @@ export default class DataViewer extends Vue {
 }
 
 .data-viewer__header-cell--disabled {
-  .data-viewer__header-label {
-    white-space: nowrap;
-  }
   .data-viewer__header-icon {
     pointer-events: none;
   }
@@ -389,7 +387,7 @@ export default class DataViewer extends Vue {
   text-overflow: ellipsis;
   max-width: calc(100% - 40px);
   overflow: hidden;
-  padding-right: 23px;
+  white-space: nowrap;
 }
 
 .data-viewer__header-icon {
