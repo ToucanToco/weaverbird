@@ -51,6 +51,7 @@ describe('Resizable directive', () => {
         update: jest.spyOn(ResizableTable.prototype, 'update'),
         updateCols: jest.spyOn(ResizableTable.prototype, 'updateCols'),
         updateRows: jest.spyOn(ResizableTable.prototype, 'updateRows'),
+        adaptWidthToContent: jest.spyOn(ResizableTable.prototype, 'adaptWidthToContent'),
       };
       wrapper = shallowMount(FakeTableComponent, { attachToDocument: true });
       handler = wrapper.findAll(defaultHandlerClass).at(0);
@@ -60,6 +61,10 @@ describe('Resizable directive', () => {
       wrapper.findAll('th').wrappers.map((col: Wrapper<any>) => {
         expect(col.element.style.minWidth).not.toBeUndefined();
       });
+    });
+
+    it('should adapt min-width for cols with very long label', () => {
+      expect(ResizableTableStub.adaptWidthToContent).toHaveBeenCalledTimes(3);
     });
 
     it('should add handlers to cols', () => {
