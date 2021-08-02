@@ -12,6 +12,8 @@ export const DEFAULT_OPTIONS: ResizableTableOptions = {
     handler: 'table__handler',
   },
   columns: [],
+  charsPerCol: 7.5,
+  maxCharsPerCol: 20,
 };
 
 export interface ResizableTableOptions {
@@ -20,6 +22,8 @@ export interface ResizableTableOptions {
     handler: string; // class applied to col handler
   };
   columns: string[] | number[]; // the columns associated to cols handlers
+  charsPerCol: number; // The actual number of chars displayed per col
+  maxCharsPerCol: number; // The max number of chars to display per col
 }
 
 export default class ResizableTable {
@@ -73,8 +77,16 @@ export default class ResizableTable {
   }
 
   // Add some more px to display chars if some are cropped
-  adaptWidthToContent(colElement: HTMLElement): number {
-    return colElement.offsetWidth;
+  adaptWidthToContent(colElement: HTMLElement, index: number): number {
+    const contentChars = this.options.columns[index].toString().length;
+    if (contentChars <= this.options.charsPerCol) return colElement.offsetWidth;
+    // Find the pixel width for a char based on content width and actual chars per col
+    const pixelPerChar = colElement.offsetWidth / this.options.charsPerCol;
+    // Calculate needed width for col based on chars in content
+    const contentWidth = pixelPerChar * contentChars;
+    // Calculate max available width for col based on max chars per col
+    const maxWidth = pixelPerChar * this.options.maxCharsPerCol;
+    return Math.ceil(contentWidth < maxWidth ? contentWidth : maxWidth);
   }
 
   // Get ths of current table in DOM
@@ -85,10 +97,11 @@ export default class ResizableTable {
   // apply default style and add handler to each DOM col
   setColHandlers(): void {
     this.destroy(); // remove all previous handlers before adding new ones
+    let index = 0;
     for (const col of this.cols) {
       const colElement = col as HTMLElement;
       // Retrieve the adapted width depending on content length (in characters)
-      const colWidth = this.adaptWidthToContent(colElement);
+      const colWidth = this.adaptWidthToContent(colElement, index);
       // there is sometimes an issue with small table that is solved by adding width to col (otherwise min-width is not set correctly)
       colElement.style.width = `${colWidth}px`;
       // minWidth override maxWidth css property so we use it to expand table and cols without having to touch to table width
@@ -103,6 +116,7 @@ export default class ResizableTable {
       // add the handler to referent DOM col
       col.appendChild(colHandler.render());
       this.colHandlers.push(colHandler);
+      index++;
     }
   }
 
