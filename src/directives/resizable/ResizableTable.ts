@@ -78,6 +78,12 @@ export default class ResizableTable {
     this.setColHandlers();
   }
 
+  // Get ths of current table in DOM
+  getCols(table: HTMLElement): HTMLCollection {
+    const rows: HTMLCollection = table.getElementsByTagName('tr');
+    return rows[0].children;
+  }
+
   // Add some more px to display chars if some are cropped
   adaptWidthToContent(colElement: HTMLElement, index: number): number {
     const contentChars = this.options.columns[index].toString().length;
@@ -100,11 +106,6 @@ export default class ResizableTable {
     return padding + Math.ceil(contentWidth < maxWidth ? contentWidth : maxWidth);
   }
 
-  // Get ths of current table in DOM
-  getCols(table: HTMLElement): HTMLCollection {
-    const rows: HTMLCollection = table.getElementsByTagName('tr');
-    return rows[0].children;
-  }
   // apply default style and add handler to each DOM col
   setColHandlers(): void {
     this.destroy(); // remove all previous handlers before adding new ones
