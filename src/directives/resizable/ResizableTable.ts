@@ -14,6 +14,7 @@ export const DEFAULT_OPTIONS: ResizableTableOptions = {
   columns: [],
   charsPerCol: 7.5,
   maxCharsPerCol: 20,
+  labelClass: '',
 };
 
 export interface ResizableTableOptions {
@@ -24,6 +25,7 @@ export interface ResizableTableOptions {
   columns: string[] | number[]; // the columns associated to cols handlers
   charsPerCol: number; // The actual number of chars displayed per col
   maxCharsPerCol: number; // The max number of chars to display per col
+  labelClass: string; // class to select label in col
 }
 
 export default class ResizableTable {
@@ -79,14 +81,23 @@ export default class ResizableTable {
   // Add some more px to display chars if some are cropped
   adaptWidthToContent(colElement: HTMLElement, index: number): number {
     const contentChars = this.options.columns[index].toString().length;
-    if (contentChars <= this.options.charsPerCol) return colElement.offsetWidth;
-    // Find the pixel width for a char based on content width and actual chars per col
-    const pixelPerChar = colElement.offsetWidth / this.options.charsPerCol;
+    if (!this.options.labelClass || contentChars <= this.options.charsPerCol)
+      return colElement.offsetWidth;
+
+    // Retrieve the label DOM element
+    const labelElement = colElement.getElementsByClassName(
+      this.options.labelClass,
+    )[0] as HTMLElement;
+    if (!labelElement) return colElement.offsetWidth;
+    // Find the padding width in total col width
+    const padding = colElement.offsetWidth - labelElement.offsetWidth;
+    // Find the pixel width for a char based on label width and actual chars per col
+    const pixelPerChar = labelElement.offsetWidth / this.options.charsPerCol;
     // Calculate needed width for col based on chars in content
     const contentWidth = pixelPerChar * contentChars;
     // Calculate max available width for col based on max chars per col
     const maxWidth = pixelPerChar * this.options.maxCharsPerCol;
-    return Math.ceil(contentWidth < maxWidth ? contentWidth : maxWidth);
+    return padding + Math.ceil(contentWidth < maxWidth ? contentWidth : maxWidth);
   }
 
   // Get ths of current table in DOM
