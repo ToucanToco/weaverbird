@@ -13,7 +13,7 @@
           data-cy="weaverbird-data-viewer-table"
           v-resizable="{
             columns: columnNames,
-            labelClass: 'data-viewer__header-label',
+            labelTargetClass: 'data-viewer__header-label',
             classes: {
               table: 'data-viewer-table--resizable',
               handler: 'data-viewer__header-cell--resizable',

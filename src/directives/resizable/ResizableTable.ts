@@ -12,9 +12,9 @@ export const DEFAULT_OPTIONS: ResizableTableOptions = {
     handler: 'table__handler',
   },
   columns: [],
-  charsPerCol: 7.5,
+  firstDisplayCharsPerCol: 7.5,
   maxCharsPerCol: 20,
-  labelClass: '',
+  labelTargetClass: '',
 };
 
 export interface ResizableTableOptions {
@@ -23,9 +23,9 @@ export interface ResizableTableOptions {
     handler: string; // class applied to col handler
   };
   columns: string[] | number[]; // the columns associated to cols handlers
-  charsPerCol: number; // The actual number of chars displayed per col
+  firstDisplayCharsPerCol: number; // The number of chars per col display on first render
   maxCharsPerCol: number; // The max number of chars to display per col
-  labelClass: string; // class to select label in col
+  labelTargetClass: string; // DOM class to select label in col
 }
 
 export default class ResizableTable {
@@ -87,23 +87,23 @@ export default class ResizableTable {
   // Add some more px to display chars if some are cropped
   adaptWidthToContent(colElement: HTMLElement, index: number): number {
     const contentChars = this.options.columns[index].toString().length;
-    if (!this.options.labelClass || contentChars <= this.options.charsPerCol)
+    if (!this.options.labelTargetClass || contentChars <= this.options.firstDisplayCharsPerCol)
       return colElement.offsetWidth;
 
     // Retrieve the label DOM element
     const labelElement = colElement.getElementsByClassName(
-      this.options.labelClass,
+      this.options.labelTargetClass,
     )[0] as HTMLElement;
     if (!labelElement) return colElement.offsetWidth;
     // Find the padding width in total col width
     const padding = colElement.offsetWidth - labelElement.offsetWidth;
     // Find the pixel width for a char based on label width and actual chars per col
-    const pixelPerChar = labelElement.offsetWidth / this.options.charsPerCol;
+    const pixelPerChar = labelElement.offsetWidth / this.options.firstDisplayCharsPerCol;
     // Calculate needed width for col based on chars in content
     const contentWidth = pixelPerChar * contentChars;
     // Calculate max available width for col based on max chars per col
     const maxWidth = pixelPerChar * this.options.maxCharsPerCol;
-    return padding + Math.ceil(contentWidth < maxWidth ? contentWidth : maxWidth);
+    return padding + Math.ceil(Math.min(contentWidth, maxWidth));
   }
 
   // apply default style and add handler to each DOM col
