@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.54.0] - 2021-08-09
+
+### Changed
+- Resizable: display a min characters quantity per col using options
+
 ## [0.53.1] - 2021-07-21
 
 ### Fixed
@@ -813,6 +818,7 @@
 ### Added
 
 - Initial version, showtime!
+[0.54.0]: https://github.com/ToucanToco/weaverbird/compare/v0.53.1...v0.54.0
 [0.53.1]: https://github.com/ToucanToco/weaverbird/compare/v0.53.0...v0.53.1
 [0.53.0]: https://github.com/ToucanToco/weaverbird/compare/v0.52.0...v0.53.0
 [0.52.0]: https://github.com/ToucanToco/weaverbird/compare/v0.51.0...v0.52.0
