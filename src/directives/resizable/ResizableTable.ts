@@ -85,7 +85,7 @@ export default class ResizableTable {
   }
 
   // Add some more px to display chars if some are cropped
-  adaptWidthToContent(colElement: HTMLElement, index: number): number {
+  /* istanbul ignore next */ adaptWidthToContent(colElement: HTMLElement, index: number): number {
     const contentChars = this.options.columns[index].toString().length;
     if (!this.options.labelTargetClass || contentChars <= this.options.firstDisplayCharsPerCol)
       return colElement.offsetWidth;
