@@ -47,7 +47,7 @@ describe('Variable List', () => {
             value: 'New York',
           },
         ],
-        selectedVariables: ['appRequesters.city'],
+        selectedVariables: 'appRequesters.city',
       },
     });
   });
@@ -82,7 +82,7 @@ describe('Variable List', () => {
       identifier: 'appRequesters.view',
       value: 'Product 123',
       togglable: false,
-      selectedVariables: ['appRequesters.city'],
+      selectedVariables: 'appRequesters.city',
     });
   });
 
@@ -105,8 +105,36 @@ describe('Variable List', () => {
         selectedVariables: ['appRequesters.date.month', 'appRequesters.date.year'],
       });
     });
-    it('should pass togglable to variable list option', () => {
-      expect(wrapper.find('VariableListOption-stub').props().togglable).toBe(true);
+
+    it('should pass right data to option', () => {
+      const option = wrapper.find('VariableListOption-stub');
+      expect(option.props()).toStrictEqual({
+        label: 'view',
+        identifier: 'appRequesters.view',
+        value: 'Product 123',
+        togglable: true,
+        selectedVariables: ['appRequesters.date.month', 'appRequesters.date.year'],
+      });
+    });
+
+    describe('when choosing a variable', () => {
+      it('should add the value to the list ...', async () => {
+        wrapper.find('VariableListOption-stub').vm.$emit('input', 'appRequesters.view');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0][0]).toEqual([
+          'appRequesters.date.month',
+          'appRequesters.date.year',
+          'appRequesters.view',
+        ]);
+      });
+
+      it('... or remove it if already in', async () => {
+        wrapper.find('VariableListOption-stub').vm.$emit('input', 'appRequesters.date.month');
+        await wrapper.vm.$nextTick();
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0][0]).toEqual(['appRequesters.date.year']);
+      });
     });
   });
 });

@@ -15,7 +15,7 @@
         :identifier="availableVariable.identifier"
         :label="availableVariable.label"
         :togglable="isMultiple"
-        :selectedVariables="selectedVariables"
+        :selectedVariables="value"
         @input="chooseVariable"
       />
     </div>
@@ -39,11 +39,23 @@ export default class VariableChooser extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
-  @Prop({ default: () => [] })
-  selectedVariables!: string[];
+  @Prop({ default: () => '' })
+  selectedVariables!: string | string[];
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  // Make sure that passed type for selected variables, fit isMultiple mode
+  get value(): string | string[] {
+    const isSelectedVariableArrayType = Array.isArray(this.selectedVariables);
+    if (this.isMultiple) {
+      // If isMultiple is selected value must be an array of string
+      return isSelectedVariableArrayType ? this.selectedVariables : [];
+    } else {
+      // If isMultiple is not selected value must be a string
+      return !isSelectedVariableArrayType ? this.selectedVariables : '';
+    }
+  }
 
   /**
    * Group variables by category to easily choose among them
@@ -67,10 +79,24 @@ export default class VariableChooser extends Vue {
   }
 
   /**
+   * Toggle value in array if necessary
+   */
+  toggleVariable(variableIdentifier: string): string[] | string {
+    if (!Array.isArray(this.value)) return variableIdentifier;
+
+    if (this.value.indexOf(variableIdentifier) !== -1) {
+      return this.value.filter(v => v !== variableIdentifier);
+    } else {
+      return [...this.value, variableIdentifier];
+    }
+  }
+
+  /**
    * Emit the choosen variable
    */
   chooseVariable(variableIdentifier: string) {
-    this.$emit('input', variableIdentifier);
+    const value = this.toggleVariable(variableIdentifier);
+    this.$emit('input', value);
   }
 }
 </script>
