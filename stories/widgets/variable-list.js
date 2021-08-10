@@ -41,9 +41,9 @@ stories.add('simple', () => ({
     <div>
       <VariableList 
         :available-variables="availableVariables" 
-        :selectedVariables="selectedVariables"
+        :selectedVariables="value"
         @input="input"/>
-      <pre>{{ selectedVariables }}</pre>
+      <pre>{{ value }}</pre>
     </div>
   `,
 
@@ -54,12 +54,12 @@ stories.add('simple', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      selectedVariables: [],
+      value: '',
     };
   },
   methods: {
     input(value) {
-      this.selectedVariables = [value];
+      this.value = value;
     },
   },
 }));
@@ -69,9 +69,9 @@ stories.add('selected', () => ({
     <div>
       <VariableList 
         :available-variables="availableVariables"
-        :selectedVariables="selectedVariables"
+        :selectedVariables="value"
         @input="input"/>
-      <pre>{{ selectedVariables }}</pre>
+      <pre>{{ value }}</pre>
     </div>
   `,
 
@@ -82,12 +82,12 @@ stories.add('selected', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      selectedVariables: ['requestersManager.country'],
+      value: 'requestersManager.country',
     };
   },
   methods: {
     input(value) {
-      this.selectedVariables = [value];
+      this.value = value;
     },
   },
 }));
@@ -97,10 +97,10 @@ stories.add('multiple', () => ({
     <div>
       <VariableList 
         :available-variables="availableVariables"
-        :selectedVariables="selectedVariables"
+        :selectedVariables="value"
         :isMultiple="true"
         @input="input"/>
-      <pre>{{ selectedVariables }}</pre>
+      <pre>{{ value }}</pre>
     </div>
   `,
 
@@ -111,17 +111,12 @@ stories.add('multiple', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      selectedVariables: [],
+      value: [],
     };
   },
   methods: {
     input(value) {
-      // toggle logic is handle by parent
-      if (this.selectedVariables.indexOf(value) !== -1) {
-        this.selectedVariables = this.selectedVariables.filter(v => v !== value);
-      } else {
-        this.selectedVariables = [...this.selectedVariables, value];
-      }
+      this.value = value;
     },
   },
 }));
