@@ -42,11 +42,16 @@ describe('Variable Input', () => {
             value: 'New York',
           },
         ],
+        value: '{{ appRequesters.city }}',
       },
       slots: {
         default: '<input type="text"/>',
       },
     });
+  });
+
+  afterEach(() => {
+    wrapper.destroy();
   });
 
   it('should instantiate', () => {
@@ -59,6 +64,28 @@ describe('Variable Input', () => {
 
   it('should contain the advanced variable modal', () => {
     expect(wrapper.find('AdvancedVariableModal-stub').exists()).toBe(true);
+  });
+
+  it('should pass selectedVariable without delimiters to variable chooser', () => {
+    expect(wrapper.find('VariableChooser-stub').props().selectedVariables).toStrictEqual(
+      'appRequesters.city',
+    );
+  });
+
+  describe('with multiple selected variables', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        value: ['{{ appRequesters.city }}', '{{ appRequesters.country }}'],
+      });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should pass selectedVariables without delimiters to variable chooser', () => {
+      expect(wrapper.find('VariableChooser-stub').props().selectedVariables).toStrictEqual([
+        'appRequesters.city',
+        'appRequesters.country',
+      ]);
+    });
   });
 
   describe('the variable (x) button', () => {
