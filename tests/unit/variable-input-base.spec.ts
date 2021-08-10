@@ -187,8 +187,7 @@ describe('Variable Input', () => {
         it('should emit a new values with the chosen variables', () => {
           expect(wrapper.emitted('input')).toHaveLength(1);
           expect(wrapper.emitted('input')[0]).toEqual([
-            '{{ appRequesters.view }}',
-            '{{ appRequesters.city }}',
+            ['{{ appRequesters.view }}', '{{ appRequesters.city }}'],
           ]);
         });
       });
