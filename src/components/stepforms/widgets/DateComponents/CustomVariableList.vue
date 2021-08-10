@@ -25,7 +25,7 @@ import { VariablesBucket } from '@/lib/variables';
  * This component list all the available variables to use as value in DateInputs
  */
 @Component({
-  name: 'variable-chooser',
+  name: 'custom-variable-list',
   components: { VariableList, VariableListOption },
 })
 export default class CustomVariableList extends Vue {

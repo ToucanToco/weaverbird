@@ -35,7 +35,7 @@ import VariableListOption from './VariableListOption.vue';
   name: 'variable-list',
   components: { VariableListOption },
 })
-export default class VariableChooser extends Vue {
+export default class VariableList extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
