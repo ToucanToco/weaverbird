@@ -1,5 +1,4 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
-import { VTooltip } from 'v-tooltip';
 
 import VariableList from '@/components/stepforms/widgets/VariableInputs/VariableList.vue';
 
@@ -9,9 +8,6 @@ describe('Variable List', () => {
   beforeEach(() => {
     wrapper = shallowMount(VariableList, {
       sync: false,
-      directives: {
-        tooltip: VTooltip,
-      },
       propsData: {
         availableVariables: [
           {
@@ -75,58 +71,24 @@ describe('Variable List', () => {
         .find('.widget-variable-list__section-title')
         .text(),
     ).toEqual('Story variables');
-    const varsFromFirstSection = sections.at(0).findAll('.widget-variable-list__option');
+    const varsFromFirstSection = sections.at(0).findAll('VariableListOption-stub');
     expect(varsFromFirstSection).toHaveLength(4);
   });
 
-  it('should display variables current values along their names', () => {
-    wrapper.findAll('.widget-variable-list__option').wrappers.forEach(w => {
-      expect(w.find('.widget-variable-list__option-name').text()).not.toBe('');
-      expect(w.find('.widget-variable-list__option-value').text()).not.toBe('');
-    });
-  });
-
-  it('should display dates values in UTC timezone', () => {
-    expect(
-      wrapper
-        .findAll('.widget-variable-list__option')
-        .at(3)
-        .find('.widget-variable-list__option-value')
-        .text(),
-    ).toStrictEqual('Fri, 11 Jun 2021 08:09:17 GMT');
-  });
-
-  it('should highlight selected option', () => {
-    expect(
-      wrapper
-        .find('.widget-variable-list__option--selected')
-        .find('.widget-variable-list__option-value')
-        .text(),
-    ).toEqual('New York');
-  });
-
-  describe('tooltip', () => {
-    it('should display a value tooltip for each variable', () => {
-      wrapper.findAll('.widget-variable-list__option').wrappers.forEach(w => {
-        expect(w.classes()).toContain('has-weaverbird__tooltip');
-      });
-    });
-
-    it('should display readable value in tooltip', () => {
-      expect((wrapper.vm as any).makeValueReadable([])).toStrictEqual('[]');
-      expect((wrapper.vm as any).makeValueReadable([1, 2])).toStrictEqual('[1,2]');
-      expect((wrapper.vm as any).makeValueReadable(1)).toStrictEqual('1');
-      expect((wrapper.vm as any).makeValueReadable('1')).toStrictEqual('"1"');
-      expect((wrapper.vm as any).makeValueReadable(undefined)).toStrictEqual(undefined);
-      expect((wrapper.vm as any).makeValueReadable(new Date(1623398957013))).toStrictEqual(
-        `"${new Date(1623398957013).toUTCString()}"`,
-      );
+  it('should pass right data to option', () => {
+    const option = wrapper.find('VariableListOption-stub');
+    expect(option.props()).toStrictEqual({
+      label: 'view',
+      identifier: 'appRequesters.view',
+      value: 'Product 123',
+      togglable: false,
+      selectedVariables: ['appRequesters.city'],
     });
   });
 
   describe('when choosing a variable', () => {
     beforeEach(async () => {
-      wrapper.find('.widget-variable-list__option').trigger('click');
+      wrapper.find('VariableListOption-stub').vm.$emit('input', 'appRequesters.view');
       await wrapper.vm.$nextTick();
     });
 
@@ -143,13 +105,8 @@ describe('Variable List', () => {
         selectedVariables: ['appRequesters.date.month', 'appRequesters.date.year'],
       });
     });
-
-    it('should display checkboxes before options', () => {
-      expect(wrapper.findAll('.widget-variable-list__option-toggle').length).toBe(6);
-    });
-
-    it('should highlight selected options', () => {
-      expect(wrapper.findAll('.widget-variable-list__option--selected').length).toBe(2);
+    it('should pass togglable to variable list option', () => {
+      expect(wrapper.find('VariableListOption-stub').props().togglable).toBe(true);
     });
   });
 });
