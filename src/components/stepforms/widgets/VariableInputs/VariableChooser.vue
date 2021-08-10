@@ -39,8 +39,8 @@ export default class VariableChooser extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
-  @Prop({ default: () => [] })
-  selectedVariables!: string[];
+  @Prop({ default: () => '' })
+  selectedVariables!: string | string[];
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
@@ -55,10 +55,10 @@ export default class VariableChooser extends Vue {
   }
 
   /**
-   * Emit the choosen variable
+   * Emit the choosen variable(s)
    */
-  chooseVariable(variableIdentifier: string) {
-    this.$emit('input', variableIdentifier);
+  chooseVariable(selectedVariables: string | string[]) {
+    this.$emit('input', selectedVariables);
   }
 
   addAdvancedVariable() {
