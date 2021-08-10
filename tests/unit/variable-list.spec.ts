@@ -137,4 +137,33 @@ describe('Variable List', () => {
       });
     });
   });
+
+  describe('adapt value to multiple mode', () => {
+    const ArrayValue = ['a', 'b'];
+    const StringValue = 'a';
+    it('should keep initial value if value is an array in multiple mode', async () => {
+      wrapper.setProps({ selectedVariables: ArrayValue, isMultiple: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableListOption-stub').props().selectedVariables).toStrictEqual(
+        ArrayValue,
+      );
+    });
+    it('should use empty array if value is a string in multiple mode', async () => {
+      wrapper.setProps({ selectedVariables: StringValue, isMultiple: true });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableListOption-stub').props().selectedVariables).toStrictEqual([]);
+    });
+    it('should keep initial value if value is a string not in multiple mode', async () => {
+      wrapper.setProps({ selectedVariables: StringValue, isMultiple: false });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableListOption-stub').props().selectedVariables).toStrictEqual(
+        StringValue,
+      );
+    });
+    it('should use empty string if value is an array not in multiple mode', async () => {
+      wrapper.setProps({ selectedVariables: ArrayValue, isMultiple: false });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('VariableListOption-stub').props().selectedVariables).toStrictEqual('');
+    });
+  });
 });

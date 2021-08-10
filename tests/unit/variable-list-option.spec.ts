@@ -82,6 +82,18 @@ describe('Variable List option', () => {
     });
   });
 
+  describe('when option is selected (with multiple variables)', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        selectedVariables: ['appRequesters.city'],
+      });
+      await wrapper.vm.$nextTick();
+    });
+    it('should highlight option', () => {
+      expect(wrapper.find('.widget-variable-option--selected').exists()).toBe(true);
+    });
+  });
+
   describe('tooltip', () => {
     [
       { type: 'array', value: [1, 2], attendedValue: '[1,2]' },

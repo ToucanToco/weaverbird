@@ -174,12 +174,22 @@ describe('Variable Input', () => {
       describe('when choosing a variable on multiple mode', () => {
         beforeEach(async () => {
           wrapper.setProps({ isMultiple: true });
-          wrapper.find('VariableChooser-stub').vm.$emit('input', 'appRequesters.view');
+          wrapper
+            .find('VariableChooser-stub')
+            .vm.$emit('input', ['appRequesters.view', 'appRequesters.city']);
           await wrapper.vm.$nextTick();
         });
 
         it('should keep the variable chooser open', () => {
           expect(wrapper.find('VariableChooser-stub').props().isOpened).toBe(true);
+        });
+
+        it('should emit a new values with the chosen variables', () => {
+          expect(wrapper.emitted('input')).toHaveLength(1);
+          expect(wrapper.emitted('input')[0]).toEqual([
+            '{{ appRequesters.view }}',
+            '{{ appRequesters.city }}',
+          ]);
         });
       });
 
