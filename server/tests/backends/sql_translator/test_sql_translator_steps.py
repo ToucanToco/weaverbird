@@ -9,7 +9,7 @@ from docker.models.images import Image
 import docker
 
 import pymysql
-pymysql.install_as_MySQLdb()
+from pymysql.err import OperationalError
 from sqlalchemy import create_engine
 import pytest
 
@@ -19,6 +19,8 @@ from server.tests.utils import assert_dataframes_equals
 
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
+
+pymysql.install_as_MySQLdb()
 
 image = {
     'name': 'mysql_weaverbird_test',
@@ -82,10 +84,11 @@ def toto():
         try:
             if docker_container.status == 'created' and get_connection():
                 ready = True
-        except:
+        except OperationalError:
             pass
     yield docker_container
     docker_container.stop()
+
 
 # Update this method to use snowflake connection
 def get_connection():
