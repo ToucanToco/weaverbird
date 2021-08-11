@@ -36,7 +36,7 @@ def translate_rename(
 ) -> SQLQuery:
     query_name = f'RENAME_STEP_{index}'
 
-    log.info(
+    log.debug(
         "############################################################"
         f"query_name: {query_name}\n"
         "------------------------------------------------------------"
@@ -61,7 +61,7 @@ def translate_rename(
         metadata_manager=query.metadata_manager,
     )
 
-    log.info(
+    log.debug(
         "------------------------------------------------------------"
         f"SQLquery: {new_query.transformed_query}"
         "############################################################"
