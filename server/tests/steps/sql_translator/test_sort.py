@@ -25,7 +25,7 @@ def test_translate_sort(query):
             ColumnSort(column='toto', order='asc'),
             ColumnSort(column='raichu', order='desc'),
             ColumnSort(column='florizarre', order='asc'),
-        ]
+        ],
     )
     query = translate_sort(
         step,
