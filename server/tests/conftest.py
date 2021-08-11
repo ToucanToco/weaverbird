@@ -1,138 +1,104 @@
-import socket
+import logging
 import time
-from contextlib import suppress
-from os import environ, path
+from typing import List
+import docker
+import pymysql
+from docker.models.images import Image
 
-import pytest
-import yaml
-from docker import APIClient
-from docker.tls import TLSConfig
-from slugify import slugify
-
-
-def pytest_addoption(parser):
-    parser.addoption('--pull', action='store_true', default=False, help='Pull docker images')
-
-
-@pytest.fixture(scope='session')
-def docker_pull(request):
-    return request.config.getoption('--pull')
+image = {
+    'name': 'mysql_weaverbird_test',
+    'image': 'mysql',
+    'version': '5.7.21'
+}
+image_name = 'mysql:5.7.21'
+docker_client = docker.from_env()
+docker_container = None
 
 
-@pytest.fixture(scope='session')
-def docker():
-    docker_kwargs = {'version': 'auto'}
-    if 'DOCKER_HOST' in environ:
-        docker_kwargs['base_url'] = environ['DOCKER_HOST']
-    if environ.get('DOCKER_TLS_VERIFY', 0) == '1':
-        docker_kwargs['tls'] = TLSConfig(
-            (f"{environ['DOCKER_CERT_PATH']}/cert.pem", f"{environ['DOCKER_CERT_PATH']}/key.pem")
-        )
-    return APIClient(**docker_kwargs)
+def pytest_configure(config):
+    """
+    Allows plugins and conftest files to perform initial configuration.
+    This hook is called for every plugin and initial conftest
+    file after command line options have been parsed.
+    """
+    print('')
+    print('pytest_configure')
 
 
-@pytest.fixture(scope='session')
-def unused_port():
-    def f():
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.bind(('127.0.0.1', 0))
-            return s.getsockname()[1]
-
-    return f
-
-
-def wait_for_container(checker_callable, host_port, image, skip_exception=None, timeout=60):
-    skip_exception = skip_exception or Exception
-    for i in range(timeout):
-        try:
-            checker_callable(host_port)
-            break
-        except skip_exception as e:
-            print(f'Waiting for image to start...(last exception: {e})')
-            time.sleep(1)
-    else:
-        pytest.fail(f'Cannot start {image} server')
-
-
-@pytest.fixture(scope='module')
-def container_starter(request, docker, docker_pull):
-    def f(
-        image,
-        internal_port,
-        host_port,
-        env=None,
-        volumes=None,
-        command=None,
-        checker_callable=None,
-        skip_exception=None,
-        timeout=None,
-    ):
-
-        if docker_pull:
-            print(f'Pulling {image} image')
-            docker.pull(image)
-
-        host_config = docker.create_host_config(
-            port_bindings={internal_port: host_port}, binds=volumes
-        )
-
-        if volumes is not None:
-            volumes = [vol.split(':')[1] for vol in volumes]
-
-        container_name = '-'.join(['toucan', slugify(image), 'server'])
-        print(f'Creating {container_name} on port {host_port}')
-        container = docker.create_container(
-            image=image,
-            name=container_name,
-            ports=[internal_port],
-            detach=True,
-            environment=env,
-            volumes=volumes,
-            command=command,
-            host_config=host_config,
-        )
-
-        print(f'Starting {container_name}')
-        docker.start(container=container['Id'])
-
-        def fin():
-            print(f'Stopping {container_name}')
-            docker.kill(container=container['Id'])
-            print(f'Killing {container_name}')
-            with suppress(Exception):
-                docker.remove_container(container['Id'], v=True)
-
-        request.addfinalizer(fin)
-        container['port'] = host_port
-
-        if checker_callable is not None:
-            wait_for_container(checker_callable, host_port, image, skip_exception, timeout)
-        return container
-
-    return f
-
-
-@pytest.fixture(scope='module')
-def service_container(unused_port, container_starter):
-    def f(service_name, checker_callable=None, skip_exception=None, timeout=60):
-        with open(f'{path.dirname(__file__)}/docker-compose.yml') as docker_comppse_yml:
-            docker_conf = yaml.load(docker_comppse_yml)
-        service_conf = docker_conf[service_name]
-        volumes = service_conf.get('volumes')
-        if volumes is not None:
-            volumes = [path.join(path.dirname(__file__), vol) for vol in volumes]
-        params = {
-            'image': service_conf['image'],
-            'internal_port': service_conf['ports'][0].split(':')[0],
-            'host_port': unused_port(),
-            'env': service_conf.get('environment'),
-            'volumes': volumes,
-            'command': service_conf.get('command'),
-            'timeout': timeout,
-            'checker_callable': checker_callable,
-            'skip_exception': skip_exception,
+def check_mysql_connection():
+    ready = False
+    while not ready:
+        time.sleep(1)
+        con_params = {
+            'host': '127.0.0.1',
+            'user': 'ubuntu',
+            'password': 'ilovetoucan',
+            'port': 3306,
+            'database': 'mysql_db',
+            'connect_timeout': 1000,
+            'read_timeout': 28800,
+            'write_timeout': 28800,
+            'ssl_disabled': True
         }
+        try:
+            pymysql.connect(**con_params)
+            ready = True
+            return True
+        except:
+            pass
 
-        return container_starter(**params)
 
-    return f
+def pytest_sessionstart(session):
+    """
+    Called after the Session object has been created and
+    before performing collection and entering the run test loop.
+    """
+    print('pytest_sessionstart')
+    images: List[Image] = docker_client.images.list()
+    found = False
+    for i in images:
+        if i.tags[0] == f'{image["image"]}:{image["version"]}':
+            found = True
+    if not found:
+        logging.getLogger(__name__).info(f'Download docker image {image["image"]}:{image["version"]}')
+        docker_client.images.pull('mysql:5.7.21')
+
+    logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
+    global docker_container
+    docker_container = docker_client.containers.run(
+        image=f'{image["image"]}:{image["version"]}',
+        name=f'{image["name"]}',
+        auto_remove=True,
+        detach=True,
+        environment={
+            'MYSQL_DATABASE': 'mysql_db',
+            'MYSQL_ROOT_PASSWORD': 'ilovetoucan',
+            'MYSQL_USER': 'ubuntu',
+            'MYSQL_PASSWORD': 'ilovetoucan',
+            'MYSQL_ROOT_HOST': '%'
+        },
+        ports={'3306': '3306'},
+    )
+    ready = False
+    while not ready:
+        if docker_container.status == 'created' and check_mysql_connection():
+            ready = True
+        time.sleep(1)
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """
+    Called after whole test run finished, right before
+    returning the exit status to the system.
+    """
+    print('pytest_sessionfinish')
+
+
+def pytest_unconfigure(config):
+    """
+    called before test process is exited.
+    """
+    print('pytest_unconfigure')
+    global docker_container
+    logging.getLogger(__name__).info(f'Stop docker image {docker_container.name}')
+    docker_container.stop()

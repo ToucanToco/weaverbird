@@ -22,6 +22,8 @@ Flask = "^1.1.2"
 pytest-mock = "^3.3.1"
 toucan-connectors = ">0" #required so we can use nosql_apply_parameters_to_query during tests
 pytest-benchmark = "^3.4.1"
+docker = "5.0.0"
+sqlalchemy = '1.4.22'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

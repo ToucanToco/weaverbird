@@ -3,304 +3,103 @@
     "name": "equal",
     "pipeline": [
       {
-        "name": "domain",
-        "domain": "SELECT * FROM mysql_db.City"
-      },
-      {
         "name": "filter",
         "condition": {
-          "column": "CountryCode",
+          "column": "name",
           "operator": "eq",
-          "value": "FRA"
+          "value": "foo"
         }
       }
     ]
   },
-  "output": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM mysql_db.City), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE CountryCode = 'FRA') SELECT ID, Name, CountryCode, District, Population FROM FILTER_STEP_1",
-      "result": [
+  "input": {
+    "schema": {
+      "fields": [
         {
-          "ID": 2974,
-          "Name": "Paris",
-          "CountryCode": "FRA",
-          "District": "ï¿½le-de-France",
-          "Population": 2125246
+          "name": "name",
+          "type": "string"
         },
         {
-          "ID": 2975,
-          "Name": "Marseille",
-          "CountryCode": "FRA",
-          "District": "Provence-Alpes-Cï¿½t",
-          "Population": 798430
+          "name": "age",
+          "type": "integer"
         },
         {
-          "ID": 2976,
-          "Name": "Lyon",
-          "CountryCode": "FRA",
-          "District": "Rhï¿½ne-Alpes",
-          "Population": 445452
-        },
+          "name": "score",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "name": "foo",
+        "age": 42,
+        "score": 100
+      },
+      {
+        "name": "bar",
+        "age": 43,
+        "score": 200
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "score",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
         {
-          "ID": 2977,
-          "Name": "Toulouse",
-          "CountryCode": "FRA",
-          "District": "Midi-Pyrï¿½nï¿½es",
-          "Population": 390350
-        },
-        {
-          "ID": 2978,
-          "Name": "Nice",
-          "CountryCode": "FRA",
-          "District": "Provence-Alpes-Cï¿½t",
-          "Population": 342738
-        },
-        {
-          "ID": 2979,
-          "Name": "Nantes",
-          "CountryCode": "FRA",
-          "District": "Pays de la Loire",
-          "Population": 270251
-        },
-        {
-          "ID": 2980,
-          "Name": "Strasbourg",
-          "CountryCode": "FRA",
-          "District": "Alsace",
-          "Population": 264115
-        },
-        {
-          "ID": 2981,
-          "Name": "Montpellier",
-          "CountryCode": "FRA",
-          "District": "Languedoc-Roussillon",
-          "Population": 225392
-        },
-        {
-          "ID": 2982,
-          "Name": "Bordeaux",
-          "CountryCode": "FRA",
-          "District": "Aquitaine",
-          "Population": 215363
-        },
-        {
-          "ID": 2983,
-          "Name": "Rennes",
-          "CountryCode": "FRA",
-          "District": "Haute-Normandie",
-          "Population": 206229
-        },
-        {
-          "ID": 2984,
-          "Name": "Le Havre",
-          "CountryCode": "FRA",
-          "District": "Champagne-Ardenne",
-          "Population": 190905
-        },
-        {
-          "ID": 2985,
-          "Name": "Reims",
-          "CountryCode": "FRA",
-          "District": "Nord-Pas-de-Calais",
-          "Population": 187206
-        },
-        {
-          "ID": 2986,
-          "Name": "Lille",
-          "CountryCode": "FRA",
-          "District": "Rhï¿½ne-Alpes",
-          "Population": 184657
-        },
-        {
-          "ID": 2987,
-          "Name": "St-ï¿½tienne",
-          "CountryCode": "FRA",
-          "District": "Bretagne",
-          "Population": 180210
-        },
-        {
-          "ID": 2988,
-          "Name": "Toulon",
-          "CountryCode": "FRA",
-          "District": "Provence-Alpes-Cï¿½t",
-          "Population": 160639
-        },
-        {
-          "ID": 2989,
-          "Name": "Grenoble",
-          "CountryCode": "FRA",
-          "District": "Rhï¿½ne-Alpes",
-          "Population": 153317
-        },
-        {
-          "ID": 2990,
-          "Name": "Angers",
-          "CountryCode": "FRA",
-          "District": "Pays de la Loire",
-          "Population": 151279
-        },
-        {
-          "ID": 2991,
-          "Name": "Dijon",
-          "CountryCode": "FRA",
-          "District": "Bourgogne",
-          "Population": 149867
-        },
-        {
-          "ID": 2992,
-          "Name": "Brest",
-          "CountryCode": "FRA",
-          "District": "Bretagne",
-          "Population": 149634
-        },
-        {
-          "ID": 2993,
-          "Name": "Le Mans",
-          "CountryCode": "FRA",
-          "District": "Pays de la Loire",
-          "Population": 146105
-        },
-        {
-          "ID": 2994,
-          "Name": "Clermont-Ferrand",
-          "CountryCode": "FRA",
-          "District": "Auvergne",
-          "Population": 137140
-        },
-        {
-          "ID": 2995,
-          "Name": "Amiens",
-          "CountryCode": "FRA",
-          "District": "Picardie",
-          "Population": 135501
-        },
-        {
-          "ID": 2996,
-          "Name": "Aix-en-Provence",
-          "CountryCode": "FRA",
-          "District": "Provence-Alpes-Cï¿½t",
-          "Population": 134222
-        },
-        {
-          "ID": 2997,
-          "Name": "Limoges",
-          "CountryCode": "FRA",
-          "District": "Limousin",
-          "Population": 133968
-        },
-        {
-          "ID": 2998,
-          "Name": "Nï¿½mes",
-          "CountryCode": "FRA",
-          "District": "Languedoc-Roussillon",
-          "Population": 133424
-        },
-        {
-          "ID": 2999,
-          "Name": "Tours",
-          "CountryCode": "FRA",
-          "District": "Centre",
-          "Population": 132820
-        },
-        {
-          "ID": 3000,
-          "Name": "Villeurbanne",
-          "CountryCode": "FRA",
-          "District": "Rhï¿½ne-Alpes",
-          "Population": 124215
-        },
-        {
-          "ID": 3001,
-          "Name": "Metz",
-          "CountryCode": "FRA",
-          "District": "Lorraine",
-          "Population": 123776
-        },
-        {
-          "ID": 3002,
-          "Name": "Besanï¿½on",
-          "CountryCode": "FRA",
-          "District": "Franche-Comtï¿½",
-          "Population": 117733
-        },
-        {
-          "ID": 3003,
-          "Name": "Caen",
-          "CountryCode": "FRA",
-          "District": "Basse-Normandie",
-          "Population": 113987
-        },
-        {
-          "ID": 3004,
-          "Name": "Orlï¿½ans",
-          "CountryCode": "FRA",
-          "District": "Centre",
-          "Population": 113126
-        },
-        {
-          "ID": 3005,
-          "Name": "Mulhouse",
-          "CountryCode": "FRA",
-          "District": "Alsace",
-          "Population": 110359
-        },
-        {
-          "ID": 3006,
-          "Name": "Rouen",
-          "CountryCode": "FRA",
-          "District": "Haute-Normandie",
-          "Population": 106592
-        },
-        {
-          "ID": 3007,
-          "Name": "Boulogne-Billancourt",
-          "CountryCode": "FRA",
-          "District": "ï¿½le-de-France",
-          "Population": 106367
-        },
-        {
-          "ID": 3008,
-          "Name": "Perpignan",
-          "CountryCode": "FRA",
-          "District": "Languedoc-Roussillon",
-          "Population": 105115
-        },
-        {
-          "ID": 3009,
-          "Name": "Nancy",
-          "CountryCode": "FRA",
-          "District": "Lorraine",
-          "Population": 103605
-        },
-        {
-          "ID": 3010,
-          "Name": "Roubaix",
-          "CountryCode": "FRA",
-          "District": "Nord-Pas-de-Calais",
-          "Population": 96984
-        },
-        {
-          "ID": 3011,
-          "Name": "Argenteuil",
-          "CountryCode": "FRA",
-          "District": "ï¿½le-de-France",
-          "Population": 93961
-        },
-        {
-          "ID": 3012,
-          "Name": "Tourcoing",
-          "CountryCode": "FRA",
-          "District": "Nord-Pas-de-Calais",
-          "Population": 93540
-        },
-        {
-          "ID": 3013,
-          "Name": "Montreuil",
-          "CountryCode": "FRA",
-          "District": "ï¿½le-de-France",
-          "Population": 90674
+          "name": "plop",
+          "score": 666,
+          "x": "y"
         }
       ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "age",
+          "type": "number"
+        },
+        {
+          "name": "score",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "name": "foo",
+        "age": 42.0,
+        "score": 100
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM mysql_db.City), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE CountryCode = 'FRA') SELECT ID, Name, CountryCode, District, Population FROM FILTER_STEP_1"
     }
   }
 }

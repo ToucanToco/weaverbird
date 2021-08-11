@@ -1,10 +1,15 @@
-# import json
+import time
 from typing import Union, Dict
 from glob import glob
 from os import path
 
+# import pymysql
 import pymysql
+
+pymysql.install_as_MySQLdb()
+from sqlalchemy import create_engine
 import pytest
+import docker
 
 import json
 import pandas as pd
@@ -12,7 +17,10 @@ import pandas as pd
 from server.tests.utils import assert_dataframes_equals
 
 from weaverbird.backends.sql_translator import translate_pipeline
-from weaverbird.pipeline import Pipeline
+from weaverbird.pipeline import Pipeline, PipelineStep
+
+client = docker.from_env()
+container = None
 
 fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures_sql')
 step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
@@ -36,38 +44,26 @@ type_code_mapping = {
 
 
 # Update this method to use snowflake connection
-def connect():
-    conv = pymysql.converters.conversions.copy()
-    conv[246] = float
+def get_connection():
     con_params = {
         'host': '127.0.0.1',
         'user': 'ubuntu',
         'password': 'ilovetoucan',
-        'port': 3306,  # mysql_server['port'],
+        'port': 3306,
         'database': 'mysql_db',
-        'charset': 'utf8mb4',
-        'conv': conv,
-        'cursorclass': pymysql.cursors.DictCursor,
     }
     conn = pymysql.connect(**con_params)
     return conn
 
 
-@pytest.fixture(scope='module')
-def mysql_server(service_container):
-    def check(host_port):
-        conn = pymysql.connect(host='127.0.0.1', port=3306, user='ubuntu', password='ilovetoucan')
-        cur = conn.cursor()
-        cur.execute('SELECT 1;')
-        cur.close()
-        conn.close()
-
-    return service_container('mysql', check, pymysql.Error)
-
-
-@pytest.fixture
-def mysql_connector(mysql_server):
-    return connect()
+def get_engine():
+    host = '127.0.0.1'
+    user = 'ubuntu'
+    password = 'ilovetoucan'
+    port = 3306
+    database = 'mysql_db'
+    engine = create_engine(f'mysql://{user}:{password}@{host}:{port}/{database}')
+    return engine
 
 
 def execute(connection, query: str):
@@ -77,6 +73,7 @@ def execute(connection, query: str):
 
 
 def sql_retrieve_city(t):
+    print(f'sql_retrieve_city {t}')
     return t
 
 
@@ -91,17 +88,16 @@ def sql_query_describer(t) -> Union[Dict[str, str], None]:
         table_name = temp.split('.')[0]
 
     request = f'SELECT column_name as name, data_type as type_code FROM information_schema.columns WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
-
-    connection = connect()
+    connection = get_connection()
     with connection.cursor() as cursor:
         cursor.execute(request)
         describe_res = cursor.fetchall()
-        res = {r['name']: r['type_code'] for r in describe_res}
+        res = {r[0]: r[1] for r in describe_res}
         return res
 
 
 def snowflake_query_describer(t) -> Union[Dict[str, str], None]:
-    connection = connect()
+    connection = get_connection()
     with connection.cursor() as cursor:
         describe_res = cursor.describe(t)
         res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
@@ -120,26 +116,37 @@ for x in step_cases_files:
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
-def test_sql_translator_pipeline(case_id, case_spec_file_path, mysql_connector):
+def test_sql_translator_pipeline(case_id, case_spec_file_path):
+    print(f'test_sql_translator_pipeline {case_id} - {case_spec_file_path}')
     spec_file = open(case_spec_file_path, 'r')
     spec = json.loads(spec_file.read())
     spec_file.close()
 
-    pipeline = Pipeline(steps=spec['step']['pipeline'])
-    pandas_result_expected = pd.DataFrame.from_dict(spec['output']['sql']['result'])
-    query_expected = spec['output']['sql']['query']
+    # TODO - insert data from fixture.json
+    data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+    print(f'data_to_insert {data_to_insert}')
+    data_to_insert.to_sql(
+        name=case_id.replace('/', ''),
+        con=get_engine(),
+        index=False,
+        if_exists='replace',
+    )
+
+    steps = spec['step']['pipeline']
+    steps.insert(0, {
+        'name': 'domain',
+        'domain': f'SELECT * FROM {case_id.replace("/", "")}'
+    })
+    pipeline = Pipeline(steps=steps)
+    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    query_expected = spec['other_expected']['sql']['query']
 
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer  # replace by snowflake_query_describer
     )
-    sql_result = execute(mysql_connector, query)
+    sql_result = execute(get_connection(), query)
     assert query_expected == query
     result = pd.DataFrame.from_dict(sql_result)
     assert_dataframes_equals(pandas_result_expected, result)
-
-
-# Translation and execute from ...
-def test_sql_translator_execute():
-    ...

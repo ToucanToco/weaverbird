@@ -117,5 +117,10 @@
         "x": "y"
       }
     ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM mysql_db.City), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE CountryCode = 'FRA') SELECT ID, Name, CountryCode, District, Population FROM FILTER_STEP_1"
+    }
   }
 }
