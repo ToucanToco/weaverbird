@@ -56,7 +56,7 @@ def format_condition(condition: Union[SimpleCondition, ConditionComboAnd, Condit
     if type(condition) in [ComparisonCondition, InclusionCondition, NullCondition, MatchCondition]:
         composed_value: str = str(
             tuple(condition.value) if type(condition.value) == list else condition.value
-        )
+        ).replace(",)", ")")
         compiled_query += f"""{condition.column + vqb_to_sql[condition.operator] + composed_value}"""
 
     return compiled_query
@@ -75,13 +75,13 @@ def recurse_format_if_then_else(step: IfthenelseStep) -> str:
     while type(step.else_value) == IfthenelseStep:
         composed_query = composed_query.replace(
             "/-*-/",
-            f"""IF({format_condition(step.condition)}, {step.then}, /-*-/)""",
+            f"""IFF({format_condition(step.condition)}, {step.then}, /-*-/)""",
         )
         step = step.else_value
 
     return composed_query.replace(
         "/-*-/",
-        f"""IF({format_condition(step.condition)}, {step.then}, {str(step.else_value)})""",
+        f"""IFF({format_condition(step.condition)}, {step.then}, {str(step.else_value)})""",
     )
 
 
@@ -106,7 +106,7 @@ def translate_ifthenelse(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT ({recurse_format_if_then_else(step)}) AS {step.new_column})"""
+        f""" (SELECT ({recurse_format_if_then_else(step)}) AS {step.new_column}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,

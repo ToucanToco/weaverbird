@@ -38,8 +38,8 @@ def test_simple_condition_integer(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF(raichu > 10, \'tintin\', '
-        '\'anime\')) AS cond) FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IFF(raichu > 10, \'tintin\', '
+        '\'anime\')) AS cond FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
@@ -66,8 +66,8 @@ def test_simple_condition_strings(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF(toto = \'okok\', '
-        '\'azoram\', \'zigolo\')) AS cond) FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IFF(toto = \'okok\', '
+        '\'azoram\', \'zigolo\')) AS cond FROM SELECT_STEP_0) '
     )
 
     assert query.transformed_query == expected_transformed_query
@@ -110,8 +110,8 @@ def test_and_condition(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF((raichu > 10 AND toto LIKE '
-        '\'ogadoka\'), \'tintin\', \'anime\')) AS cond) FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IFF((raichu > 10 AND toto LIKE '
+        '\'ogadoka\'), \'tintin\', \'anime\')) AS cond FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
@@ -153,8 +153,8 @@ def test_or_condition(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF((raichu < 10 OR raichu >= '
-        '1), \'tintin\', \'anime\')) AS cond) FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IFF((raichu < 10 OR raichu >= '
+        '1), \'tintin\', \'anime\')) AS cond FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
@@ -229,9 +229,9 @@ def test_then_should_support_nested_else(query):
     )
 
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF((raichu < 10 OR raichu >= '
-        '1), 3, IF(toto LIKE \'zigar\', 1, IF(florizarre = \'gokar\', 2, IF(toto != \'ok\', 7, IF(florizarre IN ('
-        '\'ok\',), 7, 0)))))) AS cond1) FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IFF((raichu < 10 OR raichu >= '
+        '1), 3, IFF(toto LIKE \'zigar\', 1, IFF(florizarre = \'gokar\', 2, IFF(toto != \'ok\', 7, IFF(florizarre IN ('
+        '\'ok\'), 7, 0)))))) AS cond1 FROM SELECT_STEP_0) '
     )
 
     assert query.transformed_query == expected_transformed_query
