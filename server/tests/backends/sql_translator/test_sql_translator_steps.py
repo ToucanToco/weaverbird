@@ -1,15 +1,12 @@
-import time
 from typing import Union, Dict
 from glob import glob
 from os import path
 
-# import pymysql
 import pymysql
 
 pymysql.install_as_MySQLdb()
 from sqlalchemy import create_engine
 import pytest
-import docker
 
 import json
 import pandas as pd
@@ -17,10 +14,22 @@ import pandas as pd
 from server.tests.utils import assert_dataframes_equals
 
 from weaverbird.backends.sql_translator import translate_pipeline
-from weaverbird.pipeline import Pipeline, PipelineStep
+from weaverbird.pipeline import Pipeline
 
-client = docker.from_env()
-container = None
+import logging
+import time
+from typing import List
+import docker
+import pymysql
+from docker.models.images import Image
+
+image = {
+    'name': 'mysql_weaverbird_test',
+    'image': 'mysql',
+    'version': 'latest'
+}
+docker_client = docker.from_env()
+docker_container = None
 
 fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures_sql')
 step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
@@ -42,6 +51,44 @@ type_code_mapping = {
     13: 'boolean',
 }
 
+
+@pytest.fixture(scope='module', autouse=True)
+def toto():
+    images: List[Image] = docker_client.images.list()
+    found = False
+    for i in images:
+        if i.tags[0] == f'{image["image"]}:{image["version"]}':
+            found = True
+    if not found:
+        logging.getLogger(__name__).info(f'Download docker image {image["image"]}:{image["version"]}')
+        docker_client.images.pull('mysql:5.7.21')
+
+    logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
+    global docker_container
+    docker_container = docker_client.containers.run(
+        image=f'{image["image"]}:{image["version"]}',
+        name=f'{image["name"]}',
+        auto_remove=True,
+        detach=True,
+        environment={
+            'MYSQL_DATABASE': 'mysql_db',
+            'MYSQL_ROOT_PASSWORD': 'ilovetoucan',
+            'MYSQL_USER': 'ubuntu',
+            'MYSQL_PASSWORD': 'ilovetoucan',
+            'MYSQL_ROOT_HOST': '%'
+        },
+        ports={'3306': '3306'},
+    )
+    ready = False
+    while not ready:
+        time.sleep(1)
+        try:
+            if docker_container.status == 'created' and get_connection():
+                ready = True
+        except:
+            pass
+    yield docker_container
+    docker_container.stop()
 
 # Update this method to use snowflake connection
 def get_connection():
@@ -69,11 +116,14 @@ def get_engine():
 def execute(connection, query: str):
     with connection.cursor() as cursor:
         cursor.execute(query)
-        return cursor.fetchall()
+        # result = cursor.fetchall()
+        df = pd.DataFrame(cursor.fetchall())
+        field_names = [i[0] for i in cursor.description]
+        df.columns = field_names
+        return df
 
 
 def sql_retrieve_city(t):
-    print(f'sql_retrieve_city {t}')
     return t
 
 
@@ -117,14 +167,12 @@ for x in step_cases_files:
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path):
-    print(f'test_sql_translator_pipeline {case_id} - {case_spec_file_path}')
     spec_file = open(case_spec_file_path, 'r')
     spec = json.loads(spec_file.read())
     spec_file.close()
 
     # TODO - insert data from fixture.json
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
-    print(f'data_to_insert {data_to_insert}')
     data_to_insert.to_sql(
         name=case_id.replace('/', ''),
         con=get_engine(),
@@ -146,7 +194,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path):
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer  # replace by snowflake_query_describer
     )
-    sql_result = execute(get_connection(), query)
+    result = execute(get_connection(), query)
     assert query_expected == query
-    result = pd.DataFrame.from_dict(sql_result)
+
     assert_dataframes_equals(pandas_result_expected, result)

@@ -99,7 +99,7 @@
   },
   "other_expected": {
     "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM mysql_db.City), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE CountryCode = 'FRA') SELECT ID, Name, CountryCode, District, Population FROM FILTER_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE name = 'foo') SELECT name, age, score FROM FILTER_STEP_1"
     }
   }
 }
