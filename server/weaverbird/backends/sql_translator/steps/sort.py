@@ -14,20 +14,21 @@ from weaverbird.pipeline.steps import SortStep
 from weaverbird.pipeline.steps.sort import ColumnSort
 
 
-def complete_fields(new_fields: List[str], tables_metadata: Dict[str, Dict[str, str]]) -> str:
+def complete_fields(tables_metadata: Dict[str, Dict[str, str]]) -> str:
     """
     We're going to complete missing field from the query
 
     """
     compiled_query: str = ""
-    for elt in tables_metadata['table1'].keys():
-        if elt not in new_fields:
-            compiled_query += f', {elt}'
+    for index, elt in enumerate(tables_metadata['table1'].keys()):
+        if index > 0:
+            compiled_query += ", "
+        compiled_query += f'{elt}'
 
     return compiled_query
 
 
-def sort_columns_to_sql(columns: List[ColumnSort]) -> Tuple[str, str]:
+def sort_columns_to_sql(columns: List[ColumnSort]) -> str:
     """
     Concatenate fields and order's fields
 
@@ -35,15 +36,12 @@ def sort_columns_to_sql(columns: List[ColumnSort]) -> Tuple[str, str]:
     columns: List[ColumnSort]
     """
     compiled_query: str = ""
-    selected_fields: str = ""
     for index, c in enumerate(columns):
         if index > 0:
             compiled_query += ", "
-            selected_fields += ", "
         compiled_query += f"{c.column} {c.order}"
-        selected_fields += f"{c.column}"
 
-    return selected_fields, compiled_query
+    return compiled_query
 
 
 def translate_sort(
@@ -64,11 +62,9 @@ def translate_sort(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
-    columns, order_query = sort_columns_to_sql(step.columns)
-    columns += str(
-        complete_fields(
-            [c.strip() for c in columns.split(",")], query.metadata_manager.tables_metadata
-        )
+    order_query = sort_columns_to_sql(step.columns)
+    columns = str(
+        complete_fields(query.metadata_manager.tables_metadata)
     )
     new_query = SQLQuery(
         query_name=query_name,
