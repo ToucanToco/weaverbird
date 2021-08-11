@@ -45,7 +45,7 @@ def translate_ifthenelse(
 ) -> SQLQuery:
     query_name = f'IFTHENELSE_STEP_{index}'
 
-    log.info(
+    log.debug(
         "############################################################"
         f"query_name: {query_name}\n"
         "------------------------------------------------------------"
@@ -62,7 +62,7 @@ def translate_ifthenelse(
         metadata_manager=query.metadata_manager,
     )
 
-    log.info(
+    log.debug(
         "------------------------------------------------------------"
         f"SQLquery: {new_query.transformed_query}"
         "############################################################"
