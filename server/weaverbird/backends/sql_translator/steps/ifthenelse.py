@@ -1,3 +1,5 @@
+from distutils import log
+
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
 )
@@ -43,6 +45,14 @@ def translate_ifthenelse(
 ) -> SQLQuery:
     query_name = f'IFTHENELSE_STEP_{index}'
 
+    log.info(
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+    )
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
@@ -51,4 +61,11 @@ def translate_ifthenelse(
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
+
+    log.info(
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
+    )
+
     return new_query
