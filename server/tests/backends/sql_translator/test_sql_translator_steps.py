@@ -1,27 +1,24 @@
-from typing import Union, Dict
+import json
+import logging
+import time
 from glob import glob
 from os import path
+from typing import List, Union, Dict
+
+from docker.models.images import Image
+import docker
 
 import pymysql
-
 pymysql.install_as_MySQLdb()
 from sqlalchemy import create_engine
 import pytest
 
-import json
 import pandas as pd
 
 from server.tests.utils import assert_dataframes_equals
 
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
-
-import logging
-import time
-from typing import List
-import docker
-import pymysql
-from docker.models.images import Image
 
 image = {
     'name': 'mysql_weaverbird_test',

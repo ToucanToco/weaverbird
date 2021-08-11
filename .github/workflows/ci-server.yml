@@ -43,9 +43,6 @@ jobs:
         poetry config virtualenvs.in-project false
         poetry config virtualenvs.path ~/.virtualenvs
 
-    - name: Pull docker image
-      run:  docker-compose -f server/tests/docker-compose.yml pull
-
     - name: Install dependencies
       run: |
         poetry check
