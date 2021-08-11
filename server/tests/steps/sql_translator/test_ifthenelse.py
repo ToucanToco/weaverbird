@@ -2,6 +2,7 @@ import pytest
 
 from weaverbird.backends.sql_translator.steps import translate_ifthenelse
 from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
+from weaverbird.pipeline.conditions import ComparisonCondition, ConditionComboAnd, MatchCondition, ConditionComboOr
 from weaverbird.pipeline.steps import IfthenelseStep
 
 
@@ -22,7 +23,7 @@ def test_simple_condition_integer(query):
         **{
             'name': 'ifthenelse',
             'if': {
-                'column': 'int',
+                'column': 'raichu',
                 'value': 10,
                 'operator': 'gt',
             },
@@ -31,7 +32,6 @@ def test_simple_condition_integer(query):
             'else': '\'anime\'',
         }
     )
-    step.condition = 'raichu > 10'
     query = translate_ifthenelse(
         step,
         query,
@@ -52,7 +52,7 @@ def test_simple_condition_strings(query):
             'name': 'ifthenelse',
             'if': {
                 'column': 'toto',
-                'value': 'okok',
+                'value': '\'okok\'',
                 'operator': 'eq',
             },
             'newColumn': 'cond',
@@ -60,43 +60,105 @@ def test_simple_condition_strings(query):
             'else': '\'zigolo\'',
         }
     )
-    step.condition = 'toto = \'okok\''
     query = translate_ifthenelse(
         step,
         query,
-        index=2,
+        index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_2 AS (SELECT (IF(toto = \'okok\', '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF(toto = \'okok\', '
         '\'azoram\', \'zigolo\')) AS cond) FROM SELECT_STEP_0) '
     )
 
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_2'
-    assert query.query_name == 'IFTHENELSE_STEP_2'
+    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
-def test_and_condition_integer(query):
-    pass
+def test_and_condition(query):
+    step = IfthenelseStep(
+        **{
+            'name': 'ifthenelse',
+            'if': ConditionComboAnd(
+                **{
+                    'and': [
+                        ComparisonCondition(
+                            **{
+                                'column': 'raichu',
+                                'value': 10,
+                                'operator': 'gt',
+                            }
+                        ),
+                        MatchCondition(
+                            **{
+                                'column': 'toto',
+                                'value': '\'ogadoka\'',
+                                'operator': 'matches',
+                            }
+                        )
+                    ],
+                }
+            ),
+            'newColumn': 'cond',
+            'then': '\'tintin\'',
+            'else': '\'anime\'',
+        }
+    )
+    query = translate_ifthenelse(
+        step,
+        query,
+        index=1,
+    )
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF((raichu > 10 AND toto LIKE '
+        '\'ogadoka\'), \'tintin\', \'anime\')) AS cond) FROM SELECT_STEP_0) '
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
-def test_or_condition_integer(query):
-    pass
-
-
-def test_matches_condition_integer(query):
-    # with not matches
-    pass
-
-
-def test_null_condition_integer(query):
-    # with not null
-    pass
-
-
-def test_in_condition_integer(query):
-    # with not in
-    pass
+def test_or_condition(query):
+    step = IfthenelseStep(
+        **{
+            'name': 'ifthenelse',
+            'if': ConditionComboOr(
+                **{
+                    'or': [
+                        ComparisonCondition(
+                            **{
+                                'column': 'raichu',
+                                'value': 10,
+                                'operator': 'lt',
+                            }
+                        ),
+                        ComparisonCondition(
+                            **{
+                                'column': 'raichu',
+                                'value': 1,
+                                'operator': 'ge',
+                            }
+                        ),
+                    ],
+                }
+            ),
+            'newColumn': 'cond',
+            'then': '\'tintin\'',
+            'else': '\'anime\'',
+        }
+    )
+    query = translate_ifthenelse(
+        step,
+        query,
+        index=1,
+    )
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF((raichu < 10 OR raichu >= '
+        '1), \'tintin\', \'anime\')) AS cond) FROM SELECT_STEP_0) '
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
 def test_then_should_support_nested_else(query):
@@ -104,7 +166,26 @@ def test_then_should_support_nested_else(query):
         **{
             'name': 'ifthenelse',
             'newColumn': 'cond1',
-            'if': {'column': 'raichu', 'value': 3, 'operator': 'lt'},
+            'if': ConditionComboOr(
+                **{
+                    'or': [
+                        ComparisonCondition(
+                            **{
+                                'column': 'raichu',
+                                'value': 10,
+                                'operator': 'lt',
+                            }
+                        ),
+                        ComparisonCondition(
+                            **{
+                                'column': 'raichu',
+                                'value': 1,
+                                'operator': 'ge',
+                            }
+                        ),
+                    ],
+                }
+            ),
             'then': 3,
             'else': IfthenelseStep(
                 **{
@@ -123,7 +204,11 @@ def test_then_should_support_nested_else(query):
                                     'newColumn': 'cond3',
                                     'else': IfthenelseStep(
                                         **{
-                                            'if': {'column': 'florizarre', 'value': ['ok'], 'operator': 'in'},
+                                            'if': {
+                                                'column': 'florizarre',
+                                                'value': ['ok'],
+                                                'operator': 'in',
+                                            },
                                             'then': 7,
                                             'newColumn': 'cond3',
                                             'else': 0,
@@ -137,22 +222,18 @@ def test_then_should_support_nested_else(query):
             ),
         }
     )
-    # redefining condition...
-    # step.condition = 'raichu < 3'
-    # step.else_value.condition = 'toto = \'zigar\''
-    # step.else_value.else_value.condition = 'florizarre = \'gokar\''
-
     query = translate_ifthenelse(
         step,
         query,
-        index=3,
+        index=1,
     )
 
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_3 AS (SELECT (IF(raichu < 3, 3, IF(toto = '
-        '\'zigar\', 1, IF(florizarre = \'gokar\', 2, 0)))) AS cond1) FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT (IF((raichu < 10 OR raichu >= '
+        '1), 3, IF(toto LIKE \'zigar\', 1, IF(florizarre = \'gokar\', 2, IF(toto != \'ok\', 7, IF(florizarre IN ('
+        '\'ok\',), 7, 0)))))) AS cond1) FROM SELECT_STEP_0) '
     )
 
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_3'
-    assert query.query_name == 'IFTHENELSE_STEP_3'
+    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
