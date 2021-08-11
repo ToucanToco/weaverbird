@@ -1,5 +1,5 @@
 from distutils import log
-from typing import Dict, List, Tuple
+from typing import Dict, List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
@@ -63,9 +63,7 @@ def translate_sort(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
     order_query = sort_columns_to_sql(step.columns)
-    columns = str(
-        complete_fields(query.metadata_manager.tables_metadata)
-    )
+    columns = str(complete_fields(query.metadata_manager.tables_metadata))
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
