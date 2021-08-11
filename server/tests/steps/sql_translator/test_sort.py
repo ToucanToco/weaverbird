@@ -24,7 +24,6 @@ def test_translate_sort(query):
         columns=[
             ColumnSort(column='toto', order='asc'),
             ColumnSort(column='raichu', order='desc'),
-            ColumnSort(column='florizarre', order='asc'),
         ],
     )
     query = translate_sort(
@@ -33,8 +32,8 @@ def test_translate_sort(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), SORT_STEP_1 AS (SELECT * FROM SELECT_STEP_0 ORDER BY toto '
-        'asc AND raichu desc AND florizarre asc) FROM SELECT_STEP_0)'
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), SORT_STEP_1 AS (SELECT toto, raichu, florizarre FROM '
+        'SELECT_STEP_0 ORDER BY toto asc, raichu desc) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM SORT_STEP_1'
