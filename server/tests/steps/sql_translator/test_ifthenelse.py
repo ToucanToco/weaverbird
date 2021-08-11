@@ -76,6 +76,29 @@ def test_simple_condition_strings(query):
     assert query.query_name == 'IFTHENELSE_STEP_2'
 
 
+def test_and_condition_integer(query):
+    pass
+
+
+def test_or_condition_integer(query):
+    pass
+
+
+def test_matches_condition_integer(query):
+    # with not matches
+    pass
+
+
+def test_null_condition_integer(query):
+    # with not null
+    pass
+
+
+def test_in_condition_integer(query):
+    # with not in
+    pass
+
+
 def test_then_should_support_nested_else(query):
     step = IfthenelseStep(
         **{
@@ -85,7 +108,7 @@ def test_then_should_support_nested_else(query):
             'then': 3,
             'else': IfthenelseStep(
                 **{
-                    'if': {'column': 'toto', 'value': '\'zigar\'', 'operator': 'eq'},
+                    'if': {'column': 'toto', 'value': '\'zigar\'', 'operator': 'matches'},
                     'newColumn': 'cond2',
                     'then': 1,
                     'else': IfthenelseStep(
@@ -93,18 +116,31 @@ def test_then_should_support_nested_else(query):
                             'if': {'column': 'florizarre', 'value': '\'gokar\'', 'operator': 'eq'},
                             'then': 2,
                             'newColumn': 'cond3',
-                            'else': 0,
+                            'else': IfthenelseStep(
+                                **{
+                                    'if': {'column': 'toto', 'value': '\'ok\'', 'operator': 'ne'},
+                                    'then': 7,
+                                    'newColumn': 'cond3',
+                                    'else': IfthenelseStep(
+                                        **{
+                                            'if': {'column': 'florizarre', 'value': ['ok'], 'operator': 'in'},
+                                            'then': 7,
+                                            'newColumn': 'cond3',
+                                            'else': 0,
+                                        }
+                                    ),
+                                }
+                            ),
                         }
                     ),
                 }
             ),
         }
     )
-    # TODO : Really strange, i needed to reset manually conditions here,
-    #  because i was getting weird results like
-    step.condition = 'raichu < 3'
-    step.else_value.condition = 'toto = \'zigar\''
-    step.else_value.else_value.condition = 'florizarre = \'gokar\''
+    # redefining condition...
+    # step.condition = 'raichu < 3'
+    # step.else_value.condition = 'toto = \'zigar\''
+    # step.else_value.else_value.condition = 'florizarre = \'gokar\''
 
     query = translate_ifthenelse(
         step,

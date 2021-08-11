@@ -12,6 +12,9 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import IfthenelseStep
 
 
+def format_condition():
+
+
 def recurse_format_else(step: IfthenelseStep) -> str:
     """
     In a case of a nested if then else, we're going to loop until the type of else_value's step
@@ -69,3 +72,45 @@ def translate_ifthenelse(
     )
 
     return new_query
+
+
+# class ComparisonCondition(BaseCondition):
+#     column: ColumnName
+#     operator: Literal['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+#     value: Any
+#
+#
+# class InclusionCondition(BaseCondition):
+#     column: ColumnName
+#     operator: Literal['in', 'nin']
+#     value: List[Any]
+#
+#
+# class NullCondition(BaseCondition):
+#     column: ColumnName
+#     operator: Literal['isnull', 'notnull']
+#
+#
+# class MatchCondition(BaseCondition):
+#     column: ColumnName
+#     operator: Literal['matches', 'notmatches']
+#     value: str
+#
+#
+# SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition, MatchCondition]
+#
+#
+# class BaseConditionCombo(BaseCondition, ABC):
+#     class Config(PopulatedWithFieldnames):
+#         ...
+#
+#     def to_dict(self):
+#         return self.dict(by_alias=True)
+#
+#
+# class ConditionComboAnd(BaseConditionCombo):
+#     and_: List['Condition'] = Field(..., alias='and')
+#
+#
+# class ConditionComboOr(BaseConditionCombo):
+#     or_: List['Condition'] = Field(..., alias='or')
