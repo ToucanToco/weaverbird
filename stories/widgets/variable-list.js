@@ -120,3 +120,61 @@ stories.add('multiple', () => ({
     },
   },
 }));
+
+stories.add('with error type in multiple mode (should raise an exception)', () => ({
+  template: `
+    <div>
+      <VariableList 
+        :available-variables="availableVariables"
+        :selectedVariables="value"
+        :isMultiple="true"
+        @input="input"/>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    VariableList,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      value: '',
+    };
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+}));
+
+stories.add('with error type in single mode (should raise an exception)', () => ({
+  template: `
+    <div>
+      <VariableList 
+        :available-variables="availableVariables"
+        :selectedVariables="value"
+        :isMultiple="false"
+        @input="input"/>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    VariableList,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      value: [],
+    };
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+}));
