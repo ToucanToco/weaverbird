@@ -46,4 +46,10 @@ describe('RangeCalendar', () => {
     calendars.at(1).vm.$emit('input', date);
     expect(wrapper.emitted('input')[0][0]).toStrictEqual({ ...value, end: date });
   });
+  it('should remove property if Calendar updated value is undefined', () => {
+    const date = undefined;
+    const calendars = wrapper.findAll('Calendar-stub');
+    calendars.at(1).vm.$emit('input', date);
+    expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start });
+  });
 });

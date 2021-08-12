@@ -23,7 +23,13 @@ export default class RangeCalendar extends Vue {
   value!: DateRange;
 
   onInput(value: Date | null, prop: DateRangeSide): void {
-    this.$emit('input', { ...this.value, [prop]: value });
+    if (value) {
+      this.$emit('input', { ...this.value, [prop]: value });
+    } else {
+      const newValue = { ...this.value };
+      delete newValue[prop];
+      this.$emit('input', newValue);
+    }
   }
 }
 </script>
