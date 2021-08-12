@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "weaverbird"
-version = "0.5.6"
+version = "0.5.7"
 description = "Pandas engine for weaverbird data pipelines"
 authors = ["Toucan Toco <dev+weaverbird@toucantoco.com>"]
 license = "MIT"

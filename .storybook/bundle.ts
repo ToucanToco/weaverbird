@@ -38,6 +38,8 @@ import TotalDimensions from '../src/components/stepforms/widgets/TotalDimensions
 import Popover from '../src/components/Popover.vue';
 import VariableList from '../src/components/stepforms/widgets/VariableInputs/VariableList.vue';
 import CustomVariableList from '../src/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
+import Calendar from '../src/components/Calendar.vue';
+import Tabs from '../src/components/Tabs.vue';
 
 export {
   FilterEditor,
@@ -75,6 +77,8 @@ export {
   Popover,
   VariableList,
   CustomVariableList,
+  Calendar,
+  Tabs
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';
