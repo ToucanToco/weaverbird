@@ -25,6 +25,7 @@ pytest-benchmark = "^3.4.1"
 docker = "5.0.0"
 sqlalchemy = '1.4.22'
 pymysql = '1.0.2'
+cryptography = '3.4.7'
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
