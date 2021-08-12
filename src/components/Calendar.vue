@@ -2,6 +2,7 @@
   <DatePicker
     :value="value"
     :availableDates="availableDates"
+    :attributes="highlights"
     :select-attribute="selectedDatesStyle"
     :drag-attribute="rangeSelectedDatesStyle"
     :is-range="isRange"
@@ -26,6 +27,9 @@ export default class Calendar extends Vue {
   @Prop({ default: undefined })
   value!: Date | DateRange | undefined;
 
+  @Prop({ default: undefined })
+  highlightedDates!: DateRange | undefined;
+
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   availableDates!: DateRange;
 
@@ -48,6 +52,18 @@ export default class Calendar extends Vue {
         contentClass: 'calendar-content',
       },
     };
+  }
+
+  // style to apply to dates to highlight to fake a range selected behaviour
+  get highlights(): DatePickerHighlight[] {
+    if (!this.highlightedDates) return [];
+    return [
+      {
+        key: 'highlighted',
+        highlight: this.rangeSelectedDatesStyle.highlight,
+        dates: this.highlightedDates,
+      },
+    ];
   }
 
   /* istanbul ignore next */

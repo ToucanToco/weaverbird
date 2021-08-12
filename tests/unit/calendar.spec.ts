@@ -19,7 +19,7 @@ describe('Calendar', () => {
     if (wrapper) wrapper.destroy();
   });
 
-  describe('simple', () => {
+  describe('default', () => {
     const defaultValue = new Date();
     beforeEach(() => {
       createWrapper({ value: defaultValue });
@@ -38,6 +38,10 @@ describe('Calendar', () => {
       const value = new Date(1);
       wrapper.find('DatePicker-stub').vm.$emit('input', value);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual(value);
+    });
+    it('should not display highlighted dates', () => {
+      const attributes = (wrapper.vm as any).highlights;
+      expect(attributes).toHaveLength(0);
     });
   });
 
@@ -59,6 +63,22 @@ describe('Calendar', () => {
       const value = { start: new Date(), end: new Date(2) };
       wrapper.find('DatePicker-stub').vm.$emit('input', value);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual(value);
+    });
+  });
+
+  describe('with highlighted dates', () => {
+    const highlightedDates = [new Date(1), new Date(2)];
+    beforeEach(() => {
+      createWrapper({
+        value: new Date(),
+        highlightedDates,
+      });
+    });
+    it('should display highlighted dates', () => {
+      const attributes = (wrapper.vm as any).highlights;
+      expect(attributes).toHaveLength(1);
+      expect(attributes[0].key).toBe('highlighted');
+      expect(attributes[0].dates).toStrictEqual(highlightedDates);
     });
   });
 });
