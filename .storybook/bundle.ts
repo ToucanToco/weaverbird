@@ -37,6 +37,7 @@ import AddTotalRowsStepForm from '../src/components/stepforms/AddTotalRowsStepFo
 import TotalDimensions from '../src/components/stepforms/widgets/TotalDimensions.vue';
 import Popover from '../src/components/Popover.vue';
 import Calendar from '../src/components/Calendar.vue';
+import Tabs from '../src/components/Tabs.vue';
 
 export {
   FilterEditor,
@@ -73,6 +74,7 @@ export {
   TotalDimensions,
   Popover,
   Calendar,
+  Tabs
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';
