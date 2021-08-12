@@ -13,7 +13,7 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import ConvertStep
 
 
-def format_cast_sql(columns: List, data_type: str) -> str:
+def format_cast_to_sql(columns: List, data_type: str) -> str:
     """
     From cast to sql
     """
@@ -49,7 +49,7 @@ def translate_convert(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {format_cast_sql(step.columns, step.data_type)} FROM {query.query_name})""",
+        f""" (SELECT {format_cast_to_sql(step.columns, step.data_type)} FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
@@ -61,4 +61,3 @@ def translate_convert(
     )
 
     return new_query
-
