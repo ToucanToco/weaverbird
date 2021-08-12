@@ -1,12 +1,14 @@
 <template>
-  <div>
+  <div class="range-calendar">
     <Calendar
+      class="range-calendar__calendar range-calendar__calendar--first"
       :value="value.start"
       :availableDates="getAvailableDates('start')"
       :highlightedDates="highlightedDates"
       @input="onInput($event, 'start')"
     />
     <Calendar
+      class="range-calendar__calendar range-calendar__calendar--last"
       :value="value.end"
       :availableDates="getAvailableDates('end')"
       :highlightedDates="highlightedDates"
@@ -58,3 +60,12 @@ export default class RangeCalendar extends Vue {
   }
 }
 </script>
+<style scoped lang="scss">
+.range-calendar {
+  display: flex;
+  flex-direction: row;
+}
+.range-calendar__calendar--last {
+  margin-left: -1px; // avoid double border
+}
+</style>
