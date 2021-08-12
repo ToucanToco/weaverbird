@@ -3,11 +3,13 @@
     <Calendar
       :value="value.start"
       :availableDates="getAvailableDates('start')"
+      :highlightedDates="highlightedDates"
       @input="onInput($event, 'start')"
     />
     <Calendar
       :value="value.end"
       :availableDates="getAvailableDates('end')"
+      :highlightedDates="highlightedDates"
       @input="onInput($event, 'end')"
     />
   </div>
@@ -29,6 +31,11 @@ import Calendar from './Calendar.vue';
 export default class RangeCalendar extends Vue {
   @Prop({ default: () => ({}) })
   value!: DateRange;
+
+  // dates to highlight in calendar to fake a range mode
+  get highlightedDates(): DateRange | undefined {
+    return this.value.start && this.value.end ? this.value : undefined;
+  }
 
   getAvailableDates(prop: DateRangeSide): DateRange {
     if (prop === 'start') {

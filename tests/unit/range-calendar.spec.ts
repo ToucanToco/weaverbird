@@ -57,4 +57,19 @@ describe('RangeCalendar', () => {
     calendars.at(1).vm.$emit('input', date);
     expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start });
   });
+  it('should pass range included dates to highlight in Calendar', () => {
+    const calendar = wrapper.find('Calendar-stub');
+    expect(calendar.props().highlightedDates).toStrictEqual(value);
+  });
+
+  describe('when range is not complete', () => {
+    beforeEach(async () => {
+      wrapper.setProps({ value: { start: new Date() } }); // no end date
+      wrapper.vm.$nextTick();
+    });
+    it('should not pass range included dates to highlight in Calendar', () => {
+      const calendar = wrapper.find('Calendar-stub');
+      expect(calendar.props().highlightedDates).toStrictEqual(undefined);
+    });
+  });
 });
