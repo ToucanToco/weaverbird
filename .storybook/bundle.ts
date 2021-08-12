@@ -36,6 +36,7 @@ import WaterfallStepForm from '../src/components/stepforms/WaterfallStepForm.vue
 import AddTotalRowsStepForm from '../src/components/stepforms/AddTotalRowsStepForm.vue';
 import TotalDimensions from '../src/components/stepforms/widgets/TotalDimensions.vue';
 import Popover from '../src/components/Popover.vue';
+import Tabs from '../src/components/Tabs.vue';
 
 export {
   FilterEditor,
@@ -71,6 +72,7 @@ export {
   AddTotalRowsStepForm,
   TotalDimensions,
   Popover,
+  Tabs
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';
