@@ -45,6 +45,7 @@ export default class VariableList extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
+  /* istanbul ignore next */
   created() {
     if (this.isMultiple && !Array.isArray(this.selectedVariables)) {
       throw new Error('selectedVariables should be an array');
