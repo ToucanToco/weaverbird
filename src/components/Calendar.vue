@@ -46,6 +46,7 @@ export default class Calendar extends Vue {
     };
   }
 
+  /* istanbul ignore next */
   onInput(value: Date | DateRange | undefined): void {
     this.$emit('input', value);
   }
