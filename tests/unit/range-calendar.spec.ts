@@ -34,6 +34,11 @@ describe('RangeCalendar', () => {
     expect(calendars.at(0).props().value).toStrictEqual(value.start);
     expect(calendars.at(1).props().value).toStrictEqual(value.end);
   });
+  it('should pass correct available dates to Calendar components', () => {
+    const calendars = wrapper.findAll('Calendar-stub');
+    expect(calendars.at(0).props().availableDates).toStrictEqual({ ...value, start: undefined }); // value can't be greater than end
+    expect(calendars.at(1).props().availableDates).toStrictEqual({ ...value, end: undefined }); // value can't be lower than start
+  });
   it('should emit modified start range when first Calendar is updated', () => {
     const date = new Date(1);
     const calendars = wrapper.findAll('Calendar-stub');

@@ -1,6 +1,7 @@
 <template>
   <DatePicker
     :value="value"
+    :availableDates="availableDates"
     :select-attribute="selectedDatesStyle"
     :drag-attribute="rangeSelectedDatesStyle"
     :is-range="isRange"
@@ -24,6 +25,9 @@ import { DatePickerHighlight, DateRange } from '@/lib/dates';
 export default class Calendar extends Vue {
   @Prop({ default: undefined })
   value!: Date | DateRange | undefined;
+
+  @Prop({ default: () => ({ start: undefined, end: undefined }) })
+  availableDates!: DateRange;
 
   @Prop({ default: false })
   isRange!: boolean;

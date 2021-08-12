@@ -1,7 +1,15 @@
 <template>
   <div>
-    <Calendar :value="value.start" @input="onInput($event, 'start')" />
-    <Calendar :value="value.end" @input="onInput($event, 'end')" />
+    <Calendar
+      :value="value.start"
+      :availableDates="getAvailableDates('start')"
+      @input="onInput($event, 'start')"
+    />
+    <Calendar
+      :value="value.end"
+      :availableDates="getAvailableDates('end')"
+      @input="onInput($event, 'end')"
+    />
   </div>
 </template>
 
@@ -21,6 +29,16 @@ import Calendar from './Calendar.vue';
 export default class RangeCalendar extends Vue {
   @Prop({ default: () => ({}) })
   value!: DateRange;
+
+  getAvailableDates(prop: DateRangeSide): DateRange {
+    if (prop === 'start') {
+      // start value can be anything before end value
+      return { start: undefined, end: this.value.end };
+    } else {
+      // end value can be anything after start value
+      return { start: this.value.start, end: undefined };
+    }
+  }
 
   onInput(value: Date | null, prop: DateRangeSide): void {
     if (value) {
