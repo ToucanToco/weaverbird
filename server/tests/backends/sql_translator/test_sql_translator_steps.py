@@ -3,30 +3,23 @@ import logging
 import time
 from glob import glob
 from os import path
-from typing import List, Union, Dict
+from typing import Dict, List, Union
 
-from docker.models.images import Image
 import docker
-
+import pandas as pd
 import pymysql
+import pytest
+from docker.models.images import Image
 from pymysql.err import OperationalError
 from sqlalchemy import create_engine
-import pytest
-
-import pandas as pd
 
 from server.tests.utils import assert_dataframes_equals
-
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
 pymysql.install_as_MySQLdb()
 
-image = {
-    'name': 'mysql_weaverbird_test',
-    'image': 'mysql',
-    'version': 'latest'
-}
+image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': 'latest'}
 docker_client = docker.from_env()
 docker_container = None
 
@@ -59,7 +52,9 @@ def toto():
         if i.tags[0] == f'{image["image"]}:{image["version"]}':
             found = True
     if not found:
-        logging.getLogger(__name__).info(f'Download docker image {image["image"]}:{image["version"]}')
+        logging.getLogger(__name__).info(
+            f'Download docker image {image["image"]}:{image["version"]}'
+        )
         docker_client.images.pull('mysql:5.7.21')
 
     logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
@@ -74,7 +69,7 @@ def toto():
             'MYSQL_ROOT_PASSWORD': 'ilovetoucan',
             'MYSQL_USER': 'ubuntu',
             'MYSQL_PASSWORD': 'ilovetoucan',
-            'MYSQL_ROOT_HOST': '%'
+            'MYSQL_ROOT_HOST': '%',
         },
         ports={'3306': '3306'},
     )
@@ -128,9 +123,9 @@ def sql_retrieve_city(t):
 
 
 def sql_query_describer(t) -> Union[Dict[str, str], None]:
-    lst = t.split(" ")
+    lst = t.split(' ')
     lst = [item for item in lst if len(item) > 0]
-    temp = lst[lst.index("FROM") + 1]
+    temp = lst[lst.index('FROM') + 1]
 
     if len(temp.split('.')) == 2:
         table_name = temp.split('.')[1]
@@ -157,7 +152,7 @@ def snowflake_query_describer(t) -> Union[Dict[str, str], None]:
 test_cases = []
 for x in step_cases_files:
     # Generate a readable id for each test case
-    case_hierarchy = path.dirname(x)[len(fixtures_dir_path):]
+    case_hierarchy = path.dirname(x)[len(fixtures_dir_path) :]
     case_name = path.splitext(path.basename(x))[0]
     case_id = case_hierarchy + '_' + case_name
 
@@ -181,10 +176,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path):
     )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {
-        'name': 'domain',
-        'domain': f'SELECT * FROM {case_id.replace("/", "")}'
-    })
+    steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
     query_expected = spec['other_expected']['sql']['query']
@@ -192,7 +184,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path):
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
-        sql_query_describer=sql_query_describer  # replace by snowflake_query_describer
+        sql_query_describer=sql_query_describer,  # replace by snowflake_query_describer
     )
     result = execute(get_connection(), query)
     assert query_expected == query
