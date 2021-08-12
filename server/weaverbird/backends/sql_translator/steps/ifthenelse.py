@@ -57,7 +57,9 @@ def format_condition(condition: Union[SimpleCondition, ConditionComboAnd, Condit
         composed_value: str = str(
             tuple(condition.value) if type(condition.value) == list else condition.value
         ).replace(",)", ")")
-        compiled_query += f"""{condition.column + vqb_to_sql[condition.operator] + composed_value}"""
+        compiled_query += (
+            f"""{condition.column + vqb_to_sql[condition.operator] + composed_value}"""
+        )
 
     return compiled_query
 
