@@ -1,5 +1,5 @@
 from distutils import log
-from typing import Dict, List
+from typing import List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
@@ -11,6 +11,19 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import ConvertStep
+
+
+def format_cast_sql(columns: List, data_type: str) -> str:
+    """
+    From cast to sql
+    """
+    compiled_query: str = ""
+    for index, c in enumerate(columns):
+        if index > 0:
+            compiled_query += ", "
+        compiled_query += f"CAST({c} AS {data_type}) AS {c}"
+
+    return compiled_query
 
 
 def translate_convert(
@@ -36,7 +49,7 @@ def translate_convert(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT CAST(raichu AS VARCHAR) as raichu FROM {query.query_name})""",
+        f""" (SELECT {format_cast_sql(step.columns, step.data_type)} FROM {query.query_name})""",
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
@@ -49,9 +62,3 @@ def translate_convert(
 
     return new_query
 
-#
-# step = ConvertStep(name='convert', columns=['value'], data_type='float')
-# class ConvertStep(BaseStep):
-#     name = Field('convert', const=True)
-#     columns: List[ColumnName]
-#     data_type: Literal['integer', 'float', 'text', 'date', 'boolean']

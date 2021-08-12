@@ -6,6 +6,7 @@ from .filter import translate_filter
 from .rename import translate_rename
 from .select import translate_select
 from .sort import translate_sort
+from .convert import translate_convert
 from .table import translate_table
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
@@ -15,4 +16,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'select': translate_select,
     'sort': translate_sort,
     'rename': translate_rename,
+    'convert': translate_convert,
 }
