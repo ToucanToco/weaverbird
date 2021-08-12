@@ -167,3 +167,22 @@ describe('Variable List', () => {
     });
   });
 });
+
+describe('Variable List - empty', () => {
+  let wrapper: Wrapper<VariableList>;
+  beforeEach(() => {
+    wrapper = shallowMount(VariableList, {
+      sync: false,
+      propsData: {},
+    });
+  });
+  afterEach(() => {
+    wrapper.destroy();
+  });
+  it('should set selectedVariables default to empty string', () => {
+    expect((wrapper.vm as any).selectedVariables).toStrictEqual('');
+  });
+  it('should set availableVariables to empty array', () => {
+    expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
+  });
+});

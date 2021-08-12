@@ -86,3 +86,19 @@ describe('Custom variable list', () => {
     });
   });
 });
+
+describe('Custom variable list - empty', () => {
+  let wrapper: Wrapper<CustomVariableList>;
+  beforeEach(() => {
+    wrapper = shallowMount(CustomVariableList, {
+      sync: false,
+      propsData: {},
+    });
+  });
+  afterEach(() => {
+    wrapper.destroy();
+  });
+  it('should set availableVariables to empty array', () => {
+    expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
+  });
+});

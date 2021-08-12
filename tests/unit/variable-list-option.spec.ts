@@ -121,3 +121,19 @@ describe('Variable List option', () => {
     );
   });
 });
+
+describe('Variable List option - empty', () => {
+  let wrapper: Wrapper<VariableListOption>;
+  beforeEach(() => {
+    wrapper = shallowMount(VariableListOption, {
+      sync: false,
+      propsData: {},
+    });
+  });
+  afterEach(() => {
+    wrapper.destroy();
+  });
+  it('should set selectedVariables default to empty string', () => {
+    expect((wrapper.vm as any).selectedVariables).toStrictEqual('');
+  });
+});
