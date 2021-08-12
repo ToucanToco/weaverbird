@@ -12,7 +12,7 @@ clean:
 .PHONY: install
 install:
 	pip install -U pip
-	pip install poetry 
+	pip install poetry
 	poetry install
 
 .PHONY: format
@@ -52,7 +52,3 @@ install_local:
 
 .PHONY: execute_local_test
 execute_local_test: install_local test
-
-.PHONY: docker_pull
-docker_pull:
-	docker-compose -f tests/docker-compose.yml pull

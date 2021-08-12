@@ -21,7 +21,6 @@ pymysql.install_as_MySQLdb()
 
 image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': 'latest'}
 docker_client = docker.from_env()
-docker_container = None
 
 fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures_sql')
 step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
@@ -58,7 +57,6 @@ def toto():
         docker_client.images.pull('mysql:5.7.21')
 
     logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
-    global docker_container
     docker_container = docker_client.containers.run(
         image=f'{image["image"]}:{image["version"]}',
         name=f'{image["name"]}',
@@ -98,6 +96,7 @@ def get_connection():
     return conn
 
 
+@pytest.fixture
 def get_engine():
     host = '127.0.0.1'
     user = 'ubuntu'
@@ -160,17 +159,18 @@ for x in step_cases_files:
 
 
 # Translation from Pipeline json to SQL query
-@pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
-def test_sql_translator_pipeline(case_id, case_spec_file_path):
+@pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
+def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec_file = open(case_spec_file_path, 'r')
     spec = json.loads(spec_file.read())
     spec_file.close()
 
-    # TODO - insert data from fixture.json
+    # inserting the data in MySQL
+    # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
     data_to_insert.to_sql(
         name=case_id.replace('/', ''),
-        con=get_engine(),
+        con=get_engine,
         index=False,
         if_exists='replace',
     )
@@ -178,15 +178,20 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path):
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    query_expected = spec['other_expected']['sql']['query']
 
+    # Convert Pipeline object to SQL Query
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer,  # replace by snowflake_query_describer
     )
-    result = execute(get_connection(), query)
+
+    # Execute request generated from Pipeline in Mysql and get the result
+    result: pd.DataFrame = execute(get_connection(), query)
+
+    # Compare result and expected (from fixture file)
+    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    query_expected = spec['other_expected']['sql']['query']
     assert query_expected == query
 
     assert_dataframes_equals(pandas_result_expected, result)
