@@ -45,7 +45,7 @@ type_code_mapping = {
 
 
 @pytest.fixture(scope='module', autouse=True)
-def toto():
+def db_container():
     images: List[Image] = docker_client.images.list()
     found = False
     for i in images:
