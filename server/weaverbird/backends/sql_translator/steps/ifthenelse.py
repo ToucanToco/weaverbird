@@ -69,9 +69,7 @@ def format_condition(condition: Union[SimpleCondition, ConditionComboAnd, Condit
 
     # for an normal condition
     if type(condition) in [ComparisonCondition, InclusionCondition, NullCondition, MatchCondition]:
-        if type(condition) == MatchCondition:
-            composed_value = f"'{condition.value}'"
-        elif type(condition) == NullCondition:
+        if type(condition) == NullCondition:
             composed_value: str = ""
         else:
             composed_value: str = str(
