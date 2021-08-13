@@ -1,5 +1,5 @@
 export type DateRange = { start?: Date; end?: Date };
-export type DateRangeSide = 'start' | 'end';
+export type DateRangeSide = keyof DateRange;
 export type DatePickerHighlight = {
   key?: string;
   highlight: {

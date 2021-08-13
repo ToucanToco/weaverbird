@@ -53,6 +53,7 @@ export default class RangeCalendar extends Vue {
     if (value) {
       this.$emit('input', { ...this.value, [prop]: value });
     } else {
+      // calendar can emit null value when clicking on already selected date
       const newValue = { ...this.value };
       delete newValue[prop];
       this.$emit('input', newValue);
