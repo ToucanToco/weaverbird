@@ -13,15 +13,18 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import RenameStep
 
 
-def complete_fields(new_fields: List[str], tables_metadata: Dict[str, Dict[str, str]]) -> str:
+def complete_fields(query, new_fields: List[str], tables_metadata: Dict[str, Dict[str, str]]) -> str:
     """
     We're going to complete missing field from the query
 
     """
     compiled_query: str = ""
-    for elt in tables_metadata['table1'].keys():
-        if elt not in new_fields:
-            compiled_query += f'{elt}, '
+    tables = [*query.metadata_manager.tables_metadata]
+    # TODO : changes the management columns on joins with multiple columns
+    for table in tables:
+        for elt in tables_metadata[table].keys():
+            if elt not in new_fields:
+                compiled_query += f'{elt}, '
 
     return compiled_query
 
@@ -47,14 +50,15 @@ def translate_rename(
 
     fields = []
     for old, new in step.to_rename:
-        table = [*query.metadata_manager.tables_metadata][0]
-        query.metadata_manager.change_name(old, new, table)
-        fields.append(new)
+        tables = [*query.metadata_manager.tables_metadata]
+        for table in tables:
+            query.metadata_manager.change_name(old, new, table)
+            fields.append(new)
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {str(complete_fields(fields, query.metadata_manager.tables_metadata)) +
+        f""" (SELECT {str(complete_fields(query, fields, query.metadata_manager.tables_metadata)) +
                                         ', '.join([f'{old} AS {new}' for old, new in step.to_rename])}"""
         f""" FROM {query.query_name})""",
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
