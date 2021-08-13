@@ -16,5 +16,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'select': translate_select,
     'sort': translate_sort,
     'rename': translate_rename,
-    'convert': translate_convert
+    'convert': translate_convert,
 }
