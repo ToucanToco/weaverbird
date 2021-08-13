@@ -210,3 +210,55 @@ def test_then_should_support_nested_else(query):
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre, cond1 FROM IFTHENELSE_STEP_1'
     assert query.query_name == 'IFTHENELSE_STEP_1'
+
+
+def test_condition_formulas(query):
+    step = IfthenelseStep(
+        **{
+            'name': 'ifthenelse',
+            'if': {
+                'column': 'raichu',
+                'value': 10,
+                'operator': 'gt',
+            },
+            'newColumn': 'cond',
+            'then': 'raichu',
+            'else': 'raichu * -1',
+        }
+    )
+    query = translate_ifthenelse(
+        step,
+        query,
+        index=1,
+    )
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT toto, raichu, florizarre,  '
+        'IFF(raichu > 10, raichu, raichu * -1) AS cond FROM SELECT_STEP_0) '
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT toto, raichu, florizarre, cond FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
+
+
+def test_condition_null(query):
+    step = IfthenelseStep(
+        **{
+            "name": "ifthenelse",
+            "if": {"column": "raichu", "operator": "isnull", "value": None},
+            "newColumn": "cond",
+            "then": "1",
+            "else": "0",
+        }
+    )
+    query = translate_ifthenelse(
+        step,
+        query,
+        index=1,
+    )
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT toto, raichu, florizarre,  '
+        'IFF(raichu IS NULL , 1, 0) AS cond FROM SELECT_STEP_0) '
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT toto, raichu, florizarre, cond FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
