@@ -51,3 +51,20 @@ def test_translate_multiple_rename(query):
         query.selection_query == 'SELECT florizarre, toto_name, raichu_renamed FROM RENAME_STEP_2'
     )
     assert query.query_name == 'RENAME_STEP_2'
+
+
+def test_translate_rename_error(mocker):
+    step = RenameStep(
+        name='rename', to_rename=[['toto', 'toto_name'], ['raichu', 'raichu_renamed']]
+    )
+    query = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT toto, raichu, florizarre FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={'table2': {'titi': 'str', 'raichu': 'int', 'florizarre': 'str'}}
+        ),
+    )
+
+    with pytest.raises(KeyError):
+        translate_rename(step, query, index=1)
