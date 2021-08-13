@@ -62,8 +62,8 @@ export default class VariableInputBase extends Vue {
   @Prop({ default: false })
   isMultiple!: boolean;
 
-  @Prop({ default: () => [] })
-  value!: string[];
+  @Prop({ default: () => '' })
+  value!: string | string[];
 
   @Prop({ default: undefined })
   availableVariables!: VariablesBucket;
@@ -87,13 +87,17 @@ export default class VariableInputBase extends Vue {
   }
 
   /**
-   * Find variables in value array
+   * Remove identifier from selected variable(s)
    */
-  get selectedVariables(): string[] {
-    return this.value.reduce((variables: string[], value: string) => {
-      const identifier = extractVariableIdentifier(value, this.variableDelimiters);
-      return identifier ? [...variables, identifier] : variables;
-    }, []);
+  get selectedVariables(): string | string[] {
+    if (!Array.isArray(this.value)) {
+      return extractVariableIdentifier(this.value, this.variableDelimiters) ?? '';
+    } else {
+      return this.value.reduce((variables: string[], value: string) => {
+        const identifier = extractVariableIdentifier(value, this.variableDelimiters);
+        return identifier ? [...variables, identifier] : variables;
+      }, []);
+    }
   }
 
   /**
@@ -121,11 +125,19 @@ export default class VariableInputBase extends Vue {
     this.$emit('resetEditedAdvancedVariable');
   }
 
+  setVariableDelimiters(value: string | string[]): string | string[] {
+    const addVariableDelimiters = (variableIdentifier: string) =>
+      `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+    return Array.isArray(value)
+      ? value.map(v => addVariableDelimiters(v))
+      : addVariableDelimiters(value);
+  }
+
   /**
-   * Emit the choosen variable
+   * Emit the choosen variable(s)
    */
-  chooseVariable(variableIdentifier: string) {
-    const value = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+  chooseVariable(selectedVariables: string | string[]) {
+    const value = this.setVariableDelimiters(selectedVariables);
     this.$emit('input', value);
     if (!this.isMultiple) {
       this.stopChoosingVariable(); // keep list open with multiVariable mode

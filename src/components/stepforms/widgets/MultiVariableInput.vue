@@ -9,7 +9,7 @@
       :edited-advanced-variable="editedAdvancedVariable"
       @chooseAdvancedVariable="chooseAdvancedVariable"
       @resetEditedAdvancedVariable="resetEditedAdvancedVariable"
-      @input="toggleVariable"
+      @input="chooseVariable"
     >
       <slot />
     </VariableInputBase>
@@ -48,15 +48,8 @@ export default class MultiVariableInput extends Vue {
   /**
    * Toggle value in array
    */
-  toggleVariable(value: string) {
-    if (this.value.indexOf(value) !== -1) {
-      this.$emit(
-        'input',
-        this.value.filter(v => v !== value),
-      );
-    } else {
-      this.$emit('input', [...this.value, value]);
-    }
+  chooseVariable(value: string[]) {
+    this.$emit('input', value);
   }
 
   /**
