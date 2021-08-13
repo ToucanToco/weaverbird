@@ -2,12 +2,6 @@ import pytest
 
 from weaverbird.backends.sql_translator.steps import translate_ifthenelse
 from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
-from weaverbird.pipeline.conditions import (
-    ComparisonCondition,
-    ConditionComboAnd,
-    ConditionComboOr,
-    MatchCondition,
-)
 from weaverbird.pipeline.steps import IfthenelseStep
 
 

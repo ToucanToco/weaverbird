@@ -93,7 +93,13 @@ def recurse_format_if_then_else(step: IfthenelseStep) -> str:
     """
     composed_query: str = "/-*-/"
     # while we have a nested else, pack the query
-    while type(step.else_value) in [IfThenElse, IfthenelseStep, SimpleCondition, ConditionComboAnd, ConditionComboOr]:
+    while type(step.else_value) in [
+        IfThenElse,
+        IfthenelseStep,
+        SimpleCondition,
+        ConditionComboAnd,
+        ConditionComboOr,
+    ]:
         composed_query = composed_query.replace(
             "/-*-/",
             f"""IFF({format_condition(step.condition)}, {step.then}, /-*-/)""",
@@ -134,7 +140,9 @@ def translate_ifthenelse(
     for table in [*query.metadata_manager.tables_metadata]:
         query.metadata_manager.add_column(table, step.new_column, "str")
 
-    new_query.selection_query = build_selection_query(query.metadata_manager.tables_metadata, query_name)
+    new_query.selection_query = build_selection_query(
+        query.metadata_manager.tables_metadata, query_name
+    )
     new_query.metadata_manager = query.metadata_manager
 
     log.debug(
