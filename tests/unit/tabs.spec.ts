@@ -6,24 +6,33 @@ const TABS = ['Tab 1', 'Tab 2'];
 
 describe('Tabs', () => {
   let wrapper: Wrapper<Tabs>;
-  const createWrapper: Function = (props: any = {}) => {
-    wrapper = shallowMount(Tabs, {
-      propsData: {
-        tabs: TABS,
-        selectedTab: 'Tab 2',
-        disabledTabs: [],
-        ...props,
-      },
-    });
+  const createWrapper: Function = (propsData: any = {}) => {
+    wrapper = shallowMount(Tabs, { propsData });
   };
 
   afterEach(() => {
     if (wrapper) wrapper.destroy();
   });
 
-  describe('(default case)', () => {
+  describe('empty', () => {
     beforeEach(() => {
       createWrapper();
+    });
+    it('should set tabs to empty array by default', () => {
+      expect((wrapper.vm as any).tabs).toStrictEqual([]);
+    });
+    it('should set disabled tabs to empty array by default', () => {
+      expect((wrapper.vm as any).disabledTabs).toStrictEqual([]);
+    });
+  });
+
+  describe('(default case)', () => {
+    beforeEach(() => {
+      createWrapper({
+        tabs: TABS,
+        selectedTab: 'Tab 2',
+        disabledTabs: [],
+      });
     });
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
@@ -41,7 +50,11 @@ describe('Tabs', () => {
   describe('error on init selected tab', () => {
     describe('no selected tab', () => {
       beforeEach(() => {
-        createWrapper({ selectedTab: undefined });
+        createWrapper({
+          tabs: TABS,
+          selectedTab: undefined,
+          disabledTabs: [],
+        });
       });
       it('should select the first available tab', () => {
         expect(wrapper.emitted().tabSelected[0][0]).toStrictEqual('Tab 1');
@@ -50,7 +63,11 @@ describe('Tabs', () => {
 
     describe('disabled tab', () => {
       beforeEach(() => {
-        createWrapper({ selectedTab: 'Tab 1', disabledTabs: ['Tab 1'] });
+        createWrapper({
+          tabs: TABS,
+          selectedTab: 'Tab 1',
+          disabledTabs: ['Tab 1'],
+        });
       });
       it('should select the first available tab', () => {
         expect(wrapper.emitted().tabSelected[0][0]).toStrictEqual('Tab 2');
@@ -59,7 +76,11 @@ describe('Tabs', () => {
 
     describe('inexisting tab', () => {
       beforeEach(() => {
-        createWrapper({ selectedTab: 'nope' });
+        createWrapper({
+          tabs: TABS,
+          selectedTab: 'nop',
+          disabledTabs: [],
+        });
       });
       it('should select the first available tab', () => {
         expect(wrapper.emitted().tabSelected[0][0]).toStrictEqual('Tab 1');
@@ -69,7 +90,12 @@ describe('Tabs', () => {
 
   describe('with specific format', () => {
     beforeEach(() => {
-      createWrapper({ formatTab: (tab: string) => `${tab} YOLO` });
+      createWrapper({
+        tabs: TABS,
+        selectedTab: undefined,
+        disabledTabs: [],
+        formatTab: (tab: string) => `${tab} YOLO`,
+      });
     });
     it('should display the formatted tabs', () => {
       expect(wrapper.findAll('.tabs__tab').wrappers.map((wrapper: any) => wrapper.text())).toEqual(
@@ -80,7 +106,11 @@ describe('Tabs', () => {
 
   describe('when selecting a tab', () => {
     beforeEach(() => {
-      createWrapper();
+      createWrapper({
+        tabs: TABS,
+        selectedTab: 'Tab 2',
+        disabledTabs: [],
+      });
     });
     it('should emit the selected tab', async () => {
       wrapper.find('.tabs__tab').trigger('click');
@@ -91,7 +121,11 @@ describe('Tabs', () => {
 
   describe('when tab is disabled', () => {
     beforeEach(async () => {
-      createWrapper({ disabledTabs: ['Tab 2'], selectedTab: 'Tab 1' });
+      createWrapper({
+        tabs: TABS,
+        disabledTabs: ['Tab 2'],
+        selectedTab: 'Tab 1',
+      });
       await wrapper.vm.$nextTick();
     });
 
