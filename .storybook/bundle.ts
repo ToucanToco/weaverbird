@@ -40,6 +40,7 @@ import VariableList from '../src/components/stepforms/widgets/VariableInputs/Var
 import CustomVariableList from '../src/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
 import Calendar from '../src/components/Calendar.vue';
 import Tabs from '../src/components/Tabs.vue';
+import RangeCalendar from '../src/components/RangeCalendar.vue';
 
 export {
   FilterEditor,
@@ -78,7 +79,8 @@ export {
   VariableList,
   CustomVariableList,
   Calendar,
-  Tabs
+  Tabs,
+  RangeCalendar,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';
