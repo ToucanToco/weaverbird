@@ -38,3 +38,25 @@ def test_translate_sort(query):
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM SORT_STEP_1'
     assert query.query_name == 'SORT_STEP_1'
+
+
+def test_translate_sort_error(query):
+    step = SortStep(
+        name='sort',
+        columns=[
+            ColumnSort(column='toto', order='asc'),
+            ColumnSort(column='raichu', order='desc'),
+        ],
+    )
+    mock_step = SortStep(
+        name='sort',
+        columns=[
+            ColumnSort(column='toto', order='desc'),
+        ],
+    )
+
+    with pytest.raises(AssertionError):
+        assert (
+            translate_sort(mock_step, query, index=1).transformed_query
+            == translate_sort(step, query, index=1).transformed_query
+        )
