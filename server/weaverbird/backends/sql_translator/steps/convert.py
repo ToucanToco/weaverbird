@@ -13,6 +13,20 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import ConvertStep
 
 
+def complete_fields(columns: List, query: SQLQuery) -> str:
+    """
+    We're going to complete missing field from the query
+
+    """
+    compiled_query: str = ""
+    for table in [*query.metadata_manager.tables_metadata]:
+        # TODO : changes the management columns on joins with duplicated columns
+        for elt in query.metadata_manager.tables_metadata[table].keys():
+            compiled_query += f'{elt}, ' if elt not in columns else ''
+
+    return compiled_query
+
+
 def format_cast_to_sql(columns: List, data_type: str) -> str:
     """
     From cast to sql
@@ -49,7 +63,7 @@ def translate_convert(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {format_cast_to_sql(step.columns, step.data_type)} FROM {query.query_name}) """,
+                          f""" (SELECT {complete_fields(step.columns, query)} {format_cast_to_sql(step.columns, step.data_type)} FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
