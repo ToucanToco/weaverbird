@@ -1,15 +1,14 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import VariableChooser from '@/components/stepforms/widgets/VariableInputs/VariableChooser.vue';
+import CustomVariableList from '@/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
 
-describe('Variable Chooser', () => {
-  let wrapper: Wrapper<VariableChooser>;
+describe('Custom variable list', () => {
+  let wrapper: Wrapper<CustomVariableList>;
 
   beforeEach(() => {
-    wrapper = shallowMount(VariableChooser, {
+    wrapper = shallowMount(CustomVariableList, {
       sync: false,
       propsData: {
-        isOpened: false,
         availableVariables: [
           {
             category: 'App variables',
@@ -56,45 +55,22 @@ describe('Variable Chooser', () => {
     expect(wrapper.exists()).toBeTruthy();
   });
 
-  it('should instantiate a popover', () => {
-    expect(wrapper.find('popover-stub').exists()).toBeTruthy();
-  });
-
   it('should instantiate a variable list', () => {
     expect(wrapper.find('VariableList-stub').exists()).toBeTruthy();
   });
 
-  describe('when is advanced', () => {
-    it('should display an "Advanced variable" option ...', () => {
-      expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
-    });
-
-    it('... even without other values', async () => {
-      wrapper.setProps({ availableVariables: [] });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
-    });
-
-    describe('when clicking on "Advanced variable"', () => {
-      beforeEach(async () => {
-        wrapper.find('.widget-advanced-variable').trigger('click');
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should emit advancedVariable', () => {
-        expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
-      });
-    });
+  it('should display an "Custom" option ...', () => {
+    expect(wrapper.find('.widget-custom-variable-list__custom-option').exists()).toBe(true);
   });
 
-  describe('when closing the popover', () => {
+  describe('when choosing "Custom"', () => {
     beforeEach(async () => {
-      wrapper.find('popover-stub').vm.$emit('closed');
+      wrapper.find('.widget-custom-variable-list__custom-option').vm.$emit('input');
       await wrapper.vm.$nextTick();
     });
 
-    it('should emit close', () => {
-      expect(wrapper.emitted().closed).toBeTruthy();
+    it('should emit selectCustomVariable', () => {
+      expect(wrapper.emitted('selectCustomVariable')).toHaveLength(1);
     });
   });
 
@@ -108,5 +84,21 @@ describe('Variable Chooser', () => {
       expect(wrapper.emitted('input')).toHaveLength(1);
       expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
     });
+  });
+});
+
+describe('Custom variable list - empty', () => {
+  let wrapper: Wrapper<CustomVariableList>;
+  beforeEach(() => {
+    wrapper = shallowMount(CustomVariableList, {
+      sync: false,
+      propsData: {},
+    });
+  });
+  afterEach(() => {
+    wrapper.destroy();
+  });
+  it('should set availableVariables to empty array', () => {
+    expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
   });
 });
