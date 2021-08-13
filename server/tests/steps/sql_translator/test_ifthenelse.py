@@ -84,26 +84,20 @@ def test_and_condition(query):
     step = IfthenelseStep(
         **{
             'name': 'ifthenelse',
-            'if': ConditionComboAnd(
-                **{
-                    'and': [
-                        ComparisonCondition(
-                            **{
-                                'column': 'raichu',
-                                'value': 10,
-                                'operator': 'gt',
-                            }
-                        ),
-                        MatchCondition(
-                            **{
-                                'column': 'toto',
-                                'value': '\'ogadoka\'',
-                                'operator': 'matches',
-                            }
-                        ),
-                    ],
-                }
-            ),
+            'if': {
+                'and': [
+                    {
+                        'column': 'raichu',
+                        'value': 10,
+                        'operator': 'gt',
+                    },
+                    {
+                        'column': 'toto',
+                        'value': '\'ogadoka\'',
+                        'operator': 'matches',
+                    },
+                ],
+            },
             'newColumn': 'cond',
             'then': '\'tintin\'',
             'else': '\'anime\'',
@@ -127,26 +121,20 @@ def test_or_condition(query):
     step = IfthenelseStep(
         **{
             'name': 'ifthenelse',
-            'if': ConditionComboOr(
-                **{
-                    'or': [
-                        ComparisonCondition(
-                            **{
-                                'column': 'raichu',
-                                'value': 10,
-                                'operator': 'lt',
-                            }
-                        ),
-                        ComparisonCondition(
-                            **{
-                                'column': 'raichu',
-                                'value': 1,
-                                'operator': 'ge',
-                            }
-                        ),
-                    ],
-                }
-            ),
+            'if': {
+                'or': [
+                    {
+                        'column': 'raichu',
+                        'value': 10,
+                        'operator': 'lt',
+                    },
+                    {
+                        'column': 'raichu',
+                        'value': 1,
+                        'operator': 'ge',
+                    },
+                ],
+            },
             'newColumn': 'cond',
             'then': '\'tintin\'',
             'else': '\'anime\'',
@@ -171,60 +159,46 @@ def test_then_should_support_nested_else(query):
         **{
             'name': 'ifthenelse',
             'newColumn': 'cond1',
-            'if': ConditionComboOr(
-                **{
-                    'or': [
-                        ComparisonCondition(
-                            **{
-                                'column': 'raichu',
-                                'value': 10,
-                                'operator': 'lt',
-                            }
-                        ),
-                        ComparisonCondition(
-                            **{
-                                'column': 'raichu',
-                                'value': 1,
-                                'operator': 'ge',
-                            }
-                        ),
-                    ],
-                }
-            ),
+            'if': {
+                'or': [
+                    {
+                        'column': 'raichu',
+                        'value': 10,
+                        'operator': 'lt',
+                    },
+                    {
+                        'column': 'raichu',
+                        'value': 1,
+                        'operator': 'ge',
+                    },
+                ],
+            },
             'then': 3,
-            'else': IfthenelseStep(
-                **{
-                    'if': {'column': 'toto', 'value': '\'zigar\'', 'operator': 'matches'},
-                    'newColumn': 'cond2',
-                    'then': 1,
-                    'else': IfthenelseStep(
-                        **{
-                            'if': {'column': 'florizarre', 'value': '\'gokar\'', 'operator': 'eq'},
-                            'then': 2,
+            'else': {
+                'if': {'column': 'toto', 'value': '\'zigar\'', 'operator': 'matches'},
+                'newColumn': 'cond2',
+                'then': 1,
+                'else': {
+                    'if': {'column': 'florizarre', 'value': '\'gokar\'', 'operator': 'eq'},
+                    'then': 2,
+                    'newColumn': 'cond3',
+                    'else': {
+                        'if': {'column': 'toto', 'value': '\'ok\'', 'operator': 'ne'},
+                        'then': 7,
+                        'newColumn': 'cond3',
+                        'else': {
+                            'if': {
+                                'column': 'florizarre',
+                                'value': ['ok'],
+                                'operator': 'in',
+                            },
+                            'then': 7,
                             'newColumn': 'cond3',
-                            'else': IfthenelseStep(
-                                **{
-                                    'if': {'column': 'toto', 'value': '\'ok\'', 'operator': 'ne'},
-                                    'then': 7,
-                                    'newColumn': 'cond3',
-                                    'else': IfthenelseStep(
-                                        **{
-                                            'if': {
-                                                'column': 'florizarre',
-                                                'value': ['ok'],
-                                                'operator': 'in',
-                                            },
-                                            'then': 7,
-                                            'newColumn': 'cond3',
-                                            'else': 0,
-                                        }
-                                    ),
-                                }
-                            ),
-                        }
-                    ),
-                }
-            ),
+                            'else': 0,
+                        },
+                    },
+                },
+            },
         }
     )
     query = translate_ifthenelse(
