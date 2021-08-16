@@ -68,7 +68,8 @@ def translate_ifthenelse(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(query)} {recursively_convert_nested_condition(step, composed_query)}"""
+        f""" (SELECT {complete_fields(query)} """
+        f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")}"""
         f""" AS {step.new_column}"""
         f""" FROM {query.query_name}) """,
     )
