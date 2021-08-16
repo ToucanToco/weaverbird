@@ -192,11 +192,7 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   get hasDateSelectedColumn(): boolean {
-    return (
-      this.$store.state?.vqb?.featureFlags != undefined &&
-      this.$store.state.vqb.featureFlags.QUERYBUILDER_ESJSON == 'enable' &&
-      this.columnTypes[this.value.column] == 'date'
-    );
+    return this.columnTypes[this.value.column] == 'date';
   }
 
   get operator(): OperatorOption {

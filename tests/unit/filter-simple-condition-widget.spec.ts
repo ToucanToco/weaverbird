@@ -276,7 +276,7 @@ describe('Widget FilterSimpleCondition', () => {
     expect(wrapper.emitted().input[0]).toEqual([{ column: 'columnA', value: [], operator: 'in' }]);
   });
 
-  describe('date column and date featureflag enabled', () => {
+  describe('date column and date', () => {
     let wrapper: Wrapper<FilterSimpleConditionWidget>;
     const createWrapper = (mountType: Function, customProps: any = {}) => {
       const store = setupMockStore({
@@ -286,8 +286,6 @@ describe('Widget FilterSimpleCondition', () => {
         },
         selectedColumns: ['columnA'],
       });
-      store.state.vqb.featureFlags = {};
-      store.state.vqb.featureFlags.QUERYBUILDER_ESJSON = 'enable';
       wrapper = mountType(FilterSimpleConditionWidget, {
         propsData: {
           value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
