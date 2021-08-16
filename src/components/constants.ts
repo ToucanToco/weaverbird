@@ -67,6 +67,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
     { name: 'comparetext', label: 'Compare text columns' },
+    { name: 'trim', label: 'Trim spaces' },
   ],
   date: [
     { name: 'todate', label: 'Convert text to date' },

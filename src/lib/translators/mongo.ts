@@ -1976,6 +1976,15 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
   ];
 }
 
+function transformTrim(step: Readonly<S.TrimStep>): MongoStep {
+  let cols: string[] = [];
+  cols = [...step.columns];
+
+  const addFields = Object.fromEntries(cols.map(x => [x, { $trim: { input: $$(x) } }]));
+
+  return { $addFields: addFields };
+}
+
 /** transform an 'uniquegroups' step into corresponding mongo steps */
 function transformUniqueGroups(step: Readonly<S.UniqueGroupsStep>): MongoStep[] {
   const id = columnMap(step.on);
@@ -2219,6 +2228,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   top: transformTop,
   totals: transformTotals,
+  trim: transformTrim,
   uniquegroups: transformUniqueGroups,
   unpivot: transformUnpivot,
   uppercase: (step: Readonly<S.ToUpperStep>) => ({

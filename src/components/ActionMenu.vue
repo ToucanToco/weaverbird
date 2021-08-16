@@ -89,6 +89,13 @@
             </div>
             <div
               class="action-menu__option"
+              v-if="isStepSupported('trim')"
+              @click="createTrimStep"
+            >
+              Trim spaces in column
+            </div>
+            <div
+              class="action-menu__option"
               v-if="isStepSupported('uniquegroups')"
               @click="createUniqueGroupsStep"
             >
@@ -208,6 +215,10 @@ export default class ActionMenu extends Vue {
 
   createFilterStep() {
     this.createStep({ name: 'filter', condition: this.condition });
+  }
+
+  createTrimStep() {
+    this.createStep({ name: 'trim', columns: [this.columnName] });
   }
 }
 </script>
