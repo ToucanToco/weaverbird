@@ -63,3 +63,33 @@ stories.add('range', () => ({
     </div>
   `,
 }));
+
+stories.add('with highlighted dates', () => ({
+  components: { Calendar },
+  data() {
+    return { 
+      value: new Date('01/01/2021'),
+      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') } 
+    };
+  },
+  computed: {
+    formattedValue() {
+      return formatValue(this.value);
+    },
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+  template: `
+    <div>
+      <Calendar 
+        :value="value"
+        :highlightedDates="highlightedDates"
+        @input="input"
+      />
+      <pre>{{ formattedValue }}</pre>
+    </div>
+  `,
+}));
