@@ -4,6 +4,7 @@ from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .convert import translate_convert
 from .filter import translate_filter
+from .ifthenelse import translate_ifthenelse
 from .rename import translate_rename
 from .select import translate_select
 from .sort import translate_sort
@@ -14,6 +15,7 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'filter': translate_filter,
     'aggregate': translate_aggregate,
     'select': translate_select,
+    'ifthenelse': translate_ifthenelse,
     'sort': translate_sort,
     'rename': translate_rename,
     'convert': translate_convert,
