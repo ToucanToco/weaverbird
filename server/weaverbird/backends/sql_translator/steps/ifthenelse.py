@@ -1,5 +1,4 @@
 from distutils import log
-from typing import List, Union
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
@@ -10,15 +9,6 @@ from weaverbird.backends.sql_translator.types import (
     SQLQuery,
     SQLQueryDescriber,
     SQLQueryRetriever,
-)
-from weaverbird.pipeline.conditions import (
-    ComparisonCondition,
-    ConditionComboAnd,
-    ConditionComboOr,
-    InclusionCondition,
-    MatchCondition,
-    NullCondition,
-    SimpleCondition,
 )
 from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
