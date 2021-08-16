@@ -19,14 +19,14 @@ describe('castFromString', () => {
     expect(castFromString(string2, 'float')).toEqual(4.2);
   });
 
-  it('should cast date string to dates, if ejson is enabled', () => {
+  it('should cast date string to date', () => {
     const string1 = '2021-01-01';
-    expect(castFromString(string1, 'date', true)).toEqual(new Date(string1));
+    expect(castFromString(string1, 'date')).toEqual(new Date(string1));
   });
 
   it('should cast date variable to string', () => {
     const variable = '<%= lala %>';
-    expect(castFromString(variable, 'date', true)).toEqual(variable);
+    expect(castFromString(variable, 'date')).toEqual(variable);
   });
 
   it('should not cast a string that does not convert to number type', () => {
