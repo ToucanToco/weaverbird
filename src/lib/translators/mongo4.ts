@@ -304,7 +304,17 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
   }
 }
 
+/** transform a 'trim' step into corresponding mongo steps */
+function transformTrim(step: Readonly<S.TrimStep>): MongoStep {
+  let cols: string[] = [];
+  cols = [...step.columns];
+
+  const addFields = Object.fromEntries(cols.map(x => [x, { $trim: { input: $$(x) } }]));
+
+  return { $addFields: addFields };
+}
+
 export class Mongo40Translator extends Mongo36Translator {
   static label = 'Mongo 4.0';
 }
-Object.assign(Mongo40Translator.prototype, { convert: transformConvert, todate: transformToDate });
+Object.assign(Mongo40Translator.prototype, { convert: transformConvert, todate: transformToDate, trim: transformTrim });
