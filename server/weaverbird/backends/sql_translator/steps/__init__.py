@@ -2,6 +2,7 @@ from typing import Dict
 
 from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
+from .convert import translate_convert
 from .filter import translate_filter
 from .rename import translate_rename
 from .select import translate_select
@@ -15,4 +16,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'select': translate_select,
     'sort': translate_sort,
     'rename': translate_rename,
+    'convert': translate_convert,
 }
