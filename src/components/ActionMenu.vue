@@ -90,9 +90,9 @@
             <div
               class="action-menu__option"
               v-if="isStepSupported('trim')"
-              @click="createTrimStep"
+              @click="openStep('trim')"
             >
-              Trim spaces in column
+              Trim spaces
             </div>
             <div
               class="action-menu__option"
@@ -215,10 +215,6 @@ export default class ActionMenu extends Vue {
 
   createFilterStep() {
     this.createStep({ name: 'filter', condition: this.condition });
-  }
-
-  createTrimStep() {
-    this.createStep({ name: 'trim', columns: [this.columnName] });
   }
 }
 </script>
