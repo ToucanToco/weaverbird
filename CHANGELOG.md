@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.55.0] - 2021-08-09
+
+### Added
+
+- Tabs: new component to switch content depending on selected tab
+- Calendar: new component to select a date in a calendar UI
+- RangeCalendar: new component to select a date range in a calendar UI
+
+### Fixed
+- Dates: remove feature flag / always use date input with date column type
+- Variable list: move component to independent file
+
 ## [0.54.0] - 2021-08-09
 
 ### Changed
