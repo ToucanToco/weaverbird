@@ -40,3 +40,22 @@ stories.add('empty', () => ({
     };
   },
 }));
+
+stories.add('isNegative', () => ({
+  template: `
+    <div>
+      <RelativeDateForm v-model="value" :isNegative="true" />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    RelativeDateForm,
+  },
+
+  data() {
+    return {
+      value: { quantity: -2, duration: 'quarter' },
+    };
+  },
+}));

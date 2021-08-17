@@ -33,7 +33,7 @@ describe('Relative date form', () => {
     it('should use an autocomplete input', () => {
       expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
     });
-    it('should pass durations options to autcomplete', () => {
+    it('should pass durations options to autocomplete', () => {
       expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual(
         DEFAULT_DURATIONS,
       );
@@ -41,7 +41,7 @@ describe('Relative date form', () => {
     it('should pass quantity to input number', () => {
       expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(20);
     });
-    it('should pass duration label to autocomplete', () => {
+    it('should pass duration to autocomplete', () => {
       expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(selectedDuration);
     });
 
@@ -68,6 +68,43 @@ describe('Relative date form', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           ...value,
           duration: selectedDuration.value,
+        });
+      });
+    });
+  });
+
+  describe('isNegative', () => {
+    const selectedDuration = DEFAULT_DURATIONS[1];
+    const value = { quantity: -20, duration: selectedDuration.value };
+    beforeEach(() => {
+      createWrapper({
+        value,
+        isNegative: true,
+      });
+    });
+    it('should pass negative durations options to autocomplete', () => {
+      const option = wrapper.find('AutocompleteWidget-stub').props().options[0];
+      const defaultOption = DEFAULT_DURATIONS[0];
+      expect(option.label).toStrictEqual(`${defaultOption.label} ago`);
+      expect(option.value).toStrictEqual(defaultOption.value);
+    });
+    it('should pass abs quantity to input number', () => {
+      expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(20);
+    });
+    it('should pass negative duration to autocomplete', () => {
+      const duration = wrapper.find('AutocompleteWidget-stub').props().value;
+      expect(duration.label).toStrictEqual(`${selectedDuration.label} ago`);
+      expect(duration.value).toStrictEqual(selectedDuration.value);
+    });
+    describe('when quantity is updated', () => {
+      beforeEach(async () => {
+        wrapper.find('InputNumberWidget-stub').vm.$emit('input', 3);
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated negative quantity', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          ...value,
+          quantity: -3,
         });
       });
     });

@@ -28,19 +28,32 @@ import { DEFAULT_DURATIONS, DurationOption, RelativeDate } from '@/lib/dates';
   },
 })
 export default class CustomVariableList extends Vue {
-  @Prop({ default: () => ({ quantity: 1, duration: 'year' }) })
+  @Prop({ default: () => ({ quantity: 1, duration: DEFAULT_DURATIONS[0].value }) })
   value!: RelativeDate;
 
+  @Prop({ default: false })
+  isNegative!: boolean; // define if the quantity should be negative
+
   get quantity(): number {
-    return this.value.quantity;
+    return Math.abs(this.value.quantity);
   }
 
   set quantity(quantity: number) {
-    this.$emit('input', { ...this.value, quantity });
+    const abs = this.isNegative ? -1 : 1;
+    this.$emit('input', { ...this.value, quantity: quantity * abs });
   }
 
   get durations(): DurationOption[] {
-    return DEFAULT_DURATIONS;
+    /* When quantity is negative we add "ago" to durations labels
+     in order to specify user that relative date refers to past */
+    if (this.isNegative) {
+      return [...DEFAULT_DURATIONS].map(opt => ({
+        ...opt,
+        label: opt.label + ' ago',
+      }));
+    } else {
+      return DEFAULT_DURATIONS;
+    }
   }
 
   get duration(): DurationOption | undefined {
