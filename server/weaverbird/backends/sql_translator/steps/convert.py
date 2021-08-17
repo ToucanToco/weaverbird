@@ -1,5 +1,5 @@
 from distutils import log
-from typing import List, Tuple
+from typing import List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
@@ -19,14 +19,9 @@ def format_cast_to_sql(columns: List, data_type: str, completed_fields: str) -> 
     From cast to sql
     """
     compiled_query: str = ""
-    as_columns: list = []
     for c in columns:
-        compiled_query = ", ".join([f"CAST({c} AS {data_type}) AS {c}"])
-        as_columns.append(c)
-    if len(completed_fields):
-        return as_columns, ', {compiled_query}'
-    else:
-        return as_columns, compiled_query
+        compiled_query = ", ".join([f"CAST({c} AS {data_type}) AS {c}" for c in columns])
+    return compiled_query
 
 
 def translate_convert(
@@ -54,9 +49,12 @@ def translate_convert(
             query.metadata_manager.change_type(
                 column_name=c, table_name=table, new_type=step.data_type
             )
-    as_columns, compiled_query = format_cast_to_sql(step.columns, step.data_type)
-
-    completed_fields = complete_fields(columns=step.columns+as_columns, query=query)
+    completed_fields = complete_fields(columns=step.columns, query=query)
+    compiled_query = format_cast_to_sql(
+        step.columns, step.data_type, completed_fields=completed_fields
+    )
+    if len(completed_fields):
+        compiled_query = f', {compiled_query}'
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
