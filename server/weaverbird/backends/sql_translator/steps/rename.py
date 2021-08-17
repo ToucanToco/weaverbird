@@ -49,7 +49,7 @@ def translate_rename(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_rename_fields(step, query)
-                      + ', '.join([f'{old} AS {new.upper()}' for old, new in step.to_rename])}"""
+                      + ', '.join([f'{old} AS {new}' for old, new in step.to_rename])}"""
         f""" FROM {query.query_name})""",
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,
