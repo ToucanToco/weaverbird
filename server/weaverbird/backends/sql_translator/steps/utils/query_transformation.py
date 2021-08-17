@@ -36,19 +36,21 @@ SQL_INCLUSION_OPERATORS = {
 
 
 def apply_condition(condition: Condition, query: str) -> str:
-    # just to escape single quotes from crashing the snowflakeSQL query
-    if type(condition.value) == str:
-        condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
-
     if isinstance(condition, ComparisonCondition):
         try:
             float(condition.value)
             query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
         except ValueError:
+            # just to escape single quotes from crashing the snowflakeSQL query
+            if type(condition.value) == str:
+                condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
             query += f"{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, NullCondition):
         query += f'{condition.column} {SQL_NULLITY_OPERATORS[condition.operator]}'
     elif isinstance(condition, MatchCondition):
+        # just to escape single quotes from crashing the snowflakeSQL query
+        if type(condition.value) == str:
+            condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
         query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
         query += f"{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}"
