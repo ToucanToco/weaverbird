@@ -38,8 +38,8 @@ from .table import TableStep
 from .text import TextStep, TextStepWithVariable
 from .todate import ToDateStep
 from .top import TopStep, TopStepWithVariables
-from .trim import TrimStep
 from .totals import TotalsStep, TotalsStepWithVariable
+from .trim import TrimStep
 from .uniquegroups import UniqueGroupsStep, UniqueGroupsStepWithVariable
 from .unpivot import UnpivotStep, UnpivotStepWithVariable
 from .uppercase import UppercaseStep
