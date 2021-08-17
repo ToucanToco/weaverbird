@@ -3,7 +3,7 @@ from typing import List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
-    build_selection_query,
+    build_selection_query, complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -13,19 +13,6 @@ from weaverbird.backends.sql_translator.types import (
 )
 from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
-
-
-def complete_fields(fields: List, query: SQLQuery) -> str:
-    """
-    We're going to complete missing field from the query
-    """
-    compiled_query: str = ""
-    for table in [*query.metadata_manager.tables_metadata]:
-        # TODO : changes the management columns on joins with duplicated columns
-        for elt in query.metadata_manager.tables_metadata[table].keys():
-            compiled_query += f'{elt}, ' if elt.upper() not in fields else ''
-
-    return compiled_query
 
 
 def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: str) -> str:
@@ -65,7 +52,6 @@ def translate_ifthenelse(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
     composed_query: str = ""
-    step.new_column = step.new_column.upper()
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""

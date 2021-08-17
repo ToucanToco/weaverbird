@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Dict, List
 
+from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     Condition,
@@ -167,3 +168,21 @@ def prepare_aggregation_query(aggregated_cols, aggregated_string, query, step):
     elif len(aggregated_cols):
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name}"
     return aggregated_string
+
+
+def complete_fields(fields: List, query: SQLQuery) -> str:
+    """
+    We're going to complete missing field from the query
+    """
+    compiled_query: str = ""
+    for table in [*query.metadata_manager.tables_metadata]:
+        # TODO : changes the management columns on joins with duplicated columns
+        if len(fields) == 0:
+            compiled_query += ', '.join(query.metadata_manager.tables_metadata[table].keys())
+        else:
+            for elt in query.metadata_manager.tables_metadata[table].keys():
+                if elt.upper() not in fields and elt.lower() not in fields:
+                    compiled_query += f'{elt}, '
+
+    return compiled_query
+
