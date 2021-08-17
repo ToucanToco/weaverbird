@@ -14,21 +14,6 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import SortStep
 from weaverbird.pipeline.steps.sort import ColumnSort
 
-# def complete_fields(query: SQLQuery) -> str:
-#     """
-#     We're going to complete missing field from the query
-#
-#     """
-#     compiled_query: str = ""
-#     for table in [*query.metadata_manager.tables_metadata]:
-#         # TODO : changes the management columns on joins with duplicated columns
-#         for index, elt in enumerate(query.metadata_manager.tables_metadata[table].keys()):
-#             if index > 0:
-#                 compiled_query += ", "
-#             compiled_query += f'{elt}'
-#
-#     return compiled_query
-
 
 def sort_columns_to_sql(columns: List[ColumnSort]) -> str:
     """
