@@ -52,17 +52,15 @@ def translate_ifthenelse(
     )
     composed_query: str = ""
     completed_fields = complete_fields(columns=[step.new_column], query=query)
-    composed_query = (
-        f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")} AS {step.new_column}"""
-    )
+    composed_query = f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")} AS {step.new_column}"""
     if completed_fields:
         composed_query = f', {composed_query}'
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-                          f""" (SELECT {completed_fields}{composed_query}"""
-                          f""" FROM {query.query_name}) """,
+        f""" (SELECT {completed_fields}{composed_query}"""
+        f""" FROM {query.query_name}) """,
     )
 
     for table in [*query.metadata_manager.tables_metadata]:
