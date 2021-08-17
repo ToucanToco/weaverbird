@@ -8,23 +8,23 @@ export type DatePickerHighlight = {
   };
   dates?: DateRange;
 };
-export type RelativeDate = {
-  date?: Date;
-  quantity?: number; // can be negative or positive
-  duration?: any;
+
+export type Duration = 'year' | 'quarter' | 'month' | 'week' | 'day';
+export type DurationOption = {
+  label: string;
+  value: Duration;
 };
 
-export const DEFAULT_DURATIONS = [
-  {
-    label: 'Years ago',
-    identifier: 'year',
-  },
-  {
-    label: 'Months ago',
-    identifier: 'month',
-  },
-  {
-    label: 'Days ago',
-    identifier: 'day',
-  },
+export type RelativeDate = {
+  date?: Date | string;
+  quantity: number; // can be negative or positive
+  duration: Duration;
+};
+
+export const DEFAULT_DURATIONS: DurationOption[] = [
+  { label: 'Years', value: 'year' },
+  { label: 'Quarters', value: 'quarter' },
+  { label: 'Months', value: 'month' },
+  { label: 'Weeks', value: 'week' },
+  { label: 'Days', value: 'day' },
 ];

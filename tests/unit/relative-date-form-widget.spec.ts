@@ -5,20 +5,6 @@ import { DEFAULT_DURATIONS } from '@/lib/dates';
 
 describe('Relative date form', () => {
   let wrapper: Wrapper<RelativeDateForm>;
-  const VARIABLES = [
-    {
-      label: 'Today',
-      identifier: 'today',
-    },
-    {
-      label: 'Last month',
-      identifier: 'last_month',
-    },
-    {
-      label: 'This year',
-      identifier: 'this_year',
-    },
-  ];
   const createWrapper = (propsData: any = {}) => {
     wrapper = shallowMount(RelativeDateForm, {
       sync: false,
@@ -31,10 +17,10 @@ describe('Relative date form', () => {
   });
 
   describe('default', () => {
-    const value = { quantity: 20, duration: 'today' };
+    const selectedDuration = DEFAULT_DURATIONS[1];
+    const value = { quantity: 20, duration: selectedDuration.value };
     beforeEach(() => {
       createWrapper({
-        availableVariables: VARIABLES,
         value,
       });
     });
@@ -47,18 +33,16 @@ describe('Relative date form', () => {
     it('should use an autocomplete input', () => {
       expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
     });
-    it('should pass durations options labels to autcomplete', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([
-        'Today',
-        'Last month',
-        'This year',
-      ]);
+    it('should pass durations options to autcomplete', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual(
+        DEFAULT_DURATIONS,
+      );
     });
     it('should pass quantity to input number', () => {
       expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(20);
     });
     it('should pass duration label to autocomplete', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe('Today');
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(selectedDuration);
     });
 
     describe('when quantity is updated', () => {
@@ -75,39 +59,36 @@ describe('Relative date form', () => {
     });
 
     describe('when duration is updated', () => {
+      const selectedDuration = DEFAULT_DURATIONS[2];
       beforeEach(async () => {
-        wrapper.find('AutocompleteWidget-stub').vm.$emit('input', 'Last month');
+        wrapper.find('AutocompleteWidget-stub').vm.$emit('input', selectedDuration);
         await wrapper.vm.$nextTick();
       });
       it('should emit value with updated duration', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           ...value,
-          duration: 'last_month',
+          duration: selectedDuration.value,
         });
       });
     });
   });
 
   describe('empty', () => {
+    const defaultDuration = DEFAULT_DURATIONS[0];
     beforeEach(() => {
       createWrapper();
-    });
-    it('should set availableVariables to default durations', () => {
-      expect((wrapper.vm as any).availableVariables).toStrictEqual(DEFAULT_DURATIONS);
     });
     it('should set value to empty object', () => {
       expect((wrapper.vm as any).value).toStrictEqual({
         quantity: 1,
-        duration: DEFAULT_DURATIONS[0].label,
+        duration: defaultDuration.value,
       });
     });
     it('should set quantity to 1', () => {
       expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(1);
     });
     it('should set duration to first default duration', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(
-        DEFAULT_DURATIONS[0].label,
-      );
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(defaultDuration);
     });
   });
 });

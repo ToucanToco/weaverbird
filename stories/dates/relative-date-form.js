@@ -3,25 +3,10 @@ import { storiesOf } from '@storybook/vue';
 
 const stories = storiesOf('Dates/RelativeDateForm', module);
 
-const SAMPLE_VARIABLES = [
-  {
-    label: 'Years',
-    identifier: 'years',
-  },
-  {
-    label: 'Months',
-    identifier: 'months',
-  },
-  {
-    label: 'Days',
-    identifier: 'days',
-  },
-];
-
 stories.add('simple', () => ({
   template: `
     <div>
-      <RelativeDateForm :available-variables="availableVariables" v-model="value" />
+      <RelativeDateForm v-model="value" />
       <pre>{{ value }}</pre>
     </div>
   `,
@@ -32,8 +17,7 @@ stories.add('simple', () => ({
 
   data() {
     return {
-      availableVariables: SAMPLE_VARIABLES,
-      value: { quantity: 3, duration: SAMPLE_VARIABLES[1].identifier },
+      value: { quantity: 3, duration: 'month' },
     };
   },
 }));
