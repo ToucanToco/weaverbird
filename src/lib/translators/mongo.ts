@@ -2279,13 +2279,45 @@ export class Mongo36Translator extends BaseTranslator {
   }
 
   formula(step: Readonly<S.FormulaStep>): MongoStep {
-    return {
-      $addFields: {
-        [step.new_column]: buildMongoFormulaTree(
-          buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
-        ),
-      },
-    };
+    const mongoFormulaTree: MongoStep | string | number = buildMongoFormulaTree(
+      buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
+    )
+
+    const denominators: MongoStep[] | string[] | number[] = []
+
+    const iterate = (obj) => {
+      Object.keys(obj).forEach(key => {
+        if (key == '$divide') {
+          denominators.push(obj[key][1]);
+        }
+        if (typeof obj[key] === 'object') {
+          iterate(obj[key])
+        }
+      })
+    }
+
+    iterate(mongoFormulaTree)
+
+    if (denominators.length == 0) {
+      return {
+        $addFields: {
+          [step.new_column]: mongoFormulaTree,
+        },
+      };
+    }
+    else {
+      const conditions = []
+
+      for (const d in denominators) {
+        conditions.push({ $in: [ denominators[d], [ 0, null ] ] })
+      }
+
+      return {
+        $addFields: {
+          [step.new_column]: { $cond: [ { $or: conditions }, null, mongoFormulaTree ] },
+        },
+      };
+    }
   }
 
   // The $regexMatch operator is not supported until mongo 4.2
