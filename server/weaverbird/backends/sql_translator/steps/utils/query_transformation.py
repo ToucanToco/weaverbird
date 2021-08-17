@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import (

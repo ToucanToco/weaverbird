@@ -1,5 +1,4 @@
 from distutils import log
-from typing import List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
