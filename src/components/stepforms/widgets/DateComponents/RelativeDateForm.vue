@@ -60,5 +60,55 @@ export default class CustomVariableList extends Vue {
 </script>
 
 <style scoped lang="scss">
-@import '../../../../styles/variables';
+$active-color: #16406a;
+$active-color-light: #dde6f0;
+$active-color-extra-light: #f8f7fa;
+
+.widget-relative-date-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.widget-relative-date-form__quantity {
+  flex: 1 25%;
+  margin: 0;
+  background: $active-color-extra-light;
+
+  ::v-deep .widget-input-number__container {
+    margin: 0;
+  }
+
+  ::v-deep .widget-input-number {
+    padding: 8px 12px;
+  }
+}
+.widget-relative-date-form__duration {
+  flex: 1 75%;
+  margin: 0 0 0 15px;
+  background: $active-color-extra-light;
+
+  ::v-deep .multiselect__tags {
+    padding: 8px 12px;
+  }
+
+  ::v-deep .multiselect__option {
+    border: none;
+    margin: 5px;
+    border-radius: 2px;
+    max-height: 30px;
+    padding: 8px 15px;
+    line-height: 25px;
+    box-shadow: none;
+  }
+
+  ::v-deep .multiselect__option--highlight {
+    background: $active-color-extra-light;
+    color: $active-color;
+  }
+
+  ::v-deep .multiselect__option--selected {
+    background: $active-color-light;
+    color: $active-color;
+  }
+}
 </style>
