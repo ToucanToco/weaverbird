@@ -36,7 +36,20 @@ describe('Relative date form', () => {
       });
     });
     it('should instantiate', () => {
-      expect(wrapper.exists()).toBeTruthy();
+      expect(wrapper.exists()).toBe(true);
+    });
+    it('should use a number input', () => {
+      expect(wrapper.find('InputNumberWidget-stub').exists()).toBe(true);
+    });
+    it('should use an autcomplete input', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
+    });
+    it('should pass durations options labels to autcomplete', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([
+        'Today',
+        'Last month',
+        'This year',
+      ]);
     });
   });
 
