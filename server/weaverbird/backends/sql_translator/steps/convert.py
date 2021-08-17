@@ -1,5 +1,5 @@
 from distutils import log
-from typing import List
+from typing import List, Tuple
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
@@ -14,17 +14,19 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import ConvertStep
 
 
-def format_cast_to_sql(columns: List, data_type: str, completed_fields: str) -> str:
+def format_cast_to_sql(columns: List, data_type: str, completed_fields: str) -> (str, str):
     """
     From cast to sql
     """
     compiled_query: str = ""
+    as_columns: list = []
     for c in columns:
         compiled_query = ", ".join([f"CAST({c} AS {data_type}) AS {c}"])
+        as_columns.append(c)
     if len(completed_fields):
-        return f', {compiled_query}'
+        return as_columns, ', {compiled_query}'
     else:
-        return compiled_query
+        return as_columns, compiled_query
 
 
 def translate_convert(
@@ -46,17 +48,19 @@ def translate_convert(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
+
     for c in step.columns:
         for table in [*query.metadata_manager.tables_metadata]:
             query.metadata_manager.change_type(
                 column_name=c, table_name=table, new_type=step.data_type
             )
+    as_columns, compiled_query = format_cast_to_sql(step.columns, step.data_type)
 
-    completed_fields = complete_fields(columns=step.columns, query=query)
+    completed_fields = complete_fields(columns=step.columns+as_columns, query=query)
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields}{format_cast_to_sql(step.columns, step.data_type, completed_fields)}"""
+        f""" (SELECT {completed_fields}{compiled_query}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,

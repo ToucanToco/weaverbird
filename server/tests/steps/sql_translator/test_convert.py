@@ -43,6 +43,24 @@ def test_translate_cast_only_one_col():
     assert query.query_name == 'CONVERT_STEP_1'
 
 
+def test_translate_cast_redondant_column_error(query):
+    step = ConvertStep(name='convert', columns=['raichu'], data_type='text')
+
+    mock_query = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT toto, raichu, florizarre FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={'table1': {'toto': 'str', 'RAICHU': 'int', 'florizarre': 'str'}}
+        ),
+    )
+
+    with pytest.raises(AssertionError):
+        assert translate_convert(step, query, index=1) == translate_convert(
+            step, mock_query, index=1
+        )
+
+
 def test_translate_cast_error(query):
     step = ConvertStep(name='convert', columns=['raichu'], data_type='integer')
     mock_step = ConvertStep(name='convert', columns=['raichu'], data_type='text')
