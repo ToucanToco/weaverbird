@@ -23,9 +23,10 @@ class SqlQueryMetadataManager(BaseModel):
     def change_name(self, old_column_name: str, new_column_name: str, table_name: str):
         if " " in new_column_name:
             new_column_name = f'"{new_column_name}"'
-        self.tables_metadata[table_name][new_column_name] = self.tables_metadata[table_name].pop(
-            old_column_name
-        )
+        if old_column_name in self.tables_metadata[table_name]:
+            self.tables_metadata[table_name][new_column_name] = self.tables_metadata[
+                table_name
+            ].pop(old_column_name)
 
     def change_type(self, table_name: str, column_name: str, new_type: str):
         self.tables_metadata[table_name][column_name] = new_type

@@ -1,6 +1,7 @@
 import pytest
 
 from weaverbird.backends.sql_translator.steps import translate_convert
+from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
 from weaverbird.pipeline.steps import ConvertStep
 
 
@@ -17,6 +18,28 @@ def test_translate_cast(query):
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM CONVERT_STEP_1'
+    assert query.query_name == 'CONVERT_STEP_1'
+
+
+def test_translate_cast_only_one_col():
+    step = ConvertStep(name='convert', columns=['raichu'], data_type='integer')
+    q = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT raichu FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {'raichu': 'int'}}),
+    )
+    query = translate_convert(
+        step,
+        q,
+        index=1,
+    )
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT CAST(raichu AS '
+        'integer) AS raichu FROM SELECT_STEP_0) '
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT raichu FROM CONVERT_STEP_1'
     assert query.query_name == 'CONVERT_STEP_1'
 
 

@@ -3,6 +3,7 @@ from distutils import log
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
+    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -12,20 +13,6 @@ from weaverbird.backends.sql_translator.types import (
 )
 from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
-
-
-def complete_fields(query: SQLQuery) -> str:
-    """
-    We're going to complete missing field from the query
-    """
-    fields: list = []
-    compiled_query: str = ""
-    for table in [*query.metadata_manager.tables_metadata]:
-        # TODO : changes the management columns on joins with duplicated columns
-        for elt in query.metadata_manager.tables_metadata[table].keys():
-            compiled_query += f'{elt}, ' if elt not in fields else ''
-
-    return compiled_query
 
 
 def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: str) -> str:
@@ -65,12 +52,15 @@ def translate_ifthenelse(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
     composed_query: str = ""
+    completed_fields = complete_fields(query)
+    composed_query = f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")} AS {step.new_column}"""
+    if completed_fields:
+        composed_query = f', {composed_query}'
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(query)} """
-        f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")}"""
-        f""" AS {step.new_column}"""
+        f""" (SELECT {completed_fields}{composed_query}"""
         f""" FROM {query.query_name}) """,
     )
 

@@ -2,6 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -11,19 +12,18 @@ from weaverbird.backends.sql_translator.types import (
 )
 from weaverbird.pipeline.steps import TextStep
 
-
-def complete_fields(query: SQLQuery) -> str:
-    """
-    We're going to complete missing field from the query
-    """
-    fields: list = []
-    compiled_query: str = ""
-    for table in [*query.metadata_manager.tables_metadata]:
-        # TODO : changes the management columns on joins with duplicated columns
-        for elt in query.metadata_manager.tables_metadata[table].keys():
-            compiled_query += f'{elt}, ' if elt not in fields else ''
-
-    return compiled_query
+# def complete_fields(query: SQLQuery) -> str:
+#     """
+#     We're going to complete missing field from the query
+#     """
+#     fields: list = []
+#     compiled_query: str = ""
+#     for table in [*query.metadata_manager.tables_metadata]:
+#         # TODO : changes the management columns on joins with duplicated columns
+#         for elt in query.metadata_manager.tables_metadata[table].keys():
+#             compiled_query += f'{elt}, ' if elt not in fields else ''
+#
+#     return compiled_query
 
 
 def translate_text(
@@ -44,9 +44,13 @@ def translate_text(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
+    completed_fields = complete_fields(query)
+    renamed_fields = f"""'{step.text}' AS "{step.new_column}" """
+    if completed_fields:
+        renamed_fields = f', {renamed_fields}'
     transformed_query = (
         f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(query)}'{step.text}' AS "{step.new_column}" """
+        f""" (SELECT {completed_fields}{renamed_fields}"""
         f"""FROM {query.query_name}) """
     )
 
