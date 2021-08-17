@@ -1,7 +1,8 @@
 from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query, complete_fields,
+    build_selection_query,
+    complete_fields
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -10,20 +11,6 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import RenameStep
-
-
-def complete_rename_fields(step: RenameStep, query: SQLQuery) -> str:
-    """
-    We're going to complete missing field from the query
-
-    """
-    fields: list = []
-    for old, new in step.to_rename:
-        for table in [*query.metadata_manager.tables_metadata]:
-            query.metadata_manager.change_name(old, new, table)
-            fields.append(new)
-
-    return complete_fields(fields, query)
 
 
 def translate_rename(
@@ -44,12 +31,20 @@ def translate_rename(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
+    fields = []
+    for old, new in step.to_rename:
+        for table in [*query.metadata_manager.tables_metadata]:
+            query.metadata_manager.change_name(old, new, table)
+            fields.append(new)
+    completed_fields = complete_fields(columns=fields, query=query)
+    renamed_fields = ', '.join([f'{old} AS {new}' for old, new in step.to_rename])
+    if len(completed_fields):
+        renamed_fields = f", {renamed_fields}"
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_rename_fields(step, query)
-                      + ', '.join([f'{old} AS {new}' for old, new in step.to_rename])}"""
+        f""" (SELECT {completed_fields + renamed_fields}"""
         f""" FROM {query.query_name})""",
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,

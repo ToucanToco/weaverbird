@@ -170,19 +170,24 @@ def prepare_aggregation_query(aggregated_cols, aggregated_string, query, step):
     return aggregated_string
 
 
-def complete_fields(fields: List, query: SQLQuery) -> str:
+def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
     """
     We're going to complete missing field from the query
+
     """
-    compiled_query: str = ""
     for table in [*query.metadata_manager.tables_metadata]:
         # TODO : changes the management columns on joins with duplicated columns
-        if len(fields) == 0:
-            compiled_query += ', '.join(query.metadata_manager.tables_metadata[table].keys())
+        if columns:
+            compiled_query = ', '.join(
+                [
+                    k
+                    for k in query.metadata_manager.tables_metadata[table].keys()
+                    if k.upper() not in columns and k.lower() not in columns
+                ]
+            )
         else:
-            for elt in query.metadata_manager.tables_metadata[table].keys():
-                if elt.upper() not in fields and elt.lower() not in fields:
-                    compiled_query += f'{elt}, '
+            compiled_query = ', '.join(
+                [k for k in query.metadata_manager.tables_metadata[table].keys()]
+            )
 
     return compiled_query
-

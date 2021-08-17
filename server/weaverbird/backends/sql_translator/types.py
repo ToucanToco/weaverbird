@@ -21,9 +21,12 @@ class SqlQueryMetadataManager(BaseModel):
     tables_metadata: Dict[str, Dict[str, str]]
 
     def change_name(self, old_column_name: str, new_column_name: str, table_name: str):
-        self.tables_metadata[table_name][new_column_name] = self.tables_metadata[table_name].pop(
-            old_column_name
-        )
+        if " " in new_column_name:
+            new_column_name = f'"{new_column_name}"'
+        if old_column_name in self.tables_metadata[table_name]:
+            self.tables_metadata[table_name][new_column_name] = self.tables_metadata[
+                table_name
+            ].pop(old_column_name)
 
     def change_type(self, table_name: str, column_name: str, new_type: str):
         self.tables_metadata[table_name][column_name] = new_type
@@ -35,6 +38,8 @@ class SqlQueryMetadataManager(BaseModel):
             raise TableMetadataUpdateError
 
     def add_column(self, table_name: str, column_name: str, column_type: str):
+        if " " in column_name:
+            column_name = f'"{column_name}"'
         self.tables_metadata[table_name][column_name] = column_type
 
 
