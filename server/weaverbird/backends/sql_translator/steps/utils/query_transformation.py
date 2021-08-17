@@ -36,6 +36,10 @@ SQL_INCLUSION_OPERATORS = {
 
 
 def apply_condition(condition: Condition, query: str) -> str:
+    # just to escape single quotes from crashing the snowflakeSQL query
+    if type(condition.value) == str:
+        condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
+
     if isinstance(condition, ComparisonCondition):
         try:
             float(condition.value)
