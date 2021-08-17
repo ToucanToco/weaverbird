@@ -37,3 +37,22 @@ stories.add('simple', () => ({
     };
   },
 }));
+
+stories.add('empty', () => ({
+  template: `
+    <div>
+      <RelativeDateForm v-model="value" />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    RelativeDateForm,
+  },
+
+  data() {
+    return {
+      value: undefined,
+    };
+  },
+}));

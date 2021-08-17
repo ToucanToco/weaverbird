@@ -13,3 +13,18 @@ export type RelativeDate = {
   quantity?: number; // can be negative or positive
   duration?: any;
 };
+
+export const DEFAULT_DURATIONS = [
+  {
+    label: 'Years ago',
+    identifier: 'year',
+  },
+  {
+    label: 'Months ago',
+    identifier: 'month',
+  },
+  {
+    label: 'Days ago',
+    identifier: 'day',
+  },
+];

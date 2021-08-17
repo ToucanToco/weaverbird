@@ -14,7 +14,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
-import { RelativeDate } from '@/lib/dates';
+import { DEFAULT_DURATIONS, RelativeDate } from '@/lib/dates';
 import { VariablesBucket } from '@/lib/variables';
 /**
  * This component return a relative date composed from a number and a "duration" variable
@@ -27,10 +27,10 @@ import { VariablesBucket } from '@/lib/variables';
   },
 })
 export default class CustomVariableList extends Vue {
-  @Prop({ default: () => [] })
+  @Prop({ default: () => DEFAULT_DURATIONS })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => ({}) })
+  @Prop({ default: () => ({ quantity: 1, duration: DEFAULT_DURATIONS[0].label }) })
   value!: RelativeDate;
 
   get quantity(): number {

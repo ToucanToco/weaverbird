@@ -1,6 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import RelativeDateForm from '@/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
+import { DEFAULT_DURATIONS } from '@/lib/dates';
 
 describe('Relative date form', () => {
   let wrapper: Wrapper<RelativeDateForm>;
@@ -91,17 +92,22 @@ describe('Relative date form', () => {
     beforeEach(() => {
       createWrapper();
     });
-    it('should set availableVariables to empty array', () => {
-      expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
+    it('should set availableVariables to default durations', () => {
+      expect((wrapper.vm as any).availableVariables).toStrictEqual(DEFAULT_DURATIONS);
     });
     it('should set value to empty object', () => {
-      expect((wrapper.vm as any).value).toStrictEqual({});
+      expect((wrapper.vm as any).value).toStrictEqual({
+        quantity: 1,
+        duration: DEFAULT_DURATIONS[0].label,
+      });
     });
     it('should set quantity to 1', () => {
       expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(1);
     });
-    it('should set duration to undefined', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe('');
+    it('should set duration to first default duration', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(
+        DEFAULT_DURATIONS[0].label,
+      );
     });
   });
 });
