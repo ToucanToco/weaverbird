@@ -8,3 +8,8 @@ export type DatePickerHighlight = {
   };
   dates?: DateRange;
 };
+export type RelativeDate = {
+  date?: Date;
+  quantity?: number; // can be negative or positive
+  duration?: any;
+};

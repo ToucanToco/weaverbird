@@ -21,7 +21,7 @@ const SAMPLE_VARIABLES = [
 stories.add('simple', () => ({
   template: `
     <div>
-      <RelativeDateForm :available-variables="availableVariables" />
+      <RelativeDateForm :available-variables="availableVariables" v-model="value" />
       <pre>{{ value }}</pre>
     </div>
   `,
@@ -33,12 +33,7 @@ stories.add('simple', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      value: '',
+      value: { quantity: 3, duration: SAMPLE_VARIABLES[1].identifier },
     };
-  },
-  methods: {
-    input(value) {
-      this.value = value;
-    },
   },
 }));

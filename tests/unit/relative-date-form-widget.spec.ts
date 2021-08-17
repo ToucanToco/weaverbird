@@ -26,13 +26,15 @@ describe('Relative date form', () => {
   };
 
   afterEach(() => {
-    wrapper.destroy();
+    if (wrapper) wrapper.destroy();
   });
 
   describe('default', () => {
+    const value = { quantity: 20, duration: 'today' };
     beforeEach(() => {
       createWrapper({
         availableVariables: VARIABLES,
+        value,
       });
     });
     it('should instantiate', () => {
@@ -41,7 +43,7 @@ describe('Relative date form', () => {
     it('should use a number input', () => {
       expect(wrapper.find('InputNumberWidget-stub').exists()).toBe(true);
     });
-    it('should use an autcomplete input', () => {
+    it('should use an autocomplete input', () => {
       expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
     });
     it('should pass durations options labels to autcomplete', () => {
@@ -51,6 +53,38 @@ describe('Relative date form', () => {
         'This year',
       ]);
     });
+    it('should pass quantity to input number', () => {
+      expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(20);
+    });
+    it('should pass duration label to autocomplete', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe('Today');
+    });
+
+    describe('when quantity is updated', () => {
+      beforeEach(async () => {
+        wrapper.find('InputNumberWidget-stub').vm.$emit('input', 3);
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated quantity', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          ...value,
+          quantity: 3,
+        });
+      });
+    });
+
+    describe('when duration is updated', () => {
+      beforeEach(async () => {
+        wrapper.find('AutocompleteWidget-stub').vm.$emit('input', 'Last month');
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated duration', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          ...value,
+          duration: 'last_month',
+        });
+      });
+    });
   });
 
   describe('empty', () => {
@@ -59,6 +93,15 @@ describe('Relative date form', () => {
     });
     it('should set availableVariables to empty array', () => {
       expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
+    });
+    it('should set value to empty object', () => {
+      expect((wrapper.vm as any).value).toStrictEqual({});
+    });
+    it('should set quantity to 1', () => {
+      expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(1);
+    });
+    it('should set duration to undefined', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe('');
     });
   });
 });
