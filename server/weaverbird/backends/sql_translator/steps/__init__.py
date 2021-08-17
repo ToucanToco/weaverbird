@@ -10,6 +10,8 @@ from .select import translate_select
 from .sort import translate_sort
 from .table import translate_table
 from .text import translate_text
+from .lowercase import translate_lowercase
+from .uppercase import translate_uppercase
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'domain': translate_table,  # type ignore # TODO to update
@@ -21,4 +23,6 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'rename': translate_rename,
     'convert': translate_convert,
     'text': translate_text,
+    'lowercase': translate_lowercase,
+    'uppercase': translate_uppercase,
 }

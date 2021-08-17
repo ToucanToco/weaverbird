@@ -177,17 +177,29 @@ def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
     """
     for table in [*query.metadata_manager.tables_metadata]:
         # TODO : changes the management columns on joins with duplicated columns
+        table_keys = query.metadata_manager.tables_metadata[table].keys()
         if columns:
             compiled_query = ', '.join(
                 [
-                    k
-                    for k in query.metadata_manager.tables_metadata[table].keys()
+                    k.strip()
+                    for k in table_keys
                     if k.upper() not in columns and k.lower() not in columns
                 ]
             )
         else:
-            compiled_query = ', '.join(
-                [k for k in query.metadata_manager.tables_metadata[table].keys()]
-            )
+            compiled_query = ', '.join(table_keys)
 
     return compiled_query
+
+
+def clean_query_metadata_duplications(query: SQLQuery) -> SQLQuery:
+    """
+        a security patch to prevent duplicate column from precedent query meta-data
+    """
+    for table in [*query.metadata_manager.tables_metadata]:
+        table_keys = list(query.metadata_manager.tables_metadata[table].keys())
+        for k in table_keys:
+            if [c.upper() for c in table_keys].count(k.upper()) > 1:
+                query.metadata_manager.remove_column(table, k)
+
+    return query

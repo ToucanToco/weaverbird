@@ -1,6 +1,6 @@
 import pytest
 
-from weaverbird.backends.sql_translator.steps import translate_uppercase
+from weaverbird.backends.sql_translator.steps import translate_lowercase
 from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
 from weaverbird.pipeline.steps import UppercaseStep
 
@@ -17,18 +17,18 @@ def query():
     )
 
 
-def test_translate_simple_uppercase(query):
+def test_translate_simple_lowercase(query):
     step = UppercaseStep(name='uppercase', column='raichu')
 
-    query = translate_uppercase(
+    query = translate_lowercase(
         step,
         query,
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), UPPERCASE_STEP_1 AS (SELECT toto, florizarre, UPPER(raichu) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), LOWERCASE_STEP_1 AS (SELECT toto, florizarre, LOWER(raichu) '
         'AS raichu FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM UPPERCASE_STEP_1'
-    assert query.query_name == 'UPPERCASE_STEP_1'
+    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM LOWERCASE_STEP_1'
+    assert query.query_name == 'LOWERCASE_STEP_1'

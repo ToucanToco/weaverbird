@@ -1,8 +1,7 @@
 from distutils import log
-from typing import List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query,
+    build_selection_query, complete_fields, clean_query_metadata_duplications,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -11,20 +10,6 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import UppercaseStep
-
-
-def complete_fields(columns: List, query: SQLQuery) -> str:
-    """
-    We're going to complete missing field from the query
-
-    """
-    compiled_query: str = ""
-    for table in [*query.metadata_manager.tables_metadata]:
-        # TODO : changes the management columns on joins with duplicated columns
-        for elt in query.metadata_manager.tables_metadata[table].keys():
-            compiled_query += f'{elt}, ' if elt not in columns else ''
-
-    return compiled_query
 
 
 def translate_uppercase(
@@ -46,11 +31,12 @@ def translate_uppercase(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
+    query = clean_query_metadata_duplications(query)
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields([step.column], query)} UPPER({step.column}) AS {step.column}"""
+        f""" (SELECT {complete_fields(columns=[step.column], query=query)}, UPPER({step.column}) AS {step.column}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,

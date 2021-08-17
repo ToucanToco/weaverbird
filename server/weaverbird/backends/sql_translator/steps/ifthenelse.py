@@ -3,7 +3,7 @@ from distutils import log
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
-    complete_fields,
+    complete_fields, clean_query_metadata_duplications,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -50,6 +50,8 @@ def translate_ifthenelse(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
+    query = clean_query_metadata_duplications(query)
+
     composed_query: str = ""
     completed_fields = complete_fields(columns=[step.new_column], query=query)
     composed_query = f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")} AS {step.new_column}"""
