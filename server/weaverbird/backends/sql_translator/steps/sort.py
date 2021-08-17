@@ -53,7 +53,8 @@ def translate_sort(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(query)} FROM {query.query_name} ORDER BY {sort_columns_to_sql(step.columns)}) """,
+        f""" (SELECT {complete_fields(columns=[], query=query)} FROM {query.query_name}"""
+        f""" ORDER BY {sort_columns_to_sql(step.columns)}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )

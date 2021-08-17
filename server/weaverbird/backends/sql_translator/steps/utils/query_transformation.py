@@ -182,7 +182,7 @@ def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
                 [
                     k
                     for k in query.metadata_manager.tables_metadata[table].keys()
-                    if k not in columns
+                    if k.upper() not in columns and k.lower() not in columns
                 ]
             )
         else:
