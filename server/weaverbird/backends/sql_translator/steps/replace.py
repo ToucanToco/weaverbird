@@ -2,10 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-<<<<<<< HEAD
-=======
-    complete_fields,
->>>>>>> feat(vqb): added step replace + tests
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -27,7 +23,6 @@ def translate_replace(
     query_name = f'REPLACE_STEP_{index}'
 
     log.debug(
-<<<<<<< HEAD
         '############################################################'
         f'query_name: {query_name}\n'
         '------------------------------------------------------------'
@@ -51,63 +46,29 @@ def translate_replace(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.search_column]
     )
-=======
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"step.name: {step.name}\n"
-        f"step.search_column: {step.search_column}\n"
-        f"step.to_replace: {step.to_replace}\n"
-        f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
-    )
 
-    compiled_query: str = "CASE "
-    for element_to_replace in step.to_replace:
-        from_value, to_value = element_to_replace
-        try:
-            float(from_value)
-        except ValueError:
-            from_value = from_value.replace('"', '\'')
-
-        try:
-            float(to_value)
-        except ValueError:
-            to_value = to_value.replace('"', '\'')
+    if not isinstance(float, from_value):
+        to_value = from_value.replace('"', '\'')
 
         compiled_query += f'WHEN {step.search_column.upper()}={from_value} THEN {to_value} '
-    compiled_query += f"END AS {step.search_column.upper()}"
->>>>>>> feat(vqb): added step replace + tests
+        compiled_query += f"END AS {step.search_column.upper()}"
 
-    new_query = SQLQuery(
-        query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-<<<<<<< HEAD
-        f""" (SELECT {completed_fields},"""
-        f""" {compiled_query}"""
-        f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(
-            query.metadata_manager.retrieve_query_metadata_columns(), query_name
-        ),
-=======
-        f""" (SELECT {complete_fields(columns=[step.search_column], step=step, query=query)},"""
-        f""" {compiled_query}"""
-        f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
->>>>>>> feat(vqb): added step replace + tests
-        metadata_manager=query.metadata_manager,
-    )
+        new_query = SQLQuery(
+            query_name=query_name,
+            transformed_query=f"""{query.transformed_query}, {query_name} AS"""
+            f""" (SELECT {completed_fields},"""
+            f""" {compiled_query}"""
+            f""" FROM {query.query_name}) """,
+            selection_query=build_selection_query(
+                query.metadata_manager.retrieve_query_metadata_columns(), query_name
+            ),
+            metadata_manager=query.metadata_manager,
+        )
 
-    log.debug(
-<<<<<<< HEAD
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
-=======
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
->>>>>>> feat(vqb): added step replace + tests
-    )
+        log.debug(
+            '------------------------------------------------------------'
+            f'SQLquery: {new_query.transformed_query}'
+            '############################################################'
+        )
 
-    return new_query
+        return new_query
