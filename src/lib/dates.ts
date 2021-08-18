@@ -15,11 +15,15 @@ export type DurationOption = {
   value: Duration;
 };
 
+export type DateVariable = Date | string | undefined;
+
 export type RelativeDate = {
-  date: Date | string | undefined;
+  date: DateVariable;
   quantity: number; // can be negative or positive
   duration: Duration;
 };
+
+export type RelativeDateRange = [DateVariable, RelativeDate];
 
 export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Years ago', value: 'year' },

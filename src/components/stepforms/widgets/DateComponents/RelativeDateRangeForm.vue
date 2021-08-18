@@ -1,14 +1,21 @@
 <template>
   <div class="widget-relative-date-range-form">
-    <AutocompleteWidget />
-    <RelativeDateForm />
+    <AutocompleteWidget
+      v-model="from"
+      :options="availableVariables"
+      trackBy="identifier"
+      label="label"
+    />
+    <RelativeDateForm v-model="to" />
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import { RelativeDate, RelativeDateRange } from '@/lib/dates';
+import { AvailableVariable, VariablesBucket } from '@/lib/variables';
 
 import RelativeDateForm from './RelativeDateForm.vue';
 /**
@@ -21,7 +28,21 @@ import RelativeDateForm from './RelativeDateForm.vue';
     AutocompleteWidget,
   },
 })
-export default class RelativeDateRangeForm extends Vue {}
+export default class RelativeDateRangeForm extends Vue {
+  @Prop({ default: () => [] })
+  availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => [undefined, { date: undefined, quantity: -1, duration: 'year' }] })
+  value!: RelativeDateRange;
+
+  get to(): RelativeDate {
+    return this.value[1];
+  }
+
+  get from(): AvailableVariable | undefined {
+    return this.availableVariables.find(v => v.identifier === this.value[0]);
+  }
+}
 </script>
 
 <style scoped lang="scss"></style>
