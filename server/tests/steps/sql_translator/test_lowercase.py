@@ -3,7 +3,7 @@ from weaverbird.pipeline.steps import LowercaseStep
 
 
 def test_translate_simple_lowercase(query):
-    step = LowercaseStep(name='uppercase', column='raichu')
+    step = LowercaseStep(name='lowercase', column='raichu')
 
     query = translate_lowercase(
         step,
