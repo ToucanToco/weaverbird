@@ -177,17 +177,16 @@ def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
     """
     for table in [*query.metadata_manager.tables_metadata]:
         # TODO : changes the management columns on joins with duplicated columns
+        table_keys = query.metadata_manager.tables_metadata[table].keys()
         if columns:
             compiled_query = ', '.join(
                 [
-                    k
-                    for k in query.metadata_manager.tables_metadata[table].keys()
+                    k.strip().replace("-", "_").replace(" ", "").upper()
+                    for k in table_keys
                     if k.upper() not in columns and k.lower() not in columns
                 ]
             )
         else:
-            compiled_query = ', '.join(
-                [k for k in query.metadata_manager.tables_metadata[table].keys()]
-            )
+            compiled_query = ', '.join(table_keys)
 
     return compiled_query

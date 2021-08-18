@@ -5,11 +5,13 @@ from .aggregate import translate_aggregate
 from .convert import translate_convert
 from .filter import translate_filter
 from .ifthenelse import translate_ifthenelse
+from .lowercase import translate_lowercase
 from .rename import translate_rename
 from .select import translate_select
 from .sort import translate_sort
 from .table import translate_table
 from .text import translate_text
+from .uppercase import translate_uppercase
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'domain': translate_table,  # type ignore # TODO to update
@@ -21,4 +23,6 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'rename': translate_rename,
     'convert': translate_convert,
     'text': translate_text,
+    'lowercase': translate_lowercase,
+    'uppercase': translate_uppercase,
 }

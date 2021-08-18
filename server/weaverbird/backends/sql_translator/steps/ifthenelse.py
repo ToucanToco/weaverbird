@@ -50,9 +50,13 @@ def translate_ifthenelse(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
+
     composed_query: str = ""
     completed_fields = complete_fields(columns=[step.new_column], query=query)
-    composed_query = f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")} AS {step.new_column}"""
+    composed_query = (
+        f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")}"""
+        f""" AS {step.new_column.upper()}"""
+    )
     if completed_fields:
         composed_query = f', {composed_query}'
 

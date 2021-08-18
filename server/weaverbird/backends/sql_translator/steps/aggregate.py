@@ -29,6 +29,7 @@ def translate_aggregate(
         aggregated_string, first_last_string, query, step
     )
     query_name = f'AGGREGATE_STEP_{index}'
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f'{query.transformed_query}, {query_name} AS ({query_string})',
