@@ -68,11 +68,8 @@ def apply_condition(condition: Condition, query: str) -> str:
     return query
 
 
-def build_selection_query(tables_metadata: Dict[str, Dict[str, str]], query_name: str) -> str:
-    # TODO When graphical table selection will be implemented
-    # build the column_string using ', '.join([f'{table}.{c}' for table in tables_metadata for c in tables_metadata[table].keys()])
-    # for now only use the default table name
-    return f"SELECT {', '.join(tables_metadata[[*tables_metadata][0]].keys())} FROM {query_name}"
+def build_selection_query(query_metadata: Dict[str, str], query_name) -> str:
+    return f"SELECT {', '.join(query_metadata.keys())} FROM {query_name}"
 
 
 def build_first_or_last_aggregation(aggregated_string, first_last_string, query, step):
@@ -170,23 +167,21 @@ def prepare_aggregation_query(aggregated_cols, aggregated_string, query, step):
     return aggregated_string
 
 
-def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
+def complete_fields(query: SQLQuery, columns=None) -> str:
     """
     We're going to complete missing field from the query
-
     """
-    for table in [*query.metadata_manager.tables_metadata]:
-        # TODO : changes the management columns on joins with duplicated columns
-        table_keys = query.metadata_manager.tables_metadata[table].keys()
-        if columns:
-            compiled_query = ', '.join(
-                [
-                    k.strip().replace("-", "_").replace(" ", "").upper()
-                    for k in table_keys
-                    if k.upper() not in columns and k.lower() not in columns
-                ]
-            )
-        else:
-            compiled_query = ', '.join(table_keys)
+    # TODO : changes the management columns on joins with duplicated columns
+    query_keys = query.metadata_manager.query_metadata.keys()
+    if columns:
+        compiled_query = ', '.join(
+            [
+                k.strip().replace("-", "_").replace(" ", "").upper()
+                for k in query_keys
+                if k.upper() not in columns and k.lower() not in columns
+            ]
+        )
+    else:
+        compiled_query = ', '.join(query_keys)
 
     return compiled_query

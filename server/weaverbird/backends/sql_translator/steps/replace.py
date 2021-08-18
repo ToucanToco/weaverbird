@@ -41,19 +41,17 @@ def translate_replace(
             float(from_value)
         except ValueError:
             from_value = from_value.replace('"', '\'')
-
         try:
             float(to_value)
         except ValueError:
             to_value = to_value.replace('"', '\'')
-
         compiled_query += f'WHEN {step.search_column.upper()}={from_value} THEN {to_value} '
     compiled_query += f"END AS {step.search_column.upper()}"
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(columns=[step.search_column], step=step, query=query)},"""
+        f""" (SELECT {complete_fields(columns=[step.search_column], query=query)},"""
         f""" {compiled_query}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),

@@ -15,7 +15,7 @@ def test_translate_simple_replace(query):
         'RAICHU=\'abc\' THEN \'re\' END AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM REPLACE_STEP_1'
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM REPLACE_STEP_1'
     assert query.query_name == 'REPLACE_STEP_1'
 
 
@@ -32,7 +32,7 @@ def test_translate_string_integer_replace(query):
         'RAICHU=2 THEN 4 END AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM REPLACE_STEP_1'
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM REPLACE_STEP_1'
     assert query.query_name == 'REPLACE_STEP_1'
 
 
@@ -51,5 +51,5 @@ def test_translate_multiple_replace(query):
         'RAICHU=2 THEN 4 WHEN RAICHU=456.765 THEN 221.3 END AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM REPLACE_STEP_1'
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM REPLACE_STEP_1'
     assert query.query_name == 'REPLACE_STEP_1'

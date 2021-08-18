@@ -21,19 +21,17 @@ def translate_select(
     query_name = f'KEEPCOLS_STEP_{index}'
     keepcols_query = f"SELECT {', '.join(step.columns)} FROM {query.query_name}"
 
-    cols_to_remove = {}
-    for table in query.metadata_manager.tables_metadata.keys():
-        cols_to_remove[table] = [
-            col for col in query.metadata_manager.tables_metadata[table] if col not in step.columns
-        ]
-    for table in cols_to_remove.keys():
-        [query.metadata_manager.remove_column(table, c) for c in cols_to_remove[table]]
+    cols_to_remove = [
+        col for col in query.metadata_manager.query_metadata if col not in step.columns
+    ]
+    for c in cols_to_remove:
+        query.metadata_manager.remove_column(c)
 
     return SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS ({
             keepcols_query
         })""",
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
