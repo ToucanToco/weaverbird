@@ -1,0 +1,69 @@
+from distutils import log
+
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    build_selection_query,
+    complete_fields,
+)
+from weaverbird.backends.sql_translator.types import (
+    SQLPipelineTranslator,
+    SQLQuery,
+    SQLQueryDescriber,
+    SQLQueryRetriever,
+)
+from weaverbird.pipeline.steps import ReplaceStep
+
+
+def translate_replace(
+    step: ReplaceStep,
+    query: SQLQuery,
+    index: int,
+    sql_query_retriever: SQLQueryRetriever = None,
+    sql_query_describer: SQLQueryDescriber = None,
+    sql_translate_pipeline: SQLPipelineTranslator = None,
+) -> SQLQuery:
+    query_name = f'REPLACE_STEP_{index}'
+
+    log.debug(
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step.name: {step.name}\n"
+        f"step.search_column: {step.search_column}\n"
+        f"step.to_replace: {step.to_replace}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+    )
+
+    compiled_query: str = "CASE "
+    for element_to_replace in step.to_replace:
+        from_value, to_value = element_to_replace
+        try:
+            float(from_value)
+        except ValueError:
+            from_value = from_value.replace('"', '\'')
+
+        try:
+            float(to_value)
+        except ValueError:
+            to_value = to_value.replace('"', '\'')
+
+        compiled_query += f'WHEN {step.search_column.upper()}={from_value} THEN {to_value} '
+    compiled_query += f"END AS {step.search_column.upper()}"
+
+    new_query = SQLQuery(
+        query_name=query_name,
+        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
+        f""" (SELECT {complete_fields(columns=[step.search_column], step=step, query=query)},"""
+        f""" {compiled_query}"""
+        f""" FROM {query.query_name}) """,
+        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        metadata_manager=query.metadata_manager,
+    )
+
+    log.debug(
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
+    )
+
+    return new_query
