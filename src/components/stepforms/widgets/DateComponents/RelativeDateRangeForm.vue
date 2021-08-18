@@ -1,12 +1,20 @@
 <template>
   <div class="widget-relative-date-range-form">
-    <AutocompleteWidget
-      v-model="from"
-      :options="availableVariables"
-      trackBy="identifier"
-      label="label"
-    />
-    <RelativeDateForm v-model="to" />
+    <div class="widget-relative-date-range-form__container">
+      <p class="widget-relative-date-range-form__label">From</p>
+      <AutocompleteWidget
+        class="widget-relative-date-range-form__input widget-relative-date-range-form__input--from"
+        v-model="from"
+        :options="availableVariables"
+        placeholder="Select a date"
+        trackBy="identifier"
+        label="label"
+      />
+    </div>
+    <div class="widget-relative-date-range-form__container">
+      <p class="widget-relative-date-range-form__label">to</p>
+      <RelativeDateForm class="widget-relative-date-range-form__input" v-model="to" />
+    </div>
   </div>
 </template>
 
@@ -54,4 +62,56 @@ export default class RelativeDateRangeForm extends Vue {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+$active-color: #16406a;
+$active-color-light: #dde6f0;
+$active-color-extra-light: #f8f7fa;
+
+.widget-relative-date-range-form__container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.widget-relative-date-range-form__label {
+  flex: 1 0;
+  font-size: 14px;
+  font-family: 'Montserrat', sans-serif;
+  margin-right: 10px;
+  min-width: 40px;
+}
+
+.widget-relative-date-range-form__input {
+  flex: 1 100%;
+}
+
+.widget-relative-date-range-form__input--from {
+  background: $active-color-extra-light;
+  margin: 0;
+
+  ::v-deep .multiselect__tags {
+    padding: 8px 12px;
+  }
+
+  ::v-deep .multiselect__option {
+    border: none;
+    margin: 5px;
+    border-radius: 2px;
+    max-height: 30px;
+    padding: 8px 15px;
+    line-height: 25px;
+    box-shadow: none;
+  }
+
+  ::v-deep .multiselect__option--highlight {
+    background: $active-color-extra-light;
+    color: $active-color;
+  }
+
+  ::v-deep .multiselect__option--selected {
+    background: $active-color-light;
+    color: $active-color;
+  }
+}
+</style>
