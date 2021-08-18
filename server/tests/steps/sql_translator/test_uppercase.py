@@ -1,20 +1,5 @@
-import pytest
-
 from weaverbird.backends.sql_translator.steps import translate_uppercase
-from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
 from weaverbird.pipeline.steps import UppercaseStep
-
-
-@pytest.fixture
-def query():
-    return SQLQuery(
-        query_name='SELECT_STEP_0',
-        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
-        selection_query='SELECT toto, raichu, florizarre FROM SELECT_STEP_0',
-        metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'toto': 'str', 'raichu': 'int', 'florizarre': 'str'}}
-        ),
-    )
 
 
 def test_translate_simple_uppercase(query):
