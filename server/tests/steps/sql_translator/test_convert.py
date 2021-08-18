@@ -6,29 +6,29 @@ from weaverbird.pipeline.steps import ConvertStep
 
 
 def test_translate_cast(query):
-    step = ConvertStep(name='convert', columns=['raichu'], data_type='integer')
+    step = ConvertStep(name='convert', columns=['RAICHU'], data_type='integer')
     query = translate_convert(
         step,
         query,
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, CAST(raichu AS '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, CAST(RAICHU AS '
         'integer) AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto, raichu, florizarre FROM CONVERT_STEP_1'
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
     assert query.query_name == 'CONVERT_STEP_1'
 
 
 def test_translate_cast_only_one_col():
-    step = ConvertStep(name='convert', columns=['raichu'], data_type='integer')
+    step = ConvertStep(name='convert', columns=['RAICHU'], data_type='integer')
     q = SQLQuery(
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
-        selection_query='SELECT raichu FROM SELECT_STEP_0',
+        selection_query='SELECT RAICHU FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'raichu': 'int'}}, query_metadata={'raichu': 'int'}
+            tables_metadata={'table1': {'RAICHU': 'int'}}, query_metadata={'RAICHU': 'int'}
         ),
     )
     query = translate_convert(
@@ -37,11 +37,11 @@ def test_translate_cast_only_one_col():
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT CAST(raichu AS integer) AS RAICHU '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT CAST(RAICHU AS integer) AS RAICHU '
         'FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT raichu FROM CONVERT_STEP_1'
+    assert query.selection_query == 'SELECT RAICHU FROM CONVERT_STEP_1'
     assert query.query_name == 'CONVERT_STEP_1'
 
 

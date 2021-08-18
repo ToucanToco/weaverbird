@@ -9,12 +9,12 @@ from weaverbird.backends.sql_translator.sql_pipeline_translator import (
 )
 from weaverbird.pipeline import Pipeline
 
-DOMAINS = {'domain_a': 'SELECT title FROM books'}
+DOMAINS = {'domain_a': 'SELECT TITLE FROM books'}
 
 
 @pytest.fixture
 def sql_query_describer():
-    return Mock(return_value={'toto': 'int', 'raichu': 'str'})
+    return Mock(return_value={'TOTO': 'int', 'RAICHU': 'str'})
 
 
 @pytest.fixture
@@ -22,13 +22,13 @@ def pipeline_translator():
     return partial(
         translate_pipeline,
         sql_query_retriever=lambda name: DOMAINS[name],
-        sql_query_describer=lambda x: {'title': 'str'},
+        sql_query_describer=lambda x: {'TITLE': 'str'},
     )
 
 
 def test_extract_query(pipeline_translator):
     q, _ = pipeline_translator(Pipeline(steps=[{'name': 'domain', 'domain': 'domain_a'}]))
-    assert q == 'WITH SELECT_STEP_0 AS (SELECT title FROM books) SELECT title FROM SELECT_STEP_0'
+    assert q == 'WITH SELECT_STEP_0 AS (SELECT TITLE FROM books) SELECT TITLE FROM SELECT_STEP_0'
 
 
 def test_errors(pipeline_translator, mocker):
@@ -45,10 +45,11 @@ def test_errors(pipeline_translator, mocker):
         pipeline_translator(
             Pipeline(
                 steps=[
+                    {'name': 'domain', 'domain': 'domain_a'},
                     {
                         'name': 'filter',
                         'condition': {
-                            'column': 'title',
+                            'column': 'TITLE',
                             'operator': 'eq',
                         },
                     },
@@ -56,10 +57,10 @@ def test_errors(pipeline_translator, mocker):
             )
         )
     exception_message = trslinfo.value.message
-    assert 'Step #1' in exception_message
+    assert 'Step #2' in exception_message
     assert 'filter' in exception_message
     assert 'comparison' in exception_message
-    assert trslinfo.value.details['index'] == 0
+    assert trslinfo.value.details['index'] == 1
     assert trslinfo.value.details['message'] == exception_message
 
 
@@ -82,12 +83,12 @@ def test_translation_pipeline(pipeline_translator, mocker):
                 {'name': 'domain', 'domain': 'domain_a'},
                 {
                     'name': 'filter',
-                    'condition': {'column': 'title', 'operator': 'isnull'},
+                    'condition': {'column': 'TITLE', 'operator': 'isnull'},
                 },
             ]
         )
     )
     assert (
         query_string
-        == 'WITH SELECT_STEP_0 AS (SELECT title FROM books), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE title IS NULL) SELECT title FROM FILTER_STEP_1'
+        == 'WITH SELECT_STEP_0 AS (SELECT TITLE FROM books), FILTER_STEP_1 AS (SELECT TITLE FROM SELECT_STEP_0 WHERE TITLE IS NULL) SELECT TITLE FROM FILTER_STEP_1'
     )
