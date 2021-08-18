@@ -17,7 +17,7 @@ def test_translate_simple_rename(query):
         'toto_name FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT raichu, florizarre, toto_name FROM RENAME_STEP_1'
+    assert query.selection_query == 'SELECT raichu, florizarre, TOTO_NAME FROM RENAME_STEP_1'
     assert query.query_name == 'RENAME_STEP_1'
 
 
@@ -39,7 +39,7 @@ def test_translate_simple_rename_only_one():
         'toto_name FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT toto_name FROM RENAME_STEP_1'
+    assert query.selection_query == 'SELECT TOTO_NAME FROM RENAME_STEP_1'
     assert query.query_name == 'RENAME_STEP_1'
 
 
@@ -58,7 +58,7 @@ def test_translate_multiple_rename(query):
     )
     assert query.transformed_query == expected_transformed_query
     assert (
-        query.selection_query == 'SELECT florizarre, toto_name, raichu_renamed FROM RENAME_STEP_2'
+        query.selection_query == 'SELECT florizarre, TOTO_NAME, RAICHU_RENAMED FROM RENAME_STEP_2'
     )
     assert query.query_name == 'RENAME_STEP_2'
 

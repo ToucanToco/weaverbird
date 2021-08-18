@@ -71,7 +71,6 @@ class SqlQueryMetadataManager(BaseModel):
         )
 
     def remove_column(self, table_name: str, column_name: str):
-        column_name = column_name.upper()
         log.debug(
             "before : remove_column: "
             + column_name
@@ -95,6 +94,9 @@ class SqlQueryMetadataManager(BaseModel):
         )
 
     def add_column(self, table_name: str, column_name: str, column_type: str):
+        if " " in column_name:
+            column_name = f'"{column_name}"'
+
         column_name = column_name.upper()
         log.debug(
             "before : add_column: "
@@ -106,9 +108,11 @@ class SqlQueryMetadataManager(BaseModel):
             + "> table_metadata: "
             + str(self.tables_metadata[table_name].keys())
         )
-        if " " in column_name:
-            column_name = f'"{column_name}"'
-        self.tables_metadata[table_name][column_name] = column_type
+        if (
+            column_name.upper() not in self.tables_metadata[table_name] and
+            column_name.lower() not in self.tables_metadata[table_name]
+        ):
+            self.tables_metadata[table_name][column_name] = column_type
         log.debug(
             "after : add_column: "
             + column_type
