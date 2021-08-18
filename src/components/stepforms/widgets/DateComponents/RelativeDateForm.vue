@@ -27,7 +27,7 @@ import { DEFAULT_DURATIONS, DurationOption, RelativeDate } from '@/lib/dates';
     AutocompleteWidget,
   },
 })
-export default class CustomVariableList extends Vue {
+export default class RelativeDateForm extends Vue {
   @Prop({ default: () => ({ quantity: 1, duration: DEFAULT_DURATIONS[0].value }) })
   value!: RelativeDate;
 
