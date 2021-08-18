@@ -4,6 +4,7 @@ from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .convert import translate_convert
 from .filter import translate_filter
+from .formula import translate_formula
 from .ifthenelse import translate_ifthenelse
 from .lowercase import translate_lowercase
 from .rename import translate_rename
@@ -25,4 +26,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'text': translate_text,
     'lowercase': translate_lowercase,
     'uppercase': translate_uppercase,
+    'formula': translate_formula,
 }

@@ -1,3 +1,4 @@
+import re
 from typing import Dict
 
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -185,3 +186,10 @@ def complete_fields(query: SQLQuery, columns=None) -> str:
         compiled_query = ', '.join(query_keys)
 
     return compiled_query
+
+
+def handle_zero_division(formula: str) -> str:
+    if '/' not in formula:
+        return formula
+    else:
+        return re.sub(r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
