@@ -1645,17 +1645,29 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       {
         $addFields: {
           foo: {
-            $subtract: [
+            $cond: [
               {
-                $divide: [
+                $or: [
                   {
-                    $add: ['$column_1', '$column_2'],
+                    $in: ['$column_3', [0, null]],
                   },
-                  '$column_3',
                 ],
               },
+              null,
               {
-                $multiply: ['$column_4', 100],
+                $subtract: [
+                  {
+                    $divide: [
+                      {
+                        $add: ['$column_1', '$column_2'],
+                      },
+                      '$column_3',
+                    ],
+                  },
+                  {
+                    $multiply: ['$column_4', 100],
+                  },
+                ],
               },
             ],
           },
@@ -1664,21 +1676,43 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       {
         $addFields: {
           bar: {
-            $multiply: [
+            $cond: [
               {
-                $divide: [
-                  1,
+                $or: [
                   {
-                    $add: [
+                    $in: [
                       {
-                        $add: ['$column_1', '$column_2'],
+                        $add: [
+                          {
+                            $add: ['$column_1', '$column_2'],
+                          },
+                          '$column_3',
+                        ],
                       },
-                      '$column_3',
+                      [0, null],
                     ],
                   },
                 ],
               },
-              10,
+              null,
+              {
+                $multiply: [
+                  {
+                    $divide: [
+                      1,
+                      {
+                        $add: [
+                          {
+                            $add: ['$column_1', '$column_2'],
+                          },
+                          '$column_3',
+                        ],
+                      },
+                    ],
+                  },
+                  10,
+                ],
+              },
             ],
           },
         },
@@ -1692,6 +1726,66 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
               },
               {
                 $multiply: ['$column_3', 10],
+              },
+            ],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a formula step with several divisions by zero or null', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'formula',
+        new_column: 'foo',
+        formula: 'column_1 / 10 + column_1 / column_2 + column_1 / (column_2 + 10)',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $cond: [
+              {
+                $or: [
+                  {
+                    $in: ['$column_2', [0, null]],
+                  },
+                  {
+                    $in: [
+                      {
+                        $add: ['$column_2', 10],
+                      },
+                      [0, null],
+                    ],
+                  },
+                ],
+              },
+              null,
+              {
+                $add: [
+                  {
+                    $add: [
+                      {
+                        $divide: ['$column_1', 10],
+                      },
+                      {
+                        $divide: ['$column_1', '$column_2'],
+                      },
+                    ],
+                  },
+                  {
+                    $divide: [
+                      '$column_1',
+                      {
+                        $add: ['$column_2', 10],
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },

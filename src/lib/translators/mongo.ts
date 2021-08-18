@@ -2281,22 +2281,28 @@ export class Mongo36Translator extends BaseTranslator {
   formula(step: Readonly<S.FormulaStep>): MongoStep {
     const mongoFormulaTree: MongoStep | string | number = buildMongoFormulaTree(
       buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
-    )
+    );
 
-    const denominators: MongoStep[] | string[] | number[] = []
+    const denominators: MongoStep[] | string[] | number[] = [{}];
 
-    const iterate = (obj) => {
-      Object.keys(obj).forEach(key => {
-        if (key == '$divide') {
-          denominators.push(obj[key][1]);
-        }
-        if (typeof obj[key] === 'object') {
-          iterate(obj[key])
-        }
-      })
-    }
+    const iterate = (obj: MongoStep | string | number) => {
+      if (typeof obj === 'object') {
+        Object.keys(obj).forEach(key => {
+          // Add denominator only if it is a Column or a ParenthesisNode
+          if (key == '$divide' && typeof obj[key][1] != 'number') {
+            denominators.push(obj[key][1]);
+          }
+          if (typeof obj[key] === 'object') {
+            iterate(obj[key]);
+          }
+        });
+      }
+    };
 
-    iterate(mongoFormulaTree)
+    // The first element was set for type reason
+    denominators.shift();
+
+    iterate(mongoFormulaTree);
 
     if (denominators.length == 0) {
       return {
@@ -2304,17 +2310,18 @@ export class Mongo36Translator extends BaseTranslator {
           [step.new_column]: mongoFormulaTree,
         },
       };
-    }
-    else {
-      const conditions = []
+    } else {
+      const conditions = [];
 
       for (const d in denominators) {
-        conditions.push({ $in: [ denominators[d], [ 0, null ] ] })
+        conditions.push({ $in: [denominators[d], [0, null]] });
       }
 
       return {
         $addFields: {
-          [step.new_column]: { $cond: [ { $or: conditions }, null, mongoFormulaTree ] },
+          // WARNING : if at least one denominator is zero or null, the result is null
+          // i.e : 1/0 + 1 = null
+          [step.new_column]: { $cond: [{ $or: conditions }, null, mongoFormulaTree] },
         },
       };
     }
