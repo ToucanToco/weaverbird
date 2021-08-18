@@ -109,8 +109,8 @@ class SqlQueryMetadataManager(BaseModel):
             + str(self.tables_metadata[table_name].keys())
         )
         if (
-            column_name.upper() not in self.tables_metadata[table_name] and
-            column_name.lower() not in self.tables_metadata[table_name]
+            column_name.upper() not in self.tables_metadata[table_name]
+            and column_name.lower() not in self.tables_metadata[table_name]
         ):
             self.tables_metadata[table_name][column_name] = column_type
         log.debug(
