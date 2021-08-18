@@ -37,9 +37,9 @@ def translate_replace(
     compiled_query: str = "CASE "
     for element_to_replace in step.to_replace:
         from_value, to_value = element_to_replace
-        if not isinstance(float, from_value):
+        if not isinstance(from_value, float) and not isinstance(from_value, int):
             from_value = from_value.replace('"', '\'')
-        if not isinstance(float, from_value):
+        if not isinstance(from_value, float) and not isinstance(to_value, int):
             to_value = to_value.replace('"', '\'')
         compiled_query += f'WHEN {step.search_column.upper()}={from_value} THEN {to_value} '
     compiled_query += f"END AS {step.search_column.upper()}"
