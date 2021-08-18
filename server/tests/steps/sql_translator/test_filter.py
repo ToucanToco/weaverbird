@@ -12,20 +12,21 @@ def test_translate_filter(mocker):
     )
     query = SQLQuery(
         query_name='SELECT_STEP_0',
-        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
-        selection_query='SELECT * FROM SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT toto, tata FROM products)',
+        selection_query='SELECT toto, tata FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'toto': 'str', 'tata': 'int'}}
+            tables_metadata={'table1': {'toto': 'str', 'tata': 'int'}},
+            query_metadata={'toto': 'str', 'tata': 'int'},
         ),
     )
     mocker.patch(
         'weaverbird.backends.sql_translator.steps.utils.query_transformation.apply_condition',
-        return_value='SELECT * FROM SELECT_STEP_0 WHERE amount = 10',
+        return_value='SELECT toto, tata FROM SELECT_STEP_0 WHERE amount = 10',
     )
     res = translate_filter(step, query, index=1)
     assert (
         res.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE amount = 10)'
+        == 'WITH SELECT_STEP_0 AS (SELECT toto, tata FROM products), FILTER_STEP_1 AS (SELECT toto, tata FROM SELECT_STEP_0 WHERE amount = 10)'
     )
     assert res.selection_query == 'SELECT toto, tata FROM FILTER_STEP_1'
 
@@ -38,6 +39,10 @@ def test_translate_filter_error(mocker):
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products), SELECT * FROM SELECT_STEP_0',
         selection_query='SELECT * FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={'table1': {'toto': 'str', 'tata': 'int'}},
+            query_metadata={'toto': 'str', 'tata': 'int'},
+        ),
     )
     mocker.patch(
         'weaverbird.backends.sql_translator.steps.filter.apply_condition',

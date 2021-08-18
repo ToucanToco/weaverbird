@@ -20,67 +20,65 @@ class TableMetadataUpdateError(Exception):
 
 class SqlQueryMetadataManager(BaseModel):
     tables_metadata: Dict[str, Dict[str, str]]
+    query_metadata: Dict[str, str]
 
-    def change_name(self, old_column_name: str, new_column_name: str, table_name: str):
+    def change_name(self, old_column_name: str, new_column_name: str):
         new_column_name = new_column_name.upper()
         log.debug(
             "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : change_name: "
-            + f"\nold_column_name : {table_name}.{old_column_name} | new_column_name : {table_name}.{new_column_name}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\nold_column_name : {old_column_name} | new_column_name : {new_column_name}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
+
         if " " in new_column_name:
             new_column_name = f'"{new_column_name}"'
-        if old_column_name in self.tables_metadata[table_name]:
-            self.tables_metadata[table_name][new_column_name] = self.tables_metadata[
-                table_name
-            ].pop(old_column_name)
+        if old_column_name in self.query_metadata:
+            self.query_metadata[new_column_name] = self.query_metadata.pop(old_column_name)
 
         log.debug(
             "\n----------------------------------------------"
             "after : change_name: "
-            + f"\nold_column_name : {table_name}.{old_column_name} | new_column_name : {table_name}.{new_column_name}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\nold_column_name : {old_column_name} | new_column_name : {new_column_name}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
             "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
-    def change_type(self, table_name: str, column_name: str, new_type: str):
+    def change_type(self, column_name: str, new_type: str):
         log.debug(
             "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : change_type: "
-            + f"\ncolumn_name : {table_name}.{column_name}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\ncolumn_name : {column_name}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
-        self.tables_metadata[table_name][column_name] = new_type
+        self.query_metadata[column_name] = new_type
         log.debug(
             "\n----------------------------------------------"
             "after : change_type: "
-            + f"\ncolumn_name : {table_name}.{column_name}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\ncolumn_name : {column_name}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
             "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
-    def remove_column(self, table_name: str, column_name: str):
+    def remove_column(self, column_name: str):
         log.debug(
             "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : remove_column: "
-            + f"\ncolumn_name : {table_name}.{column_name}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\ncolumn_name : {column_name}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
         try:
-            del self.tables_metadata[table_name][column_name]
+            del self.query_metadata[column_name]
         except KeyError:
             raise TableMetadataUpdateError
-
         log.debug(
-            "\n----------------------------------------------"
+            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "after : remove_column: "
-            + f"\ncolumn_name : {table_name}.{column_name}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
-            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
+            + f"\ncolumn_name : {column_name}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
 
-    def add_column(self, table_name: str, column_name: str, column_type: str):
+    def add_column(self, column_name: str, column_type: str):
         if " " in column_name:
             column_name = f'"{column_name}"'
 
@@ -88,19 +86,19 @@ class SqlQueryMetadataManager(BaseModel):
         log.debug(
             "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : add_column: "
-            + f"\ncolumn_name : {table_name}.{column_name} --- column_type : {column_name}.{column_type}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\ncolumn_name : {column_name} --- column_type : {column_type}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
         if (
-            column_name.upper() not in self.tables_metadata[table_name]
-            and column_name.lower() not in self.tables_metadata[table_name]
+            column_name.upper() not in self.query_metadata
+            and column_name.lower() not in self.query_metadata
         ):
-            self.tables_metadata[table_name][column_name] = column_type
+            self.query_metadata[column_name] = column_type
         log.debug(
             "\n----------------------------------------------"
             "after : add_column: "
-            + f"\ncolumn_name : {table_name}.{column_name} --- column_type : {column_name}.{column_type}"
-            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            + f"\ncolumn_name : {column_name} --- column_type : {column_name}.{column_type}"
+            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
             "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 

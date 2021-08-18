@@ -172,10 +172,9 @@ def test_apply_not_implemented():
 
 def test_build_selection_query():
     assert (
-        build_selection_query({'table1': {'toto': 'tata'}}, 'SELECT_STEP_0')
-        == 'SELECT toto FROM SELECT_STEP_0'
+        build_selection_query({'toto': 'tata'}, 'SELECT_STEP_0') == 'SELECT toto FROM SELECT_STEP_0'
     )
 
 
 def test_build_selection_query_empty_cols():
-    assert build_selection_query({'table1': {}}, 'SELECT_STEP_0') == 'SELECT  FROM SELECT_STEP_0'
+    assert build_selection_query({}, 'SELECT_STEP_0') == 'SELECT  FROM SELECT_STEP_0'

@@ -31,6 +31,7 @@ def translate_uppercase(
         f"step.column: {step.column}\n"
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
 
     new_query = SQLQuery(
@@ -39,7 +40,7 @@ def translate_uppercase(
         f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
         f""" UPPER({step.column}) AS {step.column.upper()}"""
         f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
 

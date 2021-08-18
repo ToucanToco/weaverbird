@@ -49,6 +49,7 @@ def translate_ifthenelse(
         "------------------------------------------------------------"
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
 
     composed_query: str = ""
@@ -67,11 +68,10 @@ def translate_ifthenelse(
         f""" FROM {query.query_name}) """,
     )
 
-    for table in [*query.metadata_manager.tables_metadata]:
-        query.metadata_manager.add_column(table, step.new_column, "str")
+    query.metadata_manager.add_column(step.new_column, "str")
 
     new_query.selection_query = build_selection_query(
-        query.metadata_manager.tables_metadata, query_name
+        query.metadata_manager.query_metadata, query_name
     )
     new_query.metadata_manager = query.metadata_manager
 

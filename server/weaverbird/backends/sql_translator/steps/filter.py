@@ -25,9 +25,8 @@ def translate_filter(
         transformed_query=f"""{query.transformed_query}, {query_name} AS ({
         apply_condition(
             step.condition,
-            f'''SELECT * FROM {query.query_name} WHERE '''
-        )})""",
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+            f'''SELECT {', '.join([cols for cols in query.metadata_manager.query_metadata.keys()])} FROM {query.query_name} WHERE ''')})""",
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
     return new_query

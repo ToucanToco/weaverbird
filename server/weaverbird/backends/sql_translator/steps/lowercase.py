@@ -31,15 +31,16 @@ def translate_lowercase(
         f"step.column: {step.column}\n"
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(columns=[step.column], step=step, query=query)},"""
+        f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
         f""" LOWER({step.column}) AS {step.column.upper()}"""
         f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
 
