@@ -1,7 +1,6 @@
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_first_or_last_aggregation,
     build_selection_query,
-    clean_query_metadata_duplications,
     prepare_aggregation_query,
 )
 from weaverbird.backends.sql_translator.types import (
@@ -30,7 +29,6 @@ def translate_aggregate(
         aggregated_string, first_last_string, query, step
     )
     query_name = f'AGGREGATE_STEP_{index}'
-    query = clean_query_metadata_duplications(query)
 
     new_query = SQLQuery(
         query_name=query_name,
