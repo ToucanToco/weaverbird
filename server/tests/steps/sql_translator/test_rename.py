@@ -26,7 +26,10 @@ def test_translate_simple_rename_only_one():
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT toto FROM SELECT_STEP_0',
-        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {'toto': 'int'}}),
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={'table1': {'toto': 'int'}},
+            query_metadata={'toto': 'int'},
+        ),
     )
     step = RenameStep(name='rename', to_rename=[['toto', 'toto_name']])
     query = translate_rename(
@@ -72,7 +75,8 @@ def test_translate_rename_error(query):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT toto, raichu, florizarre FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table2': {'toto': 'str', 'raichu': 'int', 'florizarre': 'str'}}
+            tables_metadata={'table2': {'toto': 'str', 'raichu': 'int', 'florizarre': 'str'}},
+            query_metadata={'toto': 'str', 'raichu': 'int', 'florizarre': 'str'},
         ),
     )
 

@@ -42,13 +42,11 @@ def translate_convert(
         f"step.data_type: {step.data_type}\n"
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
 
     for c in step.columns:
-        for table in [*query.metadata_manager.tables_metadata]:
-            query.metadata_manager.change_type(
-                column_name=c, table_name=table, new_type=step.data_type
-            )
+        query.metadata_manager.change_type(column_name=c, new_type=step.data_type)
     completed_fields = complete_fields(columns=step.columns, query=query)
     compiled_query = format_cast_to_sql(
         step.columns, step.data_type, completed_fields=completed_fields
@@ -60,7 +58,7 @@ def translate_convert(
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields}{compiled_query}"""
         f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
 

@@ -23,8 +23,15 @@ def query():
                     'Label': 'str',
                     'title': 'str',
                     'Group': 'str',
-                }
-            }
+                },
+            },
+            query_metadata={
+                'Value1': 'int',
+                'Value2': 'int',
+                'Label': 'str',
+                'title': 'str',
+                'Group': 'str',
+            },
         ),
     )
 

@@ -30,6 +30,7 @@ def translate_text(
         f"step.new_column: {step.new_column}\n"
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.tables_metadata}\n"
     )
 
     completed_fields = complete_fields(query)
@@ -42,13 +43,12 @@ def translate_text(
         f"""FROM {query.query_name}) """
     )
 
-    for table in [*query.metadata_manager.tables_metadata]:
-        query.metadata_manager.add_column(table, step.new_column, "str")
+    query.metadata_manager.add_column(step.new_column, "str")
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=transformed_query,
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
 

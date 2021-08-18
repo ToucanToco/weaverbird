@@ -27,7 +27,9 @@ def test_translate_cast_only_one_col():
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT raichu FROM SELECT_STEP_0',
-        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {'raichu': 'int'}}),
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={'table1': {'raichu': 'int'}}, query_metadata={'raichu': 'int'}
+        ),
     )
     query = translate_convert(
         step,
@@ -51,7 +53,8 @@ def test_translate_cast_redondant_column_error(query):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT toto, raichu, florizarre FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'toto': 'str', 'RAICHU': 'int', 'florizarre': 'str'}}
+            tables_metadata={'table1': {'toto': 'str', 'RAICHU': 'int', 'florizarre': 'str'}},
+            query_metadata={'toto': 'str', 'RAICHU': 'int', 'florizarre': 'str'},
         ),
     )
 

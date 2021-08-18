@@ -24,12 +24,17 @@ def translate_table(
         step.domain
     )  # TODO in laputa, implement the table retrieval instead of query
     query_name = f'SELECT_STEP_{index}'
-    tables_metadata = {query_name: sql_query_describer(step.domain)}
+    query_description = sql_query_describer(step.domain)
+    tables_metadata = {step.domain: query_description}
+    query_metadata = query_description
     sql_query = SQLQuery(
         query_name=query_name,
         transformed_query=f'WITH {query_name} AS ({select_from_table})',
-        selection_query=build_selection_query(tables_metadata, query_name),
-        metadata_manager=SqlQueryMetadataManager(tables_metadata=tables_metadata),
+        selection_query=build_selection_query(query_metadata, query_name),
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata=tables_metadata,
+            query_metadata=query_metadata,
+        ),
     )
     # TODO adapt Laputa to directly return the SQLQuery
     return sql_query

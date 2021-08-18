@@ -26,7 +26,7 @@ def test_text_only_one():
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT raichu FROM SELECT_STEP_0',
-        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {}}),
+        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {}}, query_metadata={}),
     )
     query_result = translate_text(step, q, index=1)
 
