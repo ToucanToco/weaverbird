@@ -37,7 +37,7 @@ def translate_lowercase(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[step.column], step=step, query=query)},"""
-        f""" LOWER({step.column}) AS {step.column}"""
+        f""" LOWER({step.column}) AS {step.column.upper()}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
         metadata_manager=query.metadata_manager,

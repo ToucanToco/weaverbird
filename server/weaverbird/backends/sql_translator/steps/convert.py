@@ -20,7 +20,7 @@ def format_cast_to_sql(columns: List, data_type: str, completed_fields: str) -> 
     """
     compiled_query: str = ""
     for c in columns:
-        compiled_query = ", ".join([f"CAST({c} AS {data_type}) AS {c}" for c in columns])
+        compiled_query = ", ".join([f"CAST({c} AS {data_type}) AS {c.upper()}" for c in columns])
     return compiled_query
 
 

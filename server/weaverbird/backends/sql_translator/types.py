@@ -24,14 +24,10 @@ class SqlQueryMetadataManager(BaseModel):
     def change_name(self, old_column_name: str, new_column_name: str, table_name: str):
         new_column_name = new_column_name.upper()
         log.debug(
+            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : change_name: "
-            + old_column_name
-            + "|"
-            + new_column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\nold_column_name : {table_name}.{old_column_name} | new_column_name : {table_name}.{new_column_name}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
         )
         if " " in new_column_name:
             new_column_name = f'"{new_column_name}"'
@@ -41,43 +37,35 @@ class SqlQueryMetadataManager(BaseModel):
             ].pop(old_column_name)
 
         log.debug(
+            "\n----------------------------------------------"
             "after : change_name: "
-            + old_column_name
-            + "|"
-            + new_column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\nold_column_name : {table_name}.{old_column_name} | new_column_name : {table_name}.{new_column_name}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
     def change_type(self, table_name: str, column_name: str, new_type: str):
         log.debug(
+            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : change_type: "
-            + column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\ncolumn_name : {table_name}.{column_name}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
         )
         self.tables_metadata[table_name][column_name] = new_type
         log.debug(
+            "\n----------------------------------------------"
             "after : change_type: "
-            + column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\ncolumn_name : {table_name}.{column_name}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
     def remove_column(self, table_name: str, column_name: str):
         log.debug(
+            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : remove_column: "
-            + column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\ncolumn_name : {table_name}.{column_name}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
         )
         try:
             del self.tables_metadata[table_name][column_name]
@@ -85,12 +73,11 @@ class SqlQueryMetadataManager(BaseModel):
             raise TableMetadataUpdateError
 
         log.debug(
+            "\n----------------------------------------------"
             "after : remove_column: "
-            + column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\ncolumn_name : {table_name}.{column_name}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
     def add_column(self, table_name: str, column_name: str, column_type: str):
@@ -99,14 +86,10 @@ class SqlQueryMetadataManager(BaseModel):
 
         column_name = column_name.upper()
         log.debug(
+            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : add_column: "
-            + column_type
-            + "|"
-            + column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\ncolumn_name : {table_name}.{column_name} --- column_type : {column_name}.{column_type}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
         )
         if (
             column_name.upper() not in self.tables_metadata[table_name]
@@ -114,14 +97,11 @@ class SqlQueryMetadataManager(BaseModel):
         ):
             self.tables_metadata[table_name][column_name] = column_type
         log.debug(
+            "\n----------------------------------------------"
             "after : add_column: "
-            + column_type
-            + "|"
-            + column_name
-            + "|"
-            + table_name
-            + "> table_metadata: "
-            + str(self.tables_metadata[table_name].keys())
+            + f"\ncolumn_name : {table_name}.{column_name} --- column_type : {column_name}.{column_type}"
+            + f"\n> table_metadata: {str(self.tables_metadata[table_name].keys())}"
+            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
 

@@ -26,8 +26,8 @@ def test_translate_simple_uppercase(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), UPPERCASE_STEP_1 AS (SELECT toto, florizarre, UPPER(raichu) '
-        'AS raichu FROM SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), UPPERCASE_STEP_1 AS (SELECT TOTO, FLORIZARRE, UPPER(raichu) '
+        'AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM UPPERCASE_STEP_1'

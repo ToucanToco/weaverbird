@@ -181,7 +181,7 @@ def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
         if columns:
             compiled_query = ', '.join(
                 [
-                    k.strip()
+                    k.strip().replace("-", "_").replace(" ", "").upper()
                     for k in table_keys
                     if k.upper() not in columns and k.lower() not in columns
                 ]
