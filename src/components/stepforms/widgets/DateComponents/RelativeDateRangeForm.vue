@@ -39,8 +39,17 @@ export default class RelativeDateRangeForm extends Vue {
     return this.value[1];
   }
 
+  set to(to: RelativeDate) {
+    this.$emit('input', [this.value[0], to]);
+  }
+
   get from(): AvailableVariable | undefined {
     return this.availableVariables.find(v => v.identifier === this.value[0]);
+  }
+
+  set from(variable: AvailableVariable | undefined) {
+    const value = variable?.identifier;
+    this.$emit('input', [value, { ...this.to, date: value }]);
   }
 }
 </script>
