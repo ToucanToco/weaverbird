@@ -194,7 +194,7 @@ def complete_fields(query: SQLQuery, step=None, columns=None) -> str:
 
 def clean_query_metadata_duplications(query: SQLQuery) -> SQLQuery:
     """
-        a security patch to prevent duplicate column from precedent query meta-data
+    a security patch to prevent duplicate column from precedent query meta-data
     """
     for table in [*query.metadata_manager.tables_metadata]:
         table_keys = list(query.metadata_manager.tables_metadata[table].keys())

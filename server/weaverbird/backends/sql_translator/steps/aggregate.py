@@ -1,7 +1,8 @@
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_first_or_last_aggregation,
     build_selection_query,
-    prepare_aggregation_query, clean_query_metadata_duplications,
+    clean_query_metadata_duplications,
+    prepare_aggregation_query,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,

@@ -1,7 +1,8 @@
 from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query, complete_fields, clean_query_metadata_duplications,
+    build_selection_query,
+    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -31,7 +32,6 @@ def translate_uppercase(
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
     )
-    query = clean_query_metadata_duplications(query)
 
     new_query = SQLQuery(
         query_name=query_name,

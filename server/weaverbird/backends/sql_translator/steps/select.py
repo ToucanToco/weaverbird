@@ -1,5 +1,5 @@
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query, clean_query_metadata_duplications,
+    build_selection_query,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -20,7 +20,6 @@ def translate_select(
 ) -> SQLQuery:
     query_name = f'KEEPCOLS_STEP_{index}'
     keepcols_query = f"SELECT {', '.join(step.columns)} FROM {query.query_name}"
-    query = clean_query_metadata_duplications(query)
 
     cols_to_remove = {}
     for table in query.metadata_manager.tables_metadata.keys():
