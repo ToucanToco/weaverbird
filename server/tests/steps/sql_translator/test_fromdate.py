@@ -12,7 +12,7 @@ def test_translate_simple_fromdate(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), FROMDATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TO_VARCHAR('
-        'RAICHU, \'%d/%m/%Y\') AS RAICHU) '
+        'RAICHU, \'DD/MM/YYYY\') AS RAICHU) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM FROMDATE_STEP_1'

@@ -2,7 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    complete_fields,
+    complete_fields, snowflake_date_format,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -34,14 +34,15 @@ def translate_fromdate(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
-    # we escape quotes here and construct our format
-    step.format = None if step.format is None else step.format.replace('"', "").replace("'", "")
-    step.format = "" if step.format is None else f", '{step.format}'"
+    step.format = snowflake_date_format(step.format)
+    # we change the column type
+    query.metadata_manager.change_type(step.column, 'text')
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
-        f""" TO_VARCHAR({step.column}{step.format}) AS {step.column}) """,
+        f""" TO_VARCHAR({step.column}) AS {step.column}"""
+        f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
