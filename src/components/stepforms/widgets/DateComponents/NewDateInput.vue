@@ -30,6 +30,7 @@
           />
           <div class="widget-date-input__editor-body">
             <Calendar v-if="isFixedTabSelected" />
+            <RelativeDateForm v-else />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -67,6 +68,7 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
+import RelativeDateForm from './RelativeDateForm.vue';
 /**
  * This component allow to select a relative or fixed date using date components
  */
@@ -77,6 +79,7 @@ import CustomVariableList from './CustomVariableList.vue';
     Popover,
     Tabs,
     Calendar,
+    RelativeDateForm,
   },
 })
 export default class NewDateInput extends Vue {
@@ -241,6 +244,10 @@ $active-color-dark: #16406a;
   .vc-container {
     border: none;
     margin: 1px;
+  }
+  .widget-relative-date-form {
+    margin: 20px;
+    max-width: 400px;
   }
 }
 .widget-date-input__editor-footer {

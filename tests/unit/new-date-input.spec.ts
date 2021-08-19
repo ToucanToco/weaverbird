@@ -203,6 +203,7 @@ describe('Date input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('Calendar-stub').exists()).toBe(true);
+        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
       });
     });
 
@@ -212,6 +213,7 @@ describe('Date input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
+        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
         expect(wrapper.find('Calendar-stub').exists()).toBe(false);
       });
     });
