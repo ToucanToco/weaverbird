@@ -188,6 +188,31 @@ def complete_fields(query: SQLQuery, columns=None) -> str:
     return compiled_query
 
 
+def snowflake_date_format(input_format: str) -> str:
+    """
+    This method will format the standard sql format for dates into snowflake sql one
+    """
+    # we escape quotes here and construct our format
+    # for a valid snowflake date format
+    input_format = (
+        None
+        if input_format is None
+        else input_format.replace('"', '')
+        .replace("'", "")
+        .replace("%b", "MON")
+        .replace("%B", "MMMM")
+        .replace('%y', 'YYYY')
+        .replace('%Y', 'YYYY')
+        .replace('%M', 'MM')
+        .replace('%m', 'MM')
+        .replace('%D', 'DD')
+        .replace('%d', 'DD')
+    )
+    input_format = "" if input_format is None else f", '{input_format}'"
+
+    return input_format
+
+
 def handle_zero_division(formula: str) -> str:
     """
     Use regular expression replacement to detect '/' or '%' in formulas
