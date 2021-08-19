@@ -1,4 +1,6 @@
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import snowflake_date_format
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    snowflake_date_format,
+)
 
 
 def test_simple_date_format():
