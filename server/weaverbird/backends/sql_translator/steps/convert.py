@@ -38,7 +38,7 @@ def translate_convert(
         query.metadata_manager.change_type(column_name=c, new_type=step.data_type)
     completed_fields = complete_fields(columns=step.columns, query=query)
     compiled_query = ", ".join(
-        [f"CAST({c} AS {step.data_type}) AS {c.upper()}" for c in step.columns]
+        [f"CAST({c} AS {step.data_type}) AS {c}" for c in step.columns]
     )
 
     if len(completed_fields):
