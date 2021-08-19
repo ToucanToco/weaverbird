@@ -8,6 +8,7 @@ from .formula import translate_formula
 from .ifthenelse import translate_ifthenelse
 from .lowercase import translate_lowercase
 from .rename import translate_rename
+from .replace import translate_replace
 from .select import translate_select
 from .sort import translate_sort
 from .table import translate_table
@@ -27,4 +28,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'lowercase': translate_lowercase,
     'uppercase': translate_uppercase,
     'formula': translate_formula,
+    'replace': translate_replace,
 }
