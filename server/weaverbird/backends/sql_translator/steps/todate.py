@@ -34,14 +34,16 @@ def translate_todate(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
-
+    # we escape quotes here and construct our format
+    step.format = None if step.format is None else step.format.replace('"', "").replace("'", "")
     step.format = "" if step.format is None else f", '{step.format}'"
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
-        f""" IFF(TRY_TO_DATE({step.column.upper()}{step.format})!=NULL, TO_DATE({step.column.upper()}"""
-        f"""{step.format}), 'not-valid-date-format') AS {step.column.upper()})""",
+        f""" IFF(TRY_TO_DATE({step.column.upper()}{step.format}) != NULL, TO_DATE({step.column.upper()}"""
+        f"""{step.format}), 'not-valid-date-format') AS {step.column.upper()})"""
+        f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
