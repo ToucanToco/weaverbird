@@ -75,15 +75,15 @@
     "schema": {
       "fields": [
         {
-          "name": "NAME",
+          "name": "name",
           "type": "string"
         },
         {
-          "name": "AGE",
+          "name": "age",
           "type": "number"
         },
         {
-          "name": "SCORE",
+          "name": "score",
           "type": "integer"
         }
       ],
@@ -91,14 +91,17 @@
     },
     "data": [
       {
-        "NAME": "foo",
-        "AGE": 42.0,
-        "SCORE": 100
+        "name": "foo",
+        "age": 42.0,
+        "score": 100
       }
     ]
   },
   "other_expected": {
     "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT name, age, score FROM SELECT_STEP_0 WHERE name = 'foo') SELECT name, age, score FROM FILTER_STEP_1"
+    },
+    "snowflake": {
       "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 WHERE name = 'foo') SELECT NAME, AGE, SCORE FROM FILTER_STEP_1"
     }
   }
