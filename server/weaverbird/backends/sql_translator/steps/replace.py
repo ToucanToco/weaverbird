@@ -3,7 +3,6 @@ from distutils import log
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
     complete_fields,
-    snowflake_date_format,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -11,36 +10,46 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryDescriber,
     SQLQueryRetriever,
 )
-from weaverbird.pipeline.steps import ToDateStep
+from weaverbird.pipeline.steps import ReplaceStep
 
 
-def translate_todate(
-    step: ToDateStep,
+def translate_replace(
+    step: ReplaceStep,
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
     sql_query_describer: SQLQueryDescriber = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
-    query_name = f'TODATE_STEP_{index}'
+    query_name = f'REPLACE_STEP_{index}'
 
     log.debug(
         "############################################################"
         f"query_name: {query_name}\n"
         "------------------------------------------------------------"
         f"step.name: {step.name}\n"
-        f"step.column: {step.column}\n"
-        f"step.format: {step.format}\n"
+        f"step.search_column: {step.search_column}\n"
+        f"step.to_replace: {step.to_replace}\n"
         f"query.transformed_query: {query.transformed_query}\n"
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
-    step.format = snowflake_date_format(step.format)
+
+    compiled_query: str = "CASE "
+    for element_to_replace in step.to_replace:
+        from_value, to_value = element_to_replace
+        if not isinstance(from_value, float) and not isinstance(from_value, int):
+            from_value = from_value.replace('"', '\'')
+        if not isinstance(from_value, float) and not isinstance(to_value, int):
+            to_value = to_value.replace('"', '\'')
+        compiled_query += f'WHEN {step.search_column}={from_value} THEN {to_value} '
+    compiled_query += f"ELSE {step.search_column} END AS {step.search_column}"
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
-        f""" TRY_TO_DATE({step.column.upper()}{step.format}) AS {step.column.upper()}"""
+        f""" (SELECT {complete_fields(columns=[step.search_column], query=query)},"""
+        f""" {compiled_query}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
