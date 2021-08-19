@@ -40,37 +40,26 @@ def translate_todate(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.column]
     )
-<<<<<<< HEAD
-
-    new_query = SQLQuery(
-        query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields},"""
-        f""" TO_DATE({step.column}{step.format}) AS {step.column}"""
-        f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(
-            query.metadata_manager.retrieve_query_metadata_columns(), query_name
-        ),
-=======
     # we escape quotes here and construct our format
     step.format = None if step.format is None else step.format.replace('"', "").replace("'", "")
     step.format = "" if step.format is None else f", '{step.format}'"
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
+        f""" (SELECT {completed_fields},"""
         f""" IFF(TRY_TO_DATE({step.column.upper()}{step.format}) != NULL, TO_DATE({step.column.upper()}"""
         f"""{step.format}), 'not-valid-date-format') AS {step.column.upper()})"""
         f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
         metadata_manager=query.metadata_manager,
     )
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
->>>>>>> feat(vqb): security check on date format
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query
