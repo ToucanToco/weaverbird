@@ -200,8 +200,6 @@ def snowflake_date_format(input_format: str) -> str:
         .replace("'", "")
         .replace("%b", "MON")
         .replace("%B", "MMMM")
-        .replace("%B", "MMMM")
-        .replace("%B", "MMMM")
         .replace('%y', 'YYYY')
         .replace('%Y', 'YYYY')
         .replace('%M', 'MM')
