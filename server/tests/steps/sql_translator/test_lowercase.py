@@ -1,9 +1,9 @@
 from weaverbird.backends.sql_translator.steps import translate_lowercase
-from weaverbird.pipeline.steps import UppercaseStep
+from weaverbird.pipeline.steps import LowercaseStep
 
 
 def test_translate_simple_lowercase(query):
-    step = UppercaseStep(name='uppercase', column='raichu')
+    step = LowercaseStep(name='lowercase', column='raichu')
 
     query = translate_lowercase(
         step,
