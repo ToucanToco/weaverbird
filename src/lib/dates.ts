@@ -26,6 +26,8 @@ export type RelativeDateRange = {
   duration: Duration;
 };
 
+export type CustomDate = Date | RelativeDate;
+
 export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Years ago', value: 'year' },
   { label: 'Quarters ago', value: 'quarter' },

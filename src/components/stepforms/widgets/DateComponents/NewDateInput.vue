@@ -29,8 +29,8 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" />
-            <RelativeDateForm v-else />
+            <Calendar v-if="isFixedTabSelected" v-model="tabValue" />
+            <RelativeDateForm v-else v-model="tabValue" />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -59,7 +59,7 @@ import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import { DateVariable, RelativeDate } from '@/lib/dates';
+import { CustomDate, DateVariable, RelativeDate } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -70,7 +70,8 @@ import {
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateForm from './RelativeDateForm.vue';
 /**
- * This component allow to select a relative or fixed date using date components
+ * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Dynamic way (RelativeDateForm),
+ * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
 @Component({
   name: 'new-date-input',
@@ -99,6 +100,20 @@ export default class NewDateInput extends Vue {
 
   get tabs(): string[] {
     return ['Dynamic', 'Fixed'];
+  }
+
+  // keep each tab value in memory to enable to switch between tabs without loosing content
+  tabsValues: Record<string, CustomDate> = {
+    Fixed: new Date(),
+    Dynamic: { date: new Date(), quantity: -1, duration: 'year' },
+  };
+
+  get tabValue(): CustomDate {
+    return this.tabsValues[this.selectedTab];
+  }
+
+  set tabValue(value: CustomDate) {
+    this.tabsValues[this.selectedTab] = value;
   }
 
   get variable(): AvailableVariable | undefined {

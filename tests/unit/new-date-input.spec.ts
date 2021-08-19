@@ -205,6 +205,17 @@ describe('Date input', () => {
         expect(wrapper.find('Calendar-stub').exists()).toBe(true);
         expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
       });
+
+      describe('when updating Calendar value', () => {
+        const newValue = new Date(8);
+        beforeEach(async () => {
+          wrapper.find('Calendar-stub').vm.$emit('input', newValue);
+          await wrapper.vm.$nextTick();
+        });
+        it('should update tab value', () => {
+          expect((wrapper.vm as any).tabsValues.Fixed).toStrictEqual(newValue);
+        });
+      });
     });
 
     describe('when selecting "Dynamic" tab', () => {
@@ -215,6 +226,17 @@ describe('Date input', () => {
       it('should display correct body component', () => {
         expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
         expect(wrapper.find('Calendar-stub').exists()).toBe(false);
+      });
+
+      describe('when updating RelativeDateForm value', () => {
+        const newValue = { date: new Date(), quantity: -1, duration: 'month' };
+        beforeEach(async () => {
+          wrapper.find('RelativeDateForm-stub').vm.$emit('input', newValue);
+          await wrapper.vm.$nextTick();
+        });
+        it('should update tab value', () => {
+          expect((wrapper.vm as any).tabsValues.Dynamic).toStrictEqual(newValue);
+        });
       });
     });
   });
