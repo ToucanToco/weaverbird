@@ -109,18 +109,13 @@ describe('Date input', () => {
         wrapper.find('CustomVariableList-stub').vm.$emit('selectCustomVariable');
         await wrapper.vm.$nextTick();
       });
-      it('should select "custom" in CustomVariableList', () => {
+      it('should use "custom" as selected variable', () => {
         expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
           'custom',
         );
       });
       it('should show custom editor', () => {
         expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
-      });
-      it('should expand editor', () => {
-        expect(wrapper.find('popover-stub').classes()).toContain(
-          'widget-date-input__editor--opened',
-        );
       });
     });
   });

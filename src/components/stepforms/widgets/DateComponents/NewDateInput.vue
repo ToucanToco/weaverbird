@@ -6,13 +6,7 @@
         <i class="far fa-calendar" aria-hidden="true" />
       </div>
     </div>
-    <popover
-      class="widget-date-input__editor"
-      :class="{ 'widget-date-input__editor--opened': isCustom }"
-      :visible="isEditorOpened"
-      :align="alignLeft"
-      bottom
-    >
+    <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
       <div class="widget-date-input__editor-container">
         <CustomVariableList
           class="widget-date-input__editor-side"
@@ -254,12 +248,8 @@ $active-color-dark: #16406a;
 .widget-date-input__editor {
   margin-left: -5px;
   margin-right: -5px;
-  width: 200px;
   background-color: #fff;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
-}
-.widget-date-input__editor--opened {
-  width: 480px;
 }
 .widget-date-input__editor-container {
   display: flex;
@@ -268,8 +258,10 @@ $active-color-dark: #16406a;
   height: 100%;
 }
 .widget-date-input__editor-side {
+  width: 200px;
   min-width: 200px;
   height: 100%;
+  max-height: 380px;
   flex: 1 200px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -289,14 +281,16 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-body {
   flex: 1;
+  height: 280px;
   min-height: 280px;
+  width: 280px;
   .vc-container {
     border: none;
     margin: 1px;
+    width: 100%;
   }
   .widget-relative-date-form {
     margin: 20px;
-    max-width: 400px;
   }
 }
 .widget-date-input__editor-footer {
