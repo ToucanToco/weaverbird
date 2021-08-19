@@ -34,7 +34,8 @@ def translate_fromdate(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
-    step.format = step.format.replace('"', "").replace("'", "")
+    # we escape quotes here and construct our format
+    step.format = None if step.format is None else step.format.replace('"', "").replace("'", "")
     step.format = "" if step.format is None else f", '{step.format}'"
     new_query = SQLQuery(
         query_name=query_name,
