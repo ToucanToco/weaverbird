@@ -121,8 +121,43 @@ describe('Date input', () => {
         wrapper.find('CustomVariableList-stub').vm.$emit('selectCustomVariable');
         await wrapper.vm.$nextTick();
       });
-      it('should hide editor', () => {
-        expect(wrapper.find('popover-stub').props().visible).toBe(false);
+      it('should select "custom" in CustomVariableList', () => {
+        expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
+          'custom',
+        );
+      });
+      it('should show custom editor', () => {
+        expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
+      });
+      it('should expand editor', () => {
+        expect(wrapper.find('popover-stub').classes()).toContain(
+          'widget-date-input__editor--opened',
+        );
+      });
+    });
+  });
+
+  describe('when selected value is custom date', () => {
+    const value = new Date();
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value,
+      });
+    });
+    describe('when clicking on calendar button', () => {
+      beforeEach(async () => {
+        wrapper.find('.widget-date-input__button').trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+      it('should select "custom" in CustomVariableList', () => {
+        expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
+          'custom',
+        );
+      });
+      it('should show custom editor', () => {
+        expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
       });
     });
   });

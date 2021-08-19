@@ -6,14 +6,24 @@
         <i class="far fa-calendar" aria-hidden="true" />
       </div>
     </div>
-    <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
+    <popover
+      class="widget-date-input__editor"
+      :class="{ 'widget-date-input__editor--opened': isCustom }"
+      :visible="isEditorOpened"
+      :align="alignLeft"
+      bottom
+    >
       <div class="widget-date-input__editor-container">
         <CustomVariableList
+          class="widget-date-input__editor-side"
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
+        <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
+          Custom Editor
+        </div>
       </div>
     </popover>
   </div>
@@ -50,10 +60,11 @@ export default class NewDateInput extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: { start: '', end: '' } })
+  @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
   isEditorOpened = false;
+  isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
 
   get variable(): AvailableVariable | undefined {
@@ -63,7 +74,21 @@ export default class NewDateInput extends Vue {
   }
 
   get selectedVariables(): string {
-    return this.variable?.identifier ?? '';
+    // needed to select the custom button in CustomVariableList
+    if (this.isCustom) {
+      return 'custom';
+    } else {
+      return this.variable?.identifier ?? '';
+    }
+  }
+
+  get hasCustomValue(): boolean {
+    // value is custom if not undefined and not a preset variable
+    return (this.value && !this.variable) as boolean;
+  }
+
+  get isCustom(): boolean {
+    return this.hasCustomValue || this.isEditingCustomVariable;
   }
 
   openEditor(): void {
@@ -72,6 +97,7 @@ export default class NewDateInput extends Vue {
 
   closeEditor(): void {
     this.isEditorOpened = false;
+    this.isEditingCustomVariable = false;
   }
 
   selectVariable(value: string): void {
@@ -81,8 +107,7 @@ export default class NewDateInput extends Vue {
   }
 
   editCustomVariable(): void {
-    // TODO: do all custom things here
-    this.closeEditor();
+    this.isEditingCustomVariable = true;
   }
 }
 </script>
@@ -133,9 +158,31 @@ $grey-extra-light: #f6f6f6;
   margin-left: -5px;
   margin-right: -5px;
   width: 200px;
-}
-.widget-date-input__editor-container {
   background-color: #fff;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
+}
+.widget-date-input__editor--opened {
+  width: 480px;
+  height: 400px;
+}
+.widget-date-input__editor-container {
+  display: flex;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
+.widget-date-input__editor-side {
+  min-width: 200px;
+  height: 100%;
+  flex: 1 200px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+.widget-date-input__editor-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1 100%;
+  border-left: 1px solid #eeedf0;
 }
 </style>
