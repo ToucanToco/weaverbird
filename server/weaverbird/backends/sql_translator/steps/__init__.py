@@ -19,7 +19,6 @@ from .todate import translate_todate
 from .top import translate_top
 from .uniquegroups import translate_uniquegroups
 from .uppercase import translate_uppercase
-from .fromdate import translate_fromdate
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'domain': translate_table,  # type ignore # TODO to update
