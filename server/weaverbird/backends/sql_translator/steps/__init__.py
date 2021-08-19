@@ -5,6 +5,7 @@ from .aggregate import translate_aggregate
 from .convert import translate_convert
 from .filter import translate_filter
 from .formula import translate_formula
+from .fromdate import translate_fromdate
 from .ifthenelse import translate_ifthenelse
 from .lowercase import translate_lowercase
 from .rename import translate_rename
@@ -15,7 +16,6 @@ from .table import translate_table
 from .text import translate_text
 from .todate import translate_todate
 from .uppercase import translate_uppercase
-from .fromdate import translate_fromdate
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'domain': translate_table,  # type ignore # TODO to update
