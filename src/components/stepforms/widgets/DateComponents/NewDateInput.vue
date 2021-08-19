@@ -24,7 +24,20 @@
         <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
           <div class="widget-date-input__editor-header">Header</div>
           <div class="widget-date-input__editor-body">Body</div>
-          <div class="widget-date-input__editor-footer">Footer</div>
+          <div class="widget-date-input__editor-footer">
+            <div
+              class="widget-date-input__editor-button"
+              ref="cancel"
+              @click="closeEditor"
+              v-text="'Cancel'"
+            />
+            <div
+              class="widget-date-input__editor-button widget-date-input__editor-button--primary"
+              ref="save"
+              @click="saveCustomVariable"
+              v-text="'Set date'"
+            />
+          </div>
         </div>
       </div>
     </popover>
@@ -111,6 +124,11 @@ export default class NewDateInput extends Vue {
   editCustomVariable(): void {
     this.isEditingCustomVariable = true;
   }
+
+  saveCustomVariable(): void {
+    // TOFIX: do the save logic here
+    this.$emit('input', this.value);
+  }
 }
 </script>
 
@@ -120,6 +138,7 @@ export default class NewDateInput extends Vue {
 $grey: #808080;
 $grey-light: #d9d9d9;
 $grey-extra-light: #f6f6f6;
+$active-color-dark: #16406a;
 
 .widget-date-input {
   max-width: 400px;
@@ -200,5 +219,26 @@ $grey-extra-light: #f6f6f6;
   justify-content: flex-end;
   border-top: 1px solid #eeedf0;
   padding: 15px 20px;
+}
+.widget-date-input__editor-button {
+  @extend %button-default;
+  min-width: 100px;
+  flex: 1;
+  background: $grey-extra-light;
+  color: $base-color;
+  text-align: center;
+  &:hover {
+    background: $grey-light;
+  }
+  + .widget-date-input__editor-button {
+    margin-left: 15px;
+  }
+}
+.widget-date-input__editor-button--primary {
+  background: $active-color;
+  color: white;
+  &:hover {
+    background: $active-color-dark;
+  }
 }
 </style>

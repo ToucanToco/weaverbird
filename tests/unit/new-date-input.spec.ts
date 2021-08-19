@@ -146,18 +146,44 @@ describe('Date input', () => {
         value,
       });
     });
-    describe('when clicking on calendar button', () => {
+    it('should select "custom" in CustomVariableList', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
+        'custom',
+      );
+    });
+    it('should show custom editor', () => {
+      expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
+    });
+  });
+
+  describe('custom editor', () => {
+    const value = new Date();
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value,
+      });
+    });
+    describe('when clicking on cancel button', () => {
       beforeEach(async () => {
-        wrapper.find('.widget-date-input__button').trigger('click');
+        wrapper.find({ ref: 'cancel' }).trigger('click');
         await wrapper.vm.$nextTick();
       });
-      it('should select "custom" in CustomVariableList', () => {
-        expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
-          'custom',
-        );
+
+      it('should close the editor', () => {
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
-      it('should show custom editor', () => {
-        expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
+    });
+
+    describe('when clicking on save button', () => {
+      beforeEach(async () => {
+        wrapper.find({ ref: 'save' }).trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit saved value', () => {
+        // TOFIX
+        expect(wrapper.emitted().input[0][0]).toStrictEqual(value);
       });
     });
   });
