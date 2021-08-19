@@ -186,13 +186,21 @@ describe('Date input', () => {
     });
 
     describe('when clicking on save button', () => {
+      const editedValue = new Date(3);
+
       beforeEach(async () => {
+        wrapper.setData({
+          tabsValues: {
+            Fixed: editedValue,
+            Dynamic: { date: new Date(), quantity: -1, duration: 'year' },
+          },
+          selectedTab: 'Fixed',
+        });
         wrapper.find({ ref: 'save' }).trigger('click');
         await wrapper.vm.$nextTick();
       });
-      it('should emit saved value', () => {
-        // TOFIX
-        expect(wrapper.emitted().input[0][0]).toStrictEqual(value);
+      it('should emit selected tab value', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual(editedValue);
       });
     });
 

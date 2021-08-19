@@ -164,8 +164,8 @@ export default class NewDateInput extends Vue {
   }
 
   saveCustomVariable(): void {
-    // TOFIX: do the save logic here
-    this.$emit('input', this.value);
+    this.$emit('input', this.tabValue); // emit only the selected tab value
+    this.closeEditor();
   }
 
   selectTab(tab: string): void {
