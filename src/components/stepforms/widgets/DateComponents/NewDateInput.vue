@@ -22,7 +22,9 @@
           @input="selectVariable"
         />
         <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
-          Custom Editor
+          <div class="widget-date-input__editor-header">Header</div>
+          <div class="widget-date-input__editor-body">Body</div>
+          <div class="widget-date-input__editor-footer">Footer</div>
         </div>
       </div>
     </popover>
@@ -184,5 +186,19 @@ $grey-extra-light: #f6f6f6;
   justify-content: space-between;
   flex: 1 100%;
   border-left: 1px solid #eeedf0;
+}
+.widget-date-input__editor-header {
+  flex: 0;
+}
+.widget-date-input__editor-body {
+  flex: 1;
+}
+.widget-date-input__editor-footer {
+  flex: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-top: 1px solid #eeedf0;
+  padding: 15px 20px;
 }
 </style>
