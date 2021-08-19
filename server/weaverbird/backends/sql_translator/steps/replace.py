@@ -31,6 +31,7 @@ def translate_replace(
         f"step.search_column: {step.search_column}\n"
         f"step.to_replace: {step.to_replace}\n"
         f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
 
@@ -41,8 +42,8 @@ def translate_replace(
             from_value = from_value.replace('"', '\'')
         if not isinstance(from_value, float) and not isinstance(to_value, int):
             to_value = to_value.replace('"', '\'')
-        compiled_query += f'WHEN {step.search_column.upper()}={from_value} THEN {to_value} '
-    compiled_query += f"END AS {step.search_column.upper()}"
+        compiled_query += f'WHEN {step.search_column}={from_value} THEN {to_value} '
+    compiled_query += f"ELSE {step.search_column} END AS {step.search_column}"
 
     new_query = SQLQuery(
         query_name=query_name,
