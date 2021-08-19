@@ -12,6 +12,7 @@ from .sort import translate_sort
 from .table import translate_table
 from .text import translate_text
 from .uppercase import translate_uppercase
+from .fromdate import translate_fromdate
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'domain': translate_table,  # type ignore # TODO to update
@@ -25,4 +26,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'text': translate_text,
     'lowercase': translate_lowercase,
     'uppercase': translate_uppercase,
+    'fromdate': translate_fromdate,
 }

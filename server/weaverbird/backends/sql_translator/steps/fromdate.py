@@ -34,13 +34,13 @@ def translate_fromdate(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
-
+    step.format = step.format.replace('"', "").replace("'", "")
     step.format = "" if step.format is None else f", '{step.format}'"
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
-        f""" TO_VARCHAR({step.column.upper()}{step.format}) AS {step.column.upper()})""",
+        f""" TO_VARCHAR({step.column}{step.format}) AS {step.column}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
