@@ -64,8 +64,18 @@ def test_translate_formula_simple(query, expected_transformed_query, formula):
         ),
         (
             f'WITH SELECT_STEP_0 AS (SELECT * FROM products), {QUERY_NAME} AS (SELECT TOTO, RAICHU, FLORIZARRE, '
+            'PIKA % NULLIF(PIKA, 0) % NULLIF(AKIP, 0) AS RESULT FROM SELECT_STEP_0)',
+            'PIKA % PIKA % AKIP',
+        ),
+        (
+            f'WITH SELECT_STEP_0 AS (SELECT * FROM products), {QUERY_NAME} AS (SELECT TOTO, RAICHU, FLORIZARRE, '
             'PIKA / NULLIF(PIKA, 0) * 12 AS RESULT FROM SELECT_STEP_0)',
             'PIKA / PIKA * 12',
+        ),
+        (
+            f'WITH SELECT_STEP_0 AS (SELECT * FROM products), {QUERY_NAME} AS (SELECT TOTO, RAICHU, FLORIZARRE, '
+            'PIKA / NULLIF(PIKA, 0) * 12 % NULLIF(BLABLA, 0) AS RESULT FROM SELECT_STEP_0)',
+            'PIKA / PIKA * 12 % BLABLA',
         ),
     ],
 )

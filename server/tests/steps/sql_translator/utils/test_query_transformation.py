@@ -185,8 +185,22 @@ def test_handle_zero_division_no_division():
     assert handle_zero_division('AGE - YEAR + 2000') == 'AGE - YEAR + 2000'
 
 
-def test_handle_zero_division():
+def test_handle_zero_division_only_div():
     assert (
         handle_zero_division('1 / PIPEAU / "BLA    BLA"')
         == '1 / NULLIF(PIPEAU, 0) / NULLIF("BLA    BLA", 0)'
+    )
+
+
+def test_handle_zero_division_only_modulo():
+    assert (
+        handle_zero_division('1 % PIPEAU % "BLA    BLA"')
+        == '1 % NULLIF(PIPEAU, 0) % NULLIF("BLA    BLA", 0)'
+    )
+
+
+def test_handle_zero_division_modulo_and_div():
+    assert (
+        handle_zero_division('1 % PIPEAU / "BLA    BLA"')
+        == '1 % NULLIF(PIPEAU, 0) / NULLIF("BLA    BLA", 0)'
     )
