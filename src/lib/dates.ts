@@ -16,15 +16,15 @@ export type DurationOption = {
 };
 
 export type RelativeDate = {
-  date?: Date | string;
+  date: Date | string | undefined;
   quantity: number; // can be negative or positive
   duration: Duration;
 };
 
 export const DEFAULT_DURATIONS: DurationOption[] = [
-  { label: 'Years', value: 'year' },
-  { label: 'Quarters', value: 'quarter' },
-  { label: 'Months', value: 'month' },
-  { label: 'Weeks', value: 'week' },
-  { label: 'Days', value: 'day' },
+  { label: 'Years ago', value: 'year' },
+  { label: 'Quarters ago', value: 'quarter' },
+  { label: 'Months ago', value: 'month' },
+  { label: 'Weeks ago', value: 'week' },
+  { label: 'Days ago', value: 'day' },
 ];

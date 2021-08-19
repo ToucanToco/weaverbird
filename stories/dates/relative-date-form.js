@@ -17,7 +17,7 @@ stories.add('simple', () => ({
 
   data() {
     return {
-      value: { quantity: 3, duration: 'month' },
+      value: { date: new Date(), quantity: -3, duration: 'month' },
     };
   },
 }));
@@ -37,25 +37,6 @@ stories.add('empty', () => ({
   data() {
     return {
       value: undefined,
-    };
-  },
-}));
-
-stories.add('isNegative', () => ({
-  template: `
-    <div>
-      <RelativeDateForm v-model="value" :isNegative="true" />
-      <pre>{{ value }}</pre>
-    </div>
-  `,
-
-  components: {
-    RelativeDateForm,
-  },
-
-  data() {
-    return {
-      value: { quantity: -2, duration: 'quarter' },
     };
   },
 }));
