@@ -1,3 +1,4 @@
+import re
 from typing import Dict
 
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -197,16 +198,35 @@ def snowflake_date_format(input_format: str) -> str:
         None
         if input_format is None
         else input_format.replace('"', '')
-        .replace("'", "")
-        .replace("%b", "MON")
-        .replace("%B", "MMMM")
-        .replace('%y', 'YYYY')
-        .replace('%Y', 'YYYY')
-        .replace('%M', 'MM')
-        .replace('%m', 'MM')
-        .replace('%D', 'DD')
-        .replace('%d', 'DD')
+            .replace("'", "")
+            .replace("%b", "MON")
+            .replace("%B", "MMMM")
+            .replace('%y', 'YYYY')
+            .replace('%Y', 'YYYY')
+            .replace('%M', 'MM')
+            .replace('%m', 'MM')
+            .replace('%D', 'DD')
+            .replace('%d', 'DD')
     )
     input_format = "" if input_format is None else f", '{input_format}'"
 
     return input_format
+
+
+def handle_zero_division(formula: str) -> str:
+    """
+    Use regular expression replacement to detect '/' or '%' in formulas
+    and substitute a 0 divisor by NULL
+    For example in '1 % BLAAA / "BLA    BLA"'
+    this r'(?<=%)\s*(\w+)' captures BLAAA and this r' NULLIF(\1, 0)' replaces it
+    by NULLIF(BLAAA, 0).
+    this r'(?<=/)\s*(\"?.*\"?)' captures "BLA    BLA" and this r'NULLIFF(\2, 0)' replaces it
+    by NULLIF("BLA    BLA", 0).
+    """
+    if '/' not in formula and '%' not in formula:
+        return formula
+    if '/' in formula:
+        formula = re.sub(r'(?<=/)\s*(\w+)|(?<=/)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
+    if '%' in formula:
+        formula = re.sub(r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
+    return formula

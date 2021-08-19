@@ -3,6 +3,7 @@ import pytest
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
+    handle_zero_division,
 )
 from weaverbird.pipeline.conditions import (
     BaseCondition,
@@ -178,3 +179,28 @@ def test_build_selection_query():
 
 def test_build_selection_query_empty_cols():
     assert build_selection_query({}, 'SELECT_STEP_0') == 'SELECT  FROM SELECT_STEP_0'
+
+
+def test_handle_zero_division_no_division():
+    assert handle_zero_division('AGE - YEAR + 2000') == 'AGE - YEAR + 2000'
+
+
+def test_handle_zero_division_only_div():
+    assert (
+        handle_zero_division('1 / PIPEAU / "BLA    BLA"')
+        == '1 / NULLIF(PIPEAU, 0) / NULLIF("BLA    BLA", 0)'
+    )
+
+
+def test_handle_zero_division_only_modulo():
+    assert (
+        handle_zero_division('1 % PIPEAU % "BLA    BLA"')
+        == '1 % NULLIF(PIPEAU, 0) % NULLIF("BLA    BLA", 0)'
+    )
+
+
+def test_handle_zero_division_modulo_and_div():
+    assert (
+        handle_zero_division('1 % PIPEAU / "BLA    BLA"')
+        == '1 % NULLIF(PIPEAU, 0) / NULLIF("BLA    BLA", 0)'
+    )
