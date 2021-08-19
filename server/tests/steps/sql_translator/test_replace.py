@@ -29,7 +29,7 @@ def test_translate_string_integer_replace(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), REPLACE_STEP_1 AS (SELECT TOTO, FLORIZARRE, CASE WHEN '
-        'RAICHU=2 THEN 4 END AS RAICHU FROM SELECT_STEP_0) '
+        'RAICHU=2 THEN 4 ELSE RAICHU END AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT toto, raichu, florizarre FROM REPLACE_STEP_1'
