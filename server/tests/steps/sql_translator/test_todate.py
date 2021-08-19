@@ -11,7 +11,7 @@ def test_translate_simple_todate(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TRY_TO_DATE('
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TO_DATE('
         'RAICHU, \'DD/MM/YYYY\') AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
@@ -28,7 +28,7 @@ def test_translate_automatic_guess_todate(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TRY_TO_DATE('
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TO_DATE('
         'RAICHU) AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
@@ -45,7 +45,7 @@ def test_translate_hard_todate(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TRY_TO_DATE('
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TO_DATE('
         'RAICHU, \'mm/dd/yyyy, hh24:mi hours\') AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
