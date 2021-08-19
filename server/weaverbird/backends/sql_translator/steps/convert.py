@@ -1,5 +1,4 @@
 from distutils import log
-from typing import List
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
@@ -12,16 +11,6 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import ConvertStep
-
-
-def format_cast_to_sql(columns: List, data_type: str, completed_fields: str) -> (str, str):
-    """
-    From cast to sql
-    """
-    compiled_query: str = ""
-    for c in columns:
-        compiled_query = ", ".join([f"CAST({c} AS {data_type}) AS {c.upper()}" for c in columns])
-    return compiled_query
 
 
 def translate_convert(
@@ -48,9 +37,10 @@ def translate_convert(
     for c in step.columns:
         query.metadata_manager.change_type(column_name=c, new_type=step.data_type)
     completed_fields = complete_fields(columns=step.columns, query=query)
-    compiled_query = format_cast_to_sql(
-        step.columns, step.data_type, completed_fields=completed_fields
+    compiled_query = ", ".join(
+        [f"CAST({c} AS {step.data_type}) AS {c.upper()}" for c in step.columns]
     )
+
     if len(completed_fields):
         compiled_query = f', {compiled_query}'
     new_query = SQLQuery(
