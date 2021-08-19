@@ -22,8 +22,13 @@
           @input="selectVariable"
         />
         <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
-          <div class="widget-date-input__editor-header">Header</div>
-          <div class="widget-date-input__editor-body">Body</div>
+          <Tabs
+            class="widget-date-input__editor-header"
+            :tabs="tabs"
+            :selectedTab="selectedTab"
+            @tabSelected="selectTab"
+          />
+          <div class="widget-date-input__editor-body">{{ selectedTab }}</div>
           <div class="widget-date-input__editor-footer">
             <div
               class="widget-date-input__editor-button"
@@ -49,6 +54,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
+import Tabs from '@/components/Tabs.vue';
 import { DateVariable, RelativeDate } from '@/lib/dates';
 import {
   AvailableVariable,
@@ -66,6 +72,7 @@ import CustomVariableList from './CustomVariableList.vue';
   components: {
     CustomVariableList,
     Popover,
+    Tabs,
   },
 })
 export default class NewDateInput extends Vue {
@@ -81,6 +88,11 @@ export default class NewDateInput extends Vue {
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
+  selectedTab = 'Dynamic';
+
+  get tabs(): string[] {
+    return ['Dynamic', 'Fixed'];
+  }
 
   get variable(): AvailableVariable | undefined {
     if (typeof this.value !== 'string') return undefined;
@@ -128,6 +140,10 @@ export default class NewDateInput extends Vue {
   saveCustomVariable(): void {
     // TOFIX: do the save logic here
     this.$emit('input', this.value);
+  }
+
+  selectTab(tab: string): void {
+    this.selectedTab = tab;
   }
 }
 </script>
@@ -208,6 +224,9 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-header {
   flex: 0;
+  .tabs {
+    margin-bottom: -1px;
+  }
 }
 .widget-date-input__editor-body {
   flex: 1;

@@ -80,6 +80,15 @@ describe('Date input', () => {
       expect((wrapper.vm as any).variable).toStrictEqual(selectedVariable);
     });
 
+    it('should have a Tabs', () => {
+      expect(wrapper.find('Tabs-stub').exists()).toBe(true);
+    });
+
+    it('should have two tabs and a selected tabs by default', () => {
+      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Dynamic', 'Fixed']);
+      expect(wrapper.find('Tabs-stub').props().selectedTab).not.toBeUndefined();
+    });
+
     it('should pass available variables to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual(
         SAMPLE_VARIABLES,
@@ -184,6 +193,28 @@ describe('Date input', () => {
       it('should emit saved value', () => {
         // TOFIX
         expect(wrapper.emitted().input[0][0]).toStrictEqual(value);
+      });
+    });
+
+    describe('when selecting "Fixed" tab', () => {
+      beforeEach(async () => {
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed');
+        await wrapper.vm.$nextTick();
+      });
+      it('should display correct body component', () => {
+        // TOFIX
+        expect(wrapper.find('.widget-date-input__editor-body').text()).toBe('Fixed');
+      });
+    });
+
+    describe('when selecting "Dynamic" tab', () => {
+      beforeEach(async () => {
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic');
+        await wrapper.vm.$nextTick();
+      });
+      it('should display correct body component', () => {
+        // TOFIX
+        expect(wrapper.find('.widget-date-input__editor-body').text()).toBe('Dynamic');
       });
     });
   });
