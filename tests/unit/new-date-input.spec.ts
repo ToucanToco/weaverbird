@@ -247,6 +247,11 @@ describe('Date input', () => {
         value: `{{${selectedVariable.identifier}}}`,
       });
     });
+    it('should display variable label as input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+        selectedVariable.label,
+      );
+    });
     it('should retrieve selected variable', () => {
       expect((wrapper.vm as any).variable).toStrictEqual(selectedVariable);
     });
@@ -268,6 +273,11 @@ describe('Date input', () => {
       });
       tabValues = (wrapper.vm as any).tabsValues;
     });
+
+    it('should display date as UTC for input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(value.toUTCString());
+    });
+
     it('should select "Fixed" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
     });
@@ -296,6 +306,11 @@ describe('Date input', () => {
       });
       tabValues = (wrapper.vm as any).tabsValues;
     });
+
+    it('should display readable input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months ago');
+    });
+
     it('should select "Dynamic" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
     });
@@ -331,6 +346,9 @@ describe('Date input', () => {
     });
     it('should pass empty string as selected variable to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual('');
+    });
+    it('should display placeholder input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a date');
     });
   });
 });

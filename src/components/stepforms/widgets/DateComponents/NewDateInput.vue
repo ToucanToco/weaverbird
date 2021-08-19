@@ -1,7 +1,7 @@
 <template>
   <div class="widget-date-input">
     <div class="widget-date-input__container">
-      <span class="widget-date-input__label">Last 12 month</span>
+      <span class="widget-date-input__label">{{ label }}</span>
       <div class="widget-date-input__button" @click="openEditor">
         <i class="far fa-calendar" aria-hidden="true" />
       </div>
@@ -59,7 +59,12 @@ import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, DateVariable, RelativeDate } from '@/lib/dates';
+import {
+  CustomDate,
+  DateVariable,
+  RelativeDate,
+  transformRelativeDateToReadableLabel,
+} from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -142,6 +147,20 @@ export default class NewDateInput extends Vue {
 
   get isFixedTabSelected(): boolean {
     return this.selectedTab === 'Fixed';
+  }
+
+  get label(): string {
+    if (!this.value) {
+      return 'Select a date';
+    } else if (this.variable) {
+      return this.variable.label;
+    } else if (this.value instanceof Date) {
+      return this.value.toUTCString();
+    } else if (typeof this.value !== 'string') {
+      return transformRelativeDateToReadableLabel(this.value);
+    } else {
+      return this.value;
+    }
   }
 
   created() {
