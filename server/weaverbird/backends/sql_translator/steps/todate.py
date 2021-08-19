@@ -40,7 +40,7 @@ def translate_todate(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
-        f""" TRY_TO_DATE({step.column.upper()}{step.format}) AS {step.column.upper()}"""
+        f""" TO_DATE({step.column}{step.format}) AS {step.column}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
