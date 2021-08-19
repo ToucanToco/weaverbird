@@ -22,10 +22,11 @@ describe('Relative date range form', () => {
   });
 
   describe('default', () => {
-    const date = 'today';
+    const date = '{{today}}';
     beforeEach(() => {
       createWrapper({
         value: [date, { date, quantity: -1, duration: 'month' }],
+        variableDelimiters: { start: '{{', end: '}}' },
         availableVariables: SAMPLE_VARIABLES,
       });
     });
@@ -58,8 +59,8 @@ describe('Relative date range form', () => {
         wrapper.find('AutocompleteWidget-stub').vm.$emit('input', selectedDateVariable);
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated dates in from and to parts', () => {
-        const newDate = selectedDateVariable.identifier;
+      it('should emit value with updated dates with delimiters in from and to parts', () => {
+        const newDate = `{{${selectedDateVariable.identifier}}}`;
         expect(wrapper.emitted().input[0][0]).toStrictEqual([
           newDate,
           { date: newDate, quantity: -1, duration: 'month' },
@@ -95,6 +96,12 @@ describe('Relative date range form', () => {
     });
     it('should set available variables to empty array', () => {
       expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([]);
+    });
+    it('should set variable delimiters to empty strings', () => {
+      expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
+    });
+    it('should pass empty string as value to autocomplete input', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual('');
     });
   });
 });

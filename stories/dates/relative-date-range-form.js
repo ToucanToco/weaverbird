@@ -22,7 +22,8 @@ stories.add('simple', () => ({
   template: `
     <div>
       <RelativeDateRangeForm 
-        :available-variables="availableVariables" 
+        :available-variables="availableVariables"
+        :variable-delimiters="variableDelimiters"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -36,6 +37,7 @@ stories.add('simple', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
       value: undefined,
     };
   },
