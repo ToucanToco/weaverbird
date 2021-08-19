@@ -28,7 +28,9 @@
             :selectedTab="selectedTab"
             @tabSelected="selectTab"
           />
-          <div class="widget-date-input__editor-body">{{ selectedTab }}</div>
+          <div class="widget-date-input__editor-body">
+            <Calendar v-if="isFixedTabSelected" />
+          </div>
           <div class="widget-date-input__editor-footer">
             <div
               class="widget-date-input__editor-button"
@@ -52,6 +54,7 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
@@ -73,6 +76,7 @@ import CustomVariableList from './CustomVariableList.vue';
     CustomVariableList,
     Popover,
     Tabs,
+    Calendar,
   },
 })
 export default class NewDateInput extends Vue {
@@ -116,6 +120,10 @@ export default class NewDateInput extends Vue {
 
   get isCustom(): boolean {
     return this.hasCustomValue || this.isEditingCustomVariable;
+  }
+
+  get isFixedTabSelected(): boolean {
+    return this.selectedTab === 'Fixed';
   }
 
   openEditor(): void {
@@ -200,7 +208,6 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor--opened {
   width: 480px;
-  height: 400px;
 }
 .widget-date-input__editor-container {
   display: flex;
@@ -230,6 +237,11 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-body {
   flex: 1;
+  min-height: 280px;
+  .vc-container {
+    border: none;
+    margin: 1px;
+  }
 }
 .widget-date-input__editor-footer {
   flex: 0;

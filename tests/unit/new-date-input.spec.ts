@@ -202,8 +202,7 @@ describe('Date input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        // TOFIX
-        expect(wrapper.find('.widget-date-input__editor-body').text()).toBe('Fixed');
+        expect(wrapper.find('Calendar-stub').exists()).toBe(true);
       });
     });
 
@@ -213,8 +212,7 @@ describe('Date input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        // TOFIX
-        expect(wrapper.find('.widget-date-input__editor-body').text()).toBe('Dynamic');
+        expect(wrapper.find('Calendar-stub').exists()).toBe(false);
       });
     });
   });
