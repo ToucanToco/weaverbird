@@ -51,12 +51,10 @@ describe('Date input', () => {
   });
 
   describe('default', () => {
-    const selectedVariable = SAMPLE_VARIABLES[SAMPLE_VARIABLES.length - 1];
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
-        value: `{{${selectedVariable.identifier}}}`,
       });
     });
 
@@ -76,28 +74,9 @@ describe('Date input', () => {
       expect(wrapper.find('CustomVariableList-stub').exists()).toBe(true);
     });
 
-    it('should retrieve selected variable', () => {
-      expect((wrapper.vm as any).variable).toStrictEqual(selectedVariable);
-    });
-
-    it('should have a Tabs', () => {
-      expect(wrapper.find('Tabs-stub').exists()).toBe(true);
-    });
-
-    it('should have two tabs and a selected tabs by default', () => {
-      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Dynamic', 'Fixed']);
-      expect(wrapper.find('Tabs-stub').props().selectedTab).not.toBeUndefined();
-    });
-
     it('should pass available variables to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual(
         SAMPLE_VARIABLES,
-      );
-    });
-
-    it('should pass selected variable identifier to CustomVariableList', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
-        selectedVariable.identifier,
       );
     });
 
@@ -125,7 +104,7 @@ describe('Date input', () => {
       });
     });
 
-    describe('when selecting "custom variable" in CustomVariableList', () => {
+    describe('when selecting "custom" in CustomVariableList', () => {
       beforeEach(async () => {
         wrapper.find('CustomVariableList-stub').vm.$emit('selectCustomVariable');
         await wrapper.vm.$nextTick();
@@ -174,6 +153,16 @@ describe('Date input', () => {
         value,
       });
     });
+
+    it('should have a Tabs', () => {
+      expect(wrapper.find('Tabs-stub').exists()).toBe(true);
+    });
+
+    it('should have two tabs and a selected tabs by default', () => {
+      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Dynamic', 'Fixed']);
+      expect(wrapper.find('Tabs-stub').props().selectedTab).not.toBeUndefined();
+    });
+
     describe('when clicking on cancel button', () => {
       beforeEach(async () => {
         wrapper.find({ ref: 'cancel' }).trigger('click');
@@ -246,6 +235,81 @@ describe('Date input', () => {
           expect((wrapper.vm as any).tabsValues.Dynamic).toStrictEqual(newValue);
         });
       });
+    });
+  });
+
+  describe('with selected value as variable', () => {
+    const selectedVariable = SAMPLE_VARIABLES[SAMPLE_VARIABLES.length - 1];
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value: `{{${selectedVariable.identifier}}}`,
+      });
+    });
+    it('should retrieve selected variable', () => {
+      expect((wrapper.vm as any).variable).toStrictEqual(selectedVariable);
+    });
+    it('should pass selected variable identifier to CustomVariableList', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
+        selectedVariable.identifier,
+      );
+    });
+  });
+
+  describe('with selected value as custom date', () => {
+    let tabValues: any;
+    const value = new Date();
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value,
+      });
+      tabValues = (wrapper.vm as any).tabsValues;
+    });
+    it('should select "Fixed" tab by default', () => {
+      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
+    });
+
+    it('should assing value to tab value', () => {
+      expect((wrapper.vm as any).tabsValues).toStrictEqual({
+        ...tabValues,
+        Fixed: value,
+      });
+      expect((wrapper.vm as any).tabValue).toStrictEqual(value);
+    });
+
+    it('should preselect value in Calendar', () => {
+      expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
+    });
+  });
+
+  describe('with selected value as relative date', () => {
+    let tabValues: any;
+    const value = { date: new Date(), quantity: 1, duration: 'month' };
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value,
+      });
+      tabValues = (wrapper.vm as any).tabsValues;
+    });
+    it('should select "Dynamic" tab by default', () => {
+      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
+    });
+
+    it('should assing value to tab value', () => {
+      expect((wrapper.vm as any).tabsValues).toStrictEqual({
+        ...tabValues,
+        Dynamic: value,
+      });
+      expect((wrapper.vm as any).tabValue).toStrictEqual(value);
+    });
+
+    it('should preselect value in RelativeDateForm', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual(value);
     });
   });
 
