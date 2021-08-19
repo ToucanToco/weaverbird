@@ -1,0 +1,108 @@
+{
+  "step": {
+    "name": "equal",
+    "pipeline": [
+      {
+        "name": "filter",
+        "condition": {
+          "column": "name",
+          "operator": "eq",
+          "value": "foo"
+        }
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "age",
+          "type": "integer"
+        },
+        {
+          "name": "score",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "name": "foo",
+        "age": 42,
+        "score": 100
+      },
+      {
+        "name": "bar",
+        "age": 43,
+        "score": 200
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "score",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "name": "plop",
+          "score": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "age",
+          "type": "number"
+        },
+        {
+          "name": "score",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "name": "foo",
+        "age": 42.0,
+        "score": 100
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT name, age, score FROM SELECT_STEP_0 WHERE name = 'foo') SELECT name, age, score FROM FILTER_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 WHERE name = 'foo') SELECT NAME, AGE, SCORE FROM FILTER_STEP_1"
+    }
+  }
+}
