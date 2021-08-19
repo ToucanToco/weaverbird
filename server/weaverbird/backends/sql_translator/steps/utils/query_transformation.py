@@ -198,15 +198,15 @@ def snowflake_date_format(input_format: str) -> str:
         None
         if input_format is None
         else input_format.replace('"', '')
-            .replace("'", "")
-            .replace("%b", "MON")
-            .replace("%B", "MMMM")
-            .replace('%y', 'YYYY')
-            .replace('%Y', 'YYYY')
-            .replace('%M', 'MM')
-            .replace('%m', 'MM')
-            .replace('%D', 'DD')
-            .replace('%d', 'DD')
+        .replace("'", "")
+        .replace("%b", "MON")
+        .replace("%B", "MMMM")
+        .replace('%y', 'YYYY')
+        .replace('%Y', 'YYYY')
+        .replace('%M', 'MM')
+        .replace('%m', 'MM')
+        .replace('%D', 'DD')
+        .replace('%d', 'DD')
     )
     input_format = "" if input_format is None else f", '{input_format}'"
 
