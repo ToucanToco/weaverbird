@@ -46,9 +46,8 @@ def translate_todate(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields},"""
-        f""" IFF(TRY_TO_DATE({step.column.upper()}{step.format}) != NULL, TO_DATE({step.column.upper()}"""
-        f"""{step.format}), 'not-valid-date-format') AS {step.column.upper()})"""
+        f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
+        f""" TRY_TO_DATE({step.column}{step.format}) AS {step.column}"""
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
