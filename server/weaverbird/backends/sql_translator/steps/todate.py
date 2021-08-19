@@ -50,13 +50,6 @@ def translate_todate(
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
-        metadata_manager=query.metadata_manager,
-    )
-
-    log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
     )
 
     return new_query
