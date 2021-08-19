@@ -196,7 +196,7 @@ def snowflake_date_format(input_format: str) -> str:
     # for a valid snowflake date format
     input_format = (
         None
-        if input_format is None
+        if input_format is None or input_format == ""
         else input_format.replace('"', '')
         .replace("'", "")
         .replace("%b", "MON")
@@ -208,7 +208,7 @@ def snowflake_date_format(input_format: str) -> str:
         .replace('%D', 'DD')
         .replace('%d', 'DD')
     )
-    input_format = "" if input_format is None else f", '{input_format}'"
+    input_format = "" if input_format is None or input_format == "" else f", '{input_format}'"
 
     return input_format
 
