@@ -37,7 +37,7 @@ def translate_fromdate(
     )
     step.format = snowflake_date_format(step.format)
     # we change the column type
-    query.metadata_manager.change_type(step.column, 'text')
+    query.metadata_manager.change_type(step.column, 'str')
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
