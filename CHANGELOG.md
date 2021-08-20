@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- New step: trim (for mongo >4 and pandas) by @CharlesRngrd
+
 ## [0.55.0] - 2021-08-09
 
 ### Added
@@ -830,6 +836,7 @@
 ### Added
 
 - Initial version, showtime!
+[0.55.0]: https://github.com/ToucanToco/weaverbird/compare/v0.54.0...v0.55.0
 [0.54.0]: https://github.com/ToucanToco/weaverbird/compare/v0.53.1...v0.54.0
 [0.53.1]: https://github.com/ToucanToco/weaverbird/compare/v0.53.0...v0.53.1
 [0.53.0]: https://github.com/ToucanToco/weaverbird/compare/v0.52.0...v0.53.0
