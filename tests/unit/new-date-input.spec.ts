@@ -55,11 +55,16 @@ describe('Date input', () => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
+        value: 'anythingnotokay',
       });
     });
 
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
+    });
+
+    it('should display placeholder input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a date');
     });
 
     it('should have a popover for editor', () => {

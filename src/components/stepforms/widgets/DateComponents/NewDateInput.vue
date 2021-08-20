@@ -139,16 +139,14 @@ export default class NewDateInput extends Vue {
   }
 
   get label(): string {
-    if (!this.value) {
-      return 'Select a date';
-    } else if (this.variable) {
+    if (this.variable) {
       return this.variable.label;
     } else if (this.value instanceof Date) {
       return this.value.toUTCString();
-    } else if (typeof this.value !== 'string') {
+    } else if (this.value instanceof Object) {
       return relativeDateToString(this.value);
     } else {
-      return this.value;
+      return 'Select a date';
     }
   }
 

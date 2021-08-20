@@ -36,6 +36,7 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Days ago', value: 'day' },
 ];
 
+/* istanbul ignore next */
 export const relativeDateToString = (relativeDate: RelativeDate): string => {
   const duration: string | undefined = DEFAULT_DURATIONS.find(
     d => d.value === relativeDate.duration,
