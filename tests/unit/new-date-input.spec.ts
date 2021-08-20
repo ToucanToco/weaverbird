@@ -259,7 +259,9 @@ describe('Date input', () => {
     });
 
     it('should display date as UTC for input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(value.toUTCString());
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+        value.toLocaleDateString(),
+      );
     });
 
     it('should select "Fixed" tab by default', () => {

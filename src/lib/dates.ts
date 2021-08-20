@@ -46,8 +46,8 @@ export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR =
   '<i aria-hidden="true" class="fa fa-arrow-right"></i>';
 
 export const dateRangeToString = (dateRange: DateRange): string => {
-  const startDate = dateRange.start ? dateRange.start.toUTCString() : 'Invalid Date';
-  const endDate = dateRange.end ? dateRange.end.toUTCString() : 'Invalid Date';
+  const startDate = dateRange.start ? dateRange.start.toLocaleDateString() : 'Invalid Date';
+  const endDate = dateRange.end ? dateRange.end.toLocaleDateString() : 'Invalid Date';
   return `${startDate}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${endDate}`;
 };
 

@@ -142,7 +142,7 @@ export default class NewDateInput extends Vue {
     if (this.variable) {
       return this.variable.label;
     } else if (this.value instanceof Date) {
-      return this.value.toUTCString();
+      return this.value.toLocaleDateString();
     } else if (this.value instanceof Object) {
       return relativeDateToString(this.value);
     } else {
