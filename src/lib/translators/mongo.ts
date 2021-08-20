@@ -1638,28 +1638,30 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
   for (const [idx, elem] of step.hierarchy.entries()) {
     const id = columnMap([...step.hierarchy.slice(0, idx + 1), ...(step.groupby ?? [])]);
     const aggs: { [id: string]: {} } = {};
-    for (const aggfStep of step.aggregations) {
-      // We support simple string sfor retrocompatibility purposes
-      const cols = aggfStep.column ? [aggfStep.column] : aggfStep.columns;
-      const newcols = aggfStep.newcolumn ? [aggfStep.newcolumn] : aggfStep.newcolumns;
+    if (step.aggregations) {
+      for (const aggfStep of step.aggregations) {
+        // We support simple string sfor retrocompatibility purposes
+        const cols = aggfStep.column ? [aggfStep.column] : aggfStep.columns;
+        const newcols = aggfStep.newcolumn ? [aggfStep.newcolumn] : aggfStep.newcolumns;
 
-      if (aggfStep.aggfunction === 'count') {
-        for (let i = 0; i < cols.length; i++) {
-          // cols and newcols are always of same length
-          aggs[newcols[i]] = { $sum: 1 };
-        }
-      } else if (aggfStep.aggfunction === 'count distinct') {
-        // specific step needed to count distinct values
-        for (let i = 0; i < cols.length; i++) {
-          // build a set of unique values
-          aggs[newcols[i]] = { $addToSet: $$(cols[i]) };
-          // count the number of items in the set
-          addFields[newcols[i]] = { $size: $$(newcols[i]) };
-        }
-      } else {
-        for (let i = 0; i < cols.length; i++) {
-          // cols and newcols are always of same length
-          aggs[newcols[i]] = { [$$(aggfStep.aggfunction)]: $$(cols[i]) };
+        if (aggfStep.aggfunction === 'count') {
+          for (let i = 0; i < cols.length; i++) {
+            // cols and newcols are always of same length
+            aggs[newcols[i]] = { $sum: 1 };
+          }
+        } else if (aggfStep.aggfunction === 'count distinct') {
+          // specific step needed to count distinct values
+          for (let i = 0; i < cols.length; i++) {
+            // build a set of unique values
+            aggs[newcols[i]] = { $addToSet: $$(cols[i]) };
+            // count the number of items in the set
+            addFields[newcols[i]] = { $size: $$(newcols[i]) };
+          }
+        } else {
+          for (let i = 0; i < cols.length; i++) {
+            // cols and newcols are always of same length
+            aggs[newcols[i]] = { [$$(aggfStep.aggfunction)]: $$(cols[i]) };
+          }
         }
       }
     }

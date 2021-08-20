@@ -3195,6 +3195,97 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can generate basic rollup steps without aggregation', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['continent', 'country', 'city'],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          level_0: [
+            {
+              $group: {
+                _id: {
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                continent: '$_id.continent',
+                label: '$_id.continent',
+                level: 'continent',
+              },
+            },
+          ],
+          level_1: [
+            {
+              $group: {
+                _id: {
+                  country: '$country',
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.country',
+                parent: '$_id.continent',
+                level: 'country',
+              },
+            },
+          ],
+          level_2: [
+            {
+              $group: {
+                _id: {
+                  city: '$city',
+                  country: '$country',
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.city',
+                parent: '$_id.country',
+                level: 'city',
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbRollupLevels: { $concatArrays: ['$level_0', '$level_1', '$level_2'] },
+        },
+      },
+      {
+        $unwind: '$_vqbRollupLevels',
+      },
+      {
+        $replaceRoot: { newRoot: '$_vqbRollupLevels' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
   it('can generate more complex rollup steps if needed', () => {
     const pipeline: Pipeline = [
       {

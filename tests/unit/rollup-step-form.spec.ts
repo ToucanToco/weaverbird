@@ -117,21 +117,22 @@ describe('Rollup Step Form', () => {
         errors: [{ keyword: 'minLength', dataPath: '.groupby[0]' }],
       },
       {
-        testlabel: '"columns" and "newcolumns" parameters include empty strings',
+        testlabel: '"columns", "newcolumns" and "aggfunction" parameters include empty strings',
         props: {
           initialStepValue: {
             name: 'rollup',
             hierarchy: ['column1'],
             aggregations: [
               {
-                newcolumns: [''],
-                aggfunction: 'sum',
+                aggfunction: '',
                 columns: [''],
+                newcolumns: ['']
               },
             ],
           },
         },
         errors: [
+          { keyword: 'enum', dataPath: '.aggregations[0].aggfunction' },
           { keyword: 'minLength', dataPath: '.aggregations[0].columns[0]' },
           { keyword: 'minLength', dataPath: '.aggregations[0].newcolumns[0]' },
         ],
@@ -223,7 +224,21 @@ describe('Rollup Step Form', () => {
       },
     });
 
-    it('should call teh setAggregationsNewColumnsInStep function with editedStep as input', () => {
+    runner.testValidate({
+      testlabel: 'submitted data is valid without aggregation',
+      props: {
+        initialStepValue: {
+          name: 'rollup',
+          hierarchy: ['foo'],
+          aggregations: [],
+          labelCol: 'label',
+          levelCol: 'label',
+          parentLabelCol: 'label',
+        },
+      },
+    });
+
+    it('should call the setAggregationsNewColumnsInStep function with editedStep as input', () => {
       const editedStep = {
         name: 'rollup',
         hierarchy: ['foo'],

@@ -345,7 +345,7 @@ export type RollupStep = {
   /** the list of hierarchical columns from lowest to highest level */
   hierarchy: string[];
   /** the list of columnns to aggregate, with related aggregation function to use */
-  aggregations: Aggregation[];
+  aggregations?: Aggregation[];
   /** Groupby columns if rollup has to be performed by groups */
   groupby?: string[];
   /** To give a custom name to the output label column */
