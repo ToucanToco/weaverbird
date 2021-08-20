@@ -18,7 +18,6 @@ export type DurationOption = {
 export type DateVariable = Date | string | undefined;
 
 export type RelativeDate = {
-  date: DateVariable;
   quantity: number; // can be negative or positive
   duration: Duration;
 };
