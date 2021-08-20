@@ -22,7 +22,7 @@ on:
       - '.github/workflows/ci-ui.yml'
 
 jobs:
-  build:
+  build_lint_and_test:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,3 +44,12 @@ jobs:
 
       - name: Check that build completes as expected
         run: yarn build-bundle
+
+      - name: Send report to codecov
+        run: yarn codecov
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
