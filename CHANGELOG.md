@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- New step: trim (for mongo >4 and pandas) by @CharlesRngrd
+
 ## [0.55.0] - 2021-08-09
 
 ### Added
