@@ -156,6 +156,17 @@ export default class NewDateInput extends Vue {
     this.initTabs();
   }
 
+  // init tabs by selecting correct tab and value based on prop value
+  initTabs(): void {
+    if (this.value instanceof Date) {
+      this.tabsValues.Fixed = this.value;
+      this.selectTab('Fixed');
+    } else if (this.value && typeof this.value !== 'string') {
+      this.tabsValues.Dynamic = this.value;
+      this.selectTab('Dynamic');
+    }
+  }
+
   openEditor(): void {
     this.isEditorOpened = true;
   }
@@ -182,17 +193,6 @@ export default class NewDateInput extends Vue {
 
   selectTab(tab: string): void {
     this.selectedTab = tab;
-  }
-
-  // init tabs by selecting correct tab and value based on prop value
-  initTabs(): void {
-    if (this.value instanceof Date) {
-      this.tabsValues.Fixed = this.value;
-      this.selectTab('Fixed');
-    } else if (this.value && typeof this.value !== 'string') {
-      this.tabsValues.Dynamic = this.value;
-      this.selectTab('Dynamic');
-    }
   }
 }
 </script>
