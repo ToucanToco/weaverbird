@@ -228,9 +228,6 @@ describe('Date input', () => {
         selectedVariable.label,
       );
     });
-    it('should retrieve selected variable', () => {
-      expect((wrapper.vm as any).variable).toStrictEqual(selectedVariable);
-    });
     it('should pass selected variable identifier to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
         selectedVariable.identifier,
