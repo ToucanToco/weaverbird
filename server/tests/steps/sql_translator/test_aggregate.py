@@ -252,6 +252,25 @@ def test_count_distinct(query, sql_query_describer):
     )
 
 
+def test_count_distinct_whitespace_replace(query, sql_query_describer):
+    step = AggregateStep(
+        name='aggregate',
+        on=[],
+        aggregations=[
+            Aggregation(
+                aggfunction='count distinct',
+                columns=['Group'],
+                newcolumns=['Group CD'],
+            )
+        ],
+    )
+    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    assert (
+        sql_query.transformed_query
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT COUNT(DISTINCT Group) AS Group_CD FROM SELECT_STEP_0)'
+    )
+
+
 def test_duplicate_aggregation_columns(query, sql_query_describer):
 
     with pytest.raises(DuplicateColumnError):
