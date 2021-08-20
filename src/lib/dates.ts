@@ -1,4 +1,7 @@
 import _has from 'lodash/has';
+import _pick from 'lodash/pick';
+
+import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from './variables';
 
 export type DateRange = { start?: Date; end?: Date };
 export type DateRangeSide = keyof DateRange;
@@ -51,6 +54,18 @@ export const relativeDateToString = (relativeDate: RelativeDate): string => {
     d => d.value === relativeDate.duration,
   )?.label;
   return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
+};
+
+/* istanbul ignore next */
+export const relativeDateRangeToString = (
+  relativeDateRange: RelativeDateRange,
+  availableVariables: VariablesBucket = [],
+  variableDelimiters: VariableDelimiters = { start: '', end: '' },
+): string => {
+  const identifier = extractVariableIdentifier(relativeDateRange.date, variableDelimiters);
+  const from = availableVariables.find(v => v.identifier === identifier)?.label;
+  const to = _pick(relativeDateRange, ['quantity', 'duration']);
+  return `${from} -> ${relativeDateToString(to)}`;
 };
 
 export const isRelativeDateRange = (

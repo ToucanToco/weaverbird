@@ -2,6 +2,8 @@ import {
   dateRangeToString,
   isDateRange,
   isRelativeDateRange,
+  RelativeDateRange,
+  relativeDateRangeToString,
   relativeDateToString,
 } from '@/lib/dates';
 
@@ -28,6 +30,20 @@ describe('relativeDateToString', () => {
     expect(relativeDateToString({ quantity: -8, duration: 'year' })).toStrictEqual('8 years ago');
     expect(relativeDateToString({ quantity: -7, duration: 'day' })).toStrictEqual('7 days ago');
     expect(relativeDateToString({ quantity: -7, duration: 'day' })).toStrictEqual('7 days ago');
+  });
+});
+
+describe('relativeDateRangeToString', () => {
+  const variableDelimiters = { start: '{{', end: '}}' };
+  const SAMPLE_VARIABLES = [
+    { label: 'Today', identifier: 'today', value: '' },
+    { label: 'Tomorrow', identifier: 'tomorrow', value: '' },
+  ];
+  it('should transform a relative date range to a readable label', () => {
+    const value: RelativeDateRange = { date: '{{tomorrow}}', quantity: -2, duration: 'month' };
+    expect(relativeDateRangeToString(value, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
+      'Tomorrow -> 2 months ago',
+    );
   });
 });
 
