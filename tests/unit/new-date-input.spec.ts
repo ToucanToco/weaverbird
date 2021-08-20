@@ -212,6 +212,20 @@ describe('Date input', () => {
         });
       });
     });
+
+    describe('when switching between tabs', () => {
+      const updatedCalendarValue = new Date(11);
+      beforeEach(async () => {
+        wrapper.find('Calendar-stub').vm.$emit('input', updatedCalendarValue); // update Calendar value
+        await wrapper.vm.$nextTick();
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic'); // switching to the other tab
+        await wrapper.vm.$nextTick();
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // come back to previous tab
+      });
+      it('should not remove other tab value', () => {
+        expect(wrapper.find('Calendar-stub').props().value).toBe(updatedCalendarValue);
+      });
+    });
   });
 
   describe('with selected value as variable', () => {
@@ -236,7 +250,6 @@ describe('Date input', () => {
   });
 
   describe('with selected value as custom date', () => {
-    let tabValues: any;
     const value = new Date();
     beforeEach(() => {
       createWrapper({
@@ -244,7 +257,6 @@ describe('Date input', () => {
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
-      tabValues = (wrapper.vm as any).tabsValues;
     });
 
     it('should display date as UTC for input label', () => {
@@ -255,21 +267,12 @@ describe('Date input', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
     });
 
-    it('should assing value to tab value', () => {
-      expect((wrapper.vm as any).tabsValues).toStrictEqual({
-        ...tabValues,
-        Fixed: value,
-      });
-      expect((wrapper.vm as any).tabValue).toStrictEqual(value);
-    });
-
     it('should preselect value in Calendar', () => {
       expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
     });
   });
 
   describe('with selected value as relative date', () => {
-    let tabValues: any;
     const value = { quantity: 1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
@@ -277,7 +280,6 @@ describe('Date input', () => {
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
-      tabValues = (wrapper.vm as any).tabsValues;
     });
 
     it('should display readable input label', () => {
@@ -287,15 +289,6 @@ describe('Date input', () => {
     it('should select "Dynamic" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
     });
-
-    it('should assing value to tab value', () => {
-      expect((wrapper.vm as any).tabsValues).toStrictEqual({
-        ...tabValues,
-        Dynamic: value,
-      });
-      expect((wrapper.vm as any).tabValue).toStrictEqual(value);
-    });
-
     it('should preselect value in RelativeDateForm', () => {
       expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual(value);
     });
