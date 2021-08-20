@@ -1,0 +1,59 @@
+{
+  "step": {
+    "name": "trim",
+    "columns": [
+      "ColA",
+      "ColB"
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "ColA",
+          "type": "string"
+        },
+        {
+          "name": "ColB",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "ColA": "foo",
+        "ColB": "toto"
+      },
+      {
+        "ColA": "bar",
+        "ColB": "tata"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "ColA",
+          "type": "string"
+        },
+        {
+          "name": "ColB",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "ColA": "foo",
+        "ColB": "toto"
+      },
+      {
+        "ColA": "bar",
+        "ColB": "tata"
+      }
+    ]
+  }
+}
