@@ -88,7 +88,7 @@ stories.add('already selected variable', () => ({
   },
 }));
 
-stories.add('custom (fixed date)', () => ({
+stories.add('custom (fixed date range)', () => ({
   template: `
     <div>
       <DateRangeInput 
@@ -108,12 +108,12 @@ stories.add('custom (fixed date)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
-      value: new Date(),
+      value: { start: new Date(1), end: new Date(100000000) },
     };
   },
 }));
 
-stories.add('custom (relative date)', () => ({
+stories.add('custom (relative date range)', () => ({
   template: `
     <div>
       <DateRangeInput 
@@ -133,7 +133,7 @@ stories.add('custom (relative date)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
-      value: { quantity: -1, duration: 'month' },
+      value: { date: '{{today}}', quantity: -1, duration: 'month' },
     };
   },
 }));

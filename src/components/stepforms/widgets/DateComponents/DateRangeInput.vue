@@ -53,7 +53,7 @@ import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, relativeDateToString } from '@/lib/dates';
+import { CustomDateRange } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -79,7 +79,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
 })
 export default class DateRangeInput extends Vue {
   @Prop({ default: '' })
-  value!: string | CustomDate;
+  value!: string | CustomDateRange;
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
@@ -97,16 +97,16 @@ export default class DateRangeInput extends Vue {
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
-  tabsValues: Record<string, CustomDate> = {
-    Fixed: new Date(),
-    Dynamic: { quantity: -1, duration: 'year' },
+  tabsValues: Record<string, CustomDateRange> = {
+    Fixed: {},
+    Dynamic: { date: '', quantity: -1, duration: 'year' },
   };
 
-  get currentTabValue(): CustomDate {
+  get currentTabValue(): CustomDateRange {
     return this.tabsValues[this.selectedTab];
   }
 
-  set currentTabValue(value: CustomDate) {
+  set currentTabValue(value: CustomDateRange) {
     this.tabsValues[this.selectedTab] = value;
   }
 
@@ -141,12 +141,10 @@ export default class DateRangeInput extends Vue {
   get label(): string {
     if (this.variable) {
       return this.variable.label;
-    } else if (this.value instanceof Date) {
-      return this.value.toUTCString();
-    } else if (this.value instanceof Object) {
-      return relativeDateToString(this.value);
-    } else {
+    } else if (typeof this.value === 'string') {
       return 'Select a date';
+    } else {
+      return ''; //TO FIX;
     }
   }
 
@@ -156,13 +154,14 @@ export default class DateRangeInput extends Vue {
 
   // init tabs by selecting correct tab and value based on prop value
   initTabs(): void {
-    if (this.value instanceof Date) {
-      this.tabsValues.Fixed = this.value;
-      this.selectTab('Fixed');
-    } else if (this.value && typeof this.value !== 'string') {
-      this.tabsValues.Dynamic = this.value;
-      this.selectTab('Dynamic');
-    }
+    // if (this.value instanceof Date) {
+    //   this.tabsValues.Fixed = this.value;
+    //   this.selectTab('Fixed');
+    // } else if (this.value && typeof this.value !== 'string') {
+    //   this.tabsValues.Dynamic = this.value;
+    //   this.selectTab('Dynamic');
+    // }
+    // TOFIX
   }
 
   openEditor(): void {
