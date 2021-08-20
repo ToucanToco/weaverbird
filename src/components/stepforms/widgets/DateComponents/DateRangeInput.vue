@@ -58,7 +58,7 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import RangeCalendar from '@/components/RangeCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDateRange } from '@/lib/dates';
+import { CustomDateRange, isDateRange, isRelativeDateRange } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -162,13 +162,13 @@ export default class DateRangeInput extends Vue {
 
   // init tabs by selecting correct tab and value based on prop value
   initTabs(): void {
-    // if (this.value instanceof Date) {
-    //   this.tabsValues.Fixed = this.value;
-    //   this.selectTab('Fixed');
-    // } else if (this.value && typeof this.value !== 'string') {
-    //   this.tabsValues.Dynamic = this.value;
-    //   this.selectTab('Dynamic');
-    // }
+    if (isDateRange(this.value)) {
+      this.tabsValues.Fixed = this.value;
+      this.selectTab('Fixed');
+    } else if (isRelativeDateRange(this.value)) {
+      this.tabsValues.Dynamic = this.value;
+      this.selectTab('Dynamic');
+    }
     // TOFIX
   }
 

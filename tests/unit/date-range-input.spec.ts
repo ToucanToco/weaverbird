@@ -171,7 +171,7 @@ describe('Date range input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue = { date: '{{today}}', quantity: -1, duration: 'month' };
+      const editedValue = { start: new Date(1), end: new Date(11) };
 
       beforeEach(async () => {
         wrapper.setData({ currentTabValue: editedValue });
@@ -227,7 +227,7 @@ describe('Date range input', () => {
       });
     });
 
-    describe.skip('when switching between tabs', () => {
+    describe('when switching between tabs', () => {
       const updatedRangeCalendarValue = { start: new Date(1), end: new Date(100000) };
       beforeEach(async () => {
         wrapper.find('RangeCalendar-stub').vm.$emit('input', updatedRangeCalendarValue); // update RangeCalendar value
@@ -263,7 +263,7 @@ describe('Date range input', () => {
     });
   });
 
-  describe.skip('with selected value as custom date range', () => {
+  describe('with selected value as custom date range', () => {
     const value = { start: new Date(), end: new Date(1) };
     beforeEach(() => {
       createWrapper({
@@ -273,7 +273,7 @@ describe('Date range input', () => {
       });
     });
 
-    it('should display readable input label', () => {
+    it.skip('should display readable input label', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(value);
     });
 
@@ -286,7 +286,7 @@ describe('Date range input', () => {
     });
   });
 
-  describe.skip('with selected value as relative date', () => {
+  describe('with selected value as relative date', () => {
     const value = { date: '{{today}}', quantity: 1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
@@ -297,7 +297,7 @@ describe('Date range input', () => {
       });
     });
 
-    it('should display readable input label', () => {
+    it.skip('should display readable input label', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months ago');
     });
 
