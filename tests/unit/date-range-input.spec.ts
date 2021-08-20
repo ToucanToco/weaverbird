@@ -278,9 +278,7 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
-        dateRangeToString(value),
-      );
+      expect(wrapper.find('.widget-date-input__label').html()).toContain(dateRangeToString(value));
     });
 
     it('should select "Fixed" tab by default', () => {
@@ -304,7 +302,7 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+      expect(wrapper.find('.widget-date-input__label').html()).toContain(
         relativeDateRangeToString(value, RELATIVE_SAMPLE_VARIABLES, { start: '{{', end: '}}' }),
       );
     });
