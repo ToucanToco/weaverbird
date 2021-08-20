@@ -43,6 +43,7 @@ import ToDateStepForm from './ToDateStepForm.vue';
 import ToLowerStepForm from './ToLowerStepForm.vue';
 import TopStepForm from './TopStepForm.vue';
 import ToUpperStepForm from './ToUpperStepForm.vue';
+import TrimStepForm from './TrimStepForm.vue';
 import UniqueGroupsStepForm from './UniqueGroupsStepForm.vue';
 import UnpivotStepForm from './UnpivotStepForm.vue';
 import WaterfallStepForm from './WaterfallStepForm.vue';
@@ -88,6 +89,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   todate: ToDateStepForm,
   lowercase: ToLowerStepForm,
   top: TopStepForm,
+  trim: TrimStepForm,
   uppercase: ToUpperStepForm,
   uniquegroups: UniqueGroupsStepForm,
   unpivot: UnpivotStepForm,

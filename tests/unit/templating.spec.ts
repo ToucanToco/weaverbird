@@ -1180,6 +1180,16 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
+  it('should leave trim steps untouched', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'trim',
+        columns: ['<%= foo %>'],
+      },
+    ];
+    expect(translate(pipeline)).toEqual(pipeline);
+  });
+
   it('should interpolate unpivot steps', () => {
     const pipeline: Pipeline = [
       {

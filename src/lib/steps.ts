@@ -410,6 +410,11 @@ export type ToUpperStep = {
   column: string;
 };
 
+export type TrimStep = {
+  name: 'trim';
+  columns: string[];
+};
+
 export type UniqueGroupsStep = {
   name: 'uniquegroups';
   on: string[];
@@ -478,6 +483,7 @@ export type PipelineStep =
   | ToLowerStep
   | TopStep
   | ToUpperStep
+  | TrimStep
   | UniqueGroupsStep
   | UnpivotStep
   | WaterfallStep;

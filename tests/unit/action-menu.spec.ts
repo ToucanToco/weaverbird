@@ -56,17 +56,22 @@ const SECOND_PANEL: PanelElement[] = [
     stepName: 'sort',
     index: 3,
   },
+  {
+    label: 'Trim spaces',
+    stepName: 'trim',
+    index: 4,
+  },
   // "Get unique values" operation directly commit the step into the store, so it does not emit the stepname
   // it will be test apart
   {
     label: 'Get unique values',
     stepName: null,
-    index: 4,
+    index: 5,
   },
   {
     label: 'Compute Statistics',
     stepName: 'statistics',
-    index: 5,
+    index: 6,
   },
 ];
 
@@ -288,7 +293,7 @@ describe('Action Menu', () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
-          .at(4) // "Get unique values" operation is at index 4
+          .at(5) // "Get unique values" operation is at index 5
           .trigger('click');
         await wrapper.vm.$nextTick();
         expect(store.getters[VQBnamespace('pipeline')]).toEqual([
@@ -300,7 +305,7 @@ describe('Action Menu', () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation(true);
         await wrapper
           .findAll('.action-menu__option')
-          .at(4) // "Get unique values" operation is at index 4
+          .at(5) // "Get unique values" operation is at index 5
           .trigger('click');
         await wrapper.vm.$nextTick();
         expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();

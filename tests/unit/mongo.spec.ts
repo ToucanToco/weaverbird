@@ -3031,6 +3031,35 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  describe('trim', () => {
+    if (version <= '36') {
+      it('should not support "trim" operation', () => {
+        expect(translator.unsupportedSteps).toContain('trim');
+      });
+      return;
+    } else {
+      it('can generate a trim step', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'trim',
+            columns: ['foo', 'toto', 'tata'],
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          {
+            $addFields: {
+              foo: { $trim: { input: '$foo' } },
+              toto: { $trim: { input: '$toto' } },
+              tata: { $trim: { input: '$tata' } },
+            },
+          },
+          { $project: { _id: 0 } },
+        ]);
+      });
+    }
+  });
+
   it('can generate a uniquegroups step', () => {
     const pipeline: Pipeline = [
       {

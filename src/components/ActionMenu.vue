@@ -89,6 +89,13 @@
             </div>
             <div
               class="action-menu__option"
+              v-if="isStepSupported('trim')"
+              @click="openStep('trim')"
+            >
+              Trim spaces
+            </div>
+            <div
+              class="action-menu__option"
               v-if="isStepSupported('uniquegroups')"
               @click="createUniqueGroupsStep"
             >
