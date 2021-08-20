@@ -64,7 +64,7 @@ import {
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateForm from './RelativeDateForm.vue';
 /**
- * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Dynamic way (RelativeDateForm),
+ * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (RangeCalendar) or Dynamic way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
 @Component({
