@@ -37,6 +37,21 @@ const SAMPLE_VARIABLES = [
   },
 ];
 
+const RELATIVE_SAMPLE_VARIABLES = [
+  {
+    label: 'Today',
+    identifier: 'today',
+  },
+  {
+    label: 'Last month',
+    identifier: 'last_month',
+  },
+  {
+    label: 'Last year',
+    identifier: 'last_year',
+  },
+];
+
 describe('Date range input', () => {
   let wrapper: Wrapper<DateRangeInput>;
   const createWrapper = (propsData = {}) => {
@@ -276,6 +291,7 @@ describe('Date range input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
@@ -288,6 +304,11 @@ describe('Date range input', () => {
     it('should select "Dynamic" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
     });
+    it('should pass relative available variables to RelativeDateRangeForm', () => {
+      expect(wrapper.find('RelativeDateRangeForm-stub').props().availableVariables).toStrictEqual(
+        RELATIVE_SAMPLE_VARIABLES,
+      );
+    });
     it('should preselect value in RelativeDateRangeForm', () => {
       expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toStrictEqual(value);
     });
@@ -299,6 +320,11 @@ describe('Date range input', () => {
     });
     it('should set availableVariables to empty array', () => {
       expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual([]);
+    });
+    it('should set relativeAvailableVariables to empty array', () => {
+      expect(wrapper.find('RelativeDateRangeForm-stub').props().availableVariables).toStrictEqual(
+        [],
+      );
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });

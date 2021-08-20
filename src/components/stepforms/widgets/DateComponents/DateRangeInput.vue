@@ -24,7 +24,12 @@
           />
           <div class="widget-date-input__editor-body">
             <RangeCalendar v-if="isFixedTabSelected" v-model="currentTabValue" />
-            <RelativeDateRangeForm v-else v-model="currentTabValue" />
+            <RelativeDateRangeForm
+              v-else
+              v-model="currentTabValue"
+              :availableVariables="relativeAvailableVariables"
+              :variableDelimiters="variableDelimiters"
+            />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -83,6 +88,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => [] })
+  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateRangeForm "from"
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;

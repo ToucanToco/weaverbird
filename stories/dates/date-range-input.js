@@ -38,11 +38,27 @@ const SAMPLE_VARIABLES = [
   },
 ];
 
+const RELATIVE_SAMPLE_VARIABLES = [
+  {
+    label: 'Today',
+    identifier: 'today',
+  },
+  {
+    label: 'Last month',
+    identifier: 'last_month',
+  },
+  {
+    label: 'Last year',
+    identifier: 'last_year',
+  },
+];
+
 stories.add('simple', () => ({
   template: `
     <div>
       <DateRangeInput 
         :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
         v-model="value" 
       />
@@ -58,6 +74,7 @@ stories.add('simple', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
     };
   },
@@ -68,6 +85,7 @@ stories.add('already selected variable', () => ({
     <div>
       <DateRangeInput 
         :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
         v-model="value" 
       />
@@ -83,6 +101,7 @@ stories.add('already selected variable', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: '{{dates.all_time}}',
     };
   },
@@ -93,6 +112,7 @@ stories.add('custom (fixed date range)', () => ({
     <div>
       <DateRangeInput 
         :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
         v-model="value" 
       />
@@ -108,6 +128,7 @@ stories.add('custom (fixed date range)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { start: new Date(1), end: new Date(100000000) },
     };
   },
@@ -118,6 +139,7 @@ stories.add('custom (relative date range)', () => ({
     <div>
       <DateRangeInput 
         :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
         v-model="value" 
       />
@@ -133,6 +155,7 @@ stories.add('custom (relative date range)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { date: '{{today}}', quantity: -1, duration: 'month' },
     };
   },
