@@ -19,6 +19,7 @@
 </template>
 
 <script lang="ts">
+import _pick from 'lodash/pick';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
@@ -48,26 +49,25 @@ export default class RelativeDateRangeForm extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
-  @Prop({ default: () => [undefined, { date: undefined, quantity: -1, duration: 'year' }] })
+  @Prop({ default: () => ({ date: '', quantity: -1, duration: 'year' }) })
   value!: RelativeDateRange;
 
   get to(): RelativeDate {
-    return this.value[1];
+    return _pick(this.value, ['quantity', 'duration']);
   }
 
   set to(to: RelativeDate) {
-    this.$emit('input', [this.value[0], to]);
+    this.$emit('input', { ...this.value, ...to });
   }
 
   get from(): AvailableVariable | undefined {
-    if (typeof this.value[0] !== 'string') return undefined;
-    const identifier = extractVariableIdentifier(this.value[0], this.variableDelimiters);
+    const identifier = extractVariableIdentifier(this.value.date, this.variableDelimiters);
     return this.availableVariables.find(v => v.identifier === identifier);
   }
 
   set from(variable: AvailableVariable | undefined) {
     const value = `${this.variableDelimiters.start}${variable?.identifier}${this.variableDelimiters.end}`;
-    this.$emit('input', [value, { ...this.to, date: value }]);
+    this.$emit('input', { ...this.value, date: value });
   }
 }
 </script>

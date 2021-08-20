@@ -25,7 +25,7 @@ describe('Relative date range form', () => {
     const date = '{{today}}';
     beforeEach(() => {
       createWrapper({
-        value: [date, { date, quantity: -1, duration: 'month' }],
+        value: { date, quantity: -1, duration: 'month' },
         variableDelimiters: { start: '{{', end: '}}' },
         availableVariables: SAMPLE_VARIABLES,
       });
@@ -47,7 +47,6 @@ describe('Relative date range form', () => {
     });
     it('should pass relative date part of value to relative date form input', () => {
       expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual({
-        date,
         quantity: -1,
         duration: 'month',
       });
@@ -59,12 +58,13 @@ describe('Relative date range form', () => {
         wrapper.find('AutocompleteWidget-stub').vm.$emit('input', selectedDateVariable);
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated dates with delimiters in from and to parts', () => {
+      it('should emit value with updated date with delimiters', () => {
         const newDate = `{{${selectedDateVariable.identifier}}}`;
-        expect(wrapper.emitted().input[0][0]).toStrictEqual([
-          newDate,
-          { date: newDate, quantity: -1, duration: 'month' },
-        ]);
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          date: newDate,
+          quantity: -1,
+          duration: 'month',
+        });
       });
     });
 
@@ -76,10 +76,11 @@ describe('Relative date range form', () => {
         await wrapper.vm.$nextTick();
       });
       it('should emit value with updated to', () => {
-        expect(wrapper.emitted().input[0][0]).toStrictEqual([
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
-          { date, quantity: -2, duration: 'year' },
-        ]);
+          quantity: -2,
+          duration: 'year',
+        });
       });
     });
   });
@@ -89,10 +90,7 @@ describe('Relative date range form', () => {
       createWrapper();
     });
     it('should initiate value', () => {
-      expect((wrapper.vm as any).value).toStrictEqual([
-        undefined,
-        { date: undefined, quantity: -1, duration: 'year' },
-      ]);
+      expect((wrapper.vm as any).value).toStrictEqual({ date: '', quantity: -1, duration: 'year' });
     });
     it('should set available variables to empty array', () => {
       expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([]);
