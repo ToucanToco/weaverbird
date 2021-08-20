@@ -53,12 +53,7 @@ import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import {
-  CustomDate,
-  DateVariable,
-  RelativeDate,
-  transformRelativeDateToReadableLabel,
-} from '@/lib/dates';
+import { CustomDate, transformRelativeDateToReadableLabel } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -84,7 +79,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
 })
 export default class NewDateInput extends Vue {
   @Prop({ default: '' })
-  value!: DateVariable | RelativeDate;
+  value!: string | CustomDate;
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
