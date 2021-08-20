@@ -33,17 +33,24 @@ type_code_mapping = {
     13: 'boolean',
 }
 
+ACCOUNT = 'toucantocopartner.west-europe.azure'
+USER = 'toucan_test'
+WAREHOUSE = 'toucan_test'
+DATABASE = 'toucan_test'
+ROLE = 'toucan_test'
+SCHEMA = 'toucan_test'
+
 
 # Update this method to use snowflake connection
 def get_connection():
     con_params = {
-        'account': environ.get('SNOWFLAKE_ACCOUNT'),
-        'user': environ.get('SNOWFLAKE_USER'),
+        'account': ACCOUNT,
+        'user': USER,
         'password': environ.get('SNOWFLAKE_PASSWORD'),
-        'warehouse': environ.get('SNOWFLAKE_WAREHOUSE'),
-        'database': environ.get('SNOWFLAKE_DATABASE'),
-        'role': environ.get('SNOWFLAKE_ROLE'),
-        'schema': environ.get('SNOWFLAKE_SCHEMA'),
+        'warehouse': WAREHOUSE,
+        'database': DATABASE,
+        'role': ROLE,
+        'schema': SCHEMA,
         'authenticator': 'snowflake',
     }
     return snowflake.connector.connect(**con_params)
@@ -52,13 +59,13 @@ def get_connection():
 @pytest.fixture
 def get_engine():
     url = URL(
-        account=environ.get('SNOWFLAKE_ACCOUNT'),
-        user=environ.get('SNOWFLAKE_USER'),
+        account=ACCOUNT,
+        user=USER,
         password=environ.get('SNOWFLAKE_PASSWORD'),
-        warehouse=environ.get('SNOWFLAKE_WAREHOUSE'),
-        database=environ.get('SNOWFLAKE_DATABASE'),
-        role=environ.get('SNOWFLAKE_ROLE'),
-        schema=environ.get('SNOWFLAKE_SCHEMA'),
+        warehouse=WAREHOUSE,
+        database=DATABASE,
+        role=ROLE,
+        schema=SCHEMA,
         authenticator='snowflake',
     )
     engine = create_engine(url)

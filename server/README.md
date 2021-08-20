@@ -17,6 +17,8 @@ Main commands are available through `make`:
     make upload # Publish on pypi
 
     make test # Execute the test suite and produce reports
+    /!\ To run Snowflake's e2e tests, the password needs to be exported to env variables
+    as such: export SNOWFLAKE_PASSWORD='XXXXXXXXXXX'. This password is available in lastpass (user: toucan_test)
 
 ### Playground server
 
