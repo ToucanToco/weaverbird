@@ -1,6 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
+import { dateRangeToString, RelativeDateRange, relativeDateRangeToString } from '@/lib/dates';
 
 const SAMPLE_VARIABLES = [
   {
@@ -41,14 +42,17 @@ const RELATIVE_SAMPLE_VARIABLES = [
   {
     label: 'Today',
     identifier: 'today',
+    value: '',
   },
   {
     label: 'Last month',
     identifier: 'last_month',
+    value: '',
   },
   {
     label: 'Last year',
     identifier: 'last_year',
+    value: '',
   },
 ];
 
@@ -273,8 +277,10 @@ describe('Date range input', () => {
       });
     });
 
-    it.skip('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(value);
+    it('should display readable input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+        dateRangeToString(value),
+      );
     });
 
     it('should select "Fixed" tab by default', () => {
@@ -287,7 +293,7 @@ describe('Date range input', () => {
   });
 
   describe('with selected value as relative date', () => {
-    const value = { date: '{{today}}', quantity: 1, duration: 'month' };
+    const value: RelativeDateRange = { date: '{{today}}', quantity: 1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
@@ -297,8 +303,10 @@ describe('Date range input', () => {
       });
     });
 
-    it.skip('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months ago');
+    it('should display readable input label', () => {
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+        relativeDateRangeToString(value, RELATIVE_SAMPLE_VARIABLES, { start: '{{', end: '}}' }),
+      );
     });
 
     it('should select "Dynamic" tab by default', () => {

@@ -1,7 +1,7 @@
 <template>
   <div class="widget-date-input">
     <div class="widget-date-input__container">
-      <span class="widget-date-input__label">{{ label }}</span>
+      <span class="widget-date-input__label" v-html="label" />
       <div class="widget-date-input__button" @click="openEditor">
         <i class="far fa-calendar" aria-hidden="true" />
       </div>
@@ -58,7 +58,13 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import RangeCalendar from '@/components/RangeCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDateRange, isDateRange, isRelativeDateRange } from '@/lib/dates';
+import {
+  CustomDateRange,
+  dateRangeToString,
+  isDateRange,
+  isRelativeDateRange,
+  relativeDateRangeToString,
+} from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -106,7 +112,7 @@ export default class DateRangeInput extends Vue {
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDateRange> = {
-    Fixed: {},
+    Fixed: { start: new Date() },
     Dynamic: { date: '', quantity: -1, duration: 'year' },
   };
 
@@ -149,10 +155,16 @@ export default class DateRangeInput extends Vue {
   get label(): string {
     if (this.variable) {
       return this.variable.label;
-    } else if (typeof this.value === 'string') {
-      return 'Select a date';
+    } else if (isDateRange(this.value)) {
+      return dateRangeToString(this.value);
+    } else if (isRelativeDateRange(this.value)) {
+      return relativeDateRangeToString(
+        this.value,
+        this.relativeAvailableVariables,
+        this.variableDelimiters,
+      );
     } else {
-      return ''; //TO FIX;
+      return 'Select a date';
     }
   }
 
