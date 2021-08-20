@@ -1,9 +1,5 @@
 # <img src="docs/img/logonav.png" alt="GitHub Logo" width="30"/> Weaverbird
 
-[![npm](https://img.shields.io/npm/v/weaverbird)](https://www.npmjs.com/package/weaverbird)
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/weaverbird.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/weaverbird/)
-[![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/weaverbird.svg)](https://circleci.com/gh/ToucanToco/weaverbird)
-
 !["Weaverbird Screenshot](docs/img/readme_screenshot.png)
 
 Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it contains :
@@ -19,6 +15,21 @@ For in depth user & technical documentation, have a look at weaverbird.toucantoc
 or at the documentation's source files in the `docs` directory.
 
 Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird.herokuapp.com)** !
+
+## Badges
+
+### UI
+[![npm](https://img.shields.io/npm/v/weaverbird)](https://www.npmjs.com/package/weaverbird)
+![CI UI](https://github.com/ToucanToco/weaverbird/actions/workflows/ci-ui.yml/badge.svg)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ToucanToco_weaverbird&metric=coverage)](https://sonarcloud.io/dashboard?id=ToucanToco_weaverbird)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ToucanToco_weaverbird&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ToucanToco_weaverbird)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ToucanToco_weaverbird&metric=ncloc)](https://sonarcloud.io/dashboard?id=ToucanToco_weaverbird)
+<!-- [![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/weaverbird.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/weaverbird/) -->
+
+### Server
+[![pypi](https://img.shields.io/pypi/v/weaverbird)](https://pypi.org/project/weaverbird/)
+![CI server](https://github.com/ToucanToco/weaverbird/actions/workflows/ci-server.yml/badge.svg)
+
 
 ## Project setup
 
