@@ -154,17 +154,11 @@ describe('Date input', () => {
       const editedValue = new Date(3);
 
       beforeEach(async () => {
-        wrapper.setData({
-          tabsValues: {
-            Fixed: editedValue,
-            Dynamic: { quantity: -1, duration: 'year' },
-          },
-          selectedTab: 'Fixed',
-        });
+        wrapper.setData({ currentTabValue: editedValue });
         wrapper.find({ ref: 'save' }).trigger('click');
         await wrapper.vm.$nextTick();
       });
-      it('should emit selected tab value', () => {
+      it('should emit current tab value', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual(editedValue);
       });
     });
@@ -186,7 +180,7 @@ describe('Date input', () => {
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
-          expect((wrapper.vm as any).tabsValues.Fixed).toStrictEqual(newValue);
+          expect((wrapper.vm as any).currentTabValue).toStrictEqual(newValue);
         });
       });
     });
@@ -208,7 +202,7 @@ describe('Date input', () => {
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
-          expect((wrapper.vm as any).tabsValues.Dynamic).toStrictEqual(newValue);
+          expect((wrapper.vm as any).currentTabValue).toStrictEqual(newValue);
         });
       });
     });
