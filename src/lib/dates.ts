@@ -36,11 +36,9 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Days ago', value: 'day' },
 ];
 
-export const transformRelativeDateToReadableLabel = (relativeDate: RelativeDate): string => {
-  const duration: string =
-    DEFAULT_DURATIONS.find(d => d.value === relativeDate.duration)?.label ?? 'Years';
-  const quantity: number = Math.abs(relativeDate.quantity);
-
-  // return date to UTC string
-  return `${quantity} ${duration.toLowerCase()}`;
+export const relativeDateToString = (relativeDate: RelativeDate): string => {
+  const duration: string | undefined = DEFAULT_DURATIONS.find(
+    d => d.value === relativeDate.duration,
+  )?.label;
+  return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
 };

@@ -53,7 +53,7 @@ import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, transformRelativeDateToReadableLabel } from '@/lib/dates';
+import { CustomDate, relativeDateToString } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -146,7 +146,7 @@ export default class NewDateInput extends Vue {
     } else if (this.value instanceof Date) {
       return this.value.toUTCString();
     } else if (typeof this.value !== 'string') {
-      return transformRelativeDateToReadableLabel(this.value);
+      return relativeDateToString(this.value);
     } else {
       return this.value;
     }
