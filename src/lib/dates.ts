@@ -1,3 +1,5 @@
+import _has from 'lodash/has';
+
 export type DateRange = { start?: Date; end?: Date };
 export type DateRangeSide = keyof DateRange;
 export type DatePickerHighlight = {
@@ -43,4 +45,16 @@ export const relativeDateToString = (relativeDate: RelativeDate): string => {
     d => d.value === relativeDate.duration,
   )?.label;
   return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
+};
+
+export const isRelativeDateRange = (
+  value: string | CustomDateRange,
+): value is RelativeDateRange => {
+  if (!(value instanceof Object)) return false;
+  return _has(value, 'date') && _has(value, 'duration') && _has(value, 'quantity');
+};
+
+export const isDateRange = (value: string | CustomDateRange): value is DateRange => {
+  if (!(value instanceof Object)) return false;
+  return Object.keys(value).length === 0 || _has(value, 'start') || _has(value, 'end');
 };
