@@ -293,6 +293,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Add total rows in columns ${formatMulticol(columns)}`;
   }
 
+  trim(step: Readonly<S.TrimStep>) {
+    return `Trim spaces in ${formatMulticol(step.columns)}`;
+  }
+
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
     return `Get unique groups/values in columns ${formatMulticol(step.on)}`;
   }

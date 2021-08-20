@@ -155,6 +155,10 @@ export class PandasNoJoinsTranslator extends BaseTranslator {
     return step;
   }
 
+  trim(step: Readonly<S.TrimStep>) {
+    return step;
+  }
+
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
     return step;
   }

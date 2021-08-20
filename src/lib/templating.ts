@@ -464,6 +464,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  trim(step: Readonly<S.TrimStep>) {
+    return { ...step };
+  }
+
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
     return {
       name: step.name,

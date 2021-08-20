@@ -545,6 +545,14 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Keep top 42 values in column "column1"');
   });
 
+  it('generates label for trim steps', () => {
+    const step: S.TrimStep = {
+      name: 'trim',
+      columns: ['column1', 'column2'],
+    };
+    expect(hrl(step)).toEqual('Trim spaces in "column1", "column2"');
+  });
+
   it('generates label for uppercase steps', () => {
     const step: S.ToUpperStep = {
       name: 'uppercase',

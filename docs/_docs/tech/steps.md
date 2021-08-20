@@ -3334,6 +3334,51 @@ min, max, first or last)
 | All countries | All products | 2020 | 950     | 95          | 23.75       |
 | All countries | All products | 2019 | 400     | 40          | 10          |
 
+### `trim` step
+
+Trim spaces in a column.
+
+```javascript
+{
+    name: 'trim',
+    columns: ['my-column', 'some-other-column']
+}
+```
+
+**This step is supported by the following backends:**
+
+- Mongo 4.2
+- Mongo 4.0
+- Pandas (python)
+
+**This step is unsupported by the following backends:**
+- Mongo 3.6
+
+#### Example
+
+**Input dataset:**
+
+| Company       | Group   | Value | Label               |
+| ------------- | ------- | ----- | ------------------- |
+| ' Company 1 ' | Group 1 | 13    | Company 1 - Group 1 |
+| ' Company 2 ' | Group 1 | 7     | Company 2 - Group 1 |
+
+**Step configuration:**
+
+```javascript
+{
+  name: 'trim',
+  columns: ['Company']
+}
+```
+
+**Output dataset:**
+
+| Company     | Group   | Value | Label               |
+| ----------- | ------- | ----- | ------------------- |
+| 'Company 1' | Group 1 | 13    | Company 1 - Group 1 |
+| 'Company 2' | Group 1 | 7     | Company 2 - Group 1 |
+
 ### `unpivot` step
 
 Unpivot a list of columns to rows.
