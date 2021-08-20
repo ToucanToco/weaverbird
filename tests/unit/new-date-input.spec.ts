@@ -120,25 +120,6 @@ describe('Date input', () => {
     });
   });
 
-  describe('when selected value is custom date', () => {
-    const value = new Date();
-    beforeEach(() => {
-      createWrapper({
-        availableVariables: SAMPLE_VARIABLES,
-        variableDelimiters: { start: '{{', end: '}}' },
-        value,
-      });
-    });
-    it('should select "custom" in CustomVariableList', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
-        'custom',
-      );
-    });
-    it('should show custom editor', () => {
-      expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
-    });
-  });
-
   describe('custom editor', () => {
     const value = new Date();
     beforeEach(() => {
