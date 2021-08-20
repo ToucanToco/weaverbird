@@ -23,8 +23,8 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" v-model="tabValue" />
-            <RelativeDateForm v-else v-model="tabValue" />
+            <Calendar v-if="isFixedTabSelected" v-model="currentTabValue" />
+            <RelativeDateForm v-else v-model="currentTabValue" />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -102,11 +102,11 @@ export default class NewDateInput extends Vue {
     Dynamic: { quantity: -1, duration: 'year' },
   };
 
-  get tabValue(): CustomDate {
+  get currentTabValue(): CustomDate {
     return this.tabsValues[this.selectedTab];
   }
 
-  set tabValue(value: CustomDate) {
+  set currentTabValue(value: CustomDate) {
     this.tabsValues[this.selectedTab] = value;
   }
 
@@ -187,7 +187,7 @@ export default class NewDateInput extends Vue {
   }
 
   saveCustomVariable(): void {
-    this.$emit('input', this.tabValue); // emit only the selected tab value
+    this.$emit('input', this.currentTabValue);
     this.closeEditor();
   }
 
