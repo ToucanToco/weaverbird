@@ -39,6 +39,12 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Days ago', value: 'day' },
 ];
 
+export const dateRangeToString = (dateRange: DateRange): string => {
+  const startDate = dateRange.start ? dateRange.start.toUTCString() : 'Invalid Date';
+  const endDate = dateRange.end ? dateRange.end.toUTCString() : 'Invalid Date';
+  return `${startDate} -> ${endDate}`;
+};
+
 /* istanbul ignore next */
 export const relativeDateToString = (relativeDate: RelativeDate): string => {
   const duration: string | undefined = DEFAULT_DURATIONS.find(

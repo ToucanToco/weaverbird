@@ -1,4 +1,26 @@
-import { isDateRange, isRelativeDateRange, relativeDateToString } from '@/lib/dates';
+import {
+  dateRangeToString,
+  isDateRange,
+  isRelativeDateRange,
+  relativeDateToString,
+} from '@/lib/dates';
+
+describe('dateRangeToString', () => {
+  it('should return readable label if value is a partial date range', () => {
+    const value = { start: new Date() };
+    expect(dateRangeToString(value)).toBe(`${value.start.toUTCString()} -> Invalid Date`);
+  });
+  it('should return readable label if value is a full undefined date range', () => {
+    const value = { start: undefined, end: undefined };
+    expect(dateRangeToString(value)).toBe(`Invalid Date -> Invalid Date`);
+  });
+  it('should return readable label if value is a full date range', () => {
+    const value = { start: new Date(), end: new Date(1) };
+    expect(dateRangeToString(value)).toBe(
+      `${value.start.toUTCString()} -> ${value.end.toUTCString()}`,
+    );
+  });
+});
 
 describe('relativeDateToString', () => {
   it('should transform a relative date to a readable label', () => {
