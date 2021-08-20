@@ -26,6 +26,8 @@ export type RelativeDateRange = {
   duration: Duration;
 };
 
+export type CustomDate = Date | RelativeDate;
+
 export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Years ago', value: 'year' },
   { label: 'Quarters ago', value: 'quarter' },
@@ -33,3 +35,11 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Weeks ago', value: 'week' },
   { label: 'Days ago', value: 'day' },
 ];
+
+/* istanbul ignore next */
+export const relativeDateToString = (relativeDate: RelativeDate): string => {
+  const duration: string | undefined = DEFAULT_DURATIONS.find(
+    d => d.value === relativeDate.duration,
+  )?.label;
+  return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
+};
