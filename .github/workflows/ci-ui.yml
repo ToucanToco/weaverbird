@@ -1,0 +1,46 @@
+name: CI (UI)
+
+on:
+  # Trigger build and tests of the front-end (UI) when pushing in master or pull requests, and when creating
+  # a pull request, only if `src/`, `tests/` or some build conf files are modified
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'yarn.lock'
+      - '*.js'
+      - '.github/workflows/ci-ui.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'yarn.lock'
+      - '*.js'
+      - '.github/workflows/ci-ui.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn
+
+      - name: Lint
+        run: yarn lint:ci
+
+      - name: Unit tests
+        run: yarn test:unit --runInBand
+
+      - name: Check that build completes as expected
+        run: yarn build-bundle
