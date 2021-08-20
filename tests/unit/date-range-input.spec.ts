@@ -175,7 +175,7 @@ describe('Date range input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('RangeCalendar-stub').exists()).toBe(true);
-        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
+        expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(false);
       });
 
       describe('when updating RangeCalendar value', () => {
@@ -196,14 +196,14 @@ describe('Date range input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
+        expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(true);
         expect(wrapper.find('RangeCalendar-stub').exists()).toBe(false);
       });
 
-      describe('when updating RelativeDateForm value', () => {
+      describe('when updating RelativeDateRangeForm value', () => {
         const newValue = { date: '{{today}}', quantity: -1, duration: 'month' };
         beforeEach(async () => {
-          wrapper.find('RelativeDateForm-stub').vm.$emit('input', newValue);
+          wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
@@ -288,8 +288,8 @@ describe('Date range input', () => {
     it('should select "Dynamic" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
     });
-    it('should preselect value in RelativeDateForm', () => {
-      expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual(value);
+    it('should preselect value in RelativeDateRangeForm', () => {
+      expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toStrictEqual(value);
     });
   });
 

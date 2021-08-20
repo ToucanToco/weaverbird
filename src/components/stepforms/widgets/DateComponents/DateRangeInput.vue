@@ -24,7 +24,7 @@
           />
           <div class="widget-date-input__editor-body">
             <RangeCalendar v-if="isFixedTabSelected" v-model="currentTabValue" />
-            <RelativeDateForm v-else v-model="currentTabValue" />
+            <RelativeDateRangeForm v-else v-model="currentTabValue" />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -62,7 +62,7 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
-import RelativeDateForm from './RelativeDateForm.vue';
+import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (RangeCalendar) or Dynamic way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
@@ -74,7 +74,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
     Popover,
     Tabs,
     RangeCalendar,
-    RelativeDateForm,
+    RelativeDateRangeForm,
   },
 })
 export default class DateRangeInput extends Vue {
@@ -280,8 +280,9 @@ $active-color-dark: #16406a;
     margin: -1px;
     width: 100%;
   }
-  .widget-relative-date-form {
+  .widget-relative-date-range-form {
     margin: 20px;
+    max-width: 400px;
   }
 }
 .widget-date-input__editor-footer {
