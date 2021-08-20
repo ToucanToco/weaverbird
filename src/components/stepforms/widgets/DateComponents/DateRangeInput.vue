@@ -241,6 +241,11 @@ $active-color-dark: #16406a;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  ::v-deep i {
+    display: inline-block;
+    margin: 0 5px;
+    color: #c8c8c8;
+  }
 }
 .widget-date-input__button {
   padding: 10px 15px;

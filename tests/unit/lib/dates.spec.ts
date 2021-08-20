@@ -1,4 +1,5 @@
 import {
+  CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
   dateRangeToString,
   isDateRange,
   isRelativeDateRange,
@@ -10,16 +11,20 @@ import {
 describe('dateRangeToString', () => {
   it('should return readable label if value is a partial date range', () => {
     const value = { start: new Date() };
-    expect(dateRangeToString(value)).toBe(`${value.start.toUTCString()} -> Invalid Date`);
+    expect(dateRangeToString(value)).toBe(
+      `${value.start.toUTCString()}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Invalid Date`,
+    );
   });
   it('should return readable label if value is a full undefined date range', () => {
     const value = { start: undefined, end: undefined };
-    expect(dateRangeToString(value)).toBe(`Invalid Date -> Invalid Date`);
+    expect(dateRangeToString(value)).toBe(
+      `Invalid Date${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Invalid Date`,
+    );
   });
   it('should return readable label if value is a full date range', () => {
     const value = { start: new Date(), end: new Date(1) };
     expect(dateRangeToString(value)).toBe(
-      `${value.start.toUTCString()} -> ${value.end.toUTCString()}`,
+      `${value.start.toUTCString()}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${value.end.toUTCString()}`,
     );
   });
 });
@@ -42,7 +47,7 @@ describe('relativeDateRangeToString', () => {
   it('should transform a relative date range to a readable label', () => {
     const value: RelativeDateRange = { date: '{{tomorrow}}', quantity: -2, duration: 'month' };
     expect(relativeDateRangeToString(value, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      'Tomorrow -> 2 months ago',
+      `Tomorrow${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}2 months ago`,
     );
   });
 });
