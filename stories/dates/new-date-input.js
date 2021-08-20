@@ -133,7 +133,7 @@ stories.add('custom (relative date)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}'},
-      value: { date: new Date(),  quantity: -1, duration: 'month' },
+      value: { quantity: -1, duration: 'month' },
     };
   },
 }));

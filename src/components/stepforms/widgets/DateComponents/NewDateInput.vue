@@ -104,7 +104,7 @@ export default class NewDateInput extends Vue {
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDate> = {
     Fixed: new Date(),
-    Dynamic: { date: new Date(), quantity: -1, duration: 'year' },
+    Dynamic: { quantity: -1, duration: 'year' },
   };
 
   get tabValue(): CustomDate {

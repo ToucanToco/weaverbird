@@ -176,7 +176,7 @@ describe('Date input', () => {
         wrapper.setData({
           tabsValues: {
             Fixed: editedValue,
-            Dynamic: { date: new Date(), quantity: -1, duration: 'year' },
+            Dynamic: { quantity: -1, duration: 'year' },
           },
           selectedTab: 'Fixed',
         });
@@ -221,7 +221,7 @@ describe('Date input', () => {
       });
 
       describe('when updating RelativeDateForm value', () => {
-        const newValue = { date: new Date(), quantity: -1, duration: 'month' };
+        const newValue = { quantity: -1, duration: 'month' };
         beforeEach(async () => {
           wrapper.find('RelativeDateForm-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
@@ -292,7 +292,7 @@ describe('Date input', () => {
 
   describe('with selected value as relative date', () => {
     let tabValues: any;
-    const value = { date: new Date(), quantity: 1, duration: 'month' };
+    const value = { quantity: 1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
