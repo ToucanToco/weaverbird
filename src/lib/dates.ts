@@ -16,7 +16,12 @@ export type DurationOption = {
 };
 
 export type RelativeDate = {
-  date: Date | string | undefined;
+  quantity: number; // can be negative or positive
+  duration: Duration;
+};
+
+export type RelativeDateRange = {
+  date: string;
   quantity: number; // can be negative or positive
   duration: Duration;
 };
