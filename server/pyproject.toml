@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "weaverbird"
-version = "0.6.5"
+version = "0.6.6"
 description = "Pandas engine for weaverbird data pipelines"
 authors = ["Toucan Toco <dev+weaverbird@toucantoco.com>"]
 license = "MIT"
@@ -22,6 +22,13 @@ Flask = "^1.1.2"
 pytest-mock = "^3.3.1"
 toucan-connectors = ">0" #required so we can use nosql_apply_parameters_to_query during tests
 pytest-benchmark = "^3.4.1"
+docker = "5.0.0"
+sqlalchemy = '1.4.22'
+pymysql = '1.0.2'
+cryptography = '3.4.7'
+snowflake-connector-python = ">0"
+snowflake-sqlalchemy = ">0"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

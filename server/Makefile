@@ -12,7 +12,7 @@ clean:
 .PHONY: install
 install:
 	pip install -U pip
-	pip install poetry 
+	pip install poetry
 	poetry install
 
 .PHONY: format
@@ -41,3 +41,14 @@ build:
 .PHONY: upload
 upload:
 	poetry publish
+
+# Easy mode to use locally with pyCharm
+.PHONY: install_local
+install_local:
+	rm -rf dist/*
+	make build
+	FILENAME="$(shell ls -1t dist/*.gz | head -1)"; echo $$FILENAME
+	FILENAME="$(shell ls -1t dist/*.gz | head -1)"; pip install $$FILENAME
+
+.PHONY: execute_local_test
+execute_local_test: install_local test
