@@ -149,7 +149,7 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
 
 def prepare_aggregation_query(aggregated_cols, aggregated_string, query, step):
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names
-        agg.new_columns = [x.replace('-', '_') for x in agg.new_columns]
+        agg.new_columns = [x.replace('-', '_').replace(' ', '_') for x in agg.new_columns]
     for aggregation in [
         aggregation
         for aggregation in step.aggregations
