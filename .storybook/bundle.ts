@@ -42,6 +42,7 @@ import Calendar from '../src/components/Calendar.vue';
 import Tabs from '../src/components/Tabs.vue';
 import RangeCalendar from '../src/components/RangeCalendar.vue';
 import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
+import RelativeDateRangeForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateRangeForm.vue';
 
 export {
   FilterEditor,
@@ -83,6 +84,7 @@ export {
   Tabs,
   RangeCalendar,
   RelativeDateForm,
+  RelativeDateRangeForm,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';
