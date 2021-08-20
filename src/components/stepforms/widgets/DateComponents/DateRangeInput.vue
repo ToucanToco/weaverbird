@@ -23,7 +23,7 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" v-model="currentTabValue" />
+            <RangeCalendar v-if="isFixedTabSelected" v-model="currentTabValue" />
             <RelativeDateForm v-else v-model="currentTabValue" />
           </div>
           <div class="widget-date-input__editor-footer">
@@ -49,9 +49,9 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
+import RangeCalendar from '@/components/RangeCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDateRange } from '@/lib/dates';
 import {
@@ -73,7 +73,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
     CustomVariableList,
     Popover,
     Tabs,
-    Calendar,
+    RangeCalendar,
     RelativeDateForm,
   },
 })
@@ -273,12 +273,11 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-body {
   flex: 1;
-  height: 280px;
-  min-height: 280px;
-  width: 280px;
-  .vc-container {
-    border: none;
-    margin: 1px;
+  height: 276px;
+  min-height: 276px;
+  width: 542px;
+  .range-calendar {
+    margin: -1px;
     width: 100%;
   }
   .widget-relative-date-form {
@@ -296,7 +295,6 @@ $active-color-dark: #16406a;
 .widget-date-input__editor-button {
   @extend %button-default;
   min-width: 100px;
-  flex: 1;
   background: $grey-extra-light;
   color: $base-color;
   text-align: center;
