@@ -13,7 +13,7 @@ class RollupStep(BaseStep):
     name = Field('rollup', const=True)
     hierarchy: List[ColumnName]
     # The list of columnns to aggregate, with related aggregation function to use:
-    aggregations: Sequence[Aggregation]
+    aggregations: Optional[Sequence[Aggregation]]
     # Groupby columns if rollup has to be performed by groups:
     groupby: Optional[List[ColumnName]]
     # To give a custom name to the output label column:
@@ -25,6 +25,6 @@ class RollupStep(BaseStep):
 
 
 class RollupStepWithVariable(RollupStep, StepWithVariablesMixin):
-    aggregations: Sequence[AggregationWithVariables]
+    aggregations: Optional[Sequence[AggregationWithVariables]]
     hierarchy: Union[TemplatedVariable, List[TemplatedVariable]]
     groupby: Union[TemplatedVariable, List[TemplatedVariable]]

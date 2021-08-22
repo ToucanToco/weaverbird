@@ -63,6 +63,35 @@ def test_rollup(sample_df: DataFrame):
     assert_dataframes_equals(df_result, expected_result)
 
 
+def test_rollup_without_aggregation(sample_df: DataFrame):
+    step = RollupStep(
+        name='rollup',
+        hierarchy=['CONTINENT', 'COUNTRY', 'CITY'],
+        aggregations=[],
+    )
+    df_result = execute_rollup(step, sample_df)
+
+    columns = ['CITY', 'COUNTRY', 'CONTINENT', 'label', 'level', 'parent']
+    expected_data = [
+        [None, None, 'Europe', 'Europe', 'CONTINENT', None],
+        [None, None, 'North America', 'North America', 'CONTINENT', None],
+        [None, 'France', 'Europe', 'France', 'COUNTRY', 'Europe'],
+        [None, 'Spain', 'Europe', 'Spain', 'COUNTRY', 'Europe'],
+        [None, 'Canada', 'North America', 'Canada', 'COUNTRY', 'North America'],
+        [None, 'USA', 'North America', 'USA', 'COUNTRY', 'North America'],
+        ['Bordeaux', 'France', 'Europe', 'Bordeaux', 'CITY', 'France'],
+        ['Paris', 'France', 'Europe', 'Paris', 'CITY', 'France'],
+        ['Barcelona', 'Spain', 'Europe', 'Barcelona', 'CITY', 'Spain'],
+        ['Madrid', 'Spain', 'Europe', 'Madrid', 'CITY', 'Spain'],
+        ['Montreal', 'Canada', 'North America', 'Montreal', 'CITY', 'Canada'],
+        ['Ottawa', 'Canada', 'North America', 'Ottawa', 'CITY', 'Canada'],
+        ['Boston', 'USA', 'North America', 'Boston', 'CITY', 'USA'],
+        ['New-York', 'USA', 'North America', 'New-York', 'CITY', 'USA'],
+    ]
+    expected_result = DataFrame(expected_data, columns=columns)
+    assert_dataframes_equals(df_result, expected_result)
+
+
 def test_complex_rollup(sample_df: DataFrame):
     sample_df = sample_df.assign(COUNT=1)
     step = RollupStep(

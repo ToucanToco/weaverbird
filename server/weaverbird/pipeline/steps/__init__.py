@@ -1,7 +1,7 @@
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
 from .addmissingdates import AddMissingDatesStep, AddMissingDatesStepWithVariables
-from .aggregate import AggregateStep, AggregateStepWithVariables
+from .aggregate import AggregateStep, AggregateStepWithVariables, Aggregation
 from .append import AppendStep, AppendStepWithVariable
 from .argmax import ArgmaxStep, ArgmaxStepWithVariable
 from .argmin import ArgminStep, ArgminStepWithVariable
