@@ -33,7 +33,7 @@ min, max, first or last.
   list of columns that have a hierarchical link, in hierarchical order from
   top to bottom level.
 
-- `Columns to aggregate`: Here you must specify one or more columns to
+- `(Optional) Columns to aggregate`: Here you can specify one or more columns to
   aggregate, with the corresponding aggregation function to be applied. You can
   add a column to aggregate by clicking on the button `Add aggregation`.
 
