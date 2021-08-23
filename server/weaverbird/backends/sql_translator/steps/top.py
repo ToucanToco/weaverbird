@@ -41,7 +41,9 @@ def translate_top(
     group_by_query: str = ""
     if len(step.groups) > 0:
         # we use set() to prevent duplications
-        for index, gb in enumerate(list(set(step.groups + [step.rank_on]))):
+        if step.rank_on not in step.groups:
+            step.groups += [step.rank_on]
+        for index, gb in enumerate(step.groups):
             group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
     # We remove superflues columns
