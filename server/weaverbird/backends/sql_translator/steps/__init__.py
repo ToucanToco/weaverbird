@@ -15,8 +15,8 @@ from .sort import translate_sort
 from .table import translate_table
 from .text import translate_text
 from .todate import translate_todate
-from .uniquegroups import translate_uniquegroups
 from .top import translate_top
+from .uniquegroups import translate_uniquegroups
 from .uppercase import translate_uppercase
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {

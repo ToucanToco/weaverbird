@@ -39,14 +39,27 @@ def translate_uniquegroups(
     for index, gb in enumerate(step.on):
         group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
+    # We remove superflues columns
+    for c in [col for col in query.metadata_manager.query_metadata if col not in step.on]:
+        query.metadata_manager.remove_column(c)
+
+    from_ = " FROM " if len(step.on) > 0 else ""
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[], query=query)}"""
-        f""" FROM {query.query_name} {group_by_query}) """,
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
-        metadata_manager=query.metadata_manager,
+        f"""{from_}{query.query_name} {group_by_query}) """,
     )
+
+    if len(step.on) > 0:
+        new_query.selection_query = build_selection_query(
+            query.metadata_manager.query_metadata, query_name
+        )
+    else:
+        new_query.selection_query = f"SELECT {query_name}"
+
+    new_query.metadata_manager = (query.metadata_manager,)
 
     log.debug(
         "------------------------------------------------------------"
