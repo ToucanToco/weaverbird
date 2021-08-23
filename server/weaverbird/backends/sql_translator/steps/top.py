@@ -36,22 +36,25 @@ def translate_top(
         f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
+
+    # We build the group by query part
     group_by_query: str = ""
     for index, gb in enumerate(step.groups + [step.rank_on]):
         group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
-    cols_to_remove = [
-        col for col in query.metadata_manager.query_metadata if col not in step.groups
-    ]
-    for c in cols_to_remove:
-        if c != step.rank_on:
-            query.metadata_manager.remove_column(c)
+    # We remove superflues columns
+    for c in [
+        col
+        for col in query.metadata_manager.query_metadata
+        if col not in step.groups and col != step.rank_on
+    ]:
+        query.metadata_manager.remove_column(c)
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT TOP {step.limit} {complete_fields(columns=[], query=query)}"""
-        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort})""",
+        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
