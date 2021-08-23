@@ -30,7 +30,7 @@ def test_translate_top(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOPN_STEP_1 AS (SELECT TOP 3 RAICHU, TOTO, FLORIZARRE FROM '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOPN_STEP_1 AS (SELECT TOTO, FLORIZARRE, TOP 3 RAICHU FROM '
         'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE ORDER BY RAICHU asc) '
     )
     assert query.transformed_query == expected_transformed_query
@@ -48,7 +48,7 @@ def test_translate_top_error(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOPN_STEP_1 AS (SELECT TOP 3 TOTO, RAICHU, FLORIZARRE FROM '
-        'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, RAICHU ORDER BY RAICHU asc) '
+        'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, RAICHU ORDER BY RAICHU desc) '
     )
     with pytest.raises(AssertionError):
         assert query.transformed_query == expected_transformed_query

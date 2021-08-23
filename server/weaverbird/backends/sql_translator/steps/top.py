@@ -39,11 +39,12 @@ def translate_top(
 
     # We build the group by query part
     group_by_query: str = ""
-    for index, gb in enumerate(step.groups):
-        group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
+    if len(step.groups) > 0:
+        for index, gb in enumerate(step.groups + [step.rank_on]):
+            group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
     # We remove superflues columns
-    query.metadata_manager.remove_column(all_except=step.groups+[step.rank_on])
+    query.metadata_manager.remove_column(all_except=step.groups + [step.rank_on])
 
     complete_columns = complete_fields(columns=[step.rank_on], query=query)
     if len(complete_columns) > 0:
