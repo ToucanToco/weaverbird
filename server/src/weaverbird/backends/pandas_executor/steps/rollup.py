@@ -22,7 +22,7 @@ def execute_rollup(
 
     # The "aggregations" parameter is optional for the RollupStep but it is required for the AggregateStep.
     # So we create a fake column to run the AggregateStep correctly. This column will be deleted at the end of the step.
-    if (step.aggregations == []):
+    if step.aggregations == []:
         df['FAKE_AGG_COL'] = 0
         step.aggregations = [
             Aggregation(new_columns=['FAKE_AGG_COL'], agg_function='sum', columns=['FAKE_AGG_COL'])
