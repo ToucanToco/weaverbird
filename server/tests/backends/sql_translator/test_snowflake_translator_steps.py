@@ -111,37 +111,40 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = json.loads(spec_file.read())
     spec_file.close()
 
-    # inserting the data in MySQL
-    # Take data in fixture file, set in pandas, create table and insert
-    data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
-    data_to_insert.to_sql(
-        name=case_id.replace('/', ''),
-        con=get_engine,
-        index=False,
-        if_exists='replace',
-    )
+    # if the key snowflake is in 'other_expected', that means we should compute
+    # the snowflake verification
+    if 'snowflake' in spec['other_expected']:
+        # inserting the data in MySQL
+        # Take data in fixture file, set in pandas, create table and insert
+        data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+        data_to_insert.to_sql(
+            name=case_id.replace('/', ''),
+            con=get_engine,
+            index=False,
+            if_exists='replace',
+        )
 
-    steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
-    pipeline = Pipeline(steps=steps)
+        steps = spec['step']['pipeline']
+        steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
+        pipeline = Pipeline(steps=steps)
 
-    # Convert Pipeline object to Snowflake Query
-    query, report = translate_pipeline(
-        pipeline,
-        sql_query_retriever=sql_retrieve_city,
-        sql_query_describer=snowflake_query_describer,  # replace by snowflake_query_describer
-    )
+        # Convert Pipeline object to Snowflake Query
+        query, report = translate_pipeline(
+            pipeline,
+            sql_query_retriever=sql_retrieve_city,
+            sql_query_describer=snowflake_query_describer,  # replace by snowflake_query_describer
+        )
 
-    # Execute request generated from Pipeline in Snowflake and get the result
-    result: pd.DataFrame = execute(get_connection(), query)
-    result.columns = [c.lower() for c in result.columns]
+        # Execute request generated from Pipeline in Snowflake and get the result
+        result: pd.DataFrame = execute(get_connection(), query)
+        result.columns = [c.lower() for c in result.columns]
 
-    # Drop created table
-    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")};')
+        # Drop created table
+        execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")};')
 
-    # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    query_expected = spec['other_expected']['snowflake']['query']
-    assert query_expected == query
+        # Compare result and expected (from fixture file)
+        pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+        query_expected = spec['other_expected']['snowflake']['query']
+        assert query_expected == query
 
-    assert_dataframes_equals(pandas_result_expected, result)
+        assert_dataframes_equals(pandas_result_expected, result)
