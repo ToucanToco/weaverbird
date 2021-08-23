@@ -1,8 +1,7 @@
 /**
- * This translator is not really one: it won't translate the pipeline steps into pandas' code.
- * The pandas engine to execute pipeline exists as a python package in the `server/` folder.
- *
- * This module's sole mission is to declare which steps are supported by the pandas engine, and leave the pipeline
+ * This translator is allow an app maker to visually perfom data preparation and converts the result to a Snowflake
+ * valid SQL Query. *
+ * This module's sole mission is to declare which steps are supported by the Snowflake translator, and leave the pipeline
  * steps unchanged.
  * */
 
