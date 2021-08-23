@@ -1,36 +1,26 @@
 {
-    step = TopStep(name='top', groups=['TOTO'], rank_on='RAICHU', sort='asc', limit=3)
-
-    query = translate_top(
-        step,
-        query,
-        index=1,
-    )
-    expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOPN_STEP_1 AS (SELECT TOP 3 RAICHU, TOTO, FLORIZARRE FROM '
-        'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, RAICHU ORDER BY RAICHU asc) '
-    )
-    assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM TOPN_STEP_1'
-    assert query.query_name == 'TOPN_STEP_1'
-
   "step": {
     "name": "top",
-    "limit": 3,
-    "groups": ["TOTO"],
-    "rank_on": "RAICHU",
-    "sort":  "asc"
+    "pipeline": [
+      {
+        "name": "top",
+        "limit": 3,
+        "groups": ["TOTO"],
+        "rank_on": "RAICHU",
+        "sort":  "asc"
+      }
+    ]
   },
   "input": {
     "schema": {
       "fields": [
         {
-          "name": "TOTO",
-          "type": "string"
-        },
-        {
           "name": "RAICHU",
           "type": "integer"
+        },
+        {
+          "name": "TOTO",
+          "type": "string"
         },
         {
           "name": "FLORIZARRE",
@@ -57,12 +47,12 @@
       "schema": {
         "fields": [
           {
-            "name": "TOTO",
-            "type": "string"
-          },
-          {
             "name": "RAICHU",
             "type": "number"
+          },
+          {
+            "name": "TOTO",
+            "type": "string"
           }
         ],
         "pandas_version": "0.20.0"
@@ -85,12 +75,12 @@
     "schema": {
       "fields": [
         {
-          "name": "TOTO",
-          "type": "string"
-        },
-        {
           "name": "RAICHU",
           "type": "number"
+        },
+        {
+          "name": "TOTO",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -110,10 +100,10 @@
   },
   "other_expected": {
     "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM products), TOPN_STEP_1 AS (SELECT TOP 3 RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc) SELECT RAICHU, TOTO FROM TOPN_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOPN_STEP_1 AS (SELECT TOP 3 RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc)  SELECT RAICHU, TOTO FROM TOPN_STEP_1"
     },
     "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM products), TOPN_STEP_1 AS (SELECT TOP 3 RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc) SELECT RAICHU, TOTO FROM TOPN_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOPN_STEP_1 AS (SELECT TOP 3 RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc)  SELECT RAICHU, TOTO FROM TOPN_STEP_1"
     }
   }
 }
