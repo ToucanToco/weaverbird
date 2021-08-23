@@ -48,8 +48,11 @@ def db_container():
     images: List[Image] = docker_client.images.list()
     found = False
     for i in images:
-        if i.tags[0] == f'{image["image"]}:{image["version"]}':
-            found = True
+        try:
+            if i.tags[0] == f'{image["image"]}:{image["version"]}':
+                found = True
+        except IndexError:
+            pass
     if not found:
         logging.getLogger(__name__).info(
             f'Download docker image {image["image"]}:{image["version"]}'
