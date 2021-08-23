@@ -43,12 +43,7 @@ def translate_top(
         group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
     # We remove superflues columns
-    for c in [
-        col
-        for col in query.metadata_manager.query_metadata
-        if col not in step.groups and col != step.rank_on
-    ]:
-        query.metadata_manager.remove_column(c)
+    query.metadata_manager.remove_column(all_except=step.groups + [step.rank_on])
 
     new_query = SQLQuery(
         query_name=query_name,

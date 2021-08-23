@@ -52,6 +52,3 @@ def test_translate_top_error(query):
     )
     with pytest.raises(AssertionError):
         assert query.transformed_query == expected_transformed_query
-
-    with pytest.raises(AssertionError):
-        assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM TOPN_STEP_1'
