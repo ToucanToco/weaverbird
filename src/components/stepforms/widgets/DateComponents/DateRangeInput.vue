@@ -181,7 +181,6 @@ export default class DateRangeInput extends Vue {
       this.tabsValues.Dynamic = this.value;
       this.selectTab('Dynamic');
     }
-    // TOFIX
   }
 
   openEditor(): void {
