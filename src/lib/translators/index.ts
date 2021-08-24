@@ -15,6 +15,7 @@ import { Mongo40Translator } from './mongo4';
 import { Mongo42Translator } from './mongo42';
 import { PandasTranslator } from './pandas';
 import { PandasNoJoinsTranslator } from './pandas-no_joins';
+import { SnowflakeTranslator } from './snowflake';
 
 const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
 
@@ -68,6 +69,7 @@ registerTranslator('mongo42', Mongo42Translator);
 registerTranslator('pandas', PandasTranslator);
 registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
 registerTranslator('empty', EmptyTranslator);
+registerTranslator('snowflake', SnowflakeTranslator);
 
 /**
  * Initialize variable delimiters for all translators
