@@ -34,7 +34,7 @@ def translate_uniquegroups(
         f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
     )
 
-    select_query: str = ""
+    select_query = complete_fields(query=query)
     group_by_query: str = ""
     if len(step.on) > 0:
         # We build the group by query part
@@ -45,8 +45,6 @@ def translate_uniquegroups(
             all_except=([c.upper() for c in step.on] + [c.lower() for c in step.on])
         )
         select_query = ', '.join(step.on)
-    else:
-        select_query = complete_fields(query=query)
 
     new_query = SQLQuery(
         query_name=query_name,
