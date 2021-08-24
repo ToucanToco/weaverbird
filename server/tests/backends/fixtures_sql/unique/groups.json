@@ -1,13 +1,10 @@
 {
   "step": {
-    "name": "top",
+    "name": "uniquegroups",
     "pipeline": [
       {
-        "name": "top",
-        "limit": 3,
-        "groups": ["TOTO"],
-        "rank_on": "RAICHU",
-        "sort":  "asc"
+        "name": "uniquegroups",
+        "on": ["TOTO"]
       }
     ]
   },
@@ -75,10 +72,6 @@
     "schema": {
       "fields": [
         {
-          "name": "RAICHU",
-          "type": "number"
-        },
-        {
           "name": "TOTO",
           "type": "string"
         }
@@ -87,23 +80,19 @@
     },
     "data": [
       {
-        "TOTO": "zigolom",
-        "RAICHU": 3,
-        "FLORIZARRE": "patate"
+        "TOTO": "dindin"
       },
       {
-        "TOTO": "dindin",
-        "RAICHU": 42,
-        "FLORIZARRE": "patate"
+        "TOTO": "zigolom"
       }
     ]
   },
   "other_expected": {
     "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO FROM SELECT_STEP_0 GROUP BY TOTO)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
     },
     "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO FROM SELECT_STEP_0 GROUP BY TOTO)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
     }
   }
 }

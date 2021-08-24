@@ -16,6 +16,7 @@ from .table import translate_table
 from .text import translate_text
 from .todate import translate_todate
 from .top import translate_top
+from .uniquegroups import translate_uniquegroups
 from .uppercase import translate_uppercase
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
@@ -34,5 +35,6 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'todate': translate_todate,
     'formula': translate_formula,
     'replace': translate_replace,
+    'uniquegroups': translate_uniquegroups,
     'top': translate_top,
 }
