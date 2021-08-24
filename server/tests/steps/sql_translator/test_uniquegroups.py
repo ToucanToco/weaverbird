@@ -17,7 +17,7 @@ def test_translate_uniquegroups_empty(query):
         'SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT UNIQUEGROUPS_STEP_1'
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM UNIQUEGROUPS_STEP_1'
     assert query.query_name == 'UNIQUEGROUPS_STEP_1'
 
 

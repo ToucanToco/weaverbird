@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -21,7 +20,7 @@ def translate_top(
     sql_query_describer: SQLQueryDescriber = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
-    query_name = f'TOPN_STEP_{index}'
+    query_name = f'TOP_STEP_{index}'
 
     log.debug(
         "############################################################"
@@ -39,24 +38,30 @@ def translate_top(
 
     # We build the group by query part
     group_by_query: str = ""
-    if len(step.groups) > 0:
-        # we use set() to prevent duplications
-        if step.rank_on not in step.groups:
-            step.groups += [step.rank_on]
-        for index, gb in enumerate(step.groups):
-            group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
+    # we use set() to prevent duplications
+    for index, gb in enumerate(step.groups + [step.rank_on]):
+        group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
     # We remove superflues columns
-    query.metadata_manager.remove_column(all_except=step.groups + [step.rank_on])
+    # to handle upper and lower cases
+    # we refresh query metadatas with columns to not remove
+    query.metadata_manager.remove_column(
+        all_except=(
+            [c.upper() for c in step.groups]
+            + [c.lower() for c in step.groups]
+            + [step.rank_on.upper(), step.rank_on.lower()]
+        )
+    )
 
-    complete_columns = complete_fields(columns=[step.rank_on], query=query)
-    if len(complete_columns) > 0:
-        complete_columns = ", " + complete_columns
+    # the select group query updates
+    select_group_query = (
+        ", " + ', '.join(step.groups) if len(', '.join(step.groups)) > 0 else ', '.join(step.groups)
+    )
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {step.rank_on}{complete_columns}"""
+        f""" (SELECT {step.rank_on}{select_group_query}"""
         f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort} LIMIT {step.limit}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
