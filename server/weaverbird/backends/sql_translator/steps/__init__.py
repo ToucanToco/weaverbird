@@ -32,15 +32,11 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'text': translate_text,
     'lowercase': translate_lowercase,
     'uppercase': translate_uppercase,
-<<<<<<< HEAD
     'fromdate': translate_fromdate,
     'todate': translate_todate,
     'formula': translate_formula,
     'replace': translate_replace,
-    'uniquegroups': translate_uniquegroups,
     'top': translate_top,
+    'uniquegroups': translate_uniquegroups,
     'join': translate_join,
-=======
-    'replace': translate_replace,
->>>>>>> feat(vqb): added step replace + tests
 }

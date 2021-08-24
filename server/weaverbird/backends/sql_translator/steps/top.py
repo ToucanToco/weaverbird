@@ -36,6 +36,8 @@ def translate_top(
     )
 
     # We build the group by query part
+    group_by_query: str = ""
+    # we use set() to prevent duplications
     group_by_query: str = ''
     for index, gb in enumerate(step.groups + [step.rank_on]):
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
@@ -63,9 +65,9 @@ def translate_top(
     )
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query
