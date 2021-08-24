@@ -27,6 +27,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
 
       - uses: actions/setup-node@v2
         with:
