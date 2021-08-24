@@ -45,9 +45,13 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
 export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR =
   '<i aria-hidden="true" class="fa fa-arrow-right"></i>';
 
+export const dateToString = (date: Date): string => {
+  return date.toLocaleDateString(undefined, { timeZone: 'UTC' });
+};
+
 export const dateRangeToString = (dateRange: DateRange): string => {
-  const startDate = dateRange.start ? dateRange.start.toLocaleDateString() : 'Invalid Date';
-  const endDate = dateRange.end ? dateRange.end.toLocaleDateString() : 'Invalid Date';
+  const startDate = dateRange.start ? dateToString(dateRange.start) : 'Invalid Date';
+  const endDate = dateRange.end ? dateToString(dateRange.end) : 'Invalid Date';
   return `${startDate}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${endDate}`;
 };
 

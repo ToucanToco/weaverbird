@@ -1,6 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
+import { dateToString } from '@/lib/dates';
 
 const SAMPLE_VARIABLES = [
   {
@@ -259,9 +260,7 @@ describe('Date input', () => {
     });
 
     it('should display date as UTC for input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
-        value.toLocaleDateString(),
-      );
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(dateToString(value));
     });
 
     it('should select "Fixed" tab by default', () => {

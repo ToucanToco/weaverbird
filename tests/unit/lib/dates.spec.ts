@@ -1,6 +1,7 @@
 import {
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
   dateRangeToString,
+  dateToString,
   isDateRange,
   isRelativeDateRange,
   RelativeDateRange,
@@ -8,11 +9,18 @@ import {
   relativeDateToString,
 } from '@/lib/dates';
 
+describe('dateToString', () => {
+  it('should return a date formatted with UTC timezone', () => {
+    const date = new Date(1);
+    expect(dateToString(date)).toStrictEqual('1970-1-1');
+  });
+});
+
 describe('dateRangeToString', () => {
   it('should return readable label if value is a partial date range', () => {
     const value = { start: new Date() };
     expect(dateRangeToString(value)).toBe(
-      `${value.start.toLocaleDateString()}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Invalid Date`,
+      `${dateToString(value.start)}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Invalid Date`,
     );
   });
   it('should return readable label if value is a full undefined date range', () => {
@@ -24,7 +32,7 @@ describe('dateRangeToString', () => {
   it('should return readable label if value is a full date range', () => {
     const value = { start: new Date(), end: new Date(1) };
     expect(dateRangeToString(value)).toBe(
-      `${value.start.toLocaleDateString()}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${value.end.toLocaleDateString()}`,
+      `${dateToString(value.start)}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${dateToString(value.end)}`,
     );
   });
 });
