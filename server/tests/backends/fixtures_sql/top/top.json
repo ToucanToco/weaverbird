@@ -1,0 +1,109 @@
+{
+  "step": {
+    "name": "top",
+    "pipeline": [
+      {
+        "name": "top",
+        "limit": 3,
+        "groups": ["toto"],
+        "rank_on": "raichu",
+        "sort":  "asc"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "raichu",
+          "type": "integer"
+        },
+        {
+          "name": "toto",
+          "type": "string"
+        },
+        {
+          "name": "florizarre",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "toto": "dindin",
+        "raichu": 42,
+        "florizarre": "patate"
+      },
+      {
+        "toto": "zigolom",
+        "raichu": 3,
+        "florizarre": "patate"
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "raichu",
+            "type": "number"
+          },
+          {
+            "name": "toto",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "toto": "zigolom",
+          "raichu": 3,
+          "florizarre": "patate"
+        },
+        {
+          "toto": "dindin",
+          "raichu": 42,
+          "florizarre": "patate"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "raichu",
+          "type": "number"
+        },
+        {
+          "name": "toto",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "toto": "zigolom",
+        "raichu": 3,
+        "florizarre": "patate"
+      },
+      {
+        "toto": "dindin",
+        "raichu": 42,
+        "florizarre": "patate"
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT raichu, toto FROM TOP_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
+    }
+  }
+}
