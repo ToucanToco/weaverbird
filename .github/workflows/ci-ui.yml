@@ -27,6 +27,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+        with:
+          # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
 
       - uses: actions/setup-node@v2
         with:
@@ -42,14 +45,21 @@ jobs:
       - name: Unit tests
         run: yarn test:unit --runInBand
 
-      - name: Check that build completes as expected
-        run: yarn build-bundle
-
       - name: Send report to codecov
         run: yarn codecov
+        if: ${{ always() }}
+
+      - name: Fix code coverage paths
+        working-directory: ./coverage
+        run: |
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lcov.info
 
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: ${{ always() }}
+
+      - name: Check that build completes as expected
+        run: yarn build-bundle
