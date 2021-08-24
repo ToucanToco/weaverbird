@@ -242,8 +242,7 @@ def test_build_join_query():
             right_query_name='JOIN_STEP_1_RIGHT',
             right_query='SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS',
             step_index=1,
-            left_on=['ID'],
-            right_on=['CUSTOMER_ID'],
+            on=[['ID', 'CUSTOMER_ID']],
             how='INNER',
         )
         == 'JOIN_STEP_1_RIGHT AS (SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
@@ -261,8 +260,7 @@ def test_build_join_query_no_query_to_join_metadata():
             right_query_name='JOIN_STEP_1_RIGHT',
             right_query='SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS',
             step_index=1,
-            left_on=['ID'],
-            right_on=['CUSTOMER_ID'],
+            on=[['ID', 'CUSTOMER_ID']],
             how='INNER',
         )
         == 'JOIN_STEP_1_RIGHT AS (SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
@@ -280,8 +278,7 @@ def test_build_join_query_same_table():
             right_query_name='JOIN_STEP_1_RIGHT',
             right_query='SELECT ID, NAME FROM ORDERS',
             step_index=1,
-            left_on=['ID'],
-            right_on=['ID'],
+            on=[['ID', 'ID']],
             how='INNER',
         )
         == 'JOIN_STEP_1_RIGHT AS (SELECT ID, NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
@@ -291,7 +288,7 @@ def test_build_join_query_same_table():
 
 
 def test_build_join_query_empty_right():
-    assert (
+    with pytest.raises(IndexError):
         build_join_query(
             query_metadata={'ID': 'int', 'NAME': 'str'},
             query_to_join_metadata={},
@@ -299,14 +296,13 @@ def test_build_join_query_empty_right():
             right_query_name='JOIN_STEP_1_RIGHT',
             right_query='',
             step_index=1,
-            left_on=['ID'],
-            right_on=[],
+            on=[
+                [
+                    'ID',
+                ]
+            ],
             how='INNER',
         )
-        == 'JOIN_STEP_1_RIGHT AS (), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
-        'NAME AS NAME_LEFT,  FROM '
-        'SELECT_STEP_0 INNER JOIN JOIN_STEP_1_RIGHT ON )'
-    )
 
 
 def test_build_left_outer_join_query():
@@ -318,8 +314,7 @@ def test_build_left_outer_join_query():
             right_query_name='JOIN_STEP_1_RIGHT',
             right_query='SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS',
             step_index=1,
-            left_on=['ID'],
-            right_on=['CUSTOMER_ID'],
+            on=[['ID', 'CUSTOMER_ID']],
             how='LEFT OUTER',
         )
         == 'JOIN_STEP_1_RIGHT AS (SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '

@@ -1,12 +1,7 @@
-from weaverbird.backends.sql_translator import SQLQueryRetriever
-from weaverbird.backends.sql_translator.types import SQLPipelineTranslator
-from weaverbird.pipeline.steps.utils.combination import PipelineOrDomainName
-
-
 def resolve_sql_pipeline_for_combination(
-    pipeline_or_domain: PipelineOrDomainName,
-    sql_query_retriever: SQLQueryRetriever,
-    sql_translate_pipeline: SQLPipelineTranslator,
+    pipeline_or_domain,
+    sql_query_retriever,
+    sql_translate_pipeline,
 ) -> str:
     """
     Combined pipelines can be either single domains (str), or complete pipeline (list of steps)

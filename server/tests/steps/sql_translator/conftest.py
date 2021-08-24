@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pytest
 
 from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
@@ -14,3 +16,8 @@ def query():
             tables_metadata={'TABLE1': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'}},
         ),
     )
+
+
+@pytest.fixture
+def sql_query_describer():
+    return Mock(return_value={'toto': 'int', 'raichu': 'str'})

@@ -1,8 +1,10 @@
-from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
 from weaverbird.backends.sql_translator.steps.utils.combination import (
     resolve_sql_pipeline_for_combination,
 )
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import build_join_query
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    build_join_query,
+    build_selection_query,
+)
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
@@ -30,9 +32,6 @@ def translate_join(
 
     # 1 add right metadata
     query_to_join_metadata = sql_query_describer(right_query)
-    query.metadata_manager.add_table_metadata(
-        'JOIN_STEP_{index}_RIGHT', {f'{k}_RIGHT': v for k, v in query_to_join_metadata.items}
-    )
 
     # 2 build the query string
     transformed_query = f"""{query.transformed_query}, {
@@ -43,21 +42,20 @@ def translate_join(
         right_query_name=f'JOIN_STEP_{index}_RIGHT',
         right_query=right_query,
         step_index=index,
-        left_on=[o[0] for o in step.on],
-        right_on=[o[1] for o in step.on],
-        how=step.type
+        on=step.on,
+        how=step.type.upper()
     )}"""
 
     # 3 Suffix columns from left part of the join in metadata
     query.metadata_manager.suffix_columns('_LEFT')
 
     # 4 Update query metadata with all columns
-    query.metadata_manager.add_columns(query_to_join__metadata)
+    query.metadata_manager.add_columns(query_to_join_metadata)
 
     # 5 update the query object
     return SQLQuery(
         query_name=query_name,
         transformed_query=transformed_query,
-        selection_query=build_selection_query(query.metadata_manager.tables_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )

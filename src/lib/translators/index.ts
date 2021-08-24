@@ -78,8 +78,7 @@ export function setVariableDelimiters(variableDelimiters?: VariableDelimiters) {
   BaseTranslator.variableDelimiters = variableDelimiters;
 }
 
-
-export type VqbTranslator = 
+export type VqbTranslator =
   | 'mongo36'
   | 'mongo40'
   | 'pandas'
