@@ -38,11 +38,10 @@ def translate_uniquegroups(
     group_by_query: str = ""
     if len(step.on) > 0:
         # We build the group by query part
-        for index, gb in enumerate(step.on):
-            group_by_query += (" GROUP BY " if index == 0 else ", ") + gb
-        # We remove superflues columns
+        group_by_query = f" GROUP BY {', '.join([gb for gb in step.on])}"
+        # We remove unnecessary columns
         query.metadata_manager.remove_column(
-            all_except=([c.upper() for c in step.on] + [c.lower() for c in step.on])
+            all_except=step.on
         )
         select_query = ', '.join(step.on)
 

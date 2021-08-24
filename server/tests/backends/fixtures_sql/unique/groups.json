@@ -4,7 +4,7 @@
     "pipeline": [
       {
         "name": "uniquegroups",
-        "on": ["toto"]
+        "on": ["TOTO"]
       }
     ]
   },
@@ -12,15 +12,15 @@
     "schema": {
       "fields": [
         {
-          "name": "raichu",
+          "name": "RAICHU",
           "type": "integer"
         },
         {
-          "name": "toto",
+          "name": "TOTO",
           "type": "string"
         },
         {
-          "name": "florizarre",
+          "name": "FLORIZARRE",
           "type": "string"
         }
       ],
@@ -28,14 +28,14 @@
     },
     "data": [
       {
-        "toto": "dindin",
-        "raichu": 42,
-        "florizarre": "patate"
+        "TOTO": "dindin",
+        "RAICHU": 42,
+        "FLORIZARRE": "patate"
       },
       {
-        "toto": "zigolom",
-        "raichu": 3,
-        "florizarre": "patate"
+        "TOTO": "zigolom",
+        "RAICHU": 3,
+        "FLORIZARRE": "patate"
       }
     ]
   },
@@ -44,11 +44,11 @@
       "schema": {
         "fields": [
           {
-            "name": "raichu",
+            "name": "RAICHU",
             "type": "number"
           },
           {
-            "name": "toto",
+            "name": "TOTO",
             "type": "string"
           }
         ],
@@ -56,14 +56,14 @@
       },
       "data": [
         {
-          "toto": "zigolom",
-          "raichu": 3,
-          "florizarre": "patate"
+          "TOTO": "zigolom",
+          "RAICHU": 3,
+          "FLORIZARRE": "patate"
         },
         {
-          "toto": "dindin",
-          "raichu": 42,
-          "florizarre": "patate"
+          "TOTO": "dindin",
+          "RAICHU": 42,
+          "FLORIZARRE": "patate"
         }
       ]
     }
@@ -72,7 +72,7 @@
     "schema": {
       "fields": [
         {
-          "name": "toto",
+          "name": "TOTO",
           "type": "string"
         }
       ],
@@ -80,19 +80,19 @@
     },
     "data": [
       {
-        "toto": "dindin"
+        "TOTO": "dindin"
       },
       {
-        "toto": "zigolom"
+        "TOTO": "zigolom"
       }
     ]
   },
   "other_expected": {
     "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT toto FROM SELECT_STEP_0 GROUP BY toto)  SELECT toto FROM UNIQUEGROUPS_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO FROM SELECT_STEP_0 GROUP BY TOTO)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
     },
     "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT toto FROM SELECT_STEP_0 GROUP BY toto)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO FROM SELECT_STEP_0 GROUP BY TOTO)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
     }
   }
 }

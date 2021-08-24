@@ -5,8 +5,8 @@
       {
         "name": "top",
         "limit": 3,
-        "groups": ["toto"],
-        "rank_on": "raichu",
+        "groups": ["TOTO"],
+        "rank_on": "RAICHU",
         "sort":  "asc"
       }
     ]
@@ -15,15 +15,15 @@
     "schema": {
       "fields": [
         {
-          "name": "raichu",
+          "name": "RAICHU",
           "type": "integer"
         },
         {
-          "name": "toto",
+          "name": "TOTO",
           "type": "string"
         },
         {
-          "name": "florizarre",
+          "name": "FLORIZARRE",
           "type": "string"
         }
       ],
@@ -31,14 +31,14 @@
     },
     "data": [
       {
-        "toto": "dindin",
-        "raichu": 42,
-        "florizarre": "patate"
+        "TOTO": "dindin",
+        "RAICHU": 42,
+        "FLORIZARRE": "patate"
       },
       {
-        "toto": "zigolom",
-        "raichu": 3,
-        "florizarre": "patate"
+        "TOTO": "zigolom",
+        "RAICHU": 3,
+        "FLORIZARRE": "patate"
       }
     ]
   },
@@ -47,11 +47,11 @@
       "schema": {
         "fields": [
           {
-            "name": "raichu",
+            "name": "RAICHU",
             "type": "number"
           },
           {
-            "name": "toto",
+            "name": "TOTO",
             "type": "string"
           }
         ],
@@ -59,14 +59,14 @@
       },
       "data": [
         {
-          "toto": "zigolom",
-          "raichu": 3,
-          "florizarre": "patate"
+          "TOTO": "zigolom",
+          "RAICHU": 3,
+          "FLORIZARRE": "patate"
         },
         {
-          "toto": "dindin",
-          "raichu": 42,
-          "florizarre": "patate"
+          "TOTO": "dindin",
+          "RAICHU": 42,
+          "FLORIZARRE": "patate"
         }
       ]
     }
@@ -75,11 +75,11 @@
     "schema": {
       "fields": [
         {
-          "name": "raichu",
+          "name": "RAICHU",
           "type": "number"
         },
         {
-          "name": "toto",
+          "name": "TOTO",
           "type": "string"
         }
       ],
@@ -87,23 +87,23 @@
     },
     "data": [
       {
-        "toto": "zigolom",
-        "raichu": 3,
-        "florizarre": "patate"
+        "TOTO": "zigolom",
+        "RAICHU": 3,
+        "FLORIZARRE": "patate"
       },
       {
-        "toto": "dindin",
-        "raichu": 42,
-        "florizarre": "patate"
+        "TOTO": "dindin",
+        "RAICHU": 42,
+        "FLORIZARRE": "patate"
       }
     ]
   },
   "other_expected": {
     "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT raichu, toto FROM TOP_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
     },
     "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
     }
   }
 }
