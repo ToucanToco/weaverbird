@@ -36,7 +36,6 @@ def translate_top(
     )
 
     # We build the group by query part
-    group_by_query: str = ""
     # we use set() to prevent duplications
     group_by_query: str = ''
     for index, gb in enumerate(step.groups + [step.rank_on]):
