@@ -12,7 +12,9 @@ import {
 describe('dateToString', () => {
   it('should return a date formatted with UTC timezone', () => {
     const date = new Date(1);
-    expect(dateToString(date)).toStrictEqual('1970-1-1');
+    expect(dateToString(date)).toStrictEqual(
+      date.toLocaleDateString(undefined, { timeZone: 'UTC' }),
+    );
   });
 });
 
