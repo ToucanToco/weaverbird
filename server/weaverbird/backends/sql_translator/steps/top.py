@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
