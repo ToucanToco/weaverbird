@@ -133,8 +133,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     )
 
     # Execute request generated from Pipeline in Snowflake and get the result
+    assert query == ""
     result: pd.DataFrame = execute(get_connection(), query)
-    result.columns = [c.upper() for c in result.columns]
+    result.columns = [c.lower() for c in result.columns]
 
     # Drop created table
     execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")};')

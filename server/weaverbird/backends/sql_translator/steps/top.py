@@ -21,7 +21,7 @@ def translate_top(
     sql_query_describer: SQLQueryDescriber = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
-    query_name = f'TOPN_STEP_{index}'
+    query_name = f'TOP_STEP_{index}'
 
     log.debug(
         "############################################################"
