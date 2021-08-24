@@ -41,7 +41,9 @@ def translate_uniquegroups(
         for index, gb in enumerate(step.on):
             group_by_query += (" GROUP BY " if index == 0 else ", ") + gb
         # We remove superflues columns
-        query.metadata_manager.remove_column(all_except=step.on)
+        query.metadata_manager.remove_column(
+            all_except=([c.upper() for c in step.on] + [c.lower() for c in step.on])
+        )
         select_query = ', '.join(step.on)
     else:
         select_query = complete_fields(query=query)

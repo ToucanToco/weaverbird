@@ -1,0 +1,98 @@
+{
+  "step": {
+    "name": "uniquegroups",
+    "pipeline": [
+      {
+        "name": "uniquegroups",
+        "on": ["toto"]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "raichu",
+          "type": "integer"
+        },
+        {
+          "name": "toto",
+          "type": "string"
+        },
+        {
+          "name": "florizarre",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "toto": "dindin",
+        "raichu": 42,
+        "florizarre": "patate"
+      },
+      {
+        "toto": "zigolom",
+        "raichu": 3,
+        "florizarre": "patate"
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "raichu",
+            "type": "number"
+          },
+          {
+            "name": "toto",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "toto": "zigolom",
+          "raichu": 3,
+          "florizarre": "patate"
+        },
+        {
+          "toto": "dindin",
+          "raichu": 42,
+          "florizarre": "patate"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "toto",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "toto": "dindin"
+      },
+      {
+        "toto": "zigolom"
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT toto FROM SELECT_STEP_0 GROUP BY toto)  SELECT toto FROM UNIQUEGROUPS_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM unique_groups), UNIQUEGROUPS_STEP_1 AS (SELECT toto FROM SELECT_STEP_0 GROUP BY toto)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
+    }
+  }
+}
