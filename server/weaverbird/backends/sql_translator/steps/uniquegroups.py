@@ -40,9 +40,7 @@ def translate_uniquegroups(
         # We build the group by query part
         group_by_query = f" GROUP BY {', '.join([gb for gb in step.on])}"
         # We remove unnecessary columns
-        query.metadata_manager.remove_column(
-            all_except=step.on
-        )
+        query.metadata_manager.remove_column(all_except=step.on)
         select_query = ', '.join(step.on)
 
     new_query = SQLQuery(
