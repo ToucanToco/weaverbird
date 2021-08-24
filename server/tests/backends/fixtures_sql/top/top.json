@@ -103,7 +103,7 @@
       "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT raichu, toto FROM TOP_STEP_1"
     },
     "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT raichu, toto FROM TOP_STEP_1"
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT raichu, toto FROM SELECT_STEP_0 GROUP BY toto, raichu ORDER BY raichu asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
     }
   }
 }
