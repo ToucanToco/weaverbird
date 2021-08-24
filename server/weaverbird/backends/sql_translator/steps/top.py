@@ -56,8 +56,8 @@ def translate_top(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT TOP {step.limit} {step.rank_on}{complete_columns}"""
-        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort}) """,
+        f""" (SELECT {step.rank_on}{complete_columns}"""
+        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort} LIMIT {step.limit}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
