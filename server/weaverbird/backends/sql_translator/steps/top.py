@@ -39,22 +39,25 @@ def translate_top(
 
     # We build the group by query part
     group_by_query: str = ""
-    for index, gb in enumerate(step.groups + [step.rank_on]):
-        group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
+    if len(step.groups) > 0:
+        # we use set() to prevent duplications
+        if step.rank_on not in step.groups:
+            step.groups += [step.rank_on]
+        for index, gb in enumerate(step.groups):
+            group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
 
     # We remove superflues columns
-    for c in [
-        col
-        for col in query.metadata_manager.query_metadata
-        if col not in step.groups and col != step.rank_on
-    ]:
-        query.metadata_manager.remove_column(c)
+    query.metadata_manager.remove_column(all_except=step.groups + [step.rank_on])
+
+    complete_columns = complete_fields(columns=[step.rank_on], query=query)
+    if len(complete_columns) > 0:
+        complete_columns = ", " + complete_columns
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT TOP {step.limit} {complete_fields(columns=[], query=query)}"""
-        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort}) """,
+        f""" (SELECT {step.rank_on}{complete_columns}"""
+        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort} LIMIT {step.limit}) """,
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )
