@@ -49,6 +49,12 @@ jobs:
         run: yarn codecov
         if: ${{ always() }}
 
+      - name: Fix code coverage paths
+        working-directory: ./coverage
+        run: |
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lcov.info
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' test-report.xml
+
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
