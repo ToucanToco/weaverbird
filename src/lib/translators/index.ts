@@ -77,3 +77,12 @@ registerTranslator('snowflake', SnowflakeTranslator);
 export function setVariableDelimiters(variableDelimiters?: VariableDelimiters) {
   BaseTranslator.variableDelimiters = variableDelimiters;
 }
+
+
+export type VqbTranslator = 
+  | 'mongo36'
+  | 'mongo40'
+  | 'pandas'
+  | 'pandas-no_joins'
+  | 'empty'
+  | 'snowflake';
