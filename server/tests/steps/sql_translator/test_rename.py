@@ -1,7 +1,8 @@
 import pytest
 
 from weaverbird.backends.sql_translator.steps import translate_rename
-from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.types import SQLQuery
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager, TableMetadata
 from weaverbird.pipeline.steps import RenameStep
 
 
@@ -27,8 +28,7 @@ def test_translate_simple_rename_only_one():
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT TOTO FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'TOTO': 'int'}},
-            query_metadata={'TOTO': 'int'},
+            tables_metadata={'table1': {'TOTO': 'int'}}
         ),
     )
     step = RenameStep(name='rename', to_rename=[['TOTO', 'toto_name']])
@@ -75,8 +75,7 @@ def test_translate_rename_error(query):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT TOTO, RAICHU, FLORIZARE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table2': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'}},
-            query_metadata={'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'},
+            tables_metadata={'table2': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'}}
         ),
     )
 

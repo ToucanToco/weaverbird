@@ -12,6 +12,8 @@ from weaverbird.pipeline.conditions import (
     NullCondition,
 )
 
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata
+
 SQL_COMPARISON_OPERATORS = {
     'eq': '=',
     'ne': '!=',
@@ -69,7 +71,7 @@ def apply_condition(condition: Condition, query: str) -> str:
     return query
 
 
-def build_selection_query(query_metadata: Dict[str, str], query_name) -> str:
+def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
     return f"SELECT {', '.join(query_metadata.keys())} FROM {query_name}"
 
 

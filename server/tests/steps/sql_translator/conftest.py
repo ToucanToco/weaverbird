@@ -1,6 +1,7 @@
 import pytest
 
-from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.types import SQLQuery
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 
 
 @pytest.fixture
@@ -11,6 +12,5 @@ def query():
         selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={'TABLE1': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'}},
-            query_metadata={'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'},
         ),
     )

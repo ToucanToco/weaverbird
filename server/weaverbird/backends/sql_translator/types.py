@@ -5,6 +5,8 @@ from pydantic import BaseModel
 
 from weaverbird.pipeline import Pipeline
 
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
+
 
 class SQLStepTranslationReport(BaseModel):
     step_index: int
@@ -18,7 +20,7 @@ class TableMetadataUpdateError(Exception):
     ...
 
 
-class SqlQueryMetadataManager(BaseModel):
+class SqlQueryMetadataManagerOld(BaseModel):
     tables_metadata: Dict[str, Dict[str, str]]
     query_metadata: Dict[str, str]
 
