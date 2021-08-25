@@ -50,7 +50,6 @@ def translate_top(
         if col not in cols
     ]
     query.metadata_manager.remove_query_metadata_columns(cols_to_remove)
-
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     new_query = SQLQuery(
