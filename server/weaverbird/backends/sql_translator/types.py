@@ -1,5 +1,5 @@
 from distutils import log
-from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple
+from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, Union
 
 from pydantic import BaseModel
 
@@ -60,21 +60,43 @@ class SqlQueryMetadataManager(BaseModel):
             "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
         )
 
-    def remove_column(self, column_name: str):
+    def remove_column(
+        self,
+        column_names: Union[str, List[str]] = "all-columns",
+        all_except=None,
+    ):
+        """
+        This method will remove a bunch of column from a query
+
+        column_names: is where we put a list/str of column(s) we want to remove
+        all_except: is where we are going to place only element we want to keep from the actual list of columns
+        """
+        if all_except is None:
+            all_except = []
         log.debug(
             "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "before : remove_column: "
-            + f"\ncolumn_name : {column_name}"
+            + f"\ncolumn_name : {column_names}"
             + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
         try:
-            del self.query_metadata[column_name]
+            if column_names == "all-columns":
+                for col in list(self.query_metadata):
+                    if col not in all_except:
+                        del self.query_metadata[col]
+            else:
+                if isinstance(column_names, list):
+                    for col in column_names:
+                        if col not in all_except:
+                            del self.query_metadata[col]
+                else:
+                    del self.query_metadata[column_names]
         except KeyError:
             raise TableMetadataUpdateError
         log.debug(
             "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
             "after : remove_column: "
-            + f"\ncolumn_name : {column_name}"
+            + f"\ncolumn_name : {column_names}"
             + f"\n> query_metadata: {str(self.query_metadata.keys())}"
         )
 
