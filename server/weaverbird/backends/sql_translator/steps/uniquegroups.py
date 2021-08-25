@@ -39,7 +39,6 @@ def translate_uniquegroups(
         query.metadata_manager.remove_query_metadata_columns(cols_to_remove)
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
     group_query = f' GROUP BY {completed_fields})' if len(columns) > 0 else ')'
-
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=(
@@ -55,9 +54,9 @@ def translate_uniquegroups(
     )
 
     log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {new_query.transformed_query}'
-        '############################################################'
+        "------------------------------------------------------------"
+        f"SQLquery: {new_query.transformed_query}"
+        "############################################################"
     )
 
     return new_query
