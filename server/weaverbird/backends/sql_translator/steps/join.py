@@ -1,3 +1,5 @@
+from distutils import log
+
 from weaverbird.backends.sql_translator.steps.utils.combination import (
     resolve_sql_pipeline_for_combination,
 )
@@ -23,19 +25,29 @@ def translate_join(
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'
+    log.debug(
+        "############################################################"
+        f"query_name: {query_name}\n"
+        "------------------------------------------------------------"
+        f"step: {step}\n"
+        f"query.transformed_query: {query.transformed_query}\n"
+        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
+    )
     if step.type == 'left outer':
         how = 'LEFT'
     else:
         how = step.type.upper()
 
     # Retrieve the right query either directly as a domain or as a resolved sql pipeline
+    print(step)
     right_query = resolve_sql_pipeline_for_combination(
         step.right_pipeline, sql_query_retriever, sql_translate_pipeline
     )
     # Update tables metadata with joined table metadata
 
     # 1 add right metadata
-    query_to_join_metadata = sql_query_describer(right_query)
+    query_to_join_metadata = sql_query_describer(domain=None, query_string=right_query)
 
     # 2 build the query string
     transformed_query = f"""{query.transformed_query}, {
@@ -57,6 +69,12 @@ def translate_join(
     query.metadata_manager.add_columns({f'{k}_RIGHT': v for k, v in query_to_join_metadata.items()})
 
     # 5 update the query object
+    log.debug(
+        "------------------------------------------------------------"
+        f"SQLquery: {transformed_query}"
+        "############################################################"
+    )
+
     return SQLQuery(
         query_name=query_name,
         transformed_query=transformed_query,
