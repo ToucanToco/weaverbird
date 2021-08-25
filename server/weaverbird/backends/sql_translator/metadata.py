@@ -187,7 +187,6 @@ class SqlQueryMetadataManager(BaseModel):
             for table_name in kwargs['tables_metadata']:
                 table = self.create_table(table_name)
                 for column in kwargs['tables_metadata'][table_name]:
-                    print(column)
                     table.add_column(column, kwargs['tables_metadata'][table_name][column])
                 if first:
                     self.define_as_metadata(table_name)
@@ -260,6 +259,15 @@ class SqlQueryMetadataManager(BaseModel):
             )
         return self
 
+    def add_table_column(self, table_name: str, column_name: str, column_type: str) -> TableMetadata:
+        t_name = table_name.upper()
+        if t_name not in self.tables:
+            raise MetadataError(f'Impossible to update column name, table {t_name}({table_name}) not exist')
+        self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type)
+
+    def add_query_metadata_column(self, column_name: str, column_type: str) -> TableMetadata:
+        return self.add_table_column('__INTERNAL__', column_name, column_type)
+
     def update_column_name(self, table_name: str, column_name: str, dest_column_name: str) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
@@ -313,8 +321,7 @@ class SqlQueryMetadataManager(BaseModel):
 
     def retrieve_table(self, table_name: str, deleted: bool = False) -> Optional[TableMetadata]:
         t_name = table_name.upper()
-        if t_name in self.tables and (
-            (deleted and self.tables[t_name].is_delete()) or not self.tables[t_name].is_delete()):
+        if t_name in self.tables and ((deleted and self.tables[t_name].is_delete()) or not self.tables[t_name].is_delete()):
             return self.tables[t_name]
         return None
 
@@ -332,7 +339,9 @@ class SqlQueryMetadataManager(BaseModel):
 
     def retrieve_columns_as_list(self, table_name: str, columns_filter: List[str] = None, deleted: bool = False) -> List[str]:
         columns = self.retrieve_table_columns(table_name, deleted)
-        filter_format = [f.upper() for f in columns_filter]
+        filter_format = []
+        if columns_filter is not None:
+            filter_format = [f.upper() for f in columns_filter]
         result: List[str] = []
         for name in columns:
             if name not in filter_format:
@@ -344,6 +353,9 @@ class SqlQueryMetadataManager(BaseModel):
 
     def retrieve_query_metadata_columns_as_str(self, columns_filter: List[str] = None, deleted: bool = False) -> str:
         return ', '.join(self.retrieve_columns_as_list('__INTERNAL__', columns_filter=columns_filter, deleted=deleted))
+
+    def retrieve_query_metadata_columns_as_list(self, columns_filter: List[str] = None, deleted: bool = False) -> List[str]:
+        return self.retrieve_columns_as_list('__INTERNAL__', columns_filter=columns_filter, deleted=deleted)
 
     def retrieve_column_by_name(self, table_name: str, column_name: str, deleted: bool = False) -> ColumnMetadata:
         t_name = table_name.upper()

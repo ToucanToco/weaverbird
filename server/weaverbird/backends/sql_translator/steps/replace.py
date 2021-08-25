@@ -31,8 +31,7 @@ def translate_replace(
         f"step.search_column: {step.search_column}\n"
         f"step.to_replace: {step.to_replace}\n"
         f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     compiled_query: str = "CASE "
@@ -45,13 +44,17 @@ def translate_replace(
         compiled_query += f'WHEN {step.search_column}={from_value} THEN {to_value} '
     compiled_query += f"ELSE {step.search_column} END AS {step.search_column}"
 
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=[step.search_column]
+    )
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(columns=[step.search_column], query=query)},"""
+        f""" (SELECT {completed_fields},"""
         f""" {compiled_query}"""
         f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
+        selection_query=build_selection_query(query.metadata_manager.retrieve_query_metadata_columns(), query_name),
         metadata_manager=query.metadata_manager,
     )
 

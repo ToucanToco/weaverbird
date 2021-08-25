@@ -48,12 +48,14 @@ def translate_ifthenelse(
         f"query_name: {query_name}\n"
         "------------------------------------------------------------"
         f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
+        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
     )
 
     composed_query: str = ""
-    completed_fields = complete_fields(columns=[step.new_column], query=query)
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=[step.new_column]
+    )
+
     composed_query = (
         f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")}"""
         f""" AS {step.new_column.upper()}"""
@@ -68,11 +70,9 @@ def translate_ifthenelse(
         f""" FROM {query.query_name}) """,
     )
 
-    query.metadata_manager.add_column(step.new_column, "str")
+    query.metadata_manager.add_query_metadata_column(step.new_column, 'str')
 
-    new_query.selection_query = build_selection_query(
-        query.metadata_manager.query_metadata, query_name
-    )
+    new_query.selection_query = build_selection_query(query.metadata_manager.retrieve_query_metadata_columns(), query_name)
     new_query.metadata_manager = query.metadata_manager
 
     log.debug(

@@ -42,12 +42,12 @@ def translate_rename(
     )
     renamed_fields = ', '.join([f'{old} AS {new.upper()}' for old, new in step.to_rename])
     if len(completed_fields):
-        renamed_fields = f", {renamed_fields}, {completed_fields}"
+        renamed_fields = f"{completed_fields}, {renamed_fields}"
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields + renamed_fields}"""
+        f""" (SELECT {renamed_fields}"""
         f""" FROM {query.query_name})""",
         selection_query=build_selection_query(query.metadata_manager.retrieve_query_metadata_columns(), query_name),
         metadata_manager=query.metadata_manager,

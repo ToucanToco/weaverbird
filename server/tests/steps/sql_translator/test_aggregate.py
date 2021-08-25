@@ -3,7 +3,8 @@ from unittest.mock import Mock
 import pytest
 
 from weaverbird.backends.sql_translator.steps import translate_aggregate
-from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.types import SQLQuery
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 from weaverbird.exceptions import DuplicateColumnError
 from weaverbird.pipeline.steps import AggregateStep
 from weaverbird.pipeline.steps.aggregate import Aggregation
@@ -24,13 +25,6 @@ def query():
                     'title': 'str',
                     'Group': 'str',
                 },
-            },
-            query_metadata={
-                'Value1': 'int',
-                'Value2': 'int',
-                'Label': 'str',
-                'title': 'str',
-                'Group': 'str',
             },
         ),
     )
