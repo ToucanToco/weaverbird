@@ -573,8 +573,8 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
         name: 'filter',
         condition: { column: 'Pin', value: '/^[a-z]+$/i', operator: 'notmatches' },
       },
-      { name: 'filter', condition: { column: 'IsNull', value: null, operator: 'isnull' } },
-      { name: 'filter', condition: { column: 'NotNull', value: null, operator: 'notnull' } },
+      { name: 'filter', condition: { column: 'IsNull', value: 'dummy', operator: 'isnull' } },
+      { name: 'filter', condition: { column: 'NotNull', value: 'dummy', operator: 'notnull' } },
     ];
     const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
