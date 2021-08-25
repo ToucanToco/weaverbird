@@ -1,0 +1,133 @@
+{
+  "step": {
+    "name": "join",
+    "pipeline": [
+      {
+        "name": "join",
+        "on": [["ID", "CUSTOMER_ID"]],
+        "type": "left",
+        "right_pipeline": "SELECT * FROM orders"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "ID",
+          "type": "integer"
+        },
+        {
+          "name": "NAME",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "ID": 1,
+        "NAME": "roger"
+      },
+      {
+        "ID": 2,
+        "NAME": "didier"
+      },
+      {
+        "ID": 3,
+        "NAME": "robert"
+      }
+    ]
+  },
+  "other_inputs": {
+    "orders": {
+      "schema": {
+        "fields": [
+          {
+            "name": "ID",
+            "type": "integer"
+          },
+          {
+            "name": "CUSTOMER_ID",
+            "type": "integer"
+          },
+          {
+            "name": "CUSTOMER_NAME",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "ID": 1,
+          "CUSTOMER_ID": 1,
+          "CUSTOMER_NAME": "roger"
+        },
+        {
+          "ID": 2,
+          "CUSTOMER_ID": 2,
+          "CUSTOMER_NAME": "didier"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "id_left",
+          "type": "integer"
+        },
+        {
+          "name": "name_left",
+          "type": "string"
+        },
+        {
+          "name": "id_right",
+          "type": "any"
+        },
+        {
+          "name": "customer_id_right",
+          "type": "any"
+        },
+        {
+          "name": "customer_name_right",
+          "type": "any"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "id_left": 1,
+        "name_left": "roger",
+        "id_right": 1,
+        "customer_id_right": 1 ,
+        "customer_name_right": "roger"
+      },
+      {
+        "id_left": 2,
+        "name_left": "didier",
+        "id_right": 2,
+        "customer_id_right": 2 ,
+        "customer_name_right": "didier"
+      },
+      {
+        "id_left": 3,
+        "name_left": "robert",
+        "id_right": null,
+        "customer_id_right": null ,
+        "customer_name_right": null
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM join_left), JOIN_STEP_1_RIGHT AS (SELECT * FROM orders), JOIN_STEP_1 AS (SELECT SELECT_STEP_0.ID AS ID_LEFT, SELECT_STEP_0.NAME AS NAME_LEFT, JOIN_STEP_1_RIGHT.ID AS ID_RIGHT, JOIN_STEP_1_RIGHT.CUSTOMER_ID AS CUSTOMER_ID_RIGHT, JOIN_STEP_1_RIGHT.CUSTOMER_NAME AS CUSTOMER_NAME_RIGHT FROM SELECT_STEP_0 LEFT JOIN JOIN_STEP_1_RIGHT ON SELECT_STEP_0.ID = JOIN_STEP_1_RIGHT.CUSTOMER_ID) SELECT ID_LEFT, NAME_LEFT, ID_RIGHT, CUSTOMER_ID_RIGHT, CUSTOMER_NAME_RIGHT FROM JOIN_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM join_left), JOIN_STEP_1_RIGHT AS (SELECT * FROM orders), JOIN_STEP_1 AS (SELECT SELECT_STEP_0.ID AS ID_LEFT, SELECT_STEP_0.NAME AS NAME_LEFT, JOIN_STEP_1_RIGHT.ID AS ID_RIGHT, JOIN_STEP_1_RIGHT.CUSTOMER_ID AS CUSTOMER_ID_RIGHT, JOIN_STEP_1_RIGHT.CUSTOMER_NAME AS CUSTOMER_NAME_RIGHT FROM SELECT_STEP_0 LEFT JOIN JOIN_STEP_1_RIGHT ON SELECT_STEP_0.ID = JOIN_STEP_1_RIGHT.CUSTOMER_ID) SELECT ID_LEFT, NAME_LEFT, ID_RIGHT, CUSTOMER_ID_RIGHT, CUSTOMER_NAME_RIGHT FROM JOIN_STEP_1"
+    }
+  }
+}

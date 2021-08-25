@@ -243,10 +243,8 @@ def build_join_query(
     on: List,
     how: str,
 ) -> str:
-    left_cols = f"{', '.join([f'{name} AS {name}_LEFT' for name in query_metadata.keys()])}"
-    right_cols = (
-        f"{', '.join([f'{name} AS {name}_RIGHT' for name in query_to_join_metadata.keys()])}"
-    )
+    left_cols = f"{', '.join([f'{left_query_name}.{name} AS {name}_LEFT' for name in query_metadata.keys()])}"
+    right_cols = f"{', '.join([f'{right_query_name}.{name} AS {name}_RIGHT' for name in query_to_join_metadata.keys()])}"
     join_part = f"{'AND'.join([f'{left_query_name}.{keys[0]} = {right_query_name}.{keys[1]}' for keys in on])}"
 
     return f"""{right_query_name} AS ({right_query}), JOIN_STEP_{step_index} AS (SELECT {left_cols}, {right_cols} FROM {left_query_name} {how} JOIN {right_query_name} ON {join_part})"""

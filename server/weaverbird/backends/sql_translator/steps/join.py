@@ -23,6 +23,10 @@ def translate_join(
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'
+    if step.type == 'left outer':
+        how = 'LEFT'
+    else:
+        how = step.type.upper()
 
     # Retrieve the right query either directly as a domain or as a resolved sql pipeline
     right_query = resolve_sql_pipeline_for_combination(
@@ -43,14 +47,14 @@ def translate_join(
         right_query=right_query,
         step_index=index,
         on=step.on,
-        how=step.type.upper()
+        how=how
     )}"""
 
     # 3 Suffix columns from left part of the join in metadata
-    query.metadata_manager.suffix_columns('_LEFT')
+    query.metadata_manager.suffix_columns('LEFT')
 
     # 4 Update query metadata with all columns
-    query.metadata_manager.add_columns(query_to_join_metadata)
+    query.metadata_manager.add_columns({f'{k}_RIGHT': v for k, v in query_to_join_metadata.items()})
 
     # 5 update the query object
     return SQLQuery(
