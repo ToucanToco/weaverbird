@@ -1,8 +1,8 @@
 import pytest
 
-from weaverbird.backends.sql_translator.steps import translate_filter
-from weaverbird.backends.sql_translator.types import SQLQuery, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.steps import translate_filter
+from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import ComparisonCondition
 from weaverbird.pipeline.steps import FilterStep
 

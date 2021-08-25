@@ -1,6 +1,7 @@
 import re
 from typing import Dict
 
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -11,8 +12,6 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
-
-from weaverbird.backends.sql_translator.metadata import ColumnMetadata
 
 SQL_COMPARISON_OPERATORS = {
     'eq': '=',
@@ -57,7 +56,7 @@ def apply_condition(condition: Condition, query: str) -> str:
             condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
         query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
-        query += f"{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}"
+        query += f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}'
     elif isinstance(condition, ConditionComboAnd):
         query = apply_condition(condition.and_[0], query)
         for c in condition.and_[1:]:
@@ -179,7 +178,7 @@ def complete_fields(query: SQLQuery, columns=None) -> str:
     if columns:
         compiled_query = ', '.join(
             [
-                k.strip().replace("-", "_").replace(" ", "").upper()
+                k.strip().replace('-', '_').replace(' ', '').upper()
                 for k in query_keys
                 if k.upper() not in columns and k.lower() not in columns
             ]
@@ -198,11 +197,11 @@ def snowflake_date_format(input_format: str) -> str:
     # for a valid snowflake date format
     input_format = (
         None
-        if input_format is None or input_format == ""
+        if input_format is None or input_format == ''
         else input_format.replace('"', '')
-        .replace("'", "")
-        .replace("%b", "MON")
-        .replace("%B", "MMMM")
+        .replace("'", '')
+        .replace('%b', 'MON')
+        .replace('%B', 'MMMM')
         .replace('%y', 'YYYY')
         .replace('%Y', 'YYYY')
         .replace('%M', 'MM')
@@ -210,7 +209,7 @@ def snowflake_date_format(input_format: str) -> str:
         .replace('%D', 'DD')
         .replace('%d', 'DD')
     )
-    input_format = "" if input_format is None or input_format == "" else f", '{input_format}'"
+    input_format = '' if input_format is None or input_format == '' else f", '{input_format}'"
 
     return input_format
 

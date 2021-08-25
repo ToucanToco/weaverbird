@@ -1,8 +1,8 @@
 import pytest
 
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps import translate_convert
 from weaverbird.backends.sql_translator.types import SQLQuery
-from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 from weaverbird.pipeline.steps import ConvertStep
 
 
@@ -28,9 +28,7 @@ def test_translate_cast_only_one_col():
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT RAICHU FROM SELECT_STEP_0',
-        metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'RAICHU': 'int'}}
-        ),
+        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {'RAICHU': 'int'}}),
     )
     query = translate_convert(
         step,

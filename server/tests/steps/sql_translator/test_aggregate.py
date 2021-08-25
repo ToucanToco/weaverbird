@@ -2,9 +2,9 @@ from unittest.mock import Mock
 
 import pytest
 
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps import translate_aggregate
 from weaverbird.backends.sql_translator.types import SQLQuery
-from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 from weaverbird.exceptions import DuplicateColumnError
 from weaverbird.pipeline.steps import AggregateStep
 from weaverbird.pipeline.steps.aggregate import Aggregation

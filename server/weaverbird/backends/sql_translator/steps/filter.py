@@ -21,7 +21,9 @@ def translate_filter(
 ) -> SQLQuery:
     query_name = f'FILTER_STEP_{index}'
 
-    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(columns_filter=[])
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=[]
+    )
 
     new_query = SQLQuery(
         query_name=query_name,
@@ -29,7 +31,9 @@ def translate_filter(
         apply_condition(
             step.condition,
             f'''SELECT {completed_fields} FROM {query.query_name} WHERE ''')})""",
-        selection_query=build_selection_query(query.metadata_manager.retrieve_query_metadata_columns(), query_name),
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
         metadata_manager=query.metadata_manager,
     )
     return new_query

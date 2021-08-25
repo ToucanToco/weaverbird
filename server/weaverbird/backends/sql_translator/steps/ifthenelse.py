@@ -3,7 +3,6 @@ from distutils import log
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
-    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -30,7 +29,7 @@ def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: s
             f"""{recursively_convert_nested_condition(step.else_value, composed_query)})"""
         )
 
-    return composed_query.replace(",),", "),")
+    return composed_query.replace(',),', '),')
 
 
 def translate_ifthenelse(
@@ -44,14 +43,14 @@ def translate_ifthenelse(
     query_name = f'IFTHENELSE_STEP_{index}'
 
     log.debug(
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'query.transformed_query: {query.transformed_query}\n'
+        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    composed_query: str = ""
+    composed_query: str = ''
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.new_column]
     )
@@ -72,13 +71,15 @@ def translate_ifthenelse(
 
     query.metadata_manager.add_query_metadata_column(step.new_column, 'str')
 
-    new_query.selection_query = build_selection_query(query.metadata_manager.retrieve_query_metadata_columns(), query_name)
+    new_query.selection_query = build_selection_query(
+        query.metadata_manager.retrieve_query_metadata_columns(), query_name
+    )
     new_query.metadata_manager = query.metadata_manager
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query

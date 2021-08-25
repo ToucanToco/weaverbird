@@ -1,8 +1,13 @@
-import pytest
 from typing import Dict, List
 
-from server.weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager, TableMetadata, MetadataError, \
-    ColumnMetadata
+import pytest
+
+from server.weaverbird.backends.sql_translator.metadata import (
+    ColumnMetadata,
+    MetadataError,
+    SqlQueryMetadataManager,
+    TableMetadata,
+)
 
 
 @pytest.fixture
@@ -25,7 +30,7 @@ def sql_query_metadata() -> SqlQueryMetadataManager:
 
 
 def test_create_table_already_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.create_table('table_1')
 
 
@@ -37,15 +42,13 @@ def test_check_current_table(sql_query_metadata):
 
 
 def test_update_column_table_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.update_column_name('table_not_exist', 'column_1_1', 'new_column_1_1')
-        assert e.value == 'test'
 
 
 def test_update_column_name_column_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.update_column_name('table_1', 'column_not_exist', 'new_column_1_1')
-        assert e.value == 'test'
 
 
 def test_update_column_name(sql_query_metadata):
@@ -61,12 +64,12 @@ def test_update_column_name(sql_query_metadata):
 
 
 def test_update_column_type_table_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.update_column_type('table_not_exist', 'column_1_1', 'str')
 
 
 def test_update_column_type_column_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.update_column_type('table_1', 'column_not_exist', 'str')
 
 
@@ -81,12 +84,12 @@ def test_update_column_type(sql_query_metadata):
 
 
 def test_remove_column_table_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.remove_table_column('table_not_exist', 'column_1_1')
 
 
 def test_remove_column_column_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.remove_table_column('table_1', 'column_not_exist')
 
 
@@ -96,17 +99,19 @@ def test_remove_column(sql_query_metadata):
     sql_query_metadata.remove_table_column('table_1', 'column_1_1')
     column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_1')
     assert column is None
-    column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_1', deleted=True)
+    column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name(
+        'table_1', 'column_1_1', deleted=True
+    )
     assert column.is_delete()
 
 
 def test_remove_columns_table_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.remove_table_columns('table_not_exist', ['column_1_1', 'column_1_2'])
 
 
 def test_remove_columns_column_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.remove_table_columns('table_1', ['column_not_exist', 'column_1_2'])
 
 
@@ -118,16 +123,20 @@ def test_remove_columns(sql_query_metadata):
     sql_query_metadata.remove_table_columns('table_1', ['column_1_1', 'column_1_2'])
     column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_1')
     assert column is None
-    column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_1', deleted=True)
+    column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name(
+        'table_1', 'column_1_1', deleted=True
+    )
     assert column.is_delete()
     column2: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_2')
     assert column2 is None
-    column2: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_2', deleted=True)
+    column2: ColumnMetadata = sql_query_metadata.retrieve_column_by_name(
+        'table_1', 'column_1_2', deleted=True
+    )
     assert column2.is_delete()
 
 
 def test_remove_all_columns_table_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.remove_table_all_columns('table_not_exist')
 
 
@@ -141,7 +150,7 @@ def test_remove_all_columns(sql_query_metadata):
 
 
 def test_remove_table_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError) as e:
+    with pytest.raises(MetadataError):
         sql_query_metadata.remove_table('table_not_exist')
 
 
@@ -161,5 +170,7 @@ def test_join_query_metadata(sql_query_metadata):
 
 
 def test_retrieve_as_list(sql_query_metadata):
-    columns: List[str] = sql_query_metadata.retrieve_columns_as_list('table_1', columns_filter=['column_1_1'])
+    columns: List[str] = sql_query_metadata.retrieve_columns_as_list(
+        'table_1', columns_filter=['column_1_1']
+    )
     assert len(columns) == 3

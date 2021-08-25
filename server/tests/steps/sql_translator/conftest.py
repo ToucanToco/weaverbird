@@ -1,7 +1,7 @@
 import pytest
 
-from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.types import SQLQuery
 
 
 @pytest.fixture

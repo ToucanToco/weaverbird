@@ -12,8 +12,8 @@ def test_simple_condition_integer(query):
                 'operator': 'gt',
             },
             'newColumn': 'cond',
-            'then': '\"tintin\"',
-            'else': '\"anime\"',
+            'then': '"tintin"',
+            'else': '"anime"',
         }
     )
     query = translate_ifthenelse(
@@ -23,7 +23,7 @@ def test_simple_condition_integer(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
-        'IFF(RAICHU > 10, \'tintin\', \'anime\') AS COND FROM SELECT_STEP_0) '
+        "IFF(RAICHU > 10, 'tintin', 'anime') AS COND FROM SELECT_STEP_0) "
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
@@ -40,8 +40,8 @@ def test_simple_condition_strings(query):
                 'operator': 'eq',
             },
             'newColumn': 'cond',
-            'then': '\"azoram\"',
-            'else': '\"zigolo\"',
+            'then': '"azoram"',
+            'else': '"zigolo"',
         }
     )
     query = translate_ifthenelse(
@@ -51,7 +51,7 @@ def test_simple_condition_strings(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
-        'IFF(TOTO = \'okok\', \'azoram\', \'zigolo\') AS COND FROM SELECT_STEP_0) '
+        "IFF(TOTO = 'okok', 'azoram', 'zigolo') AS COND FROM SELECT_STEP_0) "
     )
 
     assert query.transformed_query == expected_transformed_query
@@ -89,7 +89,7 @@ def test_and_condition(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
-        'IFF(RAICHU > 10 AND TOTO RLIKE \'ogadoka\', \'tintin\', \'anime\') AS COND FROM SELECT_STEP_0) '
+        "IFF(RAICHU > 10 AND TOTO RLIKE 'ogadoka', 'tintin', 'anime') AS COND FROM SELECT_STEP_0) "
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
@@ -126,7 +126,7 @@ def test_or_condition(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
-        'IFF(RAICHU < 10 OR RAICHU >= 1, \'tintin\', \'anime\') AS COND FROM SELECT_STEP_0) '
+        "IFF(RAICHU < 10 OR RAICHU >= 1, 'tintin', 'anime') AS COND FROM SELECT_STEP_0) "
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
@@ -188,8 +188,8 @@ def test_then_should_support_nested_else(query):
 
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
-        'IFF(RAICHU < 10 OR RAICHU >= 1, 3, IFF(TOTO RLIKE \'zigar\', 1, IFF(FLORIZARRE = \'gokar\', 2, IFF(TOTO != '
-        '\'ok\', 7, IFF(FLORIZARRE IN (\'ok\'), 7, 0))))) AS COND1 FROM SELECT_STEP_0) '
+        "IFF(RAICHU < 10 OR RAICHU >= 1, 3, IFF(TOTO RLIKE 'zigar', 1, IFF(FLORIZARRE = 'gokar', 2, IFF(TOTO != "
+        "'ok', 7, IFF(FLORIZARRE IN ('ok'), 7, 0))))) AS COND1 FROM SELECT_STEP_0) "
     )
 
     assert query.transformed_query == expected_transformed_query
@@ -228,11 +228,11 @@ def test_condition_formulas(query):
 def test_condition_null(query):
     step = IfthenelseStep(
         **{
-            "name": "ifthenelse",
-            "if": {"column": "RAICHU", "operator": "isnull", "value": None},
-            "newColumn": "cond",
-            "then": "1",
-            "else": "0",
+            'name': 'ifthenelse',
+            'if': {'column': 'RAICHU', 'operator': 'isnull', 'value': None},
+            'newColumn': 'cond',
+            'then': '1',
+            'else': '0',
         }
     )
     query = translate_ifthenelse(
@@ -259,8 +259,8 @@ def test_simple_condition_with_ambigious_column(query):
                 'operator': 'gt',
             },
             'newColumn': 'raichu',
-            'then': '\"tintin\"',
-            'else': '\"anime\"',
+            'then': '"tintin"',
+            'else': '"anime"',
         }
     )
     query = translate_ifthenelse(
@@ -270,7 +270,7 @@ def test_simple_condition_with_ambigious_column(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFF(RAICHU > '
-        '10, \'tintin\', \'anime\') AS RAICHU FROM SELECT_STEP_0) '
+        "10, 'tintin', 'anime') AS RAICHU FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM IFTHENELSE_STEP_1'

@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    complete_fields,
     snowflake_date_format,
 )
 from weaverbird.backends.sql_translator.types import (
@@ -25,14 +24,14 @@ def translate_fromdate(
     query_name = f'FROMDATE_STEP_{index}'
 
     log.debug(
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"step.name: {step.name}\n"
-        f"step.column: {step.column}\n"
-        f"step.format: {step.format}\n"
-        f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n"
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'step.name: {step.name}\n'
+        f'step.column: {step.column}\n'
+        f'step.format: {step.format}\n'
+        f'query.transformed_query: {query.transformed_query}\n'
+        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
     step.format = snowflake_date_format(step.format)
     # we change the column type
@@ -48,14 +47,16 @@ def translate_fromdate(
         f""" (SELECT {completed_fields},"""
         f""" TO_VARCHAR({step.column}) AS {step.column}"""
         f""" FROM {query.query_name}) """,
-        selection_query=build_selection_query(query.metadata_manager.retrieve_query_metadata_columns(), query_name),
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
         metadata_manager=query.metadata_manager,
     )
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query

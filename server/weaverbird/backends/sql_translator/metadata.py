@@ -1,9 +1,9 @@
 from __future__ import annotations
+
 import copy
+from typing import Dict, List, Optional
 
 from pydantic import BaseModel
-
-from typing import Dict, List, Optional
 
 
 class MetadataError(Exception):
@@ -78,25 +78,36 @@ class TableMetadata(BaseModel):
         self.name = table_name.upper()
         return self
 
-    def retrieve_column_by_column_name(self, column_name: str, deleted: bool = False) -> Optional[ColumnMetadata]:
+    def retrieve_column_by_column_name(
+        self, column_name: str, deleted: bool = False
+    ) -> Optional[ColumnMetadata]:
         c_name = column_name.upper()
         if c_name in self.columns and (
-            (deleted and self.columns[c_name].is_delete()) or not self.columns[c_name].is_delete()):
+            (deleted and self.columns[c_name].is_delete()) or not self.columns[c_name].is_delete()
+        ):
             return self.columns[c_name]
         return None
 
     def retrieve_columns(self, deleted: bool = False) -> Dict[str, ColumnMetadata]:
         l: Dict[str, ColumnMetadata] = {}
         for c_name in self.columns:
-            if (deleted and self.columns[c_name].is_delete()) or not self.columns[c_name].is_delete():
+            if (deleted and self.columns[c_name].is_delete()) or not self.columns[
+                c_name
+            ].is_delete():
                 l[c_name] = self.columns[c_name]
         return l
 
-    def retrieve_column_by_type(self, column_type: str, deleted: bool = False) -> Dict[str, ColumnMetadata]:
+    def retrieve_column_by_type(
+        self, column_type: str, deleted: bool = False
+    ) -> Dict[str, ColumnMetadata]:
         c_type = column_type.upper()
         result: Dict[str, ColumnMetadata] = {}
         for c_name, column in self.columns:
-            if column.type == c_type and (deleted and self.columns[c_name].is_delete()) or not self.columns[c_name].is_delete():
+            if (
+                column.type == c_type
+                and (deleted and self.columns[c_name].is_delete())
+                or not self.columns[c_name].is_delete()
+            ):
                 result[c_name] = column
         return result
 
@@ -107,25 +118,17 @@ class TableMetadata(BaseModel):
 
     def add_columns_o(self, columns: List[ColumnMetadata]) -> TableMetadata:
         for c in columns:
-            self.add_column_o(
-                column=c
-            )
+            self.add_column_o(column=c)
         return self
 
     def add_column(self, column_name: str, column_type: str) -> TableMetadata:
-        c = ColumnMetadata(
-            name=column_name,
-            type=column_type
-        )
+        c = ColumnMetadata(name=column_name, type=column_type)
         self.add_column_o(c)
         return self
 
     def add_columns(self, columns: Dict[str, str]) -> TableMetadata:
         for k, v in columns:
-            self.add_column(
-                name=k,
-                type=v
-            )
+            self.add_column(name=k, type=v)
         return self
 
     def update_column_name(self, column_name: str, dest_column_name: str) -> TableMetadata:
@@ -133,7 +136,7 @@ class TableMetadata(BaseModel):
         if c_name not in self.columns:
             raise MetadataError(f'Error to update column {c_name}({column_name}), column not exist')
         result = self.columns[c_name].update_name(dest_column_name)
-        del (self.columns[c_name])
+        del self.columns[c_name]
         self.columns[result.name] = result
         return self
 
@@ -179,9 +182,7 @@ class SqlQueryMetadataManager(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.tables = {
-            '__INTERNAL__': TableMetadata(name='__INTERNAL__')
-        }
+        self.tables = {'__INTERNAL__': TableMetadata(name='__INTERNAL__')}
         if 'tables_metadata' in kwargs:
             first = True
             for table_name in kwargs['tables_metadata']:
@@ -194,13 +195,15 @@ class SqlQueryMetadataManager(BaseModel):
 
     def _check_name(self, name) -> bool:
         if name == '__INTERNAL__':
-            raise MetadataError(f'Table __INTERNAL__ is reserved')
+            raise MetadataError('Table __INTERNAL__ is reserved')
         return True
 
     def define_as_metadata(self, table_name: str) -> SqlQueryMetadataManager:
         t_name = table_name.upper()
         if t_name not in self.tables and self._check_name(t_name):
-            raise MetadataError(f'Impossible to define table {t_name}({table_name}) - Table not exist')
+            raise MetadataError(
+                f'Impossible to define table {t_name}({table_name}) - Table not exist'
+            )
         self.tables['__INTERNAL__'] = copy.deepcopy(self.tables[t_name])
         self.tables['__INTERNAL__'].original_name = table_name
         return self
@@ -215,7 +218,9 @@ class SqlQueryMetadataManager(BaseModel):
     def remove_table(self, table_name: str) -> SqlQueryMetadataManager:
         t_name = table_name.upper()
         if t_name not in self.tables and self._check_name(t_name):
-            raise MetadataError(f'Impossible to remove table {t_name}({table_name}) - Table not exist')
+            raise MetadataError(
+                f'Impossible to remove table {t_name}({table_name}) - Table not exist'
+            )
         self.tables[t_name] = self.tables[t_name].remove()
         return self
 
@@ -228,11 +233,13 @@ class SqlQueryMetadataManager(BaseModel):
         if t_name not in self.tables and self._check_name(t_name):
             raise MetadataError(f'Table {t_name}({table_name}) not exist')
         result = self.tables[t_name].update_name(dest_table_name)
-        del (self.tables[t_name])
+        del self.tables[t_name]
         self.tables[result.name] = result
         return self
 
-    def duplicate_table(self, src_table: TableMetadata, dst_table_name: str) -> SqlQueryMetadataManager:
+    def duplicate_table(
+        self, src_table: TableMetadata, dst_table_name: str
+    ) -> SqlQueryMetadataManager:
         t_name = dst_table_name.upper()
         if dst_table_name in self.tables:
             raise MetadataError(f'Table {t_name}({dst_table_name}) already exist')
@@ -243,57 +250,75 @@ class SqlQueryMetadataManager(BaseModel):
     def join_query_metadata(self, join_table: str) -> SqlQueryMetadataManager:
         jt_name: str = join_table.upper()
         if jt_name not in self.tables:
-            raise MetadataError(f'Impossible to merge table {jt_name}({join_table}) - Table not exist')
+            raise MetadataError(
+                f'Impossible to merge table {jt_name}({join_table}) - Table not exist'
+            )
         table = TableMetadata(name='__INTERNAL__')
         table.original_name = self.tables['__INTERNAL__'].original_name
         for cname in self.tables['__INTERNAL__'].columns:
             table.add_column(
-                table.original_name + '_' + cname,
-                self.tables['__INTERNAL__'].columns[cname].type
+                table.original_name + '_' + cname, self.tables['__INTERNAL__'].columns[cname].type
             )
         self.tables['__INTERNAL__'] = table
         for cname in self.tables[jt_name].columns:
             self.tables['__INTERNAL__'].add_column(
-                jt_name + '_' + cname,
-                self.tables[jt_name].columns[cname].type
+                jt_name + '_' + cname, self.tables[jt_name].columns[cname].type
             )
         return self
 
-    def add_table_column(self, table_name: str, column_name: str, column_type: str) -> TableMetadata:
+    def add_table_column(
+        self, table_name: str, column_name: str, column_type: str
+    ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to update column name, table {t_name}({table_name}) not exist')
+            raise MetadataError(
+                f'Impossible to update column name, table {t_name}({table_name}) not exist'
+            )
         self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type)
 
     def add_query_metadata_column(self, column_name: str, column_type: str) -> TableMetadata:
         return self.add_table_column('__INTERNAL__', column_name, column_type)
 
-    def update_column_name(self, table_name: str, column_name: str, dest_column_name: str) -> TableMetadata:
+    def update_column_name(
+        self, table_name: str, column_name: str, dest_column_name: str
+    ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to update column name, table {t_name}({table_name}) not exist')
+            raise MetadataError(
+                f'Impossible to update column name, table {t_name}({table_name}) not exist'
+            )
         self.tables[t_name] = self.tables[t_name].update_column_name(column_name, dest_column_name)
         return self.tables[t_name]
 
-    def update_query_metadata_column_name(self, column_name: str, dest_column_name: str) -> TableMetadata:
+    def update_query_metadata_column_name(
+        self, column_name: str, dest_column_name: str
+    ) -> TableMetadata:
         self.update_column_name('__INTERNAL__', column_name, dest_column_name)
         return self.retrieve_table('__INTERNAL__')
 
-    def update_column_type(self, table_name: str, column_name: str, dest_column_type: str) -> TableMetadata:
+    def update_column_type(
+        self, table_name: str, column_name: str, dest_column_type: str
+    ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to update column type, table {t_name}({table_name}) not exist')
+            raise MetadataError(
+                f'Impossible to update column type, table {t_name}({table_name}) not exist'
+            )
         self.tables[t_name].update_column_type(column_name, dest_column_type)
         return self.retrieve_table('__INTERNAL__')
 
-    def update_query_metadata_column_type(self, column_name: str, dest_column_type: str) -> TableMetadata:
+    def update_query_metadata_column_type(
+        self, column_name: str, dest_column_type: str
+    ) -> TableMetadata:
         self.update_column_type('__INTERNAL__', column_name, dest_column_type)
         return self.retrieve_table('__INTERNAL__')
 
     def remove_table_column(self, table_name: str, column_name: str) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to delete column, table {t_name}({table_name}) not exist')
+            raise MetadataError(
+                f'Impossible to delete column, table {t_name}({table_name}) not exist'
+            )
         self.tables[t_name].remove_column(column_name)
         return self.tables[t_name]
 
@@ -303,7 +328,9 @@ class SqlQueryMetadataManager(BaseModel):
     def remove_table_columns(self, table_name: str, columns_name: List[str]) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to delete column, table {t_name}({table_name}) not exist')
+            raise MetadataError(
+                f'Impossible to delete column, table {t_name}({table_name}) not exist'
+            )
         self.tables[t_name].remove_columns(columns_name)
         return self.tables[t_name]
 
@@ -313,7 +340,9 @@ class SqlQueryMetadataManager(BaseModel):
     def remove_table_all_columns(self, table_name: str) -> int:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to delete column, table {t_name}({table_name}) not exist')
+            raise MetadataError(
+                f'Impossible to delete column, table {t_name}({table_name}) not exist'
+            )
         return self.tables[t_name].remove_all_columns()
 
     def remove_query_metadata_all_columns(self) -> int:
@@ -321,23 +350,31 @@ class SqlQueryMetadataManager(BaseModel):
 
     def retrieve_table(self, table_name: str, deleted: bool = False) -> Optional[TableMetadata]:
         t_name = table_name.upper()
-        if t_name in self.tables and ((deleted and self.tables[t_name].is_delete()) or not self.tables[t_name].is_delete()):
+        if t_name in self.tables and (
+            (deleted and self.tables[t_name].is_delete()) or not self.tables[t_name].is_delete()
+        ):
             return self.tables[t_name]
         return None
 
     def retrieve_query_metadata(self) -> TableMetadata:
         return self.retrieve_table('__INTERNAL__')
 
-    def retrieve_table_columns(self, table_name: str, deleted: bool = False) -> Dict[str, ColumnMetadata]:
+    def retrieve_table_columns(
+        self, table_name: str, deleted: bool = False
+    ) -> Dict[str, ColumnMetadata]:
         t_name = table_name.upper()
         if t_name not in self.tables:
-            raise MetadataError(f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist')
+            raise MetadataError(
+                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist'
+            )
         return self.tables[t_name].retrieve_columns(deleted)
 
     def retrieve_query_metadata_columns(self, deleted: bool = False) -> Dict[str, ColumnMetadata]:
         return self.retrieve_table_columns('__INTERNAL__', deleted)
 
-    def retrieve_columns_as_list(self, table_name: str, columns_filter: List[str] = None, deleted: bool = False) -> List[str]:
+    def retrieve_columns_as_list(
+        self, table_name: str, columns_filter: List[str] = None, deleted: bool = False
+    ) -> List[str]:
         columns = self.retrieve_table_columns(table_name, deleted)
         filter_format = []
         if columns_filter is not None:
@@ -348,31 +385,52 @@ class SqlQueryMetadataManager(BaseModel):
                 result.append(name)
         return result
 
-    def retrieve_columns_as_str(self, table_name: str, columns_filter: List[str] = None, deleted: bool = False) -> str:
-        return ', '.join(self.retrieve_columns_as_list(table_name, columns_filter=columns_filter, deleted=deleted))
+    def retrieve_columns_as_str(
+        self, table_name: str, columns_filter: List[str] = None, deleted: bool = False
+    ) -> str:
+        return ', '.join(
+            self.retrieve_columns_as_list(
+                table_name, columns_filter=columns_filter, deleted=deleted
+            )
+        )
 
-    def retrieve_query_metadata_columns_as_str(self, columns_filter: List[str] = None, deleted: bool = False) -> str:
-        return ', '.join(self.retrieve_columns_as_list('__INTERNAL__', columns_filter=columns_filter, deleted=deleted))
+    def retrieve_query_metadata_columns_as_str(
+        self, columns_filter: List[str] = None, deleted: bool = False
+    ) -> str:
+        return ', '.join(
+            self.retrieve_columns_as_list(
+                '__INTERNAL__', columns_filter=columns_filter, deleted=deleted
+            )
+        )
 
-    def retrieve_query_metadata_columns_as_list(self, columns_filter: List[str] = None, deleted: bool = False) -> List[str]:
-        return self.retrieve_columns_as_list('__INTERNAL__', columns_filter=columns_filter, deleted=deleted)
+    def retrieve_query_metadata_columns_as_list(
+        self, columns_filter: List[str] = None, deleted: bool = False
+    ) -> List[str]:
+        return self.retrieve_columns_as_list(
+            '__INTERNAL__', columns_filter=columns_filter, deleted=deleted
+        )
 
-    def retrieve_column_by_name(self, table_name: str, column_name: str, deleted: bool = False) -> ColumnMetadata:
+    def retrieve_column_by_name(
+        self, table_name: str, column_name: str, deleted: bool = False
+    ) -> ColumnMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist')
+                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist'
+            )
         return self.tables[t_name].retrieve_column_by_column_name(column_name, deleted)
 
     def retrieve_query_metadata_column_by_name(self, column_name: str) -> ColumnMetadata:
         return self.retrieve_column_by_name('__INTERNAL__', column_name)
 
-    def retrieve_columns_by_type(self, table_name: str, column_type: str, deleted: bool = False) -> Dict[
-        str, ColumnMetadata]:
+    def retrieve_columns_by_type(
+        self, table_name: str, column_type: str, deleted: bool = False
+    ) -> Dict[str, ColumnMetadata]:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist')
+                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist'
+            )
         return self.tables[t_name].retrieve_column_by_type(column_type, deleted)
 
     def retrieve_query_metadata_column_by_type(self, column_type: str) -> Dict[str, ColumnMetadata]:
