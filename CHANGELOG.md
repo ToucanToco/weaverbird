@@ -8,12 +8,10 @@
 
 ## [0.56.0] - 2021-08-24
 
-- Translators: new snowflake translator
-
-
 ### Added
 
 - New step: trim (for mongo >4 and pandas) by @CharlesRngrd
+- Translators: new snowflake translator
 
 ## [0.55.0] - 2021-08-09
 
@@ -845,6 +843,8 @@
 ### Added
 
 - Initial version, showtime!
+
+
 [0.56.0]: https://github.com/ToucanToco/weaverbird/compare/v0.55.0...v0.56.0
 [0.55.0]: https://github.com/ToucanToco/weaverbird/compare/v0.54.0...v0.55.0
 [0.54.0]: https://github.com/ToucanToco/weaverbird/compare/v0.53.1...v0.54.0
