@@ -40,9 +40,8 @@ def translate_join(
         how = step.type.upper()
 
     # Retrieve the right query either directly as a domain or as a resolved sql pipeline
-    print(step)
     right_query = resolve_sql_pipeline_for_combination(
-        step.right_pipeline, sql_query_retriever, sql_translate_pipeline
+        step.right_pipeline, sql_query_retriever, sql_translate_pipeline, sql_query_describer
     )
     # Update tables metadata with joined table metadata
 
