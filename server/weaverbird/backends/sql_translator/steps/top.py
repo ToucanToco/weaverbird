@@ -36,7 +36,6 @@ def translate_top(
     )
 
     # We build the group by query part
-    # we use set() to prevent duplications
     group_by_query: str = ''
     for index, gb in enumerate(step.groups + [step.rank_on]):
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
@@ -51,7 +50,9 @@ def translate_top(
         if col not in cols
     ]
     query.metadata_manager.remove_query_metadata_columns(cols_to_remove)
+
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""

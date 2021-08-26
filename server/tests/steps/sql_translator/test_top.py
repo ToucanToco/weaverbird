@@ -30,7 +30,7 @@ def test_translate_top(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOP_STEP_1 AS (SELECT RAICHU, TOTO, FLORIZARRE FROM '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOP_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE FROM '
         'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, RAICHU ORDER BY RAICHU asc LIMIT 3) '
     )
     assert query.transformed_query == expected_transformed_query

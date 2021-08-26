@@ -48,7 +48,7 @@ class ColumnMetadata(BaseModel):
         self.delete = True
         return self
 
-    def is_delete(self):
+    def is_deleted(self):
         return self.delete
 
 
@@ -66,11 +66,6 @@ class TableMetadata(BaseModel):
             raise MetadataError('prout')
         self.name: str = kwargs['name'].upper()
         self.original_name: str = kwargs['name']
-        # self.schema: str = schema.upper() if schema is not None else schema
-        # self.database: str = database.upper() if database is not None else database
-
-        # self.delete: bool = False
-        # self.columns: Dict[str, ColumnMetadata] = {}
 
     def __eq__(self, other):
         return self.name == other.name
@@ -84,7 +79,7 @@ class TableMetadata(BaseModel):
     ) -> Optional[ColumnMetadata]:
         c_name = column_name.upper()
         if c_name in self.columns and (
-            (deleted and self.columns[c_name].is_delete()) or not self.columns[c_name].is_delete()
+            (deleted and self.columns[c_name].is_deleted()) or not self.columns[c_name].is_deleted()
         ):
             return self.columns[c_name]
         return None
@@ -92,9 +87,9 @@ class TableMetadata(BaseModel):
     def retrieve_columns(self, deleted: bool = False) -> Dict[str, ColumnMetadata]:
         l: Dict[str, ColumnMetadata] = {}
         for c_name in self.columns:
-            if (deleted and self.columns[c_name].is_delete()) or not self.columns[
+            if (deleted and self.columns[c_name].is_deleted()) or not self.columns[
                 c_name
-            ].is_delete():
+            ].is_deleted():
                 l[c_name] = self.columns[c_name]
         return l
 
@@ -106,8 +101,8 @@ class TableMetadata(BaseModel):
         for c_name, column in self.columns:
             if (
                 column.type == c_type
-                and (deleted and self.columns[c_name].is_delete())
-                or not self.columns[c_name].is_delete()
+                and (deleted and self.columns[c_name].is_deleted())
+                or not self.columns[c_name].is_deleted()
             ):
                 result[c_name] = column
         return result
@@ -122,15 +117,13 @@ class TableMetadata(BaseModel):
             self.add_column_o(column=c)
         return self
 
-    def add_column(
-        self, column_name: str, column_type: str, alias: Optional[str] = None
-    ) -> TableMetadata:
-        c = ColumnMetadata(name=column_name, type=column_type, alias=alias)
+    def add_column(self, column_name: str, column_type: str) -> TableMetadata:
+        c = ColumnMetadata(name=column_name, type=column_type)
         self.add_column_o(c)
         return self
 
     def add_columns(self, columns: Dict[str, str]) -> TableMetadata:
-        for k, v in columns.items():
+        for k, v in columns:
             self.add_column(column_name=k, column_type=v)
         return self
 
@@ -175,7 +168,7 @@ class TableMetadata(BaseModel):
         self.delete = True
         return self
 
-    def is_delete(self) -> bool:
+    def is_deleted(self) -> bool:
         return self.delete
 
 
@@ -205,7 +198,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables and self._check_name(t_name):
             raise MetadataError(
-                f'Impossible to define table {t_name}({table_name}) - Table not exist'
+                f'Impossible to define table {t_name}({table_name}) - Table does not exist'
             )
         self.tables['__INTERNAL__'] = copy.deepcopy(self.tables[t_name])
         self.tables['__INTERNAL__'].original_name = table_name
@@ -222,7 +215,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables and self._check_name(t_name):
             raise MetadataError(
-                f'Impossible to remove table {t_name}({table_name}) - Table not exist'
+                f'Impossible to remove table {t_name}({table_name}) - Table does not exist'
             )
         self.tables[t_name] = self.tables[t_name].remove()
         return self
@@ -331,7 +324,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to delete column, table {t_name}({table_name}) not exist'
+                f'Impossible to delete column, table {t_name}({table_name}) does not exist'
             )
         self.tables[t_name].remove_column(column_name)
         return self.tables[t_name]
@@ -343,7 +336,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to delete column, table {t_name}({table_name}) not exist'
+                f'Impossible to delete column, table {t_name}({table_name}) does not exist'
             )
         self.tables[t_name].remove_columns(columns_name)
         return self.tables[t_name]
@@ -355,7 +348,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to delete column, table {t_name}({table_name}) not exist'
+                f'Impossible to delete column, table {t_name}({table_name}) does not exist'
             )
         return self.tables[t_name].remove_all_columns()
 
@@ -365,7 +358,7 @@ class SqlQueryMetadataManager(BaseModel):
     def retrieve_table(self, table_name: str, deleted: bool = False) -> Optional[TableMetadata]:
         t_name = table_name.upper()
         if t_name in self.tables and (
-            (deleted and self.tables[t_name].is_delete()) or not self.tables[t_name].is_delete()
+            (deleted and self.tables[t_name].is_deleted()) or not self.tables[t_name].is_deleted()
         ):
             return self.tables[t_name]
         return None
@@ -379,7 +372,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist'
+                f'Impossible to retrieve column for table {t_name}({table_name}) - Table does not exist'
             )
         return self.tables[t_name].retrieve_columns(deleted)
 
@@ -434,7 +427,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist'
+                f'Impossible to retrieve column for table {t_name}({table_name}) - Table does not exist'
             )
         return self.tables[t_name].retrieve_column_by_column_name(column_name, deleted)
 
@@ -447,7 +440,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to retrieve column for table {t_name}({table_name}) - Table not exist'
+                f'Impossible to retrieve column for table {t_name}({table_name}) - Table does not exist'
             )
         return self.tables[t_name].retrieve_column_by_type(column_type, deleted)
 

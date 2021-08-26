@@ -40,19 +40,12 @@ def translate_todate(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.column]
     )
-    # we escape quotes here and construct our format
-    step.format = None if step.format is None else step.format.replace('"', "").replace("'", "")
-    step.format = "" if step.format is None else f", '{step.format}'"
+
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-<<<<<<< HEAD
         f""" (SELECT {completed_fields},"""
-        f""" TRY_TO_DATE({step.column}{step.format}) AS {step.column}"""
-=======
-        f""" (SELECT {complete_fields(columns=[step.column], query=query)},"""
         f""" TO_DATE({step.column}{step.format}) AS {step.column}"""
->>>>>>> feat(vqb): update utils on format date + adding tests
         f""" FROM {query.query_name}) """,
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
