@@ -1,6 +1,6 @@
 {
   "name": "weaverbird",
-  "version": "0.55.0",
+  "version": "0.56.0",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
@@ -75,7 +75,6 @@
     "jest": "^24.8.0",
     "jest-serializer-html": "^7.0.0",
     "jest-serializer-vue": "^2.0.2",
-    "jest-sonar-reporter": "^2.0.0",
     "jest-transform-stub": "^2.0.0",
     "jest-vue-preprocessor": "^1.5.0",
     "jest-watch-typeahead": "^0.3.1",
