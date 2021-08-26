@@ -1,8 +1,8 @@
-from distutils import log
-from typing import Any, Callable, Dict, List, Optional, Protocol, Tuple, Union
+from typing import Any, Callable, List, Optional, Protocol, Tuple
 
 from pydantic import BaseModel
 
+from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
 from weaverbird.pipeline import Pipeline
 
 
@@ -16,113 +16,6 @@ class SQLPipelineTranslationReport(BaseModel):
 
 class TableMetadataUpdateError(Exception):
     ...
-
-
-class SqlQueryMetadataManager(BaseModel):
-    tables_metadata: Dict[str, Dict[str, str]]
-    query_metadata: Dict[str, str]
-
-    def change_name(self, old_column_name: str, new_column_name: str):
-        new_column_name = new_column_name.upper()
-        log.debug(
-            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            "before : change_name: "
-            + f"\nold_column_name : {old_column_name} | new_column_name : {new_column_name}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-        )
-
-        if " " in new_column_name:
-            new_column_name = f'"{new_column_name}"'
-        if old_column_name in self.query_metadata:
-            self.query_metadata[new_column_name] = self.query_metadata.pop(old_column_name)
-
-        log.debug(
-            "\n----------------------------------------------"
-            "after : change_name: "
-            + f"\nold_column_name : {old_column_name} | new_column_name : {new_column_name}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        )
-
-    def change_type(self, column_name: str, new_type: str):
-        log.debug(
-            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            "before : change_type: "
-            + f"\ncolumn_name : {column_name}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-        )
-        self.query_metadata[column_name] = new_type
-        log.debug(
-            "\n----------------------------------------------"
-            "after : change_type: "
-            + f"\ncolumn_name : {column_name}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        )
-
-    def remove_column(
-        self,
-        column_names: Union[str, List[str]] = "all-columns",
-        all_except=None,
-    ):
-        """
-        This method will remove a bunch of column from a query
-
-        column_names: is where we put a list/str of column(s) we want to remove
-        all_except: is where we are going to place only element we want to keep from the actual list of columns
-        """
-        if all_except is None:
-            all_except = []
-        log.debug(
-            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            "before : remove_column: "
-            + f"\ncolumn_name : {column_names}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-        )
-        try:
-            if column_names == "all-columns":
-                for col in list(self.query_metadata):
-                    if col not in all_except:
-                        del self.query_metadata[col]
-            else:
-                if isinstance(column_names, list):
-                    for col in column_names:
-                        if col not in all_except:
-                            del self.query_metadata[col]
-                else:
-                    del self.query_metadata[column_names]
-        except KeyError:
-            raise TableMetadataUpdateError
-        log.debug(
-            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            "after : remove_column: "
-            + f"\ncolumn_name : {column_names}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-        )
-
-    def add_column(self, column_name: str, column_type: str):
-        if " " in column_name:
-            column_name = f'"{column_name}"'
-
-        column_name = column_name.upper()
-        log.debug(
-            "\n\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-            "before : add_column: "
-            + f"\ncolumn_name : {column_name} --- column_type : {column_type}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-        )
-        if (
-            column_name.upper() not in self.query_metadata
-            and column_name.lower() not in self.query_metadata
-        ):
-            self.query_metadata[column_name] = column_type
-        log.debug(
-            "\n----------------------------------------------"
-            "after : add_column: "
-            + f"\ncolumn_name : {column_name} --- column_type : {column_name}.{column_type}"
-            + f"\n> query_metadata: {str(self.query_metadata.keys())}"
-            "\n>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-        )
 
 
 class SQLQuery(BaseModel):
