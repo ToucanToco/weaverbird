@@ -1,15 +1,10 @@
 {
   "step": {
     "name": "top",
-    "pipeline": [
-      {
-        "name": "top",
-        "limit": 3,
-        "groups": ["TOTO"],
-        "rank_on": "RAICHU",
-        "sort":  "asc"
-      }
-    ]
+    "limit": 3,
+    "groups": ["TOTO"],
+    "rank_on": "RAICHU",
+    "sort":  "asc"
   },
   "input": {
     "schema": {

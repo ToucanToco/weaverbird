@@ -5,21 +5,11 @@ from os import path
 import pandas as pd
 import pytest
 
-from tests.utils import assert_dataframes_equals
+from server.tests.utils import assert_dataframes_equals, retrieve_case
 from weaverbird.backends.pandas_executor import execute_pipeline
 from weaverbird.pipeline import Pipeline
 
-fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures')
-step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
-
-test_cases = []
-for x in step_cases_files:
-    # Generate a readable id for each test case
-    case_hierarchy = path.dirname(x)[len(fixtures_dir_path) :]
-    case_name = path.splitext(path.basename(x))[0]
-    case_id = case_hierarchy + '_' + case_name
-
-    test_cases.append(pytest.param(case_id, x, id=case_id))
+test_cases = retrieve_case('pandas_executor', 'pandas')
 
 
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)

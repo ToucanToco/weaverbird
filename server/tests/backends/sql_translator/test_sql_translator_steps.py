@@ -1,8 +1,6 @@
 import json
 import logging
 import time
-from glob import glob
-from os import path
 from typing import Dict, List, Union
 
 import docker
@@ -13,7 +11,7 @@ from docker.models.images import Image
 from pymysql.err import OperationalError
 from sqlalchemy import create_engine
 
-from server.tests.utils import assert_dataframes_equals
+from server.tests.utils import assert_dataframes_equals, retrieve_case
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
@@ -22,25 +20,7 @@ pymysql.install_as_MySQLdb()
 image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': 'latest'}
 docker_client = docker.from_env()
 
-fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures_sql')
-step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
-
-type_code_mapping = {
-    0: 'int',
-    1: 'float',
-    2: 'str',
-    3: 'date',
-    4: 'timestamp',
-    5: 'variant',
-    6: 'timestamp_ltz',
-    7: 'timestamp_tz',
-    8: 'timestampe_ntz',
-    9: 'object',
-    10: 'array',
-    11: 'binary',
-    12: 'time',
-    13: 'boolean',
-}
+test_cases = retrieve_case('sql_translator', 'sql')
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -57,7 +37,7 @@ def db_container():
         logging.getLogger(__name__).info(
             f'Download docker image {image["image"]}:{image["version"]}'
         )
-        docker_client.images.pull('mysql:5.7.21')
+        docker_client.images.pull(f'{image["image"]}:{image["version"]}')
 
     logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
     docker_container = docker_client.containers.run(
@@ -113,7 +93,6 @@ def get_engine():
 def execute(connection, query: str):
     with connection.cursor() as cursor:
         cursor.execute(query)
-        # result = cursor.fetchall()
         df = pd.DataFrame(cursor.fetchall())
         field_names = [i[0] for i in cursor.description]
         df.columns = field_names
@@ -141,24 +120,6 @@ def sql_query_describer(t) -> Union[Dict[str, str], None]:
         describe_res = cursor.fetchall()
         res = {r[0]: r[1] for r in describe_res}
         return res
-
-
-def snowflake_query_describer(t) -> Union[Dict[str, str], None]:
-    connection = get_connection()
-    with connection.cursor() as cursor:
-        describe_res = cursor.describe(t)
-        res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
-        return res
-
-
-test_cases = []
-for x in step_cases_files:
-    # Generate a readable id for each test case
-    case_hierarchy = path.dirname(x)[len(fixtures_dir_path) :]
-    case_name = path.splitext(path.basename(x))[0]
-    case_id = case_hierarchy + '_' + case_name
-
-    test_cases.append(pytest.param(case_id, x, id=case_id))
 
 
 # Translation from Pipeline json to SQL query
