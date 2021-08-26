@@ -9,8 +9,6 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryDescriber,
     SQLQueryRetriever,
 )
-
-# from weaverbird.backends.sql_translator.types import SqlQueryMetadataManager
 from weaverbird.pipeline.steps import AggregateStep
 
 
@@ -35,15 +33,7 @@ def translate_aggregate(
         query_name=query_name,
         transformed_query=f'{query.transformed_query}, {query_name} AS ({query_string})',
     )
-    # query_metadata = sql_query_describer(
-    #     domain=query.metadata_manager.retrieve_query_metadata().original_name,
-    #     # domain=[*query.metadata_manager.tables_metadata][0],
-    #     query_string=f'{new_query.transformed_query} SELECT * FROM {query_name}',
-    # )
     new_query.metadata_manager = query.metadata_manager
-    # new_query.metadata_manager = SqlQueryMetadataManager(
-    #     tables_metadata=query.metadata_manager.tables_metadata, query_metadata=query_metadata
-    # )
     new_query.selection_query = build_selection_query(
         query.metadata_manager.retrieve_query_metadata_columns(), query_name
     )
