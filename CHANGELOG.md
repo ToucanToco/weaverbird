@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+### - 2021-08-26
+
+- Mongo translator: `notnull` and `isnull` condition operator now always compare to literal null.
 
 ## [0.56.0] - 2021-08-24
 
