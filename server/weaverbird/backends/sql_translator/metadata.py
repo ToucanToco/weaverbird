@@ -15,6 +15,7 @@ class ColumnMetadata(BaseModel):
     original_name: Optional[str]
     type: str
     original_type: Optional[str]
+    alias: Optional[str]
 
     delete: Optional[bool] = False
 
@@ -121,14 +122,16 @@ class TableMetadata(BaseModel):
             self.add_column_o(column=c)
         return self
 
-    def add_column(self, column_name: str, column_type: str) -> TableMetadata:
-        c = ColumnMetadata(name=column_name, type=column_type)
+    def add_column(
+        self, column_name: str, column_type: str, alias: Optional[str] = None
+    ) -> TableMetadata:
+        c = ColumnMetadata(name=column_name, type=column_type, alias=alias)
         self.add_column_o(c)
         return self
 
     def add_columns(self, columns: Dict[str, str]) -> TableMetadata:
-        for k, v in columns:
-            self.add_column(name=k, type=v)
+        for k, v in columns.items():
+            self.add_column(column_name=k, column_type=v)
         return self
 
     def update_column_name(self, column_name: str, dest_column_name: str) -> TableMetadata:
@@ -247,7 +250,7 @@ class SqlQueryMetadataManager(BaseModel):
         self.tables[t_name] = copy.deepcopy(src_table)
         return self
 
-    def join_query_metadata(self, join_table: str) -> SqlQueryMetadataManager:
+    def join_query_metadata(self, join_table: str, left_query_name: str) -> SqlQueryMetadataManager:
         jt_name: str = join_table.upper()
         if jt_name not in self.tables:
             raise MetadataError(
@@ -257,24 +260,35 @@ class SqlQueryMetadataManager(BaseModel):
         table.original_name = self.tables['__INTERNAL__'].original_name
         for cname in self.tables['__INTERNAL__'].columns:
             table.add_column(
-                table.original_name + '_' + cname, self.tables['__INTERNAL__'].columns[cname].type
+                f'{left_query_name}.{cname}',
+                self.tables['__INTERNAL__'].columns[cname].type,
+                alias=f'{cname}_LEFT',
             )
         self.tables['__INTERNAL__'] = table
         for cname in self.tables[jt_name].columns:
             self.tables['__INTERNAL__'].add_column(
-                jt_name + '_' + cname, self.tables[jt_name].columns[cname].type
+                f'{jt_name}.{cname}',
+                self.tables[jt_name].columns[cname].type,
+                alias=f'{cname}_RIGHT',
             )
         return self
 
-    def add_table_column(
-        self, table_name: str, column_name: str, column_type: str
-    ) -> TableMetadata:
+    def add_table_column(self, table_name: str, column_name: str, column_type: str):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
                 f'Impossible to update column name, table {t_name}({table_name}) not exist'
             )
         self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type)
+
+    def add_table_columns_from_dict(self, table_name: str, columns_dict: Dict[str, str]):
+        t_name = table_name.upper()
+        if t_name not in self.tables:
+            raise MetadataError(
+                f'Impossible to update column name, table {t_name}({table_name}) not exist'
+            )
+        for name, type in columns_dict.items():
+            self.tables[t_name] = self.tables[t_name].add_column(name, type)
 
     def add_query_metadata_column(self, column_name: str, column_type: str) -> TableMetadata:
         return self.add_table_column('__INTERNAL__', column_name, column_type)
@@ -380,9 +394,13 @@ class SqlQueryMetadataManager(BaseModel):
         if columns_filter is not None:
             filter_format = [f.upper() for f in columns_filter]
         result: List[str] = []
-        for name in columns:
+        for name, column_metadata in columns.items():
             if name not in filter_format:
-                result.append(name)
+                alias = getattr(column_metadata, 'alias')
+                if alias:
+                    result.append(f'{name} AS {alias}')
+                else:
+                    result.append(name)
         return result
 
     def retrieve_columns_as_str(

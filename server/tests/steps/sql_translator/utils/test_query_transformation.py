@@ -1,8 +1,8 @@
 import pytest
 
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
-    build_join_query,
     build_selection_query,
     handle_zero_division,
     snowflake_date_format,
@@ -175,7 +175,8 @@ def test_apply_not_implemented():
 
 def test_build_selection_query():
     assert (
-        build_selection_query({'toto': 'tata'}, 'SELECT_STEP_0') == 'SELECT toto FROM SELECT_STEP_0'
+        build_selection_query({'toto': ColumnMetadata(name='toto', type='tata')}, 'SELECT_STEP_0')
+        == 'SELECT TOTO FROM SELECT_STEP_0'
     )
 
 
@@ -231,93 +232,3 @@ def test_empty_date_format():
 
 def test_ignore_none_date_format():
     assert ", 'badaboum'" == snowflake_date_format('badaboum')
-
-
-def test_build_join_query():
-    assert (
-        build_join_query(
-            query_metadata={'ID': 'int', 'NAME': 'str'},
-            query_to_join_metadata={'CUSTOMER_ID': 'int', 'CUSTOMER_NAME': 'str'},
-            left_query_name='SELECT_STEP_0',
-            right_query_name='JOIN_STEP_1_RIGHT',
-            right_query='SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS',
-            step_index=1,
-            on=[['ID', 'CUSTOMER_ID']],
-            how='INNER',
-        )
-        == 'JOIN_STEP_1_RIGHT AS (SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
-        'NAME AS NAME_LEFT, CUSTOMER_ID AS CUSTOMER_ID_RIGHT, CUSTOMER_NAME AS CUSTOMER_NAME_RIGHT FROM '
-        'SELECT_STEP_0 INNER JOIN JOIN_STEP_1_RIGHT ON SELECT_STEP_0.ID = JOIN_STEP_1_RIGHT.CUSTOMER_ID)'
-    )
-
-
-def test_build_join_query_no_query_to_join_metadata():
-    assert (
-        build_join_query(
-            query_metadata={'ID': 'int', 'NAME': 'str'},
-            query_to_join_metadata={},
-            left_query_name='SELECT_STEP_0',
-            right_query_name='JOIN_STEP_1_RIGHT',
-            right_query='SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS',
-            step_index=1,
-            on=[['ID', 'CUSTOMER_ID']],
-            how='INNER',
-        )
-        == 'JOIN_STEP_1_RIGHT AS (SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
-        'NAME AS NAME_LEFT,  FROM '
-        'SELECT_STEP_0 INNER JOIN JOIN_STEP_1_RIGHT ON SELECT_STEP_0.ID = JOIN_STEP_1_RIGHT.CUSTOMER_ID)'
-    )
-
-
-def test_build_join_query_same_table():
-    assert (
-        build_join_query(
-            query_metadata={'ID': 'int', 'NAME': 'str'},
-            query_to_join_metadata={'ID': 'int', 'NAME': 'str'},
-            left_query_name='SELECT_STEP_0',
-            right_query_name='JOIN_STEP_1_RIGHT',
-            right_query='SELECT ID, NAME FROM ORDERS',
-            step_index=1,
-            on=[['ID', 'ID']],
-            how='INNER',
-        )
-        == 'JOIN_STEP_1_RIGHT AS (SELECT ID, NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
-        'NAME AS NAME_LEFT, ID AS ID_RIGHT, NAME AS NAME_RIGHT FROM '
-        'SELECT_STEP_0 INNER JOIN JOIN_STEP_1_RIGHT ON SELECT_STEP_0.ID = JOIN_STEP_1_RIGHT.ID)'
-    )
-
-
-def test_build_join_query_empty_right():
-    with pytest.raises(IndexError):
-        build_join_query(
-            query_metadata={'ID': 'int', 'NAME': 'str'},
-            query_to_join_metadata={},
-            left_query_name='SELECT_STEP_0',
-            right_query_name='JOIN_STEP_1_RIGHT',
-            right_query='',
-            step_index=1,
-            on=[
-                [
-                    'ID',
-                ]
-            ],
-            how='INNER',
-        )
-
-
-def test_build_left_outer_join_query():
-    assert (
-        build_join_query(
-            query_metadata={'ID': 'int', 'NAME': 'str'},
-            query_to_join_metadata={'CUSTOMER_ID': 'int', 'CUSTOMER_NAME': 'str'},
-            left_query_name='SELECT_STEP_0',
-            right_query_name='JOIN_STEP_1_RIGHT',
-            right_query='SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS',
-            step_index=1,
-            on=[['ID', 'CUSTOMER_ID']],
-            how='LEFT',
-        )
-        == 'JOIN_STEP_1_RIGHT AS (SELECT CUSTOMER_ID, CUSTOMER_NAME FROM ORDERS), JOIN_STEP_1 AS (SELECT ID AS ID_LEFT, '
-        'NAME AS NAME_LEFT, CUSTOMER_ID AS CUSTOMER_ID_RIGHT, CUSTOMER_NAME AS CUSTOMER_NAME_RIGHT FROM '
-        'SELECT_STEP_0 LEFT JOIN JOIN_STEP_1_RIGHT ON SELECT_STEP_0.ID = JOIN_STEP_1_RIGHT.CUSTOMER_ID)'
-    )

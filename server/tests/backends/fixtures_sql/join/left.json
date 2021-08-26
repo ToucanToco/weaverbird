@@ -76,23 +76,23 @@
     "schema": {
       "fields": [
         {
-          "name": "id_left",
+          "name": "ID_LEFT",
           "type": "integer"
         },
         {
-          "name": "name_left",
+          "name": "NAME_LEFT",
           "type": "string"
         },
         {
-          "name": "id_right",
+          "name": "ID_RIGHT",
           "type": "any"
         },
         {
-          "name": "customer_id_right",
+          "name": "CUSTOMER_ID_RIGHT",
           "type": "any"
         },
         {
-          "name": "customer_name_right",
+          "name": "CUSTOMER_NAME_RIGHT",
           "type": "any"
         }
       ],
@@ -100,25 +100,25 @@
     },
     "data": [
       {
-        "id_left": 1,
-        "name_left": "roger",
-        "id_right": 1,
-        "customer_id_right": 1 ,
-        "customer_name_right": "roger"
+        "ID_LEFT": 1,
+        "NAME_LEFT": "roger",
+        "ID_RIGHT": 1,
+        "CUSTOMER_ID_RIGHT": 1 ,
+        "CUSTOMER_NAME_RIGHT": "roger"
       },
       {
-        "id_left": 2,
-        "name_left": "didier",
-        "id_right": 2,
-        "customer_id_right": 2 ,
-        "customer_name_right": "didier"
+        "ID_LEFT": 2,
+        "NAME_LEFT": "didier",
+        "ID_RIGHT": 2,
+        "CUSTOMER_ID_RIGHT": 2 ,
+        "CUSTOMER_NAME_RIGHT": "didier"
       },
       {
-        "id_left": 3,
-        "name_left": "robert",
-        "id_right": null,
-        "customer_id_right": null ,
-        "customer_name_right": null
+        "ID_LEFT": 3,
+        "NAME_LEFT": "robert",
+        "ID_RIGHT": null,
+        "CUSTOMER_ID_RIGHT": null ,
+        "CUSTOMER_NAME_RIGHT": null
       }
     ]
   },

@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List
+from typing import Dict
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -71,7 +71,14 @@ def apply_condition(condition: Condition, query: str) -> str:
 
 
 def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
-    return f"SELECT {', '.join(query_metadata.keys())} FROM {query_name}"
+    names = []
+    for _, metadata in query_metadata.items():
+        alias = getattr(metadata, 'alias')
+        if alias:
+            names.append(alias)
+        else:
+            names.append(getattr(metadata, 'name'))
+    return f"SELECT {', '.join(names)} FROM {query_name}"
 
 
 def build_first_or_last_aggregation(aggregated_string, first_last_string, query, step):
@@ -231,20 +238,3 @@ def handle_zero_division(formula: str) -> str:
     if '%' in formula:
         formula = re.sub(r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
     return formula
-
-
-def build_join_query(
-    query_metadata: dict,
-    query_to_join_metadata: dict,
-    left_query_name: str,
-    right_query_name: str,
-    right_query: str,
-    step_index: str,
-    on: List,
-    how: str,
-) -> str:
-    left_cols = f"{', '.join([f'{left_query_name}.{name} AS {name}_LEFT' for name in query_metadata.keys()])}"
-    right_cols = f"{', '.join([f'{right_query_name}.{name} AS {name}_RIGHT' for name in query_to_join_metadata.keys()])}"
-    join_part = f"{'AND'.join([f'{left_query_name}.{keys[0]} = {right_query_name}.{keys[1]}' for keys in on])}"
-
-    return f"""{right_query_name} AS ({right_query}), JOIN_STEP_{step_index} AS (SELECT {left_cols}, {right_cols} FROM {left_query_name} {how} JOIN {right_query_name} ON {join_part})"""

@@ -86,10 +86,10 @@ def sql_retrieve_city(t):
     return t
 
 
-def snowflake_query_describer(t) -> Union[Dict[str, str], None]:
+def snowflake_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        describe_res = cursor.describe(t)
+        describe_res = cursor.describe(domain if domain else query_string)
         res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
         return res
 

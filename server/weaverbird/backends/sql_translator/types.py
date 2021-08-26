@@ -17,6 +17,7 @@ class SQLPipelineTranslationReport(BaseModel):
 class TableMetadataUpdateError(Exception):
     ...
 
+
 class SQLQuery(BaseModel):
     query_name: Optional[str]
     transformed_query: Optional[str]

@@ -14,4 +14,6 @@ def resolve_sql_pipeline_for_combination(
     else:
         # NOTE execution report of the sub-pipeline is discarded
         # For now return the domain name from first step as
-        return sql_translate_pipeline(Pipeline(steps=pipeline_or_domain), sql_query_retriever, sql_query_describer)[0]
+        return sql_translate_pipeline(
+            Pipeline(steps=pipeline_or_domain), sql_query_retriever, sql_query_describer
+        )[0]
