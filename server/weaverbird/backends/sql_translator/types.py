@@ -1,5 +1,4 @@
 from typing import Any, Callable, List, Optional, Protocol, Tuple
-
 from pydantic import BaseModel
 
 from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
