@@ -225,7 +225,7 @@ def test_complex_date_format():
 
 
 def test_empty_date_format():
-    assert "" == snowflake_date_format("")
+    assert '' == snowflake_date_format('')
 
 
 def test_ignore_none_date_format():
