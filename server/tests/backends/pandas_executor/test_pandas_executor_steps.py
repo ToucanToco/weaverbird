@@ -1,6 +1,4 @@
 import json
-from glob import glob
-from os import path
 
 import pandas as pd
 import pytest

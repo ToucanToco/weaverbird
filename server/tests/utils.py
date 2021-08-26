@@ -1,13 +1,11 @@
-from typing import Any, List
-
-from pandas import DataFrame, Series
-from pandas.testing import assert_frame_equal, assert_series_equal
-
 import json
 from glob import glob
 from os import path
+from typing import Any, List
 
 import pytest
+from pandas import DataFrame, Series
+from pandas.testing import assert_frame_equal, assert_series_equal
 
 
 def assert_dataframes_equals(left: DataFrame, right: DataFrame):
@@ -33,6 +31,7 @@ def assert_column_equals(serie: Series, values: List[Any]):
         check_dtype=False,
     )
 
+
 type_code_mapping = {
     0: 'int',
     1: 'float',
@@ -56,7 +55,6 @@ def is_excluded(file, provider):
     spec = json.loads(spec_file.read())
     spec_file.close()
     if 'exclude' in spec and provider in spec['exclude']:
-        print('exclude')
         return True
     return False
 
@@ -65,8 +63,14 @@ def retrieve_case(directory, provider):
     fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), 'backends/fixtures')
     step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
 
-    steps_dir_path = path.join(path.dirname(path.realpath(__file__)), f'../weaverbird/backends/{directory}/steps')
-    step_available = [f.replace(steps_dir_path + '/', '').replace('.py', '') for f in glob(path.join(steps_dir_path, '*.py')) if not f.endswith('__init__.py')]
+    steps_dir_path = path.join(
+        path.dirname(path.realpath(__file__)), f'../weaverbird/backends/{directory}/steps'
+    )
+    step_available = [
+        f.replace(steps_dir_path + '/', '').replace('.py', '')
+        for f in glob(path.join(steps_dir_path, '*.py'))
+        if not f.endswith('__init__.py')
+    ]
 
     test_cases = []
     for x in step_cases_files:

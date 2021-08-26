@@ -8,7 +8,7 @@ import snowflake.connector
 from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 
-from server.tests.utils import assert_dataframes_equals, type_code_mapping, retrieve_case
+from server.tests.utils import assert_dataframes_equals, retrieve_case, type_code_mapping
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
@@ -81,9 +81,14 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = json.loads(spec_file.read())
     spec_file.close()
 
+    # Drop created table
+    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")};')
+
     # inserting the data in MySQL
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+    print(f'columns: {data_to_insert.columns}')
+
     data_to_insert.to_sql(
         name=case_id.replace('/', ''),
         con=get_engine,
