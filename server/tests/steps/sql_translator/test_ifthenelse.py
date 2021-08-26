@@ -270,7 +270,7 @@ def test_simple_condition_with_ambigious_column(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFF(RAICHU > '
-        "10, 'tintin', 'anime') AS RAICHU FROM SELECT_STEP_0)"
+        "10, 'tintin', 'anime') AS RAICHU FROM SELECT_STEP_0) "
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM IFTHENELSE_STEP_1'
