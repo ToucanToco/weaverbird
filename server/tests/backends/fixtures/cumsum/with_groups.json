@@ -1,12 +1,16 @@
 {
   "step": {
-    "name": "cumsum",
-    "valueColumn": "value",
-    "referenceColumn": "date",
-    "groupby": [
-      "country"
-    ],
-    "newColumn": "my_cumsum"
+    "pipeline": [
+      {
+        "name": "cumsum",
+        "valueColumn": "value",
+        "referenceColumn": "date",
+        "groupby": [
+          "country"
+        ],
+        "newColumn": "my_cumsum"
+      }
+    ]
   },
   "input": {
     "schema": {

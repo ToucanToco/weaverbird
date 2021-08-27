@@ -1,9 +1,7 @@
 import json
 import logging
 import time
-from glob import glob
-from os import path
-from typing import Dict, List, Union
+from typing import Dict, List, Optional, Union
 
 import docker
 import pandas as pd
@@ -13,34 +11,16 @@ from docker.models.images import Image
 from pymysql.err import OperationalError
 from sqlalchemy import create_engine
 
-from server.tests.utils import assert_dataframes_equals
+from server.tests.utils import assert_dataframes_equals, retrieve_case
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
 pymysql.install_as_MySQLdb()
 
-image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': 'latest'}
+image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': '5.7.21'}
 docker_client = docker.from_env()
 
-fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), '../fixtures_sql')
-step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
-
-type_code_mapping = {
-    0: 'int',
-    1: 'float',
-    2: 'str',
-    3: 'date',
-    4: 'timestamp',
-    5: 'variant',
-    6: 'timestamp_ltz',
-    7: 'timestamp_tz',
-    8: 'timestampe_ntz',
-    9: 'object',
-    10: 'array',
-    11: 'binary',
-    12: 'time',
-    13: 'boolean',
-}
+test_cases = retrieve_case('sql_translator', 'sql')
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -57,7 +37,7 @@ def db_container():
         logging.getLogger(__name__).info(
             f'Download docker image {image["image"]}:{image["version"]}'
         )
-        docker_client.images.pull('mysql:5.7.21')
+        docker_client.images.pull(f'{image["image"]}:{image["version"]}')
 
     logging.getLogger(__name__).info(f'Start docker image {image["image"]}:{image["version"]}')
     docker_container = docker_client.containers.run(
@@ -110,14 +90,16 @@ def get_engine():
     return engine
 
 
-def execute(connection, query: str):
+def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]:
     with connection.cursor() as cursor:
         cursor.execute(query)
-        # result = cursor.fetchall()
-        df = pd.DataFrame(cursor.fetchall())
-        field_names = [i[0] for i in cursor.description]
-        df.columns = field_names
-        return df
+        if meta:
+            df = pd.DataFrame(cursor.fetchall())
+            field_names = [i[0] for i in cursor.description]
+            df.columns = field_names
+            return df
+        else:
+            return None
 
 
 def sql_retrieve_city(t):
@@ -172,6 +154,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = json.loads(spec_file.read())
     spec_file.close()
 
+    # Drop created table
+    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
+
     # inserting the data in MySQL
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
@@ -180,6 +165,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         con=get_engine,
         index=False,
         if_exists='replace',
+        chunksize=1
     )
 
     for input in spec['other_inputs']:
@@ -194,7 +180,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
 
-    # Convert Pipeline object to SQL Query
+    # Convert Pipeline object to MySQL Query
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
@@ -204,9 +190,10 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Execute request generated from Pipeline in Mysql and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
+    # Drop created table
+    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
+
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    query_expected = spec['other_expected']['sql']['query']
-    assert query_expected == query
 
     assert_dataframes_equals(pandas_result_expected, result)

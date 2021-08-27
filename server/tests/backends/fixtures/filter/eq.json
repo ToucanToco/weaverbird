@@ -1,6 +1,8 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "equal",
     "pipeline": [
       {
         "name": "filter",
@@ -96,13 +98,5 @@
         "SCORE": 100
       }
     ]
-  },
-  "other_expected": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 WHERE NAME = 'foo') SELECT NAME, AGE, SCORE FROM FILTER_STEP_1"
-    },
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM filter_eq), FILTER_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 WHERE NAME = 'foo') SELECT NAME, AGE, SCORE FROM FILTER_STEP_1"
-    }
   }
 }
