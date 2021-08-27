@@ -1,19 +1,23 @@
 {
   "step": {
-    "name": "append",
-    "pipelines": [
-      [
-        {
-          "name": "domain",
-          "domain": "buzz"
-        }
-      ],
-      [
-        {
-          "name": "domain",
-          "domain": "buzz"
-        }
-      ]
+    "pipeline": [
+      {
+        "name": "append",
+        "pipelines": [
+          [
+            {
+              "name": "domain",
+              "domain": "buzz"
+            }
+          ],
+          [
+            {
+              "name": "domain",
+              "domain": "buzz"
+            }
+          ]
+        ]
+      }
     ]
   },
   "input": {

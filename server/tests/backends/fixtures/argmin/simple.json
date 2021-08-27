@@ -1,8 +1,12 @@
 {
   "step": {
-    "name": "argmin",
-    "column": "value",
-    "groups": []
+    "pipeline": [
+      {
+        "name": "argmin",
+        "column": "value",
+        "groups": []
+      }
+    ]
   },
   "input": {
     "schema": {

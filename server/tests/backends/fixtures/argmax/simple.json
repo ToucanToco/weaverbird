@@ -1,8 +1,12 @@
 {
   "step": {
-    "name": "argmax",
-    "column": "value",
-    "groups": []
+    "pipeline": [
+      {
+        "name": "argmax",
+        "column": "value",
+        "groups": []
+      }
+    ]
   },
   "input": {
     "schema": {

@@ -1,21 +1,29 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [
-      "Group"
-    ],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "__VQB_COUNT"
-        ],
-        "aggfunction": "count distinct including empty",
-        "columns": [
+        "name": "aggregate",
+        "on": [
           "Group"
-        ]
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "__VQB_COUNT"
+            ],
+            "aggfunction": "count distinct including empty",
+            "columns": [
+              "Group"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {

@@ -102,7 +102,7 @@ def test_remove_column(sql_query_metadata):
     column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name(
         'table_1', 'column_1_1', deleted=True
     )
-    assert column.is_delete()
+    assert column.is_deleted()
 
 
 def test_remove_columns_table_not_exist(sql_query_metadata):
@@ -126,13 +126,13 @@ def test_remove_columns(sql_query_metadata):
     column: ColumnMetadata = sql_query_metadata.retrieve_column_by_name(
         'table_1', 'column_1_1', deleted=True
     )
-    assert column.is_delete()
+    assert column.is_deleted()
     column2: ColumnMetadata = sql_query_metadata.retrieve_column_by_name('table_1', 'column_1_2')
     assert column2 is None
     column2: ColumnMetadata = sql_query_metadata.retrieve_column_by_name(
         'table_1', 'column_1_2', deleted=True
     )
-    assert column2.is_delete()
+    assert column2.is_deleted()
 
 
 def test_remove_all_columns_table_not_exist(sql_query_metadata):
@@ -161,7 +161,7 @@ def test_remove_table(sql_query_metadata):
     table2: TableMetadata = sql_query_metadata.retrieve_table('table_1')
     assert table2 is None
     table2: TableMetadata = sql_query_metadata.retrieve_table('table_1', deleted=True)
-    assert table2.is_delete()
+    assert table2.is_deleted()
 
 
 def test_join_query_metadata(sql_query_metadata):

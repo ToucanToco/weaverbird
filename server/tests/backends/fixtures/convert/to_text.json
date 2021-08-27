@@ -1,10 +1,18 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "convert",
-    "columns": [
-      "value"
-    ],
-    "data_type": "text"
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "value"
+        ],
+        "data_type": "text"
+      }
+    ]
   },
   "input": {
     "schema": {
