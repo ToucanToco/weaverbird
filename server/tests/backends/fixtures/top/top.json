@@ -1,24 +1,31 @@
 {
+  "exclude": [
+    "pandas",
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "top",
-    "limit": 3,
-    "groups": ["TOTO"],
-    "rank_on": "RAICHU",
-    "sort":  "asc"
+    "pipeline": [
+      {
+        "name": "top",
+        "limit": 3,
+        "groups": [
+          "GROUP_COLUMN"
+        ],
+        "rank_on": "VALUE",
+        "sort": "asc"
+      }
+    ]
   },
   "input": {
     "schema": {
       "fields": [
         {
-          "name": "RAICHU",
+          "name": "VALUE",
           "type": "integer"
         },
         {
-          "name": "TOTO",
-          "type": "string"
-        },
-        {
-          "name": "FLORIZARRE",
+          "name": "GROUP_COLUMN",
           "type": "string"
         }
       ],
@@ -26,55 +33,48 @@
     },
     "data": [
       {
-        "TOTO": "dindin",
-        "RAICHU": 42,
-        "FLORIZARRE": "patate"
+        "VALUE": 42,
+        "GROUP_COLUMN": "group1"
       },
       {
-        "TOTO": "zigolom",
-        "RAICHU": 3,
-        "FLORIZARRE": "patate"
+        "VALUE": 3,
+        "GROUP_COLUMN": "group2"
+      },
+      {
+        "VALUE": 10,
+        "GROUP_COLUMN": "group3"
+      },
+      {
+        "VALUE": 27,
+        "GROUP_COLUMN": "group4"
+      },
+      {
+        "VALUE": 22,
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": 13,
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": 4,
+        "GROUP_COLUMN": "group2"
+      },
+      {
+        "VALUE": 3,
+        "GROUP_COLUMN": "group3"
       }
     ]
-  },
-  "other_inputs": {
-    "buzz": {
-      "schema": {
-        "fields": [
-          {
-            "name": "RAICHU",
-            "type": "number"
-          },
-          {
-            "name": "TOTO",
-            "type": "string"
-          }
-        ],
-        "pandas_version": "0.20.0"
-      },
-      "data": [
-        {
-          "TOTO": "zigolom",
-          "RAICHU": 3,
-          "FLORIZARRE": "patate"
-        },
-        {
-          "TOTO": "dindin",
-          "RAICHU": 42,
-          "FLORIZARRE": "patate"
-        }
-      ]
-    }
   },
   "expected": {
     "schema": {
       "fields": [
         {
-          "name": "RAICHU",
+          "name": "VALUE",
           "type": "number"
         },
         {
-          "name": "TOTO",
+          "name": "GROUP_COLUMN",
           "type": "string"
         }
       ],
@@ -82,23 +82,17 @@
     },
     "data": [
       {
-        "TOTO": "zigolom",
-        "RAICHU": 3,
-        "FLORIZARRE": "patate"
+        "VALUE": 7,
+        "GROUP_COLUMN": "group3"
       },
       {
-        "TOTO": "dindin",
-        "RAICHU": 42,
-        "FLORIZARRE": "patate"
+        "VALUE": 13,
+        "GROUP_COLUMN": "group3"
+      },
+      {
+        "VALUE": 27,
+        "GROUP_COLUMN": "group4"
       }
     ]
-  },
-  "other_expected": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
-    },
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM top_top), TOP_STEP_1 AS (SELECT RAICHU, TOTO FROM SELECT_STEP_0 GROUP BY TOTO, RAICHU ORDER BY RAICHU asc LIMIT 3)  SELECT RAICHU, TOTO FROM TOP_STEP_1"
-    }
   }
 }

@@ -1,8 +1,12 @@
 {
   "step": {
-    "name": "trim",
-    "columns": [
-      "ColA"
+    "pipeline": [
+      {
+        "name": "trim",
+        "columns": [
+          "ColA"
+        ]
+      }
     ]
   },
   "input": {

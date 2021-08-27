@@ -23,7 +23,10 @@ def test_pandas_execute_pipeline(case_id, case_spec_file_path):
         for (k, v) in spec.get('other_inputs', {}).items()
     }
 
-    pipeline = Pipeline(steps=[{'name': 'domain', 'domain': 'in'}, spec['step']])
+    steps = spec['step']['pipeline']
+    steps.insert(0, {'name': 'domain', 'domain': 'in'})
+    pipeline = Pipeline(steps=steps)
+
     DOMAINS = {'in': df_in, **dfs_in_others}
     result = execute_pipeline(pipeline, domain_retriever=lambda x: DOMAINS[x])[0]
 

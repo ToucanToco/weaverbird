@@ -1,7 +1,16 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "uniquegroups",
-    "on": ["TOTO"]
+    "pipeline": [
+      {
+        "name": "uniquegroups",
+        "on": [
+          "TOTO"
+        ]
+      }
+    ]
   },
   "input": {
     "schema": {

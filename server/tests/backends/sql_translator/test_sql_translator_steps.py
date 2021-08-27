@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-from typing import Dict, List, Union
+from typing import Dict, List, Union, Optional
 
 import docker
 import pandas as pd
@@ -17,7 +17,7 @@ from weaverbird.pipeline import Pipeline
 
 pymysql.install_as_MySQLdb()
 
-image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': 'latest'}
+image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': '5.7.21'}
 docker_client = docker.from_env()
 
 test_cases = retrieve_case('sql_translator', 'sql')
@@ -90,13 +90,16 @@ def get_engine():
     return engine
 
 
-def execute(connection, query: str):
+def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]:
     with connection.cursor() as cursor:
         cursor.execute(query)
-        df = pd.DataFrame(cursor.fetchall())
-        field_names = [i[0] for i in cursor.description]
-        df.columns = field_names
-        return df
+        if meta:
+            df = pd.DataFrame(cursor.fetchall())
+            field_names = [i[0] for i in cursor.description]
+            df.columns = field_names
+            return df
+        else:
+            return None
 
 
 def sql_retrieve_city(t):
@@ -129,6 +132,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = json.loads(spec_file.read())
     spec_file.close()
 
+    # Drop created table
+    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
+
     # inserting the data in MySQL
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
@@ -137,25 +143,28 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         con=get_engine,
         index=False,
         if_exists='replace',
+        chunksize=1
     )
 
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
 
-    # Convert Pipeline object to SQL Query
+    # Convert Pipeline object to MySQL Query
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
-        sql_query_describer=sql_query_describer,  # replace by snowflake_query_describer
+        sql_query_describer=sql_query_describer,
     )
 
+    print(f'{case_id} - query:: {query}')
     # Execute request generated from Pipeline in Mysql and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
+    # Drop created table
+    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
+
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    query_expected = spec['other_expected']['sql']['query']
-    assert query_expected == query
 
     assert_dataframes_equals(pandas_result_expected, result)

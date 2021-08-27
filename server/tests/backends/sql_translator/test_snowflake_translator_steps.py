@@ -1,6 +1,6 @@
 import json
 from os import environ
-from typing import Dict, Union
+from typing import Dict, Union, Optional
 
 import pandas as pd
 import pytest
@@ -53,13 +53,16 @@ def get_engine():
     return engine
 
 
-def execute(connection, query: str):
+def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]:
     with connection.cursor() as cursor:
         cursor.execute(query)
-        df = pd.DataFrame(cursor.fetchall())
-        field_names = [i[0] for i in cursor.description]
-        df.columns = field_names
-        return df
+        if meta:
+            df = pd.DataFrame(cursor.fetchall())
+            field_names = [i[0] for i in cursor.description]
+            df.columns = field_names
+            return df
+        else:
+            return None
 
 
 def sql_retrieve_city(t):
@@ -82,21 +85,20 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec_file.close()
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")};')
+    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
 
-    # inserting the data in MySQL
+    # inserting the data in Snowflake
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
-    print(f'columns: {data_to_insert.columns}')
-
     data_to_insert.to_sql(
         name=case_id.replace('/', ''),
         con=get_engine,
         index=False,
         if_exists='replace',
+        chunksize=1
     )
 
-    steps = [spec['step']]
+    steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
 
@@ -111,7 +113,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")};')
+    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
