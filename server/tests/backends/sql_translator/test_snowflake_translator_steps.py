@@ -113,9 +113,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
+    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
     for input in spec['other_inputs']:
-        execute(get_connection(), f'DROP TABLE {input}', False)
+        execute(get_connection(), f'DROP TABLE IF EXISTS {input}', False)
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')

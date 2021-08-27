@@ -36,8 +36,7 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'todate': translate_todate,
     'formula': translate_formula,
     'replace': translate_replace,
+    'join': translate_join,
     'uniquegroups': translate_uniquegroups,
     'top': translate_top,
-    'uniquegroups': translate_uniquegroups,
-    'join': translate_join,
 }

@@ -266,13 +266,14 @@ class SqlQueryMetadataManager(BaseModel):
             )
         return self
 
-    def add_table_column(self, table_name: str, column_name: str, column_type: str):
+    def add_table_column(self, table_name: str, column_name: str, column_type: str) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
                 f'Impossible to update column name, table {t_name}({table_name}) not exist'
             )
         self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type)
+        return self.tables[t_name]
 
     def add_table_columns_from_dict(self, table_name: str, columns_dict: Dict[str, str]):
         t_name = table_name.upper()

@@ -117,24 +117,13 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
         else:
             table_name = temp.split('.')[0]
 
-        request = f'SELECT column_name as name, data_type as type_code FROM information_schema.columns WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
-        connection = get_connection()
-        with connection.cursor() as cursor:
-            cursor.execute(request)
-            describe_res = cursor.fetchall()
-            res = {r[0]: r[1] for r in describe_res}
-            return res
-    else:
-        query = f'CREATE TABLE IF NOT EXISTS temp AS ({query_string});'
-        request = 'SELECT column_name as name, data_type as type_code FROM information_schema.columns WHERE table_name = "temp" ORDER BY ordinal_position;'
-        connection = get_connection()
-        with connection.cursor() as cursor:
-            cursor.execute(query)
-            cursor.fetchall()
-            cursor.execute(request)
-            describe_res = cursor.fetchall()
-            res = {r[0]: r[1] for r in describe_res}
-            return res
+    request = f'SELECT column_name as name, data_type as type_code FROM information_schema.columns WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
+    connection = get_connection()
+    with connection.cursor() as cursor:
+        cursor.execute(request)
+        describe_res = cursor.fetchall()
+        res = {r[0]: r[1] for r in describe_res}
+        return res
 
 
 # Translation from Pipeline json to SQL query
@@ -181,5 +170,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    query_expected = spec['other_expected']['sql']['query']
+    assert query_expected == query
 
     assert_dataframes_equals(pandas_result_expected, result)

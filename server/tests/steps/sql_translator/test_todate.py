@@ -11,9 +11,8 @@ def test_translate_simple_todate(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFF(TRY_TO_DATE('
-        "RAICHU, '%d/%m/%Y') != NULL, TO_DATE(RAICHU, '%d/%m/%Y'), 'not-valid-date-format') AS RAICHU) FROM "
-        'SELECT_STEP_0) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TO_DATE('
+        "RAICHU, 'DD/MM/YYYY') AS RAICHU FROM SELECT_STEP_0) "
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM TODATE_STEP_1'
@@ -46,9 +45,8 @@ def test_translate_hard_todate(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFF(TRY_TO_DATE('
-        "RAICHU, 'mm/dd/yyyy, hh24:mi hours') != NULL, TO_DATE(RAICHU, 'mm/dd/yyyy, hh24:mi hours'), "
-        "'not-valid-date-format') AS RAICHU) FROM SELECT_STEP_0) "
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), TODATE_STEP_1 AS (SELECT TOTO, FLORIZARRE, TO_DATE('
+        "RAICHU, 'mm/dd/yyyy, hh24:mi hours') AS RAICHU FROM SELECT_STEP_0) "
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM TODATE_STEP_1'
