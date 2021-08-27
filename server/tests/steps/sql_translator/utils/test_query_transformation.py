@@ -1,5 +1,6 @@
 import pytest
 
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
@@ -174,7 +175,8 @@ def test_apply_not_implemented():
 
 def test_build_selection_query():
     assert (
-        build_selection_query({'toto': 'tata'}, 'SELECT_STEP_0') == 'SELECT toto FROM SELECT_STEP_0'
+        build_selection_query({'toto': ColumnMetadata(name='toto', type='tata')}, 'SELECT_STEP_0')
+        == 'SELECT TOTO FROM SELECT_STEP_0'
     )
 
 
@@ -225,7 +227,7 @@ def test_complex_date_format():
 
 
 def test_empty_date_format():
-    assert "" == snowflake_date_format("")
+    assert '' == snowflake_date_format('')
 
 
 def test_ignore_none_date_format():
