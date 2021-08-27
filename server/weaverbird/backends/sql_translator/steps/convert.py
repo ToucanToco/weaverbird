@@ -39,7 +39,7 @@ def translate_convert(
         columns_filter=step.columns
     )
 
-    compiled_query = ', '.join([f'TRY_CAST({c} AS {step.data_type}) AS {c}' for c in step.columns])
+    compiled_query = ', '.join([f'CAST({c} AS {step.data_type}) AS {c}' for c in step.columns])
 
     if len(completed_fields):
         compiled_query = f', {compiled_query}'
