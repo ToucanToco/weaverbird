@@ -17,7 +17,8 @@ RUN yarn
 WORKDIR /weaverbird/server
 # Install back-end package dependencies
 COPY server/pyproject.toml ./
-RUN poetry install
+COPY server /weaverbird/server
+RUN make install
 
 WORKDIR /weaverbird
 # Build front-end package
