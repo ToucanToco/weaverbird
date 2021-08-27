@@ -1,7 +1,7 @@
 <template>
   <div class="widget-date-input">
     <div class="widget-date-input__container">
-      <span class="widget-date-input__label">{{ label }}</span>
+      <span class="widget-date-input__label" v-html="label" />
       <div class="widget-date-input__button" @click="openEditor">
         <i class="far fa-calendar" aria-hidden="true" />
       </div>
@@ -23,8 +23,13 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" v-model="currentTabValue" />
-            <RelativeDateForm v-else v-model="currentTabValue" />
+            <RangeCalendar v-if="isFixedTabSelected" v-model="currentTabValue" />
+            <RelativeDateRangeForm
+              v-else
+              v-model="currentTabValue"
+              :availableVariables="relativeAvailableVariables"
+              :variableDelimiters="variableDelimiters"
+            />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -49,11 +54,17 @@
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
 import Popover from '@/components/Popover.vue';
+import RangeCalendar from '@/components/RangeCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
+import {
+  CustomDateRange,
+  dateRangeToString,
+  isDateRange,
+  isRelativeDateRange,
+  relativeDateRangeToString,
+} from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -62,27 +73,30 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
-import RelativeDateForm from './RelativeDateForm.vue';
+import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 /**
- * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Dynamic way (RelativeDateForm),
+ * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (RangeCalendar) or Dynamic way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
 @Component({
-  name: 'new-date-input',
+  name: 'date-range-input',
   components: {
     CustomVariableList,
     Popover,
     Tabs,
-    Calendar,
-    RelativeDateForm,
+    RangeCalendar,
+    RelativeDateRangeForm,
   },
 })
-export default class NewDateInput extends Vue {
+export default class DateRangeInput extends Vue {
   @Prop({ default: '' })
-  value!: string | CustomDate;
+  value!: string | CustomDateRange;
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => [] })
+  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateRangeForm "from"
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
@@ -97,16 +111,16 @@ export default class NewDateInput extends Vue {
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
-  tabsValues: Record<string, CustomDate> = {
-    Fixed: new Date(),
-    Dynamic: { quantity: -1, duration: 'year' },
+  tabsValues: Record<string, CustomDateRange> = {
+    Fixed: { start: new Date() },
+    Dynamic: { date: '', quantity: -1, duration: 'year' },
   };
 
-  get currentTabValue(): CustomDate {
+  get currentTabValue(): CustomDateRange {
     return this.tabsValues[this.selectedTab];
   }
 
-  set currentTabValue(value: CustomDate) {
+  set currentTabValue(value: CustomDateRange) {
     this.tabsValues[this.selectedTab] = value;
   }
 
@@ -141,10 +155,14 @@ export default class NewDateInput extends Vue {
   get label(): string {
     if (this.variable) {
       return this.variable.label;
-    } else if (this.value instanceof Date) {
-      return dateToString(this.value);
-    } else if (this.value instanceof Object) {
-      return relativeDateToString(this.value);
+    } else if (isDateRange(this.value)) {
+      return dateRangeToString(this.value);
+    } else if (isRelativeDateRange(this.value)) {
+      return relativeDateRangeToString(
+        this.value,
+        this.relativeAvailableVariables,
+        this.variableDelimiters,
+      );
     } else {
       return 'Select a date';
     }
@@ -156,10 +174,10 @@ export default class NewDateInput extends Vue {
 
   // init tabs by selecting correct tab and value based on prop value
   initTabs(): void {
-    if (this.value instanceof Date) {
+    if (isDateRange(this.value)) {
       this.tabsValues.Fixed = this.value;
       this.selectTab('Fixed');
-    } else if (this.value && typeof this.value !== 'string') {
+    } else if (isRelativeDateRange(this.value)) {
       this.tabsValues.Dynamic = this.value;
       this.selectTab('Dynamic');
     }
@@ -222,6 +240,11 @@ $active-color-dark: #16406a;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  ::v-deep i {
+    display: inline-block;
+    margin: 0 5px;
+    color: #c8c8c8;
+  }
 }
 .widget-date-input__button {
   padding: 10px 15px;
@@ -274,16 +297,16 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-body {
   flex: 1;
-  height: 280px;
-  min-height: 280px;
-  width: 280px;
-  .vc-container {
-    border: none;
-    margin: 1px;
+  height: 276px;
+  min-height: 276px;
+  width: 542px;
+  .range-calendar {
+    margin: -1px;
     width: 100%;
   }
-  .widget-relative-date-form {
+  .widget-relative-date-range-form {
     margin: 20px;
+    max-width: 400px;
   }
 }
 .widget-date-input__editor-footer {
@@ -297,7 +320,6 @@ $active-color-dark: #16406a;
 .widget-date-input__editor-button {
   @extend %button-default;
   min-width: 100px;
-  flex: 1;
   background: $grey-extra-light;
   color: $base-color;
   text-align: center;
