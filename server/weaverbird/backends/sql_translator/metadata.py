@@ -117,8 +117,10 @@ class TableMetadata(BaseModel):
             self.add_column_o(column=c)
         return self
 
-    def add_column(self, column_name: str, column_type: str) -> TableMetadata:
-        c = ColumnMetadata(name=column_name, type=column_type)
+    def add_column(
+        self, column_name: str, column_type: str, alias: Optional[str] = None
+    ) -> TableMetadata:
+        c = ColumnMetadata(name=column_name, type=column_type, alias=alias)
         self.add_column_o(c)
         return self
 
