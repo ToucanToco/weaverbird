@@ -71,7 +71,14 @@ def apply_condition(condition: Condition, query: str) -> str:
 
 
 def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
-    return f"SELECT {', '.join(query_metadata.keys())} FROM {query_name}"
+    names = []
+    for _, metadata in query_metadata.items():
+        alias = getattr(metadata, 'alias')
+        if alias:
+            names.append(alias)
+        else:
+            names.append(getattr(metadata, 'name'))
+    return f"SELECT {', '.join(names)} FROM {query_name}"
 
 
 def build_first_or_last_aggregation(aggregated_string, first_last_string, query, step):

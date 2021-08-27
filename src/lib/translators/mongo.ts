@@ -278,7 +278,6 @@ function buildCondExpression(
     matches: '$regexMatch',
     notmatches: '$regexMatch',
   };
-
   if (S.isFilterComboAnd(cond)) {
     if (cond.and.length == 1) {
       return buildCondExpression(cond.and[0], unsupportedOperators);
@@ -312,14 +311,21 @@ function buildCondExpression(
     }
     return condExpression;
   } else {
-    let condExpression: MongoStep = {
-      [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
-    };
-    // There is not 'not in' operator
-    if (cond.operator === 'nin') {
-      condExpression = { $not: condExpression };
+    if (cond.operator === 'notnull' || cond.operator === 'isnull') {
+      const condExpression: MongoStep = {
+        [operatorMapping[cond.operator]]: [$$(cond.column), null],
+      };
+      return condExpression;
+    } else {
+      let condExpression: MongoStep = {
+        [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
+      };
+      // There is not 'not in' operator
+      if (cond.operator === 'nin') {
+        condExpression = { $not: condExpression };
+      }
+      return condExpression;
     }
-    return condExpression;
   }
 }
 
@@ -339,6 +345,7 @@ function buildMatchTree(
     isnull: '$eq',
     notnull: '$ne',
   };
+
   if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
     return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });
   }
@@ -352,6 +359,9 @@ function buildMatchTree(
     return { [cond.column]: { $regex: cond.value } };
   } else if (cond.operator === 'notmatches') {
     return { [cond.column]: { $not: { $regex: cond.value } } };
+  }
+  if (cond.operator === 'notnull' || cond.operator === 'isnull') {
+    return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
   }
   return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
 }

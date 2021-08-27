@@ -29,7 +29,7 @@ import { DEFAULT_DURATIONS, DurationOption, RelativeDate } from '@/lib/dates';
 })
 export default class RelativeDateForm extends Vue {
   @Prop({
-    default: () => ({ date: undefined, quantity: -1, duration: DEFAULT_DURATIONS[0].value }),
+    default: () => ({ quantity: -1, duration: DEFAULT_DURATIONS[0].value }),
   })
   value!: RelativeDate;
 

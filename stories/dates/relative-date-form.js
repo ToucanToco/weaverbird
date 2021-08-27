@@ -17,7 +17,7 @@ stories.add('simple', () => ({
 
   data() {
     return {
-      value: { date: new Date(), quantity: -3, duration: 'month' },
+      value: { quantity: -3, duration: 'month' },
     };
   },
 }));

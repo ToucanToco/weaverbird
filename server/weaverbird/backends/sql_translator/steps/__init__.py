@@ -7,6 +7,7 @@ from .filter import translate_filter
 from .formula import translate_formula
 from .fromdate import translate_fromdate
 from .ifthenelse import translate_ifthenelse
+from .join import translate_join
 from .lowercase import translate_lowercase
 from .rename import translate_rename
 from .replace import translate_replace
@@ -35,6 +36,7 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'todate': translate_todate,
     'formula': translate_formula,
     'replace': translate_replace,
+    'join': translate_join,
     'uniquegroups': translate_uniquegroups,
     'top': translate_top,
 }

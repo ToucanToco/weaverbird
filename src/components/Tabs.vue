@@ -83,7 +83,7 @@ $grey-dark: #6a6a6a;
   color: $grey-dark;
   text-transform: uppercase;
   font-weight: 700;
-  padding: 5px 10px;
+  padding: 15px;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
@@ -100,7 +100,7 @@ $grey-dark: #6a6a6a;
   color: $active-color;
   border-bottom: 3px solid $active-color;
   margin-bottom: -2px; // To avoid having the border above the border of the container
-  padding-bottom: 4px; // To avoid the label "jumping" one pixel up when selected
+  padding-bottom: 14px; // To avoid the label "jumping" one pixel up when selected
 }
 
 .tabs__tab--disabled {

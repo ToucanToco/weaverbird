@@ -18,7 +18,7 @@ describe('Relative date form', () => {
 
   describe('default', () => {
     const selectedDuration = DEFAULT_DURATIONS[1];
-    const value = { date: new Date(), quantity: -20, duration: selectedDuration.value };
+    const value = { quantity: -20, duration: selectedDuration.value };
     beforeEach(() => {
       createWrapper({
         value,
@@ -80,7 +80,6 @@ describe('Relative date form', () => {
     });
     it('should set value to empty object', () => {
       expect((wrapper.vm as any).value).toStrictEqual({
-        date: undefined,
         quantity: -1,
         duration: defaultDuration.value,
       });

@@ -573,8 +573,8 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
         name: 'filter',
         condition: { column: 'Pin', value: '/^[a-z]+$/i', operator: 'notmatches' },
       },
-      { name: 'filter', condition: { column: 'IsNull', value: null, operator: 'isnull' } },
-      { name: 'filter', condition: { column: 'NotNull', value: null, operator: 'notnull' } },
+      { name: 'filter', condition: { column: 'IsNull', value: 'dummy', operator: 'isnull' } },
+      { name: 'filter', condition: { column: 'NotNull', value: 'dummy', operator: 'notnull' } },
     ];
     const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
@@ -3911,7 +3911,58 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       { $project: { _id: 0 } },
     ]);
   });
-
+  it('can generate a ifthenelse step with isnull', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: { and: [{ column: 'TEST_COL', operator: 'isnull', value: '__DUMMY__' }] },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: { $eq: ['$TEST_COL', null] },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+  it('can generate a ifthenelse step with notnull', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: { and: [{ column: 'TEST_COL', operator: 'notnull', value: '__DUMMY__' }] },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: { $ne: ['$TEST_COL', null] },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
   it('can generate an ifthenelse step with `not in` operator', () => {
     const pipeline: Pipeline = [
       {

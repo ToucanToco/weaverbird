@@ -106,15 +106,16 @@ def sql_retrieve_city(t):
     return t
 
 
-def sql_query_describer(t) -> Union[Dict[str, str], None]:
-    lst = t.split(' ')
-    lst = [item for item in lst if len(item) > 0]
-    temp = lst[lst.index('FROM') + 1]
+def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
+    if domain:
+        lst = domain.split(' ')
+        lst = [item for item in lst if len(item) > 0]
+        temp = lst[lst.index('FROM') + 1]
 
-    if len(temp.split('.')) == 2:
-        table_name = temp.split('.')[1]
-    else:
-        table_name = temp.split('.')[0]
+        if len(temp.split('.')) == 2:
+            table_name = temp.split('.')[1]
+        else:
+            table_name = temp.split('.')[0]
 
     request = (
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
@@ -146,6 +147,14 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
 
+    for input in spec['other_inputs']:
+        pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
+            name=input,
+            con=get_engine,
+            index=False,
+            if_exists='replace',
+        )
+
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
@@ -157,7 +166,6 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         sql_query_describer=sql_query_describer,
     )
 
-    print(f'{case_id} - query:: {query}')
     # Execute request generated from Pipeline in Mysql and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
@@ -166,5 +174,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    query_expected = spec['other_expected']['sql']['query']
+    assert query_expected == query
 
     assert_dataframes_equals(pandas_result_expected, result)

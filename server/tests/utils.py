@@ -51,6 +51,7 @@ type_code_mapping = {
 
 
 def is_excluded(file, provider):
+    print(f'parse {file}')
     spec_file = open(file, 'r')
     spec = json.loads(spec_file.read())
     spec_file.close()
