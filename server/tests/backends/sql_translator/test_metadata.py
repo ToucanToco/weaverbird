@@ -165,8 +165,8 @@ def test_remove_table(sql_query_metadata):
 
 
 def test_join_query_metadata(sql_query_metadata):
-    sql_query_metadata.join_query_metadata('table_2')
-    assert len(sql_query_metadata.retrieve_query_metadata_columns()) == 8
+    # sql_query_metadata.join_query_metadata('table_1', 'table_2')
+    assert len(sql_query_metadata.retrieve_query_metadata_columns()) == 4
 
 
 def test_retrieve_as_list(sql_query_metadata):
