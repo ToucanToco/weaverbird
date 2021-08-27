@@ -32,10 +32,10 @@ def translate_unpivot(
     )
     unpivot_query = f"""SELECT {', '.join(step.keep + [step.unpivot_column_name.upper(),
                                                        step.value_column_name.upper()])}\
- FROM {query.query_name} UNPIVOT({step.unpivot_column_name.upper()} FOR {step.value_column_name.upper()} IN\
+ FROM {query.query_name} UNPIVOT({step.value_column_name.upper()} FOR {step.unpivot_column_name.upper()} IN\
  {str(step.unpivot).replace('[', '(').replace(']', ')').replace("'", '')}"""
 
-    transformed_query = f"""{query.transformed_query}, {query_name} AS ({unpivot_query})"""
+    transformed_query = f"""{query.transformed_query}, {query_name} AS ({unpivot_query}))"""
     unpivotted_value_column_type = query.metadata_manager.retrieve_query_metadata_column_by_name(
         step.unpivot[0]
     ).type

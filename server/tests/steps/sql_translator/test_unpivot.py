@@ -33,7 +33,7 @@ def test_translate_unpivot(mocker):
     res = translate_unpivot(step, query, index=1)
     assert (
         res.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS), UNPIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, KPI, VALUE FROM SELECT_STEP_0 UNPIVOT(KPI FOR VALUE IN (CURRENCY, PROVIDER))'
+        == 'WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS), UNPIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, KPI, VALUE FROM SELECT_STEP_0 UNPIVOT(VALUE FOR KPI IN (CURRENCY, PROVIDER)))'
     )
     assert res.selection_query == 'SELECT COMPANY, COUNTRY, KPI, VALUE FROM UNPIVOT_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_columns() == {
