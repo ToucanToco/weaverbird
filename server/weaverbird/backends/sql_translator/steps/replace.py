@@ -37,7 +37,7 @@ def translate_replace(
     for element_to_replace in step.to_replace:
         from_value, to_value = element_to_replace
         if not isinstance(from_value, float) and not isinstance(from_value, int):
-            from_value = from_value.replace('"', "\'")
+            from_value = from_value.replace('"', "'")
         if not isinstance(from_value, float) and not isinstance(to_value, int):
             to_value = to_value.replace('"', "'")
         compiled_query += f'WHEN {step.search_column}={from_value} THEN {to_value} '

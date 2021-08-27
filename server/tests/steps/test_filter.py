@@ -1,7 +1,7 @@
 import pytest
 from pandas import DataFrame
 
-from tests.utils import assert_dataframes_equals
+from server.tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.filter import execute_filter
 from weaverbird.pipeline.conditions import ComparisonCondition
 from weaverbird.pipeline.steps import FilterStep

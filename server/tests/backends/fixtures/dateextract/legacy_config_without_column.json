@@ -1,10 +1,14 @@
 {
   "step": {
-    "name": "dateextract",
-    "column": "date",
-    "dateInfo": [],
-    "newColumns": [],
-    "operation": "day"
+    "pipeline": [
+      {
+        "name": "dateextract",
+        "column": "date",
+        "dateInfo": [],
+        "newColumns": [],
+        "operation": "day"
+      }
+    ]
   },
   "input": {
     "schema": {

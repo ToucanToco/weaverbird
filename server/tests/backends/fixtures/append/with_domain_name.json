@@ -1,8 +1,12 @@
 {
   "step": {
-    "name": "append",
-    "pipelines": [
-      "miam"
+    "pipeline": [
+      {
+        "name": "append",
+        "pipelines": [
+          "miam"
+        ]
+      }
     ]
   },
   "input": {

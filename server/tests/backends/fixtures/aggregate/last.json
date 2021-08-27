@@ -1,21 +1,29 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [
-      "Group"
-    ],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "last_Label"
+        "name": "aggregate",
+        "on": [
+          "Group"
         ],
-        "aggfunction": "last",
-        "columns": [
-          "Label"
-        ]
+        "aggregations": [
+          {
+            "newcolumns": [
+              "last_Label"
+            ],
+            "aggfunction": "last",
+            "columns": [
+              "Label"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {
