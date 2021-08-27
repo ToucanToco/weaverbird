@@ -266,7 +266,9 @@ class SqlQueryMetadataManager(BaseModel):
             )
         return self
 
-    def add_table_column(self, table_name: str, column_name: str, column_type: str) -> TableMetadata:
+    def add_table_column(
+        self, table_name: str, column_name: str, column_type: str
+    ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
