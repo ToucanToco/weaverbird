@@ -1,7 +1,7 @@
 import json
 import logging
 import time
-from typing import Dict, List, Union, Optional
+from typing import Dict, List, Optional, Union
 
 import docker
 import pandas as pd
@@ -139,11 +139,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
     data_to_insert.to_sql(
-        name=case_id.replace('/', ''),
-        con=get_engine,
-        index=False,
-        if_exists='replace',
-        chunksize=1
+        name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
 
     steps = spec['step']['pipeline']
