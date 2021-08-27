@@ -11,7 +11,7 @@ import { BaseTranslator } from './base';
 
 /* istanbul ignore next */
 export class SnowflakeTranslator extends BaseTranslator {
-  static label = 'Pandas';
+  static label = 'Snowflake';
 
   aggregate(step: Readonly<S.AggregateStep>) {
     return step;
@@ -53,6 +53,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  pivot(step: Readonly<S.PivotStep>) {
+    return step;
+  }
+
   rename(step: Readonly<S.RenameStep>) {
     return step;
   }
@@ -82,6 +86,10 @@ export class SnowflakeTranslator extends BaseTranslator {
   }
 
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
+    return step;
+  }
+
+  unpivot(step: Readonly<S.UnpivotStep>) {
     return step;
   }
 

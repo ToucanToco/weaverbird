@@ -142,14 +142,14 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
-
-    for input in spec['other_inputs']:
-        pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
-            name=input,
-            con=get_engine,
-            index=False,
-            if_exists='replace',
-        )
+    if 'other_inputs' in spec:
+        for input in spec['other_inputs']:
+            pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
+                name=input,
+                con=get_engine,
+                index=False,
+                if_exists='replace',
+            )
 
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
