@@ -87,23 +87,15 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Drop created table
     execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
 
-    # inserting the data in MySQL
+    # inserting the data in Snowflake
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
     data_to_insert.to_sql(
-        name=case_id.replace('/', ''),
-        con=get_engine,
-        index=False,
-        if_exists='replace',
-        chunksize=1
+        name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
     for input in spec['other_inputs']:
         pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
-            name=input,
-            con=get_engine,
-            index=False,
-            if_exists='replace',
-            chunksize=1
+            name=input, con=get_engine, index=False, if_exists='replace', chunksize=1
         )
 
     steps = spec['step']['pipeline']

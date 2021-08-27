@@ -137,16 +137,6 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
             return res
 
 
-test_cases = []
-for x in step_cases_files:
-    # Generate a readable id for each test case
-    case_hierarchy = path.dirname(x)[len(fixtures_dir_path) :]
-    case_name = path.splitext(path.basename(x))[0]
-    case_id = case_hierarchy + '_' + case_name
-
-    test_cases.append(pytest.param(case_id, x, id=case_id))
-
-
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
@@ -161,11 +151,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
     data_to_insert.to_sql(
-        name=case_id.replace('/', ''),
-        con=get_engine,
-        index=False,
-        if_exists='replace',
-        chunksize=1
+        name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
 
     for input in spec['other_inputs']:
