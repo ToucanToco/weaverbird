@@ -9,7 +9,7 @@
         "name": "replace",
         "search_column": "NAME",
         "to_replace": [
-          ["foo", "oof"]
+          ["'foo'", "'oof'"]
         ]
       }
     ]

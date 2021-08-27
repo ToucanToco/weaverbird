@@ -93,10 +93,11 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
-    for input in spec['other_inputs']:
-        pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
-            name=input, con=get_engine, index=False, if_exists='replace', chunksize=1
-        )
+    if 'other_inputs' in spec:
+        for input in spec['other_inputs']:
+            pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
+                name=input, con=get_engine, index=False, if_exists='replace', chunksize=1
+            )
 
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
@@ -114,8 +115,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Drop created table
     execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
-    for input in spec['other_inputs']:
-        execute(get_connection(), f'DROP TABLE IF EXISTS {input}', False)
+    if 'other_inputs' in spec:
+        for input in spec['other_inputs']:
+            execute(get_connection(), f'DROP TABLE IF EXISTS {input}', False)
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
