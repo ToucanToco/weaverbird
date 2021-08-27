@@ -25,11 +25,11 @@ def translate_join(
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'
     log.debug(
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"step: {step}\n"
-        f"query.transformed_query: {query.transformed_query}\n"
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'step: {step}\n'
+        f'query.transformed_query: {query.transformed_query}\n'
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
@@ -55,7 +55,7 @@ def translate_join(
     query.metadata_manager.add_table_columns_from_dict(right_query_name, query_to_join_metadata)
 
     # 3 Update transformed query string with right query selection
-    transformed_query = f"""{query.transformed_query}, {right_query_name} AS ({right_query})"""
+    transformed_query = f'{query.transformed_query}, {right_query_name} AS ({right_query})'
 
     # 4 Join left & right metadata in internal metadata
     query.metadata_manager.join_query_metadata(right_query_name, left_query_name=query.query_name)
@@ -65,9 +65,9 @@ def translate_join(
     transformed_query = f"""{transformed_query}, {query_name} AS (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {query.query_name} {how} JOIN {right_query_name} ON {join_part})"""
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {transformed_query}'
+        '############################################################'
     )
 
     return SQLQuery(
