@@ -38,7 +38,7 @@ def test_translate_string_integer_replace(query):
 
 def test_translate_multiple_replace(query):
     step = ReplaceStep(
-        name='replace', search_column='raichu', to_replace=[[2, 4], [456.765, 221.3]]
+        name='replace', search_column='RAICHU', to_replace=[[2, 4], [456.765, 221.3]]
     )
 
     query = translate_replace(
@@ -48,7 +48,7 @@ def test_translate_multiple_replace(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), REPLACE_STEP_1 AS (SELECT TOTO, FLORIZARRE, CASE WHEN '
-        'RAICHU=2 THEN 4 WHEN RAICHU=456.765 THEN 221.3 END AS RAICHU FROM SELECT_STEP_0) '
+        'RAICHU=2 THEN 4 WHEN RAICHU=456.765 THEN 221.3 ELSE RAICHU END AS RAICHU FROM SELECT_STEP_0) '
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM REPLACE_STEP_1'
