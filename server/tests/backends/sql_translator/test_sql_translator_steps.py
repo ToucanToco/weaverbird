@@ -181,7 +181,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             )
 
             steps = spec['step']['pipeline']
-            steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
+            steps.insert(
+                0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'}
+            )
             pipeline = Pipeline(steps=steps)
 
             # Convert Pipeline object to SQL Query
