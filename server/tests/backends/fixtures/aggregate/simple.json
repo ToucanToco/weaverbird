@@ -1,32 +1,40 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [
-      "Group"
-    ],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "Sum-Value1",
-          "Sum-Value2"
+        "name": "aggregate",
+        "on": [
+          "Group"
         ],
-        "aggfunction": "sum",
-        "columns": [
-          "Value1",
-          "Value2"
-        ]
-      },
-      {
-        "newcolumns": [
-          "Avg-Value1"
+        "aggregations": [
+          {
+            "newcolumns": [
+              "Sum-Value1",
+              "Sum-Value2"
+            ],
+            "aggfunction": "sum",
+            "columns": [
+              "Value1",
+              "Value2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "Avg-Value1"
+            ],
+            "aggfunction": "avg",
+            "columns": [
+              "Value1"
+            ]
+          }
         ],
-        "aggfunction": "avg",
-        "columns": [
-          "Value1"
-        ]
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {

@@ -1,19 +1,27 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "sum_value"
+        "name": "aggregate",
+        "on": [],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "sum_value"
+            ],
+            "aggfunction": "sum",
+            "columns": [
+              "Value1"
+            ]
+          }
         ],
-        "aggfunction": "sum",
-        "columns": [
-          "Value1"
-        ]
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {
