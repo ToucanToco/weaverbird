@@ -1,13 +1,16 @@
 {
   "exclude": [
-    "sql"
+    "sql",
+    "snowflake"
   ],
   "step": {
     "pipeline": [
       {
-        "name": "todate",
-        "column": "CREATED_DATE",
-        "format": "%Y-%m-%d"
+        "name": "replace",
+        "search_column": "NAME",
+        "to_replace": [
+          ["foo", "oof"]
+        ]
       }
     ]
   },
@@ -23,8 +26,8 @@
           "type": "integer"
         },
         {
-          "name": "CREATED_DATE",
-          "type": "string"
+          "name": "SCORE",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -33,7 +36,12 @@
       {
         "NAME": "foo",
         "AGE": 42,
-        "CREATED_DATE": "2020-03-09"
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
       }
     ]
   },
@@ -49,17 +57,22 @@
           "type": "number"
         },
         {
-          "name": "CREATED_DATE",
-          "type": "datetime"
+          "name": "SCORE",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "NAME": "foo",
+        "NAME": "oof",
         "AGE": 42.0,
-        "CREATED_DATE": "2020-03-09"
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
       }
     ]
   }

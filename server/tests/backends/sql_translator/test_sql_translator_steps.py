@@ -118,8 +118,9 @@ def sql_query_describer(t) -> Union[Dict[str, str], None]:
 
     request = (
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
-        ' WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
+        f' WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
     )
+
     connection = get_connection()
     with connection.cursor() as cursor:
         cursor.execute(request)
