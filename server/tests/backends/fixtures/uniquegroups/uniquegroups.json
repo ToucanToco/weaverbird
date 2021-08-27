@@ -90,22 +90,5 @@
         "TOTO": "zigolom"
       }
     ]
-<<<<<<< HEAD
-<<<<<<< HEAD:server/tests/backends/fixtures_sql/unique/groups.json
-=======
-=======
->>>>>>> 5a24f56c33343cf4da6f1b1aa3fa9268476bee1b
-  },
-  "other_expected": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM uniquegroups_uniquegroups), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO FROM SELECT_STEP_0 GROUP BY TOTO)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
-    },
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM uniquegroups_uniquegroups), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO FROM SELECT_STEP_0 GROUP BY TOTO)  SELECT TOTO FROM UNIQUEGROUPS_STEP_1"
-    }
-<<<<<<< HEAD
->>>>>>> feat(filter_test): shared method to get all fixtures and test_case (#1030):server/tests/backends/fixtures/uniquegroups/uniquegroups.json
-=======
->>>>>>> 5a24f56c33343cf4da6f1b1aa3fa9268476bee1b
   }
 }
