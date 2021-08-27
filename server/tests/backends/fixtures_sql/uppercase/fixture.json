@@ -1,0 +1,99 @@
+{
+  "step": {
+    "name": "uppercase",
+    "pipeline": [
+      {
+        "name": "uppercase",
+        "column": "NAME"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "FOO",
+        "AGE": 42.0,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM uppercase_fixture), UPPERCASE_STEP_1 AS (SELECT AGE, SCORE, UPPER(NAME) AS NAME FROM SELECT_STEP_0) SELECT NAME, AGE, SCORE FROM UPPERCASE_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM uppercase_fixture), UPPERCASE_STEP_1 AS (SELECT AGE, SCORE, UPPER(NAME) AS NAME FROM SELECT_STEP_0) SELECT NAME, AGE, SCORE FROM UPPERCASE_STEP_1"
+    }
+  }
+}

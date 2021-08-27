@@ -1,0 +1,112 @@
+{
+  "step": {
+    "name": "replace",
+    "pipeline": [
+      {
+        "name": "replace",
+        "search_column": "NAME",
+        "to_replace": [
+          ["'foo'", "'oof'"]
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "oof",
+        "AGE": 42.0,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM replace_fixture), REPLACE_STEP_1 AS (SELECT AGE, SCORE, CASE WHEN NAME='foo' THEN 'oof' ELSE NAME END AS NAME FROM SELECT_STEP_0) SELECT NAME, AGE, SCORE FROM REPLACE_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM replace_fixture), REPLACE_STEP_1 AS (SELECT AGE, SCORE, CASE WHEN NAME='foo' THEN 'oof' ELSE NAME END AS NAME FROM SELECT_STEP_0) SELECT NAME, AGE, SCORE FROM REPLACE_STEP_1"
+    }
+  }
+}

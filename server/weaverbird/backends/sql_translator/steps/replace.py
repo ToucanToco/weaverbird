@@ -50,7 +50,7 @@ def translate_replace(
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {complete_fields(columns=[step.search_column], query=query)},"""
         f""" {compiled_query}"""
-        f""" FROM {query.query_name}) """,
+        f""" FROM {query.query_name})""",
         selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
         metadata_manager=query.metadata_manager,
     )

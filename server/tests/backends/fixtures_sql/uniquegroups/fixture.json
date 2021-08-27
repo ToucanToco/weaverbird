@@ -1,0 +1,94 @@
+{
+  "step": {
+    "name": "uniquegroups",
+    "pipeline": [
+      {
+        "name": "uniquegroups",
+        "on": ["NAME", "AGE"]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CREATED_DATE",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "CREATED_DATE": "2020-03-09 00:00:00.000"
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42.0
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM uniquegroups_fixture), UNIQUEGROUPS_STEP_1 AS (SELECT NAME, AGE FROM SELECT_STEP_0 GROUP BY NAME, AGE)  SELECT NAME, AGE FROM UNIQUEGROUPS_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM uniquegroups_fixture), UNIQUEGROUPS_STEP_1 AS (SELECT NAME, AGE FROM SELECT_STEP_0 GROUP BY NAME, AGE)  SELECT NAME, AGE FROM UNIQUEGROUPS_STEP_1"
+    }
+  }
+}

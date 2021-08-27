@@ -45,13 +45,13 @@ def translate_uniquegroups(
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=(
-            f"""{query.transformed_query}, {query_name} AS"""
-            f""" (SELECT {select_query}"""
-            f""" FROM {query.query_name}{group_by_query}) """
+        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
+        f""" (SELECT {select_query} FROM {query.query_name}{group_by_query}) """,
+        selection_query=build_selection_query(
+            query.metadata_manager.query_metadata,
+            query_name
         ),
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
-        metadata_manager=query.metadata_manager,
+        metadata_manager=query.metadata_manager
     )
 
     log.debug(

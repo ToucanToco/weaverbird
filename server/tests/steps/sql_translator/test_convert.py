@@ -14,7 +14,7 @@ def test_translate_cast(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, CAST(RAICHU AS '
-        'integer) AS RAICHU FROM SELECT_STEP_0) '
+        'integer) AS RAICHU FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
@@ -38,7 +38,7 @@ def test_translate_cast_only_one_col():
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT CAST(RAICHU AS integer) AS RAICHU '
-        'FROM SELECT_STEP_0) '
+        'FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT RAICHU FROM CONVERT_STEP_1'

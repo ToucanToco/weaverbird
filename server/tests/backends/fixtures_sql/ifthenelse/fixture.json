@@ -1,0 +1,119 @@
+{
+  "step": {
+    "name": "ifthenelse",
+    "pipeline": [
+      {
+        "name": "ifthenelse",
+        "if": {
+            "column": "AGE",
+            "value": 20,
+            "operator": "gt"
+        },
+        "newColumn": "COND",
+        "then": "'tintin'",
+        "else": "'anime'"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 20,
+        "SCORE": 200
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        },
+        {
+          "name": "COND",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100,
+        "COND": "tintin"
+      },
+      {
+        "NAME": "bar",
+        "AGE": 20,
+        "SCORE": 200,
+        "COND": "anime"
+      }
+    ]
+  },
+  "other_expected": {
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM ifthenelse_fixture), IFTHENELSE_STEP_1 AS (SELECT NAME, AGE, SCORE, IFF(AGE > 20, 'tintin', 'anime') AS COND FROM SELECT_STEP_0)  SELECT NAME, AGE, SCORE, COND FROM IFTHENELSE_STEP_1"
+    }
+  }
+}

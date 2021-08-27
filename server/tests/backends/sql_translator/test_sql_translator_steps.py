@@ -168,33 +168,35 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     spec = json.loads(spec_file.read())
     spec_file.close()
 
-    # inserting the data in MySQL
-    # Take data in fixture file, set in pandas, create table and insert
-    data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
-    data_to_insert.to_sql(
-        name=case_id.replace('/', ''),
-        con=get_engine,
-        index=False,
-        if_exists='replace',
-    )
+    if 'other_expected' in spec:
+        if 'sql' in spec['other_expected']:
+            # inserting the data in MySQL
+            # Take data in fixture file, set in pandas, create table and insert
+            data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+            data_to_insert.to_sql(
+                name=case_id.replace('/', ''),
+                con=get_engine,
+                index=False,
+                if_exists='replace',
+            )
 
-    steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
-    pipeline = Pipeline(steps=steps)
+            steps = spec['step']['pipeline']
+            steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
+            pipeline = Pipeline(steps=steps)
 
-    # Convert Pipeline object to SQL Query
-    query, report = translate_pipeline(
-        pipeline,
-        sql_query_retriever=sql_retrieve_city,
-        sql_query_describer=sql_query_describer,  # replace by snowflake_query_describer
-    )
+            # Convert Pipeline object to SQL Query
+            query, report = translate_pipeline(
+                pipeline,
+                sql_query_retriever=sql_retrieve_city,
+                sql_query_describer=sql_query_describer,  # replace by snowflake_query_describer
+            )
 
-    # Execute request generated from Pipeline in Mysql and get the result
-    result: pd.DataFrame = execute(get_connection(), query)
+            # Execute request generated from Pipeline in Mysql and get the result
+            result: pd.DataFrame = execute(get_connection(), query)
 
-    # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    query_expected = spec['other_expected']['sql']['query']
-    assert query_expected == query
+            # Compare result and expected (from fixture file)
+            pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+            query_expected = spec['other_expected']['sql']['query']
+            assert query_expected == query
 
-    assert_dataframes_equals(pandas_result_expected, result)
+            assert_dataframes_equals(pandas_result_expected, result)

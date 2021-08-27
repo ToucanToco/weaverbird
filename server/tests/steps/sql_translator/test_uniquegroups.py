@@ -48,7 +48,7 @@ def test_translate_uniquegroups_error(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE FROM '
-        'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE) '
+        'SELECT_STEP_0 GROUP BY TOTO)'
     )
     with pytest.raises(AssertionError):
         assert query.transformed_query == expected_transformed_query

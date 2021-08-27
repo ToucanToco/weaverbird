@@ -1,0 +1,118 @@
+{
+  "step": {
+    "name": "sort",
+    "pipeline": [
+      {
+        "name": "sort",
+        "columns": [
+          {
+            "column": "AGE",
+            "order": "asc"
+          },
+          {
+            "column": "NAME",
+            "order": "desc"
+          }
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "FoO",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      },
+      {
+        "NAME": "FoO",
+        "AGE": 42.0,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM sort_fixture), SORT_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 ORDER BY AGE asc, NAME desc) SELECT NAME, AGE, SCORE FROM SORT_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM sort_fixture), SORT_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 ORDER BY AGE asc, NAME desc) SELECT NAME, AGE, SCORE FROM SORT_STEP_1"
+    }
+  }
+}

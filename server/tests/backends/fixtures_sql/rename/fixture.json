@@ -1,0 +1,111 @@
+{
+  "step": {
+    "name": "rename",
+    "pipeline": [
+      {
+        "name": "rename",
+        "to_rename": [
+          ["NAME", "FIRST_NAME"]
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "x",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "x": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "FIRST_NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "FIRST_NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100
+      },
+      {
+        "FIRST_NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_expected": {
+    "sql": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM rename_fixture), RENAME_STEP_1 AS (SELECT AGE, SCORE, NAME AS FIRST_NAME FROM SELECT_STEP_0) SELECT AGE, SCORE, FIRST_NAME FROM RENAME_STEP_1"
+    },
+    "snowflake": {
+      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM rename_fixture), RENAME_STEP_1 AS (SELECT AGE, SCORE, NAME AS FIRST_NAME FROM SELECT_STEP_0) SELECT AGE, SCORE, FIRST_NAME FROM RENAME_STEP_1"
+    }
+  }
+}
