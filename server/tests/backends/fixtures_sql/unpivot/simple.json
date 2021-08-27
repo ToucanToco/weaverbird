@@ -1,4 +1,7 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
     "name": "unpivot",
     "pipeline": [
