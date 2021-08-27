@@ -1,6 +1,7 @@
 {
   "exclude": [
-    "sql"
+    "sql",
+    "snowflake"
   ],
   "step": {
     "pipeline": [
@@ -33,7 +34,7 @@
       {
         "NAME": "foo",
         "AGE": 42,
-        "CREATED_DATE": "2020-03-09"
+        "CREATED_DATE": "2020-03-09 00:00:00.000"
       }
     ]
   },
@@ -59,7 +60,7 @@
       {
         "NAME": "foo",
         "AGE": 42.0,
-        "CREATED_DATE": "2020-03-09 00:00:00.000"
+        "CREATED_DATE": "2020-03-09"
       }
     ]
   }
