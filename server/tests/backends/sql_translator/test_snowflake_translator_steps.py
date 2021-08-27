@@ -93,11 +93,14 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
-    
+
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
             pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
-                name=input, con=get_engine, index=False, if_exists='replace', chunksize=1
+                name=input,
+                con=get_engine,
+                index=False,
+                if_exists='replace',
             )
 
     steps = spec['step']['pipeline']
@@ -115,11 +118,10 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
-
+    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")};')
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
-            execute(get_connection(), f'DROP TABLE IF EXISTS {input}', False)
+            execute(get_connection(), f'DROP TABLE {input}')
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')

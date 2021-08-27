@@ -18,6 +18,7 @@ from .text import translate_text
 from .todate import translate_todate
 from .top import translate_top
 from .uniquegroups import translate_uniquegroups
+from .unpivot import translate_unpivot
 from .uppercase import translate_uppercase
 
 sql_steps_translators: Dict[str, SQLStepTranslator] = {
@@ -39,4 +40,6 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'join': translate_join,
     'uniquegroups': translate_uniquegroups,
     'top': translate_top,
+    'join': translate_join,
+    'unpivot': translate_unpivot,
 }
