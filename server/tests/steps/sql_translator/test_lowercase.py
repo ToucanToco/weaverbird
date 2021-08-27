@@ -11,7 +11,7 @@ def test_translate_simple_lowercase(query):
         index=1,
     )
     expected_transformed_query = (
-        'WITH SELECT_STEP_0 AS (SELECT * FROM products), LOWERCASE_STEP_1 AS (SELECT TOTO, FLORIZARRE, LOWER(raichu) '
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), LOWERCASE_STEP_1 AS (SELECT TOTO, FLORIZARRE, LOWER(RAICHU) '
         'AS RAICHU FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query

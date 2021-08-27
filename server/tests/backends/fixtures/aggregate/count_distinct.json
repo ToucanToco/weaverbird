@@ -1,19 +1,27 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "Group_CD"
+        "name": "aggregate",
+        "on": [],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "Group_CD"
+            ],
+            "aggfunction": "count distinct",
+            "columns": [
+              "Group"
+            ]
+          }
         ],
-        "aggfunction": "count distinct",
-        "columns": [
-          "Group"
-        ]
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {

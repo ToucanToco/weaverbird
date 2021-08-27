@@ -1,8 +1,12 @@
 {
   "step": {
-    "name": "duplicate",
-    "column": "x",
-    "new_column_name": "y"
+    "pipeline": [
+      {
+        "name": "duplicate",
+        "column": "x",
+        "new_column_name": "y"
+      }
+    ]
   },
   "input": {
     "schema": {

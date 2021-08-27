@@ -1,6 +1,9 @@
 {
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
   "step": {
-    "name": "rename",
     "pipeline": [
       {
         "name": "rename",
@@ -41,34 +44,6 @@
       }
     ]
   },
-  "other_inputs": {
-    "buzz": {
-      "schema": {
-        "fields": [
-          {
-            "name": "NAME",
-            "type": "string"
-          },
-          {
-            "name": "SCORE",
-            "type": "integer"
-          },
-          {
-            "name": "x",
-            "type": "string"
-          }
-        ],
-        "pandas_version": "0.20.0"
-      },
-      "data": [
-        {
-          "NAME": "plop",
-          "SCORE": 666,
-          "x": "y"
-        }
-      ]
-    }
-  },
   "expected": {
     "schema": {
       "fields": [
@@ -99,13 +74,5 @@
         "SCORE": 100
       }
     ]
-  },
-  "other_expected": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM rename_fixture), RENAME_STEP_1 AS (SELECT AGE, SCORE, NAME AS FIRST_NAME FROM SELECT_STEP_0) SELECT AGE, SCORE, FIRST_NAME FROM RENAME_STEP_1"
-    },
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM rename_fixture), RENAME_STEP_1 AS (SELECT AGE, SCORE, NAME AS FIRST_NAME FROM SELECT_STEP_0) SELECT AGE, SCORE, FIRST_NAME FROM RENAME_STEP_1"
-    }
   }
 }

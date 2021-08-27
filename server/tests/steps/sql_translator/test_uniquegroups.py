@@ -14,7 +14,7 @@ def test_translate_uniquegroups_empty(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE FROM '
-        'SELECT_STEP_0) '
+        'SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM UNIQUEGROUPS_STEP_1'
@@ -31,7 +31,7 @@ def test_translate_uniquegroups(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), UNIQUEGROUPS_STEP_1 AS (SELECT TOTO, FLORIZARRE FROM '
-        'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE) '
+        'SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE)'
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, FLORIZARRE FROM UNIQUEGROUPS_STEP_1'

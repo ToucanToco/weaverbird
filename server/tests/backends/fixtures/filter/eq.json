@@ -1,11 +1,16 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "fromdate",
     "pipeline": [
       {
-        "name": "fromdate",
-        "column": "CREATED_DATE",
-        "format": "%Y-%m-%d"
+        "name": "filter",
+        "condition": {
+          "column": "NAME",
+          "operator": "eq",
+          "value": "foo"
+        }
       }
     ]
   },
@@ -21,8 +26,8 @@
           "type": "integer"
         },
         {
-          "name": "CREATED_DATE",
-          "type": "datetime"
+          "name": "SCORE",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -31,7 +36,12 @@
       {
         "NAME": "foo",
         "AGE": 42,
-        "CREATED_DATE": "2020-03-09"
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
       }
     ]
   },
@@ -75,8 +85,8 @@
           "type": "number"
         },
         {
-          "name": "CREATED_DATE",
-          "type": "string"
+          "name": "SCORE",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -85,13 +95,8 @@
       {
         "NAME": "foo",
         "AGE": 42.0,
-        "CREATED_DATE": "2020-03-09 00:00:00.000"
+        "SCORE": 100
       }
     ]
-  },
-  "other_expected": {
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM fromdate_fixture), FROMDATE_STEP_1 AS (SELECT NAME, AGE, TO_VARCHAR(CREATED_DATE) AS CREATED_DATE FROM SELECT_STEP_0) SELECT NAME, AGE, CREATED_DATE FROM FROMDATE_STEP_1"
-    }
   }
 }

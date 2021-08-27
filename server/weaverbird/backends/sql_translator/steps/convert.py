@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -24,20 +23,23 @@ def translate_convert(
     query_name = f'CONVERT_STEP_{index}'
 
     log.debug(
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"step.columns: {step.columns}\n"
-        f"step.data_type: {step.data_type}\n"
-        f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'step.columns: {step.columns}\n'
+        f'step.data_type: {step.data_type}\n'
+        f'query.transformed_query: {query.transformed_query}\n'
+        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
     for c in step.columns:
-        query.metadata_manager.change_type(column_name=c, new_type=step.data_type)
-    completed_fields = complete_fields(columns=step.columns, query=query)
-    compiled_query = ", ".join([f"CAST({c} AS {step.data_type}) AS {c}" for c in step.columns])
+        query.metadata_manager.update_query_metadata_column_type(c, step.data_type)
+
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=step.columns
+    )
+
+    compiled_query = ', '.join([f'CAST({c} AS {step.data_type}) AS {c}' for c in step.columns])
 
     if len(completed_fields):
         compiled_query = f', {compiled_query}'
@@ -46,14 +48,16 @@ def translate_convert(
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields}{compiled_query}"""
         f""" FROM {query.query_name})""",
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
         metadata_manager=query.metadata_manager,
     )
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query

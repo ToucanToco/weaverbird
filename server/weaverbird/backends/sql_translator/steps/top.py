@@ -23,53 +23,51 @@ def translate_top(
     query_name = f'TOP_STEP_{index}'
 
     log.debug(
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"step.name: {step.name}\n"
-        f"step.groups: {step.groups}\n"
-        f"step.rank_on: {step.rank_on}\n"
-        f"step.sort: {step.sort}\n"
-        f"step.limit: {step.limit}\n"
-        f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'step.name: {step.name}\n'
+        f'step.groups: {step.groups}\n'
+        f'step.rank_on: {step.rank_on}\n'
+        f'step.sort: {step.sort}\n'
+        f'step.limit: {step.limit}\n'
+        f'query.transformed_query: {query.transformed_query}\n'
+        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
     # We build the group by query part
-    group_by_query: str = ""
+    group_by_query: str = ''
     for index, gb in enumerate(step.groups + [step.rank_on]):
-        group_by_query += ("GROUP BY " if index == 0 else ", ") + gb
+        group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
 
     # We remove superflues columns
     # to handle upper and lower cases
     # we refresh query metadatas with columns to not remove
-    query.metadata_manager.remove_column(
-        all_except=(
-            [c.upper() for c in step.groups]
-            + [c.lower() for c in step.groups]
-            + [step.rank_on.upper(), step.rank_on.lower()]
-        )
-    )
+    cols = [g.upper() for g in step.groups] + [step.rank_on.upper()]
+    cols_to_remove = [
+        col
+        for col in query.metadata_manager.retrieve_query_metadata_columns_as_list()
+        if col not in cols
+    ]
+    query.metadata_manager.remove_query_metadata_columns(cols_to_remove)
 
-    # the select group query updates
-    select_group_query = (
-        ", " + ', '.join(step.groups) if len(', '.join(step.groups)) > 0 else ', '.join(step.groups)
-    )
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {step.rank_on}{select_group_query}"""
+        f""" (SELECT {completed_fields}"""
         f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort} LIMIT {step.limit}) """,
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
         metadata_manager=query.metadata_manager,
     )
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query

@@ -1,6 +1,9 @@
 {
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
   "step": {
-    "name": "sort",
     "pipeline": [
       {
         "name": "sort",
@@ -48,34 +51,6 @@
       }
     ]
   },
-  "other_inputs": {
-    "buzz": {
-      "schema": {
-        "fields": [
-          {
-            "name": "NAME",
-            "type": "string"
-          },
-          {
-            "name": "SCORE",
-            "type": "integer"
-          },
-          {
-            "name": "x",
-            "type": "string"
-          }
-        ],
-        "pandas_version": "0.20.0"
-      },
-      "data": [
-        {
-          "NAME": "plop",
-          "SCORE": 666,
-          "x": "y"
-        }
-      ]
-    }
-  },
   "expected": {
     "schema": {
       "fields": [
@@ -106,13 +81,5 @@
         "SCORE": 100
       }
     ]
-  },
-  "other_expected": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM sort_fixture), SORT_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 ORDER BY AGE asc, NAME desc) SELECT NAME, AGE, SCORE FROM SORT_STEP_1"
-    },
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM sort_fixture), SORT_STEP_1 AS (SELECT NAME, AGE, SCORE FROM SELECT_STEP_0 ORDER BY AGE asc, NAME desc) SELECT NAME, AGE, SCORE FROM SORT_STEP_1"
-    }
   }
 }

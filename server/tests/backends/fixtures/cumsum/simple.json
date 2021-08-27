@@ -1,8 +1,12 @@
 {
   "step": {
-    "name": "cumsum",
-    "valueColumn": "value",
-    "referenceColumn": "date"
+    "pipeline": [
+      {
+        "name": "cumsum",
+        "valueColumn": "value",
+        "referenceColumn": "date"
+      }
+    ]
   },
   "input": {
     "schema": {

@@ -1,6 +1,9 @@
 {
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
   "step": {
-    "name": "todate",
     "pipeline": [
       {
         "name": "todate",
@@ -35,34 +38,6 @@
       }
     ]
   },
-  "other_inputs": {
-    "buzz": {
-      "schema": {
-        "fields": [
-          {
-            "name": "NAME",
-            "type": "string"
-          },
-          {
-            "name": "SCORE",
-            "type": "integer"
-          },
-          {
-            "name": "x",
-            "type": "string"
-          }
-        ],
-        "pandas_version": "0.20.0"
-      },
-      "data": [
-        {
-          "NAME": "plop",
-          "SCORE": 666,
-          "x": "y"
-        }
-      ]
-    }
-  },
   "expected": {
     "schema": {
       "fields": [
@@ -88,10 +63,5 @@
         "CREATED_DATE": "2020-03-09"
       }
     ]
-  },
-  "other_expected": {
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM todate_fixture), TODATE_STEP_1 AS (SELECT NAME, AGE, TO_DATE(CREATED_DATE, 'YYYY-MM-DD') AS CREATED_DATE FROM SELECT_STEP_0) SELECT NAME, AGE, CREATED_DATE FROM TODATE_STEP_1"
-    }
   }
 }

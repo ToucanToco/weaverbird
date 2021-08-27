@@ -1,6 +1,9 @@
 {
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
   "step": {
-    "name": "replace",
     "pipeline": [
       {
         "name": "replace",
@@ -42,34 +45,6 @@
       }
     ]
   },
-  "other_inputs": {
-    "buzz": {
-      "schema": {
-        "fields": [
-          {
-            "name": "NAME",
-            "type": "string"
-          },
-          {
-            "name": "SCORE",
-            "type": "integer"
-          },
-          {
-            "name": "x",
-            "type": "string"
-          }
-        ],
-        "pandas_version": "0.20.0"
-      },
-      "data": [
-        {
-          "NAME": "plop",
-          "SCORE": 666,
-          "x": "y"
-        }
-      ]
-    }
-  },
   "expected": {
     "schema": {
       "fields": [
@@ -100,13 +75,5 @@
         "SCORE": 100
       }
     ]
-  },
-  "other_expected": {
-    "sql": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM replace_fixture), REPLACE_STEP_1 AS (SELECT AGE, SCORE, CASE WHEN NAME='foo' THEN 'oof' ELSE NAME END AS NAME FROM SELECT_STEP_0) SELECT NAME, AGE, SCORE FROM REPLACE_STEP_1"
-    },
-    "snowflake": {
-      "query": "WITH SELECT_STEP_0 AS (SELECT * FROM replace_fixture), REPLACE_STEP_1 AS (SELECT AGE, SCORE, CASE WHEN NAME='foo' THEN 'oof' ELSE NAME END AS NAME FROM SELECT_STEP_0) SELECT NAME, AGE, SCORE FROM REPLACE_STEP_1"
-    }
   }
 }

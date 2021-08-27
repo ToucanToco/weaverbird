@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    complete_fields,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -24,41 +23,46 @@ def translate_replace(
     query_name = f'REPLACE_STEP_{index}'
 
     log.debug(
-        "############################################################"
-        f"query_name: {query_name}\n"
-        "------------------------------------------------------------"
-        f"step.name: {step.name}\n"
-        f"step.search_column: {step.search_column}\n"
-        f"step.to_replace: {step.to_replace}\n"
-        f"query.transformed_query: {query.transformed_query}\n"
-        f"query.metadata_manager.tables_metadata: {query.metadata_manager.tables_metadata}\n"
-        f"query.metadata_manager.query_metadata: {query.metadata_manager.query_metadata}\n"
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'step.name: {step.name}\n'
+        f'step.search_column: {step.search_column}\n'
+        f'step.to_replace: {step.to_replace}\n'
+        f'query.transformed_query: {query.transformed_query}\n'
+        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    compiled_query: str = "CASE "
+    compiled_query: str = 'CASE '
     for element_to_replace in step.to_replace:
         from_value, to_value = element_to_replace
         if not isinstance(from_value, float) and not isinstance(from_value, int):
-            from_value = from_value.replace('"', '\'')
+            from_value = from_value.replace('"', "\'")
         if not isinstance(from_value, float) and not isinstance(to_value, int):
-            to_value = to_value.replace('"', '\'')
+            to_value = to_value.replace('"', "'")
         compiled_query += f'WHEN {step.search_column}={from_value} THEN {to_value} '
-    compiled_query += f"ELSE {step.search_column} END AS {step.search_column}"
+    compiled_query += f'ELSE {step.search_column} END AS {step.search_column}'
+
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=[step.search_column]
+    )
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {complete_fields(columns=[step.search_column], query=query)},"""
+        f""" (SELECT {completed_fields},"""
         f""" {compiled_query}"""
         f""" FROM {query.query_name})""",
-        selection_query=build_selection_query(query.metadata_manager.query_metadata, query_name),
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
         metadata_manager=query.metadata_manager,
     )
 
     log.debug(
-        "------------------------------------------------------------"
-        f"SQLquery: {new_query.transformed_query}"
-        "############################################################"
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
     )
 
     return new_query
