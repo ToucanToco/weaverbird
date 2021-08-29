@@ -1,0 +1,135 @@
+{
+  "exclude": [
+    "pandas",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "append",
+        "pipelines": [
+          [
+            {
+              "name": "domain",
+              "domain": "buzz"
+            }
+          ],
+          [
+            {
+              "name": "domain",
+              "domain": "buzz"
+            }
+          ]
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      }
+    ]
+  },
+  "other_inputs": {
+    "buzz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "X",
+            "type": "string"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "plop",
+          "SCORE": 666,
+          "X": "y"
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        },
+        {
+          "name": "X",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100,
+        "X": null
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43.0,
+        "SCORE": 200,
+        "X": null
+      },
+      {
+        "NAME": "plop",
+        "AGE": null,
+        "SCORE": 666,
+        "X": "y"
+      },
+      {
+        "NAME": "plop",
+        "AGE": null,
+        "SCORE": 666,
+        "X": "y"
+      }
+    ]
+  }
+}
