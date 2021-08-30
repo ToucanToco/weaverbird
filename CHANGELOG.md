@@ -2,11 +2,11 @@
 
 ## Unreleased
 
-### [0.58.0] - 2021-08-27
+## [0.58.0] - 2021-08-27
 
 - SQL VQB: Added Unpivot & Pivot Step to Snowflake
 
-### [0.57.0] - 2021-08-26
+## [0.57.0] - 2021-08-26
 
 ### Added
 
