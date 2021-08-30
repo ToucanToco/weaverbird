@@ -998,6 +998,7 @@ describe('Pipeline interpolator', () => {
         column_to_pivot: '<%= foo %>',
         value_column: '<%= egg %>',
         agg_function: 'sum',
+        pivot_values: [],
       },
     ];
     expect(translate(pipeline)).toEqual([
@@ -1007,6 +1008,7 @@ describe('Pipeline interpolator', () => {
         column_to_pivot: 'bar',
         value_column: 'spam',
         agg_function: 'sum',
+        pivot_values: [],
       },
     ]);
   });

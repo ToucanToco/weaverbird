@@ -47,7 +47,7 @@
       data-path=".agg_function"
       :errors="errors"
     />
-    <List
+    <MultiInputTextWidget
       class="pivotValuesInput"
       v-model="editedStep.pivot_values"
       name="Pivot values in ..."
@@ -64,10 +64,10 @@ import { Prop } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { PipelineStepName, PivotStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
-import List from '@components/widgets/List.vue';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -77,6 +77,7 @@ import BaseStepForm from './StepForm.vue';
   components: {
     ColumnPicker,
     AutocompleteWidget,
+    MultiInputTextWidget,
     MultiselectWidget,
   },
 })
@@ -144,7 +145,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
           message: `Column name ${this.editedStep.value_column} is used at least twice but should be unique`,
         },
       ];
-    } else if (Set(this.editedStep.pivot_values).length < this.editedStep.pivot_values.length) {
+    } else if (new Set(this.editedStep.pivot_values).size < this.editedStep.pivot_values.length) {
       return [
         {
           params: [],

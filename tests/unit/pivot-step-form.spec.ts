@@ -20,6 +20,7 @@ describe('Pivot Step Form', () => {
         column_to_pivot: 'foo',
         value_column: 'bar',
         agg_function: 'sum',
+        pivot_values: [],
       },
     },
   });
@@ -46,12 +47,38 @@ describe('Pivot Step Form', () => {
           column_to_pivot: 'columnA',
           value_column: 'columnB',
           agg_function: 'sum',
+          pivot_values: [],
         },
       },
       errors: [
         {
           keyword: 'columnNameConflict',
           dataPath: '.column_to_pivot',
+        },
+      ],
+    },
+    {
+      testlabel: 'pivot_values has non unique values',
+      store: setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [],
+        },
+      }),
+      data: {
+        editedStep: {
+          name: 'pivot',
+          index: ['columnA', 'columnC'],
+          column_to_pivot: 'columnD',
+          value_column: 'columnB',
+          agg_function: 'sum',
+          pivot_values: ['boo', 'boo'],
+        },
+      },
+      errors: [
+        {
+          keyword: 'pivotValuesConflict',
+          dataPath: '.pivot_values',
         },
       ],
     },
@@ -70,6 +97,7 @@ describe('Pivot Step Form', () => {
           column_to_pivot: 'columnB',
           value_column: 'columnA',
           agg_function: 'sum',
+          pivot_values: [],
         },
       },
       errors: [
@@ -94,6 +122,7 @@ describe('Pivot Step Form', () => {
           column_to_pivot: 'columnB',
           value_column: 'columnB',
           agg_function: 'sum',
+          pivot_values: [],
         },
       },
       errors: [
@@ -114,6 +143,7 @@ describe('Pivot Step Form', () => {
           column_to_pivot: 'country',
           value_column: 'value',
           agg_function: 'sum',
+          pivot_values: ['France', 'Spain'],
         },
       },
     });
