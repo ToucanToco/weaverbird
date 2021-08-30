@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    snowflake_date_format,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
