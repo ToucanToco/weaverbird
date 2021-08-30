@@ -125,7 +125,7 @@ class TableMetadata(BaseModel):
         return self
 
     def add_columns(self, columns: Dict[str, str]) -> TableMetadata:
-        for k, v in columns:
+        for k, v in columns.items():
             self.add_column(column_name=k, column_type=v)
         return self
 
