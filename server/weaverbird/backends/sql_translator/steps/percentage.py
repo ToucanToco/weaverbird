@@ -1,0 +1,71 @@
+from distutils import log
+
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    build_selection_query,
+    snowflake_date_format,
+)
+from weaverbird.backends.sql_translator.types import (
+    SQLPipelineTranslator,
+    SQLQuery,
+    SQLQueryDescriber,
+    SQLQueryRetriever,
+)
+from weaverbird.pipeline.steps import PercentageStep
+
+
+def translate_percentage(
+    step: PercentageStep,
+    query: SQLQuery,
+    index: int,
+    sql_query_retriever: SQLQueryRetriever = None,
+    sql_query_describer: SQLQueryDescriber = None,
+    sql_translate_pipeline: SQLPipelineTranslator = None,
+) -> SQLQuery:
+    query_name = f'PERCENTAGE_STEP_{index}'
+
+    log.debug(
+        '############################################################'
+        f'query_name: {query_name}\n'
+        '------------------------------------------------------------'
+        f'step.name: {step.name}\n'
+        f'step.column: {step.column}\n'
+        f'step.group: {step.group}\n'
+        f'step.new_column_name: {step.new_column_name}\n'
+        f'query.transformed_query: {query.transformed_query}\n'
+        f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
+    )
+
+    new_column_name = f'{step.column}_PCT' if step.new_column_name is None else step.new_column_name
+    group_query = (
+        f' GROUP BY {", ".join(step.group + [step.column])}'
+        if len(step.group + [step.column]) > 0
+        else ''
+    )
+
+    # added the new column
+    for table in query.metadata_manager.tables:
+        query.metadata_manager.add_table_column(table, new_column_name, 'float')
+
+        for col in query.metadata_manager.retrieve_columns_as_list(table):
+            if col not in (step.group + [step.column, new_column_name]):
+                query.metadata_manager.remove_table_column(table, col)
+
+    new_query = SQLQuery(
+        query_name=query_name,
+        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
+                          f""" (SELECT {', '.join(step.group + [step.column])},"""
+                          f""" 100 * RATIO_TO_REPORT({step.column}) OVER () AS {new_column_name}"""
+                          f""" FROM {query.query_name}{group_query})""",
+        selection_query=build_selection_query(
+            query.metadata_manager.retrieve_query_metadata_columns(), query_name
+        ),
+        metadata_manager=query.metadata_manager,
+    )
+
+    log.debug(
+        '------------------------------------------------------------'
+        f'SQLquery: {new_query.transformed_query}'
+        '############################################################'
+    )
+
+    return new_query
