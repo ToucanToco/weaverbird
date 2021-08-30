@@ -1,0 +1,84 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "sort",
+        "columns": [
+          {
+            "column": "AGE",
+            "order": "asc"
+          },
+          {
+            "column": "NAME",
+            "order": "desc"
+          }
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "FoO",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      },
+      {
+        "NAME": "FoO",
+        "AGE": 42.0,
+        "SCORE": 100
+      }
+    ]
+  }
+}

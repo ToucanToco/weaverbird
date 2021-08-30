@@ -47,7 +47,7 @@ def translate_convert(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields}{compiled_query}"""
-        f""" FROM {query.query_name}) """,
+        f""" FROM {query.query_name})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

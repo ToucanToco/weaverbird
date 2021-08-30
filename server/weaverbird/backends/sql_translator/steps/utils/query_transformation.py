@@ -155,25 +155,44 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
     return query_string
 
 
-def prepare_aggregation_query(aggregated_cols, aggregated_string, query, step):
+def prepare_aggregation_query(aggregated_cols, aggregated_string, query: SQLQuery, step):
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names
         agg.new_columns = [x.replace('-', '_').replace(' ', '_') for x in agg.new_columns]
+
     for aggregation in [
         aggregation
         for aggregation in step.aggregations
         if aggregation.agg_function not in ['first', 'last']
     ]:
+
         for col, new_col in zip(aggregation.columns, aggregation.new_columns):
             if aggregation.agg_function == 'count distinct':
                 aggregated_cols.append(f'COUNT(DISTINCT {col}) AS {new_col}')
             else:
                 aggregated_cols.append(f'{aggregation.agg_function.upper()}({col}) AS {new_col}')
+
+            # We remove unecessary columns
+            for table in query.metadata_manager.tables:
+                column_list = query.metadata_manager.retrieve_columns_as_list(table)
+                for colu in column_list:
+                    if colu not in aggregation.columns + step.on:
+                        query.metadata_manager.remove_table_column(table, colu)
+
+                # if col not in column_list:
+                # we update the column name
+                try:
+                    query.metadata_manager.update_column_name(
+                        table_name=table, column_name=col, dest_column_name=new_col
+                    )
+                except Exception as es:
+                    print(es)
+
     if len(step.on) and len(aggregated_cols):
         aggregated_cols += step.on
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name} GROUP BY {', '.join(step.on)}"
     elif len(aggregated_cols):
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name}"
-    return aggregated_string
+    return query, aggregated_string
 
 
 def complete_fields(query: SQLQuery, columns=None) -> str:

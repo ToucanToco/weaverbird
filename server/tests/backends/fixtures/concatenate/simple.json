@@ -1,4 +1,7 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
     "pipeline": [
       {
@@ -9,7 +12,7 @@
           "SCORE"
         ],
         "separator": " - ",
-        "new_column_name": "newcol"
+        "new_column_name": "NEWCOL"
       }
     ]
   },
@@ -60,7 +63,7 @@
           "type": "integer"
         },
         {
-          "name": "newcol",
+          "name": "NEWCOL",
           "type": "string"
         }
       ],
@@ -71,13 +74,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "newcol": "foo - 42 - 100"
+        "NEWCOL": "foo - 42 - 100"
       },
       {
         "NAME": "bar",
         "AGE": 43,
         "SCORE": 200,
-        "newcol": "bar - 43 - 200"
+        "NEWCOL": "bar - 43 - 200"
       }
     ]
   }

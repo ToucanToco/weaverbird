@@ -55,7 +55,7 @@ def translate_sort(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields} FROM {query.query_name}"""
-        f""" ORDER BY {sort_columns_to_sql(step.columns)}) """,
+        f""" ORDER BY {sort_columns_to_sql(step.columns)})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

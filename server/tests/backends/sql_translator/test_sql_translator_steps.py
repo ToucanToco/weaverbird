@@ -117,7 +117,11 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
         else:
             table_name = temp.split('.')[0]
 
-    request = f'SELECT column_name as name, data_type as type_code FROM information_schema.columns WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
+    request = (
+        f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
+        f' WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
+    )
+
     connection = get_connection()
     with connection.cursor() as cursor:
         cursor.execute(request)
@@ -142,6 +146,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
+
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
             pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
@@ -170,7 +175,8 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-    query_expected = spec['other_expected']['sql']['query']
-    assert query_expected == query
+    if 'other_expected' in spec:
+        query_expected = spec['other_expected']['sql']['query']
+        assert query_expected == query
 
     assert_dataframes_equals(pandas_result_expected, result)

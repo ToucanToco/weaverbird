@@ -26,7 +26,8 @@ def test_translate_filter(mocker):
     res = translate_filter(step, query, index=1)
     assert (
         res.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT TOTO, TATA FROM products), FILTER_STEP_1 AS (SELECT TOTO, TATA FROM SELECT_STEP_0 WHERE amount = 10)'
+        == 'WITH SELECT_STEP_0 AS (SELECT TOTO, TATA FROM products), FILTER_STEP_1 AS (SELECT TOTO, TATA FROM '
+        'SELECT_STEP_0 WHERE amount = 10)'
     )
     assert res.selection_query == 'SELECT TOTO, TATA FROM FILTER_STEP_1'
 

@@ -66,7 +66,7 @@ def translate_ifthenelse(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields}{composed_query}"""
-        f""" FROM {query.query_name}) """,
+        f""" FROM {query.query_name})""",
     )
 
     query.metadata_manager.add_query_metadata_column(step.new_column, 'str')

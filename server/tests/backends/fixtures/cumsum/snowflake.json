@@ -1,0 +1,107 @@
+{
+  "exclude": [
+    "pandas",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "CUMSUM",
+        "valueColumn": "VALUE",
+        "referenceColumn": "DATE"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-06",
+        "VALUE": 6
+      },
+      {
+        "DATE": "2019-01",
+        "VALUE": 2
+      },
+      {
+        "DATE": "2019-02",
+        "VALUE": 5
+      },
+      {
+        "DATE": "2019-03",
+        "VALUE": 3
+      },
+      {
+        "DATE": "2019-04",
+        "VALUE": 8
+      },
+      {
+        "DATE": "2019-05",
+        "VALUE": 9
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE_CUMSUM",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-01",
+        "VALUE": 2,
+        "VALUE_CUMSUM": 2
+      },
+      {
+        "DATE": "2019-02",
+        "VALUE": 5,
+        "VALUE_CUMSUM": 7
+      },
+      {
+        "DATE": "2019-03",
+        "VALUE": 3,
+        "VALUE_CUMSUM": 10
+      },
+      {
+        "DATE": "2019-04",
+        "VALUE": 8,
+        "VALUE_CUMSUM": 18
+      },
+      {
+        "DATE": "2019-05",
+        "VALUE": 9,
+        "VALUE_CUMSUM": 27
+      },
+      {
+        "DATE": "2019-06",
+        "VALUE": 6,
+        "VALUE_CUMSUM": 33
+      }
+    ]
+  }
+}
