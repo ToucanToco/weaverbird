@@ -40,8 +40,6 @@ def translate_join(
     else:
         how = step.type.upper()
 
-    query_name = f'JOIN_STEP_{index}'
-
     # Retrieve the right query either directly as a domain or as a resolved sql pipeline
     right_query = resolve_sql_pipeline_for_combination(
         step.right_pipeline,
