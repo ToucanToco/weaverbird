@@ -12,12 +12,12 @@ def test_translate_no_new_column_percentage(query):
     )
     expected_transformed_query = (
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), PERCENTAGE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "100 * RATIO_TO_REPORT(RAICHU) AS PERCENT_RATIO_TO_REPORT_RAICHU FROM SELECT_STEP_0)"
+        "RATIO_TO_REPORT(RAICHU) OVER () AS RAICHU_PCT FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, PERCENT_RATIO_TO_REPORT_RAICHU FROM PERCENTAGE_STEP_1'
+        == 'SELECT TOTO, RAICHU, FLORIZARRE, RAICHU_PCT FROM PERCENTAGE_STEP_1'
     )
     assert query.query_name == 'PERCENTAGE_STEP_1'
 
@@ -32,7 +32,7 @@ def test_translate_simple_percentage(query):
     )
     expected_transformed_query = (
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), PERCENTAGE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "100 * RATIO_TO_REPORT(RAICHU) AS RAICHU_COLUMN FROM SELECT_STEP_0)"
+        "RATIO_TO_REPORT(RAICHU) OVER () AS RAICHU_COLUMN FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
     assert (
@@ -56,8 +56,8 @@ def test_translate_group_percentage(query):
         index=1,
     )
     expected_transformed_query = (
-        "WITH SELECT_STEP_0 AS (SELECT * FROM products), PERCENTAGE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "100 * RATIO_TO_REPORT(RAICHU) AS RAICHU_COLUMN FROM SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE)"
+        "WITH SELECT_STEP_0 AS (SELECT * FROM products), PERCENTAGE_STEP_1 AS (SELECT TOTO, FLORIZARRE, RAICHU, "
+        "RATIO_TO_REPORT(RAICHU) OVER () AS RAICHU_COLUMN FROM SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, RAICHU)"
     )
     assert query.transformed_query == expected_transformed_query
     assert (
