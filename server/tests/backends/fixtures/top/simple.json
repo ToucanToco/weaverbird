@@ -1,14 +1,13 @@
 {
   "exclude": [
     "sql",
-    "snowflake",
     "pandas"
   ],
   "step": {
     "pipeline": [
       {
         "name": "top",
-        "limit": 8,
+        "limit": 3,
         "groups": [
           "GROUP_COLUMN"
         ],
