@@ -1,13 +1,12 @@
 {
   "exclude": [
-    "snowflake",
     "sql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "argmax",
-        "column": "value",
+        "column": "VALUE",
         "groups": []
       }
     ]
@@ -16,15 +15,15 @@
     "schema": {
       "fields": [
         {
-          "name": "label",
+          "name": "LABEL",
           "type": "string"
         },
         {
-          "name": "group",
+          "name": "GROUP",
           "type": "string"
         },
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "integer"
         }
       ],
@@ -32,34 +31,34 @@
     },
     "data": [
       {
-        "label": "label1",
-        "group": "group 1",
-        "value": 13
+        "LABEL": "label1",
+        "GROUP": "group 1",
+        "VALUE": 13
       },
       {
-        "label": "label2",
-        "group": "group 1",
-        "value": 7
+        "LABEL": "label2",
+        "GROUP": "group 1",
+        "VALUE": 7
       },
       {
-        "label": "label3",
-        "group": "group 1",
-        "value": 20
+        "LABEL": "label3",
+        "GROUP": "group 1",
+        "VALUE": 20
       },
       {
-        "label": "label4",
-        "group": "group 2",
-        "value": 1
+        "LABEL": "label4",
+        "GROUP": "group 2",
+        "VALUE": 1
       },
       {
-        "label": "label5",
-        "group": "group 2",
-        "value": 10
+        "LABEL": "label5",
+        "GROUP": "group 2",
+        "VALUE": 10
       },
       {
-        "label": "label6",
-        "group": "group 2",
-        "value": 5
+        "LABEL": "label6",
+        "GROUP": "group 2",
+        "VALUE": 5
       }
     ]
   },
@@ -67,15 +66,15 @@
     "schema": {
       "fields": [
         {
-          "name": "label",
+          "name": "LABEL",
           "type": "string"
         },
         {
-          "name": "group",
+          "name": "GROUP",
           "type": "string"
         },
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "integer"
         }
       ],
@@ -83,9 +82,9 @@
     },
     "data": [
       {
-        "label": "label3",
-        "group": "group 1",
-        "value": 20
+        "LABEL": "label3",
+        "GROUP": "group 1",
+        "VALUE": 20
       }
     ]
   }

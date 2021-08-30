@@ -23,7 +23,9 @@ def translate_aggregate(
     aggregated_cols = []
     aggregated_string = ''
     first_last_string = ''
-    aggregated_string = prepare_aggregation_query(aggregated_cols, aggregated_string, query, step)
+    query, aggregated_string = prepare_aggregation_query(
+        aggregated_cols, aggregated_string, query, step
+    )
     query_string = build_first_or_last_aggregation(
         aggregated_string, first_last_string, query, step
     )

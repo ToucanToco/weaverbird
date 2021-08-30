@@ -1,24 +1,40 @@
 {
   "exclude": [
+    "pandas",
     "sql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "aggregate",
-        "on": [],
+        "on": [
+          "DOUM"
+        ],
         "aggregations": [
           {
             "newcolumns": [
-              "SUM_VALUE"
+              "MIN_VALUE1",
+              "MIN_VALUE2"
             ],
-            "aggfunction": "sum",
+            "aggfunction": "min",
             "columns": [
-              "VALUE1"
+              "VALUE1",
+              "VALUE2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "MAX_VALUE1",
+              "MAX_VALUE2"
+            ],
+            "aggfunction": "max",
+            "columns": [
+              "VALUE1",
+              "VALUE2"
             ]
           }
         ],
-        "keepOriginalGranularity": false
+        "keepOriginalGranularity": true
       }
     ]
   },
@@ -87,15 +103,32 @@
     "schema": {
       "fields": [
         {
-          "name": "SUM_VALUE",
-          "type": "integer"
+          "name": "DOUM",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "SUM_VALUE": 56
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "MIN_VALUE1": 7,
+        "MAX_VALUE1": 20,
+        "VALUE2": 10,
+        "MIN_VALUE2": 4,
+        "MAX_VALUE2": 21
+      },
+      {
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "MIN_VALUE1": 1,
+        "MAX_VALUE1": 10,
+        "VALUE2": 17,
+        "MIN_VALUE2": 2,
+        "MAX_VALUE2": 17
       }
     ]
   }

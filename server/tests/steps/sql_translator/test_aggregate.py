@@ -42,38 +42,38 @@ def test_translate_aggregate(query, sql_query_describer):
         aggregations=[
             Aggregation(
                 aggfunction='sum',
-                columns=['Value1', 'Value2'],
-                newcolumns=['Sum_Value1', 'Sum_Value2'],
+                columns=['VALUE1', 'VALUE2'],
+                newcolumns=['SUM_VALUE1', 'SUM_VALUE2'],
             ),
-            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg_Value1']),
+            Aggregation(aggfunction='avg', columns=['VALUE1'], newcolumns=['AVG_VALUE1']),
         ],
     )
     sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
     assert (
         sql_query.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(Value1) AS Sum_Value1, '
-        'SUM(Value2) AS Sum_Value2, AVG(Value1) AS Avg_Value1 FROM SELECT_STEP_0)'
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(VALUE1) AS SUM_VALUE1, '
+        'SUM(VALUE2) AS SUM_VALUE2, AVG(VALUE1) AS AVG_VALUE1 FROM SELECT_STEP_0)'
     )
 
 
 def test_translate_aggregate_with_group_by(query, sql_query_describer):
     step = AggregateStep(
         name='aggregate',
-        on=['category'],
+        on=['CATEGORY'],
         aggregations=[
             Aggregation(
                 aggfunction='sum',
-                columns=['Value1', 'Value2'],
-                newcolumns=['Sum_Value1', 'Sum_Value2'],
+                columns=['VALUE1', 'VALUE2'],
+                newcolumns=['SUM_VALUE1', 'SUM_VALUE2'],
             ),
-            Aggregation(aggfunction='avg', columns=['Value1'], newcolumns=['Avg_Value1']),
+            Aggregation(aggfunction='avg', columns=['VALUE1'], newcolumns=['AVG_VALUE1']),
         ],
     )
     sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
     assert (
         sql_query.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(Value1) AS Sum_Value1, '
-        'SUM(Value2) AS Sum_Value2, AVG(Value1) AS Avg_Value1, category FROM SELECT_STEP_0 GROUP BY category)'
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(VALUE1) AS SUM_VALUE1, '
+        'SUM(VALUE2) AS SUM_VALUE2, AVG(VALUE1) AS AVG_VALUE1, CATEGORY FROM SELECT_STEP_0 GROUP BY CATEGORY)'
     )
 
 

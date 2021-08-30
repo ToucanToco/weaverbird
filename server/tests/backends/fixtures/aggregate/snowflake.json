@@ -1,18 +1,32 @@
 {
   "exclude": [
+    "pandas",
     "sql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "aggregate",
-        "on": [],
+        "on": [
+          "DOUM"
+        ],
         "aggregations": [
           {
             "newcolumns": [
-              "SUM_VALUE"
+              "SUM-VALUE1",
+              "SUM-VALUE2"
             ],
             "aggfunction": "sum",
+            "columns": [
+              "VALUE1",
+              "VALUE2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "AVG-VALUE1"
+            ],
+            "aggfunction": "avg",
             "columns": [
               "VALUE1"
             ]
@@ -87,15 +101,24 @@
     "schema": {
       "fields": [
         {
-          "name": "SUM_VALUE",
-          "type": "integer"
+          "name": "DOUM",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "SUM_VALUE": 56
+        "DOUM": "Group 1",
+        "SUM-VALUE1": 40,
+        "SUM-VALUE2": 35,
+        "AVG-VALUE1": 13.3333333333
+      },
+      {
+        "DOUM": "Group 2",
+        "SUM-VALUE1": 16,
+        "SUM-VALUE2": 31,
+        "AVG-VALUE1": 5.3333333333
       }
     ]
   }

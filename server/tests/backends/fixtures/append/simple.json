@@ -1,6 +1,5 @@
 {
   "exclude": [
-    "pandas",
     "sql"
   ],
   "step": {

@@ -1,16 +1,19 @@
 {
   "exclude": [
+    "pandas",
     "sql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "aggregate",
-        "on": [],
+        "on": [
+          "DOUM"
+        ],
         "aggregations": [
           {
             "newcolumns": [
-              "SUM_VALUE"
+              "TOTAL"
             ],
             "aggfunction": "sum",
             "columns": [
@@ -18,7 +21,7 @@
             ]
           }
         ],
-        "keepOriginalGranularity": false
+        "keepOriginalGranularity": true
       }
     ]
   },
@@ -87,7 +90,11 @@
     "schema": {
       "fields": [
         {
-          "name": "SUM_VALUE",
+          "name": "DOUM",
+          "type": "string"
+        },
+        {
+          "name": "TOTAL",
           "type": "integer"
         }
       ],
@@ -95,7 +102,18 @@
     },
     "data": [
       {
-        "SUM_VALUE": 56
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "TOTAL": 40,
+        "VALUE2": 10
+      },
+      {
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "TOTAL": 16,
+        "VALUE2": 12
       }
     ]
   }
