@@ -53,6 +53,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  percentage(step: Readonly<S.PercentageStep>) {
+    return step;
+  }
+
   pivot(step: Readonly<S.PivotStep>) {
     return step;
   }
