@@ -206,9 +206,9 @@ def test_append_queries_metadata_first_smaller():
         'COLUMN_1_1',
         'COLUMN_1_2',
         'COLUMN_1_3',
-        'NULL AS COLUMN_2_1',
+        'NULL AS COLUMN_2_4',
     ]
-    assert s.retrieve_query_metadata_column_by_name('NULL AS COLUMN_2_1').type == 'UNDEFINED'
+    assert s.retrieve_query_metadata_column_by_name('NULL AS COLUMN_2_4').type == 'UNDEFINED'
 
 
 def test_append_queries_metadata_second_smaller():

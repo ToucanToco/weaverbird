@@ -5,6 +5,7 @@ from weaverbird.backends.sql_translator.steps.utils.combination import (
 )
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    build_union_query,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -21,7 +22,7 @@ def translate_append(
     index: int,
     sql_query_retriever: SQLQueryRetriever,
     sql_query_describer: SQLQueryDescriber,
-    sql_translate_pipeline: SQLPipelineTranslator = None,
+    sql_translate_pipeline: SQLPipelineTranslator,
 ) -> SQLQuery:
     query_name = f'APPEND_STEP_{index}'
     log.debug(
@@ -36,6 +37,7 @@ def translate_append(
     query_to_union_metadata = {}
 
     transformed_query = f'{query.transformed_query}'
+
     for index, pipeline in enumerate(step.pipelines):
         query_string = resolve_sql_pipeline_for_combination(
             pipeline, sql_query_retriever, sql_translate_pipeline, sql_query_describer
@@ -48,20 +50,14 @@ def translate_append(
 
         query.metadata_manager.create_table(unioned_query_name)
         query.metadata_manager.add_table_columns_from_dict(
-            unioned_query_name, query_to_union_metadata
+            unioned_query_name, query_to_union_metadata[unioned_query_name]
         )
         transformed_query += f', {unioned_query_name} AS ({query_string})'
 
-    # Metadata need to be updated only for additional "NULL" columns, these column will have first the first available
-    # name from the immediate query below current one with excess column number (same behavior as Pandas)
-    query.metadata_manager.append_queries_metadata(unioned_tables=[queries_to_append.keys()])
-
-    # transformed_query = f'{query.transformed_query}, {right_query_name} AS ({right_query})'
-
-    # # 5 build the final query string
-    # join_part = f"{'AND'.join([f'{query.query_name}.{keys[0]} = {right_query_name}.{keys[1]}' for keys in step.on])}"
-    # transformed_query = f"""{transformed_query}, {query_name} AS (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {query.query_name} {how} JOIN {right_query_name} ON {join_part})"""
-
+    query.metadata_manager.append_queries_metadata(unioned_tables=queries_to_append.keys())
+    transformed_query += f', {query_name} AS\
+ ({build_union_query(query.metadata_manager, query.query_name, queries_to_append.keys())})'
+    query.metadata_manager.rename_union_columns()
     log.debug(
         '------------------------------------------------------------'
         f'SQLquery: {transformed_query}'

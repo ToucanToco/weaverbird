@@ -305,18 +305,14 @@ class SqlQueryMetadataManager(BaseModel):
         new_table = TableMetadata(name='__INTERNAL__')
         new_table.original_name = self.tables['__INTERNAL__'].original_name
         new_table.columns = self.retrieve_query_metadata_columns()
-
         if len(new_table.columns) < max_column_number:
-            if len(all_columns):
-                for cols in all_columns + []:
-                    if len(cols):
-                        cname = cols.pop(0)
+            index_cols_to_add = range(len(new_table.columns), max_column_number)
+            for cols in all_columns:
+                for index in index_cols_to_add:
+                    if index < len(cols):
                         new_table.add_column(
-                            column_name=f'NULL AS {cname}', column_type='UNDEFINED'
+                            column_name=f'NULL AS {cols[index]}', column_type='UNDEFINED'
                         )
-                    else:
-                        all_columns.pop(0)
-
         self.tables['__INTERNAL__'] = new_table
         return self
 
@@ -335,7 +331,7 @@ class SqlQueryMetadataManager(BaseModel):
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
-                f'Impossible to update column name, table {t_name}({table_name}) not exist'
+                f'Impossible to update column name, table {t_name}({table_name}) does not exist'
             )
         for name, type in columns_dict.items():
             self.tables[t_name] = self.tables[t_name].add_column(name, type)
@@ -545,3 +541,12 @@ class SqlQueryMetadataManager(BaseModel):
                 )
                 self.remove_query_metadata_column_alias(col.alias)
         return self.retrieve_table('__INTERNAL__')
+
+    def rename_union_columns(self):
+        union_columns = self.retrieve_query_metadata_columns()
+        [
+            self.update_query_metadata_column_name(cname, cname.split(' ')[-1])
+            for cname in union_columns.keys()
+            if 'NULL' in cname
+        ]
+        return self

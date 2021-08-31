@@ -275,7 +275,7 @@ def test_build_union_query_first_smaller():
     res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
     assert (
         res
-        == """SELECT COLUMN_1_1, COLUMN_1_2, COLUMN_1_3, NULL AS COLUMN_2_1 FROM SELECT_STEP_0 UNION SELECT\
+        == """SELECT COLUMN_1_1, COLUMN_1_2, COLUMN_1_3, NULL AS COLUMN_2_4 FROM SELECT_STEP_0 UNION SELECT\
  COLUMN_2_1, COLUMN_2_2, COLUMN_2_3, COLUMN_2_4 FROM table_2"""
     )
 
