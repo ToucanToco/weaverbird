@@ -1,0 +1,79 @@
+{
+  "exclude": [
+    "sql",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "replace",
+        "search_column": "NAME",
+        "to_replace": [
+          ["foo", "oof"]
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "oof",
+        "AGE": 42.0,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  }
+}

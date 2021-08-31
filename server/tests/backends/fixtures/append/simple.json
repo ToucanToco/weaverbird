@@ -1,4 +1,7 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
     "pipeline": [
       {
@@ -24,15 +27,15 @@
     "schema": {
       "fields": [
         {
-          "name": "name",
+          "name": "NAME",
           "type": "string"
         },
         {
-          "name": "age",
+          "name": "AGE",
           "type": "integer"
         },
         {
-          "name": "score",
+          "name": "SCORE",
           "type": "integer"
         }
       ],
@@ -40,14 +43,14 @@
     },
     "data": [
       {
-        "name": "foo",
-        "age": 42,
-        "score": 100
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
       },
       {
-        "name": "bar",
-        "age": 43,
-        "score": 200
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
       }
     ]
   },
@@ -56,15 +59,15 @@
       "schema": {
         "fields": [
           {
-            "name": "name",
+            "name": "NAME",
             "type": "string"
           },
           {
-            "name": "score",
+            "name": "SCORE",
             "type": "integer"
           },
           {
-            "name": "x",
+            "name": "X",
             "type": "string"
           }
         ],
@@ -72,9 +75,9 @@
       },
       "data": [
         {
-          "name": "plop",
-          "score": 666,
-          "x": "y"
+          "NAME": "plop",
+          "SCORE": 666,
+          "X": "y"
         }
       ]
     }
@@ -83,19 +86,19 @@
     "schema": {
       "fields": [
         {
-          "name": "name",
+          "name": "NAME",
           "type": "string"
         },
         {
-          "name": "age",
+          "name": "AGE",
           "type": "number"
         },
         {
-          "name": "score",
+          "name": "SCORE",
           "type": "integer"
         },
         {
-          "name": "x",
+          "name": "X",
           "type": "string"
         }
       ],
@@ -103,28 +106,28 @@
     },
     "data": [
       {
-        "name": "foo",
-        "age": 42.0,
-        "score": 100,
-        "x": null
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100,
+        "X": null
       },
       {
-        "name": "bar",
-        "age": 43.0,
-        "score": 200,
-        "x": null
+        "NAME": "bar",
+        "AGE": 43.0,
+        "SCORE": 200,
+        "X": null
       },
       {
-        "name": "plop",
-        "age": null,
-        "score": 666,
-        "x": "y"
+        "NAME": "plop",
+        "AGE": null,
+        "SCORE": 666,
+        "X": "y"
       },
       {
-        "name": "plop",
-        "age": null,
-        "score": 666,
-        "x": "y"
+        "NAME": "plop",
+        "AGE": null,
+        "SCORE": 666,
+        "X": "y"
       }
     ]
   }

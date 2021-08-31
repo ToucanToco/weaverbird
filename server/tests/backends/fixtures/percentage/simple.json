@@ -1,0 +1,98 @@
+{
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "percentage",
+        "column": "AGE",
+        "new_column_name": "AGE_PERCENT"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "alel",
+        "AGE": 25
+      },
+      {
+        "NAME": "nicholas",
+        "AGE": 33
+      },
+      {
+        "NAME": "zimar",
+        "AGE": 33
+      },
+      {
+        "NAME": "bar",
+        "AGE": 25
+      },
+      {
+        "NAME": "foo",
+        "AGE": 22
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "AGE_PERCENT",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "alel",
+        "AGE": 25,
+        "AGE_PERCENT": 0.181159
+      },
+      {
+        "NAME": "nicholas",
+        "AGE": 33,
+        "AGE_PERCENT": 0.239130
+      },
+      {
+        "NAME": "zimar",
+        "AGE": 33,
+        "AGE_PERCENT": 0.239130
+      },
+      {
+        "NAME": "bar",
+        "AGE": 25,
+        "AGE_PERCENT": 0.181159
+      },
+      {
+        "NAME": "foo",
+        "AGE": 22,
+        "AGE_PERCENT": 0.159420
+      }
+    ]
+  }
+}

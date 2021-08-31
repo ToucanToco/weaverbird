@@ -10,7 +10,7 @@ def test_text(query):
     expected_transformed_query = (
         """WITH SELECT_STEP_0 AS (SELECT * FROM products), TEXT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, """
         """'jean-jacques-goldman' AS BEST_SINGER_EVER FROM """
-        """SELECT_STEP_0) """
+        """SELECT_STEP_0)"""
     )
     assert query_result.transformed_query == expected_transformed_query
     assert (
@@ -33,7 +33,7 @@ def test_text_only_one():
     expected_transformed_query = (
         """WITH SELECT_STEP_0 AS (SELECT * FROM products), TEXT_STEP_1 AS (SELECT """
         """'jean-jacques-goldman' AS BEST_SINGER_EVER FROM """
-        """SELECT_STEP_0) """
+        """SELECT_STEP_0)"""
     )
     assert query_result.transformed_query == expected_transformed_query
     assert query_result.selection_query == """SELECT BEST_SINGER_EVER FROM TEXT_STEP_1"""

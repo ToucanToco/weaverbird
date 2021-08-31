@@ -10,6 +10,7 @@ from .ifthenelse import translate_ifthenelse
 from .join import translate_join
 from .lowercase import translate_lowercase
 from .pivot import translate_pivot
+from .percentage import translate_percentage
 from .rename import translate_rename
 from .replace import translate_replace
 from .select import translate_select
@@ -41,6 +42,7 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'join': translate_join,
     'uniquegroups': translate_uniquegroups,
     'top': translate_top,
+    'percentage': translate_percentage,
     'unpivot': translate_unpivot,
     'pivot': translate_pivot,
 }

@@ -1,0 +1,82 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "text",
+        "new_column": "BEST_SINGER_EVER",
+        "text": "jean-jacques-goldman"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        },
+        {
+          "name": "BEST_SINGER_EVER",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100,
+        "BEST_SINGER_EVER": "jean-jacques-goldman"
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200,
+        "BEST_SINGER_EVER": "jean-jacques-goldman"
+      }
+    ]
+  }
+}

@@ -38,7 +38,7 @@ def translate_text(
     transformed_query = (
         f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields}{renamed_fields}"""
-        f"""FROM {query.query_name}) """
+        f"""FROM {query.query_name})"""
     )
 
     query.metadata_manager.add_query_metadata_column(step.new_column, 'str')

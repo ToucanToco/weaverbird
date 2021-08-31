@@ -1,0 +1,125 @@
+{
+  "exclude": [
+    "pandas",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "DOUM"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "SUM-VALUE1",
+              "SUM-VALUE2"
+            ],
+            "aggfunction": "sum",
+            "columns": [
+              "VALUE1",
+              "VALUE2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "AVG-VALUE1"
+            ],
+            "aggfunction": "avg",
+            "columns": [
+              "VALUE1"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "DOUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE2",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "VALUE2": 10
+      },
+      {
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "VALUE2": 21
+      },
+      {
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "VALUE2": 4
+      },
+      {
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "VALUE2": 17
+      },
+      {
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "VALUE2": 12
+      },
+      {
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "VALUE2": 2
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DOUM",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DOUM": "Group 1",
+        "SUM-VALUE1": 40,
+        "SUM-VALUE2": 35,
+        "AVG-VALUE1": 13.3333333333
+      },
+      {
+        "DOUM": "Group 2",
+        "SUM-VALUE1": 16,
+        "SUM-VALUE2": 31,
+        "AVG-VALUE1": 5.3333333333
+      }
+    ]
+  }
+}

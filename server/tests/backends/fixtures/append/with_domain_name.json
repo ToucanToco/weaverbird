@@ -1,4 +1,7 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
     "pipeline": [
       {
@@ -13,15 +16,15 @@
     "schema": {
       "fields": [
         {
-          "name": "name",
+          "name": "NAME",
           "type": "string"
         },
         {
-          "name": "age",
+          "name": "AGE",
           "type": "integer"
         },
         {
-          "name": "score",
+          "name": "SCORE",
           "type": "integer"
         }
       ],
@@ -29,14 +32,14 @@
     },
     "data": [
       {
-        "name": "foo",
-        "age": 42,
-        "score": 100
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
       },
       {
-        "name": "bar",
-        "age": 43,
-        "score": 200
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
       }
     ]
   },
@@ -45,15 +48,15 @@
       "schema": {
         "fields": [
           {
-            "name": "name",
+            "name": "NAME",
             "type": "string"
           },
           {
-            "name": "score",
+            "name": "SCORE",
             "type": "integer"
           },
           {
-            "name": "lambda",
+            "name": "LAMBDA",
             "type": "string"
           }
         ],
@@ -61,9 +64,9 @@
       },
       "data": [
         {
-          "name": "miam",
-          "score": 999,
-          "lambda": "p"
+          "NAME": "miam",
+          "SCORE": 999,
+          "LAMBDA": "p"
         }
       ]
     }
@@ -72,19 +75,19 @@
     "schema": {
       "fields": [
         {
-          "name": "name",
+          "name": "NAME",
           "type": "string"
         },
         {
-          "name": "age",
+          "name": "AGE",
           "type": "number"
         },
         {
-          "name": "score",
+          "name": "SCORE",
           "type": "integer"
         },
         {
-          "name": "lambda",
+          "name": "LAMBDA",
           "type": "string"
         }
       ],
@@ -92,22 +95,22 @@
     },
     "data": [
       {
-        "name": "foo",
-        "age": 42.0,
-        "score": 100,
-        "lambda": null
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100,
+        "LAMBDA": null
       },
       {
-        "name": "bar",
-        "age": 43.0,
-        "score": 200,
-        "lambda": null
+        "NAME": "bar",
+        "AGE": 43.0,
+        "SCORE": 200,
+        "LAMBDA": null
       },
       {
-        "name": "miam",
-        "age": null,
-        "score": 999,
-        "lambda": "p"
+        "NAME": "miam",
+        "AGE": null,
+        "SCORE": 999,
+        "LAMBDA": "p"
       }
     ]
   }

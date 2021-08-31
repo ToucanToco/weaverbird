@@ -20,7 +20,7 @@ def test_translate_sort(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), SORT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE FROM '
-        'SELECT_STEP_0 ORDER BY TOTO asc, RAICHU desc) '
+        'SELECT_STEP_0 ORDER BY TOTO asc, RAICHU desc)'
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM SORT_STEP_1'

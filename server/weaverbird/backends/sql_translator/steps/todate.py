@@ -46,7 +46,7 @@ def translate_todate(
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
         f""" (SELECT {completed_fields},"""
         f""" TO_DATE({step.column}{step.format}) AS {step.column}"""
-        f""" FROM {query.query_name}) """,
+        f""" FROM {query.query_name})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
