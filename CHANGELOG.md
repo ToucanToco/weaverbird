@@ -4,8 +4,7 @@
 
 ### Added
 
-- SQL VQB: Added Join Step to Snowflake
-- SQL VQB: Added Percentage Step to Snowflake
+- SQL VQB: Added Percentage and Join Step to Snowflake
 
 ### [0.58.0] - 2021-08-27
 
