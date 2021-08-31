@@ -1,5 +1,12 @@
 # Changelog
 
+### [0.60.0] - 2021-08-31
+
+### Added
+
+- SQL VQB: Added pivot_values field in pivot step form
+
+
 ### [0.59.0] - 2021-08-31
 
 ### Added
@@ -858,6 +865,7 @@
 ## Unreleased
 
 
+[0.59.0]: https://github.com/ToucanToco/weaverbird/compare/v0.59.0...v0.60.0
 [0.59.0]: https://github.com/ToucanToco/weaverbird/compare/v0.58.0...v0.59.0
 [0.58.0]: https://github.com/ToucanToco/weaverbird/compare/v0.57.0...v0.58.0
 [0.57.0]: https://github.com/ToucanToco/weaverbird/compare/v0.56.0...v0.57.0
