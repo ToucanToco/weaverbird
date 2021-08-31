@@ -24,6 +24,10 @@ export class SnowflakeTranslator extends BaseTranslator {
   convert(step: Readonly<S.ConvertStep>) {
     return step;
   }
+  
+  dateextract(step: Readonly<S.DateExtractStep>) {
+    return step;
+  }
 
   domain(step: Readonly<S.DomainStep>) {
     return step;
