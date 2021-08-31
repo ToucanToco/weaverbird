@@ -24,6 +24,7 @@ def translate_join(
     sql_query_describer: SQLQueryDescriber,
     sql_translate_pipeline: SQLPipelineTranslator = None,
     sql_query_executor: SQLQueryExecutor = None,
+    subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'
     log.debug(

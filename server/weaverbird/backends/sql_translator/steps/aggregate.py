@@ -21,6 +21,7 @@ def translate_aggregate(
     sql_query_describer: SQLQueryDescriber = None,
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
+    subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     aggregated_cols = []
     aggregated_string = ''

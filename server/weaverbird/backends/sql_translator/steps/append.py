@@ -23,6 +23,7 @@ def translate_append(
     sql_query_retriever: SQLQueryRetriever,
     sql_query_describer: SQLQueryDescriber,
     sql_translate_pipeline: SQLPipelineTranslator,
+    subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     query_name = f'APPEND_STEP_{index}'
     log.debug(
@@ -40,7 +41,7 @@ def translate_append(
 
     for index, pipeline in enumerate(step.pipelines):
         query_string = resolve_sql_pipeline_for_combination(
-            pipeline, sql_query_retriever, sql_translate_pipeline, sql_query_describer
+            pipeline, sql_query_retriever, sql_translate_pipeline, sql_query_describer, index
         )
         unioned_query_name = f'APPEND_STEP_UNION_{index}'
         queries_to_append[unioned_query_name] = query_string

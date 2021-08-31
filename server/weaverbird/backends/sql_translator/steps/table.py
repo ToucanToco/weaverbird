@@ -20,12 +20,19 @@ def translate_table(
     sql_query_describer: SQLQueryDescriber,
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
+    subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     """As it is always the first step add the with keyword"""
     select_from_table = sql_query_retriever(
         step.domain
     )  # TODO in laputa, implement the table retrieval instead of query
     query_name = f'SELECT_STEP_{index}'
+    query_name += (
+        f'_{subcall_from_other_pipeline_count}'
+        if isinstance(subcall_from_other_pipeline_count, int)
+        and subcall_from_other_pipeline_count >= 0
+        else ''
+    )
     query_description = sql_query_describer(step.domain)
     query_metadata_manager = SqlQueryMetadataManager(
         tables_metadata={step.domain: query_description}

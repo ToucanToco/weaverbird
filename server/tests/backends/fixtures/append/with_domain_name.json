@@ -57,7 +57,7 @@
           },
           {
             "name": "LAMBDA",
-            "type": "string"
+            "type": "integer"
           }
         ],
         "pandas_version": "0.20.0"
@@ -66,7 +66,7 @@
         {
           "NAME": "miam",
           "SCORE": 999,
-          "LAMBDA": "p"
+          "LAMBDA": 12
         }
       ]
     }
@@ -80,15 +80,15 @@
         },
         {
           "name": "AGE",
-          "type": "number"
-        },
-        {
-          "name": "SCORE",
           "type": "integer"
         },
         {
-          "name": "LAMBDA",
+          "name": "SCORE",
           "type": "string"
+        },
+        {
+          "name": "LAMBDA",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -110,7 +110,43 @@
         "NAME": "miam",
         "AGE": null,
         "SCORE": 999,
-        "LAMBDA": "p"
+        "LAMBDA": 12
+      }
+    ]
+  },
+  "expected_sql": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      },
+      {
+        "NAME": "miam",
+        "AGE": 999,
+        "SCORE": 12
       }
     ]
   }

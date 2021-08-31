@@ -45,5 +45,6 @@ class SQLStepTranslator(Protocol):
         sql_query_describer: Optional[SQLQueryDescriber],
         sql_query_executor: Optional[SQLQueryExecutor],
         sql_translate_pipeline: Optional[SQLPipelineTranslator],
-    ) -> str:
+        subcall_from_other_pipeline_count: Optional[int],
+    ):
         ...
