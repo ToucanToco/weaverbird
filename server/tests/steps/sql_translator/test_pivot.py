@@ -28,7 +28,6 @@ def test_translate_pivot(mocker):
         column_to_pivot='CURRENCY',
         value_column='PROVIDER',
         agg_function='sum',
-        pivot_values=['SPAIN', 'FRANCE'],
     )
     res = translate_pivot(step, query, index=1)
     assert (
@@ -81,7 +80,6 @@ def test_translate_pivot_error(mocker):
         column_to_pivot='CURRENCY',
         value_column='PROVIDER',
         agg_function='sum',
-        pivot_values=['SPAIN', 'FRANCE'],
     )
     query = SQLQuery(
         query_name='SELECT_STEP_0',

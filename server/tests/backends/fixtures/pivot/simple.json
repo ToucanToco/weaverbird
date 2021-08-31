@@ -10,7 +10,6 @@
         "column_to_pivot":"MONTH",
         "value_column":"AMOUNT",
         "agg_function":"sum",
-        "pivot_values":["JAN", "FEB"]
       }
     ]
   },
