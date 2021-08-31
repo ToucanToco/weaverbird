@@ -2,7 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    date_extract_per_date_type,
+    get_query_for_date_extract,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -13,7 +13,7 @@ from weaverbird.backends.sql_translator.types import (
 from weaverbird.pipeline.steps import DateExtractStep
 
 
-def translate_date_extract(
+def translate_dateextract(
     step: DateExtractStep,
     query: SQLQuery,
     index: int,
@@ -21,7 +21,7 @@ def translate_date_extract(
     sql_query_describer: SQLQueryDescriber = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
-    query_name = f'DATE_EXTRACT_STEP_{index}'
+    query_name = f'DATEEXTRACT_STEP_{index}'
 
     log.debug(
         '############################################################'
@@ -44,7 +44,7 @@ def translate_date_extract(
             if len(step.new_columns) > 0
             else f'{step.column}_{d.upper()}'
         )
-        to_extract_string += date_extract_per_date_type(d, step.column, new_column)
+        to_extract_string += get_query_for_date_extract(d, step.column, new_column)
         query.metadata_manager.add_query_metadata_column(f"{new_column}", "date")
 
     select_fields = ""

@@ -3,7 +3,7 @@ from typing import Dict
 from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .convert import translate_convert
-from .dateextract import translate_date_extract
+from .dateextract import translate_dateextract
 from .filter import translate_filter
 from .formula import translate_formula
 from .fromdate import translate_fromdate
@@ -46,5 +46,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'percentage': translate_percentage,
     'unpivot': translate_unpivot,
     'pivot': translate_pivot,
-    'dateextract': translate_date_extract,
+    'dateextract': translate_dateextract,
 }
