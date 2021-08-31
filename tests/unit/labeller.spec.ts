@@ -404,7 +404,6 @@ describe('Labeller', () => {
       column_to_pivot: 'column3',
       value_column: 'column4',
       agg_function: 'sum',
-      pivot_values: [],
     };
     expect(hrl(step)).toEqual('Pivot column "column3"');
   });
