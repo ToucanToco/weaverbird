@@ -294,9 +294,7 @@ class SqlQueryMetadataManager(BaseModel):
 
         return self
 
-    def append_queries_metadata(
-        self, unioned_tables: List[str], current_query_name: str
-    ) -> SqlQueryMetadataManager:
+    def append_queries_metadata(self, unioned_tables: List[str]) -> SqlQueryMetadataManager:
         try:
             all_columns = [self.retrieve_columns_as_list(t) for t in unioned_tables]
             all_columns.sort(key=len)
@@ -306,6 +304,7 @@ class SqlQueryMetadataManager(BaseModel):
 
         new_table = TableMetadata(name='__INTERNAL__')
         new_table.original_name = self.tables['__INTERNAL__'].original_name
+        new_table.columns = self.retrieve_query_metadata_columns()
 
         if len(new_table.columns) < max_column_number:
             if len(all_columns):
@@ -313,20 +312,13 @@ class SqlQueryMetadataManager(BaseModel):
                     if len(cols):
                         cname = cols.pop(0)
                         new_table.add_column(
-                            column_name=f'NULL AS {cname}', column_type='undefined'
+                            column_name=f'NULL AS {cname}', column_type='UNDEFINED'
                         )
                     else:
                         all_columns.pop(0)
 
         self.tables['__INTERNAL__'] = new_table
-        new_query = (
-            f'SELECT {self.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}'
-        )
-        for t in unioned_tables:
-            table_columns = self.retrieve_columns_as_str(t)
-            missing_columns = max_column_number - len(table_columns)
-            new_query += f", UNION SELECT {', '.join(['NULL'] * missing_columns)} FROM {t}"
-        return new_query
+        return self
 
     def add_table_column(
         self, table_name: str, column_name: str, column_type: str, alias: Optional[str] = None

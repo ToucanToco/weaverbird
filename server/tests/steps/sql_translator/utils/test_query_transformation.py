@@ -1,9 +1,10 @@
 import pytest
 
-from weaverbird.backends.sql_translator.metadata import ColumnMetadata
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
+    build_union_query,
     handle_zero_division,
     snowflake_date_format,
 )
@@ -232,3 +233,70 @@ def test_empty_date_format():
 
 def test_ignore_none_date_format():
     assert ", 'badaboum'" == snowflake_date_format('badaboum')
+
+
+def test_build_union_query():
+    s = SqlQueryMetadataManager()
+    t = s.create_table('table_1')
+    t.add_column('column_1_1', 'int')
+    t.add_column('column_1_2', 'str')
+    t.add_column('column_1_3', 'str')
+    t.add_column('column_1_4', 'str')
+
+    t = s.create_table('table_2')
+    t.add_column('column_2_1', 'int')
+    t.add_column('column_2_2', 'str')
+    t.add_column('column_2_3', 'str')
+    t.add_column('column_2_4', 'str')
+    s.define_as_metadata('table_1')
+    s.append_queries_metadata(['table_2'])
+    res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
+    assert (
+        res
+        == """SELECT COLUMN_1_1, COLUMN_1_2, COLUMN_1_3, COLUMN_1_4 FROM SELECT_STEP_0 UNION SELECT\
+ COLUMN_2_1, COLUMN_2_2, COLUMN_2_3, COLUMN_2_4 FROM table_2"""
+    )
+
+
+def test_build_union_query_first_smaller():
+    s = SqlQueryMetadataManager()
+    t = s.create_table('table_1')
+    t.add_column('column_1_1', 'int')
+    t.add_column('column_1_2', 'str')
+    t.add_column('column_1_3', 'str')
+
+    t = s.create_table('table_2')
+    t.add_column('column_2_1', 'int')
+    t.add_column('column_2_2', 'str')
+    t.add_column('column_2_3', 'str')
+    t.add_column('column_2_4', 'str')
+    s.define_as_metadata('table_1')
+    s.append_queries_metadata(['table_2'])
+    res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
+    assert (
+        res
+        == """SELECT COLUMN_1_1, COLUMN_1_2, COLUMN_1_3, NULL AS COLUMN_2_1 FROM SELECT_STEP_0 UNION SELECT\
+ COLUMN_2_1, COLUMN_2_2, COLUMN_2_3, COLUMN_2_4 FROM table_2"""
+    )
+
+
+def test_build_union_query_second_smaller():
+    s = SqlQueryMetadataManager()
+    t = s.create_table('table_1')
+    t.add_column('column_1_1', 'int')
+    t.add_column('column_1_2', 'str')
+    t.add_column('column_1_3', 'str')
+    t.add_column('column_1_4', 'str')
+
+    t = s.create_table('table_2')
+    t.add_column('column_2_1', 'int')
+    t.add_column('column_2_2', 'str')
+    t.add_column('column_2_3', 'str')
+    s.define_as_metadata('table_1')
+    s.append_queries_metadata(['table_2'])
+    res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
+    assert (
+        res
+        == """SELECT COLUMN_1_1, COLUMN_1_2, COLUMN_1_3, COLUMN_1_4 FROM SELECT_STEP_0 UNION SELECT\
+ COLUMN_2_1, COLUMN_2_2, COLUMN_2_3, NULL FROM table_2"""
+    )
