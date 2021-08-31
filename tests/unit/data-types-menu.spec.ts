@@ -18,7 +18,7 @@ describe('Data Types Menu', () => {
     });
     const wrapper = mount(DataTypesMenu, { store, localVue });
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).toContain('popover');
+    expect(wrapper.classes()).toContain('weaverbird-popover');
   });
 
   it('should contain the right set of data types', () => {
