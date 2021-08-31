@@ -51,6 +51,10 @@ class ColumnMetadata(BaseModel):
     def is_deleted(self):
         return self.delete
 
+    def update_alias(self, alias) -> ColumnMetadata:
+        self.alias = alias.upper()
+        return self
+
 
 class TableMetadata(BaseModel):
     name: str
@@ -144,6 +148,15 @@ class TableMetadata(BaseModel):
             raise MetadataError(f'Error to update column {c_name}({column_name}), column not exist')
         self.columns[c_name] = self.columns[c_name].update_type(dest_column_type)
         return self.columns[c_name]
+
+    def update_column_alias(self, column_name, alias) -> ColumnMetadata:
+        c_name = column_name.upper()
+        if c_name not in self.columns:
+            raise MetadataError(
+                f'Error updating column {c_name}({column_name}), column does not exist'
+            )
+        self.columns[c_name] = self.columns[c_name].update_alias(alias)
+        return self
 
     def remove_column(self, column_name: str) -> None:
         c_name = column_name.upper()
@@ -291,6 +304,9 @@ class SqlQueryMetadataManager(BaseModel):
     def add_query_metadata_column(self, column_name: str, column_type: str) -> TableMetadata:
         return self.add_table_column('__INTERNAL__', column_name, column_type)
 
+    def add_query_metadata_columns(self, columns: Dict[str, str]) -> TableMetadata:
+        return self.add_table_columns_from_dict('__INTERNAL__', columns)
+
     def update_column_name(
         self, table_name: str, column_name: str, dest_column_name: str
     ) -> TableMetadata:
@@ -302,10 +318,23 @@ class SqlQueryMetadataManager(BaseModel):
         self.tables[t_name] = self.tables[t_name].update_column_name(column_name, dest_column_name)
         return self.tables[t_name]
 
+    def update_column_alias(self, table_name: str, column_name: str, alias: str) -> TableMetadata:
+        t_name = table_name.upper()
+        if t_name not in self.tables:
+            raise MetadataError(
+                f'Impossible to update column\'s alias, table {t_name}({table_name}) does not exist'
+            )
+        self.tables[t_name] = self.tables[t_name].update_column_alias(column_name, alias)
+        return self.tables[t_name]
+
     def update_query_metadata_column_name(
         self, column_name: str, dest_column_name: str
     ) -> TableMetadata:
         self.update_column_name('__INTERNAL__', column_name, dest_column_name)
+        return self.retrieve_table('__INTERNAL__')
+
+    def update_query_metadata_column_alias(self, column_name: str, alias: str):
+        self.update_column_alias('__INTERNAL__', column_name, alias)
         return self.retrieve_table('__INTERNAL__')
 
     def update_column_type(

@@ -42,6 +42,8 @@ Equivalent to the `PIVOT` clause in SQL.
 - `Aggregate values using...`: the aggregation function to be used when
   aggregation has to be performed
 
+- `Pivot values in ...`: for sql translator only, values to keep in value column
+
 #### Example
 
 <img src="../../img/docs/user-interface/pivot_example_conf.jpg" width="750" />

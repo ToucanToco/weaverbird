@@ -47,6 +47,14 @@
       data-path=".agg_function"
       :errors="errors"
     />
+    <MultiInputTextWidget
+      class="pivotValuesInput"
+      v-model="editedStep.pivot_values"
+      name="Pivot values in ..."
+      placeholder="Pivot Values"
+      data-path=".pivot_values"
+      :errors="errors"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -56,6 +64,7 @@ import { Prop } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { PipelineStepName, PivotStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -68,6 +77,7 @@ import BaseStepForm from './StepForm.vue';
   components: {
     ColumnPicker,
     AutocompleteWidget,
+    MultiInputTextWidget,
     MultiselectWidget,
   },
 })
@@ -86,6 +96,7 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
       column_to_pivot: '',
       value_column: '',
       agg_function: 'sum',
+      pivot_values: [],
     }),
   })
   initialStepValue!: PivotStep;
@@ -132,6 +143,16 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
           keyword: 'columnNameConflict',
           dataPath: '.value_column',
           message: `Column name ${this.editedStep.value_column} is used at least twice but should be unique`,
+        },
+      ];
+    } else if (new Set(this.editedStep.pivot_values).size < this.editedStep.pivot_values.length) {
+      return [
+        {
+          params: [],
+          schemaPath: '.pivot_values',
+          keyword: 'pivotValuesConflict',
+          dataPath: '.pivot_values',
+          message: `Pivot values has duplicate entries but should have only unique ones`,
         },
       ];
     }

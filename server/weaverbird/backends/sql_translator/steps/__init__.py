@@ -10,6 +10,7 @@ from .ifthenelse import translate_ifthenelse
 from .join import translate_join
 from .lowercase import translate_lowercase
 from .percentage import translate_percentage
+from .pivot import translate_pivot
 from .rename import translate_rename
 from .replace import translate_replace
 from .select import translate_select
@@ -43,4 +44,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'top': translate_top,
     'percentage': translate_percentage,
     'unpivot': translate_unpivot,
+    'pivot': translate_pivot,
 }

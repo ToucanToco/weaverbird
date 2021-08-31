@@ -41,6 +41,18 @@ export default {
       type: 'string',
       enum: ['sum', 'avg', 'count', 'min', 'max'],
     },
+    pivot_values: {
+      type: 'array',
+      items: {
+        type: 'string',
+        minLength: 1,
+      },
+      title: 'Pivot values in ...',
+      description: 'Values to keep from value column',
+      attrs: {
+        placeholder: 'Pivot Values',
+      },
+    },
   },
   required: ['name', 'index', 'column_to_pivot', 'value_column', 'agg_function'],
   additionalProperties: false,
