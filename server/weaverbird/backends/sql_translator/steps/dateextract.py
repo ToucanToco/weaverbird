@@ -2,6 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    date_extract_per_date_type,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -43,7 +44,7 @@ def translate_date_extract(
             if len(step.new_columns) > 0
             else f'{step.column}_{d.upper()}'
         )
-        to_extract_string += f"EXTRACT({d} from to_timestamp({step.column})) AS {new_column}"
+        to_extract_string += date_extract_per_date_type(d, step.column, new_column)
         query.metadata_manager.add_query_metadata_column(f"{new_column}", "date")
 
     select_fields = ""

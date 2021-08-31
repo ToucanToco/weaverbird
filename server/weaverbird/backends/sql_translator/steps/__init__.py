@@ -3,7 +3,7 @@ from typing import Dict
 from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .convert import translate_convert
-from .date_extract import translate_date_extract
+from .dateextract import translate_date_extract
 from .filter import translate_filter
 from .formula import translate_formula
 from .fromdate import translate_fromdate

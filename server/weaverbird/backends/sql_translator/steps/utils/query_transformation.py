@@ -257,3 +257,86 @@ def handle_zero_division(formula: str) -> str:
     if '%' in formula:
         formula = re.sub(r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
     return formula
+
+
+def date_extract_per_date_type(
+    date_type: str,
+    target_column: str,
+    new_column: str,
+) -> str:
+    """
+    This method will get as input the date type and return a query with
+    the appropriate function of that date type on snowflake, it can be a simple function or a whole expression
+
+
+    """
+    if date_type.lower() in [
+        "year",
+        "month",
+        "day",
+        "hour",
+        "minutes",
+        "seconds",
+        "milliseconds",
+        "dayofweek",
+        "dayofweekiso",
+        "dayofyear",
+        "week",
+        "weekiso",
+        "quarter",
+        "yearofweek",
+        "yearofweekiso",
+    ]:
+        return f"EXTRACT({date_type.lower()} from to_timestamp({target_column})) AS {new_column}"
+    else:
+        appropriate_func = {
+            "isoYear": {"query": "YEAROFWEEKISO(____target____)"},
+            "isoWeek": {"query": "WEEKISO(____target____)"},
+            "isoDayOfWeek": {"query": "DAYOFWEEKISO(____target____)"},
+            "firstDayOfYear": {
+                "query": "TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(____target____)))",
+            },
+            "firstDayOfMonth": {
+                "query": "TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(____target____)))",
+            },
+            "firstDayOfWeek": {
+                "query": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
+            },
+            "firstDayOfQuarter": {
+                "query": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____)))",
+            },
+            "firstDayOfIsoWeek": {
+                "query": "DAYOFWEEKISO(to_timestamp(____target____)) - DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+            },
+            "previousDay": {
+                "query": "to_timestamp(____target____) - interval '1 day'",
+            },
+            "firstDayOfPreviousYear": {
+                "query": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
+            },
+            "firstDayOfPreviousMonth": {
+                "query": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
+            },
+            "firstDayOfPreviousWeek": {
+                "query": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO(to_timestamp("
+                "____target____)) + 1",
+            },
+            "firstDayOfPreviousQuarter": {
+                "query": "to_timestamp(____target____) - interval '1 quarter'",
+            },
+            "firstDayOfPreviousIsoWeek": {
+                "query": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO("
+                "to_timestamp(____target____)) + 1",
+            },
+            "previousYear": {"custom": "YEAR(to_timestamp(____target____) - interval '1 year')"},
+            "previousMonth": {"query": "MONTH(to_timestamp(____target____) - interval '1 month')"},
+            "previousWeek": {"query": "WEEK(to_timestamp(____target____) - interval '1 week')"},
+            "previousQuarter": {
+                "query": "QUARTER(to_timestamp(____target____) - interval '1 quarter')"
+            },
+            "previousIsoWeek": {
+                "query": "WEEKISO(to_timestamp(____target____)) - 1",
+            },
+        }
+
+        return f"({appropriate_func[date_type]['query'].replace('____target____', target_column)}) AS {new_column}"

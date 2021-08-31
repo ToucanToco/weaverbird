@@ -66,12 +66,12 @@ def test_translate_complex_date_extract(query_date):
     )
     expected_transformed_query = (
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), DATE_EXTRACT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "DATE, EXTRACT(year from to_timestamp(DATE)) AS DATE_YEAR, EXTRACT(previousDay from to_timestamp(DATE)) AS "
-        "DATE_PREVIOUSDAY, EXTRACT(firstDayOfPreviousYear from to_timestamp(DATE)) AS DATE_FIRSTDAYOFPREVIOUSYEAR, "
-        "EXTRACT(firstDayOfPreviousMonth from to_timestamp(DATE)) AS DATE_FIRSTDAYOFPREVIOUSMONTH, "
-        "EXTRACT(firstDayOfPreviousWeek from to_timestamp(DATE)) AS DATE_FIRSTDAYOFPREVIOUSWEEK, EXTRACT(dayOfYear "
-        "from to_timestamp(DATE)) AS DATE_DAYOFYEAR, EXTRACT(isoYear from to_timestamp(DATE)) AS DATE_ISOYEAR, "
-        "EXTRACT(isoWeek from to_timestamp(DATE)) AS DATE_ISOWEEK, EXTRACT(isoDayOfWeek from to_timestamp(DATE)) AS "
+        "DATE, EXTRACT(year from to_timestamp(DATE)) AS DATE_YEAR, (to_timestamp(DATE) - interval '1 day') AS "
+        "DATE_PREVIOUSDAY, ((to_timestamp(DATE) - interval '1 year') + interval '1 day') AS "
+        "DATE_FIRSTDAYOFPREVIOUSYEAR, ((to_timestamp(DATE) - interval '2 month') + interval '1 day') AS "
+        "DATE_FIRSTDAYOFPREVIOUSMONTH, (DAY(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO(to_timestamp("
+        "DATE)) + 1) AS DATE_FIRSTDAYOFPREVIOUSWEEK, EXTRACT(dayofyear from to_timestamp(DATE)) AS DATE_DAYOFYEAR, "
+        "(YEAROFWEEKISO(DATE)) AS DATE_ISOYEAR, (WEEKISO(DATE)) AS DATE_ISOWEEK, (DAYOFWEEKISO(DATE)) AS "
         "DATE_ISODAYOFWEEK, EXTRACT(day from to_timestamp(DATE)) AS DATE_DAY, EXTRACT(week from to_timestamp(DATE)) "
         "AS DATE_WEEK FROM SELECT_STEP_0)"
     )
