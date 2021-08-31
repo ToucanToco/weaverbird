@@ -5,13 +5,6 @@ from weaverbird.backends.sql_translator.steps import translate_date_extract
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import DateExtractStep
 
-# name = Field('dateextract', const=True)
-# column: str
-# date_info: List[DATE_INFO] = Field([], alias=('dateInfo'))
-# new_columns: List[ColumnName] = Field([], alias='newColumns')
-# operation: Optional[BASIC_DATE_PARTS]
-# new_column_name: Optional[ColumnName]
-
 
 @pytest.fixture
 def query_date():
