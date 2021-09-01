@@ -3,7 +3,7 @@
     <div class="widget-date-input__container">
       <span class="widget-date-input__label" v-html="label" />
       <div class="widget-date-input__button" @click="openEditor">
-        <i class="far fa-calendar" aria-hidden="true" />
+        <FAIcon icon="far calendar" />
       </div>
     </div>
     <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
@@ -55,6 +55,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
+import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
 import RangeCalendar from '@/components/RangeCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
@@ -86,6 +87,7 @@ import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
     Tabs,
     RangeCalendar,
     RelativeDateRangeForm,
+    FAIcon,
   },
 })
 export default class DateRangeInput extends Vue {
@@ -240,9 +242,10 @@ $active-color-dark: #16406a;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  ::v-deep i {
+  ::v-deep span {
     display: inline-block;
-    margin: 0 5px;
+    line-height: 0;
+    font-size: 30px;
     color: #c8c8c8;
   }
 }

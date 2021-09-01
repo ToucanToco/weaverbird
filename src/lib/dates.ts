@@ -42,8 +42,7 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Days ago', value: 'day' },
 ];
 
-export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR =
-  '<i aria-hidden="true" class="fa fa-arrow-right"></i>';
+export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR = '<span>&#8594;</span>'; //use utf8 arrow symbol
 
 export const dateToString = (date: Date): string => {
   return date.toLocaleDateString(undefined, { timeZone: 'UTC' });
