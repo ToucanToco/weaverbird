@@ -16,7 +16,7 @@ export {
   VQB_MODULE_NAME,
 } from '@/store';
 
-import '@/assets/FA-ICONS';
+import '@/lib/icons';
 
 // export Vue components
 import DataViewer from '@/components/DataViewer.vue';

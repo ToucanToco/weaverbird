@@ -2,7 +2,7 @@
   This file creates the bundle needed by storybook to import the UI components.
   All components available in the Storybook must be exported here.
 */
-import '@/assets/FA-ICONS';
+import '@/lib/icons';
 
 import DataViewer from '../src/components/DataViewer.vue';
 import FilterStepForm from '../src/components/stepforms/FilterStepForm.vue';

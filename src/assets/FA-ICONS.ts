@@ -1,5 +1,5 @@
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { far } from '@fortawesome/free-regular-svg-icons'; // TODO: find a better way that including all icons
-import { fas } from '@fortawesome/free-solid-svg-icons'; // TODO: find a better way that including all icons
+const FA_ICONS = {};
 
-library.add(far, fas);
+export const FA_ICONS_PACK = Object.values(FA_ICONS);
+export const FA_ICONS_NAMES = Object.keys(FA_ICONS);
+export type FAIcon = typeof FA_ICONS_NAMES[number];
