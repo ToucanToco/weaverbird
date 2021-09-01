@@ -1,10 +1,14 @@
-import { faCalendar, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faCalendar as faCalendarFar,
+  faTrashAlt as faTrashAltFar,
+} from '@fortawesome/free-regular-svg-icons';
 import {
   faAngleDown,
   faAngleLeft,
   faAngleRight,
   faArrowRight,
   faCalculator,
+  faCalendar,
   faCalendarAlt,
   faCheck,
   faCodeBranch,
@@ -25,7 +29,9 @@ import {
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
 
+/* List all icons used in app */
 const FA_ICONS = {
+  // Solid icons (default)
   'angle-down': faAngleDown,
   'angle-left': faAngleLeft,
   'angle-right': faAngleRight,
@@ -50,7 +56,9 @@ const FA_ICONS = {
   search: faSearch,
   times: faTimes,
   trash: faTrash,
-  'trash-alt': faTrashAlt,
+  // Regular icons (should always use `far ` prefix)
+  'far calendar': faCalendarFar,
+  'far trash-alt': faTrashAltFar,
 };
 
 export const FA_ICONS_PACK = Object.values(FA_ICONS);

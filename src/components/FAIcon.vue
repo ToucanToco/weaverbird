@@ -1,5 +1,5 @@
 <template>
-  <FontAwesomeIcon :icon="[styles, icon]" />
+  <FontAwesomeIcon :icon="iconWithStyle" />
 </template>
 
 <script lang="ts">
@@ -9,8 +9,7 @@ import { Component, Prop } from 'vue-property-decorator';
 
 import { FAIcon } from '@/assets/FA-ICONS';
 
-/* This component enable to use a font-awesome icon in svg mode 
-using only the icon name without prefix  and optionnaly the style(far or fas) */
+/* This component enable to use a font-awesome icon in svg mode (available icons are declared in @/assets/FA-ICONS)  */
 
 @Component({
   name: 'FA-icon',
@@ -21,14 +20,17 @@ using only the icon name without prefix  and optionnaly the style(far or fas) */
 export default class Icon extends Vue {
   @Prop({
     type: String,
-    required: true,
+    default: '',
   })
   icon!: FAIcon;
 
-  @Prop({
-    type: String,
-    default: 'fas',
-  })
-  styles!: 'fas' | 'far'; //IMPORTANT: some icons are not available in far
+  get iconWithStyle(): FAIcon | string[] {
+    const hasSpecificStyle = this.icon.indexOf(' ') != -1; // icon name is prefixed
+    if (hasSpecificStyle) {
+      return this.icon.split(' ');
+    } else {
+      return this.icon;
+    }
+  }
 }
 </script>

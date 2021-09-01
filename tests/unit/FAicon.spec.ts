@@ -23,17 +23,19 @@ describe('FAIcon', () => {
   });
 
   it('should pass icon name to icon', () => {
-    expect(wrapper.find('FontAwesomeIcon-stub').attributes().icon).toContain('filter');
-  });
-  it('should pass default style to icon', () => {
-    expect(wrapper.find('FontAwesomeIcon-stub').attributes().icon).toContain('fas');
+    expect(wrapper.find('FontAwesomeIcon-stub').attributes().icon).toStrictEqual('filter');
   });
 
   describe('with specific style', () => {
     beforeEach(() => {
-      wrapper.setProps({ styles: 'far' });
+      wrapper.setProps({ icon: 'far filter' });
     });
-    it('should pass style to icon', () => {
+
+    it('should pass icon name to icon', () => {
+      expect(wrapper.find('FontAwesomeIcon-stub').attributes().icon).toContain('filter');
+    });
+
+    it('should also pass style to icon', () => {
       expect(wrapper.find('FontAwesomeIcon-stub').attributes().icon).toContain('far');
     });
   });
