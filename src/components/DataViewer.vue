@@ -39,7 +39,8 @@
                     @actionClicked="openStepForm"
                     @closed="closeDataTypeMenu"
                   />
-                  <span v-html="getIconType(column.type)" />
+                  <FAIcon v-if="shouldUseFAIcon(column.type)" :icon="getIconType(column.type)" />
+                  <span v-else v-html="getIconType(column.type)" />
                 </span>
                 <span
                   class="data-viewer__header-label"
@@ -65,7 +66,7 @@
                     @closed="closeMenu"
                     @actionClicked="openStepForm"
                   />
-                  <i class="fas fa-angle-down" aria-hidden="true" />
+                  <FAIcon icon="angle-down" />
                 </span>
               </td>
             </tr>
@@ -94,6 +95,7 @@ import VTooltip from 'v-tooltip';
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import Pagination from '@/components/Pagination.vue';
 import { resizable } from '@/directives/resizable/resizable';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
@@ -121,6 +123,7 @@ Vue.use(VTooltip);
     DataTypesMenu,
     DataViewerCell,
     Pagination,
+    FAIcon,
   },
   directives: { resizable },
 })
@@ -221,13 +224,24 @@ export default class DataViewer extends Vue {
       case 'float':
         return '1.2';
       case 'date':
-        return '<i class="fas fa-calendar-alt" aria-hidden="true"></i>';
+        return 'calendar-alt';
       case 'boolean':
-        return '<i class="fas fa-check" aria-hidden="true"></i>';
+        return 'check';
       case 'object':
         return '{ }';
       default:
         return '???';
+    }
+  }
+
+  shouldUseFAIcon(type: DataSetColumnType): boolean {
+    switch (type) {
+      case 'date':
+        return true;
+      case 'boolean':
+        return true;
+      default:
+        return false;
     }
   }
 
