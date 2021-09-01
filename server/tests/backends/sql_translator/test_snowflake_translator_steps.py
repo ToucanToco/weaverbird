@@ -75,7 +75,7 @@ class TestDataSlice(NamedTuple):
 
 
 def snowflake_query_describer_or_runner(
-    domain, query_string=None, run=False
+    domain: str, query_string: str = None, run: bool = False
 ) -> Union[Dict[str, str], TestDataSlice, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
