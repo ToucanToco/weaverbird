@@ -1777,7 +1777,6 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
         column_to_pivot: 'column_3',
         value_column: 'column_4',
         agg_function: 'sum',
-        pivot_values: [],
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -1823,7 +1822,6 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
         column_to_pivot: 'column_3',
         value_column: 'column_4',
         agg_function: 'sum',
-        pivot_values: [],
       },
     ];
     const querySteps = translator.translate(pipeline);

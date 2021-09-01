@@ -31,11 +31,11 @@ def query():
 
 
 @pytest.fixture
-def sql_query_describer():
+def sql_query_describer_or_runner():
     return Mock(return_value={'toto': 'int', 'raichu': 'str'})
 
 
-def test_translate_aggregate(query, sql_query_describer):
+def test_translate_aggregate(query, sql_query_describer_or_runner):
 
     step = AggregateStep(
         name='aggregate',
@@ -48,7 +48,9 @@ def test_translate_aggregate(query, sql_query_describer):
             Aggregation(aggfunction='avg', columns=['VALUE1'], newcolumns=['AVG_VALUE1']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(VALUE1) AS SUM_VALUE1, '
@@ -56,7 +58,7 @@ def test_translate_aggregate(query, sql_query_describer):
     )
 
 
-def test_translate_aggregate_with_group_by(query, sql_query_describer):
+def test_translate_aggregate_with_group_by(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=['CATEGORY'],
@@ -69,7 +71,9 @@ def test_translate_aggregate_with_group_by(query, sql_query_describer):
             Aggregation(aggfunction='avg', columns=['VALUE1'], newcolumns=['AVG_VALUE1']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT SUM(VALUE1) AS SUM_VALUE1, '
@@ -77,7 +81,7 @@ def test_translate_aggregate_with_group_by(query, sql_query_describer):
     )
 
 
-def test_count(query, sql_query_describer):
+def test_count(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=['category'],
@@ -85,7 +89,9 @@ def test_count(query, sql_query_describer):
             Aggregation(aggfunction='count', columns=['Label'], newcolumns=['count']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT COUNT(Label) AS count, '
@@ -93,7 +99,7 @@ def test_count(query, sql_query_describer):
     )
 
 
-def test_first_no_aggregation_with_groupby(query, sql_query_describer):
+def test_first_no_aggregation_with_groupby(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=['category'],
@@ -101,7 +107,9 @@ def test_first_no_aggregation_with_groupby(query, sql_query_describer):
             Aggregation(aggfunction='first', columns=['Label'], newcolumns=['first_Label']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT first_Label, category FROM ('
@@ -110,14 +118,16 @@ def test_first_no_aggregation_with_groupby(query, sql_query_describer):
     )
 
 
-def test_first_no_group_by_no_aggregation(query, sql_query_describer):
+def test_first_no_group_by_no_aggregation(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         aggregations=[
             Aggregation(aggfunction='first', columns=['Label'], newcolumns=['first_Label']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT first_Label FROM (SELECT '
@@ -125,14 +135,16 @@ def test_first_no_group_by_no_aggregation(query, sql_query_describer):
     )
 
 
-def test_last_no_group_by_no_aggregation_no_first(query, sql_query_describer):
+def test_last_no_group_by_no_aggregation_no_first(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         aggregations=[
             Aggregation(aggfunction='last', columns=['Label'], newcolumns=['last_Label']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT last_Label FROM (SELECT Label '
@@ -140,7 +152,7 @@ def test_last_no_group_by_no_aggregation_no_first(query, sql_query_describer):
     )
 
 
-def test_last_with_group_by_no_aggregation_no_first(query, sql_query_describer):
+def test_last_with_group_by_no_aggregation_no_first(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=['category'],
@@ -148,7 +160,9 @@ def test_last_with_group_by_no_aggregation_no_first(query, sql_query_describer):
             Aggregation(aggfunction='last', columns=['Label'], newcolumns=['last_Label']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT last_Label, category FROM ('
@@ -157,7 +171,7 @@ def test_last_with_group_by_no_aggregation_no_first(query, sql_query_describer):
     )
 
 
-def test_last_with_group_by_no_aggregation_with_first(query, sql_query_describer):
+def test_last_with_group_by_no_aggregation_with_first(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=['category'],
@@ -166,7 +180,9 @@ def test_last_with_group_by_no_aggregation_with_first(query, sql_query_describer
             Aggregation(aggfunction='last', columns=['title'], newcolumns=['last_title']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT first_label, last_title, '
@@ -175,7 +191,7 @@ def test_last_with_group_by_no_aggregation_with_first(query, sql_query_describer
     )
 
 
-def test_last_no_group_by_with_aggregation_with_first(query, sql_query_describer):
+def test_last_no_group_by_with_aggregation_with_first(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         aggregations=[
@@ -183,7 +199,9 @@ def test_last_no_group_by_with_aggregation_with_first(query, sql_query_describer
             Aggregation(aggfunction='sum', columns=['title'], newcolumns=['sum_title']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT A.*, F.first_label FROM ('
@@ -192,7 +210,7 @@ def test_last_no_group_by_with_aggregation_with_first(query, sql_query_describer
     )
 
 
-def test_last_no_group_by_with_aggregation_with_last(query, sql_query_describer):
+def test_last_no_group_by_with_aggregation_with_last(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         aggregations=[
@@ -200,7 +218,9 @@ def test_last_no_group_by_with_aggregation_with_last(query, sql_query_describer)
             Aggregation(aggfunction='sum', columns=['title'], newcolumns=['sum_title']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT A.*, F.last_label FROM ('
@@ -209,7 +229,9 @@ def test_last_no_group_by_with_aggregation_with_last(query, sql_query_describer)
     )
 
 
-def test_last_no_group_by_with_aggregation_with_last_with_first(query, sql_query_describer):
+def test_last_no_group_by_with_aggregation_with_last_with_first(
+    query, sql_query_describer_or_runner
+):
     step = AggregateStep(
         name='aggregate',
         aggregations=[
@@ -218,7 +240,9 @@ def test_last_no_group_by_with_aggregation_with_last_with_first(query, sql_query
             Aggregation(aggfunction='sum', columns=['title'], newcolumns=['sum_title']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT A.*, F.first_title, '
@@ -228,7 +252,7 @@ def test_last_no_group_by_with_aggregation_with_last_with_first(query, sql_query
     )
 
 
-def test_with_group_by_with_aggregation_with_last_with_first(query, sql_query_describer):
+def test_with_group_by_with_aggregation_with_last_with_first(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=['category'],
@@ -238,7 +262,9 @@ def test_with_group_by_with_aggregation_with_last_with_first(query, sql_query_de
             Aggregation(aggfunction='sum', columns=['title'], newcolumns=['sum_title']),
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT A.*, F.first_title, '
@@ -249,7 +275,7 @@ def test_with_group_by_with_aggregation_with_last_with_first(query, sql_query_de
     )
 
 
-def test_count_distinct(query, sql_query_describer):
+def test_count_distinct(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=[],
@@ -261,7 +287,9 @@ def test_count_distinct(query, sql_query_describer):
             )
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT COUNT(DISTINCT Group) AS '
@@ -269,7 +297,7 @@ def test_count_distinct(query, sql_query_describer):
     )
 
 
-def test_count_distinct_whitespace_replace(query, sql_query_describer):
+def test_count_distinct_whitespace_replace(query, sql_query_describer_or_runner):
     step = AggregateStep(
         name='aggregate',
         on=[],
@@ -281,7 +309,9 @@ def test_count_distinct_whitespace_replace(query, sql_query_describer):
             )
         ],
     )
-    sql_query = translate_aggregate(step, query, index=1, sql_query_describer=sql_query_describer)
+    sql_query = translate_aggregate(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         sql_query.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), AGGREGATE_STEP_1 AS (SELECT COUNT(DISTINCT Group) AS '
@@ -289,7 +319,7 @@ def test_count_distinct_whitespace_replace(query, sql_query_describer):
     )
 
 
-def test_duplicate_aggregation_columns(query, sql_query_describer):
+def test_duplicate_aggregation_columns(query, sql_query_describer_or_runner):
 
     with pytest.raises(DuplicateColumnError):
         step = AggregateStep(
