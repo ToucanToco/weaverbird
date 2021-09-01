@@ -34,9 +34,13 @@ def translate_concatenate(
     concatenate_query: str = (
         f"CONCAT_WS('{step.separator}', " + ", ".join(step.columns) + f") AS {step.new_column_name}"
     )
-    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
     # we update metadatas
     query.metadata_manager.add_query_metadata_column(f"{step.new_column_name}", "string")
+
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=[step.new_column_name]
+    )
+
     if len(completed_fields):
         concatenate_query = f', {concatenate_query}'
 
