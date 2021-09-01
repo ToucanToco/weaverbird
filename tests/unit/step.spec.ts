@@ -135,10 +135,10 @@ describe('Step.vue', () => {
       { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
     ];
     const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-    const wrapper = mount(PipelineComponent, { store, localVue });
+    const wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
-    renameStep.find('.fa-cog').trigger('click');
+    renameStep.find('.query-pipeline-step__action').trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
       [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],
@@ -155,7 +155,7 @@ describe('Step.vue', () => {
     const store = setupMockStore(
       buildStateWithOnePipeline(pipeline, { currentStepFormName: 'rename' }),
     );
-    const wrapper = mount(PipelineComponent, { store, localVue });
+    const wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
     renameStep
@@ -182,7 +182,7 @@ describe('Step.vue', () => {
           ],
         }),
       );
-      const wrapper = mount(PipelineComponent, { store, localVue });
+      const wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
       const stepsArray = wrapper.findAll(Step);
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.classes()).toContain('query-pipeline-step__container--errors');
@@ -201,7 +201,7 @@ describe('Step.vue', () => {
           ],
         }),
       );
-      const wrapper = mount(PipelineComponent, { store, localVue });
+      const wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
       const stepsArray = wrapper.findAll(Step);
       const replaceStep = stepsArray.at(1);
       expect(replaceStep.find('.query-pipeline-step__footer').exists()).toBe(true);
@@ -223,7 +223,7 @@ describe('Step.vue', () => {
           ],
         }),
       );
-      const wrapper = mount(PipelineComponent, { store, localVue });
+      const wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
       const stepsArray = wrapper.findAll(Step);
       stepsArray
         .at(0)

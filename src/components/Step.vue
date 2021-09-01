@@ -4,7 +4,7 @@
       <div :class="firstStrokeClass" />
       <div class="query-pipeline-queue__dot" @click="toggleDelete">
         <div class="query-pipeline-queue__dot-ink">
-          <i class="fas fa-check" aria-hidden="true" />
+          <FAIcon icon="check" />
         </div>
       </div>
       <div :class="lastStrokeClass" />
@@ -25,14 +25,14 @@
         >
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
           <div class="query-pipeline-step__action" @click.stop="editStep()">
-            <i class="far fa-cog" aria-hidden="true" />
+            <FAIcon icon="cog" />
           </div>
           <div
             class="query-pipeline-step__action query-pipeline-step__action--handle"
             v-if="!isFirst"
             @click.stop
           >
-            <i class="fa fa-grip-vertical" aria-hidden="true" />
+            <FAIcon icon="grip-vertical" />
           </div>
         </div>
       </div>
@@ -48,6 +48,7 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { humanReadableLabel, labelWithReadeableVariables } from '@/lib/labeller';
 import { PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
@@ -55,6 +56,9 @@ import { VQBModule } from '@/store';
 
 @Component({
   name: 'step',
+  components: {
+    FAIcon,
+  },
 })
 export default class Step extends Vue {
   @Prop(Boolean)
@@ -205,7 +209,8 @@ export default class Step extends Vue {
   font-size: 8px;
   color: white;
   transform: width 0.2s, height 0.2s;
-  i {
+
+  ::v-deep .fa-check {
     visibility: hidden;
   }
 }
@@ -289,7 +294,7 @@ export default class Step extends Vue {
   cursor: move;
 }
 
-.query-pipeline-step__action i {
+.query-pipeline-step__action ::v-deep .fa-cog {
   transition: color 0.3s ease;
 }
 
@@ -334,7 +339,7 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink {
     background-color: $active-color-faded;
     border-color: $active-color-faded;
-    i {
+    ::v-deep .fa-check {
       visibility: visible;
     }
   }
