@@ -10,10 +10,12 @@
       @focus="focus()"
     />
     <div v-if="messageError" class="field__msg-error">
-      <span class="fa fa-exclamation-circle" />{{ messageError }}
+      <FAIcon icon="exclamation-circle" />
+      {{ messageError }}
     </div>
     <div v-if="messageWarning" class="field__msg-warning">
-      <span class="fas fa-exclamation-triangle" />{{ messageWarning }}
+      <FAIcon icon="exclamation-triangle" />
+      {{ messageWarning }}
     </div>
   </div>
 </template>
@@ -22,11 +24,15 @@
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
 import { CodeEditor, CodeEditorConfig, CodeEditorConfigs } from '@/components/code-editor';
+import FAIcon from '@/components/FAIcon.vue';
 
 import FormWidget from './FormWidget.vue';
 
 @Component({
   name: 'code-editor-widget',
+  components: {
+    FAIcon,
+  },
 })
 export default class CodeEditorWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })

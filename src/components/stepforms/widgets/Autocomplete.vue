@@ -36,7 +36,7 @@
       </multiselect>
     </VariableInput>
     <div v-if="messageError" class="field__msg-error">
-      <span class="fa fa-exclamation-circle" />
+      <FAIcon icon="exclamation-circle" />
       {{ messageError }}
     </div>
   </div>
@@ -46,6 +46,7 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
@@ -56,6 +57,7 @@ import VariableInput from './VariableInput.vue';
   components: {
     Multiselect,
     VariableInput,
+    FAIcon,
   },
 })
 export default class AutocompleteWidget extends Mixins(FormWidget) {
