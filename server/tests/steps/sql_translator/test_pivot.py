@@ -11,7 +11,7 @@ from weaverbird.pipeline.steps import PivotStep
 
 @pytest.fixture
 def sql_query_executor():
-    def f(domain, query_string, run):
+    def f(domain, query_string):
         return Mock(df=pd.DataFrame({'CURRENCY': ['SPAIN', 'FRANCE']}))
 
     return f
@@ -65,20 +65,20 @@ def test_translate_pivot(sql_query_executor):
             alias=None,
             delete=False,
         ),
-        '''"'SPAIN'"''': ColumnMetadata(
-            name='"\'SPAIN\'"',
+        'SPAIN': ColumnMetadata(
+            name='SPAIN',
             original_name='"\'SPAIN\'"',
             type='STR',
             original_type='STR',
-            alias='SPAIN',
+            alias=None,
             delete=False,
         ),
-        '''"'FRANCE'"''': ColumnMetadata(
-            name='"\'FRANCE\'"',
+        'FRANCE': ColumnMetadata(
+            name='FRANCE',
             original_name='"\'FRANCE\'"',
             type='STR',
             original_type='STR',
-            alias='FRANCE',
+            alias=None,
             delete=False,
         ),
     }

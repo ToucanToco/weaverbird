@@ -18,7 +18,7 @@ def translate_table(
     index: int,
     sql_query_retriever: SQLQueryRetriever,
     sql_query_describer: SQLQueryDescriber,
-    sql_query_executor: SQLQueryExecutor,
+    sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     """As it is always the first step add the with keyword"""

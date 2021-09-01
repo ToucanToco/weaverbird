@@ -23,6 +23,7 @@ def pipeline_translator():
         translate_pipeline,
         sql_query_retriever=lambda name: DOMAINS[name],
         sql_query_describer=lambda x: {'TITLE': 'str'},
+        sql_query_executor=lambda x: 'bar',
     )
 
 
