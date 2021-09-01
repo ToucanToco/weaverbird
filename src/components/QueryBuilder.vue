@@ -23,7 +23,7 @@
             class="documentation-help__content"
             :data-version="version"
           >
-            <i class="fas fa-question-circle" aria-hidden="true" />
+            <FAIcon icon="question-circle" />
             <p>Need help?</p>
           </a>
         </div>
@@ -37,6 +37,7 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
@@ -49,6 +50,7 @@ import StepFormsComponents from './stepforms';
   name: 'query-builder',
   components: {
     Pipeline: PipelineComponent,
+    FAIcon,
   },
 })
 export default class QueryBuilder extends Vue {
@@ -173,7 +175,7 @@ export default class QueryBuilder extends Vue {
     text-decoration: underline;
   }
 
-  .fas.fa-question-circle {
+  ::v-deep .fa-question-circle {
     margin-right: 5px;
   }
 }
