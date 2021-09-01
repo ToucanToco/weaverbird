@@ -13,7 +13,6 @@ class PivotStep(BaseStep):
     column_to_pivot: str
     value_column: str
     agg_function: Literal['sum', 'avg', 'count', 'min', 'max']
-    pivot_values: List[str]
 
 
 class PivotStepWithVariable(PivotStep, StepWithVariablesMixin):
