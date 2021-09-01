@@ -1,9 +1,13 @@
 import pytest
 
-from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps import translate_dateextract
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    get_query_for_date_extract,
+)
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import DateExtractStep
+from weaverbird.pipeline.steps.date_extract import DATE_INFO
 
 
 @pytest.fixture
@@ -38,6 +42,50 @@ def test_translate_simple_date_extract(query_date):
         == 'SELECT TOTO, RAICHU, FLORIZARRE, DATE, DATE_YEAR FROM DATEEXTRACT_STEP_1'
     )
     assert query.query_name == 'DATEEXTRACT_STEP_1'
+
+    # assert on metadatas
+    assert query.metadata_manager.retrieve_query_metadata_columns() == {
+        'DATE': ColumnMetadata(
+            name='DATE',
+            original_name='DATE',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_YEAR': ColumnMetadata(
+            name='DATE_YEAR',
+            original_name='DATE_YEAR',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'FLORIZARRE': ColumnMetadata(
+            name='FLORIZARRE',
+            original_name='FLORIZARRE',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+        'RAICHU': ColumnMetadata(
+            name='RAICHU',
+            original_name='RAICHU',
+            type='INT',
+            original_type='int',
+            alias=None,
+            delete=False,
+        ),
+        'TOTO': ColumnMetadata(
+            name='TOTO',
+            original_name='TOTO',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+    }
 
 
 def test_translate_complex_date_extract(query_date):
@@ -84,6 +132,130 @@ def test_translate_complex_date_extract(query_date):
     )
     assert query.query_name == 'DATEEXTRACT_STEP_1'
 
+    # assert on metadatas
+    assert query.metadata_manager.retrieve_query_metadata_columns() == {
+        'DATE': ColumnMetadata(
+            name='DATE',
+            original_name='DATE',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_DAY': ColumnMetadata(
+            name='DATE_DAY',
+            original_name='DATE_DAY',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_DAYOFYEAR': ColumnMetadata(
+            name='DATE_DAYOFYEAR',
+            original_name='DATE_DAYOFYEAR',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_FIRSTDAYOFPREVIOUSMONTH': ColumnMetadata(
+            name='DATE_FIRSTDAYOFPREVIOUSMONTH',
+            original_name='DATE_FIRSTDAYOFPREVIOUSMONTH',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_FIRSTDAYOFPREVIOUSWEEK': ColumnMetadata(
+            name='DATE_FIRSTDAYOFPREVIOUSWEEK',
+            original_name='DATE_FIRSTDAYOFPREVIOUSWEEK',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_FIRSTDAYOFPREVIOUSYEAR': ColumnMetadata(
+            name='DATE_FIRSTDAYOFPREVIOUSYEAR',
+            original_name='DATE_FIRSTDAYOFPREVIOUSYEAR',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_ISODAYOFWEEK': ColumnMetadata(
+            name='DATE_ISODAYOFWEEK',
+            original_name='DATE_ISODAYOFWEEK',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_ISOWEEK': ColumnMetadata(
+            name='DATE_ISOWEEK',
+            original_name='DATE_ISOWEEK',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_ISOYEAR': ColumnMetadata(
+            name='DATE_ISOYEAR',
+            original_name='DATE_ISOYEAR',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_PREVIOUSDAY': ColumnMetadata(
+            name='DATE_PREVIOUSDAY',
+            original_name='DATE_PREVIOUSDAY',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_WEEK': ColumnMetadata(
+            name='DATE_WEEK',
+            original_name='DATE_WEEK',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'DATE_YEAR': ColumnMetadata(
+            name='DATE_YEAR',
+            original_name='DATE_YEAR',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'FLORIZARRE': ColumnMetadata(
+            name='FLORIZARRE',
+            original_name='FLORIZARRE',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+        'RAICHU': ColumnMetadata(
+            name='RAICHU',
+            original_name='RAICHU',
+            type='INT',
+            original_type='int',
+            alias=None,
+            delete=False,
+        ),
+        'TOTO': ColumnMetadata(
+            name='TOTO',
+            original_name='TOTO',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+    }
+
 
 def test_translate_with_new_columns_date_extract(query_date):
     step = DateExtractStep(
@@ -105,3 +277,95 @@ def test_translate_with_new_columns_date_extract(query_date):
         == 'SELECT TOTO, RAICHU, FLORIZARRE, DATE, ZOZOR FROM DATEEXTRACT_STEP_1'
     )
     assert query.query_name == 'DATEEXTRACT_STEP_1'
+
+    # assert on metadatas
+    assert query.metadata_manager.retrieve_query_metadata_columns() == {
+        'DATE': ColumnMetadata(
+            name='DATE',
+            original_name='DATE',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+        'FLORIZARRE': ColumnMetadata(
+            name='FLORIZARRE',
+            original_name='FLORIZARRE',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+        'RAICHU': ColumnMetadata(
+            name='RAICHU',
+            original_name='RAICHU',
+            type='INT',
+            original_type='int',
+            alias=None,
+            delete=False,
+        ),
+        'TOTO': ColumnMetadata(
+            name='TOTO',
+            original_name='TOTO',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+        'ZOZOR': ColumnMetadata(
+            name='ZOZOR',
+            original_name='ZOZOR',
+            type='DATE',
+            original_type='date',
+            alias=None,
+            delete=False,
+        ),
+    }
+
+
+def test_utils_query_for_date_extract():
+    date_infos__expected_sql = {
+        'year': "EXTRACT(year from to_timestamp(DATE)) AS NEW_COLUMN",
+        'month': "EXTRACT(month from to_timestamp(DATE)) AS NEW_COLUMN",
+        'day': "EXTRACT(day from to_timestamp(DATE)) AS NEW_COLUMN",
+        'week': "EXTRACT(week from to_timestamp(DATE)) AS NEW_COLUMN",
+        'quarter': "EXTRACT(quarter from to_timestamp(DATE)) AS NEW_COLUMN",
+        'dayOfWeek': "EXTRACT(dayofweek from to_timestamp(DATE)) AS NEW_COLUMN",
+        'dayOfYear': "EXTRACT(dayofyear from to_timestamp(DATE)) AS NEW_COLUMN",
+        'isoYear': "(YEAROFWEEKISO(to_timestamp(DATE))) AS NEW_COLUMN",
+        'isoWeek': "(WEEKISO(to_timestamp(DATE))) AS NEW_COLUMN",
+        'isoDayOfWeek': "(DAYOFWEEKISO(to_timestamp(DATE))) AS NEW_COLUMN",
+        'hour': "EXTRACT(hour from to_timestamp(DATE)) AS NEW_COLUMN",
+        'minutes': "EXTRACT(minute from to_timestamp(DATE)) AS NEW_COLUMN",
+        'seconds': "EXTRACT(second from to_timestamp(DATE)) AS NEW_COLUMN",
+        'milliseconds': "(DATE_TRUNC(millisecond, to_timestamp(DATE))) AS NEW_COLUMN",
+        'firstDayOfYear': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(DATE)))) AS NEW_COLUMN",
+        'firstDayOfMonth': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(DATE)))) AS NEW_COLUMN",
+        'firstDayOfWeek': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(DATE)))) AS NEW_COLUMN",
+        'firstDayOfQuarter': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(DATE)))) AS NEW_COLUMN",
+        'firstDayOfIsoWeek': "(DAYOFWEEKISO(to_timestamp(DATE)) - DAYOFWEEKISO(to_timestamp(DATE)) + 1) AS NEW_COLUMN",
+        'previousDay': "(to_timestamp(DATE) - interval '1 day') AS NEW_COLUMN",
+        'firstDayOfPreviousYear': "((to_timestamp(DATE) - interval '1 year') + interval '1 day') AS NEW_COLUMN",
+        'firstDayOfPreviousMonth': "((to_timestamp(DATE) - interval '2 month') + interval '1 day') AS NEW_COLUMN",
+        'firstDayOfPreviousWeek': "(DAY(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO(to_timestamp(DATE)) + "
+                                  "1) AS NEW_COLUMN",
+        'firstDayOfPreviousQuarter': "(to_timestamp(DATE) - interval '1 quarter') AS NEW_COLUMN",
+        'firstDayOfPreviousIsoWeek': "(DAYOFWEEKISO(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO("
+                                     "to_timestamp(DATE)) + 1) AS NEW_COLUMN",
+        'previousYear': "(YEAR(to_timestamp(DATE) - interval '1 year')) AS NEW_COLUMN",
+        'previousMonth': "(MONTH(to_timestamp(DATE) - interval '1 month')) AS NEW_COLUMN",
+        'previousWeek': "(WEEK(to_timestamp(DATE) - interval '1 week')) AS NEW_COLUMN",
+        'previousQuarter': "(QUARTER(to_timestamp(DATE) - interval '1 quarter')) AS NEW_COLUMN",
+        'previousIsoWeek': "(WEEKISO(to_timestamp(DATE)) - 1) AS NEW_COLUMN",
+    }
+
+    # a loop to evaluate all date-info and the sql output
+    for dd in date_infos__expected_sql:
+        assert (
+            get_query_for_date_extract(
+                dd,
+                "DATE",
+                "NEW_COLUMN",
+            )
+            == date_infos__expected_sql[dd]
+        )

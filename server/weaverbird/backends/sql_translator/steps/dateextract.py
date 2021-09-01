@@ -30,22 +30,34 @@ def translate_dateextract(
         f'step: {step}\n'
     )
 
-    to_extract_string: str = ""
-    for index, d in enumerate(step.date_info):
-        if index > 0:
-            to_extract_string += ", "
-        new_column = (
+    def new_column_name(d: str, idd: int) -> str:
+        """
+        A security method inside the translator to get a new column name base
+        on the step.new_columns wetheir or not that is empty or full
+
+        d : date info element
+        idd: index of that date info in new columns array
+        """
+        return (
             (
                 # if index is in step.new_columns
-                step.new_columns[index]
-                if index < len(step.new_columns)
+                step.new_columns[idd]
+                if idd < len(step.new_columns)
                 else f'{step.column}_{d.upper()}'
             )
             if len(step.new_columns) > 0
             else f'{step.column}_{d.upper()}'
         )
-        to_extract_string += get_query_for_date_extract(d, step.column, new_column)
-        query.metadata_manager.add_query_metadata_column(f"{new_column}", "date")
+
+    to_extract_string: str = ", ".join(
+        [
+            get_query_for_date_extract(d, step.column, new_column_name(d, idd))
+            for idd, d in enumerate(step.date_info)
+            if query.metadata_manager.add_query_metadata_column(
+                f"{new_column_name(d, idd)}", "date"
+            )
+        ]
+    )
 
     select_fields = ""
     # added the new column
