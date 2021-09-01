@@ -27,7 +27,6 @@ def test_pivot(sample_df: DataFrame):
         column_to_pivot='Country',
         value_column='Value',
         agg_function='sum',
-        pivot_values=[],
     )
     df_result = execute_pivot(step, sample_df)
 
@@ -48,7 +47,6 @@ def test_pivot_avg(sample_df: DataFrame):
         column_to_pivot='Country',
         value_column='Value',
         agg_function='avg',
-        pivot_values=[],
     )
     df_result = execute_pivot(step, sample_df)
 
@@ -78,6 +76,5 @@ def test_benchmark_pivot(benchmark):
         column_to_pivot='group',
         value_column='value',
         agg_function='avg',
-        pivot_values=[],
     )
     benchmark(execute_pivot, step, df)

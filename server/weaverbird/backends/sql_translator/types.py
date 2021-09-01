@@ -26,10 +26,11 @@ class SQLQuery(BaseModel):
 
 
 SQLQueryRetriever = Callable[[str], str]
-SQLQueryDescriber = Callable[[str, str], str]
+SQLQueryDescriberOrRunner = Callable[[str, str], str]
 
 SQLPipelineTranslator = Callable[
-    [Pipeline, SQLQueryRetriever, SQLQueryDescriber], Tuple[str, SQLPipelineTranslationReport]
+    [Pipeline, SQLQueryRetriever, SQLQueryDescriberOrRunner],
+    Tuple[str, SQLPipelineTranslationReport],
 ]
 
 
@@ -40,7 +41,7 @@ class SQLStepTranslator(Protocol):
         query: SQLQuery,
         index,
         sql_query_retriever: Optional[SQLQueryRetriever],
-        sql_query_describer: Optional[SQLQueryDescriber],
+        sql_query_describer_or_runner: Optional[SQLQueryDescriberOrRunner],
         sql_translate_pipeline: Optional[SQLPipelineTranslator],
     ) -> str:
         ...
