@@ -81,6 +81,7 @@ export class BasicStepFormTestRunner {
       propsData,
       localVue: this.vue,
       sync: false,
+      stubs: { FAIcon: '<div />' },
     });
     if (data) {
       wrapper.setData(data);
@@ -129,6 +130,7 @@ export class BasicStepFormTestRunner {
       propsData,
       localVue: this.vue,
       sync: false,
+      stubs: { FAIcon: '<div />' },
     });
     if (data) {
       wrapper.setData(data);
@@ -167,6 +169,7 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
+        stubs: { FAIcon: '<div />' },
       });
       if (data) {
         wrapper.setData(data);
@@ -185,6 +188,7 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
+        stubs: { FAIcon: '<div />' },
       });
       if (data) {
         wrapper.setData(data);
@@ -203,6 +207,7 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
+        stubs: { FAIcon: '<div />' },
       });
       if (data) {
         wrapper.setData(data);
@@ -222,7 +227,12 @@ export class BasicStepFormTestRunner {
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should emit "back" event when back button is clicked', () => {
-      const wrapper = mount(this.componentType, { store, localVue: this.vue, sync: false });
+      const wrapper = mount(this.componentType, {
+        store,
+        localVue: this.vue,
+        sync: false,
+        stubs: { FAIcon: '<div />' },
+      });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(wrapper.emitted()).toEqual({ back: [[]] });
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
@@ -237,6 +247,7 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         sync: false,
         methods,
+        stubs: { FAIcon: '<div />' },
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(cancelEditionCustomMock).toHaveBeenCalledTimes(1);
@@ -261,7 +272,12 @@ export class BasicStepFormTestRunner {
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-      const wrapper = mount(this.componentType, { store, localVue: this.vue, sync: false });
+      const wrapper = mount(this.componentType, {
+        store,
+        localVue: this.vue,
+        sync: false,
+        stubs: { FAIcon: '<div />' },
+      });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
 
