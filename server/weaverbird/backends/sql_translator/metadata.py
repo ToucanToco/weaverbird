@@ -509,3 +509,13 @@ class SqlQueryMetadataManager(BaseModel):
 
     def cast_column_to_string(self, columns: Dict[str, ColumnMetadata]):
         return ', '.join([cname for cname, column in columns])
+
+    def update_query_metadata_column_names_with_alias(self):
+        for col in self.retrieve_query_metadata_columns().values():
+            if col.alias:
+                self.update_query_metadata_column_name(
+                    column_name=col.name,
+                    dest_column_name=col.alias,
+                )
+                self.remove_query_metadata_column_alias(col.alias)
+        return self.retrieve_table('__INTERNAL__')

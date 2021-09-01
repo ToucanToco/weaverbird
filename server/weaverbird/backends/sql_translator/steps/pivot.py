@@ -75,4 +75,5 @@ FROM {query.query_name} PIVOT({aggregate_part} FOR {step.column_to_pivot} IN ({'
         '############################################################'
     )
 
+    query.metadata_manager.update_query_metadata_column_names_with_alias()
     return new_query
