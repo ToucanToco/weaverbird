@@ -4,7 +4,8 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLQueryDescriberOrRunner,
+    SQLQueryDescriber,
+    SQLQueryExecutor,
     SqlQueryMetadataManager,
     SQLQueryRetriever,
 )
@@ -16,7 +17,8 @@ def translate_table(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever,
-    sql_query_describer_or_runner: SQLQueryDescriberOrRunner,
+    sql_query_describer: SQLQueryDescriber,
+    sql_query_executor: SQLQueryExecutor,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     """As it is always the first step add the with keyword"""
@@ -24,7 +26,7 @@ def translate_table(
         step.domain
     )  # TODO in laputa, implement the table retrieval instead of query
     query_name = f'SELECT_STEP_{index}'
-    query_description = sql_query_describer_or_runner(step.domain)
+    query_description = sql_query_describer(step.domain)
     query_metadata_manager = SqlQueryMetadataManager(
         tables_metadata={step.domain: query_description}
     )
