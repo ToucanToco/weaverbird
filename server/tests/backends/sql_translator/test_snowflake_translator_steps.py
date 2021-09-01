@@ -1,6 +1,6 @@
 import json
 from os import environ
-from typing import Dict, Optional, Union
+from typing import Dict, NamedTuple, Optional, Union
 
 import pandas as pd
 import pytest
@@ -69,11 +69,20 @@ def sql_retrieve_city(t):
     return t
 
 
-def snowflake_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
+class TestDataSlice(NamedTuple):
+    df: pd.DataFrame
+
+
+def snowflake_query_describer_or_runner(
+    domain, query_string=None, run=False
+) -> Union[Dict[str, str], TestDataSlice, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        describe_res = cursor.describe(domain if domain else query_string)
-        res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
+        if run:
+            res = cursor.execute(domain if domain else query_string)
+            return TestDataSlice(df=pd.DataFrame(res))
+        res = cursor.describe(domain if domain else query_string)
+        res = {r.name: type_code_mapping.get(r.type_code) for r in res}
         return res
 
 
@@ -111,7 +120,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
-        sql_query_describer=snowflake_query_describer,
+        sql_query_describer_or_runner=snowflake_query_describer_or_runner,
     )
 
     # Execute request generated from Pipeline in Snowflake and get the result

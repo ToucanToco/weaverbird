@@ -1,3 +1,6 @@
+from unittest.mock import Mock
+
+import pandas as pd
 import pytest
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
@@ -6,7 +9,15 @@ from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import PivotStep
 
 
-def test_translate_pivot(mocker):
+@pytest.fixture
+def sql_query_describer_or_runner():
+    def f(domain, query_string, run):
+        return Mock(df=pd.DataFrame({0: ['SPAIN', 'FRANCE']}))
+
+    return f
+
+
+def test_translate_pivot(sql_query_describer_or_runner):
     query = SQLQuery(
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS)',
@@ -29,7 +40,9 @@ def test_translate_pivot(mocker):
         value_column='PROVIDER',
         agg_function='sum',
     )
-    res = translate_pivot(step, query, index=1)
+    res = translate_pivot(
+        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
+    )
     assert (
         res.transformed_query
         == """WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS),\
@@ -73,7 +86,7 @@ def test_translate_pivot(mocker):
     }
 
 
-def test_translate_pivot_error(mocker):
+def test_translate_pivot_error(sql_query_describer_or_runner, mocker):
     step = PivotStep(
         name='pivot',
         index=['COMPANY', 'COUNTRY'],
