@@ -66,7 +66,8 @@ describe('Pipeline.vue', () => {
     expect(wrapper.find('.query-pipeline__tips').text()).toEqual(
       'Interact with the widgets and table on the right to add steps',
     );
-    expect(wrapper.find('.fa-magic').exists()).toBeTruthy();
+    const icons = wrapper.findAll('FAIcon-stub');
+    expect(icons.at(0).props().icon).toBe('magic');
   });
 
   describe('toggle delete step', () => {
@@ -159,7 +160,7 @@ describe('Pipeline.vue', () => {
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       dispatchSpy = jest.spyOn(store, 'dispatch');
-      wrapper = mount(PipelineComponent, { store, localVue });
+      wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
       wrapper.setData({ selectedSteps });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
       await wrapper.vm.$nextTick();
@@ -220,7 +221,7 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      wrapper = mount(PipelineComponent, { store, localVue });
+      wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
       wrapper.setData({ selectedSteps });
       (wrapper.vm as any).keyDownEventHandler({ key: 'Backspace' });
       await wrapper.vm.$nextTick();
