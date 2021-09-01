@@ -16,13 +16,14 @@
       @mousedown.prevent="editAdvancedVariable"
       >{{ variableLabel }}</span
     >
-    <i
-      class="widget-variable__tag-close fa fa-times"
+    <span
+      class="widget-variable__tag-close"
       tabindex="1"
       @keypress.enter.prevent="removeVariableTag"
       @mousedown.prevent="removeVariableTag"
-      aria-hidden="true"
-    />
+    >
+      <FAIcon icon="times" />
+    </span>
   </div>
 </template>
 
@@ -30,6 +31,7 @@
 import VTooltip from 'v-tooltip';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 Vue.use(VTooltip);
@@ -39,6 +41,9 @@ Vue.use(VTooltip);
  */
 @Component({
   name: 'variable-tag',
+  components: {
+    FAIcon,
+  },
 })
 export default class VariableTag extends Vue {
   @Prop()
