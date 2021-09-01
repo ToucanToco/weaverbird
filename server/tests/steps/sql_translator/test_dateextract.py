@@ -7,7 +7,6 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 )
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import DateExtractStep
-from weaverbird.pipeline.steps.date_extract import DATE_INFO
 
 
 @pytest.fixture
@@ -348,10 +347,10 @@ def test_utils_query_for_date_extract():
         'firstDayOfPreviousYear': "((to_timestamp(DATE) - interval '1 year') + interval '1 day') AS NEW_COLUMN",
         'firstDayOfPreviousMonth': "((to_timestamp(DATE) - interval '2 month') + interval '1 day') AS NEW_COLUMN",
         'firstDayOfPreviousWeek': "(DAY(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO(to_timestamp(DATE)) + "
-                                  "1) AS NEW_COLUMN",
+        "1) AS NEW_COLUMN",
         'firstDayOfPreviousQuarter': "(to_timestamp(DATE) - interval '1 quarter') AS NEW_COLUMN",
         'firstDayOfPreviousIsoWeek': "(DAYOFWEEKISO(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO("
-                                     "to_timestamp(DATE)) + 1) AS NEW_COLUMN",
+        "to_timestamp(DATE)) + 1) AS NEW_COLUMN",
         'previousYear': "(YEAR(to_timestamp(DATE) - interval '1 year')) AS NEW_COLUMN",
         'previousMonth': "(MONTH(to_timestamp(DATE) - interval '1 month')) AS NEW_COLUMN",
         'previousWeek': "(WEEK(to_timestamp(DATE) - interval '1 week')) AS NEW_COLUMN",
