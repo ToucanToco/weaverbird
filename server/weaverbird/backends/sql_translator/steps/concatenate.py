@@ -7,6 +7,7 @@ from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
     SQLQueryDescriber,
+    SQLQueryExecutor,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import ConcatenateStep
@@ -18,6 +19,7 @@ def translate_concatenate(
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
     sql_query_describer: SQLQueryDescriber = None,
+    sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'CONCATENATE_STEP_{index}'
