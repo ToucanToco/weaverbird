@@ -3,7 +3,7 @@
     <div class="widget-date-input__container">
       <span class="widget-date-input__label">{{ label }}</span>
       <div class="widget-date-input__button" @click="openEditor">
-        <i class="far fa-calendar" aria-hidden="true" />
+        <FAIcon icon="far calendar" />
       </div>
     </div>
     <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
@@ -51,6 +51,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import Calendar from '@/components/Calendar.vue';
 import { POPOVER_ALIGN } from '@/components/constants';
+import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
@@ -75,6 +76,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
     Tabs,
     Calendar,
     RelativeDateForm,
+    FAIcon,
   },
 })
 export default class NewDateInput extends Vue {
