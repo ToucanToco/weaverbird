@@ -264,25 +264,30 @@ class SqlQueryMetadataManager(BaseModel):
             raise MetadataError(
                 f'Impossible to merge table {jt_name}({join_table}) - Table not exist'
             )
-        table = TableMetadata(name='__INTERNAL__')
-        table.original_name = self.tables['__INTERNAL__'].original_name
-        for cname in self.tables['__INTERNAL__'].columns:
-            table.add_column(
-                f'{left_query_name}.{cname}',
-                self.tables['__INTERNAL__'].columns[cname].type,
+        self.create_table(table_name='__TEMP_JOIN__')
+
+        for cname in self.retrieve_query_metadata_columns():
+            self.add_table_column(
+                table_name='__TEMP_JOIN__',
+                column_name=f'{left_query_name}.{cname}',
+                column_type=self.retrieve_query_metadata_column_by_name(cname).type,
                 alias=f'{cname}_LEFT',
             )
-        self.tables['__INTERNAL__'] = table
+        self.define_as_metadata(table_name='__TEMP_JOIN__')
+
         for cname in self.tables[jt_name].columns:
-            self.tables['__INTERNAL__'].add_column(
-                f'{jt_name}.{cname}',
-                self.tables[jt_name].columns[cname].type,
+            self.add_query_metadata_column(
+                column_name=f'{jt_name}.{cname}',
+                column_type=self.retrieve_column_by_name(
+                    table_name=jt_name, column_name=cname
+                ).type,
                 alias=f'{cname}_RIGHT',
             )
+
         return self
 
     def add_table_column(
-        self, table_name: str, column_name: str, column_type: str
+        self, table_name: str, column_name: str, column_type: str, alias: Optional[str]
     ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
@@ -301,7 +306,9 @@ class SqlQueryMetadataManager(BaseModel):
         for name, type in columns_dict.items():
             self.tables[t_name] = self.tables[t_name].add_column(name, type)
 
-    def add_query_metadata_column(self, column_name: str, column_type: str) -> TableMetadata:
+    def add_query_metadata_column(
+        self, column_name: str, column_type: str, alias: Optional[str]
+    ) -> TableMetadata:
         return self.add_table_column('__INTERNAL__', column_name, column_type)
 
     def add_query_metadata_columns(self, columns: Dict[str, str]) -> TableMetadata:
