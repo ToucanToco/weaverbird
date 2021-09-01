@@ -195,26 +195,6 @@ def prepare_aggregation_query(aggregated_cols, aggregated_string, query: SQLQuer
     return query, aggregated_string
 
 
-def complete_fields(query: SQLQuery, columns=None) -> str:
-    """
-    We're going to complete missing field from the query
-    """
-    # TODO : changes the management columns on joins with duplicated columns
-    query_keys = query.metadata_manager.query_metadata.keys()
-    if columns:
-        compiled_query = ', '.join(
-            [
-                k.strip().replace('-', '_').replace(' ', '').upper()
-                for k in query_keys
-                if k.upper() not in columns and k.lower() not in columns
-            ]
-        )
-    else:
-        compiled_query = ', '.join(query_keys)
-
-    return compiled_query
-
-
 def snowflake_date_format(input_format: str) -> str:
     """
     This method will format the standard sql format for dates into snowflake sql one
@@ -307,8 +287,7 @@ def get_query_for_date_extract(
             "to_timestamp(____target____)) + 1",
             "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
             "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - "
-            "DAYOFWEEKISO( "
-            "to_timestamp(____target____)) + 1",
+            "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
             "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
             "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
             "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",
