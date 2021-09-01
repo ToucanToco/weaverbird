@@ -1,5 +1,5 @@
 <template>
-  <span class="popover" data-cy="weaverbird-popover" :style="elementStyle" @click.stop>
+  <span class="weaverbird-popover" data-cy="weaverbird-popover" :style="elementStyle" @click.stop>
     <slot />
   </span>
 </template>
@@ -174,7 +174,7 @@ export default class Popover extends Vue {
 }
 </script>
 <style lang="scss" scoped>
-.popover {
+.weaverbird-popover {
   font-family: 'Montserrat', sans-serif;
   position: absolute;
   visibility: visible;
