@@ -6,7 +6,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLQueryDescriber,
+    SQLQueryDescriberOrRunner,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import UnpivotStep
@@ -17,7 +17,7 @@ def translate_unpivot(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
-    sql_query_describer: SQLQueryDescriber = None,
+    sql_query_describer_or_runner: SQLQueryDescriberOrRunner = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'UNPIVOT_STEP_{index}'
@@ -36,9 +36,12 @@ def translate_unpivot(
  {str(step.unpivot).replace('[', '(').replace(']', ')').replace("'", '')}"""
 
     transformed_query = f"""{query.transformed_query}, {query_name} AS ({unpivot_query}))"""
-    unpivotted_value_column_type = query.metadata_manager.retrieve_query_metadata_column_by_name(
+    unpivotted_value_column = query.metadata_manager.retrieve_query_metadata_column_by_name(
         step.unpivot[0]
-    ).type
+    )
+    unpivotted_value_column_type = (
+        unpivotted_value_column.type if hasattr(unpivotted_value_column, 'type') else 'UNDEFINED'
+    )
     query.metadata_manager.remove_query_metadata_columns(
         [
             c

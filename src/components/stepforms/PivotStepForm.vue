@@ -47,14 +47,6 @@
       data-path=".agg_function"
       :errors="errors"
     />
-    <MultiInputTextWidget
-      class="pivotValuesInput"
-      v-model="editedStep.pivot_values"
-      name="Pivot values in ..."
-      placeholder="Pivot Values"
-      data-path=".pivot_values"
-      :errors="errors"
-    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -96,7 +88,6 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
       column_to_pivot: '',
       value_column: '',
       agg_function: 'sum',
-      pivot_values: [],
     }),
   })
   initialStepValue!: PivotStep;
@@ -143,16 +134,6 @@ export default class PivotStepForm extends BaseStepForm<PivotStep> {
           keyword: 'columnNameConflict',
           dataPath: '.value_column',
           message: `Column name ${this.editedStep.value_column} is used at least twice but should be unique`,
-        },
-      ];
-    } else if (new Set(this.editedStep.pivot_values).size < this.editedStep.pivot_values.length) {
-      return [
-        {
-          params: [],
-          schemaPath: '.pivot_values',
-          keyword: 'pivotValuesConflict',
-          dataPath: '.pivot_values',
-          message: `Pivot values has duplicate entries but should have only unique ones`,
         },
       ];
     }

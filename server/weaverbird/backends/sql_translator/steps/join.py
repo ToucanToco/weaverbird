@@ -9,7 +9,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLQueryDescriber,
+    SQLQueryDescriberOrRunner,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import JoinStep
@@ -20,7 +20,7 @@ def translate_join(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever,
-    sql_query_describer: SQLQueryDescriber,
+    sql_query_describer_or_runner: SQLQueryDescriberOrRunner,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'
@@ -42,13 +42,16 @@ def translate_join(
 
     # Retrieve the right query either directly as a domain or as a resolved sql pipeline
     right_query = resolve_sql_pipeline_for_combination(
-        step.right_pipeline, sql_query_retriever, sql_translate_pipeline, sql_query_describer
+        step.right_pipeline,
+        sql_query_retriever,
+        sql_translate_pipeline,
+        sql_query_describer_or_runner,
     )
     right_query_name = f'JOIN_STEP_{index}_RIGHT'
     # Update tables metadata with joined table metadata
 
     # 1 retrieve right metadata
-    query_to_join_metadata = sql_query_describer(domain=None, query_string=right_query)
+    query_to_join_metadata = sql_query_describer_or_runner(domain=None, query_string=right_query)
 
     # 2 Add them to the MetadataManager
     query.metadata_manager.create_table(right_query_name)
