@@ -239,8 +239,6 @@ def handle_zero_division(formula: str) -> str:
     return formula
 
 
-<<<<<<< HEAD
-=======
 def build_union_query(
     query_metadata_manager: SqlQueryMetadataManager,
     current_query_name: str,
@@ -313,18 +311,3 @@ def get_query_for_date_extract(
         }
 
         return f"({appropriate_func[date_type].replace('____target____', target_column)}) AS {new_column}"
-
-
-def build_union_query(
-    query_metadata_manager: SqlQueryMetadataManager,
-    current_query_name: str,
-    appended_tables_name: List[str],
-) -> str:
-    new_query = f'SELECT {query_metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}'
-    max_column_number = len(query_metadata_manager.retrieve_query_metadata_columns_as_list())
-    for t in appended_tables_name:
-        table_columns = query_metadata_manager.retrieve_columns_as_list(t)
-        missing_columns = max_column_number - len(table_columns)
-        all_columns = table_columns + ['NULL'] * missing_columns
-        new_query += f" UNION SELECT {', '.join(all_columns)} FROM {t}"
-    return new_query

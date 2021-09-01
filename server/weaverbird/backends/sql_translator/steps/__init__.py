@@ -46,7 +46,6 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'top': translate_top,
     'percentage': translate_percentage,
     'unpivot': translate_unpivot,
-<<<<<<< HEAD
     'pivot': translate_pivot,
     'dateextract': translate_dateextract,
     'append': translate_append,
