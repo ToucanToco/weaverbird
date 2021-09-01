@@ -65,6 +65,7 @@ def translate_join(
 
     # 5 build the final query string
     join_part = f"{'AND'.join([f'{query.query_name}.{keys[0]} = {right_query_name}.{keys[1]}' for keys in step.on])}"
+
     transformed_query = f"""{transformed_query}, {query_name} AS (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {query.query_name} {how} JOIN {right_query_name} ON {join_part})"""
 
     log.debug(

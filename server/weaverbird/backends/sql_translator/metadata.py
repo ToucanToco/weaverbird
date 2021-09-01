@@ -55,6 +55,10 @@ class ColumnMetadata(BaseModel):
         self.alias = alias.upper()
         return self
 
+    def remove_alias(self) -> ColumnMetadata:
+        self.alias = None
+        return self
+
 
 class TableMetadata(BaseModel):
     name: str
@@ -183,6 +187,10 @@ class TableMetadata(BaseModel):
         self.delete = True
         return self
 
+    def remove_column_alias(self, column_name: str) -> TableMetadata:
+        self.columns[column_name].remove_alias()
+        return self
+
     def is_deleted(self) -> bool:
         return self.delete
 
@@ -287,14 +295,14 @@ class SqlQueryMetadataManager(BaseModel):
         return self
 
     def add_table_column(
-        self, table_name: str, column_name: str, column_type: str, alias: Optional[str]
+        self, table_name: str, column_name: str, column_type: str, alias: Optional[str] = None
     ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
                 f'Impossible to update column name, table {t_name}({table_name}) not exist'
             )
-        self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type)
+        self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type, alias)
         return self.tables[t_name]
 
     def add_table_columns_from_dict(self, table_name: str, columns_dict: Dict[str, str]):
@@ -307,9 +315,9 @@ class SqlQueryMetadataManager(BaseModel):
             self.tables[t_name] = self.tables[t_name].add_column(name, type)
 
     def add_query_metadata_column(
-        self, column_name: str, column_type: str, alias: Optional[str]
+        self, column_name: str, column_type: str, alias: Optional[str] = None
     ) -> TableMetadata:
-        return self.add_table_column('__INTERNAL__', column_name, column_type)
+        return self.add_table_column('__INTERNAL__', column_name, column_type, alias)
 
     def add_query_metadata_columns(self, columns: Dict[str, str]) -> TableMetadata:
         return self.add_table_columns_from_dict('__INTERNAL__', columns)
@@ -333,6 +341,14 @@ class SqlQueryMetadataManager(BaseModel):
             )
         self.tables[t_name] = self.tables[t_name].update_column_alias(column_name, alias)
         return self.tables[t_name]
+
+    def remove_column_alias(self, table_name: str, column_name: str) -> TableMetadata:
+        if table_name not in self.tables:
+            raise MetadataError(
+                f'Impossible to remove column\'s alias, table {table_name} does not exist'
+            )
+        self.tables[table_name] = self.tables[table_name].remove_column_alias(column_name)
+        return self.tables[table_name]
 
     def update_query_metadata_column_name(
         self, column_name: str, dest_column_name: str
@@ -372,6 +388,9 @@ class SqlQueryMetadataManager(BaseModel):
 
     def remove_query_metadata_column(self, column_name: str) -> TableMetadata:
         return self.remove_table_column('__INTERNAL__', column_name)
+
+    def remove_query_metadata_column_alias(self, column_name: str) -> TableMetadata:
+        return self.remove_column_alias('__INTERNAL__', column_name)
 
     def remove_table_columns(self, table_name: str, columns_name: List[str]) -> TableMetadata:
         t_name = table_name.upper()
