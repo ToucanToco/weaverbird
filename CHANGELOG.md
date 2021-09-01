@@ -1,5 +1,9 @@
 # Changelog
 
+### [0.60.1] - 2021-09-01
+
+- Popover: prefix class name to avoid collision when embedded in other apps
+
 ### [0.60.0] - 2021-08-31
 
 ### Added
@@ -12,8 +16,6 @@
 ### Added
 
 - SQL VQB: Added Percentage and Join Step to Snowflake
-
-- Popover: prefix class name to avoid collision when embedded in other apps
 
 ## [0.58.0] - 2021-08-27
 
@@ -867,7 +869,8 @@
 ## Unreleased
 
 
-[0.59.0]: https://github.com/ToucanToco/weaverbird/compare/v0.59.0...v0.60.0
+[0.60.1]: https://github.com/ToucanToco/weaverbird/compare/v0.60.0...v0.60.1
+[0.60.0]: https://github.com/ToucanToco/weaverbird/compare/v0.59.0...v0.60.0
 [0.59.0]: https://github.com/ToucanToco/weaverbird/compare/v0.58.0...v0.59.0
 [0.58.0]: https://github.com/ToucanToco/weaverbird/compare/v0.57.0...v0.58.0
 [0.57.0]: https://github.com/ToucanToco/weaverbird/compare/v0.56.0...v0.57.0
