@@ -1,4 +1,57 @@
-const FA_ICONS = {};
+import { faCalendar, faTrashAlt } from '@fortawesome/free-regular-svg-icons';
+import {
+  faAngleDown,
+  faAngleLeft,
+  faAngleRight,
+  faArrowRight,
+  faCalculator,
+  faCalendarAlt,
+  faCheck,
+  faCodeBranch,
+  faCog,
+  faDrawPolygon,
+  faExclamation,
+  faExclamationCircle,
+  faExclamationTriangle,
+  faFilter,
+  faFont,
+  faGripVertical,
+  faMagic,
+  faObjectGroup,
+  faPlus,
+  faQuestionCircle,
+  faSearch,
+  faTimes,
+  faTrash,
+} from '@fortawesome/free-solid-svg-icons';
+
+const FA_ICONS = {
+  'angle-down': faAngleDown,
+  'angle-left': faAngleLeft,
+  'angle-right': faAngleRight,
+  'arrow-right': faArrowRight,
+  calculator: faCalculator,
+  calendar: faCalendar,
+  'calendar-alt': faCalendarAlt,
+  check: faCheck,
+  'code-branch': faCodeBranch,
+  cog: faCog,
+  'draw-polygon': faDrawPolygon,
+  exclamation: faExclamation,
+  'exclamation-circle': faExclamationCircle,
+  'exclamation-triangle': faExclamationTriangle,
+  filter: faFilter,
+  font: faFont,
+  'grip-vertical': faGripVertical,
+  magic: faMagic,
+  'object-group': faObjectGroup,
+  plus: faPlus,
+  'question-circle': faQuestionCircle,
+  search: faSearch,
+  times: faTimes,
+  trash: faTrash,
+  'trash-alt': faTrashAlt,
+};
 
 export const FA_ICONS_PACK = Object.values(FA_ICONS);
 export const FA_ICONS_NAMES = Object.keys(FA_ICONS);
