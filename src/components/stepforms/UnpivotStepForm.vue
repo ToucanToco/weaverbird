@@ -79,6 +79,7 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
     }),
   })
   initialStepValue!: UnpivotStep;
+  @VQBModule.Getter translator!: string;
 
   readonly title: string = 'Unpivot columns';
   readonly checkboxLabel: string = 'Drop null values';
