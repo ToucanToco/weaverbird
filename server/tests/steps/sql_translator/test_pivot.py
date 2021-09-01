@@ -10,14 +10,14 @@ from weaverbird.pipeline.steps import PivotStep
 
 
 @pytest.fixture
-def sql_query_describer_or_runner():
-    def f(domain, query_string, run):
+def sql_query_executor():
+    def f(domain, query_string):
         return Mock(df=pd.DataFrame({'CURRENCY': ['SPAIN', 'FRANCE']}))
 
     return f
 
 
-def test_translate_pivot(sql_query_describer_or_runner):
+def test_translate_pivot(sql_query_executor):
     query = SQLQuery(
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS)',
@@ -40,9 +40,7 @@ def test_translate_pivot(sql_query_describer_or_runner):
         value_column='PROVIDER',
         agg_function='sum',
     )
-    res = translate_pivot(
-        step, query, index=1, sql_query_describer_or_runner=sql_query_describer_or_runner
-    )
+    res = translate_pivot(step, query, index=1, sql_query_executor=sql_query_executor)
     assert (
         res.transformed_query
         == """WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS),\
@@ -67,26 +65,26 @@ def test_translate_pivot(sql_query_describer_or_runner):
             alias=None,
             delete=False,
         ),
-        '''"'SPAIN'"''': ColumnMetadata(
-            name='"\'SPAIN\'"',
+        'SPAIN': ColumnMetadata(
+            name='SPAIN',
             original_name='"\'SPAIN\'"',
             type='STR',
             original_type='STR',
-            alias='SPAIN',
+            alias=None,
             delete=False,
         ),
-        '''"'FRANCE'"''': ColumnMetadata(
-            name='"\'FRANCE\'"',
+        'FRANCE': ColumnMetadata(
+            name='FRANCE',
             original_name='"\'FRANCE\'"',
             type='STR',
             original_type='STR',
-            alias='FRANCE',
+            alias=None,
             delete=False,
         ),
     }
 
 
-def test_translate_pivot_error(sql_query_describer_or_runner, mocker):
+def test_translate_pivot_error(sql_query_executor, mocker):
     step = PivotStep(
         name='pivot',
         index=['COMPANY', 'COUNTRY'],

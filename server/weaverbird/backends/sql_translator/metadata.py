@@ -55,6 +55,10 @@ class ColumnMetadata(BaseModel):
         self.alias = alias.upper()
         return self
 
+    def remove_alias(self) -> ColumnMetadata:
+        self.alias = None
+        return self
+
 
 class TableMetadata(BaseModel):
     name: str
@@ -183,6 +187,10 @@ class TableMetadata(BaseModel):
         self.delete = True
         return self
 
+    def remove_column_alias(self, column_name: str) -> TableMetadata:
+        self.columns[column_name].remove_alias()
+        return self
+
     def is_deleted(self) -> bool:
         return self.delete
 
@@ -264,32 +272,37 @@ class SqlQueryMetadataManager(BaseModel):
             raise MetadataError(
                 f'Impossible to merge table {jt_name}({join_table}) - Table not exist'
             )
-        table = TableMetadata(name='__INTERNAL__')
-        table.original_name = self.tables['__INTERNAL__'].original_name
-        for cname in self.tables['__INTERNAL__'].columns:
-            table.add_column(
-                f'{left_query_name}.{cname}',
-                self.tables['__INTERNAL__'].columns[cname].type,
+        self.create_table(table_name='__TEMP_JOIN__')
+
+        for cname in self.retrieve_query_metadata_columns():
+            self.add_table_column(
+                table_name='__TEMP_JOIN__',
+                column_name=f'{left_query_name}.{cname}',
+                column_type=self.retrieve_query_metadata_column_by_name(cname).type,
                 alias=f'{cname}_LEFT',
             )
-        self.tables['__INTERNAL__'] = table
+        self.define_as_metadata(table_name='__TEMP_JOIN__')
+
         for cname in self.tables[jt_name].columns:
-            self.tables['__INTERNAL__'].add_column(
-                f'{jt_name}.{cname}',
-                self.tables[jt_name].columns[cname].type,
+            self.add_query_metadata_column(
+                column_name=f'{jt_name}.{cname}',
+                column_type=self.retrieve_column_by_name(
+                    table_name=jt_name, column_name=cname
+                ).type,
                 alias=f'{cname}_RIGHT',
             )
+
         return self
 
     def add_table_column(
-        self, table_name: str, column_name: str, column_type: str
+        self, table_name: str, column_name: str, column_type: str, alias: Optional[str] = None
     ) -> TableMetadata:
         t_name = table_name.upper()
         if t_name not in self.tables:
             raise MetadataError(
                 f'Impossible to update column name, table {t_name}({table_name}) not exist'
             )
-        self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type)
+        self.tables[t_name] = self.tables[t_name].add_column(column_name, column_type, alias)
         return self.tables[t_name]
 
     def add_table_columns_from_dict(self, table_name: str, columns_dict: Dict[str, str]):
@@ -301,8 +314,10 @@ class SqlQueryMetadataManager(BaseModel):
         for name, type in columns_dict.items():
             self.tables[t_name] = self.tables[t_name].add_column(name, type)
 
-    def add_query_metadata_column(self, column_name: str, column_type: str) -> TableMetadata:
-        return self.add_table_column('__INTERNAL__', column_name, column_type)
+    def add_query_metadata_column(
+        self, column_name: str, column_type: str, alias: Optional[str] = None
+    ) -> TableMetadata:
+        return self.add_table_column('__INTERNAL__', column_name, column_type, alias)
 
     def add_query_metadata_columns(self, columns: Dict[str, str]) -> TableMetadata:
         return self.add_table_columns_from_dict('__INTERNAL__', columns)
@@ -326,6 +341,14 @@ class SqlQueryMetadataManager(BaseModel):
             )
         self.tables[t_name] = self.tables[t_name].update_column_alias(column_name, alias)
         return self.tables[t_name]
+
+    def remove_column_alias(self, table_name: str, column_name: str) -> TableMetadata:
+        if table_name not in self.tables:
+            raise MetadataError(
+                f'Impossible to remove column\'s alias, table {table_name} does not exist'
+            )
+        self.tables[table_name] = self.tables[table_name].remove_column_alias(column_name)
+        return self.tables[table_name]
 
     def update_query_metadata_column_name(
         self, column_name: str, dest_column_name: str
@@ -365,6 +388,9 @@ class SqlQueryMetadataManager(BaseModel):
 
     def remove_query_metadata_column(self, column_name: str) -> TableMetadata:
         return self.remove_table_column('__INTERNAL__', column_name)
+
+    def remove_query_metadata_column_alias(self, column_name: str) -> TableMetadata:
+        return self.remove_column_alias('__INTERNAL__', column_name)
 
     def remove_table_columns(self, table_name: str, columns_name: List[str]) -> TableMetadata:
         t_name = table_name.upper()
@@ -483,3 +509,13 @@ class SqlQueryMetadataManager(BaseModel):
 
     def cast_column_to_string(self, columns: Dict[str, ColumnMetadata]):
         return ', '.join([cname for cname, column in columns])
+
+    def update_query_metadata_column_names_with_alias(self):
+        for col in self.retrieve_query_metadata_columns().values():
+            if col.alias:
+                self.update_query_metadata_column_name(
+                    column_name=col.name,
+                    dest_column_name=col.alias,
+                )
+                self.remove_query_metadata_column_alias(col.alias)
+        return self.retrieve_table('__INTERNAL__')

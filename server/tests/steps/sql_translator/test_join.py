@@ -13,7 +13,7 @@ from weaverbird.pipeline.steps import JoinStep
 
 @pytest.fixture
 def mock_translate_pipeline() -> SQLPipelineTranslator:
-    return lambda p, _, __: ('SELECT * FROM ORDERS', _, __)
+    return lambda p, _, __, ___: ('SELECT * FROM ORDERS', _, __, ___)
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def sql_query_retriever():
 
 
 @pytest.fixture
-def sql_query_describer_or_runner():
+def sql_query_describer():
     return Mock(return_value={'CUSTOMER_ID': 'int', 'CUSTOMER_NAME': 'str'})
 
 
@@ -41,7 +41,7 @@ def query():
 
 def test_join(
     query,
-    sql_query_describer_or_runner,
+    sql_query_describer,
     sql_query_retriever,
     mock_translate_pipeline,
 ):
@@ -58,7 +58,7 @@ def test_join(
         query=query,
         index=1,
         sql_query_retriever=sql_query_retriever,
-        sql_query_describer_or_runner=sql_query_describer_or_runner,
+        sql_query_describer=sql_query_describer,
         sql_translate_pipeline=mock_translate_pipeline,
     )
 
@@ -72,7 +72,7 @@ def test_join(
 
 
 def test_join_error(
-    query, sql_query_describer_or_runner, sql_query_retriever, mock_translate_pipeline, mocker
+    query, sql_query_describer, sql_query_retriever, mock_translate_pipeline, mocker
 ):
     step = JoinStep(
         name='join',
@@ -92,6 +92,6 @@ def test_join_error(
             query=query,
             index=1,
             sql_query_retriever=sql_query_retriever,
-            sql_query_describer_or_runner=sql_query_describer_or_runner,
+            sql_query_describer=sql_query_describer,
             sql_translate_pipeline=mock_translate_pipeline,
         )
