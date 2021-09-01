@@ -74,7 +74,7 @@ def translate_join(
         '############################################################'
     )
 
-    return SQLQuery(
+    new_query = SQLQuery(
         query_name=query_name,
         transformed_query=transformed_query,
         selection_query=build_selection_query(
@@ -82,3 +82,12 @@ def translate_join(
         ),
         metadata_manager=query.metadata_manager,
     )
+
+    # Rename query metadata columns by their alias
+    for col in query.metadata_manager.retrieve_query_metadata_columns().values():
+        query.metadata_manager.update_query_metadata_column_name(
+            column_name=col.name,
+            dest_column_name=col.alias,
+        )
+        query.metadata_manager.remove_query_metadata_column_alias(col.alias)
+    return new_query
