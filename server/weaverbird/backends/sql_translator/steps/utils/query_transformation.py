@@ -195,26 +195,6 @@ def prepare_aggregation_query(aggregated_cols, aggregated_string, query: SQLQuer
     return query, aggregated_string
 
 
-def complete_fields(query: SQLQuery, columns=None) -> str:
-    """
-    We're going to complete missing field from the query
-    """
-    # TODO : changes the management columns on joins with duplicated columns
-    query_keys = query.metadata_manager.query_metadata.keys()
-    if columns:
-        compiled_query = ', '.join(
-            [
-                k.strip().replace('-', '_').replace(' ', '').upper()
-                for k in query_keys
-                if k.upper() not in columns and k.lower() not in columns
-            ]
-        )
-    else:
-        compiled_query = ', '.join(query_keys)
-
-    return compiled_query
-
-
 def snowflake_date_format(input_format: str) -> str:
     """
     This method will format the standard sql format for dates into snowflake sql one
@@ -257,3 +237,62 @@ def handle_zero_division(formula: str) -> str:
     if '%' in formula:
         formula = re.sub(r'(?<=%)\s*(\w+)|(?<=%)\s*(\"?.*\"?)', r' NULLIF(\1\2, 0)', formula)
     return formula
+
+
+def get_query_for_date_extract(
+    date_type: str,
+    target_column: str,
+    new_column: str,
+) -> str:
+    """
+    This method will get as input the date type and return a query with
+    the appropriate function of that date type on snowflake, it can be a simple function or a whole expression
+
+
+    """
+    if date_type.lower() in [
+        "year",
+        "month",
+        "day",
+        "hour",
+        "minutes",
+        "seconds",
+        "dayofweek",
+        "dayofweekiso",
+        "dayofyear",
+        "week",
+        "weekiso",
+        "quarter",
+        "yearofweek",
+        "yearofweekiso",
+    ]:
+        date_type = date_type[:-1] if date_type in ["seconds", "minutes"] else date_type
+        return f"EXTRACT({date_type.lower()} from to_timestamp({target_column})) AS {new_column}"
+    else:
+        appropriate_func = {
+            "milliseconds": "DATE_TRUNC(millisecond, to_timestamp(____target____))",
+            "isoYear": "YEAROFWEEKISO(to_timestamp(____target____))",
+            "isoWeek": "WEEKISO(to_timestamp(____target____))",
+            "isoDayOfWeek": "DAYOFWEEKISO(to_timestamp(____target____))",
+            "firstDayOfYear": "TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(____target____)))",
+            "firstDayOfMonth": "TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(____target____)))",
+            "firstDayOfWeek": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
+            "firstDayOfQuarter": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____)))",
+            "firstDayOfIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____)) - DAYOFWEEKISO(to_timestamp("
+            "____target____)) + 1",
+            "previousDay": "to_timestamp(____target____) - interval '1 day'",
+            "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
+            "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
+            "firstDayOfPreviousWeek": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO("
+            "to_timestamp(____target____)) + 1",
+            "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
+            "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - "
+            "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+            "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
+            "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
+            "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",
+            "previousQuarter": "QUARTER(to_timestamp(____target____) - interval '1 quarter')",
+            "previousIsoWeek": "WEEKISO(to_timestamp(____target____)) - 1",
+        }
+
+        return f"({appropriate_func[date_type].replace('____target____', target_column)}) AS {new_column}"
