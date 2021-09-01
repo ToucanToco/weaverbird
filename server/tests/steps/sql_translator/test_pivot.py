@@ -12,7 +12,7 @@ from weaverbird.pipeline.steps import PivotStep
 @pytest.fixture
 def sql_query_describer_or_runner():
     def f(domain, query_string, run):
-        return Mock(df=pd.DataFrame({0: ['SPAIN', 'FRANCE']}))
+        return Mock(df=pd.DataFrame({'CURRENCY': ['SPAIN', 'FRANCE']}))
 
     return f
 

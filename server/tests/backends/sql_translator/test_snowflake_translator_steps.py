@@ -5,6 +5,7 @@ from typing import Dict, NamedTuple, Optional, Union
 import pandas as pd
 import pytest
 import snowflake.connector
+from snowflake.connector import DictCursor
 from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 
@@ -79,7 +80,8 @@ def snowflake_query_describer_or_runner(
     connection = get_connection()
     with connection.cursor() as cursor:
         if run:
-            res = cursor.execute(domain if domain else query_string)
+            cursor = connection.cursor(DictCursor)
+            res = cursor.execute(domain if domain else query_string).fetchall()
             return TestDataSlice(df=pd.DataFrame(res))
         res = cursor.describe(domain if domain else query_string)
         res = {r.name: type_code_mapping.get(r.type_code) for r in res}

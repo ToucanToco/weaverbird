@@ -37,7 +37,7 @@ def translate_pivot(
             query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
             run=True,
         )
-        .df[0]
+        .df[f'{step.column_to_pivot}']
         .values.tolist()
     )
 
