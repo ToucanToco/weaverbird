@@ -250,7 +250,7 @@ def build_union_query(
         table_columns = query_metadata_manager.retrieve_columns_as_list(t)
         missing_columns = max_column_number - len(table_columns)
         all_columns = table_columns + ['NULL'] * missing_columns
-        new_query += f" UNION SELECT {', '.join(all_columns)} FROM {t}"
+        new_query += f" UNION ALL SELECT {', '.join(all_columns)} FROM {t}"
     return new_query
 
 
