@@ -2,7 +2,7 @@
   <div class="step-edit-form">
     <div class="step-edit-form__container">
       <button class="step-edit-form__back-button" @click="cancelEdition">
-        <i class="fas fa-angle-left" aria-hidden="true" />
+        <FAIcon class="step-edit-form__back-icon" icon="angle-left" />
         BACK
       </button>
       <div class="step-edit-form__title-container">
@@ -14,7 +14,7 @@
           rel="noopener"
           :data-version="version"
         >
-          <i class="fas fa-question-circle" aria-hidden="true" />
+          <FAIcon class="step-edit-form__link-icon" icon="question-circle" />
         </a>
       </div>
       <div class="step-edit-form__empty" />
@@ -28,9 +28,13 @@
 <script lang="ts">
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
+
+import FAIcon from '@/components/FAIcon.vue';
 @Component({
   name: 'step-form-header',
-  components: {},
+  components: {
+    FAIcon,
+  },
 })
 export default class StepFormHeader extends Vue {
   @Prop()
@@ -100,15 +104,16 @@ export default class StepFormHeader extends Vue {
   }
 }
 
-.fas.fa-angle-left {
+.step-edit-form__back-icon {
   font-size: 19px;
   margin-right: 5px;
 }
 
-.fas.fa-question-circle {
+.step-edit-form__link-icon {
   margin-left: 5px;
   color: $base-color;
   font-size: 14px;
+  vertical-align: middle;
 
   &:hover {
     color: $active-color;
