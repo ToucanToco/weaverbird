@@ -3,6 +3,7 @@ from typing import Dict
 from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .append import translate_append
+from .concatenate import translate_concatenate
 from .convert import translate_convert
 from .dateextract import translate_dateextract
 from .filter import translate_filter
@@ -49,4 +50,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'pivot': translate_pivot,
     'dateextract': translate_dateextract,
     'append': translate_append,
+    'concatenate': translate_concatenate,
 }

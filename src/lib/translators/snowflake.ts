@@ -21,6 +21,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  concatenate(step: Readonly<S.ConcatenateStep>) {
+    return step;
+  }
+
   convert(step: Readonly<S.ConvertStep>) {
     return step;
   }

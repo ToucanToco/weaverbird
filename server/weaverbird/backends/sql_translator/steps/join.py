@@ -86,5 +86,4 @@ def translate_join(
     )
 
     query.metadata_manager.update_query_metadata_column_names_with_alias()
-
     return new_query
