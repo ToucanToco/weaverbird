@@ -53,7 +53,7 @@ def test_append(
     )
     expected_transformed = 'WITH SELECT_STEP_0 AS (SELECT * FROM CUSTOMERS_1),\
  APPEND_STEP_UNION_0 AS (SELECT * FROM CUSTOMERS_2), APPEND_STEP_1 AS\
- (SELECT ID, NAME, NULL AS COUNTRY FROM SELECT_STEP_0 UNION SELECT ID, NAME, COUNTRY FROM APPEND_STEP_UNION_0)'
+ (SELECT ID, NAME, NULL AS COUNTRY FROM SELECT_STEP_0 UNION ALL SELECT ID, NAME, COUNTRY FROM APPEND_STEP_UNION_0)'
     expect_selection = 'SELECT ID, NAME, COUNTRY FROM APPEND_STEP_1'
     assert query_result.transformed_query == expected_transformed
     assert query_result.selection_query == expect_selection
