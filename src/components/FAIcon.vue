@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
-import { FAIcon } from '@/assets/FA-ICONS';
+import { FAIconName } from '@/assets/FA-ICONS';
 
 /* This component enable to use a font-awesome icon in svg mode (available icons are declared in @/assets/FA-ICONS)  */
 
@@ -17,14 +17,14 @@ import { FAIcon } from '@/assets/FA-ICONS';
     FontAwesomeIcon,
   },
 })
-export default class Icon extends Vue {
+export default class FAIcon extends Vue {
   @Prop({
     type: String,
     default: '',
   })
-  icon!: FAIcon;
+  icon!: FAIconName;
 
-  get iconWithStyle(): FAIcon | string[] {
+  get iconWithStyle(): FAIconName | string[] {
     const hasSpecificStyle = this.icon.indexOf(' ') != -1; // icon name is prefixed
     if (hasSpecificStyle) {
       return this.icon.split(' ');
