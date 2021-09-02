@@ -9,7 +9,8 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLQueryDescriberOrRunner,
+    SQLQueryDescriber,
+    SQLQueryExecutor,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import JoinStep
@@ -20,8 +21,9 @@ def translate_join(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever,
-    sql_query_describer_or_runner: SQLQueryDescriberOrRunner,
+    sql_query_describer: SQLQueryDescriber,
     sql_translate_pipeline: SQLPipelineTranslator = None,
+    sql_query_executor: SQLQueryExecutor = None,
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'
     log.debug(
@@ -45,13 +47,14 @@ def translate_join(
         step.right_pipeline,
         sql_query_retriever,
         sql_translate_pipeline,
-        sql_query_describer_or_runner,
+        sql_query_describer,
+        sql_query_executor,
     )
     right_query_name = f'JOIN_STEP_{index}_RIGHT'
     # Update tables metadata with joined table metadata
 
     # 1 retrieve right metadata
-    query_to_join_metadata = sql_query_describer_or_runner(domain=None, query_string=right_query)
+    query_to_join_metadata = sql_query_describer(domain=None, query_string=right_query)
 
     # 2 Add them to the MetadataManager
     query.metadata_manager.create_table(right_query_name)
@@ -65,6 +68,7 @@ def translate_join(
 
     # 5 build the final query string
     join_part = f"{'AND'.join([f'{query.query_name}.{keys[0]} = {right_query_name}.{keys[1]}' for keys in step.on])}"
+
     transformed_query = f"""{transformed_query}, {query_name} AS (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {query.query_name} {how} JOIN {right_query_name} ON {join_part})"""
 
     log.debug(
@@ -73,7 +77,7 @@ def translate_join(
         '############################################################'
     )
 
-    return SQLQuery(
+    new_query = SQLQuery(
         query_name=query_name,
         transformed_query=transformed_query,
         selection_query=build_selection_query(
@@ -81,3 +85,7 @@ def translate_join(
         ),
         metadata_manager=query.metadata_manager,
     )
+
+    query.metadata_manager.update_query_metadata_column_names_with_alias()
+
+    return new_query

@@ -74,18 +74,20 @@ class TestDataSlice(NamedTuple):
     df: pd.DataFrame
 
 
-def snowflake_query_describer_or_runner(
-    domain: str, query_string: str = None, run: bool = False
-) -> Union[Dict[str, str], TestDataSlice, None]:
+def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        if run:
-            cursor = connection.cursor(DictCursor)
-            res = cursor.execute(domain if domain else query_string).fetchall()
-            return TestDataSlice(df=pd.DataFrame(res))
         res = cursor.describe(domain if domain else query_string)
         res = {r.name: type_code_mapping.get(r.type_code) for r in res}
         return res
+
+
+def snowflake_query_executor(domain: str, query_string: str = None) -> Union[TestDataSlice, None]:
+    connection = get_connection()
+    with connection.cursor() as cursor:
+        cursor = connection.cursor(DictCursor)
+        res = cursor.execute(domain if domain else query_string).fetchall()
+        return TestDataSlice(df=pd.DataFrame(res))
 
 
 # Translation from Pipeline json to SQL query
@@ -122,7 +124,8 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
-        sql_query_describer_or_runner=snowflake_query_describer_or_runner,
+        sql_query_describer=snowflake_query_describer,
+        sql_query_executor=snowflake_query_executor,
     )
 
     # Execute request generated from Pipeline in Snowflake and get the result

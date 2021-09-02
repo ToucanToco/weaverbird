@@ -13,7 +13,7 @@ DOMAINS = {'domain_a': 'SELECT TITLE FROM books'}
 
 
 @pytest.fixture
-def sql_query_describer_or_runner():
+def sql_query_describer():
     return Mock(return_value={'TOTO': 'int', 'RAICHU': 'str'})
 
 
@@ -22,7 +22,8 @@ def pipeline_translator():
     return partial(
         translate_pipeline,
         sql_query_retriever=lambda name: DOMAINS[name],
-        sql_query_describer_or_runner=lambda x: {'TITLE': 'str'},
+        sql_query_describer=lambda x: {'TITLE': 'str'},
+        sql_query_executor=lambda x: 'bar',
     )
 
 

@@ -7,7 +7,8 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLQueryDescriberOrRunner,
+    SQLQueryDescriber,
+    SQLQueryExecutor,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import SortStep
@@ -35,7 +36,8 @@ def translate_sort(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
-    sql_query_describer_or_runner: SQLQueryDescriberOrRunner = None,
+    sql_query_describer: SQLQueryDescriber = None,
+    sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'SORT_STEP_{index}'

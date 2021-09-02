@@ -6,7 +6,8 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
-    SQLQueryDescriberOrRunner,
+    SQLQueryDescriber,
+    SQLQueryExecutor,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import PivotStep
@@ -17,7 +18,8 @@ def translate_pivot(
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
-    sql_query_describer_or_runner: SQLQueryDescriberOrRunner = None,
+    sql_query_describer: SQLQueryDescriber = None,
+    sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
 ) -> SQLQuery:
     query_name = f'PIVOT_STEP_{index}'
@@ -32,10 +34,9 @@ def translate_pivot(
     )
     aggregate_part = f'{step.agg_function}({step.value_column})'
     pivot_values = (
-        sql_query_describer_or_runner(
+        sql_query_executor(
             domain=None,
             query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
-            run=True,
         )
         .df[f'{step.column_to_pivot}']
         .values.tolist()
@@ -74,4 +75,5 @@ FROM {query.query_name} PIVOT({aggregate_part} FOR {step.column_to_pivot} IN ({'
         '############################################################'
     )
 
+    query.metadata_manager.update_query_metadata_column_names_with_alias()
     return new_query
