@@ -40,20 +40,22 @@ def translate_top(
 
     # We build the group by query part
     group_by_query: str = ''
-    for index, gb in enumerate(step.groups + [step.rank_on]):
-        group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
+    if len(step.groups) > 0:
+        for index, gb in enumerate(step.groups + [step.rank_on]):
+            group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
 
-    # We remove superflues columns
-    # to handle upper and lower cases
-    # we refresh query metadatas with columns to not remove
-    cols = [g.upper() for g in step.groups] + [step.rank_on.upper()]
-    cols_to_remove = [
-        col
-        for col in query.metadata_manager.retrieve_query_metadata_columns_as_list()
-        if col not in cols
-    ]
-    query.metadata_manager.remove_query_metadata_columns(cols_to_remove)
+    # We remove other columns not in the group-by
+    query.metadata_manager.remove_query_metadata_columns(
+        [
+            col
+            for col in query.metadata_manager.retrieve_query_metadata_columns_as_list()
+            if col not in step.groups + [step.rank_on]
+        ]
+        if len(step.groups) > 0
+        else []
+    )
 
+    # fields to complete the query
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     new_query = SQLQuery(
