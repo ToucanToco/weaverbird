@@ -3,7 +3,7 @@ from weaverbird.backends.sql_translator.steps import translate_concatenate
 from weaverbird.pipeline.steps import ConcatenateStep
 
 
-def test_translate_simple_concatenante(query):
+def test_translate_simple_concatenate(query):
     step = ConcatenateStep(
         name='concatenate', columns=['TOTO', 'AGE'], separator=',', new_column_name='TO_AGE'
     )
