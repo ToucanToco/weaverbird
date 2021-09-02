@@ -12,6 +12,7 @@ module.exports = {
   },
   transformIgnorePatterns: ['/node_modules/', 'tests/*.js', 'playground/*'],
   collectCoverage: true,
+  collectCoverageFrom: ['src/**/*.{vue,ts,js}'],
   coveragePathIgnorePatterns: ['/node_modules/', 'playground/', 'tests/', 'src/typings/'],
   coverageDirectory: 'coverage',
 };
