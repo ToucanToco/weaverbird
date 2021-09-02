@@ -20,10 +20,10 @@ def translate_join(
     step: JoinStep,
     query: SQLQuery,
     index: int,
-    sql_query_retriever: SQLQueryRetriever,
-    sql_query_describer: SQLQueryDescriber,
-    sql_translate_pipeline: SQLPipelineTranslator = None,
+    sql_query_retriever: SQLQueryRetriever = None,
+    sql_query_describer: SQLQueryDescriber = None,
     sql_query_executor: SQLQueryExecutor = None,
+    sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     query_name = f'JOIN_STEP_{index}'

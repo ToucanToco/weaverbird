@@ -11,6 +11,7 @@ from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
     SQLQuery,
     SQLQueryDescriber,
+    SQLQueryExecutor,
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import AppendStep
@@ -20,9 +21,10 @@ def translate_append(
     step: AppendStep,
     query: SQLQuery,
     index: int,
-    sql_query_retriever: SQLQueryRetriever,
-    sql_query_describer: SQLQueryDescriber,
-    sql_translate_pipeline: SQLPipelineTranslator,
+    sql_query_retriever: SQLQueryRetriever = None,
+    sql_query_describer: SQLQueryDescriber = None,
+    sql_query_executor: SQLQueryExecutor = None,
+    sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     query_name = f'APPEND_STEP_{index}'
@@ -41,7 +43,12 @@ def translate_append(
 
     for index, pipeline in enumerate(step.pipelines):
         query_string = resolve_sql_pipeline_for_combination(
-            pipeline, sql_query_retriever, sql_translate_pipeline, sql_query_describer, index
+            pipeline_or_domain=pipeline,
+            sql_query_retriever=sql_query_retriever,
+            sql_translate_pipeline=sql_translate_pipeline,
+            sql_query_describer=sql_query_describer,
+            sql_query_executor=sql_query_executor,
+            subcall_from_other_pipeline_count=index,
         )
         unioned_query_name = f'APPEND_STEP_UNION_{index}'
         queries_to_append[unioned_query_name] = query_string

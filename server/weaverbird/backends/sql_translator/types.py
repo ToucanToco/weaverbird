@@ -30,7 +30,7 @@ SQLQueryDescriber = Callable[[str, str], str]
 SQLQueryExecutor = Callable[[str, str], str]
 
 SQLPipelineTranslator = Callable[
-    [Pipeline, SQLQueryRetriever, SQLQueryDescriber],
+    [Pipeline, SQLQueryRetriever, SQLQueryDescriber, SQLQueryExecutor],
     Tuple[str, SQLPipelineTranslationReport],
 ]
 
