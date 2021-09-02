@@ -174,3 +174,61 @@ def test_retrieve_as_list(sql_query_metadata):
         'table_1', columns_filter=['column_1_1']
     )
     assert len(columns) == 3
+
+
+def test_append_queries_metadata_same_sizes(sql_query_metadata):
+    sql_query_metadata.append_queries_metadata(['table_2'])
+    assert len(sql_query_metadata.retrieve_query_metadata_columns_as_list()) == 4
+    assert sql_query_metadata.retrieve_query_metadata_columns_as_list() == [
+        'COLUMN_1_1',
+        'COLUMN_1_2',
+        'COLUMN_1_3',
+        'COLUMN_1_4',
+    ]
+
+
+def test_append_queries_metadata_first_smaller():
+    s = SqlQueryMetadataManager()
+    t = s.create_table('table_1')
+    t.add_column('column_1_1', 'int')
+    t.add_column('column_1_2', 'str')
+    t.add_column('column_1_3', 'str')
+
+    t = s.create_table('table_2')
+    t.add_column('column_2_1', 'int')
+    t.add_column('column_2_2', 'str')
+    t.add_column('column_2_3', 'str')
+    t.add_column('column_2_4', 'str')
+    s.define_as_metadata('table_1')
+    s.append_queries_metadata(['table_2'])
+    assert len(s.retrieve_query_metadata_columns_as_list()) == 4
+    assert s.retrieve_query_metadata_columns_as_list() == [
+        'COLUMN_1_1',
+        'COLUMN_1_2',
+        'COLUMN_1_3',
+        'NULL AS COLUMN_2_4',
+    ]
+    assert s.retrieve_query_metadata_column_by_name('NULL AS COLUMN_2_4').type == 'UNDEFINED'
+
+
+def test_append_queries_metadata_second_smaller():
+    s = SqlQueryMetadataManager()
+    t = s.create_table('table_1')
+    t.add_column('column_1_1', 'int')
+    t.add_column('column_1_2', 'str')
+    t.add_column('column_1_3', 'str')
+    t.add_column('column_1_4', 'str')
+
+    t = s.create_table('table_2')
+    t.add_column('column_2_1', 'int')
+    t.add_column('column_2_2', 'str')
+    t.add_column('column_2_3', 'str')
+    s.define_as_metadata('table_1')
+    s.append_queries_metadata(['table_2'])
+    assert len(s.retrieve_query_metadata_columns_as_list()) == 4
+    assert s.retrieve_query_metadata_columns_as_list() == [
+        'COLUMN_1_1',
+        'COLUMN_1_2',
+        'COLUMN_1_3',
+        'COLUMN_1_4',
+    ]

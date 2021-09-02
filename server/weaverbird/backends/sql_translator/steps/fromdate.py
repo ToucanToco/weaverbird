@@ -22,6 +22,7 @@ def translate_fromdate(
     sql_query_describer: SQLQueryDescriber = None,
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
+    subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
     query_name = f'FROMDATE_STEP_{index}'
 

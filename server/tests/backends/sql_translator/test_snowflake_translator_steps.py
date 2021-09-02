@@ -67,7 +67,7 @@ def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]
 
 
 def sql_retrieve_city(t):
-    return t
+    return f'SELECT * FROM {t}'
 
 
 class TestDataSlice(NamedTuple):
@@ -77,8 +77,8 @@ class TestDataSlice(NamedTuple):
 def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        res = cursor.describe(domain if domain else query_string)
-        res = {r.name: type_code_mapping.get(r.type_code) for r in res}
+        describe_res = cursor.describe(f'SELECT * FROM {domain}' if domain else query_string)
+        res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
         return res
 
 
@@ -117,7 +117,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
+    steps.insert(0, {'name': 'domain', 'domain': case_id.replace("/", "")})
     pipeline = Pipeline(steps=steps)
 
     # Convert Pipeline object to Snowflake Query
@@ -138,6 +138,8 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             execute(get_connection(), f'DROP TABLE {input}')
 
     # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
-
-    assert_dataframes_equals(pandas_result_expected, result)
+    if 'expected_sql' in spec:
+        result_expected = pd.read_json(json.dumps(spec['expected_sql']), orient='table')
+    else:
+        result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    assert_dataframes_equals(result_expected, result)

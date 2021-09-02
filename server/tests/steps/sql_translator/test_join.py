@@ -13,7 +13,7 @@ from weaverbird.pipeline.steps import JoinStep
 
 @pytest.fixture
 def mock_translate_pipeline() -> SQLPipelineTranslator:
-    return lambda p, _, __, ___: ('SELECT * FROM ORDERS', _, __, ___)
+    return lambda p, _, __, ___, ____: ('SELECT * FROM ORDERS', _, __, ___, ____)
 
 
 @pytest.fixture

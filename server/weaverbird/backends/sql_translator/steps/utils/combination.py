@@ -4,6 +4,7 @@ def resolve_sql_pipeline_for_combination(
     sql_translate_pipeline,
     sql_query_describer,
     sql_query_executor,
+    subcall_from_other_pipeline_count=None,
 ) -> str:
     """
     Combined pipelines can be either single domains (str), or complete pipeline (list of steps)
@@ -20,4 +21,5 @@ def resolve_sql_pipeline_for_combination(
             sql_query_retriever,
             sql_query_describer,
             sql_query_executor,
+            subcall_from_other_pipeline_count,
         )[0]

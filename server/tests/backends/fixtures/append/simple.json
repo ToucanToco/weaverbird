@@ -68,7 +68,7 @@
           },
           {
             "name": "X",
-            "type": "string"
+            "type": "integer"
           }
         ],
         "pandas_version": "0.20.0"
@@ -77,11 +77,12 @@
         {
           "NAME": "plop",
           "SCORE": 666,
-          "X": "y"
+          "X": 12
         }
       ]
     }
   },
+  "input_query": "SELECT * FROM append_simple",
   "expected": {
     "schema": {
       "fields": [
@@ -99,7 +100,7 @@
         },
         {
           "name": "X",
-          "type": "string"
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -121,13 +122,49 @@
         "NAME": "plop",
         "AGE": null,
         "SCORE": 666,
-        "X": "y"
+        "X": 12.0
       },
       {
         "NAME": "plop",
         "AGE": null,
         "SCORE": 666,
-        "X": "y"
+        "X": 12.0
+      }
+    ]
+  },
+  "expected_sql": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      },
+      {
+        "NAME": "plop",
+        "AGE": 666,
+        "SCORE": 12
       }
     ]
   }
