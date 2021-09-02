@@ -3,7 +3,7 @@
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body">
-        <i class="vqb-modal__close fas fa-times" @click="cancelDelete" aria-hidden="true" />
+        <span class="vqb-modal__close" @click="cancelDelete"><FAIcon icon="times"/></span>
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Delete this step?</div>
         </div>
@@ -30,9 +30,12 @@
 import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 @Component({
   name: 'delete-confirmation-modal',
-  components: {},
+  components: {
+    FAIcon,
+  },
 })
 /**
  * @name DeleteConfirmationModal
@@ -99,9 +102,6 @@ export default class DeleteConfirmationModal extends Vue {
   position: absolute;
   top: 15px;
   right: 30px;
-}
-
-.fa-times {
   cursor: pointer;
 }
 
