@@ -80,7 +80,7 @@
         },
         {
           "name": "AGE",
-          "type": "integer"
+          "type": "number"
         },
         {
           "name": "SCORE",
@@ -88,7 +88,7 @@
         },
         {
           "name": "LAMBDA",
-          "type": "integer"
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"

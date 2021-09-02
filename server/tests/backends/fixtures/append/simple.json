@@ -100,7 +100,7 @@
         },
         {
           "name": "X",
-          "type": "string"
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -122,13 +122,13 @@
         "NAME": "plop",
         "AGE": null,
         "SCORE": 666,
-        "X": "y"
+        "X": 12.0
       },
       {
         "NAME": "plop",
         "AGE": null,
         "SCORE": 666,
-        "X": "y"
+        "X": 12.0
       }
     ]
   },
