@@ -188,6 +188,8 @@ class TableMetadata(BaseModel):
         return self
 
     def remove_column_alias(self, column_name: str) -> TableMetadata:
+        if column_name not in self.columns:
+            raise MetadataError(f'Error updating column {column_name}), column does not exist')
         self.columns[column_name].remove_alias()
         return self
 
