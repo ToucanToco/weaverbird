@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.60.3] - 2021-09-02
+
+- SQL VQB: Release Concatenate & extract Date steps
+
+
 ### [0.60.2] - 2021-09-01
 
 - SQL VQB: Hide drop null values in unpivotstepform & remove pivot_values in pivotstepform
@@ -874,7 +879,8 @@
 ## Unreleased
 
 
-[0.60.2]: https://github.com/ToucanToco/weaverbird/compare/v0.60.0...v0.60.1
+[0.60.3]: https://github.com/ToucanToco/weaverbird/compare/v0.60.2...v0.60.3
+[0.60.2]: https://github.com/ToucanToco/weaverbird/compare/v0.60.1...v0.60.2
 [0.60.1]: https://github.com/ToucanToco/weaverbird/compare/v0.60.0...v0.60.1
 [0.60.0]: https://github.com/ToucanToco/weaverbird/compare/v0.59.0...v0.60.0
 [0.59.0]: https://github.com/ToucanToco/weaverbird/compare/v0.58.0...v0.59.0
