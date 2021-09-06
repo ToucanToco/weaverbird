@@ -65,21 +65,23 @@ def translate_rank(
             group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
 
         final_query = (
-            f"(SELECT {sub_select_query} {rank_query} "
+            f"(SELECT * FROM (SELECT {sub_select_query} {rank_query} "
             f"FROM {query.query_name} {group_by_query}) B "
-            f"INNER JOIN {query.query_name} A ON ({on_query})"
+            f"INNER JOIN {query.query_name} A ON ({on_query}))"
         )
     else:
-        rank_query = f", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
-        final_query = query.metadata_manager.retrieve_query_metadata_columns_as_str() + rank_query
+        final_query = (
+            f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
+            f""", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
+            f""" FROM {query.query_name})"""
+        )
 
     # we add the column to the metadata
     query.metadata_manager.add_query_metadata_column(step.new_column_name, 'int')
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT * FROM {final_query})""",
+        transformed_query=f"""{query.transformed_query}, {query_name} AS""" f""" {final_query}""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
