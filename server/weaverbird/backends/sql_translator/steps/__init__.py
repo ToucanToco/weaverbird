@@ -15,6 +15,7 @@ from .join import translate_join
 from .lowercase import translate_lowercase
 from .percentage import translate_percentage
 from .pivot import translate_pivot
+from .rank import translate_rank
 from .rename import translate_rename
 from .replace import translate_replace
 from .select import translate_select
@@ -53,4 +54,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'append': translate_append,
     'concatenate': translate_concatenate,
     'delete': translate_delete,
+    'rank': translate_rank,
 }
