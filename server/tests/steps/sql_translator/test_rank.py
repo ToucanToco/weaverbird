@@ -13,7 +13,7 @@ def test_translate_no_new_column_rank(query):
     assert (
         query.transformed_query
         == "WITH SELECT_STEP_0 AS (SELECT * FROM products), RANK_STEP_1 AS  (SELECT TOTO, RAICHU, FLORIZARRE, "
-           "(RANK() OVER (ORDER BY RAICHU asc)) AS RAICHU_RANK FROM SELECT_STEP_0)"
+        "(RANK() OVER (ORDER BY RAICHU asc)) AS RAICHU_RANK FROM SELECT_STEP_0)"
     )
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, RAICHU_RANK FROM RANK_STEP_1'
     assert query.query_name == 'RANK_STEP_1'
@@ -71,7 +71,7 @@ def test_translate_rank(query):
     assert (
         query.transformed_query
         == "WITH SELECT_STEP_0 AS (SELECT * FROM products), RANK_STEP_1 AS  (SELECT TOTO, RAICHU, FLORIZARRE, "
-           "(RANK() OVER (ORDER BY RAICHU asc)) AS DOUMBA FROM SELECT_STEP_0)"
+        "(RANK() OVER (ORDER BY RAICHU asc)) AS DOUMBA FROM SELECT_STEP_0)"
     )
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, DOUMBA FROM RANK_STEP_1'
     assert query.query_name == 'RANK_STEP_1'
