@@ -1,5 +1,4 @@
 from distutils import log
-from hashlib import md5
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
@@ -12,11 +11,6 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryRetriever,
 )
 from weaverbird.pipeline.steps import RankStep
-
-#
-# WITH SELECT_STEP_0 AS (SELECT Price, Name, Category FROM products),
-# AGGREGATE_STEP_1 AS (SELECT SUM(Price), Category FROM SELECT_STEP_0 GROUP BY Category) A
-# inner join (SELECT * FROM SELECT_STEP_0) B ON A.Category = B.Category
 
 
 def translate_rank(
@@ -45,7 +39,11 @@ def translate_rank(
         f"{step.value_col}_RANK" if step.new_column_name is None else step.new_column_name
     )
 
-    final_query: str = ""
+    final_query = (
+        f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
+        f""", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
+        f""" FROM {query.query_name})"""
+    )
     if len(step.groupby) > 0:
         # We build the group by query part
         group_by_query: str = ""
@@ -55,25 +53,21 @@ def translate_rank(
 
         for index, gb in enumerate(step.groupby + [step.value_col]):
             # we create a subfield containing a fixed hash for the current column and the index
-            sub_field = f"SUB_FIELD_{md5(gb.encode()).hexdigest()[:4].upper()}_{index}"
+            sub_field = f"{gb}_ALIAS_{index}"
 
             # The sub select query
             sub_select_query += ("" if index == 0 else ", ") + f"{gb} AS {sub_field}"
-            # The ON query regroupment
-            on_query += ("" if index == 0 else " AND ") + f"({sub_field} = A.{gb})"
+            # The ON query re-group
+            on_query += (
+                "" if index == 0 else " AND "
+            ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
             # The GROUP BY query
             group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
 
         final_query = (
             f"(SELECT * FROM (SELECT {sub_select_query} {rank_query} "
-            f"FROM {query.query_name} {group_by_query}) B "
-            f"INNER JOIN {query.query_name} A ON ({on_query}))"
-        )
-    else:
-        final_query = (
-            f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
-            f""", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
-            f""" FROM {query.query_name})"""
+            f"FROM {query.query_name} {group_by_query}) {query_name}_ALIAS "
+            f"INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query}))"
         )
 
     # we add the column to the metadata
