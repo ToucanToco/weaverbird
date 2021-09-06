@@ -52,7 +52,7 @@ def translate_rank(
         rank_query = f", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
 
         for index, gb in enumerate(step.groupby + [step.value_col]):
-            # we create a subfield containing a fixed hash for the current column and the index
+            # we create a subfield alias for the current column and the index
             sub_field = f"{gb}_ALIAS_{index}"
 
             # The sub select query
@@ -75,7 +75,7 @@ def translate_rank(
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS""" f""" {final_query}""",
+        transformed_query=f"""{query.transformed_query}, {query_name} AS {final_query}""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
