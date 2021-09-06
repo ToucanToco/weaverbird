@@ -7,6 +7,8 @@ import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Rollup Step Form', () => {
   const runner = new BasicStepFormTestRunner(RollupStepForm, 'rollup');
   runner.testInstantiate();

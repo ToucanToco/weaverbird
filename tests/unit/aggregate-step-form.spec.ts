@@ -4,6 +4,8 @@ import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Aggregate Step Form', () => {
   const runner = new BasicStepFormTestRunner(AggregateStepForm, 'aggregate');
   runner.testInstantiate();

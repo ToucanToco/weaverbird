@@ -8,6 +8,8 @@ import {
   relativeDateRangeToString,
 } from '@/lib/dates';
 
+jest.mock('@/components/FAIcon.vue');
+
 const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',

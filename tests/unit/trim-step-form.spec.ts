@@ -3,6 +3,8 @@ import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Trim Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(TrimStepForm, 'trim');
   runner.testInstantiate();

@@ -2,6 +2,8 @@ import JoinStepForm from '@/components/stepforms/JoinStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('join Step Form', () => {
   const runner = new BasicStepFormTestRunner(JoinStepForm, 'join');
   runner.testInstantiate();

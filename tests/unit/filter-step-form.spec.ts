@@ -4,6 +4,8 @@ import FilterStepForm from '@/components/stepforms/FilterStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Filter Step Form', () => {
   const runner = new BasicStepFormTestRunner(FilterStepForm, 'filter');
   runner.testInstantiate();

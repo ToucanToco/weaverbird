@@ -7,6 +7,8 @@ import { Pipeline } from '@/lib/steps';
 import { registerModule, VQBnamespace } from '@/store';
 import { emptyState, VQBState } from '@/store/state';
 
+jest.mock('@/components/FAIcon.vue');
+
 export type RootState = {
   vqb: VQBState;
 };
@@ -81,7 +83,6 @@ export class BasicStepFormTestRunner {
       propsData,
       localVue: this.vue,
       sync: false,
-      stubs: { FAIcon: '<div />' },
     });
     if (data) {
       wrapper.setData(data);
@@ -130,7 +131,6 @@ export class BasicStepFormTestRunner {
       propsData,
       localVue: this.vue,
       sync: false,
-      stubs: { FAIcon: '<div />' },
     });
     if (data) {
       wrapper.setData(data);
@@ -169,7 +169,6 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
-        stubs: { FAIcon: '<div />' },
       });
       if (data) {
         wrapper.setData(data);
@@ -188,7 +187,6 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
-        stubs: { FAIcon: '<div />' },
       });
       if (data) {
         wrapper.setData(data);
@@ -207,7 +205,6 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         propsData: props ?? {},
         sync: false,
-        stubs: { FAIcon: '<div />' },
       });
       if (data) {
         wrapper.setData(data);
@@ -231,7 +228,6 @@ export class BasicStepFormTestRunner {
         store,
         localVue: this.vue,
         sync: false,
-        stubs: { FAIcon: '<div />' },
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(wrapper.emitted()).toEqual({ back: [[]] });
@@ -247,7 +243,6 @@ export class BasicStepFormTestRunner {
         localVue: this.vue,
         sync: false,
         methods,
-        stubs: { FAIcon: '<div />' },
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(cancelEditionCustomMock).toHaveBeenCalledTimes(1);
@@ -276,7 +271,6 @@ export class BasicStepFormTestRunner {
         store,
         localVue: this.vue,
         sync: false,
-        stubs: { FAIcon: '<div />' },
       });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);

@@ -3,6 +3,8 @@ import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('UniqueGroups Step Form', () => {
   const runner = new BasicStepFormTestRunner(UniqueGroupsStepForm, 'uniquegroups');
   runner.testInstantiate();

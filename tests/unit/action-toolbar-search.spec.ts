@@ -8,6 +8,8 @@ import Popover from '@/components/Popover.vue';
 
 import { setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

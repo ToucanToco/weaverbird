@@ -2,6 +2,8 @@ import SplitStepForm from '@/components/stepforms/SplitStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Split Step Form', () => {
   const runner = new BasicStepFormTestRunner(SplitStepForm, 'split');
   runner.testInstantiate();

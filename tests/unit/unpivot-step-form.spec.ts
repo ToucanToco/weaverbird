@@ -3,6 +3,8 @@ import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Unpivot Step Form', () => {
   const runner = new BasicStepFormTestRunner(UnpivotStepForm, 'unpivot');
   runner.testInstantiate();

@@ -2,6 +2,8 @@ import ReplaceStepForm from '@/components/stepforms/ReplaceStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Replace Step Form', () => {
   const runner = new BasicStepFormTestRunner(ReplaceStepForm, 'replace');
   runner.testInstantiate();

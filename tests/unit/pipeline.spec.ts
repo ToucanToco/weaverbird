@@ -9,6 +9,8 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -160,7 +162,7 @@ describe('Pipeline.vue', () => {
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       dispatchSpy = jest.spyOn(store, 'dispatch');
-      wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
+      wrapper = mount(PipelineComponent, { store, localVue });
       wrapper.setData({ selectedSteps });
       wrapper.find('.query-pipeline__delete-steps').trigger('click');
       await wrapper.vm.$nextTick();
@@ -221,7 +223,7 @@ describe('Pipeline.vue', () => {
         { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
       ];
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
-      wrapper = mount(PipelineComponent, { store, localVue, stubs: { FAIcon: '<div />' } });
+      wrapper = mount(PipelineComponent, { store, localVue });
       wrapper.setData({ selectedSteps });
       (wrapper.vm as any).keyDownEventHandler({ key: 'Backspace' });
       await wrapper.vm.$nextTick();

@@ -7,6 +7,8 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -70,12 +72,9 @@ describe('ActionToolbarButton not active', () => {
       propsData: { category: 'add', label: 'toto', icon: 'plop' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div class="icon"/>`,
-      },
     });
     expect(wrapper.find('.action-toolbar__btn-txt').text()).toEqual('toto');
-    expect(wrapper.find('.icon').props().icon).toBe('plop');
+    expect(wrapper.find('.fa-icon').attributes().icon).toBe('plop');
   });
 
   it('should instantiate without popover', () => {
@@ -83,9 +82,6 @@ describe('ActionToolbarButton not active', () => {
       propsData: { category: 'add' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.find(Popover).vm.$props.visible).toBeFalsy();
   });
@@ -97,9 +93,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'add' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['text', 'formula', 'ifthenelse', 'custom']);
@@ -110,9 +103,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'filter' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['delete', 'select', 'filter', 'top', 'argmax', 'argmin']);
@@ -123,9 +113,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'compute' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
@@ -147,9 +134,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'text' },
       localVue,
       store,
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
@@ -173,9 +157,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'add' },
       localVue,
       store,
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, [
@@ -191,9 +172,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'date' },
       store: setupMockStore(),
       localVue,
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     const actionsWrappers = assertMenuEmitsExpected(wrapper, [
@@ -218,9 +196,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'aggregate' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['aggregate', 'totals', 'rollup', 'uniquegroups']);
@@ -231,9 +206,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'reshape' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['pivot', 'unpivot', 'waterfall']);
@@ -244,9 +216,6 @@ describe('ActionToolbarButton active', () => {
       propsData: { isActive: true, category: 'combine' },
       localVue,
       store: setupMockStore(),
-      stubs: {
-        FAIcon: `<div/>`,
-      },
     });
     expect(wrapper.exists()).toBeTruthy();
     assertMenuEmitsExpected(wrapper, ['append', 'join']);
@@ -263,9 +232,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'text' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
@@ -282,9 +248,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'text' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
@@ -305,9 +268,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'text' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(4).trigger('click');
@@ -326,9 +286,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'text' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(5).trigger('click');
@@ -345,9 +302,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'text' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(5).trigger('click');
@@ -368,9 +322,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'text' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(5).trigger('click');
@@ -389,9 +340,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'date' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(0).trigger('click');
@@ -408,9 +356,6 @@ describe('ActionToolbarButton active', () => {
         propsData: { isActive: true, category: 'date' },
         store,
         localVue,
-        stubs: {
-          FAIcon: `<div/>`,
-        },
       });
       const actionsWrappers = wrapper.findAll('.action-menu__option');
       await actionsWrappers.at(0).trigger('click');

@@ -2,6 +2,8 @@ import DuplicateColumnStepForm from '@/components/stepforms/DuplicateColumnStepF
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Duplicate Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(DuplicateColumnStepForm, 'duplicate');
   runner.testInstantiate();

@@ -2,6 +2,8 @@ import ComputeDurationStepForm from '@/components/stepforms/ComputeDurationStepF
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Compute Duration Step Form', () => {
   const runner = new BasicStepFormTestRunner(ComputeDurationStepForm, 'duration');
   runner.testInstantiate();

@@ -2,6 +2,8 @@ import StatisticsStepForm from '@/components/stepforms/StatisticsStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('statistics Step Form', () => {
   const runner = new BasicStepFormTestRunner(StatisticsStepForm, 'statistics');
   runner.testInstantiate();

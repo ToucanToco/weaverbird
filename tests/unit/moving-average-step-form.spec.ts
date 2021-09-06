@@ -5,6 +5,8 @@ import { ScopeContext } from '@/lib/templating';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Moving Average Step Form', () => {
   const runner = new BasicStepFormTestRunner(MovingAverageStepForm, 'movingaverage');
   runner.testInstantiate();

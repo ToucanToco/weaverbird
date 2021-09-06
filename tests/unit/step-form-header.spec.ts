@@ -2,6 +2,8 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import StepFormHeader from '@/components/stepforms/StepFormHeader.vue';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('StepFormHeader', () => {
   let wrapper: Wrapper<StepFormHeader>;
 

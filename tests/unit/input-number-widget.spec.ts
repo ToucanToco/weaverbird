@@ -2,6 +2,8 @@ import { mount, shallowMount } from '@vue/test-utils';
 
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Widget Input Number', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(InputNumberWidget);

@@ -2,6 +2,8 @@ import EvolutionStepForm from '@/components/stepforms/EvolutionStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Evolution Step Form', () => {
   const runner = new BasicStepFormTestRunner(EvolutionStepForm, 'evolution');
   runner.testInstantiate();
