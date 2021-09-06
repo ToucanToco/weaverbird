@@ -6,6 +6,7 @@ from .append import translate_append
 from .concatenate import translate_concatenate
 from .convert import translate_convert
 from .dateextract import translate_dateextract
+from .delete import translate_delete
 from .filter import translate_filter
 from .formula import translate_formula
 from .fromdate import translate_fromdate
@@ -51,4 +52,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'dateextract': translate_dateextract,
     'append': translate_append,
     'concatenate': translate_concatenate,
+    'delete': translate_delete,
 }
