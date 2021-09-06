@@ -1,5 +1,10 @@
 # Changelog
 
+### [0.60.4] - 2021-09-06
+
+- SQL VQB: Release Delete columns step
+
+
 ### [0.60.3] - 2021-09-02
 
 - SQL VQB: Release Concatenate & extract Date steps
@@ -879,6 +884,7 @@
 ## Unreleased
 
 
+[0.60.4]: https://github.com/ToucanToco/weaverbird/compare/v0.60.3...v0.60.4
 [0.60.3]: https://github.com/ToucanToco/weaverbird/compare/v0.60.2...v0.60.3
 [0.60.2]: https://github.com/ToucanToco/weaverbird/compare/v0.60.1...v0.60.2
 [0.60.1]: https://github.com/ToucanToco/weaverbird/compare/v0.60.0...v0.60.1
