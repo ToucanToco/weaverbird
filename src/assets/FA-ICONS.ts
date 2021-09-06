@@ -62,8 +62,6 @@ const FA_ICONS = {
   'far trash-alt': faTrashAltFar,
 };
 
-/* istanbul ignore next */
 export const FA_ICONS_PACK = Object.values(FA_ICONS);
-/* istanbul ignore next */
 export const FA_ICONS_NAMES = Object.keys(FA_ICONS);
 export type FAIconName = typeof FA_ICONS_NAMES[number];
