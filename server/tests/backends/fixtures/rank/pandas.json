@@ -1,0 +1,109 @@
+{
+  "exclude": [
+    "sql",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "rank",
+        "value_col": "AGE",
+        "method": "dense",
+        "groupby": [
+          "CITY"
+        ],
+        "order": "desc"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris"
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse"
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg"
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        },
+        {
+          "name": "AGE_RANK",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris",
+        "AGE_RANK": 1.0
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse",
+        "AGE_RANK": 1.0
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg",
+        "AGE_RANK": 1.0
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah",
+        "AGE_RANK": 1.0
+      }
+    ]
+  }
+}
