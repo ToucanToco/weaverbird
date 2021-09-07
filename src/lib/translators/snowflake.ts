@@ -93,6 +93,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  split(step: Readonly<S.SplitStep>) {
+    return step;
+  }
+
   text(step: Readonly<S.AddTextColumnStep>) {
     return step;
   }
