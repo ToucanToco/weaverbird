@@ -54,11 +54,15 @@ def translate_split(
         [
             f"SPLIT_PART({step.column}, '{step.delimiter}', {delimiter_count + 1}) AS {step.column}_{delimiter_count + 1}"
             for delimiter_count in range(0, step.number_cols_to_keep)
-            if query.metadata_manager.add_query_metadata_column(
-                f"{step.column}_{delimiter_count + 1}", "str"
-            )
         ]
     )
+    # We add the metadata column
+    [
+        query.metadata_manager.add_query_metadata_column(
+            f"{step.column}_{delimiter_count + 1}", "str"
+        )
+        for delimiter_count in range(0, step.number_cols_to_keep)
+    ]
 
     new_query = SQLQuery(
         query_name=query_name,
