@@ -1,7 +1,7 @@
 from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query,
+    build_selection_query, generate_query_by_keeping_granularity,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -38,31 +38,27 @@ def translate_top(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    # We build the group by query part
-    group_by_query: str = ''
-    if len(step.groups) > 0:
-        for index, gb in enumerate(step.groups + [step.rank_on]):
-            group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
-
-    # We remove other columns not in the group-by
-    query.metadata_manager.remove_query_metadata_columns(
-        [
-            col
-            for col in query.metadata_manager.retrieve_query_metadata_columns_as_list()
-            if col not in step.groups + [step.rank_on]
-        ]
-        if len(step.groups) > 0
-        else []
-    )
-
     # fields to complete the query
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
+    final_query: str = ""
+    if len(step.groups) > 0:
+        step.groups.append(step.rank_on)
+        # We build the group by query part
+        final_query = generate_query_by_keeping_granularity(
+            group_by=step.groups,
+            prev_step_name=query.query_name,
+            current_step_name=query_name
+        ) + f""" ORDER BY {query.query_name}_ALIAS.{step.rank_on} {step.sort} LIMIT {step.limit})"""
+    else:
+        final_query = (
+            f""" (SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"""
+            f""" {step.sort} LIMIT {step.limit})"""
+        )
+
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields}"""
-        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort} LIMIT {step.limit})""",
+        transformed_query=f"""{query.transformed_query}, {query_name} AS {final_query}""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

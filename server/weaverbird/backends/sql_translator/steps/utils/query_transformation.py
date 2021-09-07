@@ -12,6 +12,7 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.steps import AggregateStep
 
 SQL_COMPARISON_OPERATORS = {
     'eq': '=',
@@ -155,7 +156,44 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
     return query_string
 
 
-def prepare_aggregation_query(aggregated_cols, aggregated_string, query: SQLQuery, step):
+def generate_query_by_keeping_granularity(
+    group_by: list, prev_step_name: str, current_step_name: str, query_to_complete: str = ""
+) -> str:
+    """
+    On some steps, when we do the Group By we will need to keep the granularity of
+    all our precedents columns
+
+    params:
+    group_by: the group by list
+    prev_step_name: the previous step name (usually query.query_name)
+    current_step_name: the current step name (usually query_name)
+    """
+    # We build the group by query part
+    group_by_query: str = ""
+    on_query: str = ""
+    sub_select_query: str = ""
+
+    for index, gb in enumerate(group_by):
+        # we create a subfield containing a fixed hash for the current column and the index
+        sub_field = f"{gb}_ALIAS_{index}"
+
+        # The sub select query
+        sub_select_query += ("" if index == 0 else ", ") + f"{gb} AS {sub_field}"
+        # The ON query re-group
+        on_query += ("" if index == 0 else " AND ") + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
+        # The GROUP BY query
+        group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
+
+    return (
+        f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete}"
+        f" FROM {prev_step_name} {group_by_query}) {current_step_name}_ALIAS"
+        f" INNER JOIN {prev_step_name} {prev_step_name}_ALIAS ON ({on_query})"
+    )
+
+
+def prepare_aggregation_query(
+    aggregated_cols: list, aggregated_string: str, query: SQLQuery, step: AggregateStep
+):
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names
         agg.new_columns = [x.replace('-', '_').replace(' ', '_') for x in agg.new_columns]
 

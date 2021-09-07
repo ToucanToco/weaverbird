@@ -2,6 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    generate_query_by_keeping_granularity,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -41,30 +42,16 @@ def translate_rank(
 
     final_query: str = ""
     if len(step.groupby) > 0:
-        # We build the group by query part
-        group_by_query: str = ""
-        on_query: str = ""
-        sub_select_query: str = ""
+        # the rank query
         rank_query = f", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
-
-        for index, gb in enumerate(step.groupby + [step.value_col]):
-            # we create a subfield containing a fixed hash for the current column and the index
-            sub_field = f"{gb}_ALIAS_{index}"
-
-            # The sub select query
-            sub_select_query += ("" if index == 0 else ", ") + f"{gb} AS {sub_field}"
-            # The ON query re-group
-            on_query += (
-                "" if index == 0 else " AND "
-            ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
-            # The GROUP BY query
-            group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
-
-        final_query = (
-            f"(SELECT * FROM (SELECT {sub_select_query} {rank_query} "
-            f"FROM {query.query_name} {group_by_query}) {query_name}_ALIAS "
-            f"INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query}))"
-        )
+        step.groupby.append(step.value_col)
+        # We build the group by query part
+        final_query = generate_query_by_keeping_granularity(
+            group_by=step.groupby,
+            prev_step_name=query.query_name,
+            current_step_name=query_name,
+            query_to_complete=rank_query,
+        ) + ")"
     else:
         final_query = (
             f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
@@ -77,7 +64,7 @@ def translate_rank(
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS""" f""" {final_query}""",
+        transformed_query=f"""{query.transformed_query}, {query_name} AS {final_query}""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
