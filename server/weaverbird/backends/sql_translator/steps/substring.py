@@ -35,7 +35,7 @@ def translate_substring(
     )
 
     step.new_column_name = (
-        step.column + "_SUBSTR" if step.new_column_name is None else step.new_column_name
+        f"{step.column}_SUBSTR" if step.new_column_name is None else step.new_column_name
     )
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
