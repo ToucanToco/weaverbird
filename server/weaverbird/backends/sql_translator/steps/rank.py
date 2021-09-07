@@ -54,7 +54,9 @@ def translate_rank(
             # The sub select query
             sub_select_query += ("" if index == 0 else ", ") + f"{gb} AS {sub_field}"
             # The ON query re-group
-            on_query += ("" if index == 0 else " AND ") + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
+            on_query += (
+                "" if index == 0 else " AND "
+            ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
             # The GROUP BY query
             group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
 
