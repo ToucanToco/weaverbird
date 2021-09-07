@@ -17,7 +17,7 @@ def test_translate_simple_split(query):
     )
     expected_transformed_query = (
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), SPLIT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "SPLIT_PART(TOTO, ',', 0) AS TOTO_1, SPLIT_PART(TOTO, ',', 1) AS TOTO_2 FROM SELECT_STEP_0)"
+        "SPLIT_PART(TOTO, ',', 1) AS TOTO_1, SPLIT_PART(TOTO, ',', 2) AS TOTO_2 FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
     assert (
@@ -84,7 +84,7 @@ def test_translate_quotes_as_delimiter_split(query):
     )
     expected_transformed_query = (
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), SPLIT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "SPLIT_PART(TOTO, '\\'', 0) AS TOTO_1 FROM SELECT_STEP_0)"
+        "SPLIT_PART(TOTO, '\\'', 1) AS TOTO_1 FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
     assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_1 FROM SPLIT_STEP_1'
