@@ -41,6 +41,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  fillna(step: Readonly<S.FillnaStep>) {
+    return step;
+  }
+
   filter(step: Readonly<S.FilterStep>) {
     return step;
   }
