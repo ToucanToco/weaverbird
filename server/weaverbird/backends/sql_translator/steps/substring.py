@@ -44,9 +44,7 @@ def translate_substring(
 
     # managing negative values
     step.start_index = (
-        f"(LENGTH ({step.column}) {step.start_index})"
-        if step.start_index < 0
-        else step.start_index
+        f"(LENGTH ({step.column}) {step.start_index})" if step.start_index < 0 else step.start_index
     )
     step.end_index = (
         f"(LENGTH ({step.column}) {step.end_index})" if step.end_index < 0 else step.end_index

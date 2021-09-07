@@ -138,7 +138,7 @@ def test_translate_substring_negative_index(query):
     assert (
         query.transformed_query
         == "WITH SELECT_STEP_0 AS (SELECT * FROM products), SUBSTRING_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "SUBSTR(TOTO, -7, -4) AS TOTO_SUBSTR FROM SELECT_STEP_0)"
+        "SUBSTR(TOTO, (LENGTH (TOTO) -7), (LENGTH (TOTO) -4)) AS TOTO_SUBSTR FROM SELECT_STEP_0)"
     )
     assert (
         query.selection_query
