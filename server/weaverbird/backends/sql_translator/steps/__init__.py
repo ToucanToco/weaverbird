@@ -21,6 +21,7 @@ from .replace import translate_replace
 from .select import translate_select
 from .sort import translate_sort
 from .split import translate_split
+from .substring import translate_substring
 from .table import translate_table
 from .text import translate_text
 from .todate import translate_todate
@@ -57,4 +58,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'delete': translate_delete,
     'rank': translate_rank,
     'split': translate_split,
+    'substring': translate_substring,
 }
