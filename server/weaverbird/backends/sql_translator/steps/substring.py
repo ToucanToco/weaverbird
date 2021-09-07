@@ -42,7 +42,12 @@ def translate_substring(
         columns_filter=[step.column] if step.column == step.new_column_name else []
     )
 
-    # managing negative values
+    # For negative values, since snowflake returns automatically an empty string,
+    # That's means, the synthax down there :
+    # SUBSTR(TOTO,  -7, -4)
+    #
+    # Is equivalent to :
+    # SUBSTR(TOTO, (LENGTH(TOTO) - 7), (LENGTH(TOTO) - 4))
     step.start_index = (
         f"(LENGTH ({step.column}) {step.start_index})" if step.start_index < 0 else step.start_index
     )
