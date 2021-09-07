@@ -1,0 +1,105 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "substring",
+        "column": "CITY",
+        "start_index": 1,
+        "end_index": 4
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris"
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse"
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg"
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        },
+        {
+          "name": "CITY_SUBSTR",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris",
+        "CITY_SUBSTR": "pari"
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse",
+        "CITY_SUBSTR": "toul"
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg",
+        "CITY_SUBSTR": "tras"
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah",
+        "CITY_SUBSTR": "zing"
+      }
+    ]
+  }
+}
