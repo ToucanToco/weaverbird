@@ -41,12 +41,15 @@ def translate_split(
         else step.number_cols_to_keep
     )
 
+    # we should escape weird quotes on the delimiter
+    # to prevent the sql query fail
     step.delimiter = step.delimiter.replace('"', "'").replace("'", "\\'")
 
     # We complete fields
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     # We construct the split query here
+    # using SPLIT_PART
     split_query = ", ".join(
         [
             f"SPLIT_PART({step.column}, '{step.delimiter}', {delimiter_count + 1}) AS {step.column}_{delimiter_count + 1}"

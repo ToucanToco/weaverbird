@@ -70,7 +70,7 @@ def test_translate_simple_split(query):
     }
 
 
-def test_translate_quotes_spliter_split(query):
+def test_translate_quotes_as_delimiter_split(query):
     step = SplitStep(
         name='split',
         column='TOTO',
