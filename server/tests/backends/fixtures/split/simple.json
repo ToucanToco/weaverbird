@@ -1,0 +1,113 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "split",
+        "column": "CITY",
+        "delimiter": ",",
+        "number_cols_to_keep": 2
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris, france"
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse, france"
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg, usa"
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah, golgoma"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        },
+        {
+          "name": "CITY_1",
+          "type": "string"
+        },
+        {
+          "name": "CITY_2",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris, france",
+        "CITY_1": "paris",
+        "CITY_2": " france"
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse, france",
+        "CITY_1": "toulouse",
+        "CITY_2": " france"
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg, usa",
+        "CITY_1": "trasbourg",
+        "CITY_2": " usa"
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah, golgoma",
+        "CITY_1": "zinguelewah",
+        "CITY_2": " golgoma"
+      }
+    ]
+  }
+}

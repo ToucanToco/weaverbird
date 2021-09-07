@@ -20,7 +20,9 @@ def test_translate_simple_split(query):
         "SPLIT_PART(TOTO, ',', 0) AS TOTO_1, SPLIT_PART(TOTO, ',', 1) AS TOTO_2 FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_1, TOTO_2 FROM SPLIT_STEP_1'
+    assert (
+        query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_1, TOTO_2 FROM SPLIT_STEP_1'
+    )
     assert query.query_name == 'SPLIT_STEP_1'
 
     # assert on metadata
