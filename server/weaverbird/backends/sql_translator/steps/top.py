@@ -1,7 +1,8 @@
 from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query, generate_query_by_keeping_granularity,
+    build_selection_query,
+    generate_query_by_keeping_granularity,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -45,11 +46,12 @@ def translate_top(
     if len(step.groups) > 0:
         step.groups.append(step.rank_on)
         # We build the group by query part
-        final_query = generate_query_by_keeping_granularity(
-            group_by=step.groups,
-            prev_step_name=query.query_name,
-            current_step_name=query_name
-        ) + f""" ORDER BY {query.query_name}_ALIAS.{step.rank_on} {step.sort} LIMIT {step.limit})"""
+        final_query = (
+            generate_query_by_keeping_granularity(
+                group_by=step.groups, prev_step_name=query.query_name, current_step_name=query_name
+            )
+            + f""" ORDER BY {query.query_name}_ALIAS.{step.rank_on} {step.sort} LIMIT {step.limit})"""
+        )
     else:
         final_query = (
             f""" (SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"""

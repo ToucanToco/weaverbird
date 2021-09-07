@@ -46,12 +46,15 @@ def translate_rank(
         rank_query = f", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         step.groupby.append(step.value_col)
         # We build the group by query part
-        final_query = generate_query_by_keeping_granularity(
-            group_by=step.groupby,
-            prev_step_name=query.query_name,
-            current_step_name=query_name,
-            query_to_complete=rank_query,
-        ) + ")"
+        final_query = (
+            generate_query_by_keeping_granularity(
+                group_by=step.groupby,
+                prev_step_name=query.query_name,
+                current_step_name=query_name,
+                query_to_complete=rank_query,
+            )
+            + ")"
+        )
     else:
         final_query = (
             f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
