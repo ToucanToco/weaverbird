@@ -3,6 +3,8 @@ import Vuex, { Store } from 'vuex';
 
 import ConvertStepForm from '@/components/stepforms/ConvertStepForm.vue';
 
+jest.mock('@/components/FAIcon.vue');
+
 import { RootState, setupMockStore } from './utils';
 
 const localVue = createLocalVue();

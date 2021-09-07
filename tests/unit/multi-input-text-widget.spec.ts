@@ -6,6 +6,8 @@ import MultiVariableInput from '@/components/stepforms/widgets/MultiVariableInpu
 import VariableInput from '@/components/stepforms/widgets/VariableInput.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 

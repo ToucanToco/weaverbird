@@ -2,6 +2,8 @@ import AddMissingDatesStepForm from '@/components/stepforms/AddMissingDatesStepF
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Add missing dates Step Form', () => {
   const runner = new BasicStepFormTestRunner(AddMissingDatesStepForm, 'addmissingdates');
   runner.testInstantiate();

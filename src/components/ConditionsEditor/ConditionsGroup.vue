@@ -50,7 +50,7 @@
         aria-label="Delete this group"
         @click="deleteRow(rowIndex)"
       >
-        <i aria-hidden="true" class=" far fa-trash-alt" />
+        <FAIcon icon="far trash-alt" />
       </div>
     </div>
     <div
@@ -82,7 +82,7 @@
         aria-label="Delete this group"
         @click="deleteGroup(groupIndex)"
       >
-        <i aria-hidden="true" class=" far fa-trash-alt" />
+        <FAIcon icon="far trash-alt" />
       </div>
     </div>
     <div class="conditions-group__action-buttons">
@@ -118,10 +118,15 @@
  */
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
+
 import { AbstractCondition, AbstractFilterTree, ConditionOperator } from './tree-types';
 
 @Component({
   name: 'ConditionsGroup',
+  components: {
+    FAIcon,
+  },
 })
 export default class ConditionsGroup extends Vue {
   @Prop({

@@ -7,6 +7,8 @@ import { Pipeline } from '@/lib/steps';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -138,7 +140,7 @@ describe('Step.vue', () => {
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
-    renameStep.find('.fa-cog').trigger('click');
+    renameStep.find('.query-pipeline-step__action').trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
       [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],

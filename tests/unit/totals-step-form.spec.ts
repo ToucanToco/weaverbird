@@ -8,6 +8,8 @@ import { setAggregationsNewColumnsInStep } from '@/lib/helpers';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Add Total Rows Step Form', () => {
   const runner = new BasicStepFormTestRunner(AddTotalRowsStepForm, 'totals');
   runner.testInstantiate();

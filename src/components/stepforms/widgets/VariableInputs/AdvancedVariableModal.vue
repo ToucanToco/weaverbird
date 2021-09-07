@@ -3,7 +3,7 @@
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body" style="width: 500px;">
-        <em class="vqb-modal__close fas fa-times" @click="close" />
+        <FAIcon class="vqb-modal__close" icon="times" @click.native="close" />
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Custom Variable</div>
         </div>
@@ -35,6 +35,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import CodeEditorWidget from '@/components/stepforms/widgets/CodeEditorWidget.vue';
 import { extractVariableIdentifier, VariableDelimiters } from '@/lib/variables';
 /**
@@ -42,7 +43,10 @@ import { extractVariableIdentifier, VariableDelimiters } from '@/lib/variables';
  */
 @Component({
   name: 'advanced-variable-modal',
-  components: { CodeEditorWidget },
+  components: {
+    CodeEditorWidget,
+    FAIcon,
+  },
 })
 export default class AdvancedVariableModal extends Vue {
   value = '';
@@ -132,7 +136,7 @@ export default class AdvancedVariableModal extends Vue {
   right: 30px;
 }
 
-.fa-times {
+::v-deep.fa-times {
   cursor: pointer;
 }
 

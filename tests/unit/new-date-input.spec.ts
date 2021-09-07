@@ -3,6 +3,8 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import { dateToString } from '@/lib/dates';
 
+jest.mock('@/components/FAIcon.vue');
+
 const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',

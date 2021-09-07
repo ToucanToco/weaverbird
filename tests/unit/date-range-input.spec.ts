@@ -1,7 +1,14 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
-import { dateRangeToString, RelativeDateRange, relativeDateRangeToString } from '@/lib/dates';
+import {
+  CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
+  dateRangeToString,
+  RelativeDateRange,
+  relativeDateRangeToString,
+} from '@/lib/dates';
+
+jest.mock('@/components/FAIcon.vue');
 
 const SAMPLE_VARIABLES = [
   {
@@ -278,7 +285,11 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').html()).toContain(dateRangeToString(value));
+      const labelWithoutSeparator = dateRangeToString(value).split(
+        CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
+      ); // due to utf8 char we need to split label
+      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[0]);
+      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[1]);
     });
 
     it('should select "Fixed" tab by default', () => {
@@ -302,9 +313,12 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').html()).toContain(
-        relativeDateRangeToString(value, RELATIVE_SAMPLE_VARIABLES, { start: '{{', end: '}}' }),
-      );
+      const labelWithoutSeparator = relativeDateRangeToString(value, RELATIVE_SAMPLE_VARIABLES, {
+        start: '{{',
+        end: '}}',
+      }).split(CUSTOM_DATE_RANGE_LABEL_SEPARATOR); // due to utf8 char we need to split label
+      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[0]);
+      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[1]);
     });
 
     it('should select "Dynamic" tab by default', () => {

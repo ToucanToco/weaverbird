@@ -2,6 +2,8 @@ import AddTextColumnStepForm from '@/components/stepforms/AddTextColumnStepForm.
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Add Text Column Step Form', () => {
   const runner = new BasicStepFormTestRunner(AddTextColumnStepForm, 'text');
   runner.testInstantiate();

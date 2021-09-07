@@ -16,6 +16,8 @@ export {
   VQB_MODULE_NAME,
 } from '@/store';
 
+import '@/lib/icons';
+
 // export Vue components
 import DataViewer from '@/components/DataViewer.vue';
 import FilterEditor from '@/components/FilterEditor.vue';

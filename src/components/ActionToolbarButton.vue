@@ -1,6 +1,6 @@
 <template>
   <button type="button" class="action-toolbar__btn" data-cy="weaverbird-action-menu">
-    <i :class="`action-toolbar__btn-icon fas fa-${icon}`" aria-hidden="true" />
+    <FAIcon class="action-toolbar__btn-icon" :icon="icon" />
     <span class="action-toolbar__btn-txt">{{ label }}</span>
     <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
       <div class="action-menu__body">
@@ -25,6 +25,7 @@ import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
 import { ACTION_CATEGORIES, POPOVER_ALIGN } from '@/components/constants';
+import FAIcon from '@/components/FAIcon.vue';
 import * as S from '@/lib/steps';
 import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
@@ -40,6 +41,7 @@ type NoFormStep = S.DateExtractStep | S.ToLowerStep | S.ToDateStep | S.ToUpperSt
   name: 'action-toolbar-button',
   components: {
     Popover,
+    FAIcon,
   },
   props: {
     label: String,

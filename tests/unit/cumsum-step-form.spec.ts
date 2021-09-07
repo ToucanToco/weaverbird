@@ -2,6 +2,8 @@ import CumSumStepForm from '@/components/stepforms/CumSumStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Cumsum Step Form', () => {
   const runner = new BasicStepFormTestRunner(CumSumStepForm, 'cumsum');
   runner.testInstantiate();

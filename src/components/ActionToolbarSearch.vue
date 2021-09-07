@@ -7,7 +7,7 @@
         'action-toolbar-search__btn--active': isActive,
       }"
     >
-      <i class="action-toolbar-search__btn-icon fa fa-search" aria-hidden="true" />
+      <FAIcon class="action-toolbar-search__btn-icon" icon="search" />
       <popover :visible="isActive" :align="'left'" bottom @closed="$emit('closed')">
         <div class="action-menu__body action-toolbar-search__popover">
           <multiselect
@@ -33,6 +33,7 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { PipelineStepName } from '@/lib/steps';
 
 import { VQBModule } from '../store';
@@ -44,6 +45,7 @@ import Popover from './Popover.vue';
   components: {
     Popover,
     Multiselect,
+    FAIcon,
   },
 })
 export default class SearchActions extends Vue {
