@@ -1,5 +1,6 @@
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    sanitize_input,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -26,7 +27,7 @@ def translate_fillna(
     unchanged_colums = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=step.columns
     )
-    fill_value = f"'{step.value}'" if isinstance(step.value, str) else step.value
+    fill_value = f"'{sanitize_input(step.value)}'" if isinstance(step.value, str) else step.value
     filled_columns = ', '.join([f'IFNULL({col}, {fill_value}) AS {col}' for col in step.columns])
     new_query = SQLQuery(
         query_name=query_name,
