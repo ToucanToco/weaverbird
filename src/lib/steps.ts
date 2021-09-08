@@ -160,6 +160,11 @@ export type CustomStep = {
   query: string;
 };
 
+export type CustomSqlStep = {
+  name: 'customsql';
+  query: string;
+};
+
 export type DateExtractStep = {
   name: 'dateextract';
   dateInfo: DateInfo[];
@@ -456,6 +461,7 @@ export type PipelineStep =
   | ConvertStep
   | CumSumStep
   | CustomStep
+  | CustomSqlStep
   | DateExtractStep
   | DeleteStep
   | DuplicateColumnStep

@@ -136,6 +136,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported
+  customsql(step: Readonly<S.CustomSqlStep>) {}
+
+  @unsupported
   dateextract(step: Readonly<S.DateExtractStep>) {}
 
   @unsupported

@@ -25,6 +25,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  customsql(step: Readonly<S.CustomSqlStep>) {
+    return step;
+  }
+
   convert(step: Readonly<S.ConvertStep>) {
     return step;
   }

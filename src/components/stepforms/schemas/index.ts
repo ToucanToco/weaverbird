@@ -8,6 +8,7 @@ import concatenateBuildSchema from './concatenate';
 import convertSchema from './convert';
 import cumsumSchema from './cumsum';
 import customSchema from './custom';
+import customSqlSchema from './customsql';
 import dateextractSchema from './dateextract';
 import deleteSchema from './delete';
 import domainSchema from './domain';
@@ -56,6 +57,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   convert: convertSchema,
   cumsum: cumsumSchema,
   custom: customSchema,
+  customsql: customSqlSchema,
   dateextract: dateextractSchema,
   delete: deleteSchema,
   domain: domainSchema,
