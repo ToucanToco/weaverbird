@@ -23,21 +23,23 @@ def translate_aggregate(
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
+    query_name = f'AGGREGATE_STEP_{index}'
+
     aggregated_cols = []
     aggregated_string = ''
     first_last_string = ''
     query, aggregated_string = prepare_aggregation_query(
-        aggregated_cols, aggregated_string, query, step
+        query_name, aggregated_cols, aggregated_string, query, step
     )
-    query_string = build_first_or_last_aggregation(
+    query, query_string = build_first_or_last_aggregation(
         aggregated_string, first_last_string, query, step
     )
-    query_name = f'AGGREGATE_STEP_{index}'
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f'{query.transformed_query}, {query_name} AS ({query_string})',
+        transformed_query=f'{query.transformed_query}, {query_name} AS {query_string})',
     )
+    print("new_query.transformed_query: ", new_query.transformed_query)
     new_query.metadata_manager = query.metadata_manager
     new_query.selection_query = build_selection_query(
         query.metadata_manager.retrieve_query_metadata_columns(), query_name

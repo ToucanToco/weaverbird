@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -82,13 +82,17 @@ def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name)
     return f"SELECT {', '.join(names)} FROM {query_name}"
 
 
-def build_first_or_last_aggregation(aggregated_string, first_last_string, query, step):
+def build_first_or_last_aggregation(
+    aggregated_string: str, first_last_string: str, query: SQLQuery, step: AggregateStep
+) -> Tuple[SQLQuery, str]:
+    # TODO : Maybe in the future, provide more specifics comments for this function
     first_cols, last_cols = [], []
     for aggregation in [
         aggregation
         for aggregation in step.aggregations
         if aggregation.agg_function in ['first', 'last']
     ]:
+
         for col, new_col in zip(aggregation.columns, aggregation.new_columns):
             if aggregation.agg_function == 'first':
                 first_cols.append((col, new_col))
@@ -96,11 +100,33 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
                 last_cols.append((col, new_col))
     if len(first_cols) and not len(last_cols):
         if len(step.on):
-            firsts_query = (
-                f"SELECT {', '.join([f'{col} AS {new_col}' for (col, new_col) in first_cols] + step.on + ['ROW_NUMBER()'])} OVER (PARTITION BY {', '.join(step.on)} "
-                f"ORDER BY {', '.join([c[0] for c in first_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
-            )
-            first_last_string = f"SELECT {', '.join([f'{c[1]}' for c in first_cols] + step.on)} FROM ({firsts_query})"
+            # we add metadata columns
+            [
+                query.metadata_manager.add_query_metadata_column(new_col, "float")
+                for (col, new_col) in first_cols
+            ]
+
+            # depending on the granularity keep parameter
+            # we should remove unnecessary columns
+            if step.keep_original_granularity:
+                firsts_query = (
+                    f"SELECT *, {', '.join([f'{col} AS {new_col}' for (col, new_col) in first_cols] + ['ROW_NUMBER()'])} OVER (PARTITION BY {', '.join(step.on)} "
+                    f"ORDER BY {', '.join([c[0] for c in first_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
+                )
+            else:
+                firsts_query = (
+                    f"SELECT {', '.join([f'{col} AS {new_col}' for (col, new_col) in first_cols] + ['ROW_NUMBER()'])} OVER (PARTITION BY {', '.join(step.on)} "
+                    f"ORDER BY {', '.join([c[0] for c in first_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
+                )
+                for table in query.metadata_manager.tables:
+                    # we add metadata columns
+                    [
+                        query.metadata_manager.remove_query_metadata_column(col)
+                        for col in query.metadata_manager.retrieve_columns_as_list(table)
+                        if col not in [f'{c[1]}' for c in first_cols] and col not in step.on
+                    ]
+
+            first_last_string = f"(SELECT {', '.join([f'{c[1]}' for c in first_cols] + step.on)} FROM ({firsts_query})"
 
         else:
             firsts_query = (
@@ -114,13 +140,18 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
     if len(last_cols) and not len(first_cols):
         if len(step.on):
             lasts_query = (
-                f"SELECT {', '.join([f'{col} AS {new_col}' for (col, new_col) in last_cols] + step.on + ['ROW_NUMBER()'])} OVER (PARTITION BY {', '.join(step.on)} "
+                f"SELECT {', '.join([f'{col} AS {new_col}' for (col, new_col) in last_cols if new_col != col] + ['ROW_NUMBER()'])} OVER (PARTITION BY {', '.join(step.on)} "
                 f"ORDER BY {', '.join([f'{c[0]} DESC' for c in last_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
             first_last_string = (
                 f"SELECT {', '.join([f'{c[1]}' for c in last_cols] + step.on)} FROM ({lasts_query})"
             )
 
+            # we add metadata
+            [
+                query.metadata_manager.add_query_metadata_column(new_col, "float")
+                for (col, new_col) in last_cols
+            ]
         else:
             lasts_query = (
                 f"SELECT {', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in last_cols] + ['ROW_NUMBER()'])} OVER ("
@@ -135,14 +166,14 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
                 f"SELECT {', '.join([f'{col} AS {new_col}' for (col, new_col) in first_cols] + [f'{col} AS {new_col}' for (col, new_col) in last_cols] + step.on + ['ROW_NUMBER()'])} OVER (PARTITION BY {', '.join(step.on)} "
                 f"ORDER BY {', '.join([f'{c[0]}' for c in first_cols] + [f'{c[0]} DESC' for c in last_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
-            first_last_string = f"SELECT {', '.join([f'{c[1]}' for c in first_cols] + [f'{c[1]}' for c in last_cols] + step.on)} FROM ({firsts_and_lasts_query})"
+            first_last_string = f"(SELECT {', '.join([f'{c[1]}' for c in first_cols] + [f'{c[1]}' for c in last_cols] + step.on)} FROM ({firsts_and_lasts_query})"
 
         else:
             firsts_and_lasts_query = (
                 f"SELECT {', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in first_cols] + [f'{col} AS {new_col}' for (col, new_col) in last_cols] + ['ROW_NUMBER()'])} OVER ("
                 f"ORDER BY {', '.join([f'{c[0]}' for c in first_cols] + [f'{c[0]} DESC' for c in last_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
-            first_last_string = f"SELECT {', '.join([f'{c[1]}' for c in first_cols] + [f'{c[1]}' for c in last_cols])} FROM ({firsts_and_lasts_query})"
+            first_last_string = f"(SELECT {', '.join([f'{c[1]}' for c in first_cols] + [f'{c[1]}' for c in last_cols])} FROM ({firsts_and_lasts_query})"
     if len(aggregated_string) and len(first_last_string):
         if len(step.on):
             query_string = f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string}) A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])}"
@@ -153,11 +184,15 @@ def build_first_or_last_aggregation(aggregated_string, first_last_string, query,
         query_string = aggregated_string
     else:
         query_string = first_last_string
-    return query_string
+    return query, query_string
 
 
 def generate_query_by_keeping_granularity(
-    group_by: list, prev_step_name: str, current_step_name: str, query_to_complete: str = ""
+    group_by: list,
+    prev_step_name: str,
+    current_step_name: str,
+    query_to_complete: str = "",
+    aggregate_on_cols_skip=None,
 ) -> str:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
@@ -168,6 +203,10 @@ def generate_query_by_keeping_granularity(
     prev_step_name: the previous step name (usually query.query_name)
     current_step_name: the current step name (usually query_name)
     """
+    # in case it's None it should be an empty array
+    if aggregate_on_cols_skip is None:
+        aggregate_on_cols_skip = []
+
     # We build the group by query part
     group_by_query: str = ""
     on_query: str = ""
@@ -175,14 +214,36 @@ def generate_query_by_keeping_granularity(
 
     for index, gb in enumerate(group_by):
         # we create a subfield containing a fixed hash for the current column and the index
-        sub_field = f"{gb}_ALIAS_{index}"
+        sub_field = f"{gb.replace(')', '_').replace('(', '_')}_ALIAS_{index}"
+
+        # To handle aggregates AS cases
+        for c in aggregate_on_cols_skip:
+            if gb in c and " AS " in c:
+                sub_field = c.split(" AS ")[1]
+                break
 
         # The sub select query
         sub_select_query += ("" if index == 0 else ", ") + f"{gb} AS {sub_field}"
+
         # The ON query re-group
-        on_query += ("" if index == 0 else " AND ") + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
+        # the sub on query
+        sub_on_query = (
+            "" if index == 0 else " AND "
+        ) + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
+        # the sub group by query
+        sub_group_by_query = ('GROUP BY ' if index == 0 else ', ') + sub_field
+
+        # To handle aggregates AS cases
+        for c in aggregate_on_cols_skip:
+            if gb in c and " AS " in c:
+                sub_on_query = ""
+                sub_group_by_query = ""
+                break
+
+        # The ON query
+        on_query += sub_on_query
         # The GROUP BY query
-        group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
+        group_by_query += sub_group_by_query
 
     return (
         f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete}"
@@ -192,8 +253,12 @@ def generate_query_by_keeping_granularity(
 
 
 def prepare_aggregation_query(
-    aggregated_cols: list, aggregated_string: str, query: SQLQuery, step: AggregateStep
-):
+    query_name: str,
+    aggregated_cols: list,
+    aggregated_string: str,
+    query: SQLQuery,
+    step: AggregateStep,
+) -> Tuple[SQLQuery, str]:
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names
         agg.new_columns = [x.replace('-', '_').replace(' ', '_') for x in agg.new_columns]
 
@@ -209,25 +274,39 @@ def prepare_aggregation_query(
             else:
                 aggregated_cols.append(f'{aggregation.agg_function.upper()}({col}) AS {new_col}')
 
-            # We remove unecessary columns
-            for table in query.metadata_manager.tables:
-                column_list = query.metadata_manager.retrieve_columns_as_list(table)
-                for colu in column_list:
-                    if colu not in aggregation.columns + step.on:
-                        query.metadata_manager.remove_table_column(table, colu)
+            if len(step.on) == 0:
+                # We remove unecessary columns
+                for table in query.metadata_manager.tables:
+                    column_list = query.metadata_manager.retrieve_columns_as_list(table)
+                    for colu in column_list:
+                        if colu not in aggregation.columns + step.on:
+                            query.metadata_manager.remove_table_column(table, colu)
 
-                # if col not in column_list:
-                # we update the column name
-                try:
-                    query.metadata_manager.update_column_name(
-                        table_name=table, column_name=col, dest_column_name=new_col
-                    )
-                except Exception as es:
-                    print(es)
+                    # if col not in column_list:
+                    # we update the column name
+                    try:
+                        query.metadata_manager.update_column_name(
+                            table_name=table, column_name=col, dest_column_name=new_col
+                        )
+                    except Exception as es:
+                        print(es)
 
     if len(step.on) and len(aggregated_cols):
-        aggregated_cols += step.on
-        aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name} GROUP BY {', '.join(step.on)}"
+        as_ag_columns = [cls.split(" AS ")[0] for cls in aggregated_cols]
+        # we generate the query by keeping granularity
+        aggregated_string = generate_query_by_keeping_granularity(
+            group_by=step.on + as_ag_columns,
+            prev_step_name=query.query_name,
+            current_step_name=query_name,
+            aggregate_on_cols_skip=aggregated_cols + step.on,
+        )
+
+        # We add some metadata
+        [
+            query.metadata_manager.add_query_metadata_column(cls.split(" AS ")[1], "float")
+            for cls in aggregated_cols
+            if " AS " in cls
+        ]
     elif len(aggregated_cols):
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name}"
     return query, aggregated_string
