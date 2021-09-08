@@ -46,14 +46,14 @@ def apply_condition(condition: Condition, query: str) -> str:
         except ValueError:
             # just to escape single quotes from crashing the snowflakeSQL query
             if type(condition.value) == str:
-                condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
+                condition.value = sanitize_input(condition.value)
             query += f"{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, NullCondition):
         query += f'{condition.column} {SQL_NULLITY_OPERATORS[condition.operator]}'
     elif isinstance(condition, MatchCondition):
         # just to escape single quotes from crashing the snowflakeSQL query
         if type(condition.value) == str:
-            condition.value = condition.value.replace('"', '\\"').replace("'", "\\'")
+            condition.value = sanitize_input(condition.value)
         query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
         query += f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}'
@@ -311,3 +311,7 @@ def get_query_for_date_extract(
         }
 
         return f"({appropriate_func[date_type].replace('____target____', target_column)}) AS {new_column}"
+
+
+def sanitize_input(value: str) -> str:
+    return value.replace('"', '\\"').replace("'", "\\'")

@@ -6,6 +6,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
     build_selection_query,
     build_union_query,
     handle_zero_division,
+    sanitize_input,
     snowflake_date_format,
 )
 from weaverbird.pipeline.conditions import (
@@ -300,3 +301,9 @@ def test_build_union_query_second_smaller():
         == """SELECT COLUMN_1_1, COLUMN_1_2, COLUMN_1_3, COLUMN_1_4 FROM SELECT_STEP_0 UNION ALL SELECT\
  COLUMN_2_1, COLUMN_2_2, COLUMN_2_3, NULL FROM table_2"""
     )
+
+
+def test_sanitize_input():
+    assert sanitize_input('bla') == 'bla'
+    assert sanitize_input("bla'") == "bla\\'"
+    assert sanitize_input('bla"') == 'bla\\"'
