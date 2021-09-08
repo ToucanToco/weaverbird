@@ -1,7 +1,9 @@
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+from weaverbird.backends.sql_translator.steps.utils.aggregation import (
     build_first_or_last_aggregation,
-    build_selection_query,
     prepare_aggregation_query,
+)
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    build_selection_query,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
