@@ -41,6 +41,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  fillna(step: Readonly<S.FillnaStep>) {
+    return step;
+  }
+
   filter(step: Readonly<S.FilterStep>) {
     return step;
   }
@@ -90,6 +94,10 @@ export class SnowflakeTranslator extends BaseTranslator {
   }
 
   sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
+
+  split(step: Readonly<S.SplitStep>) {
     return step;
   }
 

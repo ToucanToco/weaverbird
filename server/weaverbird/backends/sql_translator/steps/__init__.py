@@ -7,6 +7,7 @@ from .concatenate import translate_concatenate
 from .convert import translate_convert
 from .dateextract import translate_dateextract
 from .delete import translate_delete
+from .fillna import translate_fillna
 from .filter import translate_filter
 from .formula import translate_formula
 from .fromdate import translate_fromdate
@@ -20,6 +21,7 @@ from .rename import translate_rename
 from .replace import translate_replace
 from .select import translate_select
 from .sort import translate_sort
+from .split import translate_split
 from .substring import translate_substring
 from .table import translate_table
 from .text import translate_text
@@ -56,5 +58,7 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'concatenate': translate_concatenate,
     'delete': translate_delete,
     'rank': translate_rank,
+    'split': translate_split,
     'substring': translate_substring,
+    'fillna': translate_fillna,
 }
