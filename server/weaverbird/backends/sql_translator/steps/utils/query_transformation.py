@@ -2,10 +2,6 @@ import re
 from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
-from weaverbird.backends.sql_translator.steps.utils.aggregation import (
-    first_last_query_string_with_group_and_granularity,
-    get_first_last_cols_from_aggregate,
-)
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -86,6 +82,100 @@ def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name)
     return f"SELECT {', '.join(names)} FROM {query_name}"
 
 
+def first_last_query_string_with_group_and_granularity(
+    step: AggregateStep,
+    query: SQLQuery,
+    scope_cols: list,
+) -> Tuple[SQLQuery, str]:
+    """
+    This function will... depending on the group by of the aggregate and the granularity conservation, generate
+    the appropriate final query and clean/update the query's metadata columns
+
+    params:
+    query: the sqlquery object
+    step: The current aggregate step
+    select_array_cols: the selection columns in the end_query
+    array_cols: the order by's columns
+    scope_cols: he scope of our process, for example: firsts_cols or lasts_cols...
+    """
+
+    # we add metadata columns
+    [
+        query.metadata_manager.add_query_metadata_column(new_col, "float")
+        for (col, new_col) in scope_cols
+    ]
+
+    if len(step.on):
+        # depending on the granularity keep parameter
+        # we should remove unnecessary columns
+        if step.keep_original_granularity:
+            end_query = (
+                f"SELECT *,{', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols] + ['ROW_NUMBER()'])}"
+                f" OVER (PARTITION BY {', '.join(step.on)}"
+                f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
+            )
+            final_end_query_string = f"(SELECT * FROM ({end_query})"
+        else:
+            # the difference on the  if col != new_col after the loop
+            end_query = (
+                f"SELECT *, {', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])}"
+                f" OVER (PARTITION BY {', '.join(step.on)}"
+                f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
+            )
+            # we fresh an concatenate the final first_last_string
+            query, final_end_query_string = get_query_from_first_query(
+                query, [f'{c[1]}' for c in scope_cols] + step.on, end_query
+            )
+    else:
+        # depending on the granularity keep parameter
+        # we should remove unnecessary columns
+        if step.keep_original_granularity:
+            end_query = (
+                f"SELECT *,{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols] + ['ROW_NUMBER()'])} OVER ("
+                f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
+            )
+            final_end_query_string = f"(SELECT * FROM ({end_query})"
+        else:
+            end_query = (
+                f"SELECT *,{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])} OVER ("
+                f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
+            )
+            # we fresh an concatenate the final first_last_string
+            query, final_end_query_string = get_query_from_first_query(
+                query, [f'{c[1]}' for c in scope_cols], end_query
+            )
+
+    return query, final_end_query_string
+
+
+def get_query_from_first_query(
+    query: SQLQuery, array_cols: list, first_last_string: str, first_or_last_aggregate: bool = True
+) -> Tuple[SQLQuery, str]:
+    """
+    For the given query, this function will remove metadata columns if its not on a given list
+    then concatenate the join on array_cols list to the final query
+
+    params:
+    query : the given query
+    array_cols : the list of columns we want to keep in the metadatas
+    str_query : the end query
+    """
+
+    # we loop on tables and add new columns and get back the fresh query
+    for table in query.metadata_manager.tables:
+        # we add metadata columns
+        [
+            query.metadata_manager.remove_query_metadata_column(col)
+            for col in query.metadata_manager.retrieve_columns_as_list(table)
+            if col not in array_cols
+        ]
+
+    if first_or_last_aggregate:
+        first_last_string = f"(SELECT {', '.join(array_cols)} FROM ({first_last_string})"
+
+    return query, first_last_string
+
+
 def generate_query_by_keeping_granularity(
     group_by: list,
     prev_step_name: str,
@@ -127,8 +217,8 @@ def generate_query_by_keeping_granularity(
         # The ON query re-group
         # the sub on query
         sub_on_query = (
-            "" if index == 0 else " AND "
-        ) + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
+                           "" if index == 0 else " AND "
+                       ) + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
         # the sub group by query
         sub_group_by_query = ('GROUP BY ' if index == 0 else ', ') + sub_field
 
@@ -160,15 +250,15 @@ def snowflake_date_format(input_format: str) -> str:
         None
         if input_format is None or input_format == ''
         else input_format.replace('"', '')
-        .replace("'", '')
-        .replace('%b', 'MON')
-        .replace('%B', 'MMMM')
-        .replace('%y', 'YYYY')
-        .replace('%Y', 'YYYY')
-        .replace('%M', 'MM')
-        .replace('%m', 'MM')
-        .replace('%D', 'DD')
-        .replace('%d', 'DD')
+            .replace("'", '')
+            .replace('%b', 'MON')
+            .replace('%B', 'MMMM')
+            .replace('%y', 'YYYY')
+            .replace('%Y', 'YYYY')
+            .replace('%M', 'MM')
+            .replace('%m', 'MM')
+            .replace('%D', 'DD')
+            .replace('%d', 'DD')
     )
     input_format = '' if input_format is None or input_format == '' else f", '{input_format}'"
 
@@ -249,15 +339,15 @@ def get_query_for_date_extract(
             "firstDayOfWeek": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
             "firstDayOfQuarter": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____)))",
             "firstDayOfIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____)) - DAYOFWEEKISO(to_timestamp("
-            "____target____)) + 1",
+                                 "____target____)) + 1",
             "previousDay": "to_timestamp(____target____) - interval '1 day'",
             "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
             "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
             "firstDayOfPreviousWeek": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO("
-            "to_timestamp(____target____)) + 1",
+                                      "to_timestamp(____target____)) + 1",
             "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
             "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - "
-            "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+                                         "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
             "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
             "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
             "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",
