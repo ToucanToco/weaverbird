@@ -1,5 +1,15 @@
 # Changelog
 
+### [0.60.5] - 2021-09-08
+
+### Added
+
+- SQL VQB [Snowflake]: Rank step
+- SQL VQB [Snowflake]: Substring step
+- SQL VQB [Snowflake]: Split Column step
+- SQL VQB [Snowflake]: Fill Null step
+
+
 ### [0.60.4] - 2021-09-06
 
 - SQL VQB: Release Delete columns step
@@ -884,6 +894,7 @@
 ## Unreleased
 
 
+[0.60.5]: https://github.com/ToucanToco/weaverbird/compare/v0.60.4...v0.60.5
 [0.60.4]: https://github.com/ToucanToco/weaverbird/compare/v0.60.3...v0.60.4
 [0.60.3]: https://github.com/ToucanToco/weaverbird/compare/v0.60.2...v0.60.3
 [0.60.2]: https://github.com/ToucanToco/weaverbird/compare/v0.60.1...v0.60.2
