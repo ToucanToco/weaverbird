@@ -185,7 +185,18 @@ def generate_query_by_keeping_granularity(
 ) -> str:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
-    all our precedents columns
+    all our precedents columns, this method will do that operation but with an innerjoin on the precedent dataset
+    then order by those elements in the group by list/array
+    For example :
+    SELECT * FROM (
+        WITH SELECT_STEP_0 AS (
+            SELECT Price, Name, Category FROM products
+        ), AGGREGATE_STEP_1 AS (
+            SELECT SUM(Price) AS PRICE_SUM, Category FROM SELECT_STEP_0 GROUP BY Category
+        )  A INNER JOIN (SELECT * FROM SELECT_STEP_0) B
+                ON A.Category = B.Category
+                ORDER BY A.Category
+    ) SELECT * FROM AGGREGATE_STEP_1
 
     params:
     group_by: the group by list
@@ -199,13 +210,14 @@ def generate_query_by_keeping_granularity(
     # We build the group by query part
     group_by_query: str = ""
     on_query: str = ""
+    order_query: str = ""
     sub_select_query: str = ""
 
     for index, gb in enumerate(group_by):
-        # we create a subfield containing a fixed hash for the current column and the index
+        # we create a subfield containing a the alias name for the current column and the index
         sub_field = f"{gb.replace(')', '_').replace('(', '_')}_ALIAS_{index}"
 
-        # To handle aggregates AS cases
+        # To handle aggregates 'AS' cases
         for c in aggregate_on_cols_skip:
             if gb in c and " AS " in c:
                 sub_field = c.split(" AS ")[1]
@@ -217,8 +229,8 @@ def generate_query_by_keeping_granularity(
         # The ON query re-group
         # the sub on query
         sub_on_query = (
-                           "" if index == 0 else " AND "
-                       ) + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
+            "" if index == 0 else " AND "
+        ) + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
         # the sub group by query
         sub_group_by_query = ('GROUP BY ' if index == 0 else ', ') + sub_field
 
@@ -232,11 +244,13 @@ def generate_query_by_keeping_granularity(
         on_query += sub_on_query
         # The GROUP BY query
         group_by_query += sub_group_by_query
+        # The ORDER BY to keep element compact
+        order_query += ('ORDER BY ' if index == 0 else ', ') + sub_field
 
     return (
         f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete}"
         f" FROM {prev_step_name} {group_by_query}) {current_step_name}_ALIAS"
-        f" INNER JOIN {prev_step_name} {prev_step_name}_ALIAS ON ({on_query})"
+        f" INNER JOIN {prev_step_name} {prev_step_name}_ALIAS ON ({on_query}) {order_query} "
     )
 
 
@@ -250,15 +264,15 @@ def snowflake_date_format(input_format: str) -> str:
         None
         if input_format is None or input_format == ''
         else input_format.replace('"', '')
-            .replace("'", '')
-            .replace('%b', 'MON')
-            .replace('%B', 'MMMM')
-            .replace('%y', 'YYYY')
-            .replace('%Y', 'YYYY')
-            .replace('%M', 'MM')
-            .replace('%m', 'MM')
-            .replace('%D', 'DD')
-            .replace('%d', 'DD')
+        .replace("'", '')
+        .replace('%b', 'MON')
+        .replace('%B', 'MMMM')
+        .replace('%y', 'YYYY')
+        .replace('%Y', 'YYYY')
+        .replace('%M', 'MM')
+        .replace('%m', 'MM')
+        .replace('%D', 'DD')
+        .replace('%d', 'DD')
     )
     input_format = '' if input_format is None or input_format == '' else f", '{input_format}'"
 
@@ -339,15 +353,15 @@ def get_query_for_date_extract(
             "firstDayOfWeek": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
             "firstDayOfQuarter": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____)))",
             "firstDayOfIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____)) - DAYOFWEEKISO(to_timestamp("
-                                 "____target____)) + 1",
+            "____target____)) + 1",
             "previousDay": "to_timestamp(____target____) - interval '1 day'",
             "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
             "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
             "firstDayOfPreviousWeek": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO("
-                                      "to_timestamp(____target____)) + 1",
+            "to_timestamp(____target____)) + 1",
             "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
             "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - "
-                                         "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+            "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
             "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
             "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
             "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",

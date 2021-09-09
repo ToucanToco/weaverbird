@@ -2,7 +2,8 @@ from typing import Tuple
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     first_last_query_string_with_group_and_granularity,
-    generate_query_by_keeping_granularity, get_query_from_first_query,
+    generate_query_by_keeping_granularity,
+    get_query_from_first_query,
 )
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import AggregateStep
@@ -90,7 +91,7 @@ def build_first_or_last_aggregation(
                 f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
                 f" A INNER JOIN ({first_last_string}) F"
             )
-            
+
             if not step.keep_original_granularity:
                 # we fresh an concatenate the final first_last_string
                 query, query_string = get_query_from_first_query(
