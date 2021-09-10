@@ -8,7 +8,7 @@
     />
     <label>
       Please write you SQL query by referring to the result of the previous step. Refer to the
-      previous step using the ##PREVIOUS_STEP## keyword
+      previous step using the <b>##PREVIOUS_STEP##</b> keyword
     </label>
     <CodeEditorWidget
       v-model="editedStep.query"
@@ -24,7 +24,7 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import { CustomStep, PipelineStepName } from '@/lib/steps';
+import { CustomSqlStep, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
 
@@ -35,7 +35,7 @@ import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
   name: 'custom-sql-step-form',
   components: { CodeEditorWidget },
 })
-export default class CustomSqlStepForm extends BaseStepForm<CustomStep> {
+export default class CustomSqlStepForm extends BaseStepForm<CustomSqlStep> {
   stepname: PipelineStepName = 'customsql';
 
   @VQBModule.Getter translator!: string;
@@ -43,20 +43,16 @@ export default class CustomSqlStepForm extends BaseStepForm<CustomStep> {
     type: Object,
     default: () => ({ name: 'customsql', query: '' }),
   })
-  initialStepValue!: CustomStep;
+  initialStepValue!: CustomSqlStep;
 
   readonly title: string = 'Custom Sql step';
-  get name() {
-    return `Write a custom Sql query`;
-  }
 
   validate() {
     const errors = this.$$super.validate();
     if (errors !== null) {
       return errors;
     }
-    const translatorErrors = getTranslator(this.translator).validate({ ...this.editedStep });
-    return translatorErrors;
+    return getTranslator(this.translator).validate({ ...this.editedStep });
   }
 }
 </script>

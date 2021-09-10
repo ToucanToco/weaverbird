@@ -267,7 +267,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * validate the query written in a custom step
    * return null if no error
    */
-  validate(_customEditedStep: S.CustomStep): ValidationError[] | null {
+  validate(_customEditedStep: S.CustomStep | S.CustomSqlStep): ValidationError[] | null {
     return null;
   }
 }
