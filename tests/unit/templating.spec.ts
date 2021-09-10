@@ -263,6 +263,21 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
+  it('should interpolate a custom sql step query', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'customsql',
+        query: 'SELECT * FROM ##PREVIOUS_STEP## WHERE NAME = "<%= foo %>"}',
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'customsql',
+        query: 'SELECT * FROM ##PREVIOUS_STEP## WHERE NAME = "bar"}',
+      },
+    ]);
+  });
+
   it('interpolates the "text" parameter of text steps', () => {
     const step: Pipeline = [
       {
