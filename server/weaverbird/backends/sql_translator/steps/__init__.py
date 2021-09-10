@@ -5,7 +5,7 @@ from .aggregate import translate_aggregate
 from .append import translate_append
 from .concatenate import translate_concatenate
 from .convert import translate_convert
-from .custom import translate_custom
+from .customsql import translate_customsql
 from .dateextract import translate_dateextract
 from .delete import translate_delete
 from .fillna import translate_fillna
@@ -62,5 +62,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'split': translate_split,
     'substring': translate_substring,
     'fillna': translate_fillna,
-    'customsql': translate_custom,
+    'customsql': translate_customsql,
 }

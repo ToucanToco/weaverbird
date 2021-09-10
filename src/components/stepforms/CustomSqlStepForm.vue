@@ -39,7 +39,7 @@ export default class CustomSqlStepForm extends BaseStepForm<CustomSqlStep> {
 
   @Prop({
     type: Object,
-    default: () => ({ name: 'customsql', query: '' }),
+    default: () => ({ name: 'customsql', query: 'SELECT * FROM ##PREVIOUS_STEP##' }),
   })
   initialStepValue!: CustomSqlStep;
 

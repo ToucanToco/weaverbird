@@ -10,11 +10,11 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryExecutor,
     SQLQueryRetriever,
 )
-from weaverbird.pipeline.steps import CustomStep
+from weaverbird.pipeline.steps import CustomSqlStep
 
 
-def translate_custom(
-    step: CustomStep,
+def translate_customsql(
+    step: CustomSqlStep,
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
@@ -23,7 +23,7 @@ def translate_custom(
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
-    query_name = f'CUSTOM_STEP_{index}'
+    query_name = f'CUSTOMSQL_STEP_{index}'
 
     log.debug(
         '############################################################'
@@ -33,7 +33,9 @@ def translate_custom(
         f'query.transformed_query: {query.transformed_query}\n'
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
-    injected_query = step.query.replace('##PREVIOUS_STEP##', query.query_name).replace(';', '')
+    injected_query = (
+        step.query.replace('##PREVIOUS_STEP##', query.query_name).replace(';', '').strip()
+    )
     transformed_query = f"""{query.transformed_query}, {query_name} AS ({injected_query})"""
     query.metadata_manager.remove_query_metadata_all_columns()
     query.metadata_manager.add_query_metadata_columns(
