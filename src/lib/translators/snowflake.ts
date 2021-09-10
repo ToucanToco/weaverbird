@@ -134,8 +134,10 @@ export class SnowflakeTranslator extends BaseTranslator {
 
   validate(customEditedStep: S.CustomSqlStep): ValidationError[] | null {
     try {
-      if (!customEditedStep.query.toLowerCase().includes('select')) {
-        throw new Error('Invalid Query');
+      if (!customEditedStep.query.toLowerCase().includes('select')
+        && !customEditedStep.query.toLowerCase().includes('##previous_step##')
+        ) {
+        throw new Error('Invalid Query: should use SELECT and ##PREVIOUS_STEP## keywords');
       } else {
         return null;
       }
