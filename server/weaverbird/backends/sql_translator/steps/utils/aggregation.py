@@ -9,25 +9,24 @@ from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import AggregateStep
 
 
-def get_first_last_cols_from_aggregate(step: AggregateStep) -> Tuple[list, list]:
+def get_first_last_cols_from_aggregate(step: AggregateStep) -> Tuple[list, list, list]:
     """
     This small method will return the first_cols and last_cols depending on the aggregation type
 
     """
-    first_cols, last_cols = [], []
-    for aggregation in [
-        aggregation
-        for aggregation in step.aggregations
-        if aggregation.agg_function in ['first', 'last']
-    ]:
+    first_cols, last_cols, aggregate_cols = [], [], []
+    for aggregation in step.aggregations:
         # we loop to construct our first/last columns
         for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-            if aggregation.agg_function == 'first':
-                first_cols.append((col, new_col))
+            if aggregation.agg_function in ['first', 'last']:
+                if aggregation.agg_function == 'first':
+                    first_cols.append((col, new_col))
+                else:
+                    last_cols.append((col, new_col))
             else:
-                last_cols.append((col, new_col))
+                aggregate_cols.append((col, new_col))
 
-    return first_cols, last_cols
+    return first_cols, last_cols, aggregate_cols
 
 
 def build_first_or_last_aggregation(
@@ -43,7 +42,13 @@ def build_first_or_last_aggregation(
     step: the aggregate step
     """
     # extract first-last cols
-    first_cols, last_cols = get_first_last_cols_from_aggregate(step)
+    first_cols, last_cols, aggregate_cols = get_first_last_cols_from_aggregate(step)
+
+    # we add metadata columns
+    [
+        query.metadata_manager.add_query_metadata_column(new_col, "float")
+        for (col, new_col) in last_cols + first_cols
+    ]
 
     # first agreggate
     if len(first_cols) and not len(last_cols):
@@ -70,19 +75,13 @@ def build_first_or_last_aggregation(
         )
 
     if len(aggregated_string) and len(first_last_string):
-        # we add metadata columns
-        [
-            query.metadata_manager.add_query_metadata_column(new_col, "float")
-            for (col, new_col) in last_cols + first_cols
-        ]
-
         if len(step.on):
             query_string = (
                 f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
                 f" A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])}"
             )
             if not step.keep_original_granularity:
-                # we fresh an concatenate the final first_last_string
+                # we fresh the query and concatenate the previous query string
                 query, query_string = get_query_from_first_query(
                     query, [f'{c[1]}' for c in last_cols + first_cols], query_string, False
                 )
@@ -93,15 +92,41 @@ def build_first_or_last_aggregation(
             )
 
             if not step.keep_original_granularity:
-                # we fresh an concatenate the final first_last_string
+                # we fresh the query and concatenate the previous query string
                 query, query_string = get_query_from_first_query(
                     query, [f'{c[1]}' for c in last_cols + first_cols], query_string, False
                 )
 
     elif len(aggregated_string):
         query_string = aggregated_string
+
+        if not step.keep_original_granularity:
+            if len(step.on):
+                print("aggregate_cols + step.on: ", aggregate_cols + step.on)
+                # we fresh the query and concatenate the previous query string
+                query, query_string = get_query_from_first_query(
+                    query, [f'{c[1]}' for c in aggregate_cols] + step.on, query_string, False
+                )
+            else:
+                # we fresh the query and concatenate the previous query string
+                query, query_string = get_query_from_first_query(
+                    query, [f'{c[1]}' for c in aggregate_cols], query_string, False
+                )
     else:
         query_string = first_last_string
+
+        if not step.keep_original_granularity:
+            if len(step.on):
+                # we fresh the query and concatenate the previous query string
+                query, query_string = get_query_from_first_query(
+                    query, [f'{c[1]}' for c in aggregate_cols] + step.on, query_string, False
+                )
+            else:
+                # we fresh the query and concatenate the previous query string
+                query, query_string = get_query_from_first_query(
+                    query, [f'{c[1]}' for c in aggregate_cols], query_string, False
+                )
+
     return query, query_string
 
 

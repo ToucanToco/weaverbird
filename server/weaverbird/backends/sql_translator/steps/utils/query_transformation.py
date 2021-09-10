@@ -99,12 +99,6 @@ def first_last_query_string_with_group_and_granularity(
     scope_cols: he scope of our process, for example: firsts_cols or lasts_cols...
     """
 
-    # we add metadata columns
-    [
-        query.metadata_manager.add_query_metadata_column(new_col, "float")
-        for (col, new_col) in scope_cols
-    ]
-
     if len(step.on):
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
@@ -118,7 +112,8 @@ def first_last_query_string_with_group_and_granularity(
         else:
             # the difference on the  if col != new_col after the loop
             end_query = (
-                f"SELECT *, {', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])}"
+                f"SELECT *,"
+                f"{', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])}"
                 f" OVER (PARTITION BY {', '.join(step.on)}"
                 f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
@@ -131,13 +126,16 @@ def first_last_query_string_with_group_and_granularity(
         # we should remove unnecessary columns
         if step.keep_original_granularity:
             end_query = (
-                f"SELECT *,{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols] + ['ROW_NUMBER()'])} OVER ("
+                f"SELECT *,"
+                f"{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols] + ['ROW_NUMBER()'])}"
+                "OVER ("
                 f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
             final_end_query_string = f"(SELECT * FROM ({end_query})"
         else:
             end_query = (
-                f"SELECT *,{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])} OVER ("
+                f"SELECT *,"
+                f"{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])} OVER ("
                 f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
             # we fresh an concatenate the final first_last_string
@@ -210,7 +208,6 @@ def generate_query_by_keeping_granularity(
     # We build the group by query part
     group_by_query: str = ""
     on_query: str = ""
-    order_query: str = ""
     sub_select_query: str = ""
 
     for index, gb in enumerate(group_by):
@@ -244,13 +241,11 @@ def generate_query_by_keeping_granularity(
         on_query += sub_on_query
         # The GROUP BY query
         group_by_query += sub_group_by_query
-        # The ORDER BY to keep element compact
-        order_query += ('ORDER BY ' if index == 0 else ', ') + sub_field
 
     return (
         f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete}"
         f" FROM {prev_step_name} {group_by_query}) {current_step_name}_ALIAS"
-        f" INNER JOIN {prev_step_name} {prev_step_name}_ALIAS ON ({on_query}) {order_query} "
+        f" INNER JOIN {prev_step_name} {prev_step_name}_ALIAS ON ({on_query})"
     )
 
 
