@@ -6,8 +6,7 @@
  * */
 
 import * as S from '@/lib/steps';
-
-import { BaseTranslator } from './base';
+import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 
 /* istanbul ignore next */
 export class SnowflakeTranslator extends BaseTranslator {
@@ -131,5 +130,23 @@ export class SnowflakeTranslator extends BaseTranslator {
 
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
+  }
+
+  validate(customEditedStep: S.CustomSqlStep): ValidationError[] | null {
+    try {
+      if (!customEditedStep.query.toLowerCase().includes('select')) {
+        throw new Error('Invalid Query');
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return [
+        {
+          keyword: 'sql',
+          dataPath: '.query',
+          message: e.message,
+        },
+      ];
+    }
   }
 }

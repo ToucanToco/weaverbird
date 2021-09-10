@@ -8,7 +8,7 @@
     />
     <label>
       Please write you SQL query by referring to the result of the previous step. Refer to the
-      previous step using the <b>##PREVIOUS_STEP##</b> keyword
+      previous step using the <strong>##PREVIOUS_STEP##</strong> keyword
     </label>
     <CodeEditorWidget
       v-model="editedStep.query"
@@ -26,7 +26,6 @@ import { Prop } from 'vue-property-decorator';
 
 import { CustomSqlStep, PipelineStepName } from '@/lib/steps';
 import { getTranslator } from '@/lib/translators';
-import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
 import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
@@ -38,7 +37,6 @@ import CodeEditorWidget from './widgets/CodeEditorWidget.vue';
 export default class CustomSqlStepForm extends BaseStepForm<CustomSqlStep> {
   stepname: PipelineStepName = 'customsql';
 
-  @VQBModule.Getter translator!: string;
   @Prop({
     type: Object,
     default: () => ({ name: 'customsql', query: '' }),
@@ -52,7 +50,7 @@ export default class CustomSqlStepForm extends BaseStepForm<CustomSqlStep> {
     if (errors !== null) {
       return errors;
     }
-    return getTranslator(this.translator).validate({ ...this.editedStep });
+    return getTranslator('snowflake').validate({ ...this.editedStep });
   }
 }
 </script>
