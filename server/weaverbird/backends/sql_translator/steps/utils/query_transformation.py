@@ -175,12 +175,12 @@ def get_query_from_first_query(
 
 
 def generate_query_by_keeping_granularity(
+    query: SQLQuery,
     group_by: list,
-    prev_step_name: str,
     current_step_name: str,
     query_to_complete: str = "",
-    aggregate_on_cols_skip=None,
-) -> str:
+    aggregated_cols=None
+) -> Tuple[SQLQuery, str]:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
     all our precedents columns, this method will do that operation but with an innerjoin on the precedent dataset
@@ -201,51 +201,56 @@ def generate_query_by_keeping_granularity(
     prev_step_name: the previous step name (usually query.query_name)
     current_step_name: the current step name (usually query_name)
     """
-    # in case it's None it should be an empty array
-    if aggregate_on_cols_skip is None:
-        aggregate_on_cols_skip = []
-
     # We build the group by query part
+    if aggregated_cols is None:
+        aggregated_cols = []
+
     group_by_query: str = ""
     on_query: str = ""
     sub_select_query: str = ""
 
     for index, gb in enumerate(group_by):
         # we create a subfield containing a the alias name for the current column and the index
-        sub_field = f"{gb.replace(')', '_').replace('(', '_')}_ALIAS_{index}"
-
-        # To handle aggregates 'AS' cases
-        for c in aggregate_on_cols_skip:
-            if gb in c and " AS " in c:
-                sub_field = c.split(" AS ")[1]
-                break
+        sub_field = f"{gb}_ALIAS_{index}"
 
         # The sub select query
         sub_select_query += ("" if index == 0 else ", ") + f"{gb} AS {sub_field}"
 
         # The ON query re-group
-        # the sub on query
-        sub_on_query = (
+        on_query += (
             "" if index == 0 else " AND "
-        ) + f"({sub_field} = {prev_step_name}_ALIAS.{gb})"
-        # the sub group by query
-        sub_group_by_query = ('GROUP BY ' if index == 0 else ', ') + sub_field
+        ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
 
-        # To handle aggregates AS cases
-        for c in aggregate_on_cols_skip:
-            if gb in c and " AS " in c:
-                sub_on_query, sub_group_by_query = "", ""
-                break
-
-        # The ON query
-        on_query += sub_on_query
         # The GROUP BY query
-        group_by_query += sub_group_by_query
+        group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
 
-    return (
+    to_add_on_metadata: list = []
+    for index, ag in enumerate(aggregated_cols):
+        # the aggregate as word
+        as_ag = ag.split(" AS ")[1]
+        # just to fix some missing suffixes
+        if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
+            as_ag += "_SUM"
+        if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
+            as_ag += "_AVG"
+        if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
+            as_ag += "_COUNT"
+        # we apend to the array of metadata
+        to_add_on_metadata.append(as_ag)
+
+        # The sub select query
+        sub_select_query += ("" if index == 0 else ", ") + f"{ag.split(' AS ')[0]} AS {as_ag}"
+
+    # We add all metadatas that nee to be add to the query
+    [
+        query.metadata_manager.add_query_metadata_column(col, "float")
+        for col in to_add_on_metadata
+    ]
+
+    return query, (
         f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete}"
-        f" FROM {prev_step_name} {group_by_query}) {current_step_name}_ALIAS"
-        f" INNER JOIN {prev_step_name} {prev_step_name}_ALIAS ON ({on_query})"
+        f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
+        f" INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
     )
 
 

@@ -169,22 +169,15 @@ def prepare_aggregation_query(
                         print(es)
 
     if len(step.on) and len(aggregated_cols):
-        # aliases of aggregate columns
-        as_ag_columns = [cls.split(" AS ")[0] for cls in aggregated_cols]
+
         # we generate the query by keeping granularity
         aggregated_string = generate_query_by_keeping_granularity(
-            group_by=step.on + as_ag_columns,
-            prev_step_name=query.query_name,
-            current_step_name=query_name,
-            aggregate_on_cols_skip=aggregated_cols + step.on,
+            query=query,
+            group_by=step.on,
+            aggregated_cols=aggregated_cols,
+            current_step_name=query_name
         )
 
-        # We add some metadata
-        [
-            query.metadata_manager.add_query_metadata_column(cls.split(" AS ")[1], "float")
-            for cls in aggregated_cols
-            if " AS " in cls
-        ]
     elif len(aggregated_cols):
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name}"
     return query, aggregated_string

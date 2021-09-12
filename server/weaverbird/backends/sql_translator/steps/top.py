@@ -45,11 +45,12 @@ def translate_top(
     final_query: str = ""
     if len(step.groups) > 0:
         step.groups.append(step.rank_on)
+        query, query_with_granularity = generate_query_by_keeping_granularity(
+            query=query, group_by=step.groups, current_step_name=query_name
+        )
         # We build the group by query part
         final_query = (
-            generate_query_by_keeping_granularity(
-                group_by=step.groups, prev_step_name=query.query_name, current_step_name=query_name
-            )
+            query_with_granularity
             + f""" ORDER BY {query.query_name}_ALIAS.{step.rank_on} {step.sort} LIMIT {step.limit})"""
         )
     else:
