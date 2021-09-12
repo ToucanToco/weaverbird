@@ -102,7 +102,6 @@ def build_first_or_last_aggregation(
 
         if not step.keep_original_granularity:
             if len(step.on):
-                print("aggregate_cols + step.on: ", aggregate_cols + step.on)
                 # we fresh the query and concatenate the previous query string
                 query, query_string = get_query_from_first_query(
                     query, [f'{c[1]}' for c in aggregate_cols] + step.on, query_string, False

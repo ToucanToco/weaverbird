@@ -46,6 +46,11 @@
         "CITY": "toulouse"
       },
       {
+        "NAME": "florentinio",
+        "AGE": 0,
+        "CITY": "paris"
+      },
+      {
         "NAME": "alice",
         "AGE": 9,
         "CITY": "trasbourg"
