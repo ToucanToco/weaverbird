@@ -45,8 +45,11 @@ def translate_top(
     final_query: str = ""
     if len(step.groups) > 0:
         step.groups.append(step.rank_on)
-        query, query_with_granularity = generate_query_by_keeping_granularity(
-            query=query, group_by=step.groups, current_step_name=query_name
+        query, query_with_granularity, _ = generate_query_by_keeping_granularity(
+            query=query,
+            group_by=step.groups,
+            current_step_name=query_name,
+            group_by_except_target_columns=[step.rank_on]
         )
         # We build the group by query part
         final_query = (

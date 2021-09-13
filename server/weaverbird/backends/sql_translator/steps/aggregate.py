@@ -30,11 +30,12 @@ def translate_aggregate(
     aggregated_cols = []
     aggregated_string = ''
     first_last_string = ''
-    query, aggregated_string = prepare_aggregation_query(
+    query, aggregated_string, new_as_columns = prepare_aggregation_query(
         query_name, aggregated_cols, aggregated_string, query, step
     )
+
     query, query_string = build_first_or_last_aggregation(
-        aggregated_string, first_last_string, query, step
+        aggregated_string, first_last_string, query, step, new_as_columns
     )
 
     new_query = SQLQuery(

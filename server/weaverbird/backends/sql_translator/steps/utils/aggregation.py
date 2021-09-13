@@ -3,7 +3,7 @@ from typing import Tuple
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     first_last_query_string_with_group_and_granularity,
     generate_query_by_keeping_granularity,
-    get_query_from_first_query,
+    remove_metadatas_columns_from_query,
 )
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import AggregateStep
@@ -30,7 +30,7 @@ def get_first_last_cols_from_aggregate(step: AggregateStep) -> Tuple[list, list,
 
 
 def build_first_or_last_aggregation(
-    aggregated_string: str, first_last_string: str, query: SQLQuery, step: AggregateStep
+    aggregated_string: str, first_last_string: str, query: SQLQuery, step: AggregateStep, new_as_columns=None
 ) -> Tuple[SQLQuery, str]:
     """
     This method will help us build the first-last aggregation query
@@ -42,6 +42,9 @@ def build_first_or_last_aggregation(
     step: the aggregate step
     """
     # extract first-last cols
+    if new_as_columns is None:
+        new_as_columns = []
+
     first_cols, last_cols, aggregate_cols = get_first_last_cols_from_aggregate(step)
 
     # we add metadata columns
@@ -77,54 +80,37 @@ def build_first_or_last_aggregation(
     if len(aggregated_string) and len(first_last_string):
         if len(step.on):
             query_string = (
-                f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
-                f" A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])}"
+                f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
+                f" A INNER JOIN {first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])})"
             )
-            if not step.keep_original_granularity:
-                # we fresh the query and concatenate the previous query string
-                query, query_string = get_query_from_first_query(
-                    query, [f'{c[1]}' for c in last_cols + first_cols], query_string, False
-                )
         else:
             query_string = (
-                f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
-                f" A INNER JOIN ({first_last_string}) F"
+                f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
+                f" A INNER JOIN {first_last_string}) F)"
             )
 
-            if not step.keep_original_granularity:
-                # we fresh the query and concatenate the previous query string
-                query, query_string = get_query_from_first_query(
-                    query, [f'{c[1]}' for c in last_cols + first_cols], query_string, False
-                )
+        if not step.keep_original_granularity:
+            # we fresh the query and concatenate the previous query string
+            query, query_string = remove_metadatas_columns_from_query(
+                query, [f'{c[1]}' for c in last_cols + first_cols] + step.on + new_as_columns, query_string, False
+            )
 
     elif len(aggregated_string):
         query_string = aggregated_string
 
         if not step.keep_original_granularity:
-            if len(step.on):
-                # we fresh the query and concatenate the previous query string
-                query, query_string = get_query_from_first_query(
-                    query, [f'{c[1]}' for c in aggregate_cols] + step.on, query_string, False
-                )
-            else:
-                # we fresh the query and concatenate the previous query string
-                query, query_string = get_query_from_first_query(
-                    query, [f'{c[1]}' for c in aggregate_cols], query_string, False
-                )
+            # we fresh the query and concatenate the previous query string
+            query, query_string = remove_metadatas_columns_from_query(
+                query, step.on + new_as_columns, query_string, False
+            )
     else:
         query_string = first_last_string
 
         if not step.keep_original_granularity:
-            if len(step.on):
-                # we fresh the query and concatenate the previous query string
-                query, query_string = get_query_from_first_query(
-                    query, [f'{c[1]}' for c in aggregate_cols] + step.on, query_string, False
-                )
-            else:
-                # we fresh the query and concatenate the previous query string
-                query, query_string = get_query_from_first_query(
-                    query, [f'{c[1]}' for c in aggregate_cols], query_string, False
-                )
+            # we fresh the query and concatenate the previous query string
+            query, query_string = remove_metadatas_columns_from_query(
+                query, step.on + new_as_columns, query_string, False
+            )
 
     return query, query_string
 
@@ -135,7 +121,9 @@ def prepare_aggregation_query(
     aggregated_string: str,
     query: SQLQuery,
     step: AggregateStep,
-) -> Tuple[SQLQuery, str]:
+) -> Tuple[SQLQuery, str, list]:
+    new_as_columns: list = []
+
     for agg in step.aggregations:  # TODO the front should restrict - usage in column names
         agg.new_columns = [x.replace('-', '_').replace(' ', '_') for x in agg.new_columns]
 
@@ -171,7 +159,8 @@ def prepare_aggregation_query(
     if len(step.on) and len(aggregated_cols):
 
         # we generate the query by keeping granularity
-        aggregated_string = generate_query_by_keeping_granularity(
+        # and update the query metadatas for new as columns
+        query, aggregated_string, new_as_columns = generate_query_by_keeping_granularity(
             query=query,
             group_by=step.on,
             aggregated_cols=aggregated_cols,
@@ -180,4 +169,4 @@ def prepare_aggregation_query(
 
     elif len(aggregated_cols):
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name}"
-    return query, aggregated_string
+    return query, aggregated_string, new_as_columns

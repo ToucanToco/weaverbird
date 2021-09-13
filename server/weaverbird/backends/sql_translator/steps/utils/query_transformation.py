@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Union
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -118,7 +118,7 @@ def first_last_query_string_with_group_and_granularity(
                 f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
             # we fresh an concatenate the final first_last_string
-            query, final_end_query_string = get_query_from_first_query(
+            query, final_end_query_string = remove_metadatas_columns_from_query(
                 query, [f'{c[1]}' for c in scope_cols] + step.on, end_query
             )
     else:
@@ -139,14 +139,14 @@ def first_last_query_string_with_group_and_granularity(
                 f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
             # we fresh an concatenate the final first_last_string
-            query, final_end_query_string = get_query_from_first_query(
+            query, final_end_query_string = remove_metadatas_columns_from_query(
                 query, [f'{c[1]}' for c in scope_cols], end_query
             )
 
     return query, final_end_query_string
 
 
-def get_query_from_first_query(
+def remove_metadatas_columns_from_query(
     query: SQLQuery, array_cols: list, first_last_string: str, first_or_last_aggregate: bool = True
 ) -> Tuple[SQLQuery, str]:
     """
@@ -179,8 +179,9 @@ def generate_query_by_keeping_granularity(
     group_by: list,
     current_step_name: str,
     query_to_complete: str = "",
-    aggregated_cols=None
-) -> Tuple[SQLQuery, str]:
+    aggregated_cols=None,
+    group_by_except_target_columns=None
+) -> Tuple[SQLQuery, str, list]:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
     all our precedents columns, this method will do that operation but with an innerjoin on the precedent dataset
@@ -200,8 +201,12 @@ def generate_query_by_keeping_granularity(
     group_by: the group by list
     prev_step_name: the previous step name (usually query.query_name)
     current_step_name: the current step name (usually query_name)
+
+    it's supposed to return :
     """
     # We build the group by query part
+    if group_by_except_target_columns is None:
+        group_by_except_target_columns = []
     if aggregated_cols is None:
         aggregated_cols = []
 
@@ -224,34 +229,33 @@ def generate_query_by_keeping_granularity(
         # The GROUP BY query
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
 
-    to_add_on_metadata: list = []
+    new_as_columns: list = []
     for index, ag in enumerate(aggregated_cols):
         # the aggregate as word
         as_ag = ag.split(" AS ")[1]
+
         # just to fix some missing suffixes
+        # ex: SUM(TIME) AS TIME
         if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
             as_ag += "_SUM"
         if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
             as_ag += "_AVG"
         if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
             as_ag += "_COUNT"
-        # we apend to the array of metadata
-        to_add_on_metadata.append(as_ag)
+
+        new_as_columns.append(as_ag)
 
         # The sub select query
-        sub_select_query += ("" if index == 0 else ", ") + f"{ag.split(' AS ')[0]} AS {as_ag}"
+        sub_select_query += f", {ag.split(' AS ')[0]} AS {as_ag}"
 
-    # We add all metadatas that nee to be add to the query
-    [
-        query.metadata_manager.add_query_metadata_column(col, "float")
-        for col in to_add_on_metadata
-    ]
+        # we apend to the array of metadata
+        query.metadata_manager.add_query_metadata_column(as_ag, "float")
 
     return query, (
-        f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete}"
-        f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
-        f" INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
-    )
+        f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete} "
+        f"FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS "
+        f"INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
+    ), new_as_columns
 
 
 def snowflake_date_format(input_format: str) -> str:
