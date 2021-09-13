@@ -230,26 +230,26 @@ def generate_query_by_keeping_granularity(
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
     #
     new_as_columns: list = []
-    # for index, ag in enumerate(aggregated_cols):
-    #     # the aggregate as word
-    #     as_ag = ag.split(" AS ")[1]
-    #
-    #     # just to fix some missing suffixes
-    #     # ex: SUM(TIME) AS TIME
-    #     if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
-    #         as_ag += "_SUM"
-    #     if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
-    #         as_ag += "_AVG"
-    #     if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
-    #         as_ag += "_COUNT"
-    #
-    #     new_as_columns.append(as_ag)
-    #
-    #     # The sub select query
-    #     sub_select_query += f", {ag.split(' AS ')[0]} AS {as_ag}"
-    #
-    #     # we apend to the array of metadata
-    #     query.metadata_manager.add_query_metadata_column(as_ag, "float")
+    for index, ag in enumerate(aggregated_cols):
+        # the aggregate as word
+        as_ag = ag.split(" AS ")[1]
+
+        # just to fix some missing suffixes
+        # ex: SUM(TIME) AS TIME
+        if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
+            as_ag += "_SUM"
+        if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
+            as_ag += "_AVG"
+        if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
+            as_ag += "_COUNT"
+
+        new_as_columns.append(as_ag)
+
+        # The sub select query
+        sub_select_query += f", {ag.split(' AS ')[0]} AS {as_ag}"
+
+        # we apend to the array of metadata
+        query.metadata_manager.add_query_metadata_column(as_ag, "float")
 
     return query, (
         f"(SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
