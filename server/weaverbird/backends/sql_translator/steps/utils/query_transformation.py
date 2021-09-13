@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -180,7 +180,7 @@ def generate_query_by_keeping_granularity(
     current_step_name: str,
     query_to_complete: str = "",
     aggregated_cols=None,
-    group_by_except_target_columns=None
+    group_by_except_target_columns=None,
 ) -> Tuple[SQLQuery, str, list]:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
@@ -223,8 +223,8 @@ def generate_query_by_keeping_granularity(
 
         # The ON query re-group
         on_query += (
-                        "" if index == 0 else " AND "
-                    ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
+            "" if index == 0 else " AND "
+        ) + f"({sub_field} = {query.query_name}_ALIAS.{gb})"
 
         # The GROUP BY query
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
@@ -251,11 +251,15 @@ def generate_query_by_keeping_granularity(
         # we apend to the array of metadata
         query.metadata_manager.add_query_metadata_column(as_ag, "float")
 
-    return query, (
-        f"(SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
-        f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
-        f" INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
-    ), new_as_columns
+    return (
+        query,
+        (
+            f"(SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
+            f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
+            f" INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
+        ),
+        new_as_columns,
+    )
 
 
 def snowflake_date_format(input_format: str) -> str:
@@ -268,15 +272,15 @@ def snowflake_date_format(input_format: str) -> str:
         None
         if input_format is None or input_format == ''
         else input_format.replace('"', '')
-            .replace("'", '')
-            .replace('%b', 'MON')
-            .replace('%B', 'MMMM')
-            .replace('%y', 'YYYY')
-            .replace('%Y', 'YYYY')
-            .replace('%M', 'MM')
-            .replace('%m', 'MM')
-            .replace('%D', 'DD')
-            .replace('%d', 'DD')
+        .replace("'", '')
+        .replace('%b', 'MON')
+        .replace('%B', 'MMMM')
+        .replace('%y', 'YYYY')
+        .replace('%Y', 'YYYY')
+        .replace('%M', 'MM')
+        .replace('%m', 'MM')
+        .replace('%D', 'DD')
+        .replace('%d', 'DD')
     )
     input_format = '' if input_format is None or input_format == '' else f", '{input_format}'"
 
@@ -357,15 +361,15 @@ def get_query_for_date_extract(
             "firstDayOfWeek": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
             "firstDayOfQuarter": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____)))",
             "firstDayOfIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____)) - DAYOFWEEKISO(to_timestamp("
-                                 "____target____)) + 1",
+            "____target____)) + 1",
             "previousDay": "to_timestamp(____target____) - interval '1 day'",
             "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
             "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
             "firstDayOfPreviousWeek": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO("
-                                      "to_timestamp(____target____)) + 1",
+            "to_timestamp(____target____)) + 1",
             "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
             "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - "
-                                         "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+            "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
             "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
             "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
             "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",

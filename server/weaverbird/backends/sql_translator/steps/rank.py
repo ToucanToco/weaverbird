@@ -48,10 +48,10 @@ def translate_rank(
         step.groupby.append(step.value_col)
 
         query, granularity_query, _ = generate_query_by_keeping_granularity(
-                query=query,
-                group_by=step.groupby,
-                current_step_name=query_name,
-                query_to_complete=rank_query,
+            query=query,
+            group_by=step.groupby,
+            current_step_name=query_name,
+            query_to_complete=rank_query,
         )
 
         # We build the group by query part

@@ -30,7 +30,11 @@ def get_first_last_cols_from_aggregate(step: AggregateStep) -> Tuple[list, list,
 
 
 def build_first_or_last_aggregation(
-    aggregated_string: str, first_last_string: str, query: SQLQuery, step: AggregateStep, new_as_columns=None
+    aggregated_string: str,
+    first_last_string: str,
+    query: SQLQuery,
+    step: AggregateStep,
+    new_as_columns=None,
 ) -> Tuple[SQLQuery, str]:
     """
     This method will help us build the first-last aggregation query
@@ -92,7 +96,10 @@ def build_first_or_last_aggregation(
         if not step.keep_original_granularity:
             # we fresh the query and concatenate the previous query string
             query, query_string = remove_metadatas_columns_from_query(
-                query, [f'{c[1]}' for c in last_cols + first_cols] + step.on + new_as_columns, query_string, False
+                query,
+                [f'{c[1]}' for c in last_cols + first_cols] + step.on + new_as_columns,
+                query_string,
+                False,
             )
 
     elif len(aggregated_string):
@@ -164,7 +171,7 @@ def prepare_aggregation_query(
             query=query,
             group_by=step.on,
             aggregated_cols=aggregated_cols,
-            current_step_name=query_name
+            current_step_name=query_name,
         )
 
     elif len(aggregated_cols):
