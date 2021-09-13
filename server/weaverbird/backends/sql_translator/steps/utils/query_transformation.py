@@ -256,7 +256,9 @@ def generate_query_by_keeping_granularity(
         (
             f"(SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
             f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
-            f" INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
+            f" INNER JOIN (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS TO_REMOVE_{current_step_name}"
+            f" FROM {query.query_name})"
+            f" {query.query_name}_ALIAS ON ({on_query}) ORDER BY TO_REMOVE_{current_step_name}"
         ),
         new_as_columns,
     )

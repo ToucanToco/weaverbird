@@ -40,7 +40,7 @@ def translate_aggregate(
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f'{query.transformed_query}, {query_name} AS ({query_string})',
+        transformed_query=f'{query.transformed_query}, {query_name} AS {query_string})',
     )
 
     new_query.metadata_manager = query.metadata_manager
