@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    generate_query_by_keeping_granularity,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -42,29 +41,31 @@ def translate_top(
     # fields to complete the query
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
-    final_query: str = ""
     if len(step.groups) > 0:
-        step.groups.append(step.rank_on)
-        query, query_with_granularity, _ = generate_query_by_keeping_granularity(
-            query=query,
-            group_by=step.groups,
-            current_step_name=query_name,
-            group_by_except_target_columns=[step.rank_on],
-        )
+        # query, query_with_granularity, _ = generate_query_by_keeping_granularity(
+        #     query=query,
+        #     group_by=step.groups,
+        #     current_step_name=query_name,
+        #     group_by_except_target_columns=[step.rank_on],
+        # )
+        #
+        # TOP_STEP_1 AS (
+        #   SELECT * FROM (
+        #     SELECT * FROM SELECT_STEP_0 qualify ROW_NUMBER() OVER (PARTITION BY LOCATION, INDICATOR ORDER BY VALUE_ DESC) <= 4
+        #   ) TOP_STEP_1_ALIAS  ORDER BY LOCATION, INDICATOR
+        final_query = f"""SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() \
+OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) {query_name}_ALIAS \
+ORDER BY {', '.join(step.groups)}"""
         # We build the group by query part
-        final_query = (
-            query_with_granularity
-            + f""" ORDER BY {query.query_name}_ALIAS.{step.rank_on} {step.sort} LIMIT {step.limit})"""
-        )
     else:
         final_query = (
-            f""" (SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"""
-            f""" {step.sort} LIMIT {step.limit})"""
+            f"""SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"""
+            f""" {step.sort} LIMIT {step.limit}"""
         )
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS {final_query}""",
+        transformed_query=f"""{query.transformed_query}, {query_name} AS ({final_query})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
