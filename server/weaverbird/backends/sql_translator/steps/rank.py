@@ -41,21 +41,24 @@ def translate_rank(
 
     # the rank query
     rank_query: str = ""
+    order_by_query: str = ""
     if len(step.groupby) > 0:
         rank_query = (
             f", ({rank_mode} OVER (PARTITION BY {', '.join(step.groupby)} "
             f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
+        order_by_query = f"ORDER BY {step.new_column_name}, {', '.join(step.groupby)}"
     else:
         rank_query = (
             f", ({rank_mode} OVER ("
             f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
+        order_by_query = f"ORDER BY {step.new_column_name}"
 
     final_query = (
         f" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"
         f"{rank_query}"
-        f" FROM {query.query_name} ORDER BY {step.new_column_name})"
+        f" FROM {query.query_name} {order_by_query})"
     )
 
     # we add the column to the metadata
