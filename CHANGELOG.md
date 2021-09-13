@@ -2,6 +2,10 @@
 
 ### [0.60.5] - 2021-09-08
 
+### Changed
+
+- Now using SVG FontAwesome icons for better embedded (web component) support
+
 ### Added
 
 - SQL VQB [Snowflake]: Rank step
