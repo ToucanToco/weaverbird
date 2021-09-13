@@ -29,11 +29,7 @@ def translate_top(
         '############################################################'
         f'query_name: {query_name}\n'
         '------------------------------------------------------------'
-        f'step.name: {step.name}\n'
-        f'step.groups: {step.groups}\n'
-        f'step.rank_on: {step.rank_on}\n'
-        f'step.sort: {step.sort}\n'
-        f'step.limit: {step.limit}\n'
+        f'step: {step}\n'
         f'query.transformed_query: {query.transformed_query}\n'
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
@@ -42,21 +38,11 @@ def translate_top(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     if len(step.groups) > 0:
-        # query, query_with_granularity, _ = generate_query_by_keeping_granularity(
-        #     query=query,
-        #     group_by=step.groups,
-        #     current_step_name=query_name,
-        #     group_by_except_target_columns=[step.rank_on],
-        # )
-        #
-        # TOP_STEP_1 AS (
-        #   SELECT * FROM (
-        #     SELECT * FROM SELECT_STEP_0 qualify ROW_NUMBER() OVER (PARTITION BY LOCATION, INDICATOR ORDER BY VALUE_ DESC) <= 4
-        #   ) TOP_STEP_1_ALIAS  ORDER BY LOCATION, INDICATOR
-        final_query = f"""SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() \
-OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) {query_name}_ALIAS \
-ORDER BY {', '.join(step.groups)}"""
-        # We build the group by query part
+        final_query = (
+            f"SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() "
+            f"OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) "
+            f"{query_name}_ALIAS ORDER BY {', '.join(step.groups)}"
+        )
     else:
         final_query = (
             f"""SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"""

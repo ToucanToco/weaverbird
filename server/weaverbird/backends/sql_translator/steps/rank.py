@@ -2,7 +2,6 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    generate_query_by_keeping_granularity,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -40,29 +39,24 @@ def translate_rank(
         f"{step.value_col}_RANK" if step.new_column_name is None else step.new_column_name
     )
 
-    final_query: str = ""
+    rank_query: str = ""
     if len(step.groupby) > 0:
         # the rank query
-        rank_query = f""", ({rank_mode} OVER (PARTITION BY {', '.join(step.groupby)}\
- ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
-        step.groupby.append(step.value_col)
-
-        query, granularity_query, _ = generate_query_by_keeping_granularity(
-            query=query,
-            group_by=step.groupby,
-            current_step_name=query_name,
-            query_to_complete=rank_query,
+        rank_query = (
+            f", ({rank_mode} OVER (PARTITION BY {', '.join(step.groupby)} "
+            f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
-
-        # We build the group by query part
-        final_query = f"""{granularity_query} ORDER BY {step.new_column_name})"""
     else:
-        final_query = (
-            f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
-            f""", ({rank_mode} OVER ("""
-            f"""ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
-            f""" FROM {query.query_name} ORDER BY {step.new_column_name})"""
+        rank_query = (
+            f", ({rank_mode} OVER ("
+            f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
+
+    final_query = (
+        f" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"
+        f"{rank_query}"
+        f" FROM {query.query_name} ORDER BY {step.new_column_name})"
+    )
 
     # we add the column to the metadata
     query.metadata_manager.add_query_metadata_column(step.new_column_name, 'int')
