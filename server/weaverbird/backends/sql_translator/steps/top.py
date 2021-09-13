@@ -45,13 +45,13 @@ def translate_top(
         )
     else:
         final_query = (
-            f"""SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"""
-            f""" {step.sort} LIMIT {step.limit}"""
+            f"SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"
+            f" {step.sort} LIMIT {step.limit}"
         )
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS ({final_query})""",
+        transformed_query=f"{query.transformed_query}, {query_name} AS ({final_query})",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

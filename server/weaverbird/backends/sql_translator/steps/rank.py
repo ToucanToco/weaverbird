@@ -39,9 +39,9 @@ def translate_rank(
         f"{step.value_col}_RANK" if step.new_column_name is None else step.new_column_name
     )
 
+    # the rank query
     rank_query: str = ""
     if len(step.groupby) > 0:
-        # the rank query
         rank_query = (
             f", ({rank_mode} OVER (PARTITION BY {', '.join(step.groupby)} "
             f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
@@ -63,7 +63,7 @@ def translate_rank(
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS {final_query}""",
+        transformed_query=f"{query.transformed_query}, {query_name} AS {final_query}",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
