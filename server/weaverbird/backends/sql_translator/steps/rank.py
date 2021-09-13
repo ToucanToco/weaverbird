@@ -43,23 +43,25 @@ def translate_rank(
     final_query: str = ""
     if len(step.groupby) > 0:
         # the rank query
-        rank_query = f", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
+        rank_query = f""", ({rank_mode} OVER (PARTITION BY {', '.join(step.groupby)}\
+ ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
         step.groupby.append(step.value_col)
 
-        query, query_with_granularity, _ = generate_query_by_keeping_granularity(
+        query, granularity_query, _ = generate_query_by_keeping_granularity(
             query=query,
             group_by=step.groupby,
-            group_by_except_target_columns=[step.value_col],
             current_step_name=query_name,
-            query_to_complete=rank_query
+            query_to_complete=rank_query,
         )
+
         # We build the group by query part
-        final_query = query_with_granularity + ")"
+        final_query = f"""{granularity_query} ORDER BY {step.new_column_name})"""
     else:
         final_query = (
             f""" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
-            f""", ({rank_mode} OVER (ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
-            f""" FROM {query.query_name})"""
+            f""", ({rank_mode} OVER ("""
+            f"""ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"""
+            f""" FROM {query.query_name} ORDER BY {step.new_column_name})"""
         )
 
     # we add the column to the metadata

@@ -1,5 +1,5 @@
 import re
-from typing import Dict, List, Tuple, Union
+from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.types import SQLQuery
@@ -180,7 +180,7 @@ def generate_query_by_keeping_granularity(
     current_step_name: str,
     query_to_complete: str = "",
     aggregated_cols=None,
-    group_by_except_target_columns=None
+    group_by_except_target_columns=None,
 ) -> Tuple[SQLQuery, str, list]:
     """
     On some steps, when we do the Group By we will need to keep the granularity of
@@ -228,7 +228,7 @@ def generate_query_by_keeping_granularity(
 
         # The GROUP BY query
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
-
+    #
     new_as_columns: list = []
     for index, ag in enumerate(aggregated_cols):
         # the aggregate as word
@@ -251,11 +251,15 @@ def generate_query_by_keeping_granularity(
         # we apend to the array of metadata
         query.metadata_manager.add_query_metadata_column(as_ag, "float")
 
-    return query, (
-        f"(SELECT * FROM (SELECT {sub_select_query} {query_to_complete} "
-        f"FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS "
-        f"INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
-    ), new_as_columns
+    return (
+        query,
+        (
+            f"(SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
+            f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
+            f" INNER JOIN {query.query_name} {query.query_name}_ALIAS ON ({on_query})"
+        ),
+        new_as_columns,
+    )
 
 
 def snowflake_date_format(input_format: str) -> str:

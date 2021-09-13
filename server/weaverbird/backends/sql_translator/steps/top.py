@@ -49,7 +49,7 @@ def translate_top(
             query=query,
             group_by=step.groups,
             current_step_name=query_name,
-            group_by_except_target_columns=[step.rank_on]
+            group_by_except_target_columns=[step.rank_on],
         )
         # We build the group by query part
         final_query = (
