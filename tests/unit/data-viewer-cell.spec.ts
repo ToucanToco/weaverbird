@@ -55,6 +55,19 @@ describe('Data Viewer Cell', () => {
       expect(wrapper.text()).toEqual('{"my_column":"my_value"}');
     });
   });
+  describe('value is a date', () => {
+    it('should display the value', () => {
+      const date = new Date();
+      const wrapper = shallowMount(DataViewerCell, {
+        context: {
+          props: {
+            value: date,
+          },
+        },
+      });
+      expect(wrapper.text()).toEqual(date.toString());
+    });
+  });
   it('should have specific class when selected', () => {
     const wrapper = shallowMount(DataViewerCell, {
       context: {

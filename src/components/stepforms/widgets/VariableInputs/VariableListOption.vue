@@ -47,7 +47,7 @@ export default class VariableListOption extends Vue {
   togglable!: boolean;
 
   get formattedValue(): string {
-    return this.value instanceof Date ? this.value.toUTCString() : this.value;
+    return this.value instanceof Date ? this.value.toString() : this.value;
   }
 
   get readableValue(): string {

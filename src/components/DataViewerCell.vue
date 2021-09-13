@@ -27,7 +27,9 @@ export default {
   },
   methods: {
     getValue(value: any) {
-      return typeof value === 'object' ? JSON.stringify(value) : value.toString();
+      return typeof value === 'object' && !(value instanceof Date)
+        ? JSON.stringify(value)
+        : value.toString();
     },
   },
 };
