@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Changed
+
+- Variable chooser & data viewer : stop forcing date display in UTC/ISO, use default toString instead
+
 ### [0.60.5] - 2021-09-08
 
 ### Added
