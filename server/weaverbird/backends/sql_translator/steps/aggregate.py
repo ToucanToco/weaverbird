@@ -44,8 +44,15 @@ def translate_aggregate(
     )
 
     new_query.metadata_manager = query.metadata_manager
-    new_query.selection_query = build_selection_query(
-        query.metadata_manager.retrieve_query_metadata_columns(), query_name
+    new_query.metadata_manager.remove_query_metadata_columns(
+        new_query.metadata_manager.retrieve_query_metadata_columns_as_list()
     )
-
+    new_query.metadata_manager.add_query_metadata_columns(
+        columns=sql_query_describer(
+            f'{new_query.transformed_query} SELECT * FROM {new_query.query_name}'
+        )
+    )
+    new_query.selection_query = build_selection_query(
+        new_query.metadata_manager.retrieve_query_metadata_columns(), query_name
+    )
     return new_query
