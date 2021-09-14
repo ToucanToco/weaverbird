@@ -34,6 +34,7 @@ def build_first_or_last_aggregation(
     first_last_string: str,
     query: SQLQuery,
     step: AggregateStep,
+    query_name: str,
     new_as_columns=None,
 ) -> Tuple[SQLQuery, str]:
     """
@@ -54,7 +55,7 @@ def build_first_or_last_aggregation(
     # we add metadata columns
     [
         query.metadata_manager.add_query_metadata_column(new_col, "float")
-        for (col, new_col) in last_cols + first_cols
+        for (col, new_col) in last_cols + first_cols + aggregate_cols
     ]
 
     # first agreggate
@@ -62,7 +63,7 @@ def build_first_or_last_aggregation(
         query, first_last_string = first_last_query_string_with_group_and_granularity(
             step=step,
             query=query,
-            scope_cols=first_cols,
+            scope_cols=first_cols + aggregate_cols,
         )
 
     # last agreggate
@@ -70,7 +71,7 @@ def build_first_or_last_aggregation(
         query, first_last_string = first_last_query_string_with_group_and_granularity(
             step=step,
             query=query,
-            scope_cols=last_cols,
+            scope_cols=last_cols + aggregate_cols,
         )
 
     # first and last agreggate
@@ -78,34 +79,40 @@ def build_first_or_last_aggregation(
         query, first_last_string = first_last_query_string_with_group_and_granularity(
             step=step,
             query=query,
-            scope_cols=last_cols + first_cols,
+            scope_cols=last_cols + first_cols + aggregate_cols,
         )
 
     if len(aggregated_string) and len(first_last_string):
         if len(step.on):
+            # to prevent duplications
             query_string = (
-                f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
-                f" A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])})"
+                f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
+                f" A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])}"
             )
 
-            if not step.keep_original_granularity:
+            if step.keep_original_granularity:
+                query_string += f" AND (A.TO_REMOVE_{query_name} = F.TO_REMOVE_{query.query_name}_ALIAS)"
+            else:
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(
                     query,
-                    [f'{c[1]}' for c in last_cols + first_cols] + step.on + new_as_columns,
+                    [f'{c[1]}' for c in last_cols + first_cols + aggregate_cols] + step.on + new_as_columns,
                     query_string,
                     False,
                 )
         else:
             query_string = (
-                f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
-                f" A INNER JOIN ({first_last_string}) F)"
+                f"SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
+                f" A INNER JOIN ({first_last_string}) F"
             )
-            if not step.keep_original_granularity:
+
+            if step.keep_original_granularity:
+                query_string += f" ON (A.TO_REMOVE_{query_name} = F.TO_REMOVE_{query.query_name}_ALIAS)"
+            else:
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(
                     query,
-                    [f'{c[1]}' for c in last_cols + first_cols] + new_as_columns,
+                    [f'{c[1]}' for c in last_cols + first_cols + aggregate_cols] + new_as_columns,
                     query_string,
                     False,
                 )
