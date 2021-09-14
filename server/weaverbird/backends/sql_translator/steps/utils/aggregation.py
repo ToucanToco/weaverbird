@@ -91,12 +91,16 @@ def build_first_or_last_aggregation(
             )
 
             if step.keep_original_granularity:
-                query_string += f" AND (A.TO_REMOVE_{query_name} = F.TO_REMOVE_{query.query_name}_ALIAS)"
+                query_string += (
+                    f" AND (A.TO_REMOVE_{query_name} = F.TO_REMOVE_{query.query_name}_ALIAS)"
+                )
             else:
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(
                     query,
-                    [f'{c[1]}' for c in last_cols + first_cols + aggregate_cols] + step.on + new_as_columns,
+                    [f'{c[1]}' for c in last_cols + first_cols + aggregate_cols]
+                    + step.on
+                    + new_as_columns,
                     query_string,
                     False,
                 )
@@ -107,7 +111,9 @@ def build_first_or_last_aggregation(
             )
 
             if step.keep_original_granularity:
-                query_string += f" ON (A.TO_REMOVE_{query_name} = F.TO_REMOVE_{query.query_name}_ALIAS)"
+                query_string += (
+                    f" ON (A.TO_REMOVE_{query_name} = F.TO_REMOVE_{query.query_name}_ALIAS)"
+                )
             else:
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(

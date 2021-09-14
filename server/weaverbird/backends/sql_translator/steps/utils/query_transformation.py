@@ -98,8 +98,6 @@ def first_last_query_string_with_group_and_granularity(
     array_cols: the order by's columns
     scope_cols: he scope of our process, for example: firsts_cols or lasts_cols...
     """
-    q_columns_keys: list = list(query.metadata_manager.retrieve_query_metadata_columns().keys())
-    as_columns: list = [co[1].upper().split('.')[-1] for co in scope_cols]
     if len(step.on):
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
