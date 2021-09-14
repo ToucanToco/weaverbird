@@ -10,5 +10,8 @@ def execute_todate(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-    datetime_serie = to_datetime(df[step.column], format=step.format, errors='coerce')
+    timestamp_unit = 'ms' if df[step.column].dtype == 'int64' else None
+    datetime_serie = to_datetime(
+        df[step.column], format=step.format, errors='coerce', unit=timestamp_unit
+    )
     return df.assign(**{step.column: datetime_serie})
