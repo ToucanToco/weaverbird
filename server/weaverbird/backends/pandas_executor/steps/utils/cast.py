@@ -6,10 +6,13 @@ def cast_to_float(s: Series) -> Series:
 
 
 def cast_to_int(s: Series) -> Series:
-    s = cast_to_float(s)
+    s_float = cast_to_float(s)
     # Since .astype(int) would fail on NaN values, treat them separately:
-    s_integer = s[s.notna()].astype(int)
-    s_nan = s[s.isna()]
+    s_integer = s_float[s_float.notna()].astype(int)
+    s_nan = s_float[s_float.isna()]
+    # Pandas operate on NanoSecond Timestamp but we want to output MilliSecond Timestamps
+    if s.dtype == 'datetime64[ns]':
+        s_integer = s_integer // 10 ** 6
     return s_integer.append(s_nan).sort_index()
 
 
@@ -18,7 +21,10 @@ def cast_to_str(s: Series) -> Series:
 
 
 def cast_to_datetime(s: Series) -> Series:
-    return to_datetime(s, errors='coerce')  # cast errors will result in NaT values
+    timestamp_unit = 'ms' if s.dtype == 'int64' else None
+    return to_datetime(
+        s, errors='coerce', unit=timestamp_unit
+    )  # cast errors will result in NaT values
 
 
 def cast_to_bool(s: Series) -> Series:
