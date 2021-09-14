@@ -50,7 +50,7 @@ def build_first_or_last_aggregation(
         new_as_columns = []
 
     first_cols, last_cols, aggregate_cols = get_first_last_cols_from_aggregate(step)
-
+    query_string: str = ""
     # we add metadata columns
     [
         query.metadata_manager.add_query_metadata_column(new_col, "float")
@@ -66,7 +66,7 @@ def build_first_or_last_aggregation(
         )
 
     # last agreggate
-    if len(last_cols) and not len(first_cols):
+    elif len(last_cols) and not len(first_cols):
         query, first_last_string = first_last_query_string_with_group_and_granularity(
             step=step,
             query=query,
@@ -74,7 +74,7 @@ def build_first_or_last_aggregation(
         )
 
     # first and last agreggate
-    if len(last_cols) and len(first_cols):
+    elif len(last_cols) and len(first_cols):
         query, first_last_string = first_last_query_string_with_group_and_granularity(
             step=step,
             query=query,
@@ -88,9 +88,7 @@ def build_first_or_last_aggregation(
                 f" A INNER JOIN {first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])})"
             )
 
-            if step.keep_original_granularity:
-                query_string += f" INNER JOIN {query.query_name} X ON {' AND '.join([f'X.{s}=F.{s}' for s in step.on])}"
-            else:
+            if not step.keep_original_granularity:
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(
                     query,
@@ -103,27 +101,19 @@ def build_first_or_last_aggregation(
                 f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
                 f" A INNER JOIN {first_last_string}) F)"
             )
-            # Something need to be done here to append the new appropriate inner join
-            # Something need to be done here to append the new appropriate inner join
-            # Something need to be done here to append the new appropriate inner join
-            # Something need to be done here to append the new appropriate inner join
+            if not step.keep_original_granularity:
+                # we fresh the query and concatenate the previous query string
+                query, query_string = remove_metadatas_columns_from_query(
+                    query,
+                    [f'{c[1]}' for c in last_cols + first_cols] + new_as_columns,
+                    query_string,
+                    False,
+                )
 
     elif len(aggregated_string):
         query_string = aggregated_string
-
-        if not step.keep_original_granularity:
-            # we fresh the query and concatenate the previous query string
-            query, query_string = remove_metadatas_columns_from_query(
-                query, step.on + new_as_columns, query_string, False
-            )
     else:
         query_string = first_last_string
-
-        if not step.keep_original_granularity:
-            # we fresh the query and concatenate the previous query string
-            query, query_string = remove_metadatas_columns_from_query(
-                query, step.on + new_as_columns, query_string, False
-            )
 
     return query, query_string
 

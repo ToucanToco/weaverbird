@@ -98,7 +98,8 @@ def first_last_query_string_with_group_and_granularity(
     array_cols: the order by's columns
     scope_cols: he scope of our process, for example: firsts_cols or lasts_cols...
     """
-
+    q_columns_keys: list = list(query.metadata_manager.retrieve_query_metadata_columns().keys())
+    as_columns: list = [co[1].upper().split('.')[-1] for co in scope_cols]
     if len(step.on):
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
@@ -108,7 +109,13 @@ def first_last_query_string_with_group_and_granularity(
                 f" OVER (PARTITION BY {', '.join(step.on)}"
                 f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
-            final_end_query_string = f"(SELECT * FROM ({end_query})"
+
+            # ['X.VALUE__first=Z.VALUE__first', 'X.TIME_first=Z.TIME_first']
+            final_end_query_string = (
+                f"(SELECT * FROM ({end_query}) X INNER JOIN {query.query_name} Z "
+                f"ON {' AND '.join([f'X.{s[0]}=Z.{s[0]}' for s in scope_cols])} AND "
+                f"{' AND '.join([f'X.{s}=Z.{s}' for s in q_columns_keys if s.upper() not in as_columns])}"
+            )
         else:
             # the difference on the  if col != new_col after the loop
             end_query = (
@@ -131,13 +138,18 @@ def first_last_query_string_with_group_and_granularity(
                 "OVER ("
                 f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
-            final_end_query_string = f"(SELECT * FROM ({end_query})"
+            final_end_query_string = (
+                f"(SELECT * FROM ({end_query}) X INNER JOIN {query.query_name} Z "
+                f"ON {' AND '.join([f'X.{s[0]}=Z.{s[0]}' for s in scope_cols])} AND "
+                f"{' AND '.join([f'X.{s}=Z.{s}' for s in q_columns_keys if s.upper() not in as_columns])}"
+            )
         else:
             end_query = (
                 f"SELECT *,"
                 f"{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])} OVER ("
                 f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
+
             # we fresh an concatenate the final first_last_string
             query, final_end_query_string = remove_metadatas_columns_from_query(
                 query, [f'{c[1]}' for c in scope_cols], end_query
