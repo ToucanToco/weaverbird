@@ -104,17 +104,18 @@ def first_last_query_string_with_group_and_granularity(
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
         if step.keep_original_granularity:
+            groupby_alias = ', '.join([f'{cc} AS X_{cc}' for cc in step.on])
             end_query = (
-                f"SELECT *,{', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols] + ['ROW_NUMBER()'])}"
+                f"SELECT {groupby_alias},{', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols]+['ROW_NUMBER()'])}"
                 f" OVER (PARTITION BY {', '.join(step.on)}"
                 f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
-
             # ['X.VALUE__first=Z.VALUE__first', 'X.TIME_first=Z.TIME_first']
             final_end_query_string = (
-                f"(SELECT * FROM ({end_query}) X INNER JOIN {query.query_name} Z "
-                f"ON {' AND '.join([f'X.{s[0]}=Z.{s[0]}' for s in scope_cols])} AND "
-                f"{' AND '.join([f'X.{s}=Z.{s}' for s in q_columns_keys if s.upper() not in as_columns])}"
+                f"SELECT * FROM ({end_query}) X "
+                f"INNER JOIN (SELECT *,ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS TO_REMOVE_{query.query_name}_ALIAS"
+                f" FROM {query.query_name}) Z"
+                f" ON {' AND '.join([f'X.X_{s}=Z.{s}' for s in step.on])} ORDER BY TO_REMOVE_{query.query_name}_ALIAS"
             )
         else:
             # the difference on the  if col != new_col after the loop
@@ -133,15 +134,15 @@ def first_last_query_string_with_group_and_granularity(
         # we should remove unnecessary columns
         if step.keep_original_granularity:
             end_query = (
-                f"SELECT *,"
+                f"SELECT "
                 f"{', '.join(step.on + [f'{col} AS {new_col}' for (col, new_col) in scope_cols] + ['ROW_NUMBER()'])}"
                 "OVER ("
                 f"ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
             )
             final_end_query_string = (
-                f"(SELECT * FROM ({end_query}) X INNER JOIN {query.query_name} Z "
-                f"ON {' AND '.join([f'X.{s[0]}=Z.{s[0]}' for s in scope_cols])} AND "
-                f"{' AND '.join([f'X.{s}=Z.{s}' for s in q_columns_keys if s.upper() not in as_columns])}"
+                f"SELECT * FROM ({end_query}) X INNER JOIN {query.query_name} Z "
+                # f"ON {' AND '.join([f'X.{s[0]}=Z.{s[0]}' for s in scope_cols])} AND "
+                # f"{' AND '.join([f'X.{s}=Z.{s}' for s in q_columns_keys if s.upper() not in as_columns])}"
             )
         else:
             end_query = (
@@ -181,7 +182,7 @@ def remove_metadatas_columns_from_query(
         ]
 
     if first_or_last_aggregate:
-        first_last_string = f"(SELECT {', '.join(array_cols)} FROM ({first_last_string})"
+        first_last_string = f"SELECT {', '.join(array_cols)} FROM ({first_last_string})"
 
     return query, first_last_string
 
@@ -266,7 +267,7 @@ def generate_query_by_keeping_granularity(
     return (
         query,
         (
-            f"(SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
+            f"SELECT * FROM (SELECT {sub_select_query}{query_to_complete}"
             f" FROM {query.query_name} {group_by_query}) {current_step_name}_ALIAS"
             f" INNER JOIN (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS TO_REMOVE_{current_step_name}"
             f" FROM {query.query_name})"

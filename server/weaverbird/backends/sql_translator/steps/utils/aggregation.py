@@ -85,7 +85,7 @@ def build_first_or_last_aggregation(
         if len(step.on):
             query_string = (
                 f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
-                f" A INNER JOIN {first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])})"
+                f" A INNER JOIN ({first_last_string}) F ON {' AND '.join([f'A.{s}=F.{s}' for s in step.on])})"
             )
 
             if not step.keep_original_granularity:
@@ -99,7 +99,7 @@ def build_first_or_last_aggregation(
         else:
             query_string = (
                 f"(SELECT A.*, {', '.join([f'F.{c[1]}' for c in first_cols + last_cols])} FROM ({aggregated_string})"
-                f" A INNER JOIN {first_last_string}) F)"
+                f" A INNER JOIN ({first_last_string}) F)"
             )
             if not step.keep_original_granularity:
                 # we fresh the query and concatenate the previous query string
@@ -160,16 +160,29 @@ def prepare_aggregation_query(
                         print(es)
 
     if len(step.on) and len(aggregated_cols):
-
-        # we generate the query by keeping granularity
-        # and update the query metadatas for new as columns
-        query, aggregated_string, new_as_columns = generate_query_by_keeping_granularity(
-            query=query,
-            group_by=step.on,
-            aggregated_cols=aggregated_cols,
-            current_step_name=query_name,
-        )
-
+        if step.keep_original_granularity:
+            # we generate the query by keeping granularity
+            # and update the query metadatas for new as columns
+            query, aggregated_string, new_as_columns = generate_query_by_keeping_granularity(
+                query=query,
+                group_by=step.on,
+                aggregated_cols=aggregated_cols,
+                current_step_name=query_name,
+            )
+        else:
+            aggregated_string = (
+                f"SELECT * FROM (SELECT {', '.join(step.on + aggregated_cols)}"
+                f" FROM {query.query_name} GROUP BY {', '.join(step.on)} ORDER BY {', '.join(step.on)})"
+                f" {query.query_name}_ALIAS"
+            )
+            # we loop on tables and add new columns and get back the fresh query
+            for table in query.metadata_manager.tables:
+                # we add metadata columns
+                [
+                    query.metadata_manager.remove_query_metadata_column(col)
+                    for col in query.metadata_manager.retrieve_columns_as_list(table)
+                    if col not in step.on + [c.split(" AS ")[1] for c in aggregated_cols]
+                ]
     elif len(aggregated_cols):
         aggregated_string = f"SELECT {', '.join(aggregated_cols)} FROM {query.query_name}"
     return query, aggregated_string, new_as_columns
