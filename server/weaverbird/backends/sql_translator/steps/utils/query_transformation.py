@@ -247,12 +247,12 @@ def generate_query_by_keeping_granularity(
 
         # just to fix some missing suffixes
         # ex: SUM(TIME) AS TIME
-        if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
-            as_ag += "_SUM"
-        if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
-            as_ag += "_AVG"
-        if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
-            as_ag += "_COUNT"
+        # if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
+        #     as_ag += "_SUM"
+        # if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
+        #     as_ag += "_AVG"
+        # if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
+        #     as_ag += "_COUNT"
 
         new_as_columns.append(as_ag)
 

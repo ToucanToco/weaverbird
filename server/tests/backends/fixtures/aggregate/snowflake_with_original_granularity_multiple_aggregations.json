@@ -99,8 +99,28 @@
     "schema": {
       "fields": [
         {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
           "name": "DOUM",
           "type": "string"
+        },
+        {
+          "name": "VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "MIN_VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE2",
+          "type": "integer"
+        },
+        {
+          "name": "MAX_VALUE1",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -115,11 +135,43 @@
         "MAX_VALUE1": 21
       },
       {
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "MIN_VALUE1": 7,
+        "VALUE2": 21,
+        "MAX_VALUE1": 21
+      },
+      {
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "MIN_VALUE1": 7,
+        "VALUE2": 4,
+        "MAX_VALUE1": 21
+      },
+      {
         "LABEL": "Label 4",
         "DOUM": "Group 2",
         "VALUE1": 1,
         "MIN_VALUE1": 1,
         "VALUE2": 17,
+        "MAX_VALUE1": 17
+      },
+      {
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "MIN_VALUE1": 1,
+        "VALUE2": 12,
+        "MAX_VALUE1": 17
+      },
+      {
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "MIN_VALUE1": 1,
+        "VALUE2": 2,
         "MAX_VALUE1": 17
       }
     ]
