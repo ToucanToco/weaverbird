@@ -7,26 +7,84 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
 )
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.steps import AggregateStep
+from weaverbird.pipeline.steps.aggregate import Aggregation
 
 
-def get_first_last_cols_from_aggregate(step: AggregateStep) -> Tuple[list, list, list]:
+def get_old_new_columns(aggregation: Aggregation):
     """
-    This small method will return the first_cols and last_cols depending on the aggregation type
-
+    From new/old columns this function will return a list of tuple
+    from an aggregation
     """
-    first_cols, last_cols, aggregate_cols = [], [], []
+    result = []
+    # we loop to construct our first/last columns
+    for col, new_col in zip(aggregation.columns, aggregation.new_columns):
+        result.append((col, new_col))
+
+    merge_result = []
+    for col in result:
+        merge_result.append(col)
+
+    return merge_result
+
+
+def get_aggs_columns(step: AggregateStep, agg_type: str = "") -> list:
+    """
+    This method will return the first's/last's aggregations columns
+    or normal aggregations depending on the agg_type
+    default value is empty, that means it will return all agregations except first and last
+
+    params:
+    step: the aggregate step
+    agg_type: the aggregate type (first/last)
+    """
+    result = []
     for aggregation in step.aggregations:
-        # we loop to construct our first/last columns
-        for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-            if aggregation.agg_function in ['first', 'last']:
-                if aggregation.agg_function == 'first':
-                    first_cols.append((col, new_col))
-                else:
-                    last_cols.append((col, new_col))
-            else:
-                aggregate_cols.append((col, new_col))
+        if agg_type != "":
+            if aggregation.agg_function == agg_type:
+                test = get_old_new_columns(aggregation)
+                result += test
+        else:
+            test = get_old_new_columns(aggregation)
+            result += test
+    # if len(step.on):
+    #     for aggregation in step.aggregations:
+    #         if agg_type != "":
+    #             test = get_old_new_columns(aggregation)
+    #             result += test
+    #         elif aggregation.agg_function == agg_type:
+    #             test = get_old_new_columns(aggregation)
+    #             result += test
+    # else:
+    #     result = (
+    #         [
+    #             get_old_new_columns(aggregation)[0]
+    #             for aggregation in step.aggregations
+    #             if aggregation.agg_function == agg_type
+    #         ]
+    #         if agg_type != ""
+    #         else [get_old_new_columns(aggregation)[0] for aggregation in step.aggregations]
+    #     )
+    return result
 
-    return first_cols, last_cols, aggregate_cols
+
+def get_first_columns(step: AggregateStep) -> list:
+    """
+    This method will return all first column from the aggregate step
+
+    params:
+    step: the aggregate step
+    """
+    return get_aggs_columns(step, "first")
+
+
+def get_last_columns(step: AggregateStep) -> list:
+    """
+    This method will return all last column from the aggregate step
+
+    params:
+    step: the aggregate step
+    """
+    return get_aggs_columns(step, "last")
 
 
 def build_first_or_last_aggregation(
@@ -50,39 +108,24 @@ def build_first_or_last_aggregation(
     if new_as_columns is None:
         new_as_columns = []
 
-    first_cols, last_cols, aggregate_cols = get_first_last_cols_from_aggregate(step)
+    first_cols = get_first_columns(step)
+    last_cols = get_last_columns(step)
+    aggregate_cols = get_aggs_columns(step)
+
     query_string: str = ""
     # we add metadata columns
     [
-        query.metadata_manager.add_query_metadata_column(new_col, "float")
-        for (col, new_col) in last_cols + first_cols + aggregate_cols
+        query.metadata_manager.add_query_metadata_column(new_col, "FLOAT")
+        for (col, new_col) in aggregate_cols
     ]
 
-    # first agreggate
-    if len(first_cols) and not len(last_cols):
-        query, first_last_string = first_last_query_string_with_group_and_granularity(
-            step=step,
-            query=query,
-            scope_cols=first_cols + aggregate_cols,
-        )
+    query, first_last_string = first_last_query_string_with_group_and_granularity(
+        step=step,
+        query=query,
+        scope_cols=aggregate_cols,
+    )
 
-    # last agreggate
-    elif len(last_cols) and not len(first_cols):
-        query, first_last_string = first_last_query_string_with_group_and_granularity(
-            step=step,
-            query=query,
-            scope_cols=last_cols + aggregate_cols,
-        )
-
-    # first and last agreggate
-    elif len(last_cols) and len(first_cols):
-        query, first_last_string = first_last_query_string_with_group_and_granularity(
-            step=step,
-            query=query,
-            scope_cols=last_cols + first_cols + aggregate_cols,
-        )
-
-    if len(aggregated_string) and len(first_last_string):
+    if len(aggregated_string) and (len(first_cols) or len(last_cols)):
         if len(step.on):
             # to prevent duplications
             query_string = (
@@ -98,9 +141,7 @@ def build_first_or_last_aggregation(
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(
                     query,
-                    [f'{c[1]}' for c in last_cols + first_cols + aggregate_cols]
-                    + step.on
-                    + new_as_columns,
+                    [f'{c}' for c in aggregate_cols] + step.on + new_as_columns,
                     query_string,
                     False,
                 )
@@ -118,7 +159,7 @@ def build_first_or_last_aggregation(
                 # we fresh the query and concatenate the previous query string
                 query, query_string = remove_metadatas_columns_from_query(
                     query,
-                    [f'{c[1]}' for c in last_cols + first_cols + aggregate_cols] + new_as_columns,
+                    [f'{c}' for c in aggregate_cols] + new_as_columns,
                     query_string,
                     False,
                 )

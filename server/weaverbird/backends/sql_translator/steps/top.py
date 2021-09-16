@@ -38,10 +38,14 @@ def translate_top(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
     if len(step.groups) > 0:
+        order_on_groupby = ' ASC, '.join(step.groups)
+        if len(step.groups) > 0:
+            order_on_groupby += ' ASC'
+
         final_query = (
             f"SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() "
             f"OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) "
-            f"{query_name}_ALIAS ORDER BY {', '.join(step.groups)}"
+            f"{query_name}_ALIAS ORDER BY {order_on_groupby}"
         )
     else:
         final_query = (

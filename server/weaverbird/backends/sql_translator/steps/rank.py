@@ -47,13 +47,18 @@ def translate_rank(
             f", ({rank_mode} OVER (PARTITION BY {', '.join(step.groupby)} "
             f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
-        order_by_query = f"ORDER BY {step.new_column_name}, {', '.join(step.groupby)}"
+
+        order_on_groupby = ' ASC, '.join(step.groupby)
+        if len(step.groupby) > 0:
+            order_on_groupby += ' ASC'
+
+        order_by_query = f"ORDER BY {step.new_column_name} ASC, {order_on_groupby}"
     else:
         rank_query = (
             f", ({rank_mode} OVER ("
             f"ORDER BY {step.value_col} {step.order})) AS {step.new_column_name}"
         )
-        order_by_query = f"ORDER BY {step.new_column_name}"
+        order_by_query = f"ORDER BY {step.new_column_name} ASC"
 
     final_query = (
         f" (SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"
