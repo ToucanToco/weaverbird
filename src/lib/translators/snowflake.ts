@@ -6,8 +6,7 @@
  * */
 
 import * as S from '@/lib/steps';
-
-import { BaseTranslator } from './base';
+import { BaseTranslator, ValidationError } from '@/lib/translators/base';
 
 /* istanbul ignore next */
 export class SnowflakeTranslator extends BaseTranslator {
@@ -22,6 +21,10 @@ export class SnowflakeTranslator extends BaseTranslator {
   }
 
   concatenate(step: Readonly<S.ConcatenateStep>) {
+    return step;
+  }
+
+  customsql(step: Readonly<S.CustomSqlStep>) {
     return step;
   }
 
@@ -127,5 +130,26 @@ export class SnowflakeTranslator extends BaseTranslator {
 
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
+  }
+
+  validate(customEditedStep: S.CustomSqlStep): ValidationError[] | null {
+    try {
+      if (
+        !customEditedStep.query.toLowerCase().includes('select') &&
+        !customEditedStep.query.toLowerCase().includes('##previous_step##')
+      ) {
+        throw new Error('Invalid Query: should use SELECT and ##PREVIOUS_STEP## keywords');
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return [
+        {
+          keyword: 'sql',
+          dataPath: '.query',
+          message: e.message,
+        },
+      ];
+    }
   }
 }

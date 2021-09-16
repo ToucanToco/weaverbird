@@ -112,6 +112,14 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Custom step');
   });
 
+  it('generates label for custom sql steps', () => {
+    const step: S.CustomSqlStep = {
+      name: 'customsql',
+      query: '',
+    };
+    expect(hrl(step)).toEqual('Custom sql step');
+  });
+
   it('generates label for date extraction steps', () => {
     const step: S.DateExtractStep = {
       name: 'dateextract',

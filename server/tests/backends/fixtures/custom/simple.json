@@ -1,0 +1,65 @@
+{
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
+  "step": {
+    "name": "customsql",
+    "pipeline": [
+      {
+        "name": "customsql",
+        "query": "SELECT AGE FROM ##PREVIOUS_STEP## WHERE AGE > 0;"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "AGE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "AGE": 42
+      },
+      {
+        "AGE": 43
+      }
+    ]
+  }
+}

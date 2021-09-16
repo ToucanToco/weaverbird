@@ -151,6 +151,10 @@ class StepLabeller implements StepMatcher<string> {
     return `Convert columns ${formatMulticol(step.columns)} into ${step.data_type}`;
   }
 
+  customsql(_step: Readonly<S.CustomSqlStep>) {
+    return `Custom sql step`;
+  }
+
   cumsum(step: Readonly<S.CumSumStep>) {
     return `Compute cumulated sum of "${step.valueColumn}"`;
   }
