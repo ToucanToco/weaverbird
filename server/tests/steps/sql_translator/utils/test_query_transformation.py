@@ -5,10 +5,13 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
     apply_condition,
     build_selection_query,
     build_union_query,
+    generate_query_by_keeping_granularity,
     handle_zero_division,
+    remove_metadatas_columns_from_query,
     sanitize_input,
     snowflake_date_format,
 )
+from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import (
     BaseCondition,
     ComparisonCondition,
@@ -18,6 +21,24 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+
+
+@pytest.fixture
+def query():
+    return SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT * FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={
+                'table1': {
+                    'Value1': 'int',
+                    'Label': 'str',
+                    'Group': 'str',
+                },
+            },
+        ),
+    )
 
 
 def test_apply_condition_comparisons():
@@ -307,3 +328,66 @@ def test_sanitize_input():
     assert sanitize_input('bla') == 'bla'
     assert sanitize_input("bla'") == "bla\\'"
     assert sanitize_input('bla"') == 'bla\\"'
+
+
+def test_remove_metadatas_columns_from_query(query):
+    query_with_metadatas_removed = remove_metadatas_columns_from_query(
+        query,
+        array_cols=["TOTO"],
+        first_last_string="SOME SQL QUERY HERE FOR FIRST AND LAST",
+        first_or_last_aggregate=True,
+    )
+    assert (
+        query_with_metadatas_removed[0].transformed_query
+        == "WITH SELECT_STEP_0 AS (SELECT * FROM products)"
+    )
+    assert (
+        query_with_metadatas_removed[1]
+        == "SELECT TOTO FROM (SOME SQL QUERY HERE FOR FIRST AND LAST)"
+    )
+
+
+def test_generate_query_by_keeping_granularity(query):
+    query_with_granularity_kept = generate_query_by_keeping_granularity(
+        query,
+        group_by=["TOTO", "RAICHU"],
+        current_step_name="STEP_X",
+        query_to_complete="",
+        aggregated_cols=None,
+        group_by_except_target_columns=None,
+    )
+    assert query_with_granularity_kept[0].metadata_manager.retrieve_query_metadata_columns() == {
+        'GROUP': ColumnMetadata(
+            name='GROUP',
+            original_name='Group',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+        'LABEL': ColumnMetadata(
+            name='LABEL',
+            original_name='Label',
+            type='STR',
+            original_type='str',
+            alias=None,
+            delete=False,
+        ),
+        'VALUE1': ColumnMetadata(
+            name='VALUE1',
+            original_name='Value1',
+            type='INT',
+            original_type='int',
+            alias=None,
+            delete=False,
+        ),
+    }
+    assert query_with_granularity_kept[1] == (
+        "SELECT * FROM (SELECT TOTO AS TOTO_ALIAS_0, RAICHU AS RAICHU_ALIAS_1 "
+        "FROM SELECT_STEP_0 GROUP BY TOTO_ALIAS_0, RAICHU_ALIAS_1) STEP_X_ALIAS "
+        "INNER JOIN (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS "
+        "TO_REMOVE_STEP_X FROM SELECT_STEP_0) SELECT_STEP_0_ALIAS ON (("
+        "TOTO_ALIAS_0 = SELECT_STEP_0_ALIAS.TOTO) AND (RAICHU_ALIAS_1 = "
+        "SELECT_STEP_0_ALIAS.RAICHU)) ORDER BY TO_REMOVE_STEP_X"
+    )
+    assert query_with_granularity_kept[2] == []

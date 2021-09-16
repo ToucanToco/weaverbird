@@ -29,40 +29,33 @@ def translate_top(
         '############################################################'
         f'query_name: {query_name}\n'
         '------------------------------------------------------------'
-        f'step.name: {step.name}\n'
-        f'step.groups: {step.groups}\n'
-        f'step.rank_on: {step.rank_on}\n'
-        f'step.sort: {step.sort}\n'
-        f'step.limit: {step.limit}\n'
+        f'step: {step}\n'
         f'query.transformed_query: {query.transformed_query}\n'
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
-    )
-
-    # We build the group by query part
-    group_by_query: str = ''
-    if len(step.groups) > 0:
-        for index, gb in enumerate(step.groups + [step.rank_on]):
-            group_by_query += ('GROUP BY ' if index == 0 else ', ') + gb
-
-    # We remove other columns not in the group-by
-    query.metadata_manager.remove_query_metadata_columns(
-        [
-            col
-            for col in query.metadata_manager.retrieve_query_metadata_columns_as_list()
-            if col not in step.groups + [step.rank_on]
-        ]
-        if len(step.groups) > 0
-        else []
     )
 
     # fields to complete the query
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str()
 
+    if len(step.groups) > 0:
+        order_on_groupby = ' ASC, '.join(step.groups)
+        if len(step.groups) > 0:
+            order_on_groupby += ' ASC'
+
+        final_query = (
+            f"SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() "
+            f"OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) "
+            f"{query_name}_ALIAS ORDER BY {order_on_groupby}"
+        )
+    else:
+        final_query = (
+            f"SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"
+            f" {step.sort} LIMIT {step.limit}"
+        )
+
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields}"""
-        f""" FROM {query.query_name} {group_by_query} ORDER BY {step.rank_on} {step.sort} LIMIT {step.limit})""",
+        transformed_query=f"{query.transformed_query}, {query_name} AS ({final_query})",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

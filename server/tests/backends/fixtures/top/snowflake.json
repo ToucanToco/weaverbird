@@ -70,7 +70,7 @@
       "fields": [
         {
           "name": "VALUE",
-          "type": "number"
+          "type": "integer"
         },
         {
           "name": "GROUP_COLUMN",
@@ -81,8 +81,16 @@
     },
     "data": [
       {
-        "VALUE": 3,
-        "GROUP_COLUMN": "group3"
+        "VALUE": 13,
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": 22,
+        "GROUP_COLUMN": "group1"
+      },
+      {
+        "VALUE": 42,
+        "GROUP_COLUMN": "group1"
       },
       {
         "VALUE": 3,
@@ -91,6 +99,18 @@
       {
         "VALUE": 4,
         "GROUP_COLUMN": "group2"
+      },
+      {
+        "VALUE": 3,
+        "GROUP_COLUMN": "group3"
+      },
+      {
+        "VALUE": 10,
+        "GROUP_COLUMN": "group3"
+      },
+      {
+        "VALUE": 27,
+        "GROUP_COLUMN": "group4"
       }
     ]
   }

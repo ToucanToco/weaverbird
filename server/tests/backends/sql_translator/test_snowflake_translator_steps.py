@@ -139,7 +139,10 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Compare result and expected (from fixture file)
     if 'expected_sql' in spec:
-        result_expected = pd.read_json(json.dumps(spec['expected_sql']), orient='table')
+        result_expected: pd.DataFrame = pd.read_json(
+            json.dumps(spec['expected_sql']), orient='table'
+        )
     else:
-        result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+        result_expected: pd.DataFrame = pd.read_json(json.dumps(spec['expected']), orient='table')
+
     assert_dataframes_equals(result_expected, result)

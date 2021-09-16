@@ -46,6 +46,11 @@
         "CITY": "toulouse"
       },
       {
+        "NAME": "florentinio",
+        "AGE": 0,
+        "CITY": "paris"
+      },
+      {
         "NAME": "alice",
         "AGE": 9,
         "CITY": "trasbourg"
@@ -66,7 +71,7 @@
         },
         {
           "name": "AGE",
-          "type": "number"
+          "type": "integer"
         },
         {
           "name": "CITY",
@@ -74,12 +79,18 @@
         },
         {
           "name": "AGE_RANK",
-          "type": "number"
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
+      {
+        "NAME": "florentinio",
+        "AGE": 0,
+        "CITY": "paris",
+        "AGE_RANK": 1
+      },
       {
         "NAME": "angelo",
         "AGE": 3,
@@ -87,22 +98,22 @@
         "AGE_RANK": 1
       },
       {
-        "NAME": "raphaelou",
-        "AGE": 5,
-        "CITY": "paris",
-        "AGE_RANK": 2
-      },
-      {
         "NAME": "alice",
         "AGE": 9,
         "CITY": "trasbourg",
-        "AGE_RANK": 3
+        "AGE_RANK": 1
       },
       {
         "NAME": "adriano",
         "AGE": 15,
         "CITY": "zinguelewah",
-        "AGE_RANK": 4
+        "AGE_RANK": 1
+      },
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris",
+        "AGE_RANK": 2
       }
     ]
   }

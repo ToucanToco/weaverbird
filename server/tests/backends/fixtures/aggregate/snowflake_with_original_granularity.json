@@ -90,11 +90,23 @@
     "schema": {
       "fields": [
         {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
           "name": "DOUM",
           "type": "string"
         },
         {
+          "name": "VALUE1",
+          "type": "integer"
+        },
+        {
           "name": "TOTAL",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE2",
           "type": "integer"
         }
       ],
@@ -109,11 +121,39 @@
         "VALUE2": 10
       },
       {
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "TOTAL": 40,
+        "VALUE2": 21
+      },
+      {
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "TOTAL": 40,
+        "VALUE2": 4
+      },
+      {
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "TOTAL": 16,
+        "VALUE2": 17
+      },
+      {
         "LABEL": "Label 5",
         "DOUM": "Group 2",
         "VALUE1": 10,
         "TOTAL": 16,
         "VALUE2": 12
+      },
+      {
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "TOTAL": 16,
+        "VALUE2": 2
       }
     ]
   }
