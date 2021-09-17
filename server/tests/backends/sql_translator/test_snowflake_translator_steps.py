@@ -1,5 +1,6 @@
 import json
 from os import environ
+from random import randint
 from typing import Dict, NamedTuple, Optional, Union
 
 import pandas as pd
@@ -8,7 +9,6 @@ import snowflake.connector
 from snowflake.connector import DictCursor
 from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
-from random import randint
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case, type_code_mapping
 from weaverbird.backends.sql_translator import translate_pipeline
