@@ -1,10 +1,15 @@
 # Changelog
 
-## Unreleased
+## [0.60.6] - 2021-09-17
 
 ### Changed
 
 - Variable chooser & data viewer : stop forcing date display in UTC/ISO, use default toString instead
+
+### Added
+
+- SQL VQB [Snowflake]: Custom sql step
+- SQL VQB [Snowflake]: Keep granularity option
 
 ### [0.60.5] - 2021-09-08
 
@@ -19,21 +24,17 @@
 - SQL VQB [Snowflake]: Split Column step
 - SQL VQB [Snowflake]: Fill Null step
 
-
 ### [0.60.4] - 2021-09-06
 
 - SQL VQB: Release Delete columns step
-
 
 ### [0.60.3] - 2021-09-02
 
 - SQL VQB: Release Concatenate & extract Date steps
 
-
 ### [0.60.2] - 2021-09-01
 
 - SQL VQB: Hide drop null values in unpivotstepform & remove pivot_values in pivotstepform
-
 
 ### [0.60.1] - 2021-09-01
 
@@ -44,7 +45,6 @@
 ### Added
 
 - SQL VQB: Added pivot_values field in pivot step form
-
 
 ### [0.59.0] - 2021-08-31
 
@@ -79,23 +79,27 @@
 - RangeCalendar: new component to select a date range in a calendar UI
 
 ### Fixed
+
 - Dates: remove feature flag / always use date input with date column type
 - Variable list: move component to independent file
 
 ## [0.54.0] - 2021-08-09
 
 ### Changed
+
 - Resizable: display a min characters quantity per col using options
 
 ## [0.53.1] - 2021-07-21
 
 ### Fixed
+
 - Only enable current step delete shortcut when no other input is focused
 - Display search correctly in chrome browser
 
 ## [0.53.0] - 2021-07-15
 
 ### Added
+
 - ToDateStep: try to guess now support '%Y'
 
 ## [0.52.0] - 2021-06-30
@@ -106,16 +110,19 @@
 - Moved the search bar in a popover for better toolbar integration
 
 ### Fixed
+
 - Change icon and cursor for drag zone
 
 ## [0.51.0] - 2021-06-21
 
 ### Fixed
+
 - clearer date extract labels
 
 ## [0.50.0] - 2021-06-15
 
 ### Added
+
 - `empty` translator (domain only)
 - Pipeline: hide pipeline tips when there is no supported steps
 - DataViewer: hide header cell actions when there is no supported steps
@@ -124,12 +131,14 @@
 ## [0.49.2] - 2021-06-15
 
 ### Fixed
+
 - Code editor: move static height to container to avoid css override
 - Variable chooser : stop displaying Date relative to user timezone
 
 ## [0.49.1] - 2021-06-09
 
 ### Fixed
+
 - Tooltips: remove capitalization
 - Several security update to js dependencies
 - E2E tests: data-cy target for filtering component
@@ -137,53 +146,64 @@
 ## [0.49.0] - 2021-06-04
 
 ### Added
+
 - E2E tests: add data-cy properties for easy targeting with Cypress
 
 ## [0.48.1] - 2021-05-18
 
 ### Fixed
+
 - Filter step: make value optional
 
 ## [0.48.0] - 2021-05-12
 
 ### Added
+
 - FilterEditor: add a prop to make variables for the column hiddable
 - Pipeline: copy/paste steps with clipboard (chrome only)
 
 ## [0.47.1] - 2021-05-11
 
 ### Fixed
+
 - IfThenElseStep: enable to use dates in condition
 
 ## [0.47.0] - 2021-04-29
 
 ### Added
+
 - Pipeline: enable to move steps using drag and drop
 
 ### Changed
+
 - Pipeline: delete multiple steps at once
 
 ## [0.46.4] - 2021-04-29
 
 ### Fixed
+
 - Popover: make sure that popover display correctly
 
 ## [0.46.2] - 2021-04-21
 
 ### Fixed
+
 - FromDateStep/ToDateStep: display custom format input even if field is empty
 
 ## [0.46.1] - 2021-04-20
 
 ### Fixed
+
 - FromDateStep/ToDateStep: always display custom format input when 'custom' is selected format
 
 ## [0.46.0] - 2021-04-14
 
 ### Added
+
 - Step: display backend error in step form if any
 
 ### Fixed
+
 - Variables: retrieve identifier from misformatted variables (missing spaces)
 - Filter step: use correct value with dates when switching widgets/changing operator/column type
 - Input date: enable to use variables
@@ -191,12 +211,15 @@
 ## [0.45.0] - 2021-04-08
 
 ### Added
+
 - Step: display error directly in Pipeline step by targetting its index, error must follow interface: `{ index: number; message: string; }`
 
 ### Changed
+
 - Pipeline: update styles with new guidelines
 
 ### Fixed
+
 - Filter step: display row correctly with long labels
 
 ## [0.44.0] - 2021-03-23
@@ -903,7 +926,7 @@
 
 ## Unreleased
 
-
+[0.60.6]: https://github.com/ToucanToco/weaverbird/compare/v0.60.5...v0.60.6
 [0.60.5]: https://github.com/ToucanToco/weaverbird/compare/v0.60.4...v0.60.5
 [0.60.4]: https://github.com/ToucanToco/weaverbird/compare/v0.60.3...v0.60.4
 [0.60.3]: https://github.com/ToucanToco/weaverbird/compare/v0.60.2...v0.60.3
