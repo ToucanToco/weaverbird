@@ -1,6 +1,7 @@
 import pytest
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.steps.utils.aggregation import get_aggs_columns
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
     build_selection_query,
@@ -21,6 +22,8 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.steps import AggregateStep
+from weaverbird.pipeline.steps.aggregate import Aggregation
 
 
 @pytest.fixture
@@ -345,6 +348,28 @@ def test_remove_metadatas_columns_from_query(query):
         query_with_metadatas_removed[1]
         == "SELECT TOTO FROM (SOME SQL QUERY HERE FOR FIRST AND LAST)"
     )
+
+
+def test_get_aggs_columns(query):
+    step = AggregateStep(
+        name='aggregate',
+        on=['category'],
+        aggregations=[
+            Aggregation(aggfunction='first', columns=['Label'], newcolumns=['first_label']),
+            Aggregation(aggfunction='last', columns=['title'], newcolumns=['last_title']),
+            Aggregation(aggfunction='sum', columns=['group'], newcolumns=['sum_group']),
+        ],
+        keep_original_granularity=True,
+    )
+    assert get_aggs_columns(step) == [
+        ('Label', 'first_label'),
+        ('title', 'last_title'),
+        ('group', 'sum_group'),
+    ]
+
+    assert get_aggs_columns(step, "first") == [('Label', 'first_label')]
+
+    assert get_aggs_columns(step, "last") == [('title', 'last_title')]
 
 
 def test_generate_query_by_keeping_granularity(query):
