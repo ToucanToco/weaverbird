@@ -98,6 +98,7 @@ def first_last_query_string_with_group_and_granularity(
     array_cols: the order by's columns
     scope_cols: he scope of our process, for example: firsts_cols or lasts_cols...
     """
+
     if len(step.on):
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
@@ -125,7 +126,7 @@ def first_last_query_string_with_group_and_granularity(
             )
             # we fresh an concatenate the final first_last_string
             query, final_end_query_string = remove_metadatas_columns_from_query(
-                query, [f'{c[1]}' for c in scope_cols] + step.on, end_query
+                query, [c[1] for c in scope_cols] + step.on, end_query
             )
     else:
         # depending on the granularity keep parameter
@@ -139,8 +140,6 @@ def first_last_query_string_with_group_and_granularity(
             )
             final_end_query_string = (
                 f"SELECT * FROM ({end_query}) X INNER JOIN {query.query_name} Z "
-                # f"ON {' AND '.join([f'X.{s[0]}=Z.{s[0]}' for s in scope_cols])} AND "
-                # f"{' AND '.join([f'X.{s}=Z.{s}' for s in q_columns_keys if s.upper() not in as_columns])}"
             )
         else:
             end_query = (
@@ -151,7 +150,7 @@ def first_last_query_string_with_group_and_granularity(
 
             # we fresh an concatenate the final first_last_string
             query, final_end_query_string = remove_metadatas_columns_from_query(
-                query, [f'{c[1]}' for c in scope_cols], end_query
+                query, [c[1] for c in scope_cols], end_query
             )
 
     return query, final_end_query_string
@@ -171,13 +170,12 @@ def remove_metadatas_columns_from_query(
     """
 
     # we loop on tables and add new columns and get back the fresh query
-    for table in query.metadata_manager.tables:
-        # we add metadata columns
-        [
-            query.metadata_manager.remove_query_metadata_column(col)
-            for col in query.metadata_manager.retrieve_columns_as_list(table)
-            if col not in array_cols
-        ]
+    # we add metadata columns
+    [
+        query.metadata_manager.remove_query_metadata_column(col)
+        for col in list(query.metadata_manager.retrieve_query_metadata_columns().keys())
+        if col.upper() not in [c.upper() for c in array_cols]
+    ]
 
     if first_or_last_aggregate:
         first_last_string = f"SELECT {', '.join(array_cols)} FROM ({first_last_string})"
@@ -239,20 +237,11 @@ def generate_query_by_keeping_granularity(
 
         # The GROUP BY query
         group_by_query += ('GROUP BY ' if index == 0 else ', ') + sub_field
-    #
+
     new_as_columns: list = []
     for index, ag in enumerate(aggregated_cols):
         # the aggregate as word
         as_ag = ag.split(" AS ")[1]
-
-        # just to fix some missing suffixes
-        # ex: SUM(TIME) AS TIME
-        # if "sum" in ag.split("(")[0].lower() and "sum" not in ag.split(" AS ")[1].lower():
-        #     as_ag += "_SUM"
-        # if "avg" in ag.split("(")[0].lower() and "avg" not in ag.split(" AS ")[1].lower():
-        #     as_ag += "_AVG"
-        # if "count" in ag.split("(")[0].lower() and "count" not in ag.split(" AS ")[1].lower():
-        #     as_ag += "_COUNT"
 
         new_as_columns.append(as_ag)
 

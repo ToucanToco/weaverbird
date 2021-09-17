@@ -1,5 +1,6 @@
 import json
 from os import environ
+from random import randint
 from typing import Dict, NamedTuple, Optional, Union
 
 import pandas as pd
@@ -93,12 +94,15 @@ def snowflake_query_executor(domain: str, query_string: str = None) -> Union[Tes
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
+    # TO prevent conflict on snowflake tables when testing on multiple terminals
+    case_id = case_id.replace("/", "") + str(randint(1, 100000))
+
     spec_file = open(case_spec_file_path, 'r')
     spec = json.loads(spec_file.read())
     spec_file.close()
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
+    execute(get_connection(), f'DROP TABLE IF EXISTS {case_id}', False)
 
     # inserting the data in Snowflake
     # Take data in fixture file, set in pandas, create table and insert
@@ -117,7 +121,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': case_id.replace("/", "")})
+    steps.insert(0, {'name': 'domain', 'domain': case_id})
     pipeline = Pipeline(steps=steps)
 
     # Convert Pipeline object to Snowflake Query
@@ -132,7 +136,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table
-    execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")};')
+    execute(get_connection(), f'DROP TABLE {case_id};')
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
             execute(get_connection(), f'DROP TABLE {input}')
