@@ -52,6 +52,22 @@ def test_todate_automatic_guess(sample_df: DataFrame):
     )
 
 
+def test_todate_from_str_timestamp():
+    """
+    Timestamps to date should support MilliSecond Timestamps (for consistency with Mongo Backend),
+    not NanoSecond (Pandas default)
+    """
+    df = DataFrame(
+        {
+            'timestamp_ms': [1142977800000],
+        }
+    )
+    step = ToDateStep(name='todate', column='timestamp_ms')
+    result = execute_todate(step, df)
+    date_result = result.at[0, 'timestamp_ms']
+    assert str(date_result) == '2006-03-21 21:50:00'
+
+
 def test_benchmark_sort(benchmark):
     now = datetime.datetime.today()
     today = datetime.datetime(year=now.year, month=now.month, day=now.day)
