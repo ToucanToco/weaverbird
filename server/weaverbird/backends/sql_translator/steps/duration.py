@@ -33,11 +33,12 @@ def translate_duration(
         f'query.transformed_query: {query.transformed_query}\n'
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
-
+    # we complete fields
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.new_column_name]
     )
 
+    # the final query
     final_query = (
         f"SELECT {completed_fields},"
         f" DATEDIFF({step.duration_in}, to_timestamp({step.start_date_column}),"
