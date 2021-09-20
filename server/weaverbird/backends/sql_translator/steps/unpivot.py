@@ -39,11 +39,9 @@ def translate_unpivot(
  {str(step.unpivot).replace('[', '(').replace(']', ')').replace("'", '')}"""
 
     transformed_query = f"""{query.transformed_query}, {query_name} AS ({unpivot_query}))"""
-    unpivotted_value_column = query.metadata_manager.retrieve_query_metadata_column_by_name(
-        step.unpivot[0]
-    )
+
     unpivotted_value_column_type = (
-        unpivotted_value_column.type if hasattr(unpivotted_value_column, 'type') else 'UNDEFINED'
+        query.metadata_manager.retrieve_query_metadata_column_type_by_name(step.unpivot[0])
     )
     query.metadata_manager.remove_query_metadata_columns(
         [

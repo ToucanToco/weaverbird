@@ -36,13 +36,13 @@ def translate_duplicate(
 
     # complete fields
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
-        columns_filter=[step.new_column_name.upper()]
+        columns_filter=[step.new_column_name]
     )
 
     # we add the new column depending on type of the precedent column
     query.metadata_manager.add_query_metadata_column(
         step.new_column_name,
-        query.metadata_manager.retrieve_query_metadata_column_by_name(step.column).type,
+        query.metadata_manager.retrieve_query_metadata_column_type_by_name(step.column),
     )
 
     new_query = SQLQuery(
