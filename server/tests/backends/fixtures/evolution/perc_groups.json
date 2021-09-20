@@ -11,7 +11,7 @@
         "evolution_type":"vsLastYear",
         "evolution_format":"pct",
         "index_columns": ["COUNTRY"],
-        "new_column": "pouet"
+        "new_column": "POUET"
       }
     ]
   },
@@ -19,15 +19,15 @@
     "schema": {
       "fields": [
         {
-          "name": "date",
+          "name": "DATE",
           "type": "datetime"
         },
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "number"
         },
         {
-          "name": "country",
+          "name": "COUNTRY",
           "type": "string"
         }
       ],
@@ -35,24 +35,24 @@
     },
     "data": [
       {
-        "date": "2019-01-01",
-        "value": 2,
-        "country": "France"
+        "DATE": "2019-01-01 00:00:01",
+        "VALUE": 2,
+        "COUNTRY": "France"
       },
       {
-        "date": "2019-01-01",
-        "value": 1,
-        "country": "Italy"
+        "DATE": "2019-01-01 00:00:02",
+        "VALUE": 1,
+        "COUNTRY": "Italy"
       },
       {
-        "date": "2020-01-01",
-        "value": 4,
-        "country": "France"
+        "DATE": "2020-01-01 00:00:01",
+        "VALUE": 4,
+        "COUNTRY": "France"
       },
       {
-        "date": "2020-01-01",
-        "value": 0.5,
-        "country": "Italy"
+        "DATE": "2020-01-01 00:00:02",
+        "VALUE": 0.5,
+        "COUNTRY": "Italy"
       }
     ]
   },
@@ -80,25 +80,25 @@
     },
     "data": [
       {
-        "DATE": "2019-01-01",
-        "VALUE": 1.0,
-        "COUNTRY": "Italy",
-        "POUET": null
-      },
-      {
-        "DATE": "2019-01-01",
+        "DATE": "2019-01-01 00:00:01",
         "VALUE": 2.0,
         "COUNTRY": "France",
         "POUET": null
       },
       {
-        "DATE": "2020-01-01",
+        "DATE": "2019-01-01 00:00:02",
+        "VALUE": 1.0,
+        "COUNTRY": "Italy",
+        "POUET": null
+      },
+      {
+        "DATE": "2020-01-01 00:00:01",
         "VALUE": 4.0,
         "COUNTRY": "France",
         "POUET": 1.0
       },
       {
-        "DATE": "2020-01-01",
+        "DATE": "2020-01-01 00:00:02",
         "VALUE": 0.5,
         "COUNTRY": "Italy",
         "POUET": -0.5

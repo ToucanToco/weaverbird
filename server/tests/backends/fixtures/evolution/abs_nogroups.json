@@ -10,7 +10,7 @@
         "value_col":"VALUE",
         "evolution_type":"vsLastYear",
         "evolution_format":"abs",
-        "new_column": "pouet"
+        "new_column": "POUET"
       }
     ]
   },
@@ -18,11 +18,11 @@
     "schema": {
       "fields": [
         {
-          "name": "date",
+          "name": "DATE",
           "type": "datetime"
         },
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "integer"
         }
       ],
@@ -30,52 +30,52 @@
     },
     "data": [
       {
-        "date": "2019-06-01",
-        "value": 6
+        "DATE": "2019-01-01",
+        "VALUE": 2
       },
       {
-        "date": "2019-01-01",
-        "value": 2
+        "DATE": "2019-02-01",
+        "VALUE": 5
       },
       {
-        "date": "2019-02-01",
-        "value": 5
+        "DATE": "2019-03-01",
+        "VALUE": 3
       },
       {
-        "date": "2019-03-01",
-        "value": 3
+        "DATE": "2019-04-01",
+        "VALUE": 8
       },
       {
-        "date": "2019-04-01",
-        "value": 8
+        "DATE": "2019-05-01",
+        "VALUE": 9
       },
       {
-        "date": "2019-05-01",
-        "value": 9
+        "DATE": "2019-06-01",
+        "VALUE": 6
       },
       {
-        "date": "2020-06-01",
-        "value": 6
+        "DATE": "2020-01-01",
+        "VALUE": 3
       },
       {
-        "date": "2020-01-01",
-        "value": 3
+        "DATE": "2020-02-01",
+        "VALUE": 5
       },
       {
-        "date": "2020-02-01",
-        "value": 5
+        "DATE": "2020-03-01",
+        "VALUE": 3
       },
       {
-        "date": "2020-03-01",
-        "value": 3
+        "DATE": "2020-04-01",
+        "VALUE": 8
       },
       {
-        "date": "2020-04-01",
-        "value": 8
+        "DATE": "2020-05-01",
+        "VALUE": 9
       },
       {
-        "date": "2020-05-01",
-        "value": 9
+        "DATE": "2020-06-01",
+        "VALUE": 6
       }
     ]
   },
