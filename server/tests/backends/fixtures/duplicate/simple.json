@@ -1,14 +1,13 @@
 {
   "exclude": [
-    "snowflake",
     "sql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "duplicate",
-        "column": "x",
-        "new_column_name": "y"
+        "column": "X",
+        "new_column_name": "Y"
       }
     ]
   },
@@ -16,18 +15,18 @@
     "schema": {
       "fields": [
         {
-          "name": "x",
-          "type": "integer"
+          "name": "X",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "x": 100
+        "X": "ange"
       },
       {
-        "x": 200
+        "X": "raph"
       }
     ]
   },
@@ -35,24 +34,24 @@
     "schema": {
       "fields": [
         {
-          "name": "x",
-          "type": "integer"
+          "name": "X",
+          "type": "string"
         },
         {
-          "name": "y",
-          "type": "integer"
+          "name": "Y",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "x": 100,
-        "y": 100
+        "X": "ange",
+        "Y": "ange"
       },
       {
-        "x": 200,
-        "y": 200
+        "X": "raph",
+        "Y": "raph"
       }
     ]
   }
