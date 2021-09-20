@@ -10,11 +10,11 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryExecutor,
     SQLQueryRetriever,
 )
-from weaverbird.pipeline.steps import ArgmaxStep
+from weaverbird.pipeline.steps import ArgminStep
 
 
-def translate_argmax(
-    step: ArgmaxStep,
+def translate_argmin(
+    step: ArgminStep,
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
@@ -23,7 +23,7 @@ def translate_argmax(
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
-    query_name = f'ARGMAX_STEP_{index}'
+    query_name = f'ARGMIN_STEP_{index}'
 
     log.debug(
         '############################################################'
@@ -41,14 +41,14 @@ def translate_argmax(
         # the final query
         final_query = (
             f"SELECT * FROM (SELECT {', '.join([f'{c} AS {c}_ALIAS_A' for c in step.groups])},"
-            f" MAX({step.column}) AS {step.column}_ALIAS_A FROM {query.query_name}"
+            f" MIN({step.column}) AS {step.column}_ALIAS_A FROM {query.query_name}"
             f" GROUP BY {', '.join([f'{c}_ALIAS_A' for c in step.groups])}) A"
             f" INNER JOIN {query.query_name} B"
             f" {on_query}"
         )
     else:
         final_query = (
-            f"SELECT * FROM (SELECT MAX({step.column}) AS {step.column}_ALIAS_A FROM {query.query_name}) A"
+            f"SELECT * FROM (SELECT MIN({step.column}) AS {step.column}_ALIAS_A FROM {query.query_name}) A"
             f" INNER JOIN {query.query_name} B"
             f" ON A.{step.column}_ALIAS_A=B.{step.column}"
         )

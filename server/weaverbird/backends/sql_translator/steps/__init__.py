@@ -4,6 +4,7 @@ from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .append import translate_append
 from .argmax import translate_argmax
+from .argmin import translate_argmin
 from .concatenate import translate_concatenate
 from .convert import translate_convert
 from .customsql import translate_customsql
@@ -65,4 +66,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'fillna': translate_fillna,
     'customsql': translate_customsql,
     'argmax': translate_argmax,
+    'argmin': translate_argmin,
 }
