@@ -17,16 +17,22 @@
         {
           "name": "X",
           "type": "string"
+        },
+        {
+          "name": "Z",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "X": "ange"
+        "X": "ange",
+        "Z": 12
       },
       {
-        "X": "raph"
+        "X": "raph",
+        "Z": 15
       }
     ]
   },
@@ -40,6 +46,10 @@
         {
           "name": "Y",
           "type": "string"
+        },
+        {
+          "name": "Z",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -47,11 +57,13 @@
     "data": [
       {
         "X": "ange",
-        "Y": "ange"
+        "Y": "ange",
+        "Z": 12
       },
       {
         "X": "raph",
-        "Y": "raph"
+        "Y": "raph",
+        "Z": 15
       }
     ]
   }
