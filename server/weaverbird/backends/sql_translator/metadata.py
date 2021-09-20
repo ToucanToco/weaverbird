@@ -518,6 +518,13 @@ class SqlQueryMetadataManager(BaseModel):
     def retrieve_query_metadata_column_by_name(self, column_name: str) -> ColumnMetadata:
         return self.retrieve_column_by_name('__INTERNAL__', column_name)
 
+    def retrieve_query_metadata_column_type_by_name(self, column_name: str) -> str:
+        return (
+            self.retrieve_column_by_name('__INTERNAL__', column_name).type
+            if hasattr(self.retrieve_column_by_name('__INTERNAL__', column_name), 'type')
+            else 'UNDEFINED'
+        )
+
     def retrieve_columns_by_type(
         self, table_name: str, column_type: str, deleted: bool = False
     ) -> Dict[str, ColumnMetadata]:

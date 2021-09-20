@@ -52,6 +52,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  duplicate(step: Readonly<S.DuplicateColumnStep>) {
+    return step;
+  }
+
   fillna(step: Readonly<S.FillnaStep>) {
     return step;
   }
