@@ -10,11 +10,11 @@ from weaverbird.backends.sql_translator.types import (
     SQLQueryExecutor,
     SQLQueryRetriever,
 )
-from weaverbird.pipeline.steps import UnpivotStep
+from weaverbird.pipeline.steps import DuplicateStep
 
 
-def translate_unpivot(
-    step: UnpivotStep,
+def translate_duplicate(
+    step: DuplicateStep,
     query: SQLQuery,
     index: int,
     sql_query_retriever: SQLQueryRetriever = None,
@@ -23,7 +23,7 @@ def translate_unpivot(
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
 ) -> SQLQuery:
-    query_name = f'UNPIVOT_STEP_{index}'
+    query_name = f'DUPLICATE_STEP_{index}'
 
     log.debug(
         '############################################################'
@@ -33,36 +33,23 @@ def translate_unpivot(
         f'query.transformed_query: {query.transformed_query}\n'
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
-    unpivot_query = f"""SELECT {', '.join(step.keep + [step.unpivot_column_name.upper(),
-                                                       step.value_column_name.upper()])}\
- FROM {query.query_name} UNPIVOT({step.value_column_name.upper()} FOR {step.unpivot_column_name.upper()} IN\
- {str(step.unpivot).replace('[', '(').replace(']', ')').replace("'", '')}"""
 
-    transformed_query = f"""{query.transformed_query}, {query_name} AS ({unpivot_query}))"""
+    # complete fields
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=[step.new_column_name]
+    )
 
-    unpivotted_value_column_type = (
-        query.metadata_manager.retrieve_query_metadata_column_type_by_name(step.unpivot[0])
-    )
-    query.metadata_manager.remove_query_metadata_columns(
-        [
-            c
-            for c in query.metadata_manager.retrieve_query_metadata_columns().keys()
-            if c not in step.keep
-        ]
-    )
+    # we add the new column depending on type of the precedent column
     query.metadata_manager.add_query_metadata_column(
-        column_name=step.unpivot_column_name, column_type='str'
-    )
-    query.metadata_manager.add_query_metadata_column(
-        column_name=step.value_column_name,
-        # We infer that type of value column will be the same as first unpivoted column's type.
-        # If the provided columns to unpivot have mixed types the unpivot will fail.
-        column_type=unpivotted_value_column_type,
+        step.new_column_name,
+        query.metadata_manager.retrieve_query_metadata_column_type_by_name(step.column),
     )
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=transformed_query,
+        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
+        f""" (SELECT {completed_fields}, {step.column} AS {step.new_column_name}"""
+        f""" FROM {query.query_name})""",
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
