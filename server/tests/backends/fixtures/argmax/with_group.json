@@ -8,7 +8,7 @@
         "name": "argmax",
         "column": "VALUE",
         "groups": [
-          "GROUP"
+          "COLUM"
         ]
       }
     ]
@@ -21,7 +21,7 @@
           "type": "string"
         },
         {
-          "name": "GROUP",
+          "name": "COLUM",
           "type": "string"
         },
         {
@@ -34,32 +34,32 @@
     "data": [
       {
         "LABEL": "label1",
-        "GROUP": "group 1",
+        "COLUM": "col 1",
         "VALUE": 13
       },
       {
         "LABEL": "label2",
-        "GROUP": "group 1",
+        "COLUM": "col 1",
         "VALUE": 7
       },
       {
         "LABEL": "label3",
-        "GROUP": "group 1",
+        "COLUM": "col 1",
         "VALUE": 20
       },
       {
         "LABEL": "label4",
-        "GROUP": "group 2",
+        "COLUM": "col 2",
         "VALUE": 1
       },
       {
         "LABEL": "label5",
-        "GROUP": "group 2",
+        "COLUM": "col 2",
         "VALUE": 10
       },
       {
         "LABEL": "label6",
-        "GROUP": "group 2",
+        "COLUM": "col 2",
         "VALUE": 5
       }
     ]
@@ -72,7 +72,7 @@
           "type": "string"
         },
         {
-          "name": "GROUP",
+          "name": "COLUM",
           "type": "string"
         },
         {
@@ -85,12 +85,12 @@
     "data": [
       {
         "LABEL": "label3",
-        "GROUP": "group 1",
+        "COLUM": "col 1",
         "VALUE": 20
       },
       {
         "LABEL": "label5",
-        "GROUP": "group 2",
+        "COLUM": "col 2",
         "VALUE": 10
       }
     ]

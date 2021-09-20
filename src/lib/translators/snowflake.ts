@@ -20,6 +20,14 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  argmax(step: Readonly<S.ArgmaxStep>) {
+    return step;
+  }
+
+  argmin(step: Readonly<S.ArgminStep>) {
+    return step;
+  }
+
   concatenate(step: Readonly<S.ConcatenateStep>) {
     return step;
   }
@@ -48,6 +56,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  duration(step: Readonly<S.ComputeDurationStep>) {
+    return step;
+  }
+  
   evolution(step: Readonly<S.EvolutionStep>) {
     return step;
   }

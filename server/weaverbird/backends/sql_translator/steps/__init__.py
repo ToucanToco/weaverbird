@@ -3,6 +3,8 @@ from typing import Dict
 from ..types import SQLStepTranslator
 from .aggregate import translate_aggregate
 from .append import translate_append
+from .argmax import translate_argmax
+from .argmin import translate_argmin
 from .concatenate import translate_concatenate
 from .convert import translate_convert
 from .customsql import translate_customsql
@@ -10,6 +12,7 @@ from .dateextract import translate_dateextract
 from .delete import translate_delete
 from .duplicate import translate_duplicate
 from .evolution import translate_evolution
+from .duration import translate_duration
 from .fillna import translate_fillna
 from .filter import translate_filter
 from .formula import translate_formula
@@ -65,6 +68,9 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'substring': translate_substring,
     'fillna': translate_fillna,
     'customsql': translate_customsql,
+    'argmax': translate_argmax,
+    'argmin': translate_argmin,
     'duplicate': translate_duplicate,
     'evolution': translate_evolution,
+    'duration': translate_duration,
 }
