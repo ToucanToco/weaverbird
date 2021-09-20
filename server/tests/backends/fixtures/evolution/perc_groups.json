@@ -1,0 +1,108 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name":"evolution",
+        "date_col":"DATE",
+        "value_col":"VALUE",
+        "evolution_type":"vsLastYear",
+        "evolution_format":"pct",
+        "index_columns": ["COUNTRY"],
+        "new_column": "pouet"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "date",
+          "type": "datetime"
+        },
+        {
+          "name": "value",
+          "type": "number"
+        },
+        {
+          "name": "country",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "date": "2019-01-01",
+        "value": 2,
+        "country": "France"
+      },
+      {
+        "date": "2019-01-01",
+        "value": 1,
+        "country": "Italy"
+      },
+      {
+        "date": "2020-01-01",
+        "value": 4,
+        "country": "France"
+      },
+      {
+        "date": "2020-01-01",
+        "value": 0.5,
+        "country": "Italy"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime"
+        },
+        {
+          "name": "VALUE",
+          "type": "number"
+        },
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        },
+        {
+          "name": "POUET",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-01-01",
+        "VALUE": 1.0,
+        "COUNTRY": "Italy",
+        "POUET": null
+      },
+      {
+        "DATE": "2019-01-01",
+        "VALUE": 2.0,
+        "COUNTRY": "France",
+        "POUET": null
+      },
+      {
+        "DATE": "2020-01-01",
+        "VALUE": 4.0,
+        "COUNTRY": "France",
+        "POUET": 1.0
+      },
+      {
+        "DATE": "2020-01-01",
+        "VALUE": 0.5,
+        "COUNTRY": "Italy",
+        "POUET": -0.5
+      }
+    ]
+  }
+}

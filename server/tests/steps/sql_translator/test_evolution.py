@@ -38,7 +38,7 @@ def test_translate_evolution(mocker, query):
         "WITH SELECT_STEP_0 AS (SELECT * FROM products), EVOLUTION_STEP_1 AS "
         "(SELECT A.TOTO AS TOTO, A.RAICHU AS RAICHU, A.FLORIZARRE AS FLORIZARRE, A.DATE AS DATE, "
         "B.RAICHU - A.RAICHU AS RAICHU_EVOL_ABS FROM SELECT_STEP_0 A LEFT JOIN SELECT_STEP_0 B "
-        "ON A.DATE = DATEADD('month', 1, DATE) ORDER BY A.DATE"
+        "ON A.DATE = DATEADD('month', 1, A.DATE) ORDER BY A.DATE)"
     )
     assert query.transformed_query == expected_transformed_query
     assert (
