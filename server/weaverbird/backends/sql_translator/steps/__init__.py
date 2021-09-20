@@ -11,6 +11,7 @@ from .customsql import translate_customsql
 from .dateextract import translate_dateextract
 from .delete import translate_delete
 from .duplicate import translate_duplicate
+from .duration import translate_duration
 from .fillna import translate_fillna
 from .filter import translate_filter
 from .formula import translate_formula
@@ -69,4 +70,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'argmax': translate_argmax,
     'argmin': translate_argmin,
     'duplicate': translate_duplicate,
+    'duration': translate_duration,
 }

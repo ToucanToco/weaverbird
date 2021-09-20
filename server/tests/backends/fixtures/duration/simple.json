@@ -1,0 +1,121 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "duration",
+        "new_column_name": "DURATION",
+        "start_date_column": "DATE",
+        "end_date_column": "PRE_DATE",
+        "duration_in": "minutes"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "PRE_DATE",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "DATE",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "DATE_DAY",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "PRE_DATE": "2021-03-29T00:20:00.000Z",
+        "DATE": "2021-03-29T00:00:00.000Z",
+        "DATE_DAY": 29.0
+      },
+      {
+        "PRE_DATE": "2020-12-13T00:10:00.000Z",
+        "DATE": "2020-12-13T00:00:00.000Z",
+        "DATE_DAY": 13.0
+      },
+      {
+        "PRE_DATE": "2020-07-29T00:05:00.000Z",
+        "DATE": "2020-07-29T00:00:00.000Z",
+        "DATE_DAY": 29.0
+      },
+      {
+        "PRE_DATE": "2019-04-09T01:02:03.004Z",
+        "DATE": "2019-04-09T01:01:03.004Z",
+        "DATE_DAY": 9.0
+      },
+      {
+        "pre_date": null,
+        "date": null,
+        "date_day": null
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "PRE_DATE",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "DATE",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
+          "name": "DATE_DAY",
+          "type": "number"
+        },
+        {
+          "name": "DURATION",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "PRE_DATE": "2021-03-29T00:20:00.000Z",
+        "DATE": "2021-03-29T00:00:00.000Z",
+        "DATE_DAY": 29.0,
+        "DURATION": 20.0
+      },
+      {
+        "PRE_DATE": "2020-12-13T00:10:00.000Z",
+        "DATE": "2020-12-13T00:00:00.000Z",
+        "DATE_DAY": 13.0,
+        "DURATION": 10.0
+      },
+      {
+        "PRE_DATE": "2020-07-29T00:05:00.000Z",
+        "DATE": "2020-07-29T00:00:00.000Z",
+        "DATE_DAY": 29.0,
+        "DURATION": 5.0
+      },
+      {
+        "PRE_DATE": "2019-04-09T01:02:03.004Z",
+        "DATE": "2019-04-09T01:01:03.004Z",
+        "DATE_DAY": 9.0,
+        "DURATION": 1.0
+      },
+      {
+        "PRE_DATE": null,
+        "DATE": null,
+        "DATE_DAY": null,
+        "DURATION": null
+      }
+    ]
+  }
+}
