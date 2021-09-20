@@ -59,7 +59,7 @@ export class SnowflakeTranslator extends BaseTranslator {
   duration(step: Readonly<S.ComputeDurationStep>) {
     return step;
   }
-  
+
   evolution(step: Readonly<S.EvolutionStep>) {
     return step;
   }
