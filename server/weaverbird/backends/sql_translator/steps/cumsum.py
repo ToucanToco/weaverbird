@@ -44,23 +44,18 @@ def translate_cumsum(
         columns_filter=[step.new_column]
     )
 
-    # the final query
+    # the partition by sub query
+    partition_by_sub_query = 'NULL'
     # if there is a group by query
     if step.groupby is not None and len(step.groupby):
-        # the final query
-        final_query = (
-            f"SELECT {completed_fields}, SUM({step.value_column}) OVER (PARTITION BY {', '.join(step.groupby)}"
-            f" ORDER BY {step.reference_column} ASC rows UNBOUNDED PRECEDING) {step.new_column}"
-            f" FROM {query.query_name} ORDER BY {step.reference_column} ASC"
-        )
-    else:
-        # if not
-        final_query = (
-            f"SELECT {completed_fields},"
-            f" SUM({step.value_column}) OVER (PARTITION BY NULL"
-            f" ORDER BY {step.reference_column} ASC rows UNBOUNDED PRECEDING) {step.new_column}"
-            f" FROM {query.query_name} ORDER BY {step.reference_column} ASC"
-        )
+        partition_by_sub_query = ', '.join(step.groupby)
+
+    # The final query
+    final_query = (
+        f"SELECT {completed_fields}, SUM({step.value_column}) OVER (PARTITION BY {partition_by_sub_query}"
+        f" ORDER BY {step.reference_column} ASC rows UNBOUNDED PRECEDING) {step.new_column}"
+        f" FROM {query.query_name} ORDER BY {step.reference_column} ASC"
+    )
 
     # we make sure to add the new column in the metadata list
     query.metadata_manager.add_query_metadata_column(step.new_column, "FLOAT")
