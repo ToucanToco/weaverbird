@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.60.7] - 2021-09-21
+
+### Added
+
+- SQL VQB [Snowflake]: Duplicate Column
+- SQL VQB [Snowflake]: Argmin, Argmax
+- SQL VQB [Snowflake]: Evolution
+- SQL VQB [Snowflake]: Duration
+
 ## [0.60.6] - 2021-09-17
 
 ### Changed
@@ -926,6 +935,7 @@
 
 ## Unreleased
 
+[0.60.7]: https://github.com/ToucanToco/weaverbird/compare/v0.60.6...v0.60.7
 [0.60.6]: https://github.com/ToucanToco/weaverbird/compare/v0.60.5...v0.60.6
 [0.60.5]: https://github.com/ToucanToco/weaverbird/compare/v0.60.4...v0.60.5
 [0.60.4]: https://github.com/ToucanToco/weaverbird/compare/v0.60.3...v0.60.4
