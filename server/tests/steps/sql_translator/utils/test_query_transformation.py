@@ -4,6 +4,8 @@ from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQuery
 from weaverbird.backends.sql_translator.steps.utils.aggregation import get_aggs_columns
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     apply_condition,
+    build_aggregated_columns,
+    build_hierarchical_columns_list,
     build_selection_query,
     build_union_query,
     generate_query_by_keeping_granularity,
@@ -42,6 +44,28 @@ def query():
             },
         ),
     )
+
+
+@pytest.fixture
+def aggregations(mocker):
+    return [
+        mocker.MagicMock(
+            columns=['ENRON', 'STANDARD OIL'],
+            agg_function='SUM',
+            new_columns=['SUM_ENRON', 'SUM_STANDARD_OIL'],
+        ),
+        mocker.MagicMock(columns=['ARAMCO'], agg_function='AVG', new_columns=['MOAAAR_OIL']),
+    ]
+
+
+class FakeStep:
+    def __init__(self, hierarchy, aggregations, level_col, label_col, parent_label_col, groupby):
+        self.hierarchy = hierarchy
+        self.aggregations = aggregations
+        self.level_col = level_col
+        self.label_col = label_col
+        self.parent_label_col = parent_label_col
+        self.groupby = groupby
 
 
 def test_apply_condition_comparisons():
@@ -416,3 +440,33 @@ def test_generate_query_by_keeping_granularity(query):
         "SELECT_STEP_0_ALIAS.RAICHU)) ORDER BY TO_REMOVE_STEP_X"
     )
     assert query_with_granularity_kept[2] == []
+
+
+def test_build_aggregated_columns(aggregations):
+    assert build_aggregated_columns(aggregations) == [
+        "SUM(ENRON) AS SUM_ENRON",
+        "SUM(STANDARD OIL) AS SUM_STANDARD_OIL",
+        "AVG(ARAMCO) AS MOAAAR_OIL",
+    ]
+
+
+def test_build_aggregated_columns_empty(mocker):
+    aggregations = [
+        mocker.MagicMock(columns=[], agg_function='', new_columns=[]),
+    ]
+    assert build_aggregated_columns(aggregations) == []
+
+
+def test_build_hierarchical_columns_list(aggregations):
+    step = FakeStep(
+        hierarchy=['EXXON', 'CHEVRON', 'TEXACO'],
+        aggregations=aggregations,
+        level_col='ROCKFELLER',
+        label_col='CFP',
+        parent_label_col='ANGLO-PERSIAN OIL COMPANY',
+        groupby=['SAUDI ARABIA', 'IRAN'],
+    )
+    assert (
+        build_hierarchical_columns_list(step)
+        == """EXXON, CHEVRON, TEXACO, SAUDI ARABIA, IRAN, COALESCE(TEXACO, CHEVRON, EXXON) AS CFP, CASE WHEN TEXACO IS NOT NULL THEN 'TEXACO' WHEN CHEVRON IS NOT NULL THEN 'CHEVRON' WHEN EXXON IS NOT NULL THEN 'EXXON' ELSE '' END AS ROCKFELLER, CASE WHEN ROCKFELLER = 'CHEVRON' THEN "EXXON" WHEN ROCKFELLER = 'TEXACO' THEN "CHEVRON" ELSE NULL END AS ANGLO-PERSIAN OIL COMPANY, SUM(ENRON) AS SUM_ENRON, SUM(STANDARD OIL) AS SUM_STANDARD_OIL, AVG(ARAMCO) AS MOAAAR_OIL"""
+    )

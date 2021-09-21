@@ -1,0 +1,372 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name":"rollup",
+        "hierarchy":["STATE", "CITY"],
+        "aggregations":[
+            {
+              "newcolumns": ["SUM_RETAIL_PRICE"], "aggfunction": "sum", "columns": ["RETAIL_PRICE"]
+            }
+        ],
+        "groupby": ["PRODUCT_ID"],
+        "level_col": "LEVEL",
+        "label_col": "LABEL",
+        "parent_label_col": "PARENT"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+         "name": "PRODUCT_ID",
+         "type": "integer"
+        },
+        {
+          "name": "RETAIL_PRICE",
+          "type": "number"
+        },
+        {
+          "name": "QUANTITY",
+          "type": "integer"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        },
+        {
+          "name": "STATE",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+         "PRODUCT_ID": 1,
+         "QUANTITY":2.00,
+         "RETAIL_PRICE": 1,
+         "CITY":"SF",
+         "STATE":"CA"
+      },
+      {
+         "PRODUCT_ID": 1,
+         "QUANTITY":2.00,
+         "RETAIL_PRICE": 2,
+         "CITY":"SJ",
+         "STATE":"CA"
+      },
+      {
+         "PRODUCT_ID": 2,
+         "QUANTITY":5.00,
+         "RETAIL_PRICE": 4,
+         "CITY":"SF",
+         "STATE":"CA"
+      },
+      {
+         "PRODUCT_ID": 2,
+         "QUANTITY":5.00,
+         "RETAIL_PRICE": 8,
+         "CITY":"SJ",
+         "STATE":"CA"
+      },
+      {
+         "PRODUCT_ID": 2,
+         "QUANTITY":5.00,
+         "RETAIL_PRICE": 16,
+         "CITY":"Miami",
+         "STATE":"FL"
+      },
+      {
+         "PRODUCT_ID": 2,
+         "QUANTITY":5.00,
+         "RETAIL_PRICE": 32,
+         "CITY":"Orlando",
+         "STATE":"FL"
+      },
+      {
+         "PRODUCT_ID": 2,
+         "QUANTITY":5.00,
+         "RETAIL_PRICE": 64,
+         "CITY":"SJ",
+         "STATE":"PR"
+      }
+    ]
+  },
+  "expected_sql": {
+    "schema": {
+      "fields": [
+        {
+            "name":"STATE",
+            "type":"string"
+        },
+        {
+            "name":"CITY",
+            "type":"string"
+        },
+        {
+            "name": "PRODUCT_ID",
+            "type": "integer"
+        },
+        {
+            "name":"LABEL",
+            "type":"string"
+        },
+        {
+            "name":"LEVEL",
+            "type":"string"
+        },
+        {
+            "name":"PARENT",
+            "type":"string"
+        },
+        {
+            "name":"SUM_RETAIL_PRICE",
+            "type":"number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+    {
+      "STATE": "CA",
+      "CITY": "SF",
+      "PRODUCT_ID": 1,
+      "LABEL": "SF",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 1
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SJ",
+      "PRODUCT_ID": 1,
+      "LABEL": "SJ",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 2
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SF",
+      "PRODUCT_ID": 2,
+      "LABEL": "SF",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 4
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SJ",
+      "PRODUCT_ID": 2,
+      "LABEL": "SJ",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 8
+    },
+    {
+      "STATE": "FL",
+      "CITY": "Miami",
+      "PRODUCT_ID": 2,
+      "LABEL": "Miami",
+      "LEVEL": "CITY",
+      "PARENT": "FL",
+      "SUM_RETAIL_PRICE": 16
+    },
+    {
+      "STATE": "FL",
+      "CITY": "Orlando",
+      "PRODUCT_ID": 2,
+      "LABEL": "Orlando",
+      "LEVEL": "CITY",
+      "PARENT": "FL",
+      "SUM_RETAIL_PRICE": 32
+    },
+    {
+      "STATE": "PR",
+      "CITY": "SJ",
+      "PRODUCT_ID": 2,
+      "LABEL": "SJ",
+      "LEVEL": "CITY",
+      "PARENT": "PR",
+      "SUM_RETAIL_PRICE": 64
+    },
+    {
+      "STATE": "CA",
+      "CITY": null,
+      "PRODUCT_ID": 1,
+      "LABEL": "CA",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 3
+    },
+    {
+      "STATE": "CA",
+      "CITY": null,
+      "PRODUCT_ID": 2,
+      "LABEL": "CA",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 12
+    },
+    {
+      "STATE": "FL",
+      "CITY": null,
+      "PRODUCT_ID": 2,
+      "LABEL": "FL",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 48
+    },
+    {
+      "STATE": "PR",
+      "CITY": null,
+      "PRODUCT_ID": 2,
+      "LABEL": "PR",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 64
+    }
+  ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+            "name":"STATE",
+            "type":"string"
+        },
+        {
+            "name":"CITY",
+            "type":"string"
+        },
+        {
+            "name": "PRODUCT_ID",
+            "type": "integer"
+        },
+        {
+            "name":"LABEL",
+            "type":"string"
+        },
+        {
+            "name":"LEVEL",
+            "type":"string"
+        },
+        {
+            "name":"PARENT",
+            "type":"string"
+        },
+        {
+            "name":"SUM_RETAIL_PRICE",
+            "type":"number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+    {
+      "STATE": "CA",
+      "CITY": null,
+      "PRODUCT_ID": 1,
+      "LABEL": "CA",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 3
+    },
+    {
+      "STATE": "CA",
+      "CITY": null,
+      "PRODUCT_ID": 2,
+      "LABEL": "CA",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 12
+    },
+    {
+      "STATE": "FL",
+      "CITY": null,
+      "PRODUCT_ID": 2,
+      "LABEL": "FL",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 48
+    },
+    {
+      "STATE": "PR",
+      "CITY": null,
+      "PRODUCT_ID": 2,
+      "LABEL": "PR",
+      "LEVEL": "STATE",
+      "PARENT": null,
+      "SUM_RETAIL_PRICE": 64
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SF",
+      "PRODUCT_ID": 1,
+      "LABEL": "SF",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 1
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SJ",
+      "PRODUCT_ID": 1,
+      "LABEL": "SJ",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 2
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SF",
+      "PRODUCT_ID": 2,
+      "LABEL": "SF",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 4
+    },
+    {
+      "STATE": "CA",
+      "CITY": "SJ",
+      "PRODUCT_ID": 2,
+      "LABEL": "SJ",
+      "LEVEL": "CITY",
+      "PARENT": "CA",
+      "SUM_RETAIL_PRICE": 8
+    },
+    {
+      "STATE": "FL",
+      "CITY": "Miami",
+      "PRODUCT_ID": 2,
+      "LABEL": "Miami",
+      "LEVEL": "CITY",
+      "PARENT": "FL",
+      "SUM_RETAIL_PRICE": 16
+    },
+    {
+      "STATE": "FL",
+      "CITY": "Orlando",
+      "PRODUCT_ID": 2,
+      "LABEL": "Orlando",
+      "LEVEL": "CITY",
+      "PARENT": "FL",
+      "SUM_RETAIL_PRICE": 32
+    },
+    {
+      "STATE": "PR",
+      "CITY": "SJ",
+      "PRODUCT_ID": 2,
+      "LABEL": "SJ",
+      "LEVEL": "CITY",
+      "PARENT": "PR",
+      "SUM_RETAIL_PRICE": 64
+    }
+  ]
+  }
+}

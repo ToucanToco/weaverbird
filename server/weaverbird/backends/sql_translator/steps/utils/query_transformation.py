@@ -384,3 +384,41 @@ def get_query_for_date_extract(
 
 def sanitize_input(value: str) -> str:
     return value.replace('"', '\\"').replace("'", "\\'")
+
+
+def build_aggregated_columns(aggregations):
+    aggregated_columns = []
+    for aggregation in aggregations:
+        for col, newcol in zip(aggregation.columns, aggregation.new_columns):
+            aggregated_columns.append(
+                f'{aggregation.agg_function.upper()}({col}) AS {newcol}'
+                if aggregation.agg_function != 'count distinct'
+                else f'COUNT(DISTINCT {col}) AS {newcol}'
+            )
+    return aggregated_columns
+
+
+def build_hierarchical_columns_list(step):
+    level_columns = ' '.join(
+        [f"WHEN {c} IS NOT NULL THEN '{c.upper()}'" for c in step.hierarchy[::-1]]
+    )
+    level_columns = f"CASE {level_columns} ELSE '' END AS {step.level_col or 'LEVEL'}"
+    label_columns = (
+        f"""COALESCE({', '.join(step.hierarchy[::-1])}) AS {step.label_col or "LABEL"}"""
+    )
+    parent_columns = []
+    for p, c in zip(step.hierarchy, step.hierarchy[1:]):
+        parent_columns.append(f"""WHEN {step.level_col or "LEVEL"} = '{c}' THEN "{p}" """)
+    parent_columns = (
+        f"""CASE {''.join(parent_columns)}ELSE NULL END AS {step.parent_label_col or 'PARENT'}"""
+    )
+
+    aggregated_columns = build_aggregated_columns(step.aggregations)
+
+    all_columns = (
+        step.hierarchy
+        + (step.groupby or [])
+        + [label_columns, level_columns, parent_columns]
+        + aggregated_columns
+    )
+    return ', '.join(all_columns)

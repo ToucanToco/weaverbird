@@ -112,6 +112,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  rollup(step: Readonly<S.RollupStep>) {
+    return step;
+  }
+
   select(step: Readonly<S.SelectStep>) {
     return step;
   }
