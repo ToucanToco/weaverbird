@@ -19,7 +19,7 @@ def test_translate_cumsum(query):
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), CUMSUM_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
         'SUM(TOTO) OVER (PARTITION BY NULL ORDER BY RAICHU ASC rows UNBOUNDED PRECEDING) TOTO_CUMSUM_CUSTOM FROM '
-        'SELECT_STEP_0)'
+        'SELECT_STEP_0 ORDER BY RAICHU ASC)'
     )
     assert query.transformed_query == expected_transformed_query
     assert (
@@ -79,12 +79,11 @@ def test_translate_no_new_column_name_cumsum(query):
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), CUMSUM_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
         'SUM(TOTO) OVER (PARTITION BY NULL ORDER BY RAICHU ASC rows UNBOUNDED PRECEDING) TOTO_CUMSUM FROM '
-        'SELECT_STEP_0)'
+        'SELECT_STEP_0 ORDER BY RAICHU ASC)'
     )
     assert query.transformed_query == expected_transformed_query
     assert (
-        query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM FROM CUMSUM_STEP_1'
+        query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM FROM CUMSUM_STEP_1'
     )
     assert query.query_name == 'CUMSUM_STEP_1'
     # metadatas
@@ -138,14 +137,12 @@ def test_translate_groupby_cumsum(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), CUMSUM_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, '
-        'SUM(TOTO) OVER (PARTITION BY NULL ORDER BY RAICHU ASC rows UNBOUNDED PRECEDING) TOTO_CUMSUM FROM '
-        'SELECT_STEP_0 GROUP BY FLORIZARRE_ALIAS_A) A INNER JOIN SELECT_STEP_0 B ON A.FLORIZARRE_ALIAS_A=B.FLORIZARRE '
-        'AND A.TOTO_ALIAS_A=B.TOTO)'
+        'SUM(TOTO) OVER (PARTITION BY FLORIZARRE ORDER BY RAICHU ASC rows UNBOUNDED PRECEDING) TOTO_CUMSUM FROM '
+        'SELECT_STEP_0 ORDER BY RAICHU ASC)'
     )
     assert query.transformed_query == expected_transformed_query
     assert (
-        query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM FROM CUMSUM_STEP_1'
+        query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM FROM CUMSUM_STEP_1'
     )
     assert query.query_name == 'CUMSUM_STEP_1'
     # metadatas
