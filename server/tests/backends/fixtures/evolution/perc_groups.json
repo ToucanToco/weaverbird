@@ -1,0 +1,108 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name":"evolution",
+        "date_col":"DATE",
+        "value_col":"VALUE",
+        "evolution_type":"vsLastYear",
+        "evolution_format":"pct",
+        "index_columns": ["COUNTRY"],
+        "new_column": "POUET"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime"
+        },
+        {
+          "name": "VALUE",
+          "type": "number"
+        },
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-01-01 00:00:01",
+        "VALUE": 2,
+        "COUNTRY": "France"
+      },
+      {
+        "DATE": "2019-01-01 00:00:02",
+        "VALUE": 1,
+        "COUNTRY": "Italy"
+      },
+      {
+        "DATE": "2020-01-01 00:00:01",
+        "VALUE": 4,
+        "COUNTRY": "France"
+      },
+      {
+        "DATE": "2020-01-01 00:00:02",
+        "VALUE": 0.5,
+        "COUNTRY": "Italy"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime"
+        },
+        {
+          "name": "VALUE",
+          "type": "number"
+        },
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        },
+        {
+          "name": "POUET",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-01-01 00:00:01",
+        "VALUE": 2.0,
+        "COUNTRY": "France",
+        "POUET": null
+      },
+      {
+        "DATE": "2019-01-01 00:00:02",
+        "VALUE": 1.0,
+        "COUNTRY": "Italy",
+        "POUET": null
+      },
+      {
+        "DATE": "2020-01-01 00:00:01",
+        "VALUE": 4.0,
+        "COUNTRY": "France",
+        "POUET": 1.0
+      },
+      {
+        "DATE": "2020-01-01 00:00:02",
+        "VALUE": 0.5,
+        "COUNTRY": "Italy",
+        "POUET": -0.5
+      }
+    ]
+  }
+}

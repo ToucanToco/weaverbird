@@ -1,0 +1,163 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name":"evolution",
+        "date_col":"DATE",
+        "value_col":"VALUE",
+        "evolution_type":"vsLastYear",
+        "evolution_format":"abs",
+        "new_column": "POUET"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-01-01",
+        "VALUE": 2
+      },
+      {
+        "DATE": "2019-02-01",
+        "VALUE": 5
+      },
+      {
+        "DATE": "2019-03-01",
+        "VALUE": 3
+      },
+      {
+        "DATE": "2019-04-01",
+        "VALUE": 8
+      },
+      {
+        "DATE": "2019-05-01",
+        "VALUE": 9
+      },
+      {
+        "DATE": "2019-06-01",
+        "VALUE": 6
+      },
+      {
+        "DATE": "2020-01-01",
+        "VALUE": 3
+      },
+      {
+        "DATE": "2020-02-01",
+        "VALUE": 5
+      },
+      {
+        "DATE": "2020-03-01",
+        "VALUE": 3
+      },
+      {
+        "DATE": "2020-04-01",
+        "VALUE": 8
+      },
+      {
+        "DATE": "2020-05-01",
+        "VALUE": 9
+      },
+      {
+        "DATE": "2020-06-01",
+        "VALUE": 6
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "DATE",
+          "type": "datetime"
+        },
+        {
+          "name": "VALUE",
+          "type": "integer"
+        },
+        {
+          "name": "POUET",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "DATE": "2019-01-01",
+        "VALUE": 2,
+        "POUET": null
+      },
+      {
+        "DATE": "2019-02-01",
+        "VALUE": 5,
+        "POUET": null
+      },
+      {
+        "DATE": "2019-03-01",
+        "VALUE": 3,
+        "POUET": null
+      },
+      {
+        "DATE": "2019-04-01",
+        "VALUE": 8,
+        "POUET": null
+      },
+      {
+        "DATE": "2019-05-01",
+        "VALUE": 9,
+        "POUET": null
+      },
+      {
+        "DATE": "2019-06-01",
+        "VALUE": 6,
+        "POUET": null
+      },
+      {
+        "DATE": "2020-01-01",
+        "VALUE": 3,
+        "POUET": 1
+      },
+      {
+        "DATE": "2020-02-01",
+        "VALUE": 5,
+        "POUET": 0
+      },
+      {
+        "DATE": "2020-03-01",
+        "VALUE": 3,
+        "POUET": 0
+      },
+      {
+        "DATE": "2020-04-01",
+        "VALUE": 8,
+        "POUET": 0
+      },
+      {
+        "DATE": "2020-05-01",
+        "VALUE": 9,
+        "POUET": 0
+      },
+      {
+        "DATE": "2020-06-01",
+        "VALUE": 6,
+        "POUET": 0
+      }
+    ]
+  }
+}
