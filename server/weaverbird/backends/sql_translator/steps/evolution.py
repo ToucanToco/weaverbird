@@ -46,20 +46,27 @@ def translate_evolution(
     )
 
     if step.evolution_format == 'abs':
-        new_column = f'''A.{step.value_col} - B.{step.value_col} AS {new_column_name}'''
+        new_column = f'''(A.{step.value_col} - B.{step.value_col}) AS {new_column_name}'''
     else:
-        new_column = f'''A.{step.value_col} / B.{step.value_col} - 1 AS {new_column_name}'''
+        new_column = f'''((A.{step.value_col} / B.{step.value_col}) - 1) AS {new_column_name}'''
 
-    date_join = (
-        f"A.{step.date_col} = DATEADD('{DATE_UNIT[step.evolution_type]}', 1, B.{step.date_col})"
-    )
     selected_columns = [
         f'A.{c} AS {c}' for c in query.metadata_manager.retrieve_query_metadata_columns()
     ] + [new_column]
 
-    transformed_query = f"""{query.transformed_query}, {query_name} AS (SELECT {', '.join(selected_columns)}\
- FROM {query.query_name} A LEFT JOIN {query.query_name} B ON {" AND ".join([date_join]+[f"A.{c} = "
-    f"B.{c}" for c in step.index_columns])} ORDER BY A.{step.date_col})"""
+    date_join = (
+        f"A.{step.date_col} = DATEADD('{DATE_UNIT[step.evolution_type]}', 1, B.{step.date_col})"
+    )
+
+    on_query = f"ON {' AND '.join([date_join]+[f'A.{c} = B.{c}' for c in step.index_columns])}"
+
+    final_query = (
+        f"SELECT {', '.join(selected_columns)}"
+        f" FROM {query.query_name} A LEFT JOIN {query.query_name} B"
+        f" {on_query} ORDER BY A.{step.date_col}"
+    )
+
+    transformed_query = f"{query.transformed_query}, {query_name} AS ({final_query})"
 
     query.metadata_manager.add_query_metadata_column(new_column_name, 'float')
 
