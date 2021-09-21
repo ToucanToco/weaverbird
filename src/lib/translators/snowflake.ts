@@ -40,6 +40,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  cumsum(step: Readonly<S.CumSumStep>) {
+    return step;
+  }
+
   dateextract(step: Readonly<S.DateExtractStep>) {
     return step;
   }

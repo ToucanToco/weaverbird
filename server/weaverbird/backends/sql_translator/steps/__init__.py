@@ -7,6 +7,7 @@ from .argmax import translate_argmax
 from .argmin import translate_argmin
 from .concatenate import translate_concatenate
 from .convert import translate_convert
+from .cumsum import translate_cumsum
 from .customsql import translate_customsql
 from .dateextract import translate_dateextract
 from .delete import translate_delete
@@ -71,4 +72,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'argmin': translate_argmin,
     'duplicate': translate_duplicate,
     'duration': translate_duration,
+    'cumsum': translate_cumsum,
 }
