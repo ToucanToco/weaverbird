@@ -12,7 +12,7 @@ def sql_query_describer():
     return Mock(return_value={'toto': 'int', 'raichu': 'str'})
 
 
-def test_rollup(query, sql_query_describer):
+def test_translate_rollup(query, sql_query_describer):
     step = RollupStep(
         name='rollup',
         hierarchy=['CONTINENT', 'COUNTRY', 'CITY'],
@@ -23,9 +23,17 @@ def test_rollup(query, sql_query_describer):
     result = translate_rollup(step, query, index=1, sql_query_describer=sql_query_describer)
     assert (
         result.transformed_query
-        == '''WITH SELECT_STEP_0 AS (SELECT * FROM products), ROLLUP_STEP_1 AS (SELECT CONTINENT, COUNTRY, CITY, COALESCE(CITY, COUNTRY, CONTINENT) AS LABEL, CASE WHEN CITY IS NOT NULL THEN 'CITY' WHEN COUNTRY IS NOT NULL THEN 'COUNTRY' WHEN CONTINENT IS NOT NULL THEN 'CONTINENT' ELSE '' END AS LEVEL, CASE WHEN LEVEL = 'COUNTRY' THEN "CONTINENT" WHEN LEVEL = 'CITY' THEN "COUNTRY" ELSE NULL END AS PARENT, SUM(VALUE) AS VALUE FROM SELECT_STEP_0 GROUP BY ROLLUP(CONTINENT, COUNTRY, CITY) HAVING CONTINENT IS NOT NULL)'''
+        == '''WITH SELECT_STEP_0 AS (SELECT * FROM products), \
+ROLLUP_STEP_1 AS (SELECT CONTINENT, COUNTRY, CITY, \
+COALESCE(CITY, COUNTRY, CONTINENT) AS LABEL, \
+CASE WHEN CITY IS NOT NULL THEN 'CITY' WHEN COUNTRY IS NOT NULL \
+THEN 'COUNTRY' WHEN CONTINENT IS NOT NULL THEN 'CONTINENT' ELSE '' END AS LEVEL, \
+CASE WHEN LEVEL = 'COUNTRY' THEN "CONTINENT" WHEN LEVEL = 'CITY' \
+THEN "COUNTRY" ELSE NULL END AS PARENT, SUM(VALUE) AS VALUE FROM SELECT_STEP_0 \
+GROUP BY ROLLUP(CONTINENT, COUNTRY, CITY) HAVING CONTINENT IS NOT NULL)'''
     )
     assert result.query_name == 'ROLLUP_STEP_1'
+    assert result.selection_query == 'SELECT TOTO, RAICHU FROM ROLLUP_STEP_1'
     assert result.metadata_manager.retrieve_query_metadata_columns() == {
         'TOTO': ColumnMetadata(
             name='TOTO',
@@ -46,7 +54,7 @@ def test_rollup(query, sql_query_describer):
     }
 
 
-def test_rollup_groupby(query, sql_query_describer):
+def test_translate_rollup_groupby(query, sql_query_describer):
     step = RollupStep(
         name='rollup',
         hierarchy=['CONTINENT', 'COUNTRY', 'CITY'],
@@ -66,5 +74,12 @@ def test_rollup_groupby(query, sql_query_describer):
     result = translate_rollup(step, query, index=1, sql_query_describer=sql_query_describer)
     assert (
         result.transformed_query
-        == """WITH SELECT_STEP_0 AS (SELECT * FROM products), ROLLUP_STEP_1 AS (SELECT CONTINENT, COUNTRY, CITY, YEAR, COALESCE(CITY, COUNTRY, CONTINENT) AS MY_LABEL, CASE WHEN CITY IS NOT NULL THEN 'CITY' WHEN COUNTRY IS NOT NULL THEN 'COUNTRY' WHEN CONTINENT IS NOT NULL THEN 'CONTINENT' ELSE '' END AS MY_LEVEL, CASE WHEN MY_LEVEL = 'COUNTRY' THEN "CONTINENT" WHEN MY_LEVEL = 'CITY' THEN "COUNTRY" ELSE NULL END AS MY_PARENT, SUM(VALUE) AS VALUE-sum, SUM(COUNT) AS COUNT, AVG(VALUE) AS VALUE-avg FROM SELECT_STEP_0 GROUP BY YEAR, ROLLUP(CONTINENT, COUNTRY, CITY) HAVING CONTINENT IS NOT NULL)"""
+        == """WITH SELECT_STEP_0 AS (SELECT * FROM products), \
+ROLLUP_STEP_1 AS (SELECT CONTINENT, COUNTRY, CITY, YEAR, COALESCE(CITY, COUNTRY, CONTINENT) AS MY_LABEL, \
+CASE WHEN CITY IS NOT NULL THEN 'CITY' WHEN COUNTRY IS NOT NULL THEN 'COUNTRY' WHEN CONTINENT IS NOT NULL \
+THEN 'CONTINENT' ELSE '' END AS MY_LEVEL, CASE WHEN MY_LEVEL = 'COUNTRY' \
+THEN "CONTINENT" WHEN MY_LEVEL = 'CITY' THEN "COUNTRY" ELSE NULL END AS MY_PARENT, SUM(VALUE) AS VALUE-sum, \
+SUM(COUNT) AS COUNT, AVG(VALUE) AS VALUE-avg FROM SELECT_STEP_0 \
+GROUP BY YEAR, ROLLUP(CONTINENT, COUNTRY, CITY) HAVING CONTINENT IS NOT NULL)"""
     )
+    assert result.selection_query == 'SELECT TOTO, RAICHU FROM ROLLUP_STEP_1'
