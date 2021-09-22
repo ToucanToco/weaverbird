@@ -26,6 +26,7 @@ from .pivot import translate_pivot
 from .rank import translate_rank
 from .rename import translate_rename
 from .replace import translate_replace
+from .rollup import translate_rollup
 from .select import translate_select
 from .sort import translate_sort
 from .split import translate_split
@@ -75,6 +76,7 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'duplicate': translate_duplicate,
     'evolution': translate_evolution,
     'duration': translate_duration,
+    'rollup': translate_rollup,
     'cumsum': translate_cumsum,
     'totals': translate_totals,
 }
