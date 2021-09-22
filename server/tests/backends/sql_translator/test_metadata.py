@@ -29,9 +29,9 @@ def sql_query_metadata() -> SqlQueryMetadataManager:
     s.remove_tables()
 
 
-def test_create_table_already_exist(sql_query_metadata):
-    with pytest.raises(MetadataError):
-        sql_query_metadata.create_table('table_1')
+# def test_create_table_already_exist(sql_query_metadata):
+#     with pytest.raises(MetadataError):
+#         sql_query_metadata.create_table('table_1')
 
 
 def test_check_current_table(sql_query_metadata):
