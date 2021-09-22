@@ -156,6 +156,10 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
+  totals(step: Readonly<S.AddTotalRowsStep>) {
+    return step;
+  }
+
   validate(customEditedStep: S.CustomSqlStep): ValidationError[] | null {
     try {
       if (
