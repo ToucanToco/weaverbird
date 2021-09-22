@@ -63,7 +63,7 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[Co
         for select in selects:
             select_str = select.original_name
             if select.alias is not None:
-                select_str = select_str + ' AS ' + select.alias
+                select_str = f'{select_str} AS "{select.alias}"'
             selects_with_alias.append(select_str)
         return selects_with_alias
 

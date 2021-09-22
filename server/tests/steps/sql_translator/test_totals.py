@@ -56,10 +56,10 @@ def test_translate_totals(query):
     )
     expected_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOTALS_STEP_1 AS ('
-        'SELECT CASE WHEN GROUPING(COUNTRY) = 0 THEN COUNTRY ELSE \'All countries\' END AS COUNTRY, '
-        'CASE WHEN GROUPING(PRODUCT) = 0 THEN PRODUCT ELSE \'All products\' END AS PRODUCT, '
-        'SUM(VALUE_1) AS VALUE_1-SUM, SUM(VALUE_2) AS VALUE_2-SUM, AVG(VALUE_1) '
-        'AS VALUE_1-AVG, YEAR FROM SELECT_STEP_0 GROUP BY YEAR, '
+        'SELECT CASE WHEN GROUPING(COUNTRY) = 0 THEN COUNTRY ELSE \'All countries\' END AS "COUNTRY", '
+        'CASE WHEN GROUPING(PRODUCT) = 0 THEN PRODUCT ELSE \'All products\' END AS "PRODUCT", '
+        'SUM(VALUE_1) AS "VALUE_1-SUM", SUM(VALUE_2) AS "VALUE_2-SUM", AVG(VALUE_1) '
+        'AS "VALUE_1-AVG", YEAR FROM SELECT_STEP_0 GROUP BY YEAR, '
         'GROUPING SETS((COUNTRY), (PRODUCT), (COUNTRY, PRODUCT), ()))'
     )
     assert new_query.transformed_query == expected_query
@@ -150,10 +150,10 @@ def test_translate_totals_no_group(query):
     )
     expected_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), TOTALS_STEP_1 AS ('
-        'SELECT CASE WHEN GROUPING(COUNTRY) = 0 THEN COUNTRY ELSE \'All countries\' END AS COUNTRY, '
-        'CASE WHEN GROUPING(PRODUCT) = 0 THEN PRODUCT ELSE \'All products\' END AS PRODUCT, '
-        'SUM(VALUE_1) AS VALUE_1-SUM, SUM(VALUE_2) AS VALUE_2-SUM, AVG(VALUE_1) '
-        'AS VALUE_1-AVG FROM SELECT_STEP_0 GROUP BY '
+        'SELECT CASE WHEN GROUPING(COUNTRY) = 0 THEN COUNTRY ELSE \'All countries\' END AS "COUNTRY", '
+        'CASE WHEN GROUPING(PRODUCT) = 0 THEN PRODUCT ELSE \'All products\' END AS "PRODUCT", '
+        'SUM(VALUE_1) AS "VALUE_1-SUM", SUM(VALUE_2) AS "VALUE_2-SUM", AVG(VALUE_1) '
+        'AS "VALUE_1-AVG" FROM SELECT_STEP_0 GROUP BY '
         'GROUPING SETS((COUNTRY), (PRODUCT), (COUNTRY, PRODUCT), ()))'
     )
     assert new_query.transformed_query == expected_query
