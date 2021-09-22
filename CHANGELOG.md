@@ -4,8 +4,8 @@
 
 ### Added
 
-- SQL VQB [Snowflake]: totals rows step
-- SQL VQB [Snowflake]: Hierachical rollup step
+- SQL VQB [Snowflake]: Totals rows step
+- SQL VQB [Snowflake]: Hierarchical rollup step
 
 ## [0.60.7] - 2021-09-21
 
