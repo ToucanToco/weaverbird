@@ -1,6 +1,7 @@
 from distutils import log
 from typing import List, Sequence
 
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
 )
@@ -18,49 +19,79 @@ from weaverbird.pipeline.types import ColumnName
 from weaverbird.utils.iter import combinations
 
 
-def select_total_dimensions(total_dimensions: List[TotalDimension]) -> List[str]:
-    selects = []
-    for dimension in total_dimensions:
-        selects.append(
-            f"CASE WHEN GROUPING({dimension.total_column}) = 0 THEN {dimension.total_column} ELSE '{dimension.total_rows_label}' END"
-        )
-    return selects
+def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[ColumnMetadata]):
+    def select_total_dimensions(total_dimensions: List[TotalDimension]) -> List[ColumnMetadata]:
+        selects = []
+        for dimension in total_dimensions:
+            selects.append(
+                # in practice, it should be something called a `SelectField` if our queries were typed objects.
+                # however this `ColumnMetadata` type has all I need.
+                ColumnMetadata(
+                    name=f"CASE WHEN GROUPING({dimension.total_column}) = 0 THEN {dimension.total_column} ELSE '{dimension.total_rows_label}' END",
+                    alias=dimension.total_column,
+                    type=parent_query.metadata_manager.retrieve_query_metadata_column_type_by_name(
+                        dimension.total_column
+                    ),
+                )
+            )
+        return selects
 
+    def select_aggregate(aggregations: Sequence[Aggregation]) -> List[ColumnMetadata]:
+        aggregated_cols = []
+        for aggregation in [
+            aggregation
+            for aggregation in aggregations
+            if aggregation.agg_function not in ['first', 'last']
+        ]:
+            for col, new_col in zip(aggregation.columns, aggregation.new_columns):
+                if aggregation.agg_function == 'count distinct':
+                    aggregated_cols.append(
+                        ColumnMetadata(name=f'COUNT(DISTINCT {col})', alias=new_col, type='FLOAT')
+                    )
+                else:
+                    aggregated_cols.append(
+                        ColumnMetadata(
+                            name=f'{aggregation.agg_function.upper()}({col})',
+                            alias=new_col,
+                            type='FLOAT',
+                        )
+                    )
+        return aggregated_cols
 
-def select_aggregate(aggregations: Sequence[Aggregation]) -> List[str]:
-    aggregated_cols = []
-    for aggregation in [
-        aggregation
-        for aggregation in aggregations
-        if aggregation.agg_function not in ['first', 'last']
-    ]:
+    def with_alias(selects: List[ColumnMetadata]) -> List[str]:
+        selects_with_alias = []
+        for select in selects:
+            select_str = select.original_name
+            if select.alias is not None:
+                select_str = select_str + ' AS ' + select.alias
+            selects_with_alias.append(select_str)
+        return selects_with_alias
 
-        for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-            if aggregation.agg_function == 'count distinct':
-                aggregated_cols.append(f'COUNT(DISTINCT {col}) AS {new_col}')
-            else:
-                aggregated_cols.append(f'{aggregation.agg_function.upper()}({col}) AS {new_col}')
-    return aggregated_cols
-
-
-def make_totals_query(step: TotalsStep, from_table: str) -> str:
     total_dimensions: List[ColumnName] = list(map(lambda x: x.total_column, step.total_dimensions))
 
-    selects = (
+    selects: List[ColumnMetadata] = (
         select_total_dimensions(step.total_dimensions)
         + select_aggregate(step.aggregations)
-        + step.groups
+        + [
+            ColumnMetadata(
+                name=column,
+                type=parent_query.metadata_manager.retrieve_query_metadata_column_type_by_name(
+                    column
+                ),
+            )
+            for column in step.groups
+        ]
     )
 
     group_sets = []
     for combination in combinations(total_dimensions):
-        group_sets.append('(' + ','.join(combination) + ')')
+        group_sets.append('(' + ', '.join(combination) + ')')
     group_sets.append('()')
     group_by = step.groups + ['GROUPING SETS(' + (', '.join(group_sets)) + ')']
 
-    query = f"""SELECT {', '.join(selects)} FROM {from_table} GROUP BY {', '.join(group_by)};"""
+    query = f"""SELECT {', '.join(with_alias(selects))} FROM {parent_query.query_name} GROUP BY {', '.join(group_by)}"""
 
-    return query
+    return query, selects
 
 
 def translate_totals(
@@ -84,15 +115,23 @@ def translate_totals(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
+    sql_query, selects = make_totals_query(step, query)
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"{query.transformed_query}, {query_name} AS({make_totals_query(step, query.query_name)})",
-        selection_query=build_selection_query(
-            query.metadata_manager.retrieve_query_metadata_columns(), query_name
-        ),
-        metadata_manager=query.metadata_manager,
+        transformed_query=f"{query.transformed_query}, {query_name} AS ({sql_query})",
     )
 
+    new_query.metadata_manager = SqlQueryMetadataManager()
+    [
+        new_query.metadata_manager.add_query_metadata_column(
+            select.alias if select.alias is not None else select.name, select.type
+        )
+        for select in selects
+    ]
+
+    new_query.selection_query = build_selection_query(
+        new_query.metadata_manager.retrieve_query_metadata_columns(), query_name
+    )
     log.debug(
         '------------------------------------------------------------'
         f'SQLquery: {new_query.transformed_query}'
