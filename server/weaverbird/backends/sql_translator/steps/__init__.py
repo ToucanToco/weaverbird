@@ -34,6 +34,7 @@ from .table import translate_table
 from .text import translate_text
 from .todate import translate_todate
 from .top import translate_top
+from .totals import translate_totals
 from .uniquegroups import translate_uniquegroups
 from .unpivot import translate_unpivot
 from .uppercase import translate_uppercase
@@ -75,4 +76,5 @@ sql_steps_translators: Dict[str, SQLStepTranslator] = {
     'evolution': translate_evolution,
     'duration': translate_duration,
     'cumsum': translate_cumsum,
+    'totals': translate_totals,
 }
