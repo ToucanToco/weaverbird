@@ -29,6 +29,8 @@ def sql_query_metadata() -> SqlQueryMetadataManager:
     s.remove_tables()
 
 
+# just a quick fix for the join, not good for now
+# TODO : Find a better way to manage the behaviour of join two tables with the same name
 # def test_create_table_already_exist(sql_query_metadata):
 #     with pytest.raises(MetadataError):
 #         sql_query_metadata.create_table('table_1')
