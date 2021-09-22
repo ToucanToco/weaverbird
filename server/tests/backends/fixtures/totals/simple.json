@@ -1,0 +1,167 @@
+{
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+
+            "name": "totals",
+            "totalDimensions": [
+                {"totalColumn": "COUNTRY", "totalRowsLabel": "All countries"},
+                {"totalColumn": "PRODUCT", "totalRowsLabel": "All products"}
+            ],
+            "aggregations": [
+                {
+                    "columns": ["VALUE_1", "VALUE_2"],
+                    "aggfunction": "sum",
+                    "newcolumns": ["VALUE_1_SUM", "VALUE_2_SUM"]
+                },
+                {
+                    "columns": ["VALUE_1"],
+                    "aggfunction": "avg",
+                    "newcolumns": ["VALUE_1_AVG"]
+                }
+            ],
+            "groups": ["YEAR"]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        },
+        {
+          "name": "PRODUCT",
+          "type": "string"
+        },
+        {
+          "name": "YEAR",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE_1",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE_2",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "COUNTRY": "France",
+        "PRODUCT": "Product A",
+        "YEAR": 2019,
+        "VALUE_1": 5,
+        "VALUE_2": 50
+      },
+      {
+        "COUNTRY": "USA",
+        "PRODUCT": "Product A",
+         "YEAR": 2019,
+        "VALUE_1": 10,
+        "VALUE_2": 100
+      },
+      {
+        "COUNTRY": "France",
+        "PRODUCT": "Product B",
+         "YEAR": 2019,
+        "VALUE_1": 10,
+        "VALUE_2": 100
+      },
+      {
+        "COUNTRY": "USA",
+        "PRODUCT": "Product B",
+         "YEAR": 2019,
+        "VALUE_1": 15,
+        "VALUE_2": 150
+      },
+      {
+        "COUNTRY": "France",
+        "PRODUCT": "Product A",
+         "YEAR": 2020,
+        "VALUE_1": 20,
+        "VALUE_2": 200
+      },
+      {
+        "COUNTRY": "USA",
+        "PRODUCT": "Product A",
+         "YEAR": 2020,
+        "VALUE_1": 20,
+        "VALUE_2": 200
+      },
+      {
+        "COUNTRY": "France",
+        "PRODUCT": "Product B",
+         "YEAR": 2020,
+        "VALUE_1": 30,
+        "VALUE_2": 300
+      },
+      {
+        "COUNTRY": "USA",
+        "PRODUCT": "Product B",
+         "YEAR": 2020,
+        "VALUE_1": 25,
+        "VALUE_2": 250
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        },
+        {
+          "name": "PRODUCT",
+          "type": "string"
+        },
+        {
+          "name": "YEAR",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE_1_SUM",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE_1_AVG",
+          "type": "number"
+        },
+        {
+          "name": "VALUE_2_SUM",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {"COUNTRY":"France","PRODUCT":"Product A","VALUE_1_SUM":5,"VALUE_2_SUM":50,"VALUE_1_AVG":5.0,"YEAR":2019},
+      {"COUNTRY":"USA","PRODUCT":"Product A","VALUE_1_SUM":10,"VALUE_2_SUM":100,"VALUE_1_AVG":10.0,"YEAR":2019},
+      {"COUNTRY":"France","PRODUCT":"Product B","VALUE_1_SUM":10,"VALUE_2_SUM":100,"VALUE_1_AVG":10.0,"YEAR":2019},
+      {"COUNTRY":"USA","PRODUCT":"Product B","VALUE_1_SUM":15,"VALUE_2_SUM":150,"VALUE_1_AVG":15.0,"YEAR":2019},
+      {"COUNTRY":"France","PRODUCT":"Product A","VALUE_1_SUM":20,"VALUE_2_SUM":200,"VALUE_1_AVG":20.0,"YEAR":2020},
+      {"COUNTRY":"France","PRODUCT":"Product B","VALUE_1_SUM":30,"VALUE_2_SUM":300,"VALUE_1_AVG":30.0,"YEAR":2020},
+      {"COUNTRY":"USA","PRODUCT":"Product B","VALUE_1_SUM":25,"VALUE_2_SUM":250,"VALUE_1_AVG":25.0,"YEAR":2020},
+      {"COUNTRY":"USA","PRODUCT":"Product A","VALUE_1_SUM":20,"VALUE_2_SUM":200,"VALUE_1_AVG":20.0,"YEAR":2020},
+      {"COUNTRY":"France","PRODUCT":"All products","VALUE_1_SUM":15,"VALUE_2_SUM":150,"VALUE_1_AVG":7.5,"YEAR":2019},
+      {"COUNTRY":"USA","PRODUCT":"All products","VALUE_1_SUM":25,"VALUE_2_SUM":250,"VALUE_1_AVG":12.5,"YEAR":2019},
+      {"COUNTRY":"France","PRODUCT":"All products","VALUE_1_SUM":50,"VALUE_2_SUM":500,"VALUE_1_AVG":25.0,"YEAR":2020},
+      {"COUNTRY":"USA","PRODUCT":"All products","VALUE_1_SUM":45,"VALUE_2_SUM":450,"VALUE_1_AVG":22.5,"YEAR":2020},
+      {"COUNTRY":"All countries","PRODUCT":"All products","VALUE_1_SUM":40,"VALUE_2_SUM":400,"VALUE_1_AVG":10.0,"YEAR":2019},
+      {"COUNTRY":"All countries","PRODUCT":"All products","VALUE_1_SUM":95,"VALUE_2_SUM":950,"VALUE_1_AVG":23.75,"YEAR":2020},
+      {"COUNTRY":"All countries","PRODUCT":"Product A","VALUE_1_SUM":15,"VALUE_2_SUM":150,"VALUE_1_AVG":7.5,"YEAR":2019},
+      {"COUNTRY":"All countries","PRODUCT":"Product B","VALUE_1_SUM":25,"VALUE_2_SUM":250,"VALUE_1_AVG":12.5,"YEAR":2019},
+      {"COUNTRY":"All countries","PRODUCT":"Product A","VALUE_1_SUM":40,"VALUE_2_SUM":400,"VALUE_1_AVG":20.0,"YEAR":2020},
+      {"COUNTRY":"All countries","PRODUCT":"Product B","VALUE_1_SUM":55,"VALUE_2_SUM":550,"VALUE_1_AVG":27.5,"YEAR":2020}
+    ]
+  }
+}
