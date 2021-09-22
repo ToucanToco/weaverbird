@@ -231,8 +231,12 @@ class SqlQueryMetadataManager(BaseModel):
 
     def create_table(self, table_name: str) -> TableMetadata:
         t_name = table_name.upper()
-        if t_name in self.tables and self._check_name(t_name):
-            raise MetadataError(f'Table {t_name}({table_name}) already exist')
+
+        # just a quick fix for the join, not good for now
+        # TODO : Find a better way to manage the behaviour of join two tables with the same name
+        # if t_name in self.tables and self._check_name(t_name):
+        #     raise MetadataError(f'Table {t_name}({table_name}) already exist')
+
         self.tables[t_name] = TableMetadata(name=table_name)
         return self.tables[t_name]
 
@@ -262,8 +266,12 @@ class SqlQueryMetadataManager(BaseModel):
         self, src_table: TableMetadata, dst_table_name: str
     ) -> SqlQueryMetadataManager:
         t_name = dst_table_name.upper()
-        if dst_table_name in self.tables:
-            raise MetadataError(f'Table {t_name}({dst_table_name}) already exist')
+
+        # just a quick fix for the join, not good for now
+        # TODO : Find a better way to manage the behaviour of join two tables with the same name
+        # if dst_table_name in self.tables:
+        #     raise MetadataError(f'Table {t_name}({dst_table_name}) already exist')
+
         self.create_table(t_name)
         self.tables[t_name] = copy.deepcopy(src_table)
         return self
