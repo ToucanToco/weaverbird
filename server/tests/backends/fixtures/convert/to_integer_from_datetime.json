@@ -7,7 +7,7 @@
       {
         "name": "convert",
         "columns": [
-          "value"
+          "VALUE"
         ],
         "data_type": "integer"
       }
@@ -17,7 +17,7 @@
     "schema": {
       "fields": [
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "datetime"
         }
       ],
@@ -25,7 +25,7 @@
     },
     "data": [
       {
-        "value": "2020-11-02T15:30:00.000Z"
+        "VALUE": "2020-11-02T15:30:00.000Z"
       }
     ]
   },
