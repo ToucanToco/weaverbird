@@ -113,7 +113,7 @@ def test_translate_cast_date_to_int():
         selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
-                'TABLE1': {'TOTO': 'timestampe_ntz', 'RAICHU': 'float', 'FLORIZARRE': 'str'}
+                'TABLE1': {'TOTO': 'timestamp_ntz', 'RAICHU': 'float', 'FLORIZARRE': 'str'}
             },
         ),
     )
