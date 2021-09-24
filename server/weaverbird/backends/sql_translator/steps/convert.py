@@ -41,8 +41,19 @@ def translate_convert(
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=step.columns
     )
+    to_cast = []
+    for c in step.columns:
+        retrieved_col = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
+            column_name=c
+        )
+        if retrieved_col == 'float' and step.data_type == 'integer':
+            to_cast.append(f'TRUNCATE({c}) AS {c}')
+        elif retrieved_col == 'string' and step.data_type == 'integer':
+            to_cast.append(f"CAST(SPLIT_PART({c}, '.', 0) AS {step.data_type}) AS {c}")
+        else:
+            to_cast.append(f'CAST({c} AS {step.data_type}) AS {c}')
 
-    compiled_query = ', '.join([f'CAST({c} AS {step.data_type}) AS {c}' for c in step.columns])
+    compiled_query = ', '.join(to_cast)
 
     if len(completed_fields):
         compiled_query = f', {compiled_query}'
