@@ -1,11 +1,5 @@
 <template>
-  <div
-    :class="classContainer"
-    :data-cy="{
-      'weaverbird-query-pipeline-step': !errorMessage,
-      'weaverbird-query-pipeline-step--error': errorMessage,
-    }"
-  >
+  <div :class="classContainer" data-cy="weaverbird-query-pipeline-step">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass" />
       <div class="query-pipeline-queue__dot" data-cy="weaverbird-step-dot" @click="toggleDelete">
