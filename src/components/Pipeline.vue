@@ -1,5 +1,5 @@
 <template>
-  <div class="query-pipeline">
+  <div class="query-pipeline" data-cy="weaverbird-pipeline">
     <Draggable
       class="query-pipeline__draggable"
       v-model="arrangedSteps"
@@ -25,7 +25,11 @@
       />
     </Draggable>
     <div class="query-pipeline__delete-steps-container" v-if="selectedSteps.length">
-      <div class="query-pipeline__delete-steps" @click="openDeleteConfirmationModal">
+      <div
+        class="query-pipeline__delete-steps"
+        data-cy="weaverbird-delete-steps"
+        @click="openDeleteConfirmationModal"
+      >
         <FAIcon icon="trash" />
         Delete [{{ selectedSteps.length }}] selected
       </div>
