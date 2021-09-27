@@ -12,6 +12,8 @@ from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case, type_code_mapping
+
+from weaverbird.backends.pandas_executor.pipeline_executor import logger
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
@@ -25,6 +27,9 @@ ROLE = 'toucan_test'
 SCHEMA = 'toucan_test'
 
 SNOWFLAKE_TABLES_TESTS = []
+# to be sure we're going to run the cleaner job only once per test
+# we will need this boolean variable
+CLEANER_JOB_DONE = False
 
 
 # Update this method to use snowflake connection
@@ -102,20 +107,20 @@ def _drop_table(table_array: list):
     As given parameter, we have list of tables we want to drop
 
     """
-    print("[x] Cleaning tables in progress, please wait...")
+    logger.info("[x] Cleaning tables in progress, please wait...")
     # Drop created table
     for case_id in table_array:
         # The try catch just if we're droping an already drope table in the process
         try:
-            print(f"[-] Droping {case_id}")
+            logger.info(f"[-] Dropping {case_id}")
+
             execute(get_connection(), f'DROP TABLE {case_id};')
             # we remove from SNOWFLAKE_TABLES_TESTS the case test
-            SNOWFLAKE_TABLES_TESTS.remove(case_id) if case_id in SNOWFLAKE_TABLES_TESTS else print(
+            SNOWFLAKE_TABLES_TESTS.remove(case_id) if case_id in SNOWFLAKE_TABLES_TESTS else logger.info(
                 f"{case_id} not in the list anymore !"
             )
         except Exception as es:
-            print(es)
-            print(f"[-] {case_id} was probably already dropped or not available !")
+            logger.info(f"[-]{es}\n[-] {case_id} was probably already dropped or not available !")
 
 
 def clean_too_old_residuals_tables():
@@ -142,20 +147,23 @@ def clean_too_old_residuals_tables():
     except Exception as es:
         # in some case we can have an exception here for an empty result for table
         # no worries, not a big deal, that's why there is this error skip here
-        print(es)
+        logger.info(es)
 
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
-    global SNOWFLAKE_TABLES_TESTS
+    global SNOWFLAKE_TABLES_TESTS, CLEANER_JOB_DONE
 
-    # Let's clean some old residuals tables
-    clean_too_old_residuals_tables()
+    # To be sure to execute the cleaner job only once per tests
+    if not CLEANER_JOB_DONE:
+        # Let's clean some old residuals tables
+        clean_too_old_residuals_tables()
+        CLEANER_JOB_DONE = True
 
     # To prevent conflicts on snowflake tables when testing on multiple terminals
     # we're going to create specific tables for tests with this structure
-    # tableName_creationTime_caseid (Ex: SUBSTRING_toucan_test_@169494938@_3342)
+    # tableName_creationTime_caseid (Ex: SUBSTRING_toucan_test___169494938___3342)
     # The _toucan_test_ is to prevent drop e2e tables because those tables will not have tha keyword
     case_id = (
         f"{case_id.replace('/', '')}_toucan_test___{str(int(time.time()))}___{str(randint(1, 100))}"
@@ -219,6 +227,6 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
         assert_dataframes_equals(result_expected, result)
     except KeyboardInterrupt as es:
-        print(es)
+        logger.info(es)
         # We try to kill residuals tables
         _drop_table(SNOWFLAKE_TABLES_TESTS)
