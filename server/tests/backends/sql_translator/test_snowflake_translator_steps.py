@@ -12,7 +12,6 @@ from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case, type_code_mapping
-
 from weaverbird.backends.pandas_executor.pipeline_executor import logger
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
@@ -116,7 +115,9 @@ def _drop_table(table_array: list):
 
             execute(get_connection(), f'DROP TABLE {case_id};')
             # we remove from SNOWFLAKE_TABLES_TESTS the case test
-            SNOWFLAKE_TABLES_TESTS.remove(case_id) if case_id in SNOWFLAKE_TABLES_TESTS else logger.info(
+            SNOWFLAKE_TABLES_TESTS.remove(
+                case_id
+            ) if case_id in SNOWFLAKE_TABLES_TESTS else logger.info(
                 f"{case_id} not in the list anymore !"
             )
         except Exception as es:
