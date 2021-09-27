@@ -41,7 +41,7 @@ type_code_mapping = {
     5: 'variant',
     6: 'timestamp_ltz',
     7: 'timestamp_tz',
-    8: 'timestampe_ntz',
+    8: 'timestamp_ntz',
     9: 'object',
     10: 'array',
     11: 'binary',

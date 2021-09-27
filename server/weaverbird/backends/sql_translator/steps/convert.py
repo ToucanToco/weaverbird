@@ -35,6 +35,22 @@ def translate_convert(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
+    to_cast = []
+    for col in step.columns:
+        retrieved_col_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
+            column_name=col
+        )
+        if retrieved_col_type == 'FLOAT' and step.data_type == 'integer':
+            to_cast.append(f'TRUNCATE({col}) AS {col}')
+        elif retrieved_col_type == 'STR' and step.data_type == 'integer':
+            to_cast.append(f"CAST(SPLIT_PART({col}, '.', 0) AS {step.data_type}) AS {col}")
+        elif (retrieved_col_type == 'TIMESTAMP_NTZ') and step.data_type == 'integer':
+            to_cast.append(
+                f"CAST(DATE_PART('EPOCH_MILLISECOND', TO_TIMESTAMP({col})) AS {step.data_type}) AS {col}"
+            )
+        else:
+            to_cast.append(f'CAST({col} AS {step.data_type}) AS {col}')
+
     for c in step.columns:
         query.metadata_manager.update_query_metadata_column_type(c, step.data_type)
 
@@ -42,8 +58,7 @@ def translate_convert(
         columns_filter=step.columns
     )
 
-    compiled_query = ', '.join([f'CAST({c} AS {step.data_type}) AS {c}' for c in step.columns])
-
+    compiled_query = ', '.join(to_cast)
     if len(completed_fields):
         compiled_query = f', {compiled_query}'
     new_query = SQLQuery(
