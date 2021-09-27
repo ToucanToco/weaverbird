@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.60.9] - 2021-06-04
+
+### Fixed
+
+- E2E tests: add missing data-cy properties for easy targeting with Cypress
+
 ## [0.60.8] - 2021-09-22
 
 ### Added
@@ -942,6 +948,7 @@
 
 ## Unreleased
 
+[0.60.9]: https://github.com/ToucanToco/weaverbird/compare/v0.60.8...v0.60.9
 [0.60.8]: https://github.com/ToucanToco/weaverbird/compare/v0.60.7...v0.60.8
 [0.60.7]: https://github.com/ToucanToco/weaverbird/compare/v0.60.6...v0.60.7
 [0.60.6]: https://github.com/ToucanToco/weaverbird/compare/v0.60.5...v0.60.6
