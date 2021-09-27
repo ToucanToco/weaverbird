@@ -1,5 +1,5 @@
 <template>
-  <div class="vqb-modal">
+  <div class="vqb-modal" data-cy="weaverbird-confirm-delete-modal">
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
       <div class="vqb-modal__body">
@@ -14,10 +14,18 @@
           </strong>
         </div>
         <div class="vqb-modal__footer">
-          <div class="vqb-modal__action vqb-modal__action--secondary" @click="cancelDelete">
+          <div
+            class="vqb-modal__action vqb-modal__action--secondary"
+            data-cy="weaverbird-cancel-delete"
+            @click="cancelDelete"
+          >
             cancel
           </div>
-          <div class="vqb-modal__action vqb-modal__action--primary" @click="validateDelete">
+          <div
+            class="vqb-modal__action vqb-modal__action--primary"
+            data-cy="weaverbird-confirm-delete"
+            @click="validateDelete"
+          >
             confirm
           </div>
         </div>

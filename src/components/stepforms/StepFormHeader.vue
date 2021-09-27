@@ -5,7 +5,7 @@
         <FAIcon class="step-edit-form__back-icon" icon="angle-left" />
         BACK
       </button>
-      <div class="step-edit-form__title-container">
+      <div class="step-edit-form__title-container" data-cy="weaverbird-step-form-title">
         <h1>{{ title }}</h1>
         <a
           class="step-edit-form__link"

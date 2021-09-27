@@ -1,15 +1,15 @@
 <template>
-  <div :class="classContainer">
+  <div :class="classContainer" data-cy="weaverbird-query-pipeline-step">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass" />
-      <div class="query-pipeline-queue__dot" @click="toggleDelete">
+      <div class="query-pipeline-queue__dot" data-cy="weaverbird-step-dot" @click="toggleDelete">
         <div class="query-pipeline-queue__dot-ink">
           <FAIcon icon="check" />
         </div>
       </div>
       <div :class="lastStrokeClass" />
     </div>
-    <div class="query-pipeline-step" @click="select()">
+    <div class="query-pipeline-step" data-cy="weaverbird-select-step" @click="select()">
       <div class="query-pipeline-step__body">
         <span
           class="query-pipeline-step__name"
@@ -24,7 +24,11 @@
           }"
         >
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
-          <div class="query-pipeline-step__action" @click.stop="editStep()">
+          <div
+            class="query-pipeline-step__action"
+            data-cy="weaverbird-edit-step"
+            @click.stop="editStep()"
+          >
             <FAIcon icon="cog" />
           </div>
           <div
