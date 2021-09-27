@@ -98,14 +98,14 @@ def snowflake_query_executor(domain: str, query_string: str = None) -> Union[Tes
         return TestDataSlice(df=pd.DataFrame(res))
 
 
-def _drop_table(table_array: list):
-    global SNOWFLAKE_TABLES_TESTS
-
+def _drop_tables(table_array: list):
     """
     This method will drop tables
     As given parameter, we have list of tables we want to drop
 
     """
+    global SNOWFLAKE_TABLES_TESTS
+
     logger.info("[x] Cleaning tables in progress, please wait...")
     # Drop created table
     for case_id in table_array:
@@ -144,7 +144,7 @@ def clean_too_old_residuals_tables():
                     too_old_tables_to_delete.append(table_name)
 
         # then we delete the list of residual tables:
-        _drop_table(too_old_tables_to_delete)
+        _drop_tables(too_old_tables_to_delete)
     except Exception as es:
         # in some case we can have an exception here for an empty result for table
         # no worries, not a big deal, that's why there is this error skip here
@@ -212,9 +212,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         # Execute request generated from Pipeline in Snowflake and get the result
         result: pd.DataFrame = execute(get_connection(), query)
 
-        _drop_table([case_id])
+        _drop_tables([case_id])
         if 'other_inputs' in spec:
-            _drop_table(spec['other_inputs'])
+            _drop_tables(spec['other_inputs'])
 
         # Compare result and expected (from fixture file)
         if 'expected_sql' in spec:
@@ -230,4 +230,4 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     except KeyboardInterrupt as es:
         logger.info(es)
         # We try to kill residuals tables
-        _drop_table(SNOWFLAKE_TABLES_TESTS)
+        _drop_tables(SNOWFLAKE_TABLES_TESTS)
