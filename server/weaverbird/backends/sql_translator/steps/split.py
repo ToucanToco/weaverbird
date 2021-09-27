@@ -59,7 +59,7 @@ def translate_split(
     # We add the metadata column
     [
         query.metadata_manager.add_query_metadata_column(
-            f"{step.column}_{delimiter_count + 1}", "str"
+            f"{step.column}_{delimiter_count + 1}", "text"
         )
         for delimiter_count in range(0, step.number_cols_to_keep)
     ]

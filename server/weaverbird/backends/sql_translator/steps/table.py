@@ -33,7 +33,6 @@ def translate_table(
         and subcall_from_other_pipeline_count >= 0
         else ''
     )
-
     query_description = sql_query_describer(step.domain)
     query_metadata_manager = SqlQueryMetadataManager(
         tables_metadata={step.domain: query_description}

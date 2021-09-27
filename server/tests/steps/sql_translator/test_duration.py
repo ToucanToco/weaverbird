@@ -15,9 +15,9 @@ def query_date_duration():
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
                 'TABLE1': {
-                    'TOTO': 'str',
+                    'TOTO': 'text',
                     'RAICHU': 'int',
-                    'FLORIZARRE': 'str',
+                    'FLORIZARRE': 'text',
                     'FROM_DATE': 'date',
                     'TO_DATE': 'date',
                 }
@@ -63,8 +63,8 @@ def test_translate_simple_duration(query_date_duration):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -87,8 +87,8 @@ def test_translate_simple_duration(query_date_duration):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -131,8 +131,8 @@ def test_translate_with_old_column_name_duration(query_date_duration):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

@@ -52,7 +52,7 @@ def test_translate_cast_redondant_column_error(query):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT toto, raichu, florizarre FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'toto': 'str', 'RAICHU': 'int', 'florizarre': 'str'}},
+            tables_metadata={'table1': {'toto': 'text', 'RAICHU': 'int', 'florizarre': 'text'}},
         ),
     )
 
@@ -79,7 +79,7 @@ def test_translate_cast_float_to_int():
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'TABLE1': {'TOTO': 'str', 'RAICHU': 'float', 'FLORIZARRE': 'str'}},
+            tables_metadata={'TABLE1': {'TOTO': 'text', 'RAICHU': 'float', 'FLORIZARRE': 'text'}},
         ),
     )
     res = translate_convert(step, test_query, index=1)
@@ -113,7 +113,7 @@ def test_translate_cast_date_to_int():
         selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
-                'TABLE1': {'TOTO': 'timestamp_ntz', 'RAICHU': 'float', 'FLORIZARRE': 'str'}
+                'TABLE1': {'TOTO': 'timestamp_ntz', 'RAICHU': 'float', 'FLORIZARRE': 'text'}
             },
         ),
     )
