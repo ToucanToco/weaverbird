@@ -17,7 +17,7 @@ def query_date():
         selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
-                'TABLE1': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str', 'DATE': 'date'}
+                'TABLE1': {'TOTO': 'text', 'RAICHU': 'int', 'FLORIZARRE': 'text', 'DATE': 'date'}
             },
         ),
     )
@@ -63,8 +63,8 @@ def test_translate_simple_date_extract(query_date):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -79,8 +79,8 @@ def test_translate_simple_date_extract(query_date):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -232,8 +232,8 @@ def test_translate_complex_date_extract(query_date):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -248,8 +248,8 @@ def test_translate_complex_date_extract(query_date):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -290,8 +290,8 @@ def test_translate_with_new_columns_date_extract(query_date):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -306,8 +306,8 @@ def test_translate_with_new_columns_date_extract(query_date):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

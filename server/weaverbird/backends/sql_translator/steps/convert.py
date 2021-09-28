@@ -40,11 +40,15 @@ def translate_convert(
         retrieved_col_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
             column_name=col
         )
-        if retrieved_col_type == 'FLOAT' and step.data_type == 'integer':
+        if (
+            retrieved_col_type == 'FLOAT' or retrieved_col_type == 'REAL'
+        ) and step.data_type == 'integer':
             to_cast.append(f'TRUNCATE({col}) AS {col}')
-        elif retrieved_col_type == 'STR' and step.data_type == 'integer':
+        elif retrieved_col_type == 'TEXT' and step.data_type == 'integer':
             to_cast.append(f"CAST(SPLIT_PART({col}, '.', 0) AS {step.data_type}) AS {col}")
-        elif (retrieved_col_type == 'TIMESTAMP_NTZ') and step.data_type == 'integer':
+        elif (
+            retrieved_col_type == 'TIMESTAMP_NTZ' or retrieved_col_type == 'DATE'
+        ) and step.data_type == 'integer':
             to_cast.append(
                 f"CAST(DATE_PART('EPOCH_MILLISECOND', TO_TIMESTAMP({col})) AS {step.data_type}) AS {col}"
             )

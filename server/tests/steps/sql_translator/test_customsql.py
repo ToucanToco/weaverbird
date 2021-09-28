@@ -9,7 +9,7 @@ from weaverbird.pipeline.steps import CustomSqlStep
 
 @pytest.fixture
 def sql_query_describer():
-    return Mock(return_value={'CUSTOMER_ID': 'int', 'CUSTOMER_NAME': 'str'})
+    return Mock(return_value={'CUSTOMER_ID': 'int', 'CUSTOMER_NAME': 'text'})
 
 
 def test_translate_customsql(query, sql_query_describer):
@@ -38,8 +38,8 @@ def test_translate_customsql(query, sql_query_describer):
             'CUSTOMER_NAME': ColumnMetadata(
                 name='CUSTOMER_NAME',
                 original_name='CUSTOMER_NAME',
-                type='STR',
-                original_type='str',
+                type='TEXT',
+                original_type='text',
                 alias=None,
                 delete=False,
             ),

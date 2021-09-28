@@ -22,8 +22,8 @@ def test_translate_argmin(query):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -38,8 +38,8 @@ def test_translate_argmin(query):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -66,8 +66,8 @@ def test_translate_groupby_argmin(query):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -82,8 +82,8 @@ def test_translate_groupby_argmin(query):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

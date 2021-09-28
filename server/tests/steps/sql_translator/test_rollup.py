@@ -9,7 +9,7 @@ from weaverbird.pipeline.steps import RollupStep
 
 @pytest.fixture
 def sql_query_describer():
-    return Mock(return_value={'toto': 'int', 'raichu': 'str'})
+    return Mock(return_value={'toto': 'int', 'raichu': 'text'})
 
 
 def test_translate_rollup(query, sql_query_describer):
@@ -46,8 +46,8 @@ GROUP BY ROLLUP(CONTINENT, COUNTRY, CITY) HAVING CONTINENT IS NOT NULL)'''
         'RAICHU': ColumnMetadata(
             name='RAICHU',
             original_name='raichu',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

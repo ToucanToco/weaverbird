@@ -16,7 +16,7 @@ def test_translate_filter(mocker):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT TOTO, TATA FROM products)',
         selection_query='SELECT TOTO, TATA FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'toto': 'str', 'tata': 'int'}},
+            tables_metadata={'table1': {'toto': 'text', 'tata': 'int'}},
         ),
     )
     mocker.patch(
@@ -41,7 +41,7 @@ def test_translate_filter_error(mocker):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products), SELECT * FROM SELECT_STEP_0',
         selection_query='SELECT * FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table1': {'toto': 'str', 'tata': 'int'}},
+            tables_metadata={'table1': {'toto': 'text', 'tata': 'int'}},
         ),
     )
     mocker.patch(

@@ -71,7 +71,7 @@ def build_first_or_last_aggregation(
     query_string: str = ""
 
     def clean_none_aggregate_columns():
-        """ This pseudo method will remove all columns except the one provided"""
+        """This pseudo method will remove all columns except the one provided"""
         return remove_metadatas_columns_from_query(
             query=query,
             array_cols=[f'{c[1]}' for c in aggregate_cols] + step.on + new_as_columns,

@@ -51,7 +51,7 @@ def translate_unpivot(
         ]
     )
     query.metadata_manager.add_query_metadata_column(
-        column_name=step.unpivot_column_name, column_type='str'
+        column_name=step.unpivot_column_name, column_type='text'
     )
     query.metadata_manager.add_query_metadata_column(
         column_name=step.value_column_name,

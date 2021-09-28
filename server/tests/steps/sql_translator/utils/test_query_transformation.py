@@ -38,8 +38,8 @@ def query():
             tables_metadata={
                 'table1': {
                     'Value1': 'int',
-                    'Label': 'str',
-                    'Group': 'str',
+                    'Label': 'text',
+                    'Group': 'text',
                 },
             },
         ),
@@ -288,15 +288,15 @@ def test_build_union_query():
     s = SqlQueryMetadataManager()
     t = s.create_table('table_1')
     t.add_column('column_1_1', 'int')
-    t.add_column('column_1_2', 'str')
-    t.add_column('column_1_3', 'str')
-    t.add_column('column_1_4', 'str')
+    t.add_column('column_1_2', 'text')
+    t.add_column('column_1_3', 'text')
+    t.add_column('column_1_4', 'text')
 
     t = s.create_table('table_2')
     t.add_column('column_2_1', 'int')
-    t.add_column('column_2_2', 'str')
-    t.add_column('column_2_3', 'str')
-    t.add_column('column_2_4', 'str')
+    t.add_column('column_2_2', 'text')
+    t.add_column('column_2_3', 'text')
+    t.add_column('column_2_4', 'text')
     s.define_as_metadata('table_1')
     s.append_queries_metadata(['table_2'])
     res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
@@ -311,14 +311,14 @@ def test_build_union_query_first_smaller():
     s = SqlQueryMetadataManager()
     t = s.create_table('table_1')
     t.add_column('column_1_1', 'int')
-    t.add_column('column_1_2', 'str')
-    t.add_column('column_1_3', 'str')
+    t.add_column('column_1_2', 'text')
+    t.add_column('column_1_3', 'text')
 
     t = s.create_table('table_2')
     t.add_column('column_2_1', 'int')
-    t.add_column('column_2_2', 'str')
-    t.add_column('column_2_3', 'str')
-    t.add_column('column_2_4', 'str')
+    t.add_column('column_2_2', 'text')
+    t.add_column('column_2_3', 'text')
+    t.add_column('column_2_4', 'text')
     s.define_as_metadata('table_1')
     s.append_queries_metadata(['table_2'])
     res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
@@ -333,14 +333,14 @@ def test_build_union_query_second_smaller():
     s = SqlQueryMetadataManager()
     t = s.create_table('table_1')
     t.add_column('column_1_1', 'int')
-    t.add_column('column_1_2', 'str')
-    t.add_column('column_1_3', 'str')
-    t.add_column('column_1_4', 'str')
+    t.add_column('column_1_2', 'text')
+    t.add_column('column_1_3', 'text')
+    t.add_column('column_1_4', 'text')
 
     t = s.create_table('table_2')
     t.add_column('column_2_1', 'int')
-    t.add_column('column_2_2', 'str')
-    t.add_column('column_2_3', 'str')
+    t.add_column('column_2_2', 'text')
+    t.add_column('column_2_3', 'text')
     s.define_as_metadata('table_1')
     s.append_queries_metadata(['table_2'])
     res = build_union_query(s, 'SELECT_STEP_0', ['table_2'])
@@ -409,16 +409,16 @@ def test_generate_query_by_keeping_granularity(query):
         'GROUP': ColumnMetadata(
             name='GROUP',
             original_name='Group',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'LABEL': ColumnMetadata(
             name='LABEL',
             original_name='Label',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

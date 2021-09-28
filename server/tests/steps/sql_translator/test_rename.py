@@ -73,7 +73,7 @@ def test_translate_rename_error(query):
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
         selection_query='SELECT TOTO, RAICHU, FLORIZARE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'table2': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str'}}
+            tables_metadata={'table2': {'TOTO': 'text', 'RAICHU': 'int', 'FLORIZARRE': 'text'}}
         ),
     )
 
