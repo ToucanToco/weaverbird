@@ -11,6 +11,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
     generate_query_by_keeping_granularity,
     handle_zero_division,
     remove_metadatas_columns_from_query,
+    sanitize_column_name,
     sanitize_input,
     snowflake_date_format,
 )
@@ -355,6 +356,15 @@ def test_sanitize_input():
     assert sanitize_input('bla') == 'bla'
     assert sanitize_input("bla'") == "bla\\'"
     assert sanitize_input('bla"') == 'bla\\"'
+
+
+def test_sanitize_column_name():
+    assert sanitize_column_name('bla') == 'bla'
+    assert sanitize_column_name("bla'") == 'bla_'
+    assert sanitize_column_name('bla"') == 'bla_'
+    assert sanitize_column_name('1bla') == '_1bla'
+    assert sanitize_column_name('€bla') == '_bla'
+    assert sanitize_column_name('./§PL%L121R0°I"""$$"' '""€€') == '___PL_L121R0_I___$$_____'
 
 
 def test_remove_metadatas_columns_from_query(query):
