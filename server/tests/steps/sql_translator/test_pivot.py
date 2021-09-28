@@ -44,8 +44,9 @@ def test_translate_pivot(sql_query_executor):
     assert res.transformed_query == (
         """WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS), """
         """PRE_PIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM SELECT_STEP_0), """
-        """PIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, "'SPAIN'" AS SPAIN, "'FRANCE'" AS FRANCE """
-        """FROM PRE_PIVOT_STEP_1 PIVOT(sum(PROVIDER) FOR CURRENCY IN ('SPAIN', 'FRANCE')))"""
+        """PIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, SPAIN, FRANCE """
+        """FROM PRE_PIVOT_STEP_1 PIVOT(sum(PROVIDER) FOR CURRENCY IN ('SPAIN', 'FRANCE')) """
+        """AS p (COMPANY, COUNTRY, SPAIN, FRANCE))"""
     )
     assert res.selection_query == 'SELECT COMPANY, COUNTRY, SPAIN, FRANCE FROM PIVOT_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_columns() == {

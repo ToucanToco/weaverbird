@@ -386,6 +386,14 @@ def sanitize_input(value: str) -> str:
     return value.replace('"', '\\"').replace("'", "\\'")
 
 
+def sanitize_column_name(col: str) -> str:
+    # see   https://docs.snowflake.com/en/sql-reference/identifiers-syntax.html
+    if col[0].isdigit():
+        return f"_{col[0]}{re.sub(r'[^0-9a-zA-Z_$]', '_', col[1:])}"
+    else:
+        return re.sub(r'[^0-9a-zA-Z_$]', '_', col)
+
+
 def build_aggregated_columns(aggregations):
     aggregated_columns = []
     for aggregation in aggregations:
