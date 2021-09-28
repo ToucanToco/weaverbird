@@ -62,7 +62,7 @@ def translate_pivot(
     pivot_query = (
         f"""SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
         f""" FROM PRE_{query_name} PIVOT({aggregate_part} FOR {step.column_to_pivot} IN """
-        f"""({', '.join([f"'{val}'" for val in pivot_values])})) as p ({', '.join(step.index + sanitized_columns)})"""
+        f"""({', '.join([f"'{val}'" for val in pivot_values])})) AS p ({', '.join(step.index + sanitized_columns)})"""
     )
     transformed_query = (
         f"""{query.transformed_query}, {prepivot_query}, {query_name} AS ({pivot_query})"""
