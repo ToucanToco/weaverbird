@@ -383,9 +383,13 @@ def get_query_for_date_extract(
 
 
 def sanitize_input(value: str) -> str:
-    if value[0].isdigit():
-        value = f'_{value}'
-    return value.replace('"', '\\"').replace("'", "\\'").replace('-', '_').replace(' ', '_')
+    return value.replace('"', '\\"').replace("'", "\\'")
+
+
+def sanitize_column_name(col: str) -> str:
+    if col[0].isdigit():
+        col = f'_{col}'
+    return col.replace('-', '_').replace(' ', '_')
 
 
 def build_aggregated_columns(aggregations):

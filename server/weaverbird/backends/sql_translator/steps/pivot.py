@@ -2,7 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
-    sanitize_input,
+    sanitize_column_name,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -43,7 +43,7 @@ def translate_pivot(
         .df[f'{step.column_to_pivot}']
         .values.tolist()
     )
-    sanitized_columns = [sanitize_input(p) for p in pivot_values]
+    sanitized_columns = [sanitize_column_name(p) for p in pivot_values]
 
     pivoted_values_column_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
         step.value_column
