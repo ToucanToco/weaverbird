@@ -34,4 +34,9 @@ export default {
   },
 };
 </script>
-<style lang="scss"></style>
+<style lang="scss" scoped>
+.data-viewer-cell {
+  // Ensure that digits all take the same width, so they stay aligned vertically
+  font-variant-numeric: tabular-nums;
+}
+</style>
