@@ -1,6 +1,10 @@
 <template functional>
   <td
-    :class="{ 'data-viewer-cell': true, 'data-viewer-cell--active': props.isSelected }"
+    class="data-viewer-cell"
+    :class="{
+      'data-viewer-cell--active': props.isSelected,
+      'data-viewer-cell--numeric': $options.methods.isNumeric(props.value)
+    }"
     data-cy="weaverbird-data-viewer-cell"
   >
     {{ $options.methods.getValue(props.value) }}
@@ -11,7 +15,7 @@
  * @name DataViewerCell
  * @description A table cell displayed in a DataViewer
  *
- * @param {boolean} isSelected - Wether the cell is selected or is in a selected column
+ * @param {boolean} isSelected - Weather the cell is selected or is in a selected column
  * @param {string} value - The cell's value
  */
 export default {
@@ -31,11 +35,17 @@ export default {
         ? JSON.stringify(value)
         : value.toString();
     },
+
+    isNumeric(value: any): boolean {
+      return typeof value === 'number';
+    }
   },
 };
 </script>
-<style lang="scss" scoped>
-.data-viewer-cell {
+<style lang="scss">
+.data-viewer-cell--numeric {
+  text-align: right;
+
   // Ensure that digits all take the same width, so they stay aligned vertically
   font-variant-numeric: tabular-nums;
 }
