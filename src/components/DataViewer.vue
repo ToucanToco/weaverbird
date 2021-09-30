@@ -74,9 +74,10 @@
           <tbody class="data-viewer__body">
             <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
               <DataViewerCell
+                class="data-viewer__cell"
+                :class="{ 'data-viewer-cell--active': isSelected(columnHeaders[cellidx].name) }"
                 v-for="(cell, cellidx) in row"
                 :key="cellidx"
-                :isSelected="isSelected(columnHeaders[cellidx].name)"
                 :value="cell"
               />
             </tr>
@@ -329,7 +330,7 @@ export default class DataViewer extends Vue {
 }
 
 .data-viewer__header-cell,
-.data-viewer-cell {
+.data-viewer__cell {
   position: relative;
   padding: 8px;
   background-color: white;
@@ -343,14 +344,14 @@ export default class DataViewer extends Vue {
   min-width: 140px;
 }
 
-.data-viewer-cell {
+.data-viewer__cell {
   background-color: #fafafa;
   white-space: normal;
   overflow: hidden;
 }
 
 .data-viewer__header-cell--active,
-.data-viewer-cell--active {
+.data-viewer__cell--active {
   // It's trick to have its left side colored cause of border-collapse
   border-left: 1px double;
   background-color: $active-color-faded-3;
@@ -359,7 +360,7 @@ export default class DataViewer extends Vue {
 }
 
 .data-viewer__row:last-child {
-  .data-viewer-cell--active {
+  .data-viewer__cell--active {
     border-bottom-color: $active-color;
   }
 }
