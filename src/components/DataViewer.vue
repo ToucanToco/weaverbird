@@ -75,7 +75,7 @@
             <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
               <DataViewerCell
                 class="data-viewer__cell"
-                :class="{ 'data-viewer-cell--active': isSelected(columnHeaders[cellidx].name) }"
+                :class="{ 'data-viewer__cell--active': isSelected(columnHeaders[cellidx].name) }"
                 v-for="(cell, cellidx) in row"
                 :key="cellidx"
                 :value="cell"
