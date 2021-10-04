@@ -334,6 +334,25 @@ describe('Date range input', () => {
     });
   });
 
+  describe('with relative date disabled', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        enableRelativeDate: false,
+      });
+    });
+    it('should have no tabs', () => {
+      expect(wrapper.find('Tabs-stub').exists()).toBe(false);
+    });
+    it('should always use "Fixed" as selected tab', () => {
+      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
+    });
+    it('should pass disabled relative date disabled to custom variable list', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().enableRelativeDate).toBe(false);
+    });
+  });
+
   describe('empty', () => {
     beforeEach(() => {
       createWrapper();

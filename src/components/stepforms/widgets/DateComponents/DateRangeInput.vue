@@ -12,11 +12,13 @@
           class="widget-date-input__editor-side"
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
+          :enableRelativeDate="enableRelativeDate"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
         <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
           <Tabs
+            v-if="enableRelativeDate"
             class="widget-date-input__editor-header"
             :tabs="tabs"
             :selectedTab="selectedTab"
@@ -103,6 +105,9 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: () => true })
+  enableRelativeDate!: boolean;
+
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
@@ -182,6 +187,10 @@ export default class DateRangeInput extends Vue {
     } else if (isRelativeDateRange(this.value)) {
       this.tabsValues.Dynamic = this.value;
       this.selectTab('Dynamic');
+    }
+    // force fixed tab by default if relative date is not enabled
+    if (!this.enableRelativeDate) {
+      this.selectTab('Fixed');
     }
   }
 

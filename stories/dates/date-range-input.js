@@ -160,3 +160,31 @@ stories.add('custom (relative date range)', () => ({
     };
   },
 }));
+
+stories.add('without relative date enabled', () => ({
+  template: `
+    <div>
+      <DateRangeInput 
+        :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
+        :variable-delimiters="variableDelimiters" 
+        enableRelativeDate="false"
+        v-model="value" 
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+      value: undefined,
+    };
+  },
+}));
