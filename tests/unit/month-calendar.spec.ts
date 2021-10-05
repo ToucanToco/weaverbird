@@ -26,4 +26,14 @@ describe('MonthCalendar', () => {
       expect(wrapper.exists()).toBe(true);
     });
   });
+
+  describe('with initialDate', () => {
+    beforeEach(() => {
+      createWrapper({ initialDate: new Date('12/21/1977') });
+    });
+
+    it('should set header on corresponding year', () => {
+      expect(wrapper.find('.month-calendar__header').text()).toBe('1977');
+    });
+  });
 });

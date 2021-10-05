@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import { DateTime } from 'luxon';
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 
@@ -25,8 +25,15 @@ import FAIcon from '@/components/FAIcon.vue';
   },
 })
 export default class MonthCalendar extends Vue {
+  @Prop()
+  initialDate!: Date | undefined;
+
+  get headerDate(): DateTime {
+    return this.initialDate ? DateTime.fromJSDate(this.initialDate) : DateTime.now();
+  }
+
   get headerLabel(): string {
-    return DateTime.now().year;
+    return this.headerDate.year;
   }
 }
 </script>
