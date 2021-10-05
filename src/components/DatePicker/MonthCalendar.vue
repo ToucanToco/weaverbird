@@ -4,30 +4,30 @@
       <div
         class="month-calendar__header-btn header-btn__previous"
         data-cy="weaverbird-month-calendar__previous"
-        @click="selectPreviousHeaderDate"
+        @click="selectPreviousNavRange"
       >
         <FAIcon icon="chevron-left" />
       </div>
-      {{ headerLabel }}
+      {{ currentNavRangeLabel }}
       <div
         class="month-calendar__header-btn header-btn__next"
         data-cy="weaverbird-month-calendar__next"
-        @click="selectNextHeaderDate"
+        @click="selectNextNavRange"
       >
         <FAIcon icon="chevron-right" />
       </div>
     </div>
     <div class="month-calendar__body">
       <div
-        v-for="date in dateOptions"
+        v-for="date in currentNavRangeRangeStarts"
         :class="{
           'month-calendar__option': true,
-          'month-calendar__option--selected': isSelectedDate(date),
+          'month-calendar__option--selected': isSelectedRange(date),
         }"
-        :key="optionLabel(date)"
-        @click="selectDate(date)"
+        :key="selectableRangeLabel(date)"
+        @click="selectRange(date)"
       >
-        {{ optionLabel(date) }}
+        {{ selectableRangeLabel(date) }}
       </div>
     </div>
   </div>
@@ -50,20 +50,20 @@ export default class MonthCalendar extends Vue {
   @Prop()
   value?: DateRange;
 
-  headerDate: DateTime = DateTime.now();
+  currentNavRangeStart: DateTime = DateTime.now();
 
-  get headerLabel(): string {
-    return this.headerDate.year;
+  get currentNavRangeLabel(): string {
+    return this.currentNavRangeStart.year;
   }
 
-  get dateOptions(): DateTime[] {
-    const selectedYear = this.headerDate.year;
+  get currentNavRangeRangeStarts(): DateTime[] {
+    const selectedYear = this.currentNavRangeStart.year;
     return Array.from({ length: 12 }, (_v, i) => {
       return DateTime.utc(selectedYear, i + 1, 1, 0, 0, 0, { locale: 'en' });
     });
   }
 
-  get currentOption(): DateTime | undefined {
+  get selectedRangeStart(): DateTime | undefined {
     if (!this.value) return undefined;
     return DateTime.fromJSDate(this.value.start, { zone: 'utc', locale: 'en' }).set({
       day: 1,
@@ -74,32 +74,32 @@ export default class MonthCalendar extends Vue {
     });
   }
 
-  selectPreviousHeaderDate() {
-    this.headerDate = this.headerDate.minus({ year: 1 });
-  }
-
-  selectNextHeaderDate() {
-    this.headerDate = this.headerDate.plus({ year: 1 });
-  }
-
-  optionLabel(date: DateTime): string {
+  selectableRangeLabel(date: DateTime): string {
     return date.monthLong;
   }
 
-  selectDate(date: DateTime) {
+  isSelectedRange(date: DateTime) {
+    return this.selectedRangeStart?.equals(date);
+  }
+
+  created() {
+    if (this.selectedRangeStart) this.currentNavRangeStart = this.selectedRangeStart;
+  }
+
+  selectPreviousNavRange() {
+    this.currentNavRangeStart = this.currentNavRangeStart.minus({ year: 1 });
+  }
+
+  selectNextNavRange() {
+    this.currentNavRangeStart = this.currentNavRangeStart.plus({ year: 1 });
+  }
+
+  selectRange(date: DateTime) {
     this.$emit('input', {
       start: date.toJSDate(),
       end: date.plus({ month: 1 }).toJSDate(),
       duration: 'month',
     });
-  }
-
-  isSelectedDate(date: DateTime) {
-    return this.currentOption?.equals(date);
-  }
-
-  created() {
-    if (this.value) this.headerDate = this.currentOption;
   }
 }
 </script>

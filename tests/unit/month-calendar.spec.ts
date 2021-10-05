@@ -59,7 +59,12 @@ describe('MonthCalendar', () => {
 
   describe('with selected date range', () => {
     beforeEach(() => {
-      createWrapper({ value: { start: new Date('12/21/1977') } });
+      createWrapper({
+        value: {
+          start: new Date('12/21/1977'),
+          // only based on start date (for now)
+        },
+      });
     });
 
     it('should set header on corresponding year', () => {
