@@ -25,6 +25,13 @@ describe('MonthCalendar', () => {
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
     });
+
+    it('should display all 12 months', () => {
+      const months = wrapper.findAll('.month-calendar__option');
+      expect(months).toHaveLength(12);
+      expect(months.at(0).text()).toStrictEqual('January');
+      expect(months.at(11).text()).toStrictEqual('December');
+    });
   });
 
   describe('with initialDate', () => {

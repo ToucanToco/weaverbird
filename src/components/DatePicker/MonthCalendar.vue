@@ -17,6 +17,11 @@
         <FAIcon icon="chevron-right" />
       </div>
     </div>
+    <div class="month-calendar__body">
+      <div v-for="date in dateOptions" :key="optionLabel(date)" class="month-calendar__option">
+        {{ optionLabel(date) }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -42,12 +47,23 @@ export default class MonthCalendar extends Vue {
     return this.headerDate.year;
   }
 
+  get dateOptions(): DateTime[] {
+    const selectedYear = this.headerDate.year;
+    return Array.from({ length: 12 }, (_v, i) => {
+      return DateTime.utc(selectedYear, i + 1, 1, 0, 0, 0, { locale: 'en' });
+    });
+  }
+
   selectPreviousHeaderDate() {
     this.headerDate = this.headerDate.minus({ year: 1 });
   }
 
   selectNextHeaderDate() {
     this.headerDate = this.headerDate.plus({ year: 1 });
+  }
+
+  optionLabel(date: DateTime): string {
+    return date.monthLong;
   }
 
   created() {
@@ -68,6 +84,7 @@ export default class MonthCalendar extends Vue {
   height: 40px;
   align-items: center;
   user-select: none;
+  font-size: 14px;
 }
 
 .month-calendar__header-btn {
@@ -83,6 +100,30 @@ export default class MonthCalendar extends Vue {
 
   &:hover {
     background: #f8f7fa;
+  }
+}
+
+.month-calendar__body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  text-align: center;
+  grid-gap: 18px;
+  margin: 16px 0;
+  font-size: 13px;
+}
+
+.month-calendar__option {
+  border-radius: 4px;
+  padding: 6px 0;
+  cursor: pointer;
+
+  &:hover {
+    background: #f8f7fa;
+  }
+
+  &--selected {
+    background: #e4efec;
+    font-weight: bold;
   }
 }
 </style>
