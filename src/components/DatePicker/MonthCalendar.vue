@@ -20,7 +20,10 @@
     <div class="month-calendar__body">
       <div
         v-for="date in dateOptions"
-        class="month-calendar__option"
+        :class="{
+          'month-calendar__option': true,
+          'month-calendar__option--selected': isSelectedDate(date),
+        }"
         :key="optionLabel(date)"
         @click="selectDate(date)"
       >
@@ -35,6 +38,7 @@ import { DateTime } from 'luxon';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
+import { DateRange } from '@/lib/dates';
 
 @Component({
   name: 'month-calendar',
@@ -44,7 +48,7 @@ import FAIcon from '@/components/FAIcon.vue';
 })
 export default class MonthCalendar extends Vue {
   @Prop()
-  initialDate!: Date | undefined;
+  value?: DateRange;
 
   headerDate: DateTime = DateTime.now();
 
@@ -56,6 +60,17 @@ export default class MonthCalendar extends Vue {
     const selectedYear = this.headerDate.year;
     return Array.from({ length: 12 }, (_v, i) => {
       return DateTime.utc(selectedYear, i + 1, 1, 0, 0, 0, { locale: 'en' });
+    });
+  }
+
+  get currentOption(): DateTime | undefined {
+    if (!this.value) return undefined;
+    return DateTime.fromJSDate(this.value.start, { zone: 'utc', locale: 'en' }).set({
+      day: 1,
+      hour: 0,
+      minute: 0,
+      second: 0,
+      millisecond: 0,
     });
   }
 
@@ -79,8 +94,12 @@ export default class MonthCalendar extends Vue {
     });
   }
 
+  isSelectedDate(date: DateTime) {
+    return this.currentOption?.equals(date);
+  }
+
   created() {
-    if (this.initialDate) this.headerDate = DateTime.fromJSDate(this.initialDate);
+    if (this.value) this.headerDate = this.currentOption;
   }
 }
 </script>

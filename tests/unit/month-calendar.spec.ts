@@ -57,13 +57,17 @@ describe('MonthCalendar', () => {
     });
   });
 
-  describe('with initialDate', () => {
+  describe('with selected date range', () => {
     beforeEach(() => {
-      createWrapper({ initialDate: new Date('12/21/1977') });
+      createWrapper({ value: { start: new Date('12/21/1977') } });
     });
 
     it('should set header on corresponding year', () => {
       expect(wrapper.find('.month-calendar__header').text()).toBe('1977');
+    });
+
+    it('should select the corresponding month', () => {
+      expect(wrapper.find('.month-calendar__option--selected').text()).toBe('December');
     });
 
     describe('when clicking on the previous year button', () => {
