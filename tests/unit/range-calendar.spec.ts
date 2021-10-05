@@ -4,7 +4,8 @@ import RangeCalendar from '@/components/RangeCalendar.vue';
 
 describe('RangeCalendar', () => {
   let wrapper: Wrapper<RangeCalendar>;
-  const value = { start: new Date(), end: new Date(1) };
+  const value = { start: new Date(2021, 10, 25), end: new Date(2021, 10, 28) };
+  const bounds = { start: new Date(2021, 9), end: new Date(2021, 12) };
   const createWrapper = (props: any = {}): void => {
     wrapper = shallowMount(RangeCalendar, {
       sync: false,
@@ -40,13 +41,13 @@ describe('RangeCalendar', () => {
       expect(calendars.at(1).props().availableDates).toStrictEqual({ ...value, end: undefined }); // value can't be lower than start
     });
     it('should emit modified start range when first Calendar is updated', () => {
-      const date = new Date(1);
+      const date = new Date(2021, 10, 15);
       const calendars = wrapper.findAll('Calendar-stub');
       calendars.at(0).vm.$emit('input', date);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual({ ...value, start: date });
     });
     it('should emit modified end range when last Calendar is updated', () => {
-      const date = new Date(2);
+      const date = new Date(2021, 10, 26);
       const calendars = wrapper.findAll('Calendar-stub');
       calendars.at(1).vm.$emit('input', date);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual({ ...value, end: date });
@@ -61,15 +62,44 @@ describe('RangeCalendar', () => {
       const calendar = wrapper.find('Calendar-stub');
       expect(calendar.props().highlightedDates).toStrictEqual(value);
     });
+    describe('with bounds', () => {
+      beforeEach(() => {
+        wrapper.setProps({ bounds });
+      });
+      it('should pass available dates updated with bounds', () => {
+        const calendars = wrapper.findAll('Calendar-stub');
+        expect(calendars.at(0).props().availableDates).toStrictEqual({
+          start: bounds.start,
+          end: value.end,
+        });
+        expect(calendars.at(1).props().availableDates).toStrictEqual({
+          start: value.start,
+          end: bounds.end,
+        });
+      });
+    });
   });
 
   describe('when range is not complete', () => {
     beforeEach(() => {
-      createWrapper({ value: { start: new Date() } });
+      createWrapper({ value: { start: new Date(2021, 10, 25) } });
     });
     it('should not pass range included dates to highlight in Calendar', () => {
       const calendar = wrapper.find('Calendar-stub');
       expect(calendar.props().highlightedDates).toStrictEqual(undefined);
+    });
+    describe('with bounds', () => {
+      beforeEach(() => {
+        wrapper.setProps({ bounds });
+      });
+      it('should pass available dates updated with bounds', () => {
+        const calendars = wrapper.findAll('Calendar-stub');
+        expect(calendars.at(0).props().availableDates).toStrictEqual(bounds);
+        expect(calendars.at(1).props().availableDates).toStrictEqual({
+          start: value.start,
+          end: bounds.end,
+        });
+      });
     });
   });
 
@@ -79,6 +109,16 @@ describe('RangeCalendar', () => {
     });
     it('should set value to {} by default', () => {
       expect((wrapper.vm as any).value).toStrictEqual({});
+    });
+    describe('with bounds', () => {
+      beforeEach(() => {
+        wrapper.setProps({ bounds });
+      });
+      it('should pass bounds as available dates', () => {
+        const calendars = wrapper.findAll('Calendar-stub');
+        expect(calendars.at(0).props().availableDates).toStrictEqual(bounds);
+        expect(calendars.at(1).props().availableDates).toStrictEqual(bounds);
+      });
     });
   });
 });

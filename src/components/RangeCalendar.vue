@@ -34,18 +34,28 @@ export default class RangeCalendar extends Vue {
   @Prop({ default: () => ({}) })
   value!: DateRange;
 
+  @Prop({ default: () => ({}) })
+  bounds!: DateRange;
+
   // dates to highlight in calendar to fake a range mode
   get highlightedDates(): DateRange | undefined {
     return this.value.start && this.value.end ? this.value : undefined;
   }
 
+  get valueWithBounds(): DateRange {
+    return {
+      start: this.value.start ?? this.bounds.start,
+      end: this.value.end ?? this.bounds.end,
+    };
+  }
+
   getAvailableDates(prop: DateRangeSide): DateRange {
     if (prop === 'start') {
-      // start value can be anything before end value
-      return { start: undefined, end: this.value.end };
+      // start value can be anything between bounds start and valueWithBounds end (bound or value)
+      return { start: this.bounds.start, end: this.valueWithBounds.end };
     } else {
-      // end value can be anything after start value
-      return { start: this.value.start, end: undefined };
+      // end value can be anything between valueWithBounds start (bound or value) and bounds end
+      return { start: this.valueWithBounds.start, end: this.bounds.end };
     }
   }
 
