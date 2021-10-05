@@ -7,7 +7,7 @@
     />
     <VariableListOption
       class="widget-custom-variable-list__custom-option"
-      label="Custom"
+      :label="customLabel"
       identifier="custom"
       :selectedVariables="selectedVariables"
       @input="selectCustomVariable"
@@ -34,6 +34,14 @@ export default class CustomVariableList extends Vue {
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => true })
+  enableRelativeDate!: boolean;
+
+  get customLabel(): string {
+    // use specific "Fixed" label when relative date is not enabled
+    return this.enableRelativeDate ? 'Custom' : 'Calendar';
+  }
 
   chooseVariable(variableIdentifier: string) {
     this.$emit('input', variableIdentifier);
