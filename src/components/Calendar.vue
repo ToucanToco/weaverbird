@@ -6,6 +6,7 @@
     :select-attribute="selectedDatesStyle"
     :drag-attribute="rangeSelectedDatesStyle"
     :is-range="isRange"
+    :from-date="defaultDate"
     timeformat="UTC"
     @input="onInput"
   />
@@ -35,6 +36,9 @@ export default class Calendar extends Vue {
 
   @Prop({ default: false })
   isRange!: boolean;
+
+  @Prop({ default: undefined })
+  defaultDate!: Date | undefined; // used only to move calendar cursor to specified date
 
   get selectedDatesStyle(): DatePickerHighlight {
     return {

@@ -81,4 +81,16 @@ describe('Calendar', () => {
       expect(attributes[0].dates).toStrictEqual(highlightedDates);
     });
   });
+
+  describe('with defaultDate', () => {
+    const defaultDate = new Date(1000);
+    beforeEach(() => {
+      createWrapper({ defaultDate });
+    });
+    it('should move calendar cursor to defaultDate', () => {
+      expect(wrapper.find('DatePicker-stub').attributes('from-date')).toStrictEqual(
+        defaultDate.toString(),
+      );
+    });
+  });
 });

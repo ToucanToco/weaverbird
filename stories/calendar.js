@@ -67,9 +67,9 @@ stories.add('range', () => ({
 stories.add('with highlighted dates', () => ({
   components: { Calendar },
   data() {
-    return { 
+    return {
       value: new Date('01/01/2021'),
-      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') } 
+      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') },
     };
   },
   computed: {
@@ -87,6 +87,40 @@ stories.add('with highlighted dates', () => ({
       <Calendar 
         :value="value"
         :highlightedDates="highlightedDates"
+        @input="input"
+      />
+      <pre>{{ formattedValue }}</pre>
+    </div>
+  `,
+}));
+
+stories.add('with available dates and default date', () => ({
+  components: { Calendar },
+  data() {
+    return { value: undefined };
+  },
+  computed: {
+    formattedValue() {
+      return formatValue(this.value);
+    },
+    availableDates() {
+      return { start: new Date(2020, 11), end: new Date(2021, 1) };
+    },
+    defaultDate() {
+      return new Date(2020, 12); // calendar should open on december month until a value is selected
+    },
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+  template: `
+    <div>
+      <Calendar 
+        :value="value"
+        :availableDates="availableDates"
+        :defaultDate="defaultDate"
         @input="input"
       />
       <pre>{{ formattedValue }}</pre>
