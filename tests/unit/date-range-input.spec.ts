@@ -374,6 +374,9 @@ describe('Date range input', () => {
     it('should set selected variable to undefined', () => {
       expect((wrapper.vm as any).variable).toBeUndefined();
     });
+    it('should set bounds to empty date range', () => {
+      expect((wrapper.vm as any).bounds).toStrictEqual({});
+    });
     it('should pass empty string as selected variable to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual('');
     });

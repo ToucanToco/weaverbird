@@ -161,14 +161,15 @@ stories.add('custom (relative date range)', () => ({
   },
 }));
 
-stories.add('without relative date enabled', () => ({
+stories.add('without relative date enabled and bounds', () => ({
   template: `
     <div>
       <DateRangeInput 
         :available-variables="availableVariables" 
         :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
-        enableRelativeDate="false"
+        :enableRelativeDate="false"
+        :bounds="bounds"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -185,6 +186,7 @@ stories.add('without relative date enabled', () => ({
       variableDelimiters: { start: '{{', end: '}}'},
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
+      bounds: { start: new Date(2021, 7), end: new Date(2021, 8) },
     };
   },
 }));
