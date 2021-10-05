@@ -1,8 +1,8 @@
 import { storiesOf } from '@storybook/vue';
 
-import { Calendar } from '../dist/storybook/components';
+import { Calendar } from '../../dist/storybook/components';
 
-const stories = storiesOf('Calendar', module);
+const stories = storiesOf('Dates/Calendar', module);
 
 const formatValue = value => {
   return value != null && value instanceof Date ? value.toUTCString() : value;
