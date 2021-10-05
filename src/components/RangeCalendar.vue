@@ -5,6 +5,7 @@
       :value="value.start"
       :availableDates="getAvailableDates('start')"
       :highlightedDates="highlightedDates"
+      :defaultDate="valueWithBounds.start"
       @input="onInput($event, 'start')"
     />
     <Calendar
@@ -12,6 +13,7 @@
       :value="value.end"
       :availableDates="getAvailableDates('end')"
       :highlightedDates="highlightedDates"
+      :defaultDate="valueWithBounds.end"
       @input="onInput($event, 'end')"
     />
   </div>

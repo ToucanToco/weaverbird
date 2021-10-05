@@ -40,6 +40,11 @@ describe('RangeCalendar', () => {
       expect(calendars.at(0).props().availableDates).toStrictEqual({ ...value, start: undefined }); // value can't be greater than end
       expect(calendars.at(1).props().availableDates).toStrictEqual({ ...value, end: undefined }); // value can't be lower than start
     });
+    it('should pass correct default dates to Calendar components', () => {
+      const calendars = wrapper.findAll('Calendar-stub');
+      expect(calendars.at(0).props().defaultDate).toStrictEqual(value.start);
+      expect(calendars.at(1).props().defaultDate).toStrictEqual(value.end);
+    });
     it('should emit modified start range when first Calendar is updated', () => {
       const date = new Date(2021, 10, 15);
       const calendars = wrapper.findAll('Calendar-stub');
@@ -77,6 +82,11 @@ describe('RangeCalendar', () => {
           end: bounds.end,
         });
       });
+      it('should pass correct default dates to Calendar components', () => {
+        const calendars = wrapper.findAll('Calendar-stub');
+        expect(calendars.at(0).props().defaultDate).toStrictEqual(value.start);
+        expect(calendars.at(1).props().defaultDate).toStrictEqual(value.end);
+      });
     });
   });
 
@@ -87,6 +97,11 @@ describe('RangeCalendar', () => {
     it('should not pass range included dates to highlight in Calendar', () => {
       const calendar = wrapper.find('Calendar-stub');
       expect(calendar.props().highlightedDates).toStrictEqual(undefined);
+    });
+    it('should pass correct default dates to Calendar components', () => {
+      const calendars = wrapper.findAll('Calendar-stub');
+      expect(calendars.at(0).props().defaultDate).toStrictEqual(value.start);
+      expect(calendars.at(1).props().defaultDate).toStrictEqual(undefined);
     });
     describe('with bounds', () => {
       beforeEach(() => {
@@ -100,6 +115,11 @@ describe('RangeCalendar', () => {
           end: bounds.end,
         });
       });
+      it('should pass correct default dates to Calendar components', () => {
+        const calendars = wrapper.findAll('Calendar-stub');
+        expect(calendars.at(0).props().defaultDate).toStrictEqual(value.start);
+        expect(calendars.at(1).props().defaultDate).toStrictEqual(bounds.end);
+      });
     });
   });
 
@@ -110,6 +130,11 @@ describe('RangeCalendar', () => {
     it('should set value to {} by default', () => {
       expect((wrapper.vm as any).value).toStrictEqual({});
     });
+    it('should pass correct default dates to Calendar components', () => {
+      const calendars = wrapper.findAll('Calendar-stub');
+      expect(calendars.at(0).props().defaultDate).toStrictEqual(undefined);
+      expect(calendars.at(1).props().defaultDate).toStrictEqual(undefined);
+    });
     describe('with bounds', () => {
       beforeEach(() => {
         wrapper.setProps({ bounds });
@@ -118,6 +143,11 @@ describe('RangeCalendar', () => {
         const calendars = wrapper.findAll('Calendar-stub');
         expect(calendars.at(0).props().availableDates).toStrictEqual(bounds);
         expect(calendars.at(1).props().availableDates).toStrictEqual(bounds);
+      });
+      it('should pass correct default dates to Calendar components', () => {
+        const calendars = wrapper.findAll('Calendar-stub');
+        expect(calendars.at(0).props().defaultDate).toStrictEqual(bounds.start);
+        expect(calendars.at(1).props().defaultDate).toStrictEqual(bounds.end);
       });
     });
   });
