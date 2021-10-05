@@ -40,6 +40,56 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
 
+type RangePickerConfig = {
+  navRange: {
+    label: (dt: DateTime) => string;
+    prev: (dt: DateTime) => DateTime;
+    next: (dt: DateTime) => DateTime;
+  };
+  selectableRanges: {
+    label: (dt: DateTime) => string;
+    currentOptions: (currentNavRangeStart: DateTime) => DateTime[];
+    optionToRange: (selectedOption: DateTime) => DateRange;
+    rangeToOption: (selectedRange: DateRange) => DateTime;
+  };
+};
+
+type AvailableDuration = 'month';
+
+const RANGE_PICKERS: Record<AvailableDuration, RangePickerConfig> = {
+  month: {
+    navRange: {
+      label: (dt: DateTime): string => dt.year,
+      prev: (dt: DateTime): DateTime => dt.minus({ year: 1 }),
+      next: (dt: DateTime): DateTime => dt.plus({ year: 1 }),
+    },
+    selectableRanges: {
+      label: (dt: DateTime): string => dt.monthLong,
+      currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
+        const navYear = currentNavRangeStart.year;
+        return Array.from({ length: 12 }, (_v, i) => {
+          return DateTime.utc(navYear, i + 1, 1, 0, 0, 0, { locale: 'en' });
+        });
+      },
+      optionToRange: (selectedOption: DateTime): DateRange => ({
+        start: selectedOption.toJSDate(),
+        end: selectedOption.plus({ month: 1 }).toJSDate(),
+        duration: 'month',
+      }),
+      rangeToOption: (selectedRange: DateRange): DateTime =>
+        DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' }).set({
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        }),
+    },
+  },
+};
+
+const pickerConfig = RANGE_PICKERS.month;
+
 @Component({
   name: 'month-calendar',
   components: {
@@ -53,29 +103,20 @@ export default class MonthCalendar extends Vue {
   currentNavRangeStart: DateTime = DateTime.now();
 
   get currentNavRangeLabel(): string {
-    return this.currentNavRangeStart.year;
+    return pickerConfig.navRange.label(this.currentNavRangeStart);
   }
 
   get currentNavRangeRangeStarts(): DateTime[] {
-    const selectedYear = this.currentNavRangeStart.year;
-    return Array.from({ length: 12 }, (_v, i) => {
-      return DateTime.utc(selectedYear, i + 1, 1, 0, 0, 0, { locale: 'en' });
-    });
+    return pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
   }
 
   get selectedRangeStart(): DateTime | undefined {
     if (!this.value) return undefined;
-    return DateTime.fromJSDate(this.value.start, { zone: 'utc', locale: 'en' }).set({
-      day: 1,
-      hour: 0,
-      minute: 0,
-      second: 0,
-      millisecond: 0,
-    });
+    return pickerConfig.selectableRanges.rangeToOption(this.value);
   }
 
   selectableRangeLabel(date: DateTime): string {
-    return date.monthLong;
+    return pickerConfig.selectableRanges.label(date);
   }
 
   isSelectedRange(date: DateTime) {
@@ -87,19 +128,15 @@ export default class MonthCalendar extends Vue {
   }
 
   selectPreviousNavRange() {
-    this.currentNavRangeStart = this.currentNavRangeStart.minus({ year: 1 });
+    this.currentNavRangeStart = pickerConfig.navRange.prev(this.currentNavRangeStart);
   }
 
   selectNextNavRange() {
-    this.currentNavRangeStart = this.currentNavRangeStart.plus({ year: 1 });
+    this.currentNavRangeStart = pickerConfig.navRange.next(this.currentNavRangeStart);
   }
 
   selectRange(date: DateTime) {
-    this.$emit('input', {
-      start: date.toJSDate(),
-      end: date.plus({ month: 1 }).toJSDate(),
-      duration: 'month',
-    });
+    this.$emit('input', pickerConfig.selectableRanges.optionToRange(date));
   }
 }
 </script>
