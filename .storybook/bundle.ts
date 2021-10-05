@@ -39,9 +39,9 @@ import TotalDimensions from '../src/components/stepforms/widgets/TotalDimensions
 import Popover from '../src/components/Popover.vue';
 import VariableList from '../src/components/stepforms/widgets/VariableInputs/VariableList.vue';
 import CustomVariableList from '../src/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
-import Calendar from '../src/components/Calendar.vue';
+import Calendar from '../src/components/DatePicker/Calendar.vue';
 import Tabs from '../src/components/Tabs.vue';
-import RangeCalendar from '../src/components/RangeCalendar.vue';
+import RangeCalendar from '../src/components/DatePicker/RangeCalendar.vue';
 import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
 import RelativeDateRangeForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateRangeForm.vue';
 import NewDateInput from '../src/components/stepforms/widgets/DateComponents/NewDateInput.vue';

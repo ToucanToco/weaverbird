@@ -1,6 +1,6 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import Calendar from '@/components/Calendar.vue';
+import Calendar from '@/components/DatePicker/Calendar.vue';
 
 describe('Calendar', () => {
   let wrapper: Wrapper<Calendar>;
