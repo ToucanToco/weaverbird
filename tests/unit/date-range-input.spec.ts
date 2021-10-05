@@ -346,9 +346,9 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').exists()).toBe(false);
     });
     it('should always use "Fixed" as selected tab', () => {
-      expect((wrapper.vm as any).selectedTab).toBe('Fixed');
+      expect(wrapper.find('RangeCalendar-stub').exists()).toBe(true);
     });
-    it('should pass disabled relative date disabled to custom variable list', () => {
+    it('should pass down disabled relative date props to custom variable list', () => {
       expect(wrapper.find('CustomVariableList-stub').props().enableRelativeDate).toBe(false);
     });
   });
