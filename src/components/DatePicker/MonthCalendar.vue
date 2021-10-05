@@ -18,7 +18,12 @@
       </div>
     </div>
     <div class="month-calendar__body">
-      <div v-for="date in dateOptions" :key="optionLabel(date)" class="month-calendar__option">
+      <div
+        v-for="date in dateOptions"
+        class="month-calendar__option"
+        :key="optionLabel(date)"
+        @click="selectDate(date)"
+      >
         {{ optionLabel(date) }}
       </div>
     </div>
@@ -64,6 +69,14 @@ export default class MonthCalendar extends Vue {
 
   optionLabel(date: DateTime): string {
     return date.monthLong;
+  }
+
+  selectDate(date: DateTime) {
+    this.$emit('input', {
+      start: date.toJSDate(),
+      end: date.plus({ month: 1 }).toJSDate(),
+      duration: 'month',
+    });
   }
 
   created() {

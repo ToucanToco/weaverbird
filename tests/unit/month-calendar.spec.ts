@@ -1,6 +1,10 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
+import { DateTime } from 'luxon';
 
 import MonthCalendar from '@/components/DatePicker/MonthCalendar.vue';
+import { DateRange } from '@/lib/dates';
+
+const currentYear = DateTime.now().year;
 
 describe('MonthCalendar', () => {
   let wrapper: Wrapper<MonthCalendar>;
@@ -31,6 +35,25 @@ describe('MonthCalendar', () => {
       expect(months).toHaveLength(12);
       expect(months.at(0).text()).toStrictEqual('January');
       expect(months.at(11).text()).toStrictEqual('December');
+    });
+
+    describe('when clicking on a a month', () => {
+      beforeEach(async () => {
+        const february = wrapper.findAll('.month-calendar__option').at(1);
+        await february.trigger('click');
+      });
+
+      it('should emit the selected date range', () => {
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        const emittedDate: DateRange = wrapper.emitted('input')[0][0];
+        expect(emittedDate.start).toBeInstanceOf(Date);
+        expect(emittedDate.end).toBeInstanceOf(Date);
+        expect(emittedDate.start?.toISOString()).toStrictEqual(
+          `${currentYear}-02-01T00:00:00.000Z`,
+        );
+        expect(emittedDate.end?.toISOString()).toStrictEqual(`${currentYear}-03-01T00:00:00.000Z`);
+        expect(emittedDate.duration).toBe('month');
+      });
     });
   });
 

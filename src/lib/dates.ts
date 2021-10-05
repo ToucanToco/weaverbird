@@ -3,7 +3,7 @@ import _pick from 'lodash/pick';
 
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from './variables';
 
-export type DateRange = { start?: Date; end?: Date };
+export type DateRange = { start?: Date; end?: Date; duration?: Duration };
 export type DateRangeSide = keyof DateRange;
 export type DatePickerHighlight = {
   key?: string;
