@@ -1,11 +1,19 @@
 <template>
   <div class="month-calendar" data-cy="weaverbird-month-calendar">
     <div class="month-calendar__header">
-      <div class="month-calendar__header-btn" data-cy="weaverbird-month-calendar__previous">
+      <div
+        class="month-calendar__header-btn header-btn__previous"
+        data-cy="weaverbird-month-calendar__previous"
+        @click="selectPreviousHeaderDate"
+      >
         <FAIcon icon="chevron-left" />
       </div>
       {{ headerLabel }}
-      <div class="month-calendar__header-btn" data-cy="weaverbird-month-calendar__next">
+      <div
+        class="month-calendar__header-btn header-btn__next"
+        data-cy="weaverbird-month-calendar__next"
+        @click="selectNextHeaderDate"
+      >
         <FAIcon icon="chevron-right" />
       </div>
     </div>
@@ -28,12 +36,22 @@ export default class MonthCalendar extends Vue {
   @Prop()
   initialDate!: Date | undefined;
 
-  get headerDate(): DateTime {
-    return this.initialDate ? DateTime.fromJSDate(this.initialDate) : DateTime.now();
-  }
+  headerDate: DateTime = DateTime.now();
 
   get headerLabel(): string {
     return this.headerDate.year;
+  }
+
+  selectPreviousHeaderDate() {
+    this.headerDate = this.headerDate.minus({ year: 1 });
+  }
+
+  selectNextHeaderDate() {
+    this.headerDate = this.headerDate.plus({ year: 1 });
+  }
+
+  created() {
+    if (this.initialDate) this.headerDate = DateTime.fromJSDate(this.initialDate);
   }
 }
 </script>

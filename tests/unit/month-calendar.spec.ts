@@ -35,5 +35,25 @@ describe('MonthCalendar', () => {
     it('should set header on corresponding year', () => {
       expect(wrapper.find('.month-calendar__header').text()).toBe('1977');
     });
+
+    describe('when clicking on the previous year button', () => {
+      beforeEach(async () => {
+        await wrapper.find('.header-btn__previous').trigger('click');
+      });
+
+      it('should show the previous year', () => {
+        expect(wrapper.find('.month-calendar__header').text()).toBe('1976');
+      });
+    });
+
+    describe('when clicking on the next year button', () => {
+      beforeEach(async () => {
+        await wrapper.find('.header-btn__next').trigger('click');
+      });
+
+      it('should show the previous year', () => {
+        expect(wrapper.find('.month-calendar__header').text()).toBe('1978');
+      });
+    });
   });
 });
