@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.62.0] - 2021-10-05
+
+### Added
+
+- DateRangeInput: add `enableRelativeDate` props to show/hide 'Fixed'/'Relative' tabs
+
 ## [0.61.0] - 2021-10-05
 
 ### Added
@@ -955,6 +961,7 @@
 
 ## Unreleased
 
+[0.62.0]: https://github.com/ToucanToco/weaverbird/compare/v0.61.0...v0.62.0
 [0.61.0]: https://github.com/ToucanToco/weaverbird/compare/v0.60.9...v0.61.0
 [0.60.9]: https://github.com/ToucanToco/weaverbird/compare/v0.60.8...v0.60.9
 [0.60.8]: https://github.com/ToucanToco/weaverbird/compare/v0.60.7...v0.60.8
