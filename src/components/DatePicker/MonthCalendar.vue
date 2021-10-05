@@ -67,6 +67,7 @@ export default class MonthCalendar extends Vue {
   justify-content: space-between;
   height: 40px;
   align-items: center;
+  user-select: none;
 }
 
 .month-calendar__header-btn {
