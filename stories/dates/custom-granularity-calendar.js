@@ -1,11 +1,11 @@
 import { storiesOf } from '@storybook/vue';
 
-import { MonthCalendar } from '../../dist/storybook/components';
+import { CustomGranularityCalendar } from '../../dist/storybook/components';
 
-const stories = storiesOf('Dates/MonthCalendar', module);
+const stories = storiesOf('Dates/CustomGranularityCalendar', module);
 
-stories.add('simple', () => ({
-  components: { MonthCalendar },
+stories.add('month', () => ({
+  components: { CustomGranularityCalendar },
   data() {
     return { value: undefined };
   },
@@ -21,7 +21,7 @@ stories.add('simple', () => ({
   },
   template: `
   <div>
-    <MonthCalendar
+    <CustomGranularityCalendar
       granularity="month"
       :value="value"
       @input="input"

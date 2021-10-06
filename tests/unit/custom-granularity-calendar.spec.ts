@@ -1,15 +1,15 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 import { DateTime } from 'luxon';
 
-import MonthCalendar from '@/components/DatePicker/MonthCalendar.vue';
+import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import { DateRange } from '@/lib/dates';
 
 const currentYear = DateTime.now().year;
 
-describe('MonthCalendar', () => {
-  let wrapper: Wrapper<MonthCalendar>;
+describe('CustomGranularityCalendar - Month', () => {
+  let wrapper: Wrapper<CustomGranularityCalendar>;
   const createWrapper = (props: any = {}): void => {
-    wrapper = shallowMount(MonthCalendar, {
+    wrapper = shallowMount(CustomGranularityCalendar, {
       sync: false,
       propsData: {
         granularity: 'month',

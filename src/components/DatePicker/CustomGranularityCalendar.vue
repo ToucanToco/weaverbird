@@ -40,7 +40,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
 
-type RangePickerConfig = {
+type GranularityConfig = {
   navRange: {
     label: (dt: DateTime) => string;
     prev: (dt: DateTime) => DateTime;
@@ -56,7 +56,7 @@ type RangePickerConfig = {
 
 type AvailableDuration = 'month';
 
-const RANGE_PICKERS: Record<AvailableDuration, RangePickerConfig> = {
+const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
     navRange: {
       label: (dt: DateTime): string => dt.year,
@@ -89,12 +89,12 @@ const RANGE_PICKERS: Record<AvailableDuration, RangePickerConfig> = {
 };
 
 @Component({
-  name: 'month-calendar',
+  name: 'custom-granularity-calendar',
   components: {
     FAIcon,
   },
 })
-export default class MonthCalendar extends Vue {
+export default class CustomGranularityCalendar extends Vue {
   @Prop()
   value?: DateRange;
 
@@ -103,7 +103,7 @@ export default class MonthCalendar extends Vue {
 
   currentNavRangeStart: DateTime = DateTime.now();
 
-  get pickerConfig(): RangePickerConfig {
+  get pickerConfig(): GranularityConfig {
     return RANGE_PICKERS[this.granularity];
   }
 
