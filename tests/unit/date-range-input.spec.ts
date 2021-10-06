@@ -353,6 +353,21 @@ describe('Date range input', () => {
     });
   });
 
+  describe('with bounds', () => {
+    const bounds = { start: new Date('2020/1/1'), end: new Date('2020/6/1') };
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value: { start: new Date('2020/2/1'), end: new Date('2020/3/1') },
+        bounds,
+      });
+    });
+    it('should pass bounds to calendar', () => {
+      expect(wrapper.find('Calendar-stub').props().availableDates).toStrictEqual(bounds);
+    });
+  });
+
   describe('empty', () => {
     beforeEach(() => {
       createWrapper();
@@ -373,6 +388,9 @@ describe('Date range input', () => {
     });
     it('should set selected variable to undefined', () => {
       expect((wrapper.vm as any).variable).toBeUndefined();
+    });
+    it('should set bounds to empty date range', () => {
+      expect((wrapper.vm as any).bounds).toStrictEqual({ start: undefined, end: undefined });
     });
     it('should pass empty string as selected variable to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual('');
