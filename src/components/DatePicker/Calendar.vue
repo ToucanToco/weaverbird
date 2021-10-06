@@ -8,6 +8,7 @@
     :is-range="isRange"
     timeformat="UTC"
     @input="onInput"
+    @drag="onDrag"
   />
 </template>
 
@@ -69,6 +70,11 @@ export default class Calendar extends Vue {
   /* istanbul ignore next */
   onInput(value: Date | DateRange | undefined): void {
     this.$emit('input', value);
+  }
+
+  // emit partial date range when dragging range to disable validate button
+  onDrag(dragValue: DateRange): void {
+    this.$emit('input', { start: dragValue.start });
   }
 }
 </script>
