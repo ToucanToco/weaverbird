@@ -31,6 +31,33 @@ stories.add('month', () => ({
   `,
 }));
 
+stories.add('quarter', () => ({
+  components: { CustomGranularityCalendar },
+  data() {
+    return { value: undefined };
+  },
+  computed: {
+    formattedValue() {
+      return this.value != null && this.value instanceof Date ? this.value.toUTCString() : this.value;
+    },
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+  template: `
+  <div>
+    <CustomGranularityCalendar
+      granularity="quarter"
+      :value="value"
+      @input="input"
+    />
+    <pre style="margin-top: 40px;">Selected: {{ formattedValue }}</pre>
+  </div>
+  `,
+}));
+
 stories.add('year', () => ({
   components: { CustomGranularityCalendar },
   data() {

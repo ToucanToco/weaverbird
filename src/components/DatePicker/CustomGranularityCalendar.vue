@@ -54,7 +54,7 @@ type GranularityConfig = {
   };
 };
 
-type AvailableDuration = 'year' | 'month';
+type AvailableDuration = 'year' | 'quarter' | 'month';
 
 const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
@@ -84,6 +84,37 @@ const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
           second: 0,
           millisecond: 0,
         }),
+    },
+  },
+  quarter: {
+    navRange: {
+      label: (dt: DateTime): string => dt.year,
+      prev: (dt: DateTime): DateTime => dt.minus({ year: 1 }),
+      next: (dt: DateTime): DateTime => dt.plus({ year: 1 }),
+    },
+    selectableRanges: {
+      label: (dt: DateTime): string => `Quarter ${dt.quarter}`,
+      currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
+        return Array.from({ length: 4 }, (_v, i) => {
+          return DateTime.utc(currentNavRangeStart.year, i * 3 + 1, 1, 0, 0, 0, { locale: 'en' });
+        });
+      },
+      optionToRange: (selectedOption: DateTime): DateRange => ({
+        start: selectedOption.toJSDate(),
+        end: selectedOption.plus({ month: 3 }).toJSDate(),
+        duration: 'quarter',
+      }),
+      rangeToOption: (selectedRange: DateRange): DateTime => {
+        const dt = DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' });
+        return dt.set({
+          month: (dt.quarter - 1) * 3 + 1,
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        });
+      },
     },
   },
   year: {
