@@ -45,6 +45,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
 
+// Types
+
 type GranularityConfig = {
   navRange: {
     label: (dt: DateTime) => string;
@@ -61,13 +63,36 @@ type GranularityConfig = {
 
 type AvailableDuration = 'year' | 'quarter' | 'month';
 
+// Navigations
+
+const YEAR_NAV = {
+  label: (dt: DateTime): string => dt.year,
+  prev: (dt: DateTime): DateTime => dt.minus({ year: 1 }),
+  next: (dt: DateTime): DateTime => dt.plus({ year: 1 }),
+};
+
+const DECADE_NAV = {
+  label: (dt: DateTime): string => {
+    const decadeStart = Math.floor(dt.year / 10) * 10;
+    return `${decadeStart}-${decadeStart + 10}`;
+  },
+  prev: (dt: DateTime): DateTime => dt.minus({ year: 10 }),
+  next: (dt: DateTime): DateTime => dt.plus({ year: 10 }),
+};
+
+// Picker configs
+
+const FIRST_DAY_OF_MONTH = {
+  day: 1,
+  hour: 0,
+  minute: 0,
+  second: 0,
+  millisecond: 0,
+};
+
 const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
-    navRange: {
-      label: (dt: DateTime): string => dt.year,
-      prev: (dt: DateTime): DateTime => dt.minus({ year: 1 }),
-      next: (dt: DateTime): DateTime => dt.plus({ year: 1 }),
-    },
+    navRange: YEAR_NAV,
     selectableRanges: {
       label: (dt: DateTime): string => dt.monthLong,
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
@@ -82,21 +107,13 @@ const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         duration: 'month',
       }),
       rangeToOption: (selectedRange: DateRange): DateTime =>
-        DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' }).set({
-          day: 1,
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
-        }),
+        DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' }).set(
+          FIRST_DAY_OF_MONTH,
+        ),
     },
   },
   quarter: {
-    navRange: {
-      label: (dt: DateTime): string => dt.year,
-      prev: (dt: DateTime): DateTime => dt.minus({ year: 1 }),
-      next: (dt: DateTime): DateTime => dt.plus({ year: 1 }),
-    },
+    navRange: YEAR_NAV,
     selectableRanges: {
       label: (dt: DateTime): string => `Quarter ${dt.quarter}`,
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
@@ -113,24 +130,13 @@ const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         const dt = DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' });
         return dt.set({
           month: (dt.quarter - 1) * 3 + 1,
-          day: 1,
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
+          ...FIRST_DAY_OF_MONTH,
         });
       },
     },
   },
   year: {
-    navRange: {
-      label: (dt: DateTime): string => {
-        const decadeStart = Math.floor(dt.year / 10) * 10;
-        return `${decadeStart}-${decadeStart + 10}`;
-      },
-      prev: (dt: DateTime): DateTime => dt.minus({ year: 10 }),
-      next: (dt: DateTime): DateTime => dt.plus({ year: 10 }),
-    },
+    navRange: DECADE_NAV,
     selectableRanges: {
       label: (dt: DateTime): string => dt.year,
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
@@ -147,11 +153,7 @@ const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       rangeToOption: (selectedRange: DateRange): DateTime =>
         DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' }).set({
           month: 1,
-          day: 1,
-          hour: 0,
-          minute: 0,
-          second: 0,
-          millisecond: 0,
+          ...FIRST_DAY_OF_MONTH,
         }),
     },
   },
