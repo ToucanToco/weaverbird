@@ -54,7 +54,7 @@ type GranularityConfig = {
   };
 };
 
-type AvailableDuration = 'month';
+type AvailableDuration = 'year' | 'month';
 
 const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
@@ -78,6 +78,39 @@ const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       }),
       rangeToOption: (selectedRange: DateRange): DateTime =>
         DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' }).set({
+          day: 1,
+          hour: 0,
+          minute: 0,
+          second: 0,
+          millisecond: 0,
+        }),
+    },
+  },
+  year: {
+    navRange: {
+      label: (dt: DateTime): string => {
+        const decadeStart = Math.floor(dt.year / 10) * 10;
+        return `${decadeStart}-${decadeStart + 10}`;
+      },
+      prev: (dt: DateTime): DateTime => dt.minus({ year: 10 }),
+      next: (dt: DateTime): DateTime => dt.plus({ year: 10 }),
+    },
+    selectableRanges: {
+      label: (dt: DateTime): string => dt.year,
+      currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
+        const decadeStart = Math.floor(currentNavRangeStart.year / 10) * 10;
+        return Array.from({ length: 11 }, (_v, i) => {
+          return DateTime.utc(decadeStart + i, 1, 1, 0, 0, 0, { locale: 'en' });
+        });
+      },
+      optionToRange: (selectedOption: DateTime): DateRange => ({
+        start: selectedOption.toJSDate(),
+        end: selectedOption.plus({ year: 1 }).toJSDate(),
+        duration: 'year',
+      }),
+      rangeToOption: (selectedRange: DateRange): DateTime =>
+        DateTime.fromJSDate(selectedRange.start, { zone: 'utc', locale: 'en' }).set({
+          month: 1,
           day: 1,
           hour: 0,
           minute: 0,
