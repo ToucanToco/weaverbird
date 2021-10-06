@@ -12,10 +12,16 @@
           class="widget-date-input__editor-side"
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
+          :enableCustomSelection="enableCustomSelection"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
-        <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
+        <div
+          class="widget-date-input__editor-content"
+          v-if="enableCustomSelection"
+          v-show="isCustom"
+          ref="custom-editor"
+        >
           <Tabs
             class="widget-date-input__editor-header"
             :tabs="tabs"
@@ -88,6 +94,9 @@ export default class NewDateInput extends Vue {
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
+
+  @Prop({ default: true })
+  enableCustomSelection!: boolean;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
