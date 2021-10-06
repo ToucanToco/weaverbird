@@ -57,9 +57,9 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
+import RangeCalendar from '@/components/DatePicker/RangeCalendar.vue';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
-import RangeCalendar from '@/components/RangeCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import {
   CustomDateRange,
