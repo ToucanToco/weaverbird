@@ -2261,26 +2261,26 @@ export class Mongo36Translator extends BaseTranslator {
   /**
    * Translate any value expression into one mongo can evaluate.
    *
-   * @private
+   * @protected
    */
-  private translateValue(value: any): any {
+  protected translateValue(value: any): any {
     if (isRelativeDate(value)) {
-      this.translateRelativeDate(value);
+      return this.translateRelativeDate(value);
     }
     return value;
   }
 
-  private translateRelativeDate(value: RelativeDate): object {
-    console.error('This version of Mongo does not support dates operators');
+  protected translateRelativeDate(value: RelativeDate): object {
+    console.error('This version of Mongo does not support relative dates');
     return value;
   }
 
   /**
    * Recursively parse a Condition and turn it into the argument of a $match aggregation step
    *
-   * @private
+   * @protected
    */
-  private buildMatchTree(
+  protected buildMatchTree(
     cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
     parentComboOp: ComboOperator = 'and',
   ): MongoStep {
@@ -2319,7 +2319,11 @@ export class Mongo36Translator extends BaseTranslator {
     if (cond.operator === 'notnull' || cond.operator === 'isnull') {
       return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
     }
-    return { [cond.column]: { [operatorMapping[cond.operator]]: this.translateValue(cond.value) } };
+    return {
+      $expr: {
+        [operatorMapping[cond.operator]]: [$$(cond.column), this.translateValue(cond.value)],
+      },
+    };
   }
 
   /**
