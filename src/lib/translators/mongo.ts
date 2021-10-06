@@ -332,46 +332,6 @@ function buildCondExpression(
   }
 }
 
-function buildMatchTree(
-  cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
-  parentComboOp: ComboOperator = 'and',
-): MongoStep {
-  const operatorMapping = {
-    eq: '$eq',
-    ne: '$ne',
-    lt: '$lt',
-    le: '$lte',
-    gt: '$gt',
-    ge: '$gte',
-    in: '$in',
-    nin: '$nin',
-    isnull: '$eq',
-    notnull: '$ne',
-    // TODO: for now we raised an execption until this two operator will be developped
-    from: '',
-    until: '',
-  };
-
-  if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
-    return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });
-  }
-  if (S.isFilterComboAnd(cond)) {
-    return { $and: cond.and.map(elem => buildMatchTree(elem, 'and')) };
-  }
-  if (S.isFilterComboOr(cond)) {
-    return { $or: cond.or.map(elem => buildMatchTree(elem, 'or')) };
-  }
-  if (cond.operator === 'matches') {
-    return { [cond.column]: { $regex: cond.value } };
-  } else if (cond.operator === 'notmatches') {
-    return { [cond.column]: { $not: { $regex: cond.value } } };
-  }
-  if (cond.operator === 'notnull' || cond.operator === 'isnull') {
-    return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
-  }
-  return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
-}
-
 /**
  * Translate a mathjs logical tree describing a formula into a Mongo step
  * @param node a mathjs node object (usually received after parsing an string expression)
@@ -1072,12 +1032,6 @@ function transformFillna(step: Readonly<S.FillnaStep>): MongoStep {
   const addFields = Object.fromEntries(cols.map(x => [x, { $ifNull: [$$(x), step.value] }]));
 
   return { $addFields: addFields };
-}
-
-/** transform a 'filter' step into corresponding mongo step */
-function transformFilterStep(step: Readonly<S.FilterStep>): MongoStep {
-  const condition = step.condition;
-  return { $match: buildMatchTree(condition) };
 }
 
 /** transform a 'fromdate' step into corresponding mongo steps */
@@ -2208,7 +2162,6 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   evolution: transformEvolution,
   fillna: transformFillna,
-  filter: transformFilterStep,
   fromdate: transformFromDate,
   lowercase: (step: Readonly<S.ToLowerStep>) => ({
     $addFields: { [step.column]: { $toLower: $$(step.column) } },
@@ -2302,6 +2255,54 @@ export class Mongo36Translator extends BaseTranslator {
         ),
       },
     };
+  }
+
+  private buildMatchTree(
+    cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
+    parentComboOp: ComboOperator = 'and',
+  ): MongoStep {
+    const operatorMapping = {
+      eq: '$eq',
+      ne: '$ne',
+      lt: '$lt',
+      le: '$lte',
+      gt: '$gt',
+      ge: '$gte',
+      in: '$in',
+      nin: '$nin',
+      isnull: '$eq',
+      notnull: '$ne',
+      // TODO: for now we raised an execption until this two operator will be developped
+      from: '',
+      until: '',
+    };
+
+    if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
+      return _simplifyAndCondition({ $and: cond.and.map(elem => this.buildMatchTree(elem, 'and')) });
+    }
+    if (S.isFilterComboAnd(cond)) {
+      return { $and: cond.and.map(elem => this.buildMatchTree(elem, 'and')) };
+    }
+    if (S.isFilterComboOr(cond)) {
+      return { $or: cond.or.map(elem => this.buildMatchTree(elem, 'or')) };
+    }
+    if (cond.operator === 'matches') {
+      return { [cond.column]: { $regex: cond.value } };
+    } else if (cond.operator === 'notmatches') {
+      return { [cond.column]: { $not: { $regex: cond.value } } };
+    }
+    if (cond.operator === 'notnull' || cond.operator === 'isnull') {
+      return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
+    }
+    return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
+  }
+
+  /**
+   * Transform a filter step into the corresponding Mongo $match aggregation step
+   */
+  filter(step: Readonly<S.FilterStep>): MongoStep {
+    const condition = step.condition;
+    return { $match: this.buildMatchTree(condition) };
   }
 
   // The $regexMatch operator is not supported until mongo 4.2
