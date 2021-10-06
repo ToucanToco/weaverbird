@@ -216,3 +216,22 @@ stories.add('disable custom selection', () => ({
     };
   },
 }));
+
+stories.add('empty', () => ({
+  template: `
+    <div>
+      <DateRangeInput v-model="value"/>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
+    };
+  },
+}));

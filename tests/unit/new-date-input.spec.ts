@@ -304,9 +304,6 @@ describe('Date input', () => {
         enableCustomSelection: false,
       });
     });
-    afterEach(() => {
-      wrapper.destroy();
-    });
     it('should not display Custom editor', () => {
       expect(wrapper.find({ ref: 'custom-editor' }).exists()).toBe(false);
     });
@@ -315,12 +312,29 @@ describe('Date input', () => {
     });
   });
 
+  describe('without available variables', () => {
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: [],
+        variableDelimiters: { start: '{{', end: '}}' },
+      });
+      wrapper.find('.widget-date-input__button').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+    it('should display Custom editor directly when clicking on open button', () => {
+      expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
+    });
+    it('should not display Custom variable list', () => {
+      expect(wrapper.find('CustomVariableList-stub').exists()).toBe(false);
+    });
+  });
+
   describe('empty', () => {
     beforeEach(() => {
       createWrapper();
     });
     it('should set availableVariables to empty array', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual([]);
+      expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
@@ -330,9 +344,6 @@ describe('Date input', () => {
     });
     it('should set selected variable to undefined', () => {
       expect((wrapper.vm as any).variable).toBeUndefined();
-    });
-    it('should pass empty string as selected variable to CustomVariableList', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual('');
     });
     it('should display placeholder input label', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a date');
