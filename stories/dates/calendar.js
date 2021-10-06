@@ -94,7 +94,7 @@ stories.add('with highlighted dates', () => ({
   `,
 }));
 
-stories.add('with bounds', () => ({
+stories.add('with available dates', () => ({
   components: { Calendar },
   data() {
     return { value: undefined };
@@ -103,8 +103,8 @@ stories.add('with bounds', () => ({
     formattedValue() {
       return formatValue(this.value);
     },
-    bounds() {
-      return { start: new Date('2021/1/1'), end: new Date('2021/1/3') };
+    availableDates() {
+      return { start: new Date(2020, 11), end: new Date(2021, 1) };
     },
   },
   methods: {
@@ -113,13 +113,13 @@ stories.add('with bounds', () => ({
     },
   },
   template: `
-  <div>
-    <Calendar 
-      :value="value"
-      :bounds="bounds"
-      @input="input"
-    />
-    <pre>{{ formattedValue }}</pre>
-  </div>
+    <div>
+      <Calendar 
+        :value="value"
+        :availableDates="availableDates"
+        @input="input"
+      />
+      <pre>{{ formattedValue }}</pre>
+    </div>
   `,
 }));
