@@ -35,7 +35,9 @@
             />
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
+              :class="{ 'widget-date-input__editor-button--disabled': hasInvalidTabValue }"
               ref="save"
+              :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
               v-text="'Set date'"
             />
@@ -99,16 +101,16 @@ export default class NewDateInput extends Vue {
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
-  tabsValues: Record<string, CustomDate> = {
-    Fixed: new Date(),
+  tabsValues: Record<string, CustomDate | undefined> = {
+    Fixed: undefined,
     Dynamic: { quantity: -1, duration: 'year' },
   };
 
-  get currentTabValue(): CustomDate {
+  get currentTabValue(): CustomDate | undefined {
     return this.tabsValues[this.selectedTab];
   }
 
-  set currentTabValue(value: CustomDate) {
+  set currentTabValue(value: CustomDate | undefined) {
     this.tabsValues[this.selectedTab] = value;
   }
 
@@ -150,6 +152,14 @@ export default class NewDateInput extends Vue {
     } else {
       return 'Select a date';
     }
+  }
+
+  get hasInvalidTabValue(): boolean {
+    if (this.isFixedTabSelected) {
+      return !(this.currentTabValue instanceof Date);
+    }
+    // relative tab is always valid because default value is already complete
+    return false;
   }
 
   created() {
