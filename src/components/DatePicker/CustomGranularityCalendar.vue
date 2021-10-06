@@ -1,28 +1,28 @@
 <template>
-  <div class="month-calendar" data-cy="weaverbird-month-calendar">
-    <div class="month-calendar__header">
+  <div class="custom-granularity-calendar" data-cy="weaverbird-custom-granularity-calendar">
+    <div class="custom-granularity-calendar__header">
       <div
-        class="month-calendar__header-btn header-btn__previous"
-        data-cy="weaverbird-month-calendar__previous"
+        class="custom-granularity-calendar__header-btn header-btn__previous"
+        data-cy="weaverbird-custom-granularity-calendar__previous"
         @click="selectPreviousNavRange"
       >
         <FAIcon icon="chevron-left" />
       </div>
       {{ currentNavRangeLabel }}
       <div
-        class="month-calendar__header-btn header-btn__next"
-        data-cy="weaverbird-month-calendar__next"
+        class="custom-granularity-calendar__header-btn header-btn__next"
+        data-cy="weaverbird-custom-granularity-calendar__next"
         @click="selectNextNavRange"
       >
         <FAIcon icon="chevron-right" />
       </div>
     </div>
-    <div class="month-calendar__body">
+    <div class="custom-granularity-calendar__body">
       <div
         v-for="date in currentNavRangeRangeStarts"
         :class="{
-          'month-calendar__option': true,
-          'month-calendar__option--selected': isSelectedRange(date),
+          'custom-granularity-calendar__option': true,
+          'custom-granularity-calendar__option--selected': isSelectedRange(date),
         }"
         :key="selectableRangeLabel(date)"
         @click="selectRange(date)"
@@ -147,12 +147,12 @@ export default class CustomGranularityCalendar extends Vue {
 </script>
 
 <style scoped lang="scss">
-.month-calendar {
+.custom-granularity-calendar {
   box-sizing: border-box;
   width: 330px;
 }
 
-.month-calendar__header {
+.custom-granularity-calendar__header {
   display: flex;
   justify-content: space-between;
   height: 40px;
@@ -162,7 +162,7 @@ export default class CustomGranularityCalendar extends Vue {
   font-weight: bold;
 }
 
-.month-calendar__header-btn {
+.custom-granularity-calendar__header-btn {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -178,7 +178,7 @@ export default class CustomGranularityCalendar extends Vue {
   }
 }
 
-.month-calendar__body {
+.custom-granularity-calendar__body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   text-align: center;
@@ -187,7 +187,7 @@ export default class CustomGranularityCalendar extends Vue {
   font-size: 13px;
 }
 
-.month-calendar__option {
+.custom-granularity-calendar__option {
   border-radius: 4px;
   padding: 6px 0;
   cursor: pointer;

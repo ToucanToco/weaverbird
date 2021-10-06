@@ -32,7 +32,7 @@ describe('CustomGranularityCalendar - Month', () => {
     });
 
     it('should display all 12 months', () => {
-      const months = wrapper.findAll('.month-calendar__option');
+      const months = wrapper.findAll('.custom-granularity-calendar__option');
       expect(months).toHaveLength(12);
       expect(months.at(0).text()).toStrictEqual('January');
       expect(months.at(11).text()).toStrictEqual('December');
@@ -40,7 +40,7 @@ describe('CustomGranularityCalendar - Month', () => {
 
     describe('when clicking on a a month', () => {
       beforeEach(async () => {
-        const february = wrapper.findAll('.month-calendar__option').at(1);
+        const february = wrapper.findAll('.custom-granularity-calendar__option').at(1);
         await february.trigger('click');
       });
 
@@ -69,11 +69,11 @@ describe('CustomGranularityCalendar - Month', () => {
     });
 
     it('should set header on corresponding year', () => {
-      expect(wrapper.find('.month-calendar__header').text()).toBe('1977');
+      expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('1977');
     });
 
     it('should select the corresponding month', () => {
-      expect(wrapper.find('.month-calendar__option--selected').text()).toBe('December');
+      expect(wrapper.find('.custom-granularity-calendar__option--selected').text()).toBe('December');
     });
 
     describe('when clicking on the previous year button', () => {
@@ -82,7 +82,7 @@ describe('CustomGranularityCalendar - Month', () => {
       });
 
       it('should show the previous year', () => {
-        expect(wrapper.find('.month-calendar__header').text()).toBe('1976');
+        expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('1976');
       });
     });
 
@@ -92,7 +92,7 @@ describe('CustomGranularityCalendar - Month', () => {
       });
 
       it('should show the previous year', () => {
-        expect(wrapper.find('.month-calendar__header').text()).toBe('1978');
+        expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('1978');
       });
     });
   });
