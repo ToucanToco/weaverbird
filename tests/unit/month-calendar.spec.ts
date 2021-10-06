@@ -12,6 +12,7 @@ describe('MonthCalendar', () => {
     wrapper = shallowMount(MonthCalendar, {
       sync: false,
       propsData: {
+        granularity: 'month',
         ...props,
       },
     });

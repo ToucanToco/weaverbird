@@ -22,6 +22,7 @@ stories.add('simple', () => ({
   template: `
   <div>
     <MonthCalendar
+      granularity="month"
       :value="value"
       @input="input"
     />

@@ -88,8 +88,6 @@ const RANGE_PICKERS: Record<AvailableDuration, RangePickerConfig> = {
   },
 };
 
-const pickerConfig = RANGE_PICKERS.month;
-
 @Component({
   name: 'month-calendar',
   components: {
@@ -100,23 +98,30 @@ export default class MonthCalendar extends Vue {
   @Prop()
   value?: DateRange;
 
+  @Prop({ required: true })
+  granularity: AvailableDuration;
+
   currentNavRangeStart: DateTime = DateTime.now();
 
+  get pickerConfig(): RangePickerConfig {
+    return RANGE_PICKERS[this.granularity];
+  }
+
   get currentNavRangeLabel(): string {
-    return pickerConfig.navRange.label(this.currentNavRangeStart);
+    return this.pickerConfig.navRange.label(this.currentNavRangeStart);
   }
 
   get currentNavRangeRangeStarts(): DateTime[] {
-    return pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
+    return this.pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
   }
 
   get selectedRangeStart(): DateTime | undefined {
     if (!this.value) return undefined;
-    return pickerConfig.selectableRanges.rangeToOption(this.value);
+    return this.pickerConfig.selectableRanges.rangeToOption(this.value);
   }
 
   selectableRangeLabel(date: DateTime): string {
-    return pickerConfig.selectableRanges.label(date);
+    return this.pickerConfig.selectableRanges.label(date);
   }
 
   isSelectedRange(date: DateTime) {
@@ -128,15 +133,15 @@ export default class MonthCalendar extends Vue {
   }
 
   selectPreviousNavRange() {
-    this.currentNavRangeStart = pickerConfig.navRange.prev(this.currentNavRangeStart);
+    this.currentNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
   }
 
   selectNextNavRange() {
-    this.currentNavRangeStart = pickerConfig.navRange.next(this.currentNavRangeStart);
+    this.currentNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
   }
 
   selectRange(date: DateTime) {
-    this.$emit('input', pickerConfig.selectableRanges.optionToRange(date));
+    this.$emit('input', this.pickerConfig.selectableRanges.optionToRange(date));
   }
 }
 </script>
