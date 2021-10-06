@@ -200,14 +200,14 @@ describe('Date range input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        expect(wrapper.find('RangeCalendar-stub').exists()).toBe(true);
+        expect(wrapper.find('Calendar-stub').exists()).toBe(true);
         expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(false);
       });
 
-      describe('when updating RangeCalendar value', () => {
+      describe('when updating Calendar value', () => {
         const newValue = { start: new Date(8), end: new Date(11) };
         beforeEach(async () => {
-          wrapper.find('RangeCalendar-stub').vm.$emit('input', newValue);
+          wrapper.find('Calendar-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
@@ -223,7 +223,7 @@ describe('Date range input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(true);
-        expect(wrapper.find('RangeCalendar-stub').exists()).toBe(false);
+        expect(wrapper.find('Calendar-stub').exists()).toBe(false);
       });
 
       describe('when updating RelativeDateRangeForm value', () => {
@@ -239,16 +239,16 @@ describe('Date range input', () => {
     });
 
     describe('when switching between tabs', () => {
-      const updatedRangeCalendarValue = { start: new Date(1), end: new Date(100000) };
+      const updatedCalendarValue = { start: new Date(1), end: new Date(100000) };
       beforeEach(async () => {
-        wrapper.find('RangeCalendar-stub').vm.$emit('input', updatedRangeCalendarValue); // update RangeCalendar value
+        wrapper.find('Calendar-stub').vm.$emit('input', updatedCalendarValue); // update Calendar value
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic'); // switching to the other tab
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // come back to previous tab
       });
       it('should not remove other tab value', () => {
-        expect(wrapper.find('RangeCalendar-stub').props().value).toBe(updatedRangeCalendarValue);
+        expect(wrapper.find('Calendar-stub').props().value).toBe(updatedCalendarValue);
       });
     });
   });
@@ -296,8 +296,8 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
     });
 
-    it('should preselect value in RangeCalendar', () => {
-      expect(wrapper.find('RangeCalendar-stub').props().value).toStrictEqual(value);
+    it('should preselect value in Calendar', () => {
+      expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
     });
   });
 
@@ -346,7 +346,7 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').exists()).toBe(false);
     });
     it('should always use "Fixed" as selected tab', () => {
-      expect(wrapper.find('RangeCalendar-stub').exists()).toBe(true);
+      expect(wrapper.find('Calendar-stub').exists()).toBe(true);
     });
     it('should pass down disabled relative date props to custom variable list', () => {
       expect(wrapper.find('CustomVariableList-stub').props().enableRelativeDate).toBe(false);
