@@ -17,7 +17,12 @@
         <FAIcon icon="chevron-right" />
       </div>
     </div>
-    <div class="custom-granularity-calendar__body">
+    <div
+      :class="{
+        'custom-granularity-calendar__body': true,
+        [`custom-granularity-calendar__body--${granularity}`]: true,
+      }"
+    >
       <div
         v-for="date in currentNavRangeRangeStarts"
         :class="{
@@ -249,6 +254,10 @@ export default class CustomGranularityCalendar extends Vue {
   grid-gap: 18px;
   margin: 16px 0;
   font-size: 13px;
+
+  &--quarter {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .custom-granularity-calendar__option {
@@ -264,5 +273,9 @@ export default class CustomGranularityCalendar extends Vue {
     background: #e4efec;
     font-weight: bold;
   }
+}
+
+.custom-granularity-calendar__body--quarter .custom-granularity-calendar__option {
+  padding: 20px 0;
 }
 </style>
