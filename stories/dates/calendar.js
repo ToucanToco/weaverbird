@@ -67,9 +67,9 @@ stories.add('range', () => ({
 stories.add('with highlighted dates', () => ({
   components: { Calendar },
   data() {
-    return { 
+    return {
       value: new Date('01/01/2021'),
-      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') } 
+      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') },
     };
   },
   computed: {
@@ -91,5 +91,35 @@ stories.add('with highlighted dates', () => ({
       />
       <pre>{{ formattedValue }}</pre>
     </div>
+  `,
+}));
+
+stories.add('with bounds', () => ({
+  components: { Calendar },
+  data() {
+    return { value: undefined };
+  },
+  computed: {
+    formattedValue() {
+      return formatValue(this.value);
+    },
+    bounds() {
+      return { start: new Date('2021/1/1'), end: new Date('2021/1/3') };
+    },
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+  template: `
+  <div>
+    <Calendar 
+      :value="value"
+      :bounds="bounds"
+      @input="input"
+    />
+    <pre>{{ formattedValue }}</pre>
+  </div>
   `,
 }));
