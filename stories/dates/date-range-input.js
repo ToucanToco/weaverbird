@@ -168,7 +168,35 @@ stories.add('without relative date enabled', () => ({
         :available-variables="availableVariables" 
         :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
-        enableRelativeDate="false"
+        :enableRelativeDate="false"
+        v-model="value" 
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+      value: undefined,
+    };
+  },
+}));
+
+stories.add('disable custom selection', () => ({
+  template: `
+    <div>
+      <DateRangeInput 
+        :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
+        :variable-delimiters="variableDelimiters" 
+        :enableCustomSelection="false"
         v-model="value" 
       />
       <pre>{{ value }}</pre>

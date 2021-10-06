@@ -353,6 +353,25 @@ describe('Date range input', () => {
     });
   });
 
+  describe('with disabled custom selection', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        enableCustomSelection: false,
+      });
+    });
+    afterEach(() => {
+      wrapper.destroy();
+    });
+    it('should not display Custom editor', () => {
+      expect(wrapper.find({ ref: 'custom-editor' }).exists()).toBe(false);
+    });
+    it('should pass down disabled custom selection props to custom variable list', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().enableCustomSelection).toBe(false);
+    });
+  });
+
   describe('empty', () => {
     beforeEach(() => {
       createWrapper();

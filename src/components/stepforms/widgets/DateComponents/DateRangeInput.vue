@@ -13,10 +13,16 @@
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
           :enableRelativeDate="enableRelativeDate"
+          :enableCustomSelection="enableCustomSelection"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
-        <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
+        <div
+          class="widget-date-input__editor-content"
+          v-if="enableCustomSelection"
+          v-show="isCustom"
+          ref="custom-editor"
+        >
           <Tabs
             v-if="enableRelativeDate"
             class="widget-date-input__editor-header"
@@ -107,6 +113,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ default: () => true })
   enableRelativeDate!: boolean;
+
+  @Prop({ default: true })
+  enableCustomSelection!: boolean;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
