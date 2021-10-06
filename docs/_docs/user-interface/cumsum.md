@@ -11,6 +11,7 @@ of the computation. The computation can be scoped by group if needed.
 
 **This step is supported by the following backends:**
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6

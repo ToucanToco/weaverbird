@@ -37,8 +37,9 @@ An addmissingdates step has the following structure:
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -237,8 +238,9 @@ An aggreation step has the following structure:
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -377,8 +379,9 @@ of the application. You can then call them by their unique names in this step.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -440,8 +443,9 @@ is specified.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -518,8 +522,9 @@ is specified.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -598,8 +603,9 @@ The comparison is case-sensitive (see examples below).
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -651,8 +657,9 @@ This step allows to concatenate several `columns` using a `separator`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -706,8 +713,9 @@ This step allows to convert `columns` data types.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Pandas (python)
@@ -773,8 +781,9 @@ of the computation. The computation can be scoped by group if needed.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -874,8 +883,9 @@ other existing steps.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -964,8 +974,9 @@ Here's an example of such a step:
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1033,8 +1044,9 @@ Delete a column.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1084,8 +1096,9 @@ This step is meant to select a specific domain (using MongoDB terminology).
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1103,8 +1116,9 @@ This step is meant to duplicate a column.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1153,8 +1167,9 @@ new column.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1240,8 +1255,9 @@ each group. You should specify those columns in the `indexColumns` parameter.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1432,8 +1448,9 @@ Replace null values by a given value in specified columns.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1548,8 +1565,9 @@ Conditions can be grouped and nested with logical operators `and` and `or`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1657,8 +1675,9 @@ supports either a string that will be interpreted as a formula (cf.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1734,8 +1753,9 @@ of the application. You can then call them by their unique names in this step.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1840,8 +1860,9 @@ Converts a date `column` into a string column based on a specified `format`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1892,8 +1913,9 @@ Converts a string `column` to lowercase.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -1944,8 +1966,9 @@ The computation result is added in a new column.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2054,8 +2077,9 @@ by `group` if specified. The result is written in a new column.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2115,8 +2139,9 @@ among `sum`, `avg`, `count`, `min` or `max`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2170,8 +2195,9 @@ Compute statistics of a column.,
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2234,8 +2260,9 @@ always increases by 1 at most).
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2353,8 +2380,9 @@ The `toRename` parameter takes as input a list of 2-elements lists in the form
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2431,8 +2459,9 @@ A replace step has the following strucure:
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2500,8 +2529,9 @@ min, max, first or last.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2694,8 +2724,9 @@ the `select` is used, it will only keep selected columns in the output.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2748,8 +2779,9 @@ When sorting on several columns, order of columns specified in `columns` matters
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2802,8 +2834,9 @@ Split a string `column` into several columns based on a `delimiter`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -2898,8 +2931,9 @@ Neither `start_index` nor `end_index` can be equal to 0.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3024,8 +3058,9 @@ specified `text`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3074,8 +3109,9 @@ Converts a string `column` into a date column based on a specified `format`.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3129,8 +3165,9 @@ Return top N rows by group if `groups` is specified, else over full dataset.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3230,8 +3267,9 @@ min, max, first or last)
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3356,8 +3394,9 @@ Trim spaces in a column.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Pandas (python)
@@ -3405,8 +3444,9 @@ Unpivot a list of columns to rows.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3496,8 +3536,9 @@ Converts a string `column` to uppercase.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3541,8 +3582,9 @@ Allow to get unique groups of values from one or several columns.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -3604,8 +3646,9 @@ purposes.
 }
 ```
 
-**This step is supported by the following backends:**
+**This step is supported by the following backends:*
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
