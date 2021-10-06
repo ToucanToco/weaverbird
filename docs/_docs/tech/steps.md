@@ -1573,6 +1573,20 @@ Conditions can be grouped and nested with logical operators `and` and `or`.
 - Mongo 3.6
 - Pandas (python)
 
+#### Relative dates
+
+Date values can be relative to the moment to the moment when the query is executed.
+This is expressed by using a `RelativeDate` object instead of the value, of the form:
+```js
+{
+  quantity: Number // can be positive (future) or negative (past)
+  duration: 'year' | 'quarter' | 'month' | 'week' | 'day'
+}
+```
+
+**This feature is supported by the following backends:*
+- Mongo 5.0
+
 ### `formula` step
 
 Add a computation based on a formula. Usually column names do not need to be
