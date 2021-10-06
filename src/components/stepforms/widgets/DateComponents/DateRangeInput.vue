@@ -323,10 +323,11 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-body {
   flex: 1;
-  height: 276px;
-  min-height: 276px;
-  .range-calendar {
-    margin: -1px;
+  height: 278px;
+  min-height: 278px;
+  .vc-container {
+    border: none;
+    margin: 1px;
     width: 100%;
   }
   .widget-relative-date-range-form {
