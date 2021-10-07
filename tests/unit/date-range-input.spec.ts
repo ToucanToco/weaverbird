@@ -199,17 +199,17 @@ describe('Date range input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        expect(wrapper.find('Calendar-stub').exists()).toBe(true);
+        expect(wrapper.find('MultiFixedDateRangeInput-stub').exists()).toBe(true);
         expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
       });
 
-      describe('when updating Calendar value', () => {
+      describe('when updating MultiFixedDateRangeInput value', () => {
         const newValue = { start: new Date(8), end: new Date(11) };
         beforeEach(async () => {
-          wrapper.find('Calendar-stub').vm.$emit('input', newValue);
+          wrapper.find('MultiFixedDateRangeInput-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
@@ -228,7 +228,7 @@ describe('Date range input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(true);
-        expect(wrapper.find('Calendar-stub').exists()).toBe(false);
+        expect(wrapper.find('MultiFixedDateRangeInput-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
@@ -309,8 +309,8 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
     });
 
-    it('should preselect value in Calendar', () => {
-      expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
+    it('should preselect value in MultiFixedDateRangeInput', () => {
+      expect(wrapper.find('MultiFixedDateRangeInput-stub').props().value).toStrictEqual(value);
     });
     it('should have an enabled save button', () => {
       expect(wrapper.find({ ref: 'save' }).attributes('disabled')).not.toBe('disabled');
@@ -365,7 +365,7 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').exists()).toBe(false);
     });
     it('should always use "Fixed" as selected tab', () => {
-      expect(wrapper.find('Calendar-stub').exists()).toBe(true);
+      expect(wrapper.find('MultiFixedDateRangeInput-stub').exists()).toBe(true);
     });
     it('should pass down disabled relative date props to custom variable list', () => {
       expect(wrapper.find('CustomVariableList-stub').props().enableRelativeDate).toBe(false);
@@ -415,8 +415,8 @@ describe('Date range input', () => {
         bounds,
       });
     });
-    it('should pass bounds to calendar', () => {
-      expect(wrapper.find('Calendar-stub').props().availableDates).toStrictEqual(bounds);
+    it('should pass bounds to MultiFixedDateRangeInput', () => {
+      expect(wrapper.find('MultiFixedDateRangeInput-stub').props().bounds).toStrictEqual(bounds);
     });
   });
 
