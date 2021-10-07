@@ -2,9 +2,8 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import { DateTime } from 'luxon';
 
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
-import { DECADE_NAV } from '@/components/DatePicker/GranularityConfigs';
+import { DECADE_NAV, RANGE_PICKERS } from '@/components/DatePicker/GranularityConfigs';
 import { DateRange } from '@/lib/dates';
-
 
 const currentYear = DateTime.now().year;
 const SAMPLE_DATE_TIME = DateTime.fromRFC2822('25 Nov 2016 13:23 Z', { locale: 'en' });
@@ -117,6 +116,39 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide a date in the previous decade', () => {
       expect(DECADE_NAV.prev(SAMPLE_DATE_TIME).year).toBe(2006);
+    });
+  });
+
+  describe('Quarter options', () => {
+    const options = RANGE_PICKERS.quarter.selectableRanges.currentOptions(SAMPLE_DATE_TIME);
+
+    it('should provide the right label', () => {
+      expect(RANGE_PICKERS.quarter.selectableRanges.label(SAMPLE_DATE_TIME)).toBe('Quarter 4');
+    });
+
+    it('should provide the right options', () => {
+      expect(options).toHaveLength(4);
+      expect(options.map(dt => dt.quarter)).toStrictEqual([1, 2, 3, 4]);
+    });
+
+    it('should convert an option to a date range', () => {
+      const Q2 = options[1];
+      expect(RANGE_PICKERS.quarter.selectableRanges.optionToRange(Q2)).toStrictEqual({
+        start: new Date(Date.UTC(2016, 3, 1)),
+        end: new Date(Date.UTC(2016, 6, 1)),
+        duration: 'quarter',
+      });
+    });
+
+    it('should convert a arbitrary date range to the associated option', () => {
+      expect(
+        RANGE_PICKERS.quarter.selectableRanges.rangeToOption({
+          // Weird quarter from the 12th to the 12th
+          start: new Date(Date.UTC(2016, 3, 12)),
+          end: new Date(Date.UTC(2016, 6, 12)),
+          duration: 'quarter',
+        }),
+      ).toStrictEqual(DateTime.utc(2016, 4, 1, { locale: 'en' }));
     });
   });
 });
