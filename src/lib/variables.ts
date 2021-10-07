@@ -54,3 +54,17 @@ export function extractVariableIdentifier(
     return undefined;
   }
 }
+
+/*
+Retrieve a variable in a list of available variables based on the value with variable delimiters and identifier: ex {{toto}}
+*/
+export const retrieveVariable = (
+  value: string,
+  availableVariables: VariablesBucket = [],
+  variableDelimiters: VariableDelimiters = { start: '', end: '' },
+): AvailableVariable | undefined => {
+  // retrieve the variable identifier
+  const identifier = extractVariableIdentifier(value, variableDelimiters);
+  // search on relative available variables
+  return availableVariables.find((v: AvailableVariable) => v.identifier === identifier);
+};
