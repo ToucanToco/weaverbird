@@ -9,7 +9,7 @@
     <InputTextWidget
       class="newColumnInput"
       v-model="editedStep.new_column"
-      name="New colum:"
+      name="New column:"
       placeholder="Enter a new column name"
       data-path=".new_column"
       :errors="errors"
