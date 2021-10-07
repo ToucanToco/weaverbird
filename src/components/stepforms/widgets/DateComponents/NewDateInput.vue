@@ -102,7 +102,7 @@ export default class NewDateInput extends Vue {
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDate | undefined> = {
-    Fixed: undefined,
+    Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds, moreover, we would have no disabled button otherwise
     Dynamic: { quantity: -1, duration: 'year' },
   };
 
