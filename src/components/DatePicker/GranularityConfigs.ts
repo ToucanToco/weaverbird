@@ -28,7 +28,7 @@ const YEAR_NAV = {
   next: (dt: DateTime): DateTime => dt.plus({ years: 1 }),
 };
 
-const DECADE_NAV = {
+export const DECADE_NAV = {
   label: (dt: DateTime): string => {
     const decadeStart = Math.floor(dt.year / 10) * 10;
     return `${decadeStart}-${decadeStart + 10}`;

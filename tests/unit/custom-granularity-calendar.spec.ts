@@ -2,9 +2,12 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import { DateTime } from 'luxon';
 
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
+import { DECADE_NAV } from '@/components/DatePicker/GranularityConfigs';
 import { DateRange } from '@/lib/dates';
 
+
 const currentYear = DateTime.now().year;
+const SAMPLE_DATE_TIME = DateTime.fromRFC2822('25 Nov 2016 13:23 Z', { locale: 'en' });
 
 describe('CustomGranularityCalendar', () => {
   let wrapper: Wrapper<CustomGranularityCalendar>;
@@ -100,6 +103,20 @@ describe('CustomGranularityCalendar', () => {
           expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('1978');
         });
       });
+    });
+  });
+
+  describe('Decade navigation', () => {
+    it('should provide the right label', () => {
+      expect(DECADE_NAV.label(SAMPLE_DATE_TIME)).toBe('2010-2020');
+    });
+
+    it('should provide a date in the next decade', () => {
+      expect(DECADE_NAV.next(SAMPLE_DATE_TIME).year).toBe(2026);
+    });
+
+    it('should provide a date in the previous decade', () => {
+      expect(DECADE_NAV.prev(SAMPLE_DATE_TIME).year).toBe(2006);
     });
   });
 });
