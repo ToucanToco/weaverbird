@@ -66,7 +66,8 @@ export const transformRelativeDateRangeToDateRange = (
   const start = DateTime.fromJSDate(value, { zone: 'UTC' }).toJSDate();
   // retrieve end date from luxon
   const end = transformRelativeDateObjectToDate({ ...relativeDateRange, date: start });
-  return { start, end };
+  // if quantity is negative, start will arrive after end
+  return relativeDateRange.quantity >= 0 ? { start, end } : { start: end, end: start };
 };
 
 /*

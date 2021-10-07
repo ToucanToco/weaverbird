@@ -94,15 +94,32 @@ describe('transformRelativeDateRangeToDateRange', () => {
       ),
     ).toBeUndefined();
   });
-  it('should return date for passed quantity and duration based on variable date', () => {
-    // ({{date}}) 03/07/2020 - 3 months => 03/04/2020
+  it('should return date range for passed quantity and duration based on variable date (negative number)', () => {
+    // ({{date}}) 03/07/2020 - 3 months => 03/04/2020 (start and end should be inverted to use min date as start)
     const relativeDateRange: RelativeDateRange = {
       date: '{{date}}',
       quantity: -3,
       duration: 'month',
     };
+    const start = DateTime.utc(2020, 4, 3).toJSDate();
+    const end = availableVariables[0].value;
+    expect(
+      transformRelativeDateRangeToDateRange(
+        relativeDateRange,
+        availableVariables,
+        variableDelimiters,
+      ),
+    ).toStrictEqual({ start, end });
+  });
+  it('should return date range for passed quantity and duration based on variable date (positive number)', () => {
+    // ({{date}}) 03/07/2020 + 3 months => 03/10/2020
+    const relativeDateRange: RelativeDateRange = {
+      date: '{{date}}',
+      quantity: 3,
+      duration: 'month',
+    };
     const start = availableVariables[0].value;
-    const end = DateTime.utc(2020, 4, 3).toJSDate();
+    const end = DateTime.utc(2020, 10, 3).toJSDate();
     expect(
       transformRelativeDateRangeToDateRange(
         relativeDateRange,
