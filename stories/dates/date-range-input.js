@@ -196,7 +196,7 @@ stories.add('disable custom selection', () => ({
         :available-variables="availableVariables" 
         :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
-        :enableCustomSelection="false"
+        :enableCustom="false"
         v-model="value" 
       />
       <pre>{{ value }}</pre>

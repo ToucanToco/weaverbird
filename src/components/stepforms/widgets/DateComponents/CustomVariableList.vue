@@ -6,7 +6,7 @@
       @input="chooseVariable"
     />
     <VariableListOption
-      v-if="enableCustomSelection"
+      v-if="enableCustom"
       class="widget-custom-variable-list__custom-option"
       :label="customLabel"
       identifier="custom"
@@ -40,7 +40,7 @@ export default class CustomVariableList extends Vue {
   enableRelativeDate!: boolean;
 
   @Prop({ default: true })
-  enableCustomSelection!: boolean;
+  enableCustom!: boolean;
 
   get customLabel(): string {
     // use specific "Fixed" label when relative date is not enabled

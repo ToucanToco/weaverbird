@@ -144,7 +144,7 @@ stories.add('disable custom selection', () => ({
       <NewDateInput 
         :available-variables="availableVariables" 
         :variable-delimiters="variableDelimiters" 
-        :enableCustomSelection="false"
+        :enableCustom="false"
         v-model="value" 
       />
       <pre>{{ value }}</pre>

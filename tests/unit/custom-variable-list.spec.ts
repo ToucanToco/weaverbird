@@ -120,7 +120,7 @@ describe('Custom variable list - with disabled custom selection', () => {
       sync: false,
       propsData: {
         availableVariables: AVAILABLE_VARIABLES,
-        enableCustomSelection: false,
+        enableCustom: false,
       },
     });
   });

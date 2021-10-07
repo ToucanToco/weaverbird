@@ -76,7 +76,7 @@ stories.add('disable custom selection', () => ({
       <CustomVariableList
         :available-variables="availableVariables" 
         :selectedVariables="selectedVariables"
-        :enableCustomSelection="false"
+        :enableCustom="false"
         @input="input"
         @selectCustomVariable="selectCustomVariable"/>
       <pre>{{ selectedVariables }}</pre>
