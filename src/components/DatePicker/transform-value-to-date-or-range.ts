@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { Duration } from '@/lib/dates';
+import { Duration, RelativeDate } from '@/lib/dates';
 
 /*
 Transform a relative date object to a readable date
@@ -21,4 +21,18 @@ export const transformRelativeDateObjectToDate = ({
   const dateTime = DateTime.fromJSDate(date, { zone: 'UTC' });
   // calculate date
   return dateTime.plus({ [luxonDuration]: quantity }).toJSDate();
+};
+
+/*
+Transform a relative date to a readable date
+*/
+export const transformRelativeDateToDate = (relativeDate: RelativeDate): Date | undefined => {
+  // In relative date we always use today as date to update
+  const today = new Date(Date.now());
+  const date = DateTime.fromJSDate(today, { zone: 'UTC' }).toJSDate();
+  // retrieve date from luxon
+  return transformRelativeDateObjectToDate({
+    ...relativeDate,
+    date,
+  });
 };
