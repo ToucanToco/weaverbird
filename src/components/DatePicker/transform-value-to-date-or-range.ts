@@ -1,6 +1,15 @@
 import { DateTime } from 'luxon';
 
-import { DateRange, Duration, RelativeDate, RelativeDateRange } from '@/lib/dates';
+import {
+  CustomDate,
+  CustomDateRange,
+  DateRange,
+  Duration,
+  isDateRange,
+  isRelativeDateRange,
+  RelativeDate,
+  RelativeDateRange,
+} from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /*
@@ -58,4 +67,49 @@ export const transformRelativeDateRangeToDateRange = (
   // retrieve end date from luxon
   const end = transformRelativeDateObjectToDate({ ...relativeDateRange, date: start });
   return { start, end };
+};
+
+/*
+Transform a value of any date available types 
+(string(Variable), CustomDate(Date, RelativeDate), CustomDateRange(DateRange, RelativeDateRange)) 
+to a Date or a DateRange if possible
+*/
+export const transformValueToDateOrDateRange = (
+  value: undefined | string | CustomDate | CustomDateRange,
+  availableVariables: VariablesBucket = [],
+  relativeAvailableVariables: VariablesBucket = [],
+  variableDelimiters: VariableDelimiters = { start: '', end: '' },
+): Date | DateRange | undefined => {
+  // Undefined
+  if (!value) {
+    return;
+  }
+  // Date or DateRange (already well formatted)
+  else if (value instanceof Date || isDateRange(value)) {
+    return value;
+  }
+  // Variable reference
+  else if (typeof value === 'string') {
+    const variableValue = retrieveVariable(value, availableVariables, variableDelimiters)?.value;
+    // if a variable is customizable, it can refers to another variable of any type
+    // loop to find the variable value as Date or DateRange
+    return transformValueToDateOrDateRange(
+      variableValue,
+      availableVariables,
+      relativeAvailableVariables,
+      variableDelimiters,
+    );
+  }
+  // RelativeDateRange
+  else if (isRelativeDateRange(value)) {
+    return transformRelativeDateRangeToDateRange(
+      value,
+      relativeAvailableVariables,
+      variableDelimiters,
+    );
+  }
+  // RelativeDate
+  else {
+    return transformRelativeDateToDate(value);
+  }
 };
