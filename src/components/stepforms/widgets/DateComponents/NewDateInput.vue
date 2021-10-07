@@ -104,7 +104,7 @@ export default class NewDateInput extends Vue {
 
   @Prop({ default: true })
   enableCustom!: boolean;
-  
+
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   bounds!: DateRange;
 

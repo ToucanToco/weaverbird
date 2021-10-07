@@ -45,7 +45,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
 
-import { RANGE_PICKERS } from './GranularityConfigs';
+import { AvailableDuration, GranularityConfig, RANGE_PICKERS } from './GranularityConfigs';
 
 @Component({
   name: 'custom-granularity-calendar',
@@ -58,7 +58,7 @@ export default class CustomGranularityCalendar extends Vue {
   value?: DateRange;
 
   @Prop({ required: true })
-  granularity: AvailableDuration;
+  granularity!: AvailableDuration;
 
   currentNavRangeStart: DateTime = DateTime.now();
 
@@ -76,7 +76,7 @@ export default class CustomGranularityCalendar extends Vue {
 
   get selectedRangeStart(): DateTime | undefined {
     if (!this.value) return undefined;
-    return this.pickerConfig.selectableRanges.rangeToOption(this.value);
+    return this.pickerConfig.selectableRanges.rangeToOption(this.value as Required<DateRange>);
   }
 
   selectableRangeLabel(date: DateTime): string {
