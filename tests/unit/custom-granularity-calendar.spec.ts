@@ -9,22 +9,23 @@ const currentYear = DateTime.now().year;
 const SAMPLE_DATE_TIME = DateTime.fromRFC2822('25 Nov 2016 13:23 Z', { locale: 'en' });
 
 describe('CustomGranularityCalendar', () => {
-  let wrapper: Wrapper<CustomGranularityCalendar>;
-  const createWrapper = (props: any = {}): void => {
-    wrapper = shallowMount(CustomGranularityCalendar, {
-      sync: false,
-      propsData: {
-        granularity: 'month',
-        ...props,
-      },
-    });
-  };
-
-  afterEach(() => {
-    if (wrapper) wrapper.destroy();
-  });
-
+  // Test the "month" config with the component itself
   describe('Month', () => {
+    let wrapper: Wrapper<CustomGranularityCalendar>;
+    const createWrapper = (props: any = {}): void => {
+      wrapper = shallowMount(CustomGranularityCalendar, {
+        sync: false,
+        propsData: {
+          granularity: 'month',
+          ...props,
+        },
+      });
+    };
+
+    afterEach(() => {
+      if (wrapper) wrapper.destroy();
+    });
+
     describe('default', () => {
       beforeEach(() => {
         createWrapper();
@@ -105,6 +106,7 @@ describe('CustomGranularityCalendar', () => {
     });
   });
 
+  // For everything else, only test date related fonction aka the "Granularity Config"
   describe('Decade navigation', () => {
     it('should provide the right label', () => {
       expect(DECADE_NAV.label(SAMPLE_DATE_TIME)).toBe('2010-2020');
