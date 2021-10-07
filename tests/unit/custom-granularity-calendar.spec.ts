@@ -151,4 +151,49 @@ describe('CustomGranularityCalendar', () => {
       ).toStrictEqual(DateTime.utc(2016, 4, 1, { locale: 'en' }));
     });
   });
+
+  describe('Year options', () => {
+    const options = RANGE_PICKERS.year.selectableRanges.currentOptions(SAMPLE_DATE_TIME);
+
+    it('should provide the right label', () => {
+      expect(RANGE_PICKERS.year.selectableRanges.label(SAMPLE_DATE_TIME)).toBe('2016');
+    });
+
+    it('should provide the right options', () => {
+      expect(options).toHaveLength(11);
+      expect(options.map(dt => dt.year)).toStrictEqual([
+        2010,
+        2011,
+        2012,
+        2013,
+        2014,
+        2015,
+        2016,
+        2017,
+        2018,
+        2019,
+        2020,
+      ]);
+    });
+
+    it('should convert an option to a date range', () => {
+      const Year2012 = options[2];
+      expect(RANGE_PICKERS.year.selectableRanges.optionToRange(Year2012)).toStrictEqual({
+        start: new Date(Date.UTC(2012, 0, 1)),
+        end: new Date(Date.UTC(2013, 0, 1)),
+        duration: 'year',
+      });
+    });
+
+    it('should convert a arbitrary date range to the associated option', () => {
+      expect(
+        RANGE_PICKERS.year.selectableRanges.rangeToOption({
+          // Weird year from the 12th feb to the 12th feb
+          start: new Date(Date.UTC(2012, 1, 12)),
+          end: new Date(Date.UTC(2013, 1, 12)),
+          duration: 'year',
+        }),
+      ).toStrictEqual(DateTime.utc(2012, 1, 1, { locale: 'en' }));
+    });
+  });
 });
