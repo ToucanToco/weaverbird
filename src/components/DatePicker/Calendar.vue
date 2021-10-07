@@ -37,7 +37,7 @@ export default class Calendar extends Vue {
   @Prop({ default: false })
   isRange!: boolean;
 
-  defaultDate: string | Date = '';
+  defaultDate: '' | Date = '';
 
   get shouldUpdateDefaultDate(): boolean {
     return !this.value || (!(this.value instanceof Date) && !this.value?.start);
