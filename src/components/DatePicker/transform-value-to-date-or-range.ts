@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 
-import { Duration, RelativeDate } from '@/lib/dates';
+import { DateRange, Duration, RelativeDate, RelativeDateRange } from '@/lib/dates';
+import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /*
 Transform a relative date object to a readable date
@@ -35,4 +36,26 @@ export const transformRelativeDateToDate = (relativeDate: RelativeDate): Date | 
     ...relativeDate,
     date,
   });
+};
+
+/*
+Transform a relative date range to a readable date range
+*/
+export const transformRelativeDateRangeToDateRange = (
+  relativeDateRange: RelativeDateRange,
+  relativeAvailableVariables: VariablesBucket = [],
+  variableDelimiters: VariableDelimiters = { start: '', end: '' },
+): DateRange | undefined => {
+  // start is always a date as relativeAvailableVariables are not customizable
+  const value = retrieveVariable(
+    relativeDateRange.date,
+    relativeAvailableVariables,
+    variableDelimiters,
+  )?.value;
+  if (!(value instanceof Date)) return;
+  // pass start date to UTC
+  const start = DateTime.fromJSDate(value, { zone: 'UTC' }).toJSDate();
+  // retrieve end date from luxon
+  const end = transformRelativeDateObjectToDate({ ...relativeDateRange, date: start });
+  return { start, end };
 };

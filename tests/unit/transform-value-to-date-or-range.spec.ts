@@ -3,9 +3,10 @@ import { DateTime } from 'luxon';
 import {
   RelativeDateObject,
   transformRelativeDateObjectToDate,
+  transformRelativeDateRangeToDateRange,
   transformRelativeDateToDate,
 } from '@/components/DatePicker/transform-value-to-date-or-range';
-import { RelativeDate } from '@/lib/dates';
+import { RelativeDate, RelativeDateRange } from '@/lib/dates';
 
 describe('transformRelativeDateObjectToDate', () => {
   const date = DateTime.utc(2020, 8, 1).toJSDate(); // received date is always an UTC date
@@ -34,8 +35,11 @@ describe('transformRelativeDateObjectToDate', () => {
 describe('transformRelativeDateToDate', () => {
   const realNow = Date.now;
   beforeEach(() => {
+    const today = DateTime.utc(2020, 7, 3)
+      .toJSDate()
+      .getTime();
     // today is now 03/07/2020
-    global.Date.now = jest.fn(() => new Date('2020/07/03').getTime());
+    global.Date.now = jest.fn(() => today);
   });
   afterEach(() => {
     global.Date.now = realNow;
@@ -52,5 +56,58 @@ describe('transformRelativeDateToDate', () => {
     const relativeDate: RelativeDate = { quantity: -2, duration: 'month' };
     const date = DateTime.utc(2020, 5, 3).toJSDate();
     expect(transformRelativeDateToDate(relativeDate)).toStrictEqual(date);
+  });
+});
+
+describe('transformRelativeDateRangeToDateRange', () => {
+  const availableVariables = [
+    { identifier: 'date', value: DateTime.utc(2020, 7, 3).toJSDate(), label: 'Date' },
+    { identifier: 'notadate', value: 'nop', label: 'Not a date' },
+  ];
+  const variableDelimiters = { start: '{{', end: '}}' };
+  it("should return undefined if variable doesn't exist", () => {
+    const relativeDateRange: RelativeDateRange = {
+      date: '{{toto}}',
+      quantity: -2,
+      duration: 'month',
+    };
+    expect(
+      transformRelativeDateRangeToDateRange(
+        relativeDateRange,
+        availableVariables,
+        variableDelimiters,
+      ),
+    ).toBeUndefined();
+  });
+  it('should return undefined if variable value is not a date', () => {
+    const relativeDateRange: RelativeDateRange = {
+      date: '{{notadate}}',
+      quantity: -2,
+      duration: 'month',
+    };
+    expect(
+      transformRelativeDateRangeToDateRange(
+        relativeDateRange,
+        availableVariables,
+        variableDelimiters,
+      ),
+    ).toBeUndefined();
+  });
+  it('should return date for passed quantity and duration based on variable date', () => {
+    // ({{date}}) 03/07/2020 - 3 months => 03/04/2020
+    const relativeDateRange: RelativeDateRange = {
+      date: '{{date}}',
+      quantity: -3,
+      duration: 'month',
+    };
+    const start = availableVariables[0].value;
+    const end = DateTime.utc(2020, 4, 3).toJSDate();
+    expect(
+      transformRelativeDateRangeToDateRange(
+        relativeDateRange,
+        availableVariables,
+        variableDelimiters,
+      ),
+    ).toStrictEqual({ start, end });
   });
 });
