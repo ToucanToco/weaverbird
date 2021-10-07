@@ -2258,18 +2258,6 @@ export class Mongo36Translator extends BaseTranslator {
     };
   }
 
-  /**
-   * Translate any value expression into one mongo can evaluate.
-   *
-   * @protected
-   */
-  protected translateValue(value: any): any {
-    if (isRelativeDate(value)) {
-      return this.translateRelativeDate(value);
-    }
-    return value;
-  }
-
   // Relative dates are not supported until mongo 5+
   protected translateRelativeDate(value: RelativeDate): object {
     console.error('This version of Mongo does not support relative dates');
@@ -2320,11 +2308,21 @@ export class Mongo36Translator extends BaseTranslator {
     if (cond.operator === 'notnull' || cond.operator === 'isnull') {
       return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
     }
-    return {
-      $expr: {
-        [operatorMapping[cond.operator]]: [$$(cond.column), this.translateValue(cond.value)],
-      },
-    };
+
+    // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
+    // They need to be used with $expr
+    if (isRelativeDate(cond.value)) {
+      return {
+        $expr: {
+          [operatorMapping[cond.operator]]: [
+            $$(cond.column),
+            this.translateRelativeDate(cond.value),
+          ],
+        },
+      };
+    }
+
+    return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
   }
 
   /**
