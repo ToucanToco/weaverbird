@@ -129,12 +129,10 @@ describe('Date input', () => {
   });
 
   describe('custom editor', () => {
-    const value = new Date();
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
-        value,
       });
     });
 
@@ -159,7 +157,7 @@ describe('Date input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue = new Date(3);
+      const editedValue = { quantity: -1, duration: 'month' };
 
       beforeEach(async () => {
         wrapper.setData({ currentTabValue: editedValue });
@@ -180,6 +178,9 @@ describe('Date input', () => {
         expect(wrapper.find('Calendar-stub').exists()).toBe(true);
         expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
       });
+      it('should have a disabled save button', () => {
+        expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
+      });
 
       describe('when updating Calendar value', () => {
         const newValue = new Date(8);
@@ -189,6 +190,9 @@ describe('Date input', () => {
         });
         it('should update tab value', () => {
           expect((wrapper.vm as any).currentTabValue).toStrictEqual(newValue);
+        });
+        it('should have an enabled save button', () => {
+          expect(wrapper.find({ ref: 'save' }).attributes('disabled')).not.toBe('disabled');
         });
       });
     });
@@ -216,16 +220,16 @@ describe('Date input', () => {
     });
 
     describe('when switching between tabs', () => {
-      const updatedCalendarValue = new Date(11);
+      const updatedRelativeDateValue = { quantity: -2, duration: 'month' };
       beforeEach(async () => {
-        wrapper.find('Calendar-stub').vm.$emit('input', updatedCalendarValue); // update Calendar value
+        wrapper.find('RelativeDateForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateForm value
         await wrapper.vm.$nextTick();
-        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic'); // switching to the other tab
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // switching to the other tab
         await wrapper.vm.$nextTick();
-        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // come back to previous tab
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic'); // come back to previous tab
       });
       it('should not remove other tab value', () => {
-        expect(wrapper.find('Calendar-stub').props().value).toBe(updatedCalendarValue);
+        expect(wrapper.find('RelativeDateForm-stub').props().value).toBe(updatedRelativeDateValue);
       });
     });
   });
@@ -271,6 +275,9 @@ describe('Date input', () => {
 
     it('should preselect value in Calendar', () => {
       expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
+    });
+    it('should have an enabled save button', () => {
+      expect(wrapper.find({ ref: 'save' }).attributes('disabled')).not.toBe('disabled');
     });
   });
 

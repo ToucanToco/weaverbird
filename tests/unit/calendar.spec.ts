@@ -64,6 +64,11 @@ describe('Calendar', () => {
       wrapper.find('DatePicker-stub').vm.$emit('input', value);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual(value);
     });
+    it('should emit start date only when datepicker is dragged (range update)', () => {
+      const value = { start: new Date(), end: new Date(2) };
+      (wrapper.vm as any).onDrag(value); // drag event is not found by stub
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start });
+    });
   });
 
   describe('with highlighted dates', () => {

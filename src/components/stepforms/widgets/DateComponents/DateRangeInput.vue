@@ -42,7 +42,9 @@
             />
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
+              :class="{ 'widget-date-input__editor-button--disabled': hasInvalidTabValue }"
               ref="save"
+              :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
               v-text="'Set date'"
             />
@@ -119,7 +121,7 @@ export default class DateRangeInput extends Vue {
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDateRange> = {
-    Fixed: { start: new Date() },
+    Fixed: {}, // DateRange should be empty on init because we can have bounds so defined dates could be out of bounds
     Dynamic: { date: '', quantity: -1, duration: 'year' },
   };
 
@@ -172,6 +174,18 @@ export default class DateRangeInput extends Vue {
       );
     } else {
       return 'Select a date';
+    }
+  }
+
+  get hasInvalidTabValue(): boolean {
+    if (this.isFixedTabSelected) {
+      return (
+        !isDateRange(this.currentTabValue) ||
+        !this.currentTabValue.start ||
+        !this.currentTabValue.end
+      );
+    } else {
+      return !isRelativeDateRange(this.currentTabValue) || !this.currentTabValue.date;
     }
   }
 
@@ -347,5 +361,10 @@ $active-color-dark: #16406a;
   &:hover {
     background: $active-color-dark;
   }
+}
+.widget-date-input__editor-button--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>

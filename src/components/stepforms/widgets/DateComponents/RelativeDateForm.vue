@@ -68,7 +68,7 @@ $active-color-extra-light: #f8f7fa;
 }
 .widget-relative-date-form__quantity {
   flex: 1 25%;
-  margin: 0;
+  margin: 0 !important;
   background: $active-color-extra-light;
 
   ::v-deep .widget-input-number__container {

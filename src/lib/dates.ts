@@ -81,7 +81,7 @@ export const isRelativeDateRange = (
   return _has(value, 'date') && _has(value, 'duration') && _has(value, 'quantity');
 };
 
-export const isDateRange = (value: string | CustomDateRange): value is DateRange => {
+export const isDateRange = (value: undefined | string | CustomDateRange): value is DateRange => {
   if (!(value instanceof Object)) return false;
   return Object.keys(value).length === 0 || _has(value, 'start') || _has(value, 'end');
 };
