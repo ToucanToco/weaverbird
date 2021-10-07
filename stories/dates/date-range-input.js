@@ -215,7 +215,7 @@ stories.add('disable custom selection', () => ({
       value: undefined,
     };
   },
-});
+}));
 
 stories.add('custom (with bounds)', () => ({
   template: `
