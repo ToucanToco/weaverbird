@@ -73,7 +73,9 @@ describe('CustomGranularityCalendar - Month', () => {
     });
 
     it('should select the corresponding month', () => {
-      expect(wrapper.find('.custom-granularity-calendar__option--selected').text()).toBe('December');
+      expect(wrapper.find('.custom-granularity-calendar__option--selected').text()).toBe(
+        'December',
+      );
     });
 
     describe('when clicking on the previous year button', () => {
