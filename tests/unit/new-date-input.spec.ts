@@ -303,14 +303,47 @@ describe('Date input', () => {
     });
   });
 
+  describe('with disabled custom selection', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        enableCustom: false,
+      });
+    });
+    it('should not display Custom editor', () => {
+      expect(wrapper.find({ ref: 'custom-editor' }).exists()).toBe(false);
+    });
+    it('should pass down disabled custom selection props to custom variable list', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().enableCustom).toBe(false);
+    });
+  });
+
+  describe('without available variables', () => {
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: [],
+        variableDelimiters: { start: '{{', end: '}}' },
+      });
+      wrapper.find('.widget-date-input__button').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+    it('should display Custom editor directly when clicking on open button', () => {
+      expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
+    });
+    it('should not display Custom variable list', () => {
+      expect(wrapper.find('CustomVariableList-stub').exists()).toBe(false);
+    });
+  });
+
   describe('with bounds', () => {
     const bounds = { start: new Date('2020/1/1'), end: new Date('2020/6/1') };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
-        value: new Date(),
         bounds,
+        value: new Date('2020/2/1'),
       });
     });
     it('should pass bounds to calendar', () => {
@@ -323,7 +356,7 @@ describe('Date input', () => {
       createWrapper();
     });
     it('should set availableVariables to empty array', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual([]);
+      expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
@@ -336,9 +369,6 @@ describe('Date input', () => {
     });
     it('should set bounds to empty date range', () => {
       expect((wrapper.vm as any).bounds).toStrictEqual({ start: undefined, end: undefined });
-    });
-    it('should pass empty string as selected variable to CustomVariableList', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual('');
     });
     it('should display placeholder input label', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a date');

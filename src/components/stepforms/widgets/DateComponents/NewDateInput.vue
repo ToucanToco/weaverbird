@@ -9,13 +9,20 @@
     <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
       <div class="widget-date-input__editor-container">
         <CustomVariableList
+          v-if="hasVariables"
           class="widget-date-input__editor-side"
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
+          :enableCustom="enableCustom"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
-        <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
+        <div
+          class="widget-date-input__editor-content"
+          v-if="enableCustom"
+          v-show="isCustom || !hasVariables"
+          ref="custom-editor"
+        >
           <Tabs
             class="widget-date-input__editor-header"
             :tabs="tabs"
@@ -95,6 +102,9 @@ export default class NewDateInput extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: true })
+  enableCustom!: boolean;
+  
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   bounds!: DateRange;
 
@@ -134,6 +144,10 @@ export default class NewDateInput extends Vue {
     } else {
       return this.variable?.identifier ?? '';
     }
+  }
+
+  get hasVariables(): boolean {
+    return this.availableVariables.length > 0;
   }
 
   get hasCustomValue(): boolean {

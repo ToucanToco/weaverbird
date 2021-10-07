@@ -69,3 +69,36 @@ stories.add('simple', () => ({
     }
   },
 }));
+
+stories.add('disable custom selection', () => ({
+  template: `
+    <div>
+      <CustomVariableList
+        :available-variables="availableVariables" 
+        :selectedVariables="selectedVariables"
+        :enableCustom="false"
+        @input="input"
+        @selectCustomVariable="selectCustomVariable"/>
+      <pre>{{ selectedVariables }}</pre>
+    </div>
+  `,
+
+  components: {
+    CustomVariableList,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      selectedVariables: '',
+    };
+  },
+  methods: {
+    input(value) {
+      this.selectedVariables = value;
+    },
+    selectCustomVariable() {
+      this.selectedVariables = 'custom';
+    }
+  },
+}));

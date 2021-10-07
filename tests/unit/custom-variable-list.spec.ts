@@ -113,6 +113,25 @@ describe('Custom variable list - with disabled relative date', () => {
   });
 });
 
+describe('Custom variable list - with disabled custom selection', () => {
+  let wrapper: Wrapper<CustomVariableList>;
+  beforeEach(() => {
+    wrapper = shallowMount(CustomVariableList, {
+      sync: false,
+      propsData: {
+        availableVariables: AVAILABLE_VARIABLES,
+        enableCustom: false,
+      },
+    });
+  });
+  afterEach(() => {
+    wrapper.destroy();
+  });
+  it('should not display Custom option', () => {
+    expect(wrapper.find('.widget-custom-variable-list__custom-option').exists()).toBe(false);
+  });
+});
+
 describe('Custom variable list - empty', () => {
   let wrapper: Wrapper<CustomVariableList>;
   beforeEach(() => {

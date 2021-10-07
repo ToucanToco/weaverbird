@@ -57,7 +57,7 @@ stories.add('simple', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       value: undefined,
     };
   },
@@ -82,7 +82,7 @@ stories.add('already selected variable', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       value: '{{dates.all_time}}',
     };
   },
@@ -107,7 +107,7 @@ stories.add('custom (fixed date)', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       value: new Date(),
     };
   },
@@ -132,8 +132,53 @@ stories.add('custom (relative date)', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       value: { quantity: -1, duration: 'month' },
+    };
+  },
+}));
+
+stories.add('disable custom selection', () => ({
+  template: `
+    <div>
+      <NewDateInput 
+        :available-variables="availableVariables" 
+        :variable-delimiters="variableDelimiters" 
+        :enableCustom="false"
+        v-model="value" 
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    NewDateInput,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
+      value: undefined,
+    };
+  },
+}));
+
+stories.add('empty', () => ({
+  template: `
+    <div>
+      <NewDateInput v-model="value"/>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    NewDateInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
     };
   },
 }));

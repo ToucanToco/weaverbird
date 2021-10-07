@@ -9,14 +9,21 @@
     <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
       <div class="widget-date-input__editor-container">
         <CustomVariableList
+          v-if="hasVariables"
           class="widget-date-input__editor-side"
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
           :enableRelativeDate="enableRelativeDate"
+          :enableCustom="enableCustom"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
-        <div class="widget-date-input__editor-content" v-show="isCustom" ref="custom-editor">
+        <div
+          class="widget-date-input__editor-content"
+          v-if="enableCustom"
+          v-show="isCustom || !hasVariables"
+          ref="custom-editor"
+        >
           <Tabs
             v-if="enableRelativeDate"
             class="widget-date-input__editor-header"
@@ -116,6 +123,9 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => true })
   enableRelativeDate!: boolean;
 
+  @Prop({ default: true })
+  enableCustom!: boolean;
+
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   bounds!: DateRange;
 
@@ -155,6 +165,10 @@ export default class DateRangeInput extends Vue {
     } else {
       return this.variable?.identifier ?? '';
     }
+  }
+
+  get hasVariables(): boolean {
+    return this.availableVariables.length > 0;
   }
 
   get hasCustomValue(): boolean {
@@ -332,10 +346,11 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-body {
   flex: 1;
-  height: 276px;
-  min-height: 276px;
-  .range-calendar {
-    margin: -1px;
+  height: 278px;
+  min-height: 278px;
+  .vc-container {
+    border: none;
+    margin: 1px;
     width: 100%;
   }
   .widget-relative-date-range-form {
