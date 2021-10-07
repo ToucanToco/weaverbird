@@ -30,7 +30,11 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" v-model="currentTabValue" />
+            <Calendar
+              v-if="isFixedTabSelected"
+              v-model="currentTabValue"
+              :availableDates="bounds"
+            />
             <RelativeDateForm v-else v-model="currentTabValue" />
           </div>
           <div class="widget-date-input__editor-footer">
@@ -42,7 +46,9 @@
             />
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
+              :class="{ 'widget-date-input__editor-button--disabled': hasInvalidTabValue }"
               ref="save"
+              :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
               v-text="'Set date'"
             />
@@ -61,7 +67,7 @@ import Calendar from '@/components/DatePicker/Calendar.vue';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
+import { CustomDate, DateRange, dateToString, relativeDateToString } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -98,6 +104,9 @@ export default class NewDateInput extends Vue {
 
   @Prop({ default: true })
   enableCustom!: boolean;
+  
+  @Prop({ default: () => ({ start: undefined, end: undefined }) })
+  bounds!: DateRange;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
@@ -109,16 +118,16 @@ export default class NewDateInput extends Vue {
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
-  tabsValues: Record<string, CustomDate> = {
-    Fixed: new Date(),
+  tabsValues: Record<string, CustomDate | undefined> = {
+    Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds, moreover, we would have no disabled button otherwise
     Dynamic: { quantity: -1, duration: 'year' },
   };
 
-  get currentTabValue(): CustomDate {
+  get currentTabValue(): CustomDate | undefined {
     return this.tabsValues[this.selectedTab];
   }
 
-  set currentTabValue(value: CustomDate) {
+  set currentTabValue(value: CustomDate | undefined) {
     this.tabsValues[this.selectedTab] = value;
   }
 
@@ -164,6 +173,14 @@ export default class NewDateInput extends Vue {
     } else {
       return 'Select a date';
     }
+  }
+
+  get hasInvalidTabValue(): boolean {
+    if (this.isFixedTabSelected) {
+      return !(this.currentTabValue instanceof Date);
+    }
+    // relative tab is always valid because default value is already complete
+    return false;
   }
 
   created() {
@@ -330,5 +347,10 @@ $active-color-dark: #16406a;
   &:hover {
     background: $active-color-dark;
   }
+}
+.widget-date-input__editor-button--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>

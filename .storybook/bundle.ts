@@ -42,7 +42,7 @@ import CustomVariableList from '../src/components/stepforms/widgets/DateComponen
 import Calendar from '../src/components/DatePicker/Calendar.vue';
 import Tabs from '../src/components/Tabs.vue';
 import RangeCalendar from '../src/components/DatePicker/RangeCalendar.vue';
-import MonthCalendar from '../src/components/DatePicker/MonthCalendar.vue';
+import CustomGranularityCalendar from '../src/components/DatePicker/CustomGranularityCalendar.vue';
 import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
 import RelativeDateRangeForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateRangeForm.vue';
 import NewDateInput from '../src/components/stepforms/widgets/DateComponents/NewDateInput.vue';
@@ -87,7 +87,7 @@ export {
   Calendar,
   Tabs,
   RangeCalendar,
-  MonthCalendar,
+  CustomGranularityCalendar,
   RelativeDateForm,
   RelativeDateRangeForm,
   NewDateInput,

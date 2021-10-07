@@ -64,6 +64,11 @@ describe('Calendar', () => {
       wrapper.find('DatePicker-stub').vm.$emit('input', value);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual(value);
     });
+    it('should emit start date only when datepicker is dragged (range update)', () => {
+      const value = { start: new Date(), end: new Date(2) };
+      (wrapper.vm as any).onDrag(value); // drag event is not found by stub
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start });
+    });
   });
 
   describe('with highlighted dates', () => {
@@ -79,6 +84,18 @@ describe('Calendar', () => {
       expect(attributes).toHaveLength(1);
       expect(attributes[0].key).toBe('highlighted');
       expect(attributes[0].dates).toStrictEqual(highlightedDates);
+    });
+  });
+
+  describe('with available dates and no value', () => {
+    const availableDates = { start: new Date(1000), end: new Date(20000) };
+    beforeEach(() => {
+      createWrapper({ availableDates });
+    });
+    it('should move calendar cursor to available date start', () => {
+      expect(wrapper.find('DatePicker-stub').attributes('from-date')).toStrictEqual(
+        availableDates.start.toString(),
+      );
     });
   });
 });

@@ -6,8 +6,10 @@
     :select-attribute="selectedDatesStyle"
     :drag-attribute="rangeSelectedDatesStyle"
     :is-range="isRange"
+    :from-date="defaultDate"
     timeformat="UTC"
     @input="onInput"
+    @drag="onDrag"
   />
 </template>
 
@@ -35,6 +37,12 @@ export default class Calendar extends Vue {
 
   @Prop({ default: false })
   isRange!: boolean;
+
+  defaultDate: '' | Date = '';
+
+  get shouldUpdateDefaultDate(): boolean {
+    return !this.value || (!(this.value instanceof Date) && !this.value?.start);
+  }
 
   get selectedDatesStyle(): DatePickerHighlight {
     return {
@@ -66,9 +74,20 @@ export default class Calendar extends Vue {
     ];
   }
 
+  created() {
+    if (this.shouldUpdateDefaultDate) {
+      this.defaultDate = this.availableDates?.start ?? '';
+    }
+  }
+
   /* istanbul ignore next */
   onInput(value: Date | DateRange | undefined): void {
     this.$emit('input', value);
+  }
+
+  // when user start to select a range he has only start value selected, we disable validate button until he select the end value
+  onDrag(dragValue: DateRange): void {
+    this.$emit('input', { start: dragValue.start });
   }
 }
 </script>

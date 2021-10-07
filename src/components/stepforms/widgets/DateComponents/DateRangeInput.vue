@@ -32,7 +32,12 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" v-model="currentTabValue" isRange />
+            <Calendar
+              v-if="isFixedTabSelected"
+              v-model="currentTabValue"
+              isRange
+              :availableDates="bounds"
+            />
             <RelativeDateRangeForm
               v-else
               v-model="currentTabValue"
@@ -49,7 +54,9 @@
             />
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
+              :class="{ 'widget-date-input__editor-button--disabled': hasInvalidTabValue }"
               ref="save"
+              :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
               v-text="'Set date'"
             />
@@ -70,6 +77,7 @@ import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
 import {
   CustomDateRange,
+  DateRange,
   dateRangeToString,
   isDateRange,
   isRelativeDateRange,
@@ -118,6 +126,9 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: true })
   enableCustom!: boolean;
 
+  @Prop({ default: () => ({ start: undefined, end: undefined }) })
+  bounds!: DateRange;
+
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
@@ -129,7 +140,7 @@ export default class DateRangeInput extends Vue {
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDateRange> = {
-    Fixed: { start: new Date() },
+    Fixed: {}, // DateRange should be empty on init because we can have bounds so defined dates could be out of bounds
     Dynamic: { date: '', quantity: -1, duration: 'year' },
   };
 
@@ -186,6 +197,18 @@ export default class DateRangeInput extends Vue {
       );
     } else {
       return 'Select a date';
+    }
+  }
+
+  get hasInvalidTabValue(): boolean {
+    if (this.isFixedTabSelected) {
+      return (
+        !isDateRange(this.currentTabValue) ||
+        !this.currentTabValue.start ||
+        !this.currentTabValue.end
+      );
+    } else {
+      return !isRelativeDateRange(this.currentTabValue) || !this.currentTabValue.date;
     }
   }
 
@@ -362,5 +385,10 @@ $active-color-dark: #16406a;
   &:hover {
     background: $active-color-dark;
   }
+}
+.widget-date-input__editor-button--disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>
