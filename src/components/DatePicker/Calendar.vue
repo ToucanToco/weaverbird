@@ -72,7 +72,7 @@ export default class Calendar extends Vue {
     this.$emit('input', value);
   }
 
-  // emit partial date range when dragging range to disable validate button
+  // when user start to select a range he has only start value selected, we disable validate button until he select the end value
   onDrag(dragValue: DateRange): void {
     this.$emit('input', { start: dragValue.start });
   }
