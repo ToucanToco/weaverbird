@@ -330,5 +330,6 @@ $active-color-dark: #16406a;
 .widget-date-input__editor-button--disabled {
   opacity: 0.5;
   pointer-events: none;
+  cursor: not-allowed;
 }
 </style>
