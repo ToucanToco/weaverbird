@@ -32,12 +32,13 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar
-              v-if="isFixedTabSelected"
-              v-model="currentTabValue"
-              isRange
-              :availableDates="bounds"
-            />
+            <div v-if="isFixedTabSelected">
+              <!-- <Tabs :tabs="['Days', 'Months', 'Quarter', 'years']" /> -->
+              <Calendar v-model="currentTabValue" isRange :availableDates="bounds" />
+              <!-- <CustomGranularityCalendar :granularity="month" />
+              <CustomGranularityCalendar :granularity="quarter" />
+              <CustomGranularityCalendar :granularity="year" /> -->
+            </div>
             <RelativeDateRangeForm
               v-else
               v-model="currentTabValue"
