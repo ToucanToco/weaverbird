@@ -13,7 +13,7 @@ type GranularityConfig = {
   selectableRanges: {
     label: (dt: DateTime) => string;
     currentOptions: (currentNavRangeStart: DateTime) => DateTime[];
-    optionToRange: (selectedOption: DateTime) => DateRange;
+    optionToRange: (selectedOption: DateTime) => Required<DateRange>;
     rangeToOption: (selectedRange: Required<DateRange>) => DateTime;
   };
 };
@@ -58,7 +58,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
           return DateTime.utc(navYear, i + 1, 1, 0, 0, 0, { locale: 'en' });
         });
       },
-      optionToRange: (selectedOption: DateTime): DateRange => ({
+      optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
         end: selectedOption.plus({ months: 1 }).toJSDate(),
         duration: 'month',
@@ -78,7 +78,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
           return DateTime.utc(currentNavRangeStart.year, i * 3 + 1, 1, 0, 0, 0, { locale: 'en' });
         });
       },
-      optionToRange: (selectedOption: DateTime): DateRange => ({
+      optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
         end: selectedOption.plus({ months: 3 }).toJSDate(),
         duration: 'quarter',
@@ -104,7 +104,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
           return DateTime.utc(decadeStart + i, 1, 1, 0, 0, 0, { locale: 'en' });
         });
       },
-      optionToRange: (selectedOption: DateTime): DateRange => ({
+      optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
         end: selectedOption.plus({ years: 1 }).toJSDate(),
         duration: 'year',
