@@ -4,7 +4,7 @@ import { DateRange } from '@/lib/dates';
 
 // Types
 
-type GranularityConfig = {
+export type GranularityConfig = {
   navRange: {
     label: (dt: DateTime) => string;
     prev: (dt: DateTime) => DateTime;
@@ -18,7 +18,7 @@ type GranularityConfig = {
   };
 };
 
-type AvailableDuration = 'year' | 'quarter' | 'month';
+export type AvailableDuration = 'year' | 'quarter' | 'month';
 
 // Navigations
 
