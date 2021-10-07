@@ -23,7 +23,11 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar v-if="isFixedTabSelected" v-model="currentTabValue" />
+            <Calendar
+              v-if="isFixedTabSelected"
+              v-model="currentTabValue"
+              :availableDates="bounds"
+            />
             <RelativeDateForm v-else v-model="currentTabValue" />
           </div>
           <div class="widget-date-input__editor-footer">
@@ -56,7 +60,7 @@ import Calendar from '@/components/DatePicker/Calendar.vue';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
+import { CustomDate, DateRange, dateToString, relativeDateToString } from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -90,6 +94,9 @@ export default class NewDateInput extends Vue {
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
+
+  @Prop({ default: () => ({ start: undefined, end: undefined }) })
+  bounds!: DateRange;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor

@@ -6,6 +6,7 @@
     :select-attribute="selectedDatesStyle"
     :drag-attribute="rangeSelectedDatesStyle"
     :is-range="isRange"
+    :from-date="defaultDate"
     timeformat="UTC"
     @input="onInput"
     @drag="onDrag"
@@ -37,6 +38,12 @@ export default class Calendar extends Vue {
   @Prop({ default: false })
   isRange!: boolean;
 
+  defaultDate: '' | Date = '';
+
+  get shouldUpdateDefaultDate(): boolean {
+    return !this.value || (!(this.value instanceof Date) && !this.value?.start);
+  }
+
   get selectedDatesStyle(): DatePickerHighlight {
     return {
       highlight: {
@@ -65,6 +72,12 @@ export default class Calendar extends Vue {
         dates: this.highlightedDates,
       },
     ];
+  }
+
+  created() {
+    if (this.shouldUpdateDefaultDate) {
+      this.defaultDate = this.availableDates?.start ?? '';
+    }
   }
 
   /* istanbul ignore next */

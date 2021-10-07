@@ -86,4 +86,16 @@ describe('Calendar', () => {
       expect(attributes[0].dates).toStrictEqual(highlightedDates);
     });
   });
+
+  describe('with available dates and no value', () => {
+    const availableDates = { start: new Date(1000), end: new Date(20000) };
+    beforeEach(() => {
+      createWrapper({ availableDates });
+    });
+    it('should move calendar cursor to available date start', () => {
+      expect(wrapper.find('DatePicker-stub').attributes('from-date')).toStrictEqual(
+        availableDates.start.toString(),
+      );
+    });
+  });
 });
