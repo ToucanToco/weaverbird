@@ -1,15 +1,17 @@
 <template>
   <div>
     <Tabs :tabs="tabs" :selectedTab="selectedTab" @tabSelected="selectTab" />
-    <Calendar
-      v-if="selectedTab === 'Days'"
-      v-model="currentTabValue"
-      :availableDates="bounds"
-      isRange
-    />
-    <CustomGranularityCalendar v-else-if="selectedTab === 'Months'" granularity="month" />
-    <CustomGranularityCalendar v-else-if="selectedTab === 'Quarters'" granularity="quarter" />
-    <CustomGranularityCalendar v-else-if="selectedTab === 'Years'" granularity="year" />
+    <div class="widget-multi-date-input__body">
+      <Calendar
+        v-if="selectedTab === 'Days'"
+        v-model="currentTabValue"
+        :availableDates="bounds"
+        isRange
+      />
+      <CustomGranularityCalendar v-else-if="selectedTab === 'Months'" granularity="month" />
+      <CustomGranularityCalendar v-else-if="selectedTab === 'Quarters'" granularity="quarter" />
+      <CustomGranularityCalendar v-else-if="selectedTab === 'Years'" granularity="year" />
+    </div>
   </div>
 </template>
 
@@ -56,4 +58,8 @@ export default class DateRangeInput extends Vue {
 }
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.widget-multi-date-input__body {
+  padding: 20px 24px;
+}
+</style>
