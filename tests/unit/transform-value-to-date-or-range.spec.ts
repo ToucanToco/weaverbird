@@ -5,6 +5,7 @@ import {
   transformRelativeDateObjectToDate,
   transformRelativeDateRangeToDateRange,
   transformRelativeDateToDate,
+  transformRelativeDateToDateRange,
   transformValueToDateOrDateRange,
 } from '@/components/DatePicker/transform-value-to-date-or-range';
 import { RelativeDate, RelativeDateRange } from '@/lib/dates';
@@ -57,6 +58,37 @@ describe('transformRelativeDateToDate', () => {
     const relativeDate: RelativeDate = { quantity: -2, duration: 'month' };
     const date = DateTime.utc(2020, 5, 3).toJSDate();
     expect(transformRelativeDateToDate(relativeDate)).toStrictEqual(date);
+  });
+});
+
+describe('transformRelativeDateToDateRange', () => {
+  const realNow = Date.now;
+  const today = DateTime.utc(2020, 7, 3).toJSDate();
+  beforeEach(() => {
+    // today is now 03/07/2020
+    global.Date.now = jest.fn(() => today.getTime());
+  });
+  afterEach(() => {
+    global.Date.now = realNow;
+  });
+  // (Today)03/07/2020 + 2 months => 03/09/2020
+  it('should return date range for passed quantity and duration based on today (positive value)', () => {
+    const relativeDate: RelativeDate = { quantity: 2, duration: 'month' };
+    const date = DateTime.utc(2020, 9, 3).toJSDate();
+    expect(transformRelativeDateToDateRange(relativeDate)).toStrictEqual({
+      start: today,
+      end: date,
+    });
+  });
+
+  // (Today)03/07/2020 - 2 months => 03/05/2020 (start and end should be inverted to use min date as start)
+  it('should return date range for passed quantity and duration based on today (negative value)', () => {
+    const relativeDate: RelativeDate = { quantity: -2, duration: 'month' };
+    const date = DateTime.utc(2020, 5, 3).toJSDate();
+    expect(transformRelativeDateToDateRange(relativeDate)).toStrictEqual({
+      start: date,
+      end: today,
+    });
   });
 });
 

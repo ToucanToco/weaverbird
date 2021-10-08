@@ -47,6 +47,20 @@ export const transformRelativeDateToDate = (relativeDate: RelativeDate): Date | 
   });
 };
 
+export const transformRelativeDateToDateRange = (
+  relativeDate: RelativeDate,
+): DateRange | undefined => {
+  // In relative date we always use today as date to update
+  const today = new Date(Date.now());
+  const start = DateTime.fromJSDate(today, { zone: 'UTC' }).toJSDate();
+  // retrieve end date from luxon
+  const end = transformRelativeDateObjectToDate({
+    ...relativeDate,
+    date: start,
+  });
+  return relativeDate.quantity >= 0 ? { start, end } : { start: end, end: start };
+};
+
 /*
 Transform a relative date range to a readable date range
 */
