@@ -6,7 +6,8 @@ import {
   transformRelativeDateRangeToDateRange,
   transformRelativeDateToDate,
   transformRelativeDateToDateRange,
-  transformValueToDateOrDateRange,
+  transformValueToDate,
+  transformValueToDateRange,
 } from '@/components/DatePicker/transform-value-to-date-or-range';
 import { RelativeDate, RelativeDateRange } from '@/lib/dates';
 
@@ -162,7 +163,7 @@ describe('transformRelativeDateRangeToDateRange', () => {
   });
 });
 
-describe('transformValueToDateOrDateRange', () => {
+describe('transformValue', () => {
   const variableDelimiters = { start: '{{', end: '}}' };
   const relativeAvailableVariables = [
     { identifier: 'hello', value: DateTime.utc(2020, 10, 20).toJSDate(), label: 'Today' },
@@ -192,38 +193,183 @@ describe('transformValueToDateOrDateRange', () => {
   ];
 
   const realNow = Date.now;
+  const today = DateTime.utc(2020, 7, 3).toJSDate();
   beforeEach(() => {
-    const today = DateTime.utc(2020, 7, 3)
-      .toJSDate()
-      .getTime();
     // today is now 03/07/2020
-    global.Date.now = jest.fn(() => today);
+    global.Date.now = jest.fn(() => today.getTime());
   });
   afterEach(() => {
     global.Date.now = realNow;
   });
 
-  it('should return undefined if value is undefined', () => {
-    expect(
-      transformValueToDateOrDateRange(
-        undefined,
-        availableVariables,
-        relativeAvailableVariables,
-        variableDelimiters,
-      ),
-    ).toBeUndefined();
-  });
-  describe('date or date range', () => {
+  describe('...toDate', () => {
+    it('should return undefined if value is undefined', () => {
+      expect(
+        transformValueToDate(
+          undefined,
+          availableVariables,
+          relativeAvailableVariables,
+          variableDelimiters,
+        ),
+      ).toBeUndefined();
+    });
     it('should return value if value is already a date', () => {
       const value = DateTime.utc(2020, 7, 3).toJSDate();
       expect(
-        transformValueToDateOrDateRange(
+        transformValueToDate(
           value,
           availableVariables,
           relativeAvailableVariables,
           variableDelimiters,
         ),
       ).toStrictEqual(value);
+    });
+    it('should return date start if value is a date range', () => {
+      const value = {
+        start: DateTime.utc(2020, 7, 3).toJSDate(),
+        end: DateTime.utc(2020, 9, 3).toJSDate(),
+      };
+      expect(
+        transformValueToDate(
+          value,
+          availableVariables,
+          relativeAvailableVariables,
+          variableDelimiters,
+        ),
+      ).toStrictEqual(value.start);
+    });
+    it('should return a date if value is a relative date', () => {
+      // (Today)03/07/2020 + 2 months => 03/09/2020
+      const value: RelativeDate = { quantity: 2, duration: 'month' };
+      const attendedValue = DateTime.utc(2020, 9, 3).toJSDate();
+      expect(
+        transformValueToDate(
+          value,
+          availableVariables,
+          relativeAvailableVariables,
+          variableDelimiters,
+        ),
+      ).toStrictEqual(attendedValue);
+    });
+    it('should return date end if value is a relative date range', () => {
+      // ({{hello}}) 20/10/2020 - 3 months => 20/07/2020
+      const value: RelativeDateRange = { date: 'hello', quantity: -3, duration: 'month' };
+      const attendedValue = transformRelativeDateRangeToDateRange(
+        value,
+        relativeAvailableVariables,
+        variableDelimiters,
+      );
+      expect(
+        transformValueToDate(
+          value,
+          availableVariables,
+          relativeAvailableVariables,
+          variableDelimiters,
+        ),
+      ).toStrictEqual(attendedValue);
+    });
+    describe('variable', () => {
+      it("should return undefined if variable doesn't exist", () => {
+        const value = '{{notexisting}}';
+        expect(
+          transformValueToDate(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toBeUndefined();
+      });
+      it('should return a date if variable value is a date', () => {
+        const value = '{{date}}';
+        const attendedValue = availableVariables[0].value;
+        expect(
+          transformValueToDate(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toStrictEqual(attendedValue);
+      });
+      it('should return date start if variable value is a date range', () => {
+        const value = '{{date-range}}';
+        const attendedValue = DateTime.utc(2020, 7, 3).toJSDate();
+        expect(
+          transformValueToDate(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toStrictEqual(attendedValue);
+      });
+      it('should return a date if variable value is a relative date', () => {
+        const value = '{{relative-date}}';
+        const attendedValue = transformRelativeDateToDate(
+          availableVariables[2].value as RelativeDate,
+        );
+        expect(
+          transformValueToDate(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toStrictEqual(attendedValue);
+      });
+      it('should return date end if variable value is a relative date range', () => {
+        const value = '{{relative-date-range}}';
+        const attendedValue = transformRelativeDateRangeToDateRange(
+          availableVariables[3].value as RelativeDateRange,
+          relativeAvailableVariables,
+          variableDelimiters,
+        );
+        expect(
+          transformValueToDate(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toStrictEqual(attendedValue?.end);
+      });
+      // if a variable is customizable, it can refers to another variable of any type
+      it('should return the corresponding variable value as date if variable value is another variable reference', () => {
+        const value = '{{reference-to-date-variable}}'; // reference to {{date}} variable
+        const attendedValue = availableVariables[0].value; // {{date}} value
+        expect(
+          transformValueToDate(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toStrictEqual(attendedValue);
+      });
+    });
+  });
+  describe('...toDateRange', () => {
+    it('should return undefined if value is undefined', () => {
+      expect(
+        transformValueToDateRange(
+          undefined,
+          availableVariables,
+          relativeAvailableVariables,
+          variableDelimiters,
+        ),
+      ).toBeUndefined();
+    });
+    it('should return partial date range if value is already a date', () => {
+      const value = DateTime.utc(2020, 7, 3).toJSDate();
+      expect(
+        transformValueToDateRange(
+          value,
+          availableVariables,
+          relativeAvailableVariables,
+          variableDelimiters,
+        ),
+      ).toStrictEqual({ start: value, end: undefined });
     });
     it('should return value if value is already a date range', () => {
       const value = {
@@ -231,7 +377,7 @@ describe('transformValueToDateOrDateRange', () => {
         end: DateTime.utc(2020, 9, 3).toJSDate(),
       };
       expect(
-        transformValueToDateOrDateRange(
+        transformValueToDateRange(
           value,
           availableVariables,
           relativeAvailableVariables,
@@ -239,25 +385,12 @@ describe('transformValueToDateOrDateRange', () => {
         ),
       ).toStrictEqual(value);
     });
-  });
-  describe('relative date and relative date range', () => {
-    const realNow = Date.now;
-    beforeEach(() => {
-      const today = DateTime.utc(2020, 7, 3)
-        .toJSDate()
-        .getTime();
-      // today is now 03/07/2020
-      global.Date.now = jest.fn(() => today);
-    });
-    afterEach(() => {
-      global.Date.now = realNow;
-    });
-    it('should return a date if value is a relative date', () => {
+    it('should return a date range if value is a relative date', () => {
       // (Today)03/07/2020 + 2 months => 03/09/2020
       const value: RelativeDate = { quantity: 2, duration: 'month' };
-      const attendedValue = DateTime.utc(2020, 9, 3).toJSDate();
+      const attendedValue = transformRelativeDateToDateRange(value);
       expect(
-        transformValueToDateOrDateRange(
+        transformValueToDateRange(
           value,
           availableVariables,
           relativeAvailableVariables,
@@ -274,7 +407,7 @@ describe('transformValueToDateOrDateRange', () => {
         variableDelimiters,
       );
       expect(
-        transformValueToDateOrDateRange(
+        transformValueToDateRange(
           value,
           availableVariables,
           relativeAvailableVariables,
@@ -282,37 +415,35 @@ describe('transformValueToDateOrDateRange', () => {
         ),
       ).toStrictEqual(attendedValue);
     });
-  });
-  describe('variable', () => {
-    it("should return undefined if variable doesn't exist", () => {
-      const value = '{{notexisting}}';
-      expect(
-        transformValueToDateOrDateRange(
-          value,
-          availableVariables,
-          relativeAvailableVariables,
-          variableDelimiters,
-        ),
-      ).toBeUndefined();
-    });
-    describe('date or date range', () => {
-      it('should return a date if variable value is a date', () => {
-        const value = '{{date}}';
-        const attendedValue = availableVariables[0].value;
+    describe('variable', () => {
+      it("should return undefined if variable doesn't exist", () => {
+        const value = '{{notexisting}}';
         expect(
-          transformValueToDateOrDateRange(
+          transformValueToDateRange(
             value,
             availableVariables,
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual(attendedValue);
+        ).toBeUndefined();
+      });
+      it('should return a partial date range if variable value is a date', () => {
+        const value = '{{date}}';
+        const attendedValue = availableVariables[0].value;
+        expect(
+          transformValueToDateRange(
+            value,
+            availableVariables,
+            relativeAvailableVariables,
+            variableDelimiters,
+          ),
+        ).toStrictEqual({ start: attendedValue, end: undefined });
       });
       it('should return a date range if variable value is a date range', () => {
         const value = '{{date-range}}';
         const attendedValue = availableVariables[1].value;
         expect(
-          transformValueToDateOrDateRange(
+          transformValueToDateRange(
             value,
             availableVariables,
             relativeAvailableVariables,
@@ -320,15 +451,13 @@ describe('transformValueToDateOrDateRange', () => {
           ),
         ).toStrictEqual(attendedValue);
       });
-    });
-    describe('relative date and relative date range', () => {
-      it('should return a date if variable value is a relative date', () => {
+      it('should return a date range if variable value is a relative date', () => {
         const value = '{{relative-date}}';
-        const attendedValue = transformRelativeDateToDate(
+        const attendedValue = transformRelativeDateToDateRange(
           availableVariables[2].value as RelativeDate,
         );
         expect(
-          transformValueToDateOrDateRange(
+          transformValueToDateRange(
             value,
             availableVariables,
             relativeAvailableVariables,
@@ -344,7 +473,7 @@ describe('transformValueToDateOrDateRange', () => {
           variableDelimiters,
         );
         expect(
-          transformValueToDateOrDateRange(
+          transformValueToDateRange(
             value,
             availableVariables,
             relativeAvailableVariables,
@@ -352,20 +481,18 @@ describe('transformValueToDateOrDateRange', () => {
           ),
         ).toStrictEqual(attendedValue);
       });
-    });
-    describe('variable (inception)', () => {
       // if a variable is customizable, it can refers to another variable of any type
-      it('should return the corresponding variable value as date or date range if variable value is another variable reference', () => {
+      it('should return the corresponding variable value as date range if variable value is another variable reference', () => {
         const value = '{{reference-to-date-variable}}'; // reference to {{date}} variable
         const attendedValue = availableVariables[0].value; // {{date}} value
         expect(
-          transformValueToDateOrDateRange(
+          transformValueToDateRange(
             value,
             availableVariables,
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual(attendedValue);
+        ).toStrictEqual({ start: attendedValue, end: undefined });
       });
     });
   });

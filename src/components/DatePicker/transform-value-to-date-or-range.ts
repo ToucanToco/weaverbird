@@ -87,20 +87,74 @@ export const transformRelativeDateRangeToDateRange = (
 /*
 Transform a value of any date available types 
 (string(Variable), CustomDate(Date, RelativeDate), CustomDateRange(DateRange, RelativeDateRange)) 
-to a Date or a DateRange if possible
+to a Date
 */
-export const transformValueToDateOrDateRange = (
+export const transformValueToDate = (
   value: undefined | string | CustomDate | CustomDateRange,
   availableVariables: VariablesBucket = [],
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
-): Date | DateRange | undefined => {
+): Date | undefined => {
   // Undefined
   if (!value) {
     return;
   }
-  // Date or DateRange (already well formatted)
-  else if (value instanceof Date || isDateRange(value)) {
+  // Date (already well formatted)
+  else if (value instanceof Date) {
+    return value;
+  }
+  // DateRange (return start date)
+  else if (isDateRange(value)) {
+    return value.start;
+  }
+  // Variable reference
+  else if (typeof value === 'string') {
+    const variableValue = retrieveVariable(value, availableVariables, variableDelimiters)?.value;
+    // if a variable is customizable, it can refers to another variable of any type
+    // loop to find the variable value as Date or DateRange
+    return transformValueToDate(
+      variableValue,
+      availableVariables,
+      relativeAvailableVariables,
+      variableDelimiters,
+    );
+  }
+  // RelativeDateRange (return end date)
+  else if (isRelativeDateRange(value)) {
+    return transformRelativeDateRangeToDateRange(
+      value,
+      relativeAvailableVariables,
+      variableDelimiters,
+    )?.end;
+  }
+  // RelativeDate
+  else {
+    return transformRelativeDateToDate(value);
+  }
+};
+
+/*
+Transform a value of any date available types 
+(string(Variable), CustomDate(Date, RelativeDate), CustomDateRange(DateRange, RelativeDateRange)) 
+to a DateRange
+TODO: start date should be at 00:00 and end date at 23:59
+*/
+export const transformValueToDateRange = (
+  value: undefined | string | CustomDate | CustomDateRange,
+  availableVariables: VariablesBucket = [],
+  relativeAvailableVariables: VariablesBucket = [],
+  variableDelimiters: VariableDelimiters = { start: '', end: '' },
+): DateRange | undefined => {
+  // Undefined
+  if (!value) {
+    return;
+  }
+  // Date (create a range from date)
+  else if (value instanceof Date) {
+    return { start: value, end: undefined };
+  }
+  // DateRange (already well formatted)
+  else if (isDateRange(value)) {
     return value;
   }
   // Variable reference
@@ -108,7 +162,7 @@ export const transformValueToDateOrDateRange = (
     const variableValue = retrieveVariable(value, availableVariables, variableDelimiters)?.value;
     // if a variable is customizable, it can refers to another variable of any type
     // loop to find the variable value as Date or DateRange
-    return transformValueToDateOrDateRange(
+    return transformValueToDateRange(
       variableValue,
       availableVariables,
       relativeAvailableVariables,
@@ -125,6 +179,6 @@ export const transformValueToDateOrDateRange = (
   }
   // RelativeDate
   else {
-    return transformRelativeDateToDate(value);
+    return transformRelativeDateToDateRange(value);
   }
 };
