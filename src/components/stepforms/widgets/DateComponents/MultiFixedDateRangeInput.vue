@@ -1,15 +1,23 @@
 <template>
-  <!-- <Tabs :tabs="['Days', 'Months', 'Quarter', 'years']" /> -->
-  <Calendar v-model="currentTabValue" isRange :availableDates="bounds" />
-  <!-- <CustomGranularityCalendar :granularity="month" />
-  <CustomGranularityCalendar :granularity="quarter" />
-  <CustomGranularityCalendar :granularity="year" /> -->
+  <div>
+    <Tabs :tabs="tabs" :selectedTab="selectedTab" @tabSelected="selectTab" />
+    <Calendar
+      v-if="selectedTab === 'Days'"
+      v-model="currentTabValue"
+      :availableDates="bounds"
+      isRange
+    />
+    <CustomGranularityCalendar v-else-if="selectedTab === 'Months'" granularity="month" />
+    <CustomGranularityCalendar v-else-if="selectedTab === 'Quarters'" granularity="quarter" />
+    <CustomGranularityCalendar v-else-if="selectedTab === 'Years'" granularity="year" />
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import Calendar from '@/components/DatePicker/Calendar.vue';
+import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDateRange, DateRange } from '@/lib/dates';
 
@@ -18,6 +26,7 @@ import { CustomDateRange, DateRange } from '@/lib/dates';
   components: {
     Tabs,
     Calendar,
+    CustomGranularityCalendar,
   },
 })
 export default class DateRangeInput extends Vue {
@@ -27,12 +36,22 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => [] })
   bounds!: DateRange;
 
+  selectedTab = 'Days';
+
+  get tabs(): string[] {
+    return ['Days', 'Months', 'Quarters', 'Years'];
+  }
+
   get currentTabValue(): CustomDateRange {
     return this.value;
   }
 
   set currentTabValue(value: CustomDateRange) {
     this.$emit('input', value);
+  }
+
+  selectTab(tab: string) {
+    this.selectedTab = tab;
   }
 }
 </script>
