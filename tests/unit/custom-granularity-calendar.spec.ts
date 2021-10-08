@@ -144,12 +144,10 @@ describe('CustomGranularityCalendar', () => {
 
     it('should convert a arbitrary date range to the associated option', () => {
       expect(
-        RANGE_PICKERS.quarter.selectableRanges.rangeToOption({
+        RANGE_PICKERS.quarter.selectableRanges.rangeToOption(
           // Weird quarter from the 12th to the 12th
-          start: new Date(Date.UTC(2016, 3, 12)),
-          end: new Date(Date.UTC(2016, 6, 12)),
-          duration: 'quarter',
-        }),
+          new Date(Date.UTC(2016, 3, 12)),
+        ),
       ).toStrictEqual(DateTime.utc(2016, 4, 1, { locale: 'en' }));
     });
   });
@@ -189,12 +187,10 @@ describe('CustomGranularityCalendar', () => {
 
     it('should convert a arbitrary date range to the associated option', () => {
       expect(
-        RANGE_PICKERS.year.selectableRanges.rangeToOption({
+        RANGE_PICKERS.year.selectableRanges.rangeToOption(
           // Weird year from the 12th feb to the 12th feb
-          start: new Date(Date.UTC(2012, 1, 12)),
-          end: new Date(Date.UTC(2013, 1, 12)),
-          duration: 'year',
-        }),
+          new Date(Date.UTC(2012, 1, 12)),
+        ),
       ).toStrictEqual(DateTime.utc(2012, 1, 1, { locale: 'en' }));
     });
   });
