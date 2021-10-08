@@ -101,6 +101,30 @@ export const setDateRangeHours = (value: DateRange | string | undefined): DateRa
 Transform a value of any date available types 
 (string(Variable), CustomDate(Date, RelativeDate), CustomDateRange(DateRange, RelativeDateRange)) 
 to a Date
+
+Here are all the cases of transformation enabled to be performed:
+
+Undefined
+undefined -> undefined
+
+// Date
+new Date() -> new Date()
+
+// Date range
+{ start: new Date(), end: new Date(1) } -> new Date() - start date
+
+// Relative Date (always refering to today)
+{ quantity: 2, duration: 'month' } -> new Date().plus(2 month)
+{ quantity: 2, duration: 'month' } -> new Date().minus(2 month)
+
+
+// Relative Date range
+{ date: 'variable_name', quantity: 2, duration: 'month' } ->  new Date(variable_name.value).plus(2 month)
+{ date: 'variable_name', quantity: -2, duration: 'month' } ->  new Date(variable_name.value).minus(2 month)
+
+// Variable
+A variable can contain another variable reference (string) in this case will will iterate to find the last occurence of date value
+Or one of the value type precise below but in any case, it will return a Date or undefined if variable does'nt exist
 */
 export const transformValueToDate = (
   value: undefined | string | CustomDate | CustomDateRange,
@@ -150,7 +174,30 @@ export const transformValueToDate = (
 Transform a value of any date available types 
 (string(Variable), CustomDate(Date, RelativeDate), CustomDateRange(DateRange, RelativeDateRange)) 
 to a DateRange
-TODO: start date should be at 00:00 and end date at 23:59
+All date range are formatted with a start date hours are 00:00 and end date hour are 23:59
+Here are all the cases of transformation enabled to be performed:
+
+Undefined
+undefined -> undefined
+
+// Date
+new Date() -> { start: new Date(), end: new Date() } - from morning to evening of one day
+
+// Date range
+{ start: new Date(), end: new Date() } -> { start: new Date(), end: new Date() }
+
+// Relative Date (always refering to today)
+{ quantity: 2, duration: 'month' } -> { start: new Date(), end: new Date().plus(2 month) }
+{ quantity: 2, duration: 'month' } -> { start: new Date().minus(2 month), end: new Date() }
+
+
+// Relative Date range
+{ date: 'variable_name', quantity: 2, duration: 'month' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
+{ date: 'variable_name', quantity: -2, duration: 'month' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
+
+// Variable
+A variable can contain another variable reference (string) in this case will will iterate to find the last occurence of date value
+Or one of the value type precise below but in any case, it will return a DateRange or undefined if variable does'nt exist
 */
 export const transformValueToDateRange = (
   value: undefined | string | CustomDate | CustomDateRange,
