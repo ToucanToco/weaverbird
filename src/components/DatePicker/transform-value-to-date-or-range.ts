@@ -84,6 +84,19 @@ export const transformRelativeDateRangeToDateRange = (
   return relativeDateRange.quantity >= 0 ? { start, end } : { start: end, end: start };
 };
 
+export const setDateRangeHours = (value: DateRange | string | undefined): DateRange | undefined => {
+  if (!isDateRange(value) || !value.start || !value.end) return;
+  const startHours = { hour: 0, minute: 0, second: 0, millisecond: 0 };
+  const endHours = { hour: 23, minute: 59, second: 0, millisecond: 0 };
+  return {
+    start: DateTime.fromJSDate(value.start, { zone: 'UTC' })
+      .set(startHours)
+      .toJSDate(),
+    end: DateTime.fromJSDate(value.end, { zone: 'UTC' })
+      .set(endHours)
+      .toJSDate(),
+  };
+};
 /*
 Transform a value of any date available types 
 (string(Variable), CustomDate(Date, RelativeDate), CustomDateRange(DateRange, RelativeDateRange)) 
@@ -145,24 +158,25 @@ export const transformValueToDateRange = (
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): DateRange | undefined => {
+  let dateRange: DateRange | undefined;
   // Undefined
   if (!value) {
     return;
   }
   // Date (create a range from date)
   else if (value instanceof Date) {
-    return { start: value, end: undefined };
+    dateRange = { start: value, end: value };
   }
   // DateRange (already well formatted)
   else if (isDateRange(value)) {
-    return value;
+    dateRange = value;
   }
   // Variable reference
   else if (typeof value === 'string') {
     const variableValue = retrieveVariable(value, availableVariables, variableDelimiters)?.value;
     // if a variable is customizable, it can refers to another variable of any type
     // loop to find the variable value as Date or DateRange
-    return transformValueToDateRange(
+    dateRange = transformValueToDateRange(
       variableValue,
       availableVariables,
       relativeAvailableVariables,
@@ -171,7 +185,7 @@ export const transformValueToDateRange = (
   }
   // RelativeDateRange
   else if (isRelativeDateRange(value)) {
-    return transformRelativeDateRangeToDateRange(
+    dateRange = transformRelativeDateRangeToDateRange(
       value,
       relativeAvailableVariables,
       variableDelimiters,
@@ -179,6 +193,7 @@ export const transformValueToDateRange = (
   }
   // RelativeDate
   else {
-    return transformRelativeDateToDateRange(value);
+    dateRange = transformRelativeDateToDateRange(value);
   }
+  return setDateRangeHours(dateRange);
 };

@@ -2,6 +2,7 @@ import { DateTime } from 'luxon';
 
 import {
   RelativeDateObject,
+  setDateRangeHours,
   transformRelativeDateObjectToDate,
   transformRelativeDateRangeToDateRange,
   transformRelativeDateToDate,
@@ -9,7 +10,7 @@ import {
   transformValueToDate,
   transformValueToDateRange,
 } from '@/components/DatePicker/transform-value-to-date-or-range';
-import { RelativeDate, RelativeDateRange } from '@/lib/dates';
+import { DateRange, RelativeDate, RelativeDateRange } from '@/lib/dates';
 
 describe('transformRelativeDateObjectToDate', () => {
   const date = DateTime.utc(2020, 8, 1).toJSDate(); // received date is always an UTC date
@@ -32,6 +33,30 @@ describe('transformRelativeDateObjectToDate', () => {
     const attendedDate = DateTime.utc(2020, 5, 1).toJSDate();
     const options: RelativeDateObject = { date, quantity: quantity * -1, duration };
     expect(transformRelativeDateObjectToDate(options)).toStrictEqual(attendedDate);
+  });
+});
+
+describe('setDateRangeHours', () => {
+  it('should return undefined if value is not a date range', () => {
+    const value = undefined;
+    expect(setDateRangeHours(value)).toBeUndefined();
+  });
+  it('should return undefined if value is not a complete date range', () => {
+    const value = {
+      start: DateTime.utc(2020, 5, 1).toJSDate(),
+    };
+    expect(setDateRangeHours(value)).toBeUndefined();
+  });
+  it('should return a included date range (00:00 at start and 23:59 at end)', () => {
+    const value = {
+      start: DateTime.utc(2020, 5, 1).toJSDate(),
+      end: DateTime.utc(2020, 5, 1).toJSDate(),
+    };
+    const attendedValue = {
+      start: DateTime.utc(2020, 5, 1, 0, 0, 0, 0).toJSDate(),
+      end: DateTime.utc(2020, 5, 1, 23, 59, 0, 0).toJSDate(),
+    };
+    expect(setDateRangeHours(value)).toStrictEqual(attendedValue);
   });
 });
 
@@ -172,7 +197,10 @@ describe('transformValue', () => {
     { identifier: 'date', value: DateTime.utc(2020, 7, 3).toJSDate(), label: 'Date' },
     {
       identifier: 'date-range',
-      value: { start: DateTime.utc(2020, 7, 3).toJSDate(), end: DateTime.utc(2020, 9, 3) },
+      value: {
+        start: DateTime.utc(2020, 7, 3).toJSDate(),
+        end: DateTime.utc(2020, 9, 3).toJSDate(),
+      },
       label: 'Date Range',
     },
     {
@@ -369,7 +397,7 @@ describe('transformValue', () => {
           relativeAvailableVariables,
           variableDelimiters,
         ),
-      ).toStrictEqual({ start: value, end: undefined });
+      ).toStrictEqual(setDateRangeHours({ start: value, end: value }));
     });
     it('should return value if value is already a date range', () => {
       const value = {
@@ -383,7 +411,7 @@ describe('transformValue', () => {
           relativeAvailableVariables,
           variableDelimiters,
         ),
-      ).toStrictEqual(value);
+      ).toStrictEqual(setDateRangeHours(value));
     });
     it('should return a date range if value is a relative date', () => {
       // (Today)03/07/2020 + 2 months => 03/09/2020
@@ -396,7 +424,7 @@ describe('transformValue', () => {
           relativeAvailableVariables,
           variableDelimiters,
         ),
-      ).toStrictEqual(attendedValue);
+      ).toStrictEqual(setDateRangeHours(attendedValue));
     });
     it('should return a date range if value is a relative date range', () => {
       // ({{hello}}) 20/10/2020 - 3 months => 20/07/2020
@@ -413,7 +441,7 @@ describe('transformValue', () => {
           relativeAvailableVariables,
           variableDelimiters,
         ),
-      ).toStrictEqual(attendedValue);
+      ).toStrictEqual(setDateRangeHours(attendedValue));
     });
     describe('variable', () => {
       it("should return undefined if variable doesn't exist", () => {
@@ -430,6 +458,7 @@ describe('transformValue', () => {
       it('should return a partial date range if variable value is a date', () => {
         const value = '{{date}}';
         const attendedValue = availableVariables[0].value;
+        const range = { start: attendedValue, end: attendedValue } as DateRange;
         expect(
           transformValueToDateRange(
             value,
@@ -437,11 +466,11 @@ describe('transformValue', () => {
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual({ start: attendedValue, end: undefined });
+        ).toStrictEqual(setDateRangeHours(range));
       });
       it('should return a date range if variable value is a date range', () => {
         const value = '{{date-range}}';
-        const attendedValue = availableVariables[1].value;
+        const attendedValue = availableVariables[1].value as DateRange;
         expect(
           transformValueToDateRange(
             value,
@@ -449,7 +478,7 @@ describe('transformValue', () => {
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual(attendedValue);
+        ).toStrictEqual(setDateRangeHours(attendedValue));
       });
       it('should return a date range if variable value is a relative date', () => {
         const value = '{{relative-date}}';
@@ -463,7 +492,7 @@ describe('transformValue', () => {
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual(attendedValue);
+        ).toStrictEqual(setDateRangeHours(attendedValue));
       });
       it('should return a date range if variable value is a relative date range', () => {
         const value = '{{relative-date-range}}';
@@ -479,12 +508,13 @@ describe('transformValue', () => {
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual(attendedValue);
+        ).toStrictEqual(setDateRangeHours(attendedValue));
       });
       // if a variable is customizable, it can refers to another variable of any type
       it('should return the corresponding variable value as date range if variable value is another variable reference', () => {
         const value = '{{reference-to-date-variable}}'; // reference to {{date}} variable
         const attendedValue = availableVariables[0].value; // {{date}} value
+        const range = { start: attendedValue, end: attendedValue } as DateRange;
         expect(
           transformValueToDateRange(
             value,
@@ -492,7 +522,7 @@ describe('transformValue', () => {
             relativeAvailableVariables,
             variableDelimiters,
           ),
-        ).toStrictEqual({ start: attendedValue, end: undefined });
+        ).toStrictEqual(setDateRangeHours(range));
       });
     });
   });
