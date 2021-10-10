@@ -20,7 +20,7 @@ def sql_query_retriever():
 
 @pytest.fixture
 def sql_query_describer():
-    return Mock(return_value={'ID': 'int', 'NAME': 'str', 'COUNTRY': 'str'})
+    return Mock(return_value={'ID': 'int', 'NAME': 'text', 'COUNTRY': 'text'})
 
 
 @pytest.fixture
@@ -30,8 +30,8 @@ def query():
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM CUSTOMERS_1)',
         selection_query='SELECT ID, NAME FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
-            tables_metadata={'CUSTOMERS_1': {'ID': 'int', 'NAME': 'str'}},
-            query_metadata={'ID': 'int', 'NAME': 'str'},
+            tables_metadata={'CUSTOMERS_1': {'ID': 'int', 'NAME': 'text'}},
+            query_metadata={'ID': 'int', 'NAME': 'text'},
         ),
     )
 
@@ -77,8 +77,8 @@ def test_append(
         'NAME': ColumnMetadata(
             name='NAME',
             original_name='NAME',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

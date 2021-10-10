@@ -18,14 +18,29 @@
       "fields": [
         {
           "name": "VALUE",
-          "type": "datetime"
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "VALUE": "2020-11-02T15:30:00.000Z"
+        "VALUE": "41.1"
+      },
+      {
+        "VALUE": "41.2"
+      },
+      {
+        "VALUE": "43.5"
+      },
+      {
+        "VALUE": "45.5"
+      },
+      {
+        "VALUE": "55.5"
+      },
+      {
+        "VALUE": "77.7"
       }
     ]
   },
@@ -34,14 +49,29 @@
       "fields": [
         {
           "name": "VALUE",
-          "type": "integer"
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
       {
-        "VALUE": 1604331000000
+        "VALUE": 41
+      },
+      {
+        "VALUE": 41
+      },
+      {
+        "VALUE": 43
+      },
+      {
+        "VALUE": 45
+      },
+      {
+        "VALUE": 55
+      },
+      {
+        "VALUE": 77
       }
     ]
   }

@@ -44,7 +44,7 @@ def translate_text(
         f"""FROM {query.query_name})"""
     )
 
-    query.metadata_manager.add_query_metadata_column(step.new_column, 'str')
+    query.metadata_manager.add_query_metadata_column(step.new_column, 'text')
 
     new_query = SQLQuery(
         query_name=query_name,

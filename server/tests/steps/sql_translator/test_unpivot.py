@@ -22,10 +22,10 @@ def test_translate_unpivot(mocker):
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
                 'PRODUCTS': {
-                    'COMPANY': 'str',
-                    'COUNTRY': 'str',
-                    'CURRENCY': 'str',
-                    'PROVIDER': 'str',
+                    'COMPANY': 'text',
+                    'COUNTRY': 'text',
+                    'CURRENCY': 'text',
+                    'PROVIDER': 'text',
                 }
             },
         ),
@@ -40,32 +40,32 @@ def test_translate_unpivot(mocker):
         'COMPANY': ColumnMetadata(
             name='COMPANY',
             original_name='COMPANY',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'COUNTRY': ColumnMetadata(
             name='COUNTRY',
             original_name='COUNTRY',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'KPI': ColumnMetadata(
             name='KPI',
             original_name='KPI',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'VALUE': ColumnMetadata(
             name='VALUE',
             original_name='VALUE',
-            type='STR',
-            original_type='STR',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -88,10 +88,10 @@ def test_translate_unpivot_error(mocker):
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
                 'PRODUCTS': {
-                    'COMPANY': 'str',
-                    'COUNTRY': 'str',
-                    'CURRENCY': 'str',
-                    'PROVIDER': 'str',
+                    'COMPANY': 'text',
+                    'COUNTRY': 'text',
+                    'CURRENCY': 'text',
+                    'PROVIDER': 'text',
                 }
             },
         ),

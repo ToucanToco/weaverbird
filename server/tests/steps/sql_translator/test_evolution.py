@@ -14,7 +14,12 @@ def query():
         selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
-                'TABLE1': {'TOTO': 'str', 'RAICHU': 'int', 'FLORIZARRE': 'str', 'DATE': 'TIMESTAMP'}
+                'TABLE1': {
+                    'TOTO': 'text',
+                    'RAICHU': 'int',
+                    'FLORIZARRE': 'text',
+                    'DATE': 'TIMESTAMP',
+                }
             },
         ),
     )
@@ -58,8 +63,8 @@ def test_translate_evolution(mocker, query):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -74,8 +79,8 @@ def test_translate_evolution(mocker, query):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

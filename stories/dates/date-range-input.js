@@ -160,3 +160,108 @@ stories.add('custom (relative date range)', () => ({
     };
   },
 }));
+
+stories.add('without relative date enabled', () => ({
+  template: `
+    <div>
+      <DateRangeInput 
+        :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
+        :variable-delimiters="variableDelimiters" 
+        :enableRelativeDate="false"
+        v-model="value" 
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+      value: undefined,
+    };
+  },
+}));
+
+stories.add('disable custom selection', () => ({
+  template: `
+    <div>
+      <DateRangeInput 
+        :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
+        :variable-delimiters="variableDelimiters" 
+        :enableCustom="false"
+        v-model="value" 
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+      value: undefined,
+    };
+  },
+});
+
+stories.add('custom (with bounds)', () => ({
+  template: `
+    <div>
+      <DateRangeInput 
+        :available-variables="availableVariables" 
+        :relative-available-variables="relativeAvailableVariables" 
+        :variable-delimiters="variableDelimiters" 
+        :enableCustom="false"
+        :bounds="bounds"
+        v-model="value" 
+      />
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}'},
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+      value: { start: new Date('2021/1/1'), end: new Date('2021/1/5') },
+      bounds: { start: new Date('2021/1/2'), end: new Date('2021/1/4') },
+    };
+  },
+}));
+
+stories.add('empty', () => ({
+  template: `
+    <div>
+      <DateRangeInput v-model="value"/>
+      <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
+    };
+  },
+}));

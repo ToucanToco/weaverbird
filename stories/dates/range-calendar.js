@@ -1,8 +1,8 @@
 import { storiesOf } from '@storybook/vue';
 
-import { RangeCalendar } from '../dist/storybook/components';
+import { RangeCalendar } from '../../dist/storybook/components';
 
-const stories = storiesOf('RangeCalendar', module);
+const stories = storiesOf('Dates/RangeCalendar', module);
 
 
 const formatValue = (value) => {

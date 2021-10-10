@@ -33,15 +33,15 @@ def assert_column_equals(serie: Series, values: List[Any]):
 
 
 type_code_mapping = {
-    0: 'int',
-    1: 'float',
-    2: 'str',
+    0: 'float',
+    1: 'real',
+    2: 'text',
     3: 'date',
     4: 'timestamp',
     5: 'variant',
     6: 'timestamp_ltz',
     7: 'timestamp_tz',
-    8: 'timestampe_ntz',
+    8: 'timestamp_ntz',
     9: 'object',
     10: 'array',
     11: 'binary',

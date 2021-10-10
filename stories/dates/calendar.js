@@ -1,8 +1,8 @@
 import { storiesOf } from '@storybook/vue';
 
-import { Calendar } from '../dist/storybook/components';
+import { Calendar } from '../../dist/storybook/components';
 
-const stories = storiesOf('Calendar', module);
+const stories = storiesOf('Dates/Calendar', module);
 
 const formatValue = value => {
   return value != null && value instanceof Date ? value.toUTCString() : value;
@@ -67,9 +67,9 @@ stories.add('range', () => ({
 stories.add('with highlighted dates', () => ({
   components: { Calendar },
   data() {
-    return { 
+    return {
       value: new Date('01/01/2021'),
-      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') } 
+      highlightedDates: { start: new Date('02/01/2021'), end: new Date('01/01/2021') },
     };
   },
   computed: {
@@ -87,6 +87,36 @@ stories.add('with highlighted dates', () => ({
       <Calendar 
         :value="value"
         :highlightedDates="highlightedDates"
+        @input="input"
+      />
+      <pre>{{ formattedValue }}</pre>
+    </div>
+  `,
+}));
+
+stories.add('with available dates', () => ({
+  components: { Calendar },
+  data() {
+    return { value: undefined };
+  },
+  computed: {
+    formattedValue() {
+      return formatValue(this.value);
+    },
+    availableDates() {
+      return { start: new Date(2020, 11), end: new Date(2021, 1) };
+    },
+  },
+  methods: {
+    input(value) {
+      this.value = value;
+    },
+  },
+  template: `
+    <div>
+      <Calendar 
+        :value="value"
+        :availableDates="availableDates"
         @input="input"
       />
       <pre>{{ formattedValue }}</pre>

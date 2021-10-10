@@ -25,10 +25,10 @@ def test_translate_pivot(sql_query_executor):
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
                 'PRODUCTS': {
-                    'COMPANY': 'str',
-                    'COUNTRY': 'str',
-                    'CURRENCY': 'str',
-                    'PROVIDER': 'str',
+                    'COMPANY': 'text',
+                    'COUNTRY': 'text',
+                    'CURRENCY': 'text',
+                    'PROVIDER': 'text',
                 }
             },
         ),
@@ -41,43 +41,44 @@ def test_translate_pivot(sql_query_executor):
         agg_function='sum',
     )
     res = translate_pivot(step, query, index=1, sql_query_executor=sql_query_executor)
-    assert (
-        res.transformed_query
-        == """WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS),\
- PIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, "'SPAIN'" AS SPAIN, "'FRANCE'" AS FRANCE\
- FROM SELECT_STEP_0 PIVOT(sum(PROVIDER) FOR CURRENCY IN ('SPAIN', 'FRANCE')))"""
+    assert res.transformed_query == (
+        """WITH SELECT_STEP_0 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM PRODUCTS), """
+        """PRE_PIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, CURRENCY, PROVIDER FROM SELECT_STEP_0), """
+        """PIVOT_STEP_1 AS (SELECT COMPANY, COUNTRY, SPAIN, FRANCE """
+        """FROM PRE_PIVOT_STEP_1 PIVOT(sum(PROVIDER) FOR CURRENCY IN ('SPAIN', 'FRANCE')) """
+        """AS p (COMPANY, COUNTRY, SPAIN, FRANCE))"""
     )
     assert res.selection_query == 'SELECT COMPANY, COUNTRY, SPAIN, FRANCE FROM PIVOT_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_columns() == {
         'COMPANY': ColumnMetadata(
             name='COMPANY',
             original_name='COMPANY',
-            type='STR',
-            original_type='STR',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'COUNTRY': ColumnMetadata(
             name='COUNTRY',
             original_name='COUNTRY',
-            type='STR',
-            original_type='STR',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'SPAIN': ColumnMetadata(
             name='SPAIN',
             original_name='"\'SPAIN\'"',
-            type='STR',
-            original_type='STR',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
         'FRANCE': ColumnMetadata(
             name='FRANCE',
             original_name='"\'FRANCE\'"',
-            type='STR',
-            original_type='STR',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -99,10 +100,10 @@ def test_translate_pivot_error(sql_query_executor, mocker):
         metadata_manager=SqlQueryMetadataManager(
             tables_metadata={
                 'PRODUCTS': {
-                    'COMPANY': 'str',
-                    'COUNTRY': 'str',
-                    'CURRENCY': 'str',
-                    'PROVIDER': 'str',
+                    'COMPANY': 'text',
+                    'COUNTRY': 'text',
+                    'CURRENCY': 'text',
+                    'PROVIDER': 'text',
                 }
             },
         ),

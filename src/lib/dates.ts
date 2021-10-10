@@ -3,7 +3,7 @@ import _pick from 'lodash/pick';
 
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from './variables';
 
-export type DateRange = { start?: Date; end?: Date };
+export type DateRange = { start?: Date; end?: Date; duration?: Duration };
 export type DateRangeSide = keyof DateRange;
 export type DatePickerHighlight = {
   key?: string;
@@ -81,7 +81,7 @@ export const isRelativeDateRange = (
   return _has(value, 'date') && _has(value, 'duration') && _has(value, 'quantity');
 };
 
-export const isDateRange = (value: string | CustomDateRange): value is DateRange => {
+export const isDateRange = (value: undefined | string | CustomDateRange): value is DateRange => {
   if (!(value instanceof Object)) return false;
   return Object.keys(value).length === 0 || _has(value, 'start') || _has(value, 'end');
 };

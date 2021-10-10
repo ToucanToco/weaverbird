@@ -23,8 +23,8 @@ def test_translate_fillna(query):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -39,8 +39,8 @@ def test_translate_fillna(query):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -65,8 +65,8 @@ def test_translate_fillna_int(query):
         'FLORIZARRE': ColumnMetadata(
             name='FLORIZARRE',
             original_name='FLORIZARRE',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),
@@ -81,8 +81,8 @@ def test_translate_fillna_int(query):
         'TOTO': ColumnMetadata(
             name='TOTO',
             original_name='TOTO',
-            type='STR',
-            original_type='str',
+            type='TEXT',
+            original_type='text',
             alias=None,
             delete=False,
         ),

@@ -2,6 +2,7 @@ from distutils import log
 
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
     build_selection_query,
+    sanitize_column_name,
 )
 from weaverbird.backends.sql_translator.types import (
     SQLPipelineTranslator,
@@ -42,24 +43,30 @@ def translate_pivot(
         .df[f'{step.column_to_pivot}']
         .values.tolist()
     )
+    sanitized_columns = [sanitize_column_name(p) for p in pivot_values]
 
-    pivoted_values_column_type = query.metadata_manager.retrieve_query_metadata_column_by_name(
+    pivoted_values_column_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
         step.value_column
-    ).type
+    )
     query.metadata_manager.remove_query_metadata_columns(
         query.metadata_manager.retrieve_query_metadata_columns_as_list(columns_filter=step.index)
     )
     query.metadata_manager.add_query_metadata_columns(
-        columns={f'''"'{name}'"''': pivoted_values_column_type for name in pivot_values}
+        columns={name: pivoted_values_column_type for name in sanitized_columns}
     )
-    [
-        query.metadata_manager.update_query_metadata_column_alias(f'''"'{name}'"''', name)
-        for name in pivot_values
-    ]
-    pivot_query = f"""SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()} \
-FROM {query.query_name} PIVOT({aggregate_part} FOR {step.column_to_pivot} IN ({', '.join([f"'{val}'" for val in pivot_values])})\
-"""
-    transformed_query = f"""{query.transformed_query}, {query_name} AS ({pivot_query}))"""
+
+    prepivot_query = (
+        f'''PRE_{query_name} AS (SELECT {', '.join(step.index + [step.column_to_pivot, step.value_column])} FROM'''
+        f''' {query.query_name})'''
+    )
+    pivot_query = (
+        f"""SELECT {query.metadata_manager.retrieve_query_metadata_columns_as_str()}"""
+        f""" FROM PRE_{query_name} PIVOT({aggregate_part} FOR {step.column_to_pivot} IN """
+        f"""({', '.join([f"'{val}'" for val in pivot_values])})) AS p ({', '.join(step.index + sanitized_columns)})"""
+    )
+    transformed_query = (
+        f"""{query.transformed_query}, {prepivot_query}, {query_name} AS ({pivot_query})"""
+    )
 
     new_query = SQLQuery(
         query_name=query_name,
