@@ -72,6 +72,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Calendar from '@/components/DatePicker/Calendar.vue';
+import { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
@@ -95,6 +96,13 @@ import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Dynamic way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
+ *
+ * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDateRange)
+ * This entry is used as a configuration for the date range input
+ * This configuration will be returned by the @input emit
+ *
+ * In another emitted property, DateRangeInput component will return a DateRange @dateRangeValueUpdated
+ * This returned value is a calculated form of the config into a date range { start: Date, end: Date } in order to be used
  */
 @Component({
   name: 'date-range-input',
@@ -240,9 +248,20 @@ export default class DateRangeInput extends Vue {
     this.isEditingCustomVariable = false;
   }
 
+  updateDateRangeValue(value: string | CustomDateRange): void {
+    const dateRange = transformValueToDateRange(
+      value,
+      this.availableVariables,
+      this.relativeAvailableVariables,
+      this.variableDelimiters,
+    );
+    this.$emit('dateRangeValueUpdated', dateRange);
+  }
+
   selectVariable(value: string): void {
     const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
     this.$emit('input', variableWithDelimiters);
+    this.updateDateRangeValue(variableWithDelimiters);
     this.closeEditor();
   }
 
@@ -252,6 +271,7 @@ export default class DateRangeInput extends Vue {
 
   saveCustomVariable(): void {
     this.$emit('input', this.currentTabValue);
+    this.updateDateRangeValue(this.currentTabValue);
     this.closeEditor();
   }
 

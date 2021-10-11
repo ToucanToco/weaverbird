@@ -1,9 +1,11 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
+import { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import {
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
   dateRangeToString,
+  isDateRange,
   RelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
@@ -14,34 +16,42 @@ const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',
     label: 'Last 7 days',
+    value: '',
   },
   {
     identifier: 'dates.last_14_days',
     label: 'Last 14 days',
+    value: { start: new Date(2020, 11), end: new Date(2020, 11) },
   },
   {
     identifier: 'dates.last_30_days',
     label: 'Last 30 days',
+    value: '',
   },
   {
     identifier: 'dates.last_3_months',
     label: 'Last 3 Months',
+    value: '',
   },
   {
     identifier: 'dates.last_12_months',
     label: 'Last 12 Months',
+    value: '',
   },
   {
     identifier: 'dates.month_to_date',
     label: 'Month to date',
+    value: '',
   },
   {
     identifier: 'dates.quarter_to_date',
     label: 'Quarter to date',
+    value: '',
   },
   {
     identifier: 'dates.all_time',
     label: 'All time',
+    value: '',
   },
 ];
 
@@ -49,7 +59,7 @@ const RELATIVE_SAMPLE_VARIABLES = [
   {
     label: 'Today',
     identifier: 'today',
-    value: '',
+    value: new Date(2020, 11),
   },
   {
     label: 'Last month',
@@ -80,6 +90,7 @@ describe('Date range input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: 'anythingnotokay',
       });
@@ -130,6 +141,17 @@ describe('Date range input', () => {
       it('should emit the selected variable identifier with delimiters', () => {
         expect(wrapper.emitted().input[0][0]).toBe(`{{${selectedVariable}}}`);
       });
+      it('should emit the selected variable value as date range', () => {
+        const emittedValue = wrapper.emitted().dateRangeValueUpdated[0][0];
+        const attendedValue = transformValueToDateRange(
+          `{{${selectedVariable}}}`,
+          SAMPLE_VARIABLES,
+          RELATIVE_SAMPLE_VARIABLES,
+          { start: '{{', end: '}}' },
+        );
+        expect(isDateRange(emittedValue)).toBe(true);
+        expect(emittedValue).toStrictEqual(attendedValue);
+      });
       it('should hide editor', () => {
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
@@ -155,6 +177,7 @@ describe('Date range input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
       });
     });
@@ -180,7 +203,7 @@ describe('Date range input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue = { date: '{{today}}', quantity: -1, duration: 'month' };
+      const editedValue: RelativeDateRange = { date: '{{today}}', quantity: -1, duration: 'month' };
 
       beforeEach(async () => {
         wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', editedValue);
@@ -190,6 +213,17 @@ describe('Date range input', () => {
       });
       it('should emit current tab value', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual(editedValue);
+      });
+      it('should emit current tab value as date range', () => {
+        const emittedValue = wrapper.emitted().dateRangeValueUpdated[0][0];
+        const attendedValue = transformValueToDateRange(
+          editedValue,
+          SAMPLE_VARIABLES,
+          RELATIVE_SAMPLE_VARIABLES,
+          { start: '{{', end: '}}' },
+        );
+        expect(emittedValue).toStrictEqual(attendedValue);
+        expect(isDateRange(emittedValue)).toBe(true);
       });
     });
 
