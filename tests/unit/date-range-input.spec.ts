@@ -21,7 +21,7 @@ const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_14_days',
     label: 'Last 14 days',
-    value: new Date(2020, 11),
+    value: { start: new Date(2020, 11), end: new Date(2020, 11) },
   },
   {
     identifier: 'dates.last_30_days',
