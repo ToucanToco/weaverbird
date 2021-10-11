@@ -440,17 +440,20 @@ describe('Date range input', () => {
   });
 
   describe('with bounds', () => {
-    const bounds = { start: new Date('2020/1/1'), end: new Date('2020/6/1') };
+    const bounds: RelativeDateRange = { date: '{{today}}', quantity: 1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: { start: new Date('2020/2/1'), end: new Date('2020/3/1') },
         bounds,
       });
     });
-    it('should pass bounds to TabbedRangeCalendars', () => {
-      expect(wrapper.find('TabbedRangeCalendars-stub').props().bounds).toStrictEqual(bounds);
+    it('should pass bounds as date range to TabbedRangeCalendars', () => {
+      const bounds = wrapper.find('TabbedRangeCalendars-stub').props().bounds;
+      expect(bounds).not.toBeUndefined();
+      expect(isDateRange(bounds)).toBe(true);
     });
   });
 
