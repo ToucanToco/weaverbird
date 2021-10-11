@@ -1,6 +1,11 @@
 <template>
   <div>
-    <Tabs :tabs="tabs" :selectedTab="selectedTab" @tabSelected="selectTab" />
+    <Tabs
+      v-if="enabledCalendars.length > 1"
+      :tabs="enabledCalendars"
+      :selectedTab="selectedTab"
+      @tabSelected="selectTab"
+    />
     <div class="widget-multi-date-input__body">
       <Calendar
         v-if="selectedTab === 'Days'"
@@ -28,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
@@ -50,10 +55,14 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => [] })
   bounds!: DateRange;
 
-  selectedTab = 'Days';
+  @Prop({ default: () => ['Days', 'Months', 'Quarters', 'Years'] })
+  enabledCalendars!: string[];
 
-  get tabs(): string[] {
-    return ['Days', 'Months', 'Quarters', 'Years'];
+  selectedTab = this.enabledCalendars[0];
+
+  @Watch('enabledCalendars')
+  onEnbaledCalendarsChange() {
+    this.selectedTab = this.enabledCalendars[0];
   }
 
   get currentValue(): CustomDateRange {

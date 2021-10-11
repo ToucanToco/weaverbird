@@ -33,7 +33,11 @@
           />
           <div class="widget-date-input__editor-body">
             <div v-if="isFixedTabSelected">
-              <TabbedRangeCalendars v-model="currentTabValue" :bounds="bounds" />
+              <TabbedRangeCalendars
+                v-model="currentTabValue"
+                :enabledCalendars="enabledCalendars"
+                :bounds="bounds"
+              />
             </div>
             <RelativeDateRangeForm
               v-else
@@ -124,6 +128,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ default: true })
   enableCustom!: boolean;
+
+  @Prop()
+  enabledCalendars!: string[] | undefined;
 
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   bounds!: DateRange;
