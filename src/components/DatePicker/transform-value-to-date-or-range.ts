@@ -1,22 +1,17 @@
 import { DateTime } from 'luxon';
 
-import { DateRange, Duration, isDateRange, RelativeDate, RelativeDateRange } from '@/lib/dates';
+import { DateRange, isDateRange, RelativeDate, RelativeDateRange } from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /*
-Transform a relative date object to a readable date
+Based on date property generate a new `Date` by adding selected quantity of duration (day, month, year...)
 */
-export type RelativeDateObject = {
-  date: Date | undefined;
-  quantity: number;
-  duration: Duration;
-};
 
 export const transformRelativeDateObjectToDate = ({
   date,
   quantity,
   duration,
-}: RelativeDateObject): Date | undefined => {
+}: RelativeDate & { date: Date | undefined }): Date | undefined => {
   if (!(date instanceof Date)) return;
   const luxonDuration = `${duration}s`; //luxon use duration with 's' at the end, but we don't (maybe we need a refacto for it)
   const dateTime = DateTime.fromJSDate(date, { zone: 'UTC' });
@@ -25,7 +20,7 @@ export const transformRelativeDateObjectToDate = ({
 };
 
 /*
-Transform a relative date to a readable date
+Read a `RelativeDate` and find the corresponding `Date` relative to the moment of execution.
 */
 export const transformRelativeDateToDate = (relativeDate: RelativeDate): Date | undefined => {
   // In relative date we always use today as date to update
@@ -39,7 +34,7 @@ export const transformRelativeDateToDate = (relativeDate: RelativeDate): Date | 
 };
 
 /*
-Transform a relative date range to a readable date range
+Read a `RelativeDateRange` and find the corresponding `Date` relative to the variable passed as `date` property.
 */
 export const transformRelativeDateRangeToDateRange = (
   relativeDateRange: RelativeDateRange,
@@ -75,9 +70,13 @@ export const setDateRangeHours = (value: DateRange | string | undefined): DateRa
   };
 };
 /*
-Transform a value of any date type (string(Variable), Date, RelativeDate)) to a Date
+Resolve any date configuration to a fixed `Date`.
+The possible configurations can be:
+- `string`: a reference to a variable - it's current value will be used
+- `Date`: no change
+- `RelativeDate`: resolved with the current moment
 
-Here are all the cases of transformation enabled to be performed:
+Here are all the transformations that can be performed:
 
 Undefined
 undefined -> undefined
@@ -88,10 +87,6 @@ new Date() -> new Date()
 // Relative Date (always refering to today)
 { quantity: 2, duration: 'month' } -> new Date().plus(2 month)
 { quantity: 2, duration: 'month' } -> new Date().minus(2 month)
-
-// Variable
-A variable can contain another variable reference (string) in this case will will iterate to find the last occurence of date value
-Or one of the value type precise below but in any case, it will return a Date or undefined if variable does'nt exist
 */
 export const transformValueToDate = (
   value: undefined | string | Date | RelativeDate,
@@ -126,9 +121,13 @@ export const transformValueToDate = (
 };
 
 /*
-Transform a value of any date available types (string(Variable), DateRange, RelativeDateRange) to a DateRange
-All date range are formatted with a start date hours are 00:00 and end date hour are 23:59
-Here are all the cases of transformation enabled to be performed:
+Resolve any date range configuration to a `DateRange`.
+The possible configurations can be:
+- `string`: a reference to a variable - it's current value will be used
+- `DateRange`: no change
+- `RelativeDateRange`: resolved with the variable passed as date property
+
+Here are all the transformations that can be performed:
 
 Undefined
 undefined -> undefined
@@ -139,10 +138,6 @@ undefined -> undefined
 // Relative Date range
 { date: 'variable_name', quantity: 2, duration: 'month' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
 { date: 'variable_name', quantity: -2, duration: 'month' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
-
-// Variable
-A variable can contain another variable reference (string) in this case will will iterate to find the last occurence of date value
-Or one of the value type precise below but in any case, it will return a DateRange or undefined if variable does'nt exist
 */
 export const transformValueToDateRange = (
   value: undefined | string | RelativeDateRange | DateRange,
