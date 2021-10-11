@@ -11,8 +11,7 @@ export const transformRelativeDateObjectToDate = ({
   date,
   quantity,
   duration,
-}: RelativeDate & { date: Date | undefined }): Date | undefined => {
-  if (!(date instanceof Date)) return;
+}: RelativeDate & { date: Date }): Date => {
   const luxonDuration = `${duration}s`; //luxon use duration with 's' at the end, but we don't (maybe we need a refacto for it)
   const dateTime = DateTime.fromJSDate(date, { zone: 'UTC' });
   // calculate date

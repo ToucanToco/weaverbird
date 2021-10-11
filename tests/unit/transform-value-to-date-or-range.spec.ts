@@ -14,13 +14,6 @@ describe('transformRelativeDateObjectToDate', () => {
   const date = DateTime.utc(2020, 8, 1).toJSDate(); // received date is always an UTC date
   const duration = 'month';
   const quantity = 3;
-
-  it('should return undefined if value is not a date', () => {
-    // undefined + 3 months => undefined=
-    expect(
-      transformRelativeDateObjectToDate({ date: undefined, quantity, duration }),
-    ).toBeUndefined();
-  });
   it('should return a date for referent relative date object (positive number)', () => {
     // 01/08/2021 + 3 months => 01/11/2021
     const attendedDate = DateTime.utc(2020, 11, 1).toJSDate();
