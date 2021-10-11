@@ -16,17 +16,17 @@ describe('transformRelativeDateObjectToDate', () => {
   const quantity = 3;
   it('should return a date for referent relative date object (positive number)', () => {
     // 01/08/2021 + 3 months => 01/11/2021
-    const attendedDate = DateTime.utc(2020, 11, 1).toJSDate();
+    const expectedDate = DateTime.utc(2020, 11, 1).toJSDate();
     expect(transformRelativeDateObjectToDate({ date, quantity, duration })).toStrictEqual(
-      attendedDate,
+      expectedDate,
     );
   });
   it('should return a date for referent relative date object (negative number)', () => {
     // 01/08/2021 - 3 months => 01/05/2021
-    const attendedDate = DateTime.utc(2020, 5, 1).toJSDate();
+    const expectedDate = DateTime.utc(2020, 5, 1).toJSDate();
     expect(
       transformRelativeDateObjectToDate({ date, quantity: quantity * -1, duration }),
-    ).toStrictEqual(attendedDate);
+    ).toStrictEqual(expectedDate);
   });
 });
 
