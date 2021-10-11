@@ -12,7 +12,14 @@ export const transformRelativeDateObjectToDate = ({
   quantity,
   duration,
 }: RelativeDate & { date: Date }): Date => {
-  const luxonDuration = `${duration}s`; //luxon use duration with 's' at the end, but we don't (maybe we need a refacto for it)
+  const RELATIVE_DATE_DURATION_TO_LUXON = {
+    day: 'days',
+    week: 'weeks',
+    month: 'months',
+    quarter: 'quarters',
+    year: 'years',
+  };
+  const luxonDuration: string = RELATIVE_DATE_DURATION_TO_LUXON[duration];
   const dateTime = DateTime.fromJSDate(date, { zone: 'UTC' });
   // calculate date
   return dateTime.plus({ [luxonDuration]: quantity }).toJSDate();
