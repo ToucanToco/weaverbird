@@ -65,7 +65,7 @@ export const transformRelativeDateRangeToDateRange = (
 export const setDateRangeHours = (value: DateRange | string | undefined): DateRange | undefined => {
   if (!isDateRange(value) || !value.start || !value.end) return;
   const startHours = { hour: 0, minute: 0, second: 0, millisecond: 0 };
-  const endHours = { hour: 23, minute: 59, second: 0, millisecond: 0 };
+  const endHours = { hour: 23, minute: 59, second: 59, millisecond: 999 };
   return {
     start: DateTime.fromJSDate(value.start, { zone: 'UTC' })
       .set(startHours)

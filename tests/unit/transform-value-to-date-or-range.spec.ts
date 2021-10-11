@@ -48,7 +48,7 @@ describe('setDateRangeHours', () => {
     };
     const attendedValue = {
       start: DateTime.utc(2020, 5, 1, 0, 0, 0, 0).toJSDate(),
-      end: DateTime.utc(2020, 5, 1, 23, 59, 0, 0).toJSDate(),
+      end: DateTime.utc(2020, 5, 1, 23, 59, 59, 999).toJSDate(),
     };
     expect(setDateRangeHours(value)).toStrictEqual(attendedValue);
   });
