@@ -14,19 +14,9 @@
         isRange
       />
       <CustomGranularityCalendar
-        v-else-if="selectedTab === 'Months'"
+        v-else-if="calendarGranularity"
         v-model="currentValue"
-        granularity="month"
-      />
-      <CustomGranularityCalendar
-        v-else-if="selectedTab === 'Quarters'"
-        v-model="currentValue"
-        granularity="quarter"
-      />
-      <CustomGranularityCalendar
-        v-else-if="selectedTab === 'Years'"
-        v-model="currentValue"
-        granularity="year"
+        :granularity="calendarGranularity"
       />
     </div>
   </div>
@@ -71,6 +61,13 @@ export default class DateRangeInput extends Vue {
 
   set currentValue(value: CustomDateRange) {
     this.$emit('input', value);
+  }
+
+  get calendarGranularity(): string | undefined {
+    if (this.selectedTab === 'Months') return 'month';
+    else if (this.selectedTab === 'Quarters') return 'quarter';
+    else if (this.selectedTab === 'Years') return 'year';
+    return undefined;
   }
 
   selectTab(tab: string) {
