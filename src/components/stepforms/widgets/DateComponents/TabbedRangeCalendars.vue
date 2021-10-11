@@ -36,7 +36,7 @@ import Tabs from '@/components/Tabs.vue';
 import { CustomDateRange, DateRange } from '@/lib/dates';
 
 @Component({
-  name: 'multi-fixed-date-range-input',
+  name: 'tabbed-range-calendars',
   components: {
     Tabs,
     Calendar,

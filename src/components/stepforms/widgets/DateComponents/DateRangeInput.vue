@@ -33,7 +33,7 @@
           />
           <div class="widget-date-input__editor-body">
             <div v-if="isFixedTabSelected">
-              <MultiFixedDateRangeInput v-model="currentTabValue" :bounds="bounds" />
+              <TabbedRangeCalendars v-model="currentTabValue" :bounds="bounds" />
             </div>
             <RelativeDateRangeForm
               v-else
@@ -88,8 +88,8 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
-import MultiFixedDateRangeInput from './MultiFixedDateRangeInput.vue';
 import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
+import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Dynamic way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
@@ -103,7 +103,7 @@ import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
     Calendar,
     RelativeDateRangeForm,
     FAIcon,
-    MultiFixedDateRangeInput,
+    TabbedRangeCalendars,
   },
 })
 export default class DateRangeInput extends Vue {
