@@ -47,6 +47,8 @@ const FIRST_DAY_OF_MONTH = {
   millisecond: 0,
 };
 
+const ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION = { milliseconds: 1 };
+
 export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
     navRange: YEAR_NAV,
@@ -62,7 +64,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         start: selectedOption.toJSDate(),
         end: selectedOption
           .plus({ months: 1 })
-          .minus({ milliseconds: 1 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
           .toJSDate(),
         duration: 'month',
       }),
@@ -85,7 +87,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         start: selectedOption.toJSDate(),
         end: selectedOption
           .plus({ months: 3 })
-          .minus({ milliseconds: 1 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
           .toJSDate(),
         duration: 'quarter',
       }),
@@ -114,7 +116,7 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         start: selectedOption.toJSDate(),
         end: selectedOption
           .plus({ years: 1 })
-          .minus({ milliseconds: 1 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
           .toJSDate(),
         duration: 'year',
       }),
