@@ -55,6 +55,11 @@ Examples:
   ```
   (requires the variable `THIS_WEEK_MONDAY` is available)
 
+## Support in steps
+
+Dates are supported in the `value` field of `FilterSimpleCondition`.
+These are used in the `filter` step and in the `ifthenelse` step.
+
 ## Support in backends
 
 Support is planned for the following backends:
