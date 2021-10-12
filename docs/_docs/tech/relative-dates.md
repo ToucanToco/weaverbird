@@ -54,3 +54,14 @@ Examples:
   }
   ```
   (requires the variable `THIS_WEEK_MONDAY` is available)
+
+## Support in backends
+
+Support is planned for the following backends:
+- mongo 5.0+
+- SQL
+- pandas
+
+### Mongo
+
+Support for these computations on dates rely on the `$dateAdd` aggregation operator, which is only available since v5.0.
