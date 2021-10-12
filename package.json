@@ -1,6 +1,6 @@
 {
   "name": "weaverbird",
-  "version": "0.63.0",
+  "version": "0.64.0",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
