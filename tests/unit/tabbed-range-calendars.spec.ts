@@ -28,34 +28,34 @@ describe('TabbedRangeCalendars', () => {
 
   it('should enable all tabs by default', () => {
     expect(wrapper.find('Tabs-stub').props('tabs')).toStrictEqual([
-      'Days',
-      'Months',
-      'Quarters',
-      'Years',
+      'day',
+      'month',
+      'quarter',
+      'year',
     ]);
   });
 
   it('should select the first tab by default', () => {
-    expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('Days');
+    expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('day');
   });
 
   describe('with only some calendar enabled', () => {
     beforeEach(async () => {
-      await wrapper.setProps({ enabledCalendars: ['Quarters', 'Years'] });
+      await wrapper.setProps({ enabledCalendars: ['quarter', 'year'] });
     });
 
     it('should only enable those calendar tabs', () => {
-      expect(wrapper.find('Tabs-stub').props('tabs')).toStrictEqual(['Quarters', 'Years']);
+      expect(wrapper.find('Tabs-stub').props('tabs')).toStrictEqual(['quarter', 'year']);
     });
 
     it('should select the first tab by default', () => {
-      expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('Quarters');
+      expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('quarter');
     });
   });
 
   describe('with only one calendar enabled', () => {
     beforeEach(async () => {
-      await wrapper.setProps({ enabledCalendars: ['Years'] });
+      await wrapper.setProps({ enabledCalendars: ['year'] });
     });
 
     it('should not show tabs', () => {
