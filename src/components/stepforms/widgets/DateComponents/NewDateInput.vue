@@ -2,11 +2,17 @@
   <div class="widget-date-input">
     <div class="widget-date-input__container">
       <span class="widget-date-input__label">{{ label }}</span>
-      <div class="widget-date-input__button" @click="openEditor">
+      <div class="widget-date-input__button" @click.stop="openEditor">
         <FAIcon icon="far calendar" />
       </div>
     </div>
-    <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
+    <popover
+      class="widget-date-input__editor"
+      :visible="isEditorOpened"
+      :align="alignLeft"
+      @closed="closeEditor"
+      bottom
+    >
       <div class="widget-date-input__editor-container">
         <CustomVariableList
           v-if="hasVariables"
