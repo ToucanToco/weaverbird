@@ -75,8 +75,8 @@ export default class CustomGranularityCalendar extends Vue {
   }
 
   get selectedRangeStart(): DateTime | undefined {
-    if (!this.value) return undefined;
-    return this.pickerConfig.selectableRanges.rangeToOption(this.value as Required<DateRange>);
+    if (!this.value || !this.value.start) return undefined;
+    return this.pickerConfig.selectableRanges.rangeToOption(this.value.start);
   }
 
   selectableRangeLabel(date: DateTime): string {

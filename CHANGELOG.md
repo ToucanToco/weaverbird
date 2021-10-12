@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- DateRangeInput: integrate dedicated calendars for picking months, quarters and years
+
 ## [0.62.0] - 2021-10-05
 
 ### Added
