@@ -60,7 +60,10 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       },
       optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
-        end: selectedOption.plus({ months: 1 }).toJSDate(),
+        end: selectedOption
+          .plus({ months: 1 })
+          .minus({ milliseconds: 1 })
+          .toJSDate(),
         duration: 'month',
       }),
       rangeToOption: (selectedRangeStart: Date): DateTime =>
@@ -80,7 +83,10 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       },
       optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
-        end: selectedOption.plus({ months: 3 }).toJSDate(),
+        end: selectedOption
+          .plus({ months: 3 })
+          .minus({ milliseconds: 1 })
+          .toJSDate(),
         duration: 'quarter',
       }),
       rangeToOption: (selectedRangeStart: Date): DateTime => {
@@ -106,7 +112,10 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       },
       optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
-        end: selectedOption.plus({ years: 1 }).toJSDate(),
+        end: selectedOption
+          .plus({ years: 1 })
+          .minus({ milliseconds: 1 })
+          .toJSDate(),
         duration: 'year',
       }),
       rangeToOption: (selectedRangeStart: Date): DateTime =>

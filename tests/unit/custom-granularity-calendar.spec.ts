@@ -57,7 +57,7 @@ describe('CustomGranularityCalendar', () => {
             `${currentYear}-02-01T00:00:00.000Z`,
           );
           expect(emittedDate.end?.toISOString()).toStrictEqual(
-            `${currentYear}-03-01T00:00:00.000Z`,
+            `${currentYear}-02-28T23:59:59.999Z`,
           );
           expect(emittedDate.duration).toBe('month');
         });
@@ -137,7 +137,7 @@ describe('CustomGranularityCalendar', () => {
       const Q2 = options[1];
       expect(RANGE_PICKERS.quarter.selectableRanges.optionToRange(Q2)).toStrictEqual({
         start: new Date(Date.UTC(2016, 3, 1)),
-        end: new Date(Date.UTC(2016, 6, 1)),
+        end: new Date(Date.UTC(2016, 5, 30, 23, 59, 59, 999)),
         duration: 'quarter',
       });
     });
@@ -180,7 +180,7 @@ describe('CustomGranularityCalendar', () => {
       const Year2012 = options[2];
       expect(RANGE_PICKERS.year.selectableRanges.optionToRange(Year2012)).toStrictEqual({
         start: new Date(Date.UTC(2012, 0, 1)),
-        end: new Date(Date.UTC(2013, 0, 1)),
+        end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
         duration: 'year',
       });
     });
