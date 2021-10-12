@@ -169,7 +169,7 @@ stories.add('without relative date enabled', () => ({
         :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
         :enableRelativeDate="false"
-        :enabledCalendars="['Quarters', 'Years']"
+        :enabledCalendars="['quarter', 'year']"
         v-model="value" 
       />
       <pre>{{ value }}</pre>

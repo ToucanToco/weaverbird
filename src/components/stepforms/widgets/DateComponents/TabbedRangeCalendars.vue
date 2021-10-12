@@ -8,7 +8,7 @@
     />
     <div class="widget-multi-date-input__body">
       <Calendar
-        v-if="selectedTab === 'Days'"
+        v-if="selectedTab === 'day'"
         v-model="currentValue"
         :availableDates="bounds"
         isRange
@@ -45,7 +45,7 @@ export default class TabbedRangeCalendars extends Vue {
   @Prop({ default: () => [] })
   bounds!: DateRange;
 
-  @Prop({ default: () => ['Days', 'Months', 'Quarters', 'Years'] })
+  @Prop({ default: () => ['day', 'month', 'quarter', 'year'] })
   enabledCalendars!: string[];
 
   selectedTab = this.enabledCalendars[0];
@@ -64,10 +64,7 @@ export default class TabbedRangeCalendars extends Vue {
   }
 
   get calendarGranularity(): string | undefined {
-    if (this.selectedTab === 'Months') return 'month';
-    else if (this.selectedTab === 'Quarters') return 'quarter';
-    else if (this.selectedTab === 'Years') return 'year';
-    return undefined;
+    return this.selectedTab !== 'day' ? this.selectedTab : undefined;
   }
 
   selectTab(tab: string) {
