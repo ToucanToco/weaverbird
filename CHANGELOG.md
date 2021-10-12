@@ -1,8 +1,17 @@
 # Changelog
 
-## Unreleased
+## [0.63.0] - 2021-10-12
+
+### Added
 
 - DateRangeInput: integrate dedicated calendars for picking months, quarters and years
+- DateRangeInput: emit a date range version of value using a specific `daterangeUpdated` emitter
+- DateRangeInput: hide/show variable list depeding on variables quantity
+- DateRangeInput: hide/show custom editor depding on `enableCustom` variable
+
+### Changed
+- DateRangeInput: replace range-calendar with a simple calendar using a range
+- DateRangeInput: Disable save custom date button if value is incomplete
 
 ## [0.62.0] - 2021-10-05
 
@@ -965,6 +974,7 @@
 
 ## Unreleased
 
+[0.63.0]: https://github.com/ToucanToco/weaverbird/compare/v0.62.0...v0.63.0
 [0.62.0]: https://github.com/ToucanToco/weaverbird/compare/v0.61.0...v0.62.0
 [0.61.0]: https://github.com/ToucanToco/weaverbird/compare/v0.60.9...v0.61.0
 [0.60.9]: https://github.com/ToucanToco/weaverbird/compare/v0.60.8...v0.60.9
