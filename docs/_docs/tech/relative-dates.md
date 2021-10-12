@@ -5,6 +5,8 @@ permalink: /docs/relative-dates/
 
 # Relative dates
 
+:info: Provisional! Not yet developed
+
 ## Need
 
 When creating pipelines that filter time-series (datasets with a date column), it's a common need
