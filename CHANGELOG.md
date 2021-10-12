@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.64.1] - 2021-10-12
+
+### Fix
+
+- DateRangeInput: close dropdown when clicking outside
+- DateRangeInput: use right range end datetime
+- Various: column label typo
+
 ## [0.64.0] - 2021-10-12
 
 ### Changed
@@ -979,6 +987,7 @@
 
 ## Unreleased
 
+[0.64.0]: https://github.com/ToucanToco/weaverbird/compare/v0.64.0...v0.64.1
 [0.64.0]: https://github.com/ToucanToco/weaverbird/compare/v0.63.0...v0.64.0
 [0.63.0]: https://github.com/ToucanToco/weaverbird/compare/v0.62.0...v0.63.0
 [0.62.0]: https://github.com/ToucanToco/weaverbird/compare/v0.61.0...v0.62.0
