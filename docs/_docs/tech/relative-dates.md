@@ -62,6 +62,17 @@ Examples:
 Dates are supported in the `value` field of `FilterSimpleCondition`.
 These are used in the `filter` step and in the `ifthenelse` step.
 
+### Operators
+
+Only the following operators are supported for dates:
+- from: equivalent of "greater than or equal to" (`ge`),
+- until (excluding): equivalent of "less than" (`lt`),
+- until (including): equivalent of "less than or equal to" (`le`).
+
+Dates can be configured only by day, so they contain no time information.
+Their corresponding time should be midnight (0:00).
+Exception to the dates used with operator "until (including)": their time should be 23:59 and 999ms, so any data point during the last full day should be included.
+
 ## Support in backends
 
 Support is planned for the following backends:
