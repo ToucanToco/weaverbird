@@ -38,7 +38,7 @@ import { CustomDateRange, DateRange } from '@/lib/dates';
     CustomGranularityCalendar,
   },
 })
-export default class TabbedRangeCalendar extends Vue {
+export default class TabbedRangeCalendars extends Vue {
   @Prop({ default: () => [] })
   value!: CustomDateRange;
 
