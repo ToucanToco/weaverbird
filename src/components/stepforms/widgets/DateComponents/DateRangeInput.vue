@@ -36,7 +36,7 @@
               <TabbedRangeCalendars
                 v-model="currentTabValue"
                 :enabledCalendars="enabledCalendars"
-                :bounds="bounds"
+                :bounds="boundsAsDateRange"
               />
             </div>
             <RelativeDateRangeForm
@@ -141,12 +141,22 @@ export default class DateRangeInput extends Vue {
   enabledCalendars!: string[] | undefined;
 
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
-  bounds!: DateRange;
+  bounds!: CustomDateRange;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Dynamic';
+
+  get boundsAsDateRange(): DateRange | undefined {
+    const dateRange = transformValueToDateRange(
+      this.bounds,
+      this.availableVariables,
+      this.relativeAvailableVariables,
+      this.variableDelimiters,
+    );
+    return dateRange;
+  }
 
   get tabs(): string[] {
     return ['Dynamic', 'Fixed'];
