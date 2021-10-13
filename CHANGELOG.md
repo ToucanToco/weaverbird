@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.65.0] - 2021-10-13
+
+### Added
+- DateRangeInput: hide 'unactive' variables needed for computations from UI
+
+### Fix
+- Calendar: use UTC timezone
+
 ## [0.64.1] - 2021-10-12
 
 ### Fix
@@ -987,7 +995,8 @@
 
 ## Unreleased
 
-[0.64.0]: https://github.com/ToucanToco/weaverbird/compare/v0.64.0...v0.64.1
+[0.65.0]: https://github.com/ToucanToco/weaverbird/compare/v0.64.1...v0.65.0
+[0.64.1]: https://github.com/ToucanToco/weaverbird/compare/v0.64.0...v0.64.1
 [0.64.0]: https://github.com/ToucanToco/weaverbird/compare/v0.63.0...v0.64.0
 [0.63.0]: https://github.com/ToucanToco/weaverbird/compare/v0.62.0...v0.63.0
 [0.62.0]: https://github.com/ToucanToco/weaverbird/compare/v0.61.0...v0.62.0
