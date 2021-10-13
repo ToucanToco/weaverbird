@@ -8,6 +8,7 @@
     :is-range="isRange"
     :from-date="defaultDate"
     timeformat="UTC"
+    timezone="UTC"
     @input="onInput"
     @drag="onDrag"
   />
