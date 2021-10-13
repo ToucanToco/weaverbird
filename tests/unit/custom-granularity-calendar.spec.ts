@@ -106,6 +106,26 @@ describe('CustomGranularityCalendar', () => {
     });
   });
 
+  describe('When switching granularity with a selected date range', () => {
+    beforeEach(async () => {
+      createWrapper({
+        granularity: 'month',
+        value: {
+          start: new Date('02/01/2021'),
+        },
+      });
+      await wrapper.setProps({ granularity: 'quarter' });
+    });
+
+    it('should emit an updated selected date range', () => {
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      const emittedDate: DateRange = wrapper.emitted('input')[0][0];
+      expect(emittedDate.start?.toISOString()).toStrictEqual(`2021-01-01T00:00:00.000Z`);
+      expect(emittedDate.end?.toISOString()).toStrictEqual(`2021-03-31T23:59:59.999Z`);
+      expect(emittedDate.duration).toBe('quarter');
+    });
+  });
+
   // For everything else, only test date related fonction aka the "Granularity Config"
   describe('Decade navigation', () => {
     it('should provide the right label', () => {
