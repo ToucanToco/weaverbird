@@ -9,23 +9,23 @@ const currentYear = DateTime.now().year;
 const SAMPLE_DATE_TIME = DateTime.fromRFC2822('25 Nov 2016 13:23 Z', { locale: 'en' });
 
 describe('CustomGranularityCalendar', () => {
+  let wrapper: Wrapper<CustomGranularityCalendar>;
+  const createWrapper = (props: any = {}): void => {
+    wrapper = shallowMount(CustomGranularityCalendar, {
+      sync: false,
+      propsData: {
+        granularity: 'month',
+        ...props,
+      },
+    });
+  };
+
+  afterEach(() => {
+    if (wrapper) wrapper.destroy();
+  });
+
   // Test the "month" config with the component itself
   describe('Month', () => {
-    let wrapper: Wrapper<CustomGranularityCalendar>;
-    const createWrapper = (props: any = {}): void => {
-      wrapper = shallowMount(CustomGranularityCalendar, {
-        sync: false,
-        propsData: {
-          granularity: 'month',
-          ...props,
-        },
-      });
-    };
-
-    afterEach(() => {
-      if (wrapper) wrapper.destroy();
-    });
-
     describe('default', () => {
       beforeEach(() => {
         createWrapper();
@@ -103,6 +103,26 @@ describe('CustomGranularityCalendar', () => {
           expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('1978');
         });
       });
+    });
+  });
+
+  describe('When switching granularity with a selected date range', () => {
+    beforeEach(async () => {
+      createWrapper({
+        granularity: 'month',
+        value: {
+          start: new Date('02/01/2021'),
+        },
+      });
+      await wrapper.setProps({ granularity: 'quarter' });
+    });
+
+    it('should emit an updated selected date range', () => {
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      const emittedDate: DateRange = wrapper.emitted('input')[0][0];
+      expect(emittedDate.start?.toISOString()).toStrictEqual(`2021-01-01T00:00:00.000Z`);
+      expect(emittedDate.end?.toISOString()).toStrictEqual(`2021-03-31T23:59:59.999Z`);
+      expect(emittedDate.duration).toBe('quarter');
     });
   });
 

@@ -40,7 +40,7 @@
 
 <script lang="ts">
 import { DateTime } from 'luxon';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
@@ -101,6 +101,11 @@ export default class CustomGranularityCalendar extends Vue {
 
   selectRange(date: DateTime) {
     this.$emit('input', this.pickerConfig.selectableRanges.optionToRange(date));
+  }
+
+  @Watch('granularity')
+  updateSelectedRange() {
+    if (this.selectedRangeStart) this.selectRange(this.selectedRangeStart);
   }
 }
 </script>
