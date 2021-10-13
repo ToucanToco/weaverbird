@@ -1,7 +1,7 @@
 /**
  * This module defines the supported unit-of-transformation steps.
  */
-import { RelativeDateRange } from '@/lib/dates';
+import {CustomDate, RelativeDateRange} from '@/lib/dates';
 
 export type BasicDatePart =
   | 'year'
@@ -241,7 +241,9 @@ export type FilterComboOr = {
 export type FilterSimpleCondition =
   | FilterConditionComparison
   | FilterConditionEquality
-  | FilterConditionInclusion;
+  | FilterConditionInclusion
+  | FilterConditionDateBound
+  | FilterConditionDatePeriod;
 
 type FilterConditionComparison = {
   column: string;
@@ -259,6 +261,18 @@ export type FilterConditionInclusion = {
   column: string;
   value: any[];
   operator: 'in' | 'nin';
+};
+
+export type FilterConditionDateBound = {
+  column: string;
+  value: CustomDate | string;
+  operator: 'from' | 'until';
+};
+
+export type FilterConditionDatePeriod = {
+  column: string;
+  value: CustomDate | string;
+  operator: 'day';
 };
 
 export type FilterStep = {
