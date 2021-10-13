@@ -155,7 +155,7 @@ export default class DateRangeInput extends Vue {
   selectedTab = 'Dynamic';
 
   get accessibleVariables(): VariablesBucket {
-    // we may want to have access to hidden variables in case of value is a Variable reference to a variable not display in UI
+    // some variables are required for date computations but should not be part of the variable list displayed to users
     return this.availableVariables.filter(v => v.category !== 'hidden');
   }
 
