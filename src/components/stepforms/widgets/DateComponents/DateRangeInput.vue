@@ -2,16 +2,22 @@
   <div class="widget-date-input">
     <div class="widget-date-input__container">
       <span class="widget-date-input__label" v-html="label" />
-      <div class="widget-date-input__button" @click="openEditor">
+      <div class="widget-date-input__button" @click.stop="openEditor">
         <FAIcon icon="far calendar" />
       </div>
     </div>
-    <popover class="widget-date-input__editor" :visible="isEditorOpened" :align="alignLeft" bottom>
+    <popover
+      class="widget-date-input__editor"
+      :visible="isEditorOpened"
+      :align="alignLeft"
+      bottom
+      @closed="closeEditor"
+    >
       <div class="widget-date-input__editor-container">
         <CustomVariableList
           v-if="hasVariables"
           class="widget-date-input__editor-side"
-          :availableVariables="availableVariables"
+          :availableVariables="accessibleVariables"
           :selectedVariables="selectedVariables"
           :enableRelativeDate="enableRelativeDate"
           :enableCustom="enableCustom"
@@ -32,12 +38,13 @@
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
-            <Calendar
-              v-if="isFixedTabSelected"
-              v-model="currentTabValue"
-              isRange
-              :availableDates="bounds"
-            />
+            <div v-if="isFixedTabSelected">
+              <TabbedRangeCalendars
+                v-model="currentTabValue"
+                :enabledCalendars="enabledCalendars"
+                :bounds="boundsAsDateRange"
+              />
+            </div>
             <RelativeDateRangeForm
               v-else
               v-model="currentTabValue"
@@ -72,6 +79,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
 import Calendar from '@/components/DatePicker/Calendar.vue';
+import { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
 import Tabs from '@/components/Tabs.vue';
@@ -92,9 +100,17 @@ import {
 
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
+import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Dynamic way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
+ *
+ * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDateRange)
+ * This entry is used as a configuration for the date range input
+ * This configuration will be returned by the @input emit
+ *
+ * In another emitted property, DateRangeInput component will return a DateRange @dateRangeValueUpdated
+ * This returned value is a calculated form of the config into a date range { start: Date, end: Date } in order to be used
  */
 @Component({
   name: 'date-range-input',
@@ -105,6 +121,7 @@ import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
     Calendar,
     RelativeDateRangeForm,
     FAIcon,
+    TabbedRangeCalendars,
   },
 })
 export default class DateRangeInput extends Vue {
@@ -126,13 +143,31 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: true })
   enableCustom!: boolean;
 
+  @Prop()
+  enabledCalendars!: string[] | undefined;
+
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
-  bounds!: DateRange;
+  bounds!: CustomDateRange;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Dynamic';
+
+  get accessibleVariables(): VariablesBucket {
+    // some variables are required for date computations but should not be part of the variable list displayed to users
+    return this.availableVariables.filter(v => v.category !== 'hidden');
+  }
+
+  get boundsAsDateRange(): DateRange | undefined {
+    const dateRange = transformValueToDateRange(
+      this.bounds,
+      this.availableVariables,
+      this.relativeAvailableVariables,
+      this.variableDelimiters,
+    );
+    return dateRange;
+  }
 
   get tabs(): string[] {
     return ['Dynamic', 'Fixed'];
@@ -168,7 +203,7 @@ export default class DateRangeInput extends Vue {
   }
 
   get hasVariables(): boolean {
-    return this.availableVariables.length > 0;
+    return this.accessibleVariables.length > 0;
   }
 
   get hasCustomValue(): boolean {
@@ -240,9 +275,20 @@ export default class DateRangeInput extends Vue {
     this.isEditingCustomVariable = false;
   }
 
+  updateDateRangeValue(value: string | CustomDateRange): void {
+    const dateRange = transformValueToDateRange(
+      value,
+      this.availableVariables,
+      this.relativeAvailableVariables,
+      this.variableDelimiters,
+    );
+    this.$emit('dateRangeValueUpdated', dateRange);
+  }
+
   selectVariable(value: string): void {
     const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
     this.$emit('input', variableWithDelimiters);
+    this.updateDateRangeValue(variableWithDelimiters);
     this.closeEditor();
   }
 
@@ -252,6 +298,7 @@ export default class DateRangeInput extends Vue {
 
   saveCustomVariable(): void {
     this.$emit('input', this.currentTabValue);
+    this.updateDateRangeValue(this.currentTabValue);
     this.closeEditor();
   }
 

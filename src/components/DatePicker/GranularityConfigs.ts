@@ -14,7 +14,7 @@ export type GranularityConfig = {
     label: (dt: DateTime) => string;
     currentOptions: (currentNavRangeStart: DateTime) => DateTime[];
     optionToRange: (selectedOption: DateTime) => Required<DateRange>;
-    rangeToOption: (selectedRange: Required<DateRange>) => DateTime;
+    rangeToOption: (selectedRangeStart: Date) => DateTime;
   };
 };
 
@@ -47,6 +47,8 @@ const FIRST_DAY_OF_MONTH = {
   millisecond: 0,
 };
 
+const ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION = { milliseconds: 1 };
+
 export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
     navRange: YEAR_NAV,
@@ -60,11 +62,14 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       },
       optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
-        end: selectedOption.plus({ months: 1 }).toJSDate(),
+        end: selectedOption
+          .plus({ months: 1 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
+          .toJSDate(),
         duration: 'month',
       }),
-      rangeToOption: (selectedRange: Required<DateRange>): DateTime =>
-        DateTime.fromJSDate(selectedRange.start, { zone: 'utc' })
+      rangeToOption: (selectedRangeStart: Date): DateTime =>
+        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' })
           .set(FIRST_DAY_OF_MONTH)
           .setLocale('en'),
     },
@@ -80,11 +85,14 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       },
       optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
-        end: selectedOption.plus({ months: 3 }).toJSDate(),
+        end: selectedOption
+          .plus({ months: 3 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
+          .toJSDate(),
         duration: 'quarter',
       }),
-      rangeToOption: (selectedRange: Required<DateRange>): DateTime => {
-        const dt = DateTime.fromJSDate(selectedRange.start, { zone: 'utc' });
+      rangeToOption: (selectedRangeStart: Date): DateTime => {
+        const dt = DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' });
         return dt
           .set({
             month: (dt.quarter - 1) * 3 + 1,
@@ -106,11 +114,14 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
       },
       optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
         start: selectedOption.toJSDate(),
-        end: selectedOption.plus({ years: 1 }).toJSDate(),
+        end: selectedOption
+          .plus({ years: 1 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
+          .toJSDate(),
         duration: 'year',
       }),
-      rangeToOption: (selectedRange: Required<DateRange>): DateTime =>
-        DateTime.fromJSDate(selectedRange.start, { zone: 'utc' })
+      rangeToOption: (selectedRangeStart: Date): DateTime =>
+        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' })
           .set({
             month: 1,
             ...FIRST_DAY_OF_MONTH,

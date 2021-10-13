@@ -169,6 +169,7 @@ stories.add('without relative date enabled', () => ({
         :relative-available-variables="relativeAvailableVariables" 
         :variable-delimiters="variableDelimiters" 
         :enableRelativeDate="false"
+        :enabledCalendars="['quarter', 'year']"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -215,7 +216,7 @@ stories.add('disable custom selection', () => ({
       value: undefined,
     };
   },
-});
+}));
 
 stories.add('custom (with bounds)', () => ({
   template: `

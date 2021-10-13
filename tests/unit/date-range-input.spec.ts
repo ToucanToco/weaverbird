@@ -1,9 +1,11 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
+import { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import {
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
   dateRangeToString,
+  isDateRange,
   RelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
@@ -14,34 +16,42 @@ const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',
     label: 'Last 7 days',
+    value: '',
   },
   {
     identifier: 'dates.last_14_days',
     label: 'Last 14 days',
+    value: { start: new Date(2020, 11), end: new Date(2020, 11) },
   },
   {
     identifier: 'dates.last_30_days',
     label: 'Last 30 days',
+    value: '',
   },
   {
     identifier: 'dates.last_3_months',
     label: 'Last 3 Months',
+    value: '',
   },
   {
     identifier: 'dates.last_12_months',
     label: 'Last 12 Months',
+    value: '',
   },
   {
     identifier: 'dates.month_to_date',
     label: 'Month to date',
+    value: '',
   },
   {
     identifier: 'dates.quarter_to_date',
     label: 'Quarter to date',
+    value: '',
   },
   {
     identifier: 'dates.all_time',
     label: 'All time',
+    value: '',
   },
 ];
 
@@ -49,7 +59,7 @@ const RELATIVE_SAMPLE_VARIABLES = [
   {
     label: 'Today',
     identifier: 'today',
-    value: '',
+    value: new Date(2020, 11),
   },
   {
     label: 'Last month',
@@ -80,6 +90,7 @@ describe('Date range input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: 'anythingnotokay',
       });
@@ -130,6 +141,17 @@ describe('Date range input', () => {
       it('should emit the selected variable identifier with delimiters', () => {
         expect(wrapper.emitted().input[0][0]).toBe(`{{${selectedVariable}}}`);
       });
+      it('should emit the selected variable value as date range', () => {
+        const emittedValue = wrapper.emitted().dateRangeValueUpdated[0][0];
+        const attendedValue = transformValueToDateRange(
+          `{{${selectedVariable}}}`,
+          SAMPLE_VARIABLES,
+          RELATIVE_SAMPLE_VARIABLES,
+          { start: '{{', end: '}}' },
+        );
+        expect(isDateRange(emittedValue)).toBe(true);
+        expect(emittedValue).toStrictEqual(attendedValue);
+      });
       it('should hide editor', () => {
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
@@ -155,6 +177,7 @@ describe('Date range input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
       });
     });
@@ -180,7 +203,7 @@ describe('Date range input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue = { date: '{{today}}', quantity: -1, duration: 'month' };
+      const editedValue: RelativeDateRange = { date: '{{today}}', quantity: -1, duration: 'month' };
 
       beforeEach(async () => {
         wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', editedValue);
@@ -191,6 +214,17 @@ describe('Date range input', () => {
       it('should emit current tab value', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual(editedValue);
       });
+      it('should emit current tab value as date range', () => {
+        const emittedValue = wrapper.emitted().dateRangeValueUpdated[0][0];
+        const attendedValue = transformValueToDateRange(
+          editedValue,
+          SAMPLE_VARIABLES,
+          RELATIVE_SAMPLE_VARIABLES,
+          { start: '{{', end: '}}' },
+        );
+        expect(emittedValue).toStrictEqual(attendedValue);
+        expect(isDateRange(emittedValue)).toBe(true);
+      });
     });
 
     describe('when selecting "Fixed" tab', () => {
@@ -199,17 +233,17 @@ describe('Date range input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        expect(wrapper.find('Calendar-stub').exists()).toBe(true);
+        expect(wrapper.find('TabbedRangeCalendars-stub').exists()).toBe(true);
         expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
       });
 
-      describe('when updating Calendar value', () => {
+      describe('when updating TabbedRangeCalendars value', () => {
         const newValue = { start: new Date(8), end: new Date(11) };
         beforeEach(async () => {
-          wrapper.find('Calendar-stub').vm.$emit('input', newValue);
+          wrapper.find('TabbedRangeCalendars-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
@@ -228,7 +262,7 @@ describe('Date range input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(true);
-        expect(wrapper.find('Calendar-stub').exists()).toBe(false);
+        expect(wrapper.find('TabbedRangeCalendars-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
@@ -309,8 +343,8 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
     });
 
-    it('should preselect value in Calendar', () => {
-      expect(wrapper.find('Calendar-stub').props().value).toStrictEqual(value);
+    it('should preselect value in TabbedRangeCalendars', () => {
+      expect(wrapper.find('TabbedRangeCalendars-stub').props().value).toStrictEqual(value);
     });
     it('should have an enabled save button', () => {
       expect(wrapper.find({ ref: 'save' }).attributes('disabled')).not.toBe('disabled');
@@ -365,7 +399,7 @@ describe('Date range input', () => {
       expect(wrapper.find('Tabs-stub').exists()).toBe(false);
     });
     it('should always use "Fixed" as selected tab', () => {
-      expect(wrapper.find('Calendar-stub').exists()).toBe(true);
+      expect(wrapper.find('TabbedRangeCalendars-stub').exists()).toBe(true);
     });
     it('should pass down disabled relative date props to custom variable list', () => {
       expect(wrapper.find('CustomVariableList-stub').props().enableRelativeDate).toBe(false);
@@ -388,10 +422,10 @@ describe('Date range input', () => {
     });
   });
 
-  describe('without available variables', () => {
+  describe('without accessible variables', () => {
     beforeEach(async () => {
       createWrapper({
-        availableVariables: [],
+        availableVariables: [{ label: 'Hidden', identifier: 'hidden', category: 'hidden' }],
         variableDelimiters: { start: '{{', end: '}}' },
       });
       wrapper.find('.widget-date-input__button').trigger('click');
@@ -405,18 +439,41 @@ describe('Date range input', () => {
     });
   });
 
+  describe('with hidden variables', () => {
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: [
+          { label: 'Hidden', identifier: 'hidden', category: 'hidden' },
+          { label: 'Available', identifier: 'available' },
+        ],
+        bounds: '{{hidden}}', // hidden variables can be used as variable reference for bounds or presets
+        variableDelimiters: { start: '{{', end: '}}' },
+      });
+      wrapper.find('.widget-date-input__button').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+    it('should only display accessible variables in UI', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual([
+        { label: 'Available', identifier: 'available' },
+      ]);
+    });
+  });
+
   describe('with bounds', () => {
-    const bounds = { start: new Date('2020/1/1'), end: new Date('2020/6/1') };
+    const bounds: RelativeDateRange = { date: '{{today}}', quantity: 1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: { start: new Date('2020/2/1'), end: new Date('2020/3/1') },
         bounds,
       });
     });
-    it('should pass bounds to calendar', () => {
-      expect(wrapper.find('Calendar-stub').props().availableDates).toStrictEqual(bounds);
+    it('should pass bounds as date range to TabbedRangeCalendars', () => {
+      const bounds = wrapper.find('TabbedRangeCalendars-stub').props().bounds;
+      expect(bounds).not.toBeUndefined();
+      expect(isDateRange(bounds)).toBe(true);
     });
   });
 

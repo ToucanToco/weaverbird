@@ -25,6 +25,7 @@ export type RelativeDate = {
   duration: Duration;
 };
 
+// Should be included in RelativeDate
 export type RelativeDateRange = {
   date: string;
   quantity: number; // can be negative or positive
