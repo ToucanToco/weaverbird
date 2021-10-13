@@ -17,7 +17,7 @@
         <CustomVariableList
           v-if="hasVariables"
           class="widget-date-input__editor-side"
-          :availableVariables="availableVariables"
+          :availableVariables="accessibleVariables"
           :selectedVariables="selectedVariables"
           :enableRelativeDate="enableRelativeDate"
           :enableCustom="enableCustom"
@@ -154,6 +154,11 @@ export default class DateRangeInput extends Vue {
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Dynamic';
 
+  get accessibleVariables(): VariablesBucket {
+    // some variables are required for date computations but should not be part of the variable list displayed to users
+    return this.availableVariables.filter(v => v.category !== 'hidden');
+  }
+
   get boundsAsDateRange(): DateRange | undefined {
     const dateRange = transformValueToDateRange(
       this.bounds,
@@ -198,7 +203,7 @@ export default class DateRangeInput extends Vue {
   }
 
   get hasVariables(): boolean {
-    return this.availableVariables.length > 0;
+    return this.accessibleVariables.length > 0;
   }
 
   get hasCustomValue(): boolean {

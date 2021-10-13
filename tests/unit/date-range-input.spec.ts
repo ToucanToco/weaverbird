@@ -422,10 +422,10 @@ describe('Date range input', () => {
     });
   });
 
-  describe('without available variables', () => {
+  describe('without accessible variables', () => {
     beforeEach(async () => {
       createWrapper({
-        availableVariables: [],
+        availableVariables: [{ label: 'Hidden', identifier: 'hidden', category: 'hidden' }],
         variableDelimiters: { start: '{{', end: '}}' },
       });
       wrapper.find('.widget-date-input__button').trigger('click');
@@ -436,6 +436,26 @@ describe('Date range input', () => {
     });
     it('should not display Custom variable list', () => {
       expect(wrapper.find('CustomVariableList-stub').exists()).toBe(false);
+    });
+  });
+
+  describe('with hidden variables', () => {
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: [
+          { label: 'Hidden', identifier: 'hidden', category: 'hidden' },
+          { label: 'Available', identifier: 'available' },
+        ],
+        bounds: '{{hidden}}', // hidden variables can be used as variable reference for bounds or presets
+        variableDelimiters: { start: '{{', end: '}}' },
+      });
+      wrapper.find('.widget-date-input__button').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+    it('should only display accessible variables in UI', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().availableVariables).toStrictEqual([
+        { label: 'Available', identifier: 'available' },
+      ]);
     });
   });
 
