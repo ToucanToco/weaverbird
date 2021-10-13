@@ -24,9 +24,8 @@ an object `RelativeDate` can be used instead.
 This object will be translated or interpreted so that the date used in the condition is relative to the moment of execution of the query.
 
 A `RelativeDate` contains:
-- `date`: the reference date from which to compute the finale date.
+- `date`: the reference date from which to compute the finale date. Either a `Date`, `undefined`, or a `string` with an expression resolving to a date.
   `undefined` means the moment of query execution ("now").
-  It can be a date variable, which would be resolved at execution time.
 - `duration`: the unit used to compute the final date ("year", "quarter", "month", "week" or "day").
 - `quantity`: either positive (in the future) or negative (in the past).
 
