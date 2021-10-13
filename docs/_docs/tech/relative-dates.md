@@ -21,13 +21,13 @@ But if we execute it on October 12th, it would be between October 5th and 12th.
 Where a date can be used to express a condition (in the `filter` step or in the `ifthenelse` step),
 an object `RelativeDate` can be used instead.
 
-This object will be translated or interpreted so that the date is relative to the moment of execution of the query.
+This object will be translated or interpreted so that the date used in the condition is relative to the moment of execution of the query.
 
 A `RelativeDate` contains:
 - `date`: the reference date from which to compute the finale date.
   `undefined` means the moment of query execution ("now").
   It can be a date variable, which would be resolved at execution time.
-- `duration`: the unit used to compute the final date.
+- `duration`: the unit used to compute the final date ("year", "quarter", "month", "week" or "day").
 - `quantity`: either positive (in the future) or negative (in the past).
 
 Examples:
@@ -41,12 +41,11 @@ Examples:
 - this full year:
   ```json
   {
-    "year": "{{ FIRST_DAY_OF_YEAR }}",
+    "date": "{{ FIRST_DAY_OF_YEAR }}",
     "duration": "year",
     "quantity": 1
   }
   ```
-  (requires the variable `FIRST_DAY_OF_YEAR` is available)
 - the last two full weeks
   ```json
   {
@@ -55,7 +54,7 @@ Examples:
     "quantity": -2
   }
   ```
-  (requires the variable `THIS_WEEK_MONDAY` is available)
+(These examples require the availability of some variables in the scope : `THIS_WEEK_MONDAY` and `FIRST_DAY_OF_YEAR`)
 
 ## Support in steps
 
