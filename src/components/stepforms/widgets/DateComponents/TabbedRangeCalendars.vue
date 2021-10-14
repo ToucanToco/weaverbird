@@ -55,6 +55,15 @@ export default class TabbedRangeCalendars extends Vue {
     this.selectedTab = this.enabledCalendars[0];
   }
 
+  @Watch('value')
+  onValueChange() {
+    this.selectTab(
+      this.value.duration && this.enabledCalendars.includes(this.value.duration)
+        ? this.value.duration
+        : this.enabledCalendars[0],
+    );
+  }
+
   get currentValue(): CustomDateRange {
     return this.value;
   }
