@@ -248,11 +248,35 @@ stories.add('custom (with bounds)', () => ({
   },
 }));
 
-stories.add('empty', () => ({
+stories.add('without any variable', () => ({
   template: `
     <div>
       <DateRangeInput v-model="value"/>
       <pre>{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
+    };
+  },
+}));
+
+stories.add('always open (preview mode)', () => ({
+  template: `
+    <div>
+      <DateRangeInput
+        v-model="value"
+        :enableRelativeDate="false"
+        :alwaysOpen="true"
+        :enabledCalendars="['month', 'quarter', 'year']"
+      />
+      <pre style="margin-top: 500px;">{{ value }}</pre>
     </div>
   `,
 
