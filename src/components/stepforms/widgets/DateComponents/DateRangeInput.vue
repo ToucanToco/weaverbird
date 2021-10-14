@@ -149,7 +149,10 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   bounds!: CustomDateRange;
 
-  isEditorOpened = false;
+  @Prop({ default: false })
+  alwaysOpen!: boolean;
+
+  isEditorOpened = this.alwaysOpen;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Dynamic';
@@ -271,6 +274,7 @@ export default class DateRangeInput extends Vue {
   }
 
   closeEditor(): void {
+    if (this.alwaysOpen) return;
     this.isEditorOpened = false;
     this.isEditingCustomVariable = false;
   }
