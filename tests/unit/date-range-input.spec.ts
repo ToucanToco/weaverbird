@@ -387,6 +387,26 @@ describe('Date range input', () => {
     });
   });
 
+  describe('choose right selected tab when opening calendar', () => {
+    const initialValue: RelativeDateRange = { date: '{{today}}', quantity: 1, duration: 'month' };
+    const updatedValue = { start: new Date(), end: new Date(1) };
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value: initialValue,
+      });
+      await wrapper.setProps({
+        value: updatedValue,
+      });
+      await wrapper.find('.widget-date-input__button').trigger('click');
+    });
+    it('should select "Fixed" tab by default', () => {
+      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
+    });
+  });
+
   describe('with relative date disabled', () => {
     beforeEach(() => {
       createWrapper({
