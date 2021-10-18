@@ -38,8 +38,19 @@ describe('CustomGranularityCalendar', () => {
       it('should display all 12 months', () => {
         const months = wrapper.findAll('.custom-granularity-calendar__option');
         expect(months).toHaveLength(12);
-        expect(months.at(0).text()).toStrictEqual('January');
-        expect(months.at(11).text()).toStrictEqual('December');
+      });
+
+      it('should display labels', () => {
+        const labels = wrapper.findAll('.custom-granularity-calendar__option-label');
+        expect(labels).toHaveLength(12);
+        expect(labels.at(0).text()).toStrictEqual('January');
+        expect(labels.at(11).text()).toStrictEqual('December');
+      });
+
+      it('should display descriptions', () => {
+        const descriptions = wrapper.findAll('.custom-granularity-calendar__option-description');
+        expect(descriptions).toHaveLength(12);
+        expect(descriptions.wrappers.every(m => m.text() == '')).toBe(true);
       });
 
       describe('when clicking on a a month', () => {

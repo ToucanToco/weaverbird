@@ -32,7 +32,12 @@
         :key="selectableRangeLabel(date)"
         @click="selectRange(date)"
       >
-        {{ selectableRangeLabel(date) }}
+        <div class="custom-granularity-calendar__option-label">
+          {{ selectableRangeLabel(date) }}
+        </div>
+        <div class="custom-granularity-calendar__option-description">
+          {{ selectableRangeDescription(date) }}
+        </div>
       </div>
     </div>
   </div>
@@ -81,6 +86,11 @@ export default class CustomGranularityCalendar extends Vue {
 
   selectableRangeLabel(date: DateTime): string {
     return this.pickerConfig.selectableRanges.label(date);
+  }
+
+  selectableRangeDescription(date: DateTime): string {
+    const range = this.pickerConfig.selectableRanges.optionToRange(date);
+    return this.pickerConfig.selectableRanges.description(range);
   }
 
   isSelectedRange(date: DateTime) {
@@ -156,6 +166,9 @@ export default class CustomGranularityCalendar extends Vue {
 
   &--week {
     grid-template-columns: repeat(2, 1fr);
+    .custom-granularity-calendar__option-label {
+      font-weight: bold;
+    }
   }
 }
 
@@ -170,8 +183,15 @@ export default class CustomGranularityCalendar extends Vue {
 
   &--selected {
     background: #e4efec;
-    font-weight: bold;
+    .custom-granularity-calendar__option-label {
+      font-weight: bold;
+    }
   }
+}
+
+.custom-granularity-calendar__option-description {
+  line-height: 23px;
+  font-size: 12px;
 }
 
 .custom-granularity-calendar__body--quarter .custom-granularity-calendar__option {
