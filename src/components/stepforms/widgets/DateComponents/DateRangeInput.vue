@@ -342,8 +342,9 @@ $active-color-dark: #16406a;
   ::v-deep span {
     display: inline-block;
     line-height: 0;
-    font-size: 30px;
-    color: #c8c8c8;
+    font-weight: bold;
+    padding: 0 4px;
+    color: #acacac;
   }
 }
 .widget-date-input__button {
