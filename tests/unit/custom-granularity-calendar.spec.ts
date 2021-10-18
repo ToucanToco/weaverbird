@@ -157,11 +157,11 @@ describe('CustomGranularityCalendar', () => {
       expect(WEEK_NAV.label(SAMPLE_DATE_TIME)).toBe('W47 - W2 2017');
     });
 
-    it('should provide a date in the next decade', () => {
+    it('should provide a date in the next week', () => {
       expect(WEEK_NAV.next(SAMPLE_DATE_TIME).weekNumber).toBe(3);
     });
 
-    it('should provide a date in the previous decade', () => {
+    it('should provide a date in the previous week', () => {
       expect(WEEK_NAV.prev(SAMPLE_DATE_TIME).weekNumber).toBe(39);
     });
   });
@@ -195,10 +195,7 @@ describe('CustomGranularityCalendar', () => {
 
     it('should convert a arbitrary date range to the associated option', () => {
       expect(
-        RANGE_PICKERS.week.selectableRanges.rangeToOption(
-          // Weird quarter from the 12th to the 12th
-          new Date(Date.UTC(2016, 3, 12)),
-        ),
+        RANGE_PICKERS.week.selectableRanges.rangeToOption(new Date(Date.UTC(2016, 3, 12))),
       ).toStrictEqual(DateTime.utc(2016, 4, 12, { locale: 'en' }));
     });
   });
