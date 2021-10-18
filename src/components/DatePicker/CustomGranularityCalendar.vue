@@ -24,15 +24,20 @@
       }"
     >
       <div
-        v-for="date in currentNavRangeRangeStarts"
+        v-for="option in selectableOptions"
         :class="{
           'custom-granularity-calendar__option': true,
-          'custom-granularity-calendar__option--selected': isSelectedRange(date),
+          'custom-granularity-calendar__option--selected': option.selected,
         }"
-        :key="selectableRangeLabel(date)"
-        @click="selectRange(date)"
+        :key="option.label"
+        @click="selectRange(option.range)"
       >
-        {{ selectableRangeLabel(date) }}
+        <div class="custom-granularity-calendar__option-label">
+          {{ option.label }}
+        </div>
+        <div v-if="option.description" class="custom-granularity-calendar__option-description">
+          {{ option.description }}
+        </div>
       </div>
     </div>
   </div>
@@ -46,6 +51,13 @@ import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
 
 import { AvailableDuration, GranularityConfig, RANGE_PICKERS } from './GranularityConfigs';
+
+type SelectableOption = {
+  label: string;
+  range: Required<DateRange>;
+  description: string;
+  selected: boolean;
+};
 
 @Component({
   name: 'custom-granularity-calendar',
@@ -79,12 +91,14 @@ export default class CustomGranularityCalendar extends Vue {
     return this.pickerConfig.selectableRanges.rangeToOption(this.value.start);
   }
 
-  selectableRangeLabel(date: DateTime): string {
-    return this.pickerConfig.selectableRanges.label(date);
-  }
-
-  isSelectedRange(date: DateTime) {
-    return this.selectedRangeStart?.equals(date);
+  get selectableOptions(): SelectableOption[] {
+    return this.currentNavRangeRangeStarts.map(date => {
+      const range = this.retrieveRangeFromOption(date);
+      const description = this.pickerConfig.selectableRanges.description(range);
+      const label = this.pickerConfig.selectableRanges.label(date);
+      const selected = this.selectedRangeStart?.equals(date) ?? false;
+      return { label, range, description, selected };
+    });
   }
 
   created() {
@@ -99,13 +113,20 @@ export default class CustomGranularityCalendar extends Vue {
     this.currentNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
   }
 
-  selectRange(date: DateTime) {
-    this.$emit('input', this.pickerConfig.selectableRanges.optionToRange(date));
+  retrieveRangeFromOption(date: DateTime): Required<DateRange> {
+    return this.pickerConfig.selectableRanges.optionToRange(date);
+  }
+
+  selectRange(range: Required<DateRange>) {
+    this.$emit('input', range);
   }
 
   @Watch('granularity')
   updateSelectedRange() {
-    if (this.selectedRangeStart) this.selectRange(this.selectedRangeStart);
+    if (this.selectedRangeStart) {
+      const range = this.retrieveRangeFromOption(this.selectedRangeStart);
+      this.selectRange(range);
+    }
   }
 }
 </script>
@@ -153,6 +174,13 @@ export default class CustomGranularityCalendar extends Vue {
   &--quarter {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  &--week {
+    grid-template-columns: repeat(2, 1fr);
+    .custom-granularity-calendar__option-label {
+      font-weight: bold;
+    }
+  }
 }
 
 .custom-granularity-calendar__option {
@@ -166,8 +194,15 @@ export default class CustomGranularityCalendar extends Vue {
 
   &--selected {
     background: #e4efec;
-    font-weight: bold;
+    .custom-granularity-calendar__option-label {
+      font-weight: bold;
+    }
   }
+}
+
+.custom-granularity-calendar__option-description {
+  line-height: 23px;
+  font-size: 12px;
 }
 
 .custom-granularity-calendar__body--quarter .custom-granularity-calendar__option {
