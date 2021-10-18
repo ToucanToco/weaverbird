@@ -102,7 +102,7 @@ import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
 /**
- * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Dynamic way (RelativeDateRangeForm),
+ * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  *
  * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDateRange)
@@ -155,7 +155,7 @@ export default class DateRangeInput extends Vue {
   isEditorOpened = this.alwaysOpen;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
-  selectedTab = 'Dynamic';
+  selectedTab = 'Relative';
 
   get accessibleVariables(): VariablesBucket {
     // some variables are required for date computations but should not be part of the variable list displayed to users
@@ -173,13 +173,13 @@ export default class DateRangeInput extends Vue {
   }
 
   get tabs(): string[] {
-    return ['Dynamic', 'Fixed'];
+    return ['Relative', 'Fixed'];
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDateRange> = {
     Fixed: {}, // DateRange should be empty on init because we can have bounds so defined dates could be out of bounds
-    Dynamic: { date: '', quantity: -1, duration: 'year' },
+    Relative: { date: '', quantity: -1, duration: 'year' },
   };
 
   get currentTabValue(): CustomDateRange {
@@ -260,8 +260,8 @@ export default class DateRangeInput extends Vue {
       this.tabsValues.Fixed = this.value;
       this.selectTab('Fixed');
     } else if (isRelativeDateRange(this.value)) {
-      this.tabsValues.Dynamic = this.value;
-      this.selectTab('Dynamic');
+      this.tabsValues.Relative = this.value;
+      this.selectTab('Relative');
     }
     // force fixed tab by default if relative date is not enabled
     if (!this.enableRelativeDate) {

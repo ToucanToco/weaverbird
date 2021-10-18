@@ -141,7 +141,7 @@ describe('Date input', () => {
     });
 
     it('should have two tabs and a selected tabs by default', () => {
-      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Dynamic', 'Fixed']);
+      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Relative', 'Fixed']);
       expect(wrapper.find('Tabs-stub').props().selectedTab).not.toBeUndefined();
     });
 
@@ -197,9 +197,9 @@ describe('Date input', () => {
       });
     });
 
-    describe('when selecting "Dynamic" tab', () => {
+    describe('when selecting "Relative" tab', () => {
       beforeEach(async () => {
-        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic');
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative');
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
@@ -226,7 +226,7 @@ describe('Date input', () => {
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // switching to the other tab
         await wrapper.vm.$nextTick();
-        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic'); // come back to previous tab
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative'); // come back to previous tab
       });
       it('should not remove other tab value', () => {
         expect(wrapper.find('RelativeDateForm-stub').props().value).toBe(updatedRelativeDateValue);
@@ -295,8 +295,8 @@ describe('Date input', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months ago');
     });
 
-    it('should select "Dynamic" tab by default', () => {
-      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
+    it('should select "Relative" tab by default', () => {
+      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Relative');
     });
     it('should preselect value in RelativeDateForm', () => {
       expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual(value);

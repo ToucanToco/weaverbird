@@ -187,7 +187,7 @@ describe('Date range input', () => {
     });
 
     it('should have two tabs and a selected tabs by default', () => {
-      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Dynamic', 'Fixed']);
+      expect(wrapper.find('Tabs-stub').props().tabs).toStrictEqual(['Relative', 'Fixed']);
       expect(wrapper.find('Tabs-stub').props().selectedTab).not.toBeUndefined();
     });
 
@@ -275,9 +275,9 @@ describe('Date range input', () => {
       });
     });
 
-    describe('when selecting "Dynamic" tab', () => {
+    describe('when selecting "Relative" tab', () => {
       beforeEach(async () => {
-        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic');
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative');
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
@@ -310,7 +310,7 @@ describe('Date range input', () => {
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // switching to the other tab
         await wrapper.vm.$nextTick();
-        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Dynamic'); // come back to previous tab
+        wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative'); // come back to previous tab
       });
       it('should not remove other tab value', () => {
         expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toBe(
@@ -391,8 +391,8 @@ describe('Date range input', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[1]);
     });
 
-    it('should select "Dynamic" tab by default', () => {
-      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Dynamic');
+    it('should select "Relative" tab by default', () => {
+      expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Relative');
     });
     it('should pass relative available variables to RelativeDateRangeForm', () => {
       expect(wrapper.find('RelativeDateRangeForm-stub').props().availableVariables).toStrictEqual(
