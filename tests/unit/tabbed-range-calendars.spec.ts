@@ -29,6 +29,7 @@ describe('TabbedRangeCalendars', () => {
   it('should enable all tabs by default', () => {
     expect(wrapper.find('Tabs-stub').props('tabs')).toStrictEqual([
       'day',
+      'week',
       'month',
       'quarter',
       'year',
