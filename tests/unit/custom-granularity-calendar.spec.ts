@@ -176,6 +176,12 @@ describe('CustomGranularityCalendar', () => {
       });
     });
 
+    it('should provide the right description', () => {
+      const W48 = options[1];
+      const range = RANGE_PICKERS.week.selectableRanges.optionToRange(W48);
+      expect(RANGE_PICKERS.week.selectableRanges.description(range)).toBe('12/2/2016 - 12/8/2016');
+    });
+
     it('should convert a arbitrary date range to the associated option', () => {
       expect(
         RANGE_PICKERS.week.selectableRanges.rangeToOption(
@@ -191,6 +197,12 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide the right label', () => {
       expect(RANGE_PICKERS.quarter.selectableRanges.label(SAMPLE_DATE_TIME)).toBe('Quarter 4');
+    });
+
+    it('should provide the right description', () => {
+      const Q2 = options[1];
+      const range = RANGE_PICKERS.quarter.selectableRanges.optionToRange(Q2);
+      expect(RANGE_PICKERS.quarter.selectableRanges.description(range)).toBe('');
     });
 
     it('should provide the right options', () => {
@@ -222,6 +234,12 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide the right label', () => {
       expect(RANGE_PICKERS.year.selectableRanges.label(SAMPLE_DATE_TIME)).toBe('2016');
+    });
+
+    it('should provide the right description', () => {
+      const Year2012 = options[2];
+      const range = RANGE_PICKERS.year.selectableRanges.optionToRange(Year2012);
+      expect(RANGE_PICKERS.year.selectableRanges.description(range)).toBe('');
     });
 
     it('should provide the right options', () => {
