@@ -153,6 +153,10 @@ export default class CustomGranularityCalendar extends Vue {
   &--quarter {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  &--week {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 .custom-granularity-calendar__option {
