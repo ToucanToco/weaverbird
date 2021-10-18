@@ -532,8 +532,8 @@ describe('Data Viewer', () => {
           rowsWrapper
             .at(i)
             .find('dataviewercell-stub')
-            .attributes('isselected'),
-        ).toEqual('true');
+            .classes(),
+        ).toContain('data-viewer__cell--active');
       });
     });
   });
