@@ -15,7 +15,7 @@
       <span v-if="togglable" class="widget-variable-option__toggle" />
       <span class="widget-variable-option__name">{{ label }}</span>
     </div>
-    <span class="widget-variable-option__value">{{ formattedValue }}</span>
+    <span class="widget-variable-option__value" v-if="!showOnlyLabel">{{ formattedValue }}</span>
   </div>
 </template>
 
@@ -46,12 +46,15 @@ export default class VariableListOption extends Vue {
   @Prop({ default: () => false })
   togglable!: boolean;
 
+  @Prop({ default: false })
+  showOnlyLabel!: boolean;
+
   get formattedValue(): string {
     return this.value instanceof Date ? this.value.toString() : this.value;
   }
 
   get readableValue(): string {
-    return JSON.stringify(this.formattedValue);
+    return this.showOnlyLabel ? '' : JSON.stringify(this.formattedValue);
   }
 
   get selected(): boolean {
