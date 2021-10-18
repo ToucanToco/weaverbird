@@ -352,4 +352,17 @@ describe('Popover', function() {
       expect(destroyPositioningSpy).not.toHaveBeenCalled();
     });
   });
+
+  describe('forceUpdatePosition', () => {
+    it('should update its position when forced to update position is true', async function() {
+      createWrapper({ props: { visible: false } });
+      const updatePositionSpy: jest.SpyInstance = jest.spyOn(
+        popoverWrapper.vm as any,
+        'updatePosition',
+      );
+      await popoverWrapper.setProps({ forcePositionUpdate: true });
+
+      expect(updatePositionSpy).toHaveBeenCalled();
+    });
+  });
 });

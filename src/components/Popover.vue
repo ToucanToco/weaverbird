@@ -61,6 +61,12 @@ export default class Popover extends Vue {
   })
   bottom!: boolean;
 
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  forcePositionUpdate!: boolean;
+
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
   @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
 
@@ -77,6 +83,13 @@ export default class Popover extends Vue {
       this.destroyPositioning();
     } else {
       this.setupPositioning();
+    }
+  }
+
+  @Watch('forcePositionUpdate')
+  forceUpdatePosition(forcePositionUpdate: boolean) {
+    if (forcePositionUpdate) {
+      this.updatePosition();
     }
   }
 
