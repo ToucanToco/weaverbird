@@ -2,7 +2,7 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import { DateTime } from 'luxon';
 
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
-import { DECADE_NAV, RANGE_PICKERS } from '@/components/DatePicker/GranularityConfigs';
+import { DECADE_NAV, RANGE_PICKERS, WEEK_NAV } from '@/components/DatePicker/GranularityConfigs';
 import { DateRange } from '@/lib/dates';
 
 const currentYear = DateTime.now().year;
@@ -138,6 +138,51 @@ describe('CustomGranularityCalendar', () => {
 
     it('should provide a date in the previous decade', () => {
       expect(DECADE_NAV.prev(SAMPLE_DATE_TIME).year).toBe(2006);
+    });
+  });
+
+  describe('Week navigation', () => {
+    it('should provide the right label', () => {
+      expect(WEEK_NAV.label(SAMPLE_DATE_TIME)).toBe('W47 - W2 2017');
+    });
+
+    it('should provide a date in the next decade', () => {
+      expect(WEEK_NAV.next(SAMPLE_DATE_TIME).weekNumber).toBe(3);
+    });
+
+    it('should provide a date in the previous decade', () => {
+      expect(WEEK_NAV.prev(SAMPLE_DATE_TIME).weekNumber).toBe(39);
+    });
+  });
+
+  describe('Week options', () => {
+    const options = RANGE_PICKERS.week.selectableRanges.currentOptions(SAMPLE_DATE_TIME);
+
+    it('should provide the right label', () => {
+      expect(RANGE_PICKERS.week.selectableRanges.label(SAMPLE_DATE_TIME)).toBe('Week 47');
+    });
+
+    it('should provide the right options', () => {
+      expect(options).toHaveLength(8);
+      expect(options.map(dt => dt.weekNumber)).toStrictEqual([47, 48, 49, 50, 51, 52, 1, 2]);
+    });
+
+    it('should convert an option to a date range', () => {
+      const W48 = options[1];
+      expect(RANGE_PICKERS.week.selectableRanges.optionToRange(W48)).toStrictEqual({
+        start: new Date(Date.UTC(2016, 11, 2)),
+        end: new Date(Date.UTC(2016, 11, 8, 23, 59, 59, 999)),
+        duration: 'week',
+      });
+    });
+
+    it('should convert a arbitrary date range to the associated option', () => {
+      expect(
+        RANGE_PICKERS.week.selectableRanges.rangeToOption(
+          // Weird quarter from the 12th to the 12th
+          new Date(Date.UTC(2016, 3, 12)),
+        ),
+      ).toStrictEqual(DateTime.utc(2016, 4, 12, { locale: 'en' }));
     });
   });
 

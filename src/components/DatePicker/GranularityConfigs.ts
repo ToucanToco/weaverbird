@@ -18,9 +18,18 @@ export type GranularityConfig = {
   };
 };
 
-export type AvailableDuration = 'year' | 'quarter' | 'month';
+export type AvailableDuration = 'year' | 'quarter' | 'month' | 'week';
 
 // Navigations
+
+export const WEEK_NAV = {
+  label: (dt: DateTime): string => {
+    const weekEnd = dt.plus({ weeks: 7 });
+    return `W${dt.weekNumber} - W${weekEnd.weekNumber} ${weekEnd.year}`;
+  },
+  prev: (dt: DateTime): DateTime => dt.minus({ weeks: 8 }),
+  next: (dt: DateTime): DateTime => dt.plus({ weeks: 8 }),
+};
 
 const YEAR_NAV = {
   label: (dt: DateTime): string => dt.year.toString(),
@@ -50,6 +59,28 @@ const FIRST_DAY_OF_MONTH = {
 const ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION = { milliseconds: 1 };
 
 export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
+  week: {
+    navRange: WEEK_NAV,
+    selectableRanges: {
+      label: (dt: DateTime): string => `Week ${dt.weekNumber}`,
+      currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
+        return Array.from({ length: 8 }, (_v, i) => {
+          const date = currentNavRangeStart.plus({ weeks: i });
+          return DateTime.utc(date.year, date.month, date.day, 0, 0, 0, { locale: 'en' });
+        });
+      },
+      optionToRange: (selectedOption: DateTime): Required<DateRange> => ({
+        start: selectedOption.toJSDate(),
+        end: selectedOption
+          .plus({ weeks: 1 })
+          .minus(ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION)
+          .toJSDate(),
+        duration: 'week',
+      }),
+      rangeToOption: (selectedRangeStart: Date): DateTime =>
+        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' }).setLocale('en'),
+    },
+  },
   month: {
     navRange: YEAR_NAV,
     selectableRanges: {
