@@ -35,7 +35,10 @@
         <div class="custom-granularity-calendar__option-label">
           {{ selectableRangeLabel(date) }}
         </div>
-        <div class="custom-granularity-calendar__option-description">
+        <div
+          v-if="selectableRangeDescription(date)"
+          class="custom-granularity-calendar__option-description"
+        >
           {{ selectableRangeDescription(date) }}
         </div>
       </div>

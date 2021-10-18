@@ -47,10 +47,9 @@ describe('CustomGranularityCalendar', () => {
         expect(labels.at(11).text()).toStrictEqual('December');
       });
 
-      it('should display descriptions', () => {
+      it('should hide descriptions', () => {
         const descriptions = wrapper.findAll('.custom-granularity-calendar__option-description');
-        expect(descriptions).toHaveLength(12);
-        expect(descriptions.wrappers.every(m => m.text() == '')).toBe(true);
+        expect(descriptions).toHaveLength(0);
       });
 
       describe('when clicking on a a month', () => {
