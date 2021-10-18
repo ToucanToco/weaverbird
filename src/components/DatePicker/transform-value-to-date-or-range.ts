@@ -5,13 +5,14 @@ import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/var
 
 /*
 Based on date property generate a new `Date` by adding selected quantity of duration (day, month, year...)
+
+If the `exclusive` option is set, add/remove 1 millisecond to the computed date, so the bound of the period will not be included
 */
 
-export const transformRelativeDateObjectToDate = ({
-  date,
-  quantity,
-  duration,
-}: RelativeDate & { date: Date }): Date => {
+export const transformRelativeDateObjectToDate = (
+  { date, quantity, duration }: RelativeDate & { date: Date },
+  exclusive = false,
+): Date => {
   const RELATIVE_DATE_DURATION_TO_LUXON = {
     day: 'days',
     week: 'weeks',
@@ -22,7 +23,12 @@ export const transformRelativeDateObjectToDate = ({
   const luxonDuration: string = RELATIVE_DATE_DURATION_TO_LUXON[duration];
   const dateTime = DateTime.fromJSDate(date, { zone: 'UTC' });
   // calculate date
-  return dateTime.plus({ [luxonDuration]: quantity }).toJSDate();
+  return dateTime
+    .plus({
+      [luxonDuration]: quantity,
+      milliseconds: exclusive ? -1 * Math.sign(quantity) : 0,
+    })
+    .toJSDate();
 };
 
 /*
@@ -54,12 +60,28 @@ export const transformRelativeDateRangeToDateRange = (
     variableDelimiters,
   )?.value;
   if (!(value instanceof Date)) return;
-  // pass start date to UTC
-  const start = DateTime.fromJSDate(value, { zone: 'UTC' }).toJSDate();
+
+  // pass base date to UTC
+  const base = DateTime.fromJSDate(value, { zone: 'UTC' })
+    .set(
+      // Base day should be included in full
+      // so if the range starts with the base day, its time should be 00:00
+      // but if the range ends with the base day, its time should be 23:59
+      relativeDateRange.quantity > 0 ? {} : { hour: 23, minute: 59, second: 59, millisecond: 999 },
+    )
+    .toJSDate();
+
   // retrieve end date from luxon
-  const end = transformRelativeDateObjectToDate({ ...relativeDateRange, date: start });
-  // if quantity is negative, start will arrive after end
-  return relativeDateRange.quantity >= 0 ? { start, end } : { start: end, end: start };
+  const targetDateTime = transformRelativeDateObjectToDate(
+    { ...relativeDateRange, date: base },
+    true, // ensure we add or remove 1ms so that the target day is not included
+  );
+
+  const target = DateTime.fromJSDate(targetDateTime, { zone: 'UTC' }).toJSDate();
+
+  // if quantity is negative, target will arrive before base
+  const [start, end] = relativeDateRange.quantity >= 0 ? [base, target] : [target, base];
+  return { start, end };
 };
 
 export const setDateRangeHours = (value: DateRange | string | undefined): DateRange | undefined => {

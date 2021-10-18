@@ -56,13 +56,15 @@ const RELATIVE_SAMPLE_VARIABLES = [
 stories.add('simple', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
-        v-model="value" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -76,6 +78,7 @@ stories.add('simple', () => ({
       variableDelimiters: { start: '{{', end: '}}'},
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
+      actualRangeValue: undefined,
     };
   },
 }));
@@ -83,13 +86,15 @@ stories.add('simple', () => ({
 stories.add('already selected variable', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
-        v-model="value" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -110,13 +115,15 @@ stories.add('already selected variable', () => ({
 stories.add('custom (fixed date range)', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
-        v-model="value" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -137,13 +144,15 @@ stories.add('custom (fixed date range)', () => ({
 stories.add('custom (relative date range)', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
-        v-model="value" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -164,15 +173,17 @@ stories.add('custom (relative date range)', () => ({
 stories.add('without relative date enabled', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
         :enableRelativeDate="false"
         :enabledCalendars="['quarter', 'year']"
-        v-model="value" 
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -193,14 +204,16 @@ stories.add('without relative date enabled', () => ({
 stories.add('disable custom selection', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
         :enableCustom="false"
-        v-model="value" 
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -214,6 +227,7 @@ stories.add('disable custom selection', () => ({
       variableDelimiters: { start: '{{', end: '}}'},
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
+      actualRangeValue: undefined,
     };
   },
 }));
@@ -221,15 +235,17 @@ stories.add('disable custom selection', () => ({
 stories.add('custom (with bounds)', () => ({
   template: `
     <div>
-      <DateRangeInput 
-        :available-variables="availableVariables" 
-        :relative-available-variables="relativeAvailableVariables" 
-        :variable-delimiters="variableDelimiters" 
+      <DateRangeInput
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
         :enableCustom="false"
         :bounds="bounds"
-        v-model="value" 
+        v-model="value"
+        @dateRangeValueUpdated="(v) => actualRangeValue = v"
       />
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -244,6 +260,7 @@ stories.add('custom (with bounds)', () => ({
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { start: new Date('2021/1/1'), end: new Date('2021/1/5') },
       bounds: { start: new Date('2021/1/2'), end: new Date('2021/1/4') },
+      actualRangeValue: undefined,
     };
   },
 }));
@@ -253,6 +270,7 @@ stories.add('without any variable', () => ({
     <div>
       <DateRangeInput v-model="value"/>
       <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
     </div>
   `,
 
@@ -287,6 +305,7 @@ stories.add('always open (preview mode)', () => ({
   data() {
     return {
       value: undefined,
+      actualRangeValue: undefined,
     };
   },
 }));
