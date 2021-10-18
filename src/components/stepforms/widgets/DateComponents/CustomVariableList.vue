@@ -1,10 +1,5 @@
 <template>
   <div class="widget-custom-variable-list__container">
-    <VariableList
-      :selectedVariables="selectedVariables"
-      :availableVariables="availableVariables"
-      @input="chooseVariable"
-    />
     <VariableListOption
       v-if="enableCustom"
       class="widget-custom-variable-list__custom-option"
@@ -12,6 +7,11 @@
       identifier="custom"
       :selectedVariables="selectedVariables"
       @input="selectCustomVariable"
+    />
+    <VariableList
+      :selectedVariables="selectedVariables"
+      :availableVariables="availableVariables"
+      @input="chooseVariable"
     />
   </div>
 </template>
@@ -63,8 +63,12 @@ export default class CustomVariableList extends Vue {
   width: 200px;
   background-color: #fff;
   margin-bottom: 8px;
+  padding-top: 10px;
 }
 .widget-custom-variable-list__custom-option {
   margin: 0 8px;
+}
+::v-deep .widget-variable-list__section:first-child {
+  padding-top: 0;
 }
 </style>
