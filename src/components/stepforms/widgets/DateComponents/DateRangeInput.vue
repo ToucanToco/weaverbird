@@ -1,8 +1,8 @@
 <template>
   <div class="widget-date-input">
-    <div class="widget-date-input__container">
+    <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
-      <div class="widget-date-input__button" @click.stop="openEditor">
+      <div class="widget-date-input__icon">
         <FAIcon icon="far calendar" />
       </div>
     </div>
@@ -323,6 +323,7 @@ $active-color-dark: #16406a;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  cursor: pointer;
 }
 .widget-date-input__label {
   padding: 10px 15px;
@@ -341,16 +342,15 @@ $active-color-dark: #16406a;
     color: #acacac;
   }
 }
-.widget-date-input__button {
+.widget-date-input__icon {
   padding: 10px 15px;
   background: $grey-extra-light;
   color: $grey;
-  cursor: pointer;
 }
 
 .widget-date-input__container:hover {
   border-color: $active-color;
-  .widget-date-input__button {
+  .widget-date-input__icon {
     background-color: $active-color-faded-2;
     color: $active-color;
   }
