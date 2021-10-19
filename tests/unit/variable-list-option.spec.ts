@@ -94,6 +94,21 @@ describe('Variable List option', () => {
     });
   });
 
+  describe('when showOnlyLabel', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        showOnlyLabel: true,
+      });
+      await wrapper.vm.$nextTick();
+    });
+    it('should hide variable value', () => {
+      expect(wrapper.find('.widget-variable-option__value').exists()).toBe(false);
+    });
+    it('should hide value tooltip', () => {
+      expect((wrapper.vm as any).readableValue).toStrictEqual('');
+    });
+  });
+
   describe('tooltip', () => {
     [
       { type: 'array', value: [1, 2], attendedValue: '[1,2]' },

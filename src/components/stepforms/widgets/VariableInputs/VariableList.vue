@@ -16,6 +16,7 @@
         :label="availableVariable.label"
         :togglable="isMultiple"
         :selectedVariables="selectedVariables"
+        :showOnlyLabel="showOnlyLabel"
         @input="chooseVariable"
       />
     </div>
@@ -44,6 +45,9 @@ export default class VariableList extends Vue {
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: false })
+  showOnlyLabel!: boolean;
 
   /* istanbul ignore next */
   created() {

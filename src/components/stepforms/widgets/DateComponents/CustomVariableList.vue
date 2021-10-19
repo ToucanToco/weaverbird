@@ -11,6 +11,7 @@
     <VariableList
       :selectedVariables="selectedVariables"
       :availableVariables="availableVariables"
+      :showOnlyLabel="true"
       @input="chooseVariable"
     />
   </div>

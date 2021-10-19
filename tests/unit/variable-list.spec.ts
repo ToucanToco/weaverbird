@@ -89,6 +89,7 @@ describe('Variable List', () => {
         label: 'view',
         identifier: 'appRequesters.view',
         value: 'Product 123',
+        showOnlyLabel: false,
         togglable: false,
         selectedVariables: 'appRequesters.city',
       });
@@ -123,6 +124,7 @@ describe('Variable List', () => {
         identifier: 'appRequesters.view',
         value: 'Product 123',
         togglable: true,
+        showOnlyLabel: false,
         selectedVariables: ['appRequesters.date.month', 'appRequesters.date.year'],
       });
     });
