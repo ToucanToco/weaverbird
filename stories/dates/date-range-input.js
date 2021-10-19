@@ -239,7 +239,7 @@ stories.add('custom (with bounds)', () => ({
         :available-variables="availableVariables"
         :relative-available-variables="relativeAvailableVariables"
         :variable-delimiters="variableDelimiters"
-        :enableCustom="false"
+        :enableCustom="true"
         :bounds="bounds"
         v-model="value"
         @dateRangeValueUpdated="(v) => actualRangeValue = v"
@@ -259,7 +259,7 @@ stories.add('custom (with bounds)', () => ({
       variableDelimiters: { start: '{{', end: '}}'},
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { start: new Date('2021/1/1'), end: new Date('2021/1/5') },
-      bounds: { start: new Date('2021/1/2'), end: new Date('2021/1/4') },
+      bounds: { start: new Date('2021/1/2'), end: new Date('2021/10/4') },
       actualRangeValue: undefined,
     };
   },
