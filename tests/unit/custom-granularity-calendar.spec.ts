@@ -363,6 +363,17 @@ describe('CustomGranularityCalendar', () => {
       expect(wrapper.find('.header-btn__next').classes()).not.toContain(
         'custom-granularity-calendar__header-btn--disabled',
       );
+
+      // No bounds, every navigation should be possible
+      await wrapper.setProps({
+        bounds: {},
+      });
+      expect(wrapper.find('.header-btn__previous').classes()).not.toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
+      expect(wrapper.find('.header-btn__next').classes()).not.toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
     });
   });
 });
