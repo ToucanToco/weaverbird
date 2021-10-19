@@ -290,14 +290,17 @@ describe('CustomGranularityCalendar', () => {
       createWrapper({
         granularity: 'month',
         value: new Date('2021-10-19'), // in october 2021
+      });
+    });
+
+    it('should deactivate choices that are not contained in the bounds range', async () => {
+      await wrapper.setProps({
         bounds: {
           start: new Date('2021-05-01'), // start of may 2021
           end: new Date('2021-12-01'), // start of december 2021
         },
       });
-    });
 
-    it('should deactivate choices that are not contained in the bounds range', () => {
       const options = wrapper.findAll('.custom-granularity-calendar__option');
       const enabledOptionsLabels = options
         .filter(w => !w.classes('custom-granularity-calendar__option--disabled'))
@@ -315,13 +318,51 @@ describe('CustomGranularityCalendar', () => {
         'October',
         'November',
       ]);
-      expect(disabledOptionsLabels).toEqual([
-        'January',
-        'February',
-        'March',
-        'April',
-        'December',
-      ]);
+      expect(disabledOptionsLabels).toEqual(['January', 'February', 'March', 'April', 'December']);
+    });
+
+    it('should deactivate navigation towards NavRanges that would be all disabled', async () => {
+      await wrapper.setProps({
+        bounds: {
+          start: new Date('2021-05-01'), // start of may 2021
+          end: new Date('2021-12-01'), // start of december 2021
+        },
+      });
+
+      expect(wrapper.find('.header-btn__previous').classes()).toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
+      expect(wrapper.find('.header-btn__next').classes()).toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
+
+      // Disable the navigation towards the future, but not towards the past
+      await wrapper.setProps({
+        bounds: {
+          start: new Date('1990-01-01'), // start of 1990
+          end: new Date('2021-12-01'), // start of december 2021
+        },
+      });
+      expect(wrapper.find('.header-btn__previous').classes()).not.toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
+      expect(wrapper.find('.header-btn__next').classes()).toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
+
+      // Disable the navigation towards the past, but not towards the future
+      await wrapper.setProps({
+        bounds: {
+          start: new Date('2021-05-01'), // start of may 2021
+          end: new Date('2049-01-01'), // start of 2049
+        },
+      });
+      expect(wrapper.find('.header-btn__previous').classes()).toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
+      expect(wrapper.find('.header-btn__next').classes()).not.toContain(
+        'custom-granularity-calendar__header-btn--disabled',
+      );
     });
   });
 });
