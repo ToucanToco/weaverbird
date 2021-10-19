@@ -284,4 +284,44 @@ describe('CustomGranularityCalendar', () => {
       ).toStrictEqual(DateTime.utc(2012, 1, 1, { locale: 'en' }));
     });
   });
+
+  describe('bounds', () => {
+    beforeEach(() => {
+      createWrapper({
+        granularity: 'month',
+        value: new Date('2021-10-19'), // in october 2021
+        bounds: {
+          start: new Date('2021-05-01'), // start of may 2021
+          end: new Date('2021-12-01'), // start of december 2021
+        },
+      });
+    });
+
+    it('should deactivate choices that are not contained in the bounds range', () => {
+      const options = wrapper.findAll('.custom-granularity-calendar__option');
+      const enabledOptionsLabels = options
+        .filter(w => !w.classes('custom-granularity-calendar__option--disabled'))
+        .wrappers.map(w => w.find('.custom-granularity-calendar__option-label').text());
+      const disabledOptionsLabels = options
+        .filter(w => w.classes('custom-granularity-calendar__option--disabled'))
+        .wrappers.map(w => w.find('.custom-granularity-calendar__option-label').text());
+
+      expect(enabledOptionsLabels).toEqual([
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+      ]);
+      expect(disabledOptionsLabels).toEqual([
+        'January',
+        'February',
+        'March',
+        'April',
+        'December',
+      ]);
+    });
+  });
 });

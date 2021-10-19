@@ -17,6 +17,7 @@
         v-else-if="calendarGranularity"
         v-model="currentValue"
         :granularity="calendarGranularity"
+        :bounds="bounds"
       />
     </div>
   </div>

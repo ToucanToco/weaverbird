@@ -28,6 +28,7 @@
         :class="{
           'custom-granularity-calendar__option': true,
           'custom-granularity-calendar__option--selected': option.selected,
+          'custom-granularity-calendar__option--disabled': option.disabled,
         }"
         :key="option.label"
         @click="selectRange(option.range)"
@@ -57,6 +58,7 @@ type SelectableOption = {
   range: Required<DateRange>;
   description: string;
   selected: boolean;
+  disabled: boolean;
 };
 
 @Component({
@@ -71,6 +73,9 @@ export default class CustomGranularityCalendar extends Vue {
 
   @Prop({ required: true })
   granularity!: AvailableDuration;
+
+  @Prop({ default: () => [] })
+  bounds!: DateRange;
 
   currentNavRangeStart: DateTime = DateTime.now();
 
@@ -97,7 +102,13 @@ export default class CustomGranularityCalendar extends Vue {
       const description = this.pickerConfig.selectableRanges.description(range);
       const label = this.pickerConfig.selectableRanges.label(date);
       const selected = this.selectedRangeStart?.equals(date) ?? false;
-      return { label, range, description, selected };
+
+      const { start, end } = this.pickerConfig.selectableRanges.optionToRange(date);
+      const isBeforeStartBound = this.bounds.start ? start < this.bounds.start : false;
+      const isAfterEndBound = this.bounds.end ? end >= this.bounds.end : false;
+      const disabled = isBeforeStartBound || isAfterEndBound;
+
+      return { label, range, description, selected, disabled };
     });
   }
 
