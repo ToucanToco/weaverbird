@@ -3,6 +3,7 @@
     <div class="custom-granularity-calendar__header">
       <div
         class="custom-granularity-calendar__header-btn header-btn__previous"
+        :class="{ 'custom-granularity-calendar__header-btn--disabled': prevNavRangeDisabled }"
         data-cy="weaverbird-custom-granularity-calendar__previous"
         @click="selectPreviousNavRange"
       >
@@ -11,6 +12,7 @@
       {{ currentNavRangeLabel }}
       <div
         class="custom-granularity-calendar__header-btn header-btn__next"
+        :class="{ 'custom-granularity-calendar__header-btn--disabled': nextNavRangeDisabled }"
         data-cy="weaverbird-custom-granularity-calendar__next"
         @click="selectNextNavRange"
       >
@@ -28,9 +30,10 @@
         :class="{
           'custom-granularity-calendar__option': true,
           'custom-granularity-calendar__option--selected': option.selected,
+          'custom-granularity-calendar__option--disabled': option.disabled,
         }"
         :key="option.label"
-        @click="selectRange(option.range)"
+        @click="option.disabled ? null : selectRange(option.range)"
       >
         <div class="custom-granularity-calendar__option-label">
           {{ option.label }}
@@ -57,6 +60,7 @@ type SelectableOption = {
   range: Required<DateRange>;
   description: string;
   selected: boolean;
+  disabled: boolean;
 };
 
 @Component({
@@ -71,6 +75,9 @@ export default class CustomGranularityCalendar extends Vue {
 
   @Prop({ required: true })
   granularity!: AvailableDuration;
+
+  @Prop({ default: () => [] })
+  bounds!: DateRange;
 
   currentNavRangeStart: DateTime = DateTime.now();
 
@@ -91,14 +98,40 @@ export default class CustomGranularityCalendar extends Vue {
     return this.pickerConfig.selectableRanges.rangeToOption(this.value.start);
   }
 
+  isOptionDisabled(date: DateTime): boolean {
+    const { start, end } = this.pickerConfig.selectableRanges.optionToRange(date);
+    const isBeforeStartBound = this.bounds.start ? start < this.bounds.start : false;
+    const isAfterEndBound = this.bounds.end ? end >= this.bounds.end : false;
+    return isBeforeStartBound || isAfterEndBound;
+  }
+
   get selectableOptions(): SelectableOption[] {
     return this.currentNavRangeRangeStarts.map(date => {
       const range = this.retrieveRangeFromOption(date);
       const description = this.pickerConfig.selectableRanges.description(range);
       const label = this.pickerConfig.selectableRanges.label(date);
       const selected = this.selectedRangeStart?.equals(date) ?? false;
-      return { label, range, description, selected };
+      const disabled = this.isOptionDisabled(date);
+      return { label, range, description, selected, disabled };
     });
+  }
+
+  // The previous button should be disabled if the last selectable option of the previous range should be disabled
+  get prevNavRangeDisabled(): boolean {
+    const previousNavRangeStart = this.pickerConfig.navRange.prev(this.currentNavRangeStart);
+    const previousNavRangeStarts = this.pickerConfig.selectableRanges.currentOptions(
+      previousNavRangeStart,
+    );
+    const lastPreviousNavRangeStart = previousNavRangeStarts[previousNavRangeStarts.length - 1];
+    return this.isOptionDisabled(lastPreviousNavRangeStart);
+  }
+
+  // The next button should be disabled if the first selectable option of the next range should be disabled
+  get nextNavRangeDisabled(): boolean {
+    const nextNavRangeStart = this.pickerConfig.navRange.next(this.currentNavRangeStart);
+    const nextNavRangeStarts = this.pickerConfig.selectableRanges.currentOptions(nextNavRangeStart);
+    const firstNextNavRangeStart = nextNavRangeStarts[0];
+    return this.isOptionDisabled(firstNextNavRangeStart);
   }
 
   created() {
@@ -161,6 +194,11 @@ export default class CustomGranularityCalendar extends Vue {
   &:hover {
     background: #f8f7fa;
   }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .custom-granularity-calendar__body {
@@ -197,6 +235,11 @@ export default class CustomGranularityCalendar extends Vue {
     .custom-granularity-calendar__option-label {
       font-weight: bold;
     }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 
