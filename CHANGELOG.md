@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.67.0] - 2021-10-19
+
+### Added
+
+- DateRangeInput: integrate dedicated calendars for picking weeks
+
+### Fix
+
+- DateRangeInput: open tab on selected value when clicking on custom option
+- DateRangeInput: replace separator arrow with '-' char
+- DateRangeInput: emit a inclusive ate range with using a relative date
+
 ## [0.66.0] - 2021-10-14
 
 ### Added
@@ -1005,6 +1017,7 @@
 
 ## Unreleased
 
+[0.66.0]: https://github.com/ToucanToco/weaverbird/compare/v0.66.0...v0.67.0
 [0.65.0]: https://github.com/ToucanToco/weaverbird/compare/v0.65.0...v0.66.0
 [0.65.0]: https://github.com/ToucanToco/weaverbird/compare/v0.64.1...v0.65.0
 [0.64.1]: https://github.com/ToucanToco/weaverbird/compare/v0.64.0...v0.64.1
