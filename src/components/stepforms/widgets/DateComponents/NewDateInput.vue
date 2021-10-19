@@ -84,7 +84,7 @@ import {
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateForm from './RelativeDateForm.vue';
 /**
- * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Dynamic way (RelativeDateForm),
+ * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Relative way (RelativeDateForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
 @Component({
@@ -117,16 +117,16 @@ export default class NewDateInput extends Vue {
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
-  selectedTab = 'Dynamic';
+  selectedTab = 'Relative';
 
   get tabs(): string[] {
-    return ['Dynamic', 'Fixed'];
+    return ['Relative', 'Fixed'];
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDate | undefined> = {
     Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds, moreover, we would have no disabled button otherwise
-    Dynamic: { quantity: -1, duration: 'year' },
+    Relative: { quantity: -1, duration: 'year' },
   };
 
   get currentTabValue(): CustomDate | undefined {
@@ -199,8 +199,8 @@ export default class NewDateInput extends Vue {
       this.tabsValues.Fixed = this.value;
       this.selectTab('Fixed');
     } else if (this.value && typeof this.value !== 'string') {
-      this.tabsValues.Dynamic = this.value;
-      this.selectTab('Dynamic');
+      this.tabsValues.Relative = this.value;
+      this.selectTab('Relative');
     }
   }
 
