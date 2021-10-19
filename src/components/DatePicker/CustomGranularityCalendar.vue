@@ -33,7 +33,7 @@
           'custom-granularity-calendar__option--disabled': option.disabled,
         }"
         :key="option.label"
-        @click="selectRange(option.range)"
+        @click="option.disabled ? null : selectRange(option.range)"
       >
         <div class="custom-granularity-calendar__option-label">
           {{ option.label }}
@@ -230,6 +230,11 @@ export default class CustomGranularityCalendar extends Vue {
     .custom-granularity-calendar__option-label {
       font-weight: bold;
     }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
   }
 }
 
