@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.67.1] - 2021-10-19
+
+### Fix
+- DateRangeInput: remove `daterangeUpdated` emitter and export method directly from main file
+- Date components: rename `Dynamic` tab to `Relative`
+- CustomVariableList: show only the label of options
+- CustomVariableList: move `custom` option to top of list
+
 ## [0.67.0] - 2021-10-19
 
 ### Added
@@ -1017,6 +1025,7 @@
 
 ## Unreleased
 
+[0.67.0]: https://github.com/ToucanToco/weaverbird/compare/v0.67.0...v0.67.1
 [0.66.0]: https://github.com/ToucanToco/weaverbird/compare/v0.66.0...v0.67.0
 [0.65.0]: https://github.com/ToucanToco/weaverbird/compare/v0.65.0...v0.66.0
 [0.65.0]: https://github.com/ToucanToco/weaverbird/compare/v0.64.1...v0.65.0
