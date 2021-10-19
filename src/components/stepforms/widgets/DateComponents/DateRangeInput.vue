@@ -280,20 +280,9 @@ export default class DateRangeInput extends Vue {
     this.isEditingCustomVariable = false;
   }
 
-  updateDateRangeValue(value: string | CustomDateRange): void {
-    const dateRange = transformValueToDateRange(
-      value,
-      this.availableVariables,
-      this.relativeAvailableVariables,
-      this.variableDelimiters,
-    );
-    this.$emit('dateRangeValueUpdated', dateRange);
-  }
-
   selectVariable(value: string): void {
     const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
     this.$emit('input', variableWithDelimiters);
-    this.updateDateRangeValue(variableWithDelimiters);
     this.closeEditor();
   }
 
@@ -303,7 +292,6 @@ export default class DateRangeInput extends Vue {
 
   saveCustomVariable(): void {
     this.$emit('input', this.currentTabValue);
-    this.updateDateRangeValue(this.currentTabValue);
     this.closeEditor();
   }
 

@@ -1,6 +1,5 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import {
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
@@ -141,17 +140,6 @@ describe('Date range input', () => {
       it('should emit the selected variable identifier with delimiters', () => {
         expect(wrapper.emitted().input[0][0]).toBe(`{{${selectedVariable}}}`);
       });
-      it('should emit the selected variable value as date range', () => {
-        const emittedValue = wrapper.emitted().dateRangeValueUpdated[0][0];
-        const attendedValue = transformValueToDateRange(
-          `{{${selectedVariable}}}`,
-          SAMPLE_VARIABLES,
-          RELATIVE_SAMPLE_VARIABLES,
-          { start: '{{', end: '}}' },
-        );
-        expect(isDateRange(emittedValue)).toBe(true);
-        expect(emittedValue).toStrictEqual(attendedValue);
-      });
       it('should hide editor', () => {
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
@@ -213,17 +201,6 @@ describe('Date range input', () => {
       });
       it('should emit current tab value', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual(editedValue);
-      });
-      it('should emit current tab value as date range', () => {
-        const emittedValue = wrapper.emitted().dateRangeValueUpdated[0][0];
-        const attendedValue = transformValueToDateRange(
-          editedValue,
-          SAMPLE_VARIABLES,
-          RELATIVE_SAMPLE_VARIABLES,
-          { start: '{{', end: '}}' },
-        );
-        expect(emittedValue).toStrictEqual(attendedValue);
-        expect(isDateRange(emittedValue)).toBe(true);
       });
     });
 
