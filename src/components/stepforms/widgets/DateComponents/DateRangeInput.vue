@@ -10,6 +10,7 @@
       class="widget-date-input__editor"
       :visible="isEditorOpened"
       :align="alignLeft"
+      :forcePositionUpdate="forcePopoverToUpdatePosition"
       bottom
       @closed="closeEditor"
     >
@@ -156,6 +157,7 @@ export default class DateRangeInput extends Vue {
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Relative';
+  forcePopoverToUpdatePosition = 0;
 
   get accessibleVariables(): VariablesBucket {
     // some variables are required for date computations but should not be part of the variable list displayed to users
@@ -286,8 +288,11 @@ export default class DateRangeInput extends Vue {
     this.closeEditor();
   }
 
-  editCustomVariable(): void {
+  async editCustomVariable(): Promise<void> {
     this.isEditingCustomVariable = true;
+    // force popover to update position to always display custom editor in visible part of screen
+    await this.$nextTick();
+    this.forcePopoverToUpdatePosition = this.forcePopoverToUpdatePosition + 1;
   }
 
   saveCustomVariable(): void {

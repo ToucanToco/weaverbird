@@ -61,6 +61,12 @@ export default class Popover extends Vue {
   })
   bottom!: boolean;
 
+  @Prop({
+    type: Number,
+    default: 0, // we increment the number each time we need the position to be updated
+  })
+  forcePositionUpdate!: number;
+
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
   @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
 
@@ -78,6 +84,11 @@ export default class Popover extends Vue {
     } else {
       this.setupPositioning();
     }
+  }
+
+  @Watch('forcePositionUpdate')
+  forceUpdatePosition() {
+    this.updatePosition();
   }
 
   async mounted() {
