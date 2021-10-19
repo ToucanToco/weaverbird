@@ -22,7 +22,7 @@
           />
         </div>
         <div class="widget-list__icon" v-if="child.isRemovable" @click="removeChild(index)">
-          <FAIcon icon="trash-alt" />
+          <FAIcon icon="far trash-alt" />
         </div>
       </div>
       <div v-if="messageError" class="field__msg-error">
