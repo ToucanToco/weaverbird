@@ -360,7 +360,7 @@ describe('Popover', function() {
         popoverWrapper.vm as any,
         'updatePosition',
       );
-      await popoverWrapper.setProps({ forcePositionUpdate: true });
+      await popoverWrapper.setProps({ forcePositionUpdate: 1 });
 
       expect(updatePositionSpy).toHaveBeenCalled();
     });

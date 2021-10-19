@@ -157,7 +157,7 @@ export default class DateRangeInput extends Vue {
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Relative';
-  forcePopoverToUpdatePosition = false;
+  forcePopoverToUpdatePosition = 0;
 
   get accessibleVariables(): VariablesBucket {
     // some variables are required for date computations but should not be part of the variable list displayed to users
@@ -280,7 +280,6 @@ export default class DateRangeInput extends Vue {
     if (this.alwaysOpen) return;
     this.isEditorOpened = false;
     this.isEditingCustomVariable = false;
-    this.forcePopoverToUpdatePosition = false;
   }
 
   selectVariable(value: string): void {
@@ -293,7 +292,7 @@ export default class DateRangeInput extends Vue {
     this.isEditingCustomVariable = true;
     // force popover to update position to always display custom editor in visible part of screen
     await this.$nextTick();
-    this.forcePopoverToUpdatePosition = true;
+    this.forcePopoverToUpdatePosition = this.forcePopoverToUpdatePosition + 1;
   }
 
   saveCustomVariable(): void {

@@ -159,7 +159,7 @@ describe('Date range input', () => {
         expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
       });
       it('should force popover to update position to always display custom editor in visible part of screen', () => {
-        expect(wrapper.find('.widget-date-input__editor').props().forcePositionUpdate).toBe(true);
+        expect(wrapper.find('.widget-date-input__editor').props().forcePositionUpdate).toBe(1);
       });
     });
   });
@@ -190,9 +190,6 @@ describe('Date range input', () => {
 
       it('should close the editor', () => {
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
-      });
-      it('should restore popover to update position to false', () => {
-        expect(wrapper.find('.widget-date-input__editor').props().forcePositionUpdate).toBe(false);
       });
     });
 
