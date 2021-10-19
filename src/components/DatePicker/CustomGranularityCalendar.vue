@@ -194,6 +194,11 @@ export default class CustomGranularityCalendar extends Vue {
   &:hover {
     background: #f8f7fa;
   }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
 }
 
 .custom-granularity-calendar__body {

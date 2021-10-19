@@ -86,7 +86,7 @@ stories.add('quarter', () => ({
   `,
 }));
 
-stories.add('quarter - limited to 2019 - 2020', () => ({
+stories.add('quarter - limited to 2019 Q2 - 2020 Q3', () => ({
   components: { CustomGranularityCalendar },
   data() {
     return { value: undefined };
@@ -106,7 +106,7 @@ stories.add('quarter - limited to 2019 - 2020', () => ({
     <CustomGranularityCalendar
       granularity="quarter"
       :value="value"
-      :bounds="{start: new Date('2019-01-01'), end: new Date('2021-01-01')}"
+      :bounds="{start: new Date('2019-04-01'), end: new Date('2020-10-01')}"
       @input="input"
     />
     <pre style="margin-top: 40px;">Selected: {{ formattedValue }}</pre>
