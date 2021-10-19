@@ -270,6 +270,7 @@ export default class DateRangeInput extends Vue {
   }
 
   openEditor(): void {
+    this.initTabs();
     this.isEditorOpened = true;
   }
 
