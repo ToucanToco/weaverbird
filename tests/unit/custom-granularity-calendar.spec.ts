@@ -319,9 +319,16 @@ describe('CustomGranularityCalendar', () => {
         'November',
       ]);
       expect(disabledOptionsLabels).toEqual(['January', 'February', 'March', 'April', 'December']);
+
+      // Clicking on a disabled button should have no effect
+      await options.filter(w => w.text().includes('January')).wrappers[0].trigger('click');
+      expect(wrapper.emitted('input')).toBeUndefined();
     });
 
     it('should deactivate navigation towards NavRanges that would be all disabled', async () => {
+      // NOTE: to avoid being blocked in a sate when a user can't escape (with a start value out-of-bounds),
+      // the navigation buttons are only visually disabled, but remains clickable.
+
       await wrapper.setProps({
         bounds: {
           start: new Date('2021-05-01'), // start of may 2021
