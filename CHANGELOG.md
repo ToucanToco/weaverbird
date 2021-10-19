@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.68.0] - 2021-10-19
+
+### Added
+- DateRangeInput: implement bounds in custom granularity calendars (years, quarters, months, weeks)
+
+### Fix
+- DateRangeInput: force popover to update position when clicking on `custom` option
+
 ## [0.67.1] - 2021-10-19
 
 ### Fix
@@ -1025,6 +1033,7 @@
 
 ## Unreleased
 
+[0.68.0]: https://github.com/ToucanToco/weaverbird/compare/v0.67.1...v0.68.0
 [0.67.1]: https://github.com/ToucanToco/weaverbird/compare/v0.67.0...v0.67.1
 [0.67.0]: https://github.com/ToucanToco/weaverbird/compare/v0.66.0...v0.67.0
 [0.66.0]: https://github.com/ToucanToco/weaverbird/compare/v0.65.0...v0.66.0
