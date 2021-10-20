@@ -107,6 +107,7 @@
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^3.7.0",
     "typescript-eslint": "^0.0.1-alpha.0",
+    "v-calendar": "^2.3.4",
     "v-tooltip": "^2.0.3",
     "vue": "^2.6.10",
     "vue-class-component": "^7.2.6",
@@ -149,7 +150,6 @@
     "lodash": "^4.17.11",
     "luxon": "^2.0.2",
     "mathjs": "^7.3.0",
-    "v-calendar": "^2.3.2",
     "vuedraggable": "^2.24.3"
   }
 }
