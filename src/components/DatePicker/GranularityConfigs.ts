@@ -76,8 +76,9 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         )}`;
       },
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
+        const startOfCurrentWeek = currentNavRangeStart.startOf('week');
         return Array.from({ length: 8 }, (_v, i) => {
-          const date = currentNavRangeStart.plus({ weeks: i });
+          const date = startOfCurrentWeek.plus({ weeks: i });
           return DateTime.utc(date.year, date.month, date.day, 0, 0, 0, { locale: 'en' });
         });
       },
@@ -90,7 +91,9 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         duration: 'week',
       }),
       rangeToOption: (selectedRangeStart: Date): DateTime =>
-        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' }).setLocale('en'),
+        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' })
+          .startOf('week')
+          .setLocale('en'),
     },
   },
   month: {
