@@ -10,6 +10,7 @@ import {
 } from '@/lib/dates';
 
 jest.mock('@/components/FAIcon.vue');
+jest.mock('@/components/DatePicker/Calendar.vue');
 
 const SAMPLE_VARIABLES = [
   {

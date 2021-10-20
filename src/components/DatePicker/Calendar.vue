@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import DatePicker from 'v-calendar/lib/components/date-picker.umd';
+import DatePicker from 'v-calendar/src/components/DatePicker.vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { DatePickerHighlight, DateRange } from '@/lib/dates';
