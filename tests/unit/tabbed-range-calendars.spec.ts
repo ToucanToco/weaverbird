@@ -2,6 +2,8 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import TabbedRangeCalendars from '@/components/stepforms/widgets/DateComponents/TabbedRangeCalendars.vue';
 
+jest.mock('@/components/DatePicker/Calendar.vue');
+
 describe('TabbedRangeCalendars', () => {
   let wrapper: Wrapper<TabbedRangeCalendars>;
   const createWrapper = async (props: any = {}) => {
