@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.69.0] - 2021-10-20
+
+### Added
+- Dates input components: friendlier labels for calendar ranges
+
+### Fix
+- WidgetList: display trash icon
+- Store: avoid console error messages due to state mutation
+- DateRangeInput: make all input clickable
+- DateRangeInput: activate periods that overlap bounds in custom granularity calendars
+- DateRangeInput: stay on day tab when selecting a date
+- DateRangeInput: make weeks of custom granularity calendar start on monday
+- Calendar: enable to use calendar in web component
+
 ## [0.68.0] - 2021-10-19
 
 ### Added
@@ -1033,6 +1047,7 @@
 
 ## Unreleased
 
+[0.69.0]: https://github.com/ToucanToco/weaverbird/compare/v0.68.0...v0.69.0
 [0.68.0]: https://github.com/ToucanToco/weaverbird/compare/v0.67.1...v0.68.0
 [0.67.1]: https://github.com/ToucanToco/weaverbird/compare/v0.67.0...v0.67.1
 [0.67.0]: https://github.com/ToucanToco/weaverbird/compare/v0.66.0...v0.67.0
