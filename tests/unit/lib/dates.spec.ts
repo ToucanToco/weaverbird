@@ -114,6 +114,16 @@ describe('dateRangeToString', () => {
         }),
       ).toBe('Oct 20, 2021');
     });
+
+    it('should return a short representation of start and end days', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2021-10-20T00:00:00.000Z'),
+          end: new Date('2021-10-21T23:59:59.999Z'),
+          duration: 'day',
+        }),
+      ).toBe('10/20/2021<span> - </span>10/21/2021');
+    });
   });
 });
 
