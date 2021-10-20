@@ -37,6 +37,84 @@ describe('dateRangeToString', () => {
       `${dateToString(value.start)}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${dateToString(value.end)}`,
     );
   });
+
+  describe('for year ranges', () => {
+    it('should return the year number', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2021-01-01T00:00:00.000Z'),
+          end: new Date('2021-12-31T23:59:59.999Z'),
+          duration: 'year',
+        }),
+      ).toBe('2021');
+    });
+  });
+
+  describe('for month ranges', () => {
+    it('should return the month name and year', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2021-10-01T00:00:00.000Z'),
+          end: new Date('2021-10-31T23:59:59.999Z'),
+          duration: 'month',
+        }),
+      ).toBe('October 2021');
+    });
+  });
+
+  describe('for quarter ranges', () => {
+    it('should return the month name and year', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2021-10-01T00:00:00.000Z'),
+          end: new Date('2021-12-31T23:59:59.999Z'),
+          duration: 'quarter',
+        }),
+      ).toBe('Quarter 4 2021');
+    });
+  });
+
+  describe('for week ranges', () => {
+    it('should return the week number and year', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2021-10-18T00:00:00.000Z'),
+          end: new Date('2021-10-24T23:59:59.999Z'),
+          duration: 'week',
+        }),
+      ).toBe('Week 42 2021');
+    });
+
+    it('should use the ISO year number (for weeks overlapping 2 years)', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2019-12-30T00:00:00.000Z'),
+          end: new Date('2019-01-05T23:59:59.999Z'),
+          duration: 'week',
+        }),
+      ).toBe('Week 1 2020');
+
+      expect(
+        dateRangeToString({
+          start: new Date('2021-12-27T00:00:00.000Z'),
+          end: new Date('2022-01-22T23:59:59.999Z'),
+          duration: 'week',
+        }),
+      ).toBe('Week 52 2021');
+    });
+  });
+
+  describe('for day ranges', () => {
+    it('should return the medium representation of the day', () => {
+      expect(
+        dateRangeToString({
+          start: new Date('2021-10-20T00:00:00.000Z'),
+          end: new Date('2021-10-20T23:59:59.999Z'),
+          duration: 'day',
+        }),
+      ).toBe('Oct 20, 2021');
+    });
+  });
 });
 
 describe('relativeDateToString', () => {
