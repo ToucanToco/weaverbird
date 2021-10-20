@@ -108,7 +108,7 @@ const getters: GetterTree<VQBState, any> = {
       .filter((name: string) => name !== state.currentPipelineName)
       .sort((a, b) => a.localeCompare(b));
 
-    const domainNames = state.domains.sort((a, b) => a.localeCompare(b));
+    const domainNames = [...state.domains].sort((a, b) => a.localeCompare(b));
 
     return [...pipelineNames, ...domainNames];
   },
