@@ -38,12 +38,18 @@ export default {
   external: ['vue', 'vuex'],
   plugins: [
     typescript({ module: 'es2015' }),
-    resolve(),
+    resolve({
+      // Default extensions ['.mjs', '.js', '.json', '.node']
+      // We need to add the '.vue' extension because of the import of the component from v-calendar
+      // which contains relative paths without extensions.
+      extensions: ['.mjs', '.js', '.json', '.node', '.vue']
+    }),
     alias({
       resolve: ['.vue', '.json'],
       '@': path.join(packageDir(), '/src'),
     }),
-    commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'] } }),
+    // date-fns comes from v-calendar
+    commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'], 'node_modules/date-fns/index.js': ['addDays'] } }),
     css({ output: 'dist/weaverbird.css' }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
