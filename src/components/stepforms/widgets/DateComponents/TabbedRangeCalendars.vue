@@ -46,7 +46,7 @@ export default class TabbedRangeCalendars extends Vue {
   @Prop({ default: () => [] })
   bounds!: DateRange;
 
-  @Prop({ default: () => ['day', 'week', 'month', 'quarter', 'year'] })
+  @Prop({ default: () => ['year', 'quarter', 'month', 'week', 'day'] })
   enabledCalendars!: string[];
 
   selectedTab = this.enabledCalendars[0];

@@ -28,16 +28,16 @@ describe('TabbedRangeCalendars', () => {
 
   it('should enable all tabs by default', () => {
     expect(wrapper.find('Tabs-stub').props('tabs')).toStrictEqual([
-      'day',
-      'week',
-      'month',
-      'quarter',
       'year',
+      'quarter',
+      'month',
+      'week',
+      'day',
     ]);
   });
 
   it('should select the first tab by default', () => {
-    expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('day');
+    expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('year');
   });
 
   describe('with only some calendar enabled', () => {
