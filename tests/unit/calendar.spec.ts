@@ -1,4 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
+// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// @ts-ignore
+import DatePicker from 'v-calendar/lib/components/date-picker.umd';
 
 import Calendar from '@/components/DatePicker/Calendar.vue';
 
@@ -61,13 +64,13 @@ describe('Calendar', () => {
     });
     it('should emit new value when datepicker is updated', () => {
       const value = { start: new Date(), end: new Date(2) };
-      wrapper.find('DatePicker-stub').vm.$emit('input', value);
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual(value);
+      wrapper.find(DatePicker).vm.$emit('input', value);
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ ...value, duration: 'day' });
     });
     it('should emit start date only when datepicker is dragged (range update)', () => {
       const value = { start: new Date(), end: new Date(2) };
       (wrapper.vm as any).onDrag(value); // drag event is not found by stub
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start });
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start, duration: 'day' });
     });
   });
 

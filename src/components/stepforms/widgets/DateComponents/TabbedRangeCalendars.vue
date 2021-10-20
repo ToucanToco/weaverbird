@@ -46,7 +46,7 @@ export default class TabbedRangeCalendars extends Vue {
   @Prop({ default: () => [] })
   bounds!: DateRange;
 
-  @Prop({ default: () => ['day', 'week', 'month', 'quarter', 'year'] })
+  @Prop({ default: () => ['year', 'quarter', 'month', 'week', 'day'] })
   enabledCalendars!: string[];
 
   selectedTab = this.enabledCalendars[0];
@@ -58,11 +58,9 @@ export default class TabbedRangeCalendars extends Vue {
 
   @Watch('value')
   onValueChange() {
-    this.selectTab(
-      this.value.duration && this.enabledCalendars.includes(this.value.duration)
-        ? this.value.duration
-        : this.enabledCalendars[0],
-    );
+    if (this.value.duration && this.enabledCalendars.includes(this.value.duration)) {
+      this.selectTab(this.value.duration);
+    }
   }
 
   get currentValue(): CustomDateRange {
