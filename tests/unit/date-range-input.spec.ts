@@ -123,7 +123,7 @@ describe('Date range input', () => {
 
     describe('when clicking on calendar button', () => {
       beforeEach(async () => {
-        wrapper.find('.widget-date-input__button').trigger('click');
+        wrapper.find('.widget-date-input__container').trigger('click');
         await wrapper.vm.$nextTick();
       });
       it('should show editor', () => {
@@ -428,7 +428,7 @@ describe('Date range input', () => {
         availableVariables: [{ label: 'Hidden', identifier: 'hidden', category: 'hidden' }],
         variableDelimiters: { start: '{{', end: '}}' },
       });
-      wrapper.find('.widget-date-input__button').trigger('click');
+      wrapper.find('.widget-date-input__container').trigger('click');
       await wrapper.vm.$nextTick();
     });
     it('should display Custom editor directly when clicking on open button', () => {
@@ -449,7 +449,7 @@ describe('Date range input', () => {
         bounds: '{{hidden}}', // hidden variables can be used as variable reference for bounds or presets
         variableDelimiters: { start: '{{', end: '}}' },
       });
-      wrapper.find('.widget-date-input__button').trigger('click');
+      wrapper.find('.widget-date-input__container').trigger('click');
       await wrapper.vm.$nextTick();
     });
     it('should only display accessible variables in UI', () => {

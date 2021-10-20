@@ -90,7 +90,7 @@ describe('Date input', () => {
 
     describe('when clicking on calendar button', () => {
       beforeEach(async () => {
-        wrapper.find('.widget-date-input__button').trigger('click');
+        wrapper.find('.widget-date-input__container').trigger('click');
         await wrapper.vm.$nextTick();
       });
       it('should show editor', () => {
@@ -325,7 +325,7 @@ describe('Date input', () => {
         availableVariables: [],
         variableDelimiters: { start: '{{', end: '}}' },
       });
-      wrapper.find('.widget-date-input__button').trigger('click');
+      wrapper.find('.widget-date-input__container').trigger('click');
       await wrapper.vm.$nextTick();
     });
     it('should display Custom editor directly when clicking on open button', () => {
