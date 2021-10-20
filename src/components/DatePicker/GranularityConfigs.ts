@@ -26,7 +26,7 @@ export type AvailableDuration = 'year' | 'quarter' | 'month' | 'week';
 export const WEEK_NAV = {
   label: (dt: DateTime): string => {
     const weekEnd = dt.plus({ weeks: 7 });
-    return `W${dt.weekNumber} - W${weekEnd.weekNumber} ${weekEnd.year}`;
+    return `W${dt.weekNumber} - W${weekEnd.weekNumber} ${weekEnd.weekYear}`;
   },
   prev: (dt: DateTime): DateTime => dt.minus({ weeks: 8 }),
   next: (dt: DateTime): DateTime => dt.plus({ weeks: 8 }),
@@ -76,8 +76,9 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         )}`;
       },
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
+        const startOfCurrentWeek = currentNavRangeStart.startOf('week');
         return Array.from({ length: 8 }, (_v, i) => {
-          const date = currentNavRangeStart.plus({ weeks: i });
+          const date = startOfCurrentWeek.plus({ weeks: i });
           return DateTime.utc(date.year, date.month, date.day, 0, 0, 0, { locale: 'en' });
         });
       },
@@ -90,7 +91,9 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
         duration: 'week',
       }),
       rangeToOption: (selectedRangeStart: Date): DateTime =>
-        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' }).setLocale('en'),
+        DateTime.fromJSDate(selectedRangeStart, { zone: 'utc' })
+          .startOf('week')
+          .setLocale('en'),
     },
   },
   month: {

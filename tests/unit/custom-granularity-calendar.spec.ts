@@ -177,11 +177,11 @@ describe('CustomGranularityCalendar', () => {
       expect(options.map(dt => dt.weekNumber)).toStrictEqual([47, 48, 49, 50, 51, 52, 1, 2]);
     });
 
-    it('should convert an option to a date range', () => {
+    it('should convert an option to a date range (monday to monday)', () => {
       const W48 = options[1];
       expect(RANGE_PICKERS.week.selectableRanges.optionToRange(W48)).toStrictEqual({
-        start: new Date(Date.UTC(2016, 11, 2)),
-        end: new Date(Date.UTC(2016, 11, 8, 23, 59, 59, 999)),
+        start: new Date('2016-11-28T00:00:00.000Z'), // monday November 28th 2016
+        end: new Date('2016-12-04T23:59:59.999Z'), // sunday December 4th 2016
         duration: 'week',
       });
     });
@@ -189,13 +189,13 @@ describe('CustomGranularityCalendar', () => {
     it('should provide the right description', () => {
       const W48 = options[1];
       const range = RANGE_PICKERS.week.selectableRanges.optionToRange(W48);
-      expect(RANGE_PICKERS.week.selectableRanges.description(range)).toBe('12/2/2016 - 12/8/2016');
+      expect(RANGE_PICKERS.week.selectableRanges.description(range)).toBe('11/28/2016 - 12/4/2016');
     });
 
     it('should convert a arbitrary date range to the associated option', () => {
       expect(
-        RANGE_PICKERS.week.selectableRanges.rangeToOption(new Date(Date.UTC(2016, 3, 12))),
-      ).toStrictEqual(DateTime.utc(2016, 4, 12, { locale: 'en' }));
+        RANGE_PICKERS.week.selectableRanges.rangeToOption(new Date('2016-04-12T00:00:00.000Z')), // a tuesda3
+      ).toStrictEqual(DateTime.utc(2016, 4, 11, { locale: 'en' }));
     });
   });
 
