@@ -81,14 +81,17 @@ export default class Calendar extends Vue {
     }
   }
 
-  /* istanbul ignore next */
   onInput(value: Date | DateRange | undefined): void {
-    this.$emit('input', value);
+    if (Boolean(value) && !(value instanceof Date)) {
+      this.$emit('input', { ...value, duration: 'day' });
+    } else {
+      this.$emit('input', value);
+    }
   }
 
   // when user start to select a range he has only start value selected, we disable validate button until he select the end value
   onDrag(dragValue: DateRange): void {
-    this.$emit('input', { start: dragValue.start });
+    this.$emit('input', { start: dragValue.start, duration: 'day' });
   }
 }
 </script>
