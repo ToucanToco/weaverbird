@@ -248,7 +248,7 @@ describe('Date range input', () => {
         await wrapper.setProps({
           value: updatedValue,
         });
-        await wrapper.find('.widget-date-input__button').trigger('click');
+        await wrapper.find('.widget-date-input__container').trigger('click');
       });
       it('should select "Fixed" tab by default', () => {
         expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Fixed');
