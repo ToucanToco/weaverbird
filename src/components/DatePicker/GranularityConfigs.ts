@@ -26,7 +26,7 @@ export type AvailableDuration = 'year' | 'quarter' | 'month' | 'week';
 export const WEEK_NAV = {
   label: (dt: DateTime): string => {
     const weekEnd = dt.plus({ weeks: 7 });
-    return `W${dt.weekNumber} - W${weekEnd.weekNumber} ${weekEnd.year}`;
+    return `W${dt.weekNumber} - W${weekEnd.weekNumber} ${weekEnd.weekYear}`;
   },
   prev: (dt: DateTime): DateTime => dt.minus({ weeks: 8 }),
   next: (dt: DateTime): DateTime => dt.plus({ weeks: 8 }),
