@@ -85,5 +85,22 @@ describe('TabbedRangeCalendars', () => {
         expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('year');
       });
     });
+
+    describe('with unknown granularity', () => {
+      beforeEach(async () => {
+        createWrapper();
+        await wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'day');
+        await wrapper.setProps({
+          value: {
+            start: new Date(Date.UTC(2012, 0, 1)),
+            end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
+          },
+        });
+      });
+
+      it('should stay on the already selected tab', () => {
+        expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('day');
+      });
+    });
   });
 });
