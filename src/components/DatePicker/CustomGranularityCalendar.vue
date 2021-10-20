@@ -98,11 +98,12 @@ export default class CustomGranularityCalendar extends Vue {
     return this.pickerConfig.selectableRanges.rangeToOption(this.value.start);
   }
 
+  // A period is disabled if it has no overlap with the bounds
   isOptionDisabled(date: DateTime): boolean {
     const { start, end } = this.pickerConfig.selectableRanges.optionToRange(date);
-    const isBeforeStartBound = this.bounds.start ? start < this.bounds.start : false;
-    const isAfterEndBound = this.bounds.end ? end >= this.bounds.end : false;
-    return isBeforeStartBound || isAfterEndBound;
+    const endBeforeStartBound = this.bounds.start ? end < this.bounds.start : false;
+    const startAfterEndBound = this.bounds.end ? start >= this.bounds.end : false;
+    return endBeforeStartBound || startAfterEndBound;
   }
 
   get selectableOptions(): SelectableOption[] {

@@ -293,11 +293,11 @@ describe('CustomGranularityCalendar', () => {
       });
     });
 
-    it('should deactivate choices that are not contained in the bounds range', async () => {
+    it('should deactivate choices that have no overlap with the bounds range', async () => {
       await wrapper.setProps({
         bounds: {
-          start: new Date('2021-05-01'), // start of may 2021
-          end: new Date('2021-12-01'), // start of december 2021
+          start: new Date('2021-05-15'), // middle of may 2021
+          end: new Date('2021-11-31'), // end of november 2021
         },
       });
 
