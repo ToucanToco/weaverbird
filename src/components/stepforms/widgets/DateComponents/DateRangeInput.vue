@@ -355,8 +355,7 @@ $active-color-dark: #16406a;
 }
 
 .widget-date-input__editor {
-  margin-left: -5px;
-  margin-right: -5px;
+  margin-top: 3px;
   background-color: #fff;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
 }
