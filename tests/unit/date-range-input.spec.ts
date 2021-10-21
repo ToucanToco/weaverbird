@@ -75,10 +75,11 @@ const RELATIVE_SAMPLE_VARIABLES = [
 
 describe('Date range input', () => {
   let wrapper: Wrapper<DateRangeInput>;
-  const createWrapper = (propsData = {}) => {
+  const createWrapper = (propsData = {}, attrs = {}) => {
     wrapper = shallowMount(DateRangeInput, {
       sync: false,
       propsData,
+      attrs,
     });
   };
 
@@ -478,27 +479,21 @@ describe('Date range input', () => {
     });
   });
 
-  describe('always open (preview mode)', () => {
+  describe('always opened (preview mode)', () => {
     beforeEach(() => {
-      createWrapper({
-        availableVariables: SAMPLE_VARIABLES,
-        alwaysOpen: true,
-      });
+      createWrapper(
+        {
+          availableVariables: SAMPLE_VARIABLES,
+        },
+        {
+          'always-opened': 'true',
+        },
+      );
     });
 
-    it('should show the editor', () => {
-      expect(wrapper.find('popover-stub').props().visible).toBe(true);
-    });
-
-    describe('when selecting a value', () => {
-      beforeEach(async () => {
-        wrapper.find('CustomVariableList-stub').vm.$emit('input', SAMPLE_VARIABLES[1].identifier);
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should still show the editor', () => {
-        expect(wrapper.find('popover-stub').props().visible).toBe(true);
-      });
+    it('should forward the alwaysOpened attribute to the popover', () => {
+      // vue-test-utils seems to remove dashes in attrs
+      expect(wrapper.find('popover-stub').attributes('alwaysopened')).toBe('true');
     });
   });
 
