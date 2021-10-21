@@ -1,5 +1,11 @@
 <template>
-  <span class="weaverbird-popover" data-cy="weaverbird-popover" :style="elementStyle" @click.stop>
+  <span
+    class="weaverbird-popover"
+    :class="{ 'weaverbird-popover--always-opened': $attrs.alwaysOpened }"
+    data-cy="weaverbird-popover"
+    :style="elementStyle"
+    @click.stop
+  >
     <slot />
   </span>
 </template>
@@ -67,6 +73,8 @@ export default class Popover extends Vue {
   })
   forcePositionUpdate!: number;
 
+  // Can take an attribute "alwaysOpened"
+
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
   @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
 
@@ -79,6 +87,10 @@ export default class Popover extends Vue {
 
   @Watch('visible')
   async onVisibleChange(visible: boolean) {
+    if (this.$attrs.alwaysOpened) {
+      return;
+    }
+
     if (!visible) {
       this.destroyPositioning();
     } else {
@@ -92,6 +104,11 @@ export default class Popover extends Vue {
   }
 
   async mounted() {
+    if (this.$attrs.alwaysOpened) {
+      // Skip all the repositioning in the DOM
+      return;
+    }
+
     // Save original parent before moving into body to use its position
     this.parent = this.$el.parentElement;
     // Remove element from parent: it will be added to body when `setupPosition`
@@ -128,7 +145,7 @@ export default class Popover extends Vue {
   }
 
   beforeDestroy() {
-    if (this.visible) {
+    if (this.visible && !this.$attrs.alwaysOpened) {
       this.destroyPositioning();
     }
   }
@@ -187,8 +204,15 @@ export default class Popover extends Vue {
 <style lang="scss" scoped>
 .weaverbird-popover {
   font-family: 'Montserrat', sans-serif;
-  position: absolute;
-  visibility: visible;
-  z-index: 2;
+
+  &:not(.weaverbird-popover--always-opened) {
+    position: absolute;
+    visibility: visible;
+    z-index: 2;
+  }
+
+  &.weaverbird-popover--always-opened {
+    display: block;
+  }
 }
 </style>

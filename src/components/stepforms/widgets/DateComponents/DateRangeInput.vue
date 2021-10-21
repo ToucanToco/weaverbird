@@ -8,6 +8,7 @@
     </div>
     <popover
       class="widget-date-input__editor"
+      :alwaysOpened="$attrs['always-opened']"
       :visible="isEditorOpened"
       :align="alignLeft"
       :forcePositionUpdate="forcePopoverToUpdatePosition"
@@ -150,10 +151,7 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: () => ({ start: undefined, end: undefined }) })
   bounds!: CustomDateRange;
 
-  @Prop({ default: false })
-  alwaysOpen!: boolean;
-
-  isEditorOpened = this.alwaysOpen;
+  isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Relative';
@@ -277,9 +275,9 @@ export default class DateRangeInput extends Vue {
   }
 
   closeEditor(): void {
-    if (this.alwaysOpen) return;
-    this.isEditorOpened = false;
     this.isEditingCustomVariable = false;
+    if (this.$attrs.alwaysOpened) return;
+    this.isEditorOpened = false;
   }
 
   selectVariable(value: string): void {
