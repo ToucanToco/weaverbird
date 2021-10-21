@@ -334,13 +334,6 @@ $active-color-dark: #16406a;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  ::v-deep span {
-    display: inline-block;
-    line-height: 0;
-    font-weight: bold;
-    padding: 0 4px;
-    color: #acacac;
-  }
 }
 .widget-date-input__icon {
   padding: 10px 15px;
