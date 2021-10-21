@@ -307,6 +307,7 @@ $active-color-dark: #16406a;
 }
 .widget-date-input__editor-header {
   flex: 0;
+  max-height: 45px;
   .tabs {
     margin-bottom: -1px;
   }
