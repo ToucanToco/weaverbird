@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.69.1] - 2021-10-21
+
+### Fix
+- DateRangeInput: display tabs header correctly
+- DateRangeInput: display date separator correctly and clean unecessary html tag
+- Calendar: use correct post css
+
 ## [0.69.0] - 2021-10-20
 
 ### Added
@@ -1047,6 +1054,7 @@
 
 ## Unreleased
 
+[0.69.1]: https://github.com/ToucanToco/weaverbird/compare/v0.69.0...v0.69.1
 [0.69.0]: https://github.com/ToucanToco/weaverbird/compare/v0.68.0...v0.69.0
 [0.68.0]: https://github.com/ToucanToco/weaverbird/compare/v0.67.1...v0.68.0
 [0.67.1]: https://github.com/ToucanToco/weaverbird/compare/v0.67.0...v0.67.1
