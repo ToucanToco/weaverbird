@@ -2,9 +2,11 @@ import fs from 'fs';
 import path from 'path';
 
 import alias from 'rollup-plugin-alias';
+import autoprefixer from "autoprefixer";
 import commonjs from 'rollup-plugin-commonjs';
-import css from 'rollup-plugin-css-only';
 import json from 'rollup-plugin-json';
+import postcss from 'rollup-plugin-postcss'
+import postcssPresetEnv from 'postcss-preset-env';
 import replace from 'rollup-plugin-replace';
 import resolve from 'rollup-plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript';
@@ -50,7 +52,20 @@ export default {
     }),
     // date-fns comes from v-calendar
     commonjs({ namedExports: { 'node_modules/mathjs/index.js': ['parse'], 'node_modules/date-fns/index.js': ['addDays'] } }),
-    css({ output: 'dist/weaverbird.css' }),
+    // since we are using a v-calendar component directly we need to use postcss and apply the same config
+    postcss({
+      plugins: [
+        postcssPresetEnv({
+          stage: 2,
+          features: {
+            'nesting-rules': true,
+          },
+        }),
+        autoprefixer()
+      ],
+      extract: true,
+      extract: 'weaverbird.css'
+    }),
     replace({ 'process.env.NODE_ENV': JSON.stringify('production') }),
     vue({ css: false }),
     json(),
