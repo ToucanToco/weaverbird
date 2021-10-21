@@ -122,7 +122,7 @@ describe('dateRangeToString', () => {
           end: new Date('2021-10-21T23:59:59.999Z'),
           duration: 'day',
         }),
-      ).toBe('10/20/2021<span> - </span>10/21/2021');
+      ).toBe('10/20/2021 - 10/21/2021');
     });
   });
 });
