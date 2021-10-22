@@ -30,6 +30,12 @@ def after_request(response):
     return response
 
 
+@app.route('/health', methods=['GET'])
+def handle_request():
+    if request.method == 'GET':
+        return 200
+
+
 @app.route('/', methods=['GET', 'POST'])
 def handle_request():
     if request.method == 'GET':
