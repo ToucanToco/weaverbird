@@ -478,27 +478,16 @@ describe('Date range input', () => {
     });
   });
 
-  describe('always open (preview mode)', () => {
+  describe('always opened (preview mode)', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        alwaysOpen: true,
+        alwaysOpened: true,
       });
     });
 
-    it('should show the editor', () => {
-      expect(wrapper.find('popover-stub').props().visible).toBe(true);
-    });
-
-    describe('when selecting a value', () => {
-      beforeEach(async () => {
-        wrapper.find('CustomVariableList-stub').vm.$emit('input', SAMPLE_VARIABLES[1].identifier);
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should still show the editor', () => {
-        expect(wrapper.find('popover-stub').props().visible).toBe(true);
-      });
+    it('should forward the alwaysOpened prop to the popover', () => {
+      expect(wrapper.find('popover-stub').props('alwaysOpened')).toBe(true);
     });
   });
 

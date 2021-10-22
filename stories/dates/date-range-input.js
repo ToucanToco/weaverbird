@@ -290,9 +290,10 @@ stories.add('always open (preview mode)', () => ({
     <div>
       <DateRangeInput
         v-model="value"
-        :enableRelativeDate="false"
-        :alwaysOpen="true"
-        :enabledCalendars="['month', 'quarter', 'year']"
+        :enable-relative-date="true"
+        :enable-custom="true"
+        alwaysOpened="true"
+        :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
       />
       <pre style="margin-top: 500px;">{{ value }}</pre>
     </div>

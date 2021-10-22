@@ -168,7 +168,8 @@ describe('Popover', function() {
       val3 = obj.slotStyle,
       slotStyle = val3 != null ? val3 : {},
       val4 = obj.slotText,
-      slotText = val4 != null ? val4 : '';
+      slotText = val4 != null ? val4 : '',
+      attrs = obj.attrs;
     wrapper = mount(
       {
         components: { Popover },
@@ -183,6 +184,7 @@ describe('Popover', function() {
                 Popover,
                 {
                   props,
+                  attrs,
                   ref: 'popover',
                 },
                 [
@@ -363,6 +365,20 @@ describe('Popover', function() {
       await popoverWrapper.setProps({ forcePositionUpdate: 1 });
 
       expect(updatePositionSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('alwaysOpened', () => {
+    it('should let the content in the flow, and visible prop should have no impact', async () => {
+      createWrapper({ props: { visible: false, alwaysOpened: true } });
+      const setupPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'setupPositioning');
+      const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
+
+      await popoverWrapper.setProps({ visible: true });
+      expect(setupPositioningSpy).not.toHaveBeenCalled();
+
+      await popoverWrapper.destroy();
+      expect(destroyPositioningSpy).not.toHaveBeenCalled();
     });
   });
 });
