@@ -276,7 +276,6 @@ export default class DateRangeInput extends Vue {
 
   closeEditor(): void {
     this.isEditingCustomVariable = false;
-    if (this.$attrs.alwaysOpened) return;
     this.isEditorOpened = false;
   }
 
