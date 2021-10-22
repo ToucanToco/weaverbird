@@ -1,7 +1,7 @@
 <template>
   <span
     class="weaverbird-popover"
-    :class="{ 'weaverbird-popover--always-opened': $attrs.alwaysOpened }"
+    :class="{ 'weaverbird-popover--always-opened': alwaysOpened }"
     data-cy="weaverbird-popover"
     :style="elementStyle"
     @click.stop
@@ -41,6 +41,9 @@ Implement a popover component
   - justify adapts the popover to its parent (same width and horizontal position)
 
 @params {Boolean} [bottom = false] sets the default position to below instead of above
+
+@params {Boolean} [alwaysOpened = false] always displays the popover, and keep its content in the page flow rather than
+in an floating element. Useful to create previews of configurable popovers. Make the prop `visible` effect-less.
 */
 @Component({
   name: 'popover',
@@ -73,7 +76,11 @@ export default class Popover extends Vue {
   })
   forcePositionUpdate!: number;
 
-  // Can take an attribute "alwaysOpened"
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  alwaysOpened!: boolean;
 
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
   @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
@@ -87,7 +94,7 @@ export default class Popover extends Vue {
 
   @Watch('visible')
   async onVisibleChange(visible: boolean) {
-    if (this.$attrs.alwaysOpened) {
+    if (this.alwaysOpened) {
       return;
     }
 
@@ -104,7 +111,7 @@ export default class Popover extends Vue {
   }
 
   async mounted() {
-    if (this.$attrs.alwaysOpened) {
+    if (this.alwaysOpened) {
       // Skip all the repositioning in the DOM
       return;
     }
@@ -145,7 +152,7 @@ export default class Popover extends Vue {
   }
 
   beforeDestroy() {
-    if (this.visible && !this.$attrs.alwaysOpened) {
+    if (this.visible && !this.alwaysOpened) {
       this.destroyPositioning();
     }
   }

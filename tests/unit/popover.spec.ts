@@ -368,9 +368,9 @@ describe('Popover', function() {
     });
   });
 
-  describe('always-opened attribute', () => {
+  describe('alwaysOpened', () => {
     it('should let the content in the flow, and visible prop should have no impact', async () => {
-      createWrapper({ attrs: { alwaysOpened: true }, props: { visible: false } });
+      createWrapper({ props: { visible: false, alwaysOpened: true } });
       const setupPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'setupPositioning');
       const destroyPositioningSpy: any = jest.spyOn(popoverWrapper.vm as any, 'destroyPositioning');
 

@@ -75,11 +75,10 @@ const RELATIVE_SAMPLE_VARIABLES = [
 
 describe('Date range input', () => {
   let wrapper: Wrapper<DateRangeInput>;
-  const createWrapper = (propsData = {}, attrs = {}) => {
+  const createWrapper = (propsData = {}) => {
     wrapper = shallowMount(DateRangeInput, {
       sync: false,
       propsData,
-      attrs,
     });
   };
 
@@ -481,19 +480,14 @@ describe('Date range input', () => {
 
   describe('always opened (preview mode)', () => {
     beforeEach(() => {
-      createWrapper(
-        {
-          availableVariables: SAMPLE_VARIABLES,
-        },
-        {
-          'always-opened': 'true',
-        },
-      );
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        alwaysOpened: true,
+      });
     });
 
-    it('should forward the alwaysOpened attribute to the popover', () => {
-      // vue-test-utils seems to remove dashes in attrs
-      expect(wrapper.find('popover-stub').attributes('alwaysopened')).toBe('true');
+    it('should forward the alwaysOpened prop to the popover', () => {
+      expect(wrapper.find('popover-stub').props('alwaysOpened')).toBe(true);
     });
   });
 
