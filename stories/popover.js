@@ -44,3 +44,19 @@ stories.add('with specific item as container', () => ({
     </div>
   `,
 }));
+
+
+stories.add('always opened', () => ({
+  components: { Popover },
+  data() {
+    return { visible: false};
+  },
+  template: `
+    <div>
+      <button @click="visible = !visible">Toggle popover</button>
+      <Popover alwaysOpened="true" :visible="visible">
+        Some content!
+      </Popover>
+    </div>
+  `,
+}));

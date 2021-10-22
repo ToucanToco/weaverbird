@@ -1,5 +1,11 @@
 <template>
-  <span class="weaverbird-popover" data-cy="weaverbird-popover" :style="elementStyle" @click.stop>
+  <span
+    class="weaverbird-popover"
+    :class="{ 'weaverbird-popover--always-opened': alwaysOpened }"
+    data-cy="weaverbird-popover"
+    :style="elementStyle"
+    @click.stop
+  >
     <slot />
   </span>
 </template>
@@ -35,6 +41,9 @@ Implement a popover component
   - justify adapts the popover to its parent (same width and horizontal position)
 
 @params {Boolean} [bottom = false] sets the default position to below instead of above
+
+@params {Boolean} [alwaysOpened = false] always displays the popover, and keep its content in the page flow rather than
+in an floating element. Useful to create previews of configurable popovers. Make the prop `visible` effect-less.
 */
 @Component({
   name: 'popover',
@@ -67,6 +76,12 @@ export default class Popover extends Vue {
   })
   forcePositionUpdate!: number;
 
+  @Prop({
+    type: Boolean,
+    default: false,
+  })
+  alwaysOpened!: boolean;
+
   // Inject any element as `weaverbirdPopoverContainer` in any parent component
   @Inject({ default: document.body }) weaverbirdPopoverContainer!: Element;
 
@@ -79,6 +94,10 @@ export default class Popover extends Vue {
 
   @Watch('visible')
   async onVisibleChange(visible: boolean) {
+    if (this.alwaysOpened) {
+      return;
+    }
+
     if (!visible) {
       this.destroyPositioning();
     } else {
@@ -92,6 +111,11 @@ export default class Popover extends Vue {
   }
 
   async mounted() {
+    if (this.alwaysOpened) {
+      // Skip all the repositioning in the DOM
+      return;
+    }
+
     // Save original parent before moving into body to use its position
     this.parent = this.$el.parentElement;
     // Remove element from parent: it will be added to body when `setupPosition`
@@ -128,7 +152,7 @@ export default class Popover extends Vue {
   }
 
   beforeDestroy() {
-    if (this.visible) {
+    if (this.visible && !this.alwaysOpened) {
       this.destroyPositioning();
     }
   }
@@ -187,8 +211,15 @@ export default class Popover extends Vue {
 <style lang="scss" scoped>
 .weaverbird-popover {
   font-family: 'Montserrat', sans-serif;
-  position: absolute;
-  visibility: visible;
-  z-index: 2;
+
+  &:not(.weaverbird-popover--always-opened) {
+    position: absolute;
+    visibility: visible;
+    z-index: 2;
+  }
+
+  &.weaverbird-popover--always-opened {
+    display: block;
+  }
 }
 </style>
