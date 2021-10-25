@@ -61,13 +61,11 @@ export default class Tabs extends Vue {
 
 <style lang="scss" scoped>
 @import '../styles/_variables';
-$grey: #eeedf0;
-$grey-dark: #6a6a6a;
 
 .tabs {
   display: flex;
   flex-grow: 1;
-  border-bottom: 1px solid $grey;
+  border-bottom: 1px solid $grey-light;
 }
 
 .tabs__tabs-container {
@@ -104,12 +102,12 @@ $grey-dark: #6a6a6a;
 }
 
 .tabs__tab--disabled {
-  border-bottom-color: $grey;
+  border-bottom-color: $grey-light;
   cursor: not-allowed;
   &,
   &:hover {
     background: unset;
-    color: rgba($grey, 0.9);
+    color: rgba($grey-light, 0.9);
   }
 }
 </style>

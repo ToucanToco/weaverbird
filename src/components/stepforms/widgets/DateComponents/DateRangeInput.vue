@@ -335,11 +335,6 @@ export default class DateRangeInput extends Vue {
 <style scoped lang="scss">
 @import '../../../../styles/variables';
 
-$grey: #808080;
-$grey-light: #d9d9d9;
-$grey-extra-light: #f6f6f6;
-$active-color-dark: #16406a;
-
 .widget-date-input {
   max-width: 400px;
   position: relative;

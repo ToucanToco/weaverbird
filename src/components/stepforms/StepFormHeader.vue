@@ -67,7 +67,7 @@ export default class StepFormHeader extends Vue {
   display: flex;
   align-items: center;
   padding-bottom: 20px;
-  border-bottom: 1px solid $grey;
+  border-bottom: 1px solid $grey-light;
   width: 100%;
 }
 

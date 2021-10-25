@@ -69,11 +69,6 @@ export default class VariableListOption extends Vue {
 
 <style scoped lang="scss">
 @import '../../../../styles/variables';
-$base-color: #19181a;
-$active-color-dark: #16406a;
-$active-color: #2a66a1;
-$active-color-light: #dde6f0;
-$active-color-extra-light: #f8f7fa;
 
 .widget-variable-option {
   display: flex;
@@ -86,7 +81,7 @@ $active-color-extra-light: #f8f7fa;
 }
 
 .widget-variable-option--selected {
-  background: $active-color-light;
+  background: $active-color-faded-2;
   .widget-variable-option__name {
     color: $active-color-dark;
   }
@@ -133,7 +128,7 @@ $active-color-extra-light: #f8f7fa;
   background: white;
   width: 12px;
   height: 12px;
-  border: 1px solid $active-color-light;
+  border: 1px solid $active-color-faded-2;
   border-radius: 1px;
   margin-right: 10px;
 
@@ -169,7 +164,7 @@ $active-color-extra-light: #f8f7fa;
 }
 
 .widget-variable-option:hover {
-  background-color: $active-color-extra-light;
+  background-color: $active-color-faded-3;
   .widget-variable-option__name {
     color: $active-color;
   }
@@ -177,7 +172,7 @@ $active-color-extra-light: #f8f7fa;
     color: #979797;
   }
   .widget-variable-option__toggle {
-    border-color: $active-color-light;
+    border-color: $active-color-faded-2;
   }
 }
 
