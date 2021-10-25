@@ -363,10 +363,10 @@ export default class DateRangeInput extends Vue {
 }
 
 .widget-date-input__container:hover {
-  border-color: $active-color;
+  border-color: var(--weaverbird-theme-main-color);
   .widget-date-input__icon {
-    background-color: $active-color-faded-2;
-    color: $active-color;
+    background-color: var(--weaverbird-theme-main-color-light);
+    color: var(--weaverbird-theme-main-color);
   }
 }
 
@@ -440,15 +440,34 @@ export default class DateRangeInput extends Vue {
   }
 }
 .widget-date-input__editor-button--primary {
-  background: $active-color;
+  background: var(--weaverbird-theme-emphasis-color);
   color: white;
   &:hover {
-    background: $active-color-dark;
+    background: var(--weaverbird-theme-emphasis-color-dark);
   }
 }
 .widget-date-input__editor-button--disabled {
   opacity: 0.5;
   pointer-events: none;
   cursor: not-allowed;
+}
+
+// custom theme as not same behaviour than default component because its full background covered
+.widget-date-input--custom-theme {
+  .widget-date-input__label {
+    color: white;
+  }
+  .widget-date-input__container {
+    &,
+    &:hover {
+      background: var(--weaverbird-theme-emphasis-color);
+      border-color: var(--weaverbird-theme-emphasis-color);
+      .widget-date-input__icon {
+        background: none;
+        color: white;
+        padding-left: 0;
+      }
+    }
+  }
 }
 </style>
