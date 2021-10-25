@@ -108,7 +108,7 @@ import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
 
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
- * each tab value is keeped in memory to avoid user to loose data when switching between tabs
+ * each tab value is kept in memory to avoid user to loose data when switching between tabs
  *
  * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDateRange)
  * This entry is used as a configuration for the date range input
