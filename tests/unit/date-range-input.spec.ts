@@ -73,6 +73,11 @@ const RELATIVE_SAMPLE_VARIABLES = [
   },
 ];
 
+const THEME_CSS_VARIABLES = {
+  '--weaverbird-main-color': '#000',
+  '--weaverbird-secondary-color': '#fff',
+};
+
 describe('Date range input', () => {
   let wrapper: Wrapper<DateRangeInput>;
   const createWrapper = (propsData = {}) => {
@@ -488,6 +493,20 @@ describe('Date range input', () => {
 
     it('should forward the alwaysOpened prop to the popover', () => {
       expect(wrapper.find('popover-stub').props('alwaysOpened')).toBe(true);
+    });
+  });
+
+  describe('with theme css variables', () => {
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        themeCSSVariables: THEME_CSS_VARIABLES,
+      });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should pass custom class to wrapper', () => {
+      expect(wrapper.classes()).toContain('widget-date-input--custom-theme');
     });
   });
 

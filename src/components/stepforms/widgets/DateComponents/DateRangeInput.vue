@@ -1,5 +1,9 @@
 <template>
-  <div class="widget-date-input">
+  <div
+    class="widget-date-input"
+    :style="themeCSSVariables"
+    :class="{ 'widget-date-input--custom-theme': themeCSSVariables != null }"
+  >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
       <div class="widget-date-input__icon">
@@ -12,6 +16,7 @@
       :visible="isEditorOpened"
       :align="alignLeft"
       :forcePositionUpdate="forcePopoverToUpdatePosition"
+      :style="themeCSSVariables"
       bottom
       @closed="closeEditor"
     >
@@ -159,6 +164,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ type: String, required: false })
   locale?: LocaleIdentifier;
+
+  @Prop({ default: undefined })
+  themeCSSVariables!: Record<string, string> | undefined;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
