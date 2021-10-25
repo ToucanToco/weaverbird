@@ -126,10 +126,13 @@ $disabled-color: #bababa;
     font-size: 13px;
     font-family: 'Montserrat', sans-serif;
     color: $base-color;
+    &:focus {
+      background-color: transparent;
+    }
     &:hover {
-      background-color: $active-color-faded-3;
+      background-color: var(--weaverbird-theme-main-color-extra-light);
       font-weight: 500;
-      color: $active-color;
+      color: var(--weaverbird-theme-main-color-dark);
     }
   }
   .vc-day-content.is-disabled {
@@ -143,19 +146,20 @@ $disabled-color: #bababa;
   .calendar-content {
     &,
     &:focus {
-      color: $active-color;
+      color: var(--weaverbird-theme-main-color-dark);
       font-weight: 500;
+      background-color: transparent;
     }
   }
   .calendar-value {
-    background-color: $active-color-faded-2;
+    background-color: var(--weaverbird-theme-main-color-light);
     z-index: 2;
     border-radius: 4px !important;
   }
   // Range
   .calendar-value.vc-highlight-base-middle,
   .calendar-range {
-    background-color: $active-color-faded-3;
+    background-color: var(--weaverbird-theme-main-color-extra-light);
   }
   .vc-highlight.vc-highlight-base-end,
   .vc-highlight.vc-highlight-base-start {
@@ -178,8 +182,8 @@ $disabled-color: #bababa;
     padding: 0 10px;
     border-radius: 2px;
     &:hover {
-      background-color: $active-color-faded-3;
-      color: $active-color;
+      background-color: var(--weaverbird-theme-main-color-extra-light);
+      color: var(--weaverbird-theme-main-color-dark);
       opacity: 1;
     }
   }
@@ -193,7 +197,7 @@ $disabled-color: #bababa;
 ::v-deep .vc-nav-popover-container {
   background: white;
   box-shadow: none;
-  border: 1px solid $active-color-faded-2;
+  border: 1px solid var(--weaverbird-theme-main-color-light);
   .vc-nav-item,
   .vc-nav-title {
     color: $base-color;
@@ -202,15 +206,15 @@ $disabled-color: #bababa;
     border: none;
     border-radius: 2px;
     &.is-active {
-      background-color: $active-color-faded-2;
+      background-color: var(--weaverbird-theme-main-color-light);
       box-shadow: none;
     }
     &.is-current {
       color: $base-color;
     }
     &:hover {
-      background-color: $active-color-faded-3;
-      color: $active-color;
+      background-color: var(--weaverbird-theme-main-color-extra-light);
+      color: var(--weaverbird-theme-main-color-dark);
     }
   }
   .vc-nav-item {
@@ -229,7 +233,7 @@ $disabled-color: #bababa;
     margin: 7px;
   }
   &:hover {
-    background: $active-color-faded-3;
+    background: var(--weaverbird-theme-main-color-extra-light);
   }
 }
 </style>
