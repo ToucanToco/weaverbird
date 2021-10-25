@@ -243,7 +243,7 @@ export default class DateRangeInput extends Vue {
         this.variableDelimiters,
       );
     } else {
-      return 'Select a date';
+      return t('SELECT_PERIOD_PLACEHOLDER', this.locale);
     }
   }
 

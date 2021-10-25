@@ -10,5 +10,9 @@
   "SHORT_WEEK_PREFIX": {
     "en": "W",
     "fr": "W"
+  },
+  "SELECT_PERIOD_PLACEHOLDER": {
+    "en": "Select a period",
+    "fr": "Choisissez une periode"
   }
 }
