@@ -12,6 +12,7 @@
         v-model="currentValue"
         :availableDates="bounds"
         isRange
+        :locale="locale"
       />
       <CustomGranularityCalendar
         v-else-if="calendarGranularity"

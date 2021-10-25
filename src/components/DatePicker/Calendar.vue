@@ -7,6 +7,7 @@
     :drag-attribute="rangeSelectedDatesStyle"
     :is-range="isRange"
     :from-date="defaultDate"
+    :locale="locale"
     timeformat="UTC"
     timezone="UTC"
     @input="onInput"
@@ -19,6 +20,7 @@ import DatePicker from 'v-calendar/src/components/DatePicker.vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { DatePickerHighlight, DateRange } from '@/lib/dates';
+import { LocaleIdentifier } from '@/lib/internationalization';
 
 @Component({
   name: 'calendar',
@@ -38,6 +40,9 @@ export default class Calendar extends Vue {
 
   @Prop({ default: false })
   isRange!: boolean;
+
+  @Prop({ type: String, required: false })
+  locale?: LocaleIdentifier;
 
   defaultDate: '' | Date = '';
 
