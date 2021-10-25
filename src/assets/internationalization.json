@@ -7,6 +7,14 @@
     "en": "Relative",
     "fr": "Relatif"
   },
+  "DAY": {
+    "en": "Day",
+    "fr": "Jour"
+  },
+  "MONTH": {
+    "en": "Month",
+    "fr": "Mois"
+  },
   "QUARTER": {
     "en": "Quarter",
     "fr": "Trimestre"
@@ -14,6 +22,10 @@
   "SHORT_WEEK_PREFIX": {
     "en": "W",
     "fr": "S"
+  },
+  "YEAR": {
+    "en": "Year",
+    "fr": "Année"
   },
   "WEEK": {
     "en": "Week",

@@ -5,6 +5,7 @@
       :tabs="enabledCalendars"
       :selectedTab="selectedTab"
       @tabSelected="selectTab"
+      :format-tab="translateTab"
     />
     <div class="widget-multi-date-input__body">
       <Calendar
@@ -32,7 +33,7 @@ import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDateRange, DateRange } from '@/lib/dates';
-import { LocaleIdentifier } from '@/lib/internationalization';
+import t, { LocaleIdentifier } from '@/lib/internationalization';
 
 @Component({
   name: 'tabbed-range-calendars',
@@ -83,6 +84,10 @@ export default class TabbedRangeCalendars extends Vue {
 
   selectTab(tab: string) {
     this.selectedTab = tab;
+  }
+
+  translateTab(tab: string) {
+    return t(tab.toUpperCase(), this.locale);
   }
 }
 </script>
