@@ -6,5 +6,9 @@
   "Relative": {
     "en": "Relative",
     "fr": "Relatif"
+  },
+  "SHORT_WEEK_PREFIX": {
+    "en": "W",
+    "fr": "W"
   }
 }
