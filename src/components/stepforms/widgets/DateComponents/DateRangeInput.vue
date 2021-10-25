@@ -37,6 +37,7 @@
             class="widget-date-input__editor-header"
             :tabs="tabs"
             :selectedTab="selectedTab"
+            :formatTab="translateTab"
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
@@ -103,6 +104,8 @@ import {
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
+import TRANSLATIONS from './translations.json';
+
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
@@ -153,6 +156,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   alwaysOpened!: false;
+
+  @Prop({ type: String, default: () => 'en' })
+  locale!: string; // TODO use an enumeration for supported locales
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
@@ -302,6 +308,10 @@ export default class DateRangeInput extends Vue {
 
   selectTab(tab: string): void {
     this.selectedTab = tab;
+  }
+
+  translateTab(tab: string): string {
+    return TRANSLATIONS[tab][this.locale] || TRANSLATIONS[tab]['en']; // default to 'en'
   }
 }
 </script>

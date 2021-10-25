@@ -309,4 +309,31 @@ stories.add('always open (preview mode)', () => ({
       actualRangeValue: undefined,
     };
   },
+
+}));
+stories.add('localized (fr)', () => ({
+  template: `
+    <div>
+      <DateRangeInput
+        v-model="value"
+        :enable-relative-date="true"
+        :enable-custom="true"
+        alwaysOpened="true"
+        :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
+        :locale="'fr'"
+      />
+      <pre style="margin-top: 500px;">{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
+      actualRangeValue: undefined,
+    };
+  },
 }));
