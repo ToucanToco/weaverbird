@@ -27,6 +27,10 @@
     "en": "Quarter",
     "fr": "Trimestre"
   },
+  "SELECT_PERIOD_PLACEHOLDER": {
+    "en": "Select a period",
+    "fr": "Choisissez une periode"
+  },
   "SET_DATE": {
     "en": "Set date",
     "fr": "Valider"
@@ -35,16 +39,12 @@
     "en": "W",
     "fr": "S"
   },
-  "YEAR": {
-    "en": "Year",
-    "fr": "Année"
-  },
   "WEEK": {
     "en": "Week",
     "fr": "Semaine"
   },
-  "SELECT_PERIOD_PLACEHOLDER": {
-    "en": "Select a period",
-    "fr": "Choisissez une periode"
+  "YEAR": {
+    "en": "Year",
+    "fr": "Année"
   }
 }
