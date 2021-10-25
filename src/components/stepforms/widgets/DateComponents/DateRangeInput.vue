@@ -21,8 +21,8 @@
           class="widget-date-input__editor-side"
           :availableVariables="accessibleVariables"
           :selectedVariables="selectedVariables"
-          :enableRelativeDate="enableRelativeDate"
           :enableCustom="enableCustom"
+          :customLabel="customLabel"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
@@ -244,6 +244,14 @@ export default class DateRangeInput extends Vue {
       );
     } else {
       return t('SELECT_PERIOD_PLACEHOLDER', this.locale);
+    }
+  }
+
+  get customLabel(): string {
+    if (this.enableRelativeDate) {
+      return this.t('CUSTOM');
+    } else {
+      return this.t('CALENDAR');
     }
   }
 

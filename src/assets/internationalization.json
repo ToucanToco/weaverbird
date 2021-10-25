@@ -1,7 +1,15 @@
 {
+  "CALENDAR": {
+    "en": "Calendar",
+    "fr": "Calendrier"
+  },
   "CANCEL": {
     "en": "Cancel",
     "fr": "Annuler"
+  },
+  "CUSTOM": {
+    "en": "Custom",
+    "fr": "Personnalisé"
   },
   "DAY": {
     "en": "Day",

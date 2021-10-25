@@ -37,16 +37,11 @@ export default class CustomVariableList extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => true })
-  enableRelativeDate!: boolean;
-
   @Prop({ default: true })
   enableCustom!: boolean;
 
-  get customLabel(): string {
-    // use specific "Fixed" label when relative date is not enabled
-    return this.enableRelativeDate ? 'Custom' : 'Calendar';
-  }
+  @Prop({ default: () => 'Custom', type: String })
+  customLabel!: string;
 
   chooseVariable(variableIdentifier: string) {
     this.$emit('input', variableIdentifier);
