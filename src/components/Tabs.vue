@@ -89,14 +89,14 @@ export default class Tabs extends Vue {
 }
 
 .tabs__tab:hover {
-  color: $active-color;
+  color: var(--weaverbird-theme-main-color);
   text-decoration: none;
 }
 
 .tabs__tab--selected {
   text-decoration: none;
-  color: $active-color;
-  border-bottom: 3px solid $active-color;
+  color: var(--weaverbird-theme-main-color);
+  border-bottom: 3px solid var(--weaverbird-theme-main-color);
   margin-bottom: -2px; // To avoid having the border above the border of the container
   padding-bottom: 14px; // To avoid the label "jumping" one pixel up when selected
 }
