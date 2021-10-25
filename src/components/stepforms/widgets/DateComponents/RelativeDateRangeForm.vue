@@ -113,13 +113,13 @@ export default class RelativeDateRangeForm extends Vue {
   }
 
   ::v-deep .multiselect__option--highlight {
-    background: $active-color-faded-3;
-    color: $active-color;
+    background: var(--weaverbird-theme-main-color-extra-light);
+    color: var(--weaverbird-theme-main-color);
   }
 
   ::v-deep .multiselect__option--selected {
-    background: $active-color-faded-2;
-    color: $active-color;
+    background: var(--weaverbird-theme-main-color-light);
+    color: var(--weaverbird-theme-main-color);
   }
 }
 </style>
