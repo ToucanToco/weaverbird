@@ -60,7 +60,7 @@
               class="widget-date-input__editor-button"
               ref="cancel"
               @click="closeEditor"
-              v-text="'Cancel'"
+              v-text="t('CANCEL')"
             />
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
@@ -68,7 +68,7 @@
               ref="save"
               :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
-              v-text="'Set date'"
+              v-text="t('SET_DATE')"
             />
           </div>
         </div>
@@ -308,6 +308,10 @@ export default class DateRangeInput extends Vue {
 
   selectTab(tab: string): void {
     this.selectedTab = tab;
+  }
+
+  t(key: string): string {
+    return t(key, this.locale);
   }
 }
 </script>

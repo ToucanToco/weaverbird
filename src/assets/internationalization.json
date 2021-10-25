@@ -1,4 +1,8 @@
 {
+  "CANCEL": {
+    "en": "Cancel",
+    "fr": "Annuler"
+  },
   "DAY": {
     "en": "Day",
     "fr": "Jour"
@@ -14,6 +18,10 @@
   "QUARTER": {
     "en": "Quarter",
     "fr": "Trimestre"
+  },
+  "SET_DATE": {
+    "en": "Set date",
+    "fr": "Valider"
   },
   "SHORT_WEEK_PREFIX": {
     "en": "W",
