@@ -2,7 +2,7 @@ import I18N_KEYS from '@/assets/internationalization.json';
 
 export type LocaleIdentifier = 'en' | 'fr';
 
-const DEFAULT_LOCALE: LocaleIdentifier = 'en';
+export const DEFAULT_LOCALE: LocaleIdentifier = 'en';
 
 // Types cannot be annotated in JSON
 const I18N_KEYS_TYPED = I18N_KEYS as {

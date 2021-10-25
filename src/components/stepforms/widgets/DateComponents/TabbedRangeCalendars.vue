@@ -18,6 +18,7 @@
         v-model="currentValue"
         :granularity="calendarGranularity"
         :bounds="bounds"
+        :locale="locale"
       />
     </div>
   </div>
@@ -30,6 +31,7 @@ import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDateRange, DateRange } from '@/lib/dates';
+import { LocaleIdentifier } from '@/lib/internationalization';
 
 @Component({
   name: 'tabbed-range-calendars',
@@ -48,6 +50,9 @@ export default class TabbedRangeCalendars extends Vue {
 
   @Prop({ default: () => ['year', 'quarter', 'month', 'week', 'day'] })
   enabledCalendars!: string[];
+
+  @Prop({ type: String, required: false })
+  locale?: LocaleIdentifier;
 
   selectedTab = this.enabledCalendars[0];
 

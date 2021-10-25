@@ -52,6 +52,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
 import { DateRange } from '@/lib/dates';
+import { LocaleIdentifier } from '@/lib/internationalization';
 
 import { AvailableDuration, GranularityConfig, RANGE_PICKERS } from './GranularityConfigs';
 
@@ -79,6 +80,9 @@ export default class CustomGranularityCalendar extends Vue {
   @Prop({ default: () => [] })
   bounds!: DateRange;
 
+  @Prop({ type: String, required: false })
+  locale?: LocaleIdentifier;
+
   currentNavRangeStart: DateTime = DateTime.now();
 
   get pickerConfig(): GranularityConfig {
@@ -86,7 +90,7 @@ export default class CustomGranularityCalendar extends Vue {
   }
 
   get currentNavRangeLabel(): string {
-    return this.pickerConfig.navRange.label(this.currentNavRangeStart);
+    return this.pickerConfig.navRange.label(this.currentNavRangeStart, this.locale);
   }
 
   get currentNavRangeRangeStarts(): DateTime[] {
@@ -109,8 +113,8 @@ export default class CustomGranularityCalendar extends Vue {
   get selectableOptions(): SelectableOption[] {
     return this.currentNavRangeRangeStarts.map(date => {
       const range = this.retrieveRangeFromOption(date);
-      const description = this.pickerConfig.selectableRanges.description(range);
-      const label = this.pickerConfig.selectableRanges.label(date);
+      const description = this.pickerConfig.selectableRanges.description(range, this.locale);
+      const label = this.pickerConfig.selectableRanges.label(date, this.locale);
       const selected = this.selectedRangeStart?.equals(date) ?? false;
       const disabled = this.isOptionDisabled(date);
       return { label, range, description, selected, disabled };

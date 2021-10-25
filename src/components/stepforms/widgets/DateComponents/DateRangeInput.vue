@@ -46,6 +46,7 @@
                 v-model="currentTabValue"
                 :enabledCalendars="enabledCalendars"
                 :bounds="boundsAsDateRange"
+                :locale="locale"
               />
             </div>
             <RelativeDateRangeForm

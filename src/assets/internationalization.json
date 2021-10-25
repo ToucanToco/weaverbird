@@ -7,9 +7,17 @@
     "en": "Relative",
     "fr": "Relatif"
   },
+  "QUARTER": {
+    "en": "Quarter",
+    "fr": "Trimestre"
+  },
   "SHORT_WEEK_PREFIX": {
     "en": "W",
-    "fr": "W"
+    "fr": "S"
+  },
+  "WEEK": {
+    "en": "Week",
+    "fr": "Semaine"
   },
   "SELECT_PERIOD_PLACEHOLDER": {
     "en": "Select a period",
