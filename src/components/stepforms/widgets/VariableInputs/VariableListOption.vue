@@ -81,16 +81,16 @@ export default class VariableListOption extends Vue {
 }
 
 .widget-variable-option--selected {
-  background: $active-color-faded-2;
+  background: var(--weaverbird-theme-main-color-light);
   .widget-variable-option__name {
-    color: $active-color-dark;
+    color: var(--weaverbird-theme-main-color-dark);
   }
   .widget-variable-option__value {
-    color: $active-color;
+    color: var(--weaverbird-theme-main-color);
   }
   .widget-variable-option__toggle {
-    background: $active-color;
-    border-color: $active-color;
+    background: var(--weaverbird-theme-main-color);
+    border-color: var(--weaverbird-theme-main-color);
     &::before,
     &::after {
       background: white;
@@ -128,14 +128,14 @@ export default class VariableListOption extends Vue {
   background: white;
   width: 12px;
   height: 12px;
-  border: 1px solid $active-color-faded-2;
+  border: 1px solid var(--weaverbird-theme-main-color-light);
   border-radius: 1px;
   margin-right: 10px;
 
   &:active,
   &:focus,
   &:hover {
-    border-color: $active-color;
+    border-color: var(--weaverbird-theme-main-color);
   }
 
   &::before,
@@ -143,7 +143,7 @@ export default class VariableListOption extends Vue {
     content: '';
     order: -1;
     display: block;
-    background: $active-color;
+    background: var(--weaverbird-theme-main-color);
     height: 2px;
     top: 4px;
     position: absolute;
@@ -164,21 +164,21 @@ export default class VariableListOption extends Vue {
 }
 
 .widget-variable-option:hover {
-  background-color: $active-color-faded-3;
+  background-color: var(--weaverbird-theme-main-color-extra-light);
   .widget-variable-option__name {
-    color: $active-color;
+    color: var(--weaverbird-theme-main-color);
   }
   .widget-variable-option__value {
     color: #979797;
   }
   .widget-variable-option__toggle {
-    border-color: $active-color-faded-2;
+    border-color: var(--weaverbird-theme-main-color-light);
   }
 }
 
 .widget-variable-option--selected:hover {
   .widget-variable-option-toggle {
-    background: $active-color;
+    background: var(--weaverbird-theme-main-color);
   }
 }
 </style>
