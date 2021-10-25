@@ -37,7 +37,6 @@
             class="widget-date-input__editor-header"
             :tabs="tabs"
             :selectedTab="selectedTab"
-            :formatTab="translateTab"
             @tabSelected="selectTab"
           />
           <div class="widget-date-input__editor-body">
@@ -95,7 +94,6 @@ import {
   isRelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
-import t from '@/lib/internationalization';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -309,10 +307,6 @@ export default class DateRangeInput extends Vue {
 
   selectTab(tab: string): void {
     this.selectedTab = tab;
-  }
-
-  translateTab(tab: string): string {
-    return t(tab, this.locale);
   }
 }
 </script>
