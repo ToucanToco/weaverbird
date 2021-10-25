@@ -94,6 +94,7 @@ import {
   isRelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
+import t from '@/lib/internationalization';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -234,7 +235,7 @@ export default class DateRangeInput extends Vue {
     if (this.variable) {
       return this.variable.label;
     } else if (isDateRange(this.value)) {
-      return dateRangeToString(this.value);
+      return dateRangeToString(this.value, this.locale);
     } else if (isRelativeDateRange(this.value)) {
       return relativeDateRangeToString(
         this.value,

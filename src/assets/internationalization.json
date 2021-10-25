@@ -3,6 +3,10 @@
     "en": "Day",
     "fr": "Jour"
   },
+  "INVALID_DATE": {
+    "en": "Invalid Date",
+    "fr": "Date invalide"
+  },
   "MONTH": {
     "en": "Month",
     "fr": "Mois"
