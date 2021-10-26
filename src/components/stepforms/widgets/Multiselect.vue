@@ -272,6 +272,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
 .multiselect__tags .multiselect__tag {
   background: $active-color;
+  color: white;
 }
 
 .multiselect__tags .multiselect__tag-icon {
