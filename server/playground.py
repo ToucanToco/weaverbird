@@ -1,9 +1,14 @@
 """
-A very simple webserver to test and develop weaverbird python module.
+A very simple webserver to test and develop weaverbird.
 
-The is only one route: `/`
-GET: returns the available domains
-POST: execute the pipeline in the body of the request and returns the transformed data
+Routes:
+- `/`: serves the playground static files
+- `/pandas`: pandas backend
+    - GET: returns the available domains
+    - POST: execute the pipeline in the body of the request and returns the transformed data
+- `/mongo`: not implemented yet
+- `/snowflake`: not implemented yet
+- `/health`: simple health check
 
 Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
 """
@@ -11,7 +16,7 @@ from glob import glob
 from os.path import basename, splitext
 
 import pandas as pd
-from flask import Flask, Response, jsonify, request
+from flask import Flask, Response, jsonify, request, send_from_directory
 
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
@@ -21,23 +26,13 @@ from weaverbird.pipeline import Pipeline
 app = Flask(__name__)
 
 
-# CORS
-@app.after_request
-def after_request(response):
-    response.headers.add('Access-Control-Allow-Origin', '*')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE')
-    return response
-
-
 @app.route('/health', methods=['GET'])
-def handle_request():
-    if request.method == 'GET':
-        return 200
+def handle_health_request():
+    return 200
 
 
-@app.route('/', methods=['GET', 'POST'])
-def handle_request():
+@app.route('/pandas', methods=['GET', 'POST'])
+def handle_pandas_backend_request():
     if request.method == 'GET':
         return jsonify(get_available_domains())
     elif request.method == 'POST':
@@ -50,7 +45,14 @@ def handle_request():
             return jsonify(errmsg), 400
 
 
-# Load all csv in playground's datastore
+@app.route('/', methods=['GET'])
+@app.route('/<path:filename>', methods=['GET'])
+def handle_static_files_request(filename = None):
+    filename = filename or 'index.html'
+    return send_from_directory('static', filename)
+
+
+# Load all csv in playground's pandas datastore
 csv_files = glob('../playground/datastore/*.csv')
 DOMAINS = {splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files}
 

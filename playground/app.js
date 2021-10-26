@@ -13,7 +13,7 @@ const {
   exampleInterpolateFunc,
 } = vqb;
 
-const args = new URLSearchParams(location.search)
+const args = new URLSearchParams(location.search);
 
 const TRANSLATOR = args.get('backend') || 'mongo42';
 
@@ -184,12 +184,9 @@ class MongoService {
 
 const mongoService = new MongoService();
 
-const pandasBackendBaseUrl = location.origin + '/pandas-backend/';
 class PandasService {
-
-
   async listCollections() {
-    const response = await fetch(pandasBackendBaseUrl);
+    const response = await fetch('/pandas');
     return response.json();
   }
 
@@ -199,7 +196,7 @@ class PandasService {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(dereferencedPipeline);
 
-    const url = new URL(pandasBackendBaseUrl);
+    const url = new URL(window.location.origin + '/pandas');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
