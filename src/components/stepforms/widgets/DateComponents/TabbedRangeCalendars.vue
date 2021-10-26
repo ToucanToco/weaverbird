@@ -5,6 +5,7 @@
       :tabs="enabledCalendars"
       :selectedTab="selectedTab"
       @tabSelected="selectTab"
+      :format-tab="translateTab"
     />
     <div class="widget-multi-date-input__body">
       <Calendar
@@ -12,12 +13,14 @@
         v-model="currentValue"
         :availableDates="bounds"
         isRange
+        :locale="locale"
       />
       <CustomGranularityCalendar
         v-else-if="calendarGranularity"
         v-model="currentValue"
         :granularity="calendarGranularity"
         :bounds="bounds"
+        :locale="locale"
       />
     </div>
   </div>
@@ -30,6 +33,7 @@ import Calendar from '@/components/DatePicker/Calendar.vue';
 import CustomGranularityCalendar from '@/components/DatePicker/CustomGranularityCalendar.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDateRange, DateRange } from '@/lib/dates';
+import t, { LocaleIdentifier } from '@/lib/internationalization';
 
 @Component({
   name: 'tabbed-range-calendars',
@@ -48,6 +52,9 @@ export default class TabbedRangeCalendars extends Vue {
 
   @Prop({ default: () => ['year', 'quarter', 'month', 'week', 'day'] })
   enabledCalendars!: string[];
+
+  @Prop({ type: String, required: false })
+  locale?: LocaleIdentifier;
 
   selectedTab = this.enabledCalendars[0];
 
@@ -77,6 +84,10 @@ export default class TabbedRangeCalendars extends Vue {
 
   selectTab(tab: string) {
     this.selectedTab = tab;
+  }
+
+  translateTab(tab: string) {
+    return t(tab.toUpperCase(), this.locale);
   }
 }
 </script>

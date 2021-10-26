@@ -21,8 +21,8 @@
           class="widget-date-input__editor-side"
           :availableVariables="accessibleVariables"
           :selectedVariables="selectedVariables"
-          :enableRelativeDate="enableRelativeDate"
           :enableCustom="enableCustom"
+          :customLabel="customLabel"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />
@@ -45,6 +45,7 @@
                 v-model="currentTabValue"
                 :enabledCalendars="enabledCalendars"
                 :bounds="boundsAsDateRange"
+                :locale="locale"
               />
             </div>
             <RelativeDateRangeForm
@@ -59,7 +60,7 @@
               class="widget-date-input__editor-button"
               ref="cancel"
               @click="closeEditor"
-              v-text="'Cancel'"
+              v-text="t('CANCEL')"
             />
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
@@ -67,7 +68,7 @@
               ref="save"
               :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
-              v-text="'Set date'"
+              v-text="t('SET_DATE')"
             />
           </div>
         </div>
@@ -93,6 +94,7 @@ import {
   isRelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
+import t from '@/lib/internationalization';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -103,9 +105,10 @@ import {
 import CustomVariableList from './CustomVariableList.vue';
 import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
+
 /**
  * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
- * each tab value is keeped in memory to avoid user to loose data when switching between tabs
+ * each tab value is kept in memory to avoid user to loose data when switching between tabs
  *
  * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDateRange)
  * This entry is used as a configuration for the date range input
@@ -153,6 +156,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ type: Boolean, default: false })
   alwaysOpened!: false;
+
+  @Prop({ type: String, required: false })
+  locale?: LocaleIdentifier;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
@@ -229,7 +235,7 @@ export default class DateRangeInput extends Vue {
     if (this.variable) {
       return this.variable.label;
     } else if (isDateRange(this.value)) {
-      return dateRangeToString(this.value);
+      return dateRangeToString(this.value, this.locale);
     } else if (isRelativeDateRange(this.value)) {
       return relativeDateRangeToString(
         this.value,
@@ -237,7 +243,15 @@ export default class DateRangeInput extends Vue {
         this.variableDelimiters,
       );
     } else {
-      return 'Select a date';
+      return t('SELECT_PERIOD_PLACEHOLDER', this.locale);
+    }
+  }
+
+  get customLabel(): string {
+    if (this.enableRelativeDate) {
+      return this.t('CUSTOM');
+    } else {
+      return this.t('CALENDAR');
     }
   }
 
@@ -302,6 +316,10 @@ export default class DateRangeInput extends Vue {
 
   selectTab(tab: string): void {
     this.selectedTab = tab;
+  }
+
+  t(key: string): string {
+    return t(key, this.locale);
   }
 }
 </script>

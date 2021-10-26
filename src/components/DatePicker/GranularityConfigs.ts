@@ -1,18 +1,19 @@
 import { DateTime } from 'luxon';
 
 import { DateRange } from '@/lib/dates';
+import t, { DEFAULT_LOCALE, LocaleIdentifier } from '@/lib/internationalization';
 
 // Types
 
 export type GranularityConfig = {
   navRange: {
-    label: (dt: DateTime) => string;
+    label: (dt: DateTime, locale?: LocaleIdentifier) => string;
     prev: (dt: DateTime) => DateTime;
     next: (dt: DateTime) => DateTime;
   };
   selectableRanges: {
-    label: (dt: DateTime) => string;
-    description: (range: Required<DateRange>) => string;
+    label: (dt: DateTime, locale?: LocaleIdentifier) => string;
+    description: (range: Required<DateRange>, locale?: LocaleIdentifier) => string;
     currentOptions: (currentNavRangeStart: DateTime) => DateTime[];
     optionToRange: (selectedOption: DateTime) => Required<DateRange>;
     rangeToOption: (selectedRangeStart: Date) => DateTime;
@@ -24,9 +25,10 @@ export type AvailableDuration = 'year' | 'quarter' | 'month' | 'week';
 // Navigations
 
 export const WEEK_NAV = {
-  label: (dt: DateTime): string => {
+  label: (dt: DateTime, locale?: LocaleIdentifier): string => {
     const weekEnd = dt.plus({ weeks: 7 });
-    return `W${dt.weekNumber} - W${weekEnd.weekNumber} ${weekEnd.weekYear}`;
+    const weekShortPrefix: string = t('SHORT_WEEK_PREFIX', locale);
+    return `${weekShortPrefix}${dt.weekNumber} - ${weekShortPrefix}${weekEnd.weekNumber} ${weekEnd.weekYear}`;
   },
   prev: (dt: DateTime): DateTime => dt.minus({ weeks: 8 }),
   next: (dt: DateTime): DateTime => dt.plus({ weeks: 8 }),
@@ -69,7 +71,8 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   week: {
     navRange: WEEK_NAV,
     selectableRanges: {
-      label: (dt: DateTime): string => `Week ${dt.weekNumber}`,
+      label: (dt: DateTime, locale?: LocaleIdentifier): string =>
+        `${t('WEEK', locale)} ${dt.weekNumber}`,
       description: (range: Required<DateRange>): string => {
         return `${UTC_DATE_TO_LOCALE_STRING(range.start)} - ${UTC_DATE_TO_LOCALE_STRING(
           range.end,
@@ -99,7 +102,8 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   month: {
     navRange: YEAR_NAV,
     selectableRanges: {
-      label: (dt: DateTime): string => dt.monthLong,
+      label: (dt: DateTime, locale?: LocaleIdentifier): string =>
+        dt.setLocale(locale || DEFAULT_LOCALE).monthLong,
       description: (): string => '',
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
         const navYear = currentNavRangeStart.year;
@@ -124,7 +128,8 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
   quarter: {
     navRange: YEAR_NAV,
     selectableRanges: {
-      label: (dt: DateTime): string => `Quarter ${dt.quarter}`,
+      label: (dt: DateTime, locale?: LocaleIdentifier): string =>
+        `${t('QUARTER', locale)} ${dt.quarter}`,
       description: (): string => '',
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
         return Array.from({ length: 4 }, (_v, i) => {

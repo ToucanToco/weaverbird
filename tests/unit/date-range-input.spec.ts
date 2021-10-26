@@ -101,7 +101,7 @@ describe('Date range input', () => {
     });
 
     it('should display placeholder input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a date');
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a period');
     });
 
     it('should have a popover for editor', () => {
@@ -402,8 +402,8 @@ describe('Date range input', () => {
     it('should always use "Fixed" as selected tab', () => {
       expect(wrapper.find('TabbedRangeCalendars-stub').exists()).toBe(true);
     });
-    it('should pass down disabled relative date props to custom variable list', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().enableRelativeDate).toBe(false);
+    it('should use the "calendar" label in the list', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().customLabel).toBe('Calendar');
     });
   });
 
@@ -418,8 +418,8 @@ describe('Date range input', () => {
     it('should not display Custom editor', () => {
       expect(wrapper.find({ ref: 'custom-editor' }).exists()).toBe(false);
     });
-    it('should pass down disabled custom selection props to custom variable list', () => {
-      expect(wrapper.find('CustomVariableList-stub').props().enableCustom).toBe(false);
+    it('should use the "custom" label in the list', () => {
+      expect(wrapper.find('CustomVariableList-stub').props().customLabel).toBe('Custom');
     });
   });
 
@@ -516,7 +516,7 @@ describe('Date range input', () => {
       expect((wrapper.vm as any).bounds).toStrictEqual({ start: undefined, end: undefined });
     });
     it('should display placeholder input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a date');
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a period');
     });
   });
 });

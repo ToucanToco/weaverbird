@@ -92,14 +92,14 @@ describe('Custom variable list', () => {
   });
 });
 
-describe('Custom variable list - with disabled relative date', () => {
+describe('Custom variable list - with custom label', () => {
   let wrapper: Wrapper<CustomVariableList>;
   beforeEach(() => {
     wrapper = shallowMount(CustomVariableList, {
       sync: false,
       propsData: {
         availableVariables: AVAILABLE_VARIABLES,
-        enableRelativeDate: false,
+        customLabel: 'Calendar',
       },
     });
   });
@@ -145,8 +145,5 @@ describe('Custom variable list - empty', () => {
   });
   it('should set availableVariables to empty array', () => {
     expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
-  });
-  it('should set enableRelativeDate to true', () => {
-    expect((wrapper.vm as any).enableRelativeDate).toBe(true);
   });
 });

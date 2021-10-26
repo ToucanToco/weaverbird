@@ -2,6 +2,8 @@ import _has from 'lodash/has';
 import _pick from 'lodash/pick';
 import { DateTime } from 'luxon';
 
+import t, { DEFAULT_LOCALE, LocaleIdentifier } from '@/lib/internationalization';
+
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from './variables';
 
 export type DateRange = { start?: Date; end?: Date; duration?: Duration };
@@ -46,8 +48,8 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
 
 export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR = ' - ';
 
-export const dateToString = (date: Date): string => {
-  return date.toLocaleDateString(undefined, { timeZone: 'UTC' });
+export const dateToString = (date: Date, locale?: LocaleIdentifier): string => {
+  return date.toLocaleDateString(locale, { timeZone: 'UTC' });
 };
 
 /**
@@ -56,29 +58,37 @@ export const dateToString = (date: Date): string => {
  * DateRange will have a label corresponding to their duration,
  * or a generic one (of the form start - end) if they have no duration.
  * @param dateRange
+ *
+ * @param locale - optional
  */
-export const dateRangeToString = (dateRange: DateRange): string => {
+export const dateRangeToString = (dateRange: DateRange, locale?: LocaleIdentifier): string => {
   if (!dateRange.start || !dateRange.end || !dateRange.duration) {
-    const startDate = dateRange.start ? dateToString(dateRange.start) : 'Invalid Date';
-    const endDate = dateRange.end ? dateToString(dateRange.end) : 'Invalid Date';
+    const startDate = dateRange.start
+      ? dateToString(dateRange.start, locale)
+      : t('INVALID_DATE', locale);
+    const endDate = dateRange.end ? dateToString(dateRange.end, locale) : t('INVALID_DATE', locale);
     return `${startDate}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${endDate}`;
   }
 
-  const dt = DateTime.fromJSDate(dateRange.start, { zone: 'UTC' });
-  const endDt = DateTime.fromJSDate(dateRange.end, { zone: 'UTC' });
+  const dt = DateTime.fromJSDate(dateRange.start, { zone: 'UTC' }).setLocale(
+    locale || DEFAULT_LOCALE,
+  );
+  const endDt = DateTime.fromJSDate(dateRange.end, { zone: 'UTC' }).setLocale(
+    locale || DEFAULT_LOCALE,
+  );
   switch (dateRange.duration) {
     case 'year':
       // E.g. "2021"
       return String(dt.year);
     case 'quarter':
       // E.g. "Quarter 4 2021"
-      return `Quarter ${dt.quarter} ${dt.year}`;
+      return `${t('QUARTER', locale)} ${dt.quarter} ${dt.year}`;
     case 'month':
       // E.g. "October 2021"
       return `${dt.monthLong} ${dt.year}`;
     case 'week':
       // E.g. "Week 42 2021"
-      return `Week ${dt.weekNumber} ${dt.weekYear}`; // Note: weekYear != year for weeks overlapping two years
+      return `${t('WEEK', locale)} ${dt.weekNumber} ${dt.weekYear}`; // Note: weekYear != year for weeks overlapping two years
     case 'day':
       if (dt.hasSame(endDt, 'day')) {
         // Same day
