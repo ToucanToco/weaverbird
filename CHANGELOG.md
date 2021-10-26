@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.69.2] - 2021-10-26
+
+## Fix
+- Multiselect: restore display of text in variables tags
+
 ## [0.69.1] - 2021-10-21
 
 ### Fix
@@ -1054,6 +1059,7 @@
 
 ## Unreleased
 
+[0.69.2]: https://github.com/ToucanToco/weaverbird/compare/v0.69.1...v0.69.2
 [0.69.1]: https://github.com/ToucanToco/weaverbird/compare/v0.69.0...v0.69.1
 [0.69.0]: https://github.com/ToucanToco/weaverbird/compare/v0.68.0...v0.69.0
 [0.68.0]: https://github.com/ToucanToco/weaverbird/compare/v0.67.1...v0.68.0
