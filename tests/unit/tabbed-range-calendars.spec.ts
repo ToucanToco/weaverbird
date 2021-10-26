@@ -38,6 +38,13 @@ describe('TabbedRangeCalendars', () => {
     ]);
   });
 
+  it('should provide a methode to translate tabs', async () => {
+    await wrapper.setProps({
+      locale: 'fr',
+    });
+    expect(wrapper.find('Tabs-stub').props('formatTab')('day')).toBe('Jour');
+  });
+
   it('should select the first tab by default', () => {
     expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('year');
   });
