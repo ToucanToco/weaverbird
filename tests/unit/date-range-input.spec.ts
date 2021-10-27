@@ -491,6 +491,20 @@ describe('Date range input', () => {
     });
   });
 
+  describe('with colored background', () => {
+    beforeEach(async () => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        coloredBackground: true,
+      });
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should pass custom class to wrapper', () => {
+      expect(wrapper.classes()).toContain('widget-date-input--colored-background');
+    });
+  });
+
   describe('empty', () => {
     beforeEach(() => {
       createWrapper();

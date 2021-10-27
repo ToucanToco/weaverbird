@@ -57,9 +57,7 @@ export default class RelativeDateForm extends Vue {
 </script>
 
 <style scoped lang="scss">
-$active-color: #16406a;
-$active-color-light: #dde6f0;
-$active-color-extra-light: #f8f7fa;
+@import '../../../../styles/variables';
 
 .widget-relative-date-form {
   display: flex;
@@ -69,7 +67,7 @@ $active-color-extra-light: #f8f7fa;
 .widget-relative-date-form__quantity {
   flex: 1 25%;
   margin: 0 !important;
-  background: $active-color-extra-light;
+  background: white;
 
   ::v-deep .widget-input-number__container {
     margin: 0;
@@ -82,7 +80,7 @@ $active-color-extra-light: #f8f7fa;
 .widget-relative-date-form__duration {
   flex: 1 75%;
   margin: 0 0 0 15px;
-  background: $active-color-extra-light;
+  background: white;
 
   ::v-deep .multiselect__tags {
     padding: 8px 12px;
@@ -99,13 +97,13 @@ $active-color-extra-light: #f8f7fa;
   }
 
   ::v-deep .multiselect__option--highlight {
-    background: $active-color-extra-light;
-    color: $active-color;
+    background: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
 
   ::v-deep .multiselect__option--selected {
-    background: $active-color-light;
-    color: $active-color;
+    background: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
 }
 </style>

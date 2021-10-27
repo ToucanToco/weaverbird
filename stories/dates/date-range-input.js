@@ -1,7 +1,11 @@
 import { DateRangeInput } from '../../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
+import { withKnobs, boolean } from '@storybook/addon-knobs';
+
 const stories = storiesOf('Dates/DateRangeInput', module);
+
+stories.addDecorator(withKnobs);
 
 const SAMPLE_VARIABLES = [
   {
@@ -75,7 +79,7 @@ stories.add('simple', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
       actualRangeValue: undefined,
@@ -105,7 +109,7 @@ stories.add('already selected variable', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: '{{dates.all_time}}',
     };
@@ -134,7 +138,7 @@ stories.add('custom (fixed date range)', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { start: new Date(1), end: new Date(100000000) },
     };
@@ -163,7 +167,7 @@ stories.add('custom (relative date range)', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { date: '{{today}}', quantity: -1, duration: 'month' },
     };
@@ -194,7 +198,7 @@ stories.add('without relative date enabled', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
     };
@@ -224,7 +228,7 @@ stories.add('disable custom selection', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
       actualRangeValue: undefined,
@@ -256,7 +260,7 @@ stories.add('custom (with bounds)', () => ({
   data() {
     return {
       availableVariables: SAMPLE_VARIABLES,
-      variableDelimiters: { start: '{{', end: '}}'},
+      variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { start: new Date('2021/1/1'), end: new Date('2021/1/5') },
       bounds: { start: new Date('2021/1/2'), end: new Date('2021/10/4') },
@@ -334,6 +338,47 @@ stories.add('localized (fr)', () => ({
     return {
       value: undefined,
       actualRangeValue: undefined,
+    };
+  },
+}));
+
+stories.add('custom css variables', () => ({
+  props: {
+    coloredBackground: {
+      default: boolean('Colored background', true),
+    },
+  },
+  template: `
+    <div>
+      <DateRangeInput
+        v-model="value"
+        :enable-relative-date="true"
+        :enable-custom="true"
+        :alwaysOpened="true"
+        :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
+        :themeCSSVariables="themeCSSVariables"
+        :coloredBackground="coloredBackground"
+      />
+      <pre style="margin-top: 500px;">{{ value }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
+      actualRangeValue: undefined,
+      themeCSSVariables: {
+        '--weaverbird-theme-main-color-dark': '#000000',
+        '--weaverbird-theme-main-color': '#61968A',
+        '--weaverbird-theme-main-color-light': '#E4EFEC',
+        '--weaverbird-theme-main-color-extra-light': '#F8F7FA',
+        '--weaverbird-theme-emphasis-color': '#000',
+        '--weaverbird-theme-emphasis-color-dark': '#000',
+      },
     };
   },
 }));

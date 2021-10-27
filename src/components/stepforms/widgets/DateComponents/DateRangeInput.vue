@@ -1,5 +1,9 @@
 <template>
-  <div class="widget-date-input">
+  <div
+    class="widget-date-input"
+    :style="themeCSSVariables"
+    :class="{ 'widget-date-input--colored-background': coloredBackground }"
+  >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
       <div class="widget-date-input__icon">
@@ -12,6 +16,7 @@
       :visible="isEditorOpened"
       :align="alignLeft"
       :forcePositionUpdate="forcePopoverToUpdatePosition"
+      :style="themeCSSVariables"
       bottom
       @closed="closeEditor"
     >
@@ -159,6 +164,12 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ type: String, required: false })
   locale?: LocaleIdentifier;
+
+  @Prop({ default: undefined })
+  themeCSSVariables!: Record<string, string> | undefined;
+
+  @Prop({ default: false })
+  coloredBackground!: boolean;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
@@ -327,11 +338,6 @@ export default class DateRangeInput extends Vue {
 <style scoped lang="scss">
 @import '../../../../styles/variables';
 
-$grey: #808080;
-$grey-light: #d9d9d9;
-$grey-extra-light: #f6f6f6;
-$active-color-dark: #16406a;
-
 .widget-date-input {
   max-width: 400px;
   position: relative;
@@ -360,10 +366,10 @@ $active-color-dark: #16406a;
 }
 
 .widget-date-input__container:hover {
-  border-color: $active-color;
+  border-color: var(--weaverbird-theme-main-color, $active-color);
   .widget-date-input__icon {
-    background-color: $active-color-faded-2;
-    color: $active-color;
+    background-color: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
 }
 
@@ -437,15 +443,33 @@ $active-color-dark: #16406a;
   }
 }
 .widget-date-input__editor-button--primary {
-  background: $active-color;
+  background: var(--weaverbird-theme-emphasis-color, $active-color);
   color: white;
   &:hover {
-    background: $active-color-dark;
+    background: var(--weaverbird-theme-emphasis-color-dark, $active-color);
   }
 }
 .widget-date-input__editor-button--disabled {
   opacity: 0.5;
   pointer-events: none;
   cursor: not-allowed;
+}
+
+.widget-date-input--colored-background {
+  .widget-date-input__label {
+    color: white;
+  }
+  .widget-date-input__container {
+    &,
+    &:hover {
+      background: var(--weaverbird-theme-emphasis-color, $active-color);
+      border-color: var(--weaverbird-theme-emphasis-color, $active-color);
+      .widget-date-input__icon {
+        background: none;
+        color: white;
+        padding-left: 0;
+      }
+    }
+  }
 }
 </style>

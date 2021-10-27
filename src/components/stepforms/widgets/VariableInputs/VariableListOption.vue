@@ -69,11 +69,6 @@ export default class VariableListOption extends Vue {
 
 <style scoped lang="scss">
 @import '../../../../styles/variables';
-$base-color: #19181a;
-$active-color-dark: #16406a;
-$active-color: #2a66a1;
-$active-color-light: #dde6f0;
-$active-color-extra-light: #f8f7fa;
 
 .widget-variable-option {
   display: flex;
@@ -86,16 +81,16 @@ $active-color-extra-light: #f8f7fa;
 }
 
 .widget-variable-option--selected {
-  background: $active-color-light;
+  background: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
   .widget-variable-option__name {
-    color: $active-color-dark;
+    color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
   }
   .widget-variable-option__value {
-    color: $active-color;
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
   .widget-variable-option__toggle {
-    background: $active-color;
-    border-color: $active-color;
+    background: var(--weaverbird-theme-main-color, $active-color);
+    border-color: var(--weaverbird-theme-main-color, $active-color);
     &::before,
     &::after {
       background: white;
@@ -133,14 +128,14 @@ $active-color-extra-light: #f8f7fa;
   background: white;
   width: 12px;
   height: 12px;
-  border: 1px solid $active-color-light;
+  border: 1px solid var(--weaverbird-theme-main-color-light, $active-color-faded-2);
   border-radius: 1px;
   margin-right: 10px;
 
   &:active,
   &:focus,
   &:hover {
-    border-color: $active-color;
+    border-color: var(--weaverbird-theme-main-color, $active-color);
   }
 
   &::before,
@@ -148,7 +143,7 @@ $active-color-extra-light: #f8f7fa;
     content: '';
     order: -1;
     display: block;
-    background: $active-color;
+    background: var(--weaverbird-theme-main-color, $active-color);
     height: 2px;
     top: 4px;
     position: absolute;
@@ -169,21 +164,21 @@ $active-color-extra-light: #f8f7fa;
 }
 
 .widget-variable-option:hover {
-  background-color: $active-color-extra-light;
+  background-color: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
   .widget-variable-option__name {
-    color: $active-color;
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
   .widget-variable-option__value {
     color: #979797;
   }
   .widget-variable-option__toggle {
-    border-color: $active-color-light;
+    border-color: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
   }
 }
 
 .widget-variable-option--selected:hover {
   .widget-variable-option-toggle {
-    background: $active-color;
+    background: var(--weaverbird-theme-main-color, $active-color);
   }
 }
 </style>

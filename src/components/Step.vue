@@ -235,7 +235,7 @@ export default class Step extends Vue {
   min-width: 0;
   overflow: hidden;
   border-radius: 5px;
-  border: 1px solid $grey;
+  border: 1px solid $grey-light;
   background-color: white;
 }
 
@@ -283,7 +283,7 @@ export default class Step extends Vue {
   height: 100%;
   width: 40px;
   color: $grey-medium;
-  border-right: 1px solid $grey;
+  border-right: 1px solid $grey-light;
 
   &:hover {
     color: $grey-dark;
@@ -426,7 +426,7 @@ export default class Step extends Vue {
     background: #f5f5f5;
   }
   .query-pipeline-queue__dot {
-    background-color: $grey;
+    background-color: $grey-light;
   }
   .query-pipeline-queue__dot-ink {
     background: $grey-dark;

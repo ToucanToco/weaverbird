@@ -258,7 +258,7 @@ export default class IfThenElseWidget extends Vue {
     margin: 0;
     background-color: #e9eff5;
     padding: 5px;
-    border: 1px solid $grey;
+    border: 1px solid $grey-light;
     border-radius: 5px;
   }
   ::v-deep .widget-input-text {
@@ -303,7 +303,7 @@ export default class IfThenElseWidget extends Vue {
     }
   }
   .ifthenelse-widget__tag {
-    background-color: $grey;
+    background-color: $grey-light;
     color: black;
   }
 }

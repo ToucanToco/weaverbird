@@ -73,9 +73,7 @@ export default class RelativeDateRangeForm extends Vue {
 </script>
 
 <style scoped lang="scss">
-$active-color: #16406a;
-$active-color-light: #dde6f0;
-$active-color-extra-light: #f8f7fa;
+@import '../../../../styles/variables';
 
 .widget-relative-date-range-form__container {
   display: flex;
@@ -97,7 +95,7 @@ $active-color-extra-light: #f8f7fa;
 }
 
 .widget-relative-date-range-form__input--from {
-  background: $active-color-extra-light;
+  background: white;
   margin: 0;
 
   ::v-deep .multiselect__tags {
@@ -115,13 +113,13 @@ $active-color-extra-light: #f8f7fa;
   }
 
   ::v-deep .multiselect__option--highlight {
-    background: $active-color-extra-light;
-    color: $active-color;
+    background: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
 
   ::v-deep .multiselect__option--selected {
-    background: $active-color-light;
-    color: $active-color;
+    background: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
 }
 </style>

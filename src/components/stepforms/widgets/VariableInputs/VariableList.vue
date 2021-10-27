@@ -104,8 +104,6 @@ export default class VariableList extends Vue {
 
 <style scoped lang="scss">
 @import '../../../../styles/variables';
-$grey: #6a6a6a;
-$grey-light: #eeedf0;
 
 .widget-variable-list {
   display: flex;
