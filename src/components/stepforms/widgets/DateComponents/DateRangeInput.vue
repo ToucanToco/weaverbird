@@ -366,10 +366,10 @@ export default class DateRangeInput extends Vue {
 }
 
 .widget-date-input__container:hover {
-  border-color: var(--weaverbird-theme-main-color);
+  border-color: var(--weaverbird-theme-main-color, $active-color);
   .widget-date-input__icon {
-    background-color: var(--weaverbird-theme-main-color-light);
-    color: var(--weaverbird-theme-main-color);
+    background-color: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
+    color: var(--weaverbird-theme-main-color, $active-color);
   }
 }
 
@@ -443,10 +443,10 @@ export default class DateRangeInput extends Vue {
   }
 }
 .widget-date-input__editor-button--primary {
-  background: var(--weaverbird-theme-emphasis-color);
+  background: var(--weaverbird-theme-emphasis-color, $active-color);
   color: white;
   &:hover {
-    background: var(--weaverbird-theme-emphasis-color-dark);
+    background: var(--weaverbird-theme-emphasis-color-dark, $active-color);
   }
 }
 .widget-date-input__editor-button--disabled {
@@ -462,8 +462,8 @@ export default class DateRangeInput extends Vue {
   .widget-date-input__container {
     &,
     &:hover {
-      background: var(--weaverbird-theme-emphasis-color);
-      border-color: var(--weaverbird-theme-emphasis-color);
+      background: var(--weaverbird-theme-emphasis-color, $active-color);
+      border-color: var(--weaverbird-theme-emphasis-color, $active-color);
       .widget-date-input__icon {
         background: none;
         color: white;

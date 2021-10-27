@@ -234,13 +234,13 @@ export default class CustomGranularityCalendar extends Vue {
   cursor: pointer;
 
   &:hover {
-    color: var(--weaverbird-theme-main-color-dark);
-    background: var(--weaverbird-theme-main-color-extra-light);
+    color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
+    background: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
   }
 
   &--selected {
-    color: var(--weaverbird-theme-main-color-dark);
-    background: var(--weaverbird-theme-main-color-light);
+    color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
+    background: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
     .custom-granularity-calendar__option-label {
       font-weight: bold;
     }

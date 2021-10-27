@@ -130,9 +130,9 @@ $disabled-color: #bababa;
       background-color: transparent;
     }
     &:hover {
-      background-color: var(--weaverbird-theme-main-color-extra-light);
+      background-color: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
       font-weight: 500;
-      color: var(--weaverbird-theme-main-color-dark);
+      color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
     }
   }
   .vc-day-content.is-disabled {
@@ -146,20 +146,20 @@ $disabled-color: #bababa;
   .calendar-content {
     &,
     &:focus {
-      color: var(--weaverbird-theme-main-color-dark);
+      color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
       font-weight: 500;
       background-color: transparent;
     }
   }
   .calendar-value {
-    background-color: var(--weaverbird-theme-main-color-light);
+    background-color: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
     z-index: 2;
     border-radius: 4px !important;
   }
   // Range
   .calendar-value.vc-highlight-base-middle,
   .calendar-range {
-    background-color: var(--weaverbird-theme-main-color-extra-light);
+    background-color: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
   }
   .vc-highlight.vc-highlight-base-end,
   .vc-highlight.vc-highlight-base-start {
@@ -182,8 +182,8 @@ $disabled-color: #bababa;
     padding: 0 10px;
     border-radius: 2px;
     &:hover {
-      background-color: var(--weaverbird-theme-main-color-extra-light);
-      color: var(--weaverbird-theme-main-color-dark);
+      background-color: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
+      color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
       opacity: 1;
     }
   }
@@ -197,7 +197,7 @@ $disabled-color: #bababa;
 ::v-deep .vc-nav-popover-container {
   background: white;
   box-shadow: none;
-  border: 1px solid var(--weaverbird-theme-main-color-light);
+  border: 1px solid var(--weaverbird-theme-main-color-light, $active-color-faded-2);
   .vc-nav-item,
   .vc-nav-title {
     color: $base-color;
@@ -206,15 +206,15 @@ $disabled-color: #bababa;
     border: none;
     border-radius: 2px;
     &.is-active {
-      background-color: var(--weaverbird-theme-main-color-light);
+      background-color: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
       box-shadow: none;
     }
     &.is-current {
       color: $base-color;
     }
     &:hover {
-      background-color: var(--weaverbird-theme-main-color-extra-light);
-      color: var(--weaverbird-theme-main-color-dark);
+      background-color: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
+      color: var(--weaverbird-theme-main-color-dark, $active-color-dark);
     }
   }
   .vc-nav-item {
@@ -233,7 +233,7 @@ $disabled-color: #bababa;
     margin: 7px;
   }
   &:hover {
-    background: var(--weaverbird-theme-main-color-extra-light);
+    background: var(--weaverbird-theme-main-color-extra-light, $active-color-faded-3);
   }
 }
 </style>

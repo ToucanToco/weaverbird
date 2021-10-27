@@ -16,15 +16,6 @@ $grey-dark: #585858;
 $error-light: #fdf9e5;
 $error: #f3c600;
 
-:root {
-  --weaverbird-theme-main-color-dark: #{$active-color-dark};
-  --weaverbird-theme-main-color: #{$active-color};
-  --weaverbird-theme-main-color-light: #{$active-color-faded-2};
-  --weaverbird-theme-main-color-extra-light: #{$active-color-faded-3};
-  --weaverbird-theme-emphasis-color: #{$active-color};
-  --weaverbird-theme-emphasis-color-dark: #{$active-color-dark};
-}
-
 //GLOBAL STYLE (by default we use the google font "Montserrat")
 %main-font-style {
   color: $base-color;
