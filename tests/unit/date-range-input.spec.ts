@@ -496,17 +496,17 @@ describe('Date range input', () => {
     });
   });
 
-  describe('with theme css variables', () => {
+  describe('with colored background', () => {
     beforeEach(async () => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        themeCSSVariables: THEME_CSS_VARIABLES,
+        coloredBackground: true,
       });
       await wrapper.vm.$nextTick();
     });
 
     it('should pass custom class to wrapper', () => {
-      expect(wrapper.classes()).toContain('widget-date-input--custom-theme');
+      expect(wrapper.classes()).toContain('widget-date-input--colored-background');
     });
   });
 

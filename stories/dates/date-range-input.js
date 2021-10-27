@@ -1,7 +1,11 @@
 import { DateRangeInput } from '../../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
+import { withKnobs, boolean } from '@storybook/addon-knobs';
+
 const stories = storiesOf('Dates/DateRangeInput', module);
+
+stories.addDecorator(withKnobs);
 
 const SAMPLE_VARIABLES = [
   {
@@ -339,6 +343,11 @@ stories.add('localized (fr)', () => ({
 }));
 
 stories.add('custom css variables', () => ({
+  props: {
+    coloredBackground: {
+      default: boolean('Colored background', true),
+    },
+  },
   template: `
     <div>
       <DateRangeInput
@@ -348,6 +357,7 @@ stories.add('custom css variables', () => ({
         :alwaysOpened="true"
         :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
         :themeCSSVariables="themeCSSVariables"
+        :coloredBackground="coloredBackground"
       />
       <pre style="margin-top: 500px;">{{ value }}</pre>
     </div>

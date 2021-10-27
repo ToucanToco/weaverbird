@@ -2,7 +2,7 @@
   <div
     class="widget-date-input"
     :style="themeCSSVariables"
-    :class="{ 'widget-date-input--custom-theme': themeCSSVariables != null }"
+    :class="{ 'widget-date-input--colored-background': coloredBackground }"
   >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
@@ -167,6 +167,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ default: undefined })
   themeCSSVariables!: Record<string, string> | undefined;
+
+  @Prop({ default: false })
+  coloredBackground!: boolean;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
@@ -452,8 +455,7 @@ export default class DateRangeInput extends Vue {
   cursor: not-allowed;
 }
 
-// custom theme as not same behaviour than default component because its full background covered
-.widget-date-input--custom-theme {
+.widget-date-input--colored-background {
   .widget-date-input__label {
     color: white;
   }
