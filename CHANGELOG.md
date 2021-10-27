@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.70.0] - 2021-10-27
+
+### Added
+- DateRangeInput: internationalization for fixed periods (English and French)
+
+### Fixed
+- DateRangeInput: better preview with new system to keep popovers always opened
+
 ## [0.69.2] - 2021-10-26
 
 ## Fix
@@ -1059,6 +1067,7 @@
 
 ## Unreleased
 
+[0.70.0]: https://github.com/ToucanToco/weaverbird/compare/v0.69.2...v0.70.0
 [0.69.2]: https://github.com/ToucanToco/weaverbird/compare/v0.69.1...v0.69.2
 [0.69.1]: https://github.com/ToucanToco/weaverbird/compare/v0.69.0...v0.69.1
 [0.69.0]: https://github.com/ToucanToco/weaverbird/compare/v0.68.0...v0.69.0
