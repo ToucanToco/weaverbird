@@ -73,11 +73,6 @@ const RELATIVE_SAMPLE_VARIABLES = [
   },
 ];
 
-const THEME_CSS_VARIABLES = {
-  '--weaverbird-main-color': '#000',
-  '--weaverbird-secondary-color': '#fff',
-};
-
 describe('Date range input', () => {
   let wrapper: Wrapper<DateRangeInput>;
   const createWrapper = (propsData = {}) => {
