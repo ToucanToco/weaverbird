@@ -61,10 +61,10 @@ const FIRST_DAY_OF_MONTH = {
 
 const ENOUGH_TO_AVOID_OVERLAPPING_WITH_NEXT_OPTION = { milliseconds: 1 };
 
-const UTC_DATE_TO_LOCALE_STRING = (date: Date) => {
+const UTC_DATE_TO_LOCALE_STRING = (date: Date, locale?: LocaleIdentifier) => {
   return DateTime.fromJSDate(date, { zone: 'utc' })
-    .setLocale('en')
-    .toLocaleString();
+    .reconfigure({ locale })
+    .toLocaleString(DateTime.DATE_SHORT);
 };
 
 export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
@@ -73,9 +73,10 @@ export const RANGE_PICKERS: Record<AvailableDuration, GranularityConfig> = {
     selectableRanges: {
       label: (dt: DateTime, locale?: LocaleIdentifier): string =>
         `${t('WEEK', locale)} ${dt.weekNumber}`,
-      description: (range: Required<DateRange>): string => {
-        return `${UTC_DATE_TO_LOCALE_STRING(range.start)} - ${UTC_DATE_TO_LOCALE_STRING(
+      description: (range: Required<DateRange>, locale?: LocaleIdentifier): string => {
+        return `${UTC_DATE_TO_LOCALE_STRING(range.start, locale)} - ${UTC_DATE_TO_LOCALE_STRING(
           range.end,
+          locale,
         )}`;
       },
       currentOptions: (currentNavRangeStart: DateTime): DateTime[] => {
