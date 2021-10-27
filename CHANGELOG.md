@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.71.0] - 2021-10-27
+
+### Added
+- DateRangeInput: enable to use custom css variables to stylize component colors
+
 ## [0.70.0] - 2021-10-27
 
 ### Added
@@ -1067,6 +1072,7 @@
 
 ## Unreleased
 
+[0.71.0]: https://github.com/ToucanToco/weaverbird/compare/v0.70.0...v0.71.0
 [0.70.0]: https://github.com/ToucanToco/weaverbird/compare/v0.69.2...v0.70.0
 [0.69.2]: https://github.com/ToucanToco/weaverbird/compare/v0.69.1...v0.69.2
 [0.69.1]: https://github.com/ToucanToco/weaverbird/compare/v0.69.0...v0.69.1
