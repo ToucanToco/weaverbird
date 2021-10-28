@@ -3,11 +3,13 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import {
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
+  DateRange,
   dateRangeToString,
   isDateRange,
   RelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
+import { LocaleIdentifier } from '@/lib/internationalization';
 
 jest.mock('@/components/FAIcon.vue');
 jest.mock('@/components/DatePicker/Calendar.vue');
@@ -338,6 +340,18 @@ describe('Date range input', () => {
       ); // due to utf8 char we need to split label
       expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[0]);
       expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[1]);
+    });
+
+    describe('with a dateRangeFormatter', () => {
+      beforeEach(async () => {
+        await wrapper.setProps({
+          dateRangeFormatter: (_dr: DateRange, _l: LocaleIdentifier) => 'formatted date range',
+        });
+      });
+
+      it('should use the formatter to display the label', () => {
+        expect(wrapper.find('.widget-date-input__label').text()).toBe('formatted date range');
+      });
     });
 
     it('should select "Fixed" tab by default', () => {
