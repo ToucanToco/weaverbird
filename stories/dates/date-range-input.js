@@ -298,6 +298,9 @@ stories.add('always open (preview mode)', () => ({
         :enable-custom="true"
         :alwaysOpened="true"
         :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
       />
       <pre style="margin-top: 500px;">{{ value }}</pre>
     </div>
@@ -311,6 +314,9 @@ stories.add('always open (preview mode)', () => ({
     return {
       value: undefined,
       actualRangeValue: undefined,
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
     };
   },
 
