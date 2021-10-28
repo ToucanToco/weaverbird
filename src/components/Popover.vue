@@ -211,15 +211,8 @@ export default class Popover extends Vue {
 <style lang="scss" scoped>
 .weaverbird-popover {
   font-family: 'Montserrat', sans-serif;
-
-  &:not(.weaverbird-popover--always-opened) {
-    position: absolute;
-    visibility: visible;
-    z-index: 2;
-  }
-
-  &.weaverbird-popover--always-opened {
-    display: block;
-  }
+  position: absolute;
+  visibility: visible;
+  z-index: 2;
 }
 </style>
