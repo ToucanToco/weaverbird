@@ -99,7 +99,7 @@ import {
   isRelativeDateRange,
   relativeDateRangeToString,
 } from '@/lib/dates';
-import t from '@/lib/internationalization';
+import t, { LocaleIdentifier } from '@/lib/internationalization';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -170,6 +170,9 @@ export default class DateRangeInput extends Vue {
 
   @Prop({ default: false })
   coloredBackground!: boolean;
+
+  @Prop()
+  dateRangeFormatter!: (dr: DateRange, locale?: LocaleIdentifier) => string | undefined;
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
@@ -246,6 +249,11 @@ export default class DateRangeInput extends Vue {
     if (this.variable) {
       return this.variable.label;
     } else if (isDateRange(this.value)) {
+      // Use the dateRangeFormatter function is available, and it returns a value
+      if (this.dateRangeFormatter) {
+        const formattedDataRange = this.dateRangeFormatter(this.value, this.locale);
+        if (formattedDataRange) return formattedDataRange;
+      }
       return dateRangeToString(this.value, this.locale);
     } else if (isRelativeDateRange(this.value)) {
       return relativeDateRangeToString(
