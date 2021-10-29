@@ -59,8 +59,10 @@ export default class TabbedRangeCalendars extends Vue {
   selectedTab = this.enabledCalendars[0];
 
   @Watch('enabledCalendars')
-  onEnbaledCalendarsChange() {
-    this.selectedTab = this.enabledCalendars[0];
+  onEnabledCalendarsChange() {
+    if (!this.value.duration || !this.enabledCalendars.includes(this.value.duration)) {
+      this.selectedTab = this.enabledCalendars[0];
+    }
   }
 
   @Watch('value')
