@@ -1,5 +1,5 @@
 ---
-title: Cutom step
+title: Custom step
 permalink: /docs/custom/
 ---
 
