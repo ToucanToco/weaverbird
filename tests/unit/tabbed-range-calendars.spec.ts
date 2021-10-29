@@ -112,4 +112,24 @@ describe('TabbedRangeCalendars', () => {
       });
     });
   });
+  describe('with updated enabled calendars', () => {
+    beforeEach(async () => {
+      await wrapper.setProps({
+        value: {
+          start: new Date(Date.UTC(2012, 0, 1)),
+          end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
+          duration: 'year',
+        },
+      });
+    });
+    it('should keep on current tab with value still in enabled calendars', async () => {
+      await wrapper.setProps({ enabledCalendars: ['year', 'month'] });
+      expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('year');
+    });
+
+    it('should fallback to first tab with value not in enabled calendars', async () => {
+      await wrapper.setProps({ enabledCalendars: ['day', 'month'] });
+      expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('day');
+    });
+  });
 });
