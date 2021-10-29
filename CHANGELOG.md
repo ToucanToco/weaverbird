@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.72.1] - 2021-10-29
+
+### Fixed
+TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars contains selected tab
+
 ## [0.72.0] - 2021-10-28
 
 ### Added
@@ -1077,6 +1082,7 @@
 
 ## Unreleased
 
+[0.72.1]: https://github.com/ToucanToco/weaverbird/compare/v0.72.0...v0.72.1
 [0.72.0]: https://github.com/ToucanToco/weaverbird/compare/v0.71.0...v0.72.0
 [0.71.0]: https://github.com/ToucanToco/weaverbird/compare/v0.70.0...v0.71.0
 [0.70.0]: https://github.com/ToucanToco/weaverbird/compare/v0.69.2...v0.70.0
