@@ -4,7 +4,7 @@ See [docs about purpose and usage](../docs/_docs/tech/python-package.md).
 
 ## Development
 
-We use [poetry](https://python-poetry.org/) for managing dependencies.
+We use [setuptools](https://setuptools.pypa.io/en/latest/) for managing dependencies.
 
 Main commands are available through `make`:
 
