@@ -30,5 +30,8 @@ RUN pip install -e ".[playground]"
 # Copy UI files
 COPY --from=ui-builder /weaverbird/playground/dist/* /weaverbird/server/static/
 
+# Copy sample datasets
+COPY ./playground/datastore /weaverbird/playground/datastore
+
 CMD gunicorn --bind 0.0.0.0:5000 playground:app
 EXPOSE 5000
