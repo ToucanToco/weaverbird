@@ -12,8 +12,15 @@ clean:
 .PHONY: install
 install:
 	pip install -U pip
-	pip install poetry
-	poetry install
+	pip install .
+
+.PHONY: install-dev
+install-dev:
+	pip install -e ".[dev]"
+
+.PHONY: install-playground
+install-playground:
+	pip install ".[playground]"
 
 .PHONY: format
 format:
@@ -36,11 +43,12 @@ all: test lint
 
 .PHONY: build
 build:
-	poetry build
+	python -m build
 
 .PHONY: upload
 upload:
-	poetry publish
+	pip install twine
+	twine upload dist/*
 
 # Easy mode to use locally with pyCharm
 .PHONY: install_local

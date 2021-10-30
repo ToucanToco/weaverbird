@@ -28,7 +28,7 @@ app = Flask(__name__)
 
 @app.route('/health', methods=['GET'])
 def handle_health_request():
-    return 200
+    return 'OK'
 
 
 @app.route('/pandas', methods=['GET', 'POST'])
@@ -47,7 +47,7 @@ def handle_pandas_backend_request():
 
 @app.route('/', methods=['GET'])
 @app.route('/<path:filename>', methods=['GET'])
-def handle_static_files_request(filename = None):
+def handle_static_files_request(filename=None):
     filename = filename or 'index.html'
     return send_from_directory('static', filename)
 
