@@ -121,7 +121,7 @@ function autocastDataset(dataset) {
 
 class MongoService {
   async listCollections() {
-    const response = await fetch('/collections');
+    const response = await fetch('/mongo');
     return response.json();
   }
 
@@ -152,7 +152,7 @@ class MongoService {
   }
 
   async executeQuery(query, collection, limit, skip) {
-    const response = await fetch('/query', {
+    const response = await fetch('/mongo', {
       method: 'POST',
       body: JSON.stringify({
         query,
