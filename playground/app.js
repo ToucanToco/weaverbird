@@ -151,14 +151,14 @@ class MongoService {
     }
   }
 
-  async executeQuery(query, collection, limit, skip) {
+  async executeQuery(query, collection, limit, offset) {
     const response = await fetch('/mongo', {
       method: 'POST',
       body: JSON.stringify({
         query,
         collection,
         limit,
-        skip,
+        offset,
       }),
       headers: {
         'Content-Type': 'application/json',
