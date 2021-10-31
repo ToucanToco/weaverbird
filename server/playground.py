@@ -79,6 +79,112 @@ mongo_client = MongoClient()
 mongo_db = mongo_client['test']
 
 
+def facetize_mongo_aggregation(query, limit, offset):
+    """
+    Transform an aggregation query into a `$facet` one so that we can get in a single
+     query both total query count (independently of `$limit` or `$skip` operators) and
+    the query results.
+    """
+    if not len(query):
+        query = [{'$match': {}}]
+
+    new_query = [
+        *query,
+        {
+            '$facet': {
+                'state_total_count': [
+                    {
+                        '$group': {
+                            '_id': None,
+                            'count': {
+                                '$sum': 1,
+                            },
+                        },
+                    },
+                ],
+                'stage_results': [
+                    {
+                        '$skip': offset,
+                    },
+                    {
+                        '$limit': limit,
+                    },
+                    {'$project': {'_id': 0}},
+                ],
+                'stage_types': [
+                    {
+                        '$skip': offset,
+                    },
+                    {
+                        '$limit': limit,
+                    },
+                    {'$group': {'_id': None, '_vqbAppArray': {'$push': '$$ROOT'}}},
+                    {'$unwind': {'path': "$_vqbAppArray", 'includeArrayIndex': "_vqbAppIndex"}},
+                    {
+                        '$project': {
+                            '_vqbAppArray': {
+                                '$objectToArray': '$_vqbAppArray',
+                            },
+                            '_vqbAppIndex': 1,
+                        },
+                    },
+                    {
+                        '$unwind': '$_vqbAppArray',
+                    },
+                    {
+                        '$project': {
+                            'column': '$_vqbAppArray.k',
+                            'type': {
+                                '$type': '$_vqbAppArray.v',
+                            },
+                            '_vqbAppIndex': 1,
+                        },
+                    },
+                    {
+                        '$group': {
+                            '_id': '$_vqbAppIndex',
+                            '_vqbAppArray': {
+                                '$addToSet': {
+                                    'column': '$column',
+                                    'type': '$type',
+                                },
+                            },
+                        },
+                    },
+                    {
+                        '$project': {
+                            '_vqbAppTmpObj': {
+                                '$arrayToObject': {
+                                    '$zip': {
+                                        'inputs': ['$_vqbAppArray.column', '$_vqbAppArray.type'],
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    {
+                        '$replaceRoot': {
+                            'newRoot': '$_vqbAppTmpObj',
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            '$unwind': '$state_total_count',
+        },
+        {
+            '$project': {
+                'count': '$state_total_count.count',
+                'data': '$stage_results',
+                'types': '$stage_types',
+            },
+        },
+    ]
+
+    return new_query
+
+
 @app.route('/mongo', methods=['GET', 'POST'])
 def handle_mongo_backend_request():
     if request.method == 'GET':
@@ -90,15 +196,17 @@ def handle_mongo_backend_request():
             query = req_params['query']
             collection = req_params['collection']
             limit = req_params['limit']
-            skip = req_params['skip']
+            offset = req_params['offset']
 
             # TODO: add limit/offset pipeline stages to query
-
-            results = list(mongo_db[collection].aggregate(query))
+            facetized_query = facetize_mongo_aggregation(query, limit, offset)
+            print(facetized_query)
+            results = list(mongo_db[collection].aggregate(facetized_query))
             # ObjectID are not JSON serializable, so remove them
             for row in results:
-                del row['_id']
-            return jsonify(list(results))
+                if '_id' in row:
+                    del row['_id']
+            return jsonify(results)
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
             return jsonify(errmsg), 400
