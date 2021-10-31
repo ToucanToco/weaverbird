@@ -6,12 +6,18 @@ Routes:
 - `/pandas`: pandas backend
     - GET: returns the available domains
     - POST: execute the pipeline in the body of the request and returns the transformed data
-- `/mongo`: not implemented yet
+- `/mongo`:
+    - GET: return the available collections in the database
+    - POSt: execute the aggregation pipeline and return a page of it (limit, offset) along with total count and types
 - `/snowflake`: not implemented yet
 - `/health`: simple health check
 
 Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
+
+Environment variables:
+- for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
 """
+import os
 from glob import glob
 from os.path import basename, splitext
 
@@ -64,6 +70,7 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
 def handle_pandas_backend_request():
     if request.method == 'GET':
         return jsonify(get_available_domains())
+
     elif request.method == 'POST':
         try:
             return Response(
@@ -75,8 +82,8 @@ def handle_pandas_backend_request():
 
 
 ### Mongo back-end routes
-mongo_client = MongoClient()
-mongo_db = mongo_client['test']
+mongo_client = MongoClient(os.getenv('MONGODB_CONNECTION_STRING'))
+mongo_db = mongo_client[os.getenv('MONGODB_DATABASE_NAME', default='data')]
 
 
 def facetize_mongo_aggregation(query, limit, offset):
@@ -189,6 +196,7 @@ def facetize_mongo_aggregation(query, limit, offset):
 def handle_mongo_backend_request():
     if request.method == 'GET':
         return jsonify(mongo_db.list_collection_names())
+
     elif request.method == 'POST':
         try:
             req_params = request.get_json()
@@ -198,9 +206,7 @@ def handle_mongo_backend_request():
             limit = req_params['limit']
             offset = req_params['offset']
 
-            # TODO: add limit/offset pipeline stages to query
             facetized_query = facetize_mongo_aggregation(query, limit, offset)
-            print(facetized_query)
             results = list(mongo_db[collection].aggregate(facetized_query))
             # ObjectID are not JSON serializable, so remove them
             for row in results:
