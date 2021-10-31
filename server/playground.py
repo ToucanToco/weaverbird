@@ -22,7 +22,7 @@ from glob import glob
 from os.path import basename, splitext
 
 import pandas as pd
-from flask import Flask, Response, jsonify, request, send_from_directory
+from quart import Quart, Response, jsonify, request, send_from_directory
 from pymongo import MongoClient
 
 from weaverbird.backends.pandas_executor.pipeline_executor import (
@@ -30,7 +30,7 @@ from weaverbird.backends.pandas_executor.pipeline_executor import (
 )
 from weaverbird.pipeline import Pipeline
 
-app = Flask(__name__)
+app = Quart(__name__)
 
 
 @app.route('/health', methods=['GET'])
@@ -67,14 +67,14 @@ def execute_pipeline(pipeline_steps, **kwargs) -> str:
 
 
 @app.route('/pandas', methods=['GET', 'POST'])
-def handle_pandas_backend_request():
+async def handle_pandas_backend_request():
     if request.method == 'GET':
         return jsonify(get_available_domains())
 
     elif request.method == 'POST':
         try:
             return Response(
-                execute_pipeline(request.get_json(), **request.args), mimetype='application/json'
+                execute_pipeline(await request.get_json(), **request.args), mimetype='application/json'
             )
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
@@ -193,13 +193,13 @@ def facetize_mongo_aggregation(query, limit, offset):
 
 
 @app.route('/mongo', methods=['GET', 'POST'])
-def handle_mongo_backend_request():
+async def handle_mongo_backend_request():
     if request.method == 'GET':
         return jsonify(mongo_db.list_collection_names())
 
     elif request.method == 'POST':
         try:
-            req_params = request.get_json()
+            req_params = await request.get_json()
 
             query = req_params['query']
             collection = req_params['collection']
@@ -223,6 +223,6 @@ def handle_mongo_backend_request():
 
 @app.route('/', methods=['GET'])
 @app.route('/<path:filename>', methods=['GET'])
-def handle_static_files_request(filename=None):
+async def handle_static_files_request(filename=None):
     filename = filename or 'index.html'
-    return send_from_directory('static', filename)
+    return await send_from_directory('static', filename)
