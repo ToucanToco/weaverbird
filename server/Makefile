@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := all
-flake8 = flake8 weaverbird tests
-isort = isort weaverbird tests
-black = black weaverbird tests
+flake8 = flake8 weaverbird tests playground.py
+isort = isort weaverbird tests playground.py
+black = black weaverbird tests playground.py
 
 .PHONY: clean
 clean:

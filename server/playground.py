@@ -214,6 +214,7 @@ def handle_mongo_backend_request():
 
 ### UI files
 
+
 @app.route('/', methods=['GET'])
 @app.route('/<path:filename>', methods=['GET'])
 def handle_static_files_request(filename=None):
