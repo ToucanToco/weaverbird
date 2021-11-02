@@ -33,12 +33,6 @@ describe('Relative date range form', () => {
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
     });
-    it('should use an autocomplete input for BaseDate part', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
-    });
-    it('should use a RelativeDateForm for RangeSize part', () => {
-      expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
-    });
     it('should pass option refering to date value to autocomplete input', () => {
       expect(
         wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
