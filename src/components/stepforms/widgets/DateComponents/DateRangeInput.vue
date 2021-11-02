@@ -6,7 +6,10 @@
   >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
-      <div class="widget-date-input__icon">
+      <div class="widget-date-input__reset-button">
+        <FAIcon icon="times" class="widget-date-input__reset-button-icon" />
+      </div>
+      <div class="widget-date-input__type-icon">
         <FAIcon icon="far calendar" />
       </div>
     </div>
@@ -354,20 +357,37 @@ export default class DateRangeInput extends Vue {
   border: 1px solid $grey-light;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   cursor: pointer;
 }
 .widget-date-input__label {
+  flex: 1;
   padding: 10px 15px;
   font-size: 14px;
   font-weight: 500;
   font-family: 'Montserrat', sans-serif;
-  max-width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.widget-date-input__icon {
+
+.widget-date-input__reset-button {
+  padding: 10px 15px;
+  cursor: pointer;
+  color: $grey-medium;
+
+  &:hover {
+    color: $grey-dark;
+  }
+}
+
+.widget-date-input__reset-button-icon {
+  height: 1em;
+  width: 1em;
+  background: $grey-extra-light;
+  border-radius: 100%;
+}
+
+.widget-date-input__type-icon {
   padding: 10px 15px;
   background: $grey-extra-light;
   color: $grey;
@@ -375,7 +395,7 @@ export default class DateRangeInput extends Vue {
 
 .widget-date-input__container:hover {
   border-color: var(--weaverbird-theme-main-color, $active-color);
-  .widget-date-input__icon {
+  .widget-date-input__type-icon {
     background-color: var(--weaverbird-theme-main-color-light, $active-color-faded-2);
     color: var(--weaverbird-theme-main-color, $active-color);
   }
@@ -472,7 +492,7 @@ export default class DateRangeInput extends Vue {
     &:hover {
       background: var(--weaverbird-theme-emphasis-color, $active-color);
       border-color: var(--weaverbird-theme-emphasis-color, $active-color);
-      .widget-date-input__icon {
+      .widget-date-input__type-icon {
         background: none;
         color: white;
         padding-left: 0;
