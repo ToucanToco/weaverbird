@@ -71,14 +71,14 @@ describe('Relative date range form', () => {
       });
     });
 
-    describe('when to rangeSize updated', () => {
+    describe('when rangeSize is updated', () => {
       beforeEach(async () => {
         wrapper
           .find('RelativeDateForm-stub')
           .vm.$emit('input', { date, quantity: -2, duration: 'year' });
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated to', () => {
+      it('should emit value with updated rangeSize', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
           quantity: -2,
