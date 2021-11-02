@@ -1,7 +1,7 @@
 <template>
   <div class="widget-relative-date-range-form">
     <div class="widget-relative-date-range-form__container">
-      <RelativeDateForm class="widget-relative-date-range-form__input" v-model="to" />
+      <RelativeDateForm class="widget-relative-date-range-form__input" v-model="rangeSize" />
     </div>
     <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
@@ -50,11 +50,11 @@ export default class RelativeDateRangeForm extends Vue {
   @Prop({ default: () => ({ date: '', quantity: -1, duration: 'year' }) })
   value!: RelativeDateRange;
 
-  get to(): RelativeDate {
+  get rangeSize(): RelativeDate {
     return _pick(this.value, ['quantity', 'duration']);
   }
 
-  set to(to: RelativeDate) {
+  set rangeSize(to: RelativeDate) {
     this.$emit('input', { ...this.value, ...to });
   }
 
