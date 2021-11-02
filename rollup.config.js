@@ -44,7 +44,7 @@ export default {
       // Default extensions ['.mjs', '.js', '.json', '.node']
       // We need to add the '.vue' extension because of the import of the component from v-calendar
       // which contains relative paths without extensions.
-      extensions: ['.mjs', '.js', '.json', '.node', '.vue']
+      extensions: ['.mjs', '.js', '.ts', '.json', '.node', '.vue']
     }),
     alias({
       resolve: ['.vue', '.json'],
@@ -63,6 +63,7 @@ export default {
         }),
         autoprefixer()
       ],
+      // extract option break CSS live reload in Storybook, comment it to get it back
       extract: true,
       extract: 'weaverbird.css'
     }),
