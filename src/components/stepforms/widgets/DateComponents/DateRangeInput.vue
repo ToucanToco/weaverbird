@@ -6,7 +6,7 @@
   >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
-      <div class="widget-date-input__reset-button">
+      <div class="widget-date-input__reset-button" v-if="!!value" @click.stop="resetValue">
         <FAIcon icon="times" class="widget-date-input__reset-button-icon" />
       </div>
       <div class="widget-date-input__type-icon">
@@ -138,8 +138,8 @@ import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
   },
 })
 export default class DateRangeInput extends Vue {
-  @Prop({ default: '' })
-  value!: string | CustomDateRange;
+  @Prop()
+  value!: string | CustomDateRange | undefined;
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
@@ -322,6 +322,10 @@ export default class DateRangeInput extends Vue {
     const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
     this.$emit('input', variableWithDelimiters);
     this.closeEditor();
+  }
+
+  resetValue(): void {
+    this.$emit('input', undefined);
   }
 
   async editCustomVariable(): Promise<void> {
