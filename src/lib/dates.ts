@@ -126,7 +126,7 @@ export const relativeDateRangeToString = (
 };
 
 export const isRelativeDateRange = (
-  value: string | CustomDateRange,
+  value: string | CustomDateRange | undefined,
 ): value is RelativeDateRange => {
   if (!(value instanceof Object)) return false;
   return _has(value, 'date') && _has(value, 'duration') && _has(value, 'quantity');

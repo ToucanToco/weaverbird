@@ -124,7 +124,30 @@ describe('Date range input', () => {
       );
     });
 
-    describe('when clicking on calendar button', () => {
+    describe('reset button', () => {
+      let resetButtonWrapper: Wrapper<any>;
+
+      beforeEach(() => {
+        resetButtonWrapper = wrapper.find('.widget-date-input__reset-button');
+      });
+
+      it('should display the reset button', () => {
+        expect(resetButtonWrapper.exists()).toBe(true);
+      });
+
+      describe('when clicking on the reset button', () => {
+        beforeEach(async () => {
+          await resetButtonWrapper.trigger('click');
+        });
+
+        it('should emit undefined as new value', () => {
+          const inputEmissions = wrapper.emitted('input');
+          expect(inputEmissions[inputEmissions.length - 1]).toEqual([undefined]);
+        });
+      });
+    });
+
+    describe('when clicking on the input', () => {
       beforeEach(async () => {
         wrapper.find('.widget-date-input__container').trigger('click');
         await wrapper.vm.$nextTick();
@@ -534,8 +557,8 @@ describe('Date range input', () => {
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
     });
-    it('should set value to empty string', () => {
-      expect((wrapper.vm as any).value).toBe('');
+    it('should keep value undefined', () => {
+      expect((wrapper.vm as any).value).toBeUndefined();
     });
     it('should set selected variable to undefined', () => {
       expect((wrapper.vm as any).variable).toBeUndefined();
@@ -545,6 +568,9 @@ describe('Date range input', () => {
     });
     it('should display placeholder input label', () => {
       expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('Select a period');
+    });
+    it('should not display the reset button', () => {
+      expect(wrapper.find('.widget-date-input__reset-button').exists()).toBe(false);
     });
   });
 });
