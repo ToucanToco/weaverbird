@@ -100,12 +100,16 @@ export default class RelativeDateRangeForm extends Vue {
 .widget-relative-date-range-form__container {
   display: flex;
   justify-content: center;
-  align-items: center;
   margin-bottom: 15px;
 }
 
 .widget-relative-date-range-form__input {
   flex: 1 100%;
+}
+
+.widget-relative-date-range-form__input--direction {
+  flex: 1 25%;
+  margin-right: 15px;
 }
 
 .widget-relative-date-range-form__input--base-date {
