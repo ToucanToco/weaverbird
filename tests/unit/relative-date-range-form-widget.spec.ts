@@ -33,7 +33,7 @@ describe('Relative date range form', () => {
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
     });
-    it('should pass option refering to date value to autocomplete input', () => {
+    it('should pass option referring to date value to baseDate input', () => {
       expect(
         wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
       ).toStrictEqual({
@@ -41,11 +41,16 @@ describe('Relative date range form', () => {
         label: 'Today',
       });
     });
-    it('should pass relative date part of value to relative date form input', () => {
+    it('should pass relative date part of value to rangeSize (relative date form) input', () => {
       expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual({
         quantity: -1,
         duration: 'month',
       });
+    });
+    it('should pass corresponding direction to rangeDirection input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
+      ).toStrictEqual({ label: 'before', value: 'before' });
     });
 
     describe('when baseDate is updated', () => {
@@ -98,8 +103,15 @@ describe('Relative date range form', () => {
     it('should set variable delimiters to empty strings', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
     });
-    it('should pass empty string as value to autocomplete input', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual('');
+    it('should pass empty string as value to baseDate input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
+      ).toStrictEqual('');
+    });
+    it('should pass "before" as default value to rangeDirection input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
+      ).toStrictEqual({ label: 'before', value: 'before' });
     });
   });
 });

@@ -6,8 +6,8 @@
     <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--direction"
+        v-model="rangeDirection"
         :options="directions"
-        trackBy="identifier"
         label="label"
       />
       <AutocompleteWidget
@@ -79,6 +79,10 @@ export default class RelativeDateRangeForm extends Vue {
       { label: 'before', value: 'before' },
       { label: 'after', value: 'after' },
     ];
+  }
+
+  get rangeDirection() {
+    return this.value.quantity >= 0 ? this.directions[1] : this.directions[0];
   }
 }
 </script>
