@@ -40,7 +40,9 @@ describe('Relative date range form', () => {
       expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
     });
     it('should pass option refering to date value to autocomplete input', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
+      ).toStrictEqual({
         identifier: 'today',
         label: 'Today',
       });
@@ -52,10 +54,12 @@ describe('Relative date range form', () => {
       });
     });
 
-    describe('when from is updated', () => {
+    describe('when baseDate is updated', () => {
       const selectedDateVariable = SAMPLE_VARIABLES[1];
       beforeEach(async () => {
-        wrapper.find('AutocompleteWidget-stub').vm.$emit('input', selectedDateVariable);
+        wrapper
+          .find('.widget-relative-date-range-form__input--base-date')
+          .vm.$emit('input', selectedDateVariable);
         await wrapper.vm.$nextTick();
       });
       it('should emit value with updated date with delimiters', () => {
@@ -68,7 +72,7 @@ describe('Relative date range form', () => {
       });
     });
 
-    describe('when to is updated', () => {
+    describe('when to rangeSize updated', () => {
       beforeEach(async () => {
         wrapper
           .find('RelativeDateForm-stub')
@@ -93,7 +97,9 @@ describe('Relative date range form', () => {
       expect((wrapper.vm as any).value).toStrictEqual({ date: '', quantity: -1, duration: 'year' });
     });
     it('should set available variables to empty array', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([]);
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().options,
+      ).toStrictEqual([]);
     });
     it('should set variable delimiters to empty strings', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });

@@ -5,6 +5,12 @@
     </div>
     <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
+        class="widget-relative-date-range-form__input widget-relative-date-range-form__input--direction"
+        :options="directions"
+        trackBy="identifier"
+        label="label"
+      />
+      <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--base-date"
         v-model="baseDate"
         :options="availableVariables"
@@ -66,6 +72,13 @@ export default class RelativeDateRangeForm extends Vue {
   set baseDate(variable: AvailableVariable | undefined) {
     const value = `${this.variableDelimiters.start}${variable?.identifier}${this.variableDelimiters.end}`;
     this.$emit('input', { ...this.value, date: value });
+  }
+
+  get directions() {
+    return [
+      { label: 'before', value: 'before' },
+      { label: 'after', value: 'after' },
+    ];
   }
 }
 </script>
