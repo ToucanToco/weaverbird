@@ -33,16 +33,23 @@ describe('Relative date form', () => {
     it('should use an autocomplete input', () => {
       expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
     });
-    it('should pass durations options to autocomplete', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual(
-        DEFAULT_DURATIONS,
-      );
+    it('should pass durations options with suffix to autocomplete', () => {
+      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([
+        { label: 'Years ago', value: 'year' },
+        { label: 'Quarters ago', value: 'quarter' },
+        { label: 'Months ago', value: 'month' },
+        { label: 'Weeks ago', value: 'week' },
+        { label: 'Days ago', value: 'day' },
+      ]);
     });
     it('should pass abs quantity to input number', () => {
       expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(20);
     });
     it('should pass duration to autocomplete', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(selectedDuration);
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+        label: 'Quarters ago',
+        value: 'quarter',
+      });
     });
 
     describe('when quantity is updated', () => {
@@ -88,7 +95,10 @@ describe('Relative date form', () => {
       expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(1);
     });
     it('should set duration to first default duration', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toBe(defaultDuration);
+      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+        label: 'Years ago',
+        value: 'year',
+      });
     });
   });
 });
