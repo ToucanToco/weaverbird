@@ -76,13 +76,20 @@ export default class RelativeDateRangeForm extends Vue {
 
   get directions() {
     return [
-      { label: 'before', value: 'before' },
-      { label: 'after', value: 'after' },
+      { label: 'before', value: -1 },
+      { label: 'after', value: +1 },
     ];
   }
 
   get rangeDirection() {
     return this.value.quantity >= 0 ? this.directions[1] : this.directions[0];
+  }
+
+  set rangeDirection(direction: { label: string; value: number }) {
+    this.$emit('input', {
+      ...this.value,
+      quantity: Math.sign(direction.value) * Math.abs(this.value.quantity),
+    });
   }
 }
 </script>
