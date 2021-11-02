@@ -5,8 +5,8 @@
     </div>
     <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
-        class="widget-relative-date-range-form__input widget-relative-date-range-form__input--from"
-        v-model="from"
+        class="widget-relative-date-range-form__input widget-relative-date-range-form__input--base-date"
+        v-model="baseDate"
         :options="availableVariables"
         placeholder="Select a date"
         trackBy="identifier"
@@ -58,12 +58,12 @@ export default class RelativeDateRangeForm extends Vue {
     this.$emit('input', { ...this.value, ...to });
   }
 
-  get from(): AvailableVariable | undefined {
+  get baseDate(): AvailableVariable | undefined {
     const identifier = extractVariableIdentifier(this.value.date, this.variableDelimiters);
     return this.availableVariables.find(v => v.identifier === identifier);
   }
 
-  set from(variable: AvailableVariable | undefined) {
+  set baseDate(variable: AvailableVariable | undefined) {
     const value = `${this.variableDelimiters.start}${variable?.identifier}${this.variableDelimiters.end}`;
     this.$emit('input', { ...this.value, date: value });
   }
@@ -84,7 +84,7 @@ export default class RelativeDateRangeForm extends Vue {
   flex: 1 100%;
 }
 
-.widget-relative-date-range-form__input--from {
+.widget-relative-date-range-form__input--base-date {
   background: white;
   margin: 0;
 
