@@ -1,7 +1,9 @@
 <template>
   <div class="widget-relative-date-range-form">
     <div class="widget-relative-date-range-form__container">
-      <p class="widget-relative-date-range-form__label">From</p>
+      <RelativeDateForm class="widget-relative-date-range-form__input" v-model="to" />
+    </div>
+    <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--from"
         v-model="from"
@@ -10,10 +12,6 @@
         trackBy="identifier"
         label="label"
       />
-    </div>
-    <div class="widget-relative-date-range-form__container">
-      <p class="widget-relative-date-range-form__label">to</p>
-      <RelativeDateForm class="widget-relative-date-range-form__input" v-model="to" />
     </div>
   </div>
 </template>
@@ -80,14 +78,6 @@ export default class RelativeDateRangeForm extends Vue {
   justify-content: center;
   align-items: center;
   margin-bottom: 15px;
-}
-
-.widget-relative-date-range-form__label {
-  flex: 1 0;
-  font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
-  margin-right: 10px;
-  min-width: 40px;
 }
 
 .widget-relative-date-range-form__input {
