@@ -41,11 +41,13 @@ describe('Relative date range form', () => {
         label: 'Today',
       });
     });
-    it('should pass relative date part of value to rangeSize (relative date form) input', () => {
-      expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual({
-        quantity: -1,
-        duration: 'month',
-      });
+    it('should pass relative date part of value to quantity & duration input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__quantity').props('value'),
+      ).toStrictEqual(1);
+      expect(
+        wrapper.find('.widget-relative-date-range-form__duration').props('value'),
+      ).toStrictEqual({ label: 'Months', value: 'month' });
     });
     it('should pass corresponding direction to rangeDirection input', () => {
       expect(
@@ -71,17 +73,31 @@ describe('Relative date range form', () => {
       });
     });
 
-    describe('when rangeSize is updated', () => {
+    describe('when quantity is updated', () => {
       beforeEach(async () => {
-        wrapper
-          .find('RelativeDateForm-stub')
-          .vm.$emit('input', { date, quantity: -2, duration: 'year' });
+        wrapper.find('.widget-relative-date-range-form__quantity').vm.$emit('input', 2);
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated rangeSize', () => {
+      it('should emit value with updated quantity and the right sign', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
           quantity: -2,
+          duration: 'month',
+        });
+      });
+    });
+
+    describe('when duration is updated', () => {
+      beforeEach(async () => {
+        wrapper
+          .find('.widget-relative-date-range-form__duration')
+          .vm.$emit('input', { label: 'Years', value: 'year' });
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated duration', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          date,
+          quantity: -1,
           duration: 'year',
         });
       });
