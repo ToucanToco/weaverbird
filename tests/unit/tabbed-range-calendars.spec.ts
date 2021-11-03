@@ -87,7 +87,7 @@ describe('TabbedRangeCalendars', () => {
               start: new Date('2021-11-01T00:00:00'),
               end: new Date('2022-12-18T00:00:00'),
               duration: 'day',
-            }
+            },
           });
         });
 
