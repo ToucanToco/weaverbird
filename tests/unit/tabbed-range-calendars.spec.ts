@@ -77,6 +77,7 @@ describe('TabbedRangeCalendars', () => {
       expect(wrapper.find('CustomGranularityCalendar-stub').props('granularity')).toBe('year');
     });
   });
+
   describe('with selected value', () => {
     describe('with known granularity', () => {
       beforeEach(async () => {
@@ -112,6 +113,7 @@ describe('TabbedRangeCalendars', () => {
       });
     });
   });
+
   describe('with updated enabled calendars', () => {
     beforeEach(async () => {
       await wrapper.setProps({
