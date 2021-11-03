@@ -170,6 +170,9 @@ export default class CustomGranularityCalendar extends Vue {
     if (this.selectedRangeStart) {
       const range = this.retrieveRangeFromOption(this.selectedRangeStart);
       this.selectRange(range);
+      // update navigation start to retrieve options of same page that selected date range in new granularity
+      // ex: we select 2028 in year tab then switch to month tab, we expect to retrieve 2028's months as options
+      this.currentNavRangeStart = this.selectedRangeStart;
     }
   }
 }

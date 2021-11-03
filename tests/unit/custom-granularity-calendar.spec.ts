@@ -169,6 +169,10 @@ describe('CustomGranularityCalendar', () => {
       expect(emittedDate.end?.toISOString()).toStrictEqual(`2021-03-31T23:59:59.999Z`);
       expect(emittedDate.duration).toBe('quarter');
     });
+
+    it('should update navigation start to retrieve options of same page that selected date range in new granularity', () => {
+      expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('2021');
+    });
   });
 
   // For everything else, only test date related fonction aka the "Granularity Config"
