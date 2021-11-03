@@ -116,6 +116,41 @@ describe('CustomGranularityCalendar', () => {
     });
   });
 
+  describe('range out of bounds', () => {
+    const bounds = {
+      start: new Date('11/15/2021'),
+      end: new Date('12/15/2021'),
+      duration: 'day',
+    };
+
+    beforeEach(() => {
+      createWrapper({
+        granularity: 'month',
+        value: {
+          start: new Date('10/15/2021'),
+          end: new Date('12/15/2021'),
+          duration: 'month',
+        },
+        bounds,
+      });
+    });
+
+    it('should use clamped range instead of raw value', () => {
+      expect(wrapper.find('.custom-granularity-calendar__option--selected').text()).toBe(
+        'November',
+      );
+    });
+
+    it('should emit corresponding clamped range', () => {
+      expect(wrapper.emitted('input')).toHaveLength(1);
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({
+        start: new Date('2021-11-01T00:00:00.000Z'),
+        end: new Date('2021-11-30T23:59:59.999Z'),
+        duration: 'month',
+      });
+    });
+  });
+
   describe('When switching granularity with a selected date range', () => {
     beforeEach(async () => {
       createWrapper({
@@ -128,8 +163,8 @@ describe('CustomGranularityCalendar', () => {
     });
 
     it('should emit an updated selected date range', () => {
-      expect(wrapper.emitted('input')).toHaveLength(1);
-      const emittedDate: DateRange = wrapper.emitted('input')[0][0];
+      expect(wrapper.emitted('input')).toHaveLength(2);
+      const emittedDate: DateRange = wrapper.emitted('input')[1][0];
       expect(emittedDate.start?.toISOString()).toStrictEqual(`2021-01-01T00:00:00.000Z`);
       expect(emittedDate.end?.toISOString()).toStrictEqual(`2021-03-31T23:59:59.999Z`);
       expect(emittedDate.duration).toBe('quarter');

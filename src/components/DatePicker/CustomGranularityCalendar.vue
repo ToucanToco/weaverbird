@@ -51,7 +51,7 @@ import { DateTime } from 'luxon';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import FAIcon from '@/components/FAIcon.vue';
-import { DateRange } from '@/lib/dates';
+import { clampRange, DateRange } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
 
 import { AvailableDuration, GranularityConfig, RANGE_PICKERS } from './GranularityConfigs';
@@ -97,9 +97,14 @@ export default class CustomGranularityCalendar extends Vue {
     return this.pickerConfig.selectableRanges.currentOptions(this.currentNavRangeStart);
   }
 
-  get selectedRangeStart(): DateTime | undefined {
+  get boundedValue(): DateRange | undefined {
     if (!this.value || !this.value.start) return undefined;
-    return this.pickerConfig.selectableRanges.rangeToOption(this.value.start);
+    return clampRange(this.value, this.bounds);
+  }
+
+  get selectedRangeStart(): DateTime | undefined {
+    if (!this.boundedValue?.start) return undefined;
+    return this.pickerConfig.selectableRanges.rangeToOption(this.boundedValue.start);
   }
 
   // A period is disabled if it has no overlap with the bounds
@@ -141,6 +146,7 @@ export default class CustomGranularityCalendar extends Vue {
 
   created() {
     if (this.selectedRangeStart) this.currentNavRangeStart = this.selectedRangeStart;
+    this.updateSelectedRange();
   }
 
   selectPreviousNavRange() {
@@ -155,7 +161,7 @@ export default class CustomGranularityCalendar extends Vue {
     return this.pickerConfig.selectableRanges.optionToRange(date);
   }
 
-  selectRange(range: Required<DateRange>) {
+  selectRange(range: DateRange) {
     this.$emit('input', range);
   }
 
