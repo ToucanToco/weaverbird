@@ -1,6 +1,6 @@
 <template>
   <DatePicker
-    :value="value"
+    :value="boundedValue"
     :availableDates="availableDates"
     :attributes="highlights"
     :select-attribute="selectedDatesStyle"
@@ -16,10 +16,11 @@
 </template>
 
 <script lang="ts">
+import _isEqual from 'lodash/isEqual';
 import DatePicker from 'v-calendar/src/components/DatePicker.vue';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
-import { DatePickerHighlight, DateRange } from '@/lib/dates';
+import { clampRange, DatePickerHighlight, DateRange, isDateRange } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
 
 @Component({
@@ -46,8 +47,21 @@ export default class Calendar extends Vue {
 
   defaultDate: '' | Date = '';
 
+  get boundedValue(): Date | DateRange | undefined {
+    if (
+      !(this.value instanceof Date) &&
+      isDateRange(this.value) &&
+      isDateRange(this.availableDates)
+    ) {
+      return clampRange(this.value, this.availableDates);
+    }
+    return this.value;
+  }
+
   get shouldUpdateDefaultDate(): boolean {
-    return !this.value || (!(this.value instanceof Date) && !this.value?.start);
+    return (
+      !this.boundedValue || (!(this.boundedValue instanceof Date) && !this.boundedValue?.start)
+    );
   }
 
   get selectedDatesStyle(): DatePickerHighlight {
@@ -83,6 +97,10 @@ export default class Calendar extends Vue {
   created() {
     if (this.shouldUpdateDefaultDate) {
       this.defaultDate = this.availableDates?.start ?? '';
+    }
+
+    if (!_isEqual(this.boundedValue, this.value)) {
+      this.onInput(this.boundedValue);
     }
   }
 

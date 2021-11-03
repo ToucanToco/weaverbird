@@ -72,6 +72,34 @@ describe('Calendar', () => {
       (wrapper.vm as any).onDrag(value); // drag event is not found by stub
       expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start, duration: 'day' });
     });
+
+    describe('range out of bounds', () => {
+      const bounds = {
+        start: new Date('2021-11-15T00:00:00'),
+        end: new Date('2021-12-15T00:00:00'),
+        duration: 'day',
+      };
+
+      beforeEach(() => {
+        createWrapper({
+          value: {
+            start: new Date('2021-11-01T00:00:00'),
+            end: new Date('2022-12-18T00:00:00'),
+            duration: 'day',
+          },
+          availableDates: bounds,
+          isRange: true,
+        });
+      });
+
+      it('should use clamped range instead of raw value', () => {
+        expect(wrapper.find(DatePicker).props('value')).toStrictEqual(bounds);
+      });
+
+      it('should emit clamped range', () => {
+        expect(wrapper.emitted('input')[0][0]).toStrictEqual(bounds);
+      });
+    });
   });
 
   describe('with highlighted dates', () => {
