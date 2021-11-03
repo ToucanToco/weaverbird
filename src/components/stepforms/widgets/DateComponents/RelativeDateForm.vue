@@ -43,7 +43,10 @@ export default class RelativeDateForm extends Vue {
   }
 
   get durations(): DurationOption[] {
-    return DEFAULT_DURATIONS;
+    return DEFAULT_DURATIONS.map(duration => ({
+      ...duration,
+      label: duration.label + ' ago',
+    }));
   }
 
   get duration(): DurationOption | undefined {

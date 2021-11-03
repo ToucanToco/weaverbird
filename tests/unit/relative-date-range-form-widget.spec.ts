@@ -33,29 +33,34 @@ describe('Relative date range form', () => {
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
     });
-    it('should use an autocomplete input for from part', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
-    });
-    it('should use a RelativeDateForm for to part', () => {
-      expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
-    });
-    it('should pass option refering to date value to autocomplete input', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
+    it('should pass option referring to date value to baseDate input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
+      ).toStrictEqual({
         identifier: 'today',
         label: 'Today',
       });
     });
-    it('should pass relative date part of value to relative date form input', () => {
-      expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual({
-        quantity: -1,
-        duration: 'month',
-      });
+    it('should pass relative date part of value to quantity & duration input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__quantity').props('value'),
+      ).toStrictEqual(1);
+      expect(
+        wrapper.find('.widget-relative-date-range-form__duration').props('value'),
+      ).toStrictEqual({ label: 'Months', value: 'month' });
+    });
+    it('should pass corresponding direction to rangeDirection input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
+      ).toStrictEqual({ label: 'before', value: -1 });
     });
 
-    describe('when from is updated', () => {
+    describe('when baseDate is updated', () => {
       const selectedDateVariable = SAMPLE_VARIABLES[1];
       beforeEach(async () => {
-        wrapper.find('AutocompleteWidget-stub').vm.$emit('input', selectedDateVariable);
+        wrapper
+          .find('.widget-relative-date-range-form__input--base-date')
+          .vm.$emit('input', selectedDateVariable);
         await wrapper.vm.$nextTick();
       });
       it('should emit value with updated date with delimiters', () => {
@@ -68,18 +73,48 @@ describe('Relative date range form', () => {
       });
     });
 
-    describe('when to is updated', () => {
+    describe('when quantity is updated', () => {
       beforeEach(async () => {
-        wrapper
-          .find('RelativeDateForm-stub')
-          .vm.$emit('input', { date, quantity: -2, duration: 'year' });
+        wrapper.find('.widget-relative-date-range-form__quantity').vm.$emit('input', 2);
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated to', () => {
+      it('should emit value with updated quantity and the right sign', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
           quantity: -2,
+          duration: 'month',
+        });
+      });
+    });
+
+    describe('when duration is updated', () => {
+      beforeEach(async () => {
+        wrapper
+          .find('.widget-relative-date-range-form__duration')
+          .vm.$emit('input', { label: 'Years', value: 'year' });
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated duration', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          date,
+          quantity: -1,
           duration: 'year',
+        });
+      });
+    });
+
+    describe('when rangeDirection is updated', () => {
+      beforeEach(async () => {
+        wrapper
+          .find('.widget-relative-date-range-form__input--direction')
+          .vm.$emit('input', { label: 'after', value: +1 });
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated rangeDirection', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          date,
+          quantity: 1,
+          duration: 'month',
         });
       });
     });
@@ -93,13 +128,22 @@ describe('Relative date range form', () => {
       expect((wrapper.vm as any).value).toStrictEqual({ date: '', quantity: -1, duration: 'year' });
     });
     it('should set available variables to empty array', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([]);
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().options,
+      ).toStrictEqual([]);
     });
     it('should set variable delimiters to empty strings', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
     });
-    it('should pass empty string as value to autocomplete input', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual('');
+    it('should pass empty string as value to baseDate input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
+      ).toStrictEqual('');
+    });
+    it('should pass "before" as default value to rangeDirection input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
+      ).toStrictEqual({ label: 'before', value: -1 });
     });
   });
 });

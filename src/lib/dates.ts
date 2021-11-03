@@ -39,11 +39,11 @@ export type CustomDate = Date | RelativeDate;
 export type CustomDateRange = DateRange | RelativeDateRange;
 
 export const DEFAULT_DURATIONS: DurationOption[] = [
-  { label: 'Years ago', value: 'year' },
-  { label: 'Quarters ago', value: 'quarter' },
-  { label: 'Months ago', value: 'month' },
-  { label: 'Weeks ago', value: 'week' },
-  { label: 'Days ago', value: 'day' },
+  { label: 'Years', value: 'year' },
+  { label: 'Quarters', value: 'quarter' },
+  { label: 'Months', value: 'month' },
+  { label: 'Weeks', value: 'week' },
+  { label: 'Days', value: 'day' },
 ];
 
 export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR = ' - ';
@@ -106,11 +106,15 @@ export const dateRangeToString = (dateRange: DateRange, locale?: LocaleIdentifie
 };
 
 /* istanbul ignore next */
-export const relativeDateToString = (relativeDate: RelativeDate): string => {
+export const relativeDateToString = (
+  relativeDate: RelativeDate,
+  suffixes = { before: 'ago', after: '' },
+): string => {
   const duration: string | undefined = DEFAULT_DURATIONS.find(
     d => d.value === relativeDate.duration,
   )?.label;
-  return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
+  const suffix = ' ' + (relativeDate.quantity < 0 ? suffixes.before : suffixes.after);
+  return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}${suffix.trimEnd()}`;
 };
 
 /* istanbul ignore next */
@@ -120,9 +124,15 @@ export const relativeDateRangeToString = (
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): string => {
   const identifier = extractVariableIdentifier(relativeDateRange.date, variableDelimiters);
-  const from = availableVariables.find(v => v.identifier === identifier)?.label;
-  const to = _pick(relativeDateRange, ['quantity', 'duration']);
-  return `${from}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${relativeDateToString(to)}`;
+  const baseDateLabel = availableVariables.find(v => v.identifier === identifier)?.label;
+  const relativeDate = _pick(relativeDateRange, ['quantity', 'duration']);
+  const relativeDateLabel = relativeDateToString(relativeDate, {
+    before: 'before',
+    after: 'after',
+  });
+  return relativeDate.quantity > 0
+    ? `${baseDateLabel}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${relativeDateLabel}`
+    : `${relativeDateLabel}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
 };
 
 export const isRelativeDateRange = (

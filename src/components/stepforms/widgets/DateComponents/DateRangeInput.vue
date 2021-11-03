@@ -450,7 +450,7 @@ export default class DateRangeInput extends Vue {
   }
   .widget-relative-date-range-form {
     margin: 20px;
-    max-width: 400px;
+    width: 400px;
   }
 }
 .widget-date-input__editor-footer {

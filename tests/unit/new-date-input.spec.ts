@@ -283,7 +283,7 @@ describe('Date input', () => {
   });
 
   describe('with selected value as relative date', () => {
-    const value = { quantity: 1, duration: 'month' };
+    const value = { quantity: -1, duration: 'month' };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
