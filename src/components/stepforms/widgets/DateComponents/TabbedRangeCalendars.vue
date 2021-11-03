@@ -58,6 +58,10 @@ export default class TabbedRangeCalendars extends Vue {
 
   selectedTab = this.enabledCalendars[0];
 
+  created() {
+    this.updateTabForCurrentValue();
+  }
+
   @Watch('enabledCalendars')
   onEnabledCalendarsChange() {
     if (!this.value.duration || !this.enabledCalendars.includes(this.value.duration)) {
@@ -67,9 +71,7 @@ export default class TabbedRangeCalendars extends Vue {
 
   @Watch('value')
   onValueChange() {
-    if (this.value.duration && this.enabledCalendars.includes(this.value.duration)) {
-      this.selectTab(this.value.duration);
-    }
+    this.updateTabForCurrentValue();
   }
 
   get currentValue(): CustomDateRange {
@@ -82,6 +84,12 @@ export default class TabbedRangeCalendars extends Vue {
 
   get calendarGranularity(): string | undefined {
     return this.selectedTab !== 'day' ? this.selectedTab : undefined;
+  }
+
+  updateTabForCurrentValue() {
+    if (this.value.duration && this.enabledCalendars.includes(this.value.duration)) {
+      this.selectTab(this.value.duration);
+    }
   }
 
   selectTab(tab: string) {

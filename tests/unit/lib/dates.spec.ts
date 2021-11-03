@@ -1,5 +1,7 @@
 import {
+  clampRange,
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
+  DateRange,
   dateRangeToString,
   dateToString,
   isDateRange,
@@ -177,5 +179,60 @@ describe('isDateRange', () => {
   });
   it('should return true if value is a full date range', () => {
     expect(isDateRange({ start: new Date(), end: new Date(1) })).toBe(true);
+  });
+});
+
+describe('clampRange', () => {
+  const bounds: DateRange = {
+    start: new Date('2021-11-15T00:00:00'),
+    end: new Date('2021-12-15T00:00:00'),
+    duration: 'day',
+  };
+
+  it('should left untouched range completely contain in bound', () => {
+    const rangeInBounds: DateRange = {
+      start: new Date('2021-11-16T00:00:00'),
+      end: new Date('2021-11-18T00:00:00'),
+      duration: 'day',
+    };
+    expect(clampRange(rangeInBounds, bounds)).toStrictEqual(rangeInBounds);
+  });
+  it('should clamp range overlapping with left bound', () => {
+    const rangeOutOfLeftBound: DateRange = {
+      start: new Date('2021-11-01T00:00:00'),
+      end: new Date('2021-11-18T00:00:00'),
+      duration: 'day',
+    };
+    expect(clampRange(rangeOutOfLeftBound, bounds)).toStrictEqual({
+      ...rangeOutOfLeftBound,
+      start: bounds.start,
+    });
+  });
+  it('should clamp range overlapping with right bound', () => {
+    const rangeOutOfRightBound: DateRange = {
+      start: new Date('2021-11-15T00:00:00'),
+      end: new Date('2022-01-18T00:00:00'),
+      duration: 'day',
+    };
+    expect(clampRange(rangeOutOfRightBound, bounds)).toStrictEqual({
+      ...rangeOutOfRightBound,
+      end: bounds.end,
+    });
+  });
+  it('should clamp range overlapping both bounds', () => {
+    const rangeOutOfBounds: DateRange = {
+      start: new Date('2021-11-01T00:00:00'),
+      end: new Date('2022-12-18T00:00:00'),
+      duration: 'day',
+    };
+    expect(clampRange(rangeOutOfBounds, bounds)).toStrictEqual(bounds);
+  });
+  it('should throw an error when range it completely out of bounds without any overlap', () => {
+    const rangeOutOfBounds: DateRange = {
+      start: new Date('2022-11-16T00:00:00'),
+      end: new Date('2022-11-18T00:00:00'),
+      duration: 'day',
+    };
+    expect(() => clampRange(rangeOutOfBounds, bounds)).toThrow();
   });
 });

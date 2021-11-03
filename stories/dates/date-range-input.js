@@ -262,8 +262,8 @@ stories.add('custom (with bounds)', () => ({
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
-      value: { start: new Date('2021/1/1'), end: new Date('2021/1/5') },
-      bounds: { start: new Date('2021/1/2'), end: new Date('2021/10/4') },
+      value: { start: new Date('2021/2/1'), end: new Date('2021/2/5') },
+      bounds: { start: new Date('2021/2/2'), end: new Date('2021/10/4') },
       actualRangeValue: undefined,
     };
   },

@@ -77,41 +77,62 @@ describe('TabbedRangeCalendars', () => {
       expect(wrapper.find('CustomGranularityCalendar-stub').props('granularity')).toBe('year');
     });
   });
-  describe('with selected value', () => {
-    describe('with known granularity', () => {
-      beforeEach(async () => {
-        createWrapper();
-        await wrapper.setProps({
-          value: {
-            start: new Date(Date.UTC(2012, 0, 1)),
-            end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
-            duration: 'year',
-          },
-        });
-      });
 
-      it('should select the appropriate tab', () => {
-        expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('year');
+  describe('with selected value', () => {
+    describe('on create', () => {
+      describe('with a day range', () => {
+        beforeEach(async () => {
+          await createWrapper({
+            value: {
+              start: new Date('2021-11-01T00:00:00'),
+              end: new Date('2022-12-18T00:00:00'),
+              duration: 'day',
+            },
+          });
+        });
+
+        it('should select the day Calendar', () => {
+          expect(wrapper.find('Calendar-stub').isVisible()).toBe(true);
+        });
       });
     });
+    describe('on update', () => {
+      describe('with known granularity', () => {
+        beforeEach(async () => {
+          createWrapper();
+          await wrapper.setProps({
+            value: {
+              start: new Date(Date.UTC(2012, 0, 1)),
+              end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
+              duration: 'year',
+            },
+          });
+        });
 
-    describe('with unknown granularity', () => {
-      beforeEach(async () => {
-        createWrapper();
-        await wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'day');
-        await wrapper.setProps({
-          value: {
-            start: new Date(Date.UTC(2012, 0, 1)),
-            end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
-          },
+        it('should select the appropriate tab', () => {
+          expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('year');
         });
       });
 
-      it('should stay on the already selected tab', () => {
-        expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('day');
+      describe('with unknown granularity', () => {
+        beforeEach(async () => {
+          createWrapper();
+          await wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'day');
+          await wrapper.setProps({
+            value: {
+              start: new Date(Date.UTC(2012, 0, 1)),
+              end: new Date(Date.UTC(2012, 11, 31, 23, 59, 59, 999)),
+            },
+          });
+        });
+
+        it('should stay on the already selected tab', () => {
+          expect(wrapper.find('Tabs-stub').props('selectedTab')).toBe('day');
+        });
       });
     });
   });
+
   describe('with updated enabled calendars', () => {
     beforeEach(async () => {
       await wrapper.setProps({
