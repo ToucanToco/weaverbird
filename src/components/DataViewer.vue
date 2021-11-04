@@ -84,7 +84,7 @@
           </tbody>
         </table>
       </div>
-      <Pagination :dataset="dataset" />
+      <Pagination :dataset="dataset" @setPage="setCurrentPage" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
@@ -150,6 +150,8 @@ export default class DataViewer extends Vue {
   }) => void;
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
+
+  @VQBModule.Action setCurrentPage!: ({ pageno }: { pageno: number }) => void;
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';

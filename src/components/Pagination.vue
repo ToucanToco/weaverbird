@@ -26,7 +26,6 @@ import Paginate from 'vuejs-paginate';
 
 import { DataSet } from '@/lib/dataset';
 import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
-import { VQBModule } from '@/store';
 
 @Component({
   name: 'pagination',
@@ -37,8 +36,6 @@ import { VQBModule } from '@/store';
 export default class Pagination extends Vue {
   @Prop({ required: true })
   dataset!: DataSet;
-
-  @VQBModule.Action setCurrentPage;
 
   get showPager(): boolean {
     return this.pageCount > 1;
@@ -73,7 +70,7 @@ export default class Pagination extends Vue {
   }
 
   pageClicked(pageno: number) {
-    this.setCurrentPage({ pageno });
+    this.$emit('setPage', { pageno });
   }
 }
 </script>
