@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
 
 import { DataSet } from '@/lib/dataset';
@@ -35,7 +35,8 @@ import { VQBModule } from '@/store';
   },
 })
 export default class Pagination extends Vue {
-  @VQBModule.State dataset!: DataSet;
+  @Prop({ required: true })
+  dataset!: DataSet;
 
   @VQBModule.Action setCurrentPage;
 

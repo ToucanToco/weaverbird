@@ -84,7 +84,7 @@
           </tbody>
         </table>
       </div>
-      <Pagination />
+      <Pagination :dataset="dataset" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
