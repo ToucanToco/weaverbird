@@ -1,26 +1,19 @@
 import { mount, shallowMount } from '@vue/test-utils';
 
 import Pagination from '@/components/Pagination.vue';
-import { DataSet } from '@/lib/dataset';
+import { PaginationContext } from '@/lib/dataset/pagination';
 
-const sampleDataset: DataSet = {
-  headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-  data: [
-    ['Paris', 10000000, true],
-    ['Marseille', 3000000, false],
-  ],
-  paginationContext: {
-    totalCount: 7,
-    pageno: 1,
-    pagesize: 2,
-  },
+const samplePaginationContext: PaginationContext = {
+  totalCount: 7,
+  pageno: 1,
+  pagesize: 2,
 };
 
 describe('Pagination Component', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(Pagination, {
       propsData: {
-        dataset: sampleDataset,
+        paginationContext: samplePaginationContext,
       },
     });
     expect(wrapper.exists()).toBeTruthy();
@@ -29,7 +22,7 @@ describe('Pagination Component', () => {
   it('should display correct number of pagination links', () => {
     const wrapper = mount(Pagination, {
       propsData: {
-        dataset: sampleDataset,
+        paginationContext: samplePaginationContext,
       },
     });
     const links = wrapper
@@ -48,7 +41,7 @@ describe('Pagination Component', () => {
   it('should emit event when selecting a page', () => {
     const wrapper = mount(Pagination, {
       propsData: {
-        dataset: sampleDataset,
+        paginationContext: samplePaginationContext,
       },
     });
     wrapper
@@ -61,7 +54,7 @@ describe('Pagination Component', () => {
   it('should instantiate the counter', () => {
     const wrapper = mount(Pagination, {
       propsData: {
-        dataset: sampleDataset,
+        paginationContext: samplePaginationContext,
       },
     });
     const wrapperCounter = wrapper.find('.pagination-counter');
@@ -71,10 +64,7 @@ describe('Pagination Component', () => {
   it('should hide the pagination navigation if there is only one page', () => {
     const wrapper = mount(Pagination, {
       propsData: {
-        dataset: {
-          ...sampleDataset,
-          paginationContext: { ...sampleDataset.paginationContext, totalCount: 2 },
-        },
+        paginationContext: { ...samplePaginationContext, totalCount: 2 },
       },
     });
     expect(wrapper.find('.pagination__list').exists()).toBeFalsy();
@@ -88,13 +78,10 @@ describe('Pagination Component', () => {
     const paginationNavigationExistsOnpageIndex = function(pageno: number): boolean {
       const wrapper = mount(Pagination, {
         propsData: {
-          dataset: {
-            ...sampleDataset,
-            paginationContext: {
-              totalCount,
-              pagesize,
-              pageno,
-            },
+          paginationContext: {
+            totalCount,
+            pagesize,
+            pageno,
           },
         },
       });

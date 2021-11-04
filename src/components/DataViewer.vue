@@ -84,7 +84,7 @@
           </tbody>
         </table>
       </div>
-      <Pagination :dataset="dataset" @setPage="setCurrentPage" />
+      <Pagination :paginationContext="dataset.paginationContext" @setPage="setCurrentPage" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
