@@ -1,58 +1,37 @@
-import { createLocalVue, mount, shallowMount } from '@vue/test-utils';
-import Vuex from 'vuex';
+import { mount, shallowMount } from '@vue/test-utils';
 
 import Pagination from '@/components/Pagination.vue';
-import { BackendService } from '@/lib/backend';
-import { PipelinesScopeContext } from '@/lib/dereference-pipeline';
-import { Pipeline } from '@/lib/steps';
+import { DataSet } from '@/lib/dataset';
 
-import { buildStateWithOnePipeline, setupMockStore } from './utils';
-
-const localVue = createLocalVue();
-localVue.use(Vuex);
-
-const executePipelineMock = jest.fn();
-
-class DummyService implements BackendService {
-  listCollections() {
-    return Promise.resolve({ data: ['foo', 'bar'] });
-  }
-
-  executePipeline(
-    _pipeline: Pipeline,
-    _pipelines: PipelinesScopeContext,
-    limit: number,
-    offset: number,
-  ) {
-    executePipelineMock(limit, offset);
-    return Promise.resolve({ data: { headers: [], data: [] } });
-  }
-}
+const sampleDataset: DataSet = {
+  headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
+  data: [
+    ['Paris', 10000000, true],
+    ['Marseille', 3000000, false],
+  ],
+  paginationContext: {
+    totalCount: 7,
+    pageno: 1,
+    pagesize: 2,
+  },
+};
 
 describe('Pagination Component', () => {
   it('should instantiate', () => {
-    const store = setupMockStore();
-    const wrapper = shallowMount(Pagination, { localVue, store });
+    const wrapper = shallowMount(Pagination, {
+      propsData: {
+        dataset: sampleDataset,
+      },
+    });
     expect(wrapper.exists()).toBeTruthy();
   });
 
   it('should display correct number of pagination links', () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-        data: [
-          ['Paris', 10000000, true],
-          ['Marseille', 3000000, false],
-        ],
-        paginationContext: {
-          totalCount: 7,
-          pageno: 1,
-          pagesize: 2,
-        },
+    const wrapper = mount(Pagination, {
+      propsData: {
+        dataset: sampleDataset,
       },
-      pagesize: 2,
     });
-    const wrapper = mount(Pagination, { localVue, store });
     const links = wrapper
       .findAll('.pagination__list li')
       .wrappers.map(lw => ({ classes: lw.classes(), text: lw.text() }));
@@ -66,73 +45,38 @@ describe('Pagination Component', () => {
     ]);
   });
 
-  it('should call executePipeline with limit / offset on backend service', () => {
-    const pagesize = 2;
-    const store = setupMockStore({
-      ...buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
-        dataset: {
-          headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-          data: [
-            ['Paris', 10000000, true],
-            ['Marseille', 3000000, false],
-          ],
-          paginationContext: {
-            totalCount: 7,
-            pageno: 1,
-            pagesize,
-          },
-        },
-        pagesize,
-      }),
-      backendService: new DummyService(),
+  it('should emit event when selecting a page', () => {
+    const wrapper = mount(Pagination, {
+      propsData: {
+        dataset: sampleDataset,
+      },
     });
-    const wrapper = mount(Pagination, { localVue, store });
     wrapper
       .findAll('.pagination__list li a')
       .at(3)
       .trigger('click');
-    // click on "page 3" ⇒ offset = 4, limit = 2
-    expect(executePipelineMock).toHaveBeenCalledWith(pagesize, pagesize * 2);
+    expect(wrapper.emitted('setPage')[0][0]).toStrictEqual({ pageno: 3 });
   });
 
   it('should instantiate the counter', () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-        data: [
-          ['Paris', 10000000, true],
-          ['Marseille', 3000000, false],
-        ],
-        paginationContext: {
-          totalCount: 7,
-          pageno: 1,
-          pagesize: 2,
-        },
+    const wrapper = mount(Pagination, {
+      propsData: {
+        dataset: sampleDataset,
       },
-      pagesize: 2,
     });
-    const wrapper = mount(Pagination, { localVue, store });
     const wrapperCounter = wrapper.find('.pagination-counter');
     expect(wrapperCounter.exists()).toBeTruthy();
   });
 
   it('should hide the pagination navigation if there is only one page', () => {
-    const store = setupMockStore({
-      dataset: {
-        headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-        data: [
-          ['Paris', 10000000, true],
-          ['Marseille', 3000000, false],
-        ],
-        paginationContext: {
-          totalCount: 2,
-          pageno: 1,
-          pagesize: 2,
+    const wrapper = mount(Pagination, {
+      propsData: {
+        dataset: {
+          ...sampleDataset,
+          paginationContext: { ...sampleDataset.paginationContext, totalCount: 2 },
         },
       },
-      pagesize: 2,
     });
-    const wrapper = mount(Pagination, { localVue, store });
     expect(wrapper.find('.pagination__list').exists()).toBeFalsy();
     expect(wrapper.find('.pagination-counter__current-min').exists()).toBeFalsy();
     expect(wrapper.find('.pagination-counter__current-max').exists()).toBeFalsy();
@@ -142,22 +86,18 @@ describe('Pagination Component', () => {
     const pagesize = 50;
     const totalCount = 400;
     const paginationNavigationExistsOnpageIndex = function(pageno: number): boolean {
-      const store = setupMockStore({
-        dataset: {
-          headers: [{ name: 'city' }, { name: 'population' }, { name: 'isCapitalCity' }],
-          data: [
-            ['Paris', 10000000, true],
-            ['Marseille', 3000000, false],
-          ],
-          paginationContext: {
-            totalCount,
-            pagesize,
-            pageno,
+      const wrapper = mount(Pagination, {
+        propsData: {
+          dataset: {
+            ...sampleDataset,
+            paginationContext: {
+              totalCount,
+              pagesize,
+              pageno,
+            },
           },
         },
-        pagesize,
       });
-      const wrapper = mount(Pagination, { localVue, store });
       return wrapper.find('.pagination__list').exists();
     };
     it('should display pagination navigation on first page', () => {
