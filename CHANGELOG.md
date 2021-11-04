@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.73.0] - 2021-11-04
+
+### Fixed
+
+- v-calendar: CSS is now properly included in build
+- DateRangeInput: properly take bound into account when switching calendars
+- DateRangeInput: properly take selection years into account when switching calendars
+
+### Added
+
+- DateRangeInput: reset button
+- DateRangeInput: add before/after field in relative date range form
+
 ## [0.72.1] - 2021-10-29
 
 ### Fixed
@@ -1082,6 +1095,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.73.0]: https://github.com/ToucanToco/weaverbird/compare/v0.72.1...v0.73.0
 [0.72.1]: https://github.com/ToucanToco/weaverbird/compare/v0.72.0...v0.72.1
 [0.72.0]: https://github.com/ToucanToco/weaverbird/compare/v0.71.0...v0.72.0
 [0.71.0]: https://github.com/ToucanToco/weaverbird/compare/v0.70.0...v0.71.0
