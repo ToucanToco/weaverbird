@@ -21,6 +21,7 @@ import '@/lib/icons';
 // export Vue components
 import DataViewer from '@/components/DataViewer.vue';
 import FilterEditor from '@/components/FilterEditor.vue';
+import Pagination from '@/components/Pagination.vue';
 import PipelineSelector from '@/components/PipelineSelector.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
@@ -38,6 +39,7 @@ export {
   FilterEditor,
   NewDateInput,
   DateRangeInput,
+  Pagination,
 };
 
 // export helpers/utils
