@@ -101,8 +101,8 @@ export default class RelativeDateRangeForm extends Vue {
 
   get directions() {
     return [
-      { label: 'before', value: -1 },
-      { label: 'after', value: +1 },
+      { label: 'until', value: -1 },
+      { label: 'from', value: +1 },
     ];
   }
 

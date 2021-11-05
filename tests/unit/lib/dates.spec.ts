@@ -147,12 +147,12 @@ describe('relativeDateRangeToString', () => {
   it('should transform a relative date range to a readable label', () => {
     const value: RelativeDateRange = { date: '{{tomorrow}}', quantity: -2, duration: 'month' };
     expect(relativeDateRangeToString(value, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      `2 months before${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
+      `2 months until${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
     );
 
     const value2: RelativeDateRange = { date: '{{tomorrow}}', quantity: 2, duration: 'month' };
     expect(relativeDateRangeToString(value2, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      `Tomorrow${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}2 months after`,
+      `2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
     );
   });
 });
