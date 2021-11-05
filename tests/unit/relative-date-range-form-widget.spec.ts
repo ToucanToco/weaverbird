@@ -52,7 +52,7 @@ describe('Relative date range form', () => {
     it('should pass corresponding direction to rangeDirection input', () => {
       expect(
         wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
-      ).toStrictEqual({ label: 'before', value: -1 });
+      ).toStrictEqual({ label: 'until', value: -1 });
     });
 
     describe('when baseDate is updated', () => {
@@ -107,7 +107,7 @@ describe('Relative date range form', () => {
       beforeEach(async () => {
         wrapper
           .find('.widget-relative-date-range-form__input--direction')
-          .vm.$emit('input', { label: 'after', value: +1 });
+          .vm.$emit('input', { label: 'from', value: +1 });
         await wrapper.vm.$nextTick();
       });
       it('should emit value with updated rangeDirection', () => {
@@ -143,7 +143,7 @@ describe('Relative date range form', () => {
     it('should pass "before" as default value to rangeDirection input', () => {
       expect(
         wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
-      ).toStrictEqual({ label: 'before', value: -1 });
+      ).toStrictEqual({ label: 'until', value: -1 });
     });
   });
 });
