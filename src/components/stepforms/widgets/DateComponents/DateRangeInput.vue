@@ -377,18 +377,16 @@ export default class DateRangeInput extends Vue {
 .widget-date-input__reset-button {
   padding: 10px 15px;
   cursor: pointer;
-  color: $grey-medium;
+  opacity: 0.5;
 
   &:hover {
-    color: $grey-dark;
+    opacity: 1;
   }
 }
 
 .widget-date-input__reset-button-icon {
   height: 1em;
   width: 1em;
-  background: $grey-extra-light;
-  border-radius: 100%;
 }
 
 .widget-date-input__type-icon {
@@ -488,7 +486,8 @@ export default class DateRangeInput extends Vue {
 }
 
 .widget-date-input--colored-background {
-  .widget-date-input__label {
+  .widget-date-input__label,
+  .widget-date-input__reset-button {
     color: white;
   }
   .widget-date-input__container {
