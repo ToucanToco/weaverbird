@@ -127,12 +127,10 @@ export const relativeDateRangeToString = (
   const baseDateLabel = availableVariables.find(v => v.identifier === identifier)?.label;
   const relativeDate = _pick(relativeDateRange, ['quantity', 'duration']);
   const relativeDateLabel = relativeDateToString(relativeDate, {
-    before: 'before',
-    after: 'after',
+    before: 'until',
+    after: 'from',
   });
-  return relativeDate.quantity > 0
-    ? `${baseDateLabel}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${relativeDateLabel}`
-    : `${relativeDateLabel}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
+  return `${relativeDateLabel}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
 };
 
 export const isRelativeDateRange = (
