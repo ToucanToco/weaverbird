@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- export DataViewer Pagination component
+
 ## [0.73.0] - 2021-11-04
 
 ### Fixed
