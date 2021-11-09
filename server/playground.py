@@ -22,12 +22,11 @@ from glob import glob
 from os.path import basename, splitext
 
 import pandas as pd
-from quart import Quart, Response, jsonify, request, send_from_directory
 from pymongo import MongoClient
+from quart import Quart, Response, jsonify, request, send_from_directory
 
-from weaverbird.backends.pandas_executor.pipeline_executor import (
-    preview_pipeline as pandas_preview_pipeline,
-)
+from weaverbird.backends.pandas_executor.pipeline_executor import \
+    preview_pipeline as pandas_preview_pipeline
 from weaverbird.pipeline import Pipeline
 
 app = Quart(__name__)
@@ -74,7 +73,8 @@ async def handle_pandas_backend_request():
     elif request.method == 'POST':
         try:
             return Response(
-                execute_pipeline(await request.get_json(), **request.args), mimetype='application/json'
+                execute_pipeline(await request.get_json(), **request.args),
+                mimetype='application/json',
             )
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
