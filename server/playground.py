@@ -25,8 +25,9 @@ import pandas as pd
 from pymongo import MongoClient
 from quart import Quart, Response, jsonify, request, send_from_directory
 
-from weaverbird.backends.pandas_executor.pipeline_executor import \
-    preview_pipeline as pandas_preview_pipeline
+from weaverbird.backends.pandas_executor.pipeline_executor import (
+    preview_pipeline as pandas_preview_pipeline,
+)
 from weaverbird.pipeline import Pipeline
 
 app = Quart(__name__)
