@@ -12,7 +12,7 @@ Routes:
 - `/snowflake`: not implemented yet
 - `/health`: simple health check
 
-Run it with `FLASK_APP=playground FLASK_ENV=development flask run`
+Run it with `QUART_APP=playground QUART_ENV=development quart run`
 
 Environment variables:
 - for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
