@@ -10,6 +10,7 @@ Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it
 - a set of **BackEnds** to use those pipelines :
   - the MongoDB Translator that generate Mongo Queries, written in TypeScript
   - the Pandas Executor that compute the result using Pandas dataframes, written in Python
+  - the Snowflake SQL translator, written in Python
 
 For in depth user & technical documentation, have a look at weaverbird.toucantoco.com  
 or at the documentation's source files in the `docs` directory.
