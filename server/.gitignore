@@ -7,7 +7,6 @@ __pycache__/
 build/
 dist/
 *.egg-info/
-poetry.lock
 
 # Unit test / coverage reports
 .pytest_cache/
