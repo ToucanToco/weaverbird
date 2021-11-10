@@ -14,7 +14,7 @@ Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it
 For in depth user & technical documentation, have a look at weaverbird.toucantoco.com  
 or at the documentation's source files in the `docs` directory.
 
-Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird.herokuapp.com)** !
+Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird-playground.onrender.com)**!
 
 ## Badges
 
