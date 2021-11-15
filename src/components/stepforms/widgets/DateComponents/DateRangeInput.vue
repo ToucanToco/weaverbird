@@ -20,6 +20,7 @@
     </div>
     <popover
       class="widget-date-input__editor"
+      :class="{ 'widget-date-input__editor--compact': compactMode }"
       :alwaysOpened="alwaysOpened"
       :visible="isEditorOpened"
       :align="popoverAlignement"
@@ -59,6 +60,7 @@
                 :enabledCalendars="enabledCalendars"
                 :bounds="boundsAsDateRange"
                 :locale="locale"
+                :compactMode="compactMode"
               />
             </div>
             <RelativeDateRangeForm
@@ -464,6 +466,7 @@ export default class DateRangeInput extends Vue {
   justify-content: space-between;
   flex: 1 100%;
   border-left: 1px solid #eeedf0;
+  width: 100%;
 }
 .widget-date-input__editor-header {
   flex: 0;
@@ -476,11 +479,6 @@ export default class DateRangeInput extends Vue {
   flex: 1;
   height: 278px;
   min-height: 278px;
-  .vc-container {
-    border: none;
-    margin: 1px;
-    width: 100%;
-  }
   .widget-relative-date-range-form {
     margin: 20px;
     width: 400px;
@@ -550,5 +548,9 @@ export default class DateRangeInput extends Vue {
   .widget-date-input__label {
     padding-right: 0;
   }
+}
+
+.widget-date-input__editor--compact {
+  max-width: calc(100% - 20px);
 }
 </style>

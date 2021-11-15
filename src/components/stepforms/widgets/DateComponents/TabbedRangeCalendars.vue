@@ -1,11 +1,12 @@
 <template>
-  <div>
+  <div :class="{ 'tabbed-ranged-calendar--compact': compactMode }">
     <Tabs
       v-if="enabledCalendars.length > 1"
       :tabs="enabledCalendars"
       :selectedTab="selectedTab"
       @tabSelected="selectTab"
       :format-tab="translateTab"
+      :compactMode="compactMode"
     />
     <div class="widget-multi-date-input__body">
       <Calendar
@@ -21,6 +22,7 @@
         :granularity="calendarGranularity"
         :bounds="bounds"
         :locale="locale"
+        :compactMode="compactMode"
       />
     </div>
   </div>
@@ -55,6 +57,9 @@ export default class TabbedRangeCalendars extends Vue {
 
   @Prop({ type: String, required: false })
   locale?: LocaleIdentifier;
+
+  @Prop({ default: false })
+  compactMode!: boolean;
 
   selectedTab = this.enabledCalendars[0];
 
@@ -104,6 +109,17 @@ export default class TabbedRangeCalendars extends Vue {
 
 <style scoped lang="scss">
 .widget-multi-date-input__body {
-  padding: 20px 24px;
+  padding: 20px;
+  ::v-deep .vc-container {
+    border: none;
+    margin: 1px;
+    padding: 0;
+    width: 100%;
+  }
+}
+.tabbed-ranged-calendar--compact {
+  .widget-multi-date-input__body {
+    padding: 10px;
+  }
 }
 </style>
