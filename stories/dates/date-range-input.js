@@ -388,3 +388,37 @@ stories.add('custom css variables', () => ({
     };
   },
 }));
+
+
+stories.add('compact mode', () => ({
+  template: `
+    <div>
+      <DateRangeInput
+        v-model="value"
+        :enable-relative-date="true"
+        :enable-custom="true"
+        :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
+        :available-variables="availableVariables"
+        :relative-available-variables="relativeAvailableVariables"
+        :variable-delimiters="variableDelimiters"
+        :compactMode="true"
+      />
+      <pre>{{ value }}</pre>
+      <pre>{{ actualRangeValue }}</pre>
+    </div>
+  `,
+
+  components: {
+    DateRangeInput,
+  },
+
+  data() {
+    return {
+      value: undefined,
+      actualRangeValue: undefined,
+      availableVariables: SAMPLE_VARIABLES,
+      variableDelimiters: { start: '{{', end: '}}' },
+      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+    };
+  },
+}));

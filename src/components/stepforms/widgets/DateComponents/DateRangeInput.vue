@@ -2,7 +2,10 @@
   <div
     class="widget-date-input"
     :style="themeCSSVariables"
-    :class="{ 'widget-date-input--colored-background': coloredBackground }"
+    :class="{
+      'widget-date-input--colored-background': coloredBackground,
+      'widget-date-input--compact': compactMode,
+    }"
   >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <span class="widget-date-input__label" v-html="label" />
@@ -25,7 +28,7 @@
     >
       <div class="widget-date-input__editor-container">
         <CustomVariableList
-          v-if="hasVariables"
+          v-if="displayVariableList"
           class="widget-date-input__editor-side"
           :availableVariables="accessibleVariables"
           :selectedVariables="selectedVariables"
@@ -37,7 +40,7 @@
         <div
           class="widget-date-input__editor-content"
           v-if="enableCustom"
-          v-show="isCustom || !hasVariables"
+          v-show="displayCustomEditor"
           ref="custom-editor"
         >
           <Tabs
@@ -177,6 +180,9 @@ export default class DateRangeInput extends Vue {
   @Prop()
   dateRangeFormatter!: (dr: DateRange, locale?: LocaleIdentifier) => string | undefined;
 
+  @Prop({ default: false })
+  compactMode!: boolean;
+
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
@@ -242,6 +248,18 @@ export default class DateRangeInput extends Vue {
 
   get isCustom(): boolean {
     return this.hasCustomValue || this.isEditingCustomVariable;
+  }
+
+  get displayCustomEditor(): boolean {
+    if (!this.hasVariables) return true;
+    // in compact mode always force click on custom option to open the custom editor
+    return this.compactMode ? this.isEditingCustomVariable : this.isCustom;
+  }
+
+  get displayVariableList(): boolean {
+    // in compact mode display variable list only when custom editor is not opened
+    if (this.compactMode) return !this.displayCustomEditor;
+    return this.hasVariables;
   }
 
   get isFixedTabSelected(): boolean {
@@ -502,5 +520,9 @@ export default class DateRangeInput extends Vue {
       }
     }
   }
+}
+
+.widget-date-input--compact {
+  display: inline-block;
 }
 </style>
