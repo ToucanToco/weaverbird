@@ -92,6 +92,7 @@ describe('transformRelativeDateRangeToDateRange', () => {
       date: '{{toto}}',
       quantity: -2,
       duration: 'month',
+      operator: 'until',
     };
     expect(
       transformRelativeDateRangeToDateRange(
@@ -106,6 +107,7 @@ describe('transformRelativeDateRangeToDateRange', () => {
       date: '{{notadate}}',
       quantity: -2,
       duration: 'month',
+      operator: 'until',
     };
     expect(
       transformRelativeDateRangeToDateRange(
@@ -121,6 +123,7 @@ describe('transformRelativeDateRangeToDateRange', () => {
       date: '{{date}}',
       quantity: -3,
       duration: 'month',
+      operator: 'until',
     };
     expect(
       transformRelativeDateRangeToDateRange(
@@ -139,6 +142,7 @@ describe('transformRelativeDateRangeToDateRange', () => {
       date: '{{date}}',
       quantity: 3,
       duration: 'month',
+      operator: 'from',
     };
     expect(
       transformRelativeDateRangeToDateRange(
@@ -315,7 +319,12 @@ describe('transformValue', () => {
     });
     it('should return a date range if value is a relative date range', () => {
       // ({{hello}}) 20/10/2020 - 3 months => 20/07/2020
-      const value: RelativeDateRange = { date: 'hello', quantity: -3, duration: 'month' };
+      const value: RelativeDateRange = {
+        date: 'hello',
+        quantity: -3,
+        duration: 'month',
+        operator: 'until',
+      };
       const attendedValue = transformRelativeDateRangeToDateRange(
         value,
         relativeAvailableVariables,

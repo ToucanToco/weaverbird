@@ -67,7 +67,9 @@ export const transformRelativeDateRangeToDateRange = (
       // Base day should be included in full
       // so if the range starts with the base day, its time should be 00:00
       // but if the range ends with the base day, its time should be 23:59
-      relativeDateRange.quantity > 0 ? {} : { hour: 23, minute: 59, second: 59, millisecond: 999 },
+      relativeDateRange.operator === 'from'
+        ? {}
+        : { hour: 23, minute: 59, second: 59, millisecond: 999 },
     )
     .toJSDate();
 
@@ -80,7 +82,7 @@ export const transformRelativeDateRangeToDateRange = (
   const target = DateTime.fromJSDate(targetDateTime, { zone: 'UTC' }).toJSDate();
 
   // if quantity is negative, target will arrive before base
-  const [start, end] = relativeDateRange.quantity >= 0 ? [base, target] : [target, base];
+  const [start, end] = relativeDateRange.operator === 'from' ? [base, target] : [target, base];
   return { start, end };
 };
 
