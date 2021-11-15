@@ -589,6 +589,24 @@ describe('Date range input', () => {
     });
   });
 
+  describe('hide placeholder', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        hidePlaceholder: true,
+      });
+    });
+    it('should hide label when no value selected', () => {
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(false);
+    });
+    it('should show label when a value is selected', async () => {
+      await wrapper.setProps({ value: { start: new Date(), end: new Date(1) } });
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(true);
+    });
+  });
+
   describe('empty', () => {
     beforeEach(() => {
       createWrapper();

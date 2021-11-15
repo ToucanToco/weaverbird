@@ -391,6 +391,14 @@ stories.add('custom css variables', () => ({
 
 
 stories.add('compact mode', () => ({
+  props: {
+    hidePlaceholder: {
+      default: boolean('Hide placeholder', true),
+    },
+    coloredBackground: {
+      default: boolean('Colored background', true),
+    },
+  },
   template: `
     <div>
       <DateRangeInput
@@ -402,6 +410,8 @@ stories.add('compact mode', () => ({
         :relative-available-variables="relativeAvailableVariables"
         :variable-delimiters="variableDelimiters"
         :compactMode="true"
+        :hidePlaceholder="hidePlaceholder"
+        :coloredBackground="coloredBackground"
       />
       <pre>{{ value }}</pre>
       <pre>{{ actualRangeValue }}</pre>

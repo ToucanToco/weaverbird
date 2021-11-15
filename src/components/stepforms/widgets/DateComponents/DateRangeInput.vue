@@ -5,10 +5,11 @@
     :class="{
       'widget-date-input--colored-background': coloredBackground,
       'widget-date-input--compact': compactMode,
+      'widget-date-input--hide-label': hideLabel,
     }"
   >
     <div class="widget-date-input__container" @click.stop="openEditor">
-      <span class="widget-date-input__label" v-html="label" />
+      <span class="widget-date-input__label" v-if="!hideLabel" v-html="label" />
       <div class="widget-date-input__reset-button" v-if="!!value" @click.stop="resetValue">
         <FAIcon icon="times" class="widget-date-input__reset-button-icon" />
       </div>
@@ -183,6 +184,9 @@ export default class DateRangeInput extends Vue {
   @Prop({ default: false })
   compactMode!: boolean;
 
+  @Prop({ default: false })
+  hidePlaceholder!: boolean;
+
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
   alignLeft: string = POPOVER_ALIGN.LEFT;
@@ -287,6 +291,10 @@ export default class DateRangeInput extends Vue {
     }
   }
 
+  get hideLabel(): boolean {
+    return this.hidePlaceholder && !this.value;
+  }
+
   get customLabel(): string {
     if (this.enableRelativeDate) {
       return this.t('CUSTOM');
@@ -373,6 +381,7 @@ export default class DateRangeInput extends Vue {
 
 .widget-date-input {
   max-width: 400px;
+  width: 100%;
   position: relative;
 }
 .widget-date-input__container {
@@ -522,7 +531,8 @@ export default class DateRangeInput extends Vue {
   }
 }
 
-.widget-date-input--compact {
+.widget-date-input--hide-label {
   display: inline-block;
+  width: auto;
 }
 </style>
