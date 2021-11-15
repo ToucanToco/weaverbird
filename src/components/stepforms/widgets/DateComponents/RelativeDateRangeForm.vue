@@ -16,9 +16,9 @@
     </div>
     <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
-        class="widget-relative-date-range-form__input widget-relative-date-range-form__input--direction"
-        v-model="rangeDirection"
-        :options="directions"
+        class="widget-relative-date-range-form__input widget-relative-date-range-form__input--operator"
+        v-model="operator"
+        :options="operators"
         label="label"
       />
       <AutocompleteWidget
@@ -38,7 +38,12 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
-import { DEFAULT_DURATIONS, DurationOption, RelativeDateRange } from '@/lib/dates';
+import {
+  DEFAULT_DURATIONS,
+  DurationOption,
+  RELATIVE_DATE_RANGE_OPERATORS,
+  RelativeDateRange,
+} from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -73,7 +78,7 @@ export default class RelativeDateRangeForm extends Vue {
   set quantity(quantity: number) {
     this.$emit('input', {
       ...this.value,
-      quantity: quantity * Math.sign(this.rangeDirection.value),
+      quantity: quantity * Math.sign(this.operator.sign),
     });
   }
 
@@ -99,21 +104,24 @@ export default class RelativeDateRangeForm extends Vue {
     this.$emit('input', { ...this.value, date: value });
   }
 
-  get directions() {
-    return [
-      { label: 'until', value: -1 },
-      { label: 'from', value: +1 },
-    ];
+  get operators() {
+    return [RELATIVE_DATE_RANGE_OPERATORS.until, RELATIVE_DATE_RANGE_OPERATORS.from];
   }
 
-  get rangeDirection() {
-    return this.value.quantity >= 0 ? this.directions[1] : this.directions[0];
+  get operator() {
+    // Current value should have an operator but we introduced it without at first,
+    // relying entierly on quantity's sign to encode it.
+    // We keep this fallback as a reminder of this mistake until someone decide that comments
+    // is not the place for keeping track of our stuttering torward Clean Code :tm:
+    const fallbackOperator = this.value.quantity >= 0 ? this.operators[1] : this.operators[0];
+    return this.operators.find(op => op.label === this.value.operator) ?? fallbackOperator;
   }
 
-  set rangeDirection(direction: { label: string; value: number }) {
+  set operator(operator: { label: string; sign: number }) {
     this.$emit('input', {
       ...this.value,
-      quantity: Math.sign(direction.value) * Math.abs(this.value.quantity),
+      operator: operator.label,
+      quantity: Math.sign(operator.sign) * Math.abs(this.value.quantity),
     });
   }
 }
@@ -175,7 +183,7 @@ export default class RelativeDateRangeForm extends Vue {
   flex: 1 100%;
 }
 
-.widget-relative-date-range-form__input--direction {
+.widget-relative-date-range-form__input--operator {
   flex: 1 0 25%;
   margin-right: 15px;
 }
