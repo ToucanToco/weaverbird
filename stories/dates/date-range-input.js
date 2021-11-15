@@ -169,7 +169,7 @@ stories.add('custom (relative date range)', () => ({
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
-      value: { date: '{{today}}', quantity: -1, duration: 'month' },
+      value: { date: '{{today}}', quantity: -1, duration: 'month', operator: 'until' },
     };
   },
 }));
