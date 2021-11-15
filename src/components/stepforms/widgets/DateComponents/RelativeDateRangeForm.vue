@@ -68,7 +68,7 @@ export default class RelativeDateRangeForm extends Vue {
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
-  @Prop({ default: () => ({ date: '', quantity: -1, duration: 'year' }) })
+  @Prop({ default: () => ({ date: '', quantity: -1, duration: 'year', operator: 'until' }) })
   value!: RelativeDateRange;
 
   get quantity(): number {

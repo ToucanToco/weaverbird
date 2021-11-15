@@ -129,7 +129,12 @@ describe('Relative date range form', () => {
       createWrapper();
     });
     it('should initiate value', () => {
-      expect((wrapper.vm as any).value).toStrictEqual({ date: '', quantity: -1, duration: 'year' });
+      expect((wrapper.vm as any).value).toStrictEqual({
+        date: '',
+        quantity: -1,
+        duration: 'year',
+        operator: 'until',
+      });
     });
     it('should set available variables to empty array', () => {
       expect(
@@ -144,7 +149,7 @@ describe('Relative date range form', () => {
         wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
       ).toStrictEqual('');
     });
-    it('should pass "before" as default value to operator input', () => {
+    it('should pass "until" as default value to operator input', () => {
       expect(
         wrapper.find('.widget-relative-date-range-form__input--operator').props().value,
       ).toStrictEqual({ label: 'until', sign: -1 });
