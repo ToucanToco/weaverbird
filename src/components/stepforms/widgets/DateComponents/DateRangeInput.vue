@@ -6,6 +6,7 @@
       'widget-date-input--colored-background': coloredBackground,
       'widget-date-input--compact': compactMode,
       'widget-date-input--hide-label': hideLabel,
+      'widget-date-input--reset': !!value,
     }"
   >
     <div class="widget-date-input__container" @click.stop="openEditor">
@@ -410,6 +411,7 @@ export default class DateRangeInput extends Vue {
   padding: 10px 15px;
   cursor: pointer;
   opacity: 0.5;
+  font-size: 14px;
 
   &:hover {
     opacity: 1;
@@ -425,6 +427,7 @@ export default class DateRangeInput extends Vue {
   padding: 10px 15px;
   background: $grey-extra-light;
   color: $grey;
+  font-size: 14px;
 }
 
 .widget-date-input__container:hover {
@@ -522,6 +525,9 @@ export default class DateRangeInput extends Vue {
   .widget-date-input__reset-button {
     color: white;
   }
+  .widget-date-input__reset-button + .widget-date-input__type-icon {
+    padding-left: 0;
+  }
   .widget-date-input__container {
     &,
     &:hover {
@@ -530,7 +536,6 @@ export default class DateRangeInput extends Vue {
       .widget-date-input__type-icon {
         background: none;
         color: white;
-        padding-left: 0;
       }
     }
   }
@@ -539,5 +544,11 @@ export default class DateRangeInput extends Vue {
 .widget-date-input--hide-label {
   display: inline-block;
   width: auto;
+}
+
+.widget-date-input--reset {
+  .widget-date-input__label {
+    padding-right: 0;
+  }
 }
 </style>
