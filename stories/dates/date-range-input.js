@@ -290,17 +290,37 @@ stories.add('without any variable', () => ({
 }));
 
 stories.add('always open (preview mode)', () => ({
+  props: {
+    compactMode: {
+      default: boolean('Compact mode', false),
+    },
+    hidePlaceholder: {
+      default: boolean('Hide placeholder', false),
+    },
+    coloredBackground: {
+      default: boolean('Colored background', true),
+    },
+    enableCustom: {
+      default: boolean('Enable custom', true),
+    },
+    enableVariables: {
+      default: boolean('Enable variables', true),
+    },
+  },
   template: `
     <div>
       <DateRangeInput
         v-model="value"
         :enable-relative-date="true"
-        :enable-custom="true"
+        :enable-custom="enableCustom"
         :alwaysOpened="true"
         :enabledCalendars="['day', 'week', 'month', 'quarter', 'year']"
         :available-variables="availableVariables"
         :relative-available-variables="relativeAvailableVariables"
         :variable-delimiters="variableDelimiters"
+        :hidePlaceholder="hidePlaceholder"
+        :coloredBackground="coloredBackground"
+        :compactMode="compactMode"
       />
       <pre style="margin-top: 500px;">{{ value }}</pre>
     </div>
@@ -314,12 +334,16 @@ stories.add('always open (preview mode)', () => ({
     return {
       value: undefined,
       actualRangeValue: undefined,
-      availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
       relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
     };
   },
 
+  computed: {
+    availableVariables() {
+      return this.enableVariables ? SAMPLE_VARIABLES : [];
+    },
+  },
 }));
 stories.add('localized (fr)', () => ({
   template: `
@@ -388,7 +412,6 @@ stories.add('custom css variables', () => ({
     };
   },
 }));
-
 
 stories.add('compact mode', () => ({
   props: {
