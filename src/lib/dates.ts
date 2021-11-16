@@ -56,8 +56,7 @@ export type RelativeDateRange = {
   date: string;
   duration: Duration;
   operator: RelativeDateRangeOperator;
-  // Quantity can be negative or positive but the sign is ultimately dictated by the operator
-  quantity: number;
+  quantity: number; // always a positive integer, the sign is dictated by the operator
 };
 
 export type CustomDate = Date | RelativeDate;

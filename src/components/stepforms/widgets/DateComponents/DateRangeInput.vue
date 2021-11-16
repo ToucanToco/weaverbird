@@ -205,7 +205,7 @@ export default class DateRangeInput extends Vue {
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDateRange> = {
     Fixed: {}, // DateRange should be empty on init because we can have bounds so defined dates could be out of bounds
-    Relative: { date: '', quantity: -1, duration: 'year', operator: 'until' },
+    Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
   };
 
   get currentTabValue(): CustomDateRange {
