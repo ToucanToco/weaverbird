@@ -21,7 +21,7 @@
       class="widget-date-input__editor"
       :alwaysOpened="alwaysOpened"
       :visible="isEditorOpened"
-      :align="alignLeft"
+      :align="popoverAlignement"
       :forcePositionUpdate="forcePopoverToUpdatePosition"
       :style="themeCSSVariables"
       bottom
@@ -189,9 +189,14 @@ export default class DateRangeInput extends Vue {
 
   isEditorOpened = false;
   isEditingCustomVariable = false; // force to expand custom part of editor
-  alignLeft: string = POPOVER_ALIGN.LEFT;
   selectedTab = 'Relative';
   forcePopoverToUpdatePosition = 0;
+
+  get popoverAlignement(): string {
+    return this.compactMode && this.isEditingCustomVariable
+      ? POPOVER_ALIGN.CENTER
+      : POPOVER_ALIGN.LEFT;
+  }
 
   get accessibleVariables(): VariablesBucket {
     // some variables are required for date computations but should not be part of the variable list displayed to users
