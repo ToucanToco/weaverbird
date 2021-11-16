@@ -179,7 +179,7 @@ describe('transformValue', () => {
     },
     {
       identifier: 'relative-date-range',
-      value: { date: '{{hello}}', quantity: -2, duration: 'month' },
+      value: { quantity: -2, duration: 'month', operator: 'until', date: '{{hello}}' },
       label: 'Relative date range',
     },
     {

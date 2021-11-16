@@ -1,6 +1,12 @@
 import { DateTime } from 'luxon';
 
-import { DateRange, isDateRange, RelativeDate, RelativeDateRange } from '@/lib/dates';
+import {
+  DateRange,
+  isDateRange,
+  RELATIVE_DATE_RANGE_OPERATORS,
+  RelativeDate,
+  RelativeDateRange,
+} from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /*
@@ -82,7 +88,8 @@ export const transformRelativeDateRangeToDateRange = (
   const target = DateTime.fromJSDate(targetDateTime, { zone: 'UTC' }).toJSDate();
 
   // if quantity is negative, target will arrive before base
-  const [start, end] = relativeDateRange.operator === 'from' ? [base, target] : [target, base];
+  const quantityIsPositive = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator].sign > 0;
+  const [start, end] = quantityIsPositive ? [base, target] : [target, base];
   return { start, end };
 };
 

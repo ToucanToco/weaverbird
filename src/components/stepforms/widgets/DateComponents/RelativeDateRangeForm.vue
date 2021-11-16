@@ -18,7 +18,7 @@
       <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--operator"
         v-model="operator"
-        :options="operators"
+        :options="availableOperators"
         label="label"
       />
       <AutocompleteWidget
@@ -104,7 +104,7 @@ export default class RelativeDateRangeForm extends Vue {
     this.$emit('input', { ...this.value, date: value });
   }
 
-  get operators() {
+  get availableOperators() {
     return [RELATIVE_DATE_RANGE_OPERATORS.until, RELATIVE_DATE_RANGE_OPERATORS.from];
   }
 
@@ -113,8 +113,11 @@ export default class RelativeDateRangeForm extends Vue {
     // relying entierly on quantity's sign to encode it.
     // We keep this fallback as a reminder of this mistake until someone decide that comments
     // is not the place for keeping track of our stuttering torward Clean Code :tm:
-    const fallbackOperator = this.value.quantity >= 0 ? this.operators[1] : this.operators[0];
-    return this.operators.find(op => op.label === this.value.operator) ?? fallbackOperator;
+    const fallbackOperator =
+      this.value.quantity >= 0
+        ? RELATIVE_DATE_RANGE_OPERATORS.from
+        : RELATIVE_DATE_RANGE_OPERATORS.until;
+    return this.availableOperators.find(op => op.label === this.value.operator) ?? fallbackOperator;
   }
 
   set operator(operator: { label: string; sign: number }) {
