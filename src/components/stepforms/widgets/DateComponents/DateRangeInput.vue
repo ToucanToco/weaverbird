@@ -391,7 +391,50 @@ export default class DateRangeInput extends Vue {
   max-width: 400px;
   width: 100%;
   position: relative;
+
+  &.widget-date-input--hide-label {
+    // resize container to fit calendar icon only
+    display: inline-block;
+    width: auto;
+  }
+
+  &.widget-date-input--reset {
+    .widget-date-input__label {
+      // reduce padding between reset button and label
+      padding-right: 0;
+    }
+  }
+
+  &.widget-date-input--compact.widget-date-input--reset {
+    // hide calendar icon in compact mode to have more space to display label
+    .widget-date-input__type-icon {
+      display: none;
+    }
+  }
+
+  &.widget-date-input--colored-background {
+    .widget-date-input__label,
+    .widget-date-input__reset-button {
+      color: white;
+    }
+    .widget-date-input__reset-button + .widget-date-input__type-icon {
+      // in colored mode, reduce padding because there is no background under calendar icon
+      padding-left: 0;
+    }
+    .widget-date-input__container {
+      &,
+      &:hover {
+        background: var(--weaverbird-theme-emphasis-color, $active-color);
+        border-color: var(--weaverbird-theme-emphasis-color, $active-color);
+        .widget-date-input__type-icon {
+          background: none;
+          color: white;
+        }
+      }
+    }
+  }
 }
+
 .widget-date-input__container {
   border: 1px solid $grey-light;
   display: flex;
@@ -444,6 +487,11 @@ export default class DateRangeInput extends Vue {
   margin-top: 3px;
   background-color: #fff;
   box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.25);
+
+  & .widget-date-input__editor--compact {
+    // in compact mode use 100% of document width to display calendars
+    max-width: calc(100% - 20px);
+  }
 }
 .widget-date-input__editor-container {
   display: flex;
@@ -516,48 +564,5 @@ export default class DateRangeInput extends Vue {
   opacity: 0.5;
   pointer-events: none;
   cursor: not-allowed;
-}
-
-.widget-date-input--colored-background {
-  .widget-date-input__label,
-  .widget-date-input__reset-button {
-    color: white;
-  }
-  .widget-date-input__reset-button + .widget-date-input__type-icon {
-    padding-left: 0;
-  }
-  .widget-date-input__container {
-    &,
-    &:hover {
-      background: var(--weaverbird-theme-emphasis-color, $active-color);
-      border-color: var(--weaverbird-theme-emphasis-color, $active-color);
-      .widget-date-input__type-icon {
-        background: none;
-        color: white;
-      }
-    }
-  }
-}
-
-.widget-date-input--hide-label {
-  display: inline-block;
-  width: auto;
-}
-
-.widget-date-input--reset {
-  .widget-date-input__label {
-    padding-right: 0;
-  }
-}
-
-.widget-date-input__editor--compact {
-  max-width: calc(100% - 20px);
-}
-
-.widget-date-input--compact.widget-date-input--reset {
-  // hide calendar icon in compact mode to have more space to display label
-  .widget-date-input__type-icon {
-    display: none;
-  }
 }
 </style>
