@@ -1,5 +1,11 @@
 <template>
-  <div class="custom-granularity-calendar" data-cy="weaverbird-custom-granularity-calendar">
+  <div
+    class="custom-granularity-calendar"
+    :class="{
+      'custom-granularity-calendar--compact': compactMode,
+    }"
+    data-cy="weaverbird-custom-granularity-calendar"
+  >
     <div class="custom-granularity-calendar__header">
       <div
         class="custom-granularity-calendar__header-btn header-btn__previous"
@@ -82,6 +88,9 @@ export default class CustomGranularityCalendar extends Vue {
 
   @Prop({ type: String, required: false })
   locale?: LocaleIdentifier;
+
+  @Prop({ default: false })
+  compactMode!: boolean;
 
   currentNavRangeStart: DateTime = DateTime.now();
 
@@ -262,11 +271,21 @@ export default class CustomGranularityCalendar extends Vue {
 }
 
 .custom-granularity-calendar__option-description {
-  line-height: 23px;
   font-size: 12px;
+  padding-top: 7px;
 }
 
 .custom-granularity-calendar__body--quarter .custom-granularity-calendar__option {
   padding: 20px 0;
+}
+
+.custom-granularity-calendar--compact {
+  width: 100%;
+  .custom-granularity-calendar__body {
+    grid-gap: 10px;
+  }
+  .custom-granularity-calendar__option-description {
+    font-size: 11px;
+  }
 }
 </style>

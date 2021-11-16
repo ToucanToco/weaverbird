@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs">
+  <div class="tabs" :class="{ 'tabs--compact': compactMode }">
     <div ref="tabsContainer" class="tabs__tabs-container">
       <div
         v-for="tab in tabs"
@@ -38,6 +38,9 @@ export default class Tabs extends Vue {
 
   @Prop({ default: () => (tab: string) => `${tab}` })
   formatTab!: Function;
+
+  @Prop({ default: false })
+  compactMode!: boolean;
 
   created() {
     // select first available tab if necessary
@@ -108,6 +111,12 @@ export default class Tabs extends Vue {
   &:hover {
     background: unset;
     color: rgba($grey-light, 0.9);
+  }
+}
+
+.tabs--compact {
+  .tabs__tabs-container {
+    overflow-x: auto;
   }
 }
 </style>

@@ -1,5 +1,6 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
+import { POPOVER_ALIGN } from '@/components/constants';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import {
   CUSTOM_DATE_RANGE_LABEL_SEPARATOR,
@@ -123,6 +124,11 @@ describe('Date range input', () => {
         SAMPLE_VARIABLES,
       );
     });
+    it('should align popover left', () => {
+      expect(wrapper.find('.widget-date-input__editor').props().align).toStrictEqual(
+        POPOVER_ALIGN.LEFT,
+      );
+    });
 
     describe('reset button', () => {
       let resetButtonWrapper: Wrapper<any>;
@@ -186,6 +192,11 @@ describe('Date range input', () => {
       });
       it('should force popover to update position to always display custom editor in visible part of screen', () => {
         expect(wrapper.find('.widget-date-input__editor').props().forcePositionUpdate).toBe(1);
+      });
+      it('should align popover left', () => {
+        expect(wrapper.find('.widget-date-input__editor').props().align).toStrictEqual(
+          POPOVER_ALIGN.LEFT,
+        );
       });
     });
   });
@@ -564,6 +575,76 @@ describe('Date range input', () => {
 
     it('should pass custom class to wrapper', () => {
       expect(wrapper.classes()).toContain('widget-date-input--colored-background');
+    });
+  });
+
+  describe('compact mode', () => {
+    describe('default', () => {
+      beforeEach(() => {
+        createWrapper({
+          availableVariables: SAMPLE_VARIABLES,
+          relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+          variableDelimiters: { start: '{{', end: '}}' },
+          compactMode: true,
+        });
+      });
+      it('should add specific class to wrapper', () => {
+        expect(wrapper.classes()).toContain('widget-date-input--compact');
+      });
+      describe('when clicking on custom option', () => {
+        beforeEach(async () => {
+          wrapper.find('CustomVariableList-stub').vm.$emit('selectCustomVariable');
+          await wrapper.vm.$nextTick();
+        });
+        it('should show custom editor', () => {
+          expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
+        });
+        it('should hide variable list', () => {
+          expect(wrapper.find('CustomVariableList-stub').exists()).toBe(false);
+        });
+        it('should align popover center', () => {
+          expect(wrapper.find('.widget-date-input__editor').props().align).toStrictEqual(
+            POPOVER_ALIGN.CENTER,
+          );
+        });
+      });
+    });
+    describe('when selected value is not a variable', () => {
+      beforeEach(() => {
+        createWrapper({
+          availableVariables: SAMPLE_VARIABLES,
+          variableDelimiters: { start: '{{', end: '}}' },
+          value: { start: new Date(), end: new Date(1) },
+          compactMode: true,
+        });
+      });
+      it('should only display variable list by default', () => {
+        expect(wrapper.find('CustomVariableList-stub').exists()).toBe(true);
+        expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(false);
+      });
+      it('should use "custom" as selected variable', () => {
+        expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
+          'custom',
+        );
+      });
+    });
+  });
+
+  describe('hide placeholder', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        hidePlaceholder: true,
+      });
+    });
+    it('should hide label when no value selected', () => {
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(false);
+    });
+    it('should show label when a value is selected', async () => {
+      await wrapper.setProps({ value: { start: new Date(), end: new Date(1) } });
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(true);
     });
   });
 
