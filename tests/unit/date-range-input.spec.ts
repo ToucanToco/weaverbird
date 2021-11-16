@@ -221,10 +221,10 @@ describe('Date range input', () => {
 
     describe('when clicking on save button', () => {
       const editedValue: RelativeDateRange = {
-        date: '{{today}}',
-        quantity: -1,
+        quantity: 1,
         duration: 'month',
         operator: 'until',
+        date: '{{today}}',
       };
 
       beforeEach(async () => {
@@ -305,7 +305,7 @@ describe('Date range input', () => {
       });
 
       describe('when updating RelativeDateRangeForm value', () => {
-        const newValue = { date: '{{today}}', quantity: -1, duration: 'month' };
+        const newValue = { quantity: 1, duration: 'month', operator: 'until', date: '{{today}}' };
         beforeEach(async () => {
           wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
@@ -320,7 +320,12 @@ describe('Date range input', () => {
     });
 
     describe('when switching between tabs', () => {
-      const updatedRelativeDateValue = { date: '{{today}}', quantity: -1, duration: 'month' };
+      const updatedRelativeDateValue = {
+        quantity: 1,
+        duration: 'month',
+        operator: 'until',
+        date: '{{today}}',
+      };
       beforeEach(async () => {
         wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateRangeForm value
         await wrapper.vm.$nextTick();
