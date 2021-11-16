@@ -28,11 +28,35 @@ export type RelativeDate = {
   duration: Duration;
 };
 
+/**
+ * With:
+ * - "date" a variable that resolve to a date, NOT A DATETIME, meaning only year, month & day
+ * - delta <=> abs(quantity) * duration
+ *
+ * and "Monday 15th" as an exemple date & "2 weeks" as an exemple delta
+ *
+ * We identified 4 possible operators:
+ * - until  = [date - delta ; date] => upper bound is included <=> [Tuesday 2nd  ; Monday 15th]
+ * - before = [date - delta ; date[ => upper bound is excluded <=> [Monday 1st   ; Sunday 14th]
+ * - from   = [date ; date + delta] => lower bound is included <=> [Monday 15th  ; Sunday 28th]
+ * - after  = ]date ; date + delta] => lower bound is excluded <=> [Tuesday 16th ; Monday 29th]
+ *
+ * However, only two of them have been implemented yet. We may or may not tweak those two or even
+ * implement the four of them after getting more user feedback regarding the relevance of current ones.
+ */
+export const RELATIVE_DATE_RANGE_OPERATORS = {
+  until: { label: 'until', sign: -1 },
+  from: { label: 'from', sign: +1 },
+};
+
+export type RelativeDateRangeOperator = keyof typeof RELATIVE_DATE_RANGE_OPERATORS;
+
 // Should be included in RelativeDate
 export type RelativeDateRange = {
   date: string;
-  quantity: number; // can be negative or positive
   duration: Duration;
+  operator: RelativeDateRangeOperator;
+  quantity: number; // always a positive integer, the sign is dictated by the operator
 };
 
 export type CustomDate = Date | RelativeDate;
@@ -126,11 +150,8 @@ export const relativeDateRangeToString = (
   const identifier = extractVariableIdentifier(relativeDateRange.date, variableDelimiters);
   const baseDateLabel = availableVariables.find(v => v.identifier === identifier)?.label;
   const relativeDate = _pick(relativeDateRange, ['quantity', 'duration']);
-  const relativeDateLabel = relativeDateToString(relativeDate, {
-    before: 'until',
-    after: 'from',
-  });
-  return `${relativeDateLabel}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
+  const relativeDateLabel = relativeDateToString(relativeDate, { before: '', after: '' });
+  return `${relativeDateLabel} ${relativeDateRange.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
 };
 
 export const isRelativeDateRange = (

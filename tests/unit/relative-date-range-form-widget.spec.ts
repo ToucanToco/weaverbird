@@ -25,7 +25,7 @@ describe('Relative date range form', () => {
     const date = '{{today}}';
     beforeEach(() => {
       createWrapper({
-        value: { date, quantity: -1, duration: 'month' },
+        value: { date, quantity: 1, duration: 'month', operator: 'until' },
         variableDelimiters: { start: '{{', end: '}}' },
         availableVariables: SAMPLE_VARIABLES,
       });
@@ -49,10 +49,10 @@ describe('Relative date range form', () => {
         wrapper.find('.widget-relative-date-range-form__duration').props('value'),
       ).toStrictEqual({ label: 'Months', value: 'month' });
     });
-    it('should pass corresponding direction to rangeDirection input', () => {
+    it('should pass corresponding direction to operator input', () => {
       expect(
-        wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
-      ).toStrictEqual({ label: 'until', value: -1 });
+        wrapper.find('.widget-relative-date-range-form__input--operator').props().value,
+      ).toStrictEqual({ label: 'until', sign: -1 });
     });
 
     describe('when baseDate is updated', () => {
@@ -67,8 +67,9 @@ describe('Relative date range form', () => {
         const newDate = `{{${selectedDateVariable.identifier}}}`;
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date: newDate,
-          quantity: -1,
+          quantity: 1,
           duration: 'month',
+          operator: 'until',
         });
       });
     });
@@ -81,8 +82,9 @@ describe('Relative date range form', () => {
       it('should emit value with updated quantity and the right sign', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
-          quantity: -2,
+          quantity: 2,
           duration: 'month',
+          operator: 'until',
         });
       });
     });
@@ -97,24 +99,26 @@ describe('Relative date range form', () => {
       it('should emit value with updated duration', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
-          quantity: -1,
+          quantity: 1,
           duration: 'year',
+          operator: 'until',
         });
       });
     });
 
-    describe('when rangeDirection is updated', () => {
+    describe('when operator is updated', () => {
       beforeEach(async () => {
         wrapper
-          .find('.widget-relative-date-range-form__input--direction')
-          .vm.$emit('input', { label: 'from', value: +1 });
+          .find('.widget-relative-date-range-form__input--operator')
+          .vm.$emit('input', { label: 'from', sign: +1 });
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated rangeDirection', () => {
+      it('should emit value with updated operator', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
           date,
           quantity: 1,
           duration: 'month',
+          operator: 'from',
         });
       });
     });
@@ -125,7 +129,12 @@ describe('Relative date range form', () => {
       createWrapper();
     });
     it('should initiate value', () => {
-      expect((wrapper.vm as any).value).toStrictEqual({ date: '', quantity: -1, duration: 'year' });
+      expect((wrapper.vm as any).value).toStrictEqual({
+        date: '',
+        quantity: 1,
+        duration: 'year',
+        operator: 'until',
+      });
     });
     it('should set available variables to empty array', () => {
       expect(
@@ -140,10 +149,10 @@ describe('Relative date range form', () => {
         wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
       ).toStrictEqual('');
     });
-    it('should pass "before" as default value to rangeDirection input', () => {
+    it('should pass "until" as default value to operator input', () => {
       expect(
-        wrapper.find('.widget-relative-date-range-form__input--direction').props().value,
-      ).toStrictEqual({ label: 'until', value: -1 });
+        wrapper.find('.widget-relative-date-range-form__input--operator').props().value,
+      ).toStrictEqual({ label: 'until', sign: -1 });
     });
   });
 });

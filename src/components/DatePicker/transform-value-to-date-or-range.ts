@@ -1,6 +1,12 @@
 import { DateTime } from 'luxon';
 
-import { DateRange, isDateRange, RelativeDate, RelativeDateRange } from '@/lib/dates';
+import {
+  DateRange,
+  isDateRange,
+  RELATIVE_DATE_RANGE_OPERATORS,
+  RelativeDate,
+  RelativeDateRange,
+} from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /*
@@ -61,26 +67,35 @@ export const transformRelativeDateRangeToDateRange = (
   )?.value;
   if (!(value instanceof Date)) return;
 
+  const operator = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator];
+
   // pass base date to UTC
   const base = DateTime.fromJSDate(value, { zone: 'UTC' })
     .set(
       // Base day should be included in full
       // so if the range starts with the base day, its time should be 00:00
       // but if the range ends with the base day, its time should be 23:59
-      relativeDateRange.quantity > 0 ? {} : { hour: 23, minute: 59, second: 59, millisecond: 999 },
+      relativeDateRange.operator === 'from'
+        ? {}
+        : { hour: 23, minute: 59, second: 59, millisecond: 999 },
     )
     .toJSDate();
 
   // retrieve end date from luxon
   const targetDateTime = transformRelativeDateObjectToDate(
-    { ...relativeDateRange, date: base },
+    {
+      ...relativeDateRange,
+      quantity: Math.sign(operator.sign) * Math.abs(relativeDateRange.quantity),
+      date: base,
+    },
     true, // ensure we add or remove 1ms so that the target day is not included
   );
 
   const target = DateTime.fromJSDate(targetDateTime, { zone: 'UTC' }).toJSDate();
 
   // if quantity is negative, target will arrive before base
-  const [start, end] = relativeDateRange.quantity >= 0 ? [base, target] : [target, base];
+  const quantityIsPositive = operator.sign > 0;
+  const [start, end] = quantityIsPositive ? [base, target] : [target, base];
   return { start, end };
 };
 
@@ -164,8 +179,8 @@ undefined -> undefined
 { start: new Date(), end: new Date() } -> { start: new Date(), end: new Date() }
 
 // Relative Date range
-{ date: 'variable_name', quantity: 2, duration: 'month' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
-{ date: 'variable_name', quantity: -2, duration: 'month' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
+{ date: 'variable_name', quantity: 2, duration: 'month', operator: 'from' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
+{ date: 'variable_name', quantity: 2, duration: 'month', operator: 'until' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
 */
 export const transformValueToDateRange = (
   value: undefined | string | RelativeDateRange | DateRange,

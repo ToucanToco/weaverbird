@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Fixed
+
+- RelativeDateRange: use a proper "operator" property in data model
+
 ## [0.75.0] - 2021-11-09
 
 ### Changed
