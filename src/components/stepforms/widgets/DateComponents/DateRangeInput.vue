@@ -553,4 +553,11 @@ export default class DateRangeInput extends Vue {
 .widget-date-input__editor--compact {
   max-width: calc(100% - 20px);
 }
+
+.widget-date-input--compact.widget-date-input--reset {
+  // hide calendar icon in compact mode to have more space to display label
+  .widget-date-input__type-icon {
+    display: none;
+  }
+}
 </style>
