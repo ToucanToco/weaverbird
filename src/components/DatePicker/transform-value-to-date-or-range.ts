@@ -67,6 +67,8 @@ export const transformRelativeDateRangeToDateRange = (
   )?.value;
   if (!(value instanceof Date)) return;
 
+  const operator = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator];
+
   // pass base date to UTC
   const base = DateTime.fromJSDate(value, { zone: 'UTC' })
     .set(
@@ -81,14 +83,18 @@ export const transformRelativeDateRangeToDateRange = (
 
   // retrieve end date from luxon
   const targetDateTime = transformRelativeDateObjectToDate(
-    { ...relativeDateRange, date: base },
+    {
+      ...relativeDateRange,
+      quantity: Math.sign(operator.sign) * Math.abs(relativeDateRange.quantity),
+      date: base,
+    },
     true, // ensure we add or remove 1ms so that the target day is not included
   );
 
   const target = DateTime.fromJSDate(targetDateTime, { zone: 'UTC' }).toJSDate();
 
   // if quantity is negative, target will arrive before base
-  const quantityIsPositive = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator].sign > 0;
+  const quantityIsPositive = operator.sign > 0;
   const [start, end] = quantityIsPositive ? [base, target] : [target, base];
   return { start, end };
 };
@@ -173,8 +179,8 @@ undefined -> undefined
 { start: new Date(), end: new Date() } -> { start: new Date(), end: new Date() }
 
 // Relative Date range
-{ date: 'variable_name', quantity: 2, duration: 'month' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
-{ date: 'variable_name', quantity: -2, duration: 'month' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
+{ date: 'variable_name', quantity: 2, duration: 'month', operator: 'from' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
+{ date: 'variable_name', quantity: 2, duration: 'month', operator: 'until' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
 */
 export const transformValueToDateRange = (
   value: undefined | string | RelativeDateRange | DateRange,
