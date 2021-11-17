@@ -46,10 +46,10 @@ import t, { LocaleIdentifier } from '@/lib/internationalization';
   },
 })
 export default class TabbedRangeCalendars extends Vue {
-  @Prop({ default: () => [] })
+  @Prop({ default: () => ({}) })
   value!: CustomDateRange;
 
-  @Prop({ default: () => [] })
+  @Prop({ default: () => ({}) })
   bounds!: DateRange;
 
   @Prop({ default: () => ['year', 'quarter', 'month', 'week', 'day'] })
@@ -69,7 +69,10 @@ export default class TabbedRangeCalendars extends Vue {
 
   @Watch('enabledCalendars')
   onEnabledCalendarsChange() {
-    if (!this.value.duration || !this.enabledCalendars.includes(this.value.duration)) {
+    if (
+      !this.enabledCalendars.includes(this.selectedTab) ||
+      (this.value.duration && !this.enabledCalendars.includes(this.value.duration))
+    ) {
       this.selectedTab = this.enabledCalendars[0];
     }
   }
