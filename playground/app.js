@@ -28,7 +28,7 @@ const codeEditorForLang = function(lang) {
       return createElement('textarea', {
         domProps: {
           value: this.value,
-          placeholder: `OMG I have to write code in ${lang} in here`,
+          placeholder: `Olalala I have to write code in ${lang} in here`,
         },
         attrs: {
           type: 'text',
