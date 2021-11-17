@@ -120,7 +120,7 @@ export default class Calendar extends Vue {
 
   @Watch('availableDates')
   resetValueOutOfBounds() {
-    if (_isEmpty(this.boundedValue)) {
+    if (this.availableDates.start && _isEmpty(this.boundedValue)) {
       if (this.value) this.onInput(undefined);
       this.defaultDate = this.availableDates.start ?? '';
     }
