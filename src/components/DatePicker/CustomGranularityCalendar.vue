@@ -154,7 +154,6 @@ export default class CustomGranularityCalendar extends Vue {
   }
 
   created() {
-    if (this.selectedRangeStart) this.currentNavRangeStart = this.selectedRangeStart;
     this.updateSelectedRange();
   }
 
@@ -170,8 +169,28 @@ export default class CustomGranularityCalendar extends Vue {
     return this.pickerConfig.selectableRanges.optionToRange(date);
   }
 
-  selectRange(range: DateRange) {
+  selectRange(range: DateRange | undefined) {
     this.$emit('input', range);
+  }
+
+  updateNavStart(): void {
+    if (this.selectedRangeStart) {
+      // update navigation start to retrieve page with available options containing selected date range
+      this.currentNavRangeStart = this.selectedRangeStart;
+    } else if (this.bounds.start) {
+      // update nav start to retrieve page with available options for selected bound start
+      this.currentNavRangeStart = this.pickerConfig.selectableRanges.rangeToOption(
+        this.bounds.start,
+      );
+    }
+  }
+
+  @Watch('bounds')
+  resetRangeOutOfBounds() {
+    if (this.bounds.start && this.value && !this.boundedValue) {
+      this.selectRange(undefined);
+    }
+    this.updateNavStart();
   }
 
   @Watch('granularity')
@@ -179,10 +198,8 @@ export default class CustomGranularityCalendar extends Vue {
     if (this.selectedRangeStart) {
       const range = this.retrieveRangeFromOption(this.selectedRangeStart);
       this.selectRange(range);
-      // update navigation start to retrieve options of same page that selected date range in new granularity
-      // ex: we select 2028 in year tab then switch to month tab, we expect to retrieve 2028's months as options
-      this.currentNavRangeStart = this.selectedRangeStart;
     }
+    this.updateNavStart();
   }
 }
 </script>
