@@ -122,7 +122,7 @@ export default class Calendar extends Vue {
   resetValueOutOfBounds() {
     if (this.availableDates.start && _isEmpty(this.boundedValue)) {
       if (this.value) this.onInput(undefined);
-      this.defaultDate = this.availableDates.start ?? '';
+      this.defaultDate = this.availableDates.start;
     }
   }
 }
