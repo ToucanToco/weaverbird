@@ -97,7 +97,30 @@ describe('Calendar', () => {
       });
 
       it('should emit clamped range', () => {
+        expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0][0]).toStrictEqual(bounds);
+      });
+
+      describe('when value is completely out of updated bounds', () => {
+        const updatedBounds = {
+          start: new Date('09/15/2020'),
+          end: new Date('10/15/2020'),
+          duration: 'day',
+        };
+        beforeEach(async () => {
+          await wrapper.setProps({
+            availableDates: updatedBounds,
+          });
+        });
+        it('should move calendar cursor to start bound', () => {
+          expect(wrapper.find('DatePicker-stub').attributes('from-date')).toStrictEqual(
+            updatedBounds.start.toString(),
+          );
+        });
+        it('should reset value', () => {
+          expect(wrapper.emitted('input')).toHaveLength(2);
+          expect(wrapper.emitted('input')[1][0]).toBeUndefined();
+        });
       });
     });
   });

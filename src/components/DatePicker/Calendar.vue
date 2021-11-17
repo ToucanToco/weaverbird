@@ -16,9 +16,10 @@
 </template>
 
 <script lang="ts">
+import _isEmpty from 'lodash/isEmpty';
 import _isEqual from 'lodash/isEqual';
 import DatePicker from 'v-calendar/src/components/DatePicker.vue';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import { clampRange, DatePickerHighlight, DateRange, isDateRange } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
@@ -115,6 +116,14 @@ export default class Calendar extends Vue {
   // when user start to select a range he has only start value selected, we disable validate button until he select the end value
   onDrag(dragValue: DateRange): void {
     this.$emit('input', { start: dragValue.start, duration: 'day' });
+  }
+
+  @Watch('availableDates')
+  resetValueOutOfBounds() {
+    if (_isEmpty(this.boundedValue)) {
+      if (this.value) this.onInput(undefined);
+      this.defaultDate = this.availableDates.start ?? '';
+    }
   }
 }
 </script>
