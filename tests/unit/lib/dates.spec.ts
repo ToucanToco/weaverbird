@@ -244,12 +244,12 @@ describe('clampRange', () => {
     };
     expect(clampRange(rangeOutOfBounds, bounds)).toStrictEqual(bounds);
   });
-  it('should throw an error when range it completely out of bounds without any overlap', () => {
+  it('should return undefined when range it completely out of bounds without any overlap', () => {
     const rangeOutOfBounds: DateRange = {
       start: new Date('2022-11-16T00:00:00'),
       end: new Date('2022-11-18T00:00:00'),
       duration: 'day',
     };
-    expect(() => clampRange(rangeOutOfBounds, bounds)).toThrow();
+    expect(clampRange(rangeOutOfBounds, bounds)).toBeUndefined();
   });
 });
