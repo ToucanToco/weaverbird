@@ -116,11 +116,27 @@ describe('CustomGranularityCalendar', () => {
     });
   });
 
-  describe('range out of bounds', () => {
+  describe('with bounds', () => {
     const bounds = {
       start: new Date('11/15/2021'),
       end: new Date('12/15/2021'),
-      duration: 'day',
+    };
+
+    beforeEach(() => {
+      createWrapper({
+        granularity: 'month',
+        bounds,
+      });
+    });
+    it('should set header on year corresponding to start bound', () => {
+      expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('2021');
+    });
+  });
+
+  describe('with range out of bounds', () => {
+    const bounds = {
+      start: new Date('11/15/2021'),
+      end: new Date('12/15/2021'),
     };
 
     beforeEach(() => {
@@ -141,6 +157,10 @@ describe('CustomGranularityCalendar', () => {
       );
     });
 
+    it('should set header on year corresponding to clamped range', () => {
+      expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('2021');
+    });
+
     it('should emit corresponding clamped range', () => {
       expect(wrapper.emitted('input')).toHaveLength(1);
       expect(wrapper.emitted('input')[0][0]).toStrictEqual({
@@ -148,6 +168,36 @@ describe('CustomGranularityCalendar', () => {
         end: new Date('2021-11-30T23:59:59.999Z'),
         duration: 'month',
       });
+    });
+  });
+
+  describe('when bounds are updated and value become completely out of bounds', () => {
+    beforeEach(async () => {
+      createWrapper({
+        granularity: 'month',
+        value: {
+          start: new Date('10/15/2021'),
+          end: new Date('12/15/2021'),
+          duration: 'month',
+        },
+        bounds: {
+          start: new Date('11/15/2021'),
+          end: new Date('12/15/2021'),
+        },
+      });
+      await wrapper.setProps({
+        bounds: {
+          start: new Date('09/15/2020'),
+          end: new Date('10/15/2020'),
+        },
+      });
+    });
+    it('should set header on year corresponding to updated start bound', () => {
+      expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('2020');
+    });
+    it('should reset value', () => {
+      expect(wrapper.emitted('input')).toHaveLength(2);
+      expect(wrapper.emitted('input')[1][0]).toBeUndefined();
     });
   });
 
@@ -170,7 +220,7 @@ describe('CustomGranularityCalendar', () => {
       expect(emittedDate.duration).toBe('quarter');
     });
 
-    it('should update navigation start to retrieve options of same page that selected date range in new granularity', () => {
+    it('should set header on year corresponding to selected date range', () => {
       expect(wrapper.find('.custom-granularity-calendar__header').text()).toBe('2021');
     });
   });
@@ -329,17 +379,14 @@ describe('CustomGranularityCalendar', () => {
       createWrapper({
         granularity: 'month',
         value: new Date('2021-10-19'), // in october 2021
-      });
-    });
-
-    it('should deactivate choices that have no overlap with the bounds range', async () => {
-      await wrapper.setProps({
         bounds: {
           start: new Date('2021-05-15'), // middle of may 2021
           end: new Date('2021-11-31'), // end of november 2021
         },
       });
+    });
 
+    it('should deactivate choices that have no overlap with the bounds range', async () => {
       const options = wrapper.findAll('.custom-granularity-calendar__option');
       const enabledOptionsLabels = options
         .filter(w => !w.classes('custom-granularity-calendar__option--disabled'))
@@ -368,45 +415,10 @@ describe('CustomGranularityCalendar', () => {
       // NOTE: to avoid being blocked in a sate when a user can't escape (with a start value out-of-bounds),
       // the navigation buttons are only visually disabled, but remains clickable.
 
-      await wrapper.setProps({
-        bounds: {
-          start: new Date('2021-05-01'), // start of may 2021
-          end: new Date('2021-12-01'), // start of december 2021
-        },
-      });
-
       expect(wrapper.find('.header-btn__previous').classes()).toContain(
         'custom-granularity-calendar__header-btn--disabled',
       );
       expect(wrapper.find('.header-btn__next').classes()).toContain(
-        'custom-granularity-calendar__header-btn--disabled',
-      );
-
-      // Disable the navigation towards the future, but not towards the past
-      await wrapper.setProps({
-        bounds: {
-          start: new Date('1990-01-01'), // start of 1990
-          end: new Date('2021-12-01'), // start of december 2021
-        },
-      });
-      expect(wrapper.find('.header-btn__previous').classes()).not.toContain(
-        'custom-granularity-calendar__header-btn--disabled',
-      );
-      expect(wrapper.find('.header-btn__next').classes()).toContain(
-        'custom-granularity-calendar__header-btn--disabled',
-      );
-
-      // Disable the navigation towards the past, but not towards the future
-      await wrapper.setProps({
-        bounds: {
-          start: new Date('2021-05-01'), // start of may 2021
-          end: new Date('2049-01-01'), // start of 2049
-        },
-      });
-      expect(wrapper.find('.header-btn__previous').classes()).toContain(
-        'custom-granularity-calendar__header-btn--disabled',
-      );
-      expect(wrapper.find('.header-btn__next').classes()).not.toContain(
         'custom-granularity-calendar__header-btn--disabled',
       );
 

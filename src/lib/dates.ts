@@ -166,7 +166,7 @@ export const isDateRange = (value: undefined | string | CustomDateRange): value 
   return Object.keys(value).length === 0 || _has(value, 'start') || _has(value, 'end');
 };
 
-export const clampRange = (range: DateRange, bounds: DateRange): DateRange => {
+export const clampRange = (range: DateRange, bounds: DateRange): DateRange | undefined => {
   if (range.start == null || range.end == null || bounds.start == null || bounds.end == null) {
     return range;
   }
@@ -176,7 +176,7 @@ export const clampRange = (range: DateRange, bounds: DateRange): DateRange => {
   const rangeContainBounds = range.start < bounds.start && bounds.end < range.end;
 
   if (rangeStartIsOutOfBound && rangeEndIsOutOfBound && !rangeContainBounds) {
-    throw new Error('Cannot clamp range that does not overlap with bounds');
+    return undefined;
   }
 
   const clampedRange = {
