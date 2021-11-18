@@ -45,7 +45,9 @@ def translate_replace(
     compiled_query: str = 'CASE '
     for element_to_replace in step.to_replace:
         from_value, to_value = element_to_replace
-        compiled_query += f'WHEN {step.search_column}={_clean_str(from_value)} THEN {_clean_str(to_value)} '
+        compiled_query += (
+            f'WHEN {step.search_column}={_clean_str(from_value)} THEN {_clean_str(to_value)} '
+        )
     compiled_query += f'ELSE {step.search_column} END AS {step.search_column}'
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
