@@ -55,7 +55,7 @@ def test_translate_filter_date():
     assert (
         res.transformed_query
         == 'WITH SELECT_STEP_0 AS (SELECT TOTO, TATA FROM products), FILTER_STEP_1 AS (SELECT TOTO, CREATED FROM '
-        'SELECT_STEP_0 WHERE CREATED > to_timestamp(\'2020-01-01 01:03:30\'))'
+        'SELECT_STEP_0 WHERE to_timestamp(CREATED) > to_timestamp(\'2020-01-01T01:03:30\'))'
     )
     assert res.selection_query == 'SELECT TOTO, CREATED FROM FILTER_STEP_1'
 

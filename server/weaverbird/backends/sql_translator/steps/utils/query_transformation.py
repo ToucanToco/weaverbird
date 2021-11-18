@@ -43,10 +43,12 @@ SQL_INCLUSION_OPERATORS = {
 def apply_condition(condition: Condition, query: str) -> str:
     if isinstance(condition, ComparisonCondition):
         try:
-            if isinstance(condition.value, datetime.datetime):
+            if isinstance(condition.value, datetime.datetime) or isinstance(
+                condition.value, datetime.date
+            ):
                 query += (
-                    f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} '
-                    f'to_timestamp(\'{condition.value}\')'
+                    f'to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
+                    f'to_timestamp(\'{condition.value.isoformat()}\')'
                 )
             else:
                 float(condition.value)
