@@ -12,6 +12,13 @@
           ["'foo'", "'oof'"],
           ["l'oo'", "d'oof'"]
         ]
+      },
+      {
+        "name": "replace",
+        "search_column": "AGE",
+        "to_replace": [
+          [10, 18]
+        ]
       }
     ]
   },
@@ -82,7 +89,7 @@
       },
       {
         "NAME": "d'oof",
-        "AGE": 10,
+        "AGE": 18,
         "SCORE": 34
       }
     ]
