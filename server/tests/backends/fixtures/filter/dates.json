@@ -1,7 +1,5 @@
 {
-  "exclude": [
-    "sql"
-  ],
+  "exclude": [],
   "step": {
     "pipeline": [
       {
