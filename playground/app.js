@@ -379,6 +379,10 @@ async function buildVueApp() {
         // based on lodash templates (ERB syntax)
         interpolateFunc: (value, context) => exampleInterpolateFunc(value, context),
         variables: VARIABLES,
+
+        featureFlags: {
+          RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable'
+        }
       });
       // Add variables
       store.commit(VQBnamespace('setAvailableVariables'), {
