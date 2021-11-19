@@ -36,7 +36,7 @@ lint:
 
 .PHONY: test
 test:
-	pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml
+	pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
 
 .PHONY: all
 all: test lint
