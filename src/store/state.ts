@@ -109,7 +109,10 @@ export interface VQBState {
    * variable delimiter for templating
    */
   variableDelimiters?: VariableDelimiters;
-  featureFlags?: Record<string, boolean | string | undefined>;
+  featureFlags?: {
+    RELATIVE_DATE_FILTERING?: 'enable' | 'disable';
+    [k: string]: boolean | string | undefined;
+  };
 }
 
 /**
