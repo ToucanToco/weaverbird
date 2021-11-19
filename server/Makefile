@@ -7,7 +7,7 @@ black = black weaverbird tests playground.py
 clean:
 	rm -rf `find . -name __pycache__`
 	rm -f `find . -type f -name '*.py[co]' `
-	rm -rf .coverage build dist *.egg-info .pytest_cache .mypy_cache
+	rm -rf .coverage build dist *.egg-info src/*.egg-info .pytest_cache .mypy_cache
 
 .PHONY: install
 install:
