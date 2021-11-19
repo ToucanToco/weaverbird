@@ -75,7 +75,7 @@ describe('Variable Input', () => {
   describe('with multiple selected variables', () => {
     beforeEach(async () => {
       wrapper.setProps({
-        value: ['{{ appRequesters.city }}', '{{ appRequesters.country }}'],
+        value: ['{{ appRequesters.city }}', '{{ appRequesters.country }}', 'toto'],
       });
       await wrapper.vm.$nextTick();
     });
@@ -84,6 +84,8 @@ describe('Variable Input', () => {
       expect(wrapper.find('VariableChooser-stub').props().selectedVariables).toStrictEqual([
         'appRequesters.city',
         'appRequesters.country',
+        // toto is a simple string not a variable so keep it unchanged
+        'toto',
       ]);
     });
   });
@@ -176,7 +178,7 @@ describe('Variable Input', () => {
           wrapper.setProps({ isMultiple: true });
           wrapper
             .find('VariableChooser-stub')
-            .vm.$emit('input', ['appRequesters.view', 'appRequesters.city']);
+            .vm.$emit('input', ['appRequesters.view', 'appRequesters.city', 'toto']);
           await wrapper.vm.$nextTick();
         });
 
@@ -187,7 +189,12 @@ describe('Variable Input', () => {
         it('should emit a new values with the chosen variables', () => {
           expect(wrapper.emitted('input')).toHaveLength(1);
           expect(wrapper.emitted('input')[0]).toEqual([
-            ['{{ appRequesters.view }}', '{{ appRequesters.city }}'],
+            [
+              '{{ appRequesters.view }}',
+              '{{ appRequesters.city }}',
+              // toto is a simple string not a variable so keep it unchanged
+              'toto',
+            ],
           ]);
         });
       });

@@ -95,7 +95,8 @@ export default class VariableInputBase extends Vue {
     } else {
       return this.value.reduce((variables: string[], value: string) => {
         const identifier = extractVariableIdentifier(value, this.variableDelimiters);
-        return identifier ? [...variables, identifier] : variables;
+        // in case value is a simple string we still want to keep it in array
+        return [...variables, identifier || value];
       }, []);
     }
   }
@@ -128,8 +129,11 @@ export default class VariableInputBase extends Vue {
   setVariableDelimiters(value: string | string[]): string | string[] {
     const addVariableDelimiters = (variableIdentifier: string) =>
       `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+    // check if value is a variable
+    const isVariable = (identifier: string): boolean =>
+      Boolean(this.availableVariables.find(v => v.identifier === identifier));
     return Array.isArray(value)
-      ? value.map(v => addVariableDelimiters(v))
+      ? value.map(v => (isVariable(v) ? addVariableDelimiters(v) : v))
       : addVariableDelimiters(value);
   }
 
