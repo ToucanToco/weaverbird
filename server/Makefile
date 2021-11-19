@@ -43,6 +43,7 @@ all: test lint
 
 .PHONY: build
 build:
+	pip install build
 	python -m build
 
 .PHONY: upload
