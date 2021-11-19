@@ -36,14 +36,18 @@ def translate_replace(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
+    def _clean_str(value):
+        if not isinstance(value, float) and not isinstance(value, int):
+            value = value.strip('"').strip("'").replace('"', "\'").replace("'", "\\'")
+            return f'\'{value}\''
+        return value
+
     compiled_query: str = 'CASE '
     for element_to_replace in step.to_replace:
         from_value, to_value = element_to_replace
-        if not isinstance(from_value, float) and not isinstance(from_value, int):
-            from_value = from_value.replace('"', "'")
-        if not isinstance(from_value, float) and not isinstance(to_value, int):
-            to_value = to_value.replace('"', "'")
-        compiled_query += f'WHEN {step.search_column}={from_value} THEN {to_value} '
+        compiled_query += (
+            f'WHEN {step.search_column}={_clean_str(from_value)} THEN {_clean_str(to_value)} '
+        )
     compiled_query += f'ELSE {step.search_column} END AS {step.search_column}'
 
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(

@@ -9,7 +9,15 @@
         "name": "replace",
         "search_column": "NAME",
         "to_replace": [
-          ["'foo'", "'oof'"]
+          ["'foo'", "'oof'"],
+          ["l'oo'", "d'oof'"]
+        ]
+      },
+      {
+        "name": "replace",
+        "search_column": "AGE",
+        "to_replace": [
+          [10, 18]
         ]
       }
     ]
@@ -42,6 +50,11 @@
         "NAME": "Azz",
         "AGE": 21,
         "SCORE": 100
+      },
+      {
+        "NAME": "l'oo",
+        "AGE": 10,
+        "SCORE": 34
       }
     ]
   },
@@ -73,6 +86,11 @@
         "NAME": "Azz",
         "AGE": 21,
         "SCORE": 100
+      },
+      {
+        "NAME": "d'oof",
+        "AGE": 18,
+        "SCORE": 34
       }
     ]
   }
