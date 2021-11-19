@@ -358,6 +358,20 @@ async function buildVueApp() {
               },
             },
           ],
+          dates: [
+            {
+              name: 'domain',
+              domain: 'sin-from-2019-to-2022',
+            },
+            {
+              name: 'filter',
+              condition: {
+                column: 'day',
+                operator: 'gte',
+                value: new Date('2021-11-19T00:00:00Z'),
+              },
+            },
+          ],
         },
         currentDomain: 'sales',
         translator: TRANSLATOR,
