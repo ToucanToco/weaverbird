@@ -3,8 +3,7 @@ import json
 import pandas as pd
 import pytest
 
-from server.tests.utils import assert_dataframes_equals, retrieve_case
-from tests.utils import get_spec_from_json_fixture
+from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.pandas_executor import execute_pipeline
 from weaverbird.pipeline import Pipeline
 

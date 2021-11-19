@@ -2,7 +2,7 @@ import numpy as np
 import pytest
 from pandas import DataFrame
 
-from server.tests.utils import assert_dataframes_equals
+from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.fillna import execute_fillna
 from weaverbird.pipeline.steps import FillnaStep
 
