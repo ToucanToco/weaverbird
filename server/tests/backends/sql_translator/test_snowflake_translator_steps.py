@@ -1,4 +1,3 @@
-import datetime
 import json
 import time
 from os import environ
@@ -13,6 +12,7 @@ from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case, type_code_mapping
+from tests.utils import get_spec_from_json_fixture
 from weaverbird.backends.pandas_executor.pipeline_executor import logger
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
@@ -155,11 +155,6 @@ def clean_too_old_residuals_tables():
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
-    if 'filter_' in case_id and 'date' in case_id:
-        pass
-    else:
-        return
-
     global SNOWFLAKE_TABLES_TESTS, CLEANER_JOB_DONE
 
     # To be sure to execute the cleaner job only once per tests
@@ -175,23 +170,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     case_id = (
         f"{case_id.replace('/', '')}_toucan_test___{str(int(time.time()))}___{str(randint(1, 100))}"
     )
-
-    spec_file = open(case_spec_file_path, 'r')
-
-    def datetime_parser(dct):
-        for k, v in dct.items():
-            if isinstance(v, str) and v.startswith(
-                "date:",
-            ):
-                try:
-                    dct[k] = datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S")
-                except:
-                    pass
-        return dct
-
-    spec = json.loads(spec_file.read(), object_hook=datetime_parser)
-    spec_file.close()
-
+    spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
     try:
         # Drop created table
         execute(get_connection(), f'DROP TABLE IF EXISTS {case_id}', False)

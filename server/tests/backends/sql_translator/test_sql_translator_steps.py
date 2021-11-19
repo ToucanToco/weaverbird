@@ -12,6 +12,7 @@ from pymysql.err import OperationalError
 from sqlalchemy import create_engine
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case
+from tests.utils import get_spec_from_json_fixture
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
@@ -133,9 +134,7 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
-    spec_file = open(case_spec_file_path, 'r')
-    spec = json.loads(spec_file.read())
-    spec_file.close()
+    spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
     # Drop created table
     execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
