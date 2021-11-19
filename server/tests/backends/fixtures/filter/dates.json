@@ -7,7 +7,7 @@
         "condition": {
           "column": "CREATED",
           "operator": "gt",
-          "value": "2020-01-01 01:03:30"
+          "value": "date: 2020-01-01 01:03:30"
         }
       }
     ]
