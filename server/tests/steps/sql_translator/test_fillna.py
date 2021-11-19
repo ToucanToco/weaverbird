@@ -1,6 +1,6 @@
 import pytest
 
-from server.weaverbird.backends.sql_translator.metadata import ColumnMetadata
+from weaverbird.backends.sql_translator.metadata import ColumnMetadata
 from weaverbird.backends.sql_translator.steps import translate_fillna
 from weaverbird.pipeline.steps import FillnaStep
 

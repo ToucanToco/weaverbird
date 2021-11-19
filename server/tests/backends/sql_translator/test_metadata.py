@@ -2,7 +2,7 @@ from typing import Dict, List
 
 import pytest
 
-from server.weaverbird.backends.sql_translator.metadata import (
+from weaverbird.backends.sql_translator.metadata import (
     ColumnMetadata,
     MetadataError,
     SqlQueryMetadataManager,
