@@ -32,7 +32,7 @@ lint:
 	$(flake8)
 	$(isort) --check-only
 	$(black) --check
-	mypy weaverbird/
+	mypy
 
 .PHONY: test
 test:
