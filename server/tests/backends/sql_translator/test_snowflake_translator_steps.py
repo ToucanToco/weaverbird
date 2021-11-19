@@ -12,6 +12,7 @@ from snowflake.sqlalchemy import URL
 from sqlalchemy import create_engine
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case, type_code_mapping
+from tests.utils import get_spec_from_json_fixture
 from weaverbird.backends.pandas_executor.pipeline_executor import logger
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
@@ -169,11 +170,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     case_id = (
         f"{case_id.replace('/', '')}_toucan_test___{str(int(time.time()))}___{str(randint(1, 100))}"
     )
-
-    spec_file = open(case_spec_file_path, 'r')
-    spec = json.loads(spec_file.read())
-    spec_file.close()
-
+    spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
     try:
         # Drop created table
         execute(get_connection(), f'DROP TABLE IF EXISTS {case_id}', False)

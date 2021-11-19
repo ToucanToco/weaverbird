@@ -1,3 +1,4 @@
+import datetime
 import re
 from typing import Dict, List, Tuple
 
@@ -42,8 +43,16 @@ SQL_INCLUSION_OPERATORS = {
 def apply_condition(condition: Condition, query: str) -> str:
     if isinstance(condition, ComparisonCondition):
         try:
-            float(condition.value)
-            query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
+            if isinstance(condition.value, datetime.datetime) or isinstance(
+                condition.value, datetime.date
+            ):
+                query += (
+                    f'to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
+                    f'to_timestamp(\'{condition.value.isoformat()}\')'
+                )
+            else:
+                float(condition.value)
+                query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
         except ValueError:
             # just to escape single quotes from crashing the snowflakeSQL query
             if type(condition.value) == str:

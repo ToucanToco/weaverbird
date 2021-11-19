@@ -4,6 +4,7 @@ import pandas as pd
 import pytest
 
 from server.tests.utils import assert_dataframes_equals, retrieve_case
+from tests.utils import get_spec_from_json_fixture
 from weaverbird.backends.pandas_executor import execute_pipeline
 from weaverbird.pipeline import Pipeline
 
@@ -12,9 +13,7 @@ test_cases = retrieve_case('pandas_executor', 'pandas')
 
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_pandas_execute_pipeline(case_id, case_spec_file_path):
-    spec_file = open(case_spec_file_path, 'r')
-    spec = json.loads(spec_file.read())
-    spec_file.close()
+    spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
     df_in = pd.read_json(json.dumps(spec['input']), orient='table')
     df_out = pd.read_json(json.dumps(spec['expected']), orient='table')

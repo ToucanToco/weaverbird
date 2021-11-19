@@ -1,0 +1,72 @@
+{
+  "exclude": ["sql"],
+  "step": {
+    "pipeline": [
+      {
+        "name": "filter",
+        "condition": {
+          "column": "CREATED",
+          "operator": "gt",
+          "value": "date: 2020-01-01 01:03:30"
+        }
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CREATED",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "CREATED": "2021-01-01 01:03:30"
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "CREATED": "2019-01-01 01:03:30"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "CREATED",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "CREATED": "2021-01-01 01:03:30"
+      }
+    ]
+  }
+}

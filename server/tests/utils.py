@@ -1,3 +1,4 @@
+import datetime
 import json
 from glob import glob
 from os import path
@@ -83,3 +84,28 @@ def retrieve_case(directory, provider):
         if c in step_available and not is_excluded(x, provider):
             test_cases.append(pytest.param(case_id, x, id=case_id))
     return test_cases
+
+
+def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
+    spec_file = open(case_spec_file_path, 'r')
+
+    # if it's a date type step like the filter on date
+    if 'filter_' in case_id and 'date' in case_id:
+
+        def _datetime_parser(dct):
+            for k, v in dct.items():
+                if isinstance(dct[k], str) and dct[k].startswith(
+                    "date:",
+                ):
+                    try:
+                        dct[k] = datetime.datetime.strptime(v, "date: %Y-%m-%d %H:%M:%S")
+                    except Exception as es:
+                        print(es)
+            return dct
+
+        spec = json.loads(spec_file.read(), object_hook=_datetime_parser)
+    else:
+        spec = json.loads(spec_file.read())
+    spec_file.close()
+
+    return spec
