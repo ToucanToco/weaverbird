@@ -11,8 +11,7 @@ from docker.models.images import Image
 from pymysql.err import OperationalError
 from sqlalchemy import create_engine
 
-from server.tests.utils import assert_dataframes_equals, retrieve_case
-from tests.utils import get_spec_from_json_fixture
+from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 

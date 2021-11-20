@@ -1,13 +1,13 @@
 .DEFAULT_GOAL := all
-flake8 = flake8 weaverbird tests playground.py
-isort = isort weaverbird tests playground.py
-black = black weaverbird tests playground.py
+flake8 = flake8 src tests playground.py
+isort = isort src tests playground.py
+black = black src tests playground.py
 
 .PHONY: clean
 clean:
 	rm -rf `find . -name __pycache__`
 	rm -f `find . -type f -name '*.py[co]' `
-	rm -rf .coverage build dist *.egg-info .pytest_cache .mypy_cache
+	rm -rf .coverage build dist *.egg-info src/*.egg-info .pytest_cache .mypy_cache
 
 .PHONY: install
 install:
@@ -32,17 +32,18 @@ lint:
 	$(flake8)
 	$(isort) --check-only
 	$(black) --check
-	mypy weaverbird/
+	mypy
 
 .PHONY: test
 test:
-	pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml
+	python -m pytest --junitxml=test-report.xml --cov=weaverbird --cov-report xml -s
 
 .PHONY: all
 all: test lint
 
 .PHONY: build
 build:
+	pip install build
 	python -m build
 
 .PHONY: upload

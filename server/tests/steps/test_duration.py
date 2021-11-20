@@ -5,7 +5,7 @@ import pandas as pd
 import pytest
 from pandas import DataFrame
 
-from server.tests.utils import assert_dataframes_equals
+from tests.utils import assert_dataframes_equals
 from weaverbird.backends.pandas_executor.steps.duration import execute_duration
 from weaverbird.pipeline.steps.duration import DurationStep
 
