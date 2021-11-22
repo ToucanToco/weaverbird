@@ -353,7 +353,7 @@ async function buildVueApp() {
               name: 'filter',
               condition: {
                 column: 'day',
-                operator: 'gte',
+                operator: 'ge',
                 value: new Date('2021-11-19T00:00:00Z'),
               },
             },
