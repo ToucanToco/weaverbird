@@ -66,7 +66,7 @@ def retrieve_case(directory, provider):
     step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
 
     steps_dir_path = path.join(
-        path.dirname(path.realpath(__file__)), f'../weaverbird/backends/{directory}/steps'
+        path.dirname(path.realpath(__file__)), f'../src/weaverbird/backends/{directory}/steps'
     )
     step_available = [
         f.replace(steps_dir_path + '/', '').replace('.py', '')
