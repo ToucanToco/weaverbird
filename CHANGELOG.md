@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.76.2] - 2021-11-22
+
+### Fixed
+- Variable input: don't clear field when selecting variables in multiple mode
+
 ## [0.76.1] - 2021-11-17
 
 ### Fixed
@@ -1122,6 +1127,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.76.2]: https://github.com/ToucanToco/weaverbird/compare/v0.76.1...v0.76.2
 [0.76.1]: https://github.com/ToucanToco/weaverbird/compare/v0.76.0...v0.76.1
 [0.76.0]: https://github.com/ToucanToco/weaverbird/compare/v0.75.0...v0.76.0
 [0.75.0]: https://github.com/ToucanToco/weaverbird/compare/v0.74.0...v0.75.0
