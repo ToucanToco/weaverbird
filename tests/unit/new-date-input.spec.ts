@@ -294,6 +294,45 @@ describe('Date input', () => {
     });
   });
 
+  describe('with selected value as advanced variable', () => {
+    const advancedVariable = '{{ i am an advanced variable }}';
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value: advancedVariable,
+      });
+    });
+    it('should display variable tag instead of label', () => {
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(false);
+      expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
+    });
+    it('should pass advanced variable to advanced variable modal', () => {
+      expect(wrapper.find('AdvancedVariableModal-stub').props().variable).toStrictEqual(
+        advancedVariable,
+      );
+    });
+    describe('when clicking on variable tag', () => {
+      beforeEach(async () => {
+        await wrapper.find('VariableTag-stub').vm.$emit('edited');
+      });
+      it('should open the advanced variable modal', () => {
+        expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+      });
+    });
+    describe('when removing the variable tag', () => {
+      beforeEach(async () => {
+        await wrapper.find('VariableTag-stub').vm.$emit('removed');
+      });
+      it('should reset value', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual(undefined);
+      });
+      it('should hide editor', () => {
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
+      });
+    });
+  });
+
   describe('with selected value as custom date', () => {
     const value = new Date();
     beforeEach(() => {
