@@ -103,4 +103,28 @@ describe('Variable Tag', () => {
       expect(wrapper.emitted().edited).toBeTruthy();
     });
   });
+
+  describe('if is a date variable', () => {
+    beforeEach(() => {
+      wrapper.setProps({
+        isDate: true,
+      });
+    });
+    it('should have specific style', () => {
+      expect(wrapper.classes()).toContain('widget-variable__tag--date');
+    });
+    it('should have specific icon', () => {
+      expect(wrapper.find('.widget-variable__tag-icon').text()).not.toBe('{}');
+    });
+    describe('if the variable is an advanced variable', () => {
+      beforeEach(() => {
+        wrapper.setProps({
+          value: '{{ toto }}',
+        });
+      });
+      it('should use identifier as label', () => {
+        expect(wrapper.find('.widget-variable__tag-name').text()).toBe('toto');
+      });
+    });
+  });
 });

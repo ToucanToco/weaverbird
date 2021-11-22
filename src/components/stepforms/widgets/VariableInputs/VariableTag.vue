@@ -1,7 +1,10 @@
 <template>
   <div
     class="widget-variable__tag"
-    :class="{ 'widget-variable__tag--advanced': isAdvancedVariable }"
+    :class="{
+      'widget-variable__tag--advanced': isAdvancedVariable,
+      'widget-variable__tag--date': isDate,
+    }"
     v-tooltip="{
       targetClasses: 'has-weaverbird__tooltip',
       classes: 'weaverbird__tooltip',
@@ -9,7 +12,10 @@
       placement: 'bottom-center',
     }"
   >
-    <span class="widget-variable__tag-icon">{}</span>
+    <span class="widget-variable__tag-icon">
+      <FAIcon v-if="isDate" icon="far clock" />
+      <template v-else>{}</template>
+    </span>
     <span
       class="widget-variable__tag-name"
       @keypress.enter.prevent="editAdvancedVariable"
@@ -55,6 +61,9 @@ export default class VariableTag extends Vue {
   @Prop({ default: undefined })
   variableDelimiters!: VariableDelimiters;
 
+  @Prop({ default: false })
+  isDate!: boolean;
+
   /**
    * Retrieve identifier by removing delimiters from value.
    */
@@ -82,6 +91,8 @@ export default class VariableTag extends Vue {
   get variableLabel() {
     if (this.variable) {
       return this.variable.label;
+    } else if (this.isDate) {
+      return this.variableIdentifier;
     } else {
       return 'AdVariable';
     }
@@ -112,11 +123,13 @@ export default class VariableTag extends Vue {
 </style>
 
 <style scoped lang="scss">
+@import '../../../../styles/variables';
+
 .widget-variable__tag {
   border-radius: 4px;
-  background-color: rgba(42, 102, 161, 0.05);
+  background-color: $active-color-faded-3;
   padding: 0 10px;
-  color: #2a66a1;
+  color: $active-color;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -140,6 +153,12 @@ export default class VariableTag extends Vue {
   &:hover .widget-variable__tag-name {
     cursor: pointer;
     text-decoration: underline;
+  }
+}
+.widget-variable__tag--date {
+  .widget-variable__tag-icon {
+    margin-right: 0.5em;
+    font-size: 10px;
   }
 }
 </style>

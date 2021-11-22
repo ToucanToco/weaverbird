@@ -7,6 +7,7 @@
         :value="value"
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
+        :isDate="true"
         @edited="openAdvancedVariableModal"
         @removed="resetValue"
       />
