@@ -20,6 +20,13 @@
         @input="chooseVariable"
       />
     </div>
+    <div
+      class="widget-variable-list__advanced-variable"
+      v-if="enableAdvancedVariable"
+      @click="addAdvancedVariable"
+    >
+      Advanced variable
+    </div>
   </div>
 </template>
 
@@ -45,6 +52,9 @@ export default class VariableList extends Vue {
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => true })
+  enableAdvancedVariable!: boolean;
 
   @Prop({ default: false })
   showOnlyLabel!: boolean;
@@ -99,6 +109,10 @@ export default class VariableList extends Vue {
     const value = this.toggleVariable(variableIdentifier);
     this.$emit('input', value);
   }
+
+  addAdvancedVariable() {
+    this.$emit('addAdvancedVariable');
+  }
 }
 </script>
 
@@ -126,5 +140,20 @@ export default class VariableList extends Vue {
   text-transform: uppercase;
   letter-spacing: 0.5;
   padding: 7px 10px;
+}
+
+.widget-variable-list__advanced-variable {
+  padding: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  background: #f5f5f5;
+  color: #888888;
+  cursor: pointer;
+  margin-top: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 </style>

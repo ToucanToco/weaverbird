@@ -106,6 +106,27 @@ describe('Variable List', () => {
         expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
       });
     });
+
+    it('should display an "Advanced variable" option ...', () => {
+      expect(wrapper.find('.widget-variable-list__advanced-variable').exists()).toBe(true);
+    });
+
+    it('... even without other values', async () => {
+      wrapper.setProps({ availableVariables: [] });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.widget-variable-list__advanced-variable').exists()).toBe(true);
+    });
+
+    describe('when clicking on "Advanced variable"', () => {
+      beforeEach(async () => {
+        wrapper.find('.widget-variable-list__advanced-variable').trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should emit advancedVariable', () => {
+        expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
+      });
+    });
   });
 
   describe('multiple mode', () => {
@@ -147,6 +168,18 @@ describe('Variable List', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0][0]).toEqual(['appRequesters.date.year']);
       });
+    });
+  });
+
+  describe('when is not advanced', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: VARIABLES,
+        enableAdvancedVariable: false,
+      });
+    });
+    it('should hide "Advanced variable" option', () => {
+      expect(wrapper.find('.widget-variable-list__advanced-variable').exists()).toBe(false);
     });
   });
 
