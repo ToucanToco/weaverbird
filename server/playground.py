@@ -23,7 +23,7 @@ from os.path import basename, splitext
 
 import pandas as pd
 from pymongo import MongoClient
-from quart import Quart, Response, jsonify, request, send_from_directory
+from quart import Quart, Response, jsonify, request, send_file
 
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
@@ -45,7 +45,10 @@ csv_files = glob('../playground/datastore/*.csv')
 json_files = glob('../playground/datastore/*.json')
 DOMAINS = {
     **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
-    **{splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table') for json_file in json_files},
+    **{
+        splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table')
+        for json_file in json_files
+    },
 }
 
 
