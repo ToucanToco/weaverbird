@@ -11,8 +11,10 @@
     <VariableList
       :selectedVariables="selectedVariables"
       :availableVariables="availableVariables"
+      :enableAdvancedVariable="enableAdvancedVariable"
       :showOnlyLabel="true"
       @input="chooseVariable"
+      @addAdvancedVariable="addAdvancedVariable"
     />
   </div>
 </template>
@@ -40,6 +42,9 @@ export default class CustomVariableList extends Vue {
   @Prop({ default: true })
   enableCustom!: boolean;
 
+  @Prop({ default: () => true })
+  enableAdvancedVariable!: boolean;
+
   @Prop({ default: () => 'Custom', type: String })
   customLabel!: string;
 
@@ -49,6 +54,10 @@ export default class CustomVariableList extends Vue {
 
   selectCustomVariable() {
     this.$emit('selectCustomVariable');
+  }
+
+  addAdvancedVariable() {
+    this.$emit('addAdvancedVariable');
   }
 }
 </script>
