@@ -127,6 +127,44 @@ describe('Date input', () => {
         expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
       });
     });
+
+    describe('when choosing an advanced variable', () => {
+      beforeEach(async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('addAdvancedVariable');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should hide editor', () => {
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
+      });
+
+      it('should open the advanced variable modal', () => {
+        expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+      });
+    });
+
+    describe('when closing the advanced variable modal', () => {
+      beforeEach(async () => {
+        wrapper.find('AdvancedVariableModal-stub').vm.$emit('closed');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should close the modal', () => {
+        expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
+      });
+    });
+
+    describe('when saving an advanced variable', () => {
+      beforeEach(async () => {
+        wrapper.find('AdvancedVariableModal-stub').vm.$emit('input', 'Test');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should emit the new value with delimiters', () => {
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['{{ Test }}']);
+      });
+    });
   });
 
   describe('custom editor', () => {

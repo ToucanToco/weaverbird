@@ -22,6 +22,7 @@
           :enableCustom="enableCustom"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
+          @addAdvancedVariable="openAdvancedVariableModal"
         />
         <div
           class="widget-date-input__editor-content"
@@ -62,6 +63,12 @@
         </div>
       </div>
     </popover>
+    <AdvancedVariableModal
+      :is-opened="isAdvancedVariableModalOpened"
+      :variable-delimiters="variableDelimiters"
+      @input="chooseAdvancedVariable"
+      @closed="closeAdvancedVariableModal"
+    />
   </div>
 </template>
 
@@ -72,6 +79,7 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import Calendar from '@/components/DatePicker/Calendar.vue';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
+import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs/AdvancedVariableModal.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDate, DateRange, dateToString, relativeDateToString } from '@/lib/dates';
 import {
@@ -96,6 +104,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
     Calendar,
     RelativeDateForm,
     FAIcon,
+    AdvancedVariableModal,
   },
 })
 export default class NewDateInput extends Vue {
@@ -230,6 +239,27 @@ export default class NewDateInput extends Vue {
 
   selectTab(tab: string): void {
     this.selectedTab = tab;
+  }
+
+  // Advanced variable
+  isAdvancedVariableModalOpened = false;
+
+  openAdvancedVariableModal() {
+    this.closeEditor();
+    this.isAdvancedVariableModalOpened = true;
+  }
+
+  closeAdvancedVariableModal() {
+    this.isAdvancedVariableModalOpened = false;
+  }
+
+  /**
+   * Emit the choosen advanced variable and close the modal
+   */
+  chooseAdvancedVariable(variableIdentifier: string) {
+    const variableWithDelimiters = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+    this.$emit('input', variableWithDelimiters);
+    this.closeAdvancedVariableModal();
   }
 }
 </script>
