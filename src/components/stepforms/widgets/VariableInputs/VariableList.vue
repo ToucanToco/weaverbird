@@ -1,24 +1,26 @@
 <template>
   <div class="widget-variable-list">
-    <div
-      class="widget-variable-list__section"
-      v-for="category in variablesByCategory"
-      :key="category.label"
-    >
-      <div class="widget-variable-list__section-title" v-if="category.label">
-        {{ category.label }}
+    <div class="widget-variable-list__container">
+      <div
+        class="widget-variable-list__section"
+        v-for="category in variablesByCategory"
+        :key="category.label"
+      >
+        <div class="widget-variable-list__section-title" v-if="category.label">
+          {{ category.label }}
+        </div>
+        <VariableListOption
+          v-for="availableVariable in category.variables"
+          :key="availableVariable.identifier"
+          :value="availableVariable.value"
+          :identifier="availableVariable.identifier"
+          :label="availableVariable.label"
+          :togglable="isMultiple"
+          :selectedVariables="selectedVariables"
+          :showOnlyLabel="showOnlyLabel"
+          @input="chooseVariable"
+        />
       </div>
-      <VariableListOption
-        v-for="availableVariable in category.variables"
-        :key="availableVariable.identifier"
-        :value="availableVariable.value"
-        :identifier="availableVariable.identifier"
-        :label="availableVariable.label"
-        :togglable="isMultiple"
-        :selectedVariables="selectedVariables"
-        :showOnlyLabel="showOnlyLabel"
-        @input="chooseVariable"
-      />
     </div>
     <div
       class="widget-variable-list__advanced-variable"

@@ -1,5 +1,8 @@
 <template>
-  <div class="widget-custom-variable-list__container">
+  <div
+    class="widget-custom-variable-list"
+    :class="{ 'widget-custom-variable-list--advanced': enableAdvancedVariable }"
+  >
     <VariableListOption
       v-if="enableCustom"
       class="widget-custom-variable-list__custom-option"
@@ -64,7 +67,7 @@ export default class CustomVariableList extends Vue {
 
 <style scoped lang="scss">
 @import '../../../../styles/variables';
-.widget-custom-variable-list__container {
+.widget-custom-variable-list {
   width: 200px;
   background-color: #fff;
   margin-bottom: 8px;
@@ -75,5 +78,8 @@ export default class CustomVariableList extends Vue {
 }
 ::v-deep .widget-variable-list__section:first-child {
   padding-top: 0;
+}
+.widget-custom-variable-list--advanced {
+  margin-bottom: 0;
 }
 </style>
