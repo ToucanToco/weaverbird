@@ -42,7 +42,11 @@ def handle_health_request():
 
 # Load all csv in playground's pandas datastore
 csv_files = glob('../playground/datastore/*.csv')
-DOMAINS = {splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files}
+json_files = glob('../playground/datastore/*.json')
+DOMAINS = {
+    **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
+    **{splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table') for json_file in json_files},
+}
 
 
 def get_available_domains():
@@ -226,4 +230,4 @@ async def handle_mongo_backend_request():
 @app.route('/<path:filename>', methods=['GET'])
 async def handle_static_files_request(filename=None):
     filename = filename or 'index.html'
-    return await send_from_directory('static', filename)
+    return await send_file('static/' + filename)
