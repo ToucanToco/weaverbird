@@ -148,6 +148,8 @@ export default {
             'notmatches',
             'isnull',
             'notnull',
+            'from',
+            'until',
           ],
           title: 'Operator',
           description: 'The filter operator',
