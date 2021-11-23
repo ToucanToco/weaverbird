@@ -229,8 +229,7 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
-    const widget = this.availableOperators.find(d => d.operator === this.value.operator)
-      ?.inputWidget;
+    const widget = this.operator.inputWidget;
     if (
       this.hasDateSelectedColumn &&
       widget === InputTextWidget &&
