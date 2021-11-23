@@ -242,8 +242,7 @@ export type FilterSimpleCondition =
   | FilterConditionComparison
   | FilterConditionEquality
   | FilterConditionInclusion
-  | FilterConditionDateBound
-  | FilterConditionDatePeriod;
+  | FilterConditionDateBound;
 
 type FilterConditionComparison = {
   column: string;
@@ -267,12 +266,6 @@ export type FilterConditionDateBound = {
   column: string;
   value: CustomDate | string;
   operator: 'from' | 'until';
-};
-
-export type FilterConditionDatePeriod = {
-  column: string;
-  value: CustomDate | string;
-  operator: 'day';
 };
 
 export type FilterStep = {

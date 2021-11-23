@@ -41,19 +41,12 @@ class DateBoundCondition(BaseModel):
     value: Union[RelativeDate, datetime, str]
 
 
-class DatePeriodCondition(BaseModel):
-    column: ColumnName
-    operator: Literal['day']
-    value: Union[RelativeDate, datetime, str]
-
-
 SimpleCondition = Union[
     ComparisonCondition,
     InclusionCondition,
     NullCondition,
     MatchCondition,
     DateBoundCondition,
-    DatePeriodCondition,
 ]
 
 
