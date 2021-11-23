@@ -1,6 +1,7 @@
 /* Every icons from font-awesome should be declared here to be used as svg (check the FAIcon component to add it to template) */
 import {
   faCalendar as faCalendarFar,
+  faClock as faClockFar,
   faTrashAlt as faTrashAltFar,
 } from '@fortawesome/free-regular-svg-icons';
 import {
@@ -64,6 +65,7 @@ const FA_ICONS = {
   // Regular icons (should always use `far ` prefix)
   'far calendar': faCalendarFar,
   'far trash-alt': faTrashAltFar,
+  'far clock': faClockFar,
 };
 
 export const FA_ICONS_PACK = Object.values(FA_ICONS);

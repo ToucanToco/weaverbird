@@ -127,6 +127,44 @@ describe('Date input', () => {
         expect(wrapper.find({ ref: 'custom-editor' }).isVisible()).toBe(true);
       });
     });
+
+    describe('when choosing an advanced variable', () => {
+      beforeEach(async () => {
+        wrapper.find('CustomVariableList-stub').vm.$emit('addAdvancedVariable');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should hide editor', () => {
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
+      });
+
+      it('should open the advanced variable modal', () => {
+        expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+      });
+    });
+
+    describe('when closing the advanced variable modal', () => {
+      beforeEach(async () => {
+        wrapper.find('AdvancedVariableModal-stub').vm.$emit('closed');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should close the modal', () => {
+        expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(false);
+      });
+    });
+
+    describe('when saving an advanced variable', () => {
+      beforeEach(async () => {
+        wrapper.find('AdvancedVariableModal-stub').vm.$emit('input', 'Test');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should emit the new value with delimiters', () => {
+        expect(wrapper.emitted('input')).toHaveLength(1);
+        expect(wrapper.emitted('input')[0]).toEqual(['{{ Test }}']);
+      });
+    });
   });
 
   describe('custom editor', () => {
@@ -253,6 +291,45 @@ describe('Date input', () => {
       expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
         selectedVariable.identifier,
       );
+    });
+  });
+
+  describe('with selected value as advanced variable', () => {
+    const advancedVariable = '{{ i am an advanced variable }}';
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: SAMPLE_VARIABLES,
+        variableDelimiters: { start: '{{', end: '}}' },
+        value: advancedVariable,
+      });
+    });
+    it('should display variable tag instead of label', () => {
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(false);
+      expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
+    });
+    it('should pass advanced variable to advanced variable modal', () => {
+      expect(wrapper.find('AdvancedVariableModal-stub').props().variable).toStrictEqual(
+        advancedVariable,
+      );
+    });
+    describe('when clicking on variable tag', () => {
+      beforeEach(async () => {
+        await wrapper.find('VariableTag-stub').vm.$emit('edited');
+      });
+      it('should open the advanced variable modal', () => {
+        expect(wrapper.find('AdvancedVariableModal-stub').props().isOpened).toBe(true);
+      });
+    });
+    describe('when removing the variable tag', () => {
+      beforeEach(async () => {
+        await wrapper.find('VariableTag-stub').vm.$emit('removed');
+      });
+      it('should reset value', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual(undefined);
+      });
+      it('should hide editor', () => {
+        expect(wrapper.find('popover-stub').props().visible).toBe(false);
+      });
     });
   });
 

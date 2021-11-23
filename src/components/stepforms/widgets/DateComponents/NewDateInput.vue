@@ -1,7 +1,17 @@
 <template>
   <div class="widget-date-input">
     <div class="widget-date-input__container" @click.stop="openEditor">
-      <span class="widget-date-input__label">{{ label }}</span>
+      <VariableTag
+        class="widget-date-input__advanced-variable"
+        v-if="advancedVariable"
+        :value="value"
+        :available-variables="availableVariables"
+        :variable-delimiters="variableDelimiters"
+        :isDate="true"
+        @edited="openAdvancedVariableModal"
+        @removed="resetValue"
+      />
+      <span class="widget-date-input__label" v-else>{{ label }}</span>
       <div class="widget-date-input__icon">
         <FAIcon icon="far calendar" />
       </div>
@@ -22,6 +32,7 @@
           :enableCustom="enableCustom"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
+          @addAdvancedVariable="openAdvancedVariableModal"
         />
         <div
           class="widget-date-input__editor-content"
@@ -62,6 +73,13 @@
         </div>
       </div>
     </popover>
+    <AdvancedVariableModal
+      :is-opened="isAdvancedVariableModalOpened"
+      :variable-delimiters="variableDelimiters"
+      :variable="advancedVariable"
+      @input="chooseAdvancedVariable"
+      @closed="closeAdvancedVariableModal"
+    />
   </div>
 </template>
 
@@ -72,6 +90,8 @@ import { POPOVER_ALIGN } from '@/components/constants';
 import Calendar from '@/components/DatePicker/Calendar.vue';
 import FAIcon from '@/components/FAIcon.vue';
 import Popover from '@/components/Popover.vue';
+import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs/AdvancedVariableModal.vue';
+import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import Tabs from '@/components/Tabs.vue';
 import { CustomDate, DateRange, dateToString, relativeDateToString } from '@/lib/dates';
 import {
@@ -96,6 +116,8 @@ import RelativeDateForm from './RelativeDateForm.vue';
     Calendar,
     RelativeDateForm,
     FAIcon,
+    AdvancedVariableModal,
+    VariableTag,
   },
 })
 export default class NewDateInput extends Vue {
@@ -143,6 +165,12 @@ export default class NewDateInput extends Vue {
     return this.availableVariables.find(v => v.identifier === identifier);
   }
 
+  get advancedVariable(): string | undefined {
+    if (typeof this.value !== 'string') return undefined;
+    const identifier = extractVariableIdentifier(this.value, this.variableDelimiters);
+    return identifier && !this.variable ? this.value : undefined;
+  }
+
   get selectedVariables(): string {
     // needed to select the custom button in CustomVariableList
     if (this.isCustom) {
@@ -158,7 +186,7 @@ export default class NewDateInput extends Vue {
 
   get hasCustomValue(): boolean {
     // value is custom if not undefined and not a preset variable
-    return (this.value && !this.variable) as boolean;
+    return (this.value && !this.variable && !this.advancedVariable) as boolean;
   }
 
   get isCustom(): boolean {
@@ -231,6 +259,32 @@ export default class NewDateInput extends Vue {
   selectTab(tab: string): void {
     this.selectedTab = tab;
   }
+
+  resetValue(): void {
+    this.$emit('input', undefined);
+    this.closeEditor();
+  }
+
+  // Advanced variable
+  isAdvancedVariableModalOpened = false;
+
+  openAdvancedVariableModal() {
+    this.closeEditor();
+    this.isAdvancedVariableModalOpened = true;
+  }
+
+  closeAdvancedVariableModal() {
+    this.isAdvancedVariableModalOpened = false;
+  }
+
+  /**
+   * Emit the choosen advanced variable and close the modal
+   */
+  chooseAdvancedVariable(variableIdentifier: string) {
+    const variableWithDelimiters = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
+    this.$emit('input', variableWithDelimiters);
+    this.closeAdvancedVariableModal();
+  }
 }
 </script>
 
@@ -258,6 +312,13 @@ export default class NewDateInput extends Vue {
   text-overflow: ellipsis;
   overflow: hidden;
 }
+
+.widget-date-input__advanced-variable {
+  width: 100%;
+  padding: 5px 10px;
+  margin: 0 5px;
+}
+
 .widget-date-input__icon {
   padding: 10px 15px;
   background: $grey-extra-light;
@@ -288,7 +349,7 @@ export default class NewDateInput extends Vue {
   width: 200px;
   min-width: 200px;
   height: 100%;
-  max-height: 380px;
+  max-height: 400px;
   flex: 1 200px;
   overflow-x: hidden;
   overflow-y: auto;

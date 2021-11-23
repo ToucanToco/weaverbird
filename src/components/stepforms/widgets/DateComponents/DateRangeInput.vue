@@ -37,6 +37,7 @@
           :selectedVariables="selectedVariables"
           :enableCustom="enableCustom"
           :customLabel="customLabel"
+          :enableAdvancedVariable="false"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
         />

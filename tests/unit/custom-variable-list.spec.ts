@@ -90,6 +90,17 @@ describe('Custom variable list', () => {
       expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
     });
   });
+
+  describe('when choosing an advanced variable', () => {
+    beforeEach(async () => {
+      wrapper.find('VariableList-stub').vm.$emit('addAdvancedVariable');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should emit advancedVariable', () => {
+      expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
+    });
+  });
 });
 
 describe('Custom variable list - with custom label', () => {
