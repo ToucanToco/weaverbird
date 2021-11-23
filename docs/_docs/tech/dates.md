@@ -33,15 +33,25 @@ This object will be translated or interpreted so that the date used in the condi
 A `RelativeDate` contains:
 - `date`: the reference date from which to compute the finale date. Either a `Date`, `undefined`, or a `string` with an expression resolving to a date.
   `undefined` means the moment of query execution ("now").
+- `operator`:
+  - `until`: the duration will be subtracted from the `date`, starting from the end of the day.
+    If today is the 30st, "1 week until today" would mean the 24th.
+  - `before`: the duration will be subtracted from the `date`, starting from the beginning of the day.
+    If today is the 30st, "1 week before today" would mean the 23th.
+  - `from`: the duration will be added to the `date`, starting from the end of the day.
+    If today is the 1st, "1 week from today" would mean the 7th.
+  - `after`: the duration will be subtracted from the `date`, starting from the beginning of the day.
+    If today is the 1st, "1 week after today" would mean the 8th.
 - `duration`: the unit used to compute the final date ("year", "quarter", "month", "week" or "day").
-- `quantity`: either positive (in the future) or negative (in the past).
+- `quantity`: either positive (in the direction provided by the operator) or negative (in the opposite direction).
 
 Examples:
-- the last 7 days:
+- the last 7 days (including today):
   ```json
   {
     "duration": "day",
-    "quantity": -7
+    "quantity": 7,
+    "operator": "until"
   }
   ```
 - this full year:
@@ -49,7 +59,8 @@ Examples:
   {
     "date": "{{ FIRST_DAY_OF_YEAR }}",
     "duration": "year",
-    "quantity": 1
+    "quantity": 1,
+    "operator": "from"
   }
   ```
 - the last two full weeks
@@ -57,7 +68,8 @@ Examples:
   {
     "date": "{{ THIS_WEEK_MONDAY }}",
     "duration": "week",
-    "quantity": -2
+    "quantity": 2,
+    "operator": "before"
   }
   ```
 (These examples require the availability of some variables in the scope : `THIS_WEEK_MONDAY` and `FIRST_DAY_OF_YEAR`)
@@ -117,21 +129,6 @@ Example:
 will select all dates before 2021-10-13T23:59.
 
 As the time of dates is always midnight, we expect backends to modify time to 23:59 before doing the filtering.
-
-#### Is
-
-Filter all dates in the selected day.
-
-Example:
-
-```json
-{
-  "column": "date",
-  "operator": "day", // using "is" would be confusing as we're not selecting an exact moment in time
-  "value": Date("2021-10-13T00:00") // of type CustomDate | string
-}
-```
-will select all dates between 2021-10-13T00:00 and 2021-10-13T23:59.
 
 #### Isnull is notnull
 
