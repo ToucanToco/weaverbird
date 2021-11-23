@@ -54,6 +54,7 @@ import { VueConstructor } from 'vue';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset/index';
 import {
@@ -101,6 +102,7 @@ export const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
     AutocompleteWidget,
     InputTextWidget,
     InputDateWidget,
+    NewDateInput,
   },
 })
 export default class FilterSimpleConditionWidget extends Vue {
@@ -175,8 +177,8 @@ export default class FilterSimpleConditionWidget extends Vue {
   ];
 
   readonly dateOperators: OperatorOption[] = [
-    { operator: 'from', label: 'from', inputWidget: InputDateWidget },
-    { operator: 'until', label: 'until', inputWidget: InputDateWidget },
+    { operator: 'from', label: 'from', inputWidget: NewDateInput },
+    { operator: 'until', label: 'until', inputWidget: NewDateInput },
     ...this.nullOperators,
   ];
 
@@ -201,6 +203,12 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   get enableRelativeDateFiltering(): boolean {
     return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
+  }
+
+  get useDateInput(): boolean {
+    return Boolean(
+      this.hasDateSelectedColumn && this.enableRelativeDateFiltering && this.inputWidget,
+    );
   }
 
   get availableOperators(): OperatorOption[] {

@@ -313,13 +313,13 @@ describe('Widget FilterSimpleCondition', () => {
     it('should use the widget accordingly when changing the operator', async () => {
       createWrapper(mount);
       // from operator (from mount)
-      expect(wrapper.find('.filterValue').classes()).toContain('widget-input-date__container');
+      expect(wrapper.find('.filterValue').classes()).toContain('widget-date-input');
       // until operator
       wrapper.setProps({
         value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'until' },
       });
       await wrapper.vm.$nextTick();
-      expect(wrapper.find('.filterValue').classes()).toContain('widget-input-date__container');
+      expect(wrapper.find('.filterValue').classes()).toContain('widget-date-input');
       // isnull operator
       wrapper.setProps({
         value: { column: 'columnA', value: null, operator: 'isnull' },
