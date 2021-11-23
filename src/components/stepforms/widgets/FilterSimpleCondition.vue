@@ -81,7 +81,9 @@ type LiteralOperator =
   | 'matches pattern'
   | "doesn't match pattern"
   | 'is null'
-  | 'is not null';
+  | 'is not null'
+  | 'from'
+  | 'until';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
