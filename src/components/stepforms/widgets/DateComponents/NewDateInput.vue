@@ -35,6 +35,7 @@
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
           :enableCustom="enableCustom"
+          :showOnlyLabel="!isEditorOpened"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
           @addAdvancedVariable="openAdvancedVariableModal"
@@ -352,11 +353,11 @@ export default class NewDateInput extends Vue {
   height: 100%;
 }
 .widget-date-input__editor-side {
-  width: 200px;
-  min-width: 200px;
+  width: 285px;
+  min-width: 285px;
   height: 100%;
   max-height: 400px;
-  flex: 1 200px;
+  flex: 1 285px;
   overflow-x: hidden;
   overflow-y: auto;
 }

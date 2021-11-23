@@ -15,7 +15,7 @@
       :selectedVariables="selectedVariables"
       :availableVariables="availableVariables"
       :enableAdvancedVariable="enableAdvancedVariable"
-      :showOnlyLabel="true"
+      :showOnlyLabel="showOnlyLabel"
       @input="chooseVariable"
       @addAdvancedVariable="addAdvancedVariable"
     />
@@ -50,6 +50,9 @@ export default class CustomVariableList extends Vue {
 
   @Prop({ default: () => 'Custom', type: String })
   customLabel!: string;
+
+  @Prop({ default: true })
+  showOnlyLabel!: boolean;
 
   chooseVariable(variableIdentifier: string) {
     this.$emit('input', variableIdentifier);
