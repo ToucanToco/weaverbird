@@ -1,5 +1,10 @@
 <template>
-  <div class="widget-date-input">
+  <div
+    class="widget-date-input"
+    :class="{
+      'widget-date-input--opened': isEditorOpened,
+    }"
+  >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <VariableTag
         class="widget-date-input__advanced-variable"
@@ -295,8 +300,19 @@ export default class NewDateInput extends Vue {
   max-width: 400px;
   position: relative;
 }
+
+.widget-date-input--opened {
+  .widget-date-input__container {
+    border-color: $active-color;
+  }
+  .widget-date-input__icon {
+    background-color: $active-color-faded-2;
+    color: $active-color;
+  }
+}
+
 .widget-date-input__container {
-  border: 1px solid $grey-light;
+  border: 1px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -314,23 +330,15 @@ export default class NewDateInput extends Vue {
 }
 
 .widget-date-input__advanced-variable {
-  width: 100%;
+  width: calc(100% - 45px);
   padding: 5px 10px;
   margin: 0 5px;
 }
 
 .widget-date-input__icon {
-  padding: 10px 15px;
-  background: $grey-extra-light;
-  color: $grey;
-}
-
-.widget-date-input__container:hover {
-  border-color: $active-color;
-  .widget-date-input__icon {
-    background-color: $active-color-faded-2;
-    color: $active-color;
-  }
+  padding: 10px;
+  background: rgba(217, 217, 217, 0.24);
+  color: #000;
 }
 
 .widget-date-input__editor {
