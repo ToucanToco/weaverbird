@@ -43,30 +43,6 @@
         box-sizing: border-box;
       }
 
-      .vqb__drop-zone {
-        position: absolute;
-        top: 60px;
-        right: 40px;
-        left: 40px;
-        bottom: 0;
-        z-index: 3;
-        background-color: #fafafa;
-        border: 2px dashed rgb(38, 101, 163);
-        display: none;
-        justify-content: center;
-      }
-
-      .vqb__drop-zone--dragged {
-        display: flex;
-      }
-
-      .vqb__drop-zone__message {
-        color: rgb(38, 101, 163);
-        width: 550px;
-        text-align: center;
-        margin-top: 350px;
-      }
-
       .open-code__button {
         cursor: pointer;
         position: absolute;
@@ -121,12 +97,7 @@
   </head>
 
   <body>
-    <div id="app" @dragenter="dragEnter" @dragleave="dragLeave" @dragover="dragOver" @drop="drop">
-      <div :class="{'vqb__drop-zone': true, 'vqb__drop-zone--dragged': draggedover}">
-        <h1 class="vqb__drop-zone__message">
-          Drop your CSV file here and start to shape your data like magic !
-        </h1>
-      </div>
+    <div id="app">
       <vqb></vqb>
       <div class="warning-message" v-if="backendWarnings.length" v-for="warning in backendWarnings">
         <i class="fas fa-exclamation-triangle"></i> {{ warning.message }}

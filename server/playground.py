@@ -17,13 +17,15 @@ Run it with `QUART_APP=playground QUART_ENV=development quart run`
 Environment variables:
 - for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
 """
+import json
 import os
+from datetime import datetime
 from glob import glob
 from os.path import basename, splitext
 
 import pandas as pd
 from pymongo import MongoClient
-from quart import Quart, Response, jsonify, request, send_from_directory
+from quart import Quart, Request, Response, jsonify, request, send_file
 
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
@@ -38,11 +40,38 @@ def handle_health_request():
     return 'OK'
 
 
+def json_js_datetime_parser(dct):
+    """
+    JS serialize UTC datetimes to ISO format with a Z, while python isoformat doesn't add Z
+    """
+    for k, v in dct.items():
+        if isinstance(v, str) and v.endswith('Z'):
+            try:
+                dct[k] = datetime.fromisoformat(v[:-1])
+            except ValueError:
+                pass
+    return dct
+
+
+async def parse_request_json(request: Request):
+    """
+    Parse the request with a custom JSON parser so that types are preserved (such as dates)
+    """
+    return json.loads(await request.get_data(), object_hook=json_js_datetime_parser)
+
+
 ### Pandas back-end routes
 
 # Load all csv in playground's pandas datastore
 csv_files = glob('../playground/datastore/*.csv')
-DOMAINS = {splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files}
+json_files = glob('../playground/datastore/*.json')
+DOMAINS = {
+    **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
+    **{
+        splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table')
+        for json_file in json_files
+    },
+}
 
 
 def get_available_domains():
@@ -73,8 +102,9 @@ async def handle_pandas_backend_request():
 
     elif request.method == 'POST':
         try:
+            pipeline = await parse_request_json(request)
             return Response(
-                execute_pipeline(await request.get_json(), **request.args),
+                execute_pipeline(pipeline, **request.args),
                 mimetype='application/json',
             )
         except Exception as e:
@@ -200,7 +230,7 @@ async def handle_mongo_backend_request():
 
     elif request.method == 'POST':
         try:
-            req_params = await request.get_json()
+            req_params = await parse_request_json(request)
 
             query = req_params['query']
             collection = req_params['collection']
@@ -226,4 +256,4 @@ async def handle_mongo_backend_request():
 @app.route('/<path:filename>', methods=['GET'])
 async def handle_static_files_request(filename=None):
     filename = filename or 'index.html'
-    return await send_from_directory('static', filename)
+    return await send_file('static/' + filename)

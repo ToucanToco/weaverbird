@@ -169,17 +169,6 @@ class MongoService {
       responseContent: await response.json(),
     };
   }
-
-  async loadCSV(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch('/load', {
-      method: 'POST',
-      body: formData,
-    });
-    return response.json();
-  }
 }
 
 const mongoService = new MongoService();
@@ -293,9 +282,6 @@ async function buildVueApp() {
     data: function() {
       return {
         isCodeOpened: false,
-        draggedOverFirst: false,
-        draggedOverSecond: false,
-        draggedover: false,
       };
     },
     created: async function() {
@@ -358,6 +344,20 @@ async function buildVueApp() {
               },
             },
           ],
+          dates: [
+            {
+              name: 'domain',
+              domain: 'sin-from-2019-to-2022',
+            },
+            {
+              name: 'filter',
+              condition: {
+                column: 'day',
+                operator: 'ge',
+                value: new Date('2021-11-19T00:00:00Z'),
+              },
+            },
+          ],
         },
         currentDomain: 'sales',
         translator: TRANSLATOR,
@@ -365,6 +365,10 @@ async function buildVueApp() {
         // based on lodash templates (ERB syntax)
         interpolateFunc: (value, context) => exampleInterpolateFunc(value, context),
         variables: VARIABLES,
+
+        featureFlags: {
+          RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable'
+        }
       });
       // Add variables
       store.commit(VQBnamespace('setAvailableVariables'), {
@@ -411,39 +415,6 @@ async function buildVueApp() {
       },
     },
     methods: {
-      // both methods below help to detect correctly dragover child element and
-      // out on parent element
-      dragEnter: function(event) {
-        event.preventDefault();
-        if (this.draggedOverFirst) {
-          this.draggedOverSecond = true;
-        } else {
-          this.draggedOverFirst = true;
-        }
-        this.draggedover = true;
-      },
-      dragLeave: function() {
-        if (this.draggedOverSecond) {
-          this.draggedOverSecond = false;
-        } else if (this.draggedOverFirst) {
-          this.draggedOverFirst = false;
-        }
-        if (!this.draggedOverFirst && !this.draggedOverSecond) {
-          this.draggedover = false;
-        }
-      },
-      dragOver: function(event) {
-        // Prevent to open file when drop the file
-        event.preventDefault();
-      },
-      drop: async function(event) {
-        this.draggedover = false;
-        event.preventDefault();
-        // For the moment, only take one file and we should also test event.target
-        const { collection: domain } = await mongoService.loadCSV(event.dataTransfer.files[0]);
-        await setupInitialData(store, domain);
-        event.target.value = null;
-      },
       hideCode: function() {
         this.isCodeOpened = false;
       },
