@@ -8,7 +8,7 @@
     <div class="widget-date-input__container" @click.stop="openEditor">
       <VariableTag
         class="widget-date-input__advanced-variable"
-        v-if="advancedVariable"
+        v-if="variable || advancedVariable"
         :value="value"
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
@@ -203,9 +203,7 @@ export default class NewDateInput extends Vue {
   }
 
   get label(): string {
-    if (this.variable) {
-      return this.variable.label;
-    } else if (this.value instanceof Date) {
+    if (this.value instanceof Date) {
       return dateToString(this.value);
     } else if (this.value instanceof Object) {
       return relativeDateToString(this.value);

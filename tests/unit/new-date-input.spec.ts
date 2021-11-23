@@ -282,15 +282,14 @@ describe('Date input', () => {
         value: `{{${selectedVariable.identifier}}}`,
       });
     });
-    it('should display variable label as input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
-        selectedVariable.label,
-      );
-    });
     it('should pass selected variable identifier to CustomVariableList', () => {
       expect(wrapper.find('CustomVariableList-stub').props().selectedVariables).toStrictEqual(
         selectedVariable.identifier,
       );
+    });
+    it('should display variable tag instead of label', () => {
+      expect(wrapper.find('.widget-date-input__label').exists()).toBe(false);
+      expect(wrapper.find('VariableTag-stub').exists()).toBe(true);
     });
   });
 
