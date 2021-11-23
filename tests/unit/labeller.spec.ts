@@ -319,6 +319,67 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Keep rows where "column1" is not null');
   });
 
+  describe('generates label for simple filter steps / operator "from"', () => {
+    it('generates label for date object', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: new Date(Date.UTC(2021, 0, 1)),
+          operator: 'from',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" from 1/1/2021');
+    });
+    it('generates label for relative date', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: { quantity: -1, duration: 'year' },
+          operator: 'from',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" from 1 years ago');
+    });
+  });
+
+  describe('generates label for simple filter steps / operator "until"', () => {
+    it('generates label for date object', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: new Date(Date.UTC(2021, 0, 1)),
+          operator: 'until',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" until 1/1/2021');
+    });
+    it('generates label for relative date', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: { quantity: -1, duration: 'year' },
+          operator: 'until',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" until 1 years ago');
+    });
+    it('generates label for variable', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: '<%= date.start %>',
+          operator: 'until',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" until <%= date.start %>');
+    });
+  });
+
   it('generates label for "and" filter steps', () => {
     const step: S.FilterStep = {
       name: 'filter',

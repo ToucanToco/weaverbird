@@ -252,7 +252,7 @@ type FilterConditionComparison = {
 
 type FilterConditionDate = {
   column: string;
-  value: CustomDate;
+  value: CustomDate | string;
   operator: 'from' | 'until';
 };
 
