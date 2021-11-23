@@ -11,6 +11,29 @@ import { RootState, setupMockStore } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
+const AVAILABLE_VARIABLES_SAMPLE = [
+  {
+    category: 'date',
+    value: new Date(),
+    label: 'Date category',
+  },
+  {
+    category: 'string',
+    value: 'string',
+    label: 'Simple string',
+  },
+  {
+    category: 'number',
+    value: 3,
+    label: 'Number',
+  },
+  {
+    category: 'other',
+    value: new Date(),
+    label: 'Date not in date category',
+  },
+];
+
 describe('Widget FilterSimpleCondition', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {
@@ -293,6 +316,7 @@ describe('Widget FilterSimpleCondition', () => {
         propsData: {
           value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'from' },
           columnTypes: { columnA: 'date' },
+          availableVariables: AVAILABLE_VARIABLES_SAMPLE,
           ...customProps,
         },
         store,
@@ -308,6 +332,15 @@ describe('Widget FilterSimpleCondition', () => {
         .props()
         .options.map((o: any) => o.operator);
       expect(operators).toStrictEqual(['from', 'until', 'isnull', 'notnull']);
+    });
+
+    it('should filter available variables to keep only date once', () => {
+      createWrapper(shallowMount);
+      const variables = wrapper
+        .find('.filterValue')
+        .props()
+        .availableVariables.map((v: any) => v.label);
+      expect(variables).toStrictEqual(['Date category', 'Date not in date category']);
     });
 
     it('should use the widget accordingly when changing the operator', async () => {
@@ -398,6 +431,7 @@ describe('Widget FilterSimpleCondition', () => {
         propsData: {
           value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
           columnTypes: { columnA: 'date' },
+          availableVariables: AVAILABLE_VARIABLES_SAMPLE,
           ...customProps,
         },
         store,
@@ -415,6 +449,13 @@ describe('Widget FilterSimpleCondition', () => {
       expect(operators).not.toContain('from');
       expect(operators).not.toContain('until');
       expect(operators).not.toHaveLength(0);
+    });
+
+    it('should use all available variables', () => {
+      createWrapper(shallowMount);
+      expect(wrapper.find('.filterValue').props().availableVariables).toStrictEqual(
+        AVAILABLE_VARIABLES_SAMPLE,
+      );
     });
 
     it('should use the date input', () => {
