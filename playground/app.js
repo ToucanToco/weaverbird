@@ -20,6 +20,57 @@ const TRANSLATOR = args.get('backend') || 'mongo42';
 const mongoTranslator = getTranslator('mongo42');
 const pandasTranslator = getTranslator('pandas');
 
+const VARIABLES = {
+  view: 'Product 123',
+  angeBirthday: new Date('2021-08-08'),
+  now: new Date(Date.now()),
+  city: 'New York',
+  country: 'New Zealand',
+
+  value1: 2,
+  value2: 13,
+  groupname: 'Group 1',
+}
+
+const AVAILABLE_VARIABLES = [
+  {
+    category: 'App variables',
+    label: 'view',
+    identifier: 'view',
+    value: 'Product 123',
+  },
+  {
+    category: 'Dates',
+    label: 'Ange\'s birthday',
+    identifier: 'angeBirthday',
+    value: VARIABLES.angeBirthday,
+  },
+  {
+    category: 'Dates',
+    label: 'Now',
+    identifier: 'now',
+    value: VARIABLES.now,
+  },
+  {
+    category: 'App variables',
+    label: 'date.year',
+    identifier: 'date.year',
+    value: 2020,
+  },
+  {
+    category: 'Story variables',
+    label: 'country',
+    identifier: 'country',
+    value: 'New Zealand',
+  },
+  {
+    category: 'Story variables',
+    label: 'city',
+    identifier: 'city',
+    value: 'New York',
+  },
+];
+
 // Create a code editor config for a specific lang
 const codeEditorForLang = function(lang) {
   return {
@@ -128,7 +179,8 @@ class MongoService {
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
     const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
-    const query = mongoTranslator.translate(subpipeline);
+    const queryWithVariables = mongoTranslator.translate(subpipeline);
+    const query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
     if (isResponseOk) {
@@ -224,52 +276,6 @@ const backendService = TRANSLATOR === 'pandas' ? pandasService : mongoService
 
 
 async function buildVueApp() {
-  const AVAILABLE_VARIABLES = [
-    {
-      category: 'App variables',
-      label: 'view',
-      identifier: 'view',
-      value: 'Product 123',
-    },
-    {
-      category: 'App variables',
-      label: 'date.month',
-      identifier: 'date.month',
-      value: 'Apr',
-    },
-    {
-      category: 'App variables',
-      label: 'date.year',
-      identifier: 'date.year',
-      value: 2020,
-    },
-    {
-      category: 'Story variables',
-      label: 'country',
-      identifier: 'country',
-      value: 'New Zealand',
-    },
-    {
-      category: 'Story variables',
-      label: 'city',
-      identifier: 'city',
-      value: 'New York',
-    },
-  ];
-  const VARIABLES = {
-    view: 'Product 123',
-    date: {
-      year: 2020,
-      month: 'Apr',
-    },
-    city: 'New York',
-    country: 'New Zealand',
-
-    value1: 2,
-    value2: 13,
-    groupname: 'Group 1',
-  }
-
   Vue.use(Vuex);
   const store = new Vuex.Store({});
 
