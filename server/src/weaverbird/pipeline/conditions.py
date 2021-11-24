@@ -1,8 +1,10 @@
 from abc import ABC
+from datetime import datetime
 from typing import Any, List, Literal, Union
 
 from pydantic import BaseModel, Field
 
+from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames
 
 
@@ -33,7 +35,19 @@ class MatchCondition(BaseCondition):
     value: str
 
 
-SimpleCondition = Union[ComparisonCondition, InclusionCondition, NullCondition, MatchCondition]
+class DateBoundCondition(BaseModel):
+    column: ColumnName
+    operator: Literal['from', 'until']
+    value: Union[RelativeDate, datetime, str]
+
+
+SimpleCondition = Union[
+    ComparisonCondition,
+    InclusionCondition,
+    NullCondition,
+    MatchCondition,
+    DateBoundCondition,
+]
 
 
 class BaseConditionCombo(BaseCondition, ABC):

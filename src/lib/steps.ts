@@ -242,18 +242,12 @@ export type FilterSimpleCondition =
   | FilterConditionComparison
   | FilterConditionEquality
   | FilterConditionInclusion
-  | FilterConditionDate;
+  | FilterConditionDateBound;
 
 type FilterConditionComparison = {
   column: string;
   value: number | string;
   operator: 'gt' | 'ge' | 'lt' | 'le';
-};
-
-type FilterConditionDate = {
-  column: string;
-  value: CustomDate | string;
-  operator: 'from' | 'until';
 };
 
 type FilterConditionEquality = {
@@ -266,6 +260,12 @@ export type FilterConditionInclusion = {
   column: string;
   value: any[];
   operator: 'in' | 'nin';
+};
+
+export type FilterConditionDateBound = {
+  column: string;
+  value: CustomDate | string;
+  operator: 'from' | 'until';
 };
 
 export type FilterStep = {
