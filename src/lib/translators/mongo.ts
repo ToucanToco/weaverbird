@@ -277,9 +277,8 @@ function buildCondExpression(
     notnull: '$ne',
     matches: '$regexMatch',
     notmatches: '$regexMatch',
-    // TODO: for now we raised an execption until this two operator will be developped
-    from: '',
-    until: '',
+    from: '$gte',
+    until: '$lte',
   };
   if (S.isFilterComboAnd(cond)) {
     if (cond.and.length == 1) {
@@ -327,6 +326,16 @@ function buildCondExpression(
       if (cond.operator === 'nin') {
         condExpression = { $not: condExpression };
       }
+
+      // until operator should include the whole selected day
+      if (cond.operator === 'until') {
+        if (cond.value instanceof Date) {
+          condExpression[operatorMapping[cond.operator]][1] = new Date(
+            cond.value.setUTCHours(23, 59, 59, 999),
+          );
+        }
+      }
+
       return condExpression;
     }
   }
@@ -347,9 +356,8 @@ function buildMatchTree(
     nin: '$nin',
     isnull: '$eq',
     notnull: '$ne',
-    // TODO: for now we raised an execption until this two operator will be developped
-    from: '',
-    until: '',
+    from: '$gte',
+    until: '$lte',
   };
 
   if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
@@ -369,6 +377,15 @@ function buildMatchTree(
   if (cond.operator === 'notnull' || cond.operator === 'isnull') {
     return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
   }
+
+  // until operator should include the whole selected day
+  if (cond.operator === 'until') {
+    if (cond.value instanceof Date) {
+      const endOfDay = new Date(cond.value.setUTCHours(23, 59, 59, 999));
+      return { [cond.column]: { [operatorMapping[cond.operator]]: endOfDay } };
+    }
+  }
+
   return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
 }
 
