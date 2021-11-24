@@ -575,6 +575,14 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       },
       { name: 'filter', condition: { column: 'IsNull', value: 'dummy', operator: 'isnull' } },
       { name: 'filter', condition: { column: 'NotNull', value: 'dummy', operator: 'notnull' } },
+      {
+        name: 'filter',
+        condition: { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
+      },
+      {
+        name: 'filter',
+        condition: { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+      },
     ];
     const querySteps = translator.translate(pipeline);
     expect(querySteps).toEqual([
@@ -594,6 +602,8 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
           Code: { $nin: [0, 42] },
           IsNull: { $eq: null },
           NotNull: { $ne: null },
+          DateFrom: { $gte: new Date('2021-11-24T00:00:00Z') },
+          DateUntil: { $lte: new Date('2021-11-24T23:59:59.999Z') },
         },
       },
       { $project: { _id: 0 } },
@@ -3911,6 +3921,44 @@ describe.each(['36', '40', '42'])(`Mongo %s translator`, version => {
       { $project: { _id: 0 } },
     ]);
   });
+
+  it('can generate a ifthenelse step with condition on dates', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'ifthenelse',
+        newColumn: 'NEW_COL',
+        if: {
+          and: [
+            { column: 'DATE_FROM', operator: 'from', value: new Date('2021-08-08') },
+            { column: 'DATE_UNTIL', operator: 'until', value: new Date('2021-11-24') },
+          ],
+        },
+        then: '"True"',
+        else: '"False"',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          NEW_COL: {
+            $cond: {
+              if: {
+                $and: [
+                  { $gte: ['$DATE_FROM', new Date('2021-08-08')] },
+                  { $lte: ['$DATE_UNTIL', new Date('2021-11-24T23:59:59.999Z')] },
+                ],
+              },
+              then: 'True',
+              else: 'False',
+            },
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate a ifthenelse step with isnull', () => {
     const pipeline: Pipeline = [
       {
