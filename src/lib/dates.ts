@@ -160,6 +160,11 @@ export const relativeDateRangeToString = (
   return `${relativeDateLabel} ${relativeDateRange.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
 };
 
+export const isRelativeDate = (value: any): value is RelativeDateRange => {
+  if (!(value instanceof Object)) return false;
+  return _has(value, 'duration') && _has(value, 'quantity');
+};
+
 export const isRelativeDateRange = (
   value: string | CustomDateRange | undefined,
 ): value is RelativeDateRange => {

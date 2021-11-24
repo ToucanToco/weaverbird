@@ -5,6 +5,7 @@ import {
   dateRangeToString,
   dateToString,
   isDateRange,
+  isRelativeDate,
   isRelativeDateRange,
   RelativeDateRange,
   relativeDateRangeToString,
@@ -164,6 +165,16 @@ describe('relativeDateRangeToString', () => {
     expect(relativeDateRangeToString(value2, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
       `2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
     );
+  });
+});
+
+describe('isRelativeDate', () => {
+  it('should return false if value is not a relative date', () => {
+    expect(isRelativeDate('{{today}}')).toBe(false);
+    expect(isRelativeDate({ start: new Date() })).toBe(false);
+  });
+  it('should return true if value is a relative date', () => {
+    expect(isRelativeDate({ quantity: 2, duration: 'year' })).toBe(true);
   });
 });
 

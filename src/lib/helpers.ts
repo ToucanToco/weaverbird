@@ -1,7 +1,8 @@
 import { DataSetColumnType } from './dataset';
+import { CustomDate, isRelativeDate } from './dates';
 import { AddTotalRowsStep, RollupStep } from './steps';
 
-type ValueType = number | boolean | string | null | object | Date;
+type ValueType = number | boolean | string | null | object | CustomDate;
 /** We do not include AggregateStep as this step has some specifities that do
  *  not factorize well in the setAggregationsNewColumnsInStep helper function
  *  defined below */
@@ -108,6 +109,15 @@ export function keepCurrentValueIfCompatibleDate(
   defaultValue: ValueType,
 ): ValueType {
   return isDate(value) || typeof value === 'string' ? value : defaultValue;
+}
+
+export function keepCurrentValueIfCompatibleRelativeDate(
+  value: ValueType,
+  defaultValue: ValueType,
+) {
+  return isRelativeDate(value) || value instanceof Date || typeof value === 'string'
+    ? value
+    : defaultValue;
 }
 
 /**
