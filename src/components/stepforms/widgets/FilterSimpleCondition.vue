@@ -37,7 +37,7 @@
       :is="inputWidget"
       :multi-variable="multiVariable"
       :value="value.value"
-      :available-variables="filteredAvailableVariables"
+      :available-variables="availableVariablesForInputWidget"
       :variable-delimiters="variableDelimiters"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
@@ -205,18 +205,18 @@ export default class FilterSimpleConditionWidget extends Vue {
     return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
   }
 
-  get useDateInput(): boolean {
-    return Boolean(
-      this.hasDateSelectedColumn && this.enableRelativeDateFiltering && this.inputWidget,
-    );
+  get dateAvailableVariables(): VariablesBucket | undefined {
+    // keep only date variables
+    return this.availableVariables?.filter(v => v.value instanceof Date);
   }
 
-  get filteredAvailableVariables(): VariablesBucket | undefined {
-    if (!this.useDateInput || !this.availableVariables) {
-      return this.availableVariables;
+  get availableVariablesForInputWidget(): VariablesBucket | undefined {
+    switch (this.inputWidget) {
+      case NewDateInput:
+        return this.dateAvailableVariables;
+      default:
+        return this.availableVariables;
     }
-    // keep only date variables
-    return [...this.availableVariables]?.filter(v => v.value instanceof Date);
   }
 
   get availableOperators(): OperatorOption[] {
