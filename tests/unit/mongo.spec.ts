@@ -789,7 +789,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         name: 'filter',
         condition: {
           column: 'date',
-          operator: 'ge',
+          operator: 'from',
           value: {
             duration: 'week',
             quantity: -1,
@@ -825,7 +825,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         name: 'filter',
         condition: {
           column: 'date',
-          operator: 'le',
+          operator: 'until',
           value: {
             duration: 'month',
             quantity: 3,

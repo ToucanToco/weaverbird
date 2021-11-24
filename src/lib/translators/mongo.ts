@@ -2284,9 +2284,8 @@ export class Mongo36Translator extends BaseTranslator {
       nin: '$nin',
       isnull: '$eq',
       notnull: '$ne',
-      // TODO: for now we raised an execption until this two operator will be developped
-      from: '',
-      until: '',
+      from: '$gte',
+      until: '$lte',
     };
 
     if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
