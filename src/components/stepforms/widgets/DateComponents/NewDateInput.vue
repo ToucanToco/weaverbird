@@ -1,9 +1,14 @@
 <template>
-  <div class="widget-date-input">
+  <div
+    class="widget-date-input"
+    :class="{
+      'widget-date-input--opened': isEditorOpened,
+    }"
+  >
     <div class="widget-date-input__container" @click.stop="openEditor">
       <VariableTag
         class="widget-date-input__advanced-variable"
-        v-if="advancedVariable"
+        v-if="variable || advancedVariable"
         :value="value"
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
@@ -30,6 +35,7 @@
           :availableVariables="availableVariables"
           :selectedVariables="selectedVariables"
           :enableCustom="enableCustom"
+          :showOnlyLabel="!isEditorOpened"
           @selectCustomVariable="editCustomVariable"
           @input="selectVariable"
           @addAdvancedVariable="openAdvancedVariableModal"
@@ -198,9 +204,7 @@ export default class NewDateInput extends Vue {
   }
 
   get label(): string {
-    if (this.variable) {
-      return this.variable.label;
-    } else if (this.value instanceof Date) {
+    if (this.value instanceof Date) {
       return dateToString(this.value);
     } else if (this.value instanceof Object) {
       return relativeDateToString(this.value);
@@ -295,8 +299,19 @@ export default class NewDateInput extends Vue {
   max-width: 400px;
   position: relative;
 }
+
+.widget-date-input--opened {
+  .widget-date-input__container {
+    border-color: $active-color;
+  }
+  .widget-date-input__icon {
+    background-color: $active-color-faded-2;
+    color: $active-color;
+  }
+}
+
 .widget-date-input__container {
-  border: 1px solid $grey-light;
+  border: 1px solid #ddd;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -314,23 +329,15 @@ export default class NewDateInput extends Vue {
 }
 
 .widget-date-input__advanced-variable {
-  width: 100%;
+  width: calc(100% - 45px);
   padding: 5px 10px;
   margin: 0 5px;
 }
 
 .widget-date-input__icon {
-  padding: 10px 15px;
-  background: $grey-extra-light;
-  color: $grey;
-}
-
-.widget-date-input__container:hover {
-  border-color: $active-color;
-  .widget-date-input__icon {
-    background-color: $active-color-faded-2;
-    color: $active-color;
-  }
+  padding: 10px;
+  background: rgba(217, 217, 217, 0.24);
+  color: #000;
 }
 
 .widget-date-input__editor {
@@ -346,11 +353,11 @@ export default class NewDateInput extends Vue {
   height: 100%;
 }
 .widget-date-input__editor-side {
-  width: 200px;
-  min-width: 200px;
+  width: 285px;
+  min-width: 285px;
   height: 100%;
   max-height: 400px;
-  flex: 1 200px;
+  flex: 1 285px;
   overflow-x: hidden;
   overflow-y: auto;
 }

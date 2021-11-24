@@ -37,7 +37,7 @@
       :is="inputWidget"
       :multi-variable="multiVariable"
       :value="value.value"
-      :available-variables="availableVariables"
+      :available-variables="availableVariablesForInputWidget"
       :variable-delimiters="variableDelimiters"
       :placeholder="placeholder"
       :data-path="`${dataPath}.value`"
@@ -54,6 +54,7 @@ import { VueConstructor } from 'vue';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { ColumnTypeMapping } from '@/lib/dataset/index';
 import {
@@ -101,6 +102,7 @@ export const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
     AutocompleteWidget,
     InputTextWidget,
     InputDateWidget,
+    NewDateInput,
   },
 })
 export default class FilterSimpleConditionWidget extends Vue {
@@ -175,8 +177,8 @@ export default class FilterSimpleConditionWidget extends Vue {
   ];
 
   readonly dateOperators: OperatorOption[] = [
-    { operator: 'from', label: 'from', inputWidget: InputDateWidget },
-    { operator: 'until', label: 'until', inputWidget: InputDateWidget },
+    { operator: 'from', label: 'from', inputWidget: NewDateInput },
+    { operator: 'until', label: 'until', inputWidget: NewDateInput },
     ...this.nullOperators,
   ];
 
@@ -201,6 +203,20 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   get enableRelativeDateFiltering(): boolean {
     return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
+  }
+
+  get dateAvailableVariables(): VariablesBucket | undefined {
+    // keep only date variables
+    return this.availableVariables?.filter(v => v.value instanceof Date);
+  }
+
+  get availableVariablesForInputWidget(): VariablesBucket | undefined {
+    switch (this.inputWidget) {
+      case NewDateInput:
+        return this.dateAvailableVariables;
+      default:
+        return this.availableVariables;
+    }
   }
 
   get availableOperators(): OperatorOption[] {
@@ -287,6 +303,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 .filter-form-simple-condition-operator-input,
 .filter-form-simple-condition__container .widget-input-text__container,
 .filter-form-simple-condition__container .widget-input-date__container,
+.filter-form-simple-condition__container .widget-date-input,
 .filter-form-simple-condition__container .widget-multiinputtext__container {
   margin: 4px;
   margin-right: 0;
@@ -299,6 +316,7 @@ export default class FilterSimpleConditionWidget extends Vue {
 
 .filter-form-simple-condition__container ::v-deep .widget-input-text,
 .filter-form-simple-condition__container ::v-deep .widget-input-date,
+.filter-form-simple-condition__container ::v-deep .widget-date-input__container,
 .filter-form-simple-condition__container ::v-deep .multiselect {
   background-color: white;
 
