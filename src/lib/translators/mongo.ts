@@ -277,6 +277,9 @@ function buildCondExpression(
     notnull: '$ne',
     matches: '$regexMatch',
     notmatches: '$regexMatch',
+    // TODO: for now we raised an execption until this two operator will be developped
+    from: '',
+    until: '',
   };
   if (S.isFilterComboAnd(cond)) {
     if (cond.and.length == 1) {
@@ -344,6 +347,9 @@ function buildMatchTree(
     nin: '$nin',
     isnull: '$eq',
     notnull: '$ne',
+    // TODO: for now we raised an execption until this two operator will be developped
+    from: '',
+    until: '',
   };
 
   if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {

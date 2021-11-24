@@ -24,7 +24,7 @@
         class="filterOperator"
         :value="operator"
         @input="updateStepOperator"
-        :options="operators"
+        :options="availableOperators"
         placeholder="Filter operator"
         :trackBy="`operator`"
         :label="`label`"
@@ -55,7 +55,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
-import { ColumnTypeMapping } from '@/lib/dataset/index.ts';
+import { ColumnTypeMapping } from '@/lib/dataset/index';
 import {
   keepCurrentValueIfArrayType,
   keepCurrentValueIfCompatibleDate,
@@ -81,7 +81,9 @@ type LiteralOperator =
   | 'matches pattern'
   | "doesn't match pattern"
   | 'is null'
-  | 'is not null';
+  | 'is not null'
+  | 'from'
+  | 'until';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
@@ -98,6 +100,7 @@ export const DEFAULT_FILTER = { column: '', value: '', operator: 'eq' };
   components: {
     AutocompleteWidget,
     InputTextWidget,
+    InputDateWidget,
   },
 })
 export default class FilterSimpleConditionWidget extends Vue {
@@ -130,6 +133,8 @@ export default class FilterSimpleConditionWidget extends Vue {
 
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
+  @VQBModule.State('featureFlags') featureFlags!: Record<string, any>;
+
   @VQBModule.Mutation setSelectedColumns!: MutationCallbacks['setSelectedColumns'];
 
   @Prop()
@@ -150,7 +155,12 @@ export default class FilterSimpleConditionWidget extends Vue {
     this.updateStepOperator(this.operator);
   }
 
-  readonly operators: OperatorOption[] = [
+  readonly nullOperators: OperatorOption[] = [
+    { operator: 'isnull', label: 'is null' },
+    { operator: 'notnull', label: 'is not null' },
+  ];
+
+  readonly baseOperators: OperatorOption[] = [
     { operator: 'eq', label: 'equals', inputWidget: InputTextWidget },
     { operator: 'ne', label: "doesn't equal", inputWidget: InputTextWidget },
     { operator: 'gt', label: 'is greater than', inputWidget: InputTextWidget },
@@ -161,8 +171,13 @@ export default class FilterSimpleConditionWidget extends Vue {
     { operator: 'nin', label: 'is not one of', inputWidget: MultiInputTextWidget },
     { operator: 'matches', label: 'matches pattern', inputWidget: InputTextWidget },
     { operator: 'notmatches', label: "doesn't match pattern", inputWidget: InputTextWidget },
-    { operator: 'isnull', label: 'is null' },
-    { operator: 'notnull', label: 'is not null' },
+    ...this.nullOperators,
+  ];
+
+  readonly dateOperators: OperatorOption[] = [
+    { operator: 'from', label: 'from', inputWidget: InputDateWidget },
+    { operator: 'until', label: 'until', inputWidget: InputDateWidget },
+    ...this.nullOperators,
   ];
 
   created() {
@@ -184,6 +199,17 @@ export default class FilterSimpleConditionWidget extends Vue {
     }
   }
 
+  get enableRelativeDateFiltering(): boolean {
+    return this.featureFlags?.RELATIVE_DATE_FILTERING === 'enable';
+  }
+
+  get availableOperators(): OperatorOption[] {
+    if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
+      return this.dateOperators;
+    }
+    return this.baseOperators;
+  }
+
   get placeholder() {
     if (this.value.operator === 'matches' || this.value.operator === 'notmatches') {
       return 'Enter a regex, e.g. "[Ss]ales"';
@@ -196,19 +222,22 @@ export default class FilterSimpleConditionWidget extends Vue {
   }
 
   get operator(): OperatorOption {
-    return this.operators.filter(d => d.operator === this.value.operator)[0];
+    return (
+      this.availableOperators.find(d => d.operator === this.value.operator) ??
+      this.availableOperators[0]
+    );
   }
 
   get inputWidget(): VueConstructor<Vue> | undefined {
-    const widget = this.operators.filter(d => d.operator === this.value.operator)[0].inputWidget;
-    if (this.hasDateSelectedColumn && widget === InputTextWidget) {
+    const widget = this.operator.inputWidget;
+    if (
+      this.hasDateSelectedColumn &&
+      widget === InputTextWidget &&
+      !this.enableRelativeDateFiltering
+    ) {
       return InputDateWidget;
     }
-    if (widget) {
-      return widget;
-    } else {
-      return undefined;
-    }
+    return widget;
   }
 
   updateStepOperator(newOperator: OperatorOption) {
