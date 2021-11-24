@@ -11,6 +11,7 @@
  * const label = humanReadableLabel(step);
  * ```
  */
+import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
 import { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
@@ -37,6 +38,19 @@ const MULTIVALUE_SEP = ', ';
 
 function formatMulticol(columns: string[]) {
   return columns.map(col => `"${col}"`).join(MULTIVALUE_SEP);
+}
+
+/**
+ * Compute a human-readable label from a relative date filter step condition.
+ */
+function relativeDateFilterExpression(value: CustomDate | string): string {
+  if (value instanceof Date) {
+    return dateToString(value);
+  } else if (value instanceof Object) {
+    return relativeDateToString(value);
+  } else {
+    return value;
+  }
 }
 
 /**
@@ -78,6 +92,10 @@ function filterExpression(
         return `"${condition.column}" is null`;
       case 'notnull':
         return `"${condition.column}" is not null`;
+      case 'from':
+        return `"${condition.column}" from ${relativeDateFilterExpression(condition.value)}`;
+      case 'until':
+        return `"${condition.column}" until ${relativeDateFilterExpression(condition.value)}`;
       default:
         // only for typescript to be happy and see we always have a return value
         return '';

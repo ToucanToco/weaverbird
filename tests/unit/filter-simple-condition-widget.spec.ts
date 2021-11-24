@@ -285,10 +285,13 @@ describe('Widget FilterSimpleCondition', () => {
           data: [],
         },
         selectedColumns: ['columnA'],
+        featureFlags: {
+          RELATIVE_DATE_FILTERING: 'enable',
+        },
       });
       wrapper = mountType(FilterSimpleConditionWidget, {
         propsData: {
-          value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+          value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'from' },
           columnTypes: { columnA: 'date' },
           ...customProps,
         },
@@ -298,34 +301,50 @@ describe('Widget FilterSimpleCondition', () => {
       });
     };
 
-    it('should use the date input', () => {
+    it('should have specific operators', () => {
+      createWrapper(shallowMount);
+      const operators = wrapper
+        .find('.filterOperator')
+        .props()
+        .options.map((o: any) => o.operator);
+      expect(operators).toStrictEqual(['from', 'until', 'isnull', 'notnull']);
+    });
+
+    it('should use the widget accordingly when changing the operator', async () => {
       createWrapper(mount);
-      const widgetWrappers = wrapper.findAll('.filterValue');
-      expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
+      // from operator (from mount)
+      expect(wrapper.find('.filterValue').classes()).toContain('widget-input-date__container');
+      // until operator
+      wrapper.setProps({
+        value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'until' },
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.filterValue').classes()).toContain('widget-input-date__container');
+      // isnull operator
+      wrapper.setProps({
+        value: { column: 'columnA', value: null, operator: 'isnull' },
+      });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.filterValue').exists()).toBeFalsy();
     });
 
     it('should emit a new condition with the correct type of value when changing the operator', () => {
       createWrapper(shallowMount);
       const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-      // ne operator
-      operatorWrapper.vm.$emit('input', { operator: 'ne' });
+      // until operator
+      operatorWrapper.vm.$emit('input', { operator: 'until' });
       expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: new Date('2021-01-01'), operator: 'ne' },
-      ]);
-      // eq operator
-      operatorWrapper.vm.$emit('input', { operator: 'eq' });
-      expect(wrapper.emitted().input[1]).toEqual([
-        { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
-      ]);
-      // in operator
-      operatorWrapper.vm.$emit('input', { operator: 'in' });
-      expect(wrapper.emitted().input[2]).toEqual([
-        { column: 'columnA', value: [], operator: 'in' },
+        { column: 'columnA', value: new Date('2021-01-01'), operator: 'until' },
       ]);
       // isnull operator
       operatorWrapper.vm.$emit('input', { operator: 'isnull' });
-      expect(wrapper.emitted().input[3]).toEqual([
+      expect(wrapper.emitted().input[1]).toEqual([
         { column: 'columnA', value: null, operator: 'isnull' },
+      ]);
+      // notnull operator
+      operatorWrapper.vm.$emit('input', { operator: 'notnull' });
+      expect(wrapper.emitted().input[2]).toEqual([
+        { column: 'columnA', value: null, operator: 'notnull' },
       ]);
     });
     it('should transform invalid dates to valid date when changing the operator', () => {
@@ -334,14 +353,14 @@ describe('Widget FilterSimpleCondition', () => {
       });
       const operatorWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
       // eq operator
-      operatorWrapper.vm.$emit('input', { operator: 'eq' });
+      operatorWrapper.vm.$emit('input', { operator: 'from' });
       expect(wrapper.emitted().input[0]).toEqual([
-        { column: 'columnA', value: null, operator: 'eq' },
+        { column: 'columnA', value: null, operator: 'from' },
       ]);
     });
     it('should transform invalid dates to valid date when changing the column type', async () => {
       createWrapper(shallowMount, {
-        value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+        value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'from' },
       });
       wrapper.setProps({ columnTypes: { columnA: 'string' } });
       await wrapper.vm.$nextTick();
@@ -362,6 +381,46 @@ describe('Widget FilterSimpleCondition', () => {
       const props = widgetWrappers.at(0).props();
       expect(props.availableVariables).toBe(undefined);
       expect(props.variableDelimiters).toBe(undefined);
+    });
+  });
+
+  describe('date column and date (without relative date filtering)', () => {
+    let wrapper: Wrapper<FilterSimpleConditionWidget>;
+    const createWrapper = (mountType: Function, customProps: any = {}) => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [],
+        },
+        selectedColumns: ['columnA'],
+      });
+      wrapper = mountType(FilterSimpleConditionWidget, {
+        propsData: {
+          value: { column: 'columnA', value: new Date('2021-01-01'), operator: 'eq' },
+          columnTypes: { columnA: 'date' },
+          ...customProps,
+        },
+        store,
+        localVue,
+        sync: false,
+      });
+    };
+
+    it('should use default operators', () => {
+      createWrapper(shallowMount);
+      const operators = wrapper
+        .find('.filterOperator')
+        .props()
+        .options.map((o: any) => o.operator);
+      expect(operators).not.toContain('from');
+      expect(operators).not.toContain('until');
+      expect(operators).not.toHaveLength(0);
+    });
+
+    it('should use the date input', () => {
+      createWrapper(mount);
+      const widgetWrappers = wrapper.findAll('.filterValue');
+      expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
     });
   });
 });

@@ -1,7 +1,7 @@
 /**
  * This module defines the supported unit-of-transformation steps.
  */
-import {CustomDate, RelativeDateRange} from '@/lib/dates';
+import { CustomDate } from '@/lib/dates';
 
 export type BasicDatePart =
   | 'year'
@@ -246,7 +246,7 @@ export type FilterSimpleCondition =
 
 type FilterConditionComparison = {
   column: string;
-  value: number | string | Date | RelativeDateRange;
+  value: number | string;
   operator: 'gt' | 'ge' | 'lt' | 'le';
 };
 
