@@ -777,94 +777,91 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate a filter step with relative dates', () => {
-    if (version < '50') {
-      // Unsupported
-      return;
-    }
-
-    const pipelineFromLastWeek: Pipeline = [
-      { name: 'domain', domain: 'test_date' },
-      {
-        name: 'filter',
-        condition: {
-          column: 'date',
-          operator: 'from',
-          value: {
-            duration: 'week',
-            quantity: -1,
+  if (version >= '50') {
+    it('can generate a filter step with relative dates', () => {
+      const pipelineFromLastWeek: Pipeline = [
+        { name: 'domain', domain: 'test_date' },
+        {
+          name: 'filter',
+          condition: {
+            column: 'date',
+            operator: 'from',
+            value: {
+              duration: 'week',
+              quantity: -1,
+            },
           },
         },
-      },
-    ];
-    const queryStepsFromLastWeek = translator.translate(pipelineFromLastWeek);
-    expect(queryStepsFromLastWeek).toEqual([
-      {
-        $match: {
-          domain: 'test_date',
-          $expr: {
-            $gte: [
-              '$date',
-              {
-                $dateAdd: {
-                  startDate: {
-                    $dateTrunc: {
-                      date: '$$NOW',
-                      unit: 'day',
+      ];
+      const queryStepsFromLastWeek = translator.translate(pipelineFromLastWeek);
+      expect(queryStepsFromLastWeek).toEqual([
+        {
+          $match: {
+            domain: 'test_date',
+            $expr: {
+              $gte: [
+                '$date',
+                {
+                  $dateAdd: {
+                    startDate: {
+                      $dateTrunc: {
+                        date: '$$NOW',
+                        unit: 'day',
+                      },
                     },
+                    unit: 'week',
+                    amount: -1,
                   },
-                  unit: 'week',
-                  amount: -1,
                 },
-              },
-            ],
+              ],
+            },
           },
         },
-      },
-      { $project: { _id: 0 } },
-    ]);
+        { $project: { _id: 0 } },
+      ]);
 
-    const pipelineUntilThreeMonths: Pipeline = [
-      { name: 'domain', domain: 'test_date' },
-      {
-        name: 'filter',
-        condition: {
-          column: 'date',
-          operator: 'until',
-          value: {
-            duration: 'month',
-            quantity: 3,
+      const pipelineUntilThreeMonths: Pipeline = [
+        { name: 'domain', domain: 'test_date' },
+        {
+          name: 'filter',
+          condition: {
+            column: 'date',
+            operator: 'until',
+            value: {
+              duration: 'month',
+              quantity: 3,
+            },
           },
         },
-      },
-    ];
-    const queryStepsUntilThreeMonths = translator.translate(pipelineUntilThreeMonths);
-    expect(queryStepsUntilThreeMonths).toEqual([
-      {
-        $match: {
-          domain: 'test_date',
-          $expr: {
-            $lte: [
-              '$date',
-              {
-                $dateAdd: {
-                  startDate: {
-                    $dateTrunc: {
-                      date: '$$NOW',
-                      unit: 'day',
+      ];
+      const queryStepsUntilThreeMonths = translator.translate(pipelineUntilThreeMonths);
+      expect(queryStepsUntilThreeMonths).toEqual([
+        {
+          $match: {
+            domain: 'test_date',
+            $expr: {
+              $lte: [
+                '$date',
+                {
+                  $dateAdd: {
+                    startDate: {
+                      $dateTrunc: {
+                        date: '$$NOW',
+                        unit: 'day',
+                      },
                     },
+                    unit: 'month',
+                    amount: 3,
                   },
-                  unit: 'month',
-                  amount: 3,
                 },
-              },
-            ],
+              ],
+            },
           },
         },
-      },
-      { $project: { _id: 0 } },
-    ]);
-  });
+        { $project: { _id: 0 } },
+      ]);
+    });
+  }
 
   it('can translate aggregation steps with keepOriginalGranularity to false', () => {
     const pipeline: Pipeline = [

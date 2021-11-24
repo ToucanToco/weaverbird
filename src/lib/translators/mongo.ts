@@ -2259,6 +2259,7 @@ export class Mongo36Translator extends BaseTranslator {
   }
 
   // Relative dates are not supported until mongo 5+
+  /* istanbul ignore next */
   protected translateRelativeDate(value: RelativeDate): object {
     console.error('This version of Mongo does not support relative dates');
     return value;
