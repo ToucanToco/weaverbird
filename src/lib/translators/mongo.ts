@@ -3,6 +3,7 @@
 import _ from 'lodash';
 import * as math from 'mathjs';
 
+import { isRelativeDate, RelativeDate } from '@/lib/dates';
 import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
@@ -339,54 +340,6 @@ function buildCondExpression(
       return condExpression;
     }
   }
-}
-
-function buildMatchTree(
-  cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
-  parentComboOp: ComboOperator = 'and',
-): MongoStep {
-  const operatorMapping = {
-    eq: '$eq',
-    ne: '$ne',
-    lt: '$lt',
-    le: '$lte',
-    gt: '$gt',
-    ge: '$gte',
-    in: '$in',
-    nin: '$nin',
-    isnull: '$eq',
-    notnull: '$ne',
-    from: '$gte',
-    until: '$lte',
-  };
-
-  if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
-    return _simplifyAndCondition({ $and: cond.and.map(elem => buildMatchTree(elem, 'and')) });
-  }
-  if (S.isFilterComboAnd(cond)) {
-    return { $and: cond.and.map(elem => buildMatchTree(elem, 'and')) };
-  }
-  if (S.isFilterComboOr(cond)) {
-    return { $or: cond.or.map(elem => buildMatchTree(elem, 'or')) };
-  }
-  if (cond.operator === 'matches') {
-    return { [cond.column]: { $regex: cond.value } };
-  } else if (cond.operator === 'notmatches') {
-    return { [cond.column]: { $not: { $regex: cond.value } } };
-  }
-  if (cond.operator === 'notnull' || cond.operator === 'isnull') {
-    return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
-  }
-
-  // until operator should include the whole selected day
-  if (cond.operator === 'until') {
-    if (cond.value instanceof Date) {
-      const endOfDay = new Date(cond.value.setUTCHours(23, 59, 59, 999));
-      return { [cond.column]: { [operatorMapping[cond.operator]]: endOfDay } };
-    }
-  }
-
-  return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
 }
 
 /**
@@ -1089,12 +1042,6 @@ function transformFillna(step: Readonly<S.FillnaStep>): MongoStep {
   const addFields = Object.fromEntries(cols.map(x => [x, { $ifNull: [$$(x), step.value] }]));
 
   return { $addFields: addFields };
-}
-
-/** transform a 'filter' step into corresponding mongo step */
-function transformFilterStep(step: Readonly<S.FilterStep>): MongoStep {
-  const condition = step.condition;
-  return { $match: buildMatchTree(condition) };
 }
 
 /** transform a 'fromdate' step into corresponding mongo steps */
@@ -2225,7 +2172,6 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   }),
   evolution: transformEvolution,
   fillna: transformFillna,
-  filter: transformFilterStep,
   fromdate: transformFromDate,
   lowercase: (step: Readonly<S.ToLowerStep>) => ({
     $addFields: { [step.column]: { $toLower: $$(step.column) } },
@@ -2319,6 +2265,89 @@ export class Mongo36Translator extends BaseTranslator {
         ),
       },
     };
+  }
+
+  // Relative dates are not supported until mongo 5+
+  /* istanbul ignore next */
+  protected translateRelativeDate(value: RelativeDate): object {
+    console.error('This version of Mongo does not support relative dates');
+    return value;
+  }
+
+  /**
+   * Recursively parse a Condition and turn it into the argument of a $match aggregation step
+   *
+   * @protected
+   */
+  protected buildMatchTree(
+    cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
+    parentComboOp: ComboOperator = 'and',
+  ): MongoStep {
+    const operatorMapping = {
+      eq: '$eq',
+      ne: '$ne',
+      lt: '$lt',
+      le: '$lte',
+      gt: '$gt',
+      ge: '$gte',
+      in: '$in',
+      nin: '$nin',
+      isnull: '$eq',
+      notnull: '$ne',
+      from: '$gte',
+      until: '$lte',
+    };
+
+    if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
+      return _simplifyAndCondition({
+        $and: cond.and.map(elem => this.buildMatchTree(elem, 'and')),
+      });
+    }
+    if (S.isFilterComboAnd(cond)) {
+      return { $and: cond.and.map(elem => this.buildMatchTree(elem, 'and')) };
+    }
+    if (S.isFilterComboOr(cond)) {
+      return { $or: cond.or.map(elem => this.buildMatchTree(elem, 'or')) };
+    }
+    if (cond.operator === 'matches') {
+      return { [cond.column]: { $regex: cond.value } };
+    } else if (cond.operator === 'notmatches') {
+      return { [cond.column]: { $not: { $regex: cond.value } } };
+    }
+    if (cond.operator === 'notnull' || cond.operator === 'isnull') {
+      return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
+    }
+
+    // until operator should include the whole selected day
+    if (cond.operator === 'until') {
+      if (cond.value instanceof Date) {
+        const endOfDay = new Date(cond.value.setUTCHours(23, 59, 59, 999));
+        return { [cond.column]: { [operatorMapping[cond.operator]]: endOfDay } };
+      }
+    }
+
+    // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
+    // They need to be used with $expr
+    if (isRelativeDate(cond.value)) {
+      return {
+        $expr: {
+          [operatorMapping[cond.operator]]: [
+            $$(cond.column),
+            this.translateRelativeDate(cond.value),
+          ],
+        },
+      };
+    }
+
+    return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
+  }
+
+  /**
+   * Transform a filter step into the corresponding Mongo $match aggregation step
+   */
+  filter(step: Readonly<S.FilterStep>): MongoStep {
+    const condition = step.condition;
+    return { $match: this.buildMatchTree(condition) };
   }
 
   // The $regexMatch operator is not supported until mongo 4.2

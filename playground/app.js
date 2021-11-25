@@ -15,9 +15,9 @@ const {
 
 const args = new URLSearchParams(location.search);
 
-const TRANSLATOR = args.get('backend') || 'mongo42';
+const TRANSLATOR = args.get('backend') || 'mongo50';
 
-const mongoTranslator = getTranslator('mongo42');
+const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
 
 const VARIABLES = {
@@ -359,7 +359,7 @@ async function buildVueApp() {
               name: 'filter',
               condition: {
                 column: 'day',
-                operator: 'ge',
+                operator: 'from',
                 value: new Date('2021-11-19T00:00:00Z'),
               },
             },

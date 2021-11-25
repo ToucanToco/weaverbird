@@ -12,6 +12,7 @@ columns correspondance. It is similar to a `JOIN` clause in SQL, or to a
 
 **This step is supported by the following backends:**
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
