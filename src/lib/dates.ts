@@ -30,7 +30,10 @@ export type RelativeDate = {
 
 export function isRelativeDate(val: any): val is RelativeDate {
   return (
-    typeof val == 'object' && typeof val.quantity == 'number' && typeof val.duration == 'string'
+    val &&
+    typeof val == 'object' &&
+    typeof val.quantity == 'number' &&
+    typeof val.duration == 'string'
   );
 }
 

@@ -60,6 +60,7 @@ import { ColumnTypeMapping } from '@/lib/dataset/index';
 import {
   keepCurrentValueIfArrayType,
   keepCurrentValueIfCompatibleDate,
+  keepCurrentValueIfCompatibleRelativeDate,
   keepCurrentValueIfCompatibleType,
 } from '@/lib/helpers';
 import { FilterSimpleCondition } from '@/lib/steps';
@@ -293,6 +294,8 @@ export default class FilterSimpleConditionWidget extends Vue {
       updatedValue.value = keepCurrentValueIfArrayType(updatedValue.value, []);
     } else if (updatedValue.operator === 'isnull' || updatedValue.operator === 'notnull') {
       updatedValue.value = null;
+    } else if (this.hasDateSelectedColumn && this.enableRelativeDateFiltering) {
+      updatedValue.value = keepCurrentValueIfCompatibleRelativeDate(updatedValue.value, '');
     } else if (this.hasDateSelectedColumn) {
       // when using date widget, we need value to be a valid date
       // null as date will become "01/01/1970" as default value for input
