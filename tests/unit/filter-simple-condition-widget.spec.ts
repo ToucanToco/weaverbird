@@ -464,4 +464,105 @@ describe('Widget FilterSimpleCondition', () => {
       expect(widgetWrappers.at(0).classes()).toContain('widget-input-date__container');
     });
   });
+
+  describe('date column and date (using an invalid operator)', () => {
+    let wrapper: Wrapper<FilterSimpleConditionWidget>;
+    const createWrapper = (operator: string, isRelativeDateEnabled = false) => {
+      const store = setupMockStore({
+        dataset: {
+          headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
+          data: [],
+        },
+        selectedColumns: ['columnA'],
+        featureFlags: {
+          RELATIVE_DATE_FILTERING: isRelativeDateEnabled ? 'enable' : 'disable',
+        },
+      });
+      wrapper = shallowMount(FilterSimpleConditionWidget, {
+        propsData: {
+          value: { column: 'columnA', value: '', operator },
+          columnTypes: { columnA: 'date' },
+          availableVariables: AVAILABLE_VARIABLES_SAMPLE,
+        },
+        store,
+        localVue,
+        sync: false,
+      });
+    };
+
+    it('should transform an invalid "from" operator when relative date are disabled', async () => {
+      createWrapper('from');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      // should emit new value with 'ge' operator replacing invalid 'from' operator
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'ge' },
+      ]);
+    });
+
+    it('should transform an invalid "until" operator when relative date are disabled', async () => {
+      createWrapper('until');
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      // should emit new value with 'le' operator replacing invalid 'until' operator
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'le' },
+      ]);
+    });
+
+    it('should transform an invalid "le" operator when relative date are enabled', async () => {
+      createWrapper('le', true);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      // should emit new value with 'until' operator replacing invalid 'le' operator
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'until' },
+      ]);
+    });
+
+    it('should transform an invalid "lt" operator when relative date are enabled', async () => {
+      createWrapper('lt', true);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      // should emit new value with 'until' operator replacing invalid 'lt' operator
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'until' },
+      ]);
+    });
+
+    it('should transform an invalid "ge" operator when relative date are enabled', async () => {
+      createWrapper('ge', true);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      // should emit new value with 'from' operator replacing invalid 'ge' operator
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'from' },
+      ]);
+    });
+
+    it('should transform an invalid "gt" operator when relative date are enabled', async () => {
+      createWrapper('gt', true);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      // should emit new value with 'from' operator replacing invalid 'gt' operator
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'from' },
+      ]);
+    });
+
+    it('should fallback to first available operator when selected operator is invalid and relative date are enabled', async () => {
+      createWrapper('eq', true);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toHaveLength(1);
+      expect(wrapper.emitted().input[0]).toEqual([
+        { column: 'columnA', value: '', operator: 'from' },
+      ]);
+    });
+
+    it('should keep valid operator unchanged', async () => {
+      createWrapper('isnull', true);
+      await wrapper.vm.$nextTick();
+      expect(wrapper.emitted().input).toBeUndefined();
+    });
+  });
 });

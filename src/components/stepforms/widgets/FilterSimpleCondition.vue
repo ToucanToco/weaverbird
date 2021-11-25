@@ -186,6 +186,8 @@ export default class FilterSimpleConditionWidget extends Vue {
     // In absence of condition, emit directly to the parent the default value
     if (isEqual(this.value, DEFAULT_FILTER)) {
       this.$emit('input', DEFAULT_FILTER);
+    } else if (this.hasDateSelectedColumn) {
+      this.updateInvalidDateOperator();
     }
   }
 
@@ -254,6 +256,34 @@ export default class FilterSimpleConditionWidget extends Vue {
       return InputDateWidget;
     }
     return widget;
+  }
+
+  retrieveOperatorOption(operator: string): OperatorOption | undefined {
+    return this.availableOperators.find(o => o.operator === operator);
+  }
+
+  updateInvalidDateOperator(): void {
+    // no need to update operator already exists
+    if (this.retrieveOperatorOption(this.value.operator)) return;
+    // retrieve appropriate date operator when feature flag for relative date has been switched
+    let newOperator = '';
+    switch (this.value.operator) {
+      case 'lt':
+      case 'le':
+        newOperator = 'until';
+        break;
+      case 'gt':
+      case 'ge':
+        newOperator = 'from';
+        break;
+      case 'from':
+        newOperator = 'ge';
+        break;
+      case 'until':
+        newOperator = 'le';
+        break;
+    }
+    this.updateStepOperator(this.retrieveOperatorOption(newOperator) ?? this.operator);
   }
 
   updateStepOperator(newOperator: OperatorOption) {

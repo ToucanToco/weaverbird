@@ -8,7 +8,7 @@
     />
     <div class="filter-form__info">Filter rows matching this condition:</div>
     <FilterEditor
-      :filter-tree="this.editedStep.condition"
+      :filter-tree="editedStep.condition"
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
@@ -56,7 +56,7 @@ export default class FilterStepForm extends BaseStepForm<FilterStep> {
 
   readonly title: string = 'Filter';
 
-  mounted() {
+  created() {
     // On creation, if a column is selected, use it to set "column" property of
     // the filter step
     if (this.isStepCreation && this.selectedColumns[0]) {
