@@ -243,6 +243,11 @@ async def handle_mongo_backend_request():
             for row in results:
                 if '_id' in row:
                     del row['_id']
+
+            # Aggregation does not return correct fields if there is no results
+            if len(results) == 0:
+                results = [{'count': 0, 'data': [], 'types': []}]
+
             return jsonify(results)
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
