@@ -20,6 +20,7 @@
       body {
         margin: 0;
         height: 100%;
+        overflow: hidden;
       }
 
       body {
@@ -41,14 +42,6 @@
         border-radius: 0px;
         padding: 10px 15px;
         box-sizing: border-box;
-      }
-
-      .open-code__button {
-        cursor: pointer;
-        position: absolute;
-        bottom: 0;
-        height: 40px;
-        font-size: 20px;
       }
 
       pre {
@@ -74,14 +67,66 @@
         padding: 10px;
       }
 
+      .toolbar {
+        background: #000;
+        width: 100%;
+        height: 56px;
+        z-index: 2;
+        position: fixed;
+        bottom: 0px;
+        left: 0px;
+      }
+
+      .toolbar__title {
+        color: #fff;
+        padding: 15px 18px;
+        text-transform: none;
+        font-family: Montserrat;
+        font-weight: 600;
+        font-size: 20px;
+        letter-spacing: 2px;
+      }
+
+      .toolbar__button {
+        cursor: pointer;
+        position: absolute;
+        font-size: 12.5px;
+        font-family: Montserrat;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #fff;
+        padding: 10px;
+        right: 10px;
+        background: #404040;
+        bottom: 10px;
+        display: block;
+      }
+      .toolbar__button:hover {
+        background: #000;
+      }
+
       .debug-panel {
-        margin: 50px 0px;
-        position: relative;
+        margin: 5px 5px;
+        position: inherit;
+        top: 100%;
+        width: 100%;
+        height: calc(100% - 5px);
+        box-shadow: 0 0 15px rgb(0 0 0 / 80%);
+        transition: top .5s ease-out;
+      }
+
+      .opened {
+        top: 0%;
+        transition: top .5s ease-out;
       }
 
       .debug-panel__code {
         display: flex;
         background-color: white;
+        height: inherit;
+        padding: 10px;
+        height: calc(100% - 56px);
+        overflow-y: scroll;
       }
 
       .debug-panel__code-translated-pipeline, .debug-panel__code-pipeline {
@@ -105,13 +150,18 @@
       <div class="error-message" v-if="backendErrors.length" v-for="error in backendErrors">
         <i class="fas fa-exclamation-triangle"></i> {{ error.message }}
       </div>
-      <button class="open-code__button" v-show="!isCodeOpened" @click="openCode">
-        Open code to debug
-      </button>
-      <button class="open-code__button" v-show="isCodeOpened" @click="hideCode">
-        Hide code
-      </button>
-      <div v-if="isCodeOpened" class="debug-panel">
+      <div class="toolbar">
+        <div class="toolbar__title">
+          Weaverbird
+        </div>
+        <div class="toolbar__button" v-show="!isCodeOpened" @click="openCode">
+          Show code
+        </div>
+        <div class="toolbar__button" v-show="isCodeOpened" @click="hideCode">
+          Hide code
+        </div>
+      </div>
+      <div :class="{ opened: isCodeOpened }" class="debug-panel">
         <div class="debug-panel__code">
           <div class="debug-panel__code-pipeline">
             <div>Pipeline</div>
