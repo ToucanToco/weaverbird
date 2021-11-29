@@ -4,7 +4,6 @@ import {
   DateRange,
   isDateRange,
   RELATIVE_DATE_RANGE_OPERATORS,
-  RelativeDate,
   RelativeDateRange,
 } from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -16,7 +15,7 @@ If the `exclusive` option is set, add/remove 1 millisecond to the computed date,
 */
 
 export const transformRelativeDateObjectToDate = (
-  { date, quantity, duration }: RelativeDate & { date: Date },
+  { date, quantity, duration }: Omit<RelativeDateRange, 'date'> & { date: Date },
   exclusive = false,
 ): Date => {
   const RELATIVE_DATE_DURATION_TO_LUXON = {
@@ -38,17 +37,34 @@ export const transformRelativeDateObjectToDate = (
 };
 
 /*
-Read a `RelativeDate` and find the corresponding `Date` relative to the moment of execution.
+Read a `RelativeDate` and find the corresponding `Date` relative to the variable passed as `date` property.
 */
-export const transformRelativeDateToDate = (relativeDate: RelativeDate): Date | undefined => {
-  // In relative date we always use today as date to update
-  const today = new Date(Date.now());
-  const date = DateTime.fromJSDate(today, { zone: 'UTC' }).toJSDate();
-  // retrieve date from luxon
-  return transformRelativeDateObjectToDate({
-    ...relativeDate,
-    date,
+export const transformRelativeDateToDate = (
+  relativeDateRange: RelativeDateRange,
+  relativeAvailableVariables: VariablesBucket = [],
+  variableDelimiters: VariableDelimiters = { start: '', end: '' },
+): Date | undefined => {
+  // start is always a date as relativeAvailableVariables are not customizable
+  const value = retrieveVariable(
+    relativeDateRange.date,
+    relativeAvailableVariables,
+    variableDelimiters,
+  )?.value;
+  if (!(value instanceof Date)) return;
+
+  const operator = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator];
+
+  // pass base date to UTC
+  const base = DateTime.fromJSDate(value, { zone: 'UTC' }).toJSDate();
+
+  // retrieve end date from luxon
+  const targetDateTime = transformRelativeDateObjectToDate({
+    ...relativeDateRange,
+    quantity: Math.sign(operator.sign) * Math.abs(relativeDateRange.quantity),
+    date: base,
   });
+
+  return DateTime.fromJSDate(targetDateTime, { zone: 'UTC' }).toJSDate();
 };
 
 /*
@@ -128,11 +144,11 @@ undefined -> undefined
 new Date() -> new Date()
 
 // Relative Date (always refering to today)
-{ quantity: 2, duration: 'month' } -> new Date().plus(2 month)
-{ quantity: 2, duration: 'month' } -> new Date().minus(2 month)
+{ date: 'variable_name', quantity: 2, duration: 'month', operator: 'from' } ->  new Date(variable_name.value).plus(2 month)
+{ date: 'variable_name', quantity: 2, duration: 'month', operator: 'until' } ->  new Date(variable_name.value).minus(2 month)
 */
 export const transformValueToDate = (
-  value: undefined | string | Date | RelativeDate,
+  value: undefined | string | Date | RelativeDateRange,
   availableVariables: VariablesBucket = [],
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
@@ -159,7 +175,7 @@ export const transformValueToDate = (
   }
   // RelativeDate
   else {
-    return transformRelativeDateToDate(value);
+    return transformRelativeDateToDate(value, relativeAvailableVariables, variableDelimiters);
   }
 };
 
