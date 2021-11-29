@@ -45,7 +45,7 @@ const fullMonthReplace = {
   },
 };
 
-describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
+describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, (version) => {
   const translator = getTranslator(`mongo${version}`);
 
   it('can generate domain steps', () => {
@@ -6106,3 +6106,17 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 });
+<<<<<<< HEAD
+=======
+function then(
+  arg0: string,
+  arg1: (version: string) => void,
+  arg2: { $expr: { $lte: (string | Date)[] } },
+  then: any,
+  arg4: string,
+  arg5: string,
+  arg6: { $project: { _id: number } },
+) {
+  throw new Error('Function not implemented.');
+}
+>>>>>>> fix(lint): fix linter
