@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import { dateToString, RelativeDate } from '@/lib/dates';
+import { dateToString, DEFAULT_RELATIVE_VARIABLES, RelativeDate } from '@/lib/dates';
 
 jest.mock('@/components/FAIcon.vue');
 jest.mock('@/components/DatePicker/Calendar.vue');
@@ -478,6 +478,9 @@ describe('Date input', () => {
     });
     it('should set availableVariables to empty array', () => {
       expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
+    });
+    it('should set relativeAvailableVariables to default value array', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(DEFAULT_RELATIVE_VARIABLES);
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });

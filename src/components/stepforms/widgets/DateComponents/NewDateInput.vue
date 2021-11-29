@@ -108,6 +108,7 @@ import {
   CustomDate,
   DateRange,
   dateToString,
+  DEFAULT_RELATIVE_VARIABLES,
   isRelativeDate,
   relativeDateToString,
 } from '@/lib/dates';
@@ -144,7 +145,7 @@ export default class NewDateInput extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => [] })
+  @Prop({ default: () => DEFAULT_RELATIVE_VARIABLES })
   relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateForm "from"
 
   @Prop({ default: () => ({ start: '', end: '' }) })

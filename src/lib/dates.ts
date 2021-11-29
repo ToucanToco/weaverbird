@@ -64,6 +64,11 @@ export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Days', value: 'day' },
 ];
 
+export const DEFAULT_RELATIVE_VARIABLES = [
+  { identifier: 'today', value: '$$NOW', label: 'TODAY' },
+  // TODO: add enabled relative variables here
+];
+
 export const CUSTOM_DATE_RANGE_LABEL_SEPARATOR = ' - ';
 
 export const dateToString = (date: Date, locale?: LocaleIdentifier): string => {
