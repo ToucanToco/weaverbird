@@ -799,6 +799,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             value: {
               duration: 'week',
               quantity: -1,
+              operator: 'until',
+              date: 'today',
             },
           },
         },
@@ -840,6 +842,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             value: {
               duration: 'month',
               quantity: 3,
+              operator: 'until',
+              date: 'today',
             },
           },
         },

@@ -3,7 +3,7 @@
 import _ from 'lodash';
 import * as math from 'mathjs';
 
-import { isRelativeDate, RelativeDate } from '@/lib/dates';
+import { isRelativeDateRange, RelativeDateRange } from '@/lib/dates';
 import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
@@ -2269,7 +2269,7 @@ export class Mongo36Translator extends BaseTranslator {
 
   // Relative dates are not supported until mongo 5+
   /* istanbul ignore next */
-  protected translateRelativeDate(value: RelativeDate): object {
+  protected translateRelativeDate(value: RelativeDateRange): object {
     console.error('This version of Mongo does not support relative dates');
     return value;
   }
@@ -2328,7 +2328,7 @@ export class Mongo36Translator extends BaseTranslator {
 
     // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
     // They need to be used with $expr
-    if (isRelativeDate(cond.value)) {
+    if (isRelativeDateRange(cond.value)) {
       return {
         $expr: {
           [operatorMapping[cond.operator]]: [
