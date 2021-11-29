@@ -68,7 +68,7 @@ export type RelativeDateRange = {
   quantity: number; // always a positive integer, the sign is dictated by the operator
 };
 
-export type CustomDate = Date | RelativeDate;
+export type CustomDate = Date | RelativeDateRange;
 export type CustomDateRange = DateRange | RelativeDateRange;
 
 export const DEFAULT_DURATIONS: DurationOption[] = [

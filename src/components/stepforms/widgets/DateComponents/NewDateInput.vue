@@ -58,7 +58,12 @@
               v-model="currentTabValue"
               :availableDates="bounds"
             />
-            <RelativeDateForm v-else v-model="currentTabValue" />
+            <RelativeDateRangeForm
+              v-else
+              v-model="currentTabValue"
+              :availableVariables="relativeAvailableVariables"
+              :variableDelimiters="variableDelimiters"
+            />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -99,7 +104,13 @@ import Popover from '@/components/Popover.vue';
 import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs/AdvancedVariableModal.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, DateRange, dateToString, relativeDateToString } from '@/lib/dates';
+import {
+  CustomDate,
+  DateRange,
+  dateToString,
+  isRelativeDateRange,
+  relativeDateRangeToString,
+} from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -108,9 +119,9 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
-import RelativeDateForm from './RelativeDateForm.vue';
+import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
 /**
- * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Relative way (RelativeDateForm),
+ * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
 @Component({
@@ -120,7 +131,7 @@ import RelativeDateForm from './RelativeDateForm.vue';
     Popover,
     Tabs,
     Calendar,
-    RelativeDateForm,
+    RelativeDateRangeForm,
     FAIcon,
     AdvancedVariableModal,
     VariableTag,
@@ -132,6 +143,9 @@ export default class NewDateInput extends Vue {
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => [] })
+  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateRangeForm "from"
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
@@ -154,7 +168,7 @@ export default class NewDateInput extends Vue {
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDate | undefined> = {
     Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds, moreover, we would have no disabled button otherwise
-    Relative: { quantity: -1, duration: 'year' },
+    Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
   };
 
   get currentTabValue(): CustomDate | undefined {
@@ -206,8 +220,12 @@ export default class NewDateInput extends Vue {
   get label(): string {
     if (this.value instanceof Date) {
       return dateToString(this.value);
-    } else if (this.value instanceof Object) {
-      return relativeDateToString(this.value);
+    } else if (isRelativeDateRange(this.value)) {
+      return relativeDateRangeToString(
+        this.value,
+        this.relativeAvailableVariables,
+        this.variableDelimiters,
+      );
     } else {
       return 'Select a date';
     }
