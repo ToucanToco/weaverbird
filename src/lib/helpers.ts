@@ -1,5 +1,5 @@
 import { DataSetColumnType } from './dataset';
-import { CustomDate, isRelativeDate } from './dates';
+import { CustomDate, isRelativeDateRange } from './dates';
 import { AddTotalRowsStep, RollupStep } from './steps';
 
 type ValueType = number | boolean | string | null | object | CustomDate;
@@ -115,7 +115,7 @@ export function keepCurrentValueIfCompatibleRelativeDate(
   value: ValueType,
   defaultValue: ValueType,
 ) {
-  return isRelativeDate(value) || value instanceof Date || typeof value === 'string'
+  return isRelativeDateRange(value) || value instanceof Date || typeof value === 'string'
     ? value
     : defaultValue;
 }
