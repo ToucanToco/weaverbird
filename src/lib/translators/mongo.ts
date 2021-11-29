@@ -2318,22 +2318,14 @@ export class Mongo36Translator extends BaseTranslator {
       return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
     }
 
-    // until operator should include the whole selected day
-    if (cond.operator === 'until') {
-      if (cond.value instanceof Date) {
-        const endOfDay = new Date(cond.value.setUTCHours(23, 59, 59, 999));
-        return { [cond.column]: { [operatorMapping[cond.operator]]: endOfDay } };
-      }
-    }
-
     // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
     // They need to be used with $expr
-    if (isRelativeDate(cond.value)) {
+    if (cond.operator === 'from' || cond.operator === 'until') {
       return {
         $expr: {
           [operatorMapping[cond.operator]]: [
             $$(cond.column),
-            this.translateRelativeDate(cond.value),
+            isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
           ],
         },
       };

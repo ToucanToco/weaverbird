@@ -577,11 +577,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       { name: 'filter', condition: { column: 'NotNull', value: 'dummy', operator: 'notnull' } },
       {
         name: 'filter',
-        condition: { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
-      },
-      {
-        name: 'filter',
-        condition: { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+        condition: {
+          and: [
+            { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
+            { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+          ],
+        },
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -605,12 +606,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           $and: [
             {
               $expr: {
-                $gte: ['$DateFrom', new Date('2021-11-24T00:00.000Z')],
+                $gte: ['$DateFrom', new Date('2021-11-24T00:00:00.000Z')],
               },
             },
             {
               $expr: {
-                $lte: ['$DateUntil', new Date('2021-11-24T00:00.000Z')],
+                $lte: ['$DateUntil', new Date('2021-11-24T00:00:00.000Z')],
               },
             },
           ],
