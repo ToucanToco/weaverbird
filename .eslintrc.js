@@ -47,20 +47,6 @@ module.exports = {
     "@typescript-eslint/explicit-member-accessibility": [
       "error", { "accessibility": "no-public" }
     ],
-    "@typescript-eslint/indent": [
-      "error",
-      2,
-      {
-        // cf. https://github.com/typescript-eslint/typescript-eslint/blob/master/packages/typescript-estree/src/ts-estree/ts-estree.ts
-        // for available types
-        "ignoredNodes": [
-          // cf. https://github.com/typescript-eslint/typescript-eslint/issues/455
-          "TSTypeParameterInstantiation",
-          "TSUnionType"
-        ],
-        "SwitchCase": 1
-      }
-    ],
     "@typescript-eslint/camelcase": [
       "error",
       {
