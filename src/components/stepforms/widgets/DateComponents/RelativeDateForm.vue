@@ -41,8 +41,8 @@ import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
 import {
   DEFAULT_DURATIONS,
   DurationOption,
-  RELATIVE_DATE_RANGE_OPERATORS,
-  RelativeDateRange,
+  RELATIVE_DATE_OPERATORS,
+  RelativeDate,
 } from '@/lib/dates';
 import {
   AvailableVariable,
@@ -52,7 +52,7 @@ import {
 } from '@/lib/variables';
 
 /**
- * This component return a relative date range between a date variable and a relative date returned by RelativeDateForm
+ * This component return a relative date between a date variable and a relative date returned by RelativeDateForm
  */
 @Component({
   name: 'relative-date-range-form',
@@ -61,7 +61,7 @@ import {
     AutocompleteWidget,
   },
 })
-export default class RelativeDateRangeForm extends Vue {
+export default class RelativeDateForm extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
@@ -69,7 +69,7 @@ export default class RelativeDateRangeForm extends Vue {
   variableDelimiters!: VariableDelimiters;
 
   @Prop({ default: () => ({ date: '', quantity: 1, duration: 'year', operator: 'until' }) })
-  value!: RelativeDateRange;
+  value!: RelativeDate;
 
   get quantity(): number {
     return Math.abs(this.value.quantity);
@@ -105,7 +105,7 @@ export default class RelativeDateRangeForm extends Vue {
   }
 
   get availableOperators() {
-    return [RELATIVE_DATE_RANGE_OPERATORS.until, RELATIVE_DATE_RANGE_OPERATORS.from];
+    return [RELATIVE_DATE_OPERATORS.until, RELATIVE_DATE_OPERATORS.from];
   }
 
   get operator() {
@@ -114,9 +114,7 @@ export default class RelativeDateRangeForm extends Vue {
     // We keep this fallback as a reminder of this mistake until someone decide that comments
     // is not the place for keeping track of our stuttering torward Clean Code :tm:
     const fallbackOperator =
-      this.value.quantity >= 0
-        ? RELATIVE_DATE_RANGE_OPERATORS.from
-        : RELATIVE_DATE_RANGE_OPERATORS.until;
+      this.value.quantity >= 0 ? RELATIVE_DATE_OPERATORS.from : RELATIVE_DATE_OPERATORS.until;
     return this.availableOperators.find(op => op.label === this.value.operator) ?? fallbackOperator;
   }
 

@@ -1,11 +1,6 @@
 import { DateTime } from 'luxon';
 
-import {
-  DateRange,
-  isDateRange,
-  RELATIVE_DATE_RANGE_OPERATORS,
-  RelativeDateRange,
-} from '@/lib/dates';
+import { DateRange, isDateRange, RELATIVE_DATE_OPERATORS, RelativeDate } from '@/lib/dates';
 import { retrieveVariable, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 /*
@@ -15,7 +10,7 @@ If the `exclusive` option is set, add/remove 1 millisecond to the computed date,
 */
 
 export const transformRelativeDateObjectToDate = (
-  { date, quantity, duration }: Omit<RelativeDateRange, 'date'> & { date: Date },
+  { date, quantity, duration }: Omit<RelativeDate, 'date'> & { date: Date },
   exclusive = false,
 ): Date => {
   const RELATIVE_DATE_DURATION_TO_LUXON = {
@@ -40,27 +35,24 @@ export const transformRelativeDateObjectToDate = (
 Read a `RelativeDate` and find the corresponding `Date` relative to the variable passed as `date` property.
 */
 export const transformRelativeDateToDate = (
-  relativeDateRange: RelativeDateRange,
+  relativeDate: RelativeDate,
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): Date | undefined => {
   // start is always a date as relativeAvailableVariables are not customizable
-  const value = retrieveVariable(
-    relativeDateRange.date,
-    relativeAvailableVariables,
-    variableDelimiters,
-  )?.value;
+  const value = retrieveVariable(relativeDate.date, relativeAvailableVariables, variableDelimiters)
+    ?.value;
   if (!(value instanceof Date)) return;
 
-  const operator = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator];
+  const operator = RELATIVE_DATE_OPERATORS[relativeDate.operator];
 
   // pass base date to UTC
   const base = DateTime.fromJSDate(value, { zone: 'UTC' }).toJSDate();
 
   // retrieve end date from luxon
   const targetDateTime = transformRelativeDateObjectToDate({
-    ...relativeDateRange,
-    quantity: Math.sign(operator.sign) * Math.abs(relativeDateRange.quantity),
+    ...relativeDate,
+    quantity: Math.sign(operator.sign) * Math.abs(relativeDate.quantity),
     date: base,
   });
 
@@ -68,22 +60,19 @@ export const transformRelativeDateToDate = (
 };
 
 /*
-Read a `RelativeDateRange` and find the corresponding `Date` relative to the variable passed as `date` property.
+Read a `RelativeDate` and find the corresponding `Date` relative to the variable passed as `date` property.
 */
-export const transformRelativeDateRangeToDateRange = (
-  relativeDateRange: RelativeDateRange,
+export const transformRelativeDateToDateRange = (
+  relativeDate: RelativeDate,
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): DateRange | undefined => {
   // start is always a date as relativeAvailableVariables are not customizable
-  const value = retrieveVariable(
-    relativeDateRange.date,
-    relativeAvailableVariables,
-    variableDelimiters,
-  )?.value;
+  const value = retrieveVariable(relativeDate.date, relativeAvailableVariables, variableDelimiters)
+    ?.value;
   if (!(value instanceof Date)) return;
 
-  const operator = RELATIVE_DATE_RANGE_OPERATORS[relativeDateRange.operator];
+  const operator = RELATIVE_DATE_OPERATORS[relativeDate.operator];
 
   // pass base date to UTC
   const base = DateTime.fromJSDate(value, { zone: 'UTC' })
@@ -91,7 +80,7 @@ export const transformRelativeDateRangeToDateRange = (
       // Base day should be included in full
       // so if the range starts with the base day, its time should be 00:00
       // but if the range ends with the base day, its time should be 23:59
-      relativeDateRange.operator === 'from'
+      relativeDate.operator === 'from'
         ? {}
         : { hour: 23, minute: 59, second: 59, millisecond: 999 },
     )
@@ -100,8 +89,8 @@ export const transformRelativeDateRangeToDateRange = (
   // retrieve end date from luxon
   const targetDateTime = transformRelativeDateObjectToDate(
     {
-      ...relativeDateRange,
-      quantity: Math.sign(operator.sign) * Math.abs(relativeDateRange.quantity),
+      ...relativeDate,
+      quantity: Math.sign(operator.sign) * Math.abs(relativeDate.quantity),
       date: base,
     },
     true, // ensure we add or remove 1ms so that the target day is not included
@@ -148,7 +137,7 @@ new Date() -> new Date()
 { date: 'variable_name', quantity: 2, duration: 'month', operator: 'until' } ->  new Date(variable_name.value).minus(2 month)
 */
 export const transformValueToDate = (
-  value: undefined | string | Date | RelativeDateRange,
+  value: undefined | string | Date | RelativeDate,
   availableVariables: VariablesBucket = [],
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
@@ -184,7 +173,7 @@ Resolve any date range configuration to a `DateRange`.
 The possible configurations can be:
 - `string`: a reference to a variable - it's current value will be used
 - `DateRange`: no change
-- `RelativeDateRange`: resolved with the variable passed as date property
+- `RelativeDate`: resolved with the variable passed as date property
 
 Here are all the transformations that can be performed:
 
@@ -194,12 +183,12 @@ undefined -> undefined
 // Date range
 { start: new Date(), end: new Date() } -> { start: new Date(), end: new Date() }
 
-// Relative Date range
+// RelativeDate
 { date: 'variable_name', quantity: 2, duration: 'month', operator: 'from' } ->  { start: new Date(variable_name.value), end: new Date(variable_name.value).plus(2 month) }
 { date: 'variable_name', quantity: 2, duration: 'month', operator: 'until' } ->  { start: new Date(variable_name.value).minus(2 month), end: new Date(variable_name.value) }
 */
 export const transformValueToDateRange = (
-  value: undefined | string | RelativeDateRange | DateRange,
+  value: undefined | string | RelativeDate | DateRange,
   availableVariables: VariablesBucket = [],
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
@@ -225,9 +214,9 @@ export const transformValueToDateRange = (
       variableDelimiters,
     );
   }
-  // RelativeDateRange
+  // RelativeDate
   else {
-    dateRange = transformRelativeDateRangeToDateRange(
+    dateRange = transformRelativeDateToDateRange(
       value,
       relativeAvailableVariables,
       variableDelimiters,

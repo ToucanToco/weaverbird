@@ -58,7 +58,7 @@
               v-model="currentTabValue"
               :availableDates="bounds"
             />
-            <RelativeDateRangeForm
+            <RelativeDateForm
               v-else
               v-model="currentTabValue"
               :availableVariables="relativeAvailableVariables"
@@ -108,8 +108,8 @@ import {
   CustomDate,
   DateRange,
   dateToString,
-  isRelativeDateRange,
-  relativeDateRangeToString,
+  isRelativeDate,
+  relativeDateToString,
 } from '@/lib/dates';
 import {
   AvailableVariable,
@@ -119,9 +119,9 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
-import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
+import RelativeDateForm from './RelativeDateForm.vue';
 /**
- * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
+ * This component allow to select a variable or to switch between tabs and select a date on a Fixed (Calendar) or Relative way (RelativeDateForm),
  * each tab value is keeped in memory to avoid user to loose data when switching between tabs
  */
 @Component({
@@ -131,7 +131,7 @@ import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
     Popover,
     Tabs,
     Calendar,
-    RelativeDateRangeForm,
+    RelativeDateForm,
     FAIcon,
     AdvancedVariableModal,
     VariableTag,
@@ -145,7 +145,7 @@ export default class NewDateInput extends Vue {
   availableVariables!: VariablesBucket;
 
   @Prop({ default: () => [] })
-  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateRangeForm "from"
+  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateForm "from"
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
@@ -220,8 +220,8 @@ export default class NewDateInput extends Vue {
   get label(): string {
     if (this.value instanceof Date) {
       return dateToString(this.value);
-    } else if (isRelativeDateRange(this.value)) {
-      return relativeDateRangeToString(
+    } else if (isRelativeDate(this.value)) {
+      return relativeDateToString(
         this.value,
         this.relativeAvailableVariables,
         this.variableDelimiters,

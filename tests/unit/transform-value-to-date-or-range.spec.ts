@@ -3,12 +3,12 @@ import { DateTime } from 'luxon';
 import {
   setDateRangeHours,
   transformRelativeDateObjectToDate,
-  transformRelativeDateRangeToDateRange,
   transformRelativeDateToDate,
+  transformRelativeDateToDateRange,
   transformValueToDate,
   transformValueToDateRange,
 } from '@/components/DatePicker/transform-value-to-date-or-range';
-import { DateRange, RelativeDateRange } from '@/lib/dates';
+import { DateRange, RelativeDate } from '@/lib/dates';
 
 describe('transformRelativeDateObjectToDate', () => {
   const date = DateTime.utc(2020, 8, 1).toJSDate(); // received date is always an UTC date
@@ -66,7 +66,7 @@ describe('transformRelativeDateToDate', () => {
   ];
   const variableDelimiters = { start: '{{', end: '}}' };
   it("should return undefined if variable doesn't exist", () => {
-    const relativeDate: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       quantity: 2,
       duration: 'month',
       operator: 'until',
@@ -77,7 +77,7 @@ describe('transformRelativeDateToDate', () => {
     ).toBeUndefined();
   });
   it('should return undefined if variable value is not a date', () => {
-    const relativeDate: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       quantity: 2,
       duration: 'month',
       operator: 'until',
@@ -88,7 +88,7 @@ describe('transformRelativeDateToDate', () => {
     ).toBeUndefined();
   });
   it('should return date for passed quantity and duration based on variable date (until operator)', () => {
-    const relativeDate: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       quantity: 3,
       duration: 'month',
       operator: 'until',
@@ -99,7 +99,7 @@ describe('transformRelativeDateToDate', () => {
     ).toStrictEqual(DateTime.utc(2020, 4, 3).toJSDate());
   });
   it('should return date for passed quantity and duration based on variable date (from operator)', () => {
-    const relativeDate: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       date: '{{date}}',
       quantity: 3,
       duration: 'month',
@@ -111,56 +111,44 @@ describe('transformRelativeDateToDate', () => {
   });
 });
 
-describe('transformRelativeDateRangeToDateRange', () => {
+describe('transformRelativeDateToDateRange', () => {
   const availableVariables = [
     { identifier: 'date', value: DateTime.utc(2020, 7, 3).toJSDate(), label: 'Date' },
     { identifier: 'notadate', value: 'nop', label: 'Not a date' },
   ];
   const variableDelimiters = { start: '{{', end: '}}' };
   it("should return undefined if variable doesn't exist", () => {
-    const relativeDateRange: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       quantity: 2,
       duration: 'month',
       operator: 'until',
       date: '{{toto}}',
     };
     expect(
-      transformRelativeDateRangeToDateRange(
-        relativeDateRange,
-        availableVariables,
-        variableDelimiters,
-      ),
+      transformRelativeDateToDateRange(relativeDate, availableVariables, variableDelimiters),
     ).toBeUndefined();
   });
   it('should return undefined if variable value is not a date', () => {
-    const relativeDateRange: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       quantity: 2,
       duration: 'month',
       operator: 'until',
       date: '{{notadate}}',
     };
     expect(
-      transformRelativeDateRangeToDateRange(
-        relativeDateRange,
-        availableVariables,
-        variableDelimiters,
-      ),
+      transformRelativeDateToDateRange(relativeDate, availableVariables, variableDelimiters),
     ).toBeUndefined();
   });
   it('should return date range for passed quantity and duration based on variable date (until operator)', () => {
     // ({{date}}) 2020-07-03 (included) - 3 months => 2020-04-03 (excluded) (start and end should be inverted to use min date as start)
-    const relativeDateRange: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       quantity: 3,
       duration: 'month',
       operator: 'until',
       date: '{{date}}',
     };
     expect(
-      transformRelativeDateRangeToDateRange(
-        relativeDateRange,
-        availableVariables,
-        variableDelimiters,
-      ),
+      transformRelativeDateToDateRange(relativeDate, availableVariables, variableDelimiters),
     ).toStrictEqual({
       start: new Date('2020-04-04T00:00:00.000Z'),
       end: new Date('2020-07-03T23:59:59.999Z'), // initial day should be wholly included in the range
@@ -168,18 +156,14 @@ describe('transformRelativeDateRangeToDateRange', () => {
   });
   it('should return date range for passed quantity and duration based on variable date (from operator)', () => {
     // ({{date}}) 2020-07-03 (included) - 3 months => 2020-10-03 (excluded)
-    const relativeDateRange: RelativeDateRange = {
+    const relativeDate: RelativeDate = {
       date: '{{date}}',
       quantity: 3,
       duration: 'month',
       operator: 'from',
     };
     expect(
-      transformRelativeDateRangeToDateRange(
-        relativeDateRange,
-        availableVariables,
-        variableDelimiters,
-      ),
+      transformRelativeDateToDateRange(relativeDate, availableVariables, variableDelimiters),
     ).toStrictEqual({
       start: new Date('2020-07-03T00:00:00.000Z'), // initial day should be wholly included in the range
       end: new Date('2020-10-02T23:59:59.999Z'),
@@ -205,7 +189,7 @@ describe('transformValue', () => {
     {
       identifier: 'relative-date',
       value: { quantity: 2, duration: 'month', operator: 'until', date: '{{hello}}' },
-      label: 'Relative date range',
+      label: 'RelativeDate',
     },
     {
       identifier: 'reference-to-date-variable',
@@ -253,7 +237,7 @@ describe('transformValue', () => {
     });
     it('should return a date if value is a relative date', () => {
       // ({{hello}}) 20/10/2020 - 3 months => 20/07/2020
-      const value: RelativeDateRange = {
+      const value: RelativeDate = {
         quantity: 2,
         duration: 'month',
         date: '{{hello}}',
@@ -300,7 +284,7 @@ describe('transformValue', () => {
       it('should return a date if variable value is a relative date', () => {
         const value = '{{relative-date}}';
         const attendedValue = transformRelativeDateToDate(
-          availableVariables[2].value as RelativeDateRange,
+          availableVariables[2].value as RelativeDate,
           relativeAvailableVariables,
           variableDelimiters,
         );
@@ -353,15 +337,15 @@ describe('transformValue', () => {
         ),
       ).toStrictEqual(setDateRangeHours(value));
     });
-    it('should return a date range if value is a relative date range', () => {
+    it('should return a date range if value is a relative date', () => {
       // ({{hello}}) 20/10/2020 - 3 months => 20/07/2020
-      const value: RelativeDateRange = {
+      const value: RelativeDate = {
         quantity: 3,
         duration: 'month',
         operator: 'until',
         date: 'hello',
       };
-      const attendedValue = transformRelativeDateRangeToDateRange(
+      const attendedValue = transformRelativeDateToDateRange(
         value,
         relativeAvailableVariables,
         variableDelimiters,
@@ -401,8 +385,8 @@ describe('transformValue', () => {
       });
       it('should return a date range if variable value is a relative date', () => {
         const value = '{{relative-date}}';
-        const attendedValue = transformRelativeDateRangeToDateRange(
-          availableVariables[2].value as RelativeDateRange,
+        const attendedValue = transformRelativeDateToDateRange(
+          availableVariables[2].value as RelativeDate,
           relativeAvailableVariables,
           variableDelimiters,
         );

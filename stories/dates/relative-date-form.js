@@ -1,7 +1,7 @@
-import { RelativeDateRangeForm } from '../../dist/storybook/components';
+import { RelativeDateForm } from '../../dist/storybook/components';
 import { storiesOf } from '@storybook/vue';
 
-const stories = storiesOf('Dates/RelativeDateRangeForm', module);
+const stories = storiesOf('Dates/RelativeDateForm', module);
 
 const SAMPLE_VARIABLES = [
   {
@@ -21,7 +21,7 @@ const SAMPLE_VARIABLES = [
 stories.add('simple', () => ({
   template: `
     <div>
-      <RelativeDateRangeForm 
+      <RelativeDateForm 
         :available-variables="availableVariables"
         :variable-delimiters="variableDelimiters"
         v-model="value" 
@@ -31,7 +31,7 @@ stories.add('simple', () => ({
   `,
 
   components: {
-    RelativeDateRangeForm,
+    RelativeDateForm,
   },
 
   data() {

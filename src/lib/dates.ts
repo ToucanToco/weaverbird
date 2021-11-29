@@ -22,11 +22,6 @@ export type DurationOption = {
   value: Duration;
 };
 
-export type RelativeDate = {
-  quantity: number; // can be negative or positive
-  duration: Duration;
-};
-
 /**
  * With:
  * - "date" a variable that resolve to a date, NOT A DATETIME, meaning only year, month & day
@@ -43,23 +38,23 @@ export type RelativeDate = {
  * However, only two of them have been implemented yet. We may or may not tweak those two or even
  * implement the four of them after getting more user feedback regarding the relevance of current ones.
  */
-export const RELATIVE_DATE_RANGE_OPERATORS = {
+export const RELATIVE_DATE_OPERATORS = {
   until: { label: 'until', sign: -1 },
   from: { label: 'from', sign: +1 },
 };
 
-export type RelativeDateRangeOperator = keyof typeof RELATIVE_DATE_RANGE_OPERATORS;
+export type RelativeDateOperator = keyof typeof RELATIVE_DATE_OPERATORS;
 
 // Should be included in RelativeDate
-export type RelativeDateRange = {
+export type RelativeDate = {
   date: string;
   duration: Duration;
-  operator: RelativeDateRangeOperator;
+  operator: RelativeDateOperator;
   quantity: number; // always a positive integer, the sign is dictated by the operator
 };
 
-export type CustomDate = Date | RelativeDateRange;
-export type CustomDateRange = DateRange | RelativeDateRange;
+export type CustomDate = Date | RelativeDate;
+export type CustomDateRange = DateRange | RelativeDate;
 
 export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Years', value: 'year' },
@@ -129,25 +124,25 @@ export const dateRangeToString = (dateRange: DateRange, locale?: LocaleIdentifie
 };
 
 /* istanbul ignore next */
-export const relativeDateRangeToString = (
-  relativeDateRange: RelativeDateRange,
+export const relativeDateToString = (
+  relativeDate: RelativeDate,
   availableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): string => {
-  const identifier = extractVariableIdentifier(relativeDateRange.date, variableDelimiters);
+  const identifier = extractVariableIdentifier(relativeDate.date, variableDelimiters);
   const baseDateLabel =
     availableVariables.find(v => v.identifier === identifier)?.label ?? identifier;
   const duration: string | undefined = DEFAULT_DURATIONS.find(
-    d => d.value === relativeDateRange.duration,
+    d => d.value === relativeDate.duration,
   )?.label;
-  const suffix = ' ' + (relativeDateRange.quantity < 0 ? 'ago' : '');
+  const suffix = ' ' + (relativeDate.quantity < 0 ? 'ago' : '');
   const relativeDateLabel = `${Math.abs(
-    relativeDateRange.quantity,
+    relativeDate.quantity,
   )} ${duration?.toLowerCase()}${suffix.trimEnd()}`;
-  return `${relativeDateLabel} ${relativeDateRange.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
+  return `${relativeDateLabel} ${relativeDate.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
 };
 
-export const isRelativeDateRange = (value: any): value is RelativeDateRange => {
+export const isRelativeDate = (value: any): value is RelativeDate => {
   return (
     value &&
     typeof value == 'object' &&

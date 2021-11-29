@@ -1,6 +1,6 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
-import RelativeDateRangeForm from '@/components/stepforms/widgets/DateComponents/RelativeDateRangeForm.vue';
+import RelativeDateForm from '@/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
 
 const SAMPLE_VARIABLES = [
   { label: 'Today', identifier: 'today' },
@@ -8,10 +8,10 @@ const SAMPLE_VARIABLES = [
   { label: 'Next month', identifier: 'newt_month' },
 ];
 
-describe('Relative date range form', () => {
-  let wrapper: Wrapper<RelativeDateRangeForm>;
+describe('RelativeDate form', () => {
+  let wrapper: Wrapper<RelativeDateForm>;
   const createWrapper = (propsData: any = {}) => {
-    wrapper = shallowMount(RelativeDateRangeForm, {
+    wrapper = shallowMount(RelativeDateForm, {
       sync: false,
       propsData,
     });

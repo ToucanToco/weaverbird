@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import { dateToString, RelativeDateRange } from '@/lib/dates';
+import { dateToString, RelativeDate } from '@/lib/dates';
 
 jest.mock('@/components/FAIcon.vue');
 jest.mock('@/components/DatePicker/Calendar.vue');
@@ -58,7 +58,6 @@ const RELATIVE_SAMPLE_VARIABLES = [
     value: '',
   },
 ];
-
 
 describe('Date input', () => {
   let wrapper: Wrapper<NewDateInput>;
@@ -217,7 +216,7 @@ describe('Date input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue: RelativeDateRange = {
+      const editedValue: RelativeDate = {
         quantity: 1,
         duration: 'month',
         operator: 'until',
@@ -225,7 +224,7 @@ describe('Date input', () => {
       };
 
       beforeEach(async () => {
-        wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', editedValue);
+        wrapper.find('RelativeDateForm-stub').vm.$emit('input', editedValue);
         await wrapper.vm.$nextTick();
         wrapper.find({ ref: 'save' }).trigger('click');
         await wrapper.vm.$nextTick();
@@ -242,7 +241,7 @@ describe('Date input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('Calendar-stub').exists()).toBe(true);
-        expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(false);
+        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
@@ -269,14 +268,14 @@ describe('Date input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(true);
+        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
         expect(wrapper.find('Calendar-stub').exists()).toBe(false);
       });
 
-      describe('when updating RelativeDateRangeForm value', () => {
+      describe('when updating RelativeDateForm value', () => {
         const newValue = { quantity: -1, duration: 'month' };
         beforeEach(async () => {
-          wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', newValue);
+          wrapper.find('RelativeDateForm-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
@@ -293,16 +292,14 @@ describe('Date input', () => {
         date: '{{today}}',
       };
       beforeEach(async () => {
-        wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateRangeForm value
+        wrapper.find('RelativeDateForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateForm value
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // switching to the other tab
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative'); // come back to previous tab
       });
       it('should not remove other tab value', () => {
-        expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toBe(
-          updatedRelativeDateValue,
-        );
+        expect(wrapper.find('RelativeDateForm-stub').props().value).toBe(updatedRelativeDateValue);
       });
     });
   });
@@ -420,8 +417,8 @@ describe('Date input', () => {
     it('should select "Relative" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Relative');
     });
-    it('should preselect value in RelativeDateRangeForm', () => {
-      expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toStrictEqual(value);
+    it('should preselect value in RelativeDateForm', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual(value);
     });
   });
 

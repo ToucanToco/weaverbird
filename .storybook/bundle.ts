@@ -44,7 +44,7 @@ import Tabs from '../src/components/Tabs.vue';
 import RangeCalendar from '../src/components/DatePicker/RangeCalendar.vue';
 import CustomGranularityCalendar from '../src/components/DatePicker/CustomGranularityCalendar.vue';
 import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
-import RelativeDateRangeForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateRangeForm.vue';
+import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
 import NewDateInput from '../src/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import DateRangeInput from '../src/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 
@@ -89,7 +89,6 @@ export {
   RangeCalendar,
   CustomGranularityCalendar,
   RelativeDateForm,
-  RelativeDateRangeForm,
   NewDateInput,
   DateRangeInput,
 };
