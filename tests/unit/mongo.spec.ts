@@ -2091,36 +2091,84 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate a concatenate step with only one column', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'concatenate',
-        columns: ['foo'],
-        separator: ' - ',
-        new_column_name: 'concat',
-      },
-    ];
-    const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $addFields: { concat: { $concat: ['$foo'] } } },
-      { $project: { _id: 0 } },
-    ]);
-  });
+  describe('concatenate', () => {
+    if (version <= '36') {
+      it('can generate a concatenate step with only one column', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { concat: { $concat: ['$foo'] } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
 
-  it('can generate a concatenate step with at least two columns', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'concatenate',
-        columns: ['foo', 'bar', 'again'],
-        separator: ' - ',
-        new_column_name: 'concat',
-      },
-    ];
-    const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $addFields: { concat: { $concat: ['$foo', ' - ', '$bar', ' - ', '$again'] } } },
-      { $project: { _id: 0 } },
-    ]);
+      it('can generate a concatenate step with at least two columns', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo', 'bar', 'again'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { concat: { $concat: ['$foo', ' - ', '$bar', ' - ', '$again'] } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
+    } else {
+      it('can generate a concatenate step with only one column', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { concat: { $concat: [{ $convert: { input: '$foo', to: 'string' } }] } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
+
+      it('can generate a concatenate step with at least two columns', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo', 'bar', 'again'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          {
+            $addFields: {
+              concat: {
+                $concat: [
+                  { $convert: { input: '$foo', to: 'string' } },
+                  ' - ',
+                  { $convert: { input: '$bar', to: 'string' } },
+                  ' - ',
+                  { $convert: { input: '$again', to: 'string' } },
+                ],
+              },
+            },
+          },
+          { $project: { _id: 0 } },
+        ]);
+      });
+    }
   });
 
   it('can generate a substring step with positive start and end index', () => {
