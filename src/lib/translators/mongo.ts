@@ -2275,9 +2275,9 @@ export class Mongo36Translator extends BaseTranslator {
   }
 
   // Truncate dates are not supported until mongo 5+
-  protected truncateColumnToDay(columnName: string): string | object {
+  protected truncateDateToDay(dateExpr: string | object): string | object {
     console.warn('This version of Mongo does not support truncating dates');
-    return $$(columnName);
+    return dateExpr;
   }
 
   /**
@@ -2330,8 +2330,8 @@ export class Mongo36Translator extends BaseTranslator {
       return {
         $expr: {
           [operatorMapping[cond.operator]]: [
-            this.truncateColumnToDay(cond.column),
-            isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+            this.truncateDateToDay($$(cond.column)),
+            this.truncateDateToDay(isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value),
           ],
         },
       };

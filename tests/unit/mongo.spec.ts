@@ -615,7 +615,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                           date: '$DateFrom',
                         },
                       },
-                  new Date('2021-11-24T00:00:00.000Z'),
+                  version < '5'
+                    ? new Date('2021-11-24T00:00:00.000Z')
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: new Date('2021-11-24T00:00:00.000Z'),
+                        },
+                      },
                 ],
               },
             },
@@ -630,7 +637,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                           date: '$DateUntil',
                         },
                       },
-                  new Date('2021-11-24T00:00:00.000Z'),
+                  version < '5'
+                    ? new Date('2021-11-24T00:00:00.000Z')
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: new Date('2021-11-24T00:00:00.000Z'),
+                        },
+                      },
                 ],
               },
             },
@@ -841,17 +855,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             domain: 'test_date',
             $expr: {
               $gte: [
-                '$date',
                 {
-                  $dateAdd: {
-                    startDate: {
-                      $dateTrunc: {
-                        date: '$$NOW',
-                        unit: 'day',
+                  $dateTrunc: {
+                    date: '$date',
+                    unit: 'day',
+                  },
+                },
+                {
+                  $dateTrunc: {
+                    date: {
+                      $dateAdd: {
+                        amount: -1,
+                        startDate: {
+                          $dateTrunc: {
+                            date: '$$NOW',
+                            unit: 'day',
+                          },
+                        },
+                        unit: 'week',
                       },
                     },
-                    unit: 'week',
-                    amount: -1,
+                    unit: 'day',
                   },
                 },
               ],
@@ -882,17 +906,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             domain: 'test_date',
             $expr: {
               $lte: [
-                '$date',
                 {
-                  $dateAdd: {
-                    startDate: {
-                      $dateTrunc: {
-                        date: '$$NOW',
-                        unit: 'day',
+                  $dateTrunc: {
+                    date: '$date',
+                    unit: 'day',
+                  },
+                },
+                {
+                  $dateTrunc: {
+                    date: {
+                      $dateAdd: {
+                        amount: 3,
+                        startDate: {
+                          $dateTrunc: {
+                            date: '$$NOW',
+                            unit: 'day',
+                          },
+                        },
+                        unit: 'month',
                       },
                     },
-                    unit: 'month',
-                    amount: 3,
+                    unit: 'day',
                   },
                 },
               ],
