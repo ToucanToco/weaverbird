@@ -2331,7 +2331,9 @@ export class Mongo36Translator extends BaseTranslator {
         $expr: {
           [operatorMapping[cond.operator]]: [
             this.truncateDateToDay($$(cond.column)),
-            this.truncateDateToDay(isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value),
+            this.truncateDateToDay(
+              isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+            ),
           ],
         },
       };

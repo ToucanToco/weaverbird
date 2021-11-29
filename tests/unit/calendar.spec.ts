@@ -63,14 +63,24 @@ describe('Calendar', () => {
       expect(wrapper.find(DatePicker).props().value).toStrictEqual(defaultValue);
     });
     it('should emit new value when datepicker is updated', () => {
-      const value = { start: new Date('2021-09-08T03:00:00.000Z'), end: new Date('2021-11-29T16:51:00.000Z') };
+      const value = {
+        start: new Date('2021-09-08T03:00:00.000Z'),
+        end: new Date('2021-11-29T16:51:00.000Z'),
+      };
       wrapper.find(DatePicker).vm.$emit('input', value);
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: new Date('2021-09-08T00:00:00.000Z'), end: new Date('2021-11-29T00:00:00.000Z'), duration: 'day' });
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({
+        start: new Date('2021-09-08T00:00:00.000Z'),
+        end: new Date('2021-11-29T00:00:00.000Z'),
+        duration: 'day',
+      });
     });
     it('should emit start date only when datepicker is dragged (range update)', () => {
       const value = { start: new Date('2021-09-08T03:00:00.000Z'), end: new Date(2) };
       (wrapper.vm as any).onDrag(value); // drag event is not found by stub
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: new Date('2021-09-08T00:00:00.000Z'), duration: 'day' });
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({
+        start: new Date('2021-09-08T00:00:00.000Z'),
+        duration: 'day',
+      });
     });
 
     describe('range out of bounds', () => {
