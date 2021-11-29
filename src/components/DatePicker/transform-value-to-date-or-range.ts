@@ -99,6 +99,10 @@ export const transformRelativeDateRangeToDateRange = (
   return { start, end };
 };
 
+export function setDateToMidnight(value: Date): Date {
+  return new Date(new Date(value).setUTCHours(0, 0, 0, 0));
+}
+
 export const setDateRangeHours = (value: DateRange | string | undefined): DateRange | undefined => {
   if (!isDateRange(value) || !value.start || !value.end) return;
   const startHours = { hour: 0, minute: 0, second: 0, millisecond: 0 };

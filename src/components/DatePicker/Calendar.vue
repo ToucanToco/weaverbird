@@ -21,6 +21,7 @@ import _isEqual from 'lodash/isEqual';
 import DatePicker from 'v-calendar/src/components/DatePicker.vue';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
+import { setDateToMidnight } from '@/components/DatePicker/transform-value-to-date-or-range';
 import { clampRange, DatePickerHighlight, DateRange, isDateRange } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
 
@@ -105,17 +106,27 @@ export default class Calendar extends Vue {
     }
   }
 
+  // Emitted values should always been days at midnight (UTC)
   onInput(value: Date | DateRange | undefined): void {
-    if (Boolean(value) && !(value instanceof Date)) {
-      this.$emit('input', { ...value, duration: 'day' });
-    } else {
+    if (value == null) {
       this.$emit('input', value);
+    } else if (value instanceof Date) {
+      this.$emit('input', setDateToMidnight(value));
+    } else {
+      const newDateRange: DateRange = { ...value, duration: 'day' };
+      if (newDateRange.start) {
+        newDateRange.start = setDateToMidnight(newDateRange.start);
+      }
+      if (newDateRange.end) {
+        newDateRange.end = setDateToMidnight(newDateRange.end);
+      }
+      this.$emit('input', newDateRange);
     }
   }
 
   // when user start to select a range he has only start value selected, we disable validate button until he select the end value
   onDrag(dragValue: DateRange): void {
-    this.$emit('input', { start: dragValue.start, duration: 'day' });
+    this.onInput({ start: dragValue.start, duration: 'day' });
   }
 
   @Watch('availableDates')
