@@ -28,15 +28,6 @@ export type RelativeDate = {
   duration: Duration;
 };
 
-export function isRelativeDate(val: any): val is RelativeDate {
-  return (
-    val &&
-    typeof val == 'object' &&
-    typeof val.quantity == 'number' &&
-    typeof val.duration == 'string'
-  );
-}
-
 /**
  * With:
  * - "date" a variable that resolve to a date, NOT A DATETIME, meaning only year, month & day
