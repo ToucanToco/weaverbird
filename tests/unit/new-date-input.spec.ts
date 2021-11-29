@@ -480,7 +480,9 @@ describe('Date input', () => {
       expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
     });
     it('should set relativeAvailableVariables to default value array', () => {
-      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(DEFAULT_RELATIVE_VARIABLES);
+      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(
+        DEFAULT_RELATIVE_VARIABLES,
+      );
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
