@@ -8,7 +8,6 @@ import {
   dateRangeToString,
   isDateRange,
   RelativeDateRange,
-  relativeDateRangeToString,
 } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
 
@@ -432,12 +431,9 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      const labelWithoutSeparator = relativeDateRangeToString(value, RELATIVE_SAMPLE_VARIABLES, {
-        start: '{{',
-        end: '}}',
-      }).split(CUSTOM_DATE_RANGE_LABEL_SEPARATOR); // due to utf8 char we need to split label
-      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[0]);
-      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[1]);
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+        '1 months from - Today',
+      );
     });
 
     it('should select "Relative" tab by default', () => {
