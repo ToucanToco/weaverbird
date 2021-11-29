@@ -703,10 +703,13 @@ function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
 }
 
 /** transform a 'concatenate' step into corresponding mongo steps */
-function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
-  const concatArr: string[] = [$$(step.columns[0])];
+export function transformConcatenate(
+  step: Readonly<S.ConcatenateStep>,
+  convertColumnName: (c: string) => string | object = $$, // allow to override the conversion function of each column
+): MongoStep {
+  const concatArr = [convertColumnName(step.columns[0])];
   for (const colname of step.columns.slice(1)) {
-    concatArr.push(step.separator, $$(colname));
+    concatArr.push(step.separator, convertColumnName(colname));
   }
   return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
 }
