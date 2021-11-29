@@ -11,7 +11,7 @@
  * const label = humanReadableLabel(step);
  * ```
  */
-import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
+import { CustomDate, dateToString, relativeDateRangeToString } from '@/lib/dates';
 import { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
@@ -47,7 +47,7 @@ function relativeDateFilterExpression(value: CustomDate | string): string {
   if (value instanceof Date) {
     return dateToString(value);
   } else if (value instanceof Object) {
-    return relativeDateToString(value);
+    return relativeDateRangeToString(value);
   } else {
     return value;
   }

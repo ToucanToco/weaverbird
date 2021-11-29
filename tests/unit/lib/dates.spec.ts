@@ -8,7 +8,6 @@ import {
   isRelativeDateRange,
   RelativeDateRange,
   relativeDateRangeToString,
-  relativeDateToString,
 } from '@/lib/dates';
 
 describe('dateToString', () => {
@@ -129,15 +128,6 @@ describe('dateRangeToString', () => {
   });
 });
 
-describe('relativeDateToString', () => {
-  it('should transform a relative date to a readable label', () => {
-    expect(relativeDateToString({ quantity: -2, duration: 'month' })).toStrictEqual('2 months ago');
-    expect(relativeDateToString({ quantity: -8, duration: 'year' })).toStrictEqual('8 years ago');
-    expect(relativeDateToString({ quantity: -7, duration: 'day' })).toStrictEqual('7 days ago');
-    expect(relativeDateToString({ quantity: -7, duration: 'day' })).toStrictEqual('7 days ago');
-  });
-});
-
 describe('relativeDateRangeToString', () => {
   const variableDelimiters = { start: '{{', end: '}}' };
   const SAMPLE_VARIABLES = [
@@ -164,6 +154,16 @@ describe('relativeDateRangeToString', () => {
     expect(relativeDateRangeToString(value2, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
       `2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
     );
+
+    const unfoundVariable: RelativeDateRange = {
+      date: '{{toto}}',
+      quantity: 2,
+      duration: 'month',
+      operator: 'from',
+    };
+    expect(
+      relativeDateRangeToString(unfoundVariable, SAMPLE_VARIABLES, variableDelimiters),
+    ).toStrictEqual(`2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}toto`);
   });
 });
 

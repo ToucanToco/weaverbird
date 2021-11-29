@@ -336,11 +336,11 @@ describe('Labeller', () => {
         name: 'filter',
         condition: {
           column: 'column1',
-          value: { quantity: -1, duration: 'year' },
+          value: { quantity: -1, duration: 'year', date: '{{today}}', operator: 'until' },
           operator: 'from',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" from 1 years ago');
+      expect(hrl(step)).toEqual('Keep rows where "column1" from 1 years ago until - {{today}}');
     });
   });
 
@@ -361,11 +361,11 @@ describe('Labeller', () => {
         name: 'filter',
         condition: {
           column: 'column1',
-          value: { quantity: -1, duration: 'year' },
+          value: { quantity: -1, duration: 'year', date: '{{today}}', operator: 'until' },
           operator: 'until',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" until 1 years ago');
+      expect(hrl(step)).toEqual('Keep rows where "column1" until 1 years ago until - {{today}}');
     });
     it('generates label for variable', () => {
       const step: S.FilterStep = {

@@ -1,5 +1,4 @@
 import _has from 'lodash/has';
-import _pick from 'lodash/pick';
 import { DateTime } from 'luxon';
 
 import t, { DEFAULT_LOCALE, LocaleIdentifier } from '@/lib/internationalization';
@@ -130,27 +129,21 @@ export const dateRangeToString = (dateRange: DateRange, locale?: LocaleIdentifie
 };
 
 /* istanbul ignore next */
-export const relativeDateToString = (
-  relativeDate: RelativeDate,
-  suffixes = { before: 'ago', after: '' },
-): string => {
-  const duration: string | undefined = DEFAULT_DURATIONS.find(
-    d => d.value === relativeDate.duration,
-  )?.label;
-  const suffix = ' ' + (relativeDate.quantity < 0 ? suffixes.before : suffixes.after);
-  return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}${suffix.trimEnd()}`;
-};
-
-/* istanbul ignore next */
 export const relativeDateRangeToString = (
   relativeDateRange: RelativeDateRange,
   availableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): string => {
   const identifier = extractVariableIdentifier(relativeDateRange.date, variableDelimiters);
-  const baseDateLabel = availableVariables.find(v => v.identifier === identifier)?.label;
-  const relativeDate = _pick(relativeDateRange, ['quantity', 'duration']);
-  const relativeDateLabel = relativeDateToString(relativeDate, { before: '', after: '' });
+  const baseDateLabel =
+    availableVariables.find(v => v.identifier === identifier)?.label ?? identifier;
+  const duration: string | undefined = DEFAULT_DURATIONS.find(
+    d => d.value === relativeDateRange.duration,
+  )?.label;
+  const suffix = ' ' + (relativeDateRange.quantity < 0 ? 'ago' : '');
+  const relativeDateLabel = `${Math.abs(
+    relativeDateRange.quantity,
+  )} ${duration?.toLowerCase()}${suffix.trimEnd()}`;
   return `${relativeDateLabel} ${relativeDateRange.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
 };
 
