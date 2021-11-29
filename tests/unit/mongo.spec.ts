@@ -607,12 +607,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             {
               $expr: {
                 $gte: [
-                  {
-                    $dateTrunc: {
-                      unit: 'day',
-                      date: '$DateFrom',
+                  version < '5'
+                    ? '$DateFrom'
+                    : {
+                      $dateTrunc: {
+                        unit: 'day',
+                        date: '$DateFrom',
+                      },
                     },
-                  },
                   new Date('2021-11-24T00:00:00.000Z'),
                 ],
               },
@@ -620,12 +622,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             {
               $expr: {
                 $lte: [
-                  {
-                    $dateTrunc: {
-                      unit: 'day',
-                      date: '$DateUntil',
+                  version < '5'
+                    ? '$DateUntil'
+                    : {
+                      $dateTrunc: {
+                        unit: 'day',
+                        date: '$DateUntil',
+                      },
                     },
-                  },
                   new Date('2021-11-24T00:00:00.000Z'),
                 ],
               },
