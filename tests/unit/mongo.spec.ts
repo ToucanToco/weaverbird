@@ -602,8 +602,18 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           Code: { $nin: [0, 42] },
           IsNull: { $eq: null },
           NotNull: { $ne: null },
-          DateFrom: { $gte: new Date('2021-11-24T00:00:00Z') },
-          DateUntil: { $lte: new Date('2021-11-24T23:59:59.999Z') },
+          $and: [
+            {
+              $expr: {
+                $gte: ['$DateFrom', new Date('2021-11-24T00:00.000Z')],
+              },
+            },
+            {
+              $expr: {
+                $lte: ['$DateUntil', new Date('2021-11-24T00:00.000Z')],
+              },
+            },
+          ],
         },
       },
       { $project: { _id: 0 } },
