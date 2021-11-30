@@ -10,6 +10,7 @@
     :locale="locale"
     timeformat="UTC"
     timezone="UTC"
+    :model-config="datePickerModelConfig"
     @input="onInput"
     @drag="onDrag"
   />
@@ -21,7 +22,6 @@ import _isEqual from 'lodash/isEqual';
 import DatePicker from 'v-calendar/src/components/DatePicker.vue';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 
-import { setDateToMidnight } from '@/components/DatePicker/transform-value-to-date-or-range';
 import { clampRange, DatePickerHighlight, DateRange, isDateRange } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
 
@@ -58,6 +58,19 @@ export default class Calendar extends Vue {
       return clampRange(this.value, this.availableDates);
     }
     return this.value;
+  }
+
+  // Emitted values should always been days at midnight (UTC)
+  get datePickerModelConfig(): object {
+    return {
+      timeAdjust: '00:00:00',
+      start: {
+        timeAdjust: '00:00:00',
+      },
+      end: {
+        timeAdjust: '23:59:59',
+      },
+    };
   }
 
   get shouldUpdateDefaultDate(): boolean {
@@ -106,21 +119,11 @@ export default class Calendar extends Vue {
     }
   }
 
-  // Emitted values should always been days at midnight (UTC)
   onInput(value: Date | DateRange | undefined): void {
-    if (value == null) {
+    if (value == null || value instanceof Date) {
       this.$emit('input', value);
-    } else if (value instanceof Date) {
-      this.$emit('input', setDateToMidnight(value));
     } else {
-      const newDateRange: DateRange = { ...value, duration: 'day' };
-      if (newDateRange.start) {
-        newDateRange.start = setDateToMidnight(newDateRange.start);
-      }
-      if (newDateRange.end) {
-        newDateRange.end = setDateToMidnight(newDateRange.end);
-      }
-      this.$emit('input', newDateRange);
+      this.$emit('input', { ...value, duration: 'day' });
     }
   }
 
