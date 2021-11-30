@@ -340,7 +340,7 @@ describe('Labeller', () => {
           operator: 'from',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" from 1 years ago until - {{today}}');
+      expect(hrl(step)).toEqual('Keep rows where "column1" from 1 years ago until {{today}}');
     });
   });
 
@@ -365,7 +365,7 @@ describe('Labeller', () => {
           operator: 'until',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" until 1 years ago until - {{today}}');
+      expect(hrl(step)).toEqual('Keep rows where "column1" until 1 years ago until {{today}}');
     });
     it('generates label for variable', () => {
       const step: S.FilterStep = {
