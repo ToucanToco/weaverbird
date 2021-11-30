@@ -4,6 +4,7 @@ export { getTranslator } from './lib/translators';
 export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo';
 export { pandasDataTableToDataset } from './lib/dataset/pandas';
 export { setAvailableCodeEditors } from './components/code-editor';
+export { defineSendAnalytics } from './lib/send-analytics';
 
 // export store entrypoints
 export { dereferencePipelines, getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
