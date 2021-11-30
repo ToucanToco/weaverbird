@@ -140,11 +140,8 @@ export const relativeDateToString = (
   const duration: string | undefined = DEFAULT_DURATIONS.find(
     d => d.value === relativeDate.duration,
   )?.label;
-  const suffix = ' ' + (relativeDate.quantity < 0 ? 'ago' : '');
-  const relativeDateLabel = `${Math.abs(
-    relativeDate.quantity,
-  )} ${duration?.toLowerCase()}${suffix.trimEnd()}`;
-  return `${relativeDateLabel} ${relativeDate.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
+  const relativeDateLabel = `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
+  return `${relativeDateLabel} ${relativeDate.operator} ${baseDateLabel}`;
 };
 
 export const isRelativeDate = (value: any): value is RelativeDate => {
