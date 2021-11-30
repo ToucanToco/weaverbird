@@ -3,6 +3,25 @@ import { storiesOf } from '@storybook/vue';
 
 const stories = storiesOf('Dates/NewDateInput', module);
 
+
+const RELATIVE_SAMPLE_VARIABLES = [
+  {
+    label: 'Today',
+    identifier: 'today',
+    value: new Date('1/12/2021'),
+  },
+  {
+    label: 'Last month',
+    identifier: 'last_month',
+    value: new Date('11/12/2021'),
+  },
+  {
+    label: 'Last year',
+    identifier: 'last_year',
+    value: new Date('1/12/2020'),
+  },
+];
+
 const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',
@@ -36,21 +55,7 @@ const SAMPLE_VARIABLES = [
     identifier: 'dates.all_time',
     label: 'All time',
   },
-];
-
-const RELATIVE_SAMPLE_VARIABLES = [
-  {
-    label: 'Today',
-    identifier: 'today',
-  },
-  {
-    label: 'Last month',
-    identifier: 'last_month',
-  },
-  {
-    label: 'Last year',
-    identifier: 'last_year',
-  },
+  ...RELATIVE_SAMPLE_VARIABLES,
 ];
 
 stories.add('simple', () => ({
@@ -59,7 +64,6 @@ stories.add('simple', () => ({
       <NewDateInput 
         :available-variables="availableVariables" 
         :variable-delimiters="variableDelimiters"
-        :relative-available-variables="relativeAvailableVariables"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -74,7 +78,6 @@ stories.add('simple', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
-      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
     };
   },
@@ -86,7 +89,6 @@ stories.add('already selected variable', () => ({
       <NewDateInput 
         :available-variables="availableVariables" 
         :variable-delimiters="variableDelimiters"
-        :relative-available-variables="relativeAvailableVariables"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -101,7 +103,6 @@ stories.add('already selected variable', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
-      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: '{{dates.all_time}}',
     };
   },
@@ -113,7 +114,6 @@ stories.add('custom (fixed date)', () => ({
       <NewDateInput 
         :available-variables="availableVariables" 
         :variable-delimiters="variableDelimiters"
-        :relative-available-variables="relativeAvailableVariables"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -128,7 +128,6 @@ stories.add('custom (fixed date)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
-      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: new Date(),
     };
   },
@@ -140,7 +139,6 @@ stories.add('custom (relative date)', () => ({
       <NewDateInput 
         :available-variables="availableVariables" 
         :variable-delimiters="variableDelimiters"
-        :relative-available-variables="relativeAvailableVariables"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -155,7 +153,6 @@ stories.add('custom (relative date)', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
-      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: { quantity: -1, duration: 'month' },
     };
   },
@@ -167,7 +164,6 @@ stories.add('disable custom selection', () => ({
       <NewDateInput 
         :available-variables="availableVariables" 
         :variable-delimiters="variableDelimiters"
-        :relative-available-variables="relativeAvailableVariables"
         :enableCustom="false"
         v-model="value" 
       />
@@ -183,7 +179,6 @@ stories.add('disable custom selection', () => ({
     return {
       availableVariables: SAMPLE_VARIABLES,
       variableDelimiters: { start: '{{', end: '}}' },
-      relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
       value: undefined,
     };
   },

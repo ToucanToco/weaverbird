@@ -108,7 +108,6 @@ import {
   CustomDate,
   DateRange,
   dateToString,
-  DEFAULT_RELATIVE_VARIABLES,
   isRelativeDate,
   relativeDateToString,
 } from '@/lib/dates';
@@ -145,9 +144,6 @@ export default class NewDateInput extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
-  @Prop({ default: () => DEFAULT_RELATIVE_VARIABLES })
-  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateForm "from"
-
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
@@ -164,6 +160,10 @@ export default class NewDateInput extends Vue {
 
   get tabs(): string[] {
     return ['Relative', 'Fixed'];
+  }
+
+  get relativeAvailableVariables(): VariablesBucket {
+    return this.availableVariables.filter(v => v.value instanceof Date);
   }
 
   // keep each tab value in memory to enable to switch between tabs without loosing content
