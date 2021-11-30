@@ -142,7 +142,7 @@ describe('relativeDateToString', () => {
       date: '{{tomorrow}}',
     };
     expect(relativeDateToString(value, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      `2 months until${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
+      `2 months until Tomorrow`,
     );
 
     const value2: RelativeDate = {
@@ -152,7 +152,7 @@ describe('relativeDateToString', () => {
       operator: 'from',
     };
     expect(relativeDateToString(value2, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      `2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
+      `2 months from Tomorrow`,
     );
 
     const unfoundVariable: RelativeDate = {
@@ -163,7 +163,7 @@ describe('relativeDateToString', () => {
     };
     expect(
       relativeDateToString(unfoundVariable, SAMPLE_VARIABLES, variableDelimiters),
-    ).toStrictEqual(`2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}toto`);
+    ).toStrictEqual(`2 months from toto`);
   });
 });
 

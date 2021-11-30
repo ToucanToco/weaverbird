@@ -429,9 +429,7 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
-        '1 months from - Today',
-      );
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months from Today');
     });
 
     it('should select "Relative" tab by default', () => {
