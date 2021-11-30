@@ -93,7 +93,7 @@ describe('Widget Input Number', () => {
     const inputWrapper = wrapper.find('input[type="number"]');
     (inputWrapper.element as HTMLInputElement).value = '2';
     inputWrapper.trigger('input', { value: '2' });
-    expect(wrapper.emitted()).toEqual({ input: [['2']] });
+    expect(wrapper.emitted()).toEqual({ input: [[2]] });
   });
 
   it('should emit "input" event with the updated value when VariableInput is updated', () => {
