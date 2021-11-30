@@ -257,7 +257,7 @@ export default class Step extends Vue {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  padding-right: 5px; //avoid label to be truncate due to emphasis style
+  padding-right: 1em; //avoid label to be truncate due to emphasis style
 }
 
 .query-pipeline-step__actions {

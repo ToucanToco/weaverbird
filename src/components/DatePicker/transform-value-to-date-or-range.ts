@@ -39,7 +39,7 @@ export const transformRelativeDateToDate = (
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): Date | undefined => {
-  // start is always a date as relativeAvailableVariables are not customizable
+  // retrieve relative date variable value in order to use it to calculate date
   const value = retrieveVariable(relativeDate.date, relativeAvailableVariables, variableDelimiters)
     ?.value;
   if (!(value instanceof Date)) return;
@@ -67,7 +67,7 @@ export const transformRelativeDateToDateRange = (
   relativeAvailableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): DateRange | undefined => {
-  // start is always a date as relativeAvailableVariables are not customizable
+  // retrieve relative date variable value in order to use it to calculate date
   const value = retrieveVariable(relativeDate.date, relativeAvailableVariables, variableDelimiters)
     ?.value;
   if (!(value instanceof Date)) return;
