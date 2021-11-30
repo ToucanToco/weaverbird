@@ -261,87 +261,6 @@ function buildFormulaTree(
   });
 }
 
-function buildCondExpression(
-  cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
-  unsupportedOperators: S.FilterSimpleCondition['operator'][],
-): MongoStep {
-  const operatorMapping = {
-    eq: '$eq',
-    ne: '$ne',
-    lt: '$lt',
-    le: '$lte',
-    gt: '$gt',
-    ge: '$gte',
-    in: '$in',
-    nin: '$in',
-    isnull: '$eq',
-    notnull: '$ne',
-    matches: '$regexMatch',
-    notmatches: '$regexMatch',
-    from: '$gte',
-    until: '$lte',
-  };
-  if (S.isFilterComboAnd(cond)) {
-    if (cond.and.length == 1) {
-      return buildCondExpression(cond.and[0], unsupportedOperators);
-    } else {
-      // if cond.and.length > 1 we need to bind conditions in a $and operator,
-      // as we need a unique document to be used as the first argument of the
-      // $cond operator
-      return { $and: cond.and.map(elem => buildCondExpression(elem, unsupportedOperators)) };
-    }
-  }
-  if (S.isFilterComboOr(cond)) {
-    return { $or: cond.or.map(elem => buildCondExpression(elem, unsupportedOperators)) };
-  }
-
-  if (unsupportedOperators.includes(cond.operator)) {
-    throw new Error(`Unsupported operator ${cond.operator} in conditions`);
-  }
-
-  // $regexMatch arguments are provided differently from the others operators
-  // https://docs.mongodb.com/manual/reference/operator/aggregation/regexMatch/
-  if (cond.operator === 'matches' || cond.operator === 'notmatches') {
-    let condExpression: MongoStep = {
-      $regexMatch: {
-        input: $$(cond.column),
-        regex: cond.value,
-      },
-    };
-    // There is not 'regexNotMatch' operator
-    if (cond.operator === 'notmatches') {
-      condExpression = { $not: condExpression };
-    }
-    return condExpression;
-  } else {
-    if (cond.operator === 'notnull' || cond.operator === 'isnull') {
-      const condExpression: MongoStep = {
-        [operatorMapping[cond.operator]]: [$$(cond.column), null],
-      };
-      return condExpression;
-    } else {
-      let condExpression: MongoStep = {
-        [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
-      };
-      // There is not 'not in' operator
-      if (cond.operator === 'nin') {
-        condExpression = { $not: condExpression };
-      }
-
-      // until operator should include the whole selected day
-      if (cond.operator === 'until') {
-        if (cond.value instanceof Date) {
-          condExpression[operatorMapping[cond.operator]][1] = new Date(
-            cond.value.setUTCHours(23, 59, 59, 999),
-          );
-        }
-      }
-
-      return condExpression;
-    }
-  }
-}
-
 /**
  * Translate a mathjs logical tree describing a formula into a Mongo step
  * @param node a mathjs node object (usually received after parsing an string expression)
@@ -1273,27 +1192,6 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
   }
 }
 
-/** transform an 'ifthenelse' step into corresponding mongo step */
-function transformIfThenElseStep(
-  step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
-  unsupportedOperatorsInConditions: S.FilterSimpleCondition['operator'][],
-  variableDelimiters?: VariableDelimiters,
-): MongoStep {
-  const ifExpr: MongoStep = buildCondExpression(step.if, unsupportedOperatorsInConditions);
-  const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
-  let elseExpr: MongoStep | string | number;
-  if (typeof step.else === 'object') {
-    elseExpr = transformIfThenElseStep(
-      step.else,
-      unsupportedOperatorsInConditions,
-      variableDelimiters,
-    );
-  } else {
-    elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
-  }
-  return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
-}
-
 /** transform a 'movingaverage' step into corresponding mongo steps */
 function transformMovingAverage(step: Readonly<S.MovingAverageStep>): MongoStep[] {
   return [
@@ -2086,7 +1984,9 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
       { $sort: { _vqbOrder: 1 } },
       {
         $group: {
-          _id: { ...Object.fromEntries([...groupby, ...parents].map(col => [col, `$_id.${col}`])) },
+          _id: {
+            ...Object.fromEntries([...groupby, ...parents].map(col => [col, `$_id.${col}`])),
+          },
           _vqbValuesArray: { $push: $$(step.valueColumn) },
         },
       },
@@ -2345,6 +2245,125 @@ export class Mongo36Translator extends BaseTranslator {
     return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
   }
 
+  buildCondExpression(
+    cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
+    unsupportedOperators: S.FilterSimpleCondition['operator'][],
+  ): MongoStep {
+    const operatorMapping = {
+      eq: '$eq',
+      ne: '$ne',
+      lt: '$lt',
+      le: '$lte',
+      gt: '$gt',
+      ge: '$gte',
+      in: '$in',
+      nin: '$in',
+      isnull: '$eq',
+      notnull: '$ne',
+      matches: '$regexMatch',
+      notmatches: '$regexMatch',
+      from: '$gte',
+      until: '$lte',
+    };
+    if (S.isFilterComboAnd(cond)) {
+      if (cond.and.length == 1) {
+        return this.buildCondExpression(cond.and[0], unsupportedOperators);
+      } else {
+        // if cond.and.length > 1 we need to bind conditions in a $and operator,
+        // as we need a unique document to be used as the first argument of the
+        // $cond operator
+        return {
+          $and: cond.and.map(elem => this.buildCondExpression(elem, unsupportedOperators)),
+        };
+      }
+    }
+    if (S.isFilterComboOr(cond)) {
+      return { $or: cond.or.map(elem => this.buildCondExpression(elem, unsupportedOperators)) };
+    }
+
+    if (unsupportedOperators.includes(cond.operator)) {
+      throw new Error(`Unsupported operator ${cond.operator} in conditions`);
+    }
+
+    // $regexMatch arguments are provided differently from the others operators
+    // https://docs.mongodb.com/manual/reference/operator/aggregation/regexMatch/
+    if (cond.operator === 'matches' || cond.operator === 'notmatches') {
+      let condExpression: MongoStep = {
+        $regexMatch: {
+          input: $$(cond.column),
+          regex: cond.value,
+        },
+      };
+      // There is not 'regexNotMatch' operator
+      if (cond.operator === 'notmatches') {
+        condExpression = { $not: condExpression };
+      }
+      return condExpression;
+    } else {
+      if (cond.operator === 'notnull' || cond.operator === 'isnull') {
+        const condExpression: MongoStep = {
+          [operatorMapping[cond.operator]]: [$$(cond.column), null],
+        };
+        return condExpression;
+      } else {
+        let condExpression: MongoStep = {
+          [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
+        };
+        // There is not 'not in' operator
+        if (cond.operator === 'nin') {
+          condExpression = { $not: condExpression };
+        }
+
+        // until operator should include the whole selected day
+        if (cond.operator === 'until') {
+          if (cond.value instanceof Date) {
+            condExpression[operatorMapping[cond.operator]][1] = new Date(
+              cond.value.setUTCHours(23, 59, 59, 999),
+            );
+          }
+        }
+
+        // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
+        // They need to be used with $expr
+        if (cond.operator === 'from' || cond.operator === 'until') {
+          return {
+            $expr: {
+              [operatorMapping[cond.operator]]: [
+                this.truncateDateToDay($$(cond.column)),
+                this.truncateDateToDay(
+                  isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+                ),
+              ],
+            },
+          };
+        }
+
+        return condExpression;
+      }
+    }
+  }
+
+  /** transform an 'ifthenelse' step into corresponding mongo step */
+  transformIfThenElseStep(
+    step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
+    unsupportedOperatorsInConditions: S.FilterSimpleCondition['operator'][],
+    variableDelimiters?: VariableDelimiters,
+  ): MongoStep {
+    const ifExpr: MongoStep = this.buildCondExpression(step.if, unsupportedOperatorsInConditions);
+    const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
+    let elseExpr: MongoStep | string | number;
+    if (typeof step.else === 'object') {
+      elseExpr = this.transformIfThenElseStep(
+        step.else,
+        unsupportedOperatorsInConditions,
+        variableDelimiters,
+      );
+    } else {
+      elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
+    }
+    return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
+  }
+
   /**
    * Transform a filter step into the corresponding Mongo $match aggregation step
    */
@@ -2362,7 +2381,7 @@ export class Mongo36Translator extends BaseTranslator {
   ifthenelse(step: Readonly<S.IfThenElseStep>): MongoStep {
     return {
       $addFields: {
-        [step.newColumn]: transformIfThenElseStep(
+        [step.newColumn]: this.transformIfThenElseStep(
           _.omit(step, ['name', 'newColumn']),
           this.unsupportedOperatorsInConditions,
           BaseTranslator.variableDelimiters,
