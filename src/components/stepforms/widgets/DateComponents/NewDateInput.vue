@@ -235,9 +235,9 @@ export default class NewDateInput extends Vue {
   get hasInvalidTabValue(): boolean {
     if (this.isFixedTabSelected) {
       return !(this.currentTabValue instanceof Date);
+    } else {
+      return !isRelativeDate(this.currentTabValue) || !this.currentTabValue.date;
     }
-    // relative tab is always valid because default value is already complete
-    return false;
   }
 
   created() {
@@ -249,7 +249,7 @@ export default class NewDateInput extends Vue {
     if (this.value instanceof Date) {
       this.tabsValues.Fixed = this.value;
       this.selectTab('Fixed');
-    } else if (this.value && typeof this.value !== 'string') {
+    } else if (isRelativeDate(this.value)) {
       this.tabsValues.Relative = this.value;
       this.selectTab('Relative');
     }
