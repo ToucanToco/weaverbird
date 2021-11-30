@@ -41,12 +41,18 @@
         box-shadow: 0px 0px 10px #1119;
         border-radius: 0px;
         padding: 10px 15px;
+        padding-bottom: 56px;
         box-sizing: border-box;
+      }
+
+      #app .pagination-counter {
+        bottom: 56px;
       }
 
       pre {
         padding: 5px;
         background-color: #ededed;
+        min-height: 100px;
       }
 
       .error-message {
@@ -75,9 +81,11 @@
         position: fixed;
         bottom: 0px;
         left: 0px;
+        text-align: center;
       }
 
       .toolbar__title {
+        position: absolute;
         color: #fff;
         padding: 15px 18px;
         text-transform: none;
@@ -105,6 +113,34 @@
         background: #000;
       }
 
+      .toolbar__radio {
+        position: relative;
+        font-size: 14px;
+        font-family: Montserrat;
+        font-weight: 700;
+        letter-spacing: 1px;
+        color: #404040;
+        display: inline-block;
+        margin-right: 10px;
+        margin-left: 10px;
+        top: 16px;
+      }
+      .toolbar__radio:hover {
+        color: #fff;
+      }
+
+      .toolbar__radio a {
+        cursor: pointer;
+        padding: 5px 0px;
+        text-decoration: none;
+        color: unset;
+      }
+
+      .toolbar__selected {
+        color: #fff;
+        border-bottom: solid 2px;
+      }
+
       .debug-panel {
         margin: 5px 5px;
         position: inherit;
@@ -123,7 +159,6 @@
       .debug-panel__code {
         display: flex;
         background-color: white;
-        height: inherit;
         padding: 10px;
         height: calc(100% - 56px);
         overflow-y: scroll;
@@ -154,6 +189,16 @@
         <div class="toolbar__title">
           Weaverbird
         </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected: isSelectedTranslator('mongo50') }">
+          <a href="/">
+            MongoDB
+          </a>
+        </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('pandas') }">
+          <a href="?backend=pandas">
+            Pandas
+          </a>
+        </div>
         <div class="toolbar__button" v-show="!isCodeOpened" @click="openCode">
           Show code
         </div>
@@ -169,7 +214,8 @@
           </div>
           <div class="debug-panel__code-translated-pipeline">
             <div>Translated pipeline</div>
-            <pre>{{ mongoQueryAsJSON }}</pre>
+            <pre v-if="isSelectedTranslator('mongo50')">{{ mongoQueryAsJSON }}</pre>
+            <pre v-else>Query executed but translation not configured for this backend</pre>
           </div>
         </div>
       </div>

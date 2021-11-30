@@ -427,6 +427,9 @@ async function buildVueApp() {
       openCode: function() {
         this.isCodeOpened = true;
       },
+      isSelectedTranslator: function(translator) {
+        return TRANSLATOR === translator
+      },
     },
   });
 }
