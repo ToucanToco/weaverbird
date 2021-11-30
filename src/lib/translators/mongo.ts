@@ -68,7 +68,7 @@ const DURATION_MULTIPLIER_MAP: DurationMultiplierMap = {
  * @param colnames list of column names
  */
 function columnMap(colnames: string[]) {
-  return _.fromPairs(colnames.map((col) => [col, $$(col)]));
+  return _.fromPairs(colnames.map(col => [col, $$(col)]));
 }
 
 /**
@@ -145,7 +145,7 @@ export function _simplifyMongoPipeline(mongoSteps: MongoStep[]): MongoStep[] {
          */
         if (stepOperator === '$project') {
           const included = Boolean(step.$project[key]);
-          merge = Object.values(lastStep.$project).every((value) => Boolean(value) === included);
+          merge = Object.values(lastStep.$project).every(value => Boolean(value) === included);
         }
         if (Object.prototype.hasOwnProperty.call(lastStep[stepOperator], key)) {
           // We do not want to merge two $project with common keys
@@ -245,7 +245,7 @@ function buildFormulaTree(
   const mathjsTree: math.MathNode = math.parse(formulaPseudotised);
 
   // 3. Replace all pseudo into MathNode by there original name
-  return mathjsTree.transform(function (node: math.MathNode): math.MathNode {
+  return mathjsTree.transform(function(node: math.MathNode): math.MathNode {
     if (node.type === 'SymbolNode') {
       if (pseudoCols[node.name]) {
         node.name = pseudoCols[node.name]
@@ -276,7 +276,7 @@ function buildMongoFormulaTree(node: math.MathNode): MongoStep | string | number
         };
       }
       return {
-        [getOperator(node.op)]: node.args.map((e) => buildMongoFormulaTree(e)),
+        [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
       };
     case 'SymbolNode':
       // For column names
@@ -329,7 +329,7 @@ function addMissingDatesYear(step: Readonly<S.AddMissingDatesStep>): MongoStep[]
               // else add a new document with the missing date (we convert the year back to a date object)
               // and the group fields (every other field will be undefined)
               {
-                ...Object.fromEntries(groups.map((col) => [col, `$_id.${col}`])),
+                ...Object.fromEntries(groups.map(col => [col, `$_id.${col}`])),
                 [step.datesColumn]: { $dateFromParts: { year: '$$currentYear' } },
               },
             ],
@@ -435,7 +435,7 @@ function addMissingDatesDayOrMonth(step: Readonly<S.AddMissingDatesStep>): Mongo
               { $arrayElemAt: ['$_vqbArray', '$$dateIndex'] },
               // else add a new document with the missing date and the group fieldds (every other field will be undefined)
               {
-                ...Object.fromEntries(groups.map((col) => [col, `$_id.${col}`])),
+                ...Object.fromEntries(groups.map(col => [col, `$_id.${col}`])),
                 [step.datesColumn]: '$$date',
               },
             ],
@@ -607,7 +607,7 @@ function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
     { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
     {
       $project: {
-        ...Object.fromEntries(groupby.map((col) => [col, `$_id.${col}`])),
+        ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
         [step.newColumn ?? `${step.valueColumn}_CUMSUM`]: {
           $sum: {
             $slice: [$$(step.valueColumn), { $add: ['$_VQB_INDEX', 1] }],
@@ -919,7 +919,7 @@ function transformEvolution(step: Readonly<S.EvolutionStep>): MongoStep {
             cond: {
               $and: [
                 { $eq: ['$_VQB_DATE_PREV', `$$item.${step.dateCol}`] },
-                ...step.indexColumns.map((col) => ({ $eq: [$$(col), `$$item.${col}`] })),
+                ...step.indexColumns.map(col => ({ $eq: [$$(col), `$$item.${col}`] })),
               ],
             },
           },
@@ -958,7 +958,7 @@ function transformFillna(step: Readonly<S.FillnaStep>): MongoStep {
     cols = [...step.columns];
   }
 
-  const addFields = Object.fromEntries(cols.map((x) => [x, { $ifNull: [$$(x), step.value] }]));
+  const addFields = Object.fromEntries(cols.map(x => [x, { $ifNull: [$$(x), step.value] }]));
 
   return { $addFields: addFields };
 }
@@ -1485,8 +1485,8 @@ function transformRename(step: Readonly<S.RenameStep>): MongoStep[] {
   }
 
   return [
-    { $addFields: Object.fromEntries(step.toRename.map((a) => [a[1], $$(a[0])])) },
-    { $project: Object.fromEntries(step.toRename.map((a) => [a[0], 0])) },
+    { $addFields: Object.fromEntries(step.toRename.map(a => [a[1], $$(a[0])])) },
+    { $project: Object.fromEntries(step.toRename.map(a => [a[0], 0])) },
   ];
 }
 
@@ -1544,8 +1544,8 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
 
     const project: { [id: string]: string | number } = {
       _id: 0,
-      ...Object.fromEntries(Object.keys(id).map((col) => [col, `$_id.${col}`])),
-      ...Object.fromEntries(Object.keys(aggs).map((col) => [col, 1])),
+      ...Object.fromEntries(Object.keys(id).map(col => [col, `$_id.${col}`])),
+      ...Object.fromEntries(Object.keys(aggs).map(col => [col, 1])),
       [labelCol]: `$_id.${elem}`,
       [levelCol]: elem,
     };
@@ -1579,7 +1579,7 @@ function transformRollup(step: Readonly<S.RollupStep>): MongoStep {
         _vqbRollupLevels: {
           $concatArrays: Object.keys(facet)
             .sort()
-            .map((col) => $$(col)),
+            .map(col => $$(col)),
         },
       },
     },
@@ -1665,7 +1665,7 @@ function transformStatistics(step: Readonly<S.StatisticsStep>): MongoStep {
   return [
     {
       $project: {
-        ...Object.fromEntries(step.groupbyColumns.map((groupByColumn) => [groupByColumn, 1])),
+        ...Object.fromEntries(step.groupbyColumns.map(groupByColumn => [groupByColumn, 1])),
         column: $$(step.column),
         ...(doWeNeedTo.computeColumnSquare(step)
           ? { column_square: { $pow: [$$(step.column), 2] } }
@@ -1682,7 +1682,7 @@ function transformStatistics(step: Readonly<S.StatisticsStep>): MongoStep {
       $group: {
         _id:
           Object.fromEntries(
-            step.groupbyColumns.map((groupByColumn) => [groupByColumn, $$(groupByColumn)]),
+            step.groupbyColumns.map(groupByColumn => [groupByColumn, $$(groupByColumn)]),
           ) || null,
         data: { $push: '$column' },
         ...(doWeNeedTo.count(step) ? { count: { $sum: 1 } } : {}),
@@ -1698,11 +1698,11 @@ function transformStatistics(step: Readonly<S.StatisticsStep>): MongoStep {
       $project: {
         // groupByColumn
         ...Object.fromEntries(
-          step.groupbyColumns.map((groupByColumn) => [groupByColumn, `$_id.${groupByColumn}`]),
+          step.groupbyColumns.map(groupByColumn => [groupByColumn, `$_id.${groupByColumn}`]),
         ),
         // statistics
         ...Object.fromEntries(
-          step.statistics.map((statistic) => [statistic, statisticsFormula[statistic]]),
+          step.statistics.map(statistic => [statistic, statisticsFormula[statistic]]),
         ),
         // quantiles
         ...Object.fromEntries(
@@ -1767,7 +1767,7 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
   const addFields: MongoStep = {};
   const project: MongoStep = { _id: 0 }; // ensures $project stage will never be empty
   // list of columns to combine
-  const toCombine: string[] = [...step.totalDimensions.map((c) => c.totalColumn)];
+  const toCombine: string[] = [...step.totalDimensions.map(c => c.totalColumn)];
   // get combinations, remove first combo (most granular combination of columns
   // so not useful to compute total rows) and add[](to compute the grand total)
   const combos: string[][] = combinations(toCombine).slice(1);
@@ -1791,7 +1791,7 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
     const id = columnMap([...comb, ...groups]);
     const aggs: { [id: string]: {} } = {};
     // get columns not in aggregation, i.e. columns that will hold the total rows labels
-    const totalColumns: string[] = toCombine.filter((x) => !comb.includes(x));
+    const totalColumns: string[] = toCombine.filter(x => !comb.includes(x));
     const countDistinctAddFields: PropMap<any> = {};
 
     for (const aggfStep of step.aggregations) {
@@ -1828,14 +1828,14 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
         $project: {
           _id: 0,
           // Return id fields (untouched)
-          ...Object.fromEntries(Object.keys(id).map((c) => [c, `$_id.${c}`])),
+          ...Object.fromEntries(Object.keys(id).map(c => [c, `$_id.${c}`])),
           // Return computed aggregation fields
-          ...Object.fromEntries(Object.keys(aggs).map((c) => [c, 1])),
+          ...Object.fromEntries(Object.keys(aggs).map(c => [c, 1])),
           // Project the label of total rows for those columns
           ...Object.fromEntries(
             step.totalDimensions
-              .filter((x) => totalColumns.includes(x.totalColumn))
-              .map((t) => [t.totalColumn, t.totalRowsLabel]),
+              .filter(x => totalColumns.includes(x.totalColumn))
+              .map(t => [t.totalColumn, t.totalRowsLabel]),
           ),
         },
       },
@@ -1846,7 +1846,7 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
     { $facet: facet },
     {
       $project: {
-        _vqbCombos: { $concatArrays: Object.keys(facet).map((col) => $$(col)) },
+        _vqbCombos: { $concatArrays: Object.keys(facet).map(col => $$(col)) },
       },
     },
     { $unwind: '$_vqbCombos' },
@@ -1857,17 +1857,17 @@ function transformTotals(step: Readonly<S.AddTotalRowsStep>): MongoStep {
 /** transform an 'uniquegroups' step into corresponding mongo steps */
 function transformUniqueGroups(step: Readonly<S.UniqueGroupsStep>): MongoStep[] {
   const id = columnMap(step.on);
-  const project = Object.fromEntries(Object.keys(id).map((col) => [col, `$_id.${col}`]));
+  const project = Object.fromEntries(Object.keys(id).map(col => [col, `$_id.${col}`]));
   return [{ $group: { _id: id } }, { $project: project }];
 }
 
 /** transform an 'unpivot' step into corresponding mongo steps */
 function transformUnpivot(step: Readonly<S.UnpivotStep>): MongoStep[] {
   // projectCols to be included in Mongo $project steps
-  const projectCols: PropMap<string> = _.fromPairs(step.keep.map((col) => [col, `$${col}`]));
+  const projectCols: PropMap<string> = _.fromPairs(step.keep.map(col => [col, `$${col}`]));
   // objectToArray to be included in the first Mongo $project step
   const objectToArray: PropMap<object> = _.fromPairs(
-    step.unpivot.map((col) => [col, { $ifNull: [$$(col), null] }]),
+    step.unpivot.map(col => [col, { $ifNull: [$$(col), null] }]),
   );
   const mongoPipeline: MongoStep[] = [
     {
@@ -1910,7 +1910,7 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
     },
     {
       $project: {
-        ...Object.fromEntries(groupby.map((col) => [col, `$_id.${col}`])),
+        ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
         LABEL_waterfall: `$_id.${step.milestonesColumn}`,
         GROUP_waterfall:
           step.parentsColumn !== undefined ? `$_id.${step.milestonesColumn}` : undefined,
@@ -1940,7 +1940,7 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
       $group: {
         _id: {
           ...Object.fromEntries(
-            [...groupby, ...parents, step.labelsColumn].map((col) => [col, `$_id.${col}`]),
+            [...groupby, ...parents, step.labelsColumn].map(col => [col, `$_id.${col}`]),
           ),
         },
         _vqbValuesArray: { $push: $$(step.valueColumn) },
@@ -1948,7 +1948,7 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
     },
     {
       $project: {
-        ...Object.fromEntries(groupby.map((col) => [col, `$_id.${col}`])),
+        ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
         LABEL_waterfall: `$_id.${step.labelsColumn}`,
         GROUP_waterfall:
           step.parentsColumn !== undefined ? `$_id.${step.parentsColumn}` : undefined,
@@ -1985,14 +1985,14 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
       {
         $group: {
           _id: {
-            ...Object.fromEntries([...groupby, ...parents].map((col) => [col, `$_id.${col}`])),
+            ...Object.fromEntries([...groupby, ...parents].map(col => [col, `$_id.${col}`])),
           },
           _vqbValuesArray: { $push: $$(step.valueColumn) },
         },
       },
       {
         $project: {
-          ...Object.fromEntries(groupby.map((col) => [col, `$_id.${col}`])),
+          ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
           LABEL_waterfall: `$_id.${step.parentsColumn}`,
           GROUP_waterfall: `$_id.${step.parentsColumn}`,
           TYPE_waterfall: 'parent',
@@ -2053,7 +2053,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   dateextract: transformDateExtract,
   delete: (step: Readonly<S.DeleteStep>) => ({
-    $project: _.fromPairs(step.columns.map((col) => [col, 0])),
+    $project: _.fromPairs(step.columns.map(col => [col, 0])),
   }),
   domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
@@ -2084,7 +2084,7 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   replace: transformReplace,
   rollup: transformRollup,
   select: (step: Readonly<S.SelectStep>) => ({
-    $project: _.fromPairs(step.columns.map((col) => [col, 1])),
+    $project: _.fromPairs(step.columns.map(col => [col, 1])),
   }),
   split: transformSplit,
   sort: transformSort,
@@ -2206,14 +2206,14 @@ export class Mongo36Translator extends BaseTranslator {
 
     if (S.isFilterComboAnd(cond) && parentComboOp !== 'or') {
       return _simplifyAndCondition({
-        $and: cond.and.map((elem) => this.buildMatchTree(elem, 'and')),
+        $and: cond.and.map(elem => this.buildMatchTree(elem, 'and')),
       });
     }
     if (S.isFilterComboAnd(cond)) {
-      return { $and: cond.and.map((elem) => this.buildMatchTree(elem, 'and')) };
+      return { $and: cond.and.map(elem => this.buildMatchTree(elem, 'and')) };
     }
     if (S.isFilterComboOr(cond)) {
-      return { $or: cond.or.map((elem) => this.buildMatchTree(elem, 'or')) };
+      return { $or: cond.or.map(elem => this.buildMatchTree(elem, 'or')) };
     }
     if (cond.operator === 'matches') {
       return { [cond.column]: { $regex: cond.value } };
@@ -2273,12 +2273,12 @@ export class Mongo36Translator extends BaseTranslator {
         // as we need a unique document to be used as the first argument of the
         // $cond operator
         return {
-          $and: cond.and.map((elem) => this.buildCondExpression(elem, unsupportedOperators)),
+          $and: cond.and.map(elem => this.buildCondExpression(elem, unsupportedOperators)),
         };
       }
     }
     if (S.isFilterComboOr(cond)) {
-      return { $or: cond.or.map((elem) => this.buildCondExpression(elem, unsupportedOperators)) };
+      return { $or: cond.or.map(elem => this.buildCondExpression(elem, unsupportedOperators)) };
     }
 
     if (unsupportedOperators.includes(cond.operator)) {
