@@ -50,4 +50,7 @@ export type DataSet = {
    * pagination context (i.e. number of results displayed per page and current page number)
    */
   paginationContext?: PaginationContext;
+  previewContext?: {
+    sourceRowsSubset?: number | 'unlimited';
+  };
 };

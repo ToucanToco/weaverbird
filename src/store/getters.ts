@@ -88,6 +88,8 @@ const getters: GetterTree<VQBState, any> = {
    */
   pageno: (state: VQBState) =>
     state.dataset.paginationContext ? state.dataset.paginationContext.pageno : 1,
+
+  previewSourceRowsSubset: (state: VQBState) => state.dataset.previewContext?.sourceRowsSubset,
   /**
    * Return current edited pipeline
    */
