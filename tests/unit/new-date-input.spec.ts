@@ -1,10 +1,18 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import { dateToString, DEFAULT_RELATIVE_VARIABLES, RelativeDate } from '@/lib/dates';
+import { dateToString, RelativeDate } from '@/lib/dates';
 
 jest.mock('@/components/FAIcon.vue');
 jest.mock('@/components/DatePicker/Calendar.vue');
+
+const RELATIVE_SAMPLE_VARIABLES = [
+  {
+    label: 'Today',
+    identifier: 'today',
+    value: new Date(2020, 11),
+  },
+];
 
 const SAMPLE_VARIABLES = [
   {
@@ -39,24 +47,7 @@ const SAMPLE_VARIABLES = [
     identifier: 'dates.all_time',
     label: 'All time',
   },
-];
-
-const RELATIVE_SAMPLE_VARIABLES = [
-  {
-    label: 'Today',
-    identifier: 'today',
-    value: new Date(2020, 11),
-  },
-  {
-    label: 'Last month',
-    identifier: 'last_month',
-    value: '',
-  },
-  {
-    label: 'Last year',
-    identifier: 'last_year',
-    value: '',
-  },
+  ...RELATIVE_SAMPLE_VARIABLES,
 ];
 
 describe('Date input', () => {
@@ -76,7 +67,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: 'anythingnotokay',
       });
@@ -190,7 +180,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
       });
     });
@@ -267,6 +256,11 @@ describe('Date input', () => {
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative');
         await wrapper.vm.$nextTick();
       });
+      it('should pass filtered available variables using only dates one as relative variables', () => {
+        expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(
+          RELATIVE_SAMPLE_VARIABLES,
+        );
+      });
       it('should display correct body component', () => {
         expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
         expect(wrapper.find('Calendar-stub').exists()).toBe(false);
@@ -309,7 +303,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: `{{${selectedVariable.identifier}}}`,
       });
@@ -330,7 +323,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: advancedVariable,
       });
@@ -370,7 +362,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
@@ -402,7 +393,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
@@ -424,7 +414,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         enableCustom: false,
       });
@@ -459,7 +448,6 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
-        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         bounds,
         value: new Date('2020/2/1'),
@@ -477,10 +465,8 @@ describe('Date input', () => {
     it('should set availableVariables to empty array', () => {
       expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
     });
-    it('should set relativeAvailableVariables to default value array', () => {
-      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(
-        DEFAULT_RELATIVE_VARIABLES,
-      );
+    it('should set relativeAvailableVariables to empty array', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual([]);
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });

@@ -844,8 +844,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             value: {
               duration: 'week',
               quantity: -1,
-              operator: 'until',
-              date: 'today',
+              operator: 'from',
+              date: '{{today}}',
             },
           },
         },
@@ -867,10 +867,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   $dateTrunc: {
                     date: {
                       $dateAdd: {
-                        amount: -1,
+                        amount: 1,
                         startDate: {
                           $dateTrunc: {
-                            date: '$$NOW',
+                            date: '{{today}}',
                             unit: 'day',
                           },
                         },
@@ -898,7 +898,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               duration: 'month',
               quantity: 3,
               operator: 'until',
-              date: 'today',
+              date: '{{last_week}}',
             },
           },
         },
@@ -920,10 +920,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   $dateTrunc: {
                     date: {
                       $dateAdd: {
-                        amount: 3,
+                        amount: -3,
                         startDate: {
                           $dateTrunc: {
-                            date: '$$NOW',
+                            date: '{{last_week}}',
                             unit: 'day',
                           },
                         },
