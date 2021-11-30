@@ -2330,7 +2330,10 @@ export class Mongo36Translator extends BaseTranslator {
       return {
         $expr: {
           [operatorMapping[cond.operator]]: [
+            // from/until comparisons must include the selected day in full. For this we needd to:
+            // - remove any hour info from the compared column
             this.truncateDateToDay($$(cond.column)),
+            // - remove any hour info from the value we want to compare to
             this.truncateDateToDay(
               isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
             ),
