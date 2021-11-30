@@ -58,7 +58,12 @@
               v-model="currentTabValue"
               :availableDates="bounds"
             />
-            <RelativeDateForm v-else v-model="currentTabValue" />
+            <RelativeDateForm
+              v-else
+              v-model="currentTabValue"
+              :availableVariables="relativeAvailableVariables"
+              :variableDelimiters="variableDelimiters"
+            />
           </div>
           <div class="widget-date-input__editor-footer">
             <div
@@ -99,7 +104,14 @@ import Popover from '@/components/Popover.vue';
 import AdvancedVariableModal from '@/components/stepforms/widgets/VariableInputs/AdvancedVariableModal.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import Tabs from '@/components/Tabs.vue';
-import { CustomDate, DateRange, dateToString, relativeDateToString } from '@/lib/dates';
+import {
+  CustomDate,
+  DateRange,
+  dateToString,
+  DEFAULT_RELATIVE_VARIABLES,
+  isRelativeDate,
+  relativeDateToString,
+} from '@/lib/dates';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -133,6 +145,9 @@ export default class NewDateInput extends Vue {
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
 
+  @Prop({ default: () => DEFAULT_RELATIVE_VARIABLES })
+  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateForm "from"
+
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
 
@@ -154,7 +169,7 @@ export default class NewDateInput extends Vue {
   // keep each tab value in memory to enable to switch between tabs without loosing content
   tabsValues: Record<string, CustomDate | undefined> = {
     Fixed: undefined, // Date should be empty on init because we can have bounds so a defined date could be out of bounds, moreover, we would have no disabled button otherwise
-    Relative: { quantity: -1, duration: 'year' },
+    Relative: { date: '', quantity: 1, duration: 'year', operator: 'until' },
   };
 
   get currentTabValue(): CustomDate | undefined {
@@ -206,8 +221,12 @@ export default class NewDateInput extends Vue {
   get label(): string {
     if (this.value instanceof Date) {
       return dateToString(this.value);
-    } else if (this.value instanceof Object) {
-      return relativeDateToString(this.value);
+    } else if (isRelativeDate(this.value)) {
+      return relativeDateToString(
+        this.value,
+        this.relativeAvailableVariables,
+        this.variableDelimiters,
+      );
     } else {
       return 'Select a date';
     }

@@ -1,9 +1,14 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import RelativeDateForm from '@/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
-import { DEFAULT_DURATIONS } from '@/lib/dates';
 
-describe('Relative date form', () => {
+const SAMPLE_VARIABLES = [
+  { label: 'Today', identifier: 'today' },
+  { label: 'Tomorrow', identifier: 'tomorrow' },
+  { label: 'Next month', identifier: 'newt_month' },
+];
+
+describe('RelativeDate form', () => {
   let wrapper: Wrapper<RelativeDateForm>;
   const createWrapper = (propsData: any = {}) => {
     wrapper = shallowMount(RelativeDateForm, {
@@ -17,88 +22,137 @@ describe('Relative date form', () => {
   });
 
   describe('default', () => {
-    const selectedDuration = DEFAULT_DURATIONS[1];
-    const value = { quantity: -20, duration: selectedDuration.value };
+    const date = '{{today}}';
     beforeEach(() => {
       createWrapper({
-        value,
+        value: { date, quantity: 1, duration: 'month', operator: 'until' },
+        variableDelimiters: { start: '{{', end: '}}' },
+        availableVariables: SAMPLE_VARIABLES,
       });
     });
     it('should instantiate', () => {
       expect(wrapper.exists()).toBe(true);
     });
-    it('should use a number input', () => {
-      expect(wrapper.find('InputNumberWidget-stub').exists()).toBe(true);
+    it('should pass option referring to date value to baseDate input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
+      ).toStrictEqual({
+        identifier: 'today',
+        label: 'Today',
+      });
     });
-    it('should use an autocomplete input', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').exists()).toBe(true);
+    it('should pass relative date part of value to quantity & duration input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__quantity').props('value'),
+      ).toStrictEqual(1);
+      expect(
+        wrapper.find('.widget-relative-date-range-form__duration').props('value'),
+      ).toStrictEqual({ label: 'Months', value: 'month' });
     });
-    it('should pass durations options with suffix to autocomplete', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().options).toStrictEqual([
-        { label: 'Years ago', value: 'year' },
-        { label: 'Quarters ago', value: 'quarter' },
-        { label: 'Months ago', value: 'month' },
-        { label: 'Weeks ago', value: 'week' },
-        { label: 'Days ago', value: 'day' },
-      ]);
+    it('should pass corresponding direction to operator input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--operator').props().value,
+      ).toStrictEqual({ label: 'until', sign: -1 });
     });
-    it('should pass abs quantity to input number', () => {
-      expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(20);
-    });
-    it('should pass duration to autocomplete', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
-        label: 'Quarters ago',
-        value: 'quarter',
+
+    describe('when baseDate is updated', () => {
+      const selectedDateVariable = SAMPLE_VARIABLES[1];
+      beforeEach(async () => {
+        wrapper
+          .find('.widget-relative-date-range-form__input--base-date')
+          .vm.$emit('input', selectedDateVariable);
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated date with delimiters', () => {
+        const newDate = `{{${selectedDateVariable.identifier}}}`;
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          date: newDate,
+          quantity: 1,
+          duration: 'month',
+          operator: 'until',
+        });
       });
     });
 
     describe('when quantity is updated', () => {
       beforeEach(async () => {
-        wrapper.find('InputNumberWidget-stub').vm.$emit('input', 3);
+        wrapper.find('.widget-relative-date-range-form__quantity').vm.$emit('input', 2);
         await wrapper.vm.$nextTick();
       });
-      it('should emit value with updated negative quantity', () => {
+      it('should emit value with updated quantity and the right sign', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
-          ...value,
-          quantity: -3,
+          date,
+          quantity: 2,
+          duration: 'month',
+          operator: 'until',
         });
       });
     });
 
     describe('when duration is updated', () => {
-      const selectedDuration = DEFAULT_DURATIONS[2];
       beforeEach(async () => {
-        wrapper.find('AutocompleteWidget-stub').vm.$emit('input', selectedDuration);
+        wrapper
+          .find('.widget-relative-date-range-form__duration')
+          .vm.$emit('input', { label: 'Years', value: 'year' });
         await wrapper.vm.$nextTick();
       });
       it('should emit value with updated duration', () => {
         expect(wrapper.emitted().input[0][0]).toStrictEqual({
-          ...value,
-          duration: selectedDuration.value,
+          date,
+          quantity: 1,
+          duration: 'year',
+          operator: 'until',
+        });
+      });
+    });
+
+    describe('when operator is updated', () => {
+      beforeEach(async () => {
+        wrapper
+          .find('.widget-relative-date-range-form__input--operator')
+          .vm.$emit('input', { label: 'from', sign: +1 });
+        await wrapper.vm.$nextTick();
+      });
+      it('should emit value with updated operator', () => {
+        expect(wrapper.emitted().input[0][0]).toStrictEqual({
+          date,
+          quantity: 1,
+          duration: 'month',
+          operator: 'from',
         });
       });
     });
   });
 
   describe('empty', () => {
-    const defaultDuration = DEFAULT_DURATIONS[0];
     beforeEach(() => {
       createWrapper();
     });
-    it('should set value to empty object', () => {
+    it('should initiate value', () => {
       expect((wrapper.vm as any).value).toStrictEqual({
-        quantity: -1,
-        duration: defaultDuration.value,
+        date: '',
+        quantity: 1,
+        duration: 'year',
+        operator: 'until',
       });
     });
-    it('should set quantity to 1', () => {
-      expect(wrapper.find('InputNumberWidget-stub').props().value).toBe(1);
+    it('should set available variables to empty array', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().options,
+      ).toStrictEqual([]);
     });
-    it('should set duration to first default duration', () => {
-      expect(wrapper.find('AutocompleteWidget-stub').props().value).toStrictEqual({
-        label: 'Years ago',
-        value: 'year',
-      });
+    it('should set variable delimiters to empty strings', () => {
+      expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });
+    });
+    it('should pass empty string as value to baseDate input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--base-date').props().value,
+      ).toStrictEqual('');
+    });
+    it('should pass "until" as default value to operator input', () => {
+      expect(
+        wrapper.find('.widget-relative-date-range-form__input--operator').props().value,
+      ).toStrictEqual({ label: 'until', sign: -1 });
     });
   });
 });

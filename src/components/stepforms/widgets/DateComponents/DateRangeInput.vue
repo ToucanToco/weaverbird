@@ -64,7 +64,7 @@
                 :compactMode="compactMode"
               />
             </div>
-            <RelativeDateRangeForm
+            <RelativeDateForm
               v-else
               v-model="currentTabValue"
               :availableVariables="relativeAvailableVariables"
@@ -107,8 +107,8 @@ import {
   DateRange,
   dateRangeToString,
   isDateRange,
-  isRelativeDateRange,
-  relativeDateRangeToString,
+  isRelativeDate,
+  relativeDateToString,
 } from '@/lib/dates';
 import t, { LocaleIdentifier } from '@/lib/internationalization';
 import {
@@ -119,14 +119,14 @@ import {
 } from '@/lib/variables';
 
 import CustomVariableList from './CustomVariableList.vue';
-import RelativeDateRangeForm from './RelativeDateRangeForm.vue';
+import RelativeDateForm from './RelativeDateForm.vue';
 import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
 
 /**
- * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Relative way (RelativeDateRangeForm),
+ * This component allow to select a variable or to switch between tabs and select a date range on a Fixed (Calendar) or Relative way (RelativeDateForm),
  * each tab value is kept in memory to avoid user to loose data when switching between tabs
  *
- * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDateRange)
+ * DateRangeInput component will take any date range type of value as entry (VariableIdentifier, DateRange or RelativeDate)
  * This entry is used as a configuration for the date range input
  * This configuration will be returned by the @input emit
  *
@@ -140,7 +140,7 @@ import TabbedRangeCalendars from './TabbedRangeCalendars.vue';
     Popover,
     Tabs,
     Calendar,
-    RelativeDateRangeForm,
+    RelativeDateForm,
     FAIcon,
     TabbedRangeCalendars,
   },
@@ -153,7 +153,7 @@ export default class DateRangeInput extends Vue {
   availableVariables!: VariablesBucket;
 
   @Prop({ default: () => [] })
-  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateRangeForm "from"
+  relativeAvailableVariables!: VariablesBucket; // variables to use in RelativeDateForm "from"
 
   @Prop({ default: () => ({ start: '', end: '' }) })
   variableDelimiters!: VariableDelimiters;
@@ -289,8 +289,8 @@ export default class DateRangeInput extends Vue {
         if (formattedDataRange) return formattedDataRange;
       }
       return dateRangeToString(this.value, this.locale);
-    } else if (isRelativeDateRange(this.value)) {
-      return relativeDateRangeToString(
+    } else if (isRelativeDate(this.value)) {
+      return relativeDateToString(
         this.value,
         this.relativeAvailableVariables,
         this.variableDelimiters,
@@ -320,7 +320,7 @@ export default class DateRangeInput extends Vue {
         !this.currentTabValue.end
       );
     } else {
-      return !isRelativeDateRange(this.currentTabValue) || !this.currentTabValue.date;
+      return !isRelativeDate(this.currentTabValue) || !this.currentTabValue.date;
     }
   }
 
@@ -333,7 +333,7 @@ export default class DateRangeInput extends Vue {
     if (isDateRange(this.value)) {
       this.tabsValues.Fixed = this.value;
       this.selectTab('Fixed');
-    } else if (isRelativeDateRange(this.value)) {
+    } else if (isRelativeDate(this.value)) {
       this.tabsValues.Relative = this.value;
       this.selectTab('Relative');
     }

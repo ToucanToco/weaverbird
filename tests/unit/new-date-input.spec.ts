@@ -1,7 +1,7 @@
 import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
-import { dateToString } from '@/lib/dates';
+import { dateToString, DEFAULT_RELATIVE_VARIABLES, RelativeDate } from '@/lib/dates';
 
 jest.mock('@/components/FAIcon.vue');
 jest.mock('@/components/DatePicker/Calendar.vue');
@@ -41,6 +41,24 @@ const SAMPLE_VARIABLES = [
   },
 ];
 
+const RELATIVE_SAMPLE_VARIABLES = [
+  {
+    label: 'Today',
+    identifier: 'today',
+    value: new Date(2020, 11),
+  },
+  {
+    label: 'Last month',
+    identifier: 'last_month',
+    value: '',
+  },
+  {
+    label: 'Last year',
+    identifier: 'last_year',
+    value: '',
+  },
+];
+
 describe('Date input', () => {
   let wrapper: Wrapper<NewDateInput>;
   const createWrapper = (propsData = {}) => {
@@ -58,6 +76,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: 'anythingnotokay',
       });
@@ -171,6 +190,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
       });
     });
@@ -196,10 +216,16 @@ describe('Date input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue = { quantity: -1, duration: 'month' };
+      const editedValue: RelativeDate = {
+        quantity: 1,
+        duration: 'month',
+        operator: 'until',
+        date: '{{today}}',
+      };
 
       beforeEach(async () => {
-        wrapper.setData({ currentTabValue: editedValue });
+        wrapper.find('RelativeDateForm-stub').vm.$emit('input', editedValue);
+        await wrapper.vm.$nextTick();
         wrapper.find({ ref: 'save' }).trigger('click');
         await wrapper.vm.$nextTick();
       });
@@ -259,7 +285,12 @@ describe('Date input', () => {
     });
 
     describe('when switching between tabs', () => {
-      const updatedRelativeDateValue = { quantity: -2, duration: 'month' };
+      const updatedRelativeDateValue = {
+        quantity: 1,
+        duration: 'month',
+        operator: 'until',
+        date: '{{today}}',
+      };
       beforeEach(async () => {
         wrapper.find('RelativeDateForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateForm value
         await wrapper.vm.$nextTick();
@@ -278,6 +309,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: `{{${selectedVariable.identifier}}}`,
       });
@@ -298,6 +330,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value: advancedVariable,
       });
@@ -337,6 +370,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
@@ -359,17 +393,25 @@ describe('Date input', () => {
   });
 
   describe('with selected value as relative date', () => {
-    const value = { quantity: -1, duration: 'month' };
+    const value = {
+      quantity: 1,
+      duration: 'month',
+      operator: 'from',
+      date: '{{today}}',
+    };
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         value,
       });
     });
 
     it('should display readable input label', () => {
-      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months ago');
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual(
+        '1 months from - Today',
+      );
     });
 
     it('should select "Relative" tab by default', () => {
@@ -384,6 +426,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         enableCustom: false,
       });
@@ -418,6 +461,7 @@ describe('Date input', () => {
     beforeEach(() => {
       createWrapper({
         availableVariables: SAMPLE_VARIABLES,
+        relativeAvailableVariables: RELATIVE_SAMPLE_VARIABLES,
         variableDelimiters: { start: '{{', end: '}}' },
         bounds,
         value: new Date('2020/2/1'),
@@ -434,6 +478,11 @@ describe('Date input', () => {
     });
     it('should set availableVariables to empty array', () => {
       expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
+    });
+    it('should set relativeAvailableVariables to default value array', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(
+        DEFAULT_RELATIVE_VARIABLES,
+      );
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });

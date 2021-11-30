@@ -11,7 +11,7 @@ export class Mongo50Translator extends Mongo42Translator {
         startDate: {
           // Base date does not include any hour information
           $dateTrunc: {
-            date: '$$NOW',
+            date: '$$NOW', // TODO: adapt date with selected variable
             unit: 'day',
           },
         },
