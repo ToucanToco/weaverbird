@@ -40,16 +40,24 @@ def handle_health_request():
     return 'OK'
 
 
+def parse_js_datetime(v):
+    if isinstance(v, str) and v.endswith('Z'):
+        try:
+            return datetime.fromisoformat(v[:-1])
+        except ValueError:
+            pass
+    return v
+
+
 def json_js_datetime_parser(dct):
     """
     JS serialize UTC datetimes to ISO format with a Z, while python isoformat doesn't add Z
     """
     for k, v in dct.items():
-        if isinstance(v, str) and v.endswith('Z'):
-            try:
-                dct[k] = datetime.fromisoformat(v[:-1])
-            except ValueError:
-                pass
+        if isinstance(v, list):
+            dct[k] = [parse_js_datetime(d) for d in v]
+        else:
+            dct[k] = parse_js_datetime(v)
     return dct
 
 

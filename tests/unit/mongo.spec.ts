@@ -577,11 +577,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       { name: 'filter', condition: { column: 'NotNull', value: 'dummy', operator: 'notnull' } },
       {
         name: 'filter',
-        condition: { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
-      },
-      {
-        name: 'filter',
-        condition: { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+        condition: {
+          and: [
+            { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
+            { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+          ],
+        },
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -602,8 +603,52 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           Code: { $nin: [0, 42] },
           IsNull: { $eq: null },
           NotNull: { $ne: null },
-          DateFrom: { $gte: new Date('2021-11-24T00:00:00Z') },
-          DateUntil: { $lte: new Date('2021-11-24T23:59:59.999Z') },
+          $and: [
+            {
+              $expr: {
+                $gte: [
+                  version < '5'
+                    ? '$DateFrom'
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: '$DateFrom',
+                        },
+                      },
+                  version < '5'
+                    ? new Date('2021-11-24T00:00:00.000Z')
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: new Date('2021-11-24T00:00:00.000Z'),
+                        },
+                      },
+                ],
+              },
+            },
+            {
+              $expr: {
+                $lte: [
+                  version < '5'
+                    ? '$DateUntil'
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: '$DateUntil',
+                        },
+                      },
+                  version < '5'
+                    ? new Date('2021-11-24T00:00:00.000Z')
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: new Date('2021-11-24T00:00:00.000Z'),
+                        },
+                      },
+                ],
+              },
+            },
+          ],
         },
       },
       { $project: { _id: 0 } },
@@ -812,17 +857,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             domain: 'test_date',
             $expr: {
               $gte: [
-                '$date',
                 {
-                  $dateAdd: {
-                    startDate: {
-                      $dateTrunc: {
-                        date: '$$NOW',
-                        unit: 'day',
+                  $dateTrunc: {
+                    date: '$date',
+                    unit: 'day',
+                  },
+                },
+                {
+                  $dateTrunc: {
+                    date: {
+                      $dateAdd: {
+                        amount: -1,
+                        startDate: {
+                          $dateTrunc: {
+                            date: '$$NOW',
+                            unit: 'day',
+                          },
+                        },
+                        unit: 'week',
                       },
                     },
-                    unit: 'week',
-                    amount: -1,
+                    unit: 'day',
                   },
                 },
               ],
@@ -855,17 +910,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             domain: 'test_date',
             $expr: {
               $lte: [
-                '$date',
                 {
-                  $dateAdd: {
-                    startDate: {
-                      $dateTrunc: {
-                        date: '$$NOW',
-                        unit: 'day',
+                  $dateTrunc: {
+                    date: '$date',
+                    unit: 'day',
+                  },
+                },
+                {
+                  $dateTrunc: {
+                    date: {
+                      $dateAdd: {
+                        amount: 3,
+                        startDate: {
+                          $dateTrunc: {
+                            date: '$$NOW',
+                            unit: 'day',
+                          },
+                        },
+                        unit: 'month',
                       },
                     },
-                    unit: 'month',
-                    amount: 3,
+                    unit: 'day',
                   },
                 },
               ],

@@ -2274,6 +2274,12 @@ export class Mongo36Translator extends BaseTranslator {
     return value;
   }
 
+  // Truncate dates are not supported until mongo 5+
+  protected truncateDateToDay(dateExpr: string | object): string | object {
+    console.warn('This version of Mongo does not support truncating dates');
+    return dateExpr;
+  }
+
   /**
    * Recursively parse a Condition and turn it into the argument of a $match aggregation step
    *
@@ -2318,22 +2324,19 @@ export class Mongo36Translator extends BaseTranslator {
       return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
     }
 
-    // until operator should include the whole selected day
-    if (cond.operator === 'until') {
-      if (cond.value instanceof Date) {
-        const endOfDay = new Date(cond.value.setUTCHours(23, 59, 59, 999));
-        return { [cond.column]: { [operatorMapping[cond.operator]]: endOfDay } };
-      }
-    }
-
     // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
     // They need to be used with $expr
-    if (isRelativeDate(cond.value)) {
+    if (cond.operator === 'from' || cond.operator === 'until') {
       return {
         $expr: {
           [operatorMapping[cond.operator]]: [
-            $$(cond.column),
-            this.translateRelativeDate(cond.value),
+            // from/until comparisons must include the selected day in full. For this we needd to:
+            // - remove any hour info from the compared column
+            this.truncateDateToDay($$(cond.column)),
+            // - remove any hour info from the value we want to compare to
+            this.truncateDateToDay(
+              isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+            ),
           ],
         },
       };

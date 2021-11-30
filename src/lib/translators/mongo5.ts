@@ -20,4 +20,13 @@ export class Mongo50Translator extends Mongo42Translator {
       },
     };
   }
+
+  truncateDateToDay(dateExpr: string | object): string | object {
+    return {
+      $dateTrunc: {
+        unit: 'day',
+        date: dateExpr,
+      },
+    };
+  }
 }
