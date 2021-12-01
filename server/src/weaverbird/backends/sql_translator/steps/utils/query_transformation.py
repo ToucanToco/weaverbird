@@ -9,6 +9,7 @@ from weaverbird.pipeline.conditions import (
     Condition,
     ConditionComboAnd,
     ConditionComboOr,
+    DateBoundCondition,
     InclusionCondition,
     MatchCondition,
     NullCondition,
@@ -22,6 +23,8 @@ SQL_COMPARISON_OPERATORS = {
     'le': '<=',
     'gt': '>',
     'ge': '>=',
+    'from': '>=',
+    'until': '<=',
 }
 
 SQL_NULLITY_OPERATORS = {
@@ -67,6 +70,13 @@ def apply_condition(condition: Condition, query: str) -> str:
         query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
         query += f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}'
+
+    elif isinstance(condition, DateBoundCondition):
+        query += (
+            f'to_timestamp({condition.column}) { SQL_COMPARISON_OPERATORS[condition.operator] } '
+            f'to_timestamp(\'{condition.value.isoformat()}\')'
+        )
+
     elif isinstance(condition, ConditionComboAnd):
         query = apply_condition(condition.and_[0], query)
         for c in condition.and_[1:]:
