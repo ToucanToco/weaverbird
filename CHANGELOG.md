@@ -6,6 +6,10 @@
 
 - Preview source rows subset configuration
 
+### Removed
+
+- `listCollections` was unused, remove it from the backendService interface
+
 ## [0.76.2] - 2021-11-22
 
 ### Fixed
