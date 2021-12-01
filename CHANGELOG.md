@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- Preview source rows subset configuration
+
 ## [0.76.2] - 2021-11-22
 
 ### Fixed

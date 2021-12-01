@@ -38,6 +38,7 @@ export interface BackendService {
     pipelines: PipelinesScopeContext,
     limit: number,
     offset: number,
+    sourceRowsSubset?: number | 'unlimited',
   ): BackendResponse<DataSet>;
 }
 

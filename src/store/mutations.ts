@@ -62,6 +62,11 @@ type SetCurrentPage = {
   payload: { pageno: number };
 };
 
+type SetPreviewSourceRowsSubset = {
+  type: 'setPreviewSourceRowsSubset';
+  payload: { previewSourceRowsSubset?: number | 'unlimited' };
+};
+
 type ToggleColumnSelectionMutation = {
   type: 'toggleColumnSelection';
   payload: { column: string };
@@ -94,6 +99,7 @@ export type StateMutation =
   | SelectDomainMutation
   | SelectedStepMutation
   | SetCurrentPage
+  | SetPreviewSourceRowsSubset
   | ToggleColumnSelectionMutation
   | ToggleRequestOnGoing
   | VariableDelimitersMutation;
@@ -311,6 +317,15 @@ class Mutations {
     } else {
       const length = state.dataset.data.length;
       state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
+    }
+  }
+
+  setPreviewSourceRowsSubset(
+    state: VQBState,
+    { previewSourceRowsSubset }: { previewSourceRowsSubset?: number | 'unlimited' },
+  ) {
+    if (state.dataset.previewContext) {
+      state.dataset.previewContext.sourceRowsSubset = previewSourceRowsSubset;
     }
   }
 
