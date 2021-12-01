@@ -6,6 +6,7 @@ from weaverbird.pipeline.conditions import (
     Condition,
     ConditionComboAnd,
     ConditionComboOr,
+    DateBoundCondition,
     InclusionCondition,
     MatchCondition,
     NullCondition,
@@ -41,6 +42,16 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
             return ~f
         else:
             return f
+
+    elif isinstance(condition, DateBoundCondition):
+        if condition.operator == 'until':
+            comparison_method = 'le'
+        elif condition.operator == 'from':
+            comparison_method = 'ge'
+        else:
+            raise NotImplementedError
+        return getattr(df[condition.column], comparison_method)(condition.value)
+
     elif isinstance(condition, ConditionComboAnd):
         return logical_and.reduce([apply_condition(c, df) for c in condition.and_])
     elif isinstance(condition, ConditionComboOr):
