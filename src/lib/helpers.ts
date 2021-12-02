@@ -160,7 +160,7 @@ export function combinations(arr: any[]): any[][] {
  * @param step a step that includes an aggregation parameter of the form:
  *  { columns: ['A', 'B'], aggfunction: 'sum', newcolumns: []}
  */
-export async function setAggregationsNewColumnsInStep(step: StepWithAggregations) {
+export function setAggregationsNewColumnsInStep(step: StepWithAggregations) {
   const newcolumnOccurences: { [prop: string]: number } = {};
   for (const agg of step.aggregations) {
     agg.newcolumns = [...agg.columns];

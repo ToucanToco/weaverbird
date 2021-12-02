@@ -114,7 +114,8 @@ export default class AddTotalRowsStepForm extends BaseStepForm<AddTotalRowsStep>
   }
 
   async submit() {
-    await setAggregationsNewColumnsInStep(this.editedStep);
+    setAggregationsNewColumnsInStep(this.editedStep);
+    await this.$nextTick();
     this.$$super.submit();
   }
 }
