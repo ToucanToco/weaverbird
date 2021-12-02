@@ -2,6 +2,7 @@ from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series
 from pandas.tseries.offsets import DateOffset
 
+from weaverbird.backends.pandas_executor.steps.utils.dates import evaluate_relative_date
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     Condition,
@@ -12,6 +13,7 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.dates import RelativeDate
 
 
 def apply_condition(condition: Condition, df: DataFrame) -> Series:
@@ -52,12 +54,16 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
         else:
             raise NotImplementedError
 
+        value = condition.value
+        if isinstance(value, RelativeDate):
+            value = evaluate_relative_date(value)
+
         # Remove time info from the column to filter on
         column_without_time = df[condition.column] - DateOffset(
             hour=0, minute=0, second=0, microsecond=0, nanosecond=0
         )
         # Do the same with the value to compare it to
-        value_without_time = condition.value - DateOffset(
+        value_without_time = value - DateOffset(
             hour=0, minute=0, second=0, microsecond=0, nanosecond=0
         )
 
