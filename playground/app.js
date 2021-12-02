@@ -242,13 +242,15 @@ class PandasService {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(dereferencedPipeline);
 
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+
     const url = new URL(window.location.origin + '/pandas');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipeline),
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
