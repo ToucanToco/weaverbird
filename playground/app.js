@@ -111,7 +111,7 @@ setAvailableCodeEditors({
 });
 
 // Example to set send analytics method
-const sendAnalytics = (name, value) => { console.debug('Analytics event send ::', { name, value }) };
+const sendAnalytics = ({name, value}) => { console.debug('Analytics event send ::', { name, value }) };
 defineSendAnalytics(sendAnalytics);
 
 const CASTERS = {

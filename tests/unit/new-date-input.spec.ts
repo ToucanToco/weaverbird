@@ -121,10 +121,10 @@ describe('Date input', () => {
         expect(wrapper.emitted().input[0][0]).toBe(`{{${selectedVariable}}}`);
       });
       it('should send analytics event', () => {
-        expect(sendAnalyticsSpy).toHaveBeenCalledWith(
-          'Date input - Select variable',
-          selectedVariable,
-        );
+        expect(sendAnalyticsSpy).toHaveBeenCalledWith({
+          name: 'Date input - Select variable',
+          value: selectedVariable,
+        });
       });
       it('should hide editor', () => {
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
@@ -183,10 +183,10 @@ describe('Date input', () => {
         expect(wrapper.emitted('input')[0]).toEqual(['{{ Test }}']);
       });
       it('should send analytics event', () => {
-        expect(sendAnalyticsSpy).toHaveBeenCalledWith(
-          'Date input - Select advanced variable',
-          'Test',
-        );
+        expect(sendAnalyticsSpy).toHaveBeenCalledWith({
+          name: 'Date input - Select advanced variable',
+          value: 'Test',
+        });
       });
     });
   });

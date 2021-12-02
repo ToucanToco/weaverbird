@@ -8,9 +8,9 @@
   - value: any (the data refering to this event that can be of any type depending on the context)
 */
 
-type SendAnalyticsManager = (_name: string, _value: any) => void;
+type SendAnalyticsManager = (_params: any) => void;
 
-let sendAnalytics: SendAnalyticsManager = (_name: string, _value: any) => {};
+let sendAnalytics: SendAnalyticsManager = (_params: any) => {};
 
 function defineSendAnalytics(sendAnalyticsManager: SendAnalyticsManager) {
   sendAnalytics = sendAnalyticsManager;
