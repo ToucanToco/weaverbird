@@ -18,8 +18,5 @@ def evaluate_relative_date(relative_date: RelativeDate) -> datetime:
         raise NotImplementedError
 
     return operation(
-        relative_date.date,
-        relativedelta(**{
-            relative_date.duration + 's': relative_date.quantity
-        })
+        relative_date.date, relativedelta(**{relative_date.duration + 's': relative_date.quantity})
     )
