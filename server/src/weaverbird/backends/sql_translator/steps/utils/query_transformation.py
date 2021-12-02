@@ -14,6 +14,7 @@ from weaverbird.pipeline.conditions import (
     MatchCondition,
     NullCondition,
 )
+from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.steps import AggregateStep
 
 SQL_COMPARISON_OPERATORS = {
@@ -73,12 +74,23 @@ def apply_condition(condition: Condition, query: str) -> str:
 
     elif isinstance(condition, DateBoundCondition):
 
+        value = condition.value
+        if isinstance(value, RelativeDate):
+            if value.operator == 'until':
+                sign = -1
+            elif value.operator == 'from':
+                sign = 1
+            else:
+                raise NotImplementedError
+            value_query_part = f"dateadd({ value.duration }, { sign * value.quantity }, '{ value.date.isoformat() }'::DATE)"
+        else:
+            value_query_part = f"to_timestamp('{ value.isoformat() }')"
+
         # Remove time info from the column to filter on
         column = f'to_timestamp({ condition.column })'
         column_without_time = f"DATE_TRUNC('DAY', { column })"
         # Do the same with the value to compare it to
-        value = f"to_timestamp('{ condition.value.isoformat() }')"
-        value_without_time = f"DATE_TRUNC('DAY', { value })"
+        value_without_time = f"DATE_TRUNC('DAY', { value_query_part })"
 
         query += f'{ column_without_time } { SQL_COMPARISON_OPERATORS[condition.operator] } { value_without_time }'
 
