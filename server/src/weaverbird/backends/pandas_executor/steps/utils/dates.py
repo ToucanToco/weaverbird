@@ -17,7 +17,14 @@ def evaluate_relative_date(relative_date: RelativeDate) -> datetime:
     else:
         raise NotImplementedError
 
+    if relative_date.duration == 'quarter':
+        quantity = relative_date.quantity * 3
+        duration = 'months'
+    else:
+        quantity = relative_date.quantity
+        duration = relative_date.duration + 's'
+
     return operation(
         relative_date.date,
-        relativedelta(**{relative_date.duration + 's': relative_date.quantity}),  # type: ignore
+        relativedelta(**{duration: quantity}),  # type: ignore
     )
