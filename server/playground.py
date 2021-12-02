@@ -8,14 +8,16 @@ Routes:
     - POST: execute the pipeline in the body of the request and returns the transformed data
 - `/mongo`:
     - GET: return the available collections in the database
-    - POSt: execute the aggregation pipeline and return a page of it (limit, offset) along with total count and types
-- `/snowflake`: not implemented yet
+    - POST: execute the aggregation pipeline and return a page of it (limit, offset) along with total count and types
+- `/snowflake`:
+    - GET: return the available tables in the database
 - `/health`: simple health check
 
 Run it with `QUART_APP=playground QUART_ENV=development quart run`
 
 Environment variables:
 - for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
+- for snowflake, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT and SNOWFLAKE_DATABASE
 """
 import json
 import os
@@ -24,6 +26,7 @@ from glob import glob
 from os.path import basename, splitext
 
 import pandas as pd
+import snowflake.connector
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
@@ -260,6 +263,23 @@ async def handle_mongo_backend_request():
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
             return jsonify(errmsg), 400
+
+
+### Snowflake back-end routes
+if os.getenv('SNOWFLAKE_ACCOUNT'):
+    snowflake_connexion = snowflake.connector.connect(
+        user=os.getenv('SNOWFLAKE_USER'),
+        password=os.getenv('SNOWFLAKE_PASSWORD'),
+        account=os.getenv('SNOWFLAKE_ACCOUNT'),
+        database=os.getenv('SNOWFLAKE_DATABASE'),
+    )
+
+
+@app.route('/snowflake', methods=['GET', 'POST'])
+async def handle_snowflake_backend_request():
+    if request.method == 'GET':
+        tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
+        return jsonify([table_infos[1] for table_infos in tables_info])
 
 
 ### UI files
