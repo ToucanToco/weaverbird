@@ -1,6 +1,6 @@
 {
   "description": "Dates from/until can be specified relative to another date.",
-  "exclude": ["sql", "snowflake"],
+  "exclude": ["sql"],
   "step": {
     "pipeline": [
       {
