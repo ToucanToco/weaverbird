@@ -53,9 +53,13 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
             raise NotImplementedError
 
         # Remove time info from the column to filter on
-        column_without_time = df[condition.column] - DateOffset(hour=0, minute=0, second=0, microsecond=0, nanosecond=0)
+        column_without_time = df[condition.column] - DateOffset(
+            hour=0, minute=0, second=0, microsecond=0, nanosecond=0
+        )
         # Do the same with the value to compare it to
-        value_without_time = condition.value - DateOffset(hour=0, minute=0, second=0, microsecond=0, nanosecond=0)
+        value_without_time = condition.value - DateOffset(
+            hour=0, minute=0, second=0, microsecond=0, nanosecond=0
+        )
 
         return getattr(column_without_time, comparison_method)(value_without_time)
 

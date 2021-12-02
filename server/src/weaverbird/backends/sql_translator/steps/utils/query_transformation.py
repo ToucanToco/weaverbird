@@ -72,10 +72,15 @@ def apply_condition(condition: Condition, query: str) -> str:
         query += f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}'
 
     elif isinstance(condition, DateBoundCondition):
-        query += (
-            f'to_timestamp({condition.column}) { SQL_COMPARISON_OPERATORS[condition.operator] } '
-            f'to_timestamp(\'{condition.value.isoformat()}\')'
-        )
+
+        # Remove time info from the column to filter on
+        column = f'to_timestamp({ condition.column })'
+        column_without_time = f"DATE_TRUNC('DAY', { column })"
+        # Do the same with the value to compare it to
+        value = f"to_timestamp('{ condition.value.isoformat() }')"
+        value_without_time = f"DATE_TRUNC('DAY', { value })"
+
+        query += f'{ column_without_time } { SQL_COMPARISON_OPERATORS[condition.operator] } { value_without_time }'
 
     elif isinstance(condition, ConditionComboAnd):
         query = apply_condition(condition.and_[0], query)
