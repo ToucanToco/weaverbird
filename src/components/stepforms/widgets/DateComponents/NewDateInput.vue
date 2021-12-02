@@ -111,6 +111,7 @@ import {
   isRelativeDate,
   relativeDateToString,
 } from '@/lib/dates';
+import { sendAnalytics } from '@/lib/send-analytics';
 import {
   AvailableVariable,
   extractVariableIdentifier,
@@ -268,6 +269,7 @@ export default class NewDateInput extends Vue {
     const variableWithDelimiters = `${this.variableDelimiters.start}${value}${this.variableDelimiters.end}`;
     this.$emit('input', variableWithDelimiters);
     this.closeEditor();
+    sendAnalytics({ name: 'Date input - Select variable', value });
   }
 
   editCustomVariable(): void {
@@ -307,6 +309,7 @@ export default class NewDateInput extends Vue {
     const variableWithDelimiters = `${this.variableDelimiters.start} ${variableIdentifier} ${this.variableDelimiters.end}`;
     this.$emit('input', variableWithDelimiters);
     this.closeAdvancedVariableModal();
+    sendAnalytics({ name: 'Date input - Select advanced variable', value: variableIdentifier });
   }
 }
 </script>

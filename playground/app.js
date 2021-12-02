@@ -10,6 +10,7 @@ const {
   dereferencePipelines,
   registerModule,
   setAvailableCodeEditors,
+  defineSendAnalytics,
   exampleInterpolateFunc,
 } = vqb;
 
@@ -108,6 +109,10 @@ setAvailableCodeEditors({
     json: codeEditorForLang('json'),
   },
 });
+
+// Example to set send analytics method
+const sendAnalytics = ({name, value}) => { console.debug('Analytics event send ::', { name, value }) };
+defineSendAnalytics(sendAnalytics);
 
 const CASTERS = {
   date: val => new Date(val),

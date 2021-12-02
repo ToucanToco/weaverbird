@@ -2,6 +2,7 @@ import { shallowMount, Wrapper } from '@vue/test-utils';
 
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
 import { dateToString, RelativeDate } from '@/lib/dates';
+import * as sendAnalyticsUtils from '@/lib/send-analytics';
 
 jest.mock('@/components/FAIcon.vue');
 jest.mock('@/components/DatePicker/Calendar.vue');
@@ -52,7 +53,9 @@ const SAMPLE_VARIABLES = [
 
 describe('Date input', () => {
   let wrapper: Wrapper<NewDateInput>;
+  let sendAnalyticsSpy: jest.SpyInstance;
   const createWrapper = (propsData = {}) => {
+    sendAnalyticsSpy = jest.spyOn(sendAnalyticsUtils, 'sendAnalytics');
     wrapper = shallowMount(NewDateInput, {
       sync: false,
       propsData,
@@ -117,6 +120,12 @@ describe('Date input', () => {
       it('should emit the selected variable identifier with delimiters', () => {
         expect(wrapper.emitted().input[0][0]).toBe(`{{${selectedVariable}}}`);
       });
+      it('should send analytics event', () => {
+        expect(sendAnalyticsSpy).toHaveBeenCalledWith({
+          name: 'Date input - Select variable',
+          value: selectedVariable,
+        });
+      });
       it('should hide editor', () => {
         expect(wrapper.find('popover-stub').props().visible).toBe(false);
       });
@@ -172,6 +181,12 @@ describe('Date input', () => {
       it('should emit the new value with delimiters', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0]).toEqual(['{{ Test }}']);
+      });
+      it('should send analytics event', () => {
+        expect(sendAnalyticsSpy).toHaveBeenCalledWith({
+          name: 'Date input - Select advanced variable',
+          value: 'Test',
+        });
       });
     });
   });
