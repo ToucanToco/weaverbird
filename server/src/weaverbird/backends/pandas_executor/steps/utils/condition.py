@@ -1,5 +1,6 @@
 from numpy.ma import logical_and, logical_or
 from pandas import DataFrame, Series
+from pandas.tseries.offsets import DateOffset
 
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -50,7 +51,13 @@ def apply_condition(condition: Condition, df: DataFrame) -> Series:
             comparison_method = 'ge'
         else:
             raise NotImplementedError
-        return getattr(df[condition.column], comparison_method)(condition.value)
+
+        # Remove time info from the column to filter on
+        column_without_time = df[condition.column] - DateOffset(hour=0, minute=0, second=0, microsecond=0, nanosecond=0)
+        # Do the same with the value to compare it to
+        value_without_time = condition.value - DateOffset(hour=0, minute=0, second=0, microsecond=0, nanosecond=0)
+
+        return getattr(column_without_time, comparison_method)(value_without_time)
 
     elif isinstance(condition, ConditionComboAnd):
         return logical_and.reduce([apply_condition(c, df) for c in condition.and_])
