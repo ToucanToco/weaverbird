@@ -113,8 +113,9 @@ export default class AddTotalRowsStepForm extends BaseStepForm<AddTotalRowsStep>
     this.editedStep.totalDimensions = [...newval];
   }
 
-  submit() {
+  async submit() {
     setAggregationsNewColumnsInStep(this.editedStep);
+    await this.$nextTick();
     this.$$super.submit();
   }
 }
