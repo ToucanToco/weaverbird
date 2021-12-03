@@ -11,7 +11,7 @@ builder.
 
 ## Implementation logic 
 
-The steps were implemented using the following concepts: 
+The steps were implemented using the following concepts:
 - A step is named following this convention: **<OPERATION_NAME>\_STEP\_<STEP_INDEX>**
 - A pipeline starts with a select step using the query provided by the user like below
 ```
@@ -30,3 +30,16 @@ WITH SELECT_STEP_0 AS (<USER'S QUERY STRING>),
 FILTER_STEP_1 AS (SELECT * FROM SELECT_STEP_0 WHERE PRICE > 10)
 SELECT * FROM FILTER_STEP_1
 ```
+
+## Metadata
+
+The pipeline alone is not sufficient to be able to produce the query.
+SQL required the exhaustive list of columns to select from the moment we want to exclude or rename one.
+
+For this reason, while crafting the query, the translator needs to request the columns names, once per source table.
+It keeps them in a `MetadataManager` that get transmitted and updated across steps.
+
+## Requirements
+
+- `snowflake_query_describer`
+- `snowflake_query_executor`

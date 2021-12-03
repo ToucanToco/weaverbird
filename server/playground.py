@@ -24,6 +24,7 @@ import os
 from datetime import datetime
 from glob import glob
 from os.path import basename, splitext
+from typing import Dict, Union
 
 import pandas as pd
 import snowflake.connector
@@ -32,6 +33,9 @@ from quart import Quart, Request, Response, jsonify, request, send_file
 
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
+)
+from weaverbird.backends.sql_translator.sql_pipeline_translator import (
+    translate_pipeline as sql_translate_pipeline,
 )
 from weaverbird.pipeline import Pipeline
 
@@ -275,11 +279,55 @@ if os.getenv('SNOWFLAKE_ACCOUNT'):
     )
 
 
+def sql_table_retriever(t):
+    return f'SELECT * FROM {t}'
+
+
+def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
+    type_code_mapping = {
+        0: 'float',
+        1: 'real',
+        2: 'text',
+        3: 'date',
+        4: 'timestamp',
+        5: 'variant',
+        6: 'timestamp_ltz',
+        7: 'timestamp_tz',
+        8: 'timestamp_ntz',
+        9: 'object',
+        10: 'array',
+        11: 'binary',
+        12: 'time',
+        13: 'boolean',
+    }
+
+    with snowflake_connexion.cursor() as cursor:
+        describe_res = cursor.describe(f'SELECT * FROM {domain}' if domain else query_string)
+        res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
+        return res
+
+
+def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
+    with snowflake_connexion.cursor() as cursor:
+        res = cursor.execute(domain if domain else query_string).fetchall()
+        return res.fetch_pandas_all()
+
+
 @app.route('/snowflake', methods=['GET', 'POST'])
 async def handle_snowflake_backend_request():
     if request.method == 'GET':
         tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
         return jsonify([table_infos[1] for table_infos in tables_info])
+    elif request.method == 'POST':
+        pipeline = await parse_request_json(request)
+        query, _ = sql_translate_pipeline(
+            Pipeline(steps=pipeline),
+            sql_query_retriever=sql_table_retriever,
+            sql_query_describer=snowflake_query_describer,
+            sql_query_executor=snowflake_query_executor,
+        )
+        df_results = snowflake_connexion.cursor().execute(query).fetch_pandas_all()
+        return Response(df_results.to_json(orient='table'), mimetype='application/json')
 
 
 ### UI files
