@@ -1,5 +1,6 @@
 from typing import Any, Callable, List, Optional, Protocol, Tuple
 
+from pandas import DataFrame
 from pydantic import BaseModel
 
 from weaverbird.backends.sql_translator.metadata import SqlQueryMetadataManager
@@ -27,7 +28,7 @@ class SQLQuery(BaseModel):
 
 SQLQueryRetriever = Callable[[str], str]
 SQLQueryDescriber = Callable
-SQLQueryExecutor = Callable[[str, str], str]
+SQLQueryExecutor = Callable[[str, str], DataFrame]
 
 SQLPipelineTranslator = Callable[
     [Pipeline, SQLQueryRetriever, SQLQueryDescriber, SQLQueryExecutor],

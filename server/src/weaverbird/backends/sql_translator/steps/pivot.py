@@ -35,14 +35,10 @@ def translate_pivot(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
     aggregate_part = f'{step.agg_function}({step.value_column})'
-    pivot_values = (
-        sql_query_executor(
-            domain=None,
-            query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
-        )
-        .df[f'{step.column_to_pivot}']
-        .values.tolist()
-    )
+    pivot_values = sql_query_executor(
+        domain=None,
+        query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
+    )[f'{step.column_to_pivot}'].values.tolist()
     sanitized_columns = [sanitize_column_name(p) for p in pivot_values]
 
     pivoted_values_column_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
