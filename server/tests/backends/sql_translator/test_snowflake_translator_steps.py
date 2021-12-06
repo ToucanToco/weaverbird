@@ -2,7 +2,7 @@ import json
 import time
 from os import environ
 from random import randint
-from typing import Dict, NamedTuple, Optional, Union
+from typing import Dict, Optional, Union
 
 import pandas as pd
 import pytest
