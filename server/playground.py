@@ -28,6 +28,7 @@ from typing import Dict, Union
 
 import pandas as pd
 import snowflake.connector
+from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
@@ -280,10 +281,11 @@ if os.getenv('SNOWFLAKE_ACCOUNT'):
 
 
 def sql_table_retriever(t):
-    return f'SELECT * FROM {t}'
+    return f'SELECT * FROM "{t}"'
 
 
 def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
+    #  See https://docs.snowflake.com/en/user-guide/python-connector-api.html#type-codes
     type_code_mapping = {
         0: 'float',
         1: 'real',
@@ -318,16 +320,44 @@ async def handle_snowflake_backend_request():
     if request.method == 'GET':
         tables_info = snowflake_connexion.cursor().execute('SHOW TABLES;').fetchall()
         return jsonify([table_infos[1] for table_infos in tables_info])
+
     elif request.method == 'POST':
         pipeline = await parse_request_json(request)
+
+        # Url parameters are only strings, these two must be understood as numbers
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+
         query, _ = sql_translate_pipeline(
             Pipeline(steps=pipeline),
             sql_query_retriever=sql_table_retriever,
             sql_query_describer=snowflake_query_describer,
             sql_query_executor=snowflake_query_executor,
         )
-        df_results = snowflake_connexion.cursor().execute(query).fetch_pandas_all()
-        return Response(df_results.to_json(orient='table'), mimetype='application/json')
+
+        total_count = (
+            snowflake_connexion.cursor().execute(f'SELECT COUNT(*) FROM ({ query })').fetchone()[0]
+        )
+        # By using snowflake's connector ability to turn results into a DataFrame,
+        # we can re-use all the methods to parse this data- interchange format in the front-end
+        df_results = (
+            snowflake_connexion.cursor()
+            .execute(f'SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }')
+            .fetch_pandas_all()
+        )
+
+        return Response(
+            json.dumps(
+                {
+                    'offset': offset,
+                    'limit': limit,
+                    'total': total_count,
+                    'schema': build_table_schema(df_results, index=False),
+                    'data': json.loads(df_results.to_json(orient='records')),
+                }
+            ),
+            mimetype='application/json',
+        )
 
 
 ### UI files
