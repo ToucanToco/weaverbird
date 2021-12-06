@@ -87,7 +87,11 @@ def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name)
         if alias:
             names.append(alias)
         else:
-            name = getattr(metadata, 'original_name') if hasattr(metadata, 'original_name') else getattr(metadata, 'name')
+            name = (
+                getattr(metadata, 'original_name')
+                if hasattr(metadata, 'original_name')
+                else getattr(metadata, 'name')
+            )
             names.append(f'"{ name }"')
     return f"SELECT {', '.join(names)} FROM {query_name}"
 
