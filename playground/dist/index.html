@@ -167,11 +167,14 @@
       .debug-panel__code-translated-pipeline, .debug-panel__code-pipeline {
         width: 50%;
         padding: 10px;
-
       }
 
       .debug-panel__code-translated-pipeline {
         border-left: 1px solid;
+      }
+
+      .debug-panel__code-translated-pipeline > pre {
+        white-space: break-spaces;
       }
     </style>
   </head>
@@ -199,6 +202,11 @@
             Pandas
           </a>
         </div>
+        <div class="toolbar__radio" :class="{ toolbar__selected:isSelectedTranslator('snowflake') }">
+          <a href="?backend=snowflake">
+            Snowflake
+          </a>
+        </div>
         <div class="toolbar__button" v-show="!isCodeOpened" @click="openCode">
           Show code
         </div>
@@ -214,7 +222,7 @@
           </div>
           <div class="debug-panel__code-translated-pipeline">
             <div>Translated pipeline</div>
-            <pre v-if="isSelectedTranslator('mongo50')">{{ mongoQueryAsJSON }}</pre>
+            <pre v-if="lastExecutedQuery">{{ lastExecutedQuery }}</pre>
             <pre v-else>Query executed but translation not configured for this backend</pre>
           </div>
         </div>
