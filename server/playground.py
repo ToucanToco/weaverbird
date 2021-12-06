@@ -354,7 +354,7 @@ async def handle_snowflake_backend_request():
                     'total': total_count,
                     'schema': build_table_schema(df_results, index=False),
                     'data': json.loads(df_results.to_json(orient='records')),
-                    'query': query  # provided for inspection purposes
+                    'query': query,  # provided for inspection purposes
                 }
             ),
             mimetype='application/json',
