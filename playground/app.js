@@ -189,6 +189,8 @@ class MongoService {
     const query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
+    updateLastExecutedQuery(query);
+
     if (isResponseOk) {
       const [{ count, data: rset, types }] = responseContent;
       let dataset = mongoResultsToDataset(rset);
@@ -260,6 +262,7 @@ class PandasService {
     });
     const result = await response.json();
 
+    updateLastExecutedQuery(null);
     if (response.ok) {
       let dataset = pandasDataTableToDataset(result);
       dataset.paginationContext = {
@@ -314,8 +317,10 @@ class SnowflakeService {
         pageno: Math.floor(offset / limit) + 1,
       };
       dataset = autocastDataset(dataset);
+      updateLastExecutedQuery(result.query);
       return { data: dataset };
     } else {
+      updateLastExecutedQuery(null);
       return {
         error: [{ type: 'error', message: result }],
       };
@@ -329,18 +334,18 @@ switch (TRANSLATOR) {
     backendService = new PandasService();
     break;
   case 'snowflake':
-    backendService = new SnowflakeService;
+    backendService = new SnowflakeService();
     break;
   default:
     backendService = new MongoService();
-};
+}
 
-
+let updateLastExecutedQuery = function() {};
 async function buildVueApp() {
   Vue.use(Vuex);
   const store = new Vuex.Store({});
 
-  new Vue({
+  const vm = new Vue({
     el: '#app',
     components: {
       Vqb,
@@ -349,6 +354,7 @@ async function buildVueApp() {
     data: function() {
       return {
         isCodeOpened: false,
+        lastExecutedQuery: undefined,
       };
     },
     created: async function() {
@@ -461,10 +467,6 @@ async function buildVueApp() {
           return activePipeline;
         }
       },
-      mongoQueryAsJSON: function() {
-        const query = mongoTranslator.translate(this.activePipeline);
-        return JSON.stringify(query, null, 2);
-      },
       pipelineAsJSON: function() {
         return JSON.stringify(this.activePipeline, null, 2);
       },
@@ -493,6 +495,14 @@ async function buildVueApp() {
       },
     },
   });
+
+  updateLastExecutedQuery = (query) => {
+    if (query == null || typeof query === 'string') {
+      vm.lastExecutedQuery = query;
+    } else {
+      vm.lastExecutedQuery = JSON.stringify(query, null, 2);
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => buildVueApp());
