@@ -20,6 +20,7 @@ const TRANSLATOR = args.get('backend') || 'mongo50';
 
 const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
+const snowflakeTranslator = getTranslator('snowflake');
 
 const VARIABLES = {
   view: 'Product 123',
@@ -228,8 +229,6 @@ class MongoService {
   }
 }
 
-const mongoService = new MongoService();
-
 class PandasService {
   async listCollections() {
     const response = await fetch('/pandas');
@@ -277,9 +276,64 @@ class PandasService {
     }
   }
 }
-const pandasService = new PandasService();
 
-const backendService = TRANSLATOR === 'pandas' ? pandasService : mongoService
+class SnowflakeService {
+  async listCollections() {
+    const response = await fetch('/snowflake');
+    return response.json();
+  }
+
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+
+    // This does not modify the pipeline, but checks if all steps are supported
+    pandasTranslator.translate(dereferencedPipeline);
+
+    const url = new URL(window.location.origin + '/snowflake');
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      body: JSON.stringify(dereferencedPipeline),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      parameters: {
+        limit: limit,
+        offset: offset
+      }
+    });
+    const result = await response.json();
+
+    if (response.ok) {
+      let dataset = pandasDataTableToDataset(result);
+      dataset.paginationContext = {
+        totalCount: result.total,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      dataset = autocastDataset(dataset);
+      return { data: dataset };
+    } else {
+      return {
+        error: [{ type: 'error', message: result }],
+      };
+    }
+  }
+}
+
+let backendService;
+switch (TRANSLATOR) {
+  case 'pandas':
+    backendService = new PandasService();
+    break;
+  case 'snowflake':
+    backendService = new SnowflakeService;
+    break;
+  default:
+    backendService = new MongoService();
+};
 
 
 async function buildVueApp() {
