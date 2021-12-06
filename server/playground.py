@@ -304,7 +304,7 @@ def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Di
     }
 
     with snowflake_connexion.cursor() as cursor:
-        describe_res = cursor.describe(f'SELECT * FROM {domain}' if domain else query_string)
+        describe_res = cursor.describe(f'SELECT * FROM "{domain}"' if domain else query_string)
         res = {r.name: type_code_mapping.get(r.type_code) for r in describe_res}
         return res
 
