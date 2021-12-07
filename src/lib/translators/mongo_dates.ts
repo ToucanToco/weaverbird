@@ -1,6 +1,16 @@
 import { $$ } from '@/lib/helpers';
 import * as S from '@/lib/steps';
 
+// Mongo 5 only
+export function truncateDateToDay(dateExpr: string | object): object {
+  return {
+    $dateTrunc: {
+      unit: 'day',
+      date: dateExpr,
+    },
+  };
+}
+
 export const DATE_EXTRACT_MAP: Record<S.BasicDatePart, string> = {
   year: '$year',
   month: '$month',
@@ -180,51 +190,21 @@ export const ADVANCED_DATE_EXTRACT_MAP_MONGO_5: Record<
   (step: Readonly<S.DateExtractStep>) => object
 > = {
   ...ADVANCED_DATE_EXTRACT_MAP,
-  firstDayOfWeek: step => ({
-    // [ ] TO FIX using Mongo 5
-    // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-    $subtract: [
-      $$(step.column),
-      {
-        $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
-      },
-    ],
-  }),
-  firstDayOfIsoWeek: step => ({
-    // [ ] TO FIX using Mongo 5
-    // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-    $subtract: [
-      $$(step.column),
-      {
-        $multiply: [{ $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
-      },
-    ],
-  }),
-  previousDay: step => ({
-    // [ ] TO FIX using Mongo 5
-    // We subtract to the target date 1 day in milliseconds
-    $subtract: [$$(step.column), 24 * 60 * 60 * 1000],
-  }),
-  firstDayOfPreviousWeek: step => ({
-    // [ ] TO FIX using Mongo 5
-    // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-    $subtract: [
-      { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
-      {
-        $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
-      },
-    ],
-  }),
-  firstDayOfPreviousIsoWeek: step => ({
-    // [ ] TO FIX using Mongo 5
-    // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-    $subtract: [
-      { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
-      {
-        $multiply: [{ $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
-      },
-    ],
-  }),
+  firstDayOfWeek: step => {
+    return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfWeek'](step));
+  },
+  firstDayOfIsoWeek: step => {
+    return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfIsoWeek'](step));
+  },
+  previousDay: step => {
+    return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['previousDay'](step));
+  },
+  firstDayOfPreviousWeek: step => {
+    return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfPreviousWeek'](step));
+  },
+  firstDayOfPreviousIsoWeek: step => {
+    return truncateDateToDay(ADVANCED_DATE_EXTRACT_MAP['firstDayOfPreviousIsoWeek'](step));
+  },
 };
 
 type MongoStep = Record<string, any>;

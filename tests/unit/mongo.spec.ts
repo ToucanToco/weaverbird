@@ -2919,7 +2919,71 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       seconds: { $second: '$foo' },
       milliseconds: { $millisecond: '$foo' },
     };
-    expect(querySteps).toEqual([{ $addFields: expectedResult }, { $project: { _id: 0 } }]);
+    const expectedMongo5Result = {
+      ...expectedResult,
+      firstDayOfIsoWeek: {
+        $dateTrunc: {
+          date: {
+            $subtract: [
+              '$foo',
+              {
+                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+          unit: 'day',
+        },
+      },
+      firstDayOfWeek: {
+        $dateTrunc: {
+          unit: 'day',
+          date: {
+            $subtract: [
+              '$foo',
+              {
+                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+        },
+      },
+      previousDay: {
+        $dateTrunc: {
+          unit: 'day',
+          date: { $subtract: ['$foo', 24 * 60 * 60 * 1000] },
+        },
+      },
+      firstDayOfPreviousWeek: {
+        $dateTrunc: {
+          unit: 'day',
+          date: {
+            $subtract: [
+              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+              {
+                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+        },
+      },
+      firstDayOfPreviousIsoWeek: {
+        $dateTrunc: {
+          unit: 'day',
+          date: {
+            $subtract: [
+              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+              {
+                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+        },
+      },
+    };
+    expect(querySteps).toEqual([
+      { $addFields: version >= '5' ? expectedMongo5Result : expectedResult },
+      { $project: { _id: 0 } },
+    ]);
   });
 
   it('can generate a left join step', () => {

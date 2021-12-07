@@ -3,6 +3,7 @@ import * as S from '@/lib/steps';
 import {
   ADVANCED_DATE_EXTRACT_MAP_MONGO_5,
   transformDateExtractFactory,
+  truncateDateToDay,
 } from '@/lib/translators/mongo_dates';
 
 import { Mongo42Translator } from './mongo42';
@@ -29,12 +30,7 @@ export class Mongo50Translator extends Mongo42Translator {
   }
 
   truncateDateToDay(dateExpr: string | object): string | object {
-    return {
-      $dateTrunc: {
-        unit: 'day',
-        date: dateExpr,
-      },
-    };
+    return truncateDateToDay(dateExpr);
   }
 }
 
