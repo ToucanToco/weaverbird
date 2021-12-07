@@ -290,7 +290,8 @@ class SnowflakeService {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
 
     // This does not modify the pipeline, but checks if all steps are supported
-    pandasTranslator.translate(dereferencedPipeline);
+    snowflakeTranslator.translate(dereferencedPipeline);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
 
     const url = new URL(window.location.origin + '/snowflake');
     url.searchParams.set('limit', limit);
@@ -298,7 +299,7 @@ class SnowflakeService {
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipeline),
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
