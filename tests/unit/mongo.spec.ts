@@ -2771,163 +2771,155 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       },
     ];
     const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      {
-        $addFields: {
+    const expectedResult = {
+      year: { $year: '$foo' },
+      month: { $month: '$foo' },
+      day: { $dayOfMonth: '$foo' },
+      week: { $week: '$foo' },
+      quarter: {
+        $switch: {
+          branches: [
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 1 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 2 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 3 },
+          ],
+          default: 4,
+        },
+      },
+      dayOfWeek: { $dayOfWeek: '$foo' },
+      dayOfYear: { $dayOfYear: '$foo' },
+      isoYear: { $isoWeekYear: '$foo' },
+      isoWeek: { $isoWeek: '$foo' },
+      isoDayOfWeek: { $isoDayOfWeek: '$foo' },
+      firstDayOfYear: { $dateFromParts: { year: { $year: '$foo' }, month: 1, day: 1 } },
+      firstDayOfMonth: {
+        $dateFromParts: {
           year: { $year: '$foo' },
           month: { $month: '$foo' },
-          day: { $dayOfMonth: '$foo' },
-          week: { $week: '$foo' },
-          quarter: {
+          day: 1,
+        },
+      },
+      firstDayOfWeek: {
+        // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
+        $subtract: [
+          '$foo',
+          {
+            $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      firstDayOfQuarter: {
+        $dateFromParts: {
+          year: { $year: '$foo' },
+          month: {
             $switch: {
               branches: [
                 { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 1 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 2 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 3 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 4 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 7 },
               ],
-              default: 4,
+              default: 10,
             },
           },
-          dayOfWeek: { $dayOfWeek: '$foo' },
-          dayOfYear: { $dayOfYear: '$foo' },
-          isoYear: { $isoWeekYear: '$foo' },
-          isoWeek: { $isoWeek: '$foo' },
-          isoDayOfWeek: { $isoDayOfWeek: '$foo' },
-          firstDayOfYear: { $dateFromParts: { year: { $year: '$foo' }, month: 1, day: 1 } },
-          firstDayOfMonth: {
-            $dateFromParts: {
-              year: { $year: '$foo' },
-              month: { $month: '$foo' },
-              day: 1,
-            },
-          },
-          firstDayOfWeek: {
-            // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-            $subtract: [
-              '$foo',
-              {
-                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          firstDayOfQuarter: {
-            $dateFromParts: {
-              year: { $year: '$foo' },
-              month: {
-                $switch: {
-                  branches: [
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 1 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 4 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 7 },
-                  ],
-                  default: 10,
-                },
-              },
-              day: 1,
-            },
-          },
-          firstDayOfIsoWeek: {
-            // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-            $subtract: [
-              '$foo',
-              {
-                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          previousDay: { $subtract: ['$foo', 24 * 60 * 60 * 1000] },
-          firstDayOfPreviousYear: {
-            $dateFromParts: {
-              year: { $subtract: [{ $year: '$foo' }, 1] },
-              month: 1,
-              day: 1,
-            },
-          },
-          firstDayOfPreviousMonth: {
-            $dateFromParts: {
-              year: {
-                $cond: [
-                  { $eq: [{ $month: '$foo' }, 1] },
-                  { $subtract: [{ $year: '$foo' }, 1] },
-                  { $year: '$foo' },
-                ],
-              },
-              month: {
-                $cond: [
-                  { $eq: [{ $month: '$foo' }, 1] },
-                  12,
-                  { $subtract: [{ $month: '$foo' }, 1] },
-                ],
-              },
-              day: 1,
-            },
-          },
-          firstDayOfPreviousWeek: {
-            $subtract: [
-              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-              {
-                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          firstDayOfPreviousQuarter: {
-            $dateFromParts: {
-              year: {
-                $cond: [
-                  { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] },
-                  { $subtract: [{ $year: '$foo' }, 1] },
-                  { $year: '$foo' },
-                ],
-              },
-              month: {
-                $switch: {
-                  branches: [
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 10 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 4 },
-                  ],
-                  default: 7,
-                },
-              },
-              day: 1,
-            },
-          },
-          firstDayOfPreviousIsoWeek: {
-            $subtract: [
-              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-              {
-                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          previousYear: { $subtract: [{ $year: '$foo' }, 1] },
-          previousMonth: {
-            $cond: [{ $eq: [{ $month: '$foo' }, 1] }, 12, { $subtract: [{ $month: '$foo' }, 1] }],
-          },
-          previousWeek: {
-            $week: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-          },
-          previousQuarter: {
-            $switch: {
-              branches: [
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 4 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 2 },
-              ],
-              default: 3,
-            },
-          },
-          previousIsoWeek: {
-            $isoWeek: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-          },
-          hour: { $hour: '$foo' },
-          minutes: { $minute: '$foo' },
-          seconds: { $second: '$foo' },
-          milliseconds: { $millisecond: '$foo' },
+          day: 1,
         },
       },
-      { $project: { _id: 0 } },
-    ]);
+      firstDayOfIsoWeek: {
+        // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
+        $subtract: [
+          '$foo',
+          {
+            $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      previousDay: { $subtract: ['$foo', 24 * 60 * 60 * 1000] },
+      firstDayOfPreviousYear: {
+        $dateFromParts: {
+          year: { $subtract: [{ $year: '$foo' }, 1] },
+          month: 1,
+          day: 1,
+        },
+      },
+      firstDayOfPreviousMonth: {
+        $dateFromParts: {
+          year: {
+            $cond: [
+              { $eq: [{ $month: '$foo' }, 1] },
+              { $subtract: [{ $year: '$foo' }, 1] },
+              { $year: '$foo' },
+            ],
+          },
+          month: {
+            $cond: [{ $eq: [{ $month: '$foo' }, 1] }, 12, { $subtract: [{ $month: '$foo' }, 1] }],
+          },
+          day: 1,
+        },
+      },
+      firstDayOfPreviousWeek: {
+        $subtract: [
+          { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+          {
+            $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      firstDayOfPreviousQuarter: {
+        $dateFromParts: {
+          year: {
+            $cond: [
+              { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] },
+              { $subtract: [{ $year: '$foo' }, 1] },
+              { $year: '$foo' },
+            ],
+          },
+          month: {
+            $switch: {
+              branches: [
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 10 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 4 },
+              ],
+              default: 7,
+            },
+          },
+          day: 1,
+        },
+      },
+      firstDayOfPreviousIsoWeek: {
+        $subtract: [
+          { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+          {
+            $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      previousYear: { $subtract: [{ $year: '$foo' }, 1] },
+      previousMonth: {
+        $cond: [{ $eq: [{ $month: '$foo' }, 1] }, 12, { $subtract: [{ $month: '$foo' }, 1] }],
+      },
+      previousWeek: {
+        $week: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+      },
+      previousQuarter: {
+        $switch: {
+          branches: [
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 4 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 2 },
+          ],
+          default: 3,
+        },
+      },
+      previousIsoWeek: {
+        $isoWeek: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+      },
+      hour: { $hour: '$foo' },
+      minutes: { $minute: '$foo' },
+      seconds: { $second: '$foo' },
+      milliseconds: { $millisecond: '$foo' },
+    };
+    expect(querySteps).toEqual([{ $addFields: expectedResult }, { $project: { _id: 0 } }]);
   });
 
   it('can generate a left join step', () => {
