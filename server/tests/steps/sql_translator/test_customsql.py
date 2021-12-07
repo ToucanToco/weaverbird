@@ -20,7 +20,7 @@ def test_translate_customsql(query, sql_query_describer):
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), CUSTOMSQL_STEP_1 AS (SELECT * FROM '
         'SELECT_STEP_0)'
     )
-    assert query.selection_query == 'SELECT CUSTOMER_ID, CUSTOMER_NAME FROM CUSTOMSQL_STEP_1'
+    assert query.selection_query == 'SELECT "CUSTOMER_ID", "CUSTOMER_NAME" FROM CUSTOMSQL_STEP_1'
     assert query.query_name == 'CUSTOMSQL_STEP_1'
     assert query.metadata_manager.retrieve_query_metadata() == TableMetadata(
         name='TABLE1',

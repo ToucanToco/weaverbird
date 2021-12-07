@@ -47,7 +47,7 @@ def test_translate_simple_duration(query_date_duration):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, FROM_DATE, TO_DATE, DURATION FROM DURATION_STEP_1'
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "FROM_DATE", "TO_DATE", "DURATION" FROM DURATION_STEP_1'
     )
     assert query.query_name == 'DURATION_STEP_1'
     # we test metadatas
@@ -123,7 +123,7 @@ def test_translate_with_old_column_name_duration(query_date_duration):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, FROM_DATE, TO_DATE FROM DURATION_STEP_1'
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "FROM_DATE", "TO_DATE" FROM DURATION_STEP_1'
     )
     assert query.query_name == 'DURATION_STEP_1'
     # we test metadatas

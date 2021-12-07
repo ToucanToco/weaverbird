@@ -17,7 +17,7 @@ def test_translate_fillna(query):
         == "WITH SELECT_STEP_0 AS (SELECT * FROM products), FILLNA_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFNULL(RAICHU, \
 'ZorG') AS RAICHU FROM SELECT_STEP_0)"
     )
-    assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM FILLNA_STEP_1'
+    assert res.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM FILLNA_STEP_1'
     assert res.query_name == 'FILLNA_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_columns() == {
         'FLORIZARRE': ColumnMetadata(
@@ -59,7 +59,7 @@ def test_translate_fillna_int(query):
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), FILLNA_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFNULL(RAICHU, \
 1) AS RAICHU FROM SELECT_STEP_0)'
     )
-    assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM FILLNA_STEP_1'
+    assert res.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM FILLNA_STEP_1'
     assert res.query_name == 'FILLNA_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_columns() == {
         'FLORIZARRE': ColumnMetadata(

@@ -15,7 +15,7 @@ def test_translate_argmin(query):
         'TOTO_ALIAS_A FROM SELECT_STEP_0) A INNER JOIN SELECT_STEP_0 B ON A.TOTO_ALIAS_A=B.TOTO)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM ARGMIN_STEP_1'
+    assert query.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM ARGMIN_STEP_1'
     assert query.query_name == 'ARGMIN_STEP_1'
     # metadatas
     assert query.metadata_manager.retrieve_query_metadata_columns() == {
@@ -59,7 +59,7 @@ def test_translate_groupby_argmin(query):
         'SELECT_STEP_0 B ON A.FLORIZARRE_ALIAS_A=B.FLORIZARRE AND A.TOTO_ALIAS_A=B.TOTO)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM ARGMIN_STEP_1'
+    assert query.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM ARGMIN_STEP_1'
     assert query.query_name == 'ARGMIN_STEP_1'
     # metadatas
     assert query.metadata_manager.retrieve_query_metadata_columns() == {

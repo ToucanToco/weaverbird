@@ -16,7 +16,8 @@ def test_translate_simple_duplicate(query):
     )
     assert query.transformed_query == expected_transformed_query
     assert (
-        query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_NAME FROM DUPLICATE_STEP_1'
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "TOTO_NAME" FROM DUPLICATE_STEP_1'
     )
     assert query.query_name == 'DUPLICATE_STEP_1'
 
@@ -68,7 +69,7 @@ def test_translate_column_name_already_present_duplicate(query):
         'TOTO FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM DUPLICATE_STEP_1'
+    assert query.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM DUPLICATE_STEP_1'
     assert query.query_name == 'DUPLICATE_STEP_1'
     # we test metadata
     assert query.metadata_manager.retrieve_query_metadata_columns() == {

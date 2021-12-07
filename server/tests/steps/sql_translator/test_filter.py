@@ -31,7 +31,7 @@ def test_translate_filter(mocker):
         == 'WITH SELECT_STEP_0 AS (SELECT TOTO, TATA FROM products), FILTER_STEP_1 AS (SELECT TOTO, TATA FROM '
         'SELECT_STEP_0 WHERE amount = 10)'
     )
-    assert res.selection_query == 'SELECT TOTO, TATA FROM FILTER_STEP_1'
+    assert res.selection_query == 'SELECT "toto", "tata" FROM FILTER_STEP_1'
 
 
 def test_translate_filter_date():
@@ -57,7 +57,7 @@ def test_translate_filter_date():
         == 'WITH SELECT_STEP_0 AS (SELECT TOTO, TATA FROM products), FILTER_STEP_1 AS (SELECT TOTO, CREATED FROM '
         'SELECT_STEP_0 WHERE to_timestamp(CREATED) > to_timestamp(\'2020-01-01T01:03:30\'))'
     )
-    assert res.selection_query == 'SELECT TOTO, CREATED FROM FILTER_STEP_1'
+    assert res.selection_query == 'SELECT "toto", "created" FROM FILTER_STEP_1'
 
 
 def test_translate_filter_error(mocker):

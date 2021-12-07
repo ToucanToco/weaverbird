@@ -38,7 +38,7 @@ def test_translate_simple_date_extract(query_date):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, DATE, DATE_YEAR FROM DATEEXTRACT_STEP_1'
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "DATE", "DATE_YEAR" FROM DATEEXTRACT_STEP_1'
     )
     assert query.query_name == 'DATEEXTRACT_STEP_1'
 
@@ -125,9 +125,9 @@ def test_translate_complex_date_extract(query_date):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == "SELECT TOTO, RAICHU, FLORIZARRE, DATE, DATE_YEAR, DATE_PREVIOUSDAY, DATE_FIRSTDAYOFPREVIOUSYEAR, "
-        "DATE_FIRSTDAYOFPREVIOUSMONTH, DATE_FIRSTDAYOFPREVIOUSWEEK, DATE_DAYOFYEAR, DATE_ISOYEAR, DATE_ISOWEEK, "
-        "DATE_ISODAYOFWEEK, DATE_DAY, DATE_WEEK FROM DATEEXTRACT_STEP_1"
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "DATE", "DATE_YEAR", "DATE_PREVIOUSDAY", "DATE_FIRSTDAYOFPREVIOUSYEAR", '
+        '"DATE_FIRSTDAYOFPREVIOUSMONTH", "DATE_FIRSTDAYOFPREVIOUSWEEK", "DATE_DAYOFYEAR", "DATE_ISOYEAR", "DATE_ISOWEEK", '
+        '"DATE_ISODAYOFWEEK", "DATE_DAY", "DATE_WEEK" FROM DATEEXTRACT_STEP_1'
     )
     assert query.query_name == 'DATEEXTRACT_STEP_1'
 
@@ -273,7 +273,7 @@ def test_translate_with_new_columns_date_extract(query_date):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, DATE, ZOZOR FROM DATEEXTRACT_STEP_1'
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "DATE", "ZOZOR" FROM DATEEXTRACT_STEP_1'
     )
     assert query.query_name == 'DATEEXTRACT_STEP_1'
 

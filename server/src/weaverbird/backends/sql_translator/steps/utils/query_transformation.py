@@ -3,6 +3,7 @@ import re
 from typing import Dict, List, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
+from weaverbird.backends.sql_translator.steps.utils.sql_identifier import sql_identifier
 from weaverbird.backends.sql_translator.types import SQLQuery
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
@@ -87,12 +88,13 @@ def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name)
         if alias:
             names.append(alias)
         else:
-            name = (
-                getattr(metadata, 'original_name')
-                if hasattr(metadata, 'original_name')
-                else getattr(metadata, 'name')
+            names.append(
+                sql_identifier(
+                    getattr(metadata, 'original_name')
+                    if hasattr(metadata, 'original_name')
+                    else getattr(metadata, 'name')
+                )
             )
-            names.append(f'"{ name }"')
     return f"SELECT {', '.join(names)} FROM {query_name}"
 
 

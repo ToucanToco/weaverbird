@@ -18,7 +18,7 @@ def test_translate_cast(query):
         'integer) AS RAICHU FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
+    assert query.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM CONVERT_STEP_1'
     assert query.query_name == 'CONVERT_STEP_1'
 
 
@@ -27,7 +27,7 @@ def test_translate_cast_only_one_col():
     q = SQLQuery(
         query_name='SELECT_STEP_0',
         transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
-        selection_query='SELECT RAICHU FROM SELECT_STEP_0',
+        selection_query='SELECT "RAICHU" FROM SELECT_STEP_0',
         metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {'RAICHU': 'int'}}),
     )
     query = translate_convert(
@@ -40,7 +40,7 @@ def test_translate_cast_only_one_col():
         'FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT RAICHU FROM CONVERT_STEP_1'
+    assert query.selection_query == 'SELECT "RAICHU" FROM CONVERT_STEP_1'
     assert query.query_name == 'CONVERT_STEP_1'
 
 
@@ -87,7 +87,7 @@ def test_translate_cast_float_to_int():
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), '
         'CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, TRUNCATE(raichu) AS raichu FROM SELECT_STEP_0)'
     )
-    assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
+    assert res.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM CONVERT_STEP_1'
     assert res.query_name == 'CONVERT_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_column_type_by_name('raichu') == 'INTEGER'
 
@@ -100,7 +100,7 @@ def test_translate_cast_string_to_int(query):
         "CONVERT_STEP_1 AS (SELECT RAICHU, FLORIZARRE, CAST(SPLIT_PART(toto, '.', 0) AS integer) AS toto "
         "FROM SELECT_STEP_0)"
     )
-    assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
+    assert res.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM CONVERT_STEP_1'
     assert res.query_name == 'CONVERT_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_column_type_by_name('toto') == 'INTEGER'
 
@@ -124,6 +124,6 @@ def test_translate_cast_date_to_int():
         "CAST(DATE_PART('EPOCH_MILLISECOND', TO_TIMESTAMP(toto)) AS integer) AS toto "
         "FROM SELECT_STEP_0)"
     )
-    assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
+    assert res.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM CONVERT_STEP_1'
     assert res.query_name == 'CONVERT_STEP_1'
     assert res.metadata_manager.retrieve_query_metadata_column_type_by_name('toto') == 'INTEGER'

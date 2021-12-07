@@ -17,7 +17,7 @@ def test_translate_select(query):
         == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), DELETE_STEP_1 AS (SELECT TOTO, FLORIZARRE FROM '
         'SELECT_STEP_0)'
     )
-    assert query.selection_query == 'SELECT TOTO, FLORIZARRE FROM DELETE_STEP_1'
+    assert query.selection_query == 'SELECT "TOTO", "FLORIZARRE" FROM DELETE_STEP_1'
     assert query.query_name == 'DELETE_STEP_1'
 
 

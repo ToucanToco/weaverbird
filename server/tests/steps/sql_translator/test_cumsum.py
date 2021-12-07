@@ -24,7 +24,7 @@ def test_translate_cumsum(query):
     assert query.transformed_query == expected_transformed_query
     assert (
         query.selection_query
-        == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM_CUSTOM FROM CUMSUM_STEP_1'
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "TOTO_CUMSUM_CUSTOM" FROM CUMSUM_STEP_1'
     )
     assert query.query_name == 'CUMSUM_STEP_1'
     # metadatas
@@ -83,7 +83,8 @@ def test_translate_no_new_column_name_cumsum(query):
     )
     assert query.transformed_query == expected_transformed_query
     assert (
-        query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM FROM CUMSUM_STEP_1'
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "TOTO_CUMSUM" FROM CUMSUM_STEP_1'
     )
     assert query.query_name == 'CUMSUM_STEP_1'
     # metadatas
@@ -142,7 +143,8 @@ def test_translate_groupby_cumsum(query):
     )
     assert query.transformed_query == expected_transformed_query
     assert (
-        query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, TOTO_CUMSUM FROM CUMSUM_STEP_1'
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "TOTO_CUMSUM" FROM CUMSUM_STEP_1'
     )
     assert query.query_name == 'CUMSUM_STEP_1'
     # metadatas

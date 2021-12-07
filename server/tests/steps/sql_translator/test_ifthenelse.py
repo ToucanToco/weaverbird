@@ -26,7 +26,10 @@ def test_simple_condition_integer(query):
         "IFF(RAICHU > 10, 'tintin', 'anime') AS COND FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "COND" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -55,7 +58,10 @@ def test_simple_condition_strings(query):
     )
 
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "COND" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -92,7 +98,10 @@ def test_and_condition(query):
         "IFF(RAICHU > 10 AND TOTO RLIKE 'ogadoka', 'tintin', 'anime') AS COND FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "COND" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -129,7 +138,10 @@ def test_or_condition(query):
         "IFF(RAICHU < 10 OR RAICHU >= 1, 'tintin', 'anime') AS COND FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "COND" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -193,7 +205,10 @@ def test_then_should_support_nested_else(query):
     )
 
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND1 FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "COND1" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -221,7 +236,10 @@ def test_condition_formulas(query):
         'IFF(RAICHU > 10, raichu, raichu * -1) AS COND FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "RAICHU", "FLORIZARRE", "cond" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -245,7 +263,10 @@ def test_condition_null(query):
         'IFF(RAICHU IS NULL, 1, 0) AS COND FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert (
+        query.selection_query
+        == 'SELECT "TOTO", "raichu", "FLORIZARRE", "COND" FROM IFTHENELSE_STEP_1'
+    )
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
@@ -273,5 +294,5 @@ def test_simple_condition_with_ambigious_column(query):
         "10, 'tintin', 'anime') AS RAICHU FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM IFTHENELSE_STEP_1'
+    assert query.selection_query == 'SELECT "TOTO", "RAICHU", "FLORIZARRE" FROM IFTHENELSE_STEP_1'
     assert query.query_name == 'IFTHENELSE_STEP_1'
