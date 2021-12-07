@@ -361,15 +361,16 @@ async function buildVueApp() {
       registerModule(this.$store, {
         currentPipelineName: 'pipeline',
         pipelines: {
+          // Identifiers for Snowflake (SQL) should be uppercase (no support for other casing for now)
           pipeline: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Price',
+                column: TRANSLATOR == 'snowflake' ? 'PRICE' : 'Price',
                 operator: 'ge',
                 value: 1200,
               },
@@ -378,12 +379,12 @@ async function buildVueApp() {
           pipelineAmex: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Amex',
               },
@@ -392,12 +393,12 @@ async function buildVueApp() {
           pipelineVisa: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Visa',
               },
@@ -406,12 +407,12 @@ async function buildVueApp() {
           pipelineMastercard: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Mastercard',
               },
@@ -420,19 +421,19 @@ async function buildVueApp() {
           dates: [
             {
               name: 'domain',
-              domain: 'sin-from-2019-to-2022',
+              domain: TRANSLATOR == 'snowflake' ? 'SIN_FROM_2019_TO_2022' : 'sin-from-2019-to-2022',
             },
             {
               name: 'filter',
               condition: {
-                column: 'day',
+                column: TRANSLATOR == 'snowflake' ? 'DAY' :'day',
                 operator: 'from',
                 value: new Date('2021-11-19T00:00:00Z'),
               },
             },
           ],
         },
-        currentDomain: 'sales',
+        currentDomain: TRANSLATOR == 'snowflake' ? 'SALES' :'sales',
         translator: TRANSLATOR,
         backendService: backendService,
         // based on lodash templates (ERB syntax)
