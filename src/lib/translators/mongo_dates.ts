@@ -1,11 +1,7 @@
 import { $$ } from '@/lib/helpers';
 import * as S from '@/lib/steps';
 
-type BasicDateOperationMap = {
-  [OP in S.BasicDatePart]: string;
-};
-
-export const DATE_EXTRACT_MAP: BasicDateOperationMap = {
+export const DATE_EXTRACT_MAP: Record<S.BasicDatePart, string> = {
   year: '$year',
   month: '$month',
   day: '$dayOfMonth',
