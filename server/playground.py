@@ -277,6 +277,7 @@ if os.getenv('SNOWFLAKE_ACCOUNT'):
         password=os.getenv('SNOWFLAKE_PASSWORD'),
         account=os.getenv('SNOWFLAKE_ACCOUNT'),
         database=os.getenv('SNOWFLAKE_DATABASE'),
+        client_session_keep_alive=True,
     )
 
 
