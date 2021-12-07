@@ -42,7 +42,6 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
     },
   }),
   firstDayOfWeek: step => ({
-    // [ ] TO FIX using Mongo 5
     // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
     $subtract: [
       $$(step.column),
@@ -68,7 +67,6 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
     },
   }),
   firstDayOfIsoWeek: step => ({
-    // [ ] TO FIX using Mongo 5
     // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
     $subtract: [
       $$(step.column),
@@ -78,7 +76,6 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
     ],
   }),
   previousDay: step => ({
-    // [ ] TO FIX using Mongo 5
     // We subtract to the target date 1 day in milliseconds
     $subtract: [$$(step.column), 24 * 60 * 60 * 1000],
   }),
@@ -109,7 +106,6 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
     },
   }),
   firstDayOfPreviousWeek: step => ({
-    // [ ] TO FIX using Mongo 5
     // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
     $subtract: [
       { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
@@ -141,7 +137,6 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
     },
   }),
   firstDayOfPreviousIsoWeek: step => ({
-    // [ ] TO FIX using Mongo 5
     // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
     $subtract: [
       { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
@@ -177,6 +172,58 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
   previousIsoWeek: step => ({
     // We subtract to the target date 7 days in milliseconds
     $isoWeek: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+  }),
+};
+
+export const ADVANCED_DATE_EXTRACT_MAP_MONGO_5: Record<
+  S.AdvancedDateInfo,
+  (step: Readonly<S.DateExtractStep>) => object
+> = {
+  ...ADVANCED_DATE_EXTRACT_MAP,
+  firstDayOfWeek: step => ({
+    // [ ] TO FIX using Mongo 5
+    // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
+    $subtract: [
+      $$(step.column),
+      {
+        $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
+      },
+    ],
+  }),
+  firstDayOfIsoWeek: step => ({
+    // [ ] TO FIX using Mongo 5
+    // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
+    $subtract: [
+      $$(step.column),
+      {
+        $multiply: [{ $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
+      },
+    ],
+  }),
+  previousDay: step => ({
+    // [ ] TO FIX using Mongo 5
+    // We subtract to the target date 1 day in milliseconds
+    $subtract: [$$(step.column), 24 * 60 * 60 * 1000],
+  }),
+  firstDayOfPreviousWeek: step => ({
+    // [ ] TO FIX using Mongo 5
+    // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
+    $subtract: [
+      { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+      {
+        $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
+      },
+    ],
+  }),
+  firstDayOfPreviousIsoWeek: step => ({
+    // [ ] TO FIX using Mongo 5
+    // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
+    $subtract: [
+      { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
+      {
+        $multiply: [{ $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
+      },
+    ],
   }),
 };
 

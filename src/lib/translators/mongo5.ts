@@ -1,4 +1,9 @@
 import { RELATIVE_DATE_OPERATORS, RelativeDate } from '@/lib/dates';
+import * as S from '@/lib/steps';
+import {
+  ADVANCED_DATE_EXTRACT_MAP_MONGO_5,
+  transformDateExtractFactory,
+} from '@/lib/translators/mongo_dates';
 
 import { Mongo42Translator } from './mongo42';
 
@@ -32,3 +37,11 @@ export class Mongo50Translator extends Mongo42Translator {
     };
   }
 }
+
+function transformDateExtract(step: Readonly<S.DateExtractStep>): object {
+  return transformDateExtractFactory(ADVANCED_DATE_EXTRACT_MAP_MONGO_5)(step);
+}
+
+Object.assign(Mongo50Translator.prototype, {
+  dateextract: transformDateExtract,
+});
