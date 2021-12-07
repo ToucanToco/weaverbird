@@ -8,7 +8,7 @@ import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
-import { ADVANCED_DATE_EXTRACT_MAP, DATE_EXTRACT_MAP } from '@/lib/translators/mongo_dates';
+import { transformDateExtractFactory } from '@/lib/translators/mongo_dates';
 import { VariableDelimiters } from '@/lib/variables';
 
 type PropMap<T> = { [prop: string]: T };
@@ -613,30 +613,7 @@ function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
 
 /** transform a 'dateextracgt' step into corresponding mongo steps */
 function transformDateExtract(step: Readonly<S.DateExtractStep>): MongoStep {
-  let dateInfo: S.DateInfo[] = [];
-  let newColumns: string[] = [];
-  const addFields: MongoStep = {};
-
-  // For retrocompatibility
-  if (step.operation) {
-    dateInfo = step.operation ? [step.operation] : step.dateInfo;
-    newColumns = [`${step.new_column_name ?? step.column + '_' + step.operation}`];
-  } else {
-    dateInfo = [...step.dateInfo];
-    newColumns = [...step.newColumns];
-  }
-
-  for (let i = 0; i < dateInfo.length; i++) {
-    const d = dateInfo[i];
-    if (d in ADVANCED_DATE_EXTRACT_MAP) {
-      addFields[newColumns[i]] = ADVANCED_DATE_EXTRACT_MAP[d as S.AdvancedDateInfo](step);
-    } else {
-      addFields[newColumns[i]] = {
-        [`${DATE_EXTRACT_MAP[d as S.BasicDatePart]}`]: $$(step.column),
-      };
-    }
-  }
-  return { $addFields: addFields };
+  return transformDateExtractFactory()(step);
 }
 
 /** transform an 'evolution' step into corresponding mongo steps */

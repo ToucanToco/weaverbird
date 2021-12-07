@@ -179,3 +179,34 @@ export const ADVANCED_DATE_EXTRACT_MAP: Record<
     $isoWeek: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
   }),
 };
+
+type MongoStep = Record<string, any>;
+
+export const transformDateExtractFactory = (advancedDateExtractMap = ADVANCED_DATE_EXTRACT_MAP) => {
+  return (step: Readonly<S.DateExtractStep>): MongoStep => {
+    let dateInfo: S.DateInfo[] = [];
+    let newColumns: string[] = [];
+    const addFields: MongoStep = {};
+
+    // For retrocompatibility
+    if (step.operation) {
+      dateInfo = step.operation ? [step.operation] : step.dateInfo;
+      newColumns = [`${step.new_column_name ?? step.column + '_' + step.operation}`];
+    } else {
+      dateInfo = [...step.dateInfo];
+      newColumns = [...step.newColumns];
+    }
+
+    for (let i = 0; i < dateInfo.length; i++) {
+      const d = dateInfo[i];
+      if (d in advancedDateExtractMap) {
+        addFields[newColumns[i]] = advancedDateExtractMap[d as S.AdvancedDateInfo](step);
+      } else {
+        addFields[newColumns[i]] = {
+          [`${DATE_EXTRACT_MAP[d as S.BasicDatePart]}`]: $$(step.column),
+        };
+      }
+    }
+    return { $addFields: addFields };
+  };
+};
