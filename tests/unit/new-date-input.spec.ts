@@ -291,6 +291,25 @@ describe('Date input', () => {
           expect((wrapper.vm as any).currentTabValue).toStrictEqual(newValue);
         });
       });
+      describe('when saving', () => {
+        const newValue = {
+          quantity: 1,
+          duration: 'month',
+          operator: 'until',
+          date: '{{today}}',
+        };
+        beforeEach(async () => {
+          wrapper.find('RelativeDateForm-stub').vm.$emit('input', newValue);
+          wrapper.find({ ref: 'save' }).trigger('click');
+          await wrapper.vm.$nextTick();
+        });
+        it('should send analytics event when saving', () => {
+          expect(sendAnalyticsSpy).toHaveBeenCalledWith({
+            name: 'Date input - Select relative date',
+            value: newValue,
+          });
+        });
+      });
     });
 
     describe('when switching between tabs', () => {
