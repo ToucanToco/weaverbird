@@ -393,7 +393,7 @@ def get_query_for_date_extract(
             "firstDayOfYear": "TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(____target____)))",
 
             "firstDayOfPreviousWeek": "DATE_TRUNC(day, DATEADD(day, -(DAYOFWEEKISO(to_timestamp(____target____)) % 7 + 1)+1, to_timestamp(____target____))) - interval '1 week'",
-            "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+            "firstDayOfPreviousIsoWeek": "DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(____target____))+1, to_timestamp(____target____))) - interval '1 week'",
             "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
             "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
             "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
