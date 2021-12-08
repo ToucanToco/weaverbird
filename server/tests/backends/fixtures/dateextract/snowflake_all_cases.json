@@ -22,6 +22,7 @@
           "hour",
           "minutes",
           "seconds",
+          "firstDayOfWeek",
           "firstDayOfIsoWeek"
         ],
         "newColumns": [
@@ -38,6 +39,7 @@
           "DATE_HOUR",
           "DATE_MINUTES",
           "DATE_SECONDS",
+          "DATE_FIRSTDAYOFWEEK",
           "DATE_FIRSTDAYOFISOWEEK"
         ]
       }
@@ -139,6 +141,11 @@
           "type": "number"
         },
         {
+          "name": "DATE_FIRSTDAYOFWEEK",
+          "type": "datetime",
+          "tz": "UTC"
+        },
+        {
           "name": "DATE_FIRSTDAYOFISOWEEK",
           "type": "datetime",
           "tz": "UTC"
@@ -163,6 +170,7 @@
         "DATE_MINUTES": 0.0,
         "DATE_SECONDS": 0.0,
         "DATE_MILLISECONDS": 0.0,
+        "DATE_FIRSTDAYOFWEEK": "2021-03-28T00:00:00.000Z",
         "DATE_FIRSTDAYOFISOWEEK": "2021-03-29T00:00:00.000Z"
       },
       {
@@ -180,6 +188,7 @@
         "DATE_HOUR": 0.0,
         "DATE_MINUTES": 0.0,
         "DATE_SECONDS": 0.0,
+        "DATE_FIRSTDAYOFWEEK": "2020-12-13T00:00:00.000Z",
         "DATE_FIRSTDAYOFISOWEEK": "2020-12-07T00:00:00.000Z"
       },
       {
@@ -197,6 +206,7 @@
         "DATE_HOUR": 0.0,
         "DATE_MINUTES": 0.0,
         "DATE_SECONDS": 0.0,
+        "DATE_FIRSTDAYOFWEEK": "2020-07-26T00:00:00.000Z",
         "DATE_FIRSTDAYOFISOWEEK": "2020-07-27T00:00:00.000Z"
       },
       {
@@ -214,6 +224,7 @@
         "DATE_HOUR": 1.0,
         "DATE_MINUTES": 2.0,
         "DATE_SECONDS": 3.0,
+        "DATE_FIRSTDAYOFWEEK": "2019-04-07T00:00:00.000Z",
         "DATE_FIRSTDAYOFISOWEEK": "2019-04-08T00:00:00.000Z"
       },
       {
@@ -231,6 +242,7 @@
         "DATE_HOUR": 0.0,
         "DATE_MINUTES": 0.0,
         "DATE_SECONDS": 0.0,
+        "DATE_FIRSTDAYOFWEEK": "2017-01-01T00:00:00.000Z",
         "DATE_FIRSTDAYOFISOWEEK": "2017-01-02T00:00:00.000Z"
       },
       {
@@ -248,6 +260,7 @@
         "DATE_HOUR": 0.0,
         "DATE_MINUTES": 0.0,
         "DATE_SECONDS": 0.0,
+        "DATE_FIRSTDAYOFWEEK": "2015-12-27T00:00:00.000Z",
         "DATE_FIRSTDAYOFISOWEEK": "2015-12-28T00:00:00.000Z"
       },
       {
@@ -265,6 +278,7 @@
         "DATE_HOUR": null,
         "DATE_MINUTES": null,
         "DATE_SECONDS": null,
+        "DATE_FIRSTDAYOFWEEK": null,
         "DATE_FIRSTDAYOFISOWEEK": null
       }
     ]
