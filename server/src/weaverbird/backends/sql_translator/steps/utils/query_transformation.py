@@ -344,18 +344,18 @@ def get_query_for_date_extract(
 
     """
     if date_type.lower() in [
-        "year",
-        "month",
-        "day",
-        "hour",
-        "minutes",
         "seconds",
+        "minutes",
+        "hour",
+        "day",
         "dayofweek",
         "dayofweekiso",
         "dayofyear",
         "week",
         "weekiso",
+        "month",
         "quarter",
+        "year",
         "yearofweek",
         "yearofweekiso",
     ]:
@@ -363,28 +363,32 @@ def get_query_for_date_extract(
         return f"EXTRACT({date_type.lower()} from to_timestamp({target_column})) AS {new_column}"
     else:
         appropriate_func = {
+            # Returning numbers
             "milliseconds": "DATE_TRUNC(millisecond, to_timestamp(____target____))",
-            "isoYear": "YEAROFWEEKISO(to_timestamp(____target____))",
-            "isoWeek": "WEEKISO(to_timestamp(____target____))",
             "isoDayOfWeek": "DAYOFWEEKISO(to_timestamp(____target____))",
-            "firstDayOfYear": "TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(____target____)))",
-            "firstDayOfMonth": "TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(____target____)))",
+            "isoWeek": "WEEKISO(to_timestamp(____target____))",
+            "isoYear": "YEAROFWEEKISO(to_timestamp(____target____))",
+
+            "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",
+            "previousIsoWeek": "WEEKISO(to_timestamp(____target____)) - 1",
+            "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
+            "previousQuarter": "QUARTER(to_timestamp(____target____) - interval '1 quarter')",
+            "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
+
+            # Returning dates
+            "previousDay": "to_timestamp(____target____) - interval '1 day'",
+
             "firstDayOfWeek": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
             "firstDayOfIsoWeek": "DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(____target____))+1, to_timestamp(____target____)))",
+            "firstDayOfMonth": "TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(____target____)))",
             "firstDayOfQuarter": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____)))",
-            "previousDay": "to_timestamp(____target____) - interval '1 day'",
-            "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
+            "firstDayOfYear": "TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(____target____)))",
+
+            "firstDayOfPreviousWeek": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO(to_timestamp(____target____)) + 1",
+            "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO(to_timestamp(____target____)) + 1",
             "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
-            "firstDayOfPreviousWeek": "DAY(to_timestamp(____target____) - interval '1 week') - DAYOFWEEKISO("
-            "to_timestamp(____target____)) + 1",
             "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
-            "firstDayOfPreviousIsoWeek": "DAYOFWEEKISO(to_timestamp(____target____) - interval '1 week') - "
-            "DAYOFWEEKISO(to_timestamp(____target____)) + 1",
-            "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
-            "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
-            "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",
-            "previousQuarter": "QUARTER(to_timestamp(____target____) - interval '1 quarter')",
-            "previousIsoWeek": "WEEKISO(to_timestamp(____target____)) - 1",
+            "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
         }
 
         return f"({appropriate_func[date_type].replace('____target____', target_column)}) AS {new_column}"
