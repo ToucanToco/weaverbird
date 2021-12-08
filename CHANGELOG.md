@@ -1,9 +1,4 @@
-# Changelog
-
-## Unreleased
-
-### Changed
-- SQL translator: `sql_query_executor` must return directly a `DataFrame`, not a NamedTuple with the attr `df` anymore
+# Changelog (weaverbird npm package)
 
 ## [0.77.0] - 2021-12-06
 
