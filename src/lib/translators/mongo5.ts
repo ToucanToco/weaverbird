@@ -4,7 +4,7 @@ import {
   ADVANCED_DATE_EXTRACT_MAP_MONGO_5,
   transformDateExtractFactory,
   truncateDateToDay,
-} from '@/lib/translators/mongo_dates';
+} from '@/lib/translators/mongo-dates';
 
 import { Mongo42Translator } from './mongo42';
 

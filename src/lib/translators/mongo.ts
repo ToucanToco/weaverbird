@@ -8,7 +8,7 @@ import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
-import { transformDateExtractFactory } from '@/lib/translators/mongo_dates';
+import { transformDateExtractFactory } from '@/lib/translators/mongo-dates';
 import { VariableDelimiters } from '@/lib/variables';
 
 type PropMap<T> = { [prop: string]: T };
