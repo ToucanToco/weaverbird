@@ -378,6 +378,11 @@ def get_query_for_date_extract(
             # Returning dates
             "previousDay": "to_timestamp(____target____) - interval '1 day'",
 
+            """
+            Notes on Snowflake SQL:
+            - DATE_TRUNC(week, _) result is based on the WEEK_START sessions parameter, which is set to monday by default
+            - DATE_TRUNC does not support the "weekiso" part
+            """
             "firstDayOfWeek": "TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(____target____)))",
             "firstDayOfIsoWeek": "DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(____target____))+1, to_timestamp(____target____)))",
             "firstDayOfMonth": "TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(____target____)))",
