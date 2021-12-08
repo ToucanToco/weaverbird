@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 import pandas as pd
 import pytest
 
@@ -12,7 +10,7 @@ from weaverbird.pipeline.steps import PivotStep
 @pytest.fixture
 def sql_query_executor():
     def f(domain, query_string):
-        return Mock(df=pd.DataFrame({'CURRENCY': ['SPAIN', 'FRANCE']}))
+        return pd.DataFrame({'CURRENCY': ['SPAIN', 'FRANCE']})
 
     return f
 
