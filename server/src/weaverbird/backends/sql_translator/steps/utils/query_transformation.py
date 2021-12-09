@@ -348,7 +348,6 @@ def get_query_for_date_extract(
         "minutes",
         "hour",
         "day",
-        "dayofweek",
         "dayofweekiso",
         "dayofyear",
         # Notes on Snowflake SQL for week:
@@ -383,9 +382,11 @@ def get_query_for_date_extract(
             "previousQuarter": "QUARTER(to_timestamp(____target____) - interval '1 quarter')",
             "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
 
+            "dayOfWeek": "DAYOFWEEKISO(to_timestamp(____target____)) % 7 + 1",
+
             # Returning dates
             # ---------------
-            # Notes on Snowflake SQL:   
+            # Notes on Snowflake SQL:
             # - DATE_TRUNC(week, _), DAYOFWEEK(_) & WEEK result are based on the WEEK_START sessions parameter,
             #   which is set to monday by default, so we cannot reliably expect sunday based result out of it
             # - DATE_TRUNC does not support the "weekiso" part
