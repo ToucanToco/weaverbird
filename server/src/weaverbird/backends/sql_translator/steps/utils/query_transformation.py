@@ -341,7 +341,10 @@ def get_query_for_date_extract(
     This method will get as input the date type and return a query with
     the appropriate function of that date type on snowflake, it can be a simple function or a whole expression
 
-
+    Notes on Snowflake SQL:
+     - DATE_TRUNC(week, _), DAYOFWEEK(_) & WEEK result are based on the WEEK_START sessions parameter,
+       which is set to monday by default, so we cannot reliably expect sunday based result out of it
+     - DATE_TRUNC does not support the "weekiso" part
     """
     if date_type.lower() in [
         "seconds",
@@ -370,14 +373,15 @@ def get_query_for_date_extract(
         appropriate_func = {
             # Returning numbers
             # -----------------
-
-            "milliseconds": "DATE_TRUNC(millisecond, to_timestamp(____target____))",
+            "milliseconds": "ROUND(EXTRACT(nanosecond FROM to_timestamp(____target____))/1000000)",
             "isoDayOfWeek": "DAYOFWEEKISO(to_timestamp(____target____))",
             "isoWeek": "WEEKISO(to_timestamp(____target____))",
             "isoYear": "YEAROFWEEKISO(to_timestamp(____target____))",
 
+            # same problem as 'week' behaviour
             "previousWeek": "WEEK(to_timestamp(____target____) - interval '1 week')",
-            "previousIsoWeek": "WEEKISO(to_timestamp(____target____)) - 1",
+
+            "previousIsoWeek": "WEEKISO(to_timestamp(____target____) - interval '1 week')",
             "previousMonth": "MONTH(to_timestamp(____target____) - interval '1 month')",
             "previousQuarter": "QUARTER(to_timestamp(____target____) - interval '1 quarter')",
             "previousYear": "YEAR(to_timestamp(____target____) - interval '1 year')",
@@ -386,12 +390,7 @@ def get_query_for_date_extract(
 
             # Returning dates
             # ---------------
-            # Notes on Snowflake SQL:
-            # - DATE_TRUNC(week, _), DAYOFWEEK(_) & WEEK result are based on the WEEK_START sessions parameter,
-            #   which is set to monday by default, so we cannot reliably expect sunday based result out of it
-            # - DATE_TRUNC does not support the "weekiso" part
-
-            "previousDay": "to_timestamp(____target____) - interval '1 day'",
+            "previousDay": "DATE_TRUNC(day, to_timestamp(____target____) - interval '1 day')",
 
             "firstDayOfWeek": "DATE_TRUNC(day, DATEADD(day, -(DAYOFWEEKISO(to_timestamp(____target____)) % 7 + 1)+1, to_timestamp(____target____)))",
             "firstDayOfIsoWeek": "DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(____target____))+1, to_timestamp(____target____)))",
@@ -401,9 +400,10 @@ def get_query_for_date_extract(
 
             "firstDayOfPreviousWeek": "DATE_TRUNC(day, DATEADD(day, -(DAYOFWEEKISO(to_timestamp(____target____)) % 7 + 1)+1, to_timestamp(____target____))) - interval '1 week'",
             "firstDayOfPreviousIsoWeek": "DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(____target____))+1, to_timestamp(____target____))) - interval '1 week'",
-            "firstDayOfPreviousMonth": "(to_timestamp(____target____) - interval '2 month') + interval '1 day'",
-            "firstDayOfPreviousQuarter": "to_timestamp(____target____) - interval '1 quarter'",
-            "firstDayOfPreviousYear": "(to_timestamp(____target____) - interval '1 year') + interval '1 day'",
+
+            "firstDayOfPreviousMonth": "TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(____target____))) - interval '1 month'",
+            "firstDayOfPreviousQuarter": "TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(____target____))) - interval '1 quarter'",
+            "firstDayOfPreviousYear": "TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(____target____))) - interval '1 year'",
         }
 
         return f"({appropriate_func[date_type].replace('____target____', target_column)}) AS {new_column}"
