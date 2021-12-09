@@ -342,7 +342,7 @@ def get_query_for_date_extract(
     the appropriate function of that date type on snowflake, it can be a simple function or a whole expression
 
     Notes on Snowflake SQL:
-     - DATE_TRUNC(week, _), DAYOFWEEK(_) & WEEK result are based on the WEEK_START sessions parameter,
+     - DATE_TRUNC(week, _), DAYOFWEEK(_) & WEEK result are based on the WEEK_START & WEEK_OF_YEAR_POLICY sessions parameter,
        which is set to monday by default, so we cannot reliably expect sunday based result out of it
      - DATE_TRUNC does not support the "weekiso" part
     """
@@ -353,12 +353,11 @@ def get_query_for_date_extract(
         "day",
         "dayofweekiso",
         "dayofyear",
-        # Notes on Snowflake SQL for week:
-        # For week, Snowflake work on Mon-Mon or we wanted it on Sun-Sun
+        # For week, Snowflake work on Mon-Mon however we wanted it on Sun-Sun
         # that cause some divergences on results of the fixture on :
         #   - date "2021-03-29T00:00:00.000Z", and week should be 14 but we got 13
         #   - date "2020-12-13T00:00:00.000Z", dans week should be 51 but we got 50
-        # we're going to changes the fixture to let tests pass for now
+        # we changed the fixture to let tests pass for now
         "week",
         "weekiso",
         "month",
