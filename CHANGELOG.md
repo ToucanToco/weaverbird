@@ -1,5 +1,11 @@
 # Changelog
 
+## [0.77.1] - 2021-12-10
+
+### Fixed
+
+- Mongo translation : always truncate extracted date info
+
 ## [0.77.0] - 2021-12-06
 
 ### Added
@@ -1133,6 +1139,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.77.1]: https://github.com/ToucanToco/weaverbird/compare/v0.77.0...v0.77.1
 [0.77.0]: https://github.com/ToucanToco/weaverbird/compare/v0.76.2...v0.77.0
 [0.76.2]: https://github.com/ToucanToco/weaverbird/compare/v0.76.1...v0.76.2
 [0.76.1]: https://github.com/ToucanToco/weaverbird/compare/v0.76.0...v0.76.1
