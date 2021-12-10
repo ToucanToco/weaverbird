@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## [0.78.1] - 2021-12-10
+
+### Fixed
+
+- Mongo translation : always truncate extracted date info
+
 ## [0.78.0] - 2021-12-09
 
 ### Added
@@ -1139,6 +1145,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.78.1]: https://github.com/ToucanToco/weaverbird/compare/v0.78.0...v0.78.1
 [0.78.0]: https://github.com/ToucanToco/weaverbird/compare/v0.77.0...v0.78.0
 [0.77.0]: https://github.com/ToucanToco/weaverbird/compare/v0.76.2...v0.77.0
 [0.76.2]: https://github.com/ToucanToco/weaverbird/compare/v0.76.1...v0.76.2
