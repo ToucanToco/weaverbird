@@ -18,8 +18,7 @@ export type BasicDatePart =
   | 'seconds'
   | 'milliseconds';
 
-export type DateInfo =
-  | BasicDatePart
+export type AdvancedDateInfo =
   | 'quarter'
   | 'firstDayOfYear'
   | 'firstDayOfMonth'
@@ -37,6 +36,8 @@ export type DateInfo =
   | 'previousWeek'
   | 'previousQuarter'
   | 'previousIsoWeek';
+
+export type DateInfo = BasicDatePart | AdvancedDateInfo;
 
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
