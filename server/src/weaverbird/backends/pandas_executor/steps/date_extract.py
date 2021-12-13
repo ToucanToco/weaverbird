@@ -148,6 +148,9 @@ def execute_date_extract(
             if result.dtype.is_unsigned_integer:
                 result = cast_to_int(result)
 
+        # assign won't work if result has duplicates in its index
+        result = result[~result.index.duplicated()]
+
         df = df.assign(**{new_col: result})
 
     return df
