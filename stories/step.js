@@ -40,7 +40,8 @@ stories
     data() {
       return {
         step: {
-          name: 'custom',
+          name: 'domain',
+          domain: 'Dataset 1',
         },
       };
     },
@@ -49,7 +50,7 @@ stories
     created: function() {
       registerModule(this.$store, {
         backendMessages: [],
-        dataset: { headers: [], data: [] },
+        dataset: { headers: [], data: [], previewContext: { sourceRowsSubset: 100 } },
       });
     },
   }))
