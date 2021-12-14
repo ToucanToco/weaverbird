@@ -29,6 +29,7 @@ import {
   faPlus,
   faQuestionCircle,
   faSearch,
+  faSyncAlt,
   faTimes,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons';
@@ -60,6 +61,7 @@ const FA_ICONS = {
   plus: faPlus,
   'question-circle': faQuestionCircle,
   search: faSearch,
+  'sync-alt': faSyncAlt,
   times: faTimes,
   trash: faTrash,
   // Regular icons (should always use `far ` prefix)
