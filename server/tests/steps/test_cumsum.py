@@ -6,7 +6,9 @@ from weaverbird.pipeline.steps import CumSumStep
 
 def test_benchmark_cumsum_legacy_syntax(benchmark):
     big_df = DataFrame({'value': list(range(1000))})
-    step = CumSumStep(name='cumsum', referenceColumn='value', valueColumn='value', newColumn='my_cumsum')  # type: ignore
+    step = CumSumStep(
+        name='cumsum', referenceColumn='value', value_column='value', new_column='my_cumsum'
+    )
     benchmark(execute_cumsum, step, big_df)
 
 
