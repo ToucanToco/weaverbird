@@ -6,7 +6,7 @@
     "pipeline": [
       {
         "name": "cumsum",
-        "valueColumn": "VALUE",
+        "toCumSum": [["VALUE", ""]],
         "referenceColumn": "DATE"
       }
     ]

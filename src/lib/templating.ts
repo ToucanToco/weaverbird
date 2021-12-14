@@ -210,12 +210,18 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   cumsum(step: Readonly<S.CumSumStep>) {
     return {
       ...step,
+      // For retrocompatibility purposes
       valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
       referenceColumn: _interpolate(this.interpolateFunc, step.referenceColumn, this.context),
       groupby: (step.groupby ?? []).map(col =>
         _interpolate(this.interpolateFunc, col, this.context),
       ),
+      // For retrocompatibility purposes
       newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
+      toCumSum: step.toCumSum.map(([valueColumn, newColumn]) => [
+        _interpolate(this.interpolateFunc, valueColumn, this.context),
+        _interpolate(this.interpolateFunc, newColumn, this.context),
+      ]),
     };
   }
 

@@ -151,10 +151,11 @@ export type ConvertStep = {
 
 export type CumSumStep = {
   name: 'cumsum';
-  valueColumn: string;
+  valueColumn?: string; // supported for retrocompatibility only
   referenceColumn: string;
   groupby?: string[];
-  newColumn?: string;
+  newColumn?: string; // supported for retrocompatibility only
+  toCumSum: string[][];
 };
 
 export type CustomStep = {

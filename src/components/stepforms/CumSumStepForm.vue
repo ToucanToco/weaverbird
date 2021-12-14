@@ -6,16 +6,19 @@
       :version="version"
       :backendError="backendError"
     />
-    <ColumnPicker
-      class="valueColumnInput"
-      v-model="editedStep.valueColumn"
-      name="Value column to sum"
-      placeholder="Enter a column"
-      data-path=".valueColumn"
-      :syncWithSelectedColumn="false"
+    <ListWidget
+      addFieldName="Add column"
+      class="toReplace"
+      name="Columns to cumulate :"
+      v-model="toCumSum"
+      :defaultItem="['', '']"
+      :widget="cumSumWidget"
+      :automatic-new-field="false"
+      data-path=".toCumSum"
       :errors="errors"
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
+      unstyled-items
     />
     <ColumnPicker
       class="referenceColumnInput"
@@ -37,14 +40,6 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
     />
-    <InputTextWidget
-      class="newColumnInput"
-      v-model="editedStep.newColumn"
-      name="(Optional) New column name:"
-      :placeholder="`${editedStep.valueColumn}_CUMSUM`"
-      data-path=".newColumn"
-      :errors="errors"
-    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -60,6 +55,7 @@ import { VQBModule } from '@/store';
 
 import ColumnPicker from './ColumnPicker.vue';
 import BaseStepForm from './StepForm.vue';
+import CumSumWidget from './widgets/CumSum.vue';
 import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
@@ -79,9 +75,36 @@ export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
 
-  @Prop({ type: Object, default: () => ({ name: 'cumsum', valueColumn: '', referenceColumn: '' }) })
+  @Prop({
+    type: Object,
+    default: () => ({ name: 'cumsum', toCumSum: [['', '']], referenceColumn: '' }),
+  })
   initialStepValue!: CumSumStep;
 
   readonly title: string = 'Compute cumulated sum';
+  cumSumWidget = CumSumWidget;
+
+  /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
+   *  as we have to manage historical configurations where only one column at a time could be
+   * renamed via the 'valueColumn' and 'newColumn' parameter, now optional and not useful. So we
+   * convert them into a 'toCumSum' array upfront */
+  editedStep = {
+    ...this.stepFormDefaults,
+    ...this.initialStepValue,
+    toCumSum:
+      this.initialStepValue.valueColumn && this.initialStepValue.newColumn
+        ? [[this.initialStepValue.valueColumn, this.initialStepValue.newColumn]]
+        : this.initialStepValue.toCumSum,
+    valueColumn: undefined,
+    newColumn: undefined,
+  };
+
+  get toCumSum() {
+    return this.editedStep.toCumSum;
+  }
+
+  set toCumSum(newval) {
+    this.editedStep.toCumSum = [...newval];
+  }
 }
 </script>
