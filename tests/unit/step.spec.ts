@@ -1,4 +1,4 @@
-import { createLocalVue, mount, shallowMount, Wrapper } from '@vue/test-utils';
+import { createLocalVue, createWrapper, mount, shallowMount, Wrapper } from '@vue/test-utils';
 import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
@@ -258,6 +258,39 @@ describe('Step.vue', () => {
       expect(wrapper.find('.query-pipeline-step__actions').classes()).toContain(
         'query-pipeline-step__actions--disabled',
       );
+    });
+  });
+
+  describe('when step is expandable (source subset)', () => {
+    let wrapper: Wrapper<Step>;
+    beforeEach(() => {
+      wrapper = createStepWrapper({
+        propsData: {
+          key: 0,
+          isActive: true,
+          isDisabled: false,
+          isFirst: true,
+          isLast: false,
+          isEditable: true,
+          step: { name: 'rename', toRename: [['foo', 'bar']] },
+          indexInPipeline: 2,
+        },
+      });
+    });
+    it('should add a filter icon to expand step', () => {
+      expect(wrapper.find('.query-pipeline-step__action--expand').exists()).toBe(true);
+    });
+    it('should hide the preview source subset form', () => {
+      expect(wrapper.find('PreviewSourceSubset-stub').exists()).toBe(false);
+    });
+    describe('when step is expand', () => {
+      beforeEach(async () => {
+        wrapper.find('.query-pipeline-step__action--expand').trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+      it('should display the preview source subset form', () => {
+        expect(wrapper.find('PreviewSourceSubset-stub').exists()).toBe(true);
+      });
     });
   });
 });

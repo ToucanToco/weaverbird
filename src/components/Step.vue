@@ -23,6 +23,14 @@
             'query-pipeline-step__actions--disabled': !isEditable,
           }"
         >
+          <div
+            class="query-pipeline-step__action query-pipeline-step__action--expand"
+            data-cy="weaverbird-filter-step"
+            v-if="isExpandable"
+            @click.stop="toggleBody"
+          >
+            <FAIcon icon="filter" />
+          </div>
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
           <div
             class="query-pipeline-step__action"
@@ -39,6 +47,9 @@
             <FAIcon icon="grip-vertical" />
           </div>
         </div>
+      </div>
+      <div class="query-pipeline-step__expand" v-if="isExpandable && expanded">
+        <PreviewSourceSubset />
       </div>
       <div class="query-pipeline-step__footer" v-if="errorMessage && !isDisabled">
         <div class="query-pipeline-step__error" :title="errorMessage">
@@ -58,10 +69,13 @@ import { PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
+import PreviewSourceSubset from './PreviewSourceSubset.vue';
+
 @Component({
   name: 'step',
   components: {
     FAIcon,
+    PreviewSourceSubset,
   },
 })
 export default class Step extends Vue {
@@ -95,12 +109,18 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
+  expanded = false;
+
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
   @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
 
   get stepName(): string {
     return humanReadableLabel(this.step);
+  }
+
+  get isExpandable(): boolean {
+    return this.isFirst;
   }
 
   get errorMessage(): string | undefined {
@@ -127,6 +147,7 @@ export default class Step extends Vue {
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
       'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
+      'query-pipeline-step__container--expanded': this.isExpandable && this.expanded,
     };
   }
 
@@ -154,6 +175,10 @@ export default class Step extends Vue {
 
   toggleDelete(): void {
     if (!this.isFirst) this.$emit('toggleDelete');
+  }
+
+  toggleBody(): void {
+    this.expanded = !this.expanded;
   }
 }
 </script>
@@ -450,6 +475,21 @@ export default class Step extends Vue {
       background-color: $grey-dark;
       border-color: $grey-dark;
     }
+  }
+}
+
+.query-pipeline-step__expand {
+  height: 45px;
+}
+
+.query-pipeline-step__container--expanded {
+  height: 97px;
+  .query-pipeline-step,
+  .query-pipeline-step__action {
+    border-color: $active-color;
+  }
+  .query-pipeline-step__action--expand {
+    color: $active-color;
   }
 }
 </style>
