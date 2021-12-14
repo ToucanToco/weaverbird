@@ -115,12 +115,17 @@ export default class Step extends Vue {
 
   @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
 
+  @VQBModule.Getter('previewSourceRowsSubset') previewSourceRowsSubset?:
+    | number
+    | 'unlimited'
+    | undefined;
+
   get stepName(): string {
     return humanReadableLabel(this.step);
   }
 
   get isExpandable(): boolean {
-    return this.isFirst;
+    return Boolean(this.isFirst && this.previewSourceRowsSubset);
   }
 
   get errorMessage(): string | undefined {

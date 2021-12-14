@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
+import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
@@ -264,24 +265,37 @@ describe('Step.vue', () => {
   describe('when step is expandable (source subset)', () => {
     let wrapper: Wrapper<Step>;
     beforeEach(() => {
-      wrapper = createStepWrapper({
-        propsData: {
-          key: 0,
-          isActive: true,
-          isDisabled: false,
-          isFirst: true,
-          isLast: false,
-          isEditable: true,
-          step: { name: 'rename', toRename: [['foo', 'bar']] },
-          indexInPipeline: 2,
+      const dummyDataset: DataSet = {
+        headers: [
+          { name: 'city', uniques: { values: [{ value: 'Lyon', count: 50 }], loaded: false } },
+        ],
+        data: [['Lyon']],
+        previewContext: { sourceRowsSubset: 100 },
+      };
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      ];
+      const store = setupMockStore(
+        buildStateWithOnePipeline(pipeline, {
+          currentStepFormName: 'domain',
+          dataset: dummyDataset,
+        }),
+      );
+      wrapper = mount(PipelineComponent, {
+        store,
+        localVue,
+        stubs: {
+          PreviewSourceSubset: '<div class="preview-source-subset" />',
         },
       });
     });
     it('should add a filter icon to expand step', () => {
       expect(wrapper.find('.query-pipeline-step__action--expand').exists()).toBe(true);
+      expect(wrapper.findAll('.query-pipeline-step__action--expand')).toHaveLength(1);
     });
     it('should hide the preview source subset form', () => {
-      expect(wrapper.find('PreviewSourceSubset-stub').exists()).toBe(false);
+      expect(wrapper.find('.preview-source-subset').exists()).toBe(false);
     });
     describe('when step is expand', () => {
       beforeEach(async () => {
@@ -289,7 +303,8 @@ describe('Step.vue', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display the preview source subset form', () => {
-        expect(wrapper.find('PreviewSourceSubset-stub').exists()).toBe(true);
+        expect(wrapper.find('.preview-source-subset').exists()).toBe(true);
+        expect(wrapper.findAll('.preview-source-subset')).toHaveLength(1);
       });
     });
   });
