@@ -34,7 +34,6 @@
         Delete [{{ selectedSteps.length }}] selected
       </div>
     </div>
-    <PreviewSourceSubset />
     <div class="query-pipeline__tips-container" v-if="hasSupportedSteps">
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
@@ -63,7 +62,6 @@ import { VQBModule } from '@/store';
 import { MutationCallbacks } from '@/store/mutations';
 
 import DeleteConfirmationModal from './DeleteConfirmationModal.vue';
-import PreviewSourceSubset from './PreviewSourceSubset.vue';
 import Step from './Step.vue';
 
 @Component({
@@ -73,7 +71,6 @@ import Step from './Step.vue';
     Draggable,
     Step,
     FAIcon,
-    PreviewSourceSubset,
   },
 })
 export default class PipelineComponent extends Vue {
