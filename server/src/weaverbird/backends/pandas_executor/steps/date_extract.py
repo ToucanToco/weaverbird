@@ -149,7 +149,7 @@ def execute_date_extract(
                 result = cast_to_int(result)
 
         # assign won't work if result has duplicates in its index
-        result = result[~result.index.duplicated()]
+        result = result.drop_duplicates()
 
         df = df.assign(**{new_col: result})
 
