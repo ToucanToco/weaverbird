@@ -1382,7 +1382,8 @@ describe('Pipeline interpolator', () => {
     ]);
   });
 
-  it('should interpolate cumsum steps', () => {
+  it('should interpolate cumsum steps old-fashioned if needed', () => {
+    // Test for retrocompatibility purposes
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
@@ -1390,6 +1391,7 @@ describe('Pipeline interpolator', () => {
         referenceColumn: '<%= foo %>',
         groupby: ['<%= foo %>'],
         newColumn: '<%= foo %>',
+        toCumSum: [[]],
       },
     ];
     expect(translate(pipeline)).toEqual([
@@ -1399,6 +1401,28 @@ describe('Pipeline interpolator', () => {
         referenceColumn: 'bar',
         groupby: ['bar'],
         newColumn: 'bar',
+        toCumSum: [[undefined, undefined]],
+      },
+    ]);
+  });
+
+  it('should interpolate cumsum steps', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        referenceColumn: '<%= foo %>',
+        groupby: ['<%= foo %>'],
+        toCumSum: [['<%= foo %>', '<%= foo %>']],
+      },
+    ];
+    expect(translate(pipeline)).toEqual([
+      {
+        name: 'cumsum',
+        referenceColumn: 'bar',
+        groupby: ['bar'],
+        toCumSum: [['bar', 'bar']],
+        valueColumn: undefined,
+        newColumn: undefined,
       },
     ]);
   });

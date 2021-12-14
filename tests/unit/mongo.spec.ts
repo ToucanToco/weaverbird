@@ -4039,10 +4039,11 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate basic cumsum steps if needed', () => {
+  it('can generate basic old fashion cumsum steps if needed', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
+        toCumSum: [],
         valueColumn: 'VALUE',
         referenceColumn: 'DATE',
       },
@@ -4069,10 +4070,11 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate more complex cumsum steps if needed', () => {
+  it('can generate more complex old fashion cumsum steps if needed', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
+        toCumSum: [],
         valueColumn: 'VALUE',
         referenceColumn: 'DATE',
         groupby: ['COUNTRY', 'PRODUCT'],
@@ -4098,6 +4100,82 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           COUNTRY: '$_id.COUNTRY',
           PRODUCT: '$_id.PRODUCT',
           MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          _vqbArray: 1,
+        },
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+      { $project: { _vqbArray: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can generate basic new fashion cumsum steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        toCumSum: [
+          ['VALUE', ''],
+          ['VALUE_2', 'MY_NEW_COLUMN'],
+        ],
+        referenceColumn: 'DATE',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
+      {
+        $group: {
+          _id: null,
+          VALUE: { $push: '$VALUE' },
+          VALUE_2: { $push: '$VALUE_2' },
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
+      {
+        $project: {
+          VALUE_CUMSUM: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE_2', { $add: ['$_VQB_INDEX', 1] }] } },
+          _vqbArray: 1,
+        },
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+      { $project: { _vqbArray: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can generate more complex new fashion cumsum steps if needed', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        toCumSum: [
+          ['VALUE', ''],
+          ['VALUE_2', 'MY_NEW_COLUMN'],
+        ],
+        referenceColumn: 'DATE',
+        groupby: ['COUNTRY', 'PRODUCT'],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
+      {
+        $group: {
+          _id: {
+            COUNTRY: '$COUNTRY',
+            PRODUCT: '$PRODUCT',
+          },
+          VALUE: { $push: '$VALUE' },
+          VALUE_2: { $push: '$VALUE_2' },
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
+      {
+        $project: {
+          COUNTRY: '$_id.COUNTRY',
+          PRODUCT: '$_id.PRODUCT',
+          VALUE_CUMSUM: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE_2', { $add: ['$_VQB_INDEX', 1] }] } },
           _vqbArray: 1,
         },
       },

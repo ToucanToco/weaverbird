@@ -178,7 +178,16 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   cumsum(step: Readonly<S.CumSumStep>) {
-    return `Compute cumulated sum of "${step.valueColumn}"`;
+    // For retrocompatibility with old configurations
+    if (step.valueColumn) {
+      return `Compute cumulated sum of "${step.valueColumn}"`;
+    }
+
+    if (step.toCumSum.length === 1) {
+      return `Compute cumulated sum of "${step.toCumSum[0][0]}"`;
+    } else {
+      return `Compute cumulated sum of ${formatMulticol(step.toCumSum.map(a => a[0]))}`;
+    }
   }
 
   custom(_step: Readonly<S.CustomStep>) {

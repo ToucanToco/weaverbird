@@ -42,7 +42,7 @@ of the computation. The computation can be scoped by group if needed.
 
 #### Example 1 : Basic configuration
 
-<img src="../../img/docs/user-interface/cumsum_example_conf_1.jpg" width="750" />
+<img src="../../img/docs/user-interface/cumsum_example_conf_1.png" width="750" />
 
 This configuration results in:
 
@@ -50,7 +50,7 @@ This configuration results in:
 
 #### Example 2 : Configuration with optional parameters
 
-<img src="../../img/docs/user-interface/cumsum_example_conf_2.jpg" width="750" />
+<img src="../../img/docs/user-interface/cumsum_example_conf_2.png" width="750" />
 
 This configuration results in:
 
