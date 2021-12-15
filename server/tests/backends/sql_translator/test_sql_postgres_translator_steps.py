@@ -18,7 +18,7 @@ from weaverbird.pipeline import Pipeline
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
 
-test_cases = retrieve_case('sql_translator', 'sql')
+test_cases = retrieve_case('sql_translator', 'postgres')
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -115,7 +115,7 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
 
     request = (
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
-        f' WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
+        f' WHERE table_name = \'{table_name}\' ORDER BY ordinal_position;'
     )
 
     connection = get_connection()
@@ -131,6 +131,9 @@ def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFr
         res = cursor.execute(domain if domain else query_string).fetchall()
         return pd.DataFrame(res)
 
+def standardized_columns(df: pd.DataFrame):
+    df.columns = [c.lower() for c in df.columns]
+
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
@@ -142,13 +145,16 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # inserting the data in Postgres
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+    standardized_columns(data_to_insert)
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
 
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
-            pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
+            data_other_insert = pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table')
+            standardized_columns(data_other_insert)
+            data_other_insert.to_sql(
                 name=input,
                 con=get_engine,
                 index=False,
@@ -175,6 +181,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    standardized_columns(pandas_result_expected)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query

@@ -1,7 +1,8 @@
 {
   "exclude": [
     "pandas",
-    "sql"
+    "sql",
+    "postgres"
   ],
   "step": {
     "pipeline": [
