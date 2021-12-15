@@ -5,19 +5,17 @@ from typing import Dict, List, Optional, Union
 
 import docker
 import pandas as pd
-import pymysql
+import psycopg2
+from psycopg2 import OperationalError
 import pytest
 from docker.models.images import Image
-from pymysql.err import OperationalError
 from sqlalchemy import create_engine
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
-pymysql.install_as_MySQLdb()
-
-image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': '5.7.21'}
+image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
 
 test_cases = retrieve_case('sql_translator', 'sql')
@@ -46,13 +44,11 @@ def db_container():
         auto_remove=True,
         detach=True,
         environment={
-            'MYSQL_DATABASE': 'mysql_db',
-            'MYSQL_ROOT_PASSWORD': 'ilovetoucan',
-            'MYSQL_USER': 'ubuntu',
-            'MYSQL_PASSWORD': 'ilovetoucan',
-            'MYSQL_ROOT_HOST': '%',
+            'POSTGRES_DB': 'pg_db',
+            'POSTGRES_USER': 'ubuntu',
+            'POSTGRES_PASSWORD': 'ilovetoucan',
         },
-        ports={'3306': '3306'},
+        ports={'5432': '5432'},
     )
     ready = False
     while not ready:
@@ -72,10 +68,10 @@ def get_connection():
         'host': '127.0.0.1',
         'user': 'ubuntu',
         'password': 'ilovetoucan',
-        'port': 3306,
-        'database': 'mysql_db',
+        'port': 5432,
+        'database': 'pg_db',
     }
-    conn = pymysql.connect(**con_params)
+    conn = psycopg2.connect(**con_params)
     return conn
 
 
@@ -84,9 +80,9 @@ def get_engine():
     host = '127.0.0.1'
     user = 'ubuntu'
     password = 'ilovetoucan'
-    port = 3306
-    database = 'mysql_db'
-    engine = create_engine(f'mysql://{user}:{password}@{host}:{port}/{database}')
+    port = 5432
+    database = 'pg_db'
+    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     return engine
 
 
@@ -132,10 +128,8 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
 def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        cursor = connection.cursor()
         res = cursor.execute(domain if domain else query_string).fetchall()
         return pd.DataFrame(res)
-
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
@@ -145,7 +139,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Drop created table
     execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
 
-    # inserting the data in MySQL
+    # inserting the data in Postgres
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
     data_to_insert.to_sql(
@@ -165,15 +159,15 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
 
-    # Convert Pipeline object to MySQL Query
+    # Convert Pipeline object to Postgres Query
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer,
-        sql_query_executor=sql_query_executor,
+        sql_query_executor=sql_query_executor
     )
 
-    # Execute request generated from Pipeline in Mysql and get the result
+    # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table

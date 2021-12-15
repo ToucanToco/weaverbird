@@ -21,6 +21,7 @@ def translate_table(
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
+    #sql_type: str = None,
 ) -> SQLQuery:
     """As it is always the first step add the with keyword"""
     select_from_table = sql_query_retriever(

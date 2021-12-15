@@ -71,7 +71,7 @@ class TableMetadata(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         if 'name' not in kwargs:
-            raise MetadataError('prout')
+            raise MetadataError('Name is required')
         self.name: str = kwargs['name'].upper()
         self.original_name: str = kwargs['name']
 
