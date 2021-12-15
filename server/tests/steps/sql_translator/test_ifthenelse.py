@@ -30,6 +30,32 @@ def test_simple_condition_integer(query):
     assert query.query_name == 'IFTHENELSE_STEP_1'
 
 
+def test_without_attribute_else_value(query):
+    step = IfthenelseStep(
+        **{
+            'name': 'ifthenelse',
+            'if': {
+                'column': 'RAICHU',
+                'value': 10,
+                'operator': 'gt',
+            },
+            'newColumn': 'cond',
+            'then': '"tintin"',
+            'else': '"anime"',
+        }
+    )
+    delattr(step, 'else_value')
+    query = translate_ifthenelse(
+        step,
+        query,
+        index=1,
+    )
+    expected_transformed_query = 'WITH SELECT_STEP_0 AS (SELECT * FROM products), IFTHENELSE_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, condition=ComparisonCondition(column='RAICHU', operator='gt', value=10) then=''tintin'' name='ifthenelse' new_column='cond' AS COND FROM SELECT_STEP_0)'
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE, COND FROM IFTHENELSE_STEP_1'
+    assert query.query_name == 'IFTHENELSE_STEP_1'
+
+
 def test_simple_condition_strings(query):
     step = IfthenelseStep(
         **{

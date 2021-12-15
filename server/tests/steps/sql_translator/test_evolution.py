@@ -113,3 +113,31 @@ def test_translate_evolution_error(mocker, query):
             query,
             index=1,
         )
+
+
+def test_translate_evolution_evolutiion_format_pct(mocker, query):
+    step = EvolutionStep(
+        name='evolution',
+        dateCol='DATE',
+        valueCol='RAICHU',
+        evolutionType='vsLastMonth',
+        evolutionFormat='pct',
+    )
+    query = translate_evolution(
+        step,
+        query,
+        index=1,
+    )
+
+    expected_transformed_query = (
+        "WITH SELECT_STEP_0 AS (SELECT * FROM products), EVOLUTION_STEP_1 AS "
+        "(SELECT A.TOTO AS TOTO, A.RAICHU AS RAICHU, A.FLORIZARRE AS FLORIZARRE, A.DATE AS DATE, "
+        "((A.RAICHU / B.RAICHU) - 1) AS RAICHU_EVOL_PCT FROM SELECT_STEP_0 A LEFT JOIN SELECT_STEP_0 B "
+        "ON A.DATE = DATEADD('month', 1, B.DATE) ORDER BY A.DATE)"
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert (
+        query.selection_query
+        == 'SELECT TOTO, RAICHU, FLORIZARRE, DATE, RAICHU_EVOL_PCT FROM EVOLUTION_STEP_1'
+    )
+    assert query.query_name == 'EVOLUTION_STEP_1'

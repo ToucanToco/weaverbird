@@ -13,6 +13,33 @@ from weaverbird.backends.sql_translator.types import (
 )
 from weaverbird.pipeline.steps import ConvertStep
 
+PG_BOOLEAN_VALUES = ','.join(
+    [
+        f'\'{el}\''
+        for el in ['t', 'true', 'y', 'yes', 'on', '1', 'f', 'false', 'n', 'no', 'off', '0']
+    ]
+)
+
+
+def build_psql(retrieved_col_type, data_type, col):
+    if retrieved_col_type == 'TEXT' and data_type == 'boolean':
+        return f'CASE WHEN {col} IN ({PG_BOOLEAN_VALUES}) THEN CAST({col} AS {data_type}) ELSE FALSE END AS {col}'
+    if retrieved_col_type == 'TEXT' and data_type == 'integer':
+        return f'CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, \'[^0-9.]*\', \'\'), \'.\', 1), \'\') AS {data_type}) AS {col}'
+    return f'CAST({col} AS {data_type}) AS {col}'
+
+
+def build_snowflake(retrieved_col_type, data_type, col):
+    if (retrieved_col_type == 'FLOAT' or retrieved_col_type == 'REAL') and data_type == 'integer':
+        return f'TRUNCATE({col}) AS {col}'
+    elif retrieved_col_type == 'TEXT' and data_type == 'integer':
+        return f"CAST(SPLIT_PART({col}, '.', 0) AS {data_type}) AS {col}"
+    elif (
+        retrieved_col_type == 'TIMESTAMP_NTZ' or retrieved_col_type == 'DATE'
+    ) and data_type == 'integer':
+        return f"CAST(DATE_PART('EPOCH_MILLISECOND', TO_TIMESTAMP({col})) AS {data_type}) AS {col}"
+    return f'CAST({col} AS {data_type}) AS {col}'
+
 
 def translate_convert(
     step: ConvertStep,
@@ -37,25 +64,18 @@ def translate_convert(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
+    is_postgres = sql_dialect.get('sql_type') == 'postgres'
+
     to_cast = []
     for col in step.columns:
         retrieved_col_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(
             column_name=col
         )
-        if (
-            retrieved_col_type == 'FLOAT' or retrieved_col_type == 'REAL'
-        ) and step.data_type == 'integer':
-            to_cast.append(f'TRUNCATE({col}) AS {col}')
-        elif retrieved_col_type == 'TEXT' and step.data_type == 'integer':
-            to_cast.append(f"CAST(SPLIT_PART({col}, '.', 0) AS {step.data_type}) AS {col}")
-        elif (
-            retrieved_col_type == 'TIMESTAMP_NTZ' or retrieved_col_type == 'DATE'
-        ) and step.data_type == 'integer':
-            to_cast.append(
-                f"CAST(DATE_PART('EPOCH_MILLISECOND', TO_TIMESTAMP({col})) AS {step.data_type}) AS {col}"
-            )
+
+        if is_postgres:
+            to_cast.append(build_psql(retrieved_col_type, step.data_type, col))
         else:
-            to_cast.append(f'CAST({col} AS {step.data_type}) AS {col}')
+            to_cast.append(build_snowflake(retrieved_col_type, step.data_type, col))
 
     for c in step.columns:
         query.metadata_manager.update_query_metadata_column_type(c, step.data_type)
