@@ -262,7 +262,7 @@ describe('Step.vue', () => {
     });
   });
 
-  describe('when step is expandable (source subset)', () => {
+  describe('when step enable to edit preview source subset', () => {
     let wrapper: Wrapper<Step>;
     beforeEach(() => {
       const dummyDataset: DataSet = {
@@ -290,16 +290,20 @@ describe('Step.vue', () => {
         },
       });
     });
-    it('should add a filter icon to expand step', () => {
-      expect(wrapper.find('.query-pipeline-step__action--expand').exists()).toBe(true);
-      expect(wrapper.findAll('.query-pipeline-step__action--expand')).toHaveLength(1);
+    it('should add an icon to edit preview source subset', () => {
+      expect(wrapper.find('.query-pipeline-step__action--preview-source-subset').exists()).toBe(
+        true,
+      );
+      expect(wrapper.findAll('.query-pipeline-step__action--preview-source-subset')).toHaveLength(
+        1,
+      );
     });
     it('should hide the preview source subset form', () => {
       expect(wrapper.find('.preview-source-subset').exists()).toBe(false);
     });
-    describe('when step is expand', () => {
+    describe('when editing preview source subset', () => {
       beforeEach(async () => {
-        wrapper.find('.query-pipeline-step__action--expand').trigger('click');
+        wrapper.find('.query-pipeline-step__action--preview-source-subset').trigger('click');
         await wrapper.vm.$nextTick();
       });
       it('should display the preview source subset form', () => {

@@ -24,10 +24,10 @@
           }"
         >
           <div
-            class="query-pipeline-step__action query-pipeline-step__action--expand"
+            class="query-pipeline-step__action query-pipeline-step__action--preview-source-subset"
             data-cy="weaverbird-filter-step"
-            v-if="isExpandable"
-            @click.stop="toggleBody"
+            v-if="canConfigurePreviewSourceSubset"
+            @click.stop="togglePreviewSourceSubsetForm"
           >
             <FAIcon icon="filter" />
           </div>
@@ -48,7 +48,10 @@
           </div>
         </div>
       </div>
-      <div class="query-pipeline-step__expand" v-if="isExpandable && expanded">
+      <div
+        class="query-pipeline-step__expand"
+        v-if="canConfigurePreviewSourceSubset && isEditingPreviewSourceSubset"
+      >
         <PreviewSourceSubset />
       </div>
       <div class="query-pipeline-step__footer" v-if="errorMessage && !isDisabled">
@@ -109,7 +112,7 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
-  expanded = false;
+  isEditingPreviewSourceSubset = false;
 
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
@@ -124,7 +127,7 @@ export default class Step extends Vue {
     return humanReadableLabel(this.step);
   }
 
-  get isExpandable(): boolean {
+  get canConfigurePreviewSourceSubset(): boolean {
     return Boolean(this.isFirst && this.previewSourceRowsSubset);
   }
 
@@ -152,7 +155,8 @@ export default class Step extends Vue {
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
       'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
-      'query-pipeline-step__container--expanded': this.isExpandable && this.expanded,
+      'query-pipeline-step__container--preview-source-subset':
+        this.canConfigurePreviewSourceSubset && this.isEditingPreviewSourceSubset,
     };
   }
 
@@ -182,8 +186,8 @@ export default class Step extends Vue {
     if (!this.isFirst) this.$emit('toggleDelete');
   }
 
-  toggleBody(): void {
-    this.expanded = !this.expanded;
+  togglePreviewSourceSubsetForm(): void {
+    this.isEditingPreviewSourceSubset = !this.isEditingPreviewSourceSubset;
   }
 }
 </script>
@@ -487,13 +491,13 @@ export default class Step extends Vue {
   height: 45px;
 }
 
-.query-pipeline-step__container--expanded {
+.query-pipeline-step__container--preview-source-subset {
   height: 97px;
   .query-pipeline-step,
   .query-pipeline-step__action {
     border-color: $active-color;
   }
-  .query-pipeline-step__action--expand {
+  .query-pipeline-step__action--preview-source-subset {
     color: $active-color;
   }
 }
