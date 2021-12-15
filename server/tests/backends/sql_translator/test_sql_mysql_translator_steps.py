@@ -20,7 +20,7 @@ pymysql.install_as_MySQLdb()
 image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': '5.7.21'}
 docker_client = docker.from_env()
 
-test_cases = retrieve_case('sql_translator', 'sql')
+test_cases = retrieve_case('sql_translator', 'mysql')
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -129,13 +129,16 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
         res = {r[0]: r[1] for r in describe_res}
         return res
 
+
 def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        cursor = connection.cursor()
         res = cursor.execute(domain if domain else query_string).fetchall()
         return pd.DataFrame(res)
 
+
+def standardized_columns(df: pd.DataFrame):
+    df.columns = [c.lower() for c in df.columns]
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
@@ -148,13 +151,16 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # inserting the data in MySQL
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+    standardized_columns(data_to_insert)
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
 
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
-            pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
+            data_other_to_insert = pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table')
+            standardized_columns(data_other_to_insert)
+            data_other_to_insert.to_sql(
                 name=input,
                 con=get_engine,
                 index=False,
@@ -181,6 +187,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    standardized_columns(pandas_result_expected)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query
