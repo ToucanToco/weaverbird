@@ -42,5 +42,7 @@ def execute_addmissingdates(
             group_with_missing_dates['_old_date'],
         )
         del group_with_missing_dates['_old_date']
-        result = pd.concat([result, group_with_missing_dates])
+        # Each group could have duplicate indexes with the previous ones
+        # Ignoring the index prevents duplicate index values
+        result = pd.concat([result, group_with_missing_dates], ignore_index=True)
     return result
