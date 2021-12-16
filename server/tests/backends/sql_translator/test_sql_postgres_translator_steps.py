@@ -134,7 +134,7 @@ def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFr
 
 
 def standardized_columns(df: pd.DataFrame):
-    df.columns = [c.lower() for c in df.columns]
+    df.columns = [c.replace('-', '_').lower() for c in df.columns]
 
 
 # Translation from Pipeline json to SQL query
