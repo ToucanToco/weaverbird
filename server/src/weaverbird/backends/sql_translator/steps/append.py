@@ -26,6 +26,7 @@ def translate_append(
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
+    **kwargs,
 ) -> SQLQuery:
     query_name = f'APPEND_STEP_{index}'
     log.debug(

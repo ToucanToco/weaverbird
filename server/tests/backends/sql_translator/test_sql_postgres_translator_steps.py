@@ -17,8 +17,9 @@ from weaverbird.pipeline import Pipeline
 
 image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
+exec_type = 'postgres'
 
-test_cases = retrieve_case('sql_translator', 'postgres')
+test_cases = retrieve_case('sql_translator', exec_type)
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -176,6 +177,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer,
         sql_query_executor=sql_query_executor,
+        sql_type='postgres',
     )
 
     # Execute request generated from Pipeline in Postgres and get the result
@@ -185,7 +187,12 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
 
     # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    pandas_result_expected = pd.read_json(
+        json.dumps(
+            spec[f'expected_{exec_type}' if f'expected_{exec_type}' in spec else 'expected']
+        ),
+        orient='table',
+    )
     standardized_columns(pandas_result_expected)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']

@@ -75,5 +75,36 @@
         "value": "meh"
       }
     ]
+  },
+  "expected_postgres": {
+    "schema": {
+      "fields": [
+        {
+          "name": "value",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "value": "41"
+      },
+      {
+        "value": "42"
+      },
+      {
+        "value": "43.5"
+      },
+      {
+        "value": "43.6"
+      },
+      {
+        "value": null
+      },
+      {
+        "value": "meh"
+      }
+    ]
   }
 }

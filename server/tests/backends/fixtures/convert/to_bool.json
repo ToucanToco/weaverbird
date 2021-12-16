@@ -74,5 +74,36 @@
         "value": true
       }
     ]
+  },
+  "expected_postgres": {
+    "schema": {
+      "fields": [
+        {
+          "name": "value",
+          "type": "boolean"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "value": false
+      },
+      {
+        "value": false
+      },
+      {
+        "value": false
+      },
+      {
+        "value": true
+      },
+      {
+        "value": false
+      },
+      {
+        "value": false
+      }
+    ]
   }
 }

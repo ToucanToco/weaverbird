@@ -1,7 +1,8 @@
 {
   "exclude": [
     "pandas",
-    "mysql"
+    "mysql",
+    "postgres"
   ],
   "step": {
     "name": "convert",

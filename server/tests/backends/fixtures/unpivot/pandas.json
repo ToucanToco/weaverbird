@@ -2,7 +2,8 @@
   "exclude": [
     "snowflake",
     "postgres",
-    "mysql"
+    "mysql",
+    "postgres"
   ],
   "step": {
     "name": "unpivot",
