@@ -46,6 +46,7 @@ export {
 // export helpers/utils
 export { exampleInterpolateFunc } from '@/lib/templating';
 export { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
+export { dateRangeToString } from '@/lib/dates';
 
 // export directives
 export { resizable } from '@/directives/resizable/resizable';
