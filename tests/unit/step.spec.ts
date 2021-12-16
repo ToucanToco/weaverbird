@@ -46,7 +46,7 @@ describe('Step.vue', () => {
     expect(wrapper.emitted()).toEqual({ selectedStep: [[]] });
   });
 
-  it('emit toggleDelete when clicking on a step "time travel" dot', async () => {
+  it('emit toggleModify when clicking on a step "time travel" dot', async () => {
     const wrapper = createStepWrapper({
       propsData: {
         key: 0,
@@ -60,7 +60,7 @@ describe('Step.vue', () => {
     });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted()).toEqual({ toggleDelete: [[]] });
+    expect(wrapper.emitted()).toEqual({ toggleModify: [[]] });
   });
 
   it('should enable to drag step to other pipeline index', async () => {
@@ -79,7 +79,7 @@ describe('Step.vue', () => {
     expect(wrapper.find('.query-pipeline-step__action--handle').exists()).toBe(true);
   });
 
-  it('should not enable to delete domain step', async () => {
+  it('should not enable to modify (delete or copy) domain step', async () => {
     const wrapper = createStepWrapper({
       propsData: {
         key: 0,
@@ -94,7 +94,7 @@ describe('Step.vue', () => {
     });
     wrapper.find('.query-pipeline-queue__dot').trigger('click');
     await localVue.nextTick();
-    expect(wrapper.emitted().toggleDelete).toBeUndefined();
+    expect(wrapper.emitted().toggleModify).toBeUndefined();
   });
 
   it('should not enable to drag domain step to other pipeline index', async () => {
@@ -239,7 +239,7 @@ describe('Step.vue', () => {
     });
   });
 
-  describe('when step is not editable (delete mode)', () => {
+  describe('when step is not editable (modify mode)', () => {
     let wrapper: Wrapper<Step>;
     beforeEach(() => {
       wrapper = createStepWrapper({

@@ -2,7 +2,7 @@
   <div :class="classContainer" data-cy="weaverbird-query-pipeline-step">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass" />
-      <div class="query-pipeline-queue__dot" data-cy="weaverbird-step-dot" @click="toggleDelete">
+      <div class="query-pipeline-queue__dot" data-cy="weaverbird-step-dot" @click="toggleModify">
         <div class="query-pipeline-queue__dot-ink">
           <FAIcon icon="check" />
         </div>
@@ -98,7 +98,7 @@ export default class Step extends Vue {
   readonly isDisabled!: boolean;
 
   @Prop(Boolean)
-  readonly toDelete!: boolean;
+  readonly toModify!: boolean;
 
   @Prop({ type: Boolean, default: true })
   readonly isEditable?: boolean;
@@ -150,7 +150,7 @@ export default class Step extends Vue {
       'query-pipeline-step__container': true,
       'query-pipeline-step__container--togglable': !this.isFirst,
       'query-pipeline-step__container--draggable': !this.isFirst,
-      'query-pipeline-step__container--to-delete': this.toDelete,
+      'query-pipeline-step__container--to-modify': this.toModify,
       'query-pipeline-step__container--active': this.isActive,
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
@@ -182,8 +182,8 @@ export default class Step extends Vue {
     this.$emit('selectedStep');
   }
 
-  toggleDelete(): void {
-    if (!this.isFirst) this.$emit('toggleDelete');
+  toggleModify(): void {
+    if (!this.isFirst) this.$emit('toggleModify');
   }
 
   togglePreviewSourceSubsetForm(): void {
@@ -353,7 +353,7 @@ export default class Step extends Vue {
   width: 100%;
 }
 
-.query-pipeline-step__container--to-delete,
+.query-pipeline-step__container--to-modify,
 .query-pipeline-step__container--togglable:hover {
   .query-pipeline-queue__dot {
     transform: scale(1.3);
@@ -373,8 +373,8 @@ export default class Step extends Vue {
   }
 }
 
-.query-pipeline-step__container--to-delete,
-.query-pipeline-step__container--to-delete:hover {
+.query-pipeline-step__container--to-modify,
+.query-pipeline-step__container--to-modify:hover {
   .query-pipeline-queue__dot-ink {
     background-color: $active-color-faded;
     border-color: $active-color-faded;
@@ -409,8 +409,8 @@ export default class Step extends Vue {
     }
   }
 
-  &.query-pipeline-step__container--to-delete,
-  &.query-pipeline-step__container--to-delete:hover {
+  &.query-pipeline-step__container--to-modify,
+  &.query-pipeline-step__container--to-modify:hover {
     .query-pipeline-queue__dot-ink {
       background-color: $active-color;
       border-color: $active-color;
@@ -447,8 +447,8 @@ export default class Step extends Vue {
     }
   }
 
-  &.query-pipeline-step__container--to-delete,
-  &.query-pipeline-step__container--to-delete:hover {
+  &.query-pipeline-step__container--to-modify,
+  &.query-pipeline-step__container--to-modify:hover {
     .query-pipeline-queue__dot-ink {
       background-color: $error;
       border-color: $error;
@@ -478,8 +478,8 @@ export default class Step extends Vue {
     }
   }
 
-  &.query-pipeline-step__container--to-delete,
-  &.query-pipeline-step__container--to-delete:hover {
+  &.query-pipeline-step__container--to-modify,
+  &.query-pipeline-step__container--to-modify:hover {
     .query-pipeline-queue__dot-ink {
       background-color: $grey-dark;
       border-color: $grey-dark;

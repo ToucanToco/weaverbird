@@ -14,24 +14,37 @@
         :is-disabled="isDisabled(index)"
         :is-first="index === 0"
         :is-last="index === steps.length - 1"
-        :toDelete="toDelete({ index })"
+        :toModify="toModify({ index })"
         :isEditable="!isDeletingSteps"
         :step="step"
         :indexInPipeline="index"
         :variable-delimiters="variableDelimiters"
         @selectedStep="selectStep({ index: index })"
         @editStep="editStep"
-        @toggleDelete="toggleStepToDelete({ index })"
+        @toggleModify="toggleStepToModify({ index })"
       />
     </Draggable>
-    <div class="query-pipeline__delete-steps-container" v-if="selectedSteps.length">
+    <div class="query-pipeline__modify-steps-container" v-if="selectedSteps.length">
       <div
-        class="query-pipeline__delete-steps"
+        class="query-pipeline__modify-steps delete"
         data-cy="weaverbird-delete-steps"
         @click="openDeleteConfirmationModal"
       >
         <FAIcon icon="trash" />
         Delete [{{ selectedSteps.length }}] selected
+      </div>
+      <div
+        class="query-pipeline__modify-steps copy"
+        data-cy="weaverbird-copy-steps"
+        @click="triggerCopySelectedSteps"
+        v-if="!isCopied"
+      >
+        <FAIcon icon="copy" />
+        Copy [{{ selectedSteps.length }}] selected
+      </div>
+      <div class="query-pipeline__modify-steps copied" data-cy="weaverbird-copy-steps" v-else>
+        <FAIcon icon="check" />
+        Steps copied
       </div>
     </div>
     <div class="query-pipeline__tips-container" v-if="hasSupportedSteps">
@@ -77,6 +90,7 @@ export default class PipelineComponent extends Vue {
   // pipeline steps to delete based on their indexes
   selectedSteps: number[] = [];
   deleteConfirmationModalIsOpened = false;
+  isCopied = false;
 
   @VQBModule.State domains!: string[];
   @VQBModule.State variableDelimiters!: VariableDelimiters;
@@ -123,13 +137,14 @@ export default class PipelineComponent extends Vue {
     this.$emit('editStep', step, index);
   }
 
-  toDelete({ index }: { index: number }): boolean {
+  toModify({ index }: { index: number }): boolean {
     return this.selectedSteps.indexOf(index) !== -1;
   }
 
-  toggleStepToDelete({ index }: { index: number }): void {
-    // toggle step to delete using its index in pipeline
+  toggleStepToModify({ index }: { index: number }): void {
+    // toggle step to modify using its index in pipeline
     this.selectedSteps = _xor(this.selectedSteps, [index]);
+    this.isCopied = false;
   }
 
   openDeleteConfirmationModal(): void {
@@ -145,6 +160,11 @@ export default class PipelineComponent extends Vue {
     // clean steps to delete
     this.selectedSteps = [];
     this.closeDeleteConfirmationModal();
+  }
+
+  triggerCopySelectedSteps(): void {
+    this.copySelectedSteps();
+    this.isCopied = true;
   }
 
   updatePipeline({ pipeline }: { pipeline: Pipeline }): void {
@@ -229,17 +249,22 @@ export default class PipelineComponent extends Vue {
   text-align: center;
 }
 
-.query-pipeline__delete-steps-container {
+.query-pipeline__modify-steps-container {
   margin-top: 10px;
-  padding-left: 40px;
-  width: 100%;
-}
-
-.query-pipeline__delete-steps {
-  background: #b52519;
-  padding: 15px;
+  padding-left: 45px;
   width: 100%;
   text-align: center;
+}
+
+.query-pipeline__modify-steps {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 15px;
+  width: calc(50% - 20px);
+  display: inline-block;
+  text-align: center;
+  margin: 5px;
   text-transform: uppercase;
   color: white;
   letter-spacing: 1.5px;
@@ -247,6 +272,19 @@ export default class PipelineComponent extends Vue {
   font-weight: bold;
   cursor: pointer;
   border-radius: 2px;
+}
+
+.copy {
+  background: #2a66a1;
+}
+
+.copied {
+  background: #89aacb;
+  cursor: not-allowed;
+}
+
+.delete {
+  background: #b52519;
 }
 
 ::v-deep .fa-code {

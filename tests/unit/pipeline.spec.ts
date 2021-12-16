@@ -33,7 +33,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: true,
       isLast: false,
-      toDelete: false,
+      toModify: false,
       isEditable: true,
       indexInPipeline: 0,
     });
@@ -44,7 +44,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: false,
       isLast: false,
-      toDelete: false,
+      toModify: false,
       isEditable: true,
       indexInPipeline: 1,
     });
@@ -55,7 +55,7 @@ describe('Pipeline.vue', () => {
       isDisabled: false,
       isFirst: false,
       isLast: true,
-      toDelete: false,
+      toModify: false,
       isEditable: true,
       indexInPipeline: 2,
     });
@@ -72,8 +72,8 @@ describe('Pipeline.vue', () => {
     expect(icons.at(0).props().icon).toBe('magic');
   });
 
-  describe('toggle delete step', () => {
-    let wrapper: Wrapper<PipelineComponent>, stepToDelete: Wrapper<any>;
+  describe('toggle modify step', () => {
+    let wrapper: Wrapper<PipelineComponent>, stepToModify: Wrapper<any>;
     beforeEach(async () => {
       const pipeline: Pipeline = [
         { name: 'domain', domain: 'GoT' },
@@ -83,28 +83,28 @@ describe('Pipeline.vue', () => {
       const store = setupMockStore(buildStateWithOnePipeline(pipeline));
       wrapper = shallowMount(PipelineComponent, { store, localVue });
       const steps = wrapper.findAll('step-stub');
-      stepToDelete = steps.at(1);
-      stepToDelete.vm.$emit('toggleDelete');
+      stepToModify = steps.at(1);
+      stepToModify.vm.$emit('toggleModify');
       await wrapper.vm.$nextTick();
     });
 
-    it('should add step index to steps to delete', () => {
+    it('should add step index to steps to modify', () => {
       expect((wrapper.vm as any).selectedSteps).toContain(1);
     });
-    it('should apply delete class to step', () => {
-      expect(stepToDelete.props().toDelete).toBe(true);
+    it('should apply modify class to step', () => {
+      expect(stepToModify.props().toModify).toBe(true);
     });
 
     describe('when already selected', () => {
       beforeEach(async () => {
-        stepToDelete.vm.$emit('toggleDelete');
+        stepToModify.vm.$emit('toggleModify');
         await wrapper.vm.$nextTick();
       });
-      it('should remove step index from step to delete', () => {
+      it('should remove step index from step to modify', () => {
         expect((wrapper.vm as any).selectedSteps).not.toContain(1);
       });
-      it('should remove delete class from step', () => {
-        expect(stepToDelete.props().toDelete).toBe(false);
+      it('should remove modify class from step', () => {
+        expect(stepToModify.props().toModify).toBe(false);
       });
     });
 
@@ -113,12 +113,17 @@ describe('Pipeline.vue', () => {
         wrapper.setData({ selectedSteps: [1, 2] });
         await wrapper.vm.$nextTick();
       });
-      it('should show the delete steps button', () => {
-        expect(wrapper.find('.query-pipeline__delete-steps-container').exists()).toBe(true);
+      it('should show the modify steps button', () => {
+        expect(wrapper.find('.query-pipeline__modify-steps-container').exists()).toBe(true);
       });
       it('should display the number of selected steps into the delete steps button', () => {
-        expect(wrapper.find('.query-pipeline__delete-steps').text()).toContain(
+        expect(wrapper.find('.query-pipeline__modify-steps.delete').text()).toContain(
           'Delete [2] selected',
+        );
+      });
+      it('should display the number of selected steps into the modify steps button', () => {
+        expect(wrapper.find('.query-pipeline__modify-steps.copy').text()).toContain(
+          'Copy [2] selected',
         );
       });
       it('should make steps uneditable', () => {
@@ -127,13 +132,13 @@ describe('Pipeline.vue', () => {
       });
     });
 
-    describe('when there is no steps to delete', () => {
+    describe('when there is no steps to modify', () => {
       beforeEach(async () => {
         wrapper.setData({ selectedSteps: [] });
         await wrapper.vm.$nextTick();
       });
-      it('should hide the delete steps button', () => {
-        expect(wrapper.find('.qquery-pipeline__delete-steps-container').exists()).toBe(false);
+      it('should hide the modify steps button', () => {
+        expect(wrapper.find('.qquery-pipeline__modify-steps-container').exists()).toBe(false);
       });
     });
   });
@@ -164,7 +169,7 @@ describe('Pipeline.vue', () => {
       dispatchSpy = jest.spyOn(store, 'dispatch');
       wrapper = mount(PipelineComponent, { store, localVue });
       wrapper.setData({ selectedSteps });
-      wrapper.find('.query-pipeline__delete-steps').trigger('click');
+      wrapper.find('.query-pipeline__modify-steps.delete').trigger('click');
       await wrapper.vm.$nextTick();
       modal = wrapper.find(DeleteConfirmationModal);
     });
@@ -209,6 +214,55 @@ describe('Pipeline.vue', () => {
       it('should clean the selected steps', () => {
         expect((wrapper.vm as any).selectedSteps).toStrictEqual([]);
       });
+    });
+  });
+
+  describe('clicking on the copy buttun', () => {
+    let wrapper: Wrapper<PipelineComponent>, copyToClipboardStub: jest.SpyInstance;
+    const selectedSteps = [1, 2];
+
+    beforeEach(async () => {
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ];
+      const store = setupMockStore(buildStateWithOnePipeline(pipeline));
+      copyToClipboardStub = jest.spyOn(clipboardUtils, 'copyToClipboard').mockImplementation();
+      wrapper = mount(PipelineComponent, { store, localVue });
+      wrapper.setData({ selectedSteps });
+      wrapper.find('.query-pipeline__modify-steps.copy').trigger('click');
+      await wrapper.vm.$nextTick();
+    });
+
+    afterEach(() => {
+      jest.clearAllMocks();
+    });
+
+    it('should copy the selected steps to clipboard', async () => {
+      const stringifiedStepsContent = JSON.stringify([
+        { name: 'rename', toRename: [['foo', 'bar']] },
+        { name: 'sort', columns: [{ column: 'death', order: 'asc' }] },
+      ]);
+      expect(copyToClipboardStub).toHaveBeenCalledWith(stringifiedStepsContent);
+    });
+
+    it('should display a copied button when steps are copied', () => {
+      expect(wrapper.find('.query-pipeline__modify-steps.copy').exists()).toBe(false);
+      expect(wrapper.find('.query-pipeline__modify-steps.copied').text()).toContain('Steps copied');
+    });
+
+    it('should display a copy button again when selected steps changed', () => {
+      wrapper
+        .findAll('.query-pipeline-queue__dot')
+        .at(1)
+        .trigger('click');
+      wrapper.vm.$nextTick();
+
+      expect(wrapper.find('.query-pipeline__modify-steps.copy').text()).toContain(
+        'Copy [1] selected',
+      );
+      expect(wrapper.find('.query-pipeline__modify-steps.copied').exists()).toBe(false);
     });
   });
 
