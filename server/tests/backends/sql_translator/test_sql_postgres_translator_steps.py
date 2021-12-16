@@ -6,9 +6,9 @@ from typing import Dict, List, Optional, Union
 import docker
 import pandas as pd
 import psycopg2
-from psycopg2 import OperationalError
 import pytest
 from docker.models.images import Image
+from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
@@ -125,14 +125,17 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
         res = {r[0]: r[1] for r in describe_res}
         return res
 
+
 def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
         res = cursor.execute(domain if domain else query_string).fetchall()
         return pd.DataFrame(res)
 
+
 def standardized_columns(df: pd.DataFrame):
     df.columns = [c.lower() for c in df.columns]
+
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
@@ -152,7 +155,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
-            data_other_insert = pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table')
+            data_other_insert = pd.read_json(
+                json.dumps(spec['other_inputs'][input]), orient='table'
+            )
             standardized_columns(data_other_insert)
             data_other_insert.to_sql(
                 name=input,
@@ -170,7 +175,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         pipeline,
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer,
-        sql_query_executor=sql_query_executor
+        sql_query_executor=sql_query_executor,
     )
 
     # Execute request generated from Pipeline in Postgres and get the result

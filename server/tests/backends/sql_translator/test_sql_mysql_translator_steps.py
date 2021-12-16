@@ -140,6 +140,7 @@ def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFr
 def standardized_columns(df: pd.DataFrame):
     df.columns = [c.lower() for c in df.columns]
 
+
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
@@ -158,7 +159,9 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
 
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
-            data_other_to_insert = pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table')
+            data_other_to_insert = pd.read_json(
+                json.dumps(spec['other_inputs'][input]), orient='table'
+            )
             standardized_columns(data_other_to_insert)
             data_other_to_insert.to_sql(
                 name=input,

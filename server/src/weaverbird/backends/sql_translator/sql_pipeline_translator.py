@@ -18,7 +18,7 @@ def translate_pipeline(
     sql_query_describer: SQLQueryDescriber,
     sql_query_executor: SQLQueryExecutor,
     subcall_from_other_pipeline_count: int = None,
-    #sql_type: str = "snowflake",
+    # sql_type: str = "snowflake",
 ) -> Tuple[SQLQuery, SQLPipelineTranslationReport]:
     """
     The main function of the module. Translates a pipeline and returns the result as a transformed query.
