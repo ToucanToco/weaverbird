@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## [0.79.1] - 2021-12-17
+
+### Fixed
+
+- Preview source subset: do not propagate input focus & refresh button click
+
 ## [0.79.1] - 2021-12-16
 
 ### Added
@@ -1155,6 +1161,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.79.2]: https://github.com/ToucanToco/weaverbird/compare/v0.79.1...v0.79.2
 [0.79.1]: https://github.com/ToucanToco/weaverbird/compare/v0.79.0...v0.79.1
 [0.79.0]: https://github.com/ToucanToco/weaverbird/compare/v0.78.1...v0.79.0
 [0.78.1]: https://github.com/ToucanToco/weaverbird/compare/v0.78.0...v0.78.1
