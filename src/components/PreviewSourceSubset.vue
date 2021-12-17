@@ -7,8 +7,9 @@
         v-model.number="rowsSubsetInput"
         type="number"
         min="1"
+        @click.stop
       />
-      <span class="preview-source-rows-subset__button" @click="refreshPreview">
+      <span class="preview-source-rows-subset__button" @click.stop="refreshPreview">
         <FAIcon icon="sync-alt" />
       </span>
     </div>
