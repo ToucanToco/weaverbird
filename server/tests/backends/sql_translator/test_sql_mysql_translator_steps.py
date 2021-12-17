@@ -19,8 +19,9 @@ pymysql.install_as_MySQLdb()
 
 image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': '5.7.21'}
 docker_client = docker.from_env()
+exec_type = 'mysql'
 
-test_cases = retrieve_case('sql_translator', 'mysql')
+test_cases = retrieve_case('sql_translator', exec_type)
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -189,7 +190,12 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
 
     # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    pandas_result_expected = pd.read_json(
+        json.dumps(
+            spec[f'expected_{exec_type}' if f'expected_{exec_type}' in spec else 'expected']
+        ),
+        orient='table',
+    )
     standardized_columns(pandas_result_expected)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
