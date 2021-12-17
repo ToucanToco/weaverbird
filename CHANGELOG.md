@@ -1,6 +1,6 @@
 # Changelog (weaverbird npm package)
 
-## [0.79.1] - 2021-12-17
+## [0.79.2] - 2021-12-17
 
 ### Fixed
 
