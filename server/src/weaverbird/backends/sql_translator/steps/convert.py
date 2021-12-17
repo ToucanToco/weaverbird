@@ -29,9 +29,7 @@ def build_psql(retrieved_col_type, data_type, col):
 
 
 def build_snowflake(retrieved_col_type, data_type, col):
-    if (
-        retrieved_col_type == 'FLOAT' or retrieved_col_type == 'REAL'
-    ) and data_type == 'integer':
+    if (retrieved_col_type == 'FLOAT' or retrieved_col_type == 'REAL') and data_type == 'integer':
         return f'TRUNCATE({col}) AS {col}'
     elif retrieved_col_type == 'TEXT' and data_type == 'integer':
         return f"CAST(SPLIT_PART({col}, '.', 0) AS {data_type}) AS {col}"
@@ -74,13 +72,9 @@ def translate_convert(
         )
 
         if is_postgres:
-            to_cast.append(
-                build_psql(retrieved_col_type, step.data_type, col)
-            )
+            to_cast.append(build_psql(retrieved_col_type, step.data_type, col))
         else:
-           to_cast.append(
-               build_snowflake(retrieved_col_type, step.data_type, col)
-           )
+            to_cast.append(build_snowflake(retrieved_col_type, step.data_type, col))
 
     for c in step.columns:
         query.metadata_manager.update_query_metadata_column_type(c, step.data_type)
