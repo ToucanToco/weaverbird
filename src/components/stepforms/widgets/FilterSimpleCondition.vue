@@ -84,8 +84,8 @@ type LiteralOperator =
   | "doesn't match pattern"
   | 'is null'
   | 'is not null'
-  | 'from'
-  | 'until';
+  | 'starting'
+  | 'ending';
 
 type ShortOperator = FilterSimpleCondition['operator'];
 
@@ -178,8 +178,8 @@ export default class FilterSimpleConditionWidget extends Vue {
   ];
 
   readonly dateOperators: OperatorOption[] = [
-    { operator: 'from', label: 'from', inputWidget: NewDateInput },
-    { operator: 'until', label: 'until', inputWidget: NewDateInput },
+    { operator: 'from', label: 'starting', inputWidget: NewDateInput },
+    { operator: 'until', label: 'ending', inputWidget: NewDateInput },
     ...this.nullOperators,
   ];
 
