@@ -11,6 +11,7 @@
       v-model="rightPipeline"
       name="Select a dataset to join (as right dataset):"
       :options="options"
+      :change="selectRightColumnNames({ rightPipelineLabel: rightPipeline.label })"
       placeholder="Select a dataset"
       data-path=".right_pipeline"
       :errors="errors"
@@ -86,6 +87,12 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   @VQBModule.Getter referencingPipelines!: string[];
   @VQBModule.Getter availableDatasetNames!: string[];
+
+  @VQBModule.Action selectRightColumnNames!: ({
+    rightPipelineLabel,
+  }: {
+    rightPipelineLabel: string;
+  }) => void;
 
   readonly title: string = 'Join datasets';
   joinColumns = JoinColumns;

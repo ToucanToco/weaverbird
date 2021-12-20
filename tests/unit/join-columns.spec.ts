@@ -8,7 +8,7 @@ import { RootState, setupMockStore } from './utils';
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
-describe('Widget AggregationWidget', () => {
+describe('Widget JoinColumnsWidget', () => {
   let emptyStore: Store<RootState>;
   beforeEach(() => {
     emptyStore = setupMockStore({});
@@ -22,9 +22,7 @@ describe('Widget AggregationWidget', () => {
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(JoinColumns, { store: emptyStore, localVue });
     const autocompleteWrappers = wrapper.findAll('autocompletewidget-stub');
-    expect(autocompleteWrappers.length).toEqual(1);
-    const inputtextWrappers = wrapper.findAll('inputtextwidget-stub');
-    expect(inputtextWrappers.length).toEqual(1);
+    expect(autocompleteWrappers.length).toEqual(2);
   });
 
   it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
@@ -39,7 +37,7 @@ describe('Widget AggregationWidget', () => {
     expect(autocompleteWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
   });
 
-  it('should pass down the right prop to AutocompleteWidget', () => {
+  it('should pass down the right prop to the left AutocompleteWidget', () => {
     const wrapper = shallowMount(JoinColumns, {
       propsData: {
         value: ['toto', 'tata'],
@@ -52,7 +50,7 @@ describe('Widget AggregationWidget', () => {
     expect(autocompleteWrapper.props().value).toEqual('toto');
   });
 
-  it('should pass down the right prop to InputTextWidget', () => {
+  it('should pass down the right prop to the right AutocompleteWidget', () => {
     const wrapper = shallowMount(JoinColumns, {
       propsData: {
         value: ['toto', 'tata'],
@@ -61,8 +59,8 @@ describe('Widget AggregationWidget', () => {
       localVue,
       sync: false,
     });
-    const inputTextWrapper = wrapper.find('inputtextwidget-stub');
-    expect(inputTextWrapper.props().value).toEqual('tata');
+    const autocompleteWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
+    expect(autocompleteWrapper.props().value).toEqual('tata');
   });
 
   it('should update its value when the left column is modified', () => {
@@ -92,8 +90,8 @@ describe('Widget AggregationWidget', () => {
       sync: false,
     });
 
-    const inputTextWrapper = wrapper.find('inputtextwidget-stub');
-    inputTextWrapper.vm.$emit('input', 'tutu');
+    const autocompleteWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
+    autocompleteWrapper.vm.$emit('input', 'tutu');
 
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([['toto', 'tutu']]);

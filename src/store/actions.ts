@@ -106,6 +106,38 @@ class Actions {
     dispatch('updateDataset');
   }
 
+  async selectRightColumnNames(
+    { commit, state }: ActionContext<VQBState, any>,
+    { rightPipelineLabel }: { rightPipelineLabel: string },
+  ) {
+    if (rightPipelineLabel != '') {
+      let activePipeline: Pipeline = [];
+
+      if (rightPipelineLabel in state.pipelines) {
+        activePipeline = state.pipelines[rightPipelineLabel];
+      } else {
+        activePipeline = [
+          {
+            name: 'domain',
+            domain: rightPipelineLabel,
+          },
+        ];
+      }
+
+      const response = await state.backendService.executePipeline(
+        activePipeline,
+        state.pipelines,
+        1,
+        0,
+      );
+      if (response.data) {
+        commit('setRightColumnNames', {
+          rightColumnNames: response.data.headers.map(col => col.name),
+        });
+      }
+    }
+  }
+
   deleteSteps(
     { commit, dispatch }: ActionContext<VQBState, any>,
     { indexes }: { indexes: number[] },

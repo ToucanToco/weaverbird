@@ -701,6 +701,56 @@ describe('mutation tests', () => {
     expect(state.dataset).toEqual(dataset);
   });
 
+  it('sets right column names', () => {
+    buildState({
+      currentPipelineName: 'coco_l_asticot',
+      pipelines: {
+        coco_l_asticot: [],
+        dataset1: [],
+        dataset2: [],
+      },
+    });
+
+    const store = setupMockStore();
+    const dispatchSpy = jest.spyOn(store, 'dispatch');
+
+    store.dispatch(VQBnamespace('selectRightColumnNames'), { rightPipelineLabel: '' });
+    expect(dispatchSpy).not.toHaveBeenLastCalledWith(VQBnamespace('executePipeline'), '');
+
+    store.dispatch(VQBnamespace('selectRightColumnNames'), {
+      rightPipelineLabel: 'coco_l_asticot',
+    });
+    expect(dispatchSpy).not.toHaveBeenLastCalledWith(
+      VQBnamespace('executePipeline'),
+      [],
+      {
+        coco_l_asticot: [],
+        dataset1: [],
+        dataset2: [],
+      },
+      1,
+      0,
+    );
+
+    store.dispatch(VQBnamespace('selectRightColumnNames'), { rightPipelineLabel: 'other' });
+    expect(dispatchSpy).not.toHaveBeenLastCalledWith(
+      VQBnamespace('executePipeline'),
+      [
+        {
+          name: 'domain',
+          domain: 'other',
+        },
+      ],
+      {
+        coco_l_asticot: [],
+        dataset1: [],
+        dataset2: [],
+      },
+      1,
+      0,
+    );
+  });
+
   it('should create a step form', () => {
     const state = buildState({});
     mutations.createStepForm(state, { stepName: 'filter' });

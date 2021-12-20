@@ -44,6 +44,11 @@ export interface VQBState {
   pipelines: { [name: string]: Pipeline };
 
   /**
+   * the right column names to be joined.
+   */
+  rightColumnNames: string[];
+
+  /**
    * object used to fill an edit step form
    */
   stepFormInitialValue?: object;
@@ -130,6 +135,7 @@ export function emptyState(): VQBState {
         totalCount: 0,
       },
     },
+    rightColumnNames: [],
     domains: [],
     currentStepFormName: undefined,
     stepFormInitialValue: undefined,

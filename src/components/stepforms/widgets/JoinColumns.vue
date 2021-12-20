@@ -10,11 +10,12 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
     />
-    <InputTextWidget
+    <AutocompleteWidget
       class="rightOn"
       data-cy="weaverbird-join-column-right-on"
       v-model="rightOnColumn"
       placeholder="Right dataset column"
+      :options="rightColumnNames"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
       :available-variables="availableVariables"
@@ -60,6 +61,8 @@ export default class JoinColumns extends Vue {
 
   @VQBModule.Getter columnNames!: string[];
 
+  @VQBModule.Getter rightColumnNames!: string[];
+
   get leftOnColumn() {
     return this.value[0];
   }
@@ -84,6 +87,10 @@ export default class JoinColumns extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.rightOn {
+  margin-left: 10px;
+}
+
 .widget-join-column__container {
   background-color: white;
   display: flex;
