@@ -32,6 +32,7 @@ import {
   faSyncAlt,
   faTimes,
   faTrash,
+  faVial,
 } from '@fortawesome/free-solid-svg-icons';
 
 /* List all icons used in app */
@@ -64,6 +65,7 @@ const FA_ICONS = {
   'sync-alt': faSyncAlt,
   times: faTimes,
   trash: faTrash,
+  vial: faVial,
   // Regular icons (should always use `far ` prefix)
   'far calendar': faCalendarFar,
   'far trash-alt': faTrashAltFar,
