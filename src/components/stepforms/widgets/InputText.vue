@@ -88,7 +88,7 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   }
 
   &::placeholder {
-    color: $grey-light;
+    color: $grey;
   }
 }
 
