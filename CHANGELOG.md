@@ -1,5 +1,12 @@
 # Changelog (weaverbird npm package)
 
+## [0.79.3] - 2021-12-20
+
+### Fixed
+
+- Preview source subset: use correct icon and label
+- Filter step: use correct label for from/until operators
+
 ## [0.79.2] - 2021-12-17
 
 ### Fixed
@@ -1161,6 +1168,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.79.3]: https://github.com/ToucanToco/weaverbird/compare/v0.79.2...v0.79.3
 [0.79.2]: https://github.com/ToucanToco/weaverbird/compare/v0.79.1...v0.79.2
 [0.79.1]: https://github.com/ToucanToco/weaverbird/compare/v0.79.0...v0.79.1
 [0.79.0]: https://github.com/ToucanToco/weaverbird/compare/v0.78.1...v0.79.0
