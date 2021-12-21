@@ -2,6 +2,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
     build_selection_query,
 )
 from weaverbird.backends.sql_translator.types import (
+    SQLDialect,
     SQLPipelineTranslator,
     SQLQuery,
     SQLQueryDescriber,
@@ -20,6 +21,7 @@ def translate_evolution(
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
+    sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
     """
     Example of generated query (evolution on date column + 1 year, groupby orderstatus):

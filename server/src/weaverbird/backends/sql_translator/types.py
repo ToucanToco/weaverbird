@@ -1,4 +1,4 @@
-from typing import Any, Callable, List, Optional, Protocol, Tuple
+from typing import Any, Callable, List, Literal, Optional, Protocol, Tuple
 
 from pandas import DataFrame
 from pydantic import BaseModel
@@ -34,6 +34,7 @@ SQLPipelineTranslator = Callable[
     [Pipeline, SQLQueryRetriever, SQLQueryDescriber, SQLQueryExecutor],
     Tuple[str, SQLPipelineTranslationReport],
 ]
+SQLDialect = Literal['snowflake', 'postgres']
 
 
 class SQLStepTranslator(Protocol):
@@ -47,5 +48,6 @@ class SQLStepTranslator(Protocol):
         sql_query_executor: Optional[SQLQueryExecutor],
         sql_translate_pipeline: Optional[SQLPipelineTranslator],
         subcall_from_other_pipeline_count: Optional[int],
+        sql_dialect: Optional[SQLDialect],
     ):
         ...

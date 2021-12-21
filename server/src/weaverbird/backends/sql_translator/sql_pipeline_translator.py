@@ -5,6 +5,7 @@ from weaverbird.pipeline import Pipeline, PipelineStep
 
 from .steps import sql_steps_translators
 from .types import (
+    SQLDialect,
     SQLPipelineTranslationReport,
     SQLQueryDescriber,
     SQLQueryExecutor,
@@ -18,6 +19,7 @@ def translate_pipeline(
     sql_query_describer: SQLQueryDescriber,
     sql_query_executor: SQLQueryExecutor,
     subcall_from_other_pipeline_count: int = None,
+    sql_dialect: SQLDialect = None,
 ) -> Tuple[SQLQuery, SQLPipelineTranslationReport]:
     """
     The main function of the module. Translates a pipeline and returns the result as a transformed query.
@@ -41,6 +43,7 @@ def translate_pipeline(
                 sql_query_executor=sql_query_executor,
                 sql_translate_pipeline=translate_pipeline,
                 subcall_from_other_pipeline_count=subcall_from_other_pipeline_count,
+                sql_dialect=sql_dialect,
             )
             translate_report.append(SQLStepTranslationReport(step_index=index))
 
