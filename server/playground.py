@@ -3,6 +3,7 @@ A very simple webserver to test and develop weaverbird.
 
 Routes:
 - `/`: serves the playground static files
+- `/health`: simple health check
 - `/pandas`: pandas backend
     - GET: returns the available domains
     - POST: execute the pipeline in the body of the request and returns the transformed data
@@ -11,7 +12,7 @@ Routes:
     - POST: execute the aggregation pipeline and return a page of it (limit, offset) along with total count and types
 - `/snowflake`:
     - GET: return the available tables in the database
-- `/health`: simple health check
+    - POST: translate the pipeline into a SQL query and ask snowflake to execute it
 
 Run it with `QUART_APP=playground QUART_ENV=development quart run`
 
