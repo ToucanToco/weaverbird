@@ -10,15 +10,16 @@ Routes:
 - `/mongo`:
     - GET: return the available collections in the database
     - POST: execute the aggregation pipeline and return a page of it (limit, offset) along with total count and types
-- `/snowflake`:
+- `/snowflake` and `/postgresql`:
     - GET: return the available tables in the database
-    - POST: translate the pipeline into a SQL query and ask snowflake to execute it
+    - POST: translate the pipeline into a SQL query and ask the database to execute it
 
 Run it with `QUART_APP=playground QUART_ENV=development quart run`
 
 Environment variables:
 - for mongo, MONGODB_CONNECTION_STRING (default to localhost:27017) and MONGODB_DATABASE_NAME (default to 'data')
 - for snowflake, SNOWFLAKE_USER, SNOWFLAKE_PASSWORD, SNOWFLAKE_ACCOUNT and SNOWFLAKE_DATABASE
+- for postgresql, POSTGRESQL_CONNECTION_STRING
 """
 import json
 import os
@@ -28,10 +29,13 @@ from os.path import basename, splitext
 from typing import Dict, Union
 
 import pandas as pd
+import psycopg_pool
 import snowflake.connector
 from pandas.io.json import build_table_schema
 from pymongo import MongoClient
+import psycopg
 from quart import Quart, Request, Response, jsonify, request, send_file
+from sqlalchemy import create_engine
 
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
@@ -82,7 +86,7 @@ async def parse_request_json(request: Request):
 # Load all csv in playground's pandas datastore
 csv_files = glob('../playground/datastore/*.csv')
 json_files = glob('../playground/datastore/*.json')
-DOMAINS = {
+DOMAINS: Dict[str, pd.DataFrame] = {
     **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
     **{
         splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table')
@@ -338,15 +342,105 @@ async def handle_snowflake_backend_request():
         )
 
         total_count = (
-            snowflake_connexion.cursor().execute(f'SELECT COUNT(*) FROM ({ query })').fetchone()[0]
+            snowflake_connexion.cursor().execute(f'SELECT COUNT(*) FROM ({query})').fetchone()[0]
         )
         # By using snowflake's connector ability to turn results into a DataFrame,
         # we can re-use all the methods to parse this data- interchange format in the front-end
         df_results = (
             snowflake_connexion.cursor()
-            .execute(f'SELECT * FROM ({ query }) LIMIT { limit } OFFSET { offset }')
-            .fetch_pandas_all()
+                .execute(f'SELECT * FROM ({query}) LIMIT {limit} OFFSET {offset}')
+                .fetch_pandas_all()
         )
+
+        return Response(
+            json.dumps(
+                {
+                    'offset': offset,
+                    'limit': limit,
+                    'total': total_count,
+                    'schema': build_table_schema(df_results, index=False),
+                    'data': json.loads(df_results.to_json(orient='records')),
+                    'query': query,  # provided for inspection purposes
+                }
+            ),
+            mimetype='application/json',
+        )
+
+
+### Postgres back-end routes
+if os.getenv('POSTGRESQL_CONNECTION_STRING'):
+    # Load sample data from /datastore into the database
+    postgresql_alchemy_engine = create_engine(os.getenv('POSTGRESQL_CONNECTION_STRING'))
+    for table_name, table_df in DOMAINS.items():
+        table_df_for_sql = table_df.copy()
+        table_df_for_sql.columns = [c.upper() for c in table_df_for_sql.columns]  # Uppercase column names
+        table_df_for_sql.to_sql(table_name, postgresql_alchemy_engine, if_exists='replace')
+
+    postgresql_connection_pool = psycopg_pool.ConnectionPool(
+        os.getenv('POSTGRESQL_CONNECTION_STRING')
+    )
+
+
+def postgresql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
+    return pd.read_sql(domain if domain else query_string, postgresql_alchemy_engine)
+
+
+def postgresql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
+    if domain:
+        # lst = domain.split(' ')
+        # lst = [item for item in lst if len(item) > 0]
+        # temp = lst[lst.index('FROM') + 1]
+        #
+        # if len(temp.split('.')) == 2:
+        #     table_name = temp.split('.')[1]
+        # else:
+        #     table_name = temp.split('.')[0]
+        table_name = domain
+
+    request = (
+        f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
+        f' WHERE table_name = \'{table_name}\' ORDER BY ordinal_position;'
+    )
+
+    with postgresql_connection_pool.connection() as connection:
+        with connection.cursor() as cursor:
+            cursor.execute(request)
+            describe_res = cursor.fetchall()
+            res = {r[0]: r[1] for r in describe_res}
+            return res
+
+@app.route('/postgresql', methods=['GET', 'POST'])
+async def handle_postgresql_backend_request():
+    if request.method == 'GET':
+        with postgresql_connection_pool.connection() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    "SELECT * FROM pg_catalog.pg_tables WHERE schemaname != 'pg_catalog' AND schemaname != 'information_schema';")
+                tables_info = cur.fetchall()
+                return jsonify([table_infos[1] for table_infos in tables_info])
+
+    elif request.method == 'POST':
+        pipeline = await parse_request_json(request)
+
+        # Url parameters are only strings, these two must be understood as numbers
+        limit = int(request.args.get('limit', 50))
+        offset = int(request.args.get('offset', 0))
+
+        query, _ = sql_translate_pipeline(
+            Pipeline(steps=pipeline),
+            sql_query_retriever=sql_table_retriever,
+            sql_query_describer=postgresql_query_describer,
+            sql_query_executor=postgresql_query_executor,
+            dialect='posgresql'
+        )
+
+        # with postgresql_connection_pool.connection() as conn:
+        #     with conn.cursor() as cur:
+        #         total_count = (
+        #             cur.execute(f'SELECT COUNT(*) FROM ({query}) AS SUBQUERY').fetchone()[0]
+        #         )
+
+        df_results = postgresql_query_executor(f'SELECT Q.* FROM ({query}) AS Q LIMIT {limit} OFFSET {offset}')
 
         return Response(
             json.dumps(
