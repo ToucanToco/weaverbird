@@ -16,22 +16,33 @@ from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
-def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: str) -> str:
+def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: str, sql_dialect: SQLDialect) -> str:
     if not hasattr(step, 'else_value'):
         return str(step)
 
+    condition = apply_condition(step.condition, composed_query)
+    expr1 = step.then
+
     if type(step.else_value) != IfThenElse:
-        return (
-            f"""IFF({apply_condition(step.condition, composed_query)}, """
-            f"""{step.then}, {step.else_value})"""
-        )
+        expr2 = step.else_value
+        return build_conditional_expression(sql_dialect, condition, expr1, expr2)
     else:
-        composed_query += (
-            f"""IFF({apply_condition(step.condition, composed_query)}, {step.then}, """
-            f"""{recursively_convert_nested_condition(step.else_value, composed_query)})"""
+        expr2 = recursively_convert_nested_condition(
+            step.else_value, composed_query, sql_dialect
+        )
+        composed_query += build_conditional_expression(
+            sql_dialect, condition, expr1, expr2
         )
 
     return composed_query.replace(',),', '),')
+
+
+def build_conditional_expression(sql_dialect: SQLDialect, condition, expr1, expr2):
+    if sql_dialect == "postgres":
+        conditional_expression = f" CASE WHEN {condition} THEN {expr1} ELSE {expr2} END"
+    else:
+        conditional_expression = f" IFF({condition}, {expr1}, {expr2})"
+    return conditional_expression
 
 
 def translate_ifthenelse(
@@ -61,7 +72,7 @@ def translate_ifthenelse(
     )
 
     composed_query = (
-        f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")}"""
+        f"""{recursively_convert_nested_condition(step, composed_query, sql_dialect).replace('"', "'")}"""
         f""" AS {step.new_column.upper()}"""
     )
     if completed_fields:
