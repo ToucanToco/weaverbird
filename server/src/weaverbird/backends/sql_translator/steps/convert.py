@@ -64,7 +64,7 @@ def translate_convert(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    is_postgres = sql_dialect.get('sql_type') == 'postgres'
+    is_postgres = sql_dialect == 'postgres'
 
     to_cast = []
     for col in step.columns:
