@@ -40,11 +40,18 @@ def translate_duration(
         columns_filter=[step.new_column_name]
     )
 
+    if sql_dialect == 'postgres':
+        interval_date = f" EXTRACT({step.duration_in} FROM ({step.end_date_column}-{step.start_date_column}))"
+    else:
+        interval_date = (
+            f" DATEDIFF({step.duration_in}, "
+            f" to_timestamp({step.start_date_column}), to_timestamp({step.end_date_column}))"
+        )
+
     # the final query
     final_query = (
         f"SELECT {completed_fields},"
-        f" DATEDIFF({step.duration_in}, to_timestamp({step.start_date_column}),"
-        f" to_timestamp({step.end_date_column})) AS {step.new_column_name}"
+        f"{interval_date} AS {step.new_column_name}"
         f" FROM {query.query_name}"
     )
 
