@@ -30,7 +30,7 @@ def translate_fillna(
         columns_filter=step.columns
     )
     fill_value = f"'{sanitize_input(step.value)}'" if isinstance(step.value, str) else step.value
-    filled_columns = ', '.join([f'IFNULL({col}, {fill_value}) AS {col}' for col in step.columns])
+    filled_columns = ', '.join([f'COALESCE({col}, {fill_value}) AS {col}' for col in step.columns])
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS (SELECT {unchanged_colums}, {filled_columns}\
