@@ -32,7 +32,11 @@ def translate_pipeline(
     """
     query = SQLQuery()
     translate_report = []
+    print("Pipeline to translate:")
+    print(pipeline_to_translate.steps)
     for index, step in enumerate(pipeline_to_translate.steps):
+        print(f"Index: {index}")
+        print(f"Step: {step}")
         try:
             query = sql_steps_translators[step.name](
                 step,

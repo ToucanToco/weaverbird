@@ -1,14 +1,18 @@
 {
   "exclude": [
-    "mysql",
-    "postgres"
+    "mysql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "append",
         "pipelines": [
-          "miam"
+          [
+            {
+              "name": "domain",
+              "domain": "miam"
+            }
+          ]
         ]
       }
     ]
