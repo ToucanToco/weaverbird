@@ -103,8 +103,8 @@ def sql_retrieve_city(t):
     return t
 
 
-def split_list(index, lst, list_index):
-    temp = lst[list_index[index] + 1]
+def split_list(lst, list_index):
+    temp = lst[list_index[0] + 1]
     if len(temp.split('.')) == 2:
         table_name = temp.split('.')[1]
     else:
@@ -118,9 +118,9 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
     if 'FROM' in lst:
         list_index = [i for i, s in enumerate(lst) if s == "FROM"]
         if len(list_index) == 1:
-            table_name = split_list(0, lst, list_index)
+            table_name = split_list(lst, list_index)
         if len(list_index) > 1:
-            table_name = split_list(-1, lst, list_index)
+            table_name = split_list(lst, list_index)[:-1]
     else:
         table_name = lst[0]
 
@@ -188,7 +188,6 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         sql_query_executor=sql_query_executor,
         sql_dialect='postgres',
     )
-
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
