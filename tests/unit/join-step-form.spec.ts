@@ -15,7 +15,7 @@ describe('join Step Form', () => {
   runner.testCancel();
   runner.testResetSelectedIndex();
 
-  describe('AutocompleteWidget', () => {
+  describe('right dataset', () => {
     it('should instantiate an autocomplete widget with proper options from the store', () => {
       const initialState = {
         currentPipelineName: 'my_dataset',
@@ -43,7 +43,7 @@ describe('join Step Form', () => {
     });
   });
 
-  describe('ListWidget', () => {
+  describe('column names', () => {
     it('should pass down the "joinColumns" prop to the ListWidget value prop', async () => {
       const wrapper = runner.shallowMount(undefined, {
         data: {

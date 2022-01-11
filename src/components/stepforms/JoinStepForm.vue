@@ -129,7 +129,7 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
     });
   }
 
-  rightColumnNames?: string[];
+  rightColumnNames: string[] | null | undefined = null;
 
   @VQBModule.Action getColumnNamesFromPipeline!: (
     pipelineNameOrDomain: string,
@@ -137,6 +137,12 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
 
   async updateRightColumnNames(pipelineNameOrDomain: string) {
     this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);
+  }
+
+  created() {
+    if (this.rightPipeline.label) {
+      this.updateRightColumnNames(this.rightPipeline.label);
+    }
   }
 }
 </script>

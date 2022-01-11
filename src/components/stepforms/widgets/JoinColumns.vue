@@ -75,7 +75,7 @@ export default class JoinColumns extends Vue {
   @VQBModule.Getter columnNames!: string[];
 
   @Prop()
-  rightColumnNames?: string[];
+  rightColumnNames?: string[] | null; // because initializing to undefined won't make it reactive
 
   get leftOnColumn() {
     return this.value[0];
