@@ -12,10 +12,8 @@
         :selectedVariables="selectedVariables"
         :availableVariables="availableVariables"
         @input="chooseVariable"
+        @addAdvancedVariable="addAdvancedVariable"
       />
-      <div class="widget-advanced-variable" @click="addAdvancedVariable">
-        Advanced variable
-      </div>
     </div>
   </popover>
 </template>
@@ -78,19 +76,5 @@ export default class VariableChooser extends Vue {
   color: $base-color;
   overflow: hidden;
   overflow-y: auto;
-}
-.widget-advanced-variable {
-  padding: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  text-align: center;
-  background: #f5f5f5;
-  color: #888888;
-  cursor: pointer;
-  margin-top: 8px;
-
-  &:hover {
-    text-decoration: underline;
-  }
 }
 </style>

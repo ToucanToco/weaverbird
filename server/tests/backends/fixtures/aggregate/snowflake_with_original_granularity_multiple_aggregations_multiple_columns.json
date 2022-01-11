@@ -1,0 +1,203 @@
+{
+  "exclude": [
+    "pandas",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "aggregate",
+        "on": [
+          "DOUM"
+        ],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "MIN_VALUE1",
+              "MIN_VALUE2"
+            ],
+            "aggfunction": "min",
+            "columns": [
+              "VALUE1",
+              "VALUE2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "MAX_VALUE1",
+              "MAX_VALUE2"
+            ],
+            "aggfunction": "max",
+            "columns": [
+              "VALUE1",
+              "VALUE2"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": true
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "DOUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE2",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "VALUE2": 10
+      },
+      {
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "VALUE2": 21
+      },
+      {
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "VALUE2": 4
+      },
+      {
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "VALUE2": 17
+      },
+      {
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "VALUE2": 12
+      },
+      {
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "VALUE2": 2
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL",
+          "type": "string"
+        },
+        {
+          "name": "DOUM",
+          "type": "string"
+        },
+        {
+          "name": "VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "MIN_VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "VALUE2",
+          "type": "integer"
+        },
+        {
+          "name": "MAX_VALUE1",
+          "type": "integer"
+        },
+        {
+          "name": "MIN_VALUE2",
+          "type": "integer"
+        },
+        {
+          "name": "MAX_VALUE2",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "MIN_VALUE1": 7,
+        "MAX_VALUE1": 20,
+        "VALUE2": 10,
+        "MIN_VALUE2": 4,
+        "MAX_VALUE2": 21
+      },
+      {
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "MIN_VALUE1": 7,
+        "MAX_VALUE1": 20,
+        "VALUE2": 21,
+        "MIN_VALUE2": 4,
+        "MAX_VALUE2": 21
+      },
+      {
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "MIN_VALUE1": 7,
+        "MAX_VALUE1": 20,
+        "VALUE2": 4,
+        "MIN_VALUE2": 4,
+        "MAX_VALUE2": 21
+      },
+      {
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "MIN_VALUE1": 1,
+        "MAX_VALUE1": 10,
+        "VALUE2": 17,
+        "MIN_VALUE2": 2,
+        "MAX_VALUE2": 17
+      },
+      {
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "MIN_VALUE1": 1,
+        "MAX_VALUE1": 10,
+        "VALUE2": 12,
+        "MIN_VALUE2": 2,
+        "MAX_VALUE2": 17
+      },
+      {
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "MIN_VALUE1": 1,
+        "MAX_VALUE1": 10,
+        "VALUE2": 2,
+        "MIN_VALUE2": 2,
+        "MAX_VALUE2": 17
+      }
+    ]
+  }
+}

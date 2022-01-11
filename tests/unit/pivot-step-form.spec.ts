@@ -3,6 +3,8 @@ import { VQBnamespace } from '@/store';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Pivot Step Form', () => {
   const runner = new BasicStepFormTestRunner(PivotStepForm, 'pivot');
   runner.testInstantiate();

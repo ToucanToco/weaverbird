@@ -2,6 +2,8 @@ import DateExtractStepForm from '@/components/stepforms/DateExtractStepForm.vue'
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('DateExtract Step Form', () => {
   const runner = new BasicStepFormTestRunner(DateExtractStepForm, 'dateextract');
   runner.testInstantiate();

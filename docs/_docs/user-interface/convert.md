@@ -9,6 +9,7 @@ You can use this step to cast column data types.
 
 **This step is supported by the following backends:**
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Pandas (python)

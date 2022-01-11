@@ -1,9 +1,16 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "delete",
-    "columns": [
-      "NAME",
-      "SCORE"
+    "pipeline": [
+      {
+        "name": "delete",
+        "columns": [
+          "NAME",
+          "SCORE"
+        ]
+      }
     ]
   },
   "input": {

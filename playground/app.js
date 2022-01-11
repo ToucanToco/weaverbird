@@ -10,15 +10,68 @@ const {
   dereferencePipelines,
   registerModule,
   setAvailableCodeEditors,
+  defineSendAnalytics,
   exampleInterpolateFunc,
 } = vqb;
 
-const args = new URLSearchParams(location.search)
+const args = new URLSearchParams(location.search);
 
-const TRANSLATOR = args.get('backend') || 'mongo42';
+const TRANSLATOR = args.get('backend') || 'mongo50';
 
-const mongoTranslator = getTranslator('mongo42');
+const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
+const snowflakeTranslator = getTranslator('snowflake');
+
+const VARIABLES = {
+  view: 'Product 123',
+  angeBirthday: new Date('2021-08-08'),
+  now: new Date(Date.now()),
+  city: 'New York',
+  country: 'New Zealand',
+
+  value1: 2,
+  value2: 13,
+  groupname: 'Group 1',
+}
+
+const AVAILABLE_VARIABLES = [
+  {
+    category: 'App variables',
+    label: 'view',
+    identifier: 'view',
+    value: 'Product 123',
+  },
+  {
+    category: 'Dates',
+    label: 'Ange\'s birthday',
+    identifier: 'angeBirthday',
+    value: VARIABLES.angeBirthday,
+  },
+  {
+    category: 'Dates',
+    label: 'Now',
+    identifier: 'now',
+    value: VARIABLES.now,
+  },
+  {
+    category: 'App variables',
+    label: 'date.year',
+    identifier: 'date.year',
+    value: 2020,
+  },
+  {
+    category: 'Story variables',
+    label: 'country',
+    identifier: 'country',
+    value: 'New Zealand',
+  },
+  {
+    category: 'Story variables',
+    label: 'city',
+    identifier: 'city',
+    value: 'New York',
+  },
+];
 
 // Create a code editor config for a specific lang
 const codeEditorForLang = function(lang) {
@@ -57,6 +110,10 @@ setAvailableCodeEditors({
     json: codeEditorForLang('json'),
   },
 });
+
+// Example to set send analytics method
+const sendAnalytics = ({name, value}) => { console.debug('Analytics event send ::', { name, value }) };
+defineSendAnalytics(sendAnalytics);
 
 const CASTERS = {
   date: val => new Date(val),
@@ -121,15 +178,18 @@ function autocastDataset(dataset) {
 
 class MongoService {
   async listCollections() {
-    const response = await fetch('/collections');
+    const response = await fetch('/mongo');
     return response.json();
   }
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
     const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
-    const query = mongoTranslator.translate(subpipeline);
+    const queryWithVariables = mongoTranslator.translate(subpipeline);
+    const query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
+
+    updateLastExecutedQuery(query);
 
     if (isResponseOk) {
       const [{ count, data: rset, types }] = responseContent;
@@ -151,14 +211,14 @@ class MongoService {
     }
   }
 
-  async executeQuery(query, collection, limit, skip) {
-    const response = await fetch('/query', {
+  async executeQuery(query, collection, limit, offset) {
+    const response = await fetch('/mongo', {
       method: 'POST',
       body: JSON.stringify({
         query,
         collection,
         limit,
-        skip,
+        offset,
       }),
       headers: {
         'Content-Type': 'application/json',
@@ -169,27 +229,11 @@ class MongoService {
       responseContent: await response.json(),
     };
   }
-
-  async loadCSV(file) {
-    const formData = new FormData();
-    formData.append('file', file);
-
-    const response = await fetch('/load', {
-      method: 'POST',
-      body: formData,
-    });
-    return response.json();
-  }
 }
 
-const mongoService = new MongoService();
-
-const pandasBackendBaseUrl = location.origin + '/pandas-backend/';
 class PandasService {
-
-
   async listCollections() {
-    const response = await fetch(pandasBackendBaseUrl);
+    const response = await fetch('/pandas');
     return response.json();
   }
 
@@ -199,13 +243,63 @@ class PandasService {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(dereferencedPipeline);
 
-    const url = new URL(pandasBackendBaseUrl);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+
+    const url = new URL(window.location.origin + '/pandas');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipeline),
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      parameters: {
+        limit: limit,
+        offset: offset
+      }
+    });
+    const result = await response.json();
+
+    updateLastExecutedQuery(null);
+    if (response.ok) {
+      let dataset = pandasDataTableToDataset(result);
+      dataset.paginationContext = {
+        totalCount: result.total,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      dataset = autocastDataset(dataset);
+      return { data: dataset };
+    } else {
+      return {
+        error: [{ type: 'error', message: result }],
+      };
+    }
+  }
+}
+
+class SnowflakeService {
+  async listCollections() {
+    const response = await fetch('/snowflake');
+    return response.json();
+  }
+
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+
+    // This does not modify the pipeline, but checks if all steps are supported
+    snowflakeTranslator.translate(dereferencedPipeline);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+
+    const url = new URL(window.location.origin + '/snowflake');
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -224,70 +318,35 @@ class PandasService {
         pageno: Math.floor(offset / limit) + 1,
       };
       dataset = autocastDataset(dataset);
+      updateLastExecutedQuery(result.query);
       return { data: dataset };
     } else {
+      updateLastExecutedQuery(null);
       return {
         error: [{ type: 'error', message: result }],
       };
     }
   }
 }
-const pandasService = new PandasService();
 
-const backendService = TRANSLATOR === 'pandas' ? pandasService : mongoService
+let backendService;
+switch (TRANSLATOR) {
+  case 'pandas':
+    backendService = new PandasService();
+    break;
+  case 'snowflake':
+    backendService = new SnowflakeService();
+    break;
+  default:
+    backendService = new MongoService();
+}
 
-
+let updateLastExecutedQuery = function() {};
 async function buildVueApp() {
-  const AVAILABLE_VARIABLES = [
-    {
-      category: 'App variables',
-      label: 'view',
-      identifier: 'view',
-      value: 'Product 123',
-    },
-    {
-      category: 'App variables',
-      label: 'date.month',
-      identifier: 'date.month',
-      value: 'Apr',
-    },
-    {
-      category: 'App variables',
-      label: 'date.year',
-      identifier: 'date.year',
-      value: 2020,
-    },
-    {
-      category: 'Story variables',
-      label: 'country',
-      identifier: 'country',
-      value: 'New Zealand',
-    },
-    {
-      category: 'Story variables',
-      label: 'city',
-      identifier: 'city',
-      value: 'New York',
-    },
-  ];
-  const VARIABLES = {
-    view: 'Product 123',
-    date: {
-      year: 2020,
-      month: 'Apr',
-    },
-    city: 'New York',
-    country: 'New Zealand',
-
-    value1: 2,
-    value2: 13,
-    groupname: 'Group 1',
-  }
-
   Vue.use(Vuex);
   const store = new Vuex.Store({});
 
-  new Vue({
+  const vm = new Vue({
     el: '#app',
     components: {
       Vqb,
@@ -296,24 +355,23 @@ async function buildVueApp() {
     data: function() {
       return {
         isCodeOpened: false,
-        draggedOverFirst: false,
-        draggedOverSecond: false,
-        draggedover: false,
+        lastExecutedQuery: undefined,
       };
     },
     created: async function() {
       registerModule(this.$store, {
         currentPipelineName: 'pipeline',
         pipelines: {
+          // Identifiers for Snowflake (SQL) should be uppercase (no support for other casing for now)
           pipeline: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Price',
+                column: TRANSLATOR == 'snowflake' ? 'PRICE' : 'Price',
                 operator: 'ge',
                 value: 1200,
               },
@@ -322,12 +380,12 @@ async function buildVueApp() {
           pipelineAmex: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Amex',
               },
@@ -336,12 +394,12 @@ async function buildVueApp() {
           pipelineVisa: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Visa',
               },
@@ -350,24 +408,42 @@ async function buildVueApp() {
           pipelineMastercard: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Mastercard',
               },
             },
           ],
+          dates: [
+            {
+              name: 'domain',
+              domain: TRANSLATOR == 'snowflake' ? 'SIN_FROM_2019_TO_2022' : 'sin-from-2019-to-2022',
+            },
+            {
+              name: 'filter',
+              condition: {
+                column: TRANSLATOR == 'snowflake' ? 'DAY' :'day',
+                operator: 'from',
+                value: new Date('2021-11-19T00:00:00Z'),
+              },
+            },
+          ],
         },
-        currentDomain: 'sales',
+        currentDomain: TRANSLATOR == 'snowflake' ? 'SALES' :'sales',
         translator: TRANSLATOR,
         backendService: backendService,
         // based on lodash templates (ERB syntax)
         interpolateFunc: (value, context) => exampleInterpolateFunc(value, context),
         variables: VARIABLES,
+
+        featureFlags: {
+          RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable'
+        }
       });
       // Add variables
       store.commit(VQBnamespace('setAvailableVariables'), {
@@ -393,10 +469,6 @@ async function buildVueApp() {
           return activePipeline;
         }
       },
-      mongoQueryAsJSON: function() {
-        const query = mongoTranslator.translate(this.activePipeline);
-        return JSON.stringify(query, null, 2);
-      },
       pipelineAsJSON: function() {
         return JSON.stringify(this.activePipeline, null, 2);
       },
@@ -414,47 +486,25 @@ async function buildVueApp() {
       },
     },
     methods: {
-      // both methods below help to detect correctly dragover child element and
-      // out on parent element
-      dragEnter: function(event) {
-        event.preventDefault();
-        if (this.draggedOverFirst) {
-          this.draggedOverSecond = true;
-        } else {
-          this.draggedOverFirst = true;
-        }
-        this.draggedover = true;
-      },
-      dragLeave: function() {
-        if (this.draggedOverSecond) {
-          this.draggedOverSecond = false;
-        } else if (this.draggedOverFirst) {
-          this.draggedOverFirst = false;
-        }
-        if (!this.draggedOverFirst && !this.draggedOverSecond) {
-          this.draggedover = false;
-        }
-      },
-      dragOver: function(event) {
-        // Prevent to open file when drop the file
-        event.preventDefault();
-      },
-      drop: async function(event) {
-        this.draggedover = false;
-        event.preventDefault();
-        // For the moment, only take one file and we should also test event.target
-        const { collection: domain } = await mongoService.loadCSV(event.dataTransfer.files[0]);
-        await setupInitialData(store, domain);
-        event.target.value = null;
-      },
       hideCode: function() {
         this.isCodeOpened = false;
       },
       openCode: function() {
         this.isCodeOpened = true;
       },
+      isSelectedTranslator: function(translator) {
+        return TRANSLATOR === translator
+      },
     },
   });
+
+  updateLastExecutedQuery = (query) => {
+    if (query == null || typeof query === 'string') {
+      vm.lastExecutedQuery = query;
+    } else {
+      vm.lastExecutedQuery = JSON.stringify(query, null, 2);
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => buildVueApp());

@@ -39,7 +39,8 @@
                     @actionClicked="openStepForm"
                     @closed="closeDataTypeMenu"
                   />
-                  <span v-html="getIconType(column.type)" />
+                  <FAIcon v-if="shouldUseFAIcon(column.type)" :icon="getIconType(column.type)" />
+                  <span v-else v-html="getIconType(column.type)" />
                 </span>
                 <span
                   class="data-viewer__header-label"
@@ -65,7 +66,7 @@
                     @closed="closeMenu"
                     @actionClicked="openStepForm"
                   />
-                  <i class="fas fa-angle-down" aria-hidden="true" />
+                  <FAIcon icon="angle-down" />
                 </span>
               </td>
             </tr>
@@ -73,16 +74,17 @@
           <tbody class="data-viewer__body">
             <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
               <DataViewerCell
+                class="data-viewer__cell"
+                :class="{ 'data-viewer__cell--active': isSelected(columnHeaders[cellidx].name) }"
                 v-for="(cell, cellidx) in row"
                 :key="cellidx"
-                :isSelected="isSelected(columnHeaders[cellidx].name)"
                 :value="cell"
               />
             </tr>
           </tbody>
         </table>
       </div>
-      <Pagination />
+      <Pagination :paginationContext="dataset.paginationContext" @setPage="setCurrentPage" />
     </div>
     <div v-else-if="isEmpty">No data available</div>
   </div>
@@ -94,6 +96,7 @@ import VTooltip from 'v-tooltip';
 import Vue from 'vue';
 import { Component, Watch } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import Pagination from '@/components/Pagination.vue';
 import { resizable } from '@/directives/resizable/resizable';
 import { DataSet, DataSetColumn, DataSetColumnType } from '@/lib/dataset';
@@ -121,6 +124,7 @@ Vue.use(VTooltip);
     DataTypesMenu,
     DataViewerCell,
     Pagination,
+    FAIcon,
   },
   directives: { resizable },
 })
@@ -146,6 +150,8 @@ export default class DataViewer extends Vue {
   }) => void;
   @VQBModule.Mutation toggleColumnSelection!: ({ column }: { column: string }) => void;
   @VQBModule.Mutation setSelectedColumns!: ({ column }: { column: string }) => void;
+
+  @VQBModule.Action setCurrentPage!: ({ pageno }: { pageno: number }) => void;
 
   activeActionMenuColumnName = '';
   activeDataTypeMenuColumnName = '';
@@ -221,13 +227,24 @@ export default class DataViewer extends Vue {
       case 'float':
         return '1.2';
       case 'date':
-        return '<i class="fas fa-calendar-alt" aria-hidden="true"></i>';
+        return 'calendar-alt';
       case 'boolean':
-        return '<i class="fas fa-check" aria-hidden="true"></i>';
+        return 'check';
       case 'object':
         return '{ }';
       default:
         return '???';
+    }
+  }
+
+  shouldUseFAIcon(type: DataSetColumnType): boolean {
+    switch (type) {
+      case 'date':
+        return true;
+      case 'boolean':
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -315,7 +332,7 @@ export default class DataViewer extends Vue {
 }
 
 .data-viewer__header-cell,
-.data-viewer-cell {
+.data-viewer__cell {
   position: relative;
   padding: 8px;
   background-color: white;
@@ -329,14 +346,14 @@ export default class DataViewer extends Vue {
   min-width: 140px;
 }
 
-.data-viewer-cell {
+.data-viewer__cell {
   background-color: #fafafa;
   white-space: normal;
   overflow: hidden;
 }
 
 .data-viewer__header-cell--active,
-.data-viewer-cell--active {
+.data-viewer__cell--active {
   // It's trick to have its left side colored cause of border-collapse
   border-left: 1px double;
   background-color: $active-color-faded-3;
@@ -345,7 +362,7 @@ export default class DataViewer extends Vue {
 }
 
 .data-viewer__row:last-child {
-  .data-viewer-cell--active {
+  .data-viewer__cell--active {
     border-bottom-color: $active-color;
   }
 }

@@ -63,9 +63,9 @@ describe('Variable List option', () => {
       });
       await wrapper.vm.$nextTick();
     });
-    it('should display date value in UTC timezone', () => {
+    it('should display date value with default toString', () => {
       expect(wrapper.find('.widget-variable-option__value').text()).toBe(
-        'Fri, 11 Jun 2021 08:09:17 GMT',
+        new Date(1623398957013).toString(),
       );
     });
   });
@@ -94,6 +94,21 @@ describe('Variable List option', () => {
     });
   });
 
+  describe('when showOnlyLabel', () => {
+    beforeEach(async () => {
+      wrapper.setProps({
+        showOnlyLabel: true,
+      });
+      await wrapper.vm.$nextTick();
+    });
+    it('should hide variable value', () => {
+      expect(wrapper.find('.widget-variable-option__value').exists()).toBe(false);
+    });
+    it('should hide value tooltip', () => {
+      expect((wrapper.vm as any).readableValue).toStrictEqual('');
+    });
+  });
+
   describe('tooltip', () => {
     [
       { type: 'array', value: [1, 2], attendedValue: '[1,2]' },
@@ -104,7 +119,7 @@ describe('Variable List option', () => {
       {
         type: 'date',
         value: new Date(1623398957013),
-        attendedValue: `"${new Date(1623398957013).toUTCString()}"`,
+        attendedValue: `"${new Date(1623398957013).toString()}"`,
       },
     ].forEach(
       ({ type, value, attendedValue }: { type: string; value: any; attendedValue: any }) => {

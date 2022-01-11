@@ -22,15 +22,15 @@
           />
         </div>
         <div class="widget-list__icon" v-if="child.isRemovable" @click="removeChild(index)">
-          <i class="far fa-trash-alt" aria-hidden="true" />
+          <FAIcon icon="far trash-alt" />
         </div>
       </div>
       <div v-if="messageError" class="field__msg-error">
-        <span class="fa fa-exclamation-circle" />
+        <FAIcon icon="exclamation-circle" />
         {{ messageError }}
       </div>
       <button v-if="!automaticNewField" class="widget-list__add-fieldset" @click="addFieldSet">
-        <i class="fas fa-plus-circle" aria-hidden="true" />
+        <FAIcon icon="plus-circle" />
         {{ addFieldName }}
       </button>
     </div>
@@ -43,6 +43,7 @@ import _ from 'lodash';
 import { VueConstructor } from 'vue';
 import { Component, Mixins, Prop, Vue } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { TotalDimension } from '@/lib/steps.ts';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -59,6 +60,9 @@ type RepeatableField = Field[];
 
 @Component({
   name: 'list-widget',
+  components: {
+    FAIcon,
+  },
 })
 export default class ListWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
@@ -153,7 +157,7 @@ export default class ListWidget extends Mixins(FormWidget) {
 </script>
 <style lang="scss" scoped>
 @import '../../../styles/_variables';
-.fa-plus-circle {
+::v-deep .fa-plus-circle {
   color: $active-color;
 }
 

@@ -6,6 +6,8 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -18,7 +20,7 @@ describe('Data Types Menu', () => {
     });
     const wrapper = mount(DataTypesMenu, { store, localVue });
     expect(wrapper.exists()).toBeTruthy();
-    expect(wrapper.classes()).toContain('popover');
+    expect(wrapper.classes()).toContain('weaverbird-popover');
   });
 
   it('should contain the right set of data types', () => {

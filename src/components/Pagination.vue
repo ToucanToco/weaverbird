@@ -21,12 +21,10 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue } from 'vue-property-decorator';
 import Paginate from 'vuejs-paginate';
 
-import { DataSet } from '@/lib/dataset';
-import { numberOfPages, pageMinMax } from '@/lib/dataset/pagination';
-import { VQBModule } from '@/store';
+import { numberOfPages, pageMinMax, PaginationContext } from '@/lib/dataset/pagination';
 
 @Component({
   name: 'pagination',
@@ -35,44 +33,43 @@ import { VQBModule } from '@/store';
   },
 })
 export default class Pagination extends Vue {
-  @VQBModule.State dataset!: DataSet;
-
-  @VQBModule.Action setCurrentPage;
+  @Prop()
+  paginationContext?: PaginationContext;
 
   get showPager(): boolean {
     return this.pageCount > 1;
   }
 
   get pageCount() {
-    if (this.dataset.paginationContext) {
-      return numberOfPages(this.dataset.paginationContext);
+    if (this.paginationContext) {
+      return numberOfPages(this.paginationContext);
     }
     return 1;
   }
 
   get pageNo() {
-    if (this.dataset.paginationContext) {
-      return this.dataset.paginationContext.pageno;
+    if (this.paginationContext) {
+      return this.paginationContext.pageno;
     }
     return 1;
   }
 
   get totalCount() {
-    if (this.dataset.paginationContext) {
-      return this.dataset.paginationContext.totalCount;
+    if (this.paginationContext) {
+      return this.paginationContext.totalCount;
     }
     return null;
   }
 
   get pageRows() {
-    if (this.dataset.paginationContext) {
-      return pageMinMax(this.dataset.paginationContext);
+    if (this.paginationContext) {
+      return pageMinMax(this.paginationContext);
     }
     return 0;
   }
 
   pageClicked(pageno: number) {
-    this.setCurrentPage({ pageno });
+    this.$emit('setPage', { pageno });
   }
 }
 </script>

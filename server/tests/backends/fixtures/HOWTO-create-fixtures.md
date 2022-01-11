@@ -46,3 +46,6 @@ TODO:
 when other backends will be available:
 - skip/only for a backend
 - specific out file for a backend
+
+### Dates
+If you need to write dates in your steps, as JSON doesn't support them, you can use the string format: `date: %Y-%m-%d %H:%M:%S'`. 

@@ -202,7 +202,7 @@ describe('Data Viewer', () => {
       expect(headerCellsWrapper.at(3).text()).toContain('columnD');
     });
 
-    it('should display the right icon for each types', () => {
+    it('should display the right icon and component for each types', () => {
       const date = new Date();
       const store = setupMockStore(
         buildStateWithOnePipeline([], {
@@ -236,16 +236,16 @@ describe('Data Viewer', () => {
       expect(
         headerIconsWrapper
           .at(4)
-          .find('i')
-          .classes(),
-      ).toEqual(['fas', 'fa-calendar-alt']);
+          .find('FAIcon-stub')
+          .props().icon,
+      ).toEqual('calendar-alt');
       expect(headerIconsWrapper.at(5).text()).toEqual('{ }');
       expect(
         headerIconsWrapper
           .at(6)
-          .find('i')
-          .classes(),
-      ).toEqual(['fas', 'fa-check']);
+          .find('FAIcon-stub')
+          .props().icon,
+      ).toEqual('check');
       expect(headerIconsWrapper.at(7).text()).toEqual('???');
     });
 
@@ -532,8 +532,8 @@ describe('Data Viewer', () => {
           rowsWrapper
             .at(i)
             .find('dataviewercell-stub')
-            .attributes('isselected'),
-        ).toEqual('true');
+            .classes(),
+        ).toContain('data-viewer__cell--active');
       });
     });
   });

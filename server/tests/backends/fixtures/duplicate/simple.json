@@ -1,14 +1,25 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "duplicate",
-    "column": "x",
-    "new_column_name": "y"
+    "pipeline": [
+      {
+        "name": "duplicate",
+        "column": "X",
+        "new_column_name": "Y"
+      }
+    ]
   },
   "input": {
     "schema": {
       "fields": [
         {
-          "name": "x",
+          "name": "X",
+          "type": "string"
+        },
+        {
+          "name": "Z",
           "type": "integer"
         }
       ],
@@ -16,10 +27,12 @@
     },
     "data": [
       {
-        "x": 100
+        "X": "ange",
+        "Z": 12
       },
       {
-        "x": 200
+        "X": "raph",
+        "Z": 15
       }
     ]
   },
@@ -27,11 +40,15 @@
     "schema": {
       "fields": [
         {
-          "name": "x",
-          "type": "integer"
+          "name": "X",
+          "type": "string"
         },
         {
-          "name": "y",
+          "name": "Y",
+          "type": "string"
+        },
+        {
+          "name": "Z",
           "type": "integer"
         }
       ],
@@ -39,12 +56,14 @@
     },
     "data": [
       {
-        "x": 100,
-        "y": 100
+        "X": "ange",
+        "Y": "ange",
+        "Z": 12
       },
       {
-        "x": 200,
-        "y": 200
+        "X": "raph",
+        "Y": "raph",
+        "Z": 15
       }
     ]
   }

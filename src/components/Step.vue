@@ -1,15 +1,15 @@
 <template>
-  <div :class="classContainer">
+  <div :class="classContainer" data-cy="weaverbird-query-pipeline-step">
     <div class="query-pipeline-queue">
       <div :class="firstStrokeClass" />
-      <div class="query-pipeline-queue__dot" @click="toggleDelete">
+      <div class="query-pipeline-queue__dot" data-cy="weaverbird-step-dot" @click="toggleDelete">
         <div class="query-pipeline-queue__dot-ink">
-          <i class="fas fa-check" aria-hidden="true" />
+          <FAIcon icon="check" />
         </div>
       </div>
       <div :class="lastStrokeClass" />
     </div>
-    <div class="query-pipeline-step" @click="select()">
+    <div class="query-pipeline-step" data-cy="weaverbird-select-step" @click="select()">
       <div class="query-pipeline-step__body">
         <span
           class="query-pipeline-step__name"
@@ -23,18 +23,36 @@
             'query-pipeline-step__actions--disabled': !isEditable,
           }"
         >
+          <div
+            class="query-pipeline-step__action query-pipeline-step__action--preview-source-subset"
+            data-cy="weaverbird-filter-step"
+            v-if="canConfigurePreviewSourceSubset"
+            @click.stop="togglePreviewSourceSubsetForm"
+          >
+            <FAIcon icon="vial" />
+          </div>
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
-          <div class="query-pipeline-step__action" @click.stop="editStep()">
-            <i class="far fa-cog" aria-hidden="true" />
+          <div
+            class="query-pipeline-step__action"
+            data-cy="weaverbird-edit-step"
+            @click.stop="editStep()"
+          >
+            <FAIcon icon="cog" />
           </div>
           <div
             class="query-pipeline-step__action query-pipeline-step__action--handle"
             v-if="!isFirst"
             @click.stop
           >
-            <i class="fa fa-grip-vertical" aria-hidden="true" />
+            <FAIcon icon="grip-vertical" />
           </div>
         </div>
+      </div>
+      <div
+        class="query-pipeline-step__expand"
+        v-if="canConfigurePreviewSourceSubset && isEditingPreviewSourceSubset"
+      >
+        <PreviewSourceSubset />
       </div>
       <div class="query-pipeline-step__footer" v-if="errorMessage && !isDisabled">
         <div class="query-pipeline-step__error" :title="errorMessage">
@@ -48,13 +66,20 @@
 import Vue from 'vue';
 import { Component, Prop } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { humanReadableLabel, labelWithReadeableVariables } from '@/lib/labeller';
 import { PipelineStep } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
+import PreviewSourceSubset from './PreviewSourceSubset.vue';
+
 @Component({
   name: 'step',
+  components: {
+    FAIcon,
+    PreviewSourceSubset,
+  },
 })
 export default class Step extends Vue {
   @Prop(Boolean)
@@ -87,12 +112,23 @@ export default class Step extends Vue {
   @Prop()
   readonly indexInPipeline!: number;
 
+  isEditingPreviewSourceSubset = false;
+
   @VQBModule.Getter stepConfig!: (index: number) => PipelineStep;
 
   @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
 
+  @VQBModule.Getter('previewSourceRowsSubset') previewSourceRowsSubset?:
+    | number
+    | 'unlimited'
+    | undefined;
+
   get stepName(): string {
     return humanReadableLabel(this.step);
+  }
+
+  get canConfigurePreviewSourceSubset(): boolean {
+    return Boolean(this.isFirst && this.previewSourceRowsSubset);
   }
 
   get errorMessage(): string | undefined {
@@ -119,6 +155,8 @@ export default class Step extends Vue {
       'query-pipeline-step__container--last-active': this.isLastActive,
       'query-pipeline-step__container--disabled': this.isDisabled,
       'query-pipeline-step__container--errors': this.errorMessage && !this.isDisabled,
+      'query-pipeline-step__container--preview-source-subset':
+        this.canConfigurePreviewSourceSubset && this.isEditingPreviewSourceSubset,
     };
   }
 
@@ -146,6 +184,10 @@ export default class Step extends Vue {
 
   toggleDelete(): void {
     if (!this.isFirst) this.$emit('toggleDelete');
+  }
+
+  togglePreviewSourceSubsetForm(): void {
+    this.isEditingPreviewSourceSubset = !this.isEditingPreviewSourceSubset;
   }
 }
 </script>
@@ -205,7 +247,8 @@ export default class Step extends Vue {
   font-size: 8px;
   color: white;
   transform: width 0.2s, height 0.2s;
-  i {
+
+  ::v-deep .fa-check {
     visibility: hidden;
   }
 }
@@ -226,7 +269,7 @@ export default class Step extends Vue {
   min-width: 0;
   overflow: hidden;
   border-radius: 5px;
-  border: 1px solid $grey;
+  border: 1px solid $grey-light;
   background-color: white;
 }
 
@@ -248,6 +291,7 @@ export default class Step extends Vue {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
+  padding-right: 1em; //avoid label to be truncate due to emphasis style
 }
 
 .query-pipeline-step__actions {
@@ -274,7 +318,7 @@ export default class Step extends Vue {
   height: 100%;
   width: 40px;
   color: $grey-medium;
-  border-right: 1px solid $grey;
+  border-right: 1px solid $grey-light;
 
   &:hover {
     color: $grey-dark;
@@ -289,7 +333,7 @@ export default class Step extends Vue {
   cursor: move;
 }
 
-.query-pipeline-step__action i {
+.query-pipeline-step__action ::v-deep .fa-cog {
   transition: color 0.3s ease;
 }
 
@@ -334,7 +378,7 @@ export default class Step extends Vue {
   .query-pipeline-queue__dot-ink {
     background-color: $active-color-faded;
     border-color: $active-color-faded;
-    i {
+    ::v-deep .fa-check {
       visibility: visible;
     }
   }
@@ -417,7 +461,7 @@ export default class Step extends Vue {
     background: #f5f5f5;
   }
   .query-pipeline-queue__dot {
-    background-color: $grey;
+    background-color: $grey-light;
   }
   .query-pipeline-queue__dot-ink {
     background: $grey-dark;
@@ -440,6 +484,21 @@ export default class Step extends Vue {
       background-color: $grey-dark;
       border-color: $grey-dark;
     }
+  }
+}
+
+.query-pipeline-step__expand {
+  height: 45px;
+}
+
+.query-pipeline-step__container--preview-source-subset {
+  height: 97px;
+  .query-pipeline-step,
+  .query-pipeline-step__action {
+    border-color: $active-color;
+  }
+  .query-pipeline-step__action--preview-source-subset {
+    color: $active-color;
   }
 }
 </style>

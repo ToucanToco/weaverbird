@@ -2,6 +2,8 @@ import CompareTextStepForm from '@/components/stepforms/CompareTextStepForm.vue'
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Compute Text Columns Step Form', () => {
   const runner = new BasicStepFormTestRunner(CompareTextStepForm, 'comparetext');
   runner.testInstantiate();

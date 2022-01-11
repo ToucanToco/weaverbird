@@ -35,6 +35,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'formula', label: 'Add formula column' },
     { name: 'ifthenelse', label: 'Add conditional column' },
     { name: 'custom', label: 'Add custom step' },
+    { name: 'customsql', label: 'Add custom sql step' },
   ],
   filter: [
     { name: 'delete', label: 'Delete columns' },
@@ -67,6 +68,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'lowercase', label: 'To lowercase' },
     { name: 'uppercase', label: 'To uppercase' },
     { name: 'comparetext', label: 'Compare text columns' },
+    { name: 'trim', label: 'Trim spaces' },
   ],
   date: [
     { name: 'todate', label: 'Convert text to date' },

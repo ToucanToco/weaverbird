@@ -2,28 +2,36 @@
 #
 # Usage:
 # $ docker build -t weaverbird-playground .
-# $ docker run -p 3000:3000 -p 5000:5000 --rm -d weaverbird-playground
-# and then access http://localhost:3000/?backend=pandas
+# $ docker run -p 5000:5000 --rm -d weaverbird-playground
+# and then access http://localhost:5000/?backend=pandas
 
-
-FROM nikolaik/python-nodejs:python3.8-nodejs14
-
-WORKDIR /weaverbird/
-
-# Install front-end package dependecies
-COPY ./package.json ./yarn.lock ./
-RUN yarn
-
-WORKDIR /weaverbird/server
-# Install back-end package dependencies
-COPY server/pyproject.toml ./
-RUN poetry install
+FROM node:14 AS ui-builder
 
 WORKDIR /weaverbird
-# Build front-end package
+
+# Install npm dependencies
+COPY package.json yarn.lock ./
+RUN yarn
+
+# Build UI
 COPY . ./
 RUN yarn build
 
-CMD yarn concurrently "yarn start" "cd server; FLASK_APP=playground FLASK_RUN_HOST=0.0.0.0 FLASK_RUN_PORT=5000 poetry run flask run"
-EXPOSE 3000
+
+FROM python:3.8 as server
+
+WORKDIR /weaverbird/server
+
+COPY server /weaverbird/server
+
+# Install pypi dependencies for the playground
+RUN pip install -e ".[playground]"
+
+# Copy UI files
+COPY --from=ui-builder /weaverbird/playground/dist/* /weaverbird/server/static/
+
+# Copy sample datasets
+COPY ./playground/datastore /weaverbird/playground/datastore
+
+CMD hypercorn --bind 0.0.0.0:5000 playground:app
 EXPOSE 5000

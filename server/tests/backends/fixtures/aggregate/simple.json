@@ -1,50 +1,58 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [
-      "Group"
-    ],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "Sum-Value1",
-          "Sum-Value2"
+        "name": "aggregate",
+        "on": [
+          "DOUM"
         ],
-        "aggfunction": "sum",
-        "columns": [
-          "Value1",
-          "Value2"
-        ]
-      },
-      {
-        "newcolumns": [
-          "Avg-Value1"
+        "aggregations": [
+          {
+            "newcolumns": [
+              "SUM-VALUE1",
+              "SUM-VALUE2"
+            ],
+            "aggfunction": "sum",
+            "columns": [
+              "VALUE1",
+              "VALUE2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "AVG-VALUE1"
+            ],
+            "aggfunction": "avg",
+            "columns": [
+              "VALUE1"
+            ]
+          }
         ],
-        "aggfunction": "avg",
-        "columns": [
-          "Value1"
-        ]
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {
       "fields": [
         {
-          "name": "Label",
+          "name": "LABEL",
           "type": "string"
         },
         {
-          "name": "Group",
+          "name": "DOUM",
           "type": "string"
         },
         {
-          "name": "Value1",
+          "name": "VALUE1",
           "type": "integer"
         },
         {
-          "name": "Value2",
+          "name": "VALUE2",
           "type": "integer"
         }
       ],
@@ -52,40 +60,40 @@
     },
     "data": [
       {
-        "Label": "Label 1",
-        "Group": "Group 1",
-        "Value1": 13,
-        "Value2": 10
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "VALUE2": 10
       },
       {
-        "Label": "Label 2",
-        "Group": "Group 1",
-        "Value1": 7,
-        "Value2": 21
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "VALUE2": 21
       },
       {
-        "Label": "Label 3",
-        "Group": "Group 1",
-        "Value1": 20,
-        "Value2": 4
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "VALUE2": 4
       },
       {
-        "Label": "Label 4",
-        "Group": "Group 2",
-        "Value1": 1,
-        "Value2": 17
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "VALUE2": 17
       },
       {
-        "Label": "Label 5",
-        "Group": "Group 2",
-        "Value1": 10,
-        "Value2": 12
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "VALUE2": 12
       },
       {
-        "Label": "Label 6",
-        "Group": "Group 2",
-        "Value1": 5,
-        "Value2": 2
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "VALUE2": 2
       }
     ]
   },
@@ -93,19 +101,19 @@
     "schema": {
       "fields": [
         {
-          "name": "Group",
+          "name": "DOUM",
           "type": "string"
         },
         {
-          "name": "Sum-Value1",
+          "name": "SUM-VALUE1",
           "type": "integer"
         },
         {
-          "name": "Sum-Value2",
+          "name": "SUM-VALUE2",
           "type": "integer"
         },
         {
-          "name": "Avg-Value1",
+          "name": "AVG-VALUE1",
           "type": "number"
         }
       ],
@@ -113,16 +121,16 @@
     },
     "data": [
       {
-        "Group": "Group 1",
-        "Sum-Value1": 40,
-        "Sum-Value2": 35,
-        "Avg-Value1": 13.3333333333
+        "DOUM": "Group 1",
+        "SUM-VALUE1": 40,
+        "SUM-VALUE2": 35,
+        "AVG-VALUE1": 13.3333333333
       },
       {
-        "Group": "Group 2",
-        "Sum-Value1": 16,
-        "Sum-Value2": 31,
-        "Avg-Value1": 5.3333333333
+        "DOUM": "Group 2",
+        "SUM-VALUE1": 16,
+        "SUM-VALUE2": 31,
+        "AVG-VALUE1": 5.3333333333
       }
     ]
   }

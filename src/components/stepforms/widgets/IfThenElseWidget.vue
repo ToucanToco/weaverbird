@@ -8,7 +8,7 @@
         <span class="ifthenelse-widget__collapse-button" @click="toggle" />
         <div class="ifthenelse-widget__tag">{{ isRoot ? 'IF' : 'ELSE IF' }}</div>
         <div v-if="!isRoot && !collapsed" class="ifthenelse-widget__remove" @click="deleteElseIf">
-          <i class="far fa-trash-alt" aria-hidden="true" />
+          <FAIcon icon="far trash-alt" />
         </div>
         <template v-if="collapsed">
           <div class="ifthenelse-widget__collapse-description" v-html="formulaToHumanFormat" />
@@ -117,6 +117,7 @@ import { ErrorObject } from 'ajv';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import convertIfThenElseToHumanFormat from '@/components/convert-if-then-else-to-human-format';
+import FAIcon from '@/components/FAIcon.vue';
 import FilterEditor from '@/components/FilterEditor.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
@@ -130,6 +131,7 @@ import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
     AutocompleteWidget,
     FilterEditor,
     InputTextWidget,
+    FAIcon,
   },
 })
 export default class IfThenElseWidget extends Vue {
@@ -256,7 +258,7 @@ export default class IfThenElseWidget extends Vue {
     margin: 0;
     background-color: #e9eff5;
     padding: 5px;
-    border: 1px solid $grey;
+    border: 1px solid $grey-light;
     border-radius: 5px;
   }
   ::v-deep .widget-input-text {
@@ -301,7 +303,7 @@ export default class IfThenElseWidget extends Vue {
     }
   }
   .ifthenelse-widget__tag {
-    background-color: $grey;
+    background-color: $grey-light;
     color: black;
   }
 }

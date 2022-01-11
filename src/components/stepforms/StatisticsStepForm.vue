@@ -21,8 +21,7 @@
     />
     <div class="statistic-section-header" @click="isBasicStatisticsOpen = !isBasicStatisticsOpen">
       Basic Statistics ({{ basicStatisticsCheckedCount }})
-      <i v-if="isBasicStatisticsOpen" class="fas fa-angle-down" aria-hidden="true" />
-      <i v-else class="fas fa-angle-right" aria-hidden="true" />
+      <FAIcon :icon="isBasicStatisticsOpen ? 'angle-down' : 'angle-right'" />
     </div>
     <div class="statistic-section" v-if="isBasicStatisticsOpen">
       <div v-for="statistic in statistics" :key="statistic">
@@ -45,8 +44,7 @@
       @click="isAdvancedStatisticsOpen = !isAdvancedStatisticsOpen"
     >
       Advanced Statistics ({{ advancedStatisticsCheckedCount }})
-      <i v-if="isAdvancedStatisticsOpen" class="fas fa-angle-down" aria-hidden="true" />
-      <i v-else class="fas fa-angle-right" aria-hidden="true" />
+      <FAIcon :icon="isAdvancedStatisticsOpen ? 'angle-down' : 'angle-right'" />
     </div>
     <div class="statistic-section" v-if="isAdvancedStatisticsOpen">
       <div v-for="statistic in advancedStatistics" :key="statistic">
@@ -66,8 +64,7 @@
     </div>
     <div class="statistic-section-header" @click="isCustomQuantileOpen = !isCustomQuantileOpen">
       Custom quantiles ({{ customQuantilesCheckedCount }})
-      <i v-if="isCustomQuantileOpen" class="fas fa-angle-down" aria-hidden="true" />
-      <i v-else class="fas fa-angle-right" aria-hidden="true" />
+      <FAIcon :icon="isCustomQuantileOpen ? 'angle-down' : 'angle-right'" />
     </div>
     <div class="statistic-section" v-if="isCustomQuantileOpen">
       <div
@@ -113,6 +110,7 @@ import _intersection from 'lodash/intersection';
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import Checkbox from '@/components/stepforms/widgets/Checkbox.vue';
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
@@ -128,6 +126,7 @@ import BaseStepForm from './StepForm.vue';
     Checkbox,
     InputNumberWidget,
     MultiselectWidget,
+    FAIcon,
   },
 })
 export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
@@ -254,8 +253,8 @@ export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
   toogleQuantile(quantile: Quantile) {
     // parse quantile
     quantile = {
-      nth: parseInt(quantile.nth),
-      order: parseInt(quantile.order),
+      nth: quantile.nth,
+      order: quantile.order,
       label: quantile.label,
     };
     if (this.isQuantileChecked(quantile)) {

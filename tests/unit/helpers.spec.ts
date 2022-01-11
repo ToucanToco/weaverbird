@@ -6,6 +6,7 @@ import {
   generateNewColumnName,
   keepCurrentValueIfArrayType,
   keepCurrentValueIfCompatibleDate,
+  keepCurrentValueIfCompatibleRelativeDate,
   keepCurrentValueIfCompatibleType,
   setAggregationsNewColumnsInStep,
 } from '@/lib/helpers';
@@ -153,6 +154,24 @@ describe('castFromString', () => {
     });
     it('should return selected value if its a string', () => {
       expect(keepCurrentValueIfCompatibleDate('<%= lala %>', null)).toEqual('<%= lala %>');
+    });
+  });
+
+  describe('keepCurrentValueIfCompatibleRelativeDate', () => {
+    it('should return default if selected value is not a date/relative date or string', () => {
+      expect(keepCurrentValueIfCompatibleRelativeDate(3, null)).toEqual(null);
+      expect(keepCurrentValueIfCompatibleRelativeDate(null, null)).toEqual(null);
+    });
+    it('should return selected value if its a well formatted date', () => {
+      const value = new Date('12/04/2021');
+      expect(keepCurrentValueIfCompatibleRelativeDate(value, null)).toEqual(value);
+    });
+    it('should return selected value if its a well formatted relative date', () => {
+      const value = { quantity: 2, duration: 'year', operator: 'until', date: '{{today}}' };
+      expect(keepCurrentValueIfCompatibleRelativeDate(value, null)).toEqual(value);
+    });
+    it('should return selected value if its a string', () => {
+      expect(keepCurrentValueIfCompatibleRelativeDate('<%= lala %>', null)).toEqual('<%= lala %>');
     });
   });
 

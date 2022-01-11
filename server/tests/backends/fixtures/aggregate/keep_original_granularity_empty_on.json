@@ -1,19 +1,27 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "__vqb_count__"
+        "name": "aggregate",
+        "on": [],
+        "aggregations": [
+          {
+            "newcolumns": [
+              "__vqb_count__"
+            ],
+            "aggfunction": "count",
+            "columns": [
+              "Group"
+            ]
+          }
         ],
-        "aggfunction": "count",
-        "columns": [
-          "Group"
-        ]
+        "keepOriginalGranularity": true
       }
-    ],
-    "keepOriginalGranularity": true
+    ]
   },
   "input": {
     "schema": {

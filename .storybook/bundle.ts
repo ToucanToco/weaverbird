@@ -2,6 +2,7 @@
   This file creates the bundle needed by storybook to import the UI components.
   All components available in the Storybook must be exported here.
 */
+import '@/lib/icons';
 
 import DataViewer from '../src/components/DataViewer.vue';
 import FilterStepForm from '../src/components/stepforms/FilterStepForm.vue';
@@ -38,9 +39,14 @@ import TotalDimensions from '../src/components/stepforms/widgets/TotalDimensions
 import Popover from '../src/components/Popover.vue';
 import VariableList from '../src/components/stepforms/widgets/VariableInputs/VariableList.vue';
 import CustomVariableList from '../src/components/stepforms/widgets/DateComponents/CustomVariableList.vue';
-import Calendar from '../src/components/Calendar.vue';
+import Calendar from '../src/components/DatePicker/Calendar.vue';
 import Tabs from '../src/components/Tabs.vue';
-import RangeCalendar from '../src/components/RangeCalendar.vue';
+import RangeCalendar from '../src/components/DatePicker/RangeCalendar.vue';
+import CustomGranularityCalendar from '../src/components/DatePicker/CustomGranularityCalendar.vue';
+import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
+import RelativeDateForm from '../src/components/stepforms/widgets/DateComponents/RelativeDateForm.vue';
+import NewDateInput from '../src/components/stepforms/widgets/DateComponents/NewDateInput.vue';
+import DateRangeInput from '../src/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 
 export {
   FilterEditor,
@@ -81,6 +87,10 @@ export {
   Calendar,
   Tabs,
   RangeCalendar,
+  CustomGranularityCalendar,
+  RelativeDateForm,
+  NewDateInput,
+  DateRangeInput,
 };
 export { setupStore, registerModule, VQBnamespace } from '../src/store';
 export { resizable } from '../src/directives/resizable/resizable';

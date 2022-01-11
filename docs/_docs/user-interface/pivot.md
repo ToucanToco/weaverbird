@@ -18,6 +18,7 @@ Equivalent to the `PIVOT` clause in SQL.
 
 **This step is supported by the following backends:**
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6
@@ -41,6 +42,8 @@ Equivalent to the `PIVOT` clause in SQL.
 
 - `Aggregate values using...`: the aggregation function to be used when
   aggregation has to be performed
+
+- `Pivot values in ...`: for sql translator only, values to keep in value column
 
 #### Example
 

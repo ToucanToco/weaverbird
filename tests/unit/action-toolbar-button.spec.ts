@@ -7,6 +7,8 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -72,7 +74,7 @@ describe('ActionToolbarButton not active', () => {
       store: setupMockStore(),
     });
     expect(wrapper.find('.action-toolbar__btn-txt').text()).toEqual('toto');
-    expect(wrapper.find('.fa-plop').exists()).toBeTruthy();
+    expect(wrapper.find('.fa-icon').attributes().icon).toBe('plop');
   });
 
   it('should instantiate without popover', () => {
@@ -142,6 +144,7 @@ describe('ActionToolbarButton active', () => {
       '!lowercase',
       '!uppercase',
       'comparetext',
+      'trim',
     ]);
   });
 

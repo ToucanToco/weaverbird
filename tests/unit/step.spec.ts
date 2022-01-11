@@ -3,9 +3,12 @@ import Vuex from 'vuex';
 
 import PipelineComponent from '@/components/Pipeline.vue';
 import Step from '@/components/Step.vue';
+import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
+
+jest.mock('@/components/FAIcon.vue');
 
 const localVue = createLocalVue();
 localVue.use(Vuex);
@@ -138,7 +141,7 @@ describe('Step.vue', () => {
     const wrapper = mount(PipelineComponent, { store, localVue });
     const stepsArray = wrapper.findAll(Step);
     const renameStep = stepsArray.at(2);
-    renameStep.find('.fa-cog').trigger('click');
+    renameStep.find('.query-pipeline-step__action').trigger('click');
     expect(renameStep.emitted().editStep).toBeDefined();
     expect(renameStep.emitted().editStep).toEqual([
       [{ name: 'rename', toRename: [['region', 'kingdom']] }, 2],
@@ -256,6 +259,57 @@ describe('Step.vue', () => {
       expect(wrapper.find('.query-pipeline-step__actions').classes()).toContain(
         'query-pipeline-step__actions--disabled',
       );
+    });
+  });
+
+  describe('when step enable to edit preview source subset', () => {
+    let wrapper: Wrapper<Step>;
+    beforeEach(() => {
+      const dummyDataset: DataSet = {
+        headers: [
+          { name: 'city', uniques: { values: [{ value: 'Lyon', count: 50 }], loaded: false } },
+        ],
+        data: [['Lyon']],
+        previewContext: { sourceRowsSubset: 100 },
+      };
+      const pipeline: Pipeline = [
+        { name: 'domain', domain: 'GoT' },
+        { name: 'replace', search_column: 'characters', to_replace: [['Snow', 'Targaryen']] },
+      ];
+      const store = setupMockStore(
+        buildStateWithOnePipeline(pipeline, {
+          currentStepFormName: 'domain',
+          dataset: dummyDataset,
+        }),
+      );
+      wrapper = mount(PipelineComponent, {
+        store,
+        localVue,
+        stubs: {
+          PreviewSourceSubset: '<div class="preview-source-subset" />',
+        },
+      });
+    });
+    it('should add an icon to edit preview source subset', () => {
+      expect(wrapper.find('.query-pipeline-step__action--preview-source-subset').exists()).toBe(
+        true,
+      );
+      expect(wrapper.findAll('.query-pipeline-step__action--preview-source-subset')).toHaveLength(
+        1,
+      );
+    });
+    it('should hide the preview source subset form', () => {
+      expect(wrapper.find('.preview-source-subset').exists()).toBe(false);
+    });
+    describe('when editing preview source subset', () => {
+      beforeEach(async () => {
+        wrapper.find('.query-pipeline-step__action--preview-source-subset').trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+      it('should display the preview source subset form', () => {
+        expect(wrapper.find('.preview-source-subset').exists()).toBe(true);
+        expect(wrapper.findAll('.preview-source-subset')).toHaveLength(1);
+      });
     });
   });
 });

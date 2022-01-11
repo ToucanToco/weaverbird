@@ -1,0 +1,123 @@
+{
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
+  "step": {
+    "name": "unpivot",
+    "pipeline": [
+      {
+        "name":"unpivot",
+        "keep":["COMPANY", "COUNTRY"],
+        "unpivot":["CURRENCY", "PROVIDER"],
+        "unpivot_column_name":"KPI",
+        "value_column_name":"VALUE",
+        "dropna":false
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "COMPANY",
+          "type": "string"
+        },
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        },
+        {
+          "name": "CURRENCY",
+          "type": "string"
+        },
+        {
+          "name": "PROVIDER",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "COMPANY": "EVIL CORP",
+        "COUNTRY": "US",
+        "CURRENCY": "DOLLARS",
+        "PROVIDER": "PONZI"
+      },
+      {
+        "COMPANY": "ENRON",
+        "COUNTRY": "US",
+        "CURRENCY": "DOLLARS",
+        "PROVIDER": "ANDERSEN"
+      },
+      {
+        "COMPANY": "THERANOS",
+        "COUNTRY": "US",
+        "CURRENCY": "DOLLARS",
+        "PROVIDER": "HOLMES"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "COMPANY",
+          "type": "string"
+        },
+        {
+          "name": "COUNTRY",
+          "type": "string"
+        },
+        {
+          "name": "KPI",
+          "type": "string"
+        },
+        {
+          "name": "VALUE",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "COMPANY": "EVIL CORP",
+        "COUNTRY": "US",
+        "KPI": "CURRENCY",
+        "VALUE": "DOLLARS"
+      },
+      {
+        "COMPANY": "EVIL CORP",
+        "COUNTRY": "US",
+        "KPI": "PROVIDER",
+        "VALUE": "PONZI"
+      },
+      {
+        "COMPANY": "ENRON",
+        "COUNTRY": "US",
+        "KPI": "CURRENCY",
+        "VALUE": "DOLLARS"
+      },
+      {
+        "COMPANY": "ENRON",
+        "COUNTRY": "US",
+        "KPI": "PROVIDER",
+        "VALUE": "ANDERSEN"
+      },
+      {
+        "COMPANY": "THERANOS",
+        "COUNTRY": "US",
+        "KPI": "CURRENCY",
+        "VALUE": "DOLLARS"
+      },
+      {
+        "COMPANY": "THERANOS",
+        "COUNTRY": "US",
+        "KPI": "PROVIDER",
+        "VALUE": "HOLMES"
+      }
+    ]
+  }
+}

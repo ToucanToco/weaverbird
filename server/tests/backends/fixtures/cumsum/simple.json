@@ -1,18 +1,25 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "cumsum",
-    "valueColumn": "value",
-    "referenceColumn": "date"
+    "pipeline": [
+      {
+        "name": "cumsum",
+        "valueColumn": "VALUE",
+        "referenceColumn": "DATE"
+      }
+    ]
   },
   "input": {
     "schema": {
       "fields": [
         {
-          "name": "date",
+          "name": "DATE",
           "type": "string"
         },
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "integer"
         }
       ],
@@ -20,28 +27,28 @@
     },
     "data": [
       {
-        "date": "2019-06",
-        "value": 6
+        "DATE": "2019-06",
+        "VALUE": 6
       },
       {
-        "date": "2019-01",
-        "value": 2
+        "DATE": "2019-01",
+        "VALUE": 2
       },
       {
-        "date": "2019-02",
-        "value": 5
+        "DATE": "2019-02",
+        "VALUE": 5
       },
       {
-        "date": "2019-03",
-        "value": 3
+        "DATE": "2019-03",
+        "VALUE": 3
       },
       {
-        "date": "2019-04",
-        "value": 8
+        "DATE": "2019-04",
+        "VALUE": 8
       },
       {
-        "date": "2019-05",
-        "value": 9
+        "DATE": "2019-05",
+        "VALUE": 9
       }
     ]
   },
@@ -49,15 +56,15 @@
     "schema": {
       "fields": [
         {
-          "name": "date",
+          "name": "DATE",
           "type": "string"
         },
         {
-          "name": "value",
+          "name": "VALUE",
           "type": "integer"
         },
         {
-          "name": "value_CUMSUM",
+          "name": "VALUE_CUMSUM",
           "type": "integer"
         }
       ],
@@ -65,34 +72,34 @@
     },
     "data": [
       {
-        "date": "2019-01",
-        "value": 2,
-        "value_CUMSUM": 2
+        "DATE": "2019-01",
+        "VALUE": 2,
+        "VALUE_CUMSUM": 2
       },
       {
-        "date": "2019-02",
-        "value": 5,
-        "value_CUMSUM": 7
+        "DATE": "2019-02",
+        "VALUE": 5,
+        "VALUE_CUMSUM": 7
       },
       {
-        "date": "2019-03",
-        "value": 3,
-        "value_CUMSUM": 10
+        "DATE": "2019-03",
+        "VALUE": 3,
+        "VALUE_CUMSUM": 10
       },
       {
-        "date": "2019-04",
-        "value": 8,
-        "value_CUMSUM": 18
+        "DATE": "2019-04",
+        "VALUE": 8,
+        "VALUE_CUMSUM": 18
       },
       {
-        "date": "2019-05",
-        "value": 9,
-        "value_CUMSUM": 27
+        "DATE": "2019-05",
+        "VALUE": 9,
+        "VALUE_CUMSUM": 27
       },
       {
-        "date": "2019-06",
-        "value": 6,
-        "value_CUMSUM": 33
+        "DATE": "2019-06",
+        "VALUE": 6,
+        "VALUE_CUMSUM": 33
       }
     ]
   }

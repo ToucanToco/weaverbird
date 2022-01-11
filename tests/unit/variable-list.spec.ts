@@ -89,6 +89,7 @@ describe('Variable List', () => {
         label: 'view',
         identifier: 'appRequesters.view',
         value: 'Product 123',
+        showOnlyLabel: false,
         togglable: false,
         selectedVariables: 'appRequesters.city',
       });
@@ -103,6 +104,27 @@ describe('Variable List', () => {
       it('should emit a new value with the chosen variable', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
+      });
+    });
+
+    it('should display an "Advanced variable" option ...', () => {
+      expect(wrapper.find('.widget-variable-list__advanced-variable').exists()).toBe(true);
+    });
+
+    it('... even without other values', async () => {
+      wrapper.setProps({ availableVariables: [] });
+      await wrapper.vm.$nextTick();
+      expect(wrapper.find('.widget-variable-list__advanced-variable').exists()).toBe(true);
+    });
+
+    describe('when clicking on "Advanced variable"', () => {
+      beforeEach(async () => {
+        wrapper.find('.widget-variable-list__advanced-variable').trigger('click');
+        await wrapper.vm.$nextTick();
+      });
+
+      it('should emit advancedVariable', () => {
+        expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
       });
     });
   });
@@ -123,6 +145,7 @@ describe('Variable List', () => {
         identifier: 'appRequesters.view',
         value: 'Product 123',
         togglable: true,
+        showOnlyLabel: false,
         selectedVariables: ['appRequesters.date.month', 'appRequesters.date.year'],
       });
     });
@@ -145,6 +168,18 @@ describe('Variable List', () => {
         expect(wrapper.emitted('input')).toHaveLength(1);
         expect(wrapper.emitted('input')[0][0]).toEqual(['appRequesters.date.year']);
       });
+    });
+  });
+
+  describe('when is not advanced', () => {
+    beforeEach(() => {
+      createWrapper({
+        availableVariables: VARIABLES,
+        enableAdvancedVariable: false,
+      });
+    });
+    it('should hide "Advanced variable" option', () => {
+      expect(wrapper.find('.widget-variable-list__advanced-variable').exists()).toBe(false);
     });
   });
 

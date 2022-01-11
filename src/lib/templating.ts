@@ -223,6 +223,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step, query: _interpolate(this.interpolateFunc, step.query, this.context) };
   }
 
+  customsql(step: Readonly<S.CustomSqlStep>) {
+    return { ...step, query: _interpolate(this.interpolateFunc, step.query, this.context) };
+  }
+
   dateextract(step: Readonly<S.DateExtractStep>) {
     return {
       ...step,
@@ -464,6 +468,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     };
   }
 
+  trim(step: Readonly<S.TrimStep>) {
+    return { ...step };
+  }
+
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
     return {
       name: step.name,
@@ -524,9 +532,11 @@ const aloneVarsRegExp = new RegExp('^' + (_.templateSettings.interpolate as RegE
  * 2. Inside arrays, variables that are also arrays are expanded
  * Examples:
  * - `exampleInterpolateFunc(['<%= roles %>'], { group: ['crewmate', 'impostor'] })` returns `['crewmate', 'impostor']` (and not `[['crewmate', 'impostor']]`)
+ *
+ * 3. Inside objects, keys and values are interpolated
  */
 export const exampleInterpolateFunc: InterpolateFunction = function(
-  value: string | any[],
+  value: any,
   context: ScopeContext,
 ) {
   if (typeof value === 'string' && value.match(aloneVarsRegExp)) {
@@ -545,10 +555,19 @@ export const exampleInterpolateFunc: InterpolateFunction = function(
           return [...values, templatedValue];
         }
       } else {
-        return [...values, v];
+        return [...values, exampleInterpolateFunc(v, context)];
       }
     }, []);
-  } else {
+  } else if (_.isPlainObject(value)) {
+    return Object.fromEntries(
+      Object.entries(value).map(([k, v]: [string, any]) => [
+        exampleInterpolateFunc(k, context),
+        exampleInterpolateFunc(v, context),
+      ]),
+    );
+  } else if (typeof value === 'string') {
     return _.template(value)(context);
+  } else {
+    return value;
   }
 };

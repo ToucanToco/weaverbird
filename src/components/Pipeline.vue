@@ -1,5 +1,5 @@
 <template>
-  <div class="query-pipeline">
+  <div class="query-pipeline" data-cy="weaverbird-pipeline">
     <Draggable
       class="query-pipeline__draggable"
       v-model="arrangedSteps"
@@ -25,8 +25,12 @@
       />
     </Draggable>
     <div class="query-pipeline__delete-steps-container" v-if="selectedSteps.length">
-      <div class="query-pipeline__delete-steps" @click="openDeleteConfirmationModal">
-        <i aria-hidden="true" class="fas fa-trash" />
+      <div
+        class="query-pipeline__delete-steps"
+        data-cy="weaverbird-delete-steps"
+        @click="openDeleteConfirmationModal"
+      >
+        <FAIcon icon="trash" />
         Delete [{{ selectedSteps.length }}] selected
       </div>
     </div>
@@ -34,7 +38,7 @@
       <div class="query-pipeline__tips">
         Interact with the widgets and table on the right to add steps
       </div>
-      <i class="fas fa-magic" aria-hidden="true" />
+      <FAIcon icon="magic" />
     </div>
     <DeleteConfirmationModal
       v-if="deleteConfirmationModalIsOpened"
@@ -50,6 +54,7 @@ import Vue from 'vue';
 import { Component } from 'vue-property-decorator';
 import Draggable from 'vuedraggable';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { copyToClipboard, pasteFromClipboard } from '@/lib/clipboard';
 import { DomainStep, isPipelineStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters } from '@/lib/variables';
@@ -65,6 +70,7 @@ import Step from './Step.vue';
     DeleteConfirmationModal,
     Draggable,
     Step,
+    FAIcon,
   },
 })
 export default class PipelineComponent extends Vue {
@@ -243,11 +249,11 @@ export default class PipelineComponent extends Vue {
   border-radius: 2px;
 }
 
-.fa-code {
+::v-deep .fa-code {
   color: rgb(239, 239, 239);
 }
 
-.fa-magic {
+::v-deep .fa-magic {
   color: rgb(239, 239, 239);
   font-size: 64px;
 }

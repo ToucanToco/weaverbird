@@ -1,0 +1,49 @@
+{
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "value"
+        ],
+        "data_type": "date"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "value",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "value": 1604331000000
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "value",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "value": "2020-11-02T15:30:00.000Z"
+      }
+    ]
+  }
+}

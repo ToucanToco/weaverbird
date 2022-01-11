@@ -11,6 +11,7 @@
  * const label = humanReadableLabel(step);
  * ```
  */
+import { CustomDate, dateToString, relativeDateToString } from '@/lib/dates';
 import { StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 
@@ -37,6 +38,19 @@ const MULTIVALUE_SEP = ', ';
 
 function formatMulticol(columns: string[]) {
   return columns.map(col => `"${col}"`).join(MULTIVALUE_SEP);
+}
+
+/**
+ * Compute a human-readable label from a relative date filter step condition.
+ */
+function relativeDateFilterExpression(value: CustomDate | string): string {
+  if (value instanceof Date) {
+    return dateToString(value);
+  } else if (value instanceof Object) {
+    return relativeDateToString(value);
+  } else {
+    return value;
+  }
 }
 
 /**
@@ -78,6 +92,14 @@ function filterExpression(
         return `"${condition.column}" is null`;
       case 'notnull':
         return `"${condition.column}" is not null`;
+      case 'from':
+        return `"${condition.column}" starting in/on ${relativeDateFilterExpression(
+          condition.value,
+        )}`;
+      case 'until':
+        return `"${condition.column}" ending in/on ${relativeDateFilterExpression(
+          condition.value,
+        )}`;
       default:
         // only for typescript to be happy and see we always have a return value
         return '';
@@ -149,6 +171,10 @@ class StepLabeller implements StepMatcher<string> {
 
   convert(step: Readonly<S.ConvertStep>) {
     return `Convert columns ${formatMulticol(step.columns)} into ${step.data_type}`;
+  }
+
+  customsql(_step: Readonly<S.CustomSqlStep>) {
+    return `Custom sql step`;
   }
 
   cumsum(step: Readonly<S.CumSumStep>) {
@@ -291,6 +317,10 @@ class StepLabeller implements StepMatcher<string> {
   totals(step: Readonly<S.AddTotalRowsStep>) {
     const columns = step.totalDimensions.map(c => c.totalColumn);
     return `Add total rows in columns ${formatMulticol(columns)}`;
+  }
+
+  trim(step: Readonly<S.TrimStep>) {
+    return `Trim spaces in ${formatMulticol(step.columns)}`;
   }
 
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {

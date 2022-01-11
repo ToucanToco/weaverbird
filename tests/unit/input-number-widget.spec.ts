@@ -2,6 +2,8 @@ import { mount, shallowMount } from '@vue/test-utils';
 
 import InputNumberWidget from '@/components/stepforms/widgets/InputNumber.vue';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Widget Input Number', () => {
   it('should instantiate', () => {
     const wrapper = shallowMount(InputNumberWidget);
@@ -91,7 +93,7 @@ describe('Widget Input Number', () => {
     const inputWrapper = wrapper.find('input[type="number"]');
     (inputWrapper.element as HTMLInputElement).value = '2';
     inputWrapper.trigger('input', { value: '2' });
-    expect(wrapper.emitted()).toEqual({ input: [['2']] });
+    expect(wrapper.emitted()).toEqual({ input: [[2]] });
   });
 
   it('should emit "input" event with the updated value when VariableInput is updated', () => {

@@ -12,9 +12,11 @@ import { BaseTranslator } from './base';
 import { EmptyTranslator } from './empty';
 import { Mongo36Translator } from './mongo';
 import { Mongo40Translator } from './mongo4';
+import { Mongo50Translator } from './mongo5';
 import { Mongo42Translator } from './mongo42';
 import { PandasTranslator } from './pandas';
 import { PandasNoJoinsTranslator } from './pandas-no_joins';
+import { SnowflakeTranslator } from './snowflake';
 
 const TRANSLATORS: { [backend: string]: typeof BaseTranslator } = {};
 
@@ -65,9 +67,11 @@ export function availableTranslators() {
 registerTranslator('mongo36', Mongo36Translator);
 registerTranslator('mongo40', Mongo40Translator);
 registerTranslator('mongo42', Mongo42Translator);
+registerTranslator('mongo50', Mongo50Translator);
 registerTranslator('pandas', PandasTranslator);
 registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
 registerTranslator('empty', EmptyTranslator);
+registerTranslator('snowflake', SnowflakeTranslator);
 
 /**
  * Initialize variable delimiters for all translators
@@ -75,3 +79,13 @@ registerTranslator('empty', EmptyTranslator);
 export function setVariableDelimiters(variableDelimiters?: VariableDelimiters) {
   BaseTranslator.variableDelimiters = variableDelimiters;
 }
+
+export type VqbTranslator =
+  | 'mongo36'
+  | 'mongo40'
+  | 'mongo42'
+  | 'mongo50'
+  | 'pandas'
+  | 'pandas-no_joins'
+  | 'empty'
+  | 'snowflake';

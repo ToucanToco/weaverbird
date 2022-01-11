@@ -1,0 +1,97 @@
+{
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "replace",
+        "search_column": "NAME",
+        "to_replace": [
+          ["'foo'", "'oof'"],
+          ["l'oo'", "d'oof'"]
+        ]
+      },
+      {
+        "name": "replace",
+        "search_column": "AGE",
+        "to_replace": [
+          [10, 18]
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      },
+      {
+        "NAME": "l'oo",
+        "AGE": 10,
+        "SCORE": 34
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "oof",
+        "AGE": 42.0,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      },
+      {
+        "NAME": "d'oof",
+        "AGE": 18,
+        "SCORE": 34
+      }
+    ]
+  }
+}

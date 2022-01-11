@@ -112,6 +112,14 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Custom step');
   });
 
+  it('generates label for custom sql steps', () => {
+    const step: S.CustomSqlStep = {
+      name: 'customsql',
+      query: '',
+    };
+    expect(hrl(step)).toEqual('Custom sql step');
+  });
+
   it('generates label for date extraction steps', () => {
     const step: S.DateExtractStep = {
       name: 'dateextract',
@@ -309,6 +317,67 @@ describe('Labeller', () => {
       },
     };
     expect(hrl(step)).toEqual('Keep rows where "column1" is not null');
+  });
+
+  describe('generates label for simple filter steps / operator "from"', () => {
+    it('generates label for date object', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: new Date(Date.UTC(2021, 0, 1)),
+          operator: 'from',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" starting in/on 1/1/2021');
+    });
+    it('generates label for relative date', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: { quantity: -1, duration: 'year', date: '{{today}}', operator: 'until' },
+          operator: 'from',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" starting in/on 1 years until {{today}}');
+    });
+  });
+
+  describe('generates label for simple filter steps / operator "until"', () => {
+    it('generates label for date object', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: new Date(Date.UTC(2021, 0, 1)),
+          operator: 'until',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" ending in/on 1/1/2021');
+    });
+    it('generates label for relative date', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: { quantity: -1, duration: 'year', date: '{{today}}', operator: 'until' },
+          operator: 'until',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" ending in/on 1 years until {{today}}');
+    });
+    it('generates label for variable', () => {
+      const step: S.FilterStep = {
+        name: 'filter',
+        condition: {
+          column: 'column1',
+          value: '<%= date.start %>',
+          operator: 'until',
+        },
+      };
+      expect(hrl(step)).toEqual('Keep rows where "column1" ending in/on <%= date.start %>');
+    });
   });
 
   it('generates label for "and" filter steps', () => {
@@ -543,6 +612,14 @@ describe('Labeller', () => {
       limit: 42,
     };
     expect(hrl(step)).toEqual('Keep top 42 values in column "column1"');
+  });
+
+  it('generates label for trim steps', () => {
+    const step: S.TrimStep = {
+      name: 'trim',
+      columns: ['column1', 'column2'],
+    };
+    expect(hrl(step)).toEqual('Trim spaces in "column1", "column2"');
   });
 
   it('generates label for uppercase steps', () => {

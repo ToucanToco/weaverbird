@@ -1,9 +1,17 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "comparetext",
-    "newColumnName": "RESULT",
-    "strCol1": "TEXT_1",
-    "strCol2": "TEXT_2"
+    "pipeline": [
+      {
+        "name": "comparetext",
+        "newColumnName": "RESULT",
+        "strCol1": "TEXT_1",
+        "strCol2": "TEXT_2"
+      }
+    ]
   },
   "input": {
     "schema": {

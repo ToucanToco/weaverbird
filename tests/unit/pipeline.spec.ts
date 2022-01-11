@@ -9,6 +9,8 @@ import { VQBnamespace } from '@/store';
 
 import { buildStateWithOnePipeline, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 const localVue = createLocalVue();
 localVue.use(Vuex);
 
@@ -66,7 +68,8 @@ describe('Pipeline.vue', () => {
     expect(wrapper.find('.query-pipeline__tips').text()).toEqual(
       'Interact with the widgets and table on the right to add steps',
     );
-    expect(wrapper.find('.fa-magic').exists()).toBeTruthy();
+    const icons = wrapper.findAll('FAIcon-stub');
+    expect(icons.at(0).props().icon).toBe('magic');
   });
 
   describe('toggle delete step', () => {

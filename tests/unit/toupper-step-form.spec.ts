@@ -2,6 +2,8 @@ import ToUpperStepForm from '@/components/stepforms/ToUpperStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('To Uppercase Step Form', () => {
   const runner = new BasicStepFormTestRunner(ToUpperStepForm, 'uppercase');
   runner.testInstantiate();

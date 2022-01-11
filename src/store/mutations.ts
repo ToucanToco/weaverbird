@@ -62,6 +62,11 @@ type SetCurrentPage = {
   payload: { pageno: number };
 };
 
+type SetPreviewSourceRowsSubset = {
+  type: 'setPreviewSourceRowsSubset';
+  payload: { previewSourceRowsSubset?: number | 'unlimited' };
+};
+
 type ToggleColumnSelectionMutation = {
   type: 'toggleColumnSelection';
   payload: { column: string };
@@ -94,6 +99,7 @@ export type StateMutation =
   | SelectDomainMutation
   | SelectedStepMutation
   | SetCurrentPage
+  | SetPreviewSourceRowsSubset
   | ToggleColumnSelectionMutation
   | ToggleRequestOnGoing
   | VariableDelimitersMutation;
@@ -124,9 +130,113 @@ function resetPagination(_target: any, _propertyKey: string, descriptor: Propert
  * We'll export its prototype afterwards.
  */
 class Mutations {
+  setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {
+    state.translator = translator;
+  }
+
+  // BACKEND SERVICE & PREVIEW
+
+  setBackendService(state: VQBState, { backendService }: Pick<VQBState, 'backendService'>) {
+    state.backendService = backendService;
+  }
+
   /**
-   * unset currentStepFormName in order to close step form
+   * toggle the `isRequestOnGoing` state property
+   * meant to be used by `backendify` plugin function.
    */
+  toggleRequestOnGoing(state: VQBState, { isRequestOnGoing }: { isRequestOnGoing: boolean }) {
+    state.isRequestOnGoing = isRequestOnGoing;
+  }
+
+  setLoading(
+    state: VQBState,
+    { type, isLoading }: { type: 'dataset' | 'uniqueValues'; isLoading: boolean },
+  ) {
+    state.isLoading[type] = isLoading;
+  }
+
+  logBackendMessages(
+    state: VQBState,
+    { backendMessages }: { backendMessages: BackendError[] | BackendWarning[] },
+  ) {
+    state.backendMessages = backendMessages;
+  }
+
+  setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
+    state.dataset = dataset;
+  }
+
+  setCurrentPage(state: VQBState, { pageno }: { pageno: number }) {
+    if (state.dataset.paginationContext) {
+      state.dataset.paginationContext.pageno = pageno;
+    } else {
+      const length = state.dataset.data.length;
+      state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
+    }
+  }
+
+  setPreviewSourceRowsSubset(
+    state: VQBState,
+    { previewSourceRowsSubset }: { previewSourceRowsSubset?: number | 'unlimited' },
+  ) {
+    if (state.dataset.previewContext) {
+      state.dataset.previewContext.sourceRowsSubset = previewSourceRowsSubset;
+    }
+  }
+
+  // VARIABLES
+
+  setAvailableVariables(
+    state: VQBState,
+    { availableVariables }: Pick<VQBState, 'availableVariables'>,
+  ) {
+    state.availableVariables = availableVariables;
+  }
+
+  setVariableDelimiters(
+    state: VQBState,
+    { variableDelimiters }: Pick<VQBState, 'variableDelimiters'>,
+  ) {
+    state.variableDelimiters = variableDelimiters;
+
+    // Forward them to translators
+    setVariableDelimiters(variableDelimiters);
+  }
+
+  // DOMAINS & PIPELINES
+
+  setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
+    state.domains = domains;
+    if (!state.currentDomain || (domains.length && !domains.includes(state.currentDomain))) {
+      state.currentDomain = domains[0];
+    }
+  }
+
+  @resetPagination
+  setPipeline(state: VQBState, { pipeline }: { pipeline: Pipeline }) {
+    if (state.currentPipelineName === undefined) {
+      return;
+    }
+    Vue.set(state.pipelines, state.currentPipelineName, pipeline);
+    if (pipeline.length) {
+      const firstStep = pipeline[0];
+      if (firstStep.name === 'domain') {
+        state.currentDomain = firstStep.domain;
+      }
+    }
+  }
+
+  setPipelines(state: VQBState, { pipelines }: Pick<VQBState, 'pipelines'>) {
+    state.pipelines = pipelines;
+  }
+
+  @resetPagination
+  setCurrentPipelineName(state: VQBState, { name }: { name: string }) {
+    state.currentPipelineName = name;
+  }
+
+  // STEPS & COLUMNS
+
   closeStepForm(state: VQBState) {
     state.currentStepFormName = undefined;
   }
@@ -143,16 +253,6 @@ class Mutations {
   }
 
   /**
-   * log a backend error message.
-   */
-  logBackendMessages(
-    state: VQBState,
-    { backendMessages }: { backendMessages: BackendError[] | BackendWarning[] },
-  ) {
-    state.backendMessages = backendMessages;
-  }
-
-  /**
    * open step form when editing a step
    */
   openStepForm(
@@ -164,9 +264,6 @@ class Mutations {
     state.stepFormDefaults = undefined;
   }
 
-  /**
-   * reset step form initial value
-   */
   resetStepFormInitialValue(state: VQBState) {
     state.stepFormInitialValue = undefined;
   }
@@ -184,9 +281,7 @@ class Mutations {
       state.selectedStepIndex = index;
     }
   }
-  /**
-   * Delete selected steps by indexes in pipeline.
-   */
+
   @resetPagination
   deleteSteps(state: VQBState, { indexes }: { indexes: number[] }) {
     const pipeline = currentPipeline(state);
@@ -199,9 +294,7 @@ class Mutations {
     state.pipelines[state.currentPipelineName] = pipelineWithDeletedSteps;
     state.selectedStepIndex = pipelineWithDeletedSteps.length - 1;
   }
-  /**
-   * Add multiple steps to current pipeline.
-   */
+
   @resetPagination
   addSteps(state: VQBState, { steps }: { steps: PipelineStep[] }) {
     const pipeline = currentPipeline(state);
@@ -218,6 +311,7 @@ class Mutations {
     // select last added step
     state.selectedStepIndex = lastAddedStepIndex;
   }
+
   /**
    * change current selected domain and reset pipeline accordingly.
    */
@@ -237,134 +331,19 @@ class Mutations {
       }
     }
   }
-  /**
-   * update currentPipelineName
-   */
-  @resetPagination
-  setCurrentPipelineName(state: VQBState, { name }: { name: string }) {
-    state.currentPipelineName = name;
-  }
-  /**
-   * update dataset.
-   */
-  setDataset(state: VQBState, { dataset }: Pick<VQBState, 'dataset'>) {
-    state.dataset = dataset;
-  }
-  /**
-   * set the list of available domains.
-   */
-  setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
-    state.domains = domains;
-    if (!state.currentDomain || (domains.length && !domains.includes(state.currentDomain))) {
-      state.currentDomain = domains[0];
-    }
-  }
-  /**
-   * update pipeline.
-   */
-  @resetPagination
-  setPipeline(state: VQBState, { pipeline }: { pipeline: Pipeline }) {
-    if (state.currentPipelineName === undefined) {
-      return;
-    }
-    Vue.set(state.pipelines, state.currentPipelineName, pipeline);
-    if (pipeline.length) {
-      const firstStep = pipeline[0];
-      if (firstStep.name === 'domain') {
-        state.currentDomain = firstStep.domain;
-      }
-    }
-  }
-  /**
-   * update pipelines.
-   */
-  setPipelines(state: VQBState, { pipelines }: Pick<VQBState, 'pipelines'>) {
-    state.pipelines = pipelines;
-  }
-  /**
-   *
-   * set selected columns
-   */
+
   setSelectedColumns(state: VQBState, { column }: { column: string | undefined }) {
     if (column !== undefined) {
       state.selectedColumns = [column];
     }
   }
 
-  /**
-   * toggle column selection
-   */
   toggleColumnSelection(state: VQBState, { column }: { column: string }) {
     if (state.selectedColumns.includes(column)) {
       state.selectedColumns = [];
     } else {
       state.selectedColumns = [column];
     }
-  }
-
-  /**
-   * change current pagination context's page
-   */
-  setCurrentPage(state: VQBState, { pageno }: { pageno: number }) {
-    if (state.dataset.paginationContext) {
-      state.dataset.paginationContext.pageno = pageno;
-    } else {
-      const length = state.dataset.data.length;
-      state.dataset.paginationContext = { pageno, pagesize: length, totalCount: length };
-    }
-  }
-
-  /**
-   * toggle loading
-   */
-  setLoading(
-    state: VQBState,
-    { type, isLoading }: { type: 'dataset' | 'uniqueValues'; isLoading: boolean },
-  ) {
-    state.isLoading[type] = isLoading;
-  }
-
-  /**
-   * Update translator.
-   */
-  setTranslator(state: VQBState, { translator }: Pick<VQBState, 'translator'>) {
-    state.translator = translator;
-  }
-
-  /**
-   * Update backend service.
-   */
-  setBackendService(state: VQBState, { backendService }: Pick<VQBState, 'backendService'>) {
-    state.backendService = backendService;
-  }
-
-  /**
-   * toggle the `isRequestOnGoing` state property
-   * meant to be used by `backendify` plugin function.
-   */
-  toggleRequestOnGoing(state: VQBState, { isRequestOnGoing }: { isRequestOnGoing: boolean }) {
-    state.isRequestOnGoing = isRequestOnGoing;
-  }
-  /**
-   * set the list of available variables for templating.
-   */
-  setAvailableVariables(
-    state: VQBState,
-    { availableVariables }: Pick<VQBState, 'availableVariables'>,
-  ) {
-    state.availableVariables = availableVariables;
-  }
-  /**
-   * set the variable delimiters for templating.
-   */
-  setVariableDelimiters(
-    state: VQBState,
-    { variableDelimiters }: Pick<VQBState, 'variableDelimiters'>,
-  ) {
-    state.variableDelimiters = variableDelimiters;
-
-    // Forward them to translators
-    setVariableDelimiters(variableDelimiters);
   }
 }
 

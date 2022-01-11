@@ -1,5 +1,5 @@
 ---
-title: Cutom step
+title: Custom step
 permalink: /docs/custom/
 ---
 
@@ -9,6 +9,7 @@ You can use this step to write your own query.
 
 **This step is supported by the following backends:**
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0
 - Mongo 3.6

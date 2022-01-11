@@ -3,7 +3,7 @@
     <div class="widget-input-text__label">
       <label v-if="name" @click="$refs.input.focus()">{{ name }}</label>
       <a v-if="docUrl" :href="docUrl" target="_blank" rel="noopener">
-        <i class="fas fa-question-circle" aria-hidden="true" />
+        <FAIcon icon="question-circle" />
       </a>
     </div>
 
@@ -25,11 +25,11 @@
     </VariableInput>
 
     <div v-if="messageError" class="field__msg-error">
-      <span class="fa fa-exclamation-circle" />
+      <FAIcon icon="exclamation-circle" />
       {{ messageError }}
     </div>
     <div v-if="messageWarning" class="field__msg-warning">
-      <span class="fas fa-exclamation-triangle" />
+      <FAIcon icon="exclamation-triangle" />
       {{ messageWarning }}
     </div>
   </div>
@@ -38,6 +38,7 @@
 <script lang="ts">
 import { Component, Mixins, Prop } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 import FormWidget from './FormWidget.vue';
@@ -45,7 +46,7 @@ import VariableInput from './VariableInput.vue';
 
 @Component({
   name: 'input-text-widget',
-  components: { VariableInput },
+  components: { VariableInput, FAIcon },
 })
 export default class InputTextWidget extends Mixins(FormWidget) {
   @Prop({ type: String, default: '' })
@@ -85,6 +86,10 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   &:focus-within {
     @extend %form-widget__field--focused;
   }
+
+  &::placeholder {
+    color: $grey;
+  }
 }
 
 .widget-input-text__label {
@@ -98,7 +103,7 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   @extend %form-widget__label;
 }
 
-.fas.fa-question-circle {
+::v-deep .fa-question-circle {
   margin-left: 5px;
   color: $base-color;
   font-size: 14px;

@@ -8,7 +8,10 @@ from weaverbird.pipeline.steps import TableStep
 
 @pytest.fixture
 def sql_query_describer():
-    return Mock(return_value={'toto': 'int', 'raichu': 'str'})
+    def f(domain):
+        return {'toto': 'integer', 'raichu': 'integer'}
+
+    return f
 
 
 def test_translate_table(sql_query_describer):
@@ -27,7 +30,7 @@ def test_translate_table(sql_query_describer):
 
     sql_table_retriever_mock.assert_called_once_with('kalimdor')
     assert query.transformed_query == 'WITH SELECT_STEP_0 AS (SELECT * FROM products)'
-    assert query.selection_query == 'SELECT toto, raichu FROM SELECT_STEP_0'
+    assert query.selection_query == 'SELECT TOTO, RAICHU FROM SELECT_STEP_0'
     assert query.query_name == 'SELECT_STEP_0'
 
 

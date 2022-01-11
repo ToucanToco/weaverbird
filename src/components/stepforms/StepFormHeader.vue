@@ -1,28 +1,60 @@
-<template functional>
+<template>
   <div class="step-edit-form">
     <div class="step-edit-form__container">
-      <button class="step-edit-form__back-button" @click="parent.cancelEdition">
-        <i class="fas fa-angle-left" aria-hidden="true" />
+      <button class="step-edit-form__back-button" @click="cancelEdition">
+        <FAIcon class="step-edit-form__back-icon" icon="angle-left" />
         BACK
       </button>
-      <div class="step-edit-form__title-container">
-        <h1>{{ props.title }}</h1>
+      <div class="step-edit-form__title-container" data-cy="weaverbird-step-form-title">
+        <h1>{{ title }}</h1>
         <a
-          :href="`https://weaverbird.toucantoco.com/docs/${props.stepName}`"
+          class="step-edit-form__link"
+          :href="`https://weaverbird.toucantoco.com/docs/${stepName}`"
           target="_blank"
           rel="noopener"
-          :data-version="props.version"
+          :data-version="version"
         >
-          <i class="fas fa-question-circle" aria-hidden="true" />
+          <FAIcon class="step-edit-form__link-icon" icon="question-circle" />
         </a>
       </div>
       <div class="step-edit-form__empty" />
     </div>
-    <div v-if="props.backendError" class="step-edit-form__error">
-      <strong>{{ props.backendError }}</strong>
+    <div v-if="backendError" class="step-edit-form__error">
+      <strong>{{ backendError }}</strong>
     </div>
   </div>
 </template>
+
+<script lang="ts">
+import Vue from 'vue';
+import { Component, Prop } from 'vue-property-decorator';
+
+import FAIcon from '@/components/FAIcon.vue';
+@Component({
+  name: 'step-form-header',
+  components: {
+    FAIcon,
+  },
+})
+export default class StepFormHeader extends Vue {
+  @Prop()
+  backendError!: string | undefined;
+
+  @Prop({ default: '' })
+  version!: string;
+
+  @Prop({ default: '' })
+  title!: string;
+
+  @Prop({ default: '' })
+  stepName!: string;
+
+  cancelEdition(): void {
+    /* istanbul ignore next */
+    (this.$parent as any).cancelEdition(); // TODO: refactor (old functional logic)
+  }
+}
+</script>
 
 <style lang="scss" scoped>
 @import '../../styles/_variables';
@@ -35,7 +67,7 @@
   display: flex;
   align-items: center;
   padding-bottom: 20px;
-  border-bottom: 1px solid $grey;
+  border-bottom: 1px solid $grey-light;
   width: 100%;
 }
 
@@ -72,15 +104,16 @@
   }
 }
 
-.fas.fa-angle-left {
+.step-edit-form__back-icon {
   font-size: 19px;
   margin-right: 5px;
 }
 
-.fas.fa-question-circle {
+.step-edit-form__link-icon {
   margin-left: 5px;
   color: $base-color;
   font-size: 14px;
+  vertical-align: middle;
 
   &:hover {
     color: $active-color;

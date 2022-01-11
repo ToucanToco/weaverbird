@@ -1,10 +1,18 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "convert",
-    "columns": [
-      "value"
-    ],
-    "data_type": "date"
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "value"
+        ],
+        "data_type": "date"
+      }
+    ]
   },
   "input": {
     "schema": {
@@ -30,9 +38,6 @@
         "value": "2020-11-02T15:30"
       },
       {
-        "value": 1604331000000000000
-      },
-      {
         "value": "meh"
       }
     ]
@@ -56,9 +61,6 @@
       },
       {
         "value": "2020-11-02T00:00:00.000Z"
-      },
-      {
-        "value": "2020-11-02T15:30:00.000Z"
       },
       {
         "value": "2020-11-02T15:30:00.000Z"

@@ -7,6 +7,8 @@ import { Pipeline } from '@/lib/steps';
 import { registerModule, VQBnamespace } from '@/store';
 import { emptyState, VQBState } from '@/store/state';
 
+jest.mock('@/components/FAIcon.vue');
+
 export type RootState = {
   vqb: VQBState;
 };
@@ -134,6 +136,7 @@ export class BasicStepFormTestRunner {
       wrapper.setData(data);
     }
     wrapper.find('.widget-form-action__button--validate').trigger('click');
+    await this.vue.nextTick();
     const errors = wrapper.vm.$data.errors
       .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
       .sort((err1: ValidationError, err2: ValidationError) =>
@@ -222,7 +225,11 @@ export class BasicStepFormTestRunner {
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should emit "back" event when back button is clicked', () => {
-      const wrapper = mount(this.componentType, { store, localVue: this.vue, sync: false });
+      const wrapper = mount(this.componentType, {
+        store,
+        localVue: this.vue,
+        sync: false,
+      });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(wrapper.emitted()).toEqual({ back: [[]] });
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
@@ -261,7 +268,11 @@ export class BasicStepFormTestRunner {
     const initialStepIndex = store.state.vqb.selectedStepIndex;
 
     it('should reset selectedStepIndex correctly on cancel depending on isStepCreation', () => {
-      const wrapper = mount(this.componentType, { store, localVue: this.vue, sync: false });
+      const wrapper = mount(this.componentType, {
+        store,
+        localVue: this.vue,
+        sync: false,
+      });
       wrapper.find('.step-edit-form__back-button').trigger('click');
       expect(store.state.vqb.selectedStepIndex).toEqual(initialStepIndex);
 

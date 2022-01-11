@@ -73,7 +73,10 @@ def test_missing_date_years(today):
     assert_dataframes_equals(result, expected_result)
 
 
-def test_missing_date_with_groups(today):
+def test_missing_date_with_groups_correct_indexing(today):
+    """
+    It should not create duplicate values in index
+    """
     dates = [today + timedelta(days=nb_day) for nb_day in list(range(1, 10)) + list(range(12, 20))]
     missing_dates = [today + timedelta(days=10), today + timedelta(days=11)]
 
@@ -103,6 +106,7 @@ def test_missing_date_with_groups(today):
         ]
     ).sort_values(by=['country', 'date'])
     assert_dataframes_equals(result, expected_result)
+    assert not result.index.has_duplicates
 
 
 def test_missing_date_with_groups_various_length(today):

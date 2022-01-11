@@ -15,6 +15,7 @@ import ComputeDurationStepForm from './ComputeDurationStepForm.vue';
 import ConcatenateStepForm from './ConcatenateStepForm.vue';
 import ConvertStepForm from './ConvertStepForm.vue';
 import CumSumStepForm from './CumSumStepForm.vue';
+import CustomSqlStepForm from './CustomSqlStepForm.vue';
 import CustomStepForm from './CustomStepForm.vue';
 import DateExtractStepForm from './DateExtractStepForm.vue';
 import DeleteColumnStepForm from './DeleteColumnStepForm.vue';
@@ -43,6 +44,7 @@ import ToDateStepForm from './ToDateStepForm.vue';
 import ToLowerStepForm from './ToLowerStepForm.vue';
 import TopStepForm from './TopStepForm.vue';
 import ToUpperStepForm from './ToUpperStepForm.vue';
+import TrimStepForm from './TrimStepForm.vue';
 import UniqueGroupsStepForm from './UniqueGroupsStepForm.vue';
 import UnpivotStepForm from './UnpivotStepForm.vue';
 import WaterfallStepForm from './WaterfallStepForm.vue';
@@ -61,6 +63,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   convert: ConvertStepForm,
   cumsum: CumSumStepForm,
   custom: CustomStepForm,
+  customsql: CustomSqlStepForm,
   dateextract: DateExtractStepForm,
   delete: DeleteColumnStepForm,
   duration: ComputeDurationStepForm,
@@ -88,6 +91,7 @@ const StepFormsComponents: { [K in PipelineStepName]: VueConstructor<StepForm> }
   todate: ToDateStepForm,
   lowercase: ToLowerStepForm,
   top: TopStepForm,
+  trim: TrimStepForm,
   uppercase: ToUpperStepForm,
   uniquegroups: UniqueGroupsStepForm,
   unpivot: UnpivotStepForm,

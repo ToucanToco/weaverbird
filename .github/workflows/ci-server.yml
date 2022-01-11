@@ -35,21 +35,26 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
 
-    - name: Install Poetry
-      uses: abatilo/actions-poetry@v2.0.0
-
-    - name: Configure poetry
+    - name: Get pip cache dir
+      id: pip-cache
       run: |
-        poetry config virtualenvs.in-project false
-        poetry config virtualenvs.path ~/.virtualenvs
+        echo "::set-output name=dir::$(pip cache dir)"
+
+    - name: pip cache
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        key: ${{ runner.os }}-pip-${{ hashFiles('server/setup.cfg') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
 
     - name: Install dependencies
-      run: |
-        poetry check
-        poetry install
+      run: make install-dev
 
     - name: Lint
-      run: poetry run make lint
+      run: make lint
 
     - name: Test
-      run: poetry run make test
+      env:
+        SNOWFLAKE_PASSWORD: '${{ secrets.SNOWFLAKE_PASSWORD }}'
+      run: make test

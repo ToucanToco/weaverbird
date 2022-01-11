@@ -3,6 +3,8 @@ import ConcatenateStepForm from '@/components/stepforms/ConcatenateStepForm.vue'
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Concatenate Step Form', () => {
   const runner = new BasicStepFormTestRunner(ConcatenateStepForm, 'concatenate');
   runner.testInstantiate();

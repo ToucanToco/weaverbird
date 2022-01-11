@@ -1,39 +1,46 @@
 {
+  "exclude": [
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [
-      "Group"
-    ],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "count"
+        "name": "aggregate",
+        "on": [
+          "DOUM"
         ],
-        "aggfunction": "count",
-        "columns": [
-          "Label"
-        ]
+        "aggregations": [
+          {
+            "newcolumns": [
+              "LABEL_COUNT"
+            ],
+            "aggfunction": "count",
+            "columns": [
+              "LABEL"
+            ]
+          }
+        ],
+        "keepOriginalGranularity": false
       }
-    ],
-    "keepOriginalGranularity": false
+    ]
   },
   "input": {
     "schema": {
       "fields": [
         {
-          "name": "Label",
+          "name": "LABEL",
           "type": "string"
         },
         {
-          "name": "Group",
+          "name": "DOUM",
           "type": "string"
         },
         {
-          "name": "Value1",
+          "name": "VALUE1",
           "type": "integer"
         },
         {
-          "name": "Value2",
+          "name": "VALUE2",
           "type": "integer"
         }
       ],
@@ -41,40 +48,40 @@
     },
     "data": [
       {
-        "Label": "Label 1",
-        "Group": "Group 1",
-        "Value1": 13,
-        "Value2": 10
+        "LABEL": "Label 1",
+        "DOUM": "Group 1",
+        "VALUE1": 13,
+        "VALUE2": 10
       },
       {
-        "Label": "Label 2",
-        "Group": "Group 1",
-        "Value1": 7,
-        "Value2": 21
+        "LABEL": "Label 2",
+        "DOUM": "Group 1",
+        "VALUE1": 7,
+        "VALUE2": 21
       },
       {
-        "Label": "Label 3",
-        "Group": "Group 1",
-        "Value1": 20,
-        "Value2": 4
+        "LABEL": "Label 3",
+        "DOUM": "Group 1",
+        "VALUE1": 20,
+        "VALUE2": 4
       },
       {
-        "Label": "Label 4",
-        "Group": "Group 2",
-        "Value1": 1,
-        "Value2": 17
+        "LABEL": "Label 4",
+        "DOUM": "Group 2",
+        "VALUE1": 1,
+        "VALUE2": 17
       },
       {
-        "Label": "Label 5",
-        "Group": "Group 2",
-        "Value1": 10,
-        "Value2": 12
+        "LABEL": "Label 5",
+        "DOUM": "Group 2",
+        "VALUE1": 10,
+        "VALUE2": 12
       },
       {
-        "Label": "Label 6",
-        "Group": "Group 2",
-        "Value1": 5,
-        "Value2": 2
+        "LABEL": "Label 6",
+        "DOUM": "Group 2",
+        "VALUE1": 5,
+        "VALUE2": 2
       }
     ]
   },
@@ -82,11 +89,11 @@
     "schema": {
       "fields": [
         {
-          "name": "Group",
+          "name": "DOUM",
           "type": "string"
         },
         {
-          "name": "count",
+          "name": "LABEL_COUNT",
           "type": "integer"
         }
       ],
@@ -94,12 +101,12 @@
     },
     "data": [
       {
-        "Group": "Group 1",
-        "count": 3
+        "DOUM": "Group 1",
+        "LABEL_COUNT": 3
       },
       {
-        "Group": "Group 2",
-        "count": 3
+        "DOUM": "Group 2",
+        "LABEL_COUNT": 3
       }
     ]
   }

@@ -136,6 +136,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   custom(step: Readonly<S.CustomStep>) {}
 
   @unsupported
+  customsql(step: Readonly<S.CustomSqlStep>) {}
+
+  @unsupported
   dateextract(step: Readonly<S.DateExtractStep>) {}
 
   @unsupported
@@ -223,6 +226,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   top(step: Readonly<S.TopStep>) {}
 
   @unsupported
+  trim(step: Readonly<S.TrimStep>) {}
+
+  @unsupported
   uniquegroups(step: Readonly<S.UniqueGroupsStep>) {}
 
   @unsupported
@@ -261,7 +267,7 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
    * validate the query written in a custom step
    * return null if no error
    */
-  validate(_customEditedStep: S.CustomStep): ValidationError[] | null {
+  validate(_customEditedStep: S.CustomStep | S.CustomSqlStep): ValidationError[] | null {
     return null;
   }
 }

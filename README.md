@@ -1,9 +1,5 @@
 # <img src="docs/img/logonav.png" alt="GitHub Logo" width="30"/> Weaverbird
 
-[![npm](https://img.shields.io/npm/v/weaverbird)](https://www.npmjs.com/package/weaverbird)
-[![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/weaverbird.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/weaverbird/)
-[![CircleCI](https://img.shields.io/circleci/project/github/ToucanToco/weaverbird.svg)](https://circleci.com/gh/ToucanToco/weaverbird)
-
 !["Weaverbird Screenshot](docs/img/readme_screenshot.png)
 
 Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it contains :
@@ -14,11 +10,27 @@ Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it
 - a set of **BackEnds** to use those pipelines :
   - the MongoDB Translator that generate Mongo Queries, written in TypeScript
   - the Pandas Executor that compute the result using Pandas dataframes, written in Python
+  - the Snowflake SQL translator, written in Python
 
 For in depth user & technical documentation, have a look at weaverbird.toucantoco.com  
 or at the documentation's source files in the `docs` directory.
 
-Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird.herokuapp.com)** !
+Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird-playground-ujaf.onrender.com/)**!
+
+## Badges
+
+### UI
+[![npm](https://img.shields.io/npm/v/weaverbird)](https://www.npmjs.com/package/weaverbird)
+![CI UI](https://github.com/ToucanToco/weaverbird/actions/workflows/ci-ui.yml/badge.svg)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=ToucanToco_weaverbird&metric=coverage)](https://sonarcloud.io/dashboard?id=ToucanToco_weaverbird)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=ToucanToco_weaverbird&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=ToucanToco_weaverbird)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=ToucanToco_weaverbird&metric=ncloc)](https://sonarcloud.io/dashboard?id=ToucanToco_weaverbird)
+<!-- [![Codecov Coverage](https://img.shields.io/codecov/c/github/ToucanToco/weaverbird.svg?style=flat-square)](https://codecov.io/gh/ToucanToco/weaverbird/) -->
+
+### Server
+[![pypi](https://img.shields.io/pypi/v/weaverbird)](https://pypi.org/project/weaverbird/)
+![CI server](https://github.com/ToucanToco/weaverbird/actions/workflows/ci-server.yml/badge.svg)
+
 
 ## Project setup
 
@@ -256,86 +268,47 @@ TODO: document here sass variables that can be overriden
 ## Playground
 
 The `/playground` directory hosts a demo application with a small server that
-showcases how to integrate the exported components and API. To run it, just
-run:
+showcases how to integrate the exported components and API. To run it, use the provided `Dockerfile`:
 
 ```bash
-yarn playground
+docker build -t weaverbird-playground .
+docker run -p 5000:5000 --rm -d weaverbird-playground
 ```
 
 which is basically a shortcut for the following steps:
 
 ```bash
-# build the visual query builder bundle
-yarn build-bundle --watch
-# run the server and enjoy!
-node playground/server.js
+# install front-end dependencies
+yarn
+# build the front-end bundle
+yarn build-bundle
+# note: use --watch when developing
+
+cd server
+# install the backend dependencies
+pip install -e ".[playground]"
+# run the server
+QUART_APP=playground QUART_ENV=development quart run
+# note: in the dockerfile, a production-ready webserver is used instead of a development one
 ```
 
 Once the server is started, you should be able to open the
-`http://localhost:3000` in your favorite browser and enjoy!
+`http://localhost:5000` in your favorite browser and enjoy!
 
 ### Mongo back-end
 
 The default back-end for the playground is a small server passing queries to MongoDB.
-
-The `server.js` script reads the `playground/playground.config.json` config file
-to know which database should be queried or which http port should be used. If
-you want to customize these values, either edit this json file or override each
-available option on the commandline, e.g.
-
-```bash
-node playground/server.js --dburi mongodb://localhost:27018
-```
-
-You can also customize options through environment variables with the following
-naming pattern `VQB_PLAYGROUND_{OPTION}`, e.g.
-
-```bash
-VQB_PLAYGROUND_DBURI=mongodb://localhost:27018 node playground/server.js
-```
-
-You can use the default test dataset by loading the `playground/default-dataset.csv` file. To do that, use the following command line:
-
-```bash
-node playground/server.js --reset
-```
-
-If you want to use a custom CSV file, use the `defaultDataset` command line option:
-
-```bash
-node playground/server.js --defaultDataset my-dataset.csv --reset
-```
-
-If you don't have mongodb installed, you can use the `--automongo` flag from the
-command line. It will use
-[mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) to download
-(the first time) and run mongo `4.0.13` and then listen on the port guessed from
-the `--dburi` flag.
-
-> [mongodb-prebuilt](https://github.com/winfinit/mongodb-prebuilt) uses
-> [mongodb-download](https://github.com/mongodb-js/mongodb-download) internally
-> to download mongodb binaries. Unfortunately, the URLs on
-> https://fastdl.mongodb.org used for these binaries have changed and
-> `mongodb-download` doesn't seem up-to-date, cf.
-> https://github.com/mongodb-js/mongodb-download/issues/36 and
-> https://github.com/mongodb-js/mongodb-prebuilt/issues/59
-> To bypass this issue, you can manually specify the download URL by setting the
-> `MONGODB_DL_URI` environment variable. For instance, you can use
-> the following command line:
-> `MONGODB_DL_URI=https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-debian92-4.0.13.tgz node playground/server.js --automongo`
-> or
-> `MONGODB_DL_URI=https://fastdl.mongodb.org/osx/mongodb-osx-ssl-x86_64-4.0.13.tgz node playground/server.js --automongo`
+Connect the playground to a running MongoDB instance with the environment variables:
+- MONGODB_CONNECTION_STRING (default to localhost:27017)
+- MONGODB_DATABASE_NAME (default to 'data')
 
 ### Pandas back-end
 
 An alternative back-end for the playground is a small server running in python, executing pipelines with pandas.
+Add `?backend=pandas` to the URL to see it in action.
 
-Run the sever in `server/playground.py`: `cd server; FLASK_APP=playground FLASK_ENV=development flask run`.
-Go to `http://localhost:3000?backend=pandas` to see it in action.
+#### Use your own data files
 
-> To ease these process, the front-end and the pandas back-end can be run in a container. See the `Dockerfile`.
-> It's also published on Docker Hub, and can be run directly with:
-> `docker run --rm -p 3000:3000 toucantoco/weaverbird-playground:master`
-> And then visit http://localhost:3000?backend=pandas
-> Note: add `-v /path/to/your/folder/with/csv:/weaverbird/playground/datastore` to use your own set of csv instead of the default ones
+CSVs from `playground/datastore` are available to use in the playground with pandas.
+You can override this folder when running the container using by adding a volume parameter:
+`-v /path/to/your/folder/with/csv:/weaverbird/playground/datastore`.

@@ -1,6 +1,7 @@
 /**
  * This module defines the supported unit-of-transformation steps.
  */
+import { CustomDate } from '@/lib/dates';
 
 export type BasicDatePart =
   | 'year'
@@ -17,8 +18,7 @@ export type BasicDatePart =
   | 'seconds'
   | 'milliseconds';
 
-export type DateInfo =
-  | BasicDatePart
+export type AdvancedDateInfo =
   | 'quarter'
   | 'firstDayOfYear'
   | 'firstDayOfMonth'
@@ -36,6 +36,8 @@ export type DateInfo =
   | 'previousWeek'
   | 'previousQuarter'
   | 'previousIsoWeek';
+
+export type DateInfo = BasicDatePart | AdvancedDateInfo;
 
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
@@ -160,6 +162,11 @@ export type CustomStep = {
   query: string;
 };
 
+export type CustomSqlStep = {
+  name: 'customsql';
+  query: string;
+};
+
 export type DateExtractStep = {
   name: 'dateextract';
   dateInfo: DateInfo[];
@@ -235,7 +242,8 @@ export type FilterComboOr = {
 export type FilterSimpleCondition =
   | FilterConditionComparison
   | FilterConditionEquality
-  | FilterConditionInclusion;
+  | FilterConditionInclusion
+  | FilterConditionDateBound;
 
 type FilterConditionComparison = {
   column: string;
@@ -253,6 +261,12 @@ export type FilterConditionInclusion = {
   column: string;
   value: any[];
   operator: 'in' | 'nin';
+};
+
+export type FilterConditionDateBound = {
+  column: string;
+  value: CustomDate | string;
+  operator: 'from' | 'until';
 };
 
 export type FilterStep = {
@@ -410,6 +424,11 @@ export type ToUpperStep = {
   column: string;
 };
 
+export type TrimStep = {
+  name: 'trim';
+  columns: string[];
+};
+
 export type UniqueGroupsStep = {
   name: 'uniquegroups';
   on: string[];
@@ -451,6 +470,7 @@ export type PipelineStep =
   | ConvertStep
   | CumSumStep
   | CustomStep
+  | CustomSqlStep
   | DateExtractStep
   | DeleteStep
   | DuplicateColumnStep
@@ -478,6 +498,7 @@ export type PipelineStep =
   | ToLowerStep
   | TopStep
   | ToUpperStep
+  | TrimStep
   | UniqueGroupsStep
   | UnpivotStep
   | WaterfallStep;

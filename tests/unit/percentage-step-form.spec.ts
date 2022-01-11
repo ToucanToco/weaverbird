@@ -3,6 +3,8 @@ import { VQBnamespace } from '@/store';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Percentage Step Form', () => {
   const runner = new BasicStepFormTestRunner(PercentageStepForm, 'percentage');
   runner.testInstantiate();

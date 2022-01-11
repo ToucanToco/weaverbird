@@ -1,4 +1,4 @@
-import { extractVariableIdentifier } from '@/lib/variables';
+import { extractVariableIdentifier, retrieveVariable } from '@/lib/variables';
 
 describe('extractVariableIdentifier', () => {
   it('should extract simple variable names', () => {
@@ -74,5 +74,23 @@ describe('extractVariableIdentifier', () => {
         end: '%>',
       }),
     ).toBe('croissant');
+  });
+});
+
+describe('retrieveVariable', () => {
+  const availableVariables = [{ identifier: 'date', value: '', label: 'Date' }];
+  const variableDelimiters = { start: '<%=', end: '%>' };
+  it("should return undefined if variable don't exist in available variables", () => {
+    expect(
+      retrieveVariable('<%= croissant %>', availableVariables, variableDelimiters),
+    ).toBeUndefined();
+  });
+  it('should return undefined if variable delimiters are not attended one', () => {
+    expect(retrieveVariable('{{ date }}', availableVariables, variableDelimiters)).toBeUndefined();
+  });
+  it('should return variable if variable exist in available variables', () => {
+    expect(retrieveVariable('<%= date %>', availableVariables, variableDelimiters)).toStrictEqual(
+      availableVariables[0],
+    );
   });
 });

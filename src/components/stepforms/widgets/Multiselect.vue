@@ -55,7 +55,7 @@
       </multiselect>
     </MultiVariableInput>
     <div v-if="messageError" class="field__msg-error">
-      <span class="fa fa-exclamation-circle" />
+      <FAIcon icon="exclamation-circle" />
       {{ messageError }}
     </div>
   </div>
@@ -65,6 +65,7 @@
 import Multiselect from 'vue-multiselect';
 import { Component, Mixins, Prop, Watch } from 'vue-property-decorator';
 
+import FAIcon from '@/components/FAIcon.vue';
 import VariableTag from '@/components/stepforms/widgets/VariableInputs/VariableTag.vue';
 import { extractVariableIdentifier, VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
@@ -77,6 +78,7 @@ import MultiVariableInput from './MultiVariableInput.vue';
     Multiselect,
     VariableTag,
     MultiVariableInput,
+    FAIcon,
   },
 })
 export default class MultiselectWidget extends Mixins(FormWidget) {
@@ -203,7 +205,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
 .multiselect .multiselect__placeholder {
   margin-bottom: 0;
-  color: $grey-dark;
+  color: $grey;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -270,6 +272,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
 .multiselect__tags .multiselect__tag {
   background: $active-color;
+  color: white;
 }
 
 .multiselect__tags .multiselect__tag-icon {

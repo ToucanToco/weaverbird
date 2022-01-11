@@ -1,13 +1,16 @@
 // COLOR VARIABLES
 $base-color: #404040 !default;
 $base-color-light: #4c4c4c !default;
+$active-color-dark: #16406a !default;
 $active-color: #2a66a1 !default;
-$active-color-faded: #89AACB !default;
+$active-color-faded: #89aacb !default;
 $active-color-faded-2: #cbdaed !default;
 $active-color-faded-3: #e9eff5 !default;
 $data-viewer-border-color: #e0e0e0 !default;
 $light-grey: #fafafa;
-$grey: #eeeeee;
+$grey: #808080;
+$grey-extra-light: #f6f6f6;
+$grey-light: #d9d9d9;
 $grey-medium: #aaaaaa;
 $grey-dark: #585858;
 $error-light: #fdf9e5;
@@ -39,7 +42,7 @@ $error: #f3c600;
 %form-widget__field {
   align-items: center;
   background-color: transparent;
-  box-shadow: 0 0 0 1px #f1f1f1 inset;
+  box-shadow: 0 0 0 1px #ddd inset;
   border: none;
   font-family: 'Montserrat', sans-serif;
   font-size: 14px;

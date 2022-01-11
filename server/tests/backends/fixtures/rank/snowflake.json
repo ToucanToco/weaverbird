@@ -1,0 +1,120 @@
+{
+  "exclude": [
+    "sql",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "rank",
+        "value_col": "AGE",
+        "method": "standard",
+        "groupby": [
+          "CITY"
+        ],
+        "order": "asc"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris"
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse"
+      },
+      {
+        "NAME": "florentinio",
+        "AGE": 0,
+        "CITY": "paris"
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg"
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CITY",
+          "type": "string"
+        },
+        {
+          "name": "AGE_RANK",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "florentinio",
+        "AGE": 0,
+        "CITY": "paris",
+        "AGE_RANK": 1
+      },
+      {
+        "NAME": "angelo",
+        "AGE": 3,
+        "CITY": "toulouse",
+        "AGE_RANK": 1
+      },
+      {
+        "NAME": "alice",
+        "AGE": 9,
+        "CITY": "trasbourg",
+        "AGE_RANK": 1
+      },
+      {
+        "NAME": "adriano",
+        "AGE": 15,
+        "CITY": "zinguelewah",
+        "AGE_RANK": 1
+      },
+      {
+        "NAME": "raphaelou",
+        "AGE": 5,
+        "CITY": "paris",
+        "AGE_RANK": 2
+      }
+    ]
+  }
+}

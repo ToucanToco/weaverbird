@@ -56,6 +56,7 @@ import { Prop } from 'vue-property-decorator';
 
 import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
+import MultiInputTextWidget from '@/components/stepforms/widgets/MultiInputText.vue';
 import MultiselectWidget from '@/components/stepforms/widgets/Multiselect.vue';
 import { PipelineStepName, PivotStep } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
@@ -68,6 +69,7 @@ import BaseStepForm from './StepForm.vue';
   components: {
     ColumnPicker,
     AutocompleteWidget,
+    MultiInputTextWidget,
     MultiselectWidget,
   },
 })

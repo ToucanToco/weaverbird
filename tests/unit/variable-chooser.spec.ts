@@ -64,29 +64,6 @@ describe('Variable Chooser', () => {
     expect(wrapper.find('VariableList-stub').exists()).toBeTruthy();
   });
 
-  describe('when is advanced', () => {
-    it('should display an "Advanced variable" option ...', () => {
-      expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
-    });
-
-    it('... even without other values', async () => {
-      wrapper.setProps({ availableVariables: [] });
-      await wrapper.vm.$nextTick();
-      expect(wrapper.find('.widget-advanced-variable').exists()).toBe(true);
-    });
-
-    describe('when clicking on "Advanced variable"', () => {
-      beforeEach(async () => {
-        wrapper.find('.widget-advanced-variable').trigger('click');
-        await wrapper.vm.$nextTick();
-      });
-
-      it('should emit advancedVariable', () => {
-        expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
-      });
-    });
-  });
-
   describe('when closing the popover', () => {
     beforeEach(async () => {
       wrapper.find('popover-stub').vm.$emit('closed');
@@ -107,6 +84,17 @@ describe('Variable Chooser', () => {
     it('should emit a new value with the chosen variable', () => {
       expect(wrapper.emitted('input')).toHaveLength(1);
       expect(wrapper.emitted('input')[0]).toEqual(['appRequesters.view']);
+    });
+  });
+
+  describe('when choosing an advanced variable', () => {
+    beforeEach(async () => {
+      wrapper.find('VariableList-stub').vm.$emit('addAdvancedVariable');
+      await wrapper.vm.$nextTick();
+    });
+
+    it('should emit advancedVariable', () => {
+      expect(wrapper.emitted('addAdvancedVariable')).toHaveLength(1);
     });
   });
 });

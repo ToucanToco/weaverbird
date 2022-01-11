@@ -2,6 +2,8 @@ import SortStepForm from '@/components/stepforms/SortStepForm.vue';
 
 import { BasicStepFormTestRunner } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Sort Step Form', () => {
   const runner = new BasicStepFormTestRunner(SortStepForm, 'sort');
   runner.testInstantiate();

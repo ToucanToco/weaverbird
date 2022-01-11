@@ -78,8 +78,10 @@ describe('translator registration', () => {
       'mongo36',
       'mongo40',
       'mongo42',
+      'mongo50',
       'pandas',
       'pandas-no_joins',
+      'snowflake',
     ]);
     expect(backendsSupporting('domain')).toEqual([
       'dummy',
@@ -87,11 +89,27 @@ describe('translator registration', () => {
       'mongo36',
       'mongo40',
       'mongo42',
+      'mongo50',
       'pandas',
       'pandas-no_joins',
+      'snowflake',
     ]);
-    expect(backendsSupporting('append')).toEqual(['mongo36', 'mongo40', 'mongo42', 'pandas']);
-    expect(backendsSupporting('join')).toEqual(['mongo36', 'mongo40', 'mongo42', 'pandas']);
+    expect(backendsSupporting('append')).toEqual([
+      'mongo36',
+      'mongo40',
+      'mongo42',
+      'mongo50',
+      'pandas',
+      'snowflake',
+    ]);
+    expect(backendsSupporting('join')).toEqual([
+      'mongo36',
+      'mongo40',
+      'mongo42',
+      'mongo50',
+      'pandas',
+      'snowflake',
+    ]);
   });
 
   it('should throw an error if backend is not available', () => {
@@ -107,8 +125,10 @@ describe('translator registration', () => {
       'mongo36',
       'mongo40',
       'mongo42',
+      'mongo50',
       'pandas',
       'pandas-no_joins',
+      'snowflake',
     ]);
   });
 });

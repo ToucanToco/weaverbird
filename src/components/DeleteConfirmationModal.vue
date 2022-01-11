@@ -1,13 +1,9 @@
-<template functional>
-  <div class="vqb-modal">
+<template>
+  <div class="vqb-modal" data-cy="weaverbird-confirm-delete-modal">
     <div class="vqb-modal__backdrop" />
     <div class="vqb-modal__container">
-      <div class="vqb-modal__body" style="width: 500px;">
-        <i
-          class="vqb-modal__close fas fa-times"
-          @click="listeners['cancelDelete']"
-          aria-hidden="true"
-        />
+      <div class="vqb-modal__body">
+        <span class="vqb-modal__close" @click="cancelDelete"><FAIcon icon="times"/></span>
         <div class="vqb-modal__header">
           <div class="vqb-modal__title">Delete this step?</div>
         </div>
@@ -20,13 +16,15 @@
         <div class="vqb-modal__footer">
           <div
             class="vqb-modal__action vqb-modal__action--secondary"
-            @click="listeners['cancelDelete']"
+            data-cy="weaverbird-cancel-delete"
+            @click="cancelDelete"
           >
             cancel
           </div>
           <div
             class="vqb-modal__action vqb-modal__action--primary"
-            @click="listeners['validateDelete']"
+            data-cy="weaverbird-confirm-delete"
+            @click="validateDelete"
           >
             confirm
           </div>
@@ -37,13 +35,30 @@
 </template>
 
 <script lang="ts">
+import Vue from 'vue';
+import { Component } from 'vue-property-decorator';
+
+import FAIcon from '@/components/FAIcon.vue';
+@Component({
+  name: 'delete-confirmation-modal',
+  components: {
+    FAIcon,
+  },
+})
 /**
  * @name DeleteConfirmationModal
  * @description A modal asking for confirmation before deleting a step
  */
-export default {
-  name: 'delete-confirmation-modal',
-};
+export default class DeleteConfirmationModal extends Vue {
+  cancelDelete(): void {
+    /* istanbul ignore next */
+    (this.$listeners as any).cancelDelete(); // TODO: refactor (old functional logic)
+  }
+  validateDelete(): void {
+    /* istanbul ignore next */
+    (this.$listeners as any).validateDelete(); // TODO: refactor (old functional logic)
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -57,6 +72,10 @@ export default {
   right: 0;
   top: 0;
   z-index: 999;
+}
+
+.vqb-modal__body {
+  width: 500px;
 }
 
 .vqb-modal__backdrop {
@@ -91,9 +110,6 @@ export default {
   position: absolute;
   top: 15px;
   right: 30px;
-}
-
-.fa-times {
   cursor: pointer;
 }
 

@@ -1,11 +1,19 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "dateextract",
-    "column": "date",
-    "dateInfo": [],
-    "newColumns": [],
-    "operation": "day",
-    "new_column_name": "date"
+    "pipeline": [
+      {
+        "name": "dateextract",
+        "column": "date",
+        "dateInfo": [],
+        "newColumns": [],
+        "operation": "day",
+        "new_column_name": "date"
+      }
+    ]
   },
   "input": {
     "schema": {

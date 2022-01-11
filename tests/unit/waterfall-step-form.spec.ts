@@ -2,6 +2,8 @@ import WaterfallStepForm from '@/components/stepforms/WaterfallStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Waterfall Step Form', () => {
   const runner = new BasicStepFormTestRunner(WaterfallStepForm, 'waterfall');
   runner.testInstantiate();

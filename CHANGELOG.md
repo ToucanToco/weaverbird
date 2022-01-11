@@ -1,4 +1,326 @@
-# Changelog
+# Changelog (weaverbird npm package)
+
+## [0.79.4] - 2021-12-20
+
+### Fixed
+
+- Step Forms: changed placeholders colours to help differantiate placehoder with input values
+
+## [0.79.3] - 2021-12-20
+
+### Fixed
+
+- Preview source subset: use correct icon and label
+- Filter step: use correct label for from/until operators
+
+## [0.79.2] - 2021-12-17
+
+### Fixed
+
+- Preview source subset: do not propagate input focus & refresh button click
+
+## [0.79.1] - 2021-12-16
+
+### Added
+- DateRangeToString: export method to use it outside of app
+
+## [0.79.0] - 2021-12-16
+
+### Added
+Preview source subset: improve design and move component under domain step
+
+## [0.78.1] - 2021-12-10
+
+### Fixed
+
+- Mongo translation : always truncate extracted date info
+
+## [0.78.0] - 2021-12-09
+
+### Added
+
+- NewDateInput: send analytics event when selecting a relative date
+
+## [0.77.0] - 2021-12-06
+
+### Added
+
+- Preview source rows subset configuration
+
+### Removed
+
+- `listCollections` was unused, remove it from the backendService interface
+
+## [0.76.2] - 2021-11-22
+
+### Fixed
+- Variable input: don't clear field when selecting variables in multiple mode
+
+## [0.76.1] - 2021-11-17
+
+### Fixed
+- Calendars: reset value and update nav position when selected value is outside of updated bounds
+
+## [0.76.0] - 2021-11-16
+
+### Added
+
+- DateRangeInput: compact mode design
+
+### Fixed
+
+- RelativeDateRange: use a proper "operator" property in data model
+
+## [0.75.0] - 2021-11-09
+
+### Changed
+- UI: DateRangeInput: remove background of the reset button
+- UI: Relative date selection: rename before/after to from/until
+
+## [0.74.0] - 2021-11-05
+
+### Added
+
+- export DataViewer Pagination component
+
+## [0.73.0] - 2021-11-04
+
+### Fixed
+
+- v-calendar: CSS is now properly included in build
+- DateRangeInput: properly take bound into account when switching calendars
+- DateRangeInput: properly take selection years into account when switching calendars
+
+### Added
+
+- DateRangeInput: reset button
+- DateRangeInput: add before/after field in relative date range form
+
+## [0.72.1] - 2021-10-29
+
+### Fixed
+TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars contains selected tab
+
+## [0.72.0] - 2021-10-28
+
+### Added
+- DateRangeInput: ability to customize the format of the date range
+
+## [0.71.0] - 2021-10-27
+
+### Added
+- DateRangeInput: enable to use custom css variables to stylize component colors
+
+## [0.70.0] - 2021-10-27
+
+### Added
+- DateRangeInput: internationalization for fixed periods (English and French)
+
+### Fixed
+- DateRangeInput: better preview with new system to keep popovers always opened
+
+## [0.69.2] - 2021-10-26
+
+## Fix
+- Multiselect: restore display of text in variables tags
+
+## [0.69.1] - 2021-10-21
+
+### Fix
+- DateRangeInput: display tabs header correctly
+- DateRangeInput: display date separator correctly and clean unecessary html tag
+- Calendar: use correct post css
+
+## [0.69.0] - 2021-10-20
+
+### Added
+- Dates input components: friendlier labels for calendar ranges
+
+### Fix
+- WidgetList: display trash icon
+- Store: avoid console error messages due to state mutation
+- DateRangeInput: make all input clickable
+- DateRangeInput: activate periods that overlap bounds in custom granularity calendars
+- DateRangeInput: stay on day tab when selecting a date
+- DateRangeInput: make weeks of custom granularity calendar start on monday
+- Calendar: enable to use calendar in web component
+
+## [0.68.0] - 2021-10-19
+
+### Added
+- DateRangeInput: implement bounds in custom granularity calendars (years, quarters, months, weeks)
+
+### Fix
+- DateRangeInput: force popover to update position when clicking on `custom` option
+
+## [0.67.1] - 2021-10-19
+
+### Fix
+- DateRangeInput: remove `daterangeUpdated` emitter and export method directly from main file
+- Date components: rename `Dynamic` tab to `Relative`
+- CustomVariableList: show only the label of options
+- CustomVariableList: move `custom` option to top of list
+
+## [0.67.0] - 2021-10-19
+
+### Added
+
+- DateRangeInput: integrate dedicated calendars for picking weeks
+
+### Fix
+
+- DateRangeInput: open tab on selected value when clicking on custom option
+- DateRangeInput: replace separator arrow with '-' char
+- DateRangeInput: emit a inclusive ate range with using a relative date
+
+## [0.66.0] - 2021-10-14
+
+### Added
+
+- DateRangeInput: `alwaysOpen` prop
+
+### Fixed
+
+- Calendars: update selected date range when switching granularity
+
+## [0.65.0] - 2021-10-13
+
+### Added
+- DateRangeInput: hide 'unactive' variables needed for computations from UI
+
+### Fix
+- Calendar: use UTC timezone
+
+## [0.64.1] - 2021-10-12
+
+### Fix
+
+- DateRangeInput: close dropdown when clicking outside
+- DateRangeInput: use right range end datetime
+- Various: column label typo
+
+## [0.64.0] - 2021-10-12
+
+### Changed
+- DateRangeInput: enable to use relative date as bounds
+
+## [0.63.0] - 2021-10-12
+
+### Added
+
+- DateRangeInput: integrate dedicated calendars for picking months, quarters and years
+- DateRangeInput: emit a date range version of value using a specific `daterangeUpdated` emitter
+- DateRangeInput: hide/show variable list depeding on variables quantity
+- DateRangeInput: hide/show custom editor depding on `enableCustom` variable
+
+### Changed
+- DateRangeInput: replace range-calendar with a simple calendar using a range
+- DateRangeInput: Disable save custom date button if value is incomplete
+
+## [0.62.0] - 2021-10-05
+
+### Added
+
+- DateRangeInput: add `enableRelativeDate` props to show/hide 'Fixed'/'Relative' tabs
+
+## [0.61.0] - 2021-10-05
+
+### Added
+
+- Export for dates components
+
+
+## [0.60.9] - 2021-09-30
+
+### Fixed
+
+- E2E tests: add missing data-cy properties for easy targeting with Cypress
+
+## [0.60.8] - 2021-09-22
+
+### Added
+
+- SQL VQB [Snowflake]: Totals rows step
+- SQL VQB [Snowflake]: Hierarchical rollup step
+
+## [0.60.7] - 2021-09-21
+
+### Added
+
+- SQL VQB [Snowflake]: Duplicate Column
+- SQL VQB [Snowflake]: Argmin, Argmax
+- SQL VQB [Snowflake]: Evolution
+- SQL VQB [Snowflake]: Duration
+
+## [0.60.6] - 2021-09-17
+
+### Changed
+
+- Variable chooser & data viewer : stop forcing date display in UTC/ISO, use default toString instead
+
+### Added
+
+- SQL VQB [Snowflake]: Custom sql step
+- SQL VQB [Snowflake]: Keep granularity option
+
+### [0.60.5] - 2021-09-08
+
+### Changed
+
+- Now using SVG FontAwesome icons for better embedded (web component) support
+
+### Added
+
+- SQL VQB [Snowflake]: Rank step
+- SQL VQB [Snowflake]: Substring step
+- SQL VQB [Snowflake]: Split Column step
+- SQL VQB [Snowflake]: Fill Null step
+
+### [0.60.4] - 2021-09-06
+
+- SQL VQB: Release Delete columns step
+
+### [0.60.3] - 2021-09-02
+
+- SQL VQB: Release Concatenate & extract Date steps
+
+### [0.60.2] - 2021-09-01
+
+- SQL VQB: Hide drop null values in unpivotstepform & remove pivot_values in pivotstepform
+
+### [0.60.1] - 2021-09-01
+
+- Popover: prefix class name to avoid collision when embedded in other apps
+
+### [0.60.0] - 2021-08-31
+
+### Added
+
+- SQL VQB: Added pivot_values field in pivot step form
+
+### [0.59.0] - 2021-08-31
+
+### Added
+
+- SQL VQB: Added Percentage and Join Step to Snowflake
+
+## [0.58.0] - 2021-08-27
+
+- SQL VQB: Added Unpivot & Pivot Step to Snowflake
+
+## [0.57.0] - 2021-08-26
+
+### Added
+
+- Mongo translator: `notnull` and `isnull` condition operator now always compare to literal null.
+- Vqb: Added UnuiqueGroup Step to snowflake
+
+## [0.56.0] - 2021-08-24
+
+### Added
+
+- New step: trim (for mongo >4 and pandas) by @CharlesRngrd
+- Translators: new snowflake translator
 
 ## [0.55.0] - 2021-08-09
 
@@ -9,23 +331,27 @@
 - RangeCalendar: new component to select a date range in a calendar UI
 
 ### Fixed
+
 - Dates: remove feature flag / always use date input with date column type
 - Variable list: move component to independent file
 
 ## [0.54.0] - 2021-08-09
 
 ### Changed
+
 - Resizable: display a min characters quantity per col using options
 
 ## [0.53.1] - 2021-07-21
 
 ### Fixed
+
 - Only enable current step delete shortcut when no other input is focused
 - Display search correctly in chrome browser
 
 ## [0.53.0] - 2021-07-15
 
 ### Added
+
 - ToDateStep: try to guess now support '%Y'
 
 ## [0.52.0] - 2021-06-30
@@ -36,16 +362,19 @@
 - Moved the search bar in a popover for better toolbar integration
 
 ### Fixed
+
 - Change icon and cursor for drag zone
 
 ## [0.51.0] - 2021-06-21
 
 ### Fixed
+
 - clearer date extract labels
 
 ## [0.50.0] - 2021-06-15
 
 ### Added
+
 - `empty` translator (domain only)
 - Pipeline: hide pipeline tips when there is no supported steps
 - DataViewer: hide header cell actions when there is no supported steps
@@ -54,12 +383,14 @@
 ## [0.49.2] - 2021-06-15
 
 ### Fixed
+
 - Code editor: move static height to container to avoid css override
 - Variable chooser : stop displaying Date relative to user timezone
 
 ## [0.49.1] - 2021-06-09
 
 ### Fixed
+
 - Tooltips: remove capitalization
 - Several security update to js dependencies
 - E2E tests: data-cy target for filtering component
@@ -67,53 +398,64 @@
 ## [0.49.0] - 2021-06-04
 
 ### Added
+
 - E2E tests: add data-cy properties for easy targeting with Cypress
 
 ## [0.48.1] - 2021-05-18
 
 ### Fixed
+
 - Filter step: make value optional
 
 ## [0.48.0] - 2021-05-12
 
 ### Added
+
 - FilterEditor: add a prop to make variables for the column hiddable
 - Pipeline: copy/paste steps with clipboard (chrome only)
 
 ## [0.47.1] - 2021-05-11
 
 ### Fixed
+
 - IfThenElseStep: enable to use dates in condition
 
 ## [0.47.0] - 2021-04-29
 
 ### Added
+
 - Pipeline: enable to move steps using drag and drop
 
 ### Changed
+
 - Pipeline: delete multiple steps at once
 
 ## [0.46.4] - 2021-04-29
 
 ### Fixed
+
 - Popover: make sure that popover display correctly
 
 ## [0.46.2] - 2021-04-21
 
 ### Fixed
+
 - FromDateStep/ToDateStep: display custom format input even if field is empty
 
 ## [0.46.1] - 2021-04-20
 
 ### Fixed
+
 - FromDateStep/ToDateStep: always display custom format input when 'custom' is selected format
 
 ## [0.46.0] - 2021-04-14
 
 ### Added
+
 - Step: display backend error in step form if any
 
 ### Fixed
+
 - Variables: retrieve identifier from misformatted variables (missing spaces)
 - Filter step: use correct value with dates when switching widgets/changing operator/column type
 - Input date: enable to use variables
@@ -121,12 +463,15 @@
 ## [0.45.0] - 2021-04-08
 
 ### Added
+
 - Step: display error directly in Pipeline step by targetting its index, error must follow interface: `{ index: number; message: string; }`
 
 ### Changed
+
 - Pipeline: update styles with new guidelines
 
 ### Fixed
+
 - Filter step: display row correctly with long labels
 
 ## [0.44.0] - 2021-03-23
@@ -830,6 +1175,55 @@
 ### Added
 
 - Initial version, showtime!
+
+## Unreleased
+
+[0.79.4]: https://github.com/ToucanToco/weaverbird/compare/v0.79.3...v0.79.4
+[0.79.3]: https://github.com/ToucanToco/weaverbird/compare/v0.79.2...v0.79.3
+[0.79.2]: https://github.com/ToucanToco/weaverbird/compare/v0.79.1...v0.79.2
+[0.79.1]: https://github.com/ToucanToco/weaverbird/compare/v0.79.0...v0.79.1
+[0.79.0]: https://github.com/ToucanToco/weaverbird/compare/v0.78.1...v0.79.0
+[0.78.1]: https://github.com/ToucanToco/weaverbird/compare/v0.78.0...v0.78.1
+[0.78.0]: https://github.com/ToucanToco/weaverbird/compare/v0.77.0...v0.78.0
+[0.77.0]: https://github.com/ToucanToco/weaverbird/compare/v0.76.2...v0.77.0
+[0.76.2]: https://github.com/ToucanToco/weaverbird/compare/v0.76.1...v0.76.2
+[0.76.1]: https://github.com/ToucanToco/weaverbird/compare/v0.76.0...v0.76.1
+[0.76.0]: https://github.com/ToucanToco/weaverbird/compare/v0.75.0...v0.76.0
+[0.75.0]: https://github.com/ToucanToco/weaverbird/compare/v0.74.0...v0.75.0
+[0.74.0]: https://github.com/ToucanToco/weaverbird/compare/v0.73.0...v0.74.0
+[0.73.0]: https://github.com/ToucanToco/weaverbird/compare/v0.72.1...v0.73.0
+[0.72.1]: https://github.com/ToucanToco/weaverbird/compare/v0.72.0...v0.72.1
+[0.72.0]: https://github.com/ToucanToco/weaverbird/compare/v0.71.0...v0.72.0
+[0.71.0]: https://github.com/ToucanToco/weaverbird/compare/v0.70.0...v0.71.0
+[0.70.0]: https://github.com/ToucanToco/weaverbird/compare/v0.69.2...v0.70.0
+[0.69.2]: https://github.com/ToucanToco/weaverbird/compare/v0.69.1...v0.69.2
+[0.69.1]: https://github.com/ToucanToco/weaverbird/compare/v0.69.0...v0.69.1
+[0.69.0]: https://github.com/ToucanToco/weaverbird/compare/v0.68.0...v0.69.0
+[0.68.0]: https://github.com/ToucanToco/weaverbird/compare/v0.67.1...v0.68.0
+[0.67.1]: https://github.com/ToucanToco/weaverbird/compare/v0.67.0...v0.67.1
+[0.67.0]: https://github.com/ToucanToco/weaverbird/compare/v0.66.0...v0.67.0
+[0.66.0]: https://github.com/ToucanToco/weaverbird/compare/v0.65.0...v0.66.0
+[0.65.0]: https://github.com/ToucanToco/weaverbird/compare/v0.64.1...v0.65.0
+[0.64.1]: https://github.com/ToucanToco/weaverbird/compare/v0.64.0...v0.64.1
+[0.64.0]: https://github.com/ToucanToco/weaverbird/compare/v0.63.0...v0.64.0
+[0.63.0]: https://github.com/ToucanToco/weaverbird/compare/v0.62.0...v0.63.0
+[0.62.0]: https://github.com/ToucanToco/weaverbird/compare/v0.61.0...v0.62.0
+[0.61.0]: https://github.com/ToucanToco/weaverbird/compare/v0.60.9...v0.61.0
+[0.60.9]: https://github.com/ToucanToco/weaverbird/compare/v0.60.8...v0.60.9
+[0.60.8]: https://github.com/ToucanToco/weaverbird/compare/v0.60.7...v0.60.8
+[0.60.7]: https://github.com/ToucanToco/weaverbird/compare/v0.60.6...v0.60.7
+[0.60.6]: https://github.com/ToucanToco/weaverbird/compare/v0.60.5...v0.60.6
+[0.60.5]: https://github.com/ToucanToco/weaverbird/compare/v0.60.4...v0.60.5
+[0.60.4]: https://github.com/ToucanToco/weaverbird/compare/v0.60.3...v0.60.4
+[0.60.3]: https://github.com/ToucanToco/weaverbird/compare/v0.60.2...v0.60.3
+[0.60.2]: https://github.com/ToucanToco/weaverbird/compare/v0.60.1...v0.60.2
+[0.60.1]: https://github.com/ToucanToco/weaverbird/compare/v0.60.0...v0.60.1
+[0.60.0]: https://github.com/ToucanToco/weaverbird/compare/v0.59.0...v0.60.0
+[0.59.0]: https://github.com/ToucanToco/weaverbird/compare/v0.58.0...v0.59.0
+[0.58.0]: https://github.com/ToucanToco/weaverbird/compare/v0.57.0...v0.58.0
+[0.57.0]: https://github.com/ToucanToco/weaverbird/compare/v0.56.0...v0.57.0
+[0.56.0]: https://github.com/ToucanToco/weaverbird/compare/v0.55.0...v0.56.0
+[0.55.0]: https://github.com/ToucanToco/weaverbird/compare/v0.54.0...v0.55.0
 [0.54.0]: https://github.com/ToucanToco/weaverbird/compare/v0.53.1...v0.54.0
 [0.53.1]: https://github.com/ToucanToco/weaverbird/compare/v0.53.0...v0.53.1
 [0.53.0]: https://github.com/ToucanToco/weaverbird/compare/v0.52.0...v0.53.0

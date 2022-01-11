@@ -2,6 +2,8 @@ import SubstringStepForm from '@/components/stepforms/SubstringStepForm.vue';
 
 import { BasicStepFormTestRunner, setupMockStore } from './utils';
 
+jest.mock('@/components/FAIcon.vue');
+
 describe('Substring Step Form', () => {
   const runner = new BasicStepFormTestRunner(SubstringStepForm, 'substring');
   runner.testInstantiate();

@@ -1,0 +1,108 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name":"pivot",
+        "index":["EMPID"],
+        "column_to_pivot":"MONTH",
+        "value_column":"AMOUNT",
+        "agg_function":"sum"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "EMPID",
+          "type": "integer"
+        },
+        {
+          "name": "AMOUNT",
+          "type": "integer"
+        },
+        {
+          "name": "MONTH",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "EMPID": 1,
+        "AMOUNT": 10000,
+        "MONTH": "JAN"
+      },
+      {
+        "EMPID": 1,
+        "AMOUNT": 400,
+        "MONTH": "JAN"
+      },
+      {
+        "EMPID": 2,
+        "AMOUNT": 4500,
+        "MONTH": "JAN"
+      },
+      {
+        "EMPID": 2,
+        "AMOUNT": 35000,
+        "MONTH": "JAN"
+      },
+      {
+        "EMPID": 1,
+        "AMOUNT": 5000,
+        "MONTH": "FEB"
+      },
+      {
+        "EMPID": 1,
+        "AMOUNT": 3000,
+        "MONTH": "FEB"
+      },
+      {
+        "EMPID": 2,
+        "AMOUNT": 200,
+        "MONTH": "FEB"
+      },
+      {
+        "EMPID": 2,
+        "AMOUNT": 90500,
+        "MONTH": "FEB"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "EMPID",
+          "type": "integer"
+        },
+        {
+          "name": "JAN",
+          "type": "string"
+        },
+        {
+          "name": "FEB",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "EMPID": 1,
+        "JAN": 10400,
+        "FEB": 8000
+      },
+      {
+        "EMPID": 2,
+        "JAN": 39500,
+        "FEB": 90700
+      }
+    ]
+  }
+}

@@ -10,6 +10,7 @@ condition expressed on existing columns.
 
 **This step is supported by the following backends:**
 
+- Mongo 5.0
 - Mongo 4.2
 - Mongo 4.0 (`matches` and `not matches` operators are not supported in conditions)
 - Mongo 3.6 (`matches` and `not matches` operators are not supported in conditions)

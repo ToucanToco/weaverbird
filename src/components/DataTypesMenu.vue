@@ -23,13 +23,13 @@
           @click="openToDateStep()"
         >
           <span class="data-types-menu__icon">
-            <i class="fas fa-calendar-alt" aria-hidden="true" />
+            <FAIcon icon="calendar-alt" />
           </span>
           <span>Date</span>
         </div>
         <div class="data-types-menu__option--active" @click="createConvertStep('boolean')">
           <span class="data-types-menu__icon">
-            <i class="fas fa-check" aria-hidden="true" />
+            <FAIcon icon="check" />
           </span>
           <span>Boolean</span>
         </div>
@@ -41,6 +41,7 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
+import FAIcon from '@/components/FAIcon.vue';
 import { DataSetColumnType } from '@/lib/dataset';
 import { ConvertStep, Pipeline } from '@/lib/steps';
 import { VQBModule } from '@/store';
@@ -55,6 +56,7 @@ type PropMap<T> = { [prop: string]: T };
   name: 'data-types-menu',
   components: {
     Popover,
+    FAIcon,
   },
 })
 export default class DataTypesMenu extends Vue {

@@ -1,0 +1,129 @@
+{
+  "description": "After a addmissing date on a column having same dates but in different groups, the dateextract step was failing for pandas executor (cannot reindex from a duplicate axis)",
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "addmissingdates",
+        "datesColumn": "date",
+        "datesGranularity": "day",
+        "groups": [
+          "label"
+        ]
+      },
+      {
+        "name": "dateextract",
+        "column": "date",
+        "dateInfo": [
+          "isoYear",
+          "isoWeek",
+          "isoDayOfWeek",
+          "previousIsoWeek"
+        ],
+        "newColumns": [
+          "date_isoYear",
+          "date_isoWeek",
+          "date_isoDayOfWeek",
+          "date_previousIsoWeek"
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "date",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "label": "meow",
+        "date": "2021-12-13T00:00:00.000Z"
+      },
+      {
+        "label": "meow",
+        "date": "2021-12-15T00:00:00.000Z"
+      },
+      {
+        "label": "plop",
+        "date": "2021-12-13T00:00:00.000Z"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "label",
+          "type": "string"
+        },
+        {
+          "name": "date",
+          "type": "datetime"
+        },
+        {
+          "name": "date_isoYear",
+          "type": "number"
+        },
+        {
+          "name": "date_isoWeek",
+          "type": "number"
+        },
+        {
+          "name": "date_isoDayOfWeek",
+          "type": "number"
+        },
+        {
+          "name": "date_previousIsoWeek",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "label": "meow",
+        "date": "2021-12-13T00:00:00.000Z",
+        "date_isoYear": 2021,
+        "date_isoWeek": 50,
+        "date_isoDayOfWeek": 1,
+        "date_previousIsoWeek": 49
+      },
+      {
+        "label": "meow",
+        "date": "2021-12-14T00:00:00.000Z",
+        "date_isoYear": 2021,
+        "date_isoWeek": 50,
+        "date_isoDayOfWeek": 2,
+        "date_previousIsoWeek": 49
+      },
+      {
+        "label": "meow",
+        "date": "2021-12-15T00:00:00.000Z",
+        "date_isoYear": 2021,
+        "date_isoWeek": 50,
+        "date_isoDayOfWeek": 3,
+        "date_previousIsoWeek": 49
+      },
+      {
+        "label": "plop",
+        "date": "2021-12-13T00:00:00.000Z",
+        "date_isoYear": 2021,
+        "date_isoWeek": 50,
+        "date_isoDayOfWeek": 1,
+        "date_previousIsoWeek": 49
+      }
+    ]
+  }
+}

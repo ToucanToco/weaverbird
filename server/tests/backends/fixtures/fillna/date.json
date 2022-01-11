@@ -1,0 +1,76 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "fillna",
+        "columns": ["AGE"],
+        "value": "1970-01-01 00:00:00"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "datetime"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": "2012-04-23T18:25:43",
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": null,
+        "SCORE": 100
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "datetime"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": "2012-04-23T18:25:43",
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": "1970-01-01 00:00:00",
+        "SCORE": 100
+      }
+    ]
+  }
+}

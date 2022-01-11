@@ -1,23 +1,33 @@
 <template>
   <div class="widget-variable-list">
-    <div
-      class="widget-variable-list__section"
-      v-for="category in variablesByCategory"
-      :key="category.label"
-    >
-      <div class="widget-variable-list__section-title" v-if="category.label">
-        {{ category.label }}
+    <div class="widget-variable-list__container">
+      <div
+        class="widget-variable-list__section"
+        v-for="category in variablesByCategory"
+        :key="category.label"
+      >
+        <div class="widget-variable-list__section-title" v-if="category.label">
+          {{ category.label }}
+        </div>
+        <VariableListOption
+          v-for="availableVariable in category.variables"
+          :key="availableVariable.identifier"
+          :value="availableVariable.value"
+          :identifier="availableVariable.identifier"
+          :label="availableVariable.label"
+          :togglable="isMultiple"
+          :selectedVariables="selectedVariables"
+          :showOnlyLabel="showOnlyLabel"
+          @input="chooseVariable"
+        />
       </div>
-      <VariableListOption
-        v-for="availableVariable in category.variables"
-        :key="availableVariable.identifier"
-        :value="availableVariable.value"
-        :identifier="availableVariable.identifier"
-        :label="availableVariable.label"
-        :togglable="isMultiple"
-        :selectedVariables="selectedVariables"
-        @input="chooseVariable"
-      />
+    </div>
+    <div
+      class="widget-variable-list__advanced-variable"
+      v-if="enableAdvancedVariable"
+      @click="addAdvancedVariable"
+    >
+      Advanced variable
     </div>
   </div>
 </template>
@@ -44,6 +54,12 @@ export default class VariableList extends Vue {
 
   @Prop({ default: () => [] })
   availableVariables!: VariablesBucket;
+
+  @Prop({ default: () => true })
+  enableAdvancedVariable!: boolean;
+
+  @Prop({ default: false })
+  showOnlyLabel!: boolean;
 
   /* istanbul ignore next */
   created() {
@@ -95,13 +111,15 @@ export default class VariableList extends Vue {
     const value = this.toggleVariable(variableIdentifier);
     this.$emit('input', value);
   }
+
+  addAdvancedVariable() {
+    this.$emit('addAdvancedVariable');
+  }
 }
 </script>
 
 <style scoped lang="scss">
 @import '../../../../styles/variables';
-$grey: #6a6a6a;
-$grey-light: #eeedf0;
 
 .widget-variable-list {
   display: flex;
@@ -124,5 +142,20 @@ $grey-light: #eeedf0;
   text-transform: uppercase;
   letter-spacing: 0.5;
   padding: 7px 10px;
+}
+
+.widget-variable-list__advanced-variable {
+  padding: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  background: #f5f5f5;
+  color: #888888;
+  cursor: pointer;
+  margin-top: 8px;
+
+  &:hover {
+    text-decoration: underline;
+  }
 }
 </style>

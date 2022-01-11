@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs">
+  <div class="tabs" :class="{ 'tabs--compact': compactMode }">
     <div ref="tabsContainer" class="tabs__tabs-container">
       <div
         v-for="tab in tabs"
@@ -39,6 +39,9 @@ export default class Tabs extends Vue {
   @Prop({ default: () => (tab: string) => `${tab}` })
   formatTab!: Function;
 
+  @Prop({ default: false })
+  compactMode!: boolean;
+
   created() {
     // select first available tab if necessary
     const availableTabs = this.tabs.filter(t => this.disabledTabs.indexOf(t) === -1);
@@ -61,13 +64,11 @@ export default class Tabs extends Vue {
 
 <style lang="scss" scoped>
 @import '../styles/_variables';
-$grey: #eeedf0;
-$grey-dark: #6a6a6a;
 
 .tabs {
   display: flex;
   flex-grow: 1;
-  border-bottom: 1px solid $grey;
+  border-bottom: 1px solid $grey-light;
 }
 
 .tabs__tabs-container {
@@ -83,7 +84,7 @@ $grey-dark: #6a6a6a;
   color: $grey-dark;
   text-transform: uppercase;
   font-weight: 700;
-  padding: 5px 10px;
+  padding: 15px;
   cursor: pointer;
   white-space: nowrap;
   user-select: none;
@@ -91,25 +92,31 @@ $grey-dark: #6a6a6a;
 }
 
 .tabs__tab:hover {
-  color: $active-color;
+  color: var(--weaverbird-theme-main-color, $active-color);
   text-decoration: none;
 }
 
 .tabs__tab--selected {
   text-decoration: none;
-  color: $active-color;
-  border-bottom: 3px solid $active-color;
+  color: var(--weaverbird-theme-main-color, $active-color);
+  border-bottom: 3px solid var(--weaverbird-theme-main-color, $active-color);
   margin-bottom: -2px; // To avoid having the border above the border of the container
-  padding-bottom: 4px; // To avoid the label "jumping" one pixel up when selected
+  padding-bottom: 14px; // To avoid the label "jumping" one pixel up when selected
 }
 
 .tabs__tab--disabled {
-  border-bottom-color: $grey;
+  border-bottom-color: $grey-light;
   cursor: not-allowed;
   &,
   &:hover {
     background: unset;
-    color: rgba($grey, 0.9);
+    color: rgba($grey-light, 0.9);
+  }
+}
+
+.tabs--compact {
+  .tabs__tabs-container {
+    overflow-x: auto;
   }
 }
 </style>

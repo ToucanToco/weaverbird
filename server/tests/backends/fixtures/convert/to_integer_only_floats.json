@@ -1,0 +1,78 @@
+{
+  "exclude": [
+    "sql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "convert",
+        "columns": [
+          "VALUE"
+        ],
+        "data_type": "integer"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": 41.1
+      },
+      {
+        "VALUE": 41.2
+      },
+      {
+        "VALUE": 43.5
+      },
+      {
+        "VALUE": 45.5
+      },
+      {
+        "VALUE": 55.5
+      },
+      {
+        "VALUE": 77.7
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": 41
+      },
+      {
+        "VALUE": 41
+      },
+      {
+        "VALUE": 43
+      },
+      {
+        "VALUE": 45
+      },
+      {
+        "VALUE": 55
+      },
+      {
+        "VALUE": 77
+      }
+    ]
+  }
+}

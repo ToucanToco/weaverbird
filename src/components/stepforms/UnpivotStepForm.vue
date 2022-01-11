@@ -30,7 +30,12 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
     />
-    <CheckboxWidget class="dropnaCheckbox" :label="checkboxLabel" v-model="editedStep.dropna" />
+    <CheckboxWidget
+      v-if="translator !== 'snowflake'"
+      class="dropnaCheckbox"
+      :label="checkboxLabel"
+      v-model="editedStep.dropna"
+    />
     <StepFormButtonbar />
   </div>
 </template>
@@ -74,6 +79,7 @@ export default class UnpivotStepForm extends BaseStepForm<UnpivotStep> {
     }),
   })
   initialStepValue!: UnpivotStep;
+  @VQBModule.Getter translator!: string;
 
   readonly title: string = 'Unpivot columns';
   readonly checkboxLabel: string = 'Drop null values';

@@ -1,34 +1,42 @@
 {
+  "exclude": [
+    "snowflake",
+    "sql"
+  ],
   "step": {
-    "name": "aggregate",
-    "on": [
-      "Group"
-    ],
-    "aggregations": [
+    "pipeline": [
       {
-        "newcolumns": [
-          "min_Value1",
-          "min_Value2"
+        "name": "aggregate",
+        "on": [
+          "Group"
         ],
-        "aggfunction": "min",
-        "columns": [
-          "Value1",
-          "Value2"
-        ]
-      },
-      {
-        "newcolumns": [
-          "max_Value1",
-          "max_Value2"
+        "aggregations": [
+          {
+            "newcolumns": [
+              "min_Value1",
+              "min_Value2"
+            ],
+            "aggfunction": "min",
+            "columns": [
+              "Value1",
+              "Value2"
+            ]
+          },
+          {
+            "newcolumns": [
+              "max_Value1",
+              "max_Value2"
+            ],
+            "aggfunction": "max",
+            "columns": [
+              "Value1",
+              "Value2"
+            ]
+          }
         ],
-        "aggfunction": "max",
-        "columns": [
-          "Value1",
-          "Value2"
-        ]
+        "keepOriginalGranularity": true
       }
-    ],
-    "keepOriginalGranularity": true
+    ]
   },
   "input": {
     "schema": {

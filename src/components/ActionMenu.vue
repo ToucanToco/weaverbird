@@ -57,7 +57,7 @@
         <div v-if="visiblePanel == 2">
           <div class="action-menu__panel">
             <div class="action-menu__option--back" @click="visiblePanel = 1">
-              <i class="fas fa-angle-left" aria-hidden="true" /> BACK
+              <FAIcon class="action-menu__option__back-icon" icon="angle-left" /> BACK
             </div>
             <div
               class="action-menu__option action-menu__option--top-bordered"
@@ -89,6 +89,13 @@
             </div>
             <div
               class="action-menu__option"
+              v-if="isStepSupported('trim')"
+              @click="openStep('trim')"
+            >
+              Trim spaces
+            </div>
+            <div
+              class="action-menu__option"
               v-if="isStepSupported('uniquegroups')"
               @click="createUniqueGroupsStep"
             >
@@ -112,6 +119,7 @@ import _isEqual from 'lodash/isEqual';
 import { Component, Prop, Vue } from 'vue-property-decorator';
 
 import { POPOVER_ALIGN } from '@/components/constants';
+import FAIcon from '@/components/FAIcon.vue';
 import ListUniqueValues from '@/components/ListUniqueValues.vue';
 import { DataSetColumn } from '@/lib/dataset';
 import { FilterConditionInclusion, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
@@ -130,6 +138,7 @@ enum VisiblePanel {
   components: {
     Popover,
     ListUniqueValues,
+    FAIcon,
   },
 })
 export default class ActionMenu extends Vue {
@@ -275,7 +284,7 @@ export default class ActionMenu extends Vue {
   }
 }
 
-.fa-angle-left {
+.action-menu__option__back-icon {
   margin-right: 5px;
 }
 

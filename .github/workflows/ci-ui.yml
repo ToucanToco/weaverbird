@@ -1,0 +1,72 @@
+name: CI (UI)
+
+on:
+  # Trigger build and tests of the front-end (UI) when pushing in master or pull requests, and when creating
+  # a pull request, only if `src/`, `tests/` or some build conf files are modified
+  push:
+    branches:
+      - master
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'yarn.lock'
+      - '*.js'
+      - '.github/workflows/ci-ui.yml'
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - 'src/**'
+      - 'tests/**'
+      - 'yarn.lock'
+      - '*.js'
+      - '.github/workflows/ci-ui.yml'
+
+jobs:
+  build_lint_and_test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          # Shallow clones should be disabled for a better relevancy of analysis
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint:ci
+
+      - name: Archive lint report
+        uses: actions/upload-artifact@v2
+        with:
+          name: lint-report
+          path: lint-report.json
+        if: failure()
+
+      - name: Unit tests
+        run: yarn test:unit --runInBand
+
+      - name: Send report to codecov
+        run: yarn codecov
+        if: ${{ always() }}
+
+      - name: Fix code coverage paths
+        working-directory: ./coverage
+        run: |
+          sed -i 's@'$GITHUB_WORKSPACE'@/github/workspace/@g' lcov.info
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        if: ${{ always() }}
+
+      - name: Check that build completes as expected
+        run: yarn build-bundle
