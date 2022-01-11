@@ -118,9 +118,9 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
     if 'FROM' in lst:
         list_index = [i for i, s in enumerate(lst) if s == "FROM"]
         if len(list_index) == 1:
-            split_list(0, lst, list_index)
+            table_name = split_list(0, lst, list_index)
         if len(list_index) > 1:
-            split_list(-1, lst, list_index)
+            table_name = split_list(-1, lst, list_index)
     else:
         table_name = lst[0]
 
@@ -128,7 +128,6 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
         f' WHERE table_name = \'{table_name}\' ORDER BY ordinal_position;'
     )
-
     connection = get_connection()
     with connection.cursor() as cursor:
         cursor.execute(request)
