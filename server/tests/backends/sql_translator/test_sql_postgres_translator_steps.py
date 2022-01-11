@@ -86,6 +86,7 @@ def get_engine():
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     return engine
 
+
 def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]:
     with connection.cursor() as cursor:
         cursor.execute(query)
@@ -102,23 +103,26 @@ def sql_retrieve_city(t):
     return t
 
 
-def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
-
-    lst = (domain if domain else query_string).split(' ')
-    print(f"the list is: {lst}")
-    lst = [item for item in lst if len(item) > 0]
-    print(lst)
-    if 'FROM' in lst:
-        temp = lst[lst.index('FROM') + 1]
-        print(temp)
-        if len(temp.split('.')) == 2:
-            table_name = temp.split('.')[1]
-            print(f"the table name is: {table_name}")
-        else:
-            table_name = temp.split('.')[0]
-            print(f"the table name is: {table_name}")
+def split_list(index, lst, list_index):
+    temp = lst[list_index[index] + 1]
+    if len(temp.split('.')) == 2:
+        table_name = temp.split('.')[1]
     else:
-        table_name = ""
+        table_name = temp.split('.')[0]
+    return table_name
+
+
+def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
+    lst = (domain if domain else query_string).split(' ')
+    lst = [item for item in lst if len(item) > 0]
+    if 'FROM' in lst:
+        list_index = [i for i, s in enumerate(lst) if s == "FROM"]
+        if len(list_index) == 1:
+            split_list(0, lst, list_index)
+        if len(list_index) > 1:
+            split_list(-1, lst, list_index)
+    else:
+        table_name = lst[0]
 
     request = (
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
@@ -147,13 +151,10 @@ def standardized_columns(df: pd.DataFrame):
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
 def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
-    print("step1")
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
-    print("step2")
 
     # Drop created table
     execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
-    print("step3")
 
     # inserting the data in Postgres
     # Take data in fixture file, set in pandas, create table and insert
@@ -162,7 +163,6 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
-    print("step4")
 
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
@@ -176,12 +176,10 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
                 index=False,
                 if_exists='replace',
             )
-    print("step5")
 
     steps = spec['step']['pipeline']
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
-    print("step6")
 
     # Convert Pipeline object to Postgres Query
     query, report = translate_pipeline(
@@ -191,19 +189,12 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         sql_query_executor=sql_query_executor,
         sql_dialect='postgres',
     )
-    print("The query is:")
-    print(query)
-    print(report)
-    print("------------")
-    print("step6.2")
+
     # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
-    print("step7")
 
     # Drop created table
     execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
-    print("step8")
-    print(exec_type)
 
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(
@@ -212,12 +203,10 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         ),
         orient='table',
     )
-    print("step9")
 
     standardized_columns(pandas_result_expected)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query
-    print("step10")
 
     assert_dataframes_equals(pandas_result_expected, result)

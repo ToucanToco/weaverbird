@@ -107,16 +107,26 @@ def sql_retrieve_city(t):
     return t
 
 
-def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
-    if domain:
-        lst = domain.split(' ')
-        lst = [item for item in lst if len(item) > 0]
-        temp = lst[lst.index('FROM') + 1]
+def split_list(index, lst, list_index):
+    temp = lst[list_index[index] + 1]
+    if len(temp.split('.')) == 2:
+        table_name = temp.split('.')[1]
+    else:
+        table_name = temp.split('.')[0]
+    return table_name
 
-        if len(temp.split('.')) == 2:
-            table_name = temp.split('.')[1]
-        else:
-            table_name = temp.split('.')[0]
+
+def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
+    lst = (domain if domain else query_string).split(' ')
+    lst = [item for item in lst if len(item) > 0]
+    if 'FROM' in lst:
+        list_index = [i for i, s in enumerate(lst) if s == "FROM"]
+        if len(list_index) == 1:
+            split_list(0, lst, list_index)
+        if len(list_index) > 1:
+            split_list(-1, lst, list_index)
+    else:
+        table_name = lst[0]
 
     request = (
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'

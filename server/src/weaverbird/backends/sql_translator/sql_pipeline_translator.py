@@ -32,11 +32,7 @@ def translate_pipeline(
     """
     query = SQLQuery()
     translate_report = []
-    print("Pipeline to translate:")
-    print(pipeline_to_translate.steps)
     for index, step in enumerate(pipeline_to_translate.steps):
-        print(f"Index: {index}")
-        print(f"Step: {step}")
         try:
             query = sql_steps_translators[step.name](
                 step,
@@ -50,7 +46,6 @@ def translate_pipeline(
                 sql_dialect=sql_dialect,
             )
             translate_report.append(SQLStepTranslationReport(step_index=index))
-
         except Exception as e:
             raise SQLPipelineTranslationFailure(step, index, e) from e
 
