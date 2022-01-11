@@ -4,7 +4,6 @@ from weaverbird.backends.sql_translator.steps.utils.combination import (
     resolve_sql_pipeline_for_combination,
 )
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query,
     build_union_query,
 )
 from weaverbird.backends.sql_translator.types import (
@@ -55,9 +54,8 @@ def translate_append(
         unioned_query_name = f'APPEND_STEP_UNION_{index}'
         queries_to_append[unioned_query_name] = query_string
         query_to_union_metadata[unioned_query_name] = sql_query_describer(
-            domain=None, query_string=query_string
+            domain=pipeline[0]["domain"], query_string=query_string
         )
-
         query.metadata_manager.create_table(unioned_query_name)
         query.metadata_manager.add_table_columns_from_dict(
             unioned_query_name, query_to_union_metadata[unioned_query_name]
@@ -66,19 +64,26 @@ def translate_append(
 
     query.metadata_manager.append_queries_metadata(unioned_tables=queries_to_append.keys())
     transformed_query += f', {query_name} AS\
- ({build_union_query(query.metadata_manager, query.query_name, queries_to_append.keys())})'
+    ({build_union_query(query.metadata_manager, query.query_name, queries_to_append.keys())})'
     query.metadata_manager.rename_union_columns()
-    log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {transformed_query}'
-        '############################################################'
-    )
+    all_names = []
+    for _, value in query.metadata_manager.tables.items():
+        query_metadata = value.columns
+        names = []
+        for _, metadata in query_metadata.items():
+            alias = getattr(metadata, 'alias')
+            if alias:
+                names.append(alias)
+            else:
+                names.append(getattr(metadata, 'name'))
+            all_names.extend(names)
+
+    all_names = list(dict.fromkeys(all_names))
+    build_selection_query = f"SELECT {', '.join(all_names)} FROM {query_name}"
 
     return SQLQuery(
         query_name=query_name,
         transformed_query=transformed_query,
-        selection_query=build_selection_query(
-            query.metadata_manager.retrieve_query_metadata_columns(), query_name
-        ),
+        selection_query=build_selection_query,
         metadata_manager=query.metadata_manager,
     )
