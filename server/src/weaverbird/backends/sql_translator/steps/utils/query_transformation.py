@@ -349,13 +349,22 @@ def build_union_query(
     current_query_name: str,
     appended_tables_name: List[str],
 ) -> str:
+    columns_list = query_metadata_manager.retrieve_query_metadata_columns_as_list()
     new_query = f'SELECT {query_metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}'
-    max_column_number = len(query_metadata_manager.retrieve_query_metadata_columns_as_list())
+    max_column_number = len(columns_list)
     for t in appended_tables_name:
         table_columns = query_metadata_manager.retrieve_columns_as_list(t)
-        missing_columns = max_column_number - len(table_columns)
-        all_columns = table_columns + ['NULL'] * missing_columns
-        new_query += f" UNION ALL SELECT {', '.join(all_columns)} FROM {t}"
+        all_table_columns = columns_list + list(set(table_columns) - set(columns_list))
+        if len(all_table_columns) > max_column_number:
+            missing_columns = len(all_table_columns) - len(table_columns)
+            all_columns = columns_list + ['NULL'] * missing_columns
+            new_table_columns = table_columns + ['NULL'] * missing_columns
+            new_query = f"SELECT {', '.join(all_columns)} FROM {current_query_name} UNION ALL " \
+                        f"SELECT {', '.join(new_table_columns)} FROM {t}"
+        else:
+            missing_columns = max_column_number - len(table_columns)
+            all_columns = table_columns + ['NULL'] * missing_columns
+            new_query += f" UNION ALL SELECT {', '.join(all_columns)} FROM {t}"
     return new_query
 
 
