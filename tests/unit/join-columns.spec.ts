@@ -21,11 +21,13 @@ describe('Widget JoinColumnsWidget', () => {
 
   it('should have exactly 2 input components', () => {
     const wrapper = shallowMount(JoinColumns, { store: emptyStore, localVue });
-    const autocompleteWrappers = wrapper.findAll('autocompletewidget-stub');
-    expect(autocompleteWrappers.length).toEqual(2);
+    const rightComponentWrappers = wrapper.findAll('.rightOn');
+    const leftComponentWrappers = wrapper.findAll('.leftOn');
+    expect(rightComponentWrappers.length).toEqual(1);
+    expect(leftComponentWrappers.length).toEqual(1);
   });
 
-  it('should instantiate a widgetAutocomplete widget with proper options from the store', () => {
+  it('should suggest the columns of the actual dataset in the left widget', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA' }, { name: 'columnB' }, { name: 'columnC' }],
@@ -33,11 +35,11 @@ describe('Widget JoinColumnsWidget', () => {
       },
     });
     const wrapper = shallowMount(JoinColumns, { store, localVue });
-    const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
-    expect(autocompleteWrapper.attributes('options')).toEqual('columnA,columnB,columnC');
+    const leftWidgetWrapper = wrapper.find('.leftOn');
+    expect(leftWidgetWrapper.props().options).toEqual(['columnA', 'columnB', 'columnC']);
   });
 
-  it('should pass down the right prop to the left AutocompleteWidget', () => {
+  it('should pass down the value to the left widget', () => {
     const wrapper = shallowMount(JoinColumns, {
       propsData: {
         value: ['toto', 'tata'],
@@ -46,11 +48,11 @@ describe('Widget JoinColumnsWidget', () => {
       localVue,
       sync: false,
     });
-    const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
-    expect(autocompleteWrapper.props().value).toEqual('toto');
+    const leftWidgetWrapper = wrapper.find('.leftOn');
+    expect(leftWidgetWrapper.props().value).toEqual('toto');
   });
 
-  it('should pass down the right prop to the right AutocompleteWidget', () => {
+  it('should pass down the value to the right widget', () => {
     const wrapper = shallowMount(JoinColumns, {
       propsData: {
         value: ['toto', 'tata'],
@@ -59,8 +61,32 @@ describe('Widget JoinColumnsWidget', () => {
       localVue,
       sync: false,
     });
-    const autocompleteWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-    expect(autocompleteWrapper.props().value).toEqual('tata');
+    const rightWidgetWrapper = wrapper.find('.rightOn');
+    expect(rightWidgetWrapper.props().value).toEqual('tata');
+  });
+
+  it('should pass down the columns names of the right dataset in an autocomplete if provided', () => {
+    const wrapper = shallowMount(JoinColumns, {
+      propsData: {
+        rightColumnNames: ['meow', 'plop'],
+      },
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+    const rightWidgetWrapper = wrapper.find('.rightOn');
+    expect(rightWidgetWrapper.is('AutocompleteWidget-stub')).toBe(true);
+    expect(rightWidgetWrapper.props().options).toEqual(['meow', 'plop']);
+  });
+
+  it('should let user freely input if right dataset column names are not provided', () => {
+    const wrapper = shallowMount(JoinColumns, {
+      store: emptyStore,
+      localVue,
+      sync: false,
+    });
+    const rightWidgetWrapper = wrapper.find('.rightOn');
+    expect(rightWidgetWrapper.is('InputTextWidget-stub')).toBe(true);
   });
 
   it('should update its value when the left column is modified', () => {
@@ -73,8 +99,8 @@ describe('Widget JoinColumnsWidget', () => {
       sync: false,
     });
 
-    const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
-    autocompleteWrapper.vm.$emit('input', 'tutu');
+    const leftWidgetWrapper = wrapper.find('.leftOn');
+    leftWidgetWrapper.vm.$emit('input', 'tutu');
 
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([['tutu', 'tata']]);
@@ -90,8 +116,8 @@ describe('Widget JoinColumnsWidget', () => {
       sync: false,
     });
 
-    const autocompleteWrapper = wrapper.findAll('autocompletewidget-stub').at(1);
-    autocompleteWrapper.vm.$emit('input', 'tutu');
+    const rightWidgetWrapper = wrapper.find('.rightOn');
+    rightWidgetWrapper.vm.$emit('input', 'tutu');
 
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([['toto', 'tutu']]);
@@ -107,8 +133,8 @@ describe('Widget JoinColumnsWidget', () => {
       sync: false,
     });
 
-    const autocompleteWrapper = wrapper.find('autocompletewidget-stub');
-    autocompleteWrapper.vm.$emit('input', 'tutu');
+    const leftWidgetWrapper = wrapper.find('.leftOn');
+    leftWidgetWrapper.vm.$emit('input', 'tutu');
 
     expect(wrapper.emitted().input).toBeDefined();
     expect(wrapper.emitted().input[0]).toEqual([['tutu', 'tutu']]);

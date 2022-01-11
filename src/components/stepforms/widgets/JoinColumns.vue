@@ -10,12 +10,25 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
     />
+    <!-- defaults to a simple text input if we don't have any column names -->
     <AutocompleteWidget
+      v-if="rightColumnNames"
       class="rightOn"
       data-cy="weaverbird-join-column-right-on"
       v-model="rightOnColumn"
       placeholder="Right dataset column"
       :options="rightColumnNames"
+      :data-path="`${dataPath}[1]`"
+      :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+    />
+    <InputTextWidget
+      v-else
+      class="rightOn"
+      data-cy="weaverbird-join-column-right-on"
+      v-model="rightOnColumn"
+      placeholder="Right dataset column"
       :data-path="`${dataPath}[1]`"
       :errors="errors"
       :available-variables="availableVariables"
@@ -61,7 +74,8 @@ export default class JoinColumns extends Vue {
 
   @VQBModule.Getter columnNames!: string[];
 
-  @VQBModule.Getter rightColumnNames!: string[];
+  @Prop()
+  rightColumnNames?: string[];
 
   get leftOnColumn() {
     return this.value[0];
