@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+## Fixed
+
+- Mongo: dividing by a column with potentially null or zero values does not fail anymore (return null instead) by @CharlesRngrd
+
 ## [0.79.4] - 2021-12-20
 
 ### Fixed
