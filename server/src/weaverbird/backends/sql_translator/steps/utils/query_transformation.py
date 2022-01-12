@@ -349,52 +349,13 @@ def build_union_query(
     current_query_name: str,
     appended_tables_name: List[str],
 ) -> str:
-    columns_list = query_metadata_manager.retrieve_query_metadata_columns_as_list()
     new_query = f'SELECT {query_metadata_manager.retrieve_query_metadata_columns_as_str()} FROM {current_query_name}'
-    max_column_number = len(columns_list)
-
+    max_column_number = len(query_metadata_manager.retrieve_query_metadata_columns_as_list())
     for t in appended_tables_name:
         table_columns = query_metadata_manager.retrieve_columns_as_list(t)
-        all_table_columns = columns_list + list(set(table_columns) - set(columns_list))
-        for el in columns_list:
-            if el.startswith('NULL AS '):
-                columns_list.remove(el)
-                columns_list.append(el[8:])
-                all_table_columns.remove(el)
-                all_table_columns.append(el[8:])
-
-        all_table_columns_index = {k: all_table_columns.index(k) for k in all_table_columns}
-
-        if len(set(table_columns) - set(columns_list)) > 0:
-            first_column = list(set(table_columns) - set(columns_list))[0]
-        else:
-            first_column = None
-        if len(set(columns_list) - set(table_columns)) > 0:
-            second_column = list(set(columns_list) - set(table_columns))[0]
-        else:
-            second_column = None
-
-        if first_column and second_column:
-            columns_list.insert(all_table_columns_index[first_column], f'NULL AS {first_column}')
-            table_columns.insert(all_table_columns_index[second_column], f'NULL AS {second_column}')
-            new_query = (
-                f"SELECT {', '.join(columns_list)} FROM {current_query_name} UNION ALL "
-                f"SELECT {', '.join(table_columns)} FROM {t}"
-            )
-        elif first_column and not second_column:
-            columns_list.insert(all_table_columns_index[first_column], f'NULL AS {first_column}')
-            new_query = (
-                f"SELECT {', '.join(columns_list)} FROM {current_query_name} UNION ALL "
-                f"SELECT {', '.join(table_columns)} FROM {t}"
-            )
-
-        elif second_column and not first_column:
-            table_columns.insert(all_table_columns_index[second_column], f'NULL AS {second_column}')
-            new_query += f" UNION ALL SELECT {', '.join(table_columns)} FROM {t}"
-        else:
-            missing_columns = max_column_number - len(table_columns)
-            all_columns = table_columns + ['NULL'] * missing_columns
-            new_query += f" UNION ALL SELECT {', '.join(all_columns)} FROM {t}"
+        missing_columns = max_column_number - len(table_columns)
+        all_columns = table_columns + ['NULL'] * missing_columns
+        new_query += f" UNION ALL SELECT {', '.join(all_columns)} FROM {t}"
     return new_query
 
 
