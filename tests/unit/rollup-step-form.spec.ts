@@ -128,7 +128,7 @@ describe('Rollup Step Form', () => {
               {
                 aggfunction: '',
                 columns: [''],
-                newcolumns: ['']
+                newcolumns: [''],
               },
             ],
           },
