@@ -25,6 +25,6 @@ class RollupStep(BaseStep):
 
 
 class RollupStepWithVariable(RollupStep, StepWithVariablesMixin):
-    aggregations: Optional[Sequence[AggregationWithVariables]]
+    aggregations: Sequence[AggregationWithVariables]
     hierarchy: Union[TemplatedVariable, List[TemplatedVariable]]
     groupby: Union[TemplatedVariable, List[TemplatedVariable]]
