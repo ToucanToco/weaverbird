@@ -3416,11 +3416,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate basic rollup steps without aggregation', () => {
+  it('can translate rollup steps without aggregation', () => {
     const pipeline: Pipeline = [
       {
         name: 'rollup',
         hierarchy: ['continent', 'country', 'city'],
+        aggregations: []
       },
     ];
     const querySteps = translator.translate(pipeline);
