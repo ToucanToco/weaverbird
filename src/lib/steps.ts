@@ -155,7 +155,7 @@ export type CumSumStep = {
   groupby?: string[];
 } & (
   | {
-      toCumSum: string[][];
+      toCumSum: [string, string][];
     }
   | {
       // legacy way to declare columns (one only)
