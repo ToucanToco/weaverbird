@@ -197,7 +197,13 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Compare result and expected (from fixture file)
     pandas_result_expected = pd.read_json(
         json.dumps(
-            spec[f'expected_{exec_type}' if f'expected_{exec_type}' in spec else 'expected']
+            spec[
+                f'expected_{exec_type}'
+                if f'expected_{exec_type}' in spec
+                else 'expected_sql'
+                if 'expected_sql' in spec
+                else 'expected'
+            ]
         ),
         orient='table',
     )

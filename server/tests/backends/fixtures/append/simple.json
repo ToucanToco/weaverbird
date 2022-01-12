@@ -132,7 +132,7 @@
       }
     ]
   },
-  "expected_mysql": {
+  "expected_sql": {
     "schema": {
       "fields": [
         {
