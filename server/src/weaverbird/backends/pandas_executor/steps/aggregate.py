@@ -53,7 +53,9 @@ def execute_aggregate(
         for aggregation in step.aggregations:
             for col, new_col in zip(aggregation.columns, aggregation.new_columns):
                 agg_serie = (
-                    grouped_by_df[col].agg(get_aggregate_fn(aggregation.agg_function)).rename(new_col)
+                    grouped_by_df[col]
+                    .agg(get_aggregate_fn(aggregation.agg_function))
+                    .rename(new_col)
                 )
                 aggregated_cols.append(agg_serie)
 
