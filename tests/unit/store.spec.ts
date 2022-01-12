@@ -1176,7 +1176,6 @@ describe('action tests', () => {
         buildState({
           backendService: {
             executePipeline: mockBackendServiceExecutePipeline,
-            listCollections: jest.fn(),
           },
           currentPipelineName: 'coco_l_asticot',
           pipelines: {
