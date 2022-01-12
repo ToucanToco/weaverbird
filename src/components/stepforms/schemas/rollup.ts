@@ -21,46 +21,7 @@ export default {
         placeholder: 'Add columns',
       },
     },
-    aggregations: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          columns: {
-            type: 'array',
-            minItems: 1,
-            items: {
-              type: 'string',
-              minLength: 1,
-            },
-          },
-          column: {
-            // deprecated
-            type: 'string',
-            minLength: 1,
-          },
-          aggfunction: {
-            type: 'string',
-            enum: ['sum', 'avg', 'count', 'count distinct', 'min', 'max', 'first', 'last'],
-          },
-          newcolumns: {
-            type: 'array',
-            minItems: 1,
-            items: {
-              type: 'string',
-              minLength: 1,
-            },
-          },
-          newcolumn: {
-            // deprecated
-            type: 'string',
-            minLength: 1,
-          },
-        },
-      },
-      title: 'Aggregations',
-      description: 'The aggregations to be performed',
-    },
+    aggregations,
     groupby: {
       type: 'array',
       items: {
@@ -101,6 +62,6 @@ export default {
       },
     },
   },
-  required: ['name', 'hierarchy'],
+  required: ['name', 'hierarchy', 'aggregations'],
   additionalProperties: false,
 };
