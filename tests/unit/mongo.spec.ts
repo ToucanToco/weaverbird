@@ -4039,11 +4039,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate basic old fashion cumsum steps if needed', () => {
+  it('can translate legacy cumsum steps (with valueColum property)', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
-        toCumSum: [],
         valueColumn: 'VALUE',
         referenceColumn: 'DATE',
       },
@@ -4070,11 +4069,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate more complex old fashion cumsum steps if needed', () => {
+  it('can translate legacy cumsum steps (with valueColum property) with newColumn and groupby', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
-        toCumSum: [],
         valueColumn: 'VALUE',
         referenceColumn: 'DATE',
         groupby: ['COUNTRY', 'PRODUCT'],
@@ -4108,7 +4106,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate basic new fashion cumsum steps if needed', () => {
+  it('can translate cumsum steps with multiple columns, renamed or not', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
@@ -4143,7 +4141,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate more complex new fashion cumsum steps if needed', () => {
+  it('can translate cumsum steps with groupby', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
