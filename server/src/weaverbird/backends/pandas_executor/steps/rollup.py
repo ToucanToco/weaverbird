@@ -20,14 +20,6 @@ def execute_rollup(
     all_results = []
     previous_level = None
 
-    # The "aggregations" parameter is optional for the RollupStep but it is required for the AggregateStep.
-    # So we create a fake column to run the AggregateStep correctly. This column will be deleted at the end of the step.
-    if step.aggregations == []:
-        df['FAKE_AGG_COL'] = 0
-        step.aggregations = [
-            Aggregation(new_columns=['FAKE_AGG_COL'], agg_function='sum', columns=['FAKE_AGG_COL'])
-        ]
-
     for current_level in step.hierarchy:
         full_current_hierarchy.append(current_level)
         aggregate_on_cols = (step.groupby or []) + full_current_hierarchy
@@ -57,7 +49,5 @@ def execute_rollup(
     )  # type: ignore
 
     df = concat(all_results)[columns]
-
-    df = df.drop(['FAKE_AGG_COL'], axis=1, errors='ignore')
 
     return df

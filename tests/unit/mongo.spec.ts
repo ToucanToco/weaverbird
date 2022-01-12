@@ -3421,7 +3421,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       {
         name: 'rollup',
         hierarchy: ['continent', 'country', 'city'],
-        aggregations: []
+        aggregations: [],
       },
     ];
     const querySteps = translator.translate(pipeline);
