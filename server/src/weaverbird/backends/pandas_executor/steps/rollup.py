@@ -1,7 +1,7 @@
 from pandas import DataFrame, concat
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
-from weaverbird.pipeline.steps import AggregateStep, Aggregation, RollupStep
+from weaverbird.pipeline.steps import AggregateStep, RollupStep
 
 from .aggregate import execute_aggregate
 
