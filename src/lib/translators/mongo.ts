@@ -578,9 +578,11 @@ function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
   const groupby = step.groupby ?? [];
 
   // For retrocompatibility with old configurations
-  const toCumSum: string[][] = step.toCumSum ?? [[]];
-  if (step.valueColumn) {
-    toCumSum.push([step.valueColumn, step.newColumn ?? `${step.valueColumn}_CUMSUM`]);
+  let toCumSum: string[][];
+  if ('valueColumn' in step) {
+    toCumSum = [[step.valueColumn, step.newColumn ?? `${step.valueColumn}_CUMSUM`]];
+  } else {
+    toCumSum = step.toCumSum;
   }
 
   return [
