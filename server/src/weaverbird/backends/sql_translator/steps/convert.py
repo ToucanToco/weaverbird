@@ -26,6 +26,9 @@ def build_psql(retrieved_col_type, data_type, col):
         return f'CASE WHEN {col} IN ({PG_BOOLEAN_VALUES}) THEN CAST({col} AS {data_type}) ELSE FALSE END AS {col}'
     if retrieved_col_type == 'TEXT' and data_type == 'integer':
         return f'CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, \'[^0-9.]*\', \'\'), \'.\', 1), \'\') AS {data_type}) AS {col}'
+    if retrieved_col_type == 'FLOAT' and data_type == 'integer':
+        return f'TRUNC({col}) AS {col}'
+
     return f'CAST({col} AS {data_type}) AS {col}'
 
 

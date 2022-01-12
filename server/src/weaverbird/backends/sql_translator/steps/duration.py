@@ -46,7 +46,7 @@ def translate_duration(
         )
     else:
         interval_date = (
-            f" DATEDIFF({step.duration_in}, "
+            f" DATEDIFF({step.duration_in},"
             f" to_timestamp({step.start_date_column}), to_timestamp({step.end_date_column}))"
         )
 

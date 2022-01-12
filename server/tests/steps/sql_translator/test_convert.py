@@ -22,6 +22,18 @@ def test_translate_cast(query):
     assert query.query_name == 'CONVERT_STEP_1'
 
 
+def test_translate_cast_postgres(query):
+    step = ConvertStep(name='convert', columns=['RAICHU'], data_type='integer')
+    query = translate_convert(step, query, index=1, sql_dialect='postgres')
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, CAST(RAICHU AS '
+        'integer) AS RAICHU FROM SELECT_STEP_0)'
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
+    assert query.query_name == 'CONVERT_STEP_1'
+
+
 def test_translate_cast_only_one_col():
     step = ConvertStep(name='convert', columns=['RAICHU'], data_type='integer')
     q = SQLQuery(
@@ -35,6 +47,24 @@ def test_translate_cast_only_one_col():
         q,
         index=1,
     )
+    expected_transformed_query = (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT CAST(RAICHU AS integer) AS RAICHU '
+        'FROM SELECT_STEP_0)'
+    )
+    assert query.transformed_query == expected_transformed_query
+    assert query.selection_query == 'SELECT RAICHU FROM CONVERT_STEP_1'
+    assert query.query_name == 'CONVERT_STEP_1'
+
+
+def test_translate_cast_only_one_col_postgres():
+    step = ConvertStep(name='convert', columns=['RAICHU'], data_type='integer')
+    q = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT RAICHU FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(tables_metadata={'table1': {'RAICHU': 'int'}}),
+    )
+    query = translate_convert(step, q, index=1, sql_dialect='postgres')
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), CONVERT_STEP_1 AS (SELECT CAST(RAICHU AS integer) AS RAICHU '
         'FROM SELECT_STEP_0)'
@@ -86,6 +116,26 @@ def test_translate_cast_float_to_int():
     assert res.transformed_query == (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), '
         'CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, TRUNCATE(raichu) AS raichu FROM SELECT_STEP_0)'
+    )
+    assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
+    assert res.query_name == 'CONVERT_STEP_1'
+    assert res.metadata_manager.retrieve_query_metadata_column_type_by_name('raichu') == 'INTEGER'
+
+
+def test_translate_cast_float_to_int_postgres():
+    step = ConvertStep(name='convert', columns=['raichu'], data_type='integer')
+    test_query = SQLQuery(
+        query_name='SELECT_STEP_0',
+        transformed_query='WITH SELECT_STEP_0 AS (SELECT * FROM products)',
+        selection_query='SELECT TOTO, RAICHU, FLORIZARRE FROM SELECT_STEP_0',
+        metadata_manager=SqlQueryMetadataManager(
+            tables_metadata={'TABLE1': {'TOTO': 'text', 'RAICHU': 'float', 'FLORIZARRE': 'text'}},
+        ),
+    )
+    res = translate_convert(step, test_query, index=1, sql_dialect='postgres')
+    assert res.transformed_query == (
+        'WITH SELECT_STEP_0 AS (SELECT * FROM products), '
+        'CONVERT_STEP_1 AS (SELECT TOTO, FLORIZARRE, TRUNC(raichu) AS raichu FROM SELECT_STEP_0)'
     )
     assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM CONVERT_STEP_1'
     assert res.query_name == 'CONVERT_STEP_1'
