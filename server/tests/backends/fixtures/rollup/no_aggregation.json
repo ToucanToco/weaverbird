@@ -92,79 +92,67 @@
         {
             "name":"PARENT",
             "type":"string"
-        },
-        {
-            "name":"SUM_RETAIL_PRICE",
-            "type":"number"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
-    {
+      {
         "STATE": "CA",
         "CITY":"SF",
         "LABEL":"SF",
         "LEVEL": "CITY",
-        "PARENT": "CA",
-        "SUM_RETAIL_PRICE": 5.0
-    },
-    {
+        "PARENT": "CA"
+      },
+      {
         "STATE": "CA",
         "CITY":"SJ",
         "LABEL":"SJ",
         "LEVEL": "CITY",
-        "PARENT": "CA",
-        "SUM_RETAIL_PRICE": 10.0
-    },
-    {
+        "PARENT": "CA"
+      },
+      {
         "STATE": "FL",
         "CITY": "Miami",
         "LABEL":"Miami",
         "LEVEL": "CITY",
-        "PARENT": "FL",
-        "SUM_RETAIL_PRICE": 16.0
-    },
-    {
+        "PARENT": "FL"
+      },
+      {
         "STATE": "FL",
         "CITY": "Orlando",
         "LABEL":"Orlando",
         "LEVEL": "CITY",
-        "PARENT": "FL",
-        "SUM_RETAIL_PRICE": 32.0
-    },
-    {
+        "PARENT": "FL"
+      },
+      {
         "STATE": "PR",
         "CITY": "SJ",
         "LABEL":"SJ",
         "LEVEL": "CITY",
-        "PARENT": "PR",
-        "SUM_RETAIL_PRICE": 64.0
-    },
-    {
+        "PARENT": "PR"
+      },
+      {
         "STATE": "CA",
         "CITY": null,
         "LABEL":"CA",
         "LEVEL": "STATE",
-        "PARENT": null,
-        "SUM_RETAIL_PRICE": 15.0
-    },
-    {
+        "PARENT": null
+      },
+      {
         "STATE": "FL",
         "CITY": null,
         "LABEL":"FL",
         "LEVEL": "STATE",
-        "PARENT": null,
-        "SUM_RETAIL_PRICE": 48.0
-    },
-    {
+        "PARENT": null
+      },
+      {
         "STATE": "PR",
         "CITY": null,
         "LABEL":"PR",
         "LEVEL": "STATE",
-        "PARENT": null,
-        "SUM_RETAIL_PRICE": 64.0
-    }
+        "PARENT": null
+      }
     ]
   },
   "expected": {
