@@ -25,8 +25,9 @@ of the computation. The computation can be scoped by group if needed.
 
 <img src="../../img/docs/user-interface/cumsum_step_form.jpg" width="350" />
 
-- `Value column to sum`: the value column you want to compute the cumulated sum
-  of.
+- `Columns to cumulate`: the value columns you want to compute the cumulated sum
+  of, and for each one the name of the result column (by default it will be your
+  original column  name suffixed by '\_CUMSUM')
 
 - `Reference column to sort (usually dates)`: the column that will be used to
   order rows in ascending order. Usually you will use a date column here
@@ -35,10 +36,6 @@ of the computation. The computation can be scoped by group if needed.
 - `(Optional) Group cumulated sum by`: optional, if you need to apply the
   cumulated sum computation by group of rows, you may specify here the columns
   to be used to constitute groups (see example 2 below)
-
-- `(Optional) New column name`: Optional, if you want to give a custom name to
-  the output column to be created (by default it will be your original columnn
-  name suffixed by '\_CUMSUM').
 
 #### Example 1 : Basic configuration
 
