@@ -665,7 +665,7 @@ describe('Labeller', () => {
     expect(hrl(step)).toEqual('Roll-up hierarchy ["city", "country", "continent"]');
   });
 
-  it('generates label for cumsum steps old-fashioned', () => {
+  it('generates label for cumsum steps with legacy value/newColumn properties', () => {
     // Test for retrocompatibility purposes
     const step: S.CumSumStep = {
       name: 'cumsum',
@@ -673,7 +673,6 @@ describe('Labeller', () => {
       referenceColumn: 'DATE',
       groupby: ['COUNTRY', 'PRODUCT'],
       newColumn: 'MY_NEW_COLUMN',
-      toCumSum: [[]],
     };
     expect(hrl(step)).toEqual('Compute cumulated sum of "VALUE"');
   });
