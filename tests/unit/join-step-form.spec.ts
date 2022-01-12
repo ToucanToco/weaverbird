@@ -88,5 +88,20 @@ describe('join Step Form', () => {
       wrapper.find('listwidget-stub').vm.$emit('input', ['colRight', 'colLeft']);
       expect(wrapper.vm.$data.editedStep.on).toEqual(['colRight', 'colLeft']);
     });
+
+    it('should fetch the right dataset columns when editing an existing step', () => {
+      runner.shallowMount(undefined, {
+        propsData: {
+          initialStepValue: {
+            name: 'join',
+            right_pipeline: 'pipeline_right',
+            type: 'left',
+            on: ['left_col', 'right_col'],
+          },
+        },
+      });
+      // Unfortunately, we can't easily mock the getColumnNamesFromPipeline action for now.
+      // So this test has no assertion.
+    });
   });
 });
