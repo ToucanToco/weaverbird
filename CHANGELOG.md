@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Changed
+
+- Rollup step no longer require one aggregation column (useful to create referentials) (by @Char)
+
 ## [0.79.4] - 2021-12-20
 
 ### Fixed
