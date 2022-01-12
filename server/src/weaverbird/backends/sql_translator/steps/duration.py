@@ -41,7 +41,9 @@ def translate_duration(
     )
 
     if sql_dialect == 'postgres':
-        interval_date = f" EXTRACT({step.duration_in} FROM ({step.end_date_column}-{step.start_date_column}))"
+        interval_date = (
+            f" EXTRACT({step.duration_in} FROM ({step.end_date_column}-{step.start_date_column}))"
+        )
     else:
         interval_date = (
             f" DATEDIFF({step.duration_in}, "

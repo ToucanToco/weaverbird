@@ -16,7 +16,9 @@ from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
-def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: str, sql_dialect: SQLDialect) -> str:
+def recursively_convert_nested_condition(
+    step: IfthenelseStep, composed_query: str, sql_dialect: SQLDialect
+) -> str:
     if not hasattr(step, 'else_value'):
         return str(step)
 
@@ -27,12 +29,8 @@ def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: s
         expr2 = step.else_value
         return build_conditional_expression(sql_dialect, condition, expr1, expr2)
     else:
-        expr2 = recursively_convert_nested_condition(
-            step.else_value, composed_query, sql_dialect
-        )
-        composed_query += build_conditional_expression(
-            sql_dialect, condition, expr1, expr2
-        )
+        expr2 = recursively_convert_nested_condition(step.else_value, composed_query, sql_dialect)
+        composed_query += build_conditional_expression(sql_dialect, condition, expr1, expr2)
 
     return composed_query.replace(',),', '),')
 

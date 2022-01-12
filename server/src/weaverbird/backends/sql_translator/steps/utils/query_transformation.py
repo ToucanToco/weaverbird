@@ -377,12 +377,16 @@ def build_union_query(
         if first_column and second_column:
             columns_list.insert(all_table_columns_index[first_column], f'NULL AS {first_column}')
             table_columns.insert(all_table_columns_index[second_column], f'NULL AS {second_column}')
-            new_query = f"SELECT {', '.join(columns_list)} FROM {current_query_name} UNION ALL " \
-                        f"SELECT {', '.join(table_columns)} FROM {t}"
+            new_query = (
+                f"SELECT {', '.join(columns_list)} FROM {current_query_name} UNION ALL "
+                f"SELECT {', '.join(table_columns)} FROM {t}"
+            )
         elif first_column and not second_column:
             columns_list.insert(all_table_columns_index[first_column], f'NULL AS {first_column}')
-            new_query = f"SELECT {', '.join(columns_list)} FROM {current_query_name} UNION ALL " \
-                        f"SELECT {', '.join(table_columns)} FROM {t}"
+            new_query = (
+                f"SELECT {', '.join(columns_list)} FROM {current_query_name} UNION ALL "
+                f"SELECT {', '.join(table_columns)} FROM {t}"
+            )
 
         elif second_column and not first_column:
             table_columns.insert(all_table_columns_index[second_column], f'NULL AS {second_column}')

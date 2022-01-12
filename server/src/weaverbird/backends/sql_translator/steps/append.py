@@ -3,9 +3,7 @@ from distutils import log
 from weaverbird.backends.sql_translator.steps.utils.combination import (
     resolve_sql_pipeline_for_combination,
 )
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_union_query,
-)
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import build_union_query
 from weaverbird.backends.sql_translator.types import (
     SQLDialect,
     SQLPipelineTranslator,

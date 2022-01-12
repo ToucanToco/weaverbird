@@ -60,8 +60,5 @@ def test_translate_group_percentage(query):
         "RATIO_TO_REPORT(COLUMN_TEST) OVER () AS RAICHU_COLUMN FROM SELECT_STEP_0 GROUP BY TOTO, FLORIZARRE, COLUMN_TEST)"
     )
     assert query.transformed_query == expected_transformed_query
-    assert (
-        query.selection_query
-        == 'SELECT TOTO, FLORIZARRE, RAICHU_COLUMN FROM PERCENTAGE_STEP_1'
-    )
+    assert query.selection_query == 'SELECT TOTO, FLORIZARRE, RAICHU_COLUMN FROM PERCENTAGE_STEP_1'
     assert query.query_name == 'PERCENTAGE_STEP_1'
