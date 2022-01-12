@@ -179,7 +179,7 @@ class StepLabeller implements StepMatcher<string> {
 
   cumsum(step: Readonly<S.CumSumStep>) {
     // For retrocompatibility with old configurations
-    if (step.valueColumn) {
+    if ('valueColumn' in step) {
       return `Compute cumulated sum of "${step.valueColumn}"`;
     }
 
