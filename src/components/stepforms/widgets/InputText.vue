@@ -86,6 +86,10 @@ export default class InputTextWidget extends Mixins(FormWidget) {
   &:focus-within {
     @extend %form-widget__field--focused;
   }
+
+  &::placeholder {
+    color: $grey;
+  }
 }
 
 .widget-input-text__label {

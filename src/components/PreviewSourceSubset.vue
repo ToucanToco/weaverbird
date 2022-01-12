@@ -1,18 +1,19 @@
 <template>
   <div class="preview-source-rows-subset">
-    <span class="preview-source-rows-subset__text">Preview source on</span>
+    <span class="preview-source-rows-subset__text">Preview computation on the first</span>
     <div class="preview-source-rows-subset__wrapper">
       <input
         class="preview-source-rows-subset__input"
         v-model.number="rowsSubsetInput"
         type="number"
         min="1"
+        @click.stop
       />
-      <span class="preview-source-rows-subset__button" @click="refreshPreview">
+      <span class="preview-source-rows-subset__button" @click.stop="refreshPreview">
         <FAIcon icon="sync-alt" />
       </span>
     </div>
-    <span class="preview-source-rows-subset__text">rows subset</span>
+    <span class="preview-source-rows-subset__text">rows</span>
   </div>
 </template>
 

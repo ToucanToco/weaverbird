@@ -29,7 +29,7 @@
             v-if="canConfigurePreviewSourceSubset"
             @click.stop="togglePreviewSourceSubsetForm"
           >
-            <FAIcon icon="filter" />
+            <FAIcon icon="vial" />
           </div>
           <!-- @click.stop is used to avoid to trigger select event when editing a step -->
           <div

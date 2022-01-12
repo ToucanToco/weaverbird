@@ -1,5 +1,11 @@
 # Changelog (weaverbird python package)
 
+## [0.10.2] - 2021-12-22
+
+- Postgres translator:
+  - add an sql_dialect arg to translator & steps
+
+
 ## [0.10.1] - 2021-12-10
 
 ### Fixed
