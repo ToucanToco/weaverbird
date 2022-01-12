@@ -37,11 +37,6 @@ type PipelineMutation = {
   payload: { pipeline: Pipeline };
 };
 
-type RightColumnNamesMutation = {
-  type: 'setRightColumnNames';
-  payload: Pick<VQBState, 'rightColumnNames'>;
-};
-
 type SetCurrentPipelineNameMutation = {
   type: 'setCurrentPipelineName';
   payload: { name: string };
@@ -99,7 +94,6 @@ export type StateMutation =
   | DeleteStepMutation
   | DomainsMutation
   | PipelineMutation
-  | RightColumnNamesMutation
   | SetCurrentPipelineNameMutation
   | SelectedColumnsMutation
   | SelectDomainMutation
@@ -301,13 +295,6 @@ class Mutations {
     if (column !== undefined) {
       state.selectedColumns = [column];
     }
-  }
-
-  /**
-   * update right column names to be joined.
-   */
-  setRightColumnNames(state: VQBState, { rightColumnNames }: Pick<VQBState, 'rightColumnNames'>) {
-    state.rightColumnNames = rightColumnNames;
   }
 
   /**

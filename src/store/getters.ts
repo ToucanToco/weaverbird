@@ -122,10 +122,6 @@ const getters: GetterTree<VQBState, any> = {
       ? getPipelineNamesReferencing(state.currentPipelineName, state.pipelines)
       : [],
   /**
-   * the list of joined dataset's column names.
-   */
-  rightColumnNames: (state: VQBState) => state.rightColumnNames,
-  /**
    * Return true if an error occured in the backend
    */
   thereIsABackendError: (state: VQBState) => state.backendMessages.length > 0,
