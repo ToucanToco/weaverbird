@@ -48,9 +48,6 @@ def translate_cumsum(
         # if any new column name had been provided
         new_column = cumsum[1] or f"{cumsum[0]}_CUMSUM"
 
-        # we make sure to add the new column in the metadata list
-        query.metadata_manager.add_query_metadata_column(new_column, "FLOAT")
-
         new_columns.append(new_column)
 
         cumsum_part += f", SUM({cumsum[0]}) OVER (PARTITION BY {partition_by_sub_query}"
@@ -69,6 +66,10 @@ def translate_cumsum(
         f"SELECT {completed_fields}{cumsum_part}"
         f" FROM {query.query_name} ORDER BY {step.reference_column} ASC"
     )
+
+    # we make sure to add the new columns in the metadata list
+    for new_column in new_columns:
+        query.metadata_manager.add_query_metadata_column(new_column, "FLOAT")
 
     new_query = SQLQuery(
         query_name=query_name,
