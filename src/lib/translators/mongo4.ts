@@ -1,7 +1,7 @@
 /** This module contains mongo specific translation operations */
 
 import { $$ } from '@/lib/helpers';
-import { ConcatenateStep, ConvertStep, ToDateStep, TrimStep } from '@/lib/steps';
+import { ConvertStep, ToDateStep, TrimStep } from '@/lib/steps';
 import * as S from '@/lib/steps';
 import { Mongo36Translator, transformConcatenate } from '@/lib/translators/mongo';
 
