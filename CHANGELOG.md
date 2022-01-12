@@ -41,6 +41,12 @@ Preview source subset: improve design and move component under domain step
 
 - NewDateInput: send analytics event when selecting a relative date
 
+## Unreleased
+
+## Added
+
+- Cumsum step: can handle multiple columns at once (by @CharlesRngrd)
+
 ## [0.77.0] - 2021-12-06
 
 ### Added
