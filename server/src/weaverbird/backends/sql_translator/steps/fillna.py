@@ -26,18 +26,11 @@ def translate_fillna(
 ) -> SQLQuery:
     query_name = f'FILLNA_STEP_{index}'
 
-    if sql_dialect == 'postgres':
-        function_sql = 'COALESCE'
-    else:
-        function_sql = 'IFNULL'
-
     unchanged_colums = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=step.columns
     )
     fill_value = f"'{sanitize_input(step.value)}'" if isinstance(step.value, str) else step.value
-    filled_columns = ', '.join(
-        [f'{function_sql}({col}, {fill_value}) AS {col}' for col in step.columns]
-    )
+    filled_columns = ', '.join([f'COALESCE({col}, {fill_value}) AS {col}' for col in step.columns])
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS (SELECT {unchanged_colums}, {filled_columns}\

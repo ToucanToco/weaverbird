@@ -14,7 +14,7 @@ def test_translate_fillna(query):
     )
     assert (
         res.transformed_query
-        == "WITH SELECT_STEP_0 AS (SELECT * FROM products), FILLNA_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFNULL(RAICHU, \
+        == "WITH SELECT_STEP_0 AS (SELECT * FROM products), FILLNA_STEP_1 AS (SELECT TOTO, FLORIZARRE, COALESCE(RAICHU, \
 'ZorG') AS RAICHU FROM SELECT_STEP_0)"
     )
     assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM FILLNA_STEP_1'
@@ -94,7 +94,7 @@ def test_translate_fillna_int(query):
     )
     assert (
         res.transformed_query
-        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), FILLNA_STEP_1 AS (SELECT TOTO, FLORIZARRE, IFNULL(RAICHU, \
+        == 'WITH SELECT_STEP_0 AS (SELECT * FROM products), FILLNA_STEP_1 AS (SELECT TOTO, FLORIZARRE, COALESCE(RAICHU, \
 1) AS RAICHU FROM SELECT_STEP_0)'
     )
     assert res.selection_query == 'SELECT TOTO, RAICHU, FLORIZARRE FROM FILLNA_STEP_1'
