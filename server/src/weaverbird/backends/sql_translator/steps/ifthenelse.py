@@ -16,42 +16,25 @@ from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
-def recursively_convert_nested_condition(
-    step: IfthenelseStep,
-    composed_query: str,
-    sql_dialect: SQLDialect,
-) -> str:
-    if not hasattr(step, 'else_value'):
-        return str(step)
+def build_conditional_expression(step: IfthenelseStep):
+    built_string = ''
+    current_nested_step = step
 
-    condition = apply_condition(step.condition, composed_query)
-    expr1 = step.then
+    while hasattr(current_nested_step, 'else_value') and isinstance(
+        current_nested_step.else_value, IfThenElse
+    ):
+        built_string += (
+            f"WHEN {apply_condition(current_nested_step.condition, '')} "
+            f"THEN {current_nested_step.then} "
+        )
+        current_nested_step = current_nested_step.else_value
 
-    if type(step.else_value) != IfThenElse:
-        expr2 = step.else_value
-        return build_conditional_expression(
-            sql_dialect, condition, expr1, expr2, last_nested=True
-        ).replace(',)', ')')
-    else:
-        expr2 = recursively_convert_nested_condition(step.else_value, composed_query, sql_dialect)
-        composed_query += build_conditional_expression(sql_dialect, condition, expr1, expr2)
-
-    return composed_query.replace(',),', '),')
-
-
-def build_conditional_expression(
-    sql_dialect: SQLDialect, condition, expr1, expr2, last_nested=False
-):
-    if sql_dialect == "postgres":
-        if last_nested:
-            conditional_expression = f"WHEN {condition} THEN {expr1} ELSE {expr2} END"
-        elif last_nested:
-            conditional_expression = f"WHEN {condition} THEN {expr1} ELSE {expr2} END"
-        else:
-            conditional_expression = f"WHEN {condition} THEN {expr1} {expr2}"
-    else:
-        conditional_expression = f"IFF({condition}, {expr1}, {expr2})"
-    return conditional_expression
+    built_string += (
+        f"WHEN {apply_condition(current_nested_step.condition, '').replace(',)', ')')} "
+        f"THEN {current_nested_step.then} ELSE {current_nested_step.else_value} "
+        f"END"
+    )
+    return built_string.replace('"', "'")
 
 
 def translate_ifthenelse(
@@ -75,27 +58,14 @@ def translate_ifthenelse(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    composed_query: str = ''
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.new_column]
     )
-    if not sql_dialect == 'postgres':
-        composed_query = (
-            f"""{recursively_convert_nested_condition(step, composed_query, sql_dialect).replace('"', "'")}"""
-            f""" AS {step.new_column.upper()}"""
-        )
-    else:
-        composed_query = (
-            f"""CASE {recursively_convert_nested_condition(step, composed_query, sql_dialect).replace('"', "'")}"""
-            f""" AS {step.new_column.upper()}"""
-        )
-    if completed_fields:
-        composed_query = f', {composed_query}'
 
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields}{composed_query}"""
+        f""" (SELECT {completed_fields}, CASE {build_conditional_expression(step)} AS {step.new_column.upper()}"""
         f""" FROM {query.query_name})""",
     )
 
