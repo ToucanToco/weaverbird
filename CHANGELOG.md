@@ -4,7 +4,8 @@
 
 ### Changed
 
-- Rollup step no longer require one aggregation column (useful to create referentials) (by @Char)
+- Rollup step no longer require one aggregation column (useful to create referentials) (by @CharlesRngrd)
+- Mongo: concatenate won't fail on non-string columns (by @CharlesRngrd)
 
 ## [0.79.4] - 2021-12-20
 
