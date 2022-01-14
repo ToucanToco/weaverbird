@@ -242,28 +242,53 @@ function buildFormulaTree(
   });
 }
 
+type MongoFormulaElement = MongoStep | string | number;
+
 /**
  * Translate a mathjs logical tree describing a formula into a Mongo step
  * @param node a mathjs node object (usually received after parsing an string expression)
  * This node is the root node of the logical tree describing the formula
+ *
+ * Returns also a list of element that must not equal 0 (denominators), otherwise the computation will fail
  */
-function buildMongoFormulaTree(node: math.MathNode): MongoStep | string | number {
+function buildMongoFormulaTree(
+  node: math.MathNode,
+): {
+  mongoFormula: MongoFormulaElement;
+  denominators: MongoFormulaElement[];
+} {
   switch (node.type) {
     case 'OperatorNode':
       if (node.args.length === 1) {
         const factor = node.op === '+' ? 1 : -1;
+        const mongoFormulaAndDenominators = buildMongoFormulaTree(node.args[0]);
         return {
-          $multiply: [factor, buildMongoFormulaTree(node.args[0])],
+          mongoFormula: { $multiply: [factor, mongoFormulaAndDenominators.mongoFormula] },
+          denominators: mongoFormulaAndDenominators.denominators,
+        };
+      } else {
+        const subMongoFormulasAndDenominators = node.args.map(n => buildMongoFormulaTree(n));
+        const mongoFormula = {
+          [getOperator(node.op)]: subMongoFormulasAndDenominators.map(m => m.mongoFormula),
+        };
+        const denominators = subMongoFormulasAndDenominators.map(m => m.denominators).flat();
+        if (
+          node.op === '/' &&
+          typeof subMongoFormulasAndDenominators[1].mongoFormula !== 'number'
+        ) {
+          denominators.push(subMongoFormulasAndDenominators[1].mongoFormula);
+        }
+        return {
+          mongoFormula,
+          denominators,
         };
       }
-      return {
-        [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
-      };
+
     case 'SymbolNode':
       // For column names
-      return $$(node.name);
+      return { mongoFormula: $$(node.name), denominators: [] };
     case 'ConstantNode':
-      return node.value;
+      return { mongoFormula: node.value, denominators: [] };
     case 'ParenthesisNode':
       return buildMongoFormulaTree(node.content);
   }
@@ -1946,52 +1971,29 @@ export class Mongo36Translator extends BaseTranslator {
   }
 
   formula(step: Readonly<S.FormulaStep>): MongoStep {
-    const mongoFormulaTree: MongoStep | string | number = buildMongoFormulaTree(
+    const mongoFormulaTree = buildMongoFormulaTree(
       buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
     );
 
-    const denominators: MongoStep[] | string[] | number[] = [{}];
+    let newColumn = mongoFormulaTree.mongoFormula;
 
-    const iterate = (obj: MongoStep | string | number) => {
-      if (typeof obj === 'object') {
-        Object.keys(obj).forEach(key => {
-          // Add denominator only if it is a Column or a ParenthesisNode
-          if (key == '$divide' && typeof obj[key][1] != 'number') {
-            denominators.push(obj[key][1]);
-          }
-          if (typeof obj[key] === 'object') {
-            iterate(obj[key]);
-          }
-        });
-      }
-    };
-
-    // The first element was set for type reason
-    denominators.shift();
-
-    iterate(mongoFormulaTree);
-
-    if (denominators.length == 0) {
-      return {
-        $addFields: {
-          [step.new_column]: mongoFormulaTree,
-        },
-      };
-    } else {
-      const conditions = [];
-
-      for (const d in denominators) {
-        conditions.push({ $in: [denominators[d], [0, null]] });
-      }
-
-      return {
-        $addFields: {
-          // WARNING : if at least one denominator is zero or null, the result is null
-          // i.e : 1/0 + 1 = null
-          [step.new_column]: { $cond: [{ $or: conditions }, null, mongoFormulaTree] },
-        },
+    // If at least one denominator is zero or null, the result is null
+    // i.e : 1/0 + 1 = null
+    if (mongoFormulaTree.denominators.length > 0) {
+      newColumn = {
+        $cond: [
+          { $or: mongoFormulaTree.denominators.map(d => ({ $in: [d, [0, null]] })) },
+          null,
+          newColumn,
+        ],
       };
     }
+
+    return {
+      $addFields: {
+        [step.new_column]: newColumn,
+      },
+    };
   }
 
   // Relative dates are not supported until mongo 5+
@@ -2177,7 +2179,8 @@ export class Mongo36Translator extends BaseTranslator {
     variableDelimiters?: VariableDelimiters,
   ): MongoStep {
     const ifExpr: MongoStep = this.buildCondExpression(step.if, unsupportedOperatorsInConditions);
-    const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
+    const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters))
+      .mongoFormula;
     let elseExpr: MongoStep | string | number;
     if (typeof step.else === 'object') {
       elseExpr = this.transformIfThenElseStep(
@@ -2186,7 +2189,8 @@ export class Mongo36Translator extends BaseTranslator {
         variableDelimiters,
       );
     } else {
-      elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
+      elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters))
+        .mongoFormula;
     }
     return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
   }
