@@ -316,7 +316,12 @@ function transformTrim(step: Readonly<TrimStep>): MongoStep {
 
 export class Mongo40Translator extends Mongo36Translator {
   static label = 'Mongo 4.0';
+
+  protected convertToType(input: string | object, type: string): string | object {
+    return { $convert: { input: input, to: type } };
+  }
 }
+
 Object.assign(Mongo40Translator.prototype, {
   convert: transformConvert,
   todate: transformToDate,
