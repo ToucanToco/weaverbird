@@ -7,6 +7,10 @@
 - Rollup step no longer require one aggregation column (useful to create referentials) (by @CharlesRngrd)
 - Mongo: concatenate won't fail on non-string columns (by @CharlesRngrd)
 
+## Fixed
+
+- Mongo: dividing by a column with potentially null or zero values does not fail anymore (return null instead) by @CharlesRngrd
+
 ## [0.79.4] - 2021-12-20
 
 ### Fixed

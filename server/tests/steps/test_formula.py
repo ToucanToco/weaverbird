@@ -16,6 +16,7 @@ def sample_df() -> DataFrame:
             'col B': [2, 20],
             'col C': [3, 30],
             '[col D]': [4, 40],
+            'colE': [0, np.nan],
         }
     )
 
@@ -39,9 +40,9 @@ def test_bad_formula(sample_df: DataFrame, bad_expression):
         execute_formula(bad_step, sample_df)
 
 
-def test_formula_infinity(sample_df: DataFrame):
-    step = FormulaStep(name='formula', new_column='z', formula='`col B` / (colA - 1)')
+def test_formula_division_by_zero_o_null(sample_df: DataFrame):
+    step = FormulaStep(name='formula', new_column='z', formula='colA / colE')
     df_result = execute_formula(step, sample_df)
 
-    expected_result = sample_df.assign(z=[np.nan, 20.0 / 9])
+    expected_result = sample_df.assign(z=[np.nan, np.nan])
     assert_dataframes_equals(df_result, expected_result)
