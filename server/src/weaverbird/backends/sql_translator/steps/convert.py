@@ -25,7 +25,17 @@ def build_psql(retrieved_col_type, data_type, col):
     if retrieved_col_type == 'TEXT' and data_type == 'boolean':
         return f'CASE WHEN {col} IN ({PG_BOOLEAN_VALUES}) THEN CAST({col} AS {data_type}) ELSE FALSE END AS {col}'
     if retrieved_col_type == 'TEXT' and data_type == 'integer':
-        return f'CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, \'[^0-9.]*\', \'\'), \'.\', 1), \'\') AS {data_type}) AS {col}'
+        # To ensure we have a unified behavior between pandas, Snowflake & Postgres,
+        # additional logic is required to
+        # 1. replace any non-numeric valid string by ''
+        # 2. Keep the part between '.' (1 is equivalent to 0 in split part
+        # see https://docs.snowflake.com/en/sql-reference/functions/split_part.html#arguments)
+        # 3. Nullify the output if 1 or 2 results in empty strings i e non numeric value
+        # 4. Cast the resulting NULL or string representation of integer as Integer
+        return (
+            f'CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, \'[^0-9.]*\', \'\'), \'.\', 1), \'\') '
+            f'AS {data_type}) AS {col}'
+        )
     if retrieved_col_type == 'FLOAT' and data_type == 'integer':
         return f'TRUNC({col}) AS {col}'
 

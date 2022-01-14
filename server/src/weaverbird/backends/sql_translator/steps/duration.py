@@ -44,6 +44,9 @@ def translate_duration(
         interval_date = (
             f" EXTRACT({step.duration_in} FROM ({step.end_date_column}-{step.start_date_column}))"
         )
+    # Unlike mentionned in Snowflake's documentation using '-' between timestamps is not working
+    # https://snowflakecommunity.force.com/s/question/0D50Z00008EL41GSAT/sql-question-to-subtract-timestamps
+    # so we must do a different case for Snowflake duration's computation
     else:
         interval_date = (
             f" DATEDIFF({step.duration_in},"
