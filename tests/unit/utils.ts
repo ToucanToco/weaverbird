@@ -136,6 +136,7 @@ export class BasicStepFormTestRunner {
       wrapper.setData(data);
     }
     wrapper.find('.widget-form-action__button--validate').trigger('click');
+    await this.vue.nextTick();
     const errors = wrapper.vm.$data.errors
       .map((err: ValidationError) => ({ keyword: err.keyword, dataPath: err.dataPath }))
       .sort((err1: ValidationError, err2: ValidationError) =>

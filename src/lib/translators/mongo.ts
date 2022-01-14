@@ -8,6 +8,7 @@ import { $$, combinations, escapeForUseInRegExp } from '@/lib/helpers';
 import { OutputStep, StepMatcher } from '@/lib/matcher';
 import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from '@/lib/translators/base';
+import { transformDateExtractFactory } from '@/lib/translators/mongo-dates';
 import { VariableDelimiters } from '@/lib/variables';
 
 type PropMap<T> = { [prop: string]: T };
@@ -23,32 +24,12 @@ type ComboOperator = 'and' | 'or';
 
 export type DateGranularity = 'day' | 'month' | 'year';
 
-type BasicDateOperationMap = {
-  [OP in S.BasicDatePart]: string;
-};
-
 type DurationMultiplierMap = {
   [D in S.ComputeDurationStep['durationIn']]: number;
 };
 
 type FilterComboAndMongo = {
   $and: MongoStep[];
-};
-
-const DATE_EXTRACT_MAP: BasicDateOperationMap = {
-  year: '$year',
-  month: '$month',
-  day: '$dayOfMonth',
-  week: '$week',
-  dayOfYear: '$dayOfYear',
-  dayOfWeek: '$dayOfWeek',
-  isoYear: '$isoWeekYear',
-  isoWeek: '$isoWeek',
-  isoDayOfWeek: '$isoDayOfWeek',
-  hour: '$hour',
-  minutes: '$minute',
-  seconds: '$second',
-  milliseconds: '$millisecond',
 };
 
 // A mapping of multiplier to apply to convert milliseconds in days, hours, minutes or seconds
@@ -259,87 +240,6 @@ function buildFormulaTree(
     }
     return node;
   });
-}
-
-function buildCondExpression(
-  cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
-  unsupportedOperators: S.FilterSimpleCondition['operator'][],
-): MongoStep {
-  const operatorMapping = {
-    eq: '$eq',
-    ne: '$ne',
-    lt: '$lt',
-    le: '$lte',
-    gt: '$gt',
-    ge: '$gte',
-    in: '$in',
-    nin: '$in',
-    isnull: '$eq',
-    notnull: '$ne',
-    matches: '$regexMatch',
-    notmatches: '$regexMatch',
-    from: '$gte',
-    until: '$lte',
-  };
-  if (S.isFilterComboAnd(cond)) {
-    if (cond.and.length == 1) {
-      return buildCondExpression(cond.and[0], unsupportedOperators);
-    } else {
-      // if cond.and.length > 1 we need to bind conditions in a $and operator,
-      // as we need a unique document to be used as the first argument of the
-      // $cond operator
-      return { $and: cond.and.map(elem => buildCondExpression(elem, unsupportedOperators)) };
-    }
-  }
-  if (S.isFilterComboOr(cond)) {
-    return { $or: cond.or.map(elem => buildCondExpression(elem, unsupportedOperators)) };
-  }
-
-  if (unsupportedOperators.includes(cond.operator)) {
-    throw new Error(`Unsupported operator ${cond.operator} in conditions`);
-  }
-
-  // $regexMatch arguments are provided differently from the others operators
-  // https://docs.mongodb.com/manual/reference/operator/aggregation/regexMatch/
-  if (cond.operator === 'matches' || cond.operator === 'notmatches') {
-    let condExpression: MongoStep = {
-      $regexMatch: {
-        input: $$(cond.column),
-        regex: cond.value,
-      },
-    };
-    // There is not 'regexNotMatch' operator
-    if (cond.operator === 'notmatches') {
-      condExpression = { $not: condExpression };
-    }
-    return condExpression;
-  } else {
-    if (cond.operator === 'notnull' || cond.operator === 'isnull') {
-      const condExpression: MongoStep = {
-        [operatorMapping[cond.operator]]: [$$(cond.column), null],
-      };
-      return condExpression;
-    } else {
-      let condExpression: MongoStep = {
-        [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
-      };
-      // There is not 'not in' operator
-      if (cond.operator === 'nin') {
-        condExpression = { $not: condExpression };
-      }
-
-      // until operator should include the whole selected day
-      if (cond.operator === 'until') {
-        if (cond.value instanceof Date) {
-          condExpression[operatorMapping[cond.operator]][1] = new Date(
-            cond.value.setUTCHours(23, 59, 59, 999),
-          );
-        }
-      }
-
-      return condExpression;
-    }
-  }
 }
 
 /**
@@ -704,200 +604,7 @@ function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
 
 /** transform a 'dateextracgt' step into corresponding mongo steps */
 function transformDateExtract(step: Readonly<S.DateExtractStep>): MongoStep {
-  let dateInfo: S.DateInfo[] = [];
-  let newColumns: string[] = [];
-  const addFields: MongoStep = {};
-
-  // For retrocompatibility
-  if (step.operation) {
-    dateInfo = step.operation ? [step.operation] : step.dateInfo;
-    newColumns = [`${step.new_column_name ?? step.column + '_' + step.operation}`];
-  } else {
-    dateInfo = [...step.dateInfo];
-    newColumns = [...step.newColumns];
-  }
-
-  for (let i = 0; i < dateInfo.length; i++) {
-    const d = dateInfo[i];
-    if (d === 'quarter') {
-      addFields[newColumns[i]] = {
-        $switch: {
-          branches: [
-            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 1 },
-            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 2 },
-            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 3 },
-          ],
-          default: 4,
-        },
-      };
-    } else if (d === 'firstDayOfYear') {
-      addFields[newColumns[i]] = {
-        $dateFromParts: { year: { $year: $$(step.column) }, month: 1, day: 1 },
-      };
-    } else if (d === 'firstDayOfMonth') {
-      addFields[newColumns[i]] = {
-        $dateFromParts: {
-          year: { $year: $$(step.column) },
-          month: { $month: $$(step.column) },
-          day: 1,
-        },
-      };
-    } else if (d === 'firstDayOfWeek') {
-      addFields[newColumns[i]] = {
-        // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-        $subtract: [
-          $$(step.column),
-          {
-            $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
-          },
-        ],
-      };
-    } else if (d === 'firstDayOfQuarter') {
-      addFields[newColumns[i]] = {
-        $dateFromParts: {
-          year: { $year: $$(step.column) },
-          month: {
-            $switch: {
-              branches: [
-                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 1 },
-                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 4 },
-                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 7 },
-              ],
-              default: 10,
-            },
-          },
-          day: 1,
-        },
-      };
-    } else if (d === 'firstDayOfIsoWeek') {
-      addFields[newColumns[i]] = {
-        // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-        $subtract: [
-          $$(step.column),
-          {
-            $multiply: [
-              { $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] },
-              24 * 60 * 60 * 1000,
-            ],
-          },
-        ],
-      };
-    } else if (d === 'previousDay') {
-      // We subtract to the target date 1 day in milliseconds
-      addFields[newColumns[i]] = { $subtract: [$$(step.column), 24 * 60 * 60 * 1000] };
-    } else if (d === 'firstDayOfPreviousYear') {
-      addFields[newColumns[i]] = {
-        $dateFromParts: {
-          year: { $subtract: [{ $year: $$(step.column) }, 1] },
-          month: 1,
-          day: 1,
-        },
-      };
-    } else if (d === 'firstDayOfPreviousMonth') {
-      addFields[newColumns[i]] = {
-        $dateFromParts: {
-          year: {
-            $cond: [
-              { $eq: [{ $month: $$(step.column) }, 1] },
-              { $subtract: [{ $year: $$(step.column) }, 1] },
-              { $year: $$(step.column) },
-            ],
-          },
-          month: {
-            $cond: [
-              { $eq: [{ $month: $$(step.column) }, 1] },
-              12,
-              { $subtract: [{ $month: $$(step.column) }, 1] },
-            ],
-          },
-          day: 1,
-        },
-      };
-    } else if (d === 'firstDayOfPreviousWeek') {
-      addFields[newColumns[i]] = {
-        // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-        $subtract: [
-          { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
-          {
-            $multiply: [{ $subtract: [{ $dayOfWeek: $$(step.column) }, 1] }, 24 * 60 * 60 * 1000],
-          },
-        ],
-      };
-    } else if (d === 'firstDayOfPreviousQuarter') {
-      addFields[newColumns[i]] = {
-        $dateFromParts: {
-          year: {
-            $cond: [
-              { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] },
-              { $subtract: [{ $year: $$(step.column) }, 1] },
-              { $year: $$(step.column) },
-            ],
-          },
-          month: {
-            $switch: {
-              branches: [
-                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 10 },
-                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 1 },
-                { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 4 },
-              ],
-              default: 7,
-            },
-          },
-          day: 1,
-        },
-      };
-    } else if (d === 'firstDayOfPreviousIsoWeek') {
-      addFields[newColumns[i]] = {
-        // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-        $subtract: [
-          { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
-          {
-            $multiply: [
-              { $subtract: [{ $isoDayOfWeek: $$(step.column) }, 1] },
-              24 * 60 * 60 * 1000,
-            ],
-          },
-        ],
-      };
-    } else if (d === 'previousYear') {
-      addFields[newColumns[i]] = { $subtract: [{ $year: $$(step.column) }, 1] };
-    } else if (d === 'previousMonth') {
-      addFields[newColumns[i]] = {
-        $cond: [
-          { $eq: [{ $month: $$(step.column) }, 1] },
-          12,
-          { $subtract: [{ $month: $$(step.column) }, 1] },
-        ],
-      };
-    } else if (d === 'previousWeek') {
-      // We subtract to the target date 7 days in milliseconds
-      addFields[newColumns[i]] = {
-        $week: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
-      };
-    } else if (d === 'previousQuarter') {
-      addFields[newColumns[i]] = {
-        $switch: {
-          branches: [
-            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 1] }, then: 4 },
-            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 2] }, then: 1 },
-            { case: { $lte: [{ $divide: [{ $month: $$(step.column) }, 3] }, 3] }, then: 2 },
-          ],
-          default: 3,
-        },
-      };
-    } else if (d === 'previousIsoWeek') {
-      // We subtract to the target date 7 days in milliseconds
-      addFields[newColumns[i]] = {
-        $isoWeek: { $subtract: [$$(step.column), 7 * 24 * 60 * 60 * 1000] },
-      };
-    } else {
-      //
-      addFields[newColumns[i]] = {
-        [`${DATE_EXTRACT_MAP[d as S.BasicDatePart]}`]: $$(step.column),
-      };
-    }
-  }
-  return { $addFields: addFields };
+  return transformDateExtractFactory()(step);
 }
 
 /** transform an 'evolution' step into corresponding mongo steps */
@@ -1262,27 +969,6 @@ function transformFromDate(step: Readonly<S.FromDateStep>): MongoStep {
         },
       ];
   }
-}
-
-/** transform an 'ifthenelse' step into corresponding mongo step */
-function transformIfThenElseStep(
-  step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
-  unsupportedOperatorsInConditions: S.FilterSimpleCondition['operator'][],
-  variableDelimiters?: VariableDelimiters,
-): MongoStep {
-  const ifExpr: MongoStep = buildCondExpression(step.if, unsupportedOperatorsInConditions);
-  const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
-  let elseExpr: MongoStep | string | number;
-  if (typeof step.else === 'object') {
-    elseExpr = transformIfThenElseStep(
-      step.else,
-      unsupportedOperatorsInConditions,
-      variableDelimiters,
-    );
-  } else {
-    elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
-  }
-  return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
 }
 
 /** transform a 'movingaverage' step into corresponding mongo steps */
@@ -2077,7 +1763,9 @@ function transformWaterfall(step: Readonly<S.WaterfallStep>): MongoStep[] {
       { $sort: { _vqbOrder: 1 } },
       {
         $group: {
-          _id: { ...Object.fromEntries([...groupby, ...parents].map(col => [col, `$_id.${col}`])) },
+          _id: {
+            ...Object.fromEntries([...groupby, ...parents].map(col => [col, `$_id.${col}`])),
+          },
           _vqbValuesArray: { $push: $$(step.valueColumn) },
         },
       },
@@ -2277,6 +1965,12 @@ export class Mongo36Translator extends BaseTranslator {
     return value;
   }
 
+  // Truncate dates are not supported until mongo 5+
+  protected truncateDateToDay(dateExpr: string | object): string | object {
+    console.warn('This version of Mongo does not support truncating dates');
+    return dateExpr;
+  }
+
   /**
    * Recursively parse a Condition and turn it into the argument of a $match aggregation step
    *
@@ -2321,28 +2015,144 @@ export class Mongo36Translator extends BaseTranslator {
       return { [cond.column]: { [operatorMapping[cond.operator]]: null } };
     }
 
-    // until operator should include the whole selected day
-    if (cond.operator === 'until') {
-      if (cond.value instanceof Date) {
-        const endOfDay = new Date(cond.value.setUTCHours(23, 59, 59, 999));
-        return { [cond.column]: { [operatorMapping[cond.operator]]: endOfDay } };
-      }
-    }
-
     // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
     // They need to be used with $expr
-    if (isRelativeDate(cond.value)) {
+    if (cond.operator === 'from' || cond.operator === 'until') {
       return {
         $expr: {
           [operatorMapping[cond.operator]]: [
-            $$(cond.column),
-            this.translateRelativeDate(cond.value),
+            // from/until comparisons must include the selected day in full. For this we needd to:
+            // - remove any hour info from the compared column
+            this.truncateDateToDay($$(cond.column)),
+            // - remove any hour info from the value we want to compare to
+            this.truncateDateToDay(
+              isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+            ),
           ],
         },
       };
     }
 
     return { [cond.column]: { [operatorMapping[cond.operator]]: cond.value } };
+  }
+
+  buildCondExpression(
+    cond: S.FilterSimpleCondition | S.FilterComboAnd | S.FilterComboOr,
+    unsupportedOperators: S.FilterSimpleCondition['operator'][],
+  ): MongoStep {
+    const operatorMapping = {
+      eq: '$eq',
+      ne: '$ne',
+      lt: '$lt',
+      le: '$lte',
+      gt: '$gt',
+      ge: '$gte',
+      in: '$in',
+      nin: '$in',
+      isnull: '$eq',
+      notnull: '$ne',
+      matches: '$regexMatch',
+      notmatches: '$regexMatch',
+      from: '$gte',
+      until: '$lte',
+    };
+    if (S.isFilterComboAnd(cond)) {
+      if (cond.and.length == 1) {
+        return this.buildCondExpression(cond.and[0], unsupportedOperators);
+      } else {
+        // if cond.and.length > 1 we need to bind conditions in a $and operator,
+        // as we need a unique document to be used as the first argument of the
+        // $cond operator
+        return {
+          $and: cond.and.map(elem => this.buildCondExpression(elem, unsupportedOperators)),
+        };
+      }
+    }
+    if (S.isFilterComboOr(cond)) {
+      return { $or: cond.or.map(elem => this.buildCondExpression(elem, unsupportedOperators)) };
+    }
+
+    if (unsupportedOperators.includes(cond.operator)) {
+      throw new Error(`Unsupported operator ${cond.operator} in conditions`);
+    }
+
+    // $regexMatch arguments are provided differently from the others operators
+    // https://docs.mongodb.com/manual/reference/operator/aggregation/regexMatch/
+    if (cond.operator === 'matches' || cond.operator === 'notmatches') {
+      let condExpression: MongoStep = {
+        $regexMatch: {
+          input: $$(cond.column),
+          regex: cond.value,
+        },
+      };
+      // There is not 'regexNotMatch' operator
+      if (cond.operator === 'notmatches') {
+        condExpression = { $not: condExpression };
+      }
+      return condExpression;
+    } else {
+      if (cond.operator === 'notnull' || cond.operator === 'isnull') {
+        const condExpression: MongoStep = {
+          [operatorMapping[cond.operator]]: [$$(cond.column), null],
+        };
+        return condExpression;
+      } else {
+        let condExpression: MongoStep = {
+          [operatorMapping[cond.operator]]: [$$(cond.column), cond.value],
+        };
+        // There is not 'not in' operator
+        if (cond.operator === 'nin') {
+          condExpression = { $not: condExpression };
+        }
+
+        // until operator should include the whole selected day
+        if (cond.operator === 'until') {
+          if (cond.value instanceof Date) {
+            condExpression[operatorMapping[cond.operator]][1] = new Date(
+              cond.value.setUTCHours(23, 59, 59, 999),
+            );
+          }
+        }
+
+        // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
+        // They need to be used with $expr
+        if (cond.operator === 'from' || cond.operator === 'until') {
+          return {
+            $expr: {
+              [operatorMapping[cond.operator]]: [
+                this.truncateDateToDay($$(cond.column)),
+                this.truncateDateToDay(
+                  isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+                ),
+              ],
+            },
+          };
+        }
+
+        return condExpression;
+      }
+    }
+  }
+
+  /** transform an 'ifthenelse' step into corresponding mongo step */
+  transformIfThenElseStep(
+    step: Readonly<Omit<S.IfThenElseStep, 'name' | 'newColumn'>>,
+    unsupportedOperatorsInConditions: S.FilterSimpleCondition['operator'][],
+    variableDelimiters?: VariableDelimiters,
+  ): MongoStep {
+    const ifExpr: MongoStep = this.buildCondExpression(step.if, unsupportedOperatorsInConditions);
+    const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
+    let elseExpr: MongoStep | string | number;
+    if (typeof step.else === 'object') {
+      elseExpr = this.transformIfThenElseStep(
+        step.else,
+        unsupportedOperatorsInConditions,
+        variableDelimiters,
+      );
+    } else {
+      elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
+    }
+    return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
   }
 
   /**
@@ -2362,7 +2172,7 @@ export class Mongo36Translator extends BaseTranslator {
   ifthenelse(step: Readonly<S.IfThenElseStep>): MongoStep {
     return {
       $addFields: {
-        [step.newColumn]: transformIfThenElseStep(
+        [step.newColumn]: this.transformIfThenElseStep(
           _.omit(step, ['name', 'newColumn']),
           this.unsupportedOperatorsInConditions,
           BaseTranslator.variableDelimiters,

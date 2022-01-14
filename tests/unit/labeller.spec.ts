@@ -329,18 +329,18 @@ describe('Labeller', () => {
           operator: 'from',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" from 1/1/2021');
+      expect(hrl(step)).toEqual('Keep rows where "column1" starting in/on 1/1/2021');
     });
     it('generates label for relative date', () => {
       const step: S.FilterStep = {
         name: 'filter',
         condition: {
           column: 'column1',
-          value: { quantity: -1, duration: 'year' },
+          value: { quantity: -1, duration: 'year', date: '{{today}}', operator: 'until' },
           operator: 'from',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" from 1 years ago');
+      expect(hrl(step)).toEqual('Keep rows where "column1" starting in/on 1 years until {{today}}');
     });
   });
 
@@ -354,18 +354,18 @@ describe('Labeller', () => {
           operator: 'until',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" until 1/1/2021');
+      expect(hrl(step)).toEqual('Keep rows where "column1" ending in/on 1/1/2021');
     });
     it('generates label for relative date', () => {
       const step: S.FilterStep = {
         name: 'filter',
         condition: {
           column: 'column1',
-          value: { quantity: -1, duration: 'year' },
+          value: { quantity: -1, duration: 'year', date: '{{today}}', operator: 'until' },
           operator: 'until',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" until 1 years ago');
+      expect(hrl(step)).toEqual('Keep rows where "column1" ending in/on 1 years until {{today}}');
     });
     it('generates label for variable', () => {
       const step: S.FilterStep = {
@@ -376,7 +376,7 @@ describe('Labeller', () => {
           operator: 'until',
         },
       };
-      expect(hrl(step)).toEqual('Keep rows where "column1" until <%= date.start %>');
+      expect(hrl(step)).toEqual('Keep rows where "column1" ending in/on <%= date.start %>');
     });
   });
 

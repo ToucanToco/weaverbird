@@ -145,7 +145,7 @@ stories.add('custom (fixed date range)', () => ({
   },
 }));
 
-stories.add('custom (relative date range)', () => ({
+stories.add('custom (relative date)', () => ({
   template: `
     <div>
       <DateRangeInput

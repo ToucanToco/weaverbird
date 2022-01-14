@@ -253,8 +253,8 @@ export default class StatisticsStepForm extends BaseStepForm<StatisticsStep> {
   toogleQuantile(quantile: Quantile) {
     // parse quantile
     quantile = {
-      nth: parseInt(quantile.nth),
-      order: parseInt(quantile.order),
+      nth: quantile.nth,
+      order: quantile.order,
       label: quantile.label,
     };
     if (this.isQuantileChecked(quantile)) {

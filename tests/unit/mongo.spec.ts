@@ -577,11 +577,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       { name: 'filter', condition: { column: 'NotNull', value: 'dummy', operator: 'notnull' } },
       {
         name: 'filter',
-        condition: { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
-      },
-      {
-        name: 'filter',
-        condition: { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+        condition: {
+          and: [
+            { column: 'DateFrom', value: new Date('2021-11-24'), operator: 'from' },
+            { column: 'DateUntil', value: new Date('2021-11-24'), operator: 'until' },
+          ],
+        },
       },
     ];
     const querySteps = translator.translate(pipeline);
@@ -602,8 +603,52 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           Code: { $nin: [0, 42] },
           IsNull: { $eq: null },
           NotNull: { $ne: null },
-          DateFrom: { $gte: new Date('2021-11-24T00:00:00Z') },
-          DateUntil: { $lte: new Date('2021-11-24T23:59:59.999Z') },
+          $and: [
+            {
+              $expr: {
+                $gte: [
+                  version < '5'
+                    ? '$DateFrom'
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: '$DateFrom',
+                        },
+                      },
+                  version < '5'
+                    ? new Date('2021-11-24T00:00:00.000Z')
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: new Date('2021-11-24T00:00:00.000Z'),
+                        },
+                      },
+                ],
+              },
+            },
+            {
+              $expr: {
+                $lte: [
+                  version < '5'
+                    ? '$DateUntil'
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: '$DateUntil',
+                        },
+                      },
+                  version < '5'
+                    ? new Date('2021-11-24T00:00:00.000Z')
+                    : {
+                        $dateTrunc: {
+                          unit: 'day',
+                          date: new Date('2021-11-24T00:00:00.000Z'),
+                        },
+                      },
+                ],
+              },
+            },
+          ],
         },
       },
       { $project: { _id: 0 } },
@@ -799,6 +844,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             value: {
               duration: 'week',
               quantity: -1,
+              operator: 'from',
+              date: '{{today}}',
             },
           },
         },
@@ -810,17 +857,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             domain: 'test_date',
             $expr: {
               $gte: [
-                '$date',
                 {
-                  $dateAdd: {
-                    startDate: {
-                      $dateTrunc: {
-                        date: '$$NOW',
-                        unit: 'day',
+                  $dateTrunc: {
+                    date: '$date',
+                    unit: 'day',
+                  },
+                },
+                {
+                  $dateTrunc: {
+                    date: {
+                      $dateAdd: {
+                        amount: 1,
+                        startDate: {
+                          $dateTrunc: {
+                            date: '{{today}}',
+                            unit: 'day',
+                          },
+                        },
+                        unit: 'week',
                       },
                     },
-                    unit: 'week',
-                    amount: -1,
+                    unit: 'day',
                   },
                 },
               ],
@@ -840,6 +897,8 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             value: {
               duration: 'month',
               quantity: 3,
+              operator: 'until',
+              date: '{{last_week}}',
             },
           },
         },
@@ -851,17 +910,27 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             domain: 'test_date',
             $expr: {
               $lte: [
-                '$date',
                 {
-                  $dateAdd: {
-                    startDate: {
-                      $dateTrunc: {
-                        date: '$$NOW',
-                        unit: 'day',
+                  $dateTrunc: {
+                    date: '$date',
+                    unit: 'day',
+                  },
+                },
+                {
+                  $dateTrunc: {
+                    date: {
+                      $dateAdd: {
+                        amount: -3,
+                        startDate: {
+                          $dateTrunc: {
+                            date: '{{last_week}}',
+                            unit: 'day',
+                          },
+                        },
+                        unit: 'month',
                       },
                     },
-                    unit: 'month',
-                    amount: 3,
+                    unit: 'day',
                   },
                 },
               ],
@@ -2750,161 +2819,217 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       },
     ];
     const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      {
-        $addFields: {
+    const expectedResult = {
+      year: { $year: '$foo' },
+      month: { $month: '$foo' },
+      day: { $dayOfMonth: '$foo' },
+      week: { $week: '$foo' },
+      quarter: {
+        $switch: {
+          branches: [
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 1 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 2 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 3 },
+          ],
+          default: 4,
+        },
+      },
+      dayOfWeek: { $dayOfWeek: '$foo' },
+      dayOfYear: { $dayOfYear: '$foo' },
+      isoYear: { $isoWeekYear: '$foo' },
+      isoWeek: { $isoWeek: '$foo' },
+      isoDayOfWeek: { $isoDayOfWeek: '$foo' },
+      firstDayOfYear: { $dateFromParts: { year: { $year: '$foo' }, month: 1, day: 1 } },
+      firstDayOfMonth: {
+        $dateFromParts: {
           year: { $year: '$foo' },
           month: { $month: '$foo' },
-          day: { $dayOfMonth: '$foo' },
-          week: { $week: '$foo' },
-          quarter: {
+          day: 1,
+        },
+      },
+      firstDayOfWeek: {
+        // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
+        $subtract: [
+          '$foo',
+          {
+            $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      firstDayOfQuarter: {
+        $dateFromParts: {
+          year: { $year: '$foo' },
+          month: {
             $switch: {
               branches: [
                 { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 1 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 2 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 3 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 4 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 7 },
               ],
-              default: 4,
+              default: 10,
             },
           },
-          dayOfWeek: { $dayOfWeek: '$foo' },
-          dayOfYear: { $dayOfYear: '$foo' },
-          isoYear: { $isoWeekYear: '$foo' },
-          isoWeek: { $isoWeek: '$foo' },
-          isoDayOfWeek: { $isoDayOfWeek: '$foo' },
-          firstDayOfYear: { $dateFromParts: { year: { $year: '$foo' }, month: 1, day: 1 } },
-          firstDayOfMonth: {
-            $dateFromParts: {
-              year: { $year: '$foo' },
-              month: { $month: '$foo' },
-              day: 1,
-            },
-          },
-          firstDayOfWeek: {
-            // We subtract to the target date a number of days corresponding to (dayOfWeek - 1)
-            $subtract: [
-              '$foo',
-              {
-                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          firstDayOfQuarter: {
-            $dateFromParts: {
-              year: { $year: '$foo' },
-              month: {
-                $switch: {
-                  branches: [
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 1 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 4 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 7 },
-                  ],
-                  default: 10,
-                },
-              },
-              day: 1,
-            },
-          },
-          firstDayOfIsoWeek: {
-            // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
-            $subtract: [
-              '$foo',
-              {
-                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          previousDay: { $subtract: ['$foo', 24 * 60 * 60 * 1000] },
-          firstDayOfPreviousYear: {
-            $dateFromParts: {
-              year: { $subtract: [{ $year: '$foo' }, 1] },
-              month: 1,
-              day: 1,
-            },
-          },
-          firstDayOfPreviousMonth: {
-            $dateFromParts: {
-              year: {
-                $cond: [
-                  { $eq: [{ $month: '$foo' }, 1] },
-                  { $subtract: [{ $year: '$foo' }, 1] },
-                  { $year: '$foo' },
-                ],
-              },
-              month: {
-                $cond: [
-                  { $eq: [{ $month: '$foo' }, 1] },
-                  12,
-                  { $subtract: [{ $month: '$foo' }, 1] },
-                ],
-              },
-              day: 1,
-            },
-          },
-          firstDayOfPreviousWeek: {
-            $subtract: [
-              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-              {
-                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          firstDayOfPreviousQuarter: {
-            $dateFromParts: {
-              year: {
-                $cond: [
-                  { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] },
-                  { $subtract: [{ $year: '$foo' }, 1] },
-                  { $year: '$foo' },
-                ],
-              },
-              month: {
-                $switch: {
-                  branches: [
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 10 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
-                    { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 4 },
-                  ],
-                  default: 7,
-                },
-              },
-              day: 1,
-            },
-          },
-          firstDayOfPreviousIsoWeek: {
-            $subtract: [
-              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-              {
-                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
-              },
-            ],
-          },
-          previousYear: { $subtract: [{ $year: '$foo' }, 1] },
-          previousMonth: {
-            $cond: [{ $eq: [{ $month: '$foo' }, 1] }, 12, { $subtract: [{ $month: '$foo' }, 1] }],
-          },
-          previousWeek: {
-            $week: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-          },
-          previousQuarter: {
-            $switch: {
-              branches: [
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 4 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
-                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 2 },
-              ],
-              default: 3,
-            },
-          },
-          previousIsoWeek: {
-            $isoWeek: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
-          },
-          hour: { $hour: '$foo' },
-          minutes: { $minute: '$foo' },
-          seconds: { $second: '$foo' },
-          milliseconds: { $millisecond: '$foo' },
+          day: 1,
         },
       },
+      firstDayOfIsoWeek: {
+        // We subtract to the target date a number of days corresponding to (isoDayOfWeek - 1)
+        $subtract: [
+          '$foo',
+          {
+            $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      previousDay: { $subtract: ['$foo', 24 * 60 * 60 * 1000] },
+      firstDayOfPreviousYear: {
+        $dateFromParts: {
+          year: { $subtract: [{ $year: '$foo' }, 1] },
+          month: 1,
+          day: 1,
+        },
+      },
+      firstDayOfPreviousMonth: {
+        $dateFromParts: {
+          year: {
+            $cond: [
+              { $eq: [{ $month: '$foo' }, 1] },
+              { $subtract: [{ $year: '$foo' }, 1] },
+              { $year: '$foo' },
+            ],
+          },
+          month: {
+            $cond: [{ $eq: [{ $month: '$foo' }, 1] }, 12, { $subtract: [{ $month: '$foo' }, 1] }],
+          },
+          day: 1,
+        },
+      },
+      firstDayOfPreviousWeek: {
+        $subtract: [
+          { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+          {
+            $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      firstDayOfPreviousQuarter: {
+        $dateFromParts: {
+          year: {
+            $cond: [
+              { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] },
+              { $subtract: [{ $year: '$foo' }, 1] },
+              { $year: '$foo' },
+            ],
+          },
+          month: {
+            $switch: {
+              branches: [
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 10 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
+                { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 4 },
+              ],
+              default: 7,
+            },
+          },
+          day: 1,
+        },
+      },
+      firstDayOfPreviousIsoWeek: {
+        $subtract: [
+          { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+          {
+            $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+          },
+        ],
+      },
+      previousYear: { $subtract: [{ $year: '$foo' }, 1] },
+      previousMonth: {
+        $cond: [{ $eq: [{ $month: '$foo' }, 1] }, 12, { $subtract: [{ $month: '$foo' }, 1] }],
+      },
+      previousWeek: {
+        $week: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+      },
+      previousQuarter: {
+        $switch: {
+          branches: [
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 1] }, then: 4 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 2] }, then: 1 },
+            { case: { $lte: [{ $divide: [{ $month: '$foo' }, 3] }, 3] }, then: 2 },
+          ],
+          default: 3,
+        },
+      },
+      previousIsoWeek: {
+        $isoWeek: { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+      },
+      hour: { $hour: '$foo' },
+      minutes: { $minute: '$foo' },
+      seconds: { $second: '$foo' },
+      milliseconds: { $millisecond: '$foo' },
+    };
+    const expectedMongo5Result = {
+      ...expectedResult,
+      firstDayOfIsoWeek: {
+        $dateTrunc: {
+          date: {
+            $subtract: [
+              '$foo',
+              {
+                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+          unit: 'day',
+        },
+      },
+      firstDayOfWeek: {
+        $dateTrunc: {
+          unit: 'day',
+          date: {
+            $subtract: [
+              '$foo',
+              {
+                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+        },
+      },
+      previousDay: {
+        $dateTrunc: {
+          unit: 'day',
+          date: { $subtract: ['$foo', 24 * 60 * 60 * 1000] },
+        },
+      },
+      firstDayOfPreviousWeek: {
+        $dateTrunc: {
+          unit: 'day',
+          date: {
+            $subtract: [
+              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+              {
+                $multiply: [{ $subtract: [{ $dayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+        },
+      },
+      firstDayOfPreviousIsoWeek: {
+        $dateTrunc: {
+          unit: 'day',
+          date: {
+            $subtract: [
+              { $subtract: ['$foo', 7 * 24 * 60 * 60 * 1000] },
+              {
+                $multiply: [{ $subtract: [{ $isoDayOfWeek: '$foo' }, 1] }, 24 * 60 * 60 * 1000],
+              },
+            ],
+          },
+        },
+      },
+    };
+    expect(querySteps).toEqual([
+      { $addFields: version >= '5' ? expectedMongo5Result : expectedResult },
       { $project: { _id: 0 } },
     ]);
   });
@@ -3315,6 +3440,98 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                 parent: '$_id.country',
                 level: 'city',
                 value1: 1,
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbRollupLevels: { $concatArrays: ['$level_0', '$level_1', '$level_2'] },
+        },
+      },
+      {
+        $unwind: '$_vqbRollupLevels',
+      },
+      {
+        $replaceRoot: { newRoot: '$_vqbRollupLevels' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
+  it('can translate rollup steps without aggregation', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['continent', 'country', 'city'],
+        aggregations: [],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          level_0: [
+            {
+              $group: {
+                _id: {
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                continent: '$_id.continent',
+                label: '$_id.continent',
+                level: 'continent',
+              },
+            },
+          ],
+          level_1: [
+            {
+              $group: {
+                _id: {
+                  country: '$country',
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.country',
+                parent: '$_id.continent',
+                level: 'country',
+              },
+            },
+          ],
+          level_2: [
+            {
+              $group: {
+                _id: {
+                  city: '$city',
+                  country: '$country',
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.city',
+                parent: '$_id.country',
+                level: 'city',
               },
             },
           ],
@@ -4079,8 +4296,48 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             $cond: {
               if: {
                 $and: [
-                  { $gte: ['$DATE_FROM', new Date('2021-08-08')] },
-                  { $lte: ['$DATE_UNTIL', new Date('2021-11-24T23:59:59.999Z')] },
+                  {
+                    $expr: {
+                      $gte:
+                        version >= '5'
+                          ? [
+                              {
+                                $dateTrunc: {
+                                  date: '$DATE_FROM',
+                                  unit: 'day',
+                                },
+                              },
+                              {
+                                $dateTrunc: {
+                                  date: new Date('2021-08-08T00:00:00.000Z'),
+                                  unit: 'day',
+                                },
+                              },
+                            ]
+                          : ['$DATE_FROM', new Date('2021-08-08T00:00:00.000Z')],
+                    },
+                  },
+                  {
+                    $expr: {
+                      $lte:
+                        version >= '5'
+                          ? [
+                              {
+                                $dateTrunc: {
+                                  date: '$DATE_UNTIL',
+                                  unit: 'day',
+                                },
+                              },
+                              {
+                                $dateTrunc: {
+                                  date: new Date('2021-11-24T23:59:59.999Z'),
+                                  unit: 'day',
+                                },
+                              },
+                            ]
+                          : ['$DATE_UNTIL', new Date('2021-11-24T23:59:59.999Z')],
+                    },
+                  },
                 ],
               },
               then: 'True',

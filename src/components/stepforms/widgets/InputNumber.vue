@@ -96,7 +96,7 @@ export default class InputNumberWidget extends Mixins(FormWidget) {
   }
 
   updateValue(newValue: string) {
-    this.$emit('input', newValue);
+    this.$emit('input', Number(newValue));
   }
 }
 </script>

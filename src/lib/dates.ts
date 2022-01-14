@@ -1,5 +1,4 @@
 import _has from 'lodash/has';
-import _pick from 'lodash/pick';
 import { DateTime } from 'luxon';
 
 import t, { DEFAULT_LOCALE, LocaleIdentifier } from '@/lib/internationalization';
@@ -23,20 +22,6 @@ export type DurationOption = {
   value: Duration;
 };
 
-export type RelativeDate = {
-  quantity: number; // can be negative or positive
-  duration: Duration;
-};
-
-export function isRelativeDate(val: any): val is RelativeDate {
-  return (
-    val &&
-    typeof val == 'object' &&
-    typeof val.quantity == 'number' &&
-    typeof val.duration == 'string'
-  );
-}
-
 /**
  * With:
  * - "date" a variable that resolve to a date, NOT A DATETIME, meaning only year, month & day
@@ -53,23 +38,23 @@ export function isRelativeDate(val: any): val is RelativeDate {
  * However, only two of them have been implemented yet. We may or may not tweak those two or even
  * implement the four of them after getting more user feedback regarding the relevance of current ones.
  */
-export const RELATIVE_DATE_RANGE_OPERATORS = {
+export const RELATIVE_DATE_OPERATORS = {
   until: { label: 'until', sign: -1 },
   from: { label: 'from', sign: +1 },
 };
 
-export type RelativeDateRangeOperator = keyof typeof RELATIVE_DATE_RANGE_OPERATORS;
+export type RelativeDateOperator = keyof typeof RELATIVE_DATE_OPERATORS;
 
 // Should be included in RelativeDate
-export type RelativeDateRange = {
+export type RelativeDate = {
   date: string;
   duration: Duration;
-  operator: RelativeDateRangeOperator;
+  operator: RelativeDateOperator;
   quantity: number; // always a positive integer, the sign is dictated by the operator
 };
 
 export type CustomDate = Date | RelativeDate;
-export type CustomDateRange = DateRange | RelativeDateRange;
+export type CustomDateRange = DateRange | RelativeDate;
 
 export const DEFAULT_DURATIONS: DurationOption[] = [
   { label: 'Years', value: 'year' },
@@ -141,33 +126,27 @@ export const dateRangeToString = (dateRange: DateRange, locale?: LocaleIdentifie
 /* istanbul ignore next */
 export const relativeDateToString = (
   relativeDate: RelativeDate,
-  suffixes = { before: 'ago', after: '' },
-): string => {
-  const duration: string | undefined = DEFAULT_DURATIONS.find(
-    d => d.value === relativeDate.duration,
-  )?.label;
-  const suffix = ' ' + (relativeDate.quantity < 0 ? suffixes.before : suffixes.after);
-  return `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}${suffix.trimEnd()}`;
-};
-
-/* istanbul ignore next */
-export const relativeDateRangeToString = (
-  relativeDateRange: RelativeDateRange,
   availableVariables: VariablesBucket = [],
   variableDelimiters: VariableDelimiters = { start: '', end: '' },
 ): string => {
-  const identifier = extractVariableIdentifier(relativeDateRange.date, variableDelimiters);
-  const baseDateLabel = availableVariables.find(v => v.identifier === identifier)?.label;
-  const relativeDate = _pick(relativeDateRange, ['quantity', 'duration']);
-  const relativeDateLabel = relativeDateToString(relativeDate, { before: '', after: '' });
-  return `${relativeDateLabel} ${relativeDateRange.operator}${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}${baseDateLabel}`;
+  const identifier = extractVariableIdentifier(relativeDate.date, variableDelimiters);
+  const baseDateLabel =
+    availableVariables.find(v => v.identifier === identifier)?.label ?? identifier;
+  const duration: string | undefined = DEFAULT_DURATIONS.find(
+    d => d.value === relativeDate.duration,
+  )?.label;
+  const relativeDateLabel = `${Math.abs(relativeDate.quantity)} ${duration?.toLowerCase()}`;
+  return `${relativeDateLabel} ${relativeDate.operator} ${baseDateLabel}`;
 };
 
-export const isRelativeDateRange = (
-  value: string | CustomDateRange | undefined,
-): value is RelativeDateRange => {
-  if (!(value instanceof Object)) return false;
-  return _has(value, 'date') && _has(value, 'duration') && _has(value, 'quantity');
+export const isRelativeDate = (value: any): value is RelativeDate => {
+  return (
+    value &&
+    typeof value == 'object' &&
+    typeof value.quantity == 'number' &&
+    typeof value.duration == 'string' &&
+    typeof value.date == 'string'
+  );
 };
 
 export const isDateRange = (value: undefined | string | CustomDateRange): value is DateRange => {

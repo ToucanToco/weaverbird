@@ -8,45 +8,45 @@ import { InterpolateFunction, ScopeContext } from '@/lib/templating';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 
 export interface VQBState {
-  /**
-   * available variables for templating
-   */
+  translator: string;
+
+  // necessary methods to preview pipeline results and fetch available data collections
+  backendService: BackendService;
+  isRequestOnGoing: boolean;
+
+  isLoading: {
+    dataset: boolean;
+    uniqueValues: boolean;
+  };
+
+  // for templating
   availableVariables?: VariablesBucket;
-  /**
-   * the current dataset.
-   */
-  dataset: DataSet;
-  /**
-   * the current list of domains available.
-   */
+  variableDelimiters?: VariableDelimiters;
+  variables?: ScopeContext;
+  interpolateFunc?: InterpolateFunction;
+
   domains: string[];
+  pipelines: { [name: string]: Pipeline };
+
+  dataset: DataSet; // currently preview one
+  pagesize: number;
+  backendMessages: BackendError[] | BackendWarning[];
+
   /**
    * FIXME should be a getter from the current pipeline
    * the domain currently selected.
    */
   currentDomain?: string;
-  /**
-   * the current pipeline (being edited) name
-   */
   currentPipelineName?: string;
-  /**
-   * the current step form displayed
-   */
   currentStepFormName?: PipelineStepName;
-  /**
-   * the last step currently active.
-   */
-  selectedStepIndex: number;
-
-  /**
-   * saved pipelines, with unique name as key and pipeline as value
-   */
-  pipelines: { [name: string]: Pipeline };
+  selectedStepIndex: number; // last step currently active
+  selectedColumns: string[]; // focused in the DataViewer
 
   /**
    * object used to fill an edit step form
    */
   stepFormInitialValue?: object;
+
   /**
    * object used to setup edit step form initially without interfering with
    * `stepFormInitialValue` which has to be left undefined so that default
@@ -57,58 +57,6 @@ export interface VQBState {
    */
   stepFormDefaults?: object;
 
-  /**
-   * the seclected columns (materialized by a styled focus on the DataViewer)
-   */
-  selectedColumns: string[];
-
-  /**
-   * pagination size (i.e. number of results displayed)
-   */
-  pagesize: number;
-
-  /**
-   * error/warning messages send by backend or catch from its interface
-   */
-  backendMessages: BackendError[] | BackendWarning[];
-
-  /**
-   * An object containing all loading state
-   * `dataset` if the whole dataset is loading
-   * `uniqueValues` unique values of a column are loading
-   */
-  isLoading: {
-    dataset: boolean;
-    uniqueValues: boolean;
-  };
-
-  /**
-   * whether a request to backend service is on ongoing
-   */
-  isRequestOnGoing: boolean;
-
-  /**
-   * variables scope, if any.
-   */
-  variables?: ScopeContext;
-
-  /**
-   * interpolation function
-   */
-  interpolateFunc?: InterpolateFunction;
-
-  /**
-   * the app translator
-   */
-  translator: string;
-  /**
-   * Backend service: contains the necessary methods to preview pipeline results and fetch available data collections
-   */
-  backendService: BackendService;
-  /**
-   * variable delimiter for templating
-   */
-  variableDelimiters?: VariableDelimiters;
   featureFlags?: {
     RELATIVE_DATE_FILTERING?: 'enable' | 'disable';
     [k: string]: boolean | string | undefined;

@@ -6,9 +6,7 @@ import {
   dateToString,
   isDateRange,
   isRelativeDate,
-  isRelativeDateRange,
-  RelativeDateRange,
-  relativeDateRangeToString,
+  RelativeDate,
   relativeDateToString,
 } from '@/lib/dates';
 
@@ -131,40 +129,41 @@ describe('dateRangeToString', () => {
 });
 
 describe('relativeDateToString', () => {
-  it('should transform a relative date to a readable label', () => {
-    expect(relativeDateToString({ quantity: -2, duration: 'month' })).toStrictEqual('2 months ago');
-    expect(relativeDateToString({ quantity: -8, duration: 'year' })).toStrictEqual('8 years ago');
-    expect(relativeDateToString({ quantity: -7, duration: 'day' })).toStrictEqual('7 days ago');
-    expect(relativeDateToString({ quantity: -7, duration: 'day' })).toStrictEqual('7 days ago');
-  });
-});
-
-describe('relativeDateRangeToString', () => {
   const variableDelimiters = { start: '{{', end: '}}' };
   const SAMPLE_VARIABLES = [
     { label: 'Today', identifier: 'today', value: '' },
     { label: 'Tomorrow', identifier: 'tomorrow', value: '' },
   ];
-  it('should transform a relative date range to a readable label', () => {
-    const value: RelativeDateRange = {
+  it('should transform a relative date to a readable label', () => {
+    const value: RelativeDate = {
       quantity: 2,
       duration: 'month',
       operator: 'until',
       date: '{{tomorrow}}',
     };
-    expect(relativeDateRangeToString(value, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      `2 months until${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
+    expect(relativeDateToString(value, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
+      `2 months until Tomorrow`,
     );
 
-    const value2: RelativeDateRange = {
+    const value2: RelativeDate = {
       date: '{{tomorrow}}',
       quantity: 2,
       duration: 'month',
       operator: 'from',
     };
-    expect(relativeDateRangeToString(value2, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
-      `2 months from${CUSTOM_DATE_RANGE_LABEL_SEPARATOR}Tomorrow`,
+    expect(relativeDateToString(value2, SAMPLE_VARIABLES, variableDelimiters)).toStrictEqual(
+      `2 months from Tomorrow`,
     );
+
+    const unfoundVariable: RelativeDate = {
+      date: '{{toto}}',
+      quantity: 2,
+      duration: 'month',
+      operator: 'from',
+    };
+    expect(
+      relativeDateToString(unfoundVariable, SAMPLE_VARIABLES, variableDelimiters),
+    ).toStrictEqual(`2 months from toto`);
   });
 });
 
@@ -174,18 +173,8 @@ describe('isRelativeDate', () => {
     expect(isRelativeDate({ start: new Date() })).toBe(false);
   });
   it('should return true if value is a relative date', () => {
-    expect(isRelativeDate({ quantity: 2, duration: 'year' })).toBe(true);
-  });
-});
-
-describe('isRelativeDateRange', () => {
-  it('should return false if value is not a relative date range', () => {
-    expect(isRelativeDateRange('{{today}}')).toBe(false);
-    expect(isRelativeDateRange({ start: new Date() })).toBe(false);
-  });
-  it('should return true if value is a relative date range', () => {
     expect(
-      isRelativeDateRange({ quantity: 2, duration: 'year', operator: 'until', date: '{{today}}' }),
+      isRelativeDate({ quantity: 2, duration: 'year', operator: 'until', date: '{{today}}' }),
     ).toBe(true);
   });
 });

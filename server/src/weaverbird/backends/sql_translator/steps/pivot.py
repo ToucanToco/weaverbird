@@ -5,6 +5,7 @@ from weaverbird.backends.sql_translator.steps.utils.query_transformation import 
     sanitize_column_name,
 )
 from weaverbird.backends.sql_translator.types import (
+    SQLDialect,
     SQLPipelineTranslator,
     SQLQuery,
     SQLQueryDescriber,
@@ -23,6 +24,7 @@ def translate_pivot(
     sql_query_executor: SQLQueryExecutor = None,
     sql_translate_pipeline: SQLPipelineTranslator = None,
     subcall_from_other_pipeline_count: int = None,
+    sql_dialect: SQLDialect = None,
 ) -> SQLQuery:
     query_name = f'PIVOT_STEP_{index}'
 
@@ -35,14 +37,10 @@ def translate_pivot(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
     aggregate_part = f'{step.agg_function}({step.value_column})'
-    pivot_values = (
-        sql_query_executor(
-            domain=None,
-            query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
-        )
-        .df[f'{step.column_to_pivot}']
-        .values.tolist()
-    )
+    pivot_values = sql_query_executor(
+        domain=None,
+        query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
+    )[f'{step.column_to_pivot}'].values.tolist()
     sanitized_columns = [sanitize_column_name(p) for p in pivot_values]
 
     pivoted_values_column_type = query.metadata_manager.retrieve_query_metadata_column_type_by_name(

@@ -70,6 +70,7 @@ class Actions {
         state.pipelines,
         state.pagesize,
         pageOffset(state.pagesize, getters.pageno),
+        getters.previewSourceRowsSubset,
       );
       const backendMessages = response.error || response.warning || [];
       commit('logBackendMessages', { backendMessages });

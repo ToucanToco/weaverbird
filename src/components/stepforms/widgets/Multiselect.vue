@@ -205,7 +205,7 @@ export default class MultiselectWidget extends Mixins(FormWidget) {
 
 .multiselect .multiselect__placeholder {
   margin-bottom: 0;
-  color: $grey-dark;
+  color: $grey;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;

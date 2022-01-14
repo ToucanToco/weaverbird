@@ -7,8 +7,7 @@ import {
   DateRange,
   dateRangeToString,
   isDateRange,
-  RelativeDateRange,
-  relativeDateRangeToString,
+  RelativeDate,
 } from '@/lib/dates';
 import { LocaleIdentifier } from '@/lib/internationalization';
 
@@ -231,7 +230,7 @@ describe('Date range input', () => {
     });
 
     describe('when clicking on save button', () => {
-      const editedValue: RelativeDateRange = {
+      const editedValue: RelativeDate = {
         quantity: 1,
         duration: 'month',
         operator: 'until',
@@ -239,7 +238,7 @@ describe('Date range input', () => {
       };
 
       beforeEach(async () => {
-        wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', editedValue);
+        wrapper.find('RelativeDateForm-stub').vm.$emit('input', editedValue);
         await wrapper.vm.$nextTick();
         wrapper.find({ ref: 'save' }).trigger('click');
         await wrapper.vm.$nextTick();
@@ -256,7 +255,7 @@ describe('Date range input', () => {
       });
       it('should display correct body component', () => {
         expect(wrapper.find('TabbedRangeCalendars-stub').exists()).toBe(true);
-        expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(false);
+        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
@@ -278,7 +277,7 @@ describe('Date range input', () => {
     });
 
     describe('choose right selected tab when opening calendar', () => {
-      const initialValue: RelativeDateRange = {
+      const initialValue: RelativeDate = {
         date: '{{today}}',
         quantity: 1,
         duration: 'month',
@@ -308,17 +307,17 @@ describe('Date range input', () => {
         await wrapper.vm.$nextTick();
       });
       it('should display correct body component', () => {
-        expect(wrapper.find('RelativeDateRangeForm-stub').exists()).toBe(true);
+        expect(wrapper.find('RelativeDateForm-stub').exists()).toBe(true);
         expect(wrapper.find('TabbedRangeCalendars-stub').exists()).toBe(false);
       });
       it('should have a disabled save button', () => {
         expect(wrapper.find({ ref: 'save' }).attributes('disabled')).toBe('disabled');
       });
 
-      describe('when updating RelativeDateRangeForm value', () => {
+      describe('when updating RelativeDateForm value', () => {
         const newValue = { quantity: 1, duration: 'month', operator: 'until', date: '{{today}}' };
         beforeEach(async () => {
-          wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', newValue);
+          wrapper.find('RelativeDateForm-stub').vm.$emit('input', newValue);
           await wrapper.vm.$nextTick();
         });
         it('should update tab value', () => {
@@ -338,16 +337,14 @@ describe('Date range input', () => {
         date: '{{today}}',
       };
       beforeEach(async () => {
-        wrapper.find('RelativeDateRangeForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateRangeForm value
+        wrapper.find('RelativeDateForm-stub').vm.$emit('input', updatedRelativeDateValue); // update RelativeDateForm value
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Fixed'); // switching to the other tab
         await wrapper.vm.$nextTick();
         wrapper.find('Tabs-stub').vm.$emit('tabSelected', 'Relative'); // come back to previous tab
       });
       it('should not remove other tab value', () => {
-        expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toBe(
-          updatedRelativeDateValue,
-        );
+        expect(wrapper.find('RelativeDateForm-stub').props().value).toBe(updatedRelativeDateValue);
       });
     });
   });
@@ -416,7 +413,7 @@ describe('Date range input', () => {
   });
 
   describe('with selected value as relative date', () => {
-    const value: RelativeDateRange = {
+    const value: RelativeDate = {
       date: '{{today}}',
       quantity: 1,
       duration: 'month',
@@ -432,24 +429,19 @@ describe('Date range input', () => {
     });
 
     it('should display readable input label', () => {
-      const labelWithoutSeparator = relativeDateRangeToString(value, RELATIVE_SAMPLE_VARIABLES, {
-        start: '{{',
-        end: '}}',
-      }).split(CUSTOM_DATE_RANGE_LABEL_SEPARATOR); // due to utf8 char we need to split label
-      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[0]);
-      expect(wrapper.find('.widget-date-input__label').text()).toContain(labelWithoutSeparator[1]);
+      expect(wrapper.find('.widget-date-input__label').text()).toStrictEqual('1 months from Today');
     });
 
     it('should select "Relative" tab by default', () => {
       expect(wrapper.find('Tabs-stub').props().selectedTab).toBe('Relative');
     });
-    it('should pass relative available variables to RelativeDateRangeForm', () => {
-      expect(wrapper.find('RelativeDateRangeForm-stub').props().availableVariables).toStrictEqual(
+    it('should pass relative available variables to RelativeDateForm', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual(
         RELATIVE_SAMPLE_VARIABLES,
       );
     });
-    it('should preselect value in RelativeDateRangeForm', () => {
-      expect(wrapper.find('RelativeDateRangeForm-stub').props().value).toStrictEqual(value);
+    it('should preselect value in RelativeDateForm', () => {
+      expect(wrapper.find('RelativeDateForm-stub').props().value).toStrictEqual(value);
     });
     it('should have an enabled save button', () => {
       expect(wrapper.find({ ref: 'save' }).attributes('disabled')).not.toBe('disabled');
@@ -529,7 +521,7 @@ describe('Date range input', () => {
   });
 
   describe('with bounds', () => {
-    const bounds: RelativeDateRange = {
+    const bounds: RelativeDate = {
       date: '{{today}}',
       quantity: 1,
       duration: 'month',
@@ -656,9 +648,7 @@ describe('Date range input', () => {
       expect((wrapper.vm as any).availableVariables).toStrictEqual([]);
     });
     it('should set relativeAvailableVariables to empty array', () => {
-      expect(wrapper.find('RelativeDateRangeForm-stub').props().availableVariables).toStrictEqual(
-        [],
-      );
+      expect(wrapper.find('RelativeDateForm-stub').props().availableVariables).toStrictEqual([]);
     });
     it('should set variablesDelimiters to empty string', () => {
       expect((wrapper.vm as any).variableDelimiters).toStrictEqual({ start: '', end: '' });

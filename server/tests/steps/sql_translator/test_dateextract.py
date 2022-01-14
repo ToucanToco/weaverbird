@@ -112,14 +112,17 @@ def test_translate_complex_date_extract(query_date):
         index=1,
     )
     expected_transformed_query = (
-        "WITH SELECT_STEP_0 AS (SELECT * FROM products), DATEEXTRACT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, "
-        "DATE, EXTRACT(year from to_timestamp(DATE)) AS DATE_YEAR, (to_timestamp(DATE) - interval '1 day') AS "
-        "DATE_PREVIOUSDAY, ((to_timestamp(DATE) - interval '1 year') + interval '1 day') AS "
-        "DATE_FIRSTDAYOFPREVIOUSYEAR, ((to_timestamp(DATE) - interval '2 month') + interval '1 day') AS "
-        "DATE_FIRSTDAYOFPREVIOUSMONTH, (DAY(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO(to_timestamp("
-        "DATE)) + 1) AS DATE_FIRSTDAYOFPREVIOUSWEEK, EXTRACT(dayofyear from to_timestamp(DATE)) AS DATE_DAYOFYEAR, "
-        "(YEAROFWEEKISO(to_timestamp(DATE))) AS DATE_ISOYEAR, (WEEKISO(to_timestamp(DATE))) AS DATE_ISOWEEK, "
-        "(DAYOFWEEKISO(to_timestamp(DATE))) AS DATE_ISODAYOFWEEK, EXTRACT(day from to_timestamp(DATE)) AS DATE_DAY, "
+        "WITH SELECT_STEP_0 AS (SELECT * FROM products), "
+        "DATEEXTRACT_STEP_1 AS (SELECT TOTO, RAICHU, FLORIZARRE, DATE, EXTRACT(year from to_timestamp(DATE)) AS DATE_YEAR, "
+        "(DATE_TRUNC(day, to_timestamp(DATE) - interval '1 day')) AS DATE_PREVIOUSDAY, "
+        "(TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(DATE))) - interval '1 year') AS DATE_FIRSTDAYOFPREVIOUSYEAR, "
+        "(TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(DATE))) - interval '1 month') AS DATE_FIRSTDAYOFPREVIOUSMONTH, "
+        "(DATE_TRUNC(day, DATEADD(day, -(DAYOFWEEKISO(to_timestamp(DATE)) % 7 + 1)+1, to_timestamp(DATE))) - interval '1 week') AS DATE_FIRSTDAYOFPREVIOUSWEEK, "
+        "EXTRACT(dayofyear from to_timestamp(DATE)) AS DATE_DAYOFYEAR, "
+        "(YEAROFWEEKISO(to_timestamp(DATE))) AS DATE_ISOYEAR, "
+        "(WEEKISO(to_timestamp(DATE))) AS DATE_ISOWEEK, "
+        "(DAYOFWEEKISO(to_timestamp(DATE))) AS DATE_ISODAYOFWEEK, "
+        "EXTRACT(day from to_timestamp(DATE)) AS DATE_DAY, "
         "EXTRACT(week from to_timestamp(DATE)) AS DATE_WEEK FROM SELECT_STEP_0)"
     )
     assert query.transformed_query == expected_transformed_query
@@ -329,7 +332,7 @@ def test_utils_query_for_date_extract():
         'day': "EXTRACT(day from to_timestamp(DATE)) AS NEW_COLUMN",
         'week': "EXTRACT(week from to_timestamp(DATE)) AS NEW_COLUMN",
         'quarter': "EXTRACT(quarter from to_timestamp(DATE)) AS NEW_COLUMN",
-        'dayOfWeek': "EXTRACT(dayofweek from to_timestamp(DATE)) AS NEW_COLUMN",
+        'dayOfWeek': "(DAYOFWEEKISO(to_timestamp(DATE)) % 7 + 1) AS NEW_COLUMN",
         'dayOfYear': "EXTRACT(dayofyear from to_timestamp(DATE)) AS NEW_COLUMN",
         'isoYear': "(YEAROFWEEKISO(to_timestamp(DATE))) AS NEW_COLUMN",
         'isoWeek': "(WEEKISO(to_timestamp(DATE))) AS NEW_COLUMN",
@@ -337,25 +340,23 @@ def test_utils_query_for_date_extract():
         'hour': "EXTRACT(hour from to_timestamp(DATE)) AS NEW_COLUMN",
         'minutes': "EXTRACT(minute from to_timestamp(DATE)) AS NEW_COLUMN",
         'seconds': "EXTRACT(second from to_timestamp(DATE)) AS NEW_COLUMN",
-        'milliseconds': "(DATE_TRUNC(millisecond, to_timestamp(DATE))) AS NEW_COLUMN",
+        'milliseconds': "(ROUND(EXTRACT(nanosecond FROM to_timestamp(DATE))/1000000)) AS NEW_COLUMN",
         'firstDayOfYear': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(DATE)))) AS NEW_COLUMN",
         'firstDayOfMonth': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(DATE)))) AS NEW_COLUMN",
-        'firstDayOfWeek': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(week, to_timestamp(DATE)))) AS NEW_COLUMN",
+        'firstDayOfWeek': "(DATE_TRUNC(day, DATEADD(day, -(DAYOFWEEKISO(to_timestamp(DATE)) % 7 + 1)+1, to_timestamp(DATE)))) AS NEW_COLUMN",
+        'firstDayOfIsoWeek': "(DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(DATE))+1, to_timestamp(DATE)))) AS NEW_COLUMN",
         'firstDayOfQuarter': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(DATE)))) AS NEW_COLUMN",
-        'firstDayOfIsoWeek': "(DAYOFWEEKISO(to_timestamp(DATE)) - DAYOFWEEKISO(to_timestamp(DATE)) + 1) AS NEW_COLUMN",
-        'previousDay': "(to_timestamp(DATE) - interval '1 day') AS NEW_COLUMN",
-        'firstDayOfPreviousYear': "((to_timestamp(DATE) - interval '1 year') + interval '1 day') AS NEW_COLUMN",
-        'firstDayOfPreviousMonth': "((to_timestamp(DATE) - interval '2 month') + interval '1 day') AS NEW_COLUMN",
-        'firstDayOfPreviousWeek': "(DAY(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO(to_timestamp(DATE)) + "
-        "1) AS NEW_COLUMN",
-        'firstDayOfPreviousQuarter': "(to_timestamp(DATE) - interval '1 quarter') AS NEW_COLUMN",
-        'firstDayOfPreviousIsoWeek': "(DAYOFWEEKISO(to_timestamp(DATE) - interval '1 week') - DAYOFWEEKISO("
-        "to_timestamp(DATE)) + 1) AS NEW_COLUMN",
+        'previousDay': "(DATE_TRUNC(day, to_timestamp(DATE) - interval '1 day')) AS NEW_COLUMN",
+        'firstDayOfPreviousYear': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(year, to_timestamp(DATE))) - interval '1 year') AS NEW_COLUMN",
+        'firstDayOfPreviousMonth': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(month, to_timestamp(DATE))) - interval '1 month') AS NEW_COLUMN",
+        'firstDayOfPreviousWeek': "(DATE_TRUNC(day, DATEADD(day, -(DAYOFWEEKISO(to_timestamp(DATE)) % 7 + 1)+1, to_timestamp(DATE))) - interval '1 week') AS NEW_COLUMN",
+        'firstDayOfPreviousQuarter': "(TO_TIMESTAMP_NTZ(DATE_TRUNC(quarter, to_timestamp(DATE))) - interval '1 quarter') AS NEW_COLUMN",
+        'firstDayOfPreviousIsoWeek': "(DATE_TRUNC(day, DATEADD(day, -DAYOFWEEKISO(to_timestamp(DATE))+1, to_timestamp(DATE))) - interval '1 week') AS NEW_COLUMN",
         'previousYear': "(YEAR(to_timestamp(DATE) - interval '1 year')) AS NEW_COLUMN",
         'previousMonth': "(MONTH(to_timestamp(DATE) - interval '1 month')) AS NEW_COLUMN",
         'previousWeek': "(WEEK(to_timestamp(DATE) - interval '1 week')) AS NEW_COLUMN",
         'previousQuarter': "(QUARTER(to_timestamp(DATE) - interval '1 quarter')) AS NEW_COLUMN",
-        'previousIsoWeek': "(WEEKISO(to_timestamp(DATE)) - 1) AS NEW_COLUMN",
+        'previousIsoWeek': "(WEEKISO(to_timestamp(DATE) - interval '1 week')) AS NEW_COLUMN",
     }
 
     # a loop to evaluate all date-info and the sql output

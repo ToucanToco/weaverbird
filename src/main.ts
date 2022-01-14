@@ -4,6 +4,7 @@ export { getTranslator } from './lib/translators';
 export { mongoResultsToDataset, inferTypeFromDataset } from './lib/dataset/mongo';
 export { pandasDataTableToDataset } from './lib/dataset/pandas';
 export { setAvailableCodeEditors } from './components/code-editor';
+export { defineSendAnalytics } from './lib/send-analytics';
 
 // export store entrypoints
 export { dereferencePipelines, getPipelineNamesReferencing } from '@/lib/dereference-pipeline';
@@ -45,6 +46,7 @@ export {
 // export helpers/utils
 export { exampleInterpolateFunc } from '@/lib/templating';
 export { transformValueToDateRange } from '@/components/DatePicker/transform-value-to-date-or-range';
+export { dateRangeToString } from '@/lib/dates';
 
 // export directives
 export { resizable } from '@/directives/resizable/resizable';

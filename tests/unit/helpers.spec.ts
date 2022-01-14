@@ -167,7 +167,7 @@ describe('castFromString', () => {
       expect(keepCurrentValueIfCompatibleRelativeDate(value, null)).toEqual(value);
     });
     it('should return selected value if its a well formatted relative date', () => {
-      const value = { duration: 'month', quantity: 1 };
+      const value = { quantity: 2, duration: 'year', operator: 'until', date: '{{today}}' };
       expect(keepCurrentValueIfCompatibleRelativeDate(value, null)).toEqual(value);
     });
     it('should return selected value if its a string', () => {

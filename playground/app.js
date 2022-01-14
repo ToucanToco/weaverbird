@@ -10,6 +10,7 @@ const {
   dereferencePipelines,
   registerModule,
   setAvailableCodeEditors,
+  defineSendAnalytics,
   exampleInterpolateFunc,
 } = vqb;
 
@@ -19,6 +20,7 @@ const TRANSLATOR = args.get('backend') || 'mongo50';
 
 const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
+const snowflakeTranslator = getTranslator('snowflake');
 
 const VARIABLES = {
   view: 'Product 123',
@@ -109,6 +111,10 @@ setAvailableCodeEditors({
   },
 });
 
+// Example to set send analytics method
+const sendAnalytics = ({name, value}) => { console.debug('Analytics event send ::', { name, value }) };
+defineSendAnalytics(sendAnalytics);
+
 const CASTERS = {
   date: val => new Date(val),
 };
@@ -183,6 +189,8 @@ class MongoService {
     const query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
     const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
+    updateLastExecutedQuery(query);
+
     if (isResponseOk) {
       const [{ count, data: rset, types }] = responseContent;
       let dataset = mongoResultsToDataset(rset);
@@ -223,8 +231,6 @@ class MongoService {
   }
 }
 
-const mongoService = new MongoService();
-
 class PandasService {
   async listCollections() {
     const response = await fetch('/pandas');
@@ -237,13 +243,63 @@ class PandasService {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(dereferencedPipeline);
 
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+
     const url = new URL(window.location.origin + '/pandas');
     url.searchParams.set('limit', limit);
     url.searchParams.set('offset', offset);
 
     const response = await fetch(url.toString(), {
       method: 'POST',
-      body: JSON.stringify(dereferencedPipeline),
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      parameters: {
+        limit: limit,
+        offset: offset
+      }
+    });
+    const result = await response.json();
+
+    updateLastExecutedQuery(null);
+    if (response.ok) {
+      let dataset = pandasDataTableToDataset(result);
+      dataset.paginationContext = {
+        totalCount: result.total,
+        pagesize: limit,
+        pageno: Math.floor(offset / limit) + 1,
+      };
+      dataset = autocastDataset(dataset);
+      return { data: dataset };
+    } else {
+      return {
+        error: [{ type: 'error', message: result }],
+      };
+    }
+  }
+}
+
+class SnowflakeService {
+  async listCollections() {
+    const response = await fetch('/snowflake');
+    return response.json();
+  }
+
+  async executePipeline(pipeline, pipelines, limit, offset = 0) {
+    const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
+
+    // This does not modify the pipeline, but checks if all steps are supported
+    snowflakeTranslator.translate(dereferencedPipeline);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+
+    const url = new URL(window.location.origin + '/snowflake');
+    url.searchParams.set('limit', limit);
+    url.searchParams.set('offset', offset);
+
+    const response = await fetch(url.toString(), {
+      method: 'POST',
+      body: JSON.stringify(dereferencedPipelineWithoutVariables),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -262,24 +318,35 @@ class PandasService {
         pageno: Math.floor(offset / limit) + 1,
       };
       dataset = autocastDataset(dataset);
+      updateLastExecutedQuery(result.query);
       return { data: dataset };
     } else {
+      updateLastExecutedQuery(null);
       return {
         error: [{ type: 'error', message: result }],
       };
     }
   }
 }
-const pandasService = new PandasService();
 
-const backendService = TRANSLATOR === 'pandas' ? pandasService : mongoService
+let backendService;
+switch (TRANSLATOR) {
+  case 'pandas':
+    backendService = new PandasService();
+    break;
+  case 'snowflake':
+    backendService = new SnowflakeService();
+    break;
+  default:
+    backendService = new MongoService();
+}
 
-
+let updateLastExecutedQuery = function() {};
 async function buildVueApp() {
   Vue.use(Vuex);
   const store = new Vuex.Store({});
 
-  new Vue({
+  const vm = new Vue({
     el: '#app',
     components: {
       Vqb,
@@ -288,21 +355,23 @@ async function buildVueApp() {
     data: function() {
       return {
         isCodeOpened: false,
+        lastExecutedQuery: undefined,
       };
     },
     created: async function() {
       registerModule(this.$store, {
         currentPipelineName: 'pipeline',
         pipelines: {
+          // Identifiers for Snowflake (SQL) should be uppercase (no support for other casing for now)
           pipeline: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Price',
+                column: TRANSLATOR == 'snowflake' ? 'PRICE' : 'Price',
                 operator: 'ge',
                 value: 1200,
               },
@@ -311,12 +380,12 @@ async function buildVueApp() {
           pipelineAmex: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Amex',
               },
@@ -325,12 +394,12 @@ async function buildVueApp() {
           pipelineVisa: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Visa',
               },
@@ -339,12 +408,12 @@ async function buildVueApp() {
           pipelineMastercard: [
             {
               name: 'domain',
-              domain: 'sales',
+              domain: TRANSLATOR == 'snowflake' ? 'SALES' : 'sales',
             },
             {
               name: 'filter',
               condition: {
-                column: 'Payment_Type',
+                column: TRANSLATOR == 'snowflake' ? 'PAYMENT_TYPE' : 'Payment_Type',
                 operator: 'eq',
                 value: 'Mastercard',
               },
@@ -353,19 +422,19 @@ async function buildVueApp() {
           dates: [
             {
               name: 'domain',
-              domain: 'sin-from-2019-to-2022',
+              domain: TRANSLATOR == 'snowflake' ? 'SIN_FROM_2019_TO_2022' : 'sin-from-2019-to-2022',
             },
             {
               name: 'filter',
               condition: {
-                column: 'day',
+                column: TRANSLATOR == 'snowflake' ? 'DAY' :'day',
                 operator: 'from',
                 value: new Date('2021-11-19T00:00:00Z'),
               },
             },
           ],
         },
-        currentDomain: 'sales',
+        currentDomain: TRANSLATOR == 'snowflake' ? 'SALES' :'sales',
         translator: TRANSLATOR,
         backendService: backendService,
         // based on lodash templates (ERB syntax)
@@ -400,10 +469,6 @@ async function buildVueApp() {
           return activePipeline;
         }
       },
-      mongoQueryAsJSON: function() {
-        const query = mongoTranslator.translate(this.activePipeline);
-        return JSON.stringify(query, null, 2);
-      },
       pipelineAsJSON: function() {
         return JSON.stringify(this.activePipeline, null, 2);
       },
@@ -427,8 +492,19 @@ async function buildVueApp() {
       openCode: function() {
         this.isCodeOpened = true;
       },
+      isSelectedTranslator: function(translator) {
+        return TRANSLATOR === translator
+      },
     },
   });
+
+  updateLastExecutedQuery = (query) => {
+    if (query == null || typeof query === 'string') {
+      vm.lastExecutedQuery = query;
+    } else {
+      vm.lastExecutedQuery = JSON.stringify(query, null, 2);
+    }
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => buildVueApp());

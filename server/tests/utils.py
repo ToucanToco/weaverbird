@@ -52,7 +52,6 @@ type_code_mapping = {
 
 
 def is_excluded(file, provider):
-    print(f'parse {file}')
     spec_file = open(file, 'r')
     spec = json.loads(spec_file.read())
     spec_file.close()
@@ -65,23 +64,13 @@ def retrieve_case(directory, provider):
     fixtures_dir_path = path.join(path.dirname(path.realpath(__file__)), 'backends/fixtures')
     step_cases_files = glob(path.join(fixtures_dir_path, '*/*.json'))
 
-    steps_dir_path = path.join(
-        path.dirname(path.realpath(__file__)), f'../src/weaverbird/backends/{directory}/steps'
-    )
-    step_available = [
-        f.replace(steps_dir_path + '/', '').replace('.py', '')
-        for f in glob(path.join(steps_dir_path, '*.py'))
-        if not f.endswith('__init__.py')
-    ]
-
     test_cases = []
     for x in step_cases_files:
         # Generate a readable id for each test case
         case_hierarchy = path.dirname(x)[len(fixtures_dir_path) :]
-        c = case_hierarchy.replace('/', '')
         case_name = path.splitext(path.basename(x))[0]
         case_id = case_hierarchy + '_' + case_name
-        if c in step_available and not is_excluded(x, provider):
+        if not is_excluded(x, provider):
             test_cases.append(pytest.param(case_id, x, id=case_id))
     return test_cases
 

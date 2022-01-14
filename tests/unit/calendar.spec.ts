@@ -32,15 +32,15 @@ describe('Calendar', () => {
       expect(wrapper.exists()).toBe(true);
     });
     it('should instantiate a DatePicker', () => {
-      expect(wrapper.find('DatePicker-stub').exists()).toBe(true);
+      expect(wrapper.find(DatePicker).exists()).toBe(true);
     });
     it('should pass value to DatePicker', () => {
-      expect(wrapper.find('DatePicker-stub').props().value).toStrictEqual(defaultValue);
+      expect(wrapper.find(DatePicker).props().value).toStrictEqual(defaultValue);
     });
-    it('should emit new value when datepicker is updated', () => {
-      const value = new Date(1);
-      wrapper.find('DatePicker-stub').vm.$emit('input', value);
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual(value);
+    it('should forward event from the date picker', () => {
+      const value = new Date('2021-11-29T00:00:00Z');
+      wrapper.find(DatePicker).vm.$emit('input', value);
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual(new Date('2021-11-29T00:00:00.000Z'));
     });
     it('should not display highlighted dates', () => {
       const attributes = (wrapper.vm as any).highlights;
@@ -57,34 +57,44 @@ describe('Calendar', () => {
       });
     });
     it('should active DatePicker as range', () => {
-      expect(wrapper.find('DatePicker-stub').props().isRange).toBe(true);
+      expect(wrapper.find(DatePicker).props().isRange).toBe(true);
     });
     it('should pass value to DatePicker', () => {
-      expect(wrapper.find('DatePicker-stub').props().value).toStrictEqual(defaultValue);
+      expect(wrapper.find(DatePicker).props().value).toStrictEqual(defaultValue);
     });
     it('should emit new value when datepicker is updated', () => {
-      const value = { start: new Date(), end: new Date(2) };
+      const value = {
+        start: new Date('2021-09-08T00:00:00Z'),
+        end: new Date('2021-11-29T23:59:59Z'),
+      };
       wrapper.find(DatePicker).vm.$emit('input', value);
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ ...value, duration: 'day' });
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({
+        start: new Date('2021-09-08T00:00:00Z'),
+        end: new Date('2021-11-29T23:59:59Z'),
+        duration: 'day',
+      });
     });
     it('should emit start date only when datepicker is dragged (range update)', () => {
-      const value = { start: new Date(), end: new Date(2) };
+      const value = { start: new Date('2021-09-08T00:00:00Z'), end: new Date(2) };
       (wrapper.vm as any).onDrag(value); // drag event is not found by stub
-      expect(wrapper.emitted('input')[0][0]).toStrictEqual({ start: value.start, duration: 'day' });
+      expect(wrapper.emitted('input')[0][0]).toStrictEqual({
+        start: new Date('2021-09-08T00:00:00Z'),
+        duration: 'day',
+      });
     });
 
     describe('range out of bounds', () => {
       const bounds = {
-        start: new Date('2021-11-15T00:00:00'),
-        end: new Date('2021-12-15T00:00:00'),
+        start: new Date('2021-11-15T00:00:00Z'),
+        end: new Date('2021-12-15T00:00:00Z'),
         duration: 'day',
       };
 
       beforeEach(() => {
         createWrapper({
           value: {
-            start: new Date('2021-11-01T00:00:00'),
-            end: new Date('2022-12-18T00:00:00'),
+            start: new Date('2021-11-01T00:00:00Z'),
+            end: new Date('2022-12-18T00:00:00Z'),
             duration: 'day',
           },
           availableDates: bounds,
@@ -113,7 +123,7 @@ describe('Calendar', () => {
           });
         });
         it('should move calendar cursor to start bound', () => {
-          expect(wrapper.find('DatePicker-stub').attributes('from-date')).toStrictEqual(
+          expect(wrapper.find(DatePicker).attributes('from-date')).toStrictEqual(
             updatedBounds.start.toString(),
           );
         });
@@ -147,7 +157,7 @@ describe('Calendar', () => {
       createWrapper({ availableDates });
     });
     it('should move calendar cursor to available date start', () => {
-      expect(wrapper.find('DatePicker-stub').attributes('from-date')).toStrictEqual(
+      expect(wrapper.find(DatePicker).attributes('from-date')).toStrictEqual(
         availableDates.start.toString(),
       );
     });

@@ -177,11 +177,11 @@ describe('statistics Step Form', () => {
     wrapper
       .findAll('InputNumberWidget-stub')
       .at(0)
-      .vm.$emit('input', '2');
+      .vm.$emit('input', 2);
     wrapper
       .findAll('InputNumberWidget-stub')
       .at(1)
-      .vm.$emit('input', '4');
+      .vm.$emit('input', 4);
     await wrapper.find('.custom-quantile-widget-checkbox').trigger('click');
     expect(wrapper.vm.$data.editedStep.quantiles).toEqual([
       { label: 'last decile', nth: 9, order: 10 },

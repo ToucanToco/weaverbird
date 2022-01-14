@@ -7,3 +7,6 @@ mongoimport --db playground_data --collection sales --drop \
 mongoimport --db playground_data --collection sin-from-2019-to-2022 --drop \
     --type=json --file /datasources/sin-from-2019-to-2022.json
 
+mongoimport --db playground_data --collection november-2021-hours --drop \
+    --type=json --file /datasources/november-2021-hours.json
+

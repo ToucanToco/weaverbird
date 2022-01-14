@@ -1,0 +1,119 @@
+{
+  "description": "Dates from/until can be specified relative to another date.",
+  "exclude": ["sql"],
+  "step": {
+    "pipeline": [
+      {
+        "name": "filter",
+        "condition": {
+          "and": [{
+            "column": "CREATED",
+            "operator": "from",
+            "value": "date: 2021-11-01 12:34:56"
+          }, {
+            "column": "CREATED",
+            "operator": "until",
+            "value": {
+              "quantity": "1",
+              "duration": "month",
+              "operator": "from",
+              "date": "date: 2021-11-01 12:34:56"
+            }
+          }]
+        }
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "CREATED",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "CREATED": "2021-01-01 01:03:30"
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "CREATED": "2021-11-01 01:02:03"
+      },
+      {
+        "NAME": "baz",
+        "AGE": 44,
+        "CREATED": "2021-11-07 01:02:03"
+      },
+      {
+        "NAME": "fiz",
+        "AGE": 45,
+        "CREATED": "2021-11-30 23:05:06"
+      },
+      {
+        "NAME": "buz",
+        "AGE": 46,
+        "CREATED": "2021-12-01 00:00:00"
+      },
+      {
+        "NAME": "taz",
+        "AGE": 47,
+        "CREATED": "2021-12-02 00:00:00"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "CREATED",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "CREATED": "2021-11-01 01:02:03"
+      },
+      {
+        "NAME": "baz",
+        "AGE": 44,
+        "CREATED": "2021-11-07 01:02:03"
+      },
+      {
+        "NAME": "fiz",
+        "AGE": 45,
+        "CREATED": "2021-11-30 23:05:06"
+      },
+      {
+        "NAME": "buz",
+        "AGE": 46,
+        "CREATED": "2021-12-01 00:00:00"
+      }
+    ]
+  }
+}

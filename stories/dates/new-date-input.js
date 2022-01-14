@@ -3,6 +3,25 @@ import { storiesOf } from '@storybook/vue';
 
 const stories = storiesOf('Dates/NewDateInput', module);
 
+
+const RELATIVE_SAMPLE_VARIABLES = [
+  {
+    label: 'Today',
+    identifier: 'today',
+    value: new Date('1/12/2021'),
+  },
+  {
+    label: 'Last month',
+    identifier: 'last_month',
+    value: new Date('11/12/2021'),
+  },
+  {
+    label: 'Last year',
+    identifier: 'last_year',
+    value: new Date('1/12/2020'),
+  },
+];
+
 const SAMPLE_VARIABLES = [
   {
     identifier: 'dates.last_7_days',
@@ -36,6 +55,7 @@ const SAMPLE_VARIABLES = [
     identifier: 'dates.all_time',
     label: 'All time',
   },
+  ...RELATIVE_SAMPLE_VARIABLES,
 ];
 
 stories.add('simple', () => ({
@@ -43,7 +63,7 @@ stories.add('simple', () => ({
     <div>
       <NewDateInput 
         :available-variables="availableVariables" 
-        :variable-delimiters="variableDelimiters" 
+        :variable-delimiters="variableDelimiters"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -68,7 +88,7 @@ stories.add('already selected variable', () => ({
     <div>
       <NewDateInput 
         :available-variables="availableVariables" 
-        :variable-delimiters="variableDelimiters" 
+        :variable-delimiters="variableDelimiters"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -93,7 +113,7 @@ stories.add('custom (fixed date)', () => ({
     <div>
       <NewDateInput 
         :available-variables="availableVariables" 
-        :variable-delimiters="variableDelimiters" 
+        :variable-delimiters="variableDelimiters"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -118,7 +138,7 @@ stories.add('custom (relative date)', () => ({
     <div>
       <NewDateInput 
         :available-variables="availableVariables" 
-        :variable-delimiters="variableDelimiters" 
+        :variable-delimiters="variableDelimiters"
         v-model="value" 
       />
       <pre>{{ value }}</pre>
@@ -143,7 +163,7 @@ stories.add('disable custom selection', () => ({
     <div>
       <NewDateInput 
         :available-variables="availableVariables" 
-        :variable-delimiters="variableDelimiters" 
+        :variable-delimiters="variableDelimiters"
         :enableCustom="false"
         v-model="value" 
       />

@@ -2,7 +2,7 @@ import json
 import time
 from os import environ
 from random import randint
-from typing import Dict, NamedTuple, Optional, Union
+from typing import Dict, Optional, Union
 
 import pandas as pd
 import pytest
@@ -83,10 +83,6 @@ def sql_retrieve_city(t):
     return f'SELECT * FROM {t}'
 
 
-class TestDataSlice(NamedTuple):
-    df: pd.DataFrame
-
-
 def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Dict[str, str], None]:
     connection = get_connection()
     with connection.cursor() as cursor:
@@ -95,12 +91,12 @@ def snowflake_query_describer(domain: str, query_string: str = None) -> Union[Di
         return res
 
 
-def snowflake_query_executor(domain: str, query_string: str = None) -> Union[TestDataSlice, None]:
+def snowflake_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
         cursor = connection.cursor(DictCursor)
         res = cursor.execute(domain if domain else query_string).fetchall()
-        return TestDataSlice(df=pd.DataFrame(res))
+        return pd.DataFrame(res)
 
 
 def _drop_tables(table_array: list):

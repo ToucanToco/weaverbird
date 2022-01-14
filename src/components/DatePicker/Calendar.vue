@@ -10,6 +10,7 @@
     :locale="locale"
     timeformat="UTC"
     timezone="UTC"
+    :model-config="datePickerModelConfig"
     @input="onInput"
     @drag="onDrag"
   />
@@ -59,6 +60,19 @@ export default class Calendar extends Vue {
     return this.value;
   }
 
+  // Emitted values should always been days at midnight (UTC)
+  get datePickerModelConfig(): object {
+    return {
+      timeAdjust: '00:00:00',
+      start: {
+        timeAdjust: '00:00:00',
+      },
+      end: {
+        timeAdjust: '23:59:59',
+      },
+    };
+  }
+
   get shouldUpdateDefaultDate(): boolean {
     return (
       !this.boundedValue || (!(this.boundedValue instanceof Date) && !this.boundedValue?.start)
@@ -106,16 +120,16 @@ export default class Calendar extends Vue {
   }
 
   onInput(value: Date | DateRange | undefined): void {
-    if (Boolean(value) && !(value instanceof Date)) {
-      this.$emit('input', { ...value, duration: 'day' });
-    } else {
+    if (value == null || value instanceof Date) {
       this.$emit('input', value);
+    } else {
+      this.$emit('input', { ...value, duration: 'day' });
     }
   }
 
   // when user start to select a range he has only start value selected, we disable validate button until he select the end value
   onDrag(dragValue: DateRange): void {
-    this.$emit('input', { start: dragValue.start, duration: 'day' });
+    this.onInput({ start: dragValue.start, duration: 'day' });
   }
 
   @Watch('availableDates')

@@ -1,4 +1,61 @@
-# Changelog
+# Changelog (weaverbird npm package)
+
+## Unreleased
+
+### Changed
+
+- Rollup step no longer require one aggregation column (useful to create referentials) (by @Char)
+
+## [0.79.4] - 2021-12-20
+
+### Fixed
+
+- Step Forms: changed placeholders colours to help differantiate placehoder with input values
+
+## [0.79.3] - 2021-12-20
+
+### Fixed
+
+- Preview source subset: use correct icon and label
+- Filter step: use correct label for from/until operators
+
+## [0.79.2] - 2021-12-17
+
+### Fixed
+
+- Preview source subset: do not propagate input focus & refresh button click
+
+## [0.79.1] - 2021-12-16
+
+### Added
+- DateRangeToString: export method to use it outside of app
+
+## [0.79.0] - 2021-12-16
+
+### Added
+Preview source subset: improve design and move component under domain step
+
+## [0.78.1] - 2021-12-10
+
+### Fixed
+
+- Mongo translation : always truncate extracted date info
+
+## [0.78.0] - 2021-12-09
+
+### Added
+
+- NewDateInput: send analytics event when selecting a relative date
+
+## [0.77.0] - 2021-12-06
+
+### Added
+
+- Preview source rows subset configuration
+
+### Removed
+
+- `listCollections` was unused, remove it from the backendService interface
 
 ## [0.76.2] - 2021-11-22
 
@@ -1127,6 +1184,14 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.79.4]: https://github.com/ToucanToco/weaverbird/compare/v0.79.3...v0.79.4
+[0.79.3]: https://github.com/ToucanToco/weaverbird/compare/v0.79.2...v0.79.3
+[0.79.2]: https://github.com/ToucanToco/weaverbird/compare/v0.79.1...v0.79.2
+[0.79.1]: https://github.com/ToucanToco/weaverbird/compare/v0.79.0...v0.79.1
+[0.79.0]: https://github.com/ToucanToco/weaverbird/compare/v0.78.1...v0.79.0
+[0.78.1]: https://github.com/ToucanToco/weaverbird/compare/v0.78.0...v0.78.1
+[0.78.0]: https://github.com/ToucanToco/weaverbird/compare/v0.77.0...v0.78.0
+[0.77.0]: https://github.com/ToucanToco/weaverbird/compare/v0.76.2...v0.77.0
 [0.76.2]: https://github.com/ToucanToco/weaverbird/compare/v0.76.1...v0.76.2
 [0.76.1]: https://github.com/ToucanToco/weaverbird/compare/v0.76.0...v0.76.1
 [0.76.0]: https://github.com/ToucanToco/weaverbird/compare/v0.75.0...v0.76.0
