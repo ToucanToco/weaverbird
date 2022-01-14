@@ -37,7 +37,6 @@ export default {
     required: ['columns', 'aggfunction', 'newcolumns'],
     additionalProperties: false,
   },
-  minItems: 1,
   title: 'Aggregations',
   description: 'The aggregations to be performed',
 };
