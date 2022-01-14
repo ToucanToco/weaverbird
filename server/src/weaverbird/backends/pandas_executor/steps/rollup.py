@@ -48,4 +48,6 @@ def execute_rollup(
         + sum([agg.new_columns for agg in step.aggregations], start=[])
     )  # type: ignore
 
-    return concat(all_results)[columns]
+    df = concat(all_results)[columns]
+
+    return df

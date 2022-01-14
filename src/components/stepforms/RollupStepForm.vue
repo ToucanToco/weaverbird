@@ -19,7 +19,7 @@
     <ListWidget
       class="aggregationsInput"
       addFieldName="Add aggregation"
-      name="Columns to aggregate:"
+      name="(Optional) Columns to aggregate:"
       v-model="aggregations"
       :defaultItem="defaultAggregation"
       :widget="widgetAggregation"

@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Changed
+
+- Rollup step no longer require one aggregation column (useful to create referentials) (by @Char)
+
 ## Fixed
 
 - Mongo: dividing by a column with potentially null or zero values does not fail anymore (return null instead) by @CharlesRngrd
