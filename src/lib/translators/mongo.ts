@@ -702,18 +702,6 @@ function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
   ];
 }
 
-/** transform a 'concatenate' step into corresponding mongo steps */
-export function transformConcatenate(
-  step: Readonly<S.ConcatenateStep>,
-  convertColumnName: (c: string) => string | object = $$, // allow to override the conversion function of each column
-): MongoStep {
-  const concatArr = [convertColumnName(step.columns[0])];
-  for (const colname of step.columns.slice(1)) {
-    concatArr.push(step.separator, convertColumnName(colname));
-  }
-  return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
-}
-
 /** transform a 'dateextracgt' step into corresponding mongo steps */
 function transformDateExtract(step: Readonly<S.DateExtractStep>): MongoStep {
   let dateInfo: S.DateInfo[] = [];
@@ -2151,7 +2139,6 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
       },
     },
   }),
-  concatenate: transformConcatenate,
   cumsum: transformCumSum,
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   dateextract: transformDateExtract,
@@ -2258,6 +2245,19 @@ export class Mongo36Translator extends BaseTranslator {
       { $unwind: '$_vqbPipelinesUnion' },
       { $replaceRoot: { newRoot: '$_vqbPipelinesUnion' } },
     ];
+  }
+
+  // The $convert operator is not supported until mongo 4
+  protected convertToType(input: string | object, _type: string): string | object {
+    return input;
+  }
+
+  concatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
+    const concatArr = [this.convertToType($$(step.columns[0]), 'string')];
+    for (const colname of step.columns.slice(1)) {
+      concatArr.push(step.separator, this.convertToType($$(colname), 'string'));
+    }
+    return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
   }
 
   formula(step: Readonly<S.FormulaStep>): MongoStep {

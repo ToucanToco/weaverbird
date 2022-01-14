@@ -2,8 +2,7 @@
 
 import { $$ } from '@/lib/helpers';
 import { ConvertStep, ToDateStep, TrimStep } from '@/lib/steps';
-import * as S from '@/lib/steps';
-import { Mongo36Translator, transformConcatenate } from '@/lib/translators/mongo';
+import { Mongo36Translator } from '@/lib/translators/mongo';
 
 type PropMap<T> = { [prop: string]: T };
 
@@ -317,10 +316,13 @@ function transformTrim(step: Readonly<TrimStep>): MongoStep {
 
 export class Mongo40Translator extends Mongo36Translator {
   static label = 'Mongo 4.0';
+
+  protected convertToType(input: string | object, type: string): string | object {
+    return { $convert: { input: input, to: type } };
+  }
 }
+
 Object.assign(Mongo40Translator.prototype, {
-  concatenate: (step: Readonly<S.ConcatenateStep>) =>
-    transformConcatenate(step, colname => ({ $convert: { input: $$(colname), to: 'string' } })),
   convert: transformConvert,
   todate: transformToDate,
   trim: transformTrim,
