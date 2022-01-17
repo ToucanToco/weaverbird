@@ -9,12 +9,12 @@
       next-class="prevnext"
       :clickHandler="pageClicked"
     />
-    <div v-if="showPager" class="pagination-counter">
+    <div v-if="showPager" data-cy="weaverbird-pagination-counter" class="pagination-counter">
       <span class="pagination-counter__current-min">{{ pageRows.min }}</span>
       <span class="pagination-counter__current-max">&nbsp;- {{ pageRows.max }}</span>
       <span class="pagination-counter__total-count">&nbsp;of {{ totalCount }} rows</span>
     </div>
-    <div v-else class="pagination-counter">
+    <div v-else data-cy="weaverbird-pagination-counter" class="pagination-counter">
       <span class="pagination-counter__total-count">{{ totalCount }} rows</span>
     </div>
   </div>

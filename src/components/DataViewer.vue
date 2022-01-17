@@ -72,7 +72,12 @@
             </tr>
           </thead>
           <tbody class="data-viewer__body">
-            <tr class="data-viewer__row" v-for="(row, index) in dataset.data" :key="index">
+            <tr
+              class="data-viewer__row"
+              data-cy="weaverbird-data-viewer-table-row"
+              v-for="(row, index) in dataset.data"
+              :key="index"
+            >
               <DataViewerCell
                 class="data-viewer__cell"
                 :class="{ 'data-viewer__cell--active': isSelected(columnHeaders[cellidx].name) }"
