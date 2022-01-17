@@ -1,15 +1,20 @@
 <template>
-  <div class="preview-source-rows-subset">
+  <div class="preview-source-rows-subset" data-cy="weaverbird-preview-source-rows-subset">
     <span class="preview-source-rows-subset__text">Preview computation on the first</span>
     <div class="preview-source-rows-subset__wrapper">
       <input
         class="preview-source-rows-subset__input"
+        data-cy="weaverbird-preview-source-rows-subset-input"
         v-model.number="rowsSubsetInput"
         type="number"
         min="1"
         @click.stop
       />
-      <span class="preview-source-rows-subset__button" @click.stop="refreshPreview">
+      <span
+        class="preview-source-rows-subset__button"
+        data-cy="weaverbird-preview-source-rows-subset-refresh"
+        @click.stop="refreshPreview"
+      >
         <FAIcon icon="sync-alt" />
       </span>
     </div>
