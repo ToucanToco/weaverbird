@@ -1,5 +1,16 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Changed
+
+- Rollup step no longer require one aggregation column (useful to create referentials) (by @CharlesRngrd)
+- Mongo: concatenate won't fail on non-string columns (by @CharlesRngrd)
+
+## Fixed
+
+- Mongo: dividing by a column with potentially null or zero values does not fail anymore (return null instead) by @CharlesRngrd
+
 ## [0.79.4] - 2021-12-20
 
 ### Fixed
@@ -46,6 +57,10 @@ Preview source subset: improve design and move component under domain step
 ### Added
 
 - Preview source rows subset configuration
+
+### Removed
+
+- `listCollections` was unused, remove it from the backendService interface
 
 ## [0.76.2] - 2021-11-22
 

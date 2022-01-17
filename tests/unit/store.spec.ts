@@ -835,7 +835,6 @@ describe('action tests', () => {
     let instantiateDummyService: Function;
     beforeEach(() => {
       instantiateDummyService = (): BackendService => ({
-        listCollections: jest.fn(),
         executePipeline: jest.fn().mockResolvedValue({ data: dummyDataset }),
       });
     });
@@ -903,7 +902,6 @@ describe('action tests', () => {
       const store = setupMockStore({
         ...buildStateWithOnePipeline(pipeline),
         backendService: {
-          listCollections: jest.fn(),
           executePipeline: jest.fn().mockResolvedValue({
             error: [{ type: 'error' as 'error', message: 'OMG an error happens' }],
           }),
@@ -944,7 +942,6 @@ describe('action tests', () => {
       const store = setupMockStore({
         ...buildStateWithOnePipeline(pipeline),
         backendService: {
-          listCollections: jest.fn(),
           executePipeline: jest.fn().mockRejectedValue('Katastrophe!'),
         },
       });
@@ -988,7 +985,6 @@ describe('action tests', () => {
       const store = setupMockStore({
         ...buildStateWithOnePipeline(pipeline),
         backendService: {
-          listCollections: jest.fn(),
           executePipeline: jest.fn().mockResolvedValue({
             error: [{ type: 'error' as 'error', index: 1, message: 'Specific error for step' }],
           }),
@@ -1039,7 +1035,6 @@ describe('action tests', () => {
     let instantiateDummyService: Function;
     beforeEach(() => {
       instantiateDummyService = (): BackendService => ({
-        listCollections: jest.fn(),
         executePipeline: jest.fn().mockResolvedValue({ data: resultOfAggregationCountOnCity }),
       });
     });
@@ -1147,7 +1142,6 @@ describe('action tests', () => {
     it('set the backend service', () => {
       const state = buildState({});
       const backendService = {
-        listCollections: jest.fn(),
         executePipeline: jest.fn(),
       } as BackendService;
       mutations.setBackendService(state, { backendService });
