@@ -41,16 +41,28 @@ export type DateInfo = BasicDatePart | AdvancedDateInfo;
 
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
-export type Reference = Pipeline | string;
+export type ReferenceToOtherQuery = { type: 'ref'; uid: string };
+export type Reference = Pipeline | string | ReferenceToOtherQuery;
 export type TotalDimension = { totalColumn: string; totalRowsLabel: string };
 
 /**
  * Some step can contains either:
  * - a reference to the pipeline i.e. the name of the pipeline, then a string
  * - the pipeline itself
+ * - a reference to another pipeline, stored elsewhere, that should be resolved by the server
  */
 export function isReference(pipelineOrReference: Reference): pipelineOrReference is string {
   return typeof pipelineOrReference === 'string';
+}
+
+export function isReferenceToOtherQuery(
+  pipelineOrReference: Reference,
+): pipelineOrReference is ReferenceToOtherQuery {
+  return (
+    typeof pipelineOrReference === 'object' &&
+    'type' in pipelineOrReference &&
+    pipelineOrReference.type == 'ref'
+  );
 }
 
 export function isPipelineStep(step: any): step is PipelineStep {
@@ -210,7 +222,7 @@ export type StatisticsStep = {
 
 export type DomainStep = {
   name: 'domain';
-  domain: string;
+  domain: string | ReferenceToOtherQuery;
 };
 
 export type DuplicateColumnStep = {

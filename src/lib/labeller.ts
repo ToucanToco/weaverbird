@@ -203,7 +203,10 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   domain(step: Readonly<S.DomainStep>) {
-    return `Source: "${step.domain}"`;
+    const sourceLabel = S.isReferenceToOtherQuery(step.domain)
+      ? `query ${step.domain.uid}`
+      : `"${step.domain}"`;
+    return `Source: ${sourceLabel}`;
   }
 
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
