@@ -109,6 +109,10 @@ describe('Cumsum Step Form', () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.$data.editedStep.toCumSum).toBeDefined();
     expect(wrapper.vm.$data.editedStep.toCumSum).toEqual([['foo', 'bar']]);
+
+    // Old properties must have been deleted
+    expect('valueColumn' in wrapper.vm.$data.editedStep).toBe(false);
+    expect('newlueColumn' in wrapper.vm.$data.editedStep).toBe(false);
   });
 
   it('should pass down "toCumSum" to ListWidget', async () => {
