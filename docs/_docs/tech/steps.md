@@ -767,17 +767,19 @@ As for the conversion of date to int, we handled it by assuming the dataset's ti
 
 ### `cumsum` step
 
-This step allows to compute the cumulated sum of value column based on a
+This step allows to compute the cumulated sum of value columns based on a
 reference column (usually dates) to be sorted by ascending order for the needs
 of the computation. The computation can be scoped by group if needed.
+
+The `toCumSum` parameter takes as input a list of 2-elements lists in the form
+['valueColumn', 'newColumn'].
 
 ```javascript
 {
   name: 'cumsum',
-  valueColumn: 'myValues',
+  toCumSum: [['myValues', 'myCumsum']],
   referenceColumn: 'myDates',
   groupby: ['foo', 'bar'],
-  newColumn: 'myCumsum'
 }
 ```
 
@@ -807,7 +809,7 @@ of the computation. The computation can be scoped by group if needed.
 ```javascript
 {
   name: 'cumsum',
-  valueColumn: 'VALUE',
+  toCumSum: [['VALUE', '']]
   referenceColumn: 'DATE',
 }
 ```
@@ -847,10 +849,9 @@ of the computation. The computation can be scoped by group if needed.
 ```javascript
 {
   name: 'cumsum',
-  valueColumn: 'VALUE',
+  toCumSum: [['VALUE', 'MY_CUMSUM']],
   referenceColumn: 'DATE',
   groupby: ['COUNTRY'],
-  newColumn: 'MY_CUMSUM'
 }
 ```
 

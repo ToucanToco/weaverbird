@@ -8,9 +8,9 @@ describe('Cumsum Step Form', () => {
   const runner = new BasicStepFormTestRunner(CumSumStepForm, 'cumsum');
   runner.testInstantiate();
   runner.testExpectedComponents({
-    'columnpicker-stub': 2,
     'multiselectwidget-stub': 1,
-    'inputtextwidget-stub': 1,
+    'columnpicker-stub': 1,
+    'listwidget-stub': 1,
   });
 
   describe('MultiselectWidgets', () => {
@@ -50,7 +50,7 @@ describe('Cumsum Step Form', () => {
         props: {
           initialStepValue: {
             name: 'cumsum',
-            valueColumn: 'myValues',
+            toCumSum: [['col1', '']],
             referenceColumn: 'myDates',
             groupby: [''],
           },
@@ -58,34 +58,15 @@ describe('Cumsum Step Form', () => {
         errors: [{ keyword: 'minLength', dataPath: '.groupby[0]' }],
       },
       {
-        testlabel: '"newColumn" parameter is an empty string',
+        testlabel: '"toCumSum" parameter is an empty list',
         props: {
           initialStepValue: {
             name: 'cumsum',
-            valueColumn: 'myValues',
+            toCumSum: [],
             referenceColumn: 'myDates',
-            newColumn: '',
           },
         },
-        errors: [{ keyword: 'minLength', dataPath: '.newColumn' }],
-      },
-      {
-        testlabel: 'existing column name',
-        store: setupMockStore({
-          dataset: {
-            headers: [{ name: 'columnA' }],
-            data: [],
-          },
-        }),
-        data: {
-          editedStep: {
-            name: 'cumsum',
-            valueColumn: 'myValues',
-            referenceColumn: 'myDates',
-            newColumn: 'columnA',
-          },
-        },
-        errors: [{ keyword: 'columnNameAlreadyUsed', dataPath: '.newColumn' }],
+        errors: [{ keyword: 'minItems', dataPath: '.toCumSum' }],
       },
     ]);
 
@@ -100,10 +81,9 @@ describe('Cumsum Step Form', () => {
       props: {
         initialStepValue: {
           name: 'cumsum',
-          valueColumn: 'myValues',
+          toCumSum: [['myValues', 'myNewColumn']],
           referenceColumn: 'myDates',
           groupby: ['foo', 'bar'],
-          newColumn: 'myNewColumn',
         },
       },
     });
@@ -111,4 +91,48 @@ describe('Cumsum Step Form', () => {
 
   runner.testCancel();
   runner.testResetSelectedIndex();
+
+  it('should convert editedStep from old configurations to new configuration', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        propsData: {
+          initialStepValue: {
+            name: 'cumsum',
+            valueColumn: 'foo',
+            newColumn: 'bar',
+            referenceColumn: 'toto',
+          },
+        },
+      },
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.toCumSum).toBeDefined();
+    expect(wrapper.vm.$data.editedStep.toCumSum).toEqual([['foo', 'bar']]);
+  });
+
+  it('should pass down "toCumSum" to ListWidget', async () => {
+    const wrapper = runner.shallowMount(
+      {},
+      {
+        data: {
+          editedStep: {
+            name: 'cumsum',
+            toCumSum: [['foo', 'bar']],
+            referenceColumn: 'toto',
+          },
+        },
+      },
+    );
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('listwidget-stub').props().value).toEqual([['foo', 'bar']]);
+  });
+
+  it('should update editedStep when ListWidget is updated', async () => {
+    const wrapper = runner.shallowMount({});
+    await wrapper.vm.$nextTick();
+    wrapper.find('listwidget-stub').vm.$emit('input', [['foo', 'bar']]);
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.$data.editedStep.toCumSum).toEqual([['foo', 'bar']]);
+  });
 });

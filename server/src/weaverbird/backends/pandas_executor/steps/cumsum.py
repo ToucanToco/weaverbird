@@ -11,7 +11,11 @@ def execute_cumsum(
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
     df = df.sort_values(step.reference_column)
-    dst_column = step.new_column or f'{step.value_column}_CUMSUM'
     df_grouped = df.groupby(step.groupby, dropna=False) if step.groupby else df
-    cumsum_serie = df_grouped[step.value_column].cumsum()
-    return df.assign(**{dst_column: cumsum_serie})
+
+    for col in step.to_cumsum:
+        dst_column = col[1] or f'{col[0]}_CUMSUM'
+        cumsum_serie = df_grouped[col[0]].cumsum()
+        df = df.assign(**{dst_column: cumsum_serie})
+
+    return df

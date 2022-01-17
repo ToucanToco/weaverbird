@@ -36,31 +36,40 @@ def translate_cumsum(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    # if any new column name had been provided
-    if step.new_column is None:
-        step.new_column = f"{step.value_column}_CUMSUM"
-
-    # we complete fields without the new column name
-    # if there is a same naming
-    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
-        columns_filter=[step.new_column]
-    )
-
     # the partition by sub query
     partition_by_sub_query = 'NULL'
     # if there is a group by query
     if step.groupby is not None and len(step.groupby):
         partition_by_sub_query = ', '.join(step.groupby)
 
+    new_columns = []
+    cumsum_part = ""
+    for cumsum in step.to_cumsum:
+        # if any new column name had been provided
+        new_column = cumsum[1] or f"{cumsum[0]}_CUMSUM"
+
+        new_columns.append(new_column)
+
+        cumsum_part += f", SUM({cumsum[0]}) OVER (PARTITION BY {partition_by_sub_query}"
+        cumsum_part += (
+            f" ORDER BY {step.reference_column} ASC rows UNBOUNDED PRECEDING) {new_column}"
+        )
+
+    # we complete fields without the new column name
+    # if there is a same naming
+    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+        columns_filter=new_columns
+    )
+
     # The final query
     final_query = (
-        f"SELECT {completed_fields}, SUM({step.value_column}) OVER (PARTITION BY {partition_by_sub_query}"
-        f" ORDER BY {step.reference_column} ASC rows UNBOUNDED PRECEDING) {step.new_column}"
+        f"SELECT {completed_fields}{cumsum_part}"
         f" FROM {query.query_name} ORDER BY {step.reference_column} ASC"
     )
 
-    # we make sure to add the new column in the metadata list
-    query.metadata_manager.add_query_metadata_column(step.new_column, "FLOAT")
+    # we make sure to add the new columns in the metadata list
+    for new_column in new_columns:
+        query.metadata_manager.add_query_metadata_column(new_column, "FLOAT")
 
     new_query = SQLQuery(
         query_name=query_name,
