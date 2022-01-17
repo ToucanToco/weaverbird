@@ -6,7 +6,7 @@
     "pipeline": [
       {
         "name": "cumsum",
-        "toCumSum": [["VALUE", "MY_CUMSUM"]],
+        "toCumSum": [["VALUE", "MY_CUMSUM"], ["VALUE_2", "MY_CUMSUM_2"]],
         "referenceColumn": "DATE",
         "groupby": [
           "COUNTRY"
@@ -28,6 +28,10 @@
         {
           "name": "VALUE",
           "type": "integer"
+        },
+        {
+          "name": "VALUE_2",
+          "type": "integer"
         }
       ],
       "pandas_version": "0.20.0"
@@ -36,62 +40,74 @@
       {
         "DATE": "2019-01",
         "COUNTRY": "France",
-        "VALUE": 2
+        "VALUE": 2,
+        "VALUE_2": 1
       },
       {
         "DATE": "2019-02",
         "COUNTRY": "France",
-        "VALUE": 5
+        "VALUE": 5,
+        "VALUE_2": 4
       },
       {
         "DATE": "2019-03",
         "COUNTRY": "France",
-        "VALUE": 3
+        "VALUE": 3,
+        "VALUE_2": 2
       },
       {
         "DATE": "2019-04",
         "COUNTRY": "France",
-        "VALUE": 8
+        "VALUE": 8,
+        "VALUE_2": 7
       },
       {
         "DATE": "2019-05",
         "COUNTRY": "France",
-        "VALUE": 9
+        "VALUE": 9,
+        "VALUE_2": 8
       },
       {
         "DATE": "2019-06",
         "COUNTRY": "France",
-        "VALUE": 6
+        "VALUE": 6,
+        "VALUE_2": 5
       },
       {
         "DATE": "2019-01",
         "COUNTRY": "USA",
-        "VALUE": 10
+        "VALUE": 10,
+        "VALUE_2": 9
       },
       {
         "DATE": "2019-02",
         "COUNTRY": "USA",
-        "VALUE": 6
+        "VALUE": 6,
+        "VALUE_2": 5
       },
       {
         "DATE": "2019-03",
         "COUNTRY": "USA",
-        "VALUE": 6
+        "VALUE": 6,
+        "VALUE_2": 5
       },
       {
         "DATE": "2019-04",
         "COUNTRY": "USA",
-        "VALUE": 4
+        "VALUE": 4,
+        "VALUE_2": 3
       },
       {
         "DATE": "2019-05",
         "COUNTRY": "USA",
-        "VALUE": 8
+        "VALUE": 8,
+        "VALUE_2": 7
       },
       {
         "DATE": "2019-06",
         "COUNTRY": "USA",
-        "VALUE": 7
+        "VALUE": 7,
+        "VALUE_2": 6
       }
     ]
   },
@@ -111,7 +127,15 @@
           "type": "integer"
         },
         {
+          "name": "VALUE_2",
+          "type": "integer"
+        },
+        {
           "name": "MY_CUMSUM",
+          "type": "integer"
+        },
+        {
+          "name": "MY_CUMSUM_2",
           "type": "integer"
         }
       ],
@@ -122,73 +146,97 @@
         "DATE": "2019-01",
         "COUNTRY": "France",
         "VALUE": 2,
-        "MY_CUMSUM": 2
+        "VALUE_2": 1,
+        "MY_CUMSUM": 2,
+        "MY_CUMSUM_2": 1
       },
       {
         "DATE": "2019-01",
         "COUNTRY": "USA",
         "VALUE": 10,
-        "MY_CUMSUM": 10
+        "VALUE_2": 9,
+        "MY_CUMSUM": 10,
+        "MY_CUMSUM_2": 9
       },
       {
         "DATE": "2019-02",
         "COUNTRY": "France",
         "VALUE": 5,
-        "MY_CUMSUM": 7
+        "VALUE_2": 4,
+        "MY_CUMSUM": 7,
+        "MY_CUMSUM_2": 5
       },
       {
         "DATE": "2019-02",
         "COUNTRY": "USA",
         "VALUE": 6,
-        "MY_CUMSUM": 16
+        "VALUE_2": 5,
+        "MY_CUMSUM": 16,
+        "MY_CUMSUM_2": 14
       },
       {
         "DATE": "2019-03",
         "COUNTRY": "France",
         "VALUE": 3,
-        "MY_CUMSUM": 10
+        "VALUE_2": 2,
+        "MY_CUMSUM": 10,
+        "MY_CUMSUM_2": 7
       },
       {
         "DATE": "2019-03",
         "COUNTRY": "USA",
         "VALUE": 6,
-        "MY_CUMSUM": 22
+        "VALUE_2": 5,
+        "MY_CUMSUM": 22,
+        "MY_CUMSUM_2": 19
       },
       {
         "DATE": "2019-04",
         "COUNTRY": "France",
         "VALUE": 8,
-        "MY_CUMSUM": 18
+        "VALUE_2": 7,
+        "MY_CUMSUM": 18,
+        "MY_CUMSUM_2": 14
       },
       {
         "DATE": "2019-04",
         "COUNTRY": "USA",
         "VALUE": 4,
-        "MY_CUMSUM": 26
+        "VALUE_2": 3,
+        "MY_CUMSUM": 26,
+        "MY_CUMSUM_2": 22
       },
       {
         "DATE": "2019-05",
         "COUNTRY": "France",
         "VALUE": 9,
-        "MY_CUMSUM": 27
+        "VALUE_2": 8,
+        "MY_CUMSUM": 27,
+        "MY_CUMSUM_2": 22
       },
       {
         "DATE": "2019-05",
         "COUNTRY": "USA",
         "VALUE": 8,
-        "MY_CUMSUM": 34
+        "VALUE_2": 7,
+        "MY_CUMSUM": 34,
+        "MY_CUMSUM_2": 29
       },
       {
         "DATE": "2019-06",
         "COUNTRY": "France",
         "VALUE": 6,
-        "MY_CUMSUM": 33
+        "VALUE_2": 5,
+        "MY_CUMSUM": 33,
+        "MY_CUMSUM_2": 27
       },
       {
         "DATE": "2019-06",
         "COUNTRY": "USA",
         "VALUE": 7,
-        "MY_CUMSUM": 41
+        "VALUE_2": 6,
+        "MY_CUMSUM": 41,
+        "MY_CUMSUM_2": 35
       }
     ]
   }

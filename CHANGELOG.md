@@ -1,5 +1,16 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Changed
+
+- Rollup step no longer require one aggregation column (useful to create referentials) (by @CharlesRngrd)
+- Mongo: concatenate won't fail on non-string columns (by @CharlesRngrd)
+
+## Fixed
+
+- Mongo: dividing by a column with potentially null or zero values does not fail anymore (return null instead) by @CharlesRngrd
+
 ## [0.79.4] - 2021-12-20
 
 ### Fixed
@@ -40,6 +51,12 @@ Preview source subset: improve design and move component under domain step
 ### Added
 
 - NewDateInput: send analytics event when selecting a relative date
+
+## Unreleased
+
+## Added
+
+- Cumsum step: can handle multiple columns at once (by @CharlesRngrd)
 
 ## [0.77.0] - 2021-12-06
 

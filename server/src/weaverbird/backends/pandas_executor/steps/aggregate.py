@@ -45,14 +45,21 @@ def execute_aggregate(
 
     grouped_by_df = df.groupby(group_by_columns, dropna=False)
     aggregated_cols = []
-    for aggregation in step.aggregations:
-        for col, new_col in zip(aggregation.columns, aggregation.new_columns):
-            agg_serie = (
-                grouped_by_df[col].agg(get_aggregate_fn(aggregation.agg_function)).rename(new_col)
-            )
-            aggregated_cols.append(agg_serie)
 
-    df_result = concat(aggregated_cols, axis=1).reset_index()
+    if len(step.aggregations) == 0:
+        df_result = grouped_by_df.first().reset_index()[group_by_columns]
+
+    else:
+        for aggregation in step.aggregations:
+            for col, new_col in zip(aggregation.columns, aggregation.new_columns):
+                agg_serie = (
+                    grouped_by_df[col]
+                    .agg(get_aggregate_fn(aggregation.agg_function))
+                    .rename(new_col)
+                )
+                aggregated_cols.append(agg_serie)
+
+        df_result = concat(aggregated_cols, axis=1).reset_index()
 
     # it is faster this way, than to transform the original df
     if step.keep_original_granularity:

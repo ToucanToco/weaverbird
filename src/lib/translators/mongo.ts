@@ -242,28 +242,53 @@ function buildFormulaTree(
   });
 }
 
+type MongoFormulaElement = MongoStep | string | number;
+
 /**
  * Translate a mathjs logical tree describing a formula into a Mongo step
  * @param node a mathjs node object (usually received after parsing an string expression)
  * This node is the root node of the logical tree describing the formula
+ *
+ * Returns also a list of element that must not equal 0 (denominators), otherwise the computation will fail
  */
-function buildMongoFormulaTree(node: math.MathNode): MongoStep | string | number {
+function buildMongoFormulaTree(
+  node: math.MathNode,
+): {
+  mongoFormula: MongoFormulaElement;
+  denominators: MongoFormulaElement[];
+} {
   switch (node.type) {
     case 'OperatorNode':
       if (node.args.length === 1) {
         const factor = node.op === '+' ? 1 : -1;
+        const mongoFormulaAndDenominators = buildMongoFormulaTree(node.args[0]);
         return {
-          $multiply: [factor, buildMongoFormulaTree(node.args[0])],
+          mongoFormula: { $multiply: [factor, mongoFormulaAndDenominators.mongoFormula] },
+          denominators: mongoFormulaAndDenominators.denominators,
+        };
+      } else {
+        const subMongoFormulasAndDenominators = node.args.map(n => buildMongoFormulaTree(n));
+        const mongoFormula = {
+          [getOperator(node.op)]: subMongoFormulasAndDenominators.map(m => m.mongoFormula),
+        };
+        const denominators = subMongoFormulasAndDenominators.map(m => m.denominators).flat();
+        if (
+          node.op === '/' &&
+          typeof subMongoFormulasAndDenominators[1].mongoFormula !== 'number'
+        ) {
+          denominators.push(subMongoFormulasAndDenominators[1].mongoFormula);
+        }
+        return {
+          mongoFormula,
+          denominators,
         };
       }
-      return {
-        [getOperator(node.op)]: node.args.map(e => buildMongoFormulaTree(e)),
-      };
+
     case 'SymbolNode':
       // For column names
-      return $$(node.name);
+      return { mongoFormula: $$(node.name), denominators: [] };
     case 'ConstantNode':
-      return node.value;
+      return { mongoFormula: node.value, denominators: [] };
     case 'ParenthesisNode':
       return buildMongoFormulaTree(node.content);
   }
@@ -576,12 +601,21 @@ function transformArgmaxArgmin(step: Readonly<S.ArgmaxStep> | Readonly<S.ArgminS
 /** transform a 'cumsum' step into corresponding mongo steps */
 function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
   const groupby = step.groupby ?? [];
+
+  // For retrocompatibility with old configurations
+  let toCumSum: string[][];
+  if ('valueColumn' in step) {
+    toCumSum = [[step.valueColumn, step.newColumn ?? `${step.valueColumn}_CUMSUM`]];
+  } else {
+    toCumSum = step.toCumSum;
+  }
+
   return [
     { $sort: { [step.referenceColumn]: 1 } },
     {
       $group: {
         _id: step.groupby ? columnMap(groupby) : null,
-        [step.valueColumn]: { $push: $$(step.valueColumn) },
+        ...Object.fromEntries(toCumSum.map(col => [col[0], { $push: `$${col[0]}` }])),
         _vqbArray: { $push: '$$ROOT' },
       },
     },
@@ -589,26 +623,22 @@ function transformCumSum(step: Readonly<S.CumSumStep>): MongoStep {
     {
       $project: {
         ...Object.fromEntries(groupby.map(col => [col, `$_id.${col}`])),
-        [step.newColumn ?? `${step.valueColumn}_CUMSUM`]: {
-          $sum: {
-            $slice: [$$(step.valueColumn), { $add: ['$_VQB_INDEX', 1] }],
-          },
-        },
+        ...Object.fromEntries(
+          toCumSum.map(col => [
+            col[1].length > 0 ? col[1] : `${col[0]}_CUMSUM`,
+            {
+              $sum: {
+                $slice: [`$${col[0]}`, { $add: ['$_VQB_INDEX', 1] }],
+              },
+            },
+          ]),
+        ),
         _vqbArray: 1,
       },
     },
     { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
     { $project: { _vqbArray: 0 } },
   ];
-}
-
-/** transform a 'concatenate' step into corresponding mongo steps */
-function transformConcatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
-  const concatArr: string[] = [$$(step.columns[0])];
-  for (const colname of step.columns.slice(1)) {
-    concatArr.push(step.separator, $$(colname));
-  }
-  return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
 }
 
 /** transform a 'dateextracgt' step into corresponding mongo steps */
@@ -1836,7 +1866,6 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
       },
     },
   }),
-  concatenate: transformConcatenate,
   cumsum: transformCumSum,
   custom: (step: Readonly<S.CustomStep>) => JSON.parse(step.query),
   dateextract: transformDateExtract,
@@ -1945,12 +1974,41 @@ export class Mongo36Translator extends BaseTranslator {
     ];
   }
 
+  // The $convert operator is not supported until mongo 4
+  protected convertToType(input: string | object, _type: string): string | object {
+    return input;
+  }
+
+  concatenate(step: Readonly<S.ConcatenateStep>): MongoStep {
+    const concatArr = [this.convertToType($$(step.columns[0]), 'string')];
+    for (const colname of step.columns.slice(1)) {
+      concatArr.push(step.separator, this.convertToType($$(colname), 'string'));
+    }
+    return { $addFields: { [step.new_column_name]: { $concat: concatArr } } };
+  }
+
   formula(step: Readonly<S.FormulaStep>): MongoStep {
+    const mongoFormulaTree = buildMongoFormulaTree(
+      buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
+    );
+
+    let newColumn = mongoFormulaTree.mongoFormula;
+
+    // If at least one denominator is zero or null, the result is null
+    // i.e : 1/0 + 1 = null
+    if (mongoFormulaTree.denominators.length > 0) {
+      newColumn = {
+        $cond: [
+          { $or: mongoFormulaTree.denominators.map(d => ({ $in: [d, [0, null]] })) },
+          null,
+          newColumn,
+        ],
+      };
+    }
+
     return {
       $addFields: {
-        [step.new_column]: buildMongoFormulaTree(
-          buildFormulaTree(step.formula, BaseTranslator.variableDelimiters),
-        ),
+        [step.new_column]: newColumn,
       },
     };
   }
@@ -2138,7 +2196,8 @@ export class Mongo36Translator extends BaseTranslator {
     variableDelimiters?: VariableDelimiters,
   ): MongoStep {
     const ifExpr: MongoStep = this.buildCondExpression(step.if, unsupportedOperatorsInConditions);
-    const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters));
+    const thenExpr = buildMongoFormulaTree(buildFormulaTree(step.then, variableDelimiters))
+      .mongoFormula;
     let elseExpr: MongoStep | string | number;
     if (typeof step.else === 'object') {
       elseExpr = this.transformIfThenElseStep(
@@ -2147,7 +2206,8 @@ export class Mongo36Translator extends BaseTranslator {
         variableDelimiters,
       );
     } else {
-      elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters));
+      elseExpr = buildMongoFormulaTree(buildFormulaTree(step.else, variableDelimiters))
+        .mongoFormula;
     }
     return { $cond: { if: ifExpr, then: thenExpr, else: elseExpr } };
   }

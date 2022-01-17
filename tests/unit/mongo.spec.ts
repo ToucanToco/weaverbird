@@ -1810,17 +1810,29 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       {
         $addFields: {
           foo: {
-            $subtract: [
+            $cond: [
               {
-                $divide: [
+                $or: [
                   {
-                    $add: ['$column_1', '$column_2'],
+                    $in: ['$column_3', [0, null]],
                   },
-                  '$column_3',
                 ],
               },
+              null,
               {
-                $multiply: ['$column_4', 100],
+                $subtract: [
+                  {
+                    $divide: [
+                      {
+                        $add: ['$column_1', '$column_2'],
+                      },
+                      '$column_3',
+                    ],
+                  },
+                  {
+                    $multiply: ['$column_4', 100],
+                  },
+                ],
               },
             ],
           },
@@ -1829,21 +1841,43 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       {
         $addFields: {
           bar: {
-            $multiply: [
+            $cond: [
               {
-                $divide: [
-                  1,
+                $or: [
                   {
-                    $add: [
+                    $in: [
                       {
-                        $add: ['$column_1', '$column_2'],
+                        $add: [
+                          {
+                            $add: ['$column_1', '$column_2'],
+                          },
+                          '$column_3',
+                        ],
                       },
-                      '$column_3',
+                      [0, null],
                     ],
                   },
                 ],
               },
-              10,
+              null,
+              {
+                $multiply: [
+                  {
+                    $divide: [
+                      1,
+                      {
+                        $add: [
+                          {
+                            $add: ['$column_1', '$column_2'],
+                          },
+                          '$column_3',
+                        ],
+                      },
+                    ],
+                  },
+                  10,
+                ],
+              },
             ],
           },
         },
@@ -1857,6 +1891,66 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               },
               {
                 $multiply: ['$column_3', 10],
+              },
+            ],
+          },
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
+  it('can generate a formula step with several divisions by zero or null', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'formula',
+        new_column: 'foo',
+        formula: 'column_1 / 10 + column_1 / column_2 + column_1 / (column_2 + 10)',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $addFields: {
+          foo: {
+            $cond: [
+              {
+                $or: [
+                  {
+                    $in: ['$column_2', [0, null]],
+                  },
+                  {
+                    $in: [
+                      {
+                        $add: ['$column_2', 10],
+                      },
+                      [0, null],
+                    ],
+                  },
+                ],
+              },
+              null,
+              {
+                $add: [
+                  {
+                    $add: [
+                      {
+                        $divide: ['$column_1', 10],
+                      },
+                      {
+                        $divide: ['$column_1', '$column_2'],
+                      },
+                    ],
+                  },
+                  {
+                    $divide: [
+                      '$column_1',
+                      {
+                        $add: ['$column_2', 10],
+                      },
+                    ],
+                  },
+                ],
               },
             ],
           },
@@ -2160,36 +2254,84 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate a concatenate step with only one column', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'concatenate',
-        columns: ['foo'],
-        separator: ' - ',
-        new_column_name: 'concat',
-      },
-    ];
-    const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $addFields: { concat: { $concat: ['$foo'] } } },
-      { $project: { _id: 0 } },
-    ]);
-  });
+  describe('concatenate', () => {
+    if (version <= '36') {
+      it('can generate a concatenate step with only one column', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { concat: { $concat: ['$foo'] } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
 
-  it('can generate a concatenate step with at least two columns', () => {
-    const pipeline: Pipeline = [
-      {
-        name: 'concatenate',
-        columns: ['foo', 'bar', 'again'],
-        separator: ' - ',
-        new_column_name: 'concat',
-      },
-    ];
-    const querySteps = translator.translate(pipeline);
-    expect(querySteps).toEqual([
-      { $addFields: { concat: { $concat: ['$foo', ' - ', '$bar', ' - ', '$again'] } } },
-      { $project: { _id: 0 } },
-    ]);
+      it('can generate a concatenate step with at least two columns', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo', 'bar', 'again'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { concat: { $concat: ['$foo', ' - ', '$bar', ' - ', '$again'] } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
+    } else {
+      it('can generate a concatenate step with only one column', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          { $addFields: { concat: { $concat: [{ $convert: { input: '$foo', to: 'string' } }] } } },
+          { $project: { _id: 0 } },
+        ]);
+      });
+
+      it('can generate a concatenate step with at least two columns', () => {
+        const pipeline: Pipeline = [
+          {
+            name: 'concatenate',
+            columns: ['foo', 'bar', 'again'],
+            separator: ' - ',
+            new_column_name: 'concat',
+          },
+        ];
+        const querySteps = translator.translate(pipeline);
+        expect(querySteps).toEqual([
+          {
+            $addFields: {
+              concat: {
+                $concat: [
+                  { $convert: { input: '$foo', to: 'string' } },
+                  ' - ',
+                  { $convert: { input: '$bar', to: 'string' } },
+                  ' - ',
+                  { $convert: { input: '$again', to: 'string' } },
+                ],
+              },
+            },
+          },
+          { $project: { _id: 0 } },
+        ]);
+      });
+    }
   });
 
   it('can generate a substring step with positive start and end index', () => {
@@ -3416,6 +3558,98 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can translate rollup steps without aggregation', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'rollup',
+        hierarchy: ['continent', 'country', 'city'],
+        aggregations: [],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $facet: {
+          level_0: [
+            {
+              $group: {
+                _id: {
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                continent: '$_id.continent',
+                label: '$_id.continent',
+                level: 'continent',
+              },
+            },
+          ],
+          level_1: [
+            {
+              $group: {
+                _id: {
+                  country: '$country',
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.country',
+                parent: '$_id.continent',
+                level: 'country',
+              },
+            },
+          ],
+          level_2: [
+            {
+              $group: {
+                _id: {
+                  city: '$city',
+                  country: '$country',
+                  continent: '$continent',
+                },
+              },
+            },
+            {
+              $project: {
+                _id: 0,
+                city: '$_id.city',
+                country: '$_id.country',
+                continent: '$_id.continent',
+                label: '$_id.city',
+                parent: '$_id.country',
+                level: 'city',
+              },
+            },
+          ],
+        },
+      },
+      {
+        $project: {
+          _vqbRollupLevels: { $concatArrays: ['$level_0', '$level_1', '$level_2'] },
+        },
+      },
+      {
+        $unwind: '$_vqbRollupLevels',
+      },
+      {
+        $replaceRoot: { newRoot: '$_vqbRollupLevels' },
+      },
+      {
+        $project: {
+          _id: 0,
+        },
+      },
+    ]);
+  });
+
   it('can generate more complex rollup steps if needed', () => {
     const pipeline: Pipeline = [
       {
@@ -4039,7 +4273,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate basic cumsum steps if needed', () => {
+  it('can translate legacy cumsum steps (with valueColum property)', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
@@ -4069,7 +4303,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
-  it('can generate more complex cumsum steps if needed', () => {
+  it('can translate legacy cumsum steps (with valueColum property) with newColumn and groupby', () => {
     const pipeline: Pipeline = [
       {
         name: 'cumsum',
@@ -4098,6 +4332,82 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           COUNTRY: '$_id.COUNTRY',
           PRODUCT: '$_id.PRODUCT',
           MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          _vqbArray: 1,
+        },
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+      { $project: { _vqbArray: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can translate cumsum steps with multiple columns, renamed or not', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        toCumSum: [
+          ['VALUE', ''],
+          ['VALUE_2', 'MY_NEW_COLUMN'],
+        ],
+        referenceColumn: 'DATE',
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
+      {
+        $group: {
+          _id: null,
+          VALUE: { $push: '$VALUE' },
+          VALUE_2: { $push: '$VALUE_2' },
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
+      {
+        $project: {
+          VALUE_CUMSUM: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE_2', { $add: ['$_VQB_INDEX', 1] }] } },
+          _vqbArray: 1,
+        },
+      },
+      { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbArray', '$$ROOT'] } } },
+      { $project: { _vqbArray: 0, _id: 0 } },
+    ]);
+  });
+
+  it('can translate cumsum steps with groupby', () => {
+    const pipeline: Pipeline = [
+      {
+        name: 'cumsum',
+        toCumSum: [
+          ['VALUE', ''],
+          ['VALUE_2', 'MY_NEW_COLUMN'],
+        ],
+        referenceColumn: 'DATE',
+        groupby: ['COUNTRY', 'PRODUCT'],
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      { $sort: { DATE: 1 } },
+      {
+        $group: {
+          _id: {
+            COUNTRY: '$COUNTRY',
+            PRODUCT: '$PRODUCT',
+          },
+          VALUE: { $push: '$VALUE' },
+          VALUE_2: { $push: '$VALUE_2' },
+          _vqbArray: { $push: '$$ROOT' },
+        },
+      },
+      { $unwind: { path: '$_vqbArray', includeArrayIndex: '_VQB_INDEX' } },
+      {
+        $project: {
+          COUNTRY: '$_id.COUNTRY',
+          PRODUCT: '$_id.PRODUCT',
+          VALUE_CUMSUM: { $sum: { $slice: ['$VALUE', { $add: ['$_VQB_INDEX', 1] }] } },
+          MY_NEW_COLUMN: { $sum: { $slice: ['$VALUE_2', { $add: ['$_VQB_INDEX', 1] }] } },
           _vqbArray: 1,
         },
       },

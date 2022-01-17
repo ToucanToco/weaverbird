@@ -1,13 +1,55 @@
 [
   [
     {
-        "steps": [
-            {"name": "cumsum", "valueColumn": "{{ column }}", "newColumn":"{{ result_column }}", "referenceColumn":  "{{column }}", "groupby":  ["{{ column }}", "{{ result_column }}"]}
-        ]
+      "steps": [
+        {
+          "name": "cumsum",
+          "toCumSum": [
+            [
+              "{{ toCumSum_column_1 }}",
+              "{{ toCumSum_result_column_1 }}"
+            ],
+            [
+              "{{ toCumSum_column_2 }}",
+              "{{ toCumSum_result_column_2 }}"
+            ]
+          ], 
+          "referenceColumn": "{{ referenceColumn_column }}", 
+          "groupby": [
+            "{{ groupby_column_1 }}", 
+            "{{ groupby_column_2 }}"
+          ]
+        }
+      ]
     },
-    {"column": "a_column", "result_column":  "another_column"},
-     [
-          {"name": "cumsum", "valueColumn": "a_column", "newColumn":"another_column", "referenceColumn":  "a_column", "groupby":  ["a_column", "another_column"]}
-     ]
+    {
+      "toCumSum_column_1": "column_a",
+      "toCumSum_result_column_1": "column_b",
+      "toCumSum_column_2": "column_c",
+      "toCumSum_result_column_2": "column_d",
+      "referenceColumn_column": "column_e",
+      "groupby_column_1": "column_f",
+      "groupby_column_2": "column_g"
+    },
+    [
+      {
+        "name": "cumsum",
+        "toCumSum": [
+          [
+            "column_a",
+            "column_b"
+          ],
+          [
+            "column_c",
+            "column_d"
+          ]
+        ], 
+        "referenceColumn": "column_e", 
+        "groupby": [
+          "column_f", 
+          "column_g"
+        ]
+      }
+    ]
   ]
 ]

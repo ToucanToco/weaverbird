@@ -208,14 +208,29 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   cumsum(step: Readonly<S.CumSumStep>) {
-    return {
+    const interpolatedPartialStep = {
       ...step,
-      valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
       referenceColumn: _interpolate(this.interpolateFunc, step.referenceColumn, this.context),
       groupby: (step.groupby ?? []).map(col =>
         _interpolate(this.interpolateFunc, col, this.context),
       ),
-      newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
+    };
+
+    // Legacy syntax
+    if ('valueColumn' in step) {
+      return {
+        ...interpolatedPartialStep,
+        valueColumn: _interpolate(this.interpolateFunc, step.valueColumn, this.context),
+        newColumn: _interpolate(this.interpolateFunc, step.newColumn, this.context),
+      };
+    }
+
+    return {
+      ...interpolatedPartialStep,
+      toCumSum: step.toCumSum.map(([valueColumn, newColumn]): [string, string] => [
+        _interpolate(this.interpolateFunc, valueColumn, this.context),
+        _interpolate(this.interpolateFunc, newColumn, this.context),
+      ]),
     };
   }
 
