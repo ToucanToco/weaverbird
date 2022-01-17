@@ -84,20 +84,23 @@ export default class CumSumStepForm extends BaseStepForm<CumSumStep> {
   readonly title: string = 'Compute cumulated sum';
   cumSumWidget = CumSumWidget;
 
-  /** Overload the definition of editedStep in BaseStepForm to guarantee retrocompatibility,
-   *  as we have to manage historical configurations where only one column at a time could be
-   * renamed via the 'valueColumn' and 'newColumn' parameter, now optional and not useful. So we
-   * convert them into a 'toCumSum' array upfront */
-  editedStep = {
-    ...this.stepFormDefaults,
-    ...this.initialStepValue,
-    toCumSum:
-      this.initialStepValue.valueColumn && this.initialStepValue.newColumn
-        ? [[this.initialStepValue.valueColumn, this.initialStepValue.newColumn]]
-        : this.initialStepValue.toCumSum,
-    valueColumn: undefined,
-    newColumn: undefined,
-  };
+  created() {
+    /** Overload the definition of editedStep in BaseStepForm to guarantee retro-compatibility,
+     *  as we have to manage historical configurations where only one column at a time could be
+     * renamed via the 'valueColumn' and 'newColumn' parameter, now optional and not useful. So we
+     * convert them into a 'toCumSum' array upfront */
+    if ('valueColumn' in this.editedStep && this.editedStep.valueColumn) {
+      const valueColumn = this.editedStep.valueColumn;
+      delete this.editedStep.valueColumn;
+      (this.editedStep as CumSumStep).toCumSum = [[valueColumn, '']];
+
+      if ('newColumn' in this.editedStep && this.editedStep.newColumn) {
+        const newColumn = this.editedStep.newColumn;
+        delete this.editedStep.newColumn;
+        (this.editedStep as CumSumStep).toCumSum[0][1] = newColumn;
+      }
+    }
+  }
 
   get toCumSum() {
     return this.editedStep.toCumSum;
