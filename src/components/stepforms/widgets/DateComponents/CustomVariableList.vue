@@ -1,11 +1,13 @@
 <template>
   <div
     class="widget-custom-variable-list"
+    data-cy="weaverbird-date-input-variables"
     :class="{ 'widget-custom-variable-list--advanced': enableAdvancedVariable }"
   >
     <VariableListOption
       v-if="enableCustom"
       class="widget-custom-variable-list__custom-option"
+      data-cy="weaverbird-date-input-custom"
       :label="customLabel"
       identifier="custom"
       :selectedVariables="selectedVariables"

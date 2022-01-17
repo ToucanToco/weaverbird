@@ -5,9 +5,14 @@
       'widget-date-input--opened': isEditorOpened,
     }"
   >
-    <div class="widget-date-input__container" @click.stop="openEditor">
+    <div
+      class="widget-date-input__container"
+      @click.stop="openEditor"
+      data-cy="weaverbird-date-input"
+    >
       <VariableTag
         class="widget-date-input__advanced-variable"
+        data-cy="weaverbird-date-input-advanced-variable"
         v-if="variable || advancedVariable"
         :value="value"
         :available-variables="availableVariables"
@@ -16,7 +21,9 @@
         @edited="openAdvancedVariableModal"
         @removed="resetValue"
       />
-      <span class="widget-date-input__label" v-else>{{ label }}</span>
+      <span class="widget-date-input__label" data-cy="weaverbird-date-input-label" v-else>{{
+        label
+      }}</span>
       <div class="widget-date-input__icon">
         <FAIcon icon="far calendar" />
       </div>
@@ -48,6 +55,7 @@
         >
           <Tabs
             class="widget-date-input__editor-header"
+            data-cy="weaverbird-date-input-tabs"
             :tabs="tabs"
             :selectedTab="selectedTab"
             @tabSelected="selectTab"
@@ -68,6 +76,7 @@
           <div class="widget-date-input__editor-footer">
             <div
               class="widget-date-input__editor-button"
+              data-cy="weaverbird-date-input-cancel"
               ref="cancel"
               @click="closeEditor"
               v-text="'Cancel'"
@@ -76,6 +85,7 @@
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
               :class="{ 'widget-date-input__editor-button--disabled': hasInvalidTabValue }"
               ref="save"
+              data-cy="weaverbird-date-input-save"
               :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
               v-text="'Set date'"

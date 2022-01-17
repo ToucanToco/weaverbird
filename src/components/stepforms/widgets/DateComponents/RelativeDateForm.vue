@@ -1,13 +1,15 @@
 <template>
-  <div class="widget-relative-date-range-form">
+  <div class="widget-relative-date-range-form" data-cy="weaverbird-date-input-relative-form">
     <div class="widget-relative-date-range-form__container">
       <InputNumberWidget
         class="widget-relative-date-range-form__quantity"
+        data-cy="weaverbird-date-input-relative-form-quantity"
         v-model="quantity"
         :min="1"
       />
       <AutocompleteWidget
         class="widget-relative-date-range-form__duration"
+        data-cy="weaverbird-date-input-relative-form-duration"
         v-model="duration"
         :options="durations"
         trackBy="value"
@@ -17,12 +19,14 @@
     <div class="widget-relative-date-range-form__container">
       <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--operator"
+        data-cy="weaverbird-date-input-relative-form-operator"
         v-model="operator"
         :options="availableOperators"
         label="label"
       />
       <AutocompleteWidget
         class="widget-relative-date-range-form__input widget-relative-date-range-form__input--base-date"
+        data-cy="weaverbird-date-input-relative-form-date"
         v-model="baseDate"
         :options="availableVariables"
         placeholder="Select a date"
