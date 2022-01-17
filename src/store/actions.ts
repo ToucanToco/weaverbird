@@ -106,6 +106,35 @@ class Actions {
     dispatch('updateDataset');
   }
 
+  // Retrieve the first row from a pipeline, so we can infer its columns names
+  async getColumnNamesFromPipeline(
+    { state }: ActionContext<VQBState, any>,
+    pipelineNameOrDomain: string,
+  ): Promise<string[] | undefined> {
+    if (!pipelineNameOrDomain) {
+      return;
+    }
+
+    let pipeline: Pipeline = [];
+
+    if (pipelineNameOrDomain in state.pipelines) {
+      pipeline = state.pipelines[pipelineNameOrDomain];
+    } else {
+      pipeline = [
+        {
+          name: 'domain',
+          domain: pipelineNameOrDomain,
+        },
+      ];
+    }
+
+    const response = await state.backendService.executePipeline(pipeline, state.pipelines, 1, 0);
+
+    if (response.data) {
+      return response.data.headers.map(col => col.name);
+    }
+  }
+
   deleteSteps(
     { commit, dispatch }: ActionContext<VQBState, any>,
     { indexes }: { indexes: number[] },

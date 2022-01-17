@@ -2,12 +2,16 @@
 
 ## Unreleased
 
+### Added
+
+- UI: display columns of the right dataset in join step
+
 ### Changed
 
 - Rollup step no longer require one aggregation column (useful to create referentials) (by @CharlesRngrd)
 - Mongo: concatenate won't fail on non-string columns (by @CharlesRngrd)
 
-## Fixed
+### Fixed
 
 - Mongo: dividing by a column with potentially null or zero values does not fail anymore (return null instead) by @CharlesRngrd
 

@@ -11,6 +11,7 @@
       v-model="rightPipeline"
       name="Select a dataset to join (as right dataset):"
       :options="options"
+      @input="updateRightColumnNames(rightPipeline.label)"
       placeholder="Select a dataset"
       data-path=".right_pipeline"
       :errors="errors"
@@ -34,7 +35,7 @@
       v-model="on"
       :defaultItem="['', '']"
       :widget="joinColumns"
-      :componentProps="{ syncWithSelectedColumn: false }"
+      :componentProps="{ syncWithSelectedColumn: false, rightColumnNames }"
       :automatic-new-field="false"
       data-path=".on"
       :errors="errors"
@@ -126,6 +127,22 @@ export default class JoinStepForm extends BaseStepForm<JoinStep> {
       }
       return option;
     });
+  }
+
+  rightColumnNames: string[] | null | undefined = null;
+
+  @VQBModule.Action getColumnNamesFromPipeline!: (
+    pipelineNameOrDomain: string,
+  ) => Promise<string[] | undefined>;
+
+  async updateRightColumnNames(pipelineNameOrDomain: string) {
+    this.rightColumnNames = await this.getColumnNamesFromPipeline(pipelineNameOrDomain);
+  }
+
+  created() {
+    if (this.rightPipeline.label) {
+      this.updateRightColumnNames(this.rightPipeline.label);
+    }
   }
 }
 </script>

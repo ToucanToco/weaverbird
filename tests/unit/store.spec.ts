@@ -1,3 +1,5 @@
+import { Store } from 'vuex';
+
 import { BackendService } from '@/lib/backend';
 import { DataSet } from '@/lib/dataset';
 import { Pipeline } from '@/lib/steps';
@@ -7,7 +9,7 @@ import getters from '@/store/getters';
 import mutations from '@/store/mutations';
 import { currentPipeline, emptyState } from '@/store/state';
 
-import { buildState, buildStateWithOnePipeline, setupMockStore } from './utils';
+import { buildState, buildStateWithOnePipeline, RootState, setupMockStore } from './utils';
 
 describe('getter tests', () => {
   describe('pipelines', () => {
@@ -1161,6 +1163,89 @@ describe('action tests', () => {
         index: 1,
         message: 'Step specific error',
       });
+    });
+  });
+
+  describe('getColumnNamesFromPipeline', () => {
+    let store: Store<RootState>, mockBackendServiceExecutePipeline: jest.Mock;
+
+    beforeEach(() => {
+      mockBackendServiceExecutePipeline = jest.fn();
+
+      store = setupMockStore(
+        buildState({
+          backendService: {
+            executePipeline: mockBackendServiceExecutePipeline,
+          },
+          currentPipelineName: 'coco_l_asticot',
+          pipelines: {
+            coco_l_asticot: [
+              { name: 'domain', domain: 'plop' },
+              { name: 'text', new_column: 'yolo', text: 'asticot' },
+            ],
+            dataset1: [],
+            dataset2: [],
+          },
+        }),
+      );
+    });
+
+    it('should not return anything if no pipeline name or domain is provided', async () => {
+      expect(await store.dispatch(VQBnamespace('getColumnNamesFromPipeline'))).toBeUndefined();
+      expect(mockBackendServiceExecutePipeline).not.toHaveBeenCalled();
+    });
+
+    it('should return the column names from an existing pipeline', async () => {
+      mockBackendServiceExecutePipeline.mockResolvedValue({
+        data: { headers: [{ name: 'A' }, { name: 'B' }, { name: 'C' }] },
+      });
+      expect(
+        await store.dispatch(VQBnamespace('getColumnNamesFromPipeline'), 'coco_l_asticot'),
+      ).toEqual(['A', 'B', 'C']);
+      expect(mockBackendServiceExecutePipeline).toHaveBeenLastCalledWith(
+        [
+          { name: 'domain', domain: 'plop' },
+          { name: 'text', new_column: 'yolo', text: 'asticot' },
+        ],
+        {
+          coco_l_asticot: [
+            { name: 'domain', domain: 'plop' },
+            { name: 'text', new_column: 'yolo', text: 'asticot' },
+          ],
+          dataset1: [],
+          dataset2: [],
+        },
+        1,
+        0,
+      );
+    });
+
+    it('should return the column names from a domain', async () => {
+      mockBackendServiceExecutePipeline.mockResolvedValue({
+        data: { headers: [{ name: 'meow' }, { name: 'ouaf' }] },
+      });
+      expect(await store.dispatch(VQBnamespace('getColumnNamesFromPipeline'), 'other')).toEqual([
+        'meow',
+        'ouaf',
+      ]);
+      expect(mockBackendServiceExecutePipeline).toHaveBeenLastCalledWith(
+        [
+          {
+            name: 'domain',
+            domain: 'other',
+          },
+        ],
+        {
+          coco_l_asticot: [
+            { name: 'domain', domain: 'plop' },
+            { name: 'text', new_column: 'yolo', text: 'asticot' },
+          ],
+          dataset1: [],
+          dataset2: [],
+        },
+        1,
+        0,
+      );
     });
   });
 });
