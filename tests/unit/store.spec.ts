@@ -536,70 +536,11 @@ describe('mutation tests', () => {
     });
   });
 
-  it('sets current domain on empty pipeline', () => {
-    const state = buildStateWithOnePipeline([], { currentDomain: 'foo' });
-    expect(state.currentDomain).toEqual('foo');
-    mutations.setCurrentDomain(state, { currentDomain: 'bar' });
-    expect(state.currentDomain).toEqual('bar');
-    expect(getters.pipeline(state, {}, {}, {})).toEqual([{ name: 'domain', domain: 'bar' }]);
-  });
-
-  it('sets current domain on non empty pipeline', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', toRename: [['foo', 'bar']] },
-      { name: 'rename', toRename: [['baz', 'spam']] },
-    ];
-    const state = buildState({
-      currentDomain: 'foo',
-      ...buildStateWithOnePipeline(pipeline, {
-        dataset: {
-          headers: [],
-          data: [],
-          paginationContext: { pageno: 2, pagesize: 10, totalCount: 10 },
-        },
-      }),
-    });
-    expect(state.currentDomain).toEqual('foo');
-    mutations.setCurrentDomain(state, { currentDomain: 'bar' });
-    expect(state.currentDomain).toEqual('bar');
-    expect(getters.pipeline(state, {}, {}, {})).toEqual([
-      { name: 'domain', domain: 'bar' },
-      { name: 'rename', toRename: [['foo', 'bar']] },
-      { name: 'rename', toRename: [['baz', 'spam']] },
-    ]);
-    // make sure the pagination is reset
-    expect(state.dataset.paginationContext?.pageno).toEqual(1);
-  });
-
-  it('do nothing without any current pipeline', () => {
-    const state = buildState({});
-    mutations.setCurrentDomain(state, { currentDomain: 'bar' });
-    expect(state.currentDomain).toBeUndefined();
-  });
-
   it('sets domain list', () => {
     const state = buildState({});
     expect(state.domains).toEqual([]);
     mutations.setDomains(state, { domains: ['foo', 'bar'] });
     expect(state.domains).toEqual(['foo', 'bar']);
-    expect(state.currentDomain).toEqual('foo');
-  });
-
-  it('updates current domain when inconsistent with setDomains', () => {
-    const state = buildState({ currentDomain: 'babar' });
-    expect(state.domains).toEqual([]);
-    mutations.setDomains(state, { domains: ['foo', 'bar'] });
-    expect(state.domains).toEqual(['foo', 'bar']);
-    expect(state.currentDomain).toEqual('foo');
-  });
-
-  it('leaves current domain untouched when consistent with setDomains', () => {
-    const state = buildState({ currentDomain: 'bar' });
-    expect(state.domains).toEqual([]);
-    mutations.setDomains(state, { domains: ['foo', 'bar'] });
-    expect(state.domains).toEqual(['foo', 'bar']);
-    expect(state.currentDomain).toEqual('bar');
   });
 
   it('sets currentPipelineName', () => {
@@ -643,38 +584,6 @@ describe('mutation tests', () => {
       // make sure the pagination is reset
       expect(state.dataset.paginationContext?.pageno).toEqual(1);
     });
-  });
-
-  it('should set current domain when updating pipeline with domain', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', toRename: [['foo', 'bar']] },
-    ];
-    const state = buildState(
-      buildStateWithOnePipeline([{ name: 'domain', domain: 'babar' }], {
-        currentDomain: 'babar',
-      }),
-    );
-    expect(getters.pipeline(state, {}, {}, {})).toEqual([{ name: 'domain', domain: 'babar' }]);
-    expect(state.currentDomain).toEqual('babar');
-    mutations.setPipeline(state, { pipeline });
-    expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
-    expect(state.currentDomain).toEqual('foo');
-  });
-
-  it('should not set current domain when updating pipeline without domain', () => {
-    const pipeline: Pipeline = [
-      { name: 'domain', domain: 'foo' },
-      { name: 'rename', toRename: [['foo', 'bar']] },
-    ];
-    const state = buildState(
-      buildStateWithOnePipeline([{ name: 'rename', toRename: [['foo', 'bar']] }], {
-        currentDomain: 'foo',
-      }),
-    );
-    mutations.setPipeline(state, { pipeline });
-    expect(getters.pipeline(state, {}, {}, {})).toEqual(pipeline);
-    expect(state.currentDomain).toEqual('foo');
   });
 
   it('sets pipelines', () => {

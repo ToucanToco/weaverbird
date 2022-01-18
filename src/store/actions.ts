@@ -151,14 +151,6 @@ class Actions {
     dispatch('updateDataset');
   }
 
-  setCurrentDomain(
-    { commit, dispatch }: ActionContext<VQBState, any>,
-    payload: Pick<VQBState, 'currentDomain'>,
-  ) {
-    commit('setCurrentDomain', payload);
-    dispatch('updateDataset');
-  }
-
   setCurrentPage(
     { commit, dispatch }: ActionContext<VQBState, any>,
     { pageno }: { pageno: number },

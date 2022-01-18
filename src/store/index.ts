@@ -68,8 +68,8 @@ export function unregisterModule(rootStore: Store<any>) {
 /**
  * Vuex store factory
  * Example usage:
- * `> setupStore({domains: ['foo', 'bar'], currentDomain: 'foo'})`
- * => will create an empty state, except for `domains` and `currentDomain` fields.
+ * `> setupStore({domains: ['foo', 'bar']})`
+ * => will create an empty state, except for `domains`  field.
  *
  * @param initialState the parts of the state we want not to be empty at creation time.
  * @param plugins an optional list of store plugins (e.g. a backend database plugin)

@@ -42,11 +42,6 @@ type SetCurrentPipelineNameMutation = {
   payload: { name: string };
 };
 
-type SelectDomainMutation = {
-  type: 'setCurrentDomain';
-  payload: Pick<VQBState, 'currentDomain'>;
-};
-
 type SelectedStepMutation = {
   type: 'selectStep';
   payload: { index: number };
@@ -96,7 +91,6 @@ export type StateMutation =
   | PipelineMutation
   | SetCurrentPipelineNameMutation
   | SelectedColumnsMutation
-  | SelectDomainMutation
   | SelectedStepMutation
   | SetCurrentPage
   | SetPreviewSourceRowsSubset
@@ -207,9 +201,6 @@ class Mutations {
 
   setDomains(state: VQBState, { domains }: Pick<VQBState, 'domains'>) {
     state.domains = domains;
-    if (!state.currentDomain || (domains.length && !domains.includes(state.currentDomain))) {
-      state.currentDomain = domains[0];
-    }
   }
 
   @resetPagination
@@ -218,12 +209,6 @@ class Mutations {
       return;
     }
     Vue.set(state.pipelines, state.currentPipelineName, pipeline);
-    if (pipeline.length) {
-      const firstStep = pipeline[0];
-      if (firstStep.name === 'domain') {
-        state.currentDomain = firstStep.domain;
-      }
-    }
   }
 
   setPipelines(state: VQBState, { pipelines }: Pick<VQBState, 'pipelines'>) {
@@ -310,26 +295,6 @@ class Mutations {
     const lastAddedStepIndex = addIndex + steps.length - 1;
     // select last added step
     state.selectedStepIndex = lastAddedStepIndex;
-  }
-
-  /**
-   * change current selected domain and reset pipeline accordingly.
-   */
-  @resetPagination
-  setCurrentDomain(state: VQBState, { currentDomain }: Pick<VQBState, 'currentDomain'>) {
-    const pipeline = currentPipeline(state);
-    if (state.currentPipelineName === undefined || pipeline === undefined) {
-      return;
-    }
-    state.currentDomain = currentDomain;
-    if (currentDomain) {
-      const domainStep: DomainStep = { name: 'domain', domain: currentDomain };
-      if (pipeline.length) {
-        state.pipelines[state.currentPipelineName] = [domainStep, ...pipeline.slice(1)];
-      } else {
-        state.pipelines[state.currentPipelineName] = [domainStep];
-      }
-    }
   }
 
   setSelectedColumns(state: VQBState, { column }: { column: string | undefined }) {
