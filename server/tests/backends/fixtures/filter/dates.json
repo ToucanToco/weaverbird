@@ -1,5 +1,8 @@
 {
-  "exclude": ["sql"],
+  "exclude": [
+    "mysql",
+    "postgres"
+  ],
   "step": {
     "pipeline": [
       {

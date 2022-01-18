@@ -5,22 +5,21 @@ from typing import Dict, List, Optional, Union
 
 import docker
 import pandas as pd
-import pymysql
+import psycopg2
 import pytest
 from docker.models.images import Image
-from pymysql.err import OperationalError
+from psycopg2 import OperationalError
 from sqlalchemy import create_engine
 
 from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.sql_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
-pymysql.install_as_MySQLdb()
-
-image = {'name': 'mysql_weaverbird_test', 'image': 'mysql', 'version': '5.7.21'}
+image = {'name': 'postgres_weaverbird_test', 'image': 'postgres', 'version': '14.1-bullseye'}
 docker_client = docker.from_env()
+exec_type = 'postgres'
 
-test_cases = retrieve_case('sql_translator', 'sql')
+test_cases = retrieve_case('sql_translator', exec_type)
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -46,13 +45,11 @@ def db_container():
         auto_remove=True,
         detach=True,
         environment={
-            'MYSQL_DATABASE': 'mysql_db',
-            'MYSQL_ROOT_PASSWORD': 'ilovetoucan',
-            'MYSQL_USER': 'ubuntu',
-            'MYSQL_PASSWORD': 'ilovetoucan',
-            'MYSQL_ROOT_HOST': '%',
+            'POSTGRES_DB': 'pg_db',
+            'POSTGRES_USER': 'ubuntu',
+            'POSTGRES_PASSWORD': 'ilovetoucan',
         },
-        ports={'3306': '3306'},
+        ports={'5432': '5432'},
     )
     ready = False
     while not ready:
@@ -72,10 +69,10 @@ def get_connection():
         'host': '127.0.0.1',
         'user': 'ubuntu',
         'password': 'ilovetoucan',
-        'port': 3306,
-        'database': 'mysql_db',
+        'port': 5432,
+        'database': 'pg_db',
     }
-    conn = pymysql.connect(**con_params)
+    conn = psycopg2.connect(**con_params)
     return conn
 
 
@@ -84,9 +81,9 @@ def get_engine():
     host = '127.0.0.1'
     user = 'ubuntu'
     password = 'ilovetoucan'
-    port = 3306
-    database = 'mysql_db'
-    engine = create_engine(f'mysql://{user}:{password}@{host}:{port}/{database}')
+    port = 5432
+    database = 'pg_db'
+    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     return engine
 
 
@@ -106,28 +103,48 @@ def sql_retrieve_city(t):
     return t
 
 
-def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
-    if domain:
-        lst = domain.split(' ')
-        lst = [item for item in lst if len(item) > 0]
-        temp = lst[lst.index('FROM') + 1]
+def split_list(lst, list_index):
+    temp = lst[list_index[0] + 1]
+    if len(temp.split('.')) == 2:
+        table_name = temp.split('.')[1]
+    else:
+        table_name = temp.split('.')[0]
+    return table_name
 
-        if len(temp.split('.')) == 2:
-            table_name = temp.split('.')[1]
-        else:
-            table_name = temp.split('.')[0]
+
+def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None]:
+    lst = (domain if domain else query_string).split(' ')
+    lst = [item for item in lst if len(item) > 0]
+    if 'FROM' in lst:
+        list_index = [i for i, s in enumerate(lst) if s == "FROM"]
+        if len(list_index) == 1:
+            table_name = split_list(lst, list_index)
+        if len(list_index) > 1:
+            table_name = split_list(lst, list_index)[:-1]
+    else:
+        table_name = lst[0]
 
     request = (
         f'SELECT column_name as name, data_type as type_code FROM information_schema.columns'
-        f' WHERE table_name = "{table_name}" ORDER BY ordinal_position;'
+        f' WHERE table_name = \'{table_name}\' ORDER BY ordinal_position;'
     )
-
     connection = get_connection()
     with connection.cursor() as cursor:
         cursor.execute(request)
         describe_res = cursor.fetchall()
         res = {r[0]: r[1] for r in describe_res}
         return res
+
+
+def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
+    connection = get_connection()
+    with connection.cursor() as cursor:
+        res = cursor.execute(domain if domain else query_string).fetchall()
+        return pd.DataFrame(res)
+
+
+def standardized_columns(df: pd.DataFrame):
+    df.columns = [c.replace('-', '_').lower() for c in df.columns]
 
 
 # Translation from Pipeline json to SQL query
@@ -138,16 +155,21 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     # Drop created table
     execute(get_connection(), f'DROP TABLE IF EXISTS {case_id.replace("/", "")}', False)
 
-    # inserting the data in MySQL
+    # inserting the data in Postgres
     # Take data in fixture file, set in pandas, create table and insert
     data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
+    standardized_columns(data_to_insert)
     data_to_insert.to_sql(
         name=case_id.replace('/', ''), con=get_engine, index=False, if_exists='replace', chunksize=1
     )
 
     if 'other_inputs' in spec:
         for input in spec['other_inputs']:
-            pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
+            data_other_insert = pd.read_json(
+                json.dumps(spec['other_inputs'][input]), orient='table'
+            )
+            standardized_columns(data_other_insert)
+            data_other_insert.to_sql(
                 name=input,
                 con=get_engine,
                 index=False,
@@ -158,21 +180,35 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
     steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
     pipeline = Pipeline(steps=steps)
 
-    # Convert Pipeline object to MySQL Query
+    # Convert Pipeline object to Postgres Query
     query, report = translate_pipeline(
         pipeline,
         sql_query_retriever=sql_retrieve_city,
         sql_query_describer=sql_query_describer,
+        sql_query_executor=sql_query_executor,
+        sql_dialect='postgres',
     )
-
-    # Execute request generated from Pipeline in Mysql and get the result
+    # Execute request generated from Pipeline in Postgres and get the result
     result: pd.DataFrame = execute(get_connection(), query)
 
     # Drop created table
     execute(get_connection(), f'DROP TABLE {case_id.replace("/", "")}', False)
 
     # Compare result and expected (from fixture file)
-    pandas_result_expected = pd.read_json(json.dumps(spec['expected']), orient='table')
+    pandas_result_expected = pd.read_json(
+        json.dumps(
+            spec[
+                f'expected_{exec_type}'
+                if f'expected_{exec_type}' in spec
+                else 'expected_sql'
+                if 'expected_sql' in spec
+                else 'expected'
+            ]
+        ),
+        orient='table',
+    )
+
+    standardized_columns(pandas_result_expected)
     if 'other_expected' in spec:
         query_expected = spec['other_expected']['sql']['query']
         assert query_expected == query

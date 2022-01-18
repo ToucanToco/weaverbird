@@ -1,12 +1,12 @@
 from distutils import log
 
+from server.src.weaverbird.backends.sql_translator.steps.utils.query_transformation import (
+    build_selection_query,
+)
 from weaverbird.backends.sql_translator.steps.utils.combination import (
     resolve_sql_pipeline_for_combination,
 )
-from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
-    build_selection_query,
-    build_union_query,
-)
+from weaverbird.backends.sql_translator.steps.utils.query_transformation import build_union_query
 from weaverbird.backends.sql_translator.types import (
     SQLDialect,
     SQLPipelineTranslator,
@@ -57,7 +57,11 @@ def translate_append(
         query_to_union_metadata[unioned_query_name] = sql_query_describer(
             domain=None, query_string=query_string
         )
-
+        log.debug(
+            '------------------------------------------------------------'
+            f'SQLquery: {transformed_query}'
+            '############################################################'
+        )
         query.metadata_manager.create_table(unioned_query_name)
         query.metadata_manager.add_table_columns_from_dict(
             unioned_query_name, query_to_union_metadata[unioned_query_name]
@@ -68,11 +72,6 @@ def translate_append(
     transformed_query += f', {query_name} AS\
  ({build_union_query(query.metadata_manager, query.query_name, queries_to_append.keys())})'
     query.metadata_manager.rename_union_columns()
-    log.debug(
-        '------------------------------------------------------------'
-        f'SQLquery: {transformed_query}'
-        '############################################################'
-    )
 
     return SQLQuery(
         query_name=query_name,

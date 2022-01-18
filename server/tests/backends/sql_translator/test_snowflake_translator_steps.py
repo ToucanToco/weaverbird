@@ -205,7 +205,6 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             sql_query_describer=snowflake_query_describer,
             sql_query_executor=snowflake_query_executor,
         )
-
         # Execute request generated from Pipeline in Snowflake and get the result
         result: pd.DataFrame = execute(get_connection(), query)
 

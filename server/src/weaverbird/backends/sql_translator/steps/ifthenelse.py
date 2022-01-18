@@ -16,22 +16,25 @@ from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
-def recursively_convert_nested_condition(step: IfthenelseStep, composed_query: str) -> str:
-    if not hasattr(step, 'else_value'):
-        return str(step)
+def build_conditional_expression(step: IfthenelseStep):
+    built_string = ''
+    current_nested_step = step
 
-    if type(step.else_value) != IfThenElse:
-        return (
-            f"""IFF({apply_condition(step.condition, composed_query)}, """
-            f"""{step.then}, {step.else_value})"""
+    while hasattr(current_nested_step, 'else_value') and isinstance(
+        current_nested_step.else_value, IfThenElse
+    ):
+        built_string += (
+            f"WHEN {apply_condition(current_nested_step.condition, '')} "
+            f"THEN {current_nested_step.then} "
         )
-    else:
-        composed_query += (
-            f"""IFF({apply_condition(step.condition, composed_query)}, {step.then}, """
-            f"""{recursively_convert_nested_condition(step.else_value, composed_query)})"""
-        )
+        current_nested_step = current_nested_step.else_value
 
-    return composed_query.replace(',),', '),')
+    built_string += (
+        f"WHEN {apply_condition(current_nested_step.condition, '').replace(',)', ')')} "
+        f"THEN {current_nested_step.then} ELSE {current_nested_step.else_value} "
+        f"END"
+    )
+    return built_string.replace('"', "'")
 
 
 def translate_ifthenelse(
@@ -55,22 +58,14 @@ def translate_ifthenelse(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    composed_query: str = ''
     completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
         columns_filter=[step.new_column]
     )
 
-    composed_query = (
-        f"""{recursively_convert_nested_condition(step, composed_query).replace('"', "'")}"""
-        f""" AS {step.new_column.upper()}"""
-    )
-    if completed_fields:
-        composed_query = f', {composed_query}'
-
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields}{composed_query}"""
+        f""" (SELECT {completed_fields}, CASE {build_conditional_expression(step)} AS {step.new_column.upper()}"""
         f""" FROM {query.query_name})""",
     )
 

@@ -28,6 +28,8 @@ def translate_table(
     select_from_table = sql_query_retriever(
         step.domain
     )  # TODO in laputa, implement the table retrieval instead of query
+    if len(select_from_table.split()) == 1:
+        select_from_table = f"SELECT * FROM {select_from_table}"
     query_name = f'SELECT_STEP_{index}'
     query_name += (
         f'_{subcall_from_other_pipeline_count}'

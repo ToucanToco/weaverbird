@@ -46,7 +46,6 @@ def translate_pipeline(
                 sql_dialect=sql_dialect,
             )
             translate_report.append(SQLStepTranslationReport(step_index=index))
-
         except Exception as e:
             raise SQLPipelineTranslationFailure(step, index, e) from e
 

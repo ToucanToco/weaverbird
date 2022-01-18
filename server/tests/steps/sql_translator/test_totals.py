@@ -45,6 +45,11 @@ def test_translate_totals(query):
                     'aggfunction': 'avg',
                     'newcolumns': ['VALUE_1-AVG'],
                 },
+                {
+                    'columns': ['VALUE_3'],
+                    'aggfunction': 'count distinct',
+                    'newcolumns': ['VALUE_3-COUNT_DISTINCT'],
+                },
             ],
             'groups': ['YEAR'],
         }
@@ -59,14 +64,14 @@ def test_translate_totals(query):
         'SELECT CASE WHEN GROUPING(COUNTRY) = 0 THEN COUNTRY ELSE \'All countries\' END AS "COUNTRY", '
         'CASE WHEN GROUPING(PRODUCT) = 0 THEN PRODUCT ELSE \'All products\' END AS "PRODUCT", '
         'SUM(VALUE_1) AS "VALUE_1-SUM", SUM(VALUE_2) AS "VALUE_2-SUM", AVG(VALUE_1) '
-        'AS "VALUE_1-AVG", YEAR FROM SELECT_STEP_0 GROUP BY YEAR, '
+        'AS "VALUE_1-AVG", COUNT(DISTINCT VALUE_3) AS "VALUE_3-COUNT_DISTINCT", YEAR FROM SELECT_STEP_0 GROUP BY YEAR, '
         'GROUPING SETS((COUNTRY), (PRODUCT), (COUNTRY, PRODUCT), ()))'
     )
     assert new_query.transformed_query == expected_query
     assert new_query.query_name == 'TOTALS_STEP_1'
     assert (
         new_query.selection_query
-        == 'SELECT COUNTRY, PRODUCT, VALUE_1-SUM, VALUE_2-SUM, VALUE_1-AVG, YEAR FROM TOTALS_STEP_1'
+        == 'SELECT COUNTRY, PRODUCT, VALUE_1-SUM, VALUE_2-SUM, VALUE_1-AVG, VALUE_3-COUNT_DISTINCT, YEAR FROM TOTALS_STEP_1'
     )
     assert new_query.metadata_manager.retrieve_query_metadata_columns() == {
         'VALUE_1-SUM': ColumnMetadata(
@@ -88,6 +93,14 @@ def test_translate_totals(query):
         'VALUE_1-AVG': ColumnMetadata(
             name='VALUE_1-AVG',
             original_name='VALUE_1-AVG',
+            type='FLOAT',
+            original_type='FLOAT',
+            alias=None,
+            delete=False,
+        ),
+        'VALUE_3-COUNT_DISTINCT': ColumnMetadata(
+            name='VALUE_3-COUNT_DISTINCT',
+            original_name='VALUE_3-COUNT_DISTINCT',
             type='FLOAT',
             original_type='FLOAT',
             alias=None,
