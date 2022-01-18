@@ -67,6 +67,15 @@ export function isReferenceToExternalQuery(
   );
 }
 
+export function isReference(
+  pipelineOrReference: Reference,
+): pipelineOrReference is string | ReferenceToExternalQuery {
+  return (
+    isReferenceToOtherPipeline(pipelineOrReference) ||
+    isReferenceToExternalQuery(pipelineOrReference)
+  );
+}
+
 export function isPipelineStep(step: any): step is PipelineStep {
   return typeof step === 'object' && 'name' in step;
 }
