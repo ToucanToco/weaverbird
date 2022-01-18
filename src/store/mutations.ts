@@ -6,7 +6,7 @@ import Vue from 'vue';
 import { MutationTree } from 'vuex';
 
 import { BackendError, BackendWarning } from '@/lib/backend';
-import { DomainStep, Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
+import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { setVariableDelimiters } from '@/lib/translators';
 
 import { currentPipeline, VQBState } from './state';
