@@ -273,8 +273,14 @@ class PandasService {
       dataset = autocastDataset(dataset);
       return { data: dataset };
     } else {
+      let error = { type: 'error' };
+      if (typeof result === 'string') {
+        error.message = result;
+      } else {
+        error = {...result, ...error};
+      }
       return {
-        error: [{ type: 'error', message: result }],
+        error: [error],
       };
     }
   }
@@ -376,6 +382,9 @@ async function buildVueApp() {
                 value: 1200,
               },
             },
+            {
+              name:'top', groups:[], rank_on:'Transaction_date', sort:'asc', limit:100
+            }
           ],
           pipelineAmex: [
             {
@@ -479,7 +488,7 @@ async function buildVueApp() {
         return this.$store.state[VQB_MODULE_NAME].backendMessages;
       },
       backendErrors: function() {
-        return this.backendMessages.filter(({ type }) => type === 'error');
+        return this.backendMessages.filter(({ type, index }) => type === 'error' && index == null);
       },
       backendWarnings: function() {
         return this.backendMessages.filter(({ type }) => type === 'warning');
