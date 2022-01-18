@@ -1,13 +1,9 @@
-from typing import Literal, Union
+from typing import Union
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
-
-
-class Reference(BaseModel):
-    type: Literal['ref']
-    uid: str
+from weaverbird.pipeline.steps.utils.combination import Reference
 
 
 class DomainStep(BaseStep):

@@ -4,7 +4,7 @@ from pandas import DataFrame
 from pydantic import BaseModel, Field
 
 from weaverbird.pipeline import Pipeline
-from weaverbird.pipeline.steps.domain import Reference
+from weaverbird.pipeline.steps.utils.combination import Reference
 
 
 class StepExecutionReport(BaseModel):
