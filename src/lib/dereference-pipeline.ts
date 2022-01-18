@@ -1,4 +1,4 @@
-import { Pipeline, PipelineStep, Reference } from '@/lib/steps';
+import { Pipeline, PipelineStep, Reference, ReferenceToExternalQuery } from '@/lib/steps';
 
 export type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;
@@ -7,8 +7,11 @@ export type PipelinesScopeContext = {
 /**
  * Return a pipeline for the corresponding domain
  */
-function _getPipelineForDomain(reference: string, pipelines: PipelinesScopeContext): Pipeline {
-  if (Object.keys(pipelines).includes(reference)) {
+function _getPipelineForDomain(
+  reference: string | ReferenceToExternalQuery,
+  pipelines: PipelinesScopeContext,
+): Pipeline {
+  if (typeof reference === 'string' && Object.keys(pipelines).includes(reference)) {
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     return dereferencePipelines(pipelines[reference], pipelines);
   } else {
