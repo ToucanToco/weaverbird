@@ -433,15 +433,6 @@ async function buildVueApp() {
               },
             },
           ],
-          fromRef: [
-            {
-              name: 'domain',
-              domain: {
-                type: 'ref',
-                uid: 'xxx-yyy-zzz'
-              }
-            }
-          ]
         },
         translator: TRANSLATOR,
         backendService: backendService,
