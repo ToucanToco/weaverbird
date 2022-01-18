@@ -203,7 +203,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   domain(step: Readonly<S.DomainStep>) {
-    const sourceLabel = S.isReferenceToOtherQuery(step.domain)
+    const sourceLabel = S.isReferenceToExternalQuery(step.domain)
       ? `query ${step.domain.uid}`
       : `"${step.domain}"`;
     return `Source: ${sourceLabel}`;
