@@ -1,4 +1,11 @@
-import { Pipeline, PipelineStep, Reference, ReferenceToExternalQuery } from '@/lib/steps';
+import {
+  isReferenceToExternalQuery,
+  isReferenceToOtherPipeline,
+  Pipeline,
+  PipelineStep,
+  Reference,
+  ReferenceToExternalQuery,
+} from '@/lib/steps';
 
 export type PipelinesScopeContext = {
   [pipelineName: string]: Pipeline;
@@ -93,7 +100,7 @@ function _getPipelineNamesReferencedBy(
   cachedResults: Map<string, Array<string>>,
 ): Array<string> {
   const referenceNames: Array<string> = [];
-  if (typeof reference === 'string') {
+  if (isReferenceToOtherPipeline(reference)) {
     // if reference is a String
     const pipelineName = reference as string;
     // we add it to the results
@@ -111,6 +118,8 @@ function _getPipelineNamesReferencedBy(
       // we retreive the result
       referenceNames.push(...cachedResults.get(pipelineName));
     }
+  } else if (isReferenceToExternalQuery(reference)) {
+    // do nothing - it should not be dereferenced by the UI
   } else {
     // if reference is a Pipeline
     const pipeline = reference as Pipeline;

@@ -229,6 +229,17 @@ describe('getPipelineNamesReferencedBy', () => {
 });
 
 describe('getPipelineNamesReferencing', () => {
+  it('should not consider external query references', () => {
+    const pipelines: PipelinesScopeContext = {
+      dataset0: [{ name: 'domain', domain: { type: 'ref', uid: 'xxx-yyy-zzz' } }],
+      dataset1: [{ name: 'domain', domain: 'dataset0' }],
+      dataset2: [{ name: 'domain', domain: { type: 'ref', uid: 'aaa-bbb-ccc' } }],
+    };
+    expect(getPipelineNamesReferencing('dataset0', pipelines)).toEqual(['dataset1']);
+    expect(getPipelineNamesReferencing('dataset1', pipelines)).toEqual([]);
+    expect(getPipelineNamesReferencing('dataset2', pipelines)).toEqual([]);
+  });
+
   it('should handle a complex pipeline (nested dataset)', () => {
     const pipelines: PipelinesScopeContext = {
       toto: [{ name: 'domain', domain: 'lutte' }],
