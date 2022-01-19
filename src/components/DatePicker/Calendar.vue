@@ -1,5 +1,6 @@
 <template>
   <DatePicker
+    data-cy="weaverbird-calendar"
     :value="boundedValue"
     :availableDates="availableDates"
     :attributes="highlights"

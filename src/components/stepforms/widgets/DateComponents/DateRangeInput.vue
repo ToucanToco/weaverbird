@@ -9,9 +9,18 @@
       'widget-date-input--reset': !!value,
     }"
   >
-    <div class="widget-date-input__container" @click.stop="openEditor">
+    <div
+      class="widget-date-input__container"
+      @click.stop="openEditor"
+      data-cy="weaverbird-date-range-input"
+    >
       <span class="widget-date-input__label" v-if="!hideLabel" v-html="label" />
-      <div class="widget-date-input__reset-button" v-if="!!value" @click.stop="resetValue">
+      <div
+        class="widget-date-input__reset-button"
+        data-cy="weaverbird-date-range-input-reset"
+        v-if="!!value"
+        @click.stop="resetValue"
+      >
         <FAIcon icon="times" class="widget-date-input__reset-button-icon" />
       </div>
       <div class="widget-date-input__type-icon">
@@ -50,6 +59,7 @@
           <Tabs
             v-if="enableRelativeDate"
             class="widget-date-input__editor-header"
+            data-cy="weaverbird-date-range-input-tabs"
             :tabs="tabs"
             :selectedTab="selectedTab"
             @tabSelected="selectTab"
@@ -74,6 +84,7 @@
           <div class="widget-date-input__editor-footer">
             <div
               class="widget-date-input__editor-button"
+              data-cy="weaverbird-date-range-input-cancel"
               ref="cancel"
               @click="closeEditor"
               v-text="t('CANCEL')"
@@ -81,6 +92,7 @@
             <div
               class="widget-date-input__editor-button widget-date-input__editor-button--primary"
               :class="{ 'widget-date-input__editor-button--disabled': hasInvalidTabValue }"
+              data-cy="weaverbird-date-range-input-save"
               ref="save"
               :disabled="hasInvalidTabValue"
               @click="saveCustomVariable"
