@@ -8,7 +8,7 @@
         :initialStepValue="stepFormInitialValue"
         :stepFormDefaults="stepFormDefaults"
         :isStepCreation="isStepCreation"
-        :backendError="editedStepBackendError"
+        :backendError="backendError"
         @back="closeStepForm"
         @formSaved="saveStep"
       />
@@ -82,6 +82,10 @@ export default class QueryBuilder extends Vue {
 
   get formComponent() {
     return StepFormsComponents[this.currentStepFormName];
+  }
+
+  get backendError(): string | undefined {
+    return this.isStepCreation ? undefined : this.editedStepBackendError;
   }
 
   editStep(params: PipelineStep, index: number) {
