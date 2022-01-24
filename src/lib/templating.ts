@@ -132,7 +132,7 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   append(step: Readonly<S.AppendStep>) {
     const pipelines = [];
     for (const pipeline of step.pipelines) {
-      if (S.isReference(pipeline)) {
+      if (S.isReferenceToOtherPipeline(pipeline) || S.isReferenceToExternalQuery(pipeline)) {
         // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
         pipelines.push(pipeline);
       } else {
@@ -318,7 +318,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
   }
 
   join(step: Readonly<S.JoinStep>) {
-    if (S.isReference(step.right_pipeline)) {
+    if (
+      S.isReferenceToOtherPipeline(step.right_pipeline) ||
+      S.isReferenceToExternalQuery(step.right_pipeline)
+    ) {
       // the pipeline is referenced in: `submit` function in `src/components/stepforms/StepForm.vue`
       return { ...step };
     } else {

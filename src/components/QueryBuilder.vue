@@ -41,7 +41,6 @@ import FAIcon from '@/components/FAIcon.vue';
 import PipelineComponent from '@/components/Pipeline.vue';
 import { Pipeline, PipelineStep, PipelineStepName } from '@/lib/steps';
 import { VQBModule } from '@/store';
-import { VQBState } from '@/store/state';
 
 import { version } from '../../package.json';
 import StepFormsComponents from './stepforms';
@@ -71,7 +70,6 @@ export default class QueryBuilder extends Vue {
     initialValue: object;
   }) => void;
   @VQBModule.Mutation resetStepFormInitialValue!: () => void;
-  @VQBModule.Action setCurrentDomain!: (payload: Pick<VQBState, 'currentDomain'>) => void;
   @VQBModule.Action selectStep!: (payload: { index: number }) => void;
   @VQBModule.Mutation setPipeline!: (payload: { pipeline: Pipeline }) => void;
   @VQBModule.Getter stepErrors!: (index: number) => string | undefined;
@@ -98,19 +96,14 @@ export default class QueryBuilder extends Vue {
 
   saveStep(step: PipelineStep) {
     const newPipeline: Pipeline = [...this.pipeline];
-    // FIXME: not sure about that specific implem to handle `domain` step
     const index = step.name === 'domain' ? 0 : this.computedActiveStepIndex + 1;
     if (this.isStepCreation) {
       newPipeline.splice(index, 0, step);
     } else {
       newPipeline.splice(index, 1, step);
     }
-    if (step.name === 'domain') {
-      this.setCurrentDomain({ currentDomain: step.domain });
-    } else {
-      this.setPipeline({ pipeline: newPipeline });
-      this.selectStep({ index });
-    }
+    this.setPipeline({ pipeline: newPipeline });
+    this.selectStep({ index });
     this.closeStepForm();
     // Reset value from DataViewer
     this.resetStepFormInitialValue();

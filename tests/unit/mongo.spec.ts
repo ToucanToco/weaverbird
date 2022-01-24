@@ -54,6 +54,14 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     expect(querySteps).toEqual([{ $match: { domain: 'test_cube' } }, { $project: { _id: 0 } }]);
   });
 
+  it('should not translate domain steps with references to external queries', () => {
+    expect(() =>
+      translator.translate([
+        { name: 'domain', domain: { type: 'ref', uid: 'xxx-yyy-zzz' } },
+      ] as Pipeline),
+    ).toThrow();
+  });
+
   it('can generate select steps', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },
@@ -2781,6 +2789,25 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('should not translate an append step with unresolved references to external queries', () => {
+    expect(() =>
+      translator.translate([
+        { name: 'domain', domain: 'plop' },
+        { name: 'append', pipelines: [{ type: 'ref', uid: 'xxx-yyy-zzz' }] },
+      ] as Pipeline),
+    ).toThrow();
+
+    expect(() =>
+      translator.translate([
+        { name: 'domain', domain: 'plop' },
+        {
+          name: 'append',
+          pipelines: [[{ name: 'domain', domain: { type: 'ref', uid: 'xxx-yyy-zzz' } }]],
+        },
+      ] as Pipeline),
+    ).toThrow();
+  });
+
   it('does not support the convert step', () => {
     const pipeline: Pipeline = [
       {
@@ -3379,6 +3406,26 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
       { $replaceRoot: { newRoot: { $mergeObjects: ['$_vqbJoinKey', '$$ROOT'] } } },
       { $project: { _vqbJoinKey: 0, _id: 0 } },
     ]);
+  });
+
+  it('should not translate a join step with unresolved references to external queries', () => {
+    expect(() =>
+      translator.translate([
+        { name: 'domain', domain: 'plop' },
+        { name: 'join', right_pipeline: { type: 'ref', uid: 'xxx-yyy-zzz' }, on: [['key', 'key']] },
+      ] as Pipeline),
+    ).toThrow();
+
+    expect(() =>
+      translator.translate([
+        { name: 'domain', domain: 'plop' },
+        {
+          name: 'join',
+          right_pipeline: [{ name: 'domain', domain: { type: 'ref', uid: 'xxx-yyy-zzz' } }],
+          on: [['key', 'key']],
+        },
+      ] as Pipeline),
+    ).toThrow();
   });
 
   it('validate any custom query has json valid', () => {

@@ -434,7 +434,6 @@ async function buildVueApp() {
             },
           ],
         },
-        currentDomain: TRANSLATOR == 'snowflake' ? 'SALES' :'sales',
         translator: TRANSLATOR,
         backendService: backendService,
         // based on lodash templates (ERB syntax)

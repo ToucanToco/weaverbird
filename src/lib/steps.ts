@@ -41,16 +41,39 @@ export type DateInfo = BasicDatePart | AdvancedDateInfo;
 
 type PrimitiveType = number | boolean | string | Date;
 type Templatable<T> = T | string;
-export type Reference = Pipeline | string;
+export type ReferenceToExternalQuery = { type: 'ref'; uid: string };
+export type Reference = Pipeline | string | ReferenceToExternalQuery;
 export type TotalDimension = { totalColumn: string; totalRowsLabel: string };
 
 /**
  * Some step can contains either:
  * - a reference to the pipeline i.e. the name of the pipeline, then a string
  * - the pipeline itself
+ * - a reference to another pipeline, stored elsewhere, that should be resolved by the server
  */
-export function isReference(pipelineOrReference: Reference): pipelineOrReference is string {
+export function isReferenceToOtherPipeline(
+  pipelineOrReference: Reference,
+): pipelineOrReference is string {
   return typeof pipelineOrReference === 'string';
+}
+
+export function isReferenceToExternalQuery(
+  pipelineOrReference: Reference,
+): pipelineOrReference is ReferenceToExternalQuery {
+  return (
+    typeof pipelineOrReference === 'object' &&
+    'type' in pipelineOrReference &&
+    pipelineOrReference.type == 'ref'
+  );
+}
+
+export function isReference(
+  pipelineOrReference: Reference,
+): pipelineOrReference is string | ReferenceToExternalQuery {
+  return (
+    isReferenceToOtherPipeline(pipelineOrReference) ||
+    isReferenceToExternalQuery(pipelineOrReference)
+  );
 }
 
 export function isPipelineStep(step: any): step is PipelineStep {
@@ -210,7 +233,7 @@ export type StatisticsStep = {
 
 export type DomainStep = {
   name: 'domain';
-  domain: string;
+  domain: string | ReferenceToExternalQuery;
 };
 
 export type DuplicateColumnStep = {

@@ -32,11 +32,6 @@ export interface VQBState {
   pagesize: number;
   backendMessages: BackendError[] | BackendWarning[];
 
-  /**
-   * FIXME should be a getter from the current pipeline
-   * the domain currently selected.
-   */
-  currentDomain?: string;
   currentPipelineName?: string;
   currentStepFormName?: PipelineStepName;
   selectedStepIndex: number; // last step currently active

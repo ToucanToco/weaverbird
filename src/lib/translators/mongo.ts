@@ -1872,7 +1872,13 @@ const mapper: Partial<StepMatcher<MongoStep>> = {
   delete: (step: Readonly<S.DeleteStep>) => ({
     $project: _.fromPairs(step.columns.map(col => [col, 0])),
   }),
-  domain: (step: Readonly<S.DomainStep>) => ({ $match: { domain: step.domain } }),
+  domain: (step: Readonly<S.DomainStep>) => {
+    if (S.isReferenceToExternalQuery(step.domain)) {
+      console.error('Unresolved reference:', step.domain);
+      throw new Error('References must be resolved before translating the pipeline');
+    }
+    return { $match: { domain: step.domain } };
+  },
   duplicate: (step: Readonly<S.DuplicateColumnStep>) => ({
     $addFields: { [step.new_column_name]: $$(step.column) },
   }),
@@ -1950,12 +1956,25 @@ export class Mongo36Translator extends BaseTranslator {
 
   /** transform an 'append' step into corresponding mongo steps */
   append(step: Readonly<S.AppendStep>): MongoStep[] {
-    const pipelines = step.pipelines as S.Pipeline[];
+    const pipelines = step.pipelines;
+
     const pipelinesNames: string[] = ['$_vqbPipelineInline'];
     const lookups: MongoStep[] = [];
+
     for (let i = 0; i < pipelines.length; i++) {
-      const domainStep = pipelines[i][0] as S.DomainStep;
-      const pipelineWithoutDomain = pipelines[i].slice(1);
+      const subPipeline = pipelines[i];
+      if (S.isReference(subPipeline)) {
+        console.error('Unresolved reference:', subPipeline);
+        throw new Error('References must be resolved before translating the pipeline');
+      }
+
+      const domainStep = subPipeline[0] as S.DomainStep;
+      const pipelineWithoutDomain = subPipeline.slice(1);
+      if (S.isReferenceToExternalQuery(domainStep.domain)) {
+        console.error('Unresolved reference:', domainStep.domain);
+        throw new Error('References must be resolved before translating the pipeline');
+      }
+
       lookups.push({
         $lookup: {
           from: this.domainToCollection(domainStep.domain),
@@ -2241,8 +2260,19 @@ export class Mongo36Translator extends BaseTranslator {
   /** transform a 'join' step into corresponding mongo steps */
   join(step: Readonly<S.JoinStep>): MongoStep[] {
     const mongoPipeline: MongoStep[] = [];
-    const right = step.right_pipeline as S.Pipeline;
+
+    const right = step.right_pipeline;
+    if (S.isReference(right)) {
+      console.error('Unresolved reference:', right);
+      throw new Error('References must be resolved before translating the pipeline');
+    }
+
     const rightDomain = right[0] as S.DomainStep;
+    if (S.isReferenceToExternalQuery(rightDomain.domain)) {
+      console.error('Unresolved reference:', rightDomain.domain);
+      throw new Error('References must be resolved before translating the pipeline');
+    }
+
     const rightWithoutDomain = right.slice(1);
     const mongoLet: { [k: string]: string } = {};
     const mongoExprAnd: { [k: string]: object }[] = [];
@@ -2252,6 +2282,7 @@ export class Mongo36Translator extends BaseTranslator {
         $eq: [$$(rightOn), $$($$(columnToUserVariable(leftOn)))],
       });
     }
+
     mongoPipeline.push({
       $lookup: {
         from: this.domainToCollection(rightDomain.domain),

@@ -90,6 +90,7 @@ describe('Query Builder', () => {
         store = setupMockStore(
           buildStateWithOnePipeline([{ name: 'domain', domain: 'foo' }], {
             currentStepFormName: 'domain',
+            stepFormInitialValue: { name: 'domain', domain: 'foo' },
           }),
         );
         wrapper = shallowMount(QueryBuilder, {
@@ -111,14 +112,6 @@ describe('Query Builder', () => {
         expect(store.getters[VQBnamespace('pipeline')]).toEqual([
           { name: 'domain', domain: 'bar' },
         ]);
-      });
-
-      it('should compute the right currentDomain', async () => {
-        wrapper.find('domainstepform-stub').vm.$emit('formSaved', {
-          name: 'domain',
-          domain: 'bar',
-        });
-        expect(store.state.vqb.currentDomain).toEqual('bar');
       });
     });
 
