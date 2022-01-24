@@ -1,5 +1,13 @@
 # Changelog (weaverbird npm package)
 
+## [0.81.0] - 2022-01-24
+
+### Added
+- Query: domains can be replaced by references to other queries
+
+### Fixed
+- Step: Hide previous step error when creating a new step
+
 ## [0.80.0] - 2022-01-19
 
 ### Added
@@ -1199,6 +1207,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.81.0]: https://github.com/ToucanToco/weaverbird/compare/v0.80.0...v0.81.0
 [0.80.0]: https://github.com/ToucanToco/weaverbird/compare/v0.79.4...v0.80.0
 [0.79.4]: https://github.com/ToucanToco/weaverbird/compare/v0.79.3...v0.79.4
 [0.79.3]: https://github.com/ToucanToco/weaverbird/compare/v0.79.2...v0.79.3
