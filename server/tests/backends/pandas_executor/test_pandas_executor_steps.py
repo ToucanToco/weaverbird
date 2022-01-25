@@ -16,7 +16,6 @@ def test_pandas_execute_pipeline(case_id, case_spec_file_path):
 
     df_in = pd.read_json(json.dumps(spec['input']), orient='table')
     df_out = pd.read_json(json.dumps(spec['expected']), orient='table')
-    print(df_in.dtypes)
     dfs_in_others = {
         k: pd.read_json(json.dumps(v), orient='table')
         for (k, v) in spec.get('other_inputs', {}).items()
