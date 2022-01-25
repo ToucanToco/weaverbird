@@ -995,8 +995,6 @@ describe('action tests', () => {
       expect(dummyService.executePipeline).toHaveBeenCalledWith(
         expectedPipeline,
         expect.objectContaining({ default_pipeline: pipeline }),
-        10000,
-        0,
       );
       expect(commitSpy).toHaveBeenCalledTimes(3);
       // call 1:

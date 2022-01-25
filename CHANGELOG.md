@@ -1,5 +1,15 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Changed
+
+- backendService: make 'executePipeline' limit & offset parameter optional
+
+### Fixed
+
+- Columns "load all values" truly load all values, it is not limited to 10K rows anymore
+
 ## [0.81.0] - 2022-01-24
 
 ### Added
