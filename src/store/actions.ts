@@ -191,8 +191,6 @@ class Actions {
     const response = await context.state.backendService.executePipeline(
       loadUniqueValuesPipeline,
       context.state.pipelines,
-      10000, // FIXME: limit is hard-coded
-      0,
     );
     if (!response.error) {
       context.commit('setDataset', {
