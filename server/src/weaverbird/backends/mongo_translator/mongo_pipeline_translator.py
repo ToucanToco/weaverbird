@@ -1,21 +1,5 @@
+from weaverbird.backends.mongo_translator.steps import mongo_step_translator
 from weaverbird.pipeline import Pipeline, PipelineStep
-from weaverbird.pipeline.steps import DomainStep, TextStep
-
-
-def translate_domain(step: DomainStep) -> dict:
-    return {'$match': {'domain': step.domain}}
-
-
-def translate_text(step: TextStep) -> dict:
-    return {
-        '$addFields': {step.new_column: {'$literal': step.text}},
-    }
-
-
-mongo_step_translator = {
-    'domain': translate_domain,
-    'text': translate_text,
-}
 
 
 def translate_pipeline(

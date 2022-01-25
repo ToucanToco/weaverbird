@@ -33,7 +33,7 @@ def mongo_collection():
     return client['tests'][collection_name]
 
 
-@pytest.skip('MongoDB is not (yet) supported')
+# @pytest.skip('MongoDB is not (yet) supported')
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_path):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
@@ -45,8 +45,9 @@ def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_pat
 
     pipeline = Pipeline(steps=steps)
     query = translate_pipeline(pipeline)
+    print(query)
 
-    result = list(mongo_collection.aggregate(query))
+    result = list(mongo_collection.aggregate(*query))
     df = pd.DataFrame(result)
     del df['_id']
     expected_df = pd.DataFrame(spec['expected']['data'])
