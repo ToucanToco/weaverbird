@@ -1,7 +1,7 @@
-from weaverbird.pipeline.steps import ArgmaxStep
+from weaverbird.pipeline.steps import ArgminStep
 
 
-def translate_argmax(step: ArgmaxStep) -> list:
+def translate_argmin(step: ArgminStep) -> list:
     return [
         {
             '$group': {

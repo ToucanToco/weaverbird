@@ -1,3 +1,4 @@
+import datetime
 import socket
 import uuid
 
@@ -20,25 +21,45 @@ def unused_port():
         return s.getsockname()[1]
 
 
-@pytest.fixture()
-def mongo_collection():
+@pytest.fixture(scope='session')
+def mongo_server_port():
     port = unused_port()
     docker_client = docker.from_env()
-    _ = docker_client.containers.run(
-        'mongo:4.4.5', ports={'27017': port}, auto_remove=True, detach=True
+    container = docker_client.containers.run(
+        'mongo:5', ports={'27017': port}, auto_remove=True, detach=True
     )
+    yield port
+    container.kill()
 
+
+@pytest.fixture()
+def mongo_collection(mongo_server_port):
     collection_name = uuid.uuid4().hex
-    client = MongoClient('localhost', port)
+    client = MongoClient('localhost', mongo_server_port)
     return client['tests'][collection_name]
 
 
-# @pytest.skip('MongoDB is not (yet) supported')
+def cast_to_schema(param: dict) -> list:
+    schema = {field['name']: field['type'] for field in param['schema']['fields']}
+    data = param['data']
+    casted_data = []
+    for row in data:
+        casted_row = {}
+        for key, value in row.items():
+            if schema[key] == 'datetime':
+                casted_row[key] = datetime.datetime.fromisoformat(value)
+            else:
+                casted_row[key] = value
+        casted_data.append(casted_row)
+    return casted_data
+
+
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_path):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
-    data = spec['input']['data']
+    data = cast_to_schema(spec['input'])
+
     mongo_collection.insert_many(data)
 
     steps = spec['step']['pipeline']
@@ -49,6 +70,8 @@ def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_pat
 
     result = list(mongo_collection.aggregate(*query))
     df = pd.DataFrame(result)
-    del df['_id']
-    expected_df = pd.DataFrame(spec['expected']['data'])
+    print(df)
+    if '_id' in df:
+        df.drop('_id', axis=1, inplace=True)
+    expected_df = pd.DataFrame(cast_to_schema(spec['expected']))
     assert_dataframes_equals(df, expected_df)
