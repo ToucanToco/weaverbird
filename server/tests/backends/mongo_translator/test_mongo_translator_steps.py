@@ -56,21 +56,20 @@ def cast_to_schema(param: dict) -> list:
 
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_path):
+
+    # insert in mongoDB
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
-
     data = cast_to_schema(spec['input'])
-
     mongo_collection.insert_many(data)
 
+    # create query
     steps = spec['step']['pipeline']
-
     pipeline = Pipeline(steps=steps)
     query = translate_pipeline(pipeline)
-    print(query)
 
+    # execute query
     result = list(mongo_collection.aggregate(*query))
     df = pd.DataFrame(result)
-    print(df)
     if '_id' in df:
         df.drop('_id', axis=1, inplace=True)
     expected_df = pd.DataFrame(cast_to_schema(spec['expected']))

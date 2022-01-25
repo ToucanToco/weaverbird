@@ -41,11 +41,11 @@ def translate_relative_date(value: RelativeDate):
         '$dateAdd': {
             'startDate': {
                 '$dateTrunc': {
-                    'date': {'$toDate': value.date.timestamp()},
+                    'date': {'$toDate': value.date},
                     'unit': 'day',
                 },
             },
-            'amount': operator.sign * abs(value.quantity),
+            'amount': operator['sign'] * abs(value.quantity),
             'unit': value.duration,
         },
     }
@@ -85,13 +85,13 @@ def build_match_tree(condition: Condition, parent_operator='and') -> dict:
         target_date = (
             translate_relative_date(condition.value)
             if is_relative_date(condition.value)
-            else {'$toDate': condition.value.timestamp()}
+            else {'$toDate': condition.value}
         )
 
         return {
             '$expr': {
                 operatorMapping[condition.operator]: [
-                    truncate_to_day(condition.column),
+                    truncate_to_day(f'${condition.column}'),
                     truncate_to_day(target_date),
                 ]
             }
