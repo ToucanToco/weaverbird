@@ -1,3 +1,5 @@
+from typing import Dict
+
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     Condition,
@@ -11,7 +13,7 @@ from weaverbird.pipeline.conditions import (
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.steps import FilterStep
 
-operatorMapping = {
+operator_mapping = {
     'eq': '$eq',
     'ne': '$ne',
     'lt': '$lt',
@@ -27,16 +29,9 @@ operatorMapping = {
 }
 
 
-def is_relative_date(value):
-    return isinstance(value, RelativeDate)
-
-
 def translate_relative_date(value: RelativeDate):
-    RELATIVE_DATE_OPERATORS = {
-        'until': {'label': 'until', 'sign': -1},
-        'from': {'label': 'from', 'sign': +1},
-    }
-    operator = RELATIVE_DATE_OPERATORS[value.operator]
+    RELATIVE_DATE_OPERATORS: Dict[str, int] = {'until': -1, 'from': +1}
+    sign = RELATIVE_DATE_OPERATORS[value.operator]
     return {
         '$dateAdd': {
             'startDate': {
@@ -45,7 +40,7 @@ def translate_relative_date(value: RelativeDate):
                     'unit': 'day',
                 },
             },
-            'amount': operator['sign'] * abs(value.quantity),
+            'amount': sign * abs(int(value.quantity)),
             'unit': value.duration,
         },
     }
@@ -70,9 +65,9 @@ def build_match_tree(condition: Condition, parent_operator='and') -> dict:
 
     # simple conditions
     elif isinstance(condition, ComparisonCondition) or isinstance(condition, InclusionCondition):
-        return {condition.column: {operatorMapping[condition.operator]: condition.value}}
+        return {condition.column: {operator_mapping[condition.operator]: condition.value}}
     elif isinstance(condition, NullCondition):
-        return {condition.column: {operatorMapping[condition.operator]: None}}
+        return {condition.column: {operator_mapping[condition.operator]: None}}
 
     elif isinstance(condition, MatchCondition):
         if condition.operator == 'matches':
@@ -80,17 +75,16 @@ def build_match_tree(condition: Condition, parent_operator='and') -> dict:
         elif condition.operator == 'notmatches':
             return {condition.column: {'$not': {'$regex': condition.value}}}
 
+    # dates
     elif isinstance(condition, DateBoundCondition):
-        print(condition)
-        target_date = (
-            translate_relative_date(condition.value)
-            if is_relative_date(condition.value)
-            else {'$toDate': condition.value}
-        )
+        if isinstance(condition.value, RelativeDate):
+            target_date = translate_relative_date(condition.value)
+        else:
+            target_date = {'$toDate': condition.value}
 
         return {
             '$expr': {
-                operatorMapping[condition.operator]: [
+                operator_mapping[condition.operator]: [
                     truncate_to_day(f'${condition.column}'),
                     truncate_to_day(target_date),
                 ]
@@ -99,5 +93,4 @@ def build_match_tree(condition: Condition, parent_operator='and') -> dict:
 
 
 def translate_filter(step: FilterStep) -> list:
-    print(step)
     return [{'$match': build_match_tree(step.condition)}]
