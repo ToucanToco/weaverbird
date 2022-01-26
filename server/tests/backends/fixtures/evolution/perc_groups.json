@@ -1,17 +1,20 @@
 {
   "exclude": [
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
-        "name":"evolution",
-        "date_col":"DATE",
-        "value_col":"VALUE",
-        "evolution_type":"vsLastYear",
-        "evolution_format":"pct",
-        "index_columns": ["COUNTRY"],
+        "name": "evolution",
+        "date_col": "DATE",
+        "value_col": "VALUE",
+        "evolution_type": "vsLastYear",
+        "evolution_format": "pct",
+        "index_columns": [
+          "COUNTRY"
+        ],
         "new_column": "POUET"
       }
     ]
@@ -82,21 +85,21 @@
     "data": [
       {
         "DATE": "2019-01-01 00:00:01",
-        "VALUE": 2.0,
+        "VALUE": 2,
         "COUNTRY": "France",
         "POUET": null
       },
       {
         "DATE": "2019-01-01 00:00:02",
-        "VALUE": 1.0,
+        "VALUE": 1,
         "COUNTRY": "Italy",
         "POUET": null
       },
       {
         "DATE": "2020-01-01 00:00:01",
-        "VALUE": 4.0,
+        "VALUE": 4,
         "COUNTRY": "France",
-        "POUET": 1.0
+        "POUET": 1
       },
       {
         "DATE": "2020-01-01 00:00:02",

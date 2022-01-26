@@ -1,16 +1,19 @@
 {
   "exclude": [
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
-        "name":"pivot",
-        "index":["EMPID"],
-        "column_to_pivot":"MONTH",
-        "value_column":"AMOUNT",
-        "agg_function":"sum"
+        "name": "pivot",
+        "index": [
+          "EMPID"
+        ],
+        "column_to_pivot": "MONTH",
+        "value_column": "AMOUNT",
+        "agg_function": "sum"
       }
     ]
   },

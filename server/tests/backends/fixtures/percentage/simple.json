@@ -2,7 +2,8 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -77,12 +78,12 @@
       {
         "NAME": "nicholas",
         "AGE": 33,
-        "AGE_PERCENT": 0.239130
+        "AGE_PERCENT": 0.23913
       },
       {
         "NAME": "zimar",
         "AGE": 33,
-        "AGE_PERCENT": 0.239130
+        "AGE_PERCENT": 0.23913
       },
       {
         "NAME": "bar",
@@ -92,7 +93,7 @@
       {
         "NAME": "foo",
         "AGE": 22,
-        "AGE_PERCENT": 0.159420
+        "AGE_PERCENT": 0.15942
       }
     ]
   }

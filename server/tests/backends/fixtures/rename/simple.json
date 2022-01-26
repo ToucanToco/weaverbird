@@ -1,13 +1,17 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
         "name": "rename",
         "to_rename": [
-          ["NAME", "FIRST_NAME"]
+          [
+            "NAME",
+            "FIRST_NAME"
+          ]
         ]
       }
     ]
@@ -64,7 +68,7 @@
     "data": [
       {
         "FIRST_NAME": "foo",
-        "AGE": 42.0,
+        "AGE": 42,
         "SCORE": 100
       },
       {

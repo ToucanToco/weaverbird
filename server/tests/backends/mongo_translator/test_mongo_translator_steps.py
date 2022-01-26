@@ -11,7 +11,7 @@ from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, re
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
-test_cases = retrieve_case('pandas_executor', 'pandas')
+test_cases = retrieve_case('mongo_translator', 'mongo')
 
 
 def unused_port():
@@ -22,11 +22,16 @@ def unused_port():
 
 
 @pytest.fixture(scope='session')
-def mongo_server_port():
+def mongo_version():
+    return '5'
+
+
+@pytest.fixture(scope='session')
+def mongo_server_port(mongo_version):
     port = unused_port()
     docker_client = docker.from_env()
     container = docker_client.containers.run(
-        'mongo:5', ports={'27017': port}, auto_remove=True, detach=True
+        f'mongo:{mongo_version}', ports={'27017': port}, auto_remove=True, detach=True
     )
     yield port
     container.kill()

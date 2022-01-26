@@ -1,12 +1,15 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
         "name": "fillna",
-        "columns": ["AGE"],
+        "columns": [
+          "AGE"
+        ],
         "value": 2
       }
     ]

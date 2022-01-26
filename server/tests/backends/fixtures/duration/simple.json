@@ -1,6 +1,7 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -37,22 +38,22 @@
       {
         "PRE_DATE": "2021-03-29T00:20:00.000Z",
         "DATE": "2021-03-29T00:00:00.000Z",
-        "DATE_DAY": 29.0
+        "DATE_DAY": 29
       },
       {
         "PRE_DATE": "2020-12-13T00:10:00.000Z",
         "DATE": "2020-12-13T00:00:00.000Z",
-        "DATE_DAY": 13.0
+        "DATE_DAY": 13
       },
       {
         "PRE_DATE": "2020-07-29T00:05:00.000Z",
         "DATE": "2020-07-29T00:00:00.000Z",
-        "DATE_DAY": 29.0
+        "DATE_DAY": 29
       },
       {
         "PRE_DATE": "2019-04-09T01:02:03.004Z",
         "DATE": "2019-04-09T01:01:03.004Z",
-        "DATE_DAY": 9.0
+        "DATE_DAY": 9
       },
       {
         "pre_date": null,
@@ -89,26 +90,26 @@
       {
         "PRE_DATE": "2021-03-29T00:20:00.000Z",
         "DATE": "2021-03-29T00:00:00.000Z",
-        "DATE_DAY": 29.0,
-        "DURATION": 20.0
+        "DATE_DAY": 29,
+        "DURATION": 20
       },
       {
         "PRE_DATE": "2020-12-13T00:10:00.000Z",
         "DATE": "2020-12-13T00:00:00.000Z",
-        "DATE_DAY": 13.0,
-        "DURATION": 10.0
+        "DATE_DAY": 13,
+        "DURATION": 10
       },
       {
         "PRE_DATE": "2020-07-29T00:05:00.000Z",
         "DATE": "2020-07-29T00:00:00.000Z",
-        "DATE_DAY": 29.0,
-        "DURATION": 5.0
+        "DATE_DAY": 29,
+        "DURATION": 5
       },
       {
         "PRE_DATE": "2019-04-09T01:02:03.004Z",
         "DATE": "2019-04-09T01:01:03.004Z",
-        "DATE_DAY": 9.0,
-        "DURATION": 1.0
+        "DATE_DAY": 9,
+        "DURATION": 1
       },
       {
         "PRE_DATE": null,

@@ -2,7 +2,8 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -58,10 +59,10 @@
     },
     "data": [
       {
-        "value": 41.0
+        "value": 41
       },
       {
-        "value": 42.0
+        "value": 42
       },
       {
         "value": 43.5

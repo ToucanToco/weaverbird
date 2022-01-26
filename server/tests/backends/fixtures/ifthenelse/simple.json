@@ -1,15 +1,16 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
         "name": "ifthenelse",
         "if": {
-            "column": "AGE",
-            "value": 20,
-            "operator": "gt"
+          "column": "AGE",
+          "value": 20,
+          "operator": "gt"
         },
         "newColumn": "COND",
         "then": "'tintin'",

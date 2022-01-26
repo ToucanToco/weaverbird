@@ -1,12 +1,15 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
         "name": "fillna",
-        "columns": ["NAME"],
+        "columns": [
+          "NAME"
+        ],
         "value": "Bwar"
       }
     ]
@@ -63,7 +66,7 @@
     "data": [
       {
         "NAME": "foo",
-        "AGE": 42.0,
+        "AGE": 42,
         "SCORE": 100
       },
       {

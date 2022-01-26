@@ -2,7 +2,8 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -63,22 +64,22 @@
     },
     "data": [
       {
-        "date": 29.0
+        "date": 29
       },
       {
-        "date": 13.0
+        "date": 13
       },
       {
-        "date": 29.0
+        "date": 29
       },
       {
-        "date": 9.0
+        "date": 9
       },
       {
-        "date": 2.0
+        "date": 2
       },
       {
-        "date": 1.0
+        "date": 1
       },
       {
         "date": null
