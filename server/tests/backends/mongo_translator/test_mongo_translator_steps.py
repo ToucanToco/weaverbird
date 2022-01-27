@@ -7,7 +7,7 @@ import pandas as pd
 import pytest
 from pymongo import MongoClient
 
-from tests.utils import assert_dataframes_equals, get_spec_from_json_fixture, retrieve_case
+from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
@@ -61,7 +61,6 @@ def cast_to_schema(param: dict) -> list:
 
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_path):
-
     # insert in mongoDB
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
     data = cast_to_schema(spec['input'])
@@ -78,4 +77,4 @@ def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_pat
     if '_id' in df:
         df.drop('_id', axis=1, inplace=True)
     expected_df = pd.DataFrame(cast_to_schema(spec['expected']))
-    assert_dataframes_equals(df, expected_df)
+    assert_dataframes_content_equals(df, expected_df)
