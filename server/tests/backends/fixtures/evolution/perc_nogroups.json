@@ -1,16 +1,17 @@
 {
   "exclude": [
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
-        "name":"evolution",
-        "date_col":"DATE",
-        "value_col":"VALUE",
-        "evolution_type":"vsLastYear",
-        "evolution_format":"pct",
+        "name": "evolution",
+        "date_col": "DATE",
+        "value_col": "VALUE",
+        "evolution_type": "vsLastYear",
+        "evolution_format": "pct",
         "new_column": "POUET"
       }
     ]

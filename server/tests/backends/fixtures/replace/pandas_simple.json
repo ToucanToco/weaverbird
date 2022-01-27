@@ -2,7 +2,8 @@
   "exclude": [
     "mysql",
     "postgres",
-    "snowflake"
+    "snowflake",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -10,7 +11,10 @@
         "name": "replace",
         "search_column": "NAME",
         "to_replace": [
-          ["foo", "oof"]
+          [
+            "foo",
+            "oof"
+          ]
         ]
       }
     ]
@@ -67,7 +71,7 @@
     "data": [
       {
         "NAME": "oof",
-        "AGE": 42.0,
+        "AGE": 42,
         "SCORE": 100
       },
       {

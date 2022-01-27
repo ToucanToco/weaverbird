@@ -1,6 +1,7 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -108,13 +109,13 @@
     "data": [
       {
         "NAME": "foo",
-        "AGE": 42.0,
+        "AGE": 42,
         "SCORE": 100,
         "X": null
       },
       {
         "NAME": "bar",
-        "AGE": 43.0,
+        "AGE": 43,
         "SCORE": 200,
         "X": null
       },
@@ -122,13 +123,13 @@
         "NAME": "plop",
         "AGE": null,
         "SCORE": 666,
-        "X": 12.0
+        "X": 12
       },
       {
         "NAME": "plop",
         "AGE": null,
         "SCORE": 666,
-        "X": 12.0
+        "X": 12
       }
     ]
   },

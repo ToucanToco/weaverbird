@@ -2,7 +2,8 @@
   "exclude": [
     "mysql",
     "postgres",
-    "pandas"
+    "pandas",
+    "mongo"
   ],
   "step": {
     "pipeline": [
@@ -10,15 +11,24 @@
         "name": "replace",
         "search_column": "NAME",
         "to_replace": [
-          ["'foo'", "'oof'"],
-          ["l'oo'", "d'oof'"]
+          [
+            "'foo'",
+            "'oof'"
+          ],
+          [
+            "l'oo'",
+            "d'oof'"
+          ]
         ]
       },
       {
         "name": "replace",
         "search_column": "AGE",
         "to_replace": [
-          [10, 18]
+          [
+            10,
+            18
+          ]
         ]
       }
     ]
@@ -80,7 +90,7 @@
     "data": [
       {
         "NAME": "oof",
-        "AGE": 42.0,
+        "AGE": 42,
         "SCORE": 100
       },
       {

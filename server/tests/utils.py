@@ -21,6 +21,18 @@ def assert_dataframes_equals(left: DataFrame, right: DataFrame):
     )
 
 
+def assert_dataframes_content_equals(left: DataFrame, right: DataFrame):
+    """
+    Compare two dataframes columns and values, not their index.
+    """
+    assert_frame_equal(
+        left.sort_values(by=left.columns.tolist()).reset_index(drop=True),
+        right.sort_values(by=right.columns.tolist()).reset_index(drop=True),
+        check_like=True,
+        check_dtype=False,
+    )
+
+
 def assert_column_equals(serie: Series, values: List[Any]):
     """
     Compare vales of a dataframe's column (series)

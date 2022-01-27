@@ -1,13 +1,19 @@
 {
   "exclude": [
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
         "name": "cumsum",
-        "toCumSum": [["VALUE", "MY_CUMSUM"]],
+        "toCumSum": [
+          [
+            "VALUE",
+            "MY_CUMSUM"
+          ]
+        ],
         "referenceColumn": "DATE",
         "groupby": [
           "COUNTRY"

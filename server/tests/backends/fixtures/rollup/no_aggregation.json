@@ -1,14 +1,18 @@
 {
   "exclude": [
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "pipeline": [
       {
-        "name":"rollup",
-        "hierarchy":["STATE", "CITY"],
-        "aggregations":[],
+        "name": "rollup",
+        "hierarchy": [
+          "STATE",
+          "CITY"
+        ],
+        "aggregations": [],
         "level_col": "LEVEL",
         "label_col": "LABEL",
         "parent_label_col": "PARENT"
@@ -19,8 +23,8 @@
     "schema": {
       "fields": [
         {
-         "name": "PRODUCT_ID",
-         "type": "integer"
+          "name": "PRODUCT_ID",
+          "type": "integer"
         },
         {
           "name": "CITY",
@@ -35,39 +39,39 @@
     },
     "data": [
       {
-         "PRODUCT_ID": 1,
-         "CITY":"SF",
-         "STATE":"CA"
+        "PRODUCT_ID": 1,
+        "CITY": "SF",
+        "STATE": "CA"
       },
       {
-         "PRODUCT_ID": 1,
-         "CITY":"SJ",
-         "STATE":"CA"
+        "PRODUCT_ID": 1,
+        "CITY": "SJ",
+        "STATE": "CA"
       },
       {
-         "PRODUCT_ID": 2,
-         "CITY":"SF",
-         "STATE":"CA"
+        "PRODUCT_ID": 2,
+        "CITY": "SF",
+        "STATE": "CA"
       },
       {
-         "PRODUCT_ID": 2,
-         "CITY":"SJ",
-         "STATE":"CA"
+        "PRODUCT_ID": 2,
+        "CITY": "SJ",
+        "STATE": "CA"
       },
       {
-         "PRODUCT_ID": 2,
-         "CITY":"Miami",
-         "STATE":"FL"
+        "PRODUCT_ID": 2,
+        "CITY": "Miami",
+        "STATE": "FL"
       },
       {
-         "PRODUCT_ID": 2,
-         "CITY":"Orlando",
-         "STATE":"FL"
+        "PRODUCT_ID": 2,
+        "CITY": "Orlando",
+        "STATE": "FL"
       },
       {
-         "PRODUCT_ID": 2,
-         "CITY":"SJ",
-         "STATE":"PR"
+        "PRODUCT_ID": 2,
+        "CITY": "SJ",
+        "STATE": "PR"
       }
     ]
   },
@@ -75,24 +79,24 @@
     "schema": {
       "fields": [
         {
-            "name":"STATE",
-            "type":"string"
+          "name": "STATE",
+          "type": "string"
         },
         {
-            "name":"CITY",
-            "type":"string"
+          "name": "CITY",
+          "type": "string"
         },
         {
-            "name":"LABEL",
-            "type":"string"
+          "name": "LABEL",
+          "type": "string"
         },
         {
-            "name":"LEVEL",
-            "type":"string"
+          "name": "LEVEL",
+          "type": "string"
         },
         {
-            "name":"PARENT",
-            "type":"string"
+          "name": "PARENT",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -100,57 +104,57 @@
     "data": [
       {
         "STATE": "CA",
-        "CITY":"SF",
-        "LABEL":"SF",
+        "CITY": "SF",
+        "LABEL": "SF",
         "LEVEL": "CITY",
         "PARENT": "CA"
       },
       {
         "STATE": "CA",
-        "CITY":"SJ",
-        "LABEL":"SJ",
+        "CITY": "SJ",
+        "LABEL": "SJ",
         "LEVEL": "CITY",
         "PARENT": "CA"
       },
       {
         "STATE": "FL",
         "CITY": "Miami",
-        "LABEL":"Miami",
+        "LABEL": "Miami",
         "LEVEL": "CITY",
         "PARENT": "FL"
       },
       {
         "STATE": "FL",
         "CITY": "Orlando",
-        "LABEL":"Orlando",
+        "LABEL": "Orlando",
         "LEVEL": "CITY",
         "PARENT": "FL"
       },
       {
         "STATE": "PR",
         "CITY": "SJ",
-        "LABEL":"SJ",
+        "LABEL": "SJ",
         "LEVEL": "CITY",
         "PARENT": "PR"
       },
       {
         "STATE": "CA",
         "CITY": null,
-        "LABEL":"CA",
+        "LABEL": "CA",
         "LEVEL": "STATE",
         "PARENT": null
       },
       {
         "STATE": "FL",
         "CITY": null,
-        "LABEL":"FL",
+        "LABEL": "FL",
         "LEVEL": "STATE",
         "PARENT": null
       },
       {
         "STATE": "PR",
         "CITY": null,
-        "LABEL":"PR",
+        "LABEL": "PR",
         "LEVEL": "STATE",
         "PARENT": null
       }
@@ -160,85 +164,85 @@
     "schema": {
       "fields": [
         {
-            "name":"STATE",
-            "type":"string"
+          "name": "STATE",
+          "type": "string"
         },
         {
-            "name":"CITY",
-            "type":"string"
+          "name": "CITY",
+          "type": "string"
         },
         {
-            "name":"LABEL",
-            "type":"string"
+          "name": "LABEL",
+          "type": "string"
         },
         {
-            "name":"LEVEL",
-            "type":"string"
+          "name": "LEVEL",
+          "type": "string"
         },
         {
-            "name":"PARENT",
-            "type":"string"
+          "name": "PARENT",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
     },
     "data": [
-    {
+      {
         "STATE": "CA",
         "CITY": null,
-        "LABEL":"CA",
+        "LABEL": "CA",
         "LEVEL": "STATE",
         "PARENT": null
-    },
-    {
+      },
+      {
         "STATE": "FL",
         "CITY": null,
-        "LABEL":"FL",
+        "LABEL": "FL",
         "LEVEL": "STATE",
         "PARENT": null
-    },
-    {
+      },
+      {
         "STATE": "PR",
         "CITY": null,
-        "LABEL":"PR",
+        "LABEL": "PR",
         "LEVEL": "STATE",
         "PARENT": null
-    },
-    {
+      },
+      {
         "STATE": "CA",
-        "CITY":"SF",
-        "LABEL":"SF",
+        "CITY": "SF",
+        "LABEL": "SF",
         "LEVEL": "CITY",
         "PARENT": "CA"
-    },
-    {
+      },
+      {
         "STATE": "CA",
-        "CITY":"SJ",
-        "LABEL":"SJ",
+        "CITY": "SJ",
+        "LABEL": "SJ",
         "LEVEL": "CITY",
         "PARENT": "CA"
-    },
-    {
+      },
+      {
         "STATE": "FL",
         "CITY": "Miami",
-        "LABEL":"Miami",
+        "LABEL": "Miami",
         "LEVEL": "CITY",
         "PARENT": "FL"
-    },
-    {
+      },
+      {
         "STATE": "FL",
         "CITY": "Orlando",
-        "LABEL":"Orlando",
+        "LABEL": "Orlando",
         "LEVEL": "CITY",
         "PARENT": "FL"
-    },
-    {
+      },
+      {
         "STATE": "PR",
         "CITY": "SJ",
-        "LABEL":"SJ",
+        "LABEL": "SJ",
         "LEVEL": "CITY",
         "PARENT": "PR"
-    }
+      }
     ]
   }
 }

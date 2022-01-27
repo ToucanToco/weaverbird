@@ -3,18 +3,25 @@
     "snowflake",
     "postgres",
     "mysql",
-    "postgres"
+    "postgres",
+    "mongo"
   ],
   "step": {
     "name": "unpivot",
     "pipeline": [
       {
-        "name":"unpivot",
-        "keep":["COMPANY", "COUNTRY"],
-        "unpivot":["CURRENCY", "PROVIDER"],
-        "unpivot_column_name":"KPI",
-        "value_column_name":"VALUE",
-        "dropna":false
+        "name": "unpivot",
+        "keep": [
+          "COMPANY",
+          "COUNTRY"
+        ],
+        "unpivot": [
+          "CURRENCY",
+          "PROVIDER"
+        ],
+        "unpivot_column_name": "KPI",
+        "value_column_name": "VALUE",
+        "dropna": false
       }
     ]
   },
