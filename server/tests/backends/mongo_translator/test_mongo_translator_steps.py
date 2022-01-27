@@ -1,4 +1,4 @@
-import datetime
+import json
 import socket
 import uuid
 
@@ -44,26 +44,11 @@ def mongo_collection(mongo_server_port):
     return client['tests'][collection_name]
 
 
-def cast_to_schema(param: dict) -> list:
-    schema = {field['name']: field['type'] for field in param['schema']['fields']}
-    data = param['data']
-    casted_data = []
-    for row in data:
-        casted_row = {}
-        for key, value in row.items():
-            if schema[key] == 'datetime':
-                casted_row[key] = datetime.datetime.fromisoformat(value)
-            else:
-                casted_row[key] = value
-        casted_data.append(casted_row)
-    return casted_data
-
-
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_path):
     # insert in mongoDB
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
-    data = cast_to_schema(spec['input'])
+    data = pd.read_json(json.dumps(spec['input']), orient='table').to_dict(orient='records')
     mongo_collection.insert_many(data)
 
     # create query
@@ -72,9 +57,9 @@ def test_mongo_translator_pipeline(mongo_collection, case_id, case_spec_file_pat
     query = translate_pipeline(pipeline)
 
     # execute query
-    result = list(mongo_collection.aggregate(*query))
+    result = list(mongo_collection.aggregate(query))
     df = pd.DataFrame(result)
     if '_id' in df:
         df.drop('_id', axis=1, inplace=True)
-    expected_df = pd.DataFrame(cast_to_schema(spec['expected']))
+    expected_df = pd.read_json(json.dumps(spec['expected']), orient='table')
     assert_dataframes_content_equals(df, expected_df)

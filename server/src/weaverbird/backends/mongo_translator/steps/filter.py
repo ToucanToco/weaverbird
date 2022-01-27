@@ -28,18 +28,14 @@ operator_mapping = {
     'until': '$lte',
 }
 
+RELATIVE_DATE_OPERATORS: Dict[str, int] = {'until': -1, 'from': +1}
+
 
 def translate_relative_date(value: RelativeDate):
-    RELATIVE_DATE_OPERATORS: Dict[str, int] = {'until': -1, 'from': +1}
     sign = RELATIVE_DATE_OPERATORS[value.operator]
     return {
         '$dateAdd': {
-            'startDate': {
-                '$dateTrunc': {
-                    'date': {'$toDate': value.date},
-                    'unit': 'day',
-                },
-            },
+            'startDate': truncate_to_day({'$toDate': value.date}),
             'amount': sign * abs(int(value.quantity)),
             'unit': value.duration,
         },

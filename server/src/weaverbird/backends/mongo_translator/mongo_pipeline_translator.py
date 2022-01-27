@@ -1,14 +1,16 @@
+from typing import Any, Dict, List
+
 from weaverbird.backends.mongo_translator.steps import mongo_step_translator
 from weaverbird.pipeline import Pipeline, PipelineStep
 
 
 def translate_pipeline(
     pipeline_to_translate: Pipeline,
-) -> list:
+) -> List[Dict[str, Any]]:
     mongo_pipeline = []
     for index, step in enumerate(pipeline_to_translate.steps):
         try:
-            mongo_pipeline.append(mongo_step_translator[step.name](step))
+            mongo_pipeline.extend(mongo_step_translator[step.name](step))
         except Exception as e:
             raise PipelineTranslationFailure(step, index, e) from e
     return mongo_pipeline
