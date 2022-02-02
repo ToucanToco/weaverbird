@@ -735,6 +735,46 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
     ]);
   });
 
+  it('can generate a complex filter step with "and" as root and multiple "or" inside', () => {
+    const pipeline: Pipeline = [
+      { name: 'domain', domain: 'TC_PAT_pages' },
+      {
+        name: 'filter',
+        condition: {
+          and: [
+            { column: 'version', value: 1, operator: 'eq' },
+            {
+              or: [
+                { column: 'contentStatus', value: 'draft', operator: 'eq' },
+                { column: 'contentStatus', value: 'current', operator: 'eq' },
+              ],
+            },
+            {
+              or: [
+                { column: 'title', value: 'PAT 1', operator: 'matches' },
+                { column: 'title', value: 'PAT 2', operator: 'matches' },
+              ],
+            },
+          ],
+        },
+      },
+    ];
+    const querySteps = translator.translate(pipeline);
+    expect(querySteps).toEqual([
+      {
+        $match: {
+          domain: 'TC_PAT_pages',
+          version: { $eq: 1 },
+          $and: [
+            { $or: [{ contentStatus: { $eq: 'draft' } }, { contentStatus: { $eq: 'current' } }] },
+            { $or: [{ title: { $regex: 'PAT 1' } }, { title: { $regex: 'PAT 2' } }] },
+          ],
+        },
+      },
+      { $project: { _id: 0 } },
+    ]);
+  });
+
   it('can generate a complex filter step with "or" as root', () => {
     const pipeline: Pipeline = [
       { name: 'domain', domain: 'test_cube' },

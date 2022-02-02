@@ -80,7 +80,7 @@ export function _simplifyAndCondition(filterAndCond: FilterComboAndMongo): Mongo
 
   for (const cond of filterAndCond.$and) {
     for (const key in cond) {
-      if (counter[key] > 1 && key !== '$or') {
+      if (counter[key] > 1) {
         andList.push({ [key]: cond[key] });
       } else {
         simplifiedBlock = { ...simplifiedBlock, [key]: cond[key] };
