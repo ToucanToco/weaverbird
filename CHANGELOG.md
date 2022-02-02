@@ -1,5 +1,11 @@
 # Changelog (weaverbird npm package)
 
+## Unreleased
+
+### Fixed
+
+- Mongo Translator (JS implem): properly handle `... AND (... OR ...) AND (... OR ...)` conditions
+
 ## [0.82.0] - 2022-01-25
 
 ### Changed
