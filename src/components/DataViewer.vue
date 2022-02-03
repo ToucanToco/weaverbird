@@ -71,7 +71,7 @@
               </td>
             </tr>
           </thead>
-          <tbody class="data-viewer__body">
+          <tbody data-cy="weaverbird-data-viewer-body" class="data-viewer__body">
             <tr
               class="data-viewer__row"
               data-cy="weaverbird-data-viewer-table-row"
