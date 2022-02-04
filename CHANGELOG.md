@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.82.2] - 2022-02-03
+
+### Changed
+- Dataviewer: add data cy element for e2e tests
+
 ## [0.82.1] - 2022-02-02
 
 ### Fixed
@@ -1223,6 +1228,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.82.2]: https://github.com/ToucanToco/weaverbird/compare/v0.82.1...v0.82.2
 [0.82.1]: https://github.com/ToucanToco/weaverbird/compare/v0.82.0...v0.82.1
 [0.82.0]: https://github.com/ToucanToco/weaverbird/compare/v0.81.0...v0.82.0
 [0.81.0]: https://github.com/ToucanToco/weaverbird/compare/v0.80.0...v0.81.0
