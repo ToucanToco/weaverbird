@@ -27,6 +27,7 @@ import PipelineSelector from '@/components/PipelineSelector.vue';
 import QueryBuilder from '@/components/QueryBuilder.vue';
 import DateRangeInput from '@/components/stepforms/widgets/DateComponents/DateRangeInput.vue';
 import NewDateInput from '@/components/stepforms/widgets/DateComponents/NewDateInput.vue';
+import FilterSimpleCondition from '@/components/stepforms/widgets/FilterSimpleCondition.vue';
 import Vqb from '@/components/Vqb.vue';
 
 export {
@@ -41,6 +42,7 @@ export {
   NewDateInput,
   DateRangeInput,
   Pagination,
+  FilterSimpleCondition,
 };
 
 // export helpers/utils
