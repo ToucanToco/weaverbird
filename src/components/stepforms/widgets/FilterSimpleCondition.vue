@@ -1,6 +1,7 @@
 <template>
   <div class="filter-form-simple-condition__container">
     <div
+      v-if="!hideColumnInput"
       class="filter-form-simple-condition-column-input"
       data-cy="weaverbird-filter-form-column-input"
     >
@@ -133,6 +134,9 @@ export default class FilterSimpleConditionWidget extends Vue {
     default: () => ({}),
   })
   columnTypes!: ColumnTypeMapping;
+
+  @Prop({ type: Boolean, default: false })
+  hideColumnInput!: boolean;
 
   @VQBModule.Getter('columnNames') columnNamesFromStore!: string[];
 
