@@ -13,6 +13,7 @@
           :available-variables="availableVariables"
           :variable-delimiters="variableDelimiters"
           :hideColumnVariables="hideColumnVariables"
+          :hideColumnInput="hideColumnInput"
           :data-path="slotProps.dataPath"
           :errors="errors"
           :multi-variable="multiVariable"
@@ -69,6 +70,9 @@ export default class FilterEditor extends Vue {
 
   @Prop()
   hideColumnVariables?: boolean;
+
+  @Prop({ type: Boolean, default: false })
+  hideColumnInput!: boolean;
 
   @Prop({ type: Boolean, default: true })
   multiVariable!: boolean; // display multiInputText as multiVariableInput
