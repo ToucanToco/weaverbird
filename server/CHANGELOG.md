@@ -1,5 +1,13 @@
 # Changelog (weaverbird python package)
 
+## [0.11.0] - 2022-02-25
+
+- Domain step: support references as an alternative to names
+- Cumulated Sum step: handle multiple columns
+- Bootstrapped new translators:
+  - PostgresSQL: convert, append, fillna, duration & ifthenelse steps
+  - Mongo: argmin, argmax, filter & text steps
+
 ## [0.10.2] - 2021-12-22
 
 - Postgres translator:
