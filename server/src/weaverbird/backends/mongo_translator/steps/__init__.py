@@ -16,4 +16,5 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'domain': translate_domain,
     'text': translate_text,
     'filter': translate_filter,
+
 }
