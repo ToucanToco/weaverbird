@@ -1,0 +1,123 @@
+{
+  "exclude": [
+    "snowflake",
+    "mysql",
+    "postgres",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "join",
+        "right_pipeline":[
+          {"name": "domain", "domain": "bazz"},
+          {
+          "name": "filter",
+          "condition": {
+            "column": "X",
+            "operator": "gt",
+            "value": 11
+          }
+         }
+        ],
+        "type": "left",
+        "on": [["NAME","NAME"]]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "fla",
+        "AGE": 42,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "bazz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "X",
+            "type": "integer"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "foo",
+          "X": 12
+        },
+        {
+          "NAME": "bar",
+          "X": 20
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "number"
+        },
+        {
+          "name": "X",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100.0,
+        "X": 12.0
+      },
+      {
+        "NAME": "fla",
+        "AGE": 42.0,
+        "SCORE": 100.0,
+        "X": null
+      }
+    ]
+  }
+}
