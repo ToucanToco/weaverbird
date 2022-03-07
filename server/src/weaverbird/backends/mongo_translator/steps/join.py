@@ -1,46 +1,62 @@
-from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
+import logging
+from typing import Any, List, Union
+
 from weaverbird.backends.mongo_translator.utils import column_to_user_variable
 from weaverbird.exceptions import UnresolvedReferenceError
+from weaverbird.pipeline import Pipeline, steps
 from weaverbird.pipeline.steps import DomainStep, JoinStep
-from weaverbird.pipeline.steps.utils.combination import Reference
+from weaverbird.pipeline.steps.utils.combination import (
+    Reference,  # inconsistent with front translator, should be ReferenceToExternalQuery
+)
+
+logger = logging.getLogger(__name__)
 
 
-def is_reference_to_other_pipeline(pipeline_or_reference: Reference):
+def is_reference_to_other_pipeline(pipeline_or_reference: Union[List, str, Reference]):
     return isinstance(pipeline_or_reference, str)
 
 
-def is_reference_to_external_query(pipeline_or_reference: Reference):
+def is_reference_to_external_query(pipeline_or_reference: Union[List, str, Reference]):
+    assert isinstance(pipeline_or_reference, Reference)
     return pipeline_or_reference.type == 'ref'
 
 
-def is_reference(pipeline_or_reference: Reference):
+def is_reference(pipeline_or_reference: Union[list[dict[Any, Any]], str, Reference]):
+    assert isinstance(pipeline_or_reference, Reference) or isinstance(pipeline_or_reference, str)
     return is_reference_to_other_pipeline(pipeline_or_reference) or is_reference_to_external_query(
         pipeline_or_reference
     )
 
 
 def translate_join(step: JoinStep) -> list:
-    mongo_pipeline = []
+    mongo_pipeline: list[Any] = []
     right = step.right_pipeline
 
     if is_reference(right):
+        logger.error(f'Unresolved reference: {right}')
         raise UnresolvedReferenceError(
             'References must be resolved before translating the pipeline'
         )
-    right_domain = DomainStep(**right[0])
+    assert isinstance(right, list)
+    assert isinstance(right[0], dict)
+    right_domain: DomainStep = DomainStep(**right[0])
 
     if is_reference_to_external_query(right_domain.domain):
+        logger.error(f'Unresolved reference: {right_domain.domain}')
         raise UnresolvedReferenceError(
             'References must be resolved before translating the pipeline'
         )
-
-    right_without_domain = right[1:]
+    right_without_domain = Pipeline(
+        steps=[getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]]
+    )
     mongo_let: dict[str, str] = {}
     mongo_expr_and: list[dict[str, list[str]]] = []
 
     for left_on, right_on in step.on:
         mongo_let[column_to_user_variable(left_on)] = f'${left_on}'
         mongo_expr_and.append({'$eq': [f'${right_on}', f'$(${column_to_user_variable(left_on)})']})
+
+    from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 
     mongo_pipeline.append(
         {
