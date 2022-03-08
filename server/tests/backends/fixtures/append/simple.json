@@ -1,7 +1,6 @@
 {
   "exclude": [
-    "mysql",
-    "mongo"
+    "mysql"
   ],
   "step": {
     "pipeline": [
@@ -11,13 +10,13 @@
           [
             {
               "name": "domain",
-              "domain": "buzz"
+              "domain": "biz"
             }
           ],
           [
             {
               "name": "domain",
-              "domain": "buzz"
+              "domain": "biz"
             }
           ]
         ]
@@ -56,7 +55,7 @@
     ]
   },
   "other_inputs": {
-    "buzz": {
+    "biz": {
       "schema": {
         "fields": [
           {

@@ -50,9 +50,9 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path)
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
     data = pd.read_json(json.dumps(spec['input']), orient='table').to_dict(orient='records')
     mongo_database[collection_uid].insert_many(data)
-    if (
-        'other_inputs' in spec and 'join' in case_id
-    ):  # needed for join step tests as we need a != collection
+    if 'other_inputs' in spec and (
+        'join' in case_id or 'append' in case_id
+    ):  # needed for join & append steps tests as we need a != collection
         [
             mongo_database[k].insert_many(
                 pd.read_json(json.dumps(v), orient='table').to_dict(orient='records')
