@@ -1,5 +1,10 @@
 # Changelog (weaverbird python package)
 
+## [0.11.1] - 2022-03-08
+
+- Mongo: Join step & Append step in python translator
+
+
 ## [0.11.0] - 2022-02-25
 
 - Domain step: support references as an alternative to names
