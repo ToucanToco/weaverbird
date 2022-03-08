@@ -1,5 +1,5 @@
 import logging
-from typing import Any, List
+from typing import Dict, List
 
 from weaverbird.backends.mongo_translator.utils import column_to_user_variable
 from weaverbird.pipeline import Pipeline, steps
@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def translate_join(step: JoinStep) -> List:
-    mongo_pipeline: List[Any] = []
+    mongo_pipeline: List[Dict] = []
     right = step.right_pipeline
     assert isinstance(right, list)
     assert isinstance(right[0], dict)
