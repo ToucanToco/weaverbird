@@ -8,3 +8,7 @@ class DuplicateError(WeaverbirdError):
 
 class DuplicateColumnError(Exception):
     """raised when duplicate column names in input"""
+
+
+class UnresolvedReferenceError(Exception):
+    """Raised when a join step as a reference instead of a pipeline in input"""
