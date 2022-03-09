@@ -11,13 +11,20 @@ logger = logging.getLogger(__name__)
 def translate_join(step: JoinStep) -> List:
     mongo_pipeline: List[Dict] = []
     right = step.right_pipeline
-    assert isinstance(right, list)
-    assert isinstance(right[0], dict)
-    right_domain: DomainStep = DomainStep(**right[0])
+    right_without_domain = Pipeline(steps=[])
 
-    right_without_domain = Pipeline(
-        steps=[getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]]
-    )
+    if isinstance(right, str):
+        right_domain = DomainStep(name='domain', domain=right)
+    else:
+        try:
+            assert isinstance(right, List)
+        except AssertionError:  # in this case right is a Reference
+            raise Exception('References must be resolved before translating the pipeline')
+        right_domain = DomainStep(**right[0])
+        right_without_domain.steps = [
+            getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in right[1:]
+        ]
+
     mongo_let: dict[str, str] = {}
     mongo_expr_and: list[dict[str, list[str]]] = []
 

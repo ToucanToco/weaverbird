@@ -1,0 +1,154 @@
+{
+  "exclude": [
+    "snowflake",
+    "mysql",
+    "postgres",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "append",
+        "pipelines": ["miamoss"]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      }
+    ]
+  },
+  "other_inputs": {
+    "miamoss": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "SCORE",
+            "type": "integer"
+          },
+          {
+            "name": "LAMBDA",
+            "type": "integer"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "miam",
+          "SCORE": 999,
+          "LAMBDA": 12
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "string"
+        },
+        {
+          "name": "LAMBDA",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100,
+        "LAMBDA": null
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200,
+        "LAMBDA": null
+      },
+      {
+        "NAME": "miam",
+        "AGE": null,
+        "SCORE": 999,
+        "LAMBDA": 12
+      }
+    ]
+  },
+  "expected_sql": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "bar",
+        "AGE": 43,
+        "SCORE": 200
+      },
+      {
+        "NAME": "miam",
+        "AGE": 999,
+        "SCORE": 12
+      }
+    ]
+  }
+}
