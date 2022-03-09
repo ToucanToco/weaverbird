@@ -21,7 +21,7 @@ def translate_append(step: AppendStep) -> List:
             domain_step = DomainStep(name='domain', domain=sub_pipeline)
         else:
             try:
-                assert isinstance(sub_pipeline, List)
+                assert isinstance(sub_pipeline, list)
             except AssertionError:  # in this case sub_pipeline is a Reference
                 raise Exception('References must be resolved before translating the pipeline')
 

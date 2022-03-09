@@ -17,7 +17,7 @@ def translate_join(step: JoinStep) -> List:
         right_domain = DomainStep(name='domain', domain=right)
     else:
         try:
-            assert isinstance(right, List)
+            assert isinstance(right, list)
         except AssertionError:  # in this case right is a Reference
             raise Exception('References must be resolved before translating the pipeline')
         right_domain = DomainStep(**right[0])
