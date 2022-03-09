@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.11.2] - 2022-03-09
+
+- Mongo: Fix Join & Append steps to handle domain steps as str
+
 ## [0.11.1] - 2022-03-08
 
 - Mongo: Join step & Append step in python translator
