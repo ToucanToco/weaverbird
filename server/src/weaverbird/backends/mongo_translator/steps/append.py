@@ -15,12 +15,20 @@ def translate_append(step: AppendStep) -> List:
     lookups = []
 
     for i, sub_pipeline in enumerate(pipelines):
-        assert isinstance(sub_pipeline, list)
-        assert isinstance(sub_pipeline[0], dict)
-        domain_step: DomainStep = DomainStep(**sub_pipeline[0])
-        pipeline_without_domain = Pipeline(
-            steps=[getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in sub_pipeline[1:]]
-        )
+        pipeline_without_domain = Pipeline(steps=[])
+
+        if isinstance(sub_pipeline, str):
+            domain_step = DomainStep(name='domain', domain=sub_pipeline)
+        else:
+            try:
+                assert isinstance(sub_pipeline, list)
+            except AssertionError:  # in this case sub_pipeline is a Reference
+                raise Exception('References must be resolved before translating the pipeline')
+
+            domain_step = DomainStep(**sub_pipeline[0])
+            pipeline_without_domain.steps = [
+                getattr(steps, f"{s['name'].capitalize()}Step")(**s) for s in sub_pipeline[1:]
+            ]
         lookups.append(
             {
                 '$lookup': {

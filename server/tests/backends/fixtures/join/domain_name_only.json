@@ -1,0 +1,108 @@
+{
+  "exclude": [
+    "snowflake",
+    "mysql",
+    "postgres",
+    "pandas"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "join",
+        "right_pipeline":"bizz",
+        "type": "inner",
+        "on": [["NAME","NAME"]]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      }
+    ]
+  },
+  "other_inputs": {
+    "bizz": {
+      "schema": {
+        "fields": [
+          {
+            "name": "NAME",
+            "type": "string"
+          },
+          {
+            "name": "X",
+            "type": "integer"
+          }
+        ],
+        "pandas_version": "0.20.0"
+      },
+      "data": [
+        {
+          "NAME": "foo",
+          "X": 12
+        },
+        {
+          "NAME": "foo",
+          "X": 20
+        }
+      ]
+    }
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        },
+        {
+          "name": "X",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100.0,
+        "X": 12.0
+      },
+      {
+        "NAME": "foo",
+        "AGE": 42.0,
+        "SCORE": 100.0,
+        "X": 20.0
+      }
+    ]
+  }
+}
