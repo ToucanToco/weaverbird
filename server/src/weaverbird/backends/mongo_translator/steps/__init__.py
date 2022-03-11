@@ -1,5 +1,6 @@
 from typing import Any, Callable, Dict
 
+from weaverbird.backends.mongo_translator.steps.aggregate import translate_aggregate
 from weaverbird.backends.mongo_translator.steps.append import translate_append
 from weaverbird.backends.mongo_translator.steps.argmax import translate_argmax
 from weaverbird.backends.mongo_translator.steps.argmin import translate_argmin
@@ -21,4 +22,5 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'join': translate_join,
     'append': translate_append,
     'rename': translate_rename,
+    'aggregate': translate_aggregate,
 }
