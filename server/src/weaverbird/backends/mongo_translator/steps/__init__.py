@@ -6,6 +6,7 @@ from weaverbird.backends.mongo_translator.steps.argmin import translate_argmin
 from weaverbird.backends.mongo_translator.steps.domain import translate_domain
 from weaverbird.backends.mongo_translator.steps.filter import translate_filter
 from weaverbird.backends.mongo_translator.steps.join import translate_join
+from weaverbird.backends.mongo_translator.steps.rename import translate_rename
 from weaverbird.backends.mongo_translator.steps.text import translate_text
 
 # I would like to have a better type for the callable, but I don't know how to do it.
@@ -19,4 +20,5 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'filter': translate_filter,
     'join': translate_join,
     'append': translate_append,
+    'rename': translate_rename,
 }
