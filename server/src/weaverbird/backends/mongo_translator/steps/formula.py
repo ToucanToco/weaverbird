@@ -19,7 +19,7 @@ def mongo_formula_for_binop(binop: ast.BinOp) -> dict:
     if isinstance(binop.op, ast.Add):
         mongo_op = '$add'
     elif isinstance(binop.op, ast.Sub):
-        mongo_op = 'subtract'
+        mongo_op = '$subtract'
     elif isinstance(binop.op, ast.Mult):
         mongo_op = '$multiply'
     elif isinstance(binop.op, ast.Div):
