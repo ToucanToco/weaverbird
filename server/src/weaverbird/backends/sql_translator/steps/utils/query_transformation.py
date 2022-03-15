@@ -70,7 +70,8 @@ def apply_condition(condition: Condition, query: str) -> str:
             condition.value = sanitize_input(condition.value)
         query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
-        query += f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {str(tuple(condition.value))}'
+        values_tuple_str = '(' + ', '.join([f'\'{v}\'' for v in condition.value]) + ')'
+        query += f'{condition.column} {SQL_INCLUSION_OPERATORS[condition.operator]} {values_tuple_str}'
 
     elif isinstance(condition, DateBoundCondition):
 
