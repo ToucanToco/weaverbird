@@ -37,9 +37,18 @@ def mongo_formula_for_binop(binop: ast.BinOp) -> dict:
     }
 
 
+def mongo_formula_for_unaryop(unop: ast.UnaryOp) -> dict:
+    if isinstance(unop.op, ast.USub):
+        return {'$multiply': [-1, mongo_formula_for_ast_node(unop.operand)]}
+    else:
+        raise InvalidFormula(f'Operator {unop.op.__class__} is not supported')
+
+
 def mongo_formula_for_ast_node(node: ast.AST) -> any:
     if isinstance(node, ast.BinOp):
         return mongo_formula_for_binop(node)
+    elif isinstance(node, ast.UnaryOp):
+        return mongo_formula_for_unaryop(node)
     elif isinstance(node, ast.Constant):
         return mongo_formula_for_constant(node)
     elif isinstance(node, ast.Name):

@@ -96,3 +96,20 @@ def test_formula_nested():
             }
         }
     ]
+
+
+def test_signed_column_name():
+    assert translate_formula(FormulaStep(new_column='test', formula='-column_1 + 10')) == [
+        {
+            '$addFields': {
+                'test': {
+                    '$add': [
+                        {
+                            '$multiply': [-1, '$column_1'],
+                        },
+                        10,
+                    ],
+                }
+            }
+        }
+    ]
