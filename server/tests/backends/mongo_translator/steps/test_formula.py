@@ -3,18 +3,6 @@ from weaverbird.pipeline.steps import FormulaStep
 
 
 def test_formula():
-    assert translate_formula(
-        FormulaStep(
-            new_column='mewto',
-            formula='mew * 2'
-        )
-    ) == [{
-        '$addFields': {
-            'mewto': {
-                '$multiply': [
-                    '$mew',
-                    2
-                ]
-            }
-        }
-    }]
+    assert translate_formula(FormulaStep(new_column='mewto', formula='mew * 2')) == [
+        {'$addFields': {'mewto': {'$multiply': ['$mew', 2]}}}
+    ]
