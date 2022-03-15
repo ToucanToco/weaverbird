@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List
 
 from weaverbird.pipeline.steps import AggregateStep
 
@@ -6,7 +6,7 @@ from weaverbird.pipeline.steps import AggregateStep
 def translate_aggregate(step: AggregateStep) -> List[Dict[str, Any]]:
     idblock = {col: f'${col}' for col in step.on}
     group: Dict[str, Dict] = {}
-    project: Dict[str, Union[str, int]] = {}
+    project: Dict[str, Any] = {}
     add_fields = {}
     group['_id'] = idblock
 
@@ -14,6 +14,8 @@ def translate_aggregate(step: AggregateStep) -> List[Dict[str, Any]]:
         cols = agg_f_step.columns
         new_cols = agg_f_step.new_columns
 
+        # There is no `$count` operator in Mongo, we have to `$sum` 1s to get
+        # an equivalent result
         if agg_f_step.agg_function == 'count':
             for i in range(len(cols)):
                 group[new_cols[i]] = {'$sum': 1}
