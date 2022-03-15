@@ -24,3 +24,75 @@ def test_formula_with_unique_value():
     assert translate_formula(FormulaStep(new_column='team_number', formula='10')) == [
         {'$addFields': {'team_number': 10}}
     ]
+
+
+def test_formula_nested():
+    assert translate_formula(
+        FormulaStep(new_column='foo', formula='(column_1 + column_2) / column_3 - column_4 * 100')
+    ) == [
+        {
+            '$addFields': {
+                'foo': {
+                    '$subtract': [
+                        {
+                            '$divide': [
+                                {
+                                    '$add': ['$column_1', '$column_2'],
+                                },
+                                '$column_3',
+                            ],
+                        },
+                        {
+                            '$multiply': ['$column_4', 100],
+                        },
+                    ],
+                },
+            }
+        }
+    ]
+
+    assert translate_formula(
+        FormulaStep(new_column='bar', formula='1 / ((column_1 + column_2 + column_3)) * 10')
+    ) == [
+        {
+            '$addFields': {
+                'bar': {
+                    '$multiply': [
+                        {
+                            '$divide': [
+                                1,
+                                {
+                                    '$add': [
+                                        {
+                                            '$add': ['$column_1', '$column_2'],
+                                        },
+                                        '$column_3',
+                                    ],
+                                },
+                            ],
+                        },
+                        10,
+                    ],
+                }
+            }
+        }
+    ]
+
+    assert translate_formula(
+        FormulaStep(new_column='test_precedence', formula='column_1 + column_2 + column_3 * 10')
+    ) == [
+        {
+            '$addFields': {
+                'test_precedence': {
+                    '$add': [
+                        {
+                            '$add': ['$column_1', '$column_2'],
+                        },
+                        {
+                            '$multiply': ['$column_3', 10],
+                        },
+                    ],
+                }
+            }
+        }
+    ]
