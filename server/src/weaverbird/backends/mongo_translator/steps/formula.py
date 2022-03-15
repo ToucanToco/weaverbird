@@ -1,3 +1,4 @@
+import ast
 import re
 from typing import Dict, Union, Optional
 from numbers import Number
@@ -67,19 +68,25 @@ def build_formula_tree(
 
 
 def translate_formula(step: FormulaStep) -> Dict:
-    mongo_formula_tree = build_formula_tree()
+    mongo_formula_tree = build_formula_tree(step.formula)
 
-    new_column = mongo_formula_tree.mongo_formula
-    #     If at least one denominator is zero or null, the result is null
-    #     i.e: 1 / 0 + 1 = null
-    if len(mongo_formula_tree.mongo_formula):
-        new_column = {
-            '$cond': [
-                {'$or': [{'$in': [d, (0, None)]} for d in mongo_formula_tree.denominators]},
-                None,
-                new_column
-            ]
-        }
+    module = ast.parse(step.formula)
+    expr = module.body[0]
+    assert isinstance(expr, ast.Expr)
+
+
+
+    # new_column = mongo_formula_tree.mongo_formula
+    # #     If at least one denominator is zero or null, the result is null
+    # #     i.e: 1 / 0 + 1 = null
+    # if len(mongo_formula_tree.mongo_formula):
+    #     new_column = {
+    #         '$cond': [
+    #             {'$or': [{'$in': [d, (0, None)]} for d in mongo_formula_tree.denominators]},
+    #             None,
+    #             new_column
+    #         ]
+    #     }
 
     return {'$addFields': { step.new_column: new_column }}
 
