@@ -10,6 +10,14 @@
           [
             "NAME",
             "FIRST_NAME"
+          ],
+          [
+            "AGE",
+            "DONOTASKTOALADY"
+          ],
+          [
+            "SCORE",
+            "EROCS"
           ]
         ]
       }
@@ -54,11 +62,11 @@
           "type": "string"
         },
         {
-          "name": "AGE",
+          "name": "DONOTASKTOALADY",
           "type": "number"
         },
         {
-          "name": "SCORE",
+          "name": "EROCS",
           "type": "integer"
         }
       ],
@@ -67,13 +75,13 @@
     "data": [
       {
         "FIRST_NAME": "foo",
-        "AGE": 42,
-        "SCORE": 100
+        "DONOTASKTOALADY": 42,
+        "EROCS": 100
       },
       {
         "FIRST_NAME": "Azz",
-        "AGE": 21,
-        "SCORE": 100
+        "DONOTASKTOALADY": 21,
+        "EROCS": 100
       }
     ]
   }

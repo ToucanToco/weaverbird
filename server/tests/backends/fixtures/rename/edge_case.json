@@ -10,6 +10,10 @@
           [
             "NAME",
             "FIRST_NAME"
+          ],
+          [
+            "AGE",
+            "NAME"
           ]
         ]
       }
@@ -54,7 +58,7 @@
           "type": "string"
         },
         {
-          "name": "AGE",
+          "name": "NAME",
           "type": "number"
         },
         {
@@ -67,12 +71,12 @@
     "data": [
       {
         "FIRST_NAME": "foo",
-        "AGE": 42,
+        "NAME": 42,
         "SCORE": 100
       },
       {
         "FIRST_NAME": "Azz",
-        "AGE": 21,
+        "NAME": 21,
         "SCORE": 100
       }
     ]
