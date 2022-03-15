@@ -1,9 +1,10 @@
 from typing import List
 
+from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RenameStep
 
 
-def translate_rename(step: RenameStep) -> List:
+def translate_rename(step: RenameStep) -> List[MongoStep]:
     return [
         {'$addFields': {to_rename[1]: f'${to_rename[0]}' for to_rename in step.to_rename}},
         {

@@ -1,7 +1,10 @@
+from typing import List
+
+from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ArgminStep
 
 
-def translate_argmin(step: ArgminStep) -> list:
+def translate_argmin(step: ArgminStep) -> List[MongoStep]:
     return [
         {
             '$group': {
