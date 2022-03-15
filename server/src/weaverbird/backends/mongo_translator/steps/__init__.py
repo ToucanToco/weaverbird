@@ -14,13 +14,13 @@ from weaverbird.backends.mongo_translator.steps.text import translate_text
 # each of this function take a particular step as input
 # so it is not possible to use `Dict[str, Callable[[BaseStep], list]]
 mongo_step_translator: Dict[str, Callable[[Any], list]] = {
+    'aggregate': translate_aggregate,
+    'append': translate_append,
     'argmax': translate_argmax,
     'argmin': translate_argmin,
     'domain': translate_domain,
-    'text': translate_text,
     'filter': translate_filter,
     'join': translate_join,
-    'append': translate_append,
     'rename': translate_rename,
-    'aggregate': translate_aggregate,
+    'text': translate_text,
 }
