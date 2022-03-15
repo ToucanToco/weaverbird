@@ -15,3 +15,12 @@ def test_formula_basic_operators():
     assert translate_formula(FormulaStep(new_column='conquer', formula='1 / pi')) == [
         {'$addFields': {'conquer': {'$divide': [1, '$pi']}}}
     ]
+
+
+def test_formula_with_unique_value():
+    assert translate_formula(FormulaStep(new_column='sacred', formula='graal')) == [
+        {'$addFields': {'sacred': '$graal'}}
+    ]
+    assert translate_formula(FormulaStep(new_column='team_number', formula='10')) == [
+        {'$addFields': {'team_number': 10}}
+    ]
