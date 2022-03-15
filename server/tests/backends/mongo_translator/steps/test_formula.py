@@ -113,3 +113,7 @@ def test_signed_column_name():
             }
         }
     ]
+
+
+# TODO division by 0 (see mongo.spec.ts)
+# TODO column name escaping (see mongo.spec.ts)
