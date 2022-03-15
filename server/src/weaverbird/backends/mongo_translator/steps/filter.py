@@ -1,5 +1,6 @@
-from typing import Dict
+from typing import Dict, List
 
+from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.conditions import (
     ComparisonCondition,
     Condition,
@@ -88,5 +89,5 @@ def build_match_tree(condition: Condition, parent_operator='and') -> dict:
         }
 
 
-def translate_filter(step: FilterStep) -> list:
+def translate_filter(step: FilterStep) -> List[MongoStep]:
     return [{'$match': build_match_tree(step.condition)}]
