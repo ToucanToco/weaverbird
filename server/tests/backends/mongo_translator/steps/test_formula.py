@@ -128,53 +128,39 @@ def test_zero_division():
         {
             '$addFields': {
                 'foo': {
-                    '$cond': [
-                        {
-                            '$or': [
-                                {
-                                    '$in': ['$column_2', [0, None]],
-                                },
-                                {
-                                    '$in': [
-                                        {
-                                            '$add': ['$column_2', 10],
-                                        },
-                                        [0, None],
-                                    ],
-                                },
-                            ],
-                        },
-                        None,
+                    '$add': [
                         {
                             '$add': [
                                 {
-                                    '$add': [
-                                        {
-                                            '$divide': ['$column_1', 10],
-                                        },
-                                        {
-                                            '$divide': ['$column_1', '$column_2'],
-                                        },
-                                    ],
+                                    '$cond': [
+                                        {'$in': [10, [0, None]]},
+                                        None,
+                                        {'$divide': ['$column_1', 10]},
+                                    ]
                                 },
                                 {
-                                    '$divide': [
-                                        '$column_1',
-                                        {
-                                            '$add': ['$column_2', 10],
-                                        },
-                                    ],
+                                    '$cond': [
+                                        {'$in': ['$column_2', [0, None]]},
+                                        None,
+                                        {'$divide': ['$column_1', '$column_2']},
+                                    ]
                                 },
-                            ],
+                            ]
                         },
-                    ],
-                },
-            },
+                        {
+                            '$cond': [
+                                {'$in': [{'$add': ['$column_2', 10]}, [0, None]]},
+                                None,
+                                {'$divide': ['$column_1', {'$add': ['$column_2', 10]}]},
+                            ]
+                        },
+                    ]
+                }
+            }
         }
     ]
 
 
-# TODO column name escaping (see mongo.spec.ts)
 def test_special_column_name():
     assert translate_formula(
         FormulaStep(

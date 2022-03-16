@@ -5,10 +5,6 @@ from typing import Any, Dict
 from weaverbird.pipeline.steps import FormulaStep
 
 
-def escape_for_use_in_regexp(string: str) -> str:
-    return string.replace('[.*+-?^${}()|[]', '\\&&')
-
-
 def mongo_formula_for_constant(constant: ast.Constant) -> Any:
     return constant.value
 
@@ -37,12 +33,22 @@ def mongo_formula_for_binop(binop: ast.BinOp, pseudo_cols: Dict) -> dict:
     else:
         raise InvalidFormula(f'Operator {binop.op.__class__} is not supported')
 
-    return {
+    translated_op = {
         mongo_op: [
             mongo_formula_for_ast_node(binop.left, pseudo_cols),
             mongo_formula_for_ast_node(binop.right, pseudo_cols),
         ]
     }
+    if mongo_op == '$divide':
+        return {
+            '$cond': [
+                {'$in': [mongo_formula_for_ast_node(binop.right, pseudo_cols), [0, None]]},
+                None,
+                translated_op,
+            ]
+        }
+    else:
+        return translated_op
 
 
 def mongo_formula_for_unaryop(unop: ast.UnaryOp, pseudo_cols: Dict) -> dict:
