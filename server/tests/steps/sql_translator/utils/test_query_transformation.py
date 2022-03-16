@@ -176,6 +176,13 @@ def test_apply_condition_inclusion():
         )
         == "SELECT product FROM inventory WHERE origin NOT IN ('france', 'spain', 'italy')"
     )
+    assert (
+        apply_condition(
+            InclusionCondition(column='origin', operator='in', value=['france']),
+            query='SELECT product FROM inventory WHERE ',
+        )
+        == "SELECT product FROM inventory WHERE origin IN ('france')"
+    )
 
 
 def test_apply_condition_conditioncomboand():
