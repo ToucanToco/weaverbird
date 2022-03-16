@@ -9,11 +9,13 @@ from weaverbird.backends.mongo_translator.steps.filter import translate_filter
 from weaverbird.backends.mongo_translator.steps.formula import translate_formula
 from weaverbird.backends.mongo_translator.steps.join import translate_join
 from weaverbird.backends.mongo_translator.steps.rename import translate_rename
+from weaverbird.backends.mongo_translator.steps.sort import translate_sort
 from weaverbird.backends.mongo_translator.steps.text import translate_text
 
 # I would like to have a better type for the callable, but I don't know how to do it.
 # each of this function take a particular step as input
 # so it is not possible to use `Dict[str, Callable[[BaseStep], list]]
+
 mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'aggregate': translate_aggregate,
     'append': translate_append,
@@ -24,5 +26,6 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'formula': translate_formula,
     'join': translate_join,
     'rename': translate_rename,
+    'sort': translate_sort,
     'text': translate_text,
 }
