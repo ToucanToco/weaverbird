@@ -44,6 +44,14 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
     format = format.replace('%B', '%b');
   }
 
+  const input = {
+    $cond: [
+      { $eq: [{ $type: $$(step.column) }, 'int'] },
+      { $toString: $$(step.column) },
+      $$(step.column),
+    ],
+  };
+
   const monthReplace = {
     $switch: {
       branches: [
@@ -114,13 +122,13 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
           $addFields: {
             [step.column]: {
               $dateFromString: {
-                dateString: $$(step.column),
+                dateString: input,
                 // Mongo does not support "incomplete" date string where the day or month is missing
                 // so we add the first day of the month and of the first month of the year and use the format %d/%m/%Y
                 // to enable '%Y' format to be guessed
                 onError: {
                   $dateFromString: {
-                    dateString: { $concat: ['01/01/', $$(step.column)] },
+                    dateString: { $concat: ['01/01/', input] },
                     format: '%d/%m/%Y',
                   },
                 },
@@ -131,7 +139,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       ];
     case '%d %b %Y':
       return [
-        { $addFields: { _vqbTempArray: { $split: [$$(step.column), ' '] } } },
+        { $addFields: { _vqbTempArray: { $split: [input, ' '] } } },
         {
           $addFields: {
             _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
@@ -158,7 +166,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       ];
     case '%d-%b-%Y':
       return [
-        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        { $addFields: { _vqbTempArray: { $split: [input, '-'] } } },
         {
           $addFields: {
             _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
@@ -185,7 +193,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       ];
     case '%b %Y':
       return [
-        { $addFields: { _vqbTempArray: { $split: [$$(step.column), ' '] } } },
+        { $addFields: { _vqbTempArray: { $split: [input, ' '] } } },
         {
           $addFields: {
             _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
@@ -209,7 +217,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       ];
     case '%b-%Y':
       return [
-        { $addFields: { _vqbTempArray: { $split: [$$(step.column), '-'] } } },
+        { $addFields: { _vqbTempArray: { $split: [input, '-'] } } },
         {
           $addFields: {
             _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
@@ -235,7 +243,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       // Mongo does not support "incomplete" date string where the day is missing
       // so we add the first day of the month and use the format %Y-%m-%d instead
       return [
-        { $addFields: { _vqbTempDate: { $concat: [$$(step.column), '-01'] } } },
+        { $addFields: { _vqbTempDate: { $concat: [input, '-01'] } } },
         {
           $addFields: {
             [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y-%m-%d' } },
@@ -247,7 +255,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       // Mongo does not support "incomplete" date string where the day is missing
       // so we add the first day of the month and use the format %Y/%m/%d instead
       return [
-        { $addFields: { _vqbTempDate: { $concat: [$$(step.column), '/01'] } } },
+        { $addFields: { _vqbTempDate: { $concat: [input, '/01'] } } },
         {
           $addFields: {
             [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y/%m/%d' } },
@@ -259,7 +267,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       // Mongo does not support "incomplete" date string where the day is missing
       // so we add the first day of the month and use the format %d-%m-%Y instead
       return [
-        { $addFields: { _vqbTempDate: { $concat: ['01-', $$(step.column)] } } },
+        { $addFields: { _vqbTempDate: { $concat: ['01-', input] } } },
         {
           $addFields: {
             [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d-%m-%Y' } },
@@ -271,7 +279,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       // Mongo does not support "incomplete" date string where the day is missing
       // so we add the first day of the month and use the format %d/%m/%Y instead
       return [
-        { $addFields: { _vqbTempDate: { $concat: ['01/', $$(step.column)] } } },
+        { $addFields: { _vqbTempDate: { $concat: ['01/', input] } } },
         {
           $addFields: {
             [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
@@ -283,7 +291,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
       // Mongo does not support "incomplete" date string where the day or month is missing
       // so we add the first day of the month and of the first month of the year and use the format %d/%m/%Y
       return [
-        { $addFields: { _vqbTempDate: { $concat: ['01/01/', $$(step.column)] } } },
+        { $addFields: { _vqbTempDate: { $concat: ['01/01/', input] } } },
         {
           $addFields: {
             [step.column]: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
@@ -296,7 +304,7 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
         {
           $addFields: {
             [step.column]: {
-              $dateFromString: { dateString: $$(step.column), format: step.format },
+              $dateFromString: { dateString: input, format: step.format },
             },
           },
         },
