@@ -14,7 +14,7 @@ def mongo_formula_for_name(name: ast.Name, pseudo_cols: Dict) -> str:
     Identifiers correspond to column names
     """
     if name.id in pseudo_cols:
-        return f'${pseudo_cols[name.id]}'
+        return f'$[{pseudo_cols[name.id]}]'
     else:
         return '$' + name.id
 
@@ -58,7 +58,7 @@ def mongo_formula_for_unaryop(unop: ast.UnaryOp, pseudo_cols: Dict) -> dict:
         raise InvalidFormula(f'Operator {unop.op.__class__} is not supported')
 
 
-def mongo_formula_for_ast_node(node: ast.AST, pseudo_cols: Dict) -> any:
+def mongo_formula_for_ast_node(node: ast.AST, pseudo_cols: Dict) -> Any:
     if isinstance(node, ast.BinOp):
         return mongo_formula_for_binop(node, pseudo_cols)
     elif isinstance(node, ast.UnaryOp):
@@ -94,7 +94,6 @@ def translate_formula(step: FormulaStep) -> list:
         raise InvalidFormula
 
     mongo_expr = mongo_formula_for_expr(expr, pseudo_cols)
-
     return [{'$addFields': {step.new_column: mongo_expr}}]
 
 

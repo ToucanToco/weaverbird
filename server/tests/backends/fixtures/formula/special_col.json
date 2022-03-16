@@ -2,14 +2,15 @@
   "exclude": [
     "mysql",
     "postgres",
-    "snowflake"
+    "snowflake",
+    "pandas"
   ],
   "step": {
     "pipeline": [
       {
         "name": "formula",
         "new_column": "foobar",
-        "formula": "([column with space and + and, oh a - and_also *] + [an other ^column]) * [column with space and + and, oh a - and_also *] - [an other ^column] * 100"
+        "formula": "[column with space and + and, oh a - and_also *] + [an other ^column]"
       }
     ]
   },
@@ -71,13 +72,13 @@
         "NAME": "foo",
         "[column with space and + and, oh a - and_also *]": 42,
         "[an other ^column]": 100,
-        "foobar": -4036
+        "foobar": 142
       },
       {
         "NAME": "Azz",
         "[column with space and + and, oh a - and_also *]": 21,
         "[an other ^column]": 100,
-        "foobar": -7459
+        "foobar": 121
       }
     ]
   }

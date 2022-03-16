@@ -13,7 +13,11 @@ def test_formula_basic_operators():
         {'$addFields': {'diff': {'$subtract': ['$you', '$two']}}}
     ]
     assert translate_formula(FormulaStep(new_column='conquer', formula='1 / pi')) == [
-        {'$addFields': {'conquer': {'$divide': [1, '$pi']}}}
+        {
+            '$addFields': {
+                'conquer': {'$cond': [{'$in': ['$pi', [0, None]]}, None, {'$divide': [1, '$pi']}]}
+            }
+        }
     ]
 
 
@@ -35,18 +39,15 @@ def test_formula_nested():
                 'foo': {
                     '$subtract': [
                         {
-                            '$divide': [
-                                {
-                                    '$add': ['$column_1', '$column_2'],
-                                },
-                                '$column_3',
-                            ],
+                            '$cond': [
+                                {'$in': ['$column_3', [0, None]]},
+                                None,
+                                {'$divide': [{'$add': ['$column_1', '$column_2']}, '$column_3']},
+                            ]
                         },
-                        {
-                            '$multiply': ['$column_4', 100],
-                        },
-                    ],
-                },
+                        {'$multiply': ['$column_4', 100]},
+                    ]
+                }
             }
         }
     ]
@@ -59,20 +60,34 @@ def test_formula_nested():
                 'bar': {
                     '$multiply': [
                         {
-                            '$divide': [
-                                1,
+                            '$cond': [
                                 {
-                                    '$add': [
+                                    '$in': [
                                         {
-                                            '$add': ['$column_1', '$column_2'],
+                                            '$add': [
+                                                {'$add': ['$column_1', '$column_2']},
+                                                '$column_3',
+                                            ]
                                         },
-                                        '$column_3',
-                                    ],
+                                        [0, None],
+                                    ]
                                 },
-                            ],
+                                None,
+                                {
+                                    '$divide': [
+                                        1,
+                                        {
+                                            '$add': [
+                                                {'$add': ['$column_1', '$column_2']},
+                                                '$column_3',
+                                            ]
+                                        },
+                                    ]
+                                },
+                            ]
                         },
                         10,
-                    ],
+                    ]
                 }
             }
         }
@@ -172,8 +187,8 @@ def test_special_column_name():
             '$addFields': {
                 'test': {
                     '$add': [
-                        '$column with space and + and, oh a - and_also *',
-                        '$an other ^column',
+                        '$[column with space and + and, oh a - and_also *]',
+                        '$[an other ^column]',
                     ],
                 },
             },
@@ -190,7 +205,7 @@ def test_special_column_name_and_normal_column_name():
         {
             '$addFields': {
                 'test': {
-                    '$add': ['$column with space and + and, oh a - and_also *', '$A'],
+                    '$add': ['$[column with space and + and, oh a - and_also *]', '$A'],
                 },
             },
         },
