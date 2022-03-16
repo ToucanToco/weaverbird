@@ -1,0 +1,82 @@
+{
+  "exclude": [
+    "mysql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "formula",
+        "new_column": "FOOBAR",
+        "formula": "1/ (AGE + SCORE) / (AGE - SCORE) * 100"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 6,
+        "SCORE": 4
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 3,
+        "SCORE": 2
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "number"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        },
+        {
+          "name": "FOOBAR",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 6,
+        "SCORE": 4,
+        "FOOBAR": 5
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 3,
+        "SCORE": 2,
+        "FOOBAR": 20
+      }
+    ]
+  }
+}
