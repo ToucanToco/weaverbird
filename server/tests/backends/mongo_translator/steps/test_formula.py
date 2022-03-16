@@ -191,8 +191,7 @@ def test_special_column_name():
                     ],
                 },
             },
-        },
-        {'$project': {'_id': 0}},
+        }
     ]
 
 
@@ -209,5 +208,4 @@ def test_special_column_name_and_normal_column_name():
                 },
             },
         },
-        {'$project': {'_id': 0}},
     ]
