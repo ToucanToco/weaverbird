@@ -1,4 +1,5 @@
 from typing import List
+
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RenameStep
 
@@ -14,4 +15,3 @@ def translate_rename(step: RenameStep) -> List[MongoStep]:
             }
         },
     ]
-  

@@ -1,0 +1,84 @@
+{
+  "exclude": [
+    "mysql",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "formula",
+        "new_column": "foobar",
+        "formula": "([column with space and + and, oh a - and_also *] + [an other ^column]) * [column with space and + and, oh a - and_also *] - [an other ^column] * 100"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "[column with space and + and, oh a - and_also *]",
+          "type": "integer"
+        },
+        {
+          "name": "[an other ^column]",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "[column with space and + and, oh a - and_also *]": 42,
+        "[an other ^column]": 100
+      },
+      {
+        "NAME": "Azz",
+        "[column with space and + and, oh a - and_also *]": 21,
+        "[an other ^column]": 100
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "[column with space and + and, oh a - and_also *]",
+          "type": "number"
+        },
+        {
+          "name": "[an other ^column]",
+          "type": "integer"
+        },
+        {
+          "name": "foobar",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "[column with space and + and, oh a - and_also *]": 42,
+        "[an other ^column]": 100,
+        "foobar": -4036
+      },
+      {
+        "NAME": "Azz",
+        "[column with space and + and, oh a - and_also *]": 21,
+        "[an other ^column]": 100,
+        "foobar": -7459
+      }
+    ]
+  }
+}
