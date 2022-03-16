@@ -1,6 +1,6 @@
 import ast
 import re
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
 from weaverbird.pipeline.steps import FormulaStep
 
@@ -9,17 +9,17 @@ def mongo_formula_for_constant(constant: ast.Constant) -> Any:
     return constant.value
 
 
-def mongo_formula_for_name(name: ast.Name, pseudo_cols: Dict) -> str:
+def mongo_formula_for_name(name: ast.Name, columns_aliases: Dict) -> str:
     """
     Identifiers correspond to column names
     """
-    if name.id in pseudo_cols:
-        return f'$[{pseudo_cols[name.id]}]'
+    if name.id in columns_aliases:
+        return f'$[{columns_aliases[name.id]}]'
     else:
         return '$' + name.id
 
 
-def mongo_formula_for_binop(binop: ast.BinOp, pseudo_cols: Dict) -> dict:
+def mongo_formula_for_binop(binop: ast.BinOp, columns_aliases: Dict) -> dict:
     if isinstance(binop.op, ast.Add):
         mongo_op = '$add'
     elif isinstance(binop.op, ast.Sub):
@@ -35,14 +35,18 @@ def mongo_formula_for_binop(binop: ast.BinOp, pseudo_cols: Dict) -> dict:
 
     translated_op = {
         mongo_op: [
-            mongo_formula_for_ast_node(binop.left, pseudo_cols),
-            mongo_formula_for_ast_node(binop.right, pseudo_cols),
+            mongo_formula_for_ast_node(binop.left, columns_aliases),
+            mongo_formula_for_ast_node(binop.right, columns_aliases),
         ]
     }
+    #  In case of a division operation the translator must handle a 0 or null denominator.
+    #  The implemented logic is: if the translated operation is a division, wraps the operation with a
+    #  condition checking if the value of the right operand is in 0 or None and output a None result in this case
+    #  otherwise, return the result the division operation
     if mongo_op == '$divide':
         return {
             '$cond': [
-                {'$in': [mongo_formula_for_ast_node(binop.right, pseudo_cols), [0, None]]},
+                {'$in': [mongo_formula_for_ast_node(binop.right, columns_aliases), [0, None]]},
                 None,
                 translated_op,
             ]
@@ -51,50 +55,62 @@ def mongo_formula_for_binop(binop: ast.BinOp, pseudo_cols: Dict) -> dict:
         return translated_op
 
 
-def mongo_formula_for_unaryop(unop: ast.UnaryOp, pseudo_cols: Dict) -> dict:
+def mongo_formula_for_unaryop(unop: ast.UnaryOp, columns_aliases: Dict) -> dict:
     if isinstance(unop.op, ast.USub):
-        return {'$multiply': [-1, mongo_formula_for_ast_node(unop.operand, pseudo_cols)]}
+        return {'$multiply': [-1, mongo_formula_for_ast_node(unop.operand, columns_aliases)]}
     else:
         raise InvalidFormula(f'Operator {unop.op.__class__} is not supported')
 
 
-def mongo_formula_for_ast_node(node: ast.AST, pseudo_cols: Dict) -> Any:
+def mongo_formula_for_ast_node(node: ast.AST, columns_aliases: Dict) -> Any:
     if isinstance(node, ast.BinOp):
-        return mongo_formula_for_binop(node, pseudo_cols)
+        return mongo_formula_for_binop(node, columns_aliases)
     elif isinstance(node, ast.UnaryOp):
-        return mongo_formula_for_unaryop(node, pseudo_cols)
+        return mongo_formula_for_unaryop(node, columns_aliases)
     elif isinstance(node, ast.Constant):
         return mongo_formula_for_constant(node)
     elif isinstance(node, ast.Name):
-        return mongo_formula_for_name(node, pseudo_cols)
+        return mongo_formula_for_name(node, columns_aliases)
     else:
         raise InvalidFormula(f'Formula node {node} is not supported')
 
 
-def mongo_formula_for_expr(expr: ast.Expr, pseudo_cols: Dict) -> dict:
+def mongo_formula_for_expr(expr: ast.Expr, columns_aliases: Dict) -> dict:
     if isinstance(expr.value, ast.AST):
-        return mongo_formula_for_ast_node(expr.value, pseudo_cols)
+        return mongo_formula_for_ast_node(expr.value, columns_aliases)
     else:
         raise InvalidFormula
 
 
 def translate_formula(step: FormulaStep) -> list:
-    # search column names with [...]
-    pseudo_cols = {}
-    pseudotized_formula = step.formula
-    matches = re.findall(r'\[(.*?)]', step.formula)
+    columns_aliases, sanitized_formula = sanitize_formula(step.formula)
 
-    for i, match in enumerate(matches):
-        pseudo_cols[f'__vqb_col_{i}__'] = match
-        pseudotized_formula = pseudotized_formula.replace(f'[{match}]', f'__vqb_col_{i}__')
-
-    module = ast.parse(pseudotized_formula)
+    module = ast.parse(sanitized_formula)
     expr = module.body[0]
     if not isinstance(expr, ast.Expr):
         raise InvalidFormula
 
-    mongo_expr = mongo_formula_for_expr(expr, pseudo_cols)
+    mongo_expr = mongo_formula_for_expr(expr, columns_aliases)
     return [{'$addFields': {step.new_column: mongo_expr}}]
+
+
+def sanitize_formula(formula: str) -> Tuple[Dict, str]:
+    """
+    This function handles column names with special characters & spaces.
+    Such columns are surrounded by brackets. The functions replaces this pattern by a temporary name
+    and store the original name in a dict, with the temporary name as key and the actual name as key.
+    For example in this formula -> [I'm a Special Column!!] * 10 it will return
+    tuple(__vqb_col_0__ * 10, {"__vqb_col_0__": "[I'm a Special Column!!]"})
+    The translate function will replaces the temporary name by the old one once the formula will
+    be parsed by ast.parse and translated to mongo.
+    """
+    columns_aliases = {}
+    sanitized_formula = formula
+    matches = re.findall(r'\[(.*?)]', formula)
+    for i, match in enumerate(matches):
+        columns_aliases[f'__vqb_col_{i}__'] = match
+        sanitized_formula = sanitized_formula.replace(f'[{match}]', f'__vqb_col_{i}__')
+    return columns_aliases, sanitized_formula
 
 
 class InvalidFormula(Exception):

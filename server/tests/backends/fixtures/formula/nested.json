@@ -1,14 +1,12 @@
 {
   "exclude": [
-    "mysql",
-    "postgres",
-    "snowflake"
+    "mysql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "formula",
-        "new_column": "foobar",
+        "new_column": "FOOBAR",
         "formula": "(AGE + SCORE) * AGE - SCORE * 100"
       }
     ]
@@ -60,7 +58,7 @@
           "type": "integer"
         },
         {
-          "name": "foobar",
+          "name": "FOOBAR",
           "type": "number"
         }
       ],
@@ -71,13 +69,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "foobar": -4036
+        "FOOBAR": -4036
       },
       {
         "NAME": "Azz",
         "AGE": 21,
         "SCORE": 100,
-        "foobar": -7459
+        "FOOBAR": -7459
       }
     ]
   }

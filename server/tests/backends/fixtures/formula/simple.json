@@ -1,14 +1,12 @@
 {
   "exclude": [
-    "mysql",
-    "postgres",
-    "snowflake"
+    "mysql"
   ],
   "step": {
     "pipeline": [
       {
         "name": "formula",
-        "new_column": "foobar",
+        "new_column": "FOOBAR",
         "formula": "AGE + 10"
       }
     ]
@@ -60,7 +58,7 @@
           "type": "integer"
         },
         {
-          "name": "foobar",
+          "name": "FOOBAR",
           "type": "number"
         }
       ],
@@ -71,13 +69,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "foobar": 52
+        "FOOBAR": 52
       },
       {
         "NAME": "Azz",
         "AGE": 21,
         "SCORE": 100,
-        "foobar": 31
+        "FOOBAR": 31
       }
     ]
   }
