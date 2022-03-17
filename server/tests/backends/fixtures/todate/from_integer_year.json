@@ -1,0 +1,48 @@
+{
+  "exclude": [
+    "snowflake",
+    "mysql",
+    "postgres",
+    "mongo"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "todate",
+        "column": "CREATED_DATE"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "CREATED_DATE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "CREATED_DATE": 2018
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "CREATED_DATE",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "CREATED_DATE": "2018-01-01T00:00:00.000Z"
+      }
+    ]
+  }
+}
