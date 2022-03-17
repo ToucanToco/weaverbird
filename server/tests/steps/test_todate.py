@@ -52,6 +52,24 @@ def test_todate_automatic_guess(sample_df: DataFrame):
     )
 
 
+def test_todate_int_as_year_with_automatic_guess():
+    sample_df = DataFrame({'a_date': [2019, 2020]})
+    step = ToDateStep(name='todate', column='a_date')
+    result = execute_todate(step, sample_df)
+    assert_dataframes_equals(
+        result,
+        DataFrame(
+            {
+                'a_date': [
+                    # We force Pandas to format with %Y:
+                    Timestamp(year=2019, month=1, day=1),
+                    Timestamp(year=2020, month=1, day=1),
+                ]
+            }
+        ),
+    )
+
+
 def test_todate_from_str_timestamp():
     """
     Timestamps to date should support MilliSecond Timestamps (for consistency with Mongo Backend),

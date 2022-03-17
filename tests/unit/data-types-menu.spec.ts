@@ -214,8 +214,8 @@ describe('Data Types Menu', () => {
     expect(createConvertStepStub).toBeCalledWith('date');
   });
 
-  it('should call createConvertStep when clicking on "date" on a integer column', async () => {
-    const createConvertStepStub = jest.fn();
+  it('should emit "closed" and actionClicked" with "todate" as payload when clicking \
+  on "date" on an integer column', () => {
     const store = setupMockStore({
       dataset: {
         headers: [{ name: 'columnA', type: 'integer' }],
@@ -226,11 +226,11 @@ describe('Data Types Menu', () => {
       localVue,
       propsData: { columnName: 'columnA' },
     });
-    wrapper.setMethods({ createConvertStep: createConvertStepStub });
-    const actionsWrapper = wrapper.findAll('.data-types-menu__option--active');
-    actionsWrapper.at(3).trigger('click');
-    await localVue.nextTick();
-    expect(createConvertStepStub).toBeCalledWith('date');
+    const options = wrapper.findAll('.data-types-menu__option--active');
+    options.at(3).trigger('click');
+    expect(wrapper.emitted().closed).toBeTruthy();
+    expect(wrapper.emitted().actionClicked).toBeTruthy();
+    expect(wrapper.emitted().actionClicked[0][0]).toEqual('todate');
   });
 
   it('should not call createConvertStep when clicking on "date" on a float column', async () => {
