@@ -115,17 +115,17 @@ export default class DataTypesMenu extends Vue {
   }
 
   openToDateStep() {
-    // if string, we want to open the dedicated todate step where the user can
+    // if string or int, we want to open the dedicated todate step where the user can
     // specify string formats
-    if (this.columnTypes[this.columnName] === 'string') {
+    if (
+      this.columnTypes[this.columnName] === 'string' ||
+      this.columnTypes[this.columnName] === 'integer'
+    ) {
       this.$emit('actionClicked', 'todate');
       this.close();
     }
-    // if date or integer, we can convert the column directly
-    if (
-      this.columnTypes[this.columnName] === 'date' ||
-      this.columnTypes[this.columnName] === 'integer'
-    ) {
+    // if date, we can convert the column directly
+    if (this.columnTypes[this.columnName] === 'date') {
       this.createConvertStep('date');
     }
   }
