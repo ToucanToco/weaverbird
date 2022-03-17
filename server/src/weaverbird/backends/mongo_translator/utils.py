@@ -22,8 +22,7 @@ class UnsupportedOperatorError(Exception):
 
 
 def build_cond_expression(
-    cond: Union[SimpleCondition, ConditionComboOr, ConditionComboAnd],
-    unsupported_operators: List,
+    cond: Union[SimpleCondition, ConditionComboOr, ConditionComboAnd]
 ) -> MongoStep:
     operator_mapping = {
         'eq': '$eq',
@@ -41,15 +40,15 @@ def build_cond_expression(
         'from': '$gte',
         'until': '$lte',
     }
+    unsupported_operators: List = []
+
     if isinstance(cond, ConditionComboAnd):
         if len(cond.and_) == 1:
-            return build_cond_expression(cond.and_[0], unsupported_operators)
+            return build_cond_expression(cond.and_[0])
         else:
-            return {
-                '$and': [build_cond_expression(elem, unsupported_operators) for elem in cond.and_]
-            }
+            return {'$and': [build_cond_expression(elem) for elem in cond.and_]}
     if isinstance(cond, ConditionComboOr):
-        return {'$and': [build_cond_expression(elem, unsupported_operators) for elem in cond.or_]}
+        return {'$and': [build_cond_expression(elem) for elem in cond.or_]}
     if cond.operator in unsupported_operators:
         raise UnsupportedOperatorError(f'Unsupported operator ${cond.operator} in conditions')
 

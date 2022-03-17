@@ -11,9 +11,8 @@ def test_ifthenelse_basic():
             condition=ComparisonCondition(column='foo', operator='eq', value=1),
             then=1,
             else_value=2,
-        ),
-        unsupported_operators_in_conditions=[],
-    ) == {'$cond': {'if': {'$eq': ['$foo', 1]}, 'then': 1, 'else': 2}}
+        )
+    ) == [{'$addFields': {'foobar': {'$cond': {'if': {'$eq': ['$foo', 1]}, 'then': 1, 'else': 2}}}}]
 
 
 def test_ifthenelse_formulas():
@@ -23,21 +22,26 @@ def test_ifthenelse_formulas():
             condition=ComparisonCondition(column='foo', operator='eq', value=1),
             then='foo * 2',
             else_value='foo / (foo + 1)',
-        ),
-        unsupported_operators_in_conditions=[],
-    ) == {
-        '$cond': {
-            'if': {'$eq': ['$foo', 1]},
-            'then': {'$multiply': ['$foo', 2]},
-            'else': {
-                '$cond': [
-                    {'$in': [{'$add': ['$foo', 1]}, [0, None]]},
-                    None,
-                    {'$divide': ['$foo', {'$add': ['$foo', 1]}]},
-                ]
-            },
-        },
-    }
+        )
+    ) == [
+        {
+            '$addFields': {
+                'foobar': {
+                    '$cond': {
+                        'if': {'$eq': ['$foo', 1]},
+                        'then': {'$multiply': ['$foo', 2]},
+                        'else': {
+                            '$cond': [
+                                {'$in': [{'$add': ['$foo', 1]}, [0, None]]},
+                                None,
+                                {'$divide': ['$foo', {'$add': ['$foo', 1]}]},
+                            ]
+                        },
+                    },
+                }
+            }
+        }
+    ]
 
 
 def test_ifthenelse_nested_else():
@@ -51,18 +55,23 @@ def test_ifthenelse_nested_else():
                 then='foo**2',
                 else_value='foo**3',
             ),
-        ),
-        unsupported_operators_in_conditions=[],
-    ) == {
-        '$cond': {
-            'if': {'$eq': ['$foo', 1]},
-            'then': {'$multiply': ['$foo', 2]},
-            'else': {
-                '$cond': {
-                    'if': {'$gt': ['$foo', 2]},
-                    'then': {'$pow': ['$foo', 2]},
-                    'else': {'$pow': ['$foo', 3]},
+        )
+    ) == [
+        {
+            '$addFields': {
+                'foobar': {
+                    '$cond': {
+                        'if': {'$eq': ['$foo', 1]},
+                        'then': {'$multiply': ['$foo', 2]},
+                        'else': {
+                            '$cond': {
+                                'if': {'$gt': ['$foo', 2]},
+                                'then': {'$pow': ['$foo', 2]},
+                                'else': {'$pow': ['$foo', 3]},
+                            }
+                        },
+                    },
                 }
-            },
-        },
-    }
+            }
+        }
+    ]
