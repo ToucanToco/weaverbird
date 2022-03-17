@@ -1,6 +1,6 @@
 import datetime
 from re import sub
-from typing import List, Union
+from typing import Any, List, Union
 
 from weaverbird.backends.mongo_translator.steps.filter import (
     translate_relative_date,
