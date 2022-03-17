@@ -98,7 +98,7 @@ def build_mongo_formula_tree(formula: Union[str, int]) -> Union[Dict[str, Any], 
     return mongo_expr
 
 
-def sanitize_formula(formula: Union[str, int]) -> Tuple[Dict, str]:
+def sanitize_formula(formula: str) -> Tuple[Dict, str]:
     """
     This function handles column names with special characters & spaces.
     Such columns are surrounded by brackets. The functions replaces this pattern by a temporary name
