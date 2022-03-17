@@ -2493,7 +2493,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             foo: {
               $dateFromString: {
                 dateString: {
-                  $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                  $cond: [
+                    {
+                      $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                    },
+                    { $toString: '$foo' },
+                    '$foo',
+                  ],
                 },
                 // enable '%Y' format to be guessed
                 onError: {
@@ -2503,7 +2509,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                         '01/01/',
                         {
                           $cond: [
-                            { $eq: [{ $type: '$foo' }, 'int'] },
+                            {
+                              $and: [
+                                { $eq: [{ $type: '$foo' }, 'int'] },
+                                { $lt: ['$foo', 10_000] },
+                              ],
+                            },
                             { $toString: '$foo' },
                             '$foo',
                           ],
@@ -6213,7 +6224,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               foo: {
                 $dateFromString: {
                   dateString: {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   // enable '%Y' format to be guessed
                   onError: {
@@ -6223,7 +6240,12 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                           '01/01/',
                           {
                             $cond: [
-                              { $eq: [{ $type: '$foo' }, 'int'] },
+                              {
+                                $and: [
+                                  { $eq: [{ $type: '$foo' }, 'int'] },
+                                  { $lt: ['$foo', 10_000] },
+                                ],
+                              },
                               { $toString: '$foo' },
                               '$foo',
                             ],
@@ -6256,7 +6278,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               foo: {
                 $dateFromString: {
                   dateString: {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   format: '%Y-%m-%d',
                 },
@@ -6282,7 +6310,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempArray: {
                 $split: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   ' ',
                 ],
@@ -6338,7 +6372,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempArray: {
                 $split: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   '-',
                 ],
@@ -6394,7 +6434,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempArray: {
                 $split: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   ' ',
                 ],
@@ -6450,7 +6496,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempArray: {
                 $split: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   ' ',
                 ],
@@ -6497,7 +6549,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempArray: {
                 $split: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   '-',
                 ],
@@ -6544,7 +6602,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempArray: {
                 $split: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   ' ',
                 ],
@@ -6591,7 +6655,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempDate: {
                 $concat: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   '-01',
                 ],
@@ -6622,7 +6692,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               _vqbTempDate: {
                 $concat: [
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                   '/01',
                 ],
@@ -6654,7 +6730,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                 $concat: [
                   '01-',
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                 ],
               },
@@ -6685,7 +6767,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                 $concat: [
                   '01/',
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                 ],
               },
@@ -6716,7 +6804,13 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                 $concat: [
                   '01/01/',
                   {
-                    $cond: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $toString: '$foo' }, '$foo'],
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
                   },
                 ],
               },
