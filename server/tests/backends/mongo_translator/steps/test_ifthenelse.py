@@ -5,14 +5,23 @@ from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
 def test_ifthenelse_basic():
-    assert translate_ifthenelse(
-        step=IfthenelseStep(
-            newColumn='foobar',
-            condition=ComparisonCondition(column='foo', operator='eq', value=1),
-            then=1,
-            else_value=2,
+    assert (
+        translate_ifthenelse(
+            step=IfthenelseStep(
+                newColumn='foobar',
+                condition=ComparisonCondition(column='foo', operator='eq', value=1),
+                then=1,
+                else_value=2,
+            )
         )
-    ) == [{'$addFields': {'foobar': {'$cond': {'if': {'$eq': ['$foo', 1]}, 'then': 1, 'else': 2}}}}]
+        == [
+            {
+                '$addFields': {
+                    'foobar': {'$cond': {'if': {'$eq': ['$foo', 1]}, 'then': 1, 'else': 2}}
+                }
+            }
+        ]
+    )
 
 
 def test_ifthenelse_formulas():
