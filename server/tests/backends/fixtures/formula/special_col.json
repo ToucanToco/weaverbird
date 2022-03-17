@@ -22,11 +22,11 @@
           "type": "string"
         },
         {
-          "name": "[column with space and + and, oh a - and_also *]",
+          "name": "column with space and + and, oh a - and_also *",
           "type": "integer"
         },
         {
-          "name": "[an other ^column]",
+          "name": "an other ^column",
           "type": "integer"
         }
       ],
@@ -35,13 +35,13 @@
     "data": [
       {
         "NAME": "foo",
-        "[column with space and + and, oh a - and_also *]": 42,
-        "[an other ^column]": 100
+        "column with space and + and, oh a - and_also *": 42,
+        "an other ^column": 100
       },
       {
         "NAME": "Azz",
-        "[column with space and + and, oh a - and_also *]": 21,
-        "[an other ^column]": 100
+        "column with space and + and, oh a - and_also *": 21,
+        "an other ^column": 100
       }
     ]
   },
@@ -53,11 +53,11 @@
           "type": "string"
         },
         {
-          "name": "[column with space and + and, oh a - and_also *]",
+          "name": "column with space and + and, oh a - and_also *",
           "type": "number"
         },
         {
-          "name": "[an other ^column]",
+          "name": "an other ^column",
           "type": "integer"
         },
         {
@@ -70,14 +70,14 @@
     "data": [
       {
         "NAME": "foo",
-        "[column with space and + and, oh a - and_also *]": 42,
-        "[an other ^column]": 100,
+        "column with space and + and, oh a - and_also *": 42,
+        "an other ^column": 100,
         "foobar": 142
       },
       {
         "NAME": "Azz",
-        "[column with space and + and, oh a - and_also *]": 21,
-        "[an other ^column]": 100,
+        "column with space and + and, oh a - and_also *": 21,
+        "an other ^column": 100,
         "foobar": 121
       }
     ]

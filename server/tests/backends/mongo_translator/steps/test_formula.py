@@ -187,8 +187,8 @@ def test_special_column_name():
             '$addFields': {
                 'test': {
                     '$add': [
-                        '$[column with space and + and, oh a - and_also *]',
-                        '$[an other ^column]',
+                        '$column with space and + and, oh a - and_also *',
+                        '$an other ^column',
                     ],
                 },
             },
@@ -205,7 +205,7 @@ def test_special_column_name_and_normal_column_name():
         {
             '$addFields': {
                 'test': {
-                    '$add': ['$[column with space and + and, oh a - and_also *]', '$A'],
+                    '$add': ['$column with space and + and, oh a - and_also *', '$A'],
                 },
             },
         },
