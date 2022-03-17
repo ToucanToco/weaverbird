@@ -35,6 +35,9 @@ from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
+from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
+    translate_pipeline as mongo_translate_pipeline,
+)
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
 )
@@ -262,16 +265,34 @@ async def handle_mongo_backend_request():
         return jsonify(mongo_db.list_collection_names())
     elif request.method == 'POST':
         req_params = await parse_request_json(request)
-        # TODO translate pipeline
-        # and then call execute_mongo_aggregation_query
-        raise NotImplemented
+        pipeline = Pipeline(steps=req_params['pipeline'])  # Validation
+        mongo_query = mongo_translate_pipeline(pipeline)
+        results = execute_mongo_aggregation_query(
+            req_params['collection'],
+            mongo_query,
+            req_params['limit'],
+            req_params['offset'],
+        )[0]
+
+        return jsonify(
+            {
+                'offset': req_params['offset'],
+                'limit': req_params['limit'],
+                'total': results['count'],
+                'data': results['data'],
+                'types': results['types'],
+                'query': mongo_query,  # provided for inspection purposes
+            }
+        )
 
 
 @app.route('/mongo-translated', methods=['POST'])
 async def handle_mongo_translated_backend_request():
     try:
         req_params = await parse_request_json(request)
-        results = execute_mongo_aggregation_query(req_params['collection'], req_params['query'], req_params['limit'], req_params['offset'])
+        results = execute_mongo_aggregation_query(
+            req_params['collection'], req_params['query'], req_params['limit'], req_params['offset']
+        )
         return jsonify(results)
     except Exception as e:
         errmsg = f'{e.__class__.__name__}: {e}'
