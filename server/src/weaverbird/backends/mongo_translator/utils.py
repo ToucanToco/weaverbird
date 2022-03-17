@@ -1,6 +1,6 @@
 import datetime
 from re import sub
-from typing import Any, List, Union
+from typing import List, Union
 
 from weaverbird.backends.mongo_translator.steps.filter import (
     translate_relative_date,
@@ -23,7 +23,7 @@ class UnsupportedOperatorError(Exception):
 
 def build_cond_expression(
     cond: Union[SimpleCondition, ConditionComboOr, ConditionComboAnd],
-    unsupportedOperators: List[Any],
+    unsupported_operators: List,
 ) -> MongoStep:
     operator_mapping = {
         'eq': '$eq',
@@ -43,18 +43,20 @@ def build_cond_expression(
     }
     if isinstance(cond, ConditionComboAnd):
         if len(cond.and_) == 1:
-            return build_cond_expression(cond.and_[0], unsupportedOperators)
+            return build_cond_expression(cond.and_[0], unsupported_operators)
         else:
             return {
-                '$and': [build_cond_expression(elem, unsupportedOperators) for elem in cond.and_]
+                '$and': [build_cond_expression(elem, unsupported_operators) for elem in cond.and_]
             }
     if isinstance(cond, ConditionComboOr):
-        return {'$and': [build_cond_expression(elem, unsupportedOperators) for elem in cond.or_]}
-    if cond.operator in unsupportedOperators:
+        return {'$and': [build_cond_expression(elem, unsupported_operators) for elem in cond.or_]}
+    if cond.operator in unsupported_operators:
         raise UnsupportedOperatorError(f'Unsupported operator ${cond.operator} in conditions')
 
     if cond.operator == 'matches' or cond.operator == 'notmatches':
-        cond_expression = {'$regexMatch': {'input': f'${cond.column}', 'regex': cond.value}}
+        cond_expression: MongoStep = {
+            '$regexMatch': {'input': f'${cond.column}', 'regex': cond.value}
+        }
         if cond.operator == 'notmatches':
             cond_expression = {'$not': cond_expression}
         return cond_expression

@@ -1,4 +1,4 @@
-from typing import Any, Callable, Dict
+from typing import Any, Callable, Dict, List, Union
 
 from weaverbird.backends.mongo_translator.steps.aggregate import translate_aggregate
 from weaverbird.backends.mongo_translator.steps.append import translate_append
@@ -25,7 +25,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'domain': translate_domain,
     'filter': translate_filter,
     'formula': translate_formula,
-    'ifthenelse': translate_ifthenelse,
+    'ifthenelse': translate_ifthenelse,  # type: ignore
     'join': translate_join,
     'rename': translate_rename,
     'sort': translate_sort,
