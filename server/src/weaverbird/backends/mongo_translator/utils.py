@@ -1,6 +1,6 @@
 import datetime
 from re import sub
-from typing import Any, List, Union
+from typing import List, Union
 
 from weaverbird.backends.mongo_translator.steps.filter import (
     translate_relative_date,
@@ -19,7 +19,6 @@ def column_to_user_variable(col_name: str) -> str:
 
 class UnsupportedOperatorError(Exception):
     """Raised when condition uses an unsupported operator"""
-
 
 def build_cond_expression(
     cond: Union[SimpleCondition, ConditionComboOr, ConditionComboAnd],
@@ -53,6 +52,7 @@ def build_cond_expression(
     if cond.operator in unsupportedOperators:
         raise UnsupportedOperatorError(f'Unsupported operator ${cond.operator} in conditions')
 
+
     if cond.operator == 'matches' or cond.operator == 'notmatches':
         cond_expression = {'$regexMatch': {'input': f'${cond.column}', 'regex': cond.value}}
         if cond.operator == 'notmatches':
@@ -75,6 +75,7 @@ def build_cond_expression(
                             day=cond.value.day, month=cond.value.month, year=cond.value.month
                         ).replace(hour=23, minute=59, second=59, microsecond=999999)
                     ]
+
 
             if cond.operator == 'from' or cond.operator == 'until':
                 return {
