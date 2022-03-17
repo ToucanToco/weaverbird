@@ -212,7 +212,7 @@ class MongoService {
   }
 
   async executeQuery(query, collection, limit, offset) {
-    const response = await fetch('/mongo', {
+    const response = await fetch('/mongo-translated', {
       method: 'POST',
       body: JSON.stringify({
         query,
