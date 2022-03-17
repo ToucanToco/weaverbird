@@ -32,6 +32,7 @@ from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
+from weaverbird.backends.pandas_executor.pipeline_executor import PipelineExecutionFailure
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
 )
@@ -122,6 +123,17 @@ async def handle_pandas_backend_request():
             return Response(
                 execute_pipeline(pipeline, **request.args),
                 mimetype='application/json',
+            )
+        except PipelineExecutionFailure as e:
+            return (
+                jsonify(
+                    {
+                        'step': e.step.dict(),
+                        'index': e.index,
+                        'message': e.message,
+                    }
+                ),
+                400,
             )
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
