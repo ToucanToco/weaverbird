@@ -264,26 +264,30 @@ async def handle_mongo_backend_request():
     if request.method == 'GET':
         return jsonify(mongo_db.list_collection_names())
     elif request.method == 'POST':
-        req_params = await parse_request_json(request)
-        pipeline = Pipeline(steps=req_params['pipeline'])  # Validation
-        mongo_query = mongo_translate_pipeline(pipeline)
-        results = execute_mongo_aggregation_query(
-            req_params['collection'],
-            mongo_query,
-            req_params['limit'],
-            req_params['offset'],
-        )[0]
+        try:
+            req_params = await parse_request_json(request)
+            pipeline = Pipeline(steps=req_params['pipeline'])  # Validation
+            mongo_query = mongo_translate_pipeline(pipeline)
+            results = execute_mongo_aggregation_query(
+                req_params['collection'],
+                mongo_query,
+                req_params['limit'],
+                req_params['offset'],
+            )[0]
 
-        return jsonify(
-            {
-                'offset': req_params['offset'],
-                'limit': req_params['limit'],
-                'total': results['count'],
-                'data': results['data'],
-                'types': results['types'],
-                'query': mongo_query,  # provided for inspection purposes
-            }
-        )
+            return jsonify(
+                {
+                    'offset': req_params['offset'],
+                    'limit': req_params['limit'],
+                    'total': results['count'],
+                    'data': results['data'],
+                    'types': results['types'],
+                    'query': mongo_query,  # provided for inspection purposes
+                }
+            )
+        except Exception as e:
+            errmsg = f'{e.__class__.__name__}: {e}'
+            return jsonify(errmsg), 400
 
 
 @app.route('/mongo-translated', methods=['POST'])
