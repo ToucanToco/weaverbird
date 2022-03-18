@@ -18,6 +18,8 @@ const args = new URLSearchParams(location.search);
 
 const TRANSLATOR = args.get('backend') || 'mongo50';
 
+const USE_MONGO_BACKEND_TRANSLATOR = args.get('mongo-python') === 'enable';
+
 const mongoTranslator = getTranslator('mongo50');
 const pandasTranslator = getTranslator('pandas');
 const snowflakeTranslator = getTranslator('snowflake');
@@ -184,18 +186,46 @@ class MongoService {
 
   async executePipeline(pipeline, pipelines, limit, offset = 0) {
     const dereferencedPipeline = dereferencePipelines(pipeline, pipelines);
-    const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
-    const queryWithVariables = mongoTranslator.translate(subpipeline);
-    const query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
-    const { isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset);
 
-    updateLastExecutedQuery(query);
+    let isResponseOk, responseContent, query;
+
+    if(USE_MONGO_BACKEND_TRANSLATOR) {
+      const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+
+      // FIXME it would be better if the mongo translator returned a tuple (collection, query)
+      const { domain: collection, pipeline: subpipeline } = filterOutDomain(dereferencedPipelineWithoutVariables);
+
+      const response = await fetch('/mongo', {
+          method: 'POST',
+          body: JSON.stringify({
+            limit: limit,
+            offset: offset,
+            collection: collection,
+            pipeline: subpipeline
+          }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      isResponseOk = response.ok;
+      responseContent = await response.json();
+      query = responseContent.query;
+
+    } else {
+      const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
+      const queryWithVariables = mongoTranslator.translate(subpipeline);
+      query = exampleInterpolateFunc(queryWithVariables, VARIABLES);
+      ({ isResponseOk, responseContent } = await this.executeQuery(query, domain, limit, offset));
+      responseContent = responseContent[0];
+      responseContent.total = responseContent.count;
+    }
 
     if (isResponseOk) {
-      const [{ count, data: rset, types }] = responseContent;
+      const { total, data: rset, types } = responseContent;
+      updateLastExecutedQuery(query);
       let dataset = mongoResultsToDataset(rset);
       dataset.paginationContext = {
-        totalCount: count,
+        totalCount: total,
         pagesize: limit,
         pageno: Math.floor(offset / limit) + 1,
       };
@@ -212,7 +242,7 @@ class MongoService {
   }
 
   async executeQuery(query, collection, limit, offset) {
-    const response = await fetch('/mongo', {
+    const response = await fetch('/mongo-translated', {
       method: 'POST',
       body: JSON.stringify({
         query,

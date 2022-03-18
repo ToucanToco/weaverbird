@@ -5,12 +5,15 @@ Routes:
 - `/`: serves the playground static files
 - `/pandas`: pandas backend
     - GET: returns the available domains
-    - POST: execute the pipeline in the body of the request and returns the transformed data
+    - POST: execute the pipeline in the body of the request and returns a page of the transformed data
 - `/mongo`:
     - GET: return the available collections in the database
+    - POST: translate the pipeline to a Mongo aggregation pipeline, execute it and returns paginated results
+- `/mongo-translated`:
     - POST: execute the aggregation pipeline and return a page of it (limit, offset) along with total count and types
 - `/snowflake`:
     - GET: return the available tables in the database
+    - POST: translate the pipeline to a Snowflake query, execute it and returns paginated results
 - `/health`: simple health check
 
 Run it with `QUART_APP=playground QUART_ENV=development quart run`
@@ -32,6 +35,9 @@ from pandas.io.json import build_table_schema
 from pymongo import MongoClient
 from quart import Quart, Request, Response, jsonify, request, send_file
 
+from weaverbird.backends.mongo_translator.mongo_pipeline_translator import (
+    translate_pipeline as mongo_translate_pipeline,
+)
 from weaverbird.backends.pandas_executor.pipeline_executor import PipelineExecutionFailure
 from weaverbird.backends.pandas_executor.pipeline_executor import (
     preview_pipeline as pandas_preview_pipeline,
@@ -251,35 +257,62 @@ def facetize_mongo_aggregation(query, limit, offset):
     return new_query
 
 
+def execute_mongo_aggregation_query(collection, query, limit, offset):
+    facetized_query = facetize_mongo_aggregation(query, limit, offset)
+    results = list(mongo_db[collection].aggregate(facetized_query))
+    # ObjectID are not JSON serializable, so remove them
+    for row in results:
+        if '_id' in row:
+            del row['_id']
+
+    # Aggregation does not return correct fields if there is no results
+    if len(results) == 0:
+        results = [{'count': 0, 'data': [], 'types': []}]
+    return results
+
+
 @app.route('/mongo', methods=['GET', 'POST'])
 async def handle_mongo_backend_request():
     if request.method == 'GET':
         return jsonify(mongo_db.list_collection_names())
-
     elif request.method == 'POST':
         try:
             req_params = await parse_request_json(request)
+            pipeline = Pipeline(steps=req_params['pipeline'])  # Validation
+            mongo_query = mongo_translate_pipeline(pipeline)
+            results = execute_mongo_aggregation_query(
+                req_params['collection'],
+                mongo_query,
+                req_params['limit'],
+                req_params['offset'],
+            )[0]
 
-            query = req_params['query']
-            collection = req_params['collection']
-            limit = req_params['limit']
-            offset = req_params['offset']
-
-            facetized_query = facetize_mongo_aggregation(query, limit, offset)
-            results = list(mongo_db[collection].aggregate(facetized_query))
-            # ObjectID are not JSON serializable, so remove them
-            for row in results:
-                if '_id' in row:
-                    del row['_id']
-
-            # Aggregation does not return correct fields if there is no results
-            if len(results) == 0:
-                results = [{'count': 0, 'data': [], 'types': []}]
-
-            return jsonify(results)
+            return jsonify(
+                {
+                    'offset': req_params['offset'],
+                    'limit': req_params['limit'],
+                    'total': results['count'],
+                    'data': results['data'],
+                    'types': results['types'],
+                    'query': mongo_query,  # provided for inspection purposes
+                }
+            )
         except Exception as e:
             errmsg = f'{e.__class__.__name__}: {e}'
             return jsonify(errmsg), 400
+
+
+@app.route('/mongo-translated', methods=['POST'])
+async def handle_mongo_translated_backend_request():
+    try:
+        req_params = await parse_request_json(request)
+        results = execute_mongo_aggregation_query(
+            req_params['collection'], req_params['query'], req_params['limit'], req_params['offset']
+        )
+        return jsonify(results)
+    except Exception as e:
+        errmsg = f'{e.__class__.__name__}: {e}'
+        return jsonify(errmsg), 400
 
 
 ### Snowflake back-end routes
