@@ -1,19 +1,21 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "postgres",
+    "snowflake"
   ],
   "step": {
     "pipeline": [
       {
         "name": "ifthenelse",
         "if": {
-          "column": "AGE",
-          "value": 20,
-          "operator": "gt"
+          "column": "NAME",
+          "value": ".oo",
+          "operator": "matches"
         },
         "newColumn": "COND",
         "then": "'tintin'",
-        "else": "'anime'"
+        "else": "'glinglin'"
       }
     ]
   },
@@ -81,7 +83,7 @@
         "NAME": "bar",
         "AGE": 20,
         "SCORE": 200,
-        "COND": "anime"
+        "COND": "glinglin"
       }
     ]
   }

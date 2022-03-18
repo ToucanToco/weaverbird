@@ -1,6 +1,6 @@
 import ast
 import re
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, Tuple, Union
 
 from weaverbird.pipeline.steps import FormulaStep
 
@@ -14,7 +14,7 @@ def mongo_formula_for_name(name: ast.Name, columns_aliases: Dict) -> str:
     Identifiers correspond to column names
     """
     if name.id in columns_aliases:
-        return f'$[{columns_aliases[name.id]}]'
+        return f'${columns_aliases[name.id]}'
     else:
         return '$' + name.id
 
@@ -83,15 +83,19 @@ def mongo_formula_for_expr(expr: ast.Expr, columns_aliases: Dict) -> dict:
 
 
 def translate_formula(step: FormulaStep) -> list:
-    columns_aliases, sanitized_formula = sanitize_formula(step.formula)
+    return [{'$addFields': {step.new_column: build_mongo_formula_tree(step.formula)}}]
 
+
+def build_mongo_formula_tree(formula: Union[str, int]) -> Union[Dict[str, Any], int]:
+    if isinstance(formula, int):
+        return formula
+    columns_aliases, sanitized_formula = sanitize_formula(formula)
     module = ast.parse(sanitized_formula)
     expr = module.body[0]
     if not isinstance(expr, ast.Expr):
         raise InvalidFormula
-
     mongo_expr = mongo_formula_for_expr(expr, columns_aliases)
-    return [{'$addFields': {step.new_column: mongo_expr}}]
+    return mongo_expr
 
 
 def sanitize_formula(formula: str) -> Tuple[Dict, str]:

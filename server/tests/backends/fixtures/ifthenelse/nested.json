@@ -8,12 +8,21 @@
         "name": "ifthenelse",
         "if": {
           "column": "AGE",
-          "value": 20,
-          "operator": "gt"
+          "value": 42,
+          "operator": "eq"
         },
         "newColumn": "COND",
         "then": "'tintin'",
-        "else": "'anime'"
+        "else": {
+          "if": {
+          "column": "AGE",
+          "value": 20,
+          "operator": "eq"
+          },
+          "then": "'toto'",
+          "else": "'tata'"
+
+        }
       }
     ]
   },
@@ -81,7 +90,7 @@
         "NAME": "bar",
         "AGE": 20,
         "SCORE": 200,
-        "COND": "anime"
+        "COND": "toto"
       }
     ]
   }

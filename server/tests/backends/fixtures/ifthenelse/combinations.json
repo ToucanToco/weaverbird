@@ -6,14 +6,40 @@
     "pipeline": [
       {
         "name": "ifthenelse",
-        "if": {
-          "column": "AGE",
-          "value": 20,
-          "operator": "gt"
-        },
         "newColumn": "COND",
-        "then": "'tintin'",
-        "else": "'anime'"
+        "if": {
+          "and": [
+            {
+              "column": "AGE",
+              "value": 20,
+              "operator": "gt"
+            },
+            {
+              "column": "AGE",
+              "value": 10000000,
+              "operator": "le"
+            }
+          ]
+        },
+        "then": "'foo'",
+        "else": {
+          "if": {
+            "or": [
+              {
+                "column": "SCORE",
+                "value": null,
+                "operator": "notnull"
+              },
+              {
+                "column": "SCORE",
+                "value": null,
+                "operator": "notnull"
+              }
+            ]
+          },
+          "then": "'bar'",
+          "else": "'bloo'"
+        }
       }
     ]
   },
@@ -75,13 +101,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "COND": "tintin"
+        "COND": "foo"
       },
       {
         "NAME": "bar",
         "AGE": 20,
         "SCORE": 200,
-        "COND": "anime"
+        "COND": "bar"
       }
     ]
   }
