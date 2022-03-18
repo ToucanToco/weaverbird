@@ -25,7 +25,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                             'onError': {
                                 '$cond': [
                                     # Integer values may be either years or timestamps
-                                    {'$eq': [{'$type': f'${step.column}'}, 'int']},
+                                    {'$in': [{'$type': f'${step.column}'}, ['int', 'long']]},
                                     {
                                         '$cond': [
                                             # We decide that values lower than 10_000 will be interpreted as years...

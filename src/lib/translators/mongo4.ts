@@ -47,7 +47,10 @@ function transformToDate(step: Readonly<ToDateStep>): MongoStep[] {
   const input = {
     $cond: [
       {
-        $and: [{ $eq: [{ $type: $$(step.column) }, 'int'] }, { $lt: [$$(step.column), 10_000] }],
+        $and: [
+          { $in: [{ $type: $$(step.column) }, ['int', 'long']] },
+          { $lt: [$$(step.column), 10_000] },
+        ],
       },
       { $toString: $$(step.column) },
       $$(step.column),
