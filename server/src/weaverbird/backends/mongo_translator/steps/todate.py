@@ -151,15 +151,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
 
     elif date_format == '%Y':
         return [
-            {'$addFields': {'_vqbTempDate': {'$concat': [col_as_string, '-01-01']}}},
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {'dateString': '$_vqbTempDate', 'format': '%Y-%m-%d'}
-                    },
-                },
-            },
-            _clean_temp_fields(),
+            _concat_fields_to_date(step.column, [col_as_string, '-01-01'], '%Y-%m-%d'),
         ]
 
     else:
