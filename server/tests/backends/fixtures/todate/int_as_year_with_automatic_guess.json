@@ -2,14 +2,13 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres",
-    "mongo"
+    "postgres"
   ],
   "step": {
     "pipeline": [
       {
         "name": "todate",
-        "column": "CREATED_DATE"
+        "column": "a_date"
       }
     ]
   },
@@ -17,7 +16,7 @@
     "schema": {
       "fields": [
         {
-          "name": "CREATED_DATE",
+          "name": "a_date",
           "type": "integer"
         }
       ],
@@ -25,7 +24,10 @@
     },
     "data": [
       {
-        "CREATED_DATE": 2018
+        "a_date": 2019
+      },
+      {
+        "a_date": 2020
       }
     ]
   },
@@ -33,7 +35,7 @@
     "schema": {
       "fields": [
         {
-          "name": "CREATED_DATE",
+          "name": "a_date",
           "type": "datetime"
         }
       ],
@@ -41,7 +43,10 @@
     },
     "data": [
       {
-        "CREATED_DATE": "2018-01-01T00:00:00.000Z"
+        "a_date": "2019-01-01T00:00:00.000Z"
+      },
+      {
+        "a_date": "2020-01-01T00:00:00.000Z"
       }
     ]
   }
