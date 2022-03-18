@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ToDateStep
@@ -63,190 +63,82 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
     elif date_format == '%d %b %Y':
         return [
             {'$addFields': {'_vqbTempArray': {'$split': [col_as_string, ' ']}}},
-            {
-                '$addFields': {
-                    '_vqbTempDay': {'$arrayElemAt': ['$_vqbTempArray', 0]},
-                    '_vqbTempMonth': {'$toLower': {'$arrayElemAt': ['$_vqbTempArray', 1]}},
-                    '_vqbTempYear': {'$arrayElemAt': ['$_vqbTempArray', 2]},
-                },
-            },
-            {
-                '$addFields': {'_vqbTempMonth': MONTH_REPLACEMENT_STEP},
-            },
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {
-                            'dateString': {
-                                '$concat': [
-                                    '$_vqbTempDay',
-                                    '-',
-                                    '$_vqbTempMonth',
-                                    '-',
-                                    '$_vqbTempYear',
-                                ],
-                            },
-                            'format': '%d-%m-%Y',
-                        },
-                    },
-                },
-            },
-            {
-                '$project': {
-                    '_vqbTempArray': 0,
-                    '_vqbTempDay': 0,
-                    '_vqbTempMonth': 0,
-                    '_vqbTempYear': 0,
-                }
-            },
+            _extract_date_parts_to_temp_fields(2, 1, 0),
+            MONTH_REPLACEMENT_STEP,
+            _concat_fields_to_date(
+                step.column,
+                [
+                    '$_vqbTempDay',
+                    '-',
+                    '$_vqbTempMonth',
+                    '-',
+                    '$_vqbTempYear',
+                ],
+                '%d-%m-%Y',
+            ),
+            _clean_temp_fields(),
         ]
 
     elif date_format == '%d-%b-%Y':
         return [
             {'$addFields': {'_vqbTempArray': {'$split': [col_as_string, '-']}}},
-            {
-                '$addFields': {
-                    '_vqbTempDay': {'$arrayElemAt': ['$_vqbTempArray', 0]},
-                    '_vqbTempMonth': {'$toLower': {'$arrayElemAt': ['$_vqbTempArray', 1]}},
-                    '_vqbTempYear': {'$arrayElemAt': ['$_vqbTempArray', 2]},
-                },
-            },
-            {
-                '$addFields': {'_vqbTempMonth': MONTH_REPLACEMENT_STEP},
-            },
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {
-                            'dateString': {
-                                '$concat': [
-                                    '$_vqbTempDay',
-                                    '-',
-                                    '$_vqbTempMonth',
-                                    '-',
-                                    '$_vqbTempYear',
-                                ],
-                            },
-                            'format': '%d-%m-%Y',
-                        },
-                    },
-                },
-            },
-            {
-                '$project': {
-                    '_vqbTempArray': 0,
-                    '_vqbTempDay': 0,
-                    '_vqbTempMonth': 0,
-                    '_vqbTempYear': 0,
-                }
-            },
+            _extract_date_parts_to_temp_fields(2, 1, 0),
+            MONTH_REPLACEMENT_STEP,
+            _concat_fields_to_date(
+                step.column,
+                [
+                    '$_vqbTempDay',
+                    '-',
+                    '$_vqbTempMonth',
+                    '-',
+                    '$_vqbTempYear',
+                ],
+                '%d-%m-%Y',
+            ),
+            _clean_temp_fields(),
         ]
 
     elif date_format == '%b %Y':
         return [
             {'$addFields': {'_vqbTempArray': {'$split': [col_as_string, ' ']}}},
-            {
-                '$addFields': {
-                    '_vqbTempMonth': {'$toLower': {'$arrayElemAt': ['$_vqbTempArray', 0]}},
-                    '_vqbTempYear': {'$arrayElemAt': ['$_vqbTempArray', 1]},
-                },
-            },
-            {
-                '$addFields': {'_vqbTempMonth': MONTH_REPLACEMENT_STEP},
-            },
-            {
-                '$addFields': {
-                    [step.column]: {
-                        '$dateFromString': {
-                            'dateString': {
-                                '$concat': ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear']
-                            },
-                            'format': '%d-%m-%Y',
-                        },
-                    },
-                },
-            },
-            {'$project': {'_vqbTempArray': 0, '_vqbTempMonth': 0, '_vqbTempYear': 0}},
+            _extract_date_parts_to_temp_fields(1, 0),
+            MONTH_REPLACEMENT_STEP,
+            _concat_fields_to_date(
+                step.column, ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear'], '%d-%m-%Y'
+            ),
+            _clean_temp_fields(),
         ]
 
     elif date_format == '%b-%Y':
         return [
             {'$addFields': {'_vqbTempArray': {'$split': [col_as_string, '-']}}},
-            {
-                '$addFields': {
-                    '_vqbTempMonth': {'$toLower': {'$arrayElemAt': ['$_vqbTempArray', 0]}},
-                    '_vqbTempYear': {'$arrayElemAt': ['$_vqbTempArray', 1]},
-                },
-            },
-            {
-                '$addFields': {'_vqbTempMonth': MONTH_REPLACEMENT_STEP},
-            },
-            {
-                '$addFields': {
-                    [step.column]: {
-                        '$dateFromString': {
-                            'dateString': {
-                                '$concat': ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear']
-                            },
-                            'format': '%d-%m-%Y',
-                        },
-                    },
-                },
-            },
-            {'$project': {'_vqbTempArray': 0, '_vqbTempMonth': 0, '_vqbTempYear': 0}},
+            _extract_date_parts_to_temp_fields(1, 0),
+            MONTH_REPLACEMENT_STEP,
+            _concat_fields_to_date(
+                step.column, ['01-', '$_vqbTempMonth', '-', '$_vqbTempYear'], '%d-%m-%Y'
+            ),
+            _clean_temp_fields(),
         ]
 
     # Mongo does not support dates where some parts of the date are missing
     elif date_format == '%Y-%m':
         return [
-            {'$addFields': {'_vqbTempDate': {'$concat': [col_as_string, '-01']}}},
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {'dateString': '$_vqbTempDate', 'format': '%Y-%m-%d'}
-                    },
-                },
-            },
-            {'$project': {'_vqbTempDate': 0}},
+            _concat_fields_to_date(step.column, [col_as_string, '-01'], '%Y-%m-%d'),
         ]
 
     elif date_format == '%Y/%m':
         return [
-            {'$addFields': {'_vqbTempDate': {'$concat': [col_as_string, '/01']}}},
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {'dateString': '$_vqbTempDate', 'format': '%Y/%m/%d'}
-                    },
-                },
-            },
-            {'$project': {'_vqbTempDate': 0}},
+            _concat_fields_to_date(step.column, ['/01', col_as_string], '%Y/%m/%d'),
         ]
 
     elif date_format == '%m-%Y':
         return [
-            {'$addFields': {'_vqbTempDate': {'$concat': ['01-', col_as_string]}}},
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {'dateString': '$_vqbTempDate', 'format': '%d-%m-%Y'}
-                    },
-                },
-            },
-            {'$project': {'_vqbTempDate': 0}},
+            _concat_fields_to_date(step.column, ['01-', col_as_string], '%d-%m-%Y'),
         ]
 
     elif date_format == '%m/%Y':
         return [
-            {'$addFields': {'_vqbTempDate': {'$concat': ['01/', col_as_string]}}},
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {'dateString': '$_vqbTempDate', 'format': '%d/%m/%Y'}
-                    },
-                },
-            },
-            {'$project': {'_vqbTempDate': 0}},
+            _concat_fields_to_date(step.column, ['01/', col_as_string], '%d/%m/%Y'),
         ]
 
     elif date_format == '%Y':
@@ -259,7 +151,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                     },
                 },
             },
-            {'$project': {'_vqbTempDate': 0}},
+            _clean_temp_fields(),
         ]
 
     else:
@@ -294,13 +186,59 @@ MONTH_NUMBER_TO_NAMES = {
 }
 
 MONTH_REPLACEMENT_STEP = {
-    '$switch': {
-        'branches': [
-            {
-                'case': {'$in': month_names},
-                'then': month_number,
+    {
+        '$addFields': {
+            '_vqbTempMonth'
+            '$switch': {
+                'branches': [
+                    {
+                        'case': {'$in': month_names},
+                        'then': month_number,
+                    }
+                    for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
+                ]
             }
-            for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
-        ]
+        }
     }
 }
+
+
+def _extract_date_parts_to_temp_fields(
+    year_position: int, month_position: Optional[int] = None, day_position: Optional[int] = None
+) -> MongoStep:
+    date_parts_temp_fields = {
+        '_vqbTempYear': {'$arrayElemAt': ['$_vqbTempArray', year_position]},
+    }
+
+    if month_position is not None:
+        date_parts_temp_fields['_vqbTempMonth'] = {
+            '$toLower': {'$arrayElemAt': ['$_vqbTempArray', month_position]}
+        }
+
+    if day_position is not None:
+        date_parts_temp_fields['_vqbTempDay'] = {'$arrayElemAt': ['$_vqbTempArray', day_position]}
+
+    return {
+        '$addFields': date_parts_temp_fields,
+    }
+
+
+def _clean_temp_fields():
+    return {
+        '$project': {'_vqbTempArray': 0, '_vqbTempMonth': 0, '_vqbTempYear': 0, '_vqbTempDate': 0}
+    }
+
+
+def _concat_fields_to_date(target_col: str, fields: List[str], format: str):
+    return {
+        '$addFields': {
+            target_col: {
+                '$dateFromString': {
+                    'dateString': {
+                        '$concat': fields,
+                    },
+                    'format': format,
+                },
+            },
+        },
+    }
