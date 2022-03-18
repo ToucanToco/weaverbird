@@ -1,13 +1,18 @@
 import datetime
 from re import sub
-from typing import List, Union
+from typing import Any, Dict, List, Union
 
 from weaverbird.backends.mongo_translator.steps.filter import (
     translate_relative_date,
     truncate_to_day,
 )
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
-from weaverbird.pipeline.conditions import ConditionComboAnd, ConditionComboOr, SimpleCondition
+from weaverbird.pipeline.conditions import (
+    ConditionComboAnd,
+    ConditionComboOr,
+    MatchCondition,
+    SimpleCondition,
+)
 from weaverbird.pipeline.dates import RelativeDate
 
 
@@ -66,7 +71,9 @@ def build_cond_expression(
             return cond_expression
 
 
-def build_dates_expressions(cond, cond_expression, operator_mapping):
+def build_dates_expressions(
+    cond: SimpleCondition, cond_expression: Dict[str, Any], operator_mapping: Dict[str, str]
+):
     if cond.operator == 'until':
         if isinstance(cond.value, datetime.datetime):
             cond_expression[operator_mapping[cond.operator]][1] = [
@@ -90,14 +97,14 @@ def build_dates_expressions(cond, cond_expression, operator_mapping):
     return cond_expression
 
 
-def build_matches_expression(cond):
+def build_matches_expression(cond: MatchCondition):
     cond_expression: MongoStep = {'$regexMatch': {'input': f'${cond.column}', 'regex': cond.value}}
     if cond.operator == 'notmatches':
         cond_expression = {'$not': cond_expression}
     return cond_expression
 
 
-def build_and_expression(cond):
+def build_and_expression(cond: ConditionComboAnd):
     if len(cond.and_) == 1:
         return build_cond_expression(cond.and_[0])
     else:
