@@ -188,7 +188,11 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_sql_alchemy_c
         # Take data in fixture file, set in pandas, create table and insert
         data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
         data_to_insert.to_sql(
-            name=case_id, con=get_sql_alchemy_connection, index=False, if_exists='replace', chunksize=1
+            name=case_id,
+            con=get_sql_alchemy_connection,
+            index=False,
+            if_exists='replace',
+            chunksize=1,
         )
 
         if 'other_inputs' in spec:
