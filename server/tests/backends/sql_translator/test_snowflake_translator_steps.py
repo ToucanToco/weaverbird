@@ -35,24 +35,28 @@ SNOWFLAKE_TABLES_TESTS = []
 # we will need this boolean variable
 CLEANER_JOB_DONE = False
 
+# Use a single connexion to speed-up tests
+SNOWFLAKE_CONNEXION = None
 
-# Update this method to use snowflake connection
+
 def get_connection():
-    con_params = {
-        'account': ACCOUNT,
-        'user': USER,
-        'password': environ.get('SNOWFLAKE_PASSWORD'),
-        'warehouse': WAREHOUSE,
-        'database': DATABASE,
-        'role': ROLE,
-        'schema': SCHEMA,
-        'authenticator': 'snowflake',
-    }
-    return snowflake.connector.connect(**con_params)
+    global SNOWFLAKE_CONNEXION
+    if SNOWFLAKE_CONNEXION is None:
+        SNOWFLAKE_CONNEXION = snowflake.connector.connect(
+            account=ACCOUNT,
+            user=USER,
+            password=environ.get('SNOWFLAKE_PASSWORD'),
+            warehouse=WAREHOUSE,
+            database=DATABASE,
+            role=ROLE,
+            schema=SCHEMA,
+            authenticator='snowflake',
+        )
+    return SNOWFLAKE_CONNEXION
 
 
-@pytest.fixture
-def get_engine():
+@pytest.fixture(scope='module')
+def get_sql_alchemy_connection():
     url = URL(
         account=ACCOUNT,
         user=USER,
@@ -64,7 +68,9 @@ def get_engine():
         authenticator='snowflake',
     )
     engine = create_engine(url)
-    return engine
+    connection = engine.connect()
+    yield connection
+    connection.close()
 
 
 def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]:
@@ -154,7 +160,7 @@ def clean_too_old_residuals_tables():
 
 # Translation from Pipeline json to SQL query
 @pytest.mark.parametrize('case_id, case_spec_file_path', test_cases)
-def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
+def test_sql_translator_pipeline(case_id, case_spec_file_path, get_sql_alchemy_connection):
     global SNOWFLAKE_TABLES_TESTS, CLEANER_JOB_DONE
 
     # To be sure to execute the cleaner job only once per tests
@@ -182,14 +188,18 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         # Take data in fixture file, set in pandas, create table and insert
         data_to_insert = pd.read_json(json.dumps(spec['input']), orient='table')
         data_to_insert.to_sql(
-            name=case_id, con=get_engine, index=False, if_exists='replace', chunksize=1
+            name=case_id,
+            con=get_sql_alchemy_connection,
+            index=False,
+            if_exists='replace',
+            chunksize=1,
         )
 
         if 'other_inputs' in spec:
             for input in spec['other_inputs']:
                 pd.read_json(json.dumps(spec['other_inputs'][input]), orient='table').to_sql(
                     name=input,
-                    con=get_engine,
+                    con=get_sql_alchemy_connection,
                     index=False,
                     if_exists='replace',
                 )
@@ -227,3 +237,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
         logger.info(es)
         # We try to kill residuals tables
         _drop_tables(SNOWFLAKE_TABLES_TESTS)
+
+
+def teardown_module():
+    get_connection().close()
