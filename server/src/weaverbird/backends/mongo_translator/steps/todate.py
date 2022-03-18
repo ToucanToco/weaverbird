@@ -36,6 +36,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                                                         '$concat': [col_as_string, '-01-01']
                                                     },
                                                     'format': '%Y-%m-%d',
+                                                    'onError': {'$literal': None},
                                                 }
                                             },
                                             # ...and greater values will be interpreted as timestamps
@@ -48,8 +49,15 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                                             },
                                         ]
                                     },
-                                    # otherwise, we have no idea what date it corresponds to
-                                    {'$literal': None},
+                                    # otherwise, try to interpret as years
+                                    {
+                                        '$dateFromString': {
+                                            'dateString': {'$concat': [col_as_string, '-01-01']},
+                                            'format': '%Y-%m-%d',
+                                            # and give up if it doesn't work
+                                            'onError': {'$literal': None},
+                                        }
+                                    },
                                 ]
                             },
                         }
