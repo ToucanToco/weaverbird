@@ -1,19 +1,15 @@
 {
   "exclude": [
-    "mysql"
+    "mysql",
+    "snowflake",
+    "postgres"
   ],
   "step": {
     "pipeline": [
       {
-        "name": "ifthenelse",
-        "if": {
-          "column": "AGE",
-          "value": 20,
-          "operator": "gt"
-        },
-        "newColumn": "COND",
-        "then": "'tintin'",
-        "else": "'anime'"
+        "name": "formula",
+        "new_column": "FOOBAR",
+        "formula": "1/ (AGE + SCORE) / (AGE - SCORE) * 100"
       }
     ]
   },
@@ -38,13 +34,13 @@
     "data": [
       {
         "NAME": "foo",
-        "AGE": 42,
-        "SCORE": 100
+        "AGE": 6,
+        "SCORE": 4
       },
       {
-        "NAME": "bar",
-        "AGE": 20,
-        "SCORE": 200
+        "NAME": "Azz",
+        "AGE": 3,
+        "SCORE": 2
       }
     ]
   },
@@ -64,8 +60,8 @@
           "type": "integer"
         },
         {
-          "name": "COND",
-          "type": "string"
+          "name": "FOOBAR",
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -73,15 +69,15 @@
     "data": [
       {
         "NAME": "foo",
-        "AGE": 42,
-        "SCORE": 100,
-        "COND": "tintin"
+        "AGE": 6,
+        "SCORE": 4,
+        "FOOBAR": 5
       },
       {
-        "NAME": "bar",
-        "AGE": 20,
-        "SCORE": 200,
-        "COND": "anime"
+        "NAME": "Azz",
+        "AGE": 3,
+        "SCORE": 2,
+        "FOOBAR": 20
       }
     ]
   }

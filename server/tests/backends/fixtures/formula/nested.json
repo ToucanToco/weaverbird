@@ -5,15 +5,9 @@
   "step": {
     "pipeline": [
       {
-        "name": "ifthenelse",
-        "if": {
-          "column": "AGE",
-          "value": 20,
-          "operator": "gt"
-        },
-        "newColumn": "COND",
-        "then": "'tintin'",
-        "else": "'anime'"
+        "name": "formula",
+        "new_column": "FOOBAR",
+        "formula": "(AGE + SCORE) * AGE - SCORE * 100"
       }
     ]
   },
@@ -42,9 +36,9 @@
         "SCORE": 100
       },
       {
-        "NAME": "bar",
-        "AGE": 20,
-        "SCORE": 200
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
       }
     ]
   },
@@ -64,8 +58,8 @@
           "type": "integer"
         },
         {
-          "name": "COND",
-          "type": "string"
+          "name": "FOOBAR",
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -75,13 +69,13 @@
         "NAME": "foo",
         "AGE": 42,
         "SCORE": 100,
-        "COND": "tintin"
+        "FOOBAR": -4036
       },
       {
-        "NAME": "bar",
-        "AGE": 20,
-        "SCORE": 200,
-        "COND": "anime"
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100,
+        "FOOBAR": -7459
       }
     ]
   }
