@@ -86,9 +86,14 @@ def translate_formula(step: FormulaStep) -> list:
     return [{'$addFields': {step.new_column: build_mongo_formula_tree(step.formula)}}]
 
 
-def build_mongo_formula_tree(formula: Union[str, int]) -> Union[Dict[str, Any], int]:
-    if isinstance(formula, int):
+def build_mongo_formula_tree(
+    formula: Union[str, int, float, bool]
+) -> Union[Dict[str, Any], int, float, bool]:
+    if type(formula) in (int, float, bool):
         return formula
+    if not type(formula) == str:
+        raise InvalidFormula
+
     columns_aliases, sanitized_formula = sanitize_formula(formula)
     module = ast.parse(sanitized_formula)
     expr = module.body[0]
