@@ -25,7 +25,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                             'onError': {
                                 '$cond': [
                                     # Integer values may be either years or timestamps
-                                    {'$eq': [{'$type': f'${step.column}'}, 'int']},
+                                    {'$in': [{'$type': f'${step.column}'}, ['int', 'long']]},
                                     {
                                         '$cond': [
                                             # We decide that values lower than 10_000 will be interpreted as years...
@@ -36,6 +36,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                                                         '$concat': [col_as_string, '-01-01']
                                                     },
                                                     'format': '%Y-%m-%d',
+                                                    'onError': {'$literal': None},
                                                 }
                                             },
                                             # ...and greater values will be interpreted as timestamps
@@ -48,8 +49,15 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
                                             },
                                         ]
                                     },
-                                    # otherwise, we have no idea what date it corresponds to
-                                    {'$literal': None},
+                                    # otherwise, try to interpret as years
+                                    {
+                                        '$dateFromString': {
+                                            'dateString': {'$concat': [col_as_string, '-01-01']},
+                                            'format': '%Y-%m-%d',
+                                            # and give up if it doesn't work
+                                            'onError': {'$literal': None},
+                                        }
+                                    },
                                 ]
                             },
                         }
@@ -143,15 +151,7 @@ def translate_todate(step: ToDateStep) -> List[MongoStep]:
 
     elif date_format == '%Y':
         return [
-            {'$addFields': {'_vqbTempDate': {'$concat': [col_as_string, '-01-01']}}},
-            {
-                '$addFields': {
-                    step.column: {
-                        '$dateFromString': {'dateString': '$_vqbTempDate', 'format': '%Y-%m-%d'}
-                    },
-                },
-            },
-            _clean_temp_fields(),
+            _concat_fields_to_date(step.column, [col_as_string, '-01-01'], '%Y-%m-%d'),
         ]
 
     else:
