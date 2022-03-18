@@ -75,7 +75,7 @@ def mongo_formula_for_ast_node(node: ast.AST, columns_aliases: Dict) -> Any:
         raise InvalidFormula(f'Formula node {node} is not supported')
 
 
-def mongo_formula_for_expr(expr: ast.Expr, columns_aliases: Dict) -> dict:
+def mongo_formula_for_expr(expr: ast.Expr, columns_aliases: Dict) -> Dict[str, Any]:
     if isinstance(expr.value, ast.AST):
         return mongo_formula_for_ast_node(expr.value, columns_aliases)
     else:
@@ -89,18 +89,18 @@ def translate_formula(step: FormulaStep) -> list:
 def build_mongo_formula_tree(
     formula: Union[str, int, float, bool]
 ) -> Union[Dict[str, Any], int, float, bool]:
-    if type(formula) in (int, float, bool):
+    if isinstance(formula, str):
+        columns_aliases, sanitized_formula = sanitize_formula(formula)
+        module = ast.parse(sanitized_formula)
+        expr = module.body[0]
+        if not isinstance(expr, ast.Expr):
+            raise InvalidFormula
+        mongo_expr = mongo_formula_for_expr(expr, columns_aliases)
+        return mongo_expr
+    elif type(formula) in (int, float, bool):
         return formula
-    if not type(formula) == str:
+    else:
         raise InvalidFormula
-
-    columns_aliases, sanitized_formula = sanitize_formula(formula)
-    module = ast.parse(sanitized_formula)
-    expr = module.body[0]
-    if not isinstance(expr, ast.Expr):
-        raise InvalidFormula
-    mongo_expr = mongo_formula_for_expr(expr, columns_aliases)
-    return mongo_expr
 
 
 def sanitize_formula(formula: str) -> Tuple[Dict[str, str], str]:

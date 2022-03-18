@@ -9,7 +9,7 @@ from weaverbird.pipeline.steps.ifthenelse import IfThenElse, IfthenelseStep
 def transform_ifthenelse_step(step: IfThenElse) -> MongoStep:
     if_expr = build_cond_expression(step.condition)
     then_expr = build_mongo_formula_tree(step.then)
-    else_expr: Union[Dict[str, Any], int]
+    else_expr: Union[Dict[str, Any], int, float, bool]
     if isinstance(step.else_value, IfThenElse):
         else_expr = transform_ifthenelse_step(step.else_value)
     else:
