@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import ToDateStep
@@ -185,19 +185,17 @@ MONTH_NUMBER_TO_NAMES = {
     '12': ['dec', 'dec.', 'december', 'déc', 'déc.', 'décembre'],
 }
 
-MONTH_REPLACEMENT_STEP = {
-    {
-        '$addFields': {
-            '_vqbTempMonth'
-            '$switch': {
-                'branches': [
-                    {
-                        'case': {'$in': month_names},
-                        'then': month_number,
-                    }
-                    for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
-                ]
-            }
+MONTH_REPLACEMENT_STEP: MongoStep = {
+    '$addFields': {
+        '_vqbTempMonth'
+        '$switch': {
+            'branches': [
+                {
+                    'case': {'$in': month_names},
+                    'then': month_number,
+                }
+                for month_number, month_names in MONTH_NUMBER_TO_NAMES.items()
+            ]
         }
     }
 }
@@ -206,7 +204,7 @@ MONTH_REPLACEMENT_STEP = {
 def _extract_date_parts_to_temp_fields(
     year_position: int, month_position: Optional[int] = None, day_position: Optional[int] = None
 ) -> MongoStep:
-    date_parts_temp_fields = {
+    date_parts_temp_fields: MongoStep = {
         '_vqbTempYear': {'$arrayElemAt': ['$_vqbTempArray', year_position]},
     }
 
@@ -229,7 +227,7 @@ def _clean_temp_fields():
     }
 
 
-def _concat_fields_to_date(target_col: str, fields: List[str], format: str):
+def _concat_fields_to_date(target_col: str, fields: List[Union[str, dict]], format: str):
     return {
         '$addFields': {
             target_col: {
