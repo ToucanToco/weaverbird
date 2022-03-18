@@ -2492,12 +2492,34 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
           $addFields: {
             foo: {
               $dateFromString: {
-                dateString: '$foo',
+                dateString: {
+                  $cond: [
+                    {
+                      $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                    },
+                    { $toString: '$foo' },
+                    '$foo',
+                  ],
+                },
                 // enable '%Y' format to be guessed
                 onError: {
                   $dateFromString: {
                     dateString: {
-                      $concat: ['01/01/', '$foo'],
+                      $concat: [
+                        '01/01/',
+                        {
+                          $cond: [
+                            {
+                              $and: [
+                                { $eq: [{ $type: '$foo' }, 'int'] },
+                                { $lt: ['$foo', 10_000] },
+                              ],
+                            },
+                            { $toString: '$foo' },
+                            '$foo',
+                          ],
+                        },
+                      ],
                     },
                     format: '%d/%m/%Y',
                   },
@@ -6201,12 +6223,34 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
             $addFields: {
               foo: {
                 $dateFromString: {
-                  dateString: '$foo',
+                  dateString: {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
                   // enable '%Y' format to be guessed
                   onError: {
                     $dateFromString: {
                       dateString: {
-                        $concat: ['01/01/', '$foo'],
+                        $concat: [
+                          '01/01/',
+                          {
+                            $cond: [
+                              {
+                                $and: [
+                                  { $eq: [{ $type: '$foo' }, 'int'] },
+                                  { $lt: ['$foo', 10_000] },
+                                ],
+                              },
+                              { $toString: '$foo' },
+                              '$foo',
+                            ],
+                          },
+                        ],
                       },
                       format: '%d/%m/%Y',
                     },
@@ -6229,7 +6273,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { foo: { $dateFromString: { dateString: '$foo', format: '%Y-%m-%d' } } } },
+          {
+            $addFields: {
+              foo: {
+                $dateFromString: {
+                  dateString: {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  format: '%Y-%m-%d',
+                },
+              },
+            },
+          },
           { $project: { _id: 0 } },
         ]);
       });
@@ -6244,7 +6305,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempArray: {
+                $split: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  ' ',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
@@ -6289,7 +6367,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+          {
+            $addFields: {
+              _vqbTempArray: {
+                $split: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  '-',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
@@ -6334,7 +6429,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempArray: {
+                $split: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  ' ',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               _vqbTempDay: { $arrayElemAt: ['$_vqbTempArray', 0] },
@@ -6379,7 +6491,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempArray: {
+                $split: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  ' ',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
@@ -6415,7 +6544,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempArray: { $split: ['$foo', '-'] } } },
+          {
+            $addFields: {
+              _vqbTempArray: {
+                $split: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  '-',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
@@ -6451,7 +6597,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempArray: { $split: ['$foo', ' '] } } },
+          {
+            $addFields: {
+              _vqbTempArray: {
+                $split: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  ' ',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               _vqbTempMonth: { $toLower: { $arrayElemAt: ['$_vqbTempArray', 0] } },
@@ -6487,7 +6650,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempDate: { $concat: ['$foo', '-01'] } } },
+          {
+            $addFields: {
+              _vqbTempDate: {
+                $concat: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  '-01',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y-%m-%d' } },
@@ -6507,7 +6687,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempDate: { $concat: ['$foo', '/01'] } } },
+          {
+            $addFields: {
+              _vqbTempDate: {
+                $concat: [
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                  '/01',
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%Y/%m/%d' } },
@@ -6527,7 +6724,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempDate: { $concat: ['01-', '$foo'] } } },
+          {
+            $addFields: {
+              _vqbTempDate: {
+                $concat: [
+                  '01-',
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d-%m-%Y' } },
@@ -6547,7 +6761,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempDate: { $concat: ['01/', '$foo'] } } },
+          {
+            $addFields: {
+              _vqbTempDate: {
+                $concat: [
+                  '01/',
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
@@ -6567,7 +6798,24 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
         ];
         const querySteps = translator.translate(pipeline);
         expect(querySteps).toEqual([
-          { $addFields: { _vqbTempDate: { $concat: ['01/01/', '$foo'] } } },
+          {
+            $addFields: {
+              _vqbTempDate: {
+                $concat: [
+                  '01/01/',
+                  {
+                    $cond: [
+                      {
+                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      },
+                      { $toString: '$foo' },
+                      '$foo',
+                    ],
+                  },
+                ],
+              },
+            },
+          },
           {
             $addFields: {
               foo: { $dateFromString: { dateString: '$_vqbTempDate', format: '%d/%m/%Y' } },
