@@ -2495,7 +2495,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                 dateString: {
                   $cond: [
                     {
-                      $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                      $and: [
+                        { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                        { $lt: ['$foo', 10_000] },
+                      ],
                     },
                     { $toString: '$foo' },
                     '$foo',
@@ -2511,7 +2514,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                           $cond: [
                             {
                               $and: [
-                                { $eq: [{ $type: '$foo' }, 'int'] },
+                                { $in: [{ $type: '$foo' }, ['int', 'long']] },
                                 { $lt: ['$foo', 10_000] },
                               ],
                             },
@@ -6226,7 +6229,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   dateString: {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6242,7 +6248,7 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                             $cond: [
                               {
                                 $and: [
-                                  { $eq: [{ $type: '$foo' }, 'int'] },
+                                  { $in: [{ $type: '$foo' }, ['int', 'long']] },
                                   { $lt: ['$foo', 10_000] },
                                 ],
                               },
@@ -6280,7 +6286,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   dateString: {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6312,7 +6321,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6374,7 +6386,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6436,7 +6451,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6498,7 +6516,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6551,7 +6572,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6604,7 +6628,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6657,7 +6684,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6694,7 +6724,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6732,7 +6765,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6769,7 +6805,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
@@ -6806,7 +6845,10 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
                   {
                     $cond: [
                       {
-                        $and: [{ $eq: [{ $type: '$foo' }, 'int'] }, { $lt: ['$foo', 10_000] }],
+                        $and: [
+                          { $in: [{ $type: '$foo' }, ['int', 'long']] },
+                          { $lt: ['$foo', 10_000] },
+                        ],
                       },
                       { $toString: '$foo' },
                       '$foo',
