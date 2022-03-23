@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.82.3] - 2033-03-23
+
+### Fixed
+- Mongo translator: handle years and timestamps correctly
+
 ## [0.82.2] - 2022-02-03
 
 ### Changed
@@ -1228,6 +1233,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.82.3]: https://github.com/ToucanToco/weaverbird/compare/v0.82.3...v0.82.2
 [0.82.2]: https://github.com/ToucanToco/weaverbird/compare/v0.82.1...v0.82.2
 [0.82.1]: https://github.com/ToucanToco/weaverbird/compare/v0.82.0...v0.82.1
 [0.82.0]: https://github.com/ToucanToco/weaverbird/compare/v0.81.0...v0.82.0
