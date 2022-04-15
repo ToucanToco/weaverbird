@@ -12,7 +12,7 @@ def cast_to_int(s: Series) -> Series:
     s_nan = s_float[s_float.isna()]
     # Pandas operate on NanoSecond Timestamp but we want to output MilliSecond Timestamps
     if str(s.dtype).startswith('datetime64'):
-        s_integer = s_integer // 10 ** 6
+        s_integer = s_integer // 10**6
     return s_integer.append(s_nan).sort_index()
 
 
