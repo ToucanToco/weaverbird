@@ -69,5 +69,11 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path)
     df = pd.DataFrame(result)
     if '_id' in df:
         df.drop('_id', axis=1, inplace=True)
-    expected_df = pd.read_json(json.dumps(spec['expected']), orient='table')
+    expected_df = pd.read_json(
+        json.dumps(
+            spec[f'expected_{exec_type}' if f'expected_{exec_type}' in spec else 'expected']
+        ),
+        orient='table',
+    )
+
     assert_dataframes_content_equals(df, expected_df)
