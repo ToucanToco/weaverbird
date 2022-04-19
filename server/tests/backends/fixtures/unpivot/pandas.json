@@ -3,8 +3,7 @@
     "snowflake",
     "postgres",
     "mysql",
-    "postgres",
-    "mongo"
+    "postgres"
   ],
   "step": {
     "name": "unpivot",
