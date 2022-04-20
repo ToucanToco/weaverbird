@@ -5,6 +5,7 @@ from weaverbird.backends.mongo_translator.steps.append import translate_append
 from weaverbird.backends.mongo_translator.steps.argmax import translate_argmax
 from weaverbird.backends.mongo_translator.steps.argmin import translate_argmin
 from weaverbird.backends.mongo_translator.steps.concatenate import translate_concatenate
+from weaverbird.backends.mongo_translator.steps.convert import translate_convert
 from weaverbird.backends.mongo_translator.steps.domain import translate_domain
 from weaverbird.backends.mongo_translator.steps.filter import translate_filter
 from weaverbird.backends.mongo_translator.steps.formula import translate_formula
@@ -28,6 +29,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'argmax': translate_argmax,
     'argmin': translate_argmin,
     'concatenate': translate_concatenate,
+    'convert': translate_convert,
     'domain': translate_domain,
     'filter': translate_filter,
     'formula': translate_formula,

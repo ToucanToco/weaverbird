@@ -1,8 +1,7 @@
 {
   "exclude": [
     "snowflake",
-    "mysql",
-    "mongo"
+    "mysql"
   ],
   "step": {
     "pipeline": [
@@ -43,6 +42,37 @@
       },
       {
         "value": "meh"
+      }
+    ]
+  },
+  "expected_mongo": {
+    "schema": {
+      "fields": [
+        {
+          "name": "value",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "value": 41
+      },
+      {
+        "value": 42
+      },
+      {
+        "value": 43
+      },
+      {
+        "value": null
+      },
+      {
+        "value": null
+      },
+      {
+        "value": null
       }
     ]
   },
