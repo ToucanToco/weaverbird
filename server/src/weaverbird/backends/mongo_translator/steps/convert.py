@@ -13,6 +13,9 @@ TYPE_MAP = {
 
 
 def translate_convert(step: ConvertStep) -> List[MongoStep]:
+    # /!\ we want to get the same results than with the mongo typescript
+    # translator, not than with the pandas executor.
+
     mongo_add_fields = {}
     mongo_type = TYPE_MAP[step.data_type] if step.data_type in TYPE_MAP else ''
     for column in step.columns:
@@ -29,6 +32,12 @@ def translate_convert(step: ConvertStep) -> List[MongoStep]:
             }
         else:
             _input = f'${column}'
-        mongo_add_fields[column] = {'$convert': {'input': _input, 'to': mongo_type}}
+        mongo_add_fields[column] = {
+            '$convert': {
+                'input': _input,
+                'to': mongo_type,
+                'onError': None,  # failed conversions result in null instead of crashing
+            }
+        }
 
     return [{'$addFields': mongo_add_fields}]

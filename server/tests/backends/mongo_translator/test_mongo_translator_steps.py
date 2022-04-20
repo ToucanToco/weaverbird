@@ -11,7 +11,8 @@ from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fix
 from weaverbird.backends.mongo_translator.mongo_pipeline_translator import translate_pipeline
 from weaverbird.pipeline import Pipeline
 
-test_cases = retrieve_case('mongo_translator', 'mongo')
+exec_type = 'mongo'
+test_cases = retrieve_case('mongo_translator', exec_type)
 
 
 def unused_port():

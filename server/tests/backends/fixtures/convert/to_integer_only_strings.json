@@ -44,6 +44,37 @@
       }
     ]
   },
+  "expected_mongo": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": null
+      },
+      {
+        "VALUE": null
+      },
+      {
+        "VALUE": null
+      },
+      {
+        "VALUE": null
+      },
+      {
+        "VALUE": null
+      },
+      {
+        "VALUE": null
+      }
+    ]
+  },
   "expected": {
     "schema": {
       "fields": [

@@ -70,5 +70,33 @@
         "value": null
       }
     ]
+  },
+  "expected_mongo": {
+    "schema": {
+      "fields": [
+        {
+          "name": "value",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "value": null
+      },
+      {
+        "value": "2020-11-02T00:00:00.000Z"
+      },
+      {
+        "value": "2020-11-02T00:00:00.000Z"
+      },
+      {
+        "value": "2020-11-02T15:30:00.000Z"
+      },
+      {
+        "value": null
+      }
+    ]
   }
 }
