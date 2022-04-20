@@ -1,0 +1,71 @@
+{
+  "exclude": [
+    "mysql",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "select",
+        "columns": ["NAME", "SCORE"]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "AGE": 42,
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "AGE": 21,
+        "SCORE": 100
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "SCORE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "SCORE": 100
+      },
+      {
+        "NAME": "Azz",
+        "SCORE": 100
+      }
+    ]
+  }
+}
