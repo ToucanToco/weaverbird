@@ -61,3 +61,12 @@ install_local:
 
 .PHONY: execute_local_test
 execute_local_test: install_local test
+
+.PHONY: start_docker_playground
+start_docker_playground:
+	docker-compose down
+	docker-compose up -d weaverbird mongodb
+
+.PHONY: stop_docker_playground
+stop_docker_playground:
+	docker-compose down
