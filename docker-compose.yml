@@ -12,6 +12,18 @@ services:
     environment:
       MONGO_INITDB_DATABASE: "playground_data"
 
+  postgres:
+    image: postgres:14.2
+    ports:
+      - 5432:5432
+    volumes:
+      - ./playground/init-postgres/:/docker-entrypoint-initdb.d/:ro
+      - ./playground/datastore/:/datasources/:ro
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: dbuser
+      POSTGRES_DB: playground_db
+
   weaverbird:
     build:
       context: .

@@ -302,14 +302,16 @@ Connect the playground to a running MongoDB instance with the environment variab
 - MONGODB_CONNECTION_STRING (default to localhost:27017)
 - MONGODB_DATABASE_NAME (default to 'data')
 
-#### Run Weaverbird + MongoDB backend with docker-compose
+#### Run Weaverbird + MongoDB or PostgreSQL with docker-compose
 
-If you want to test the playground with a populated MongoDB instance, you can use `docker-compose`:
+If you want to test the playground with a populated MongoDB or PostgreSQL instance, you can use `docker-compose`:
 
 ```
 # At the directory root
-
-docker-compose up -d
+# For MongoDB
+docker-compose up -d weaverbird mongodb
+# For PostgreSQL
+docker-compose up -d weaverbird postgres
 ```
 
 ### Pandas back-end
