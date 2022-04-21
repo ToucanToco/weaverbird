@@ -2,12 +2,15 @@
 version: '3'
 services:
   mongodb:
-    build:
-      context: ./playground/
-      dockerfile: Dockerfile-mongo
+    image: mongo:5
     ports:
       # Forwarding port to host in case we want to manually run requests against mongo
       - 27017:27017
+    volumes:
+      - ./playground/init-mongo/:/docker-entrypoint-initdb.d/:ro
+      - ./playground/datastore/:/datasources/:ro
+    environment:
+      MONGO_INITDB_DATABASE: "playground_data"
 
   weaverbird:
     build:
