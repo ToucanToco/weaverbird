@@ -38,6 +38,8 @@ def build_psql(retrieved_col_type, data_type, col):
         )
     if retrieved_col_type == 'FLOAT' and data_type == 'integer':
         return f'TRUNC({col}) AS {col}'
+    if retrieved_col_type == 'TIMESTAMP WITHOUT TIME ZONE' and data_type == 'integer':
+        return f'CAST(EXTRACT(EPOCH FROM {col}) * 1000 AS BIGINT) AS {col}'
 
     return f'CAST({col} AS {data_type}) AS {col}'
 
