@@ -1,5 +1,5 @@
 from distutils import log
-from typing import List, Sequence
+from typing import List, Sequence, Tuple
 
 from weaverbird.backends.sql_translator.metadata import ColumnMetadata, SqlQueryMetadataManager
 from weaverbird.backends.sql_translator.steps.utils.query_transformation import (
@@ -20,7 +20,7 @@ from weaverbird.pipeline.types import ColumnName
 from weaverbird.utils.iter import combinations
 
 
-def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> (str, List[ColumnMetadata]):
+def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> Tuple[str, List[ColumnMetadata]]:
     def select_total_dimensions(total_dimensions: List[TotalDimension]) -> List[ColumnMetadata]:
         selects = []
         for dimension in total_dimensions:
