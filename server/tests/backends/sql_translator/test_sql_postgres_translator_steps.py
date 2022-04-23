@@ -100,7 +100,7 @@ def execute(connection, query: str, meta: bool = True) -> Optional[pd.DataFrame]
 
 
 def sql_retrieve_city(t):
-    return t
+    return f'SELECT * FROM {t}'
 
 
 def split_list(lst, list_index):
@@ -177,7 +177,7 @@ def test_sql_translator_pipeline(case_id, case_spec_file_path, get_engine):
             )
 
     steps = spec['step']['pipeline']
-    steps.insert(0, {'name': 'domain', 'domain': f'SELECT * FROM {case_id.replace("/", "")}'})
+    steps.insert(0, {'name': 'domain', 'domain': case_id.replace("/", "")})
     pipeline = Pipeline(steps=steps)
 
     # Convert Pipeline object to Postgres Query
