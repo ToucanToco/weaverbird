@@ -239,7 +239,7 @@ def test_build_selection_query():
 
 
 def test_build_selection_query_empty_cols():
-    assert build_selection_query({}, 'SELECT_STEP_0') == 'SELECT  FROM SELECT_STEP_0'
+    assert build_selection_query({}, 'SELECT_STEP_0') == 'SELECT * FROM SELECT_STEP_0'
 
 
 def test_handle_zero_division_no_division():
