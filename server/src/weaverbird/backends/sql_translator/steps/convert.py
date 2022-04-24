@@ -36,7 +36,7 @@ def build_psql(retrieved_col_type, data_type, col):
             f'CAST(NULLIF(SPLIT_PART(REGEXP_REPLACE({col}, \'[^0-9.]*\', \'\'), \'.\', 1), \'\') '
             f'AS {data_type}) AS {col}'
         )
-    if retrieved_col_type == 'FLOAT' and data_type == 'integer':
+    if retrieved_col_type in ('FLOAT', 'DOUBLE PRECISION') and data_type == 'integer':
         return f'TRUNC({col}) AS {col}'
     if retrieved_col_type == 'TIMESTAMP WITHOUT TIME ZONE' and data_type == 'integer':
         return f'CAST(EXTRACT(EPOCH FROM {col}) * 1000 AS BIGINT) AS {col}'
