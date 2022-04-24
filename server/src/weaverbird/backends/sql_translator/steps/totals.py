@@ -20,7 +20,9 @@ from weaverbird.pipeline.types import ColumnName
 from weaverbird.utils.iter import combinations
 
 
-def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> Tuple[str, List[ColumnMetadata]]:
+def make_totals_query(
+    step: TotalsStep, parent_query: SQLQuery, is_postgres=False
+) -> Tuple[str, List[ColumnMetadata]]:
     def select_total_dimensions(total_dimensions: List[TotalDimension]) -> List[ColumnMetadata]:
         selects = []
         for dimension in total_dimensions:
@@ -49,6 +51,14 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> Tuple[str, Li
                     aggregated_cols.append(
                         ColumnMetadata(name=f'COUNT(DISTINCT {col})', alias=new_col, type='FLOAT')
                     )
+                elif is_postgres:
+                    aggregated_cols.append(
+                        ColumnMetadata(
+                            name=f'{aggregation.agg_function.upper()}({col})::float',
+                            alias=new_col,
+                            type='FLOAT',
+                        )
+                    )
                 else:
                     aggregated_cols.append(
                         ColumnMetadata(
@@ -59,12 +69,15 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> Tuple[str, Li
                     )
         return aggregated_cols
 
-    def with_alias(selects: List[ColumnMetadata]) -> List[str]:
+    def with_alias(selects: List[ColumnMetadata], is_postgres=False) -> List[str]:
         selects_with_alias = []
         for select in selects:
             select_str = select.original_name
             if select.alias is not None:
-                select_str = f'{select_str} AS "{select.alias}"'
+                if is_postgres:
+                    select_str = f'{select_str} AS {select.alias}'
+                else:
+                    select_str = f'{select_str} AS "{select.alias}"'
             selects_with_alias.append(select_str)
         return selects_with_alias
 
@@ -90,7 +103,7 @@ def make_totals_query(step: TotalsStep, parent_query: SQLQuery) -> Tuple[str, Li
     group_sets.append('()')
     group_by = step.groups + ['GROUPING SETS(' + (', '.join(group_sets)) + ')']
 
-    query = f"""SELECT {', '.join(with_alias(selects))} FROM {parent_query.query_name} GROUP BY {', '.join(group_by)}"""
+    query = f"""SELECT {', '.join(with_alias(selects, is_postgres))} FROM {parent_query.query_name} GROUP BY {', '.join(group_by)}"""
 
     return query, selects
 
@@ -117,7 +130,7 @@ def translate_totals(
         f'query.metadata_manager.query_metadata: {query.metadata_manager.retrieve_query_metadata()}\n'
     )
 
-    sql_query, selects = make_totals_query(step, query)
+    sql_query, selects = make_totals_query(step, query, sql_dialect == 'postgres')
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"{query.transformed_query}, {query_name} AS ({sql_query})",
