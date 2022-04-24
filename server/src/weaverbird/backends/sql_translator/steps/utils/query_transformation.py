@@ -118,7 +118,7 @@ def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name)
             names.append(alias)
         else:
             names.append(getattr(metadata, 'name'))
-    return f"SELECT {', '.join(names)} FROM {query_name}"
+    return f"SELECT {', '.join(names) or '*'} FROM {query_name}"
 
 
 def first_last_query_string_with_group_and_granularity(
