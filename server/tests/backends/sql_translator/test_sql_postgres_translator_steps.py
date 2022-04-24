@@ -139,7 +139,8 @@ def sql_query_describer(domain, query_string=None) -> Union[Dict[str, str], None
 def sql_query_executor(domain: str, query_string: str = None) -> Union[pd.DataFrame, None]:
     connection = get_connection()
     with connection.cursor() as cursor:
-        res = cursor.execute(domain if domain else query_string).fetchall()
+        cursor.execute(domain if domain else query_string)
+        res = cursor.fetchall()
         return pd.DataFrame(res)
 
 
