@@ -14,6 +14,8 @@ from weaverbird.backends.sql_translator.types import (
 )
 from weaverbird.pipeline.steps import FromdateStep
 
+DATE_STR_FORMAT = 'YYYY-MM-DD HH24:MI:SS.MS'
+
 
 def translate_fromdate(
     step: FromdateStep,
@@ -46,12 +48,19 @@ def translate_fromdate(
         columns_filter=[step.column]
     )
 
+    if sql_dialect == 'snowflake':
+        new_column_op = f'TO_VARCHAR({step.column})'
+    else:
+        new_column_op = f"TO_CHAR({step.column}, '{DATE_STR_FORMAT}')"
+
+    transformed_query = (
+        f"""{query.transformed_query}, {query_name} AS"""
+        f""" (SELECT {completed_fields}, {new_column_op} AS {step.column} FROM {query.query_name})"""
+    )
+
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields},"""
-        f""" TO_VARCHAR({step.column}) AS {step.column}"""
-        f""" FROM {query.query_name})""",
+        transformed_query=transformed_query,
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
