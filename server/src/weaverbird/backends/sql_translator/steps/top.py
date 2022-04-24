@@ -44,11 +44,18 @@ def translate_top(
         if len(step.groups) > 0:
             order_on_groupby += ' ASC'
 
-        final_query = (
-            f"SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() "
-            f"OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) "
-            f"{query_name}_ALIAS ORDER BY {order_on_groupby}"
-        )
+        if sql_dialect == 'postgres':
+            final_query = (
+                f"SELECT *, ROW_NUMBER() OVER (PARTITION BY {', '.join(step.groups)} "
+                f"ORDER BY {step.rank_on} {step.sort}) <= {step.limit} FROM {query.query_name} "
+                f"ORDER BY {order_on_groupby}, {step.rank_on} ASC"
+            )
+        else:
+            final_query = (
+                f"SELECT * FROM (SELECT * FROM {query.query_name} QUALIFY ROW_NUMBER() "
+                f"OVER (PARTITION BY {', '.join(step.groups)} ORDER BY {step.rank_on} {step.sort}) <= {step.limit}) "
+                f"{query_name}_ALIAS ORDER BY {order_on_groupby}"
+            )
     else:
         final_query = (
             f"SELECT {completed_fields} FROM {query.query_name} ORDER BY {step.rank_on}"
