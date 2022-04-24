@@ -2,7 +2,6 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres",
     "mongo"
   ],
   "step": {
