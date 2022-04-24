@@ -42,12 +42,12 @@ def translate_pivot(
         domain=None,
         query_string=f"""{query.transformed_query} SELECT DISTINCT({step.column_to_pivot}) FROM {query.query_name}""",
     )
-    if sql_dialect == 'snowflake':
-        pivot_values = df[f'{step.column_to_pivot}'].values.tolist()
-    else:
+    if sql_dialect == 'postgres':
         # df has no column names but since we asked for distinct
         # we have only 1 column with default name '0'
         pivot_values = df[0].values.tolist()
+    else:
+        pivot_values = df[f'{step.column_to_pivot}'].values.tolist()
 
     sanitized_columns = [sanitize_column_name(p) for p in pivot_values]
 

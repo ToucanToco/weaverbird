@@ -48,10 +48,10 @@ def translate_fromdate(
         columns_filter=[step.column]
     )
 
-    if sql_dialect == 'snowflake':
-        new_column_op = f'TO_VARCHAR({step.column})'
-    else:
+    if sql_dialect == 'postgres':
         new_column_op = f"TO_CHAR({step.column}, '{DATE_STR_FORMAT}')"
+    else:
+        new_column_op = f'TO_VARCHAR({step.column})'
 
     transformed_query = (
         f"""{query.transformed_query}, {query_name} AS"""

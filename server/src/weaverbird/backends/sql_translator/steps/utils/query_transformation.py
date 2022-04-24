@@ -112,13 +112,13 @@ def apply_condition(condition: Condition, query: str) -> str:
 
 def build_selection_query(query_metadata: Dict[str, ColumnMetadata], query_name) -> str:
     names = []
-    for _, metadata in query_metadata.items():
+    for metadata in query_metadata.values():
         alias = getattr(metadata, 'alias')
         if alias:
             names.append(alias)
         else:
             names.append(getattr(metadata, 'name'))
-    return f"SELECT {', '.join(names) or '*'} FROM {query_name}"
+    return f"SELECT {', '.join(names)} FROM {query_name}"
 
 
 def first_last_query_string_with_group_and_granularity(

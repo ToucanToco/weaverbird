@@ -62,10 +62,10 @@ def translate_percentage(
                 if col not in (step.group + [step.column, new_column_name]):
                     query.metadata_manager.remove_query_metadata_column(col)
 
-    if sql_dialect == 'snowflake':
-        new_column_op = f'RATIO_TO_REPORT({step.column}) OVER () AS {new_column_name}'
-    else:
+    if sql_dialect == 'postgres':
         new_column_op = f'CAST(1.0 * {step.column} / NULLIF(SUM({step.column}) OVER(), 0) AS FLOAT)'
+    else:
+        new_column_op = f'RATIO_TO_REPORT({step.column}) OVER ()'
 
     transformed_query = (
         f"""{query.transformed_query}, {query_name} AS"""
