@@ -1,7 +1,6 @@
 {
   "exclude": [
     "mysql",
-    "postgres",
     "mongo"
   ],
   "step": {
@@ -65,7 +64,7 @@
       },
       {
         "DATE": "2020-03-01",
-        "VALUE": 3
+        "VALUE": 6
       },
       {
         "DATE": "2020-04-01",
@@ -142,8 +141,8 @@
       },
       {
         "DATE": "2020-03-01",
-        "VALUE": 3,
-        "POUET": 0
+        "VALUE": 6,
+        "POUET": 3
       },
       {
         "DATE": "2020-04-01",

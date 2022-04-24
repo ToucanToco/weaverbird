@@ -49,16 +49,20 @@ def translate_evolution(
 
     if step.evolution_format == 'abs':
         new_column = f'''(A.{step.value_col} - B.{step.value_col}) AS {new_column_name}'''
-    else:
+    elif sql_dialect == 'snowflake':
         new_column = f'''((A.{step.value_col} / B.{step.value_col}) - 1) AS {new_column_name}'''
+    else:
+        new_column = f'''((CAST(A.{step.value_col} AS FLOAT) / B.{step.value_col}) - 1) AS {new_column_name}'''
 
     selected_columns = [
         f'A.{c} AS {c}' for c in query.metadata_manager.retrieve_query_metadata_columns()
     ] + [new_column]
 
-    date_join = (
-        f"A.{step.date_col} = DATEADD('{DATE_UNIT[step.evolution_type]}', 1, B.{step.date_col})"
-    )
+    date_unit = DATE_UNIT[step.evolution_type]
+    if sql_dialect == 'snowflake':
+        date_join = f"A.{step.date_col} = DATEADD('{date_unit}', 1, B.{step.date_col})"
+    else:
+        date_join = f"A.{step.date_col} = B.{step.date_col} + INTERVAL '1 {date_unit}'"
 
     on_query = f"ON {' AND '.join([date_join]+[f'A.{c} = B.{c}' for c in step.index_columns])}"
 
