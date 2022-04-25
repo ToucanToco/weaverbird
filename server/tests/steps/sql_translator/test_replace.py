@@ -69,7 +69,7 @@ def test_translate_with_quotes_and_without_replace(query):
     )
     expected_transformed_query = (
         'WITH SELECT_STEP_0 AS (SELECT * FROM products), REPLACE_STEP_1 AS (SELECT TOTO, FLORIZARRE, CASE WHEN '
-        'RAICHU=\'TEST\' THEN \'OK DOCK\' WHEN RAICHU=\'L\\\'EXEMPLE\' THEN \'GOGO\\\'GADJET\' ELSE RAICHU END AS '
+        'RAICHU=\'TEST\' THEN \'OK DOCK\' WHEN RAICHU=\'L\\\'EXEMPLE\' THEN \'GOGO"GADJET\' ELSE RAICHU END AS '
         'RAICHU FROM SELECT_STEP_0)'
     )
     assert query.transformed_query == expected_transformed_query

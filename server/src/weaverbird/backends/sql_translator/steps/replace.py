@@ -40,12 +40,16 @@ def translate_replace(
 
     def _clean_str(value):
         if not isinstance(value, float) and not isinstance(value, int):
+            # https://github.com/ToucanToco/weaverbird/pull/1183
+            new_value = value.strip('"').strip("'")
+
             if sql_dialect == 'postgres':
                 # Only single quotes need to be escaped (by another single quote!)
-                value = value.strip('"').strip("'").replace("'", "''")
+                new_value = new_value.replace("'", "''")
             else:
-                value = value.strip('"').strip("'").replace('"', "\'").replace("'", "\\'")
-            return f'\'{value}\''
+                new_value = new_value.replace("'", "\\'")
+            return f'\'{new_value}\''
+
         return value
 
     compiled_query: str = 'CASE '
