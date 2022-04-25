@@ -50,6 +50,8 @@ def build_first_or_last_aggregation(
     step: AggregateStep,
     query_name: str,
     new_as_columns=None,
+    *,
+    is_postgres=False,
 ) -> Tuple[SQLQuery, str]:
     """
     This method will help us build the first-last aggregation query
@@ -90,6 +92,7 @@ def build_first_or_last_aggregation(
         step=step,
         query=query,
         scope_cols=aggregate_cols,
+        is_postgres=is_postgres,
     )
 
     if len(aggregated_string) and (len(first_cols) or len(last_cols)):

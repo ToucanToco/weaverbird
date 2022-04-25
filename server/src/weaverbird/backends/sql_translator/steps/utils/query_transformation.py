@@ -129,6 +129,8 @@ def first_last_query_string_with_group_and_granularity(
     step: AggregateStep,
     query: SQLQuery,
     scope_cols: list,
+    *,
+    is_postgres: bool = False,
 ) -> Tuple[SQLQuery, str]:
     """
     This function will... depending on the group by of the aggregate and the granularity conservation, generate
@@ -160,17 +162,31 @@ def first_last_query_string_with_group_and_granularity(
                 f" ON {' AND '.join([f'X.X_{s}=Z.{s}' for s in step.on])} ORDER BY TO_REMOVE_{query.query_name}_ALIAS"
             )
         else:
-            # the difference on the  if col != new_col after the loop
-            end_query = (
-                f"SELECT *,"
-                f"{', '.join([f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col] + ['ROW_NUMBER()'])}"
-                f" OVER (PARTITION BY {', '.join(step.on)}"
-                f" ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R FROM {query.query_name} QUALIFY R = 1"
-            )
-            # we fresh an concatenate the final first_last_string
-            query, final_end_query_string = remove_metadatas_columns_from_query(
-                query, [c[1] for c in scope_cols] + step.on, end_query
-            )
+            selected_columns = [
+                f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col
+            ]
+            row_number_column = f"ROW_NUMBER() OVER (PARTITION BY {', '.join(step.on)} ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R"
+
+            if is_postgres:
+                end_query = (
+                    f"SELECT FIRST_LAST_P.* FROM"
+                    f"  (SELECT {', '.join(selected_columns + step.on + [row_number_column])} FROM {query.query_name}) FIRST_LAST_P "
+                    f"WHERE R = 1"
+                )
+                # we fresh an concatenate the final first_last_string
+                query, final_end_query_string = remove_metadatas_columns_from_query(
+                    query,
+                    [c[1] for c in scope_cols] + step.on,
+                    end_query,
+                    table_alias='FIRST_LAST_Q',
+                )
+            else:
+                # the difference on the  if col != new_col after the loop
+                end_query = f"SELECT *,{', '.join(selected_columns + [row_number_column])} FROM {query.query_name} QUALIFY R = 1"
+                # we fresh an concatenate the final first_last_string
+                query, final_end_query_string = remove_metadatas_columns_from_query(
+                    query, [c[1] for c in scope_cols] + step.on, end_query
+                )
     else:
         # depending on the granularity keep parameter
         # we should remove unnecessary columns
@@ -200,7 +216,12 @@ def first_last_query_string_with_group_and_granularity(
 
 
 def remove_metadatas_columns_from_query(
-    query: SQLQuery, array_cols: list, first_last_string: str, first_or_last_aggregate: bool = True
+    query: SQLQuery,
+    array_cols: list,
+    first_last_string: str,
+    first_or_last_aggregate: bool = True,
+    *,
+    table_alias: str = '',
 ) -> Tuple[SQLQuery, str]:
     """
     For the given query, this function will remove metadata columns if its not on a given list
@@ -222,6 +243,8 @@ def remove_metadatas_columns_from_query(
 
     if first_or_last_aggregate:
         first_last_string = f"SELECT {', '.join(array_cols)} FROM ({first_last_string})"
+        if table_alias:
+            first_last_string += f' {table_alias}'
 
     return query, first_last_string
 

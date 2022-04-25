@@ -38,7 +38,13 @@ def translate_aggregate(
     )
 
     query, query_string = build_first_or_last_aggregation(
-        aggregated_string, first_last_string, query, step, query_name, new_as_columns
+        aggregated_string,
+        first_last_string,
+        query,
+        step,
+        query_name,
+        new_as_columns,
+        is_postgres=(sql_dialect == 'postgres'),
     )
 
     new_query = SQLQuery(
