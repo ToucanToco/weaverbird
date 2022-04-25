@@ -12,7 +12,7 @@ Weaverbird is [Toucan Toco](https://toucantoco.com)'s data pipelines toolkit, it
   - the Pandas Executor that compute the result using Pandas dataframes, written in Python
   - the Snowflake SQL translator, written in Python
 
-For in depth user & technical documentation, have a look at weaverbird.toucantoco.com  
+For in depth user & technical documentation, have a look at weaverbird.toucantoco.com
 or at the documentation's source files in the `docs` directory.
 
 Last but not least, you can **play with Weaverbird on our [online playground](https://weaverbird-playground-ujaf.onrender.com/)**!
@@ -301,6 +301,18 @@ The default back-end for the playground is a small server passing queries to Mon
 Connect the playground to a running MongoDB instance with the environment variables:
 - MONGODB_CONNECTION_STRING (default to localhost:27017)
 - MONGODB_DATABASE_NAME (default to 'data')
+
+#### Run Weaverbird + MongoDB or PostgreSQL with docker-compose
+
+If you want to test the playground with a populated MongoDB or PostgreSQL instance, you can use `docker-compose`:
+
+```
+# At the directory root
+# For MongoDB
+docker-compose up -d weaverbird mongodb
+# For PostgreSQL
+docker-compose up -d weaverbird postgres
+```
 
 ### Pandas back-end
 

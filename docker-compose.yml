@@ -1,0 +1,38 @@
+# This allows to run the playground with a pre-populated MongoDB backend
+version: '3'
+services:
+  mongodb:
+    image: mongo:5
+    ports:
+      # Forwarding port to host in case we want to manually run requests against mongo
+      - 27017:27017
+    volumes:
+      - ./playground/init-mongo/:/docker-entrypoint-initdb.d/:ro
+      - ./playground/datastore/:/datasources/:ro
+    environment:
+      MONGO_INITDB_DATABASE: "playground_data"
+
+  postgres:
+    image: postgres:14.2
+    ports:
+      - 5432:5432
+    volumes:
+      - ./playground/init-postgres/:/docker-entrypoint-initdb.d/:ro
+      - ./playground/datastore/:/datasources/:ro
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: dbuser
+      POSTGRES_DB: playground_db
+
+  weaverbird:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 5000:5000
+    environment:
+      MONGODB_CONNECTION_STRING: "mongodb://mongodb:27017"
+      MONGODB_DATABASE_NAME: "playground_data"
+    volumes:
+      - ./server:/local_src/:Z
+    command: bash -c "pip install -e '/local_src/[playground]' && hypercorn --bind 0.0.0.0:5000 playground:app"
