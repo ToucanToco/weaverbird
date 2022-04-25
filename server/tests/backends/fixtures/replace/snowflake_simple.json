@@ -1,7 +1,6 @@
 {
   "exclude": [
     "mysql",
-    "postgres",
     "pandas",
     "mongo"
   ],
@@ -18,6 +17,10 @@
           [
             "l'oo'",
             "d'oof'"
+          ],
+          [
+            "q\"\"\"w''e",
+            "q'w\"e"
           ]
         ]
       },
@@ -66,6 +69,11 @@
         "NAME": "l'oo",
         "AGE": 10,
         "SCORE": 34
+      },
+      {
+        "NAME": "q\"\"\"w''e",
+        "AGE": 12,
+        "SCORE": 37
       }
     ]
   },
@@ -102,6 +110,11 @@
         "NAME": "d'oof",
         "AGE": 18,
         "SCORE": 34
+      },
+      {
+        "NAME": "q'w\"e",
+        "AGE": 12,
+        "SCORE": 37
       }
     ]
   }

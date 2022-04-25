@@ -40,7 +40,11 @@ def translate_replace(
 
     def _clean_str(value):
         if not isinstance(value, float) and not isinstance(value, int):
-            value = value.strip('"').strip("'").replace('"', "\'").replace("'", "\\'")
+            if sql_dialect == 'postgres':
+                # Only single quotes need to be escaped (by another single quote!)
+                value = value.strip('"').strip("'").replace("'", "''")
+            else:
+                value = value.strip('"').strip("'").replace('"', "\'").replace("'", "\\'")
             return f'\'{value}\''
         return value
 
