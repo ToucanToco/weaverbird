@@ -42,16 +42,29 @@ def translate_todate(
     # we change the column type
     query.metadata_manager.update_query_metadata_column_type(step.column, 'date')
 
-    completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
-        columns_filter=[step.column]
-    )
+    if sql_dialect == 'postgres':
+        selected_columns = (
+            completed_fields
+        ) = query.metadata_manager.retrieve_query_metadata_columns_as_list(
+            columns_filter=[step.column]
+        )
+        selected_columns += [f'TO_DATE({step.column}{step.format}) AS {step.column}']
+        transformed_query = f'{query.transformed_query}, {query_name} AS (SELECT {", ".join(selected_columns)} FROM {query.query_name})'
+
+    else:
+        completed_fields = query.metadata_manager.retrieve_query_metadata_columns_as_str(
+            columns_filter=[step.column]
+        )
+        transformed_query = (
+            f"""{query.transformed_query}, {query_name} AS"""
+            f""" (SELECT {completed_fields},"""
+            f""" TO_DATE({step.column}{step.format}) AS {step.column}"""
+            f""" FROM {query.query_name})"""
+        )
 
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields},"""
-        f""" TO_DATE({step.column}{step.format}) AS {step.column}"""
-        f""" FROM {query.query_name})""",
+        transformed_query=transformed_query,
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),
