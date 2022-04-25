@@ -2,7 +2,6 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres",
     "mongo"
   ],
   "step": {
@@ -11,7 +10,7 @@
         "name": "trim",
         "columns": [
           "ColA",
-          "ColB"
+          "ColC"
         ]
       }
     ]
@@ -26,6 +25,10 @@
         {
           "name": "ColB",
           "type": "string"
+        },
+        {
+          "name": "ColC",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -33,11 +36,18 @@
     "data": [
       {
         "ColA": "foo",
-        "ColB": "toto"
+        "ColB": " toto ",
+        "ColC": "  pika  "
       },
       {
-        "ColA": "bar",
-        "ColB": "tata"
+        "ColA": "bar  ",
+        "ColB": " tata ",
+        "ColC": "pika"
+      },
+      {
+        "ColA": "  buz",
+        "ColB": " titi ",
+        "ColC": " pika"
       }
     ]
   },
@@ -51,6 +61,10 @@
         {
           "name": "ColB",
           "type": "string"
+        },
+        {
+          "name": "ColC",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -58,11 +72,18 @@
     "data": [
       {
         "ColA": "foo",
-        "ColB": "toto"
+        "ColB": " toto ",
+        "ColC": "pika"
       },
       {
         "ColA": "bar",
-        "ColB": "tata"
+        "ColB": " tata ",
+        "ColC": "pika"
+      },
+      {
+        "ColA": "buz",
+        "ColB": " titi ",
+        "ColC": "pika"
       }
     ]
   }

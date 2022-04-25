@@ -2,7 +2,6 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres",
     "mongo"
   ],
   "step": {
@@ -35,8 +34,12 @@
         "ColB": " toto "
       },
       {
-        "ColA": "bar",
+        "ColA": "bar  ",
         "ColB": " tata "
+      },
+      {
+        "ColA": "  buz",
+        "ColB": " titi "
       }
     ]
   },
@@ -62,6 +65,10 @@
       {
         "ColA": "bar",
         "ColB": " tata "
+      },
+      {
+        "ColA": "buz",
+        "ColB": " titi "
       }
     ]
   }
