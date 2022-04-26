@@ -395,7 +395,7 @@ async function buildVueApp() {
       };
     },
     created: async function() {
-      registerModule(this.$store, {
+      const registrationOpts = {
         currentPipelineName: 'pipeline',
         pipelines: {
           // Identifiers for Snowflake (SQL) should be uppercase (no support for other casing for now)
@@ -482,7 +482,16 @@ async function buildVueApp() {
         featureFlags: {
           RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable'
         }
-      });
+      };
+      if (TRANSLATOR === 'pandas') {
+        registrationOpts.pipelines.geo = [
+            {
+              name: 'domain',
+              domain: 'regions-france',
+            },
+        ];
+      }
+      registerModule(this.$store, registrationOpts);
       // Add variables
       store.commit(VQBnamespace('setAvailableVariables'), {
         availableVariables: AVAILABLE_VARIABLES,
