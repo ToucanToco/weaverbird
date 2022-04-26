@@ -9,7 +9,7 @@
       {
         "name": "aggregate",
         "on": [
-          "Group"
+          "Cartel"
         ],
         "aggregations": [
           {
@@ -43,7 +43,7 @@
           "type": "string"
         },
         {
-          "name": "Group",
+          "name": "Cartel",
           "type": "string"
         },
         {
@@ -60,37 +60,37 @@
     "data": [
       {
         "Label": "Label 1",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 13,
         "Value2": 10
       },
       {
         "Label": "Label 2",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 7,
         "Value2": 21
       },
       {
         "Label": "Label 3",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 20,
         "Value2": 4
       },
       {
         "Label": "Label 4",
-        "Group": "Group 2",
+        "Cartel": "Cartel 2",
         "Value1": 1,
         "Value2": 17
       },
       {
         "Label": "Label 5",
-        "Group": "Group 2",
+        "Cartel": "Cartel 2",
         "Value1": 10,
         "Value2": 12
       },
       {
         "Label": "Label 6",
-        "Group": "Group 2",
+        "Cartel": "Cartel 2",
         "Value1": 5,
         "Value2": 2
       }
@@ -104,7 +104,7 @@
           "type": "string"
         },
         {
-          "name": "Group",
+          "name": "Cartel",
           "type": "string"
         },
         {
@@ -129,7 +129,7 @@
     "data": [
       {
         "Label": "Label 1",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 13,
         "min_Value1": 7,
         "Value2": 10,
@@ -137,7 +137,7 @@
       },
       {
         "Label": "Label 2",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 7,
         "min_Value1": 7,
         "Value2": 21,
@@ -145,7 +145,7 @@
       },
       {
         "Label": "Label 3",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 20,
         "min_Value1": 7,
         "Value2": 4,
@@ -153,7 +153,7 @@
       },
       {
         "Label": "Label 4",
-        "Group": "Group 2",
+        "Cartel": "Cartel 2",
         "Value1": 1,
         "min_Value1": 1,
         "Value2": 17,
@@ -161,7 +161,7 @@
       },
       {
         "Label": "Label 5",
-        "Group": "Group 2",
+        "Cartel": "Cartel 2",
         "Value1": 10,
         "min_Value1": 1,
         "Value2": 12,
@@ -169,7 +169,7 @@
       },
       {
         "Label": "Label 6",
-        "Group": "Group 2",
+        "Cartel": "Cartel 2",
         "Value1": 5,
         "min_Value1": 1,
         "Value2": 2,

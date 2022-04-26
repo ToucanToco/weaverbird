@@ -2,7 +2,6 @@
   "exclude": [
     "snowflake",
     "mysql",
-    "postgres",
     "mongo"
   ],
   "step": {
@@ -10,7 +9,7 @@
       {
         "name": "aggregate",
         "on": [
-          "Group"
+          "Cartel"
         ],
         "aggregations": [
           {
@@ -35,7 +34,7 @@
           "type": "string"
         },
         {
-          "name": "Group",
+          "name": "Cartel",
           "type": "string"
         },
         {
@@ -48,32 +47,32 @@
     "data": [
       {
         "Label": "Label 1",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 13
       },
       {
         "Label": "Label 2",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 7
       },
       {
         "Label": "Label 3",
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Value1": 20
       },
       {
         "Label": "Label 4",
-        "Group": null,
+        "Cartel": null,
         "Value1": 1
       },
       {
         "Label": "Label 5",
-        "Group": null,
+        "Cartel": null,
         "Value1": 10
       },
       {
         "Label": "Label 6",
-        "Group": null,
+        "Cartel": null,
         "Value1": 5
       }
     ]
@@ -82,7 +81,7 @@
     "schema": {
       "fields": [
         {
-          "name": "Group",
+          "name": "Cartel",
           "type": "string"
         },
         {
@@ -94,11 +93,11 @@
     },
     "data": [
       {
-        "Group": "Group 1",
+        "Cartel": "Cartel 1",
         "Sum-Value1": 40
       },
       {
-        "Group": null,
+        "Cartel": null,
         "Sum-Value1": 16
       }
     ]
