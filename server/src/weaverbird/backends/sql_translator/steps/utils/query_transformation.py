@@ -165,9 +165,11 @@ def first_last_query_string_with_group_and_granularity(
             selected_columns = [
                 f'{col} AS {new_col}' for (col, new_col) in scope_cols if col != new_col
             ]
-            row_number_column = f"ROW_NUMBER() OVER (PARTITION BY {', '.join(step.on)} ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R"
 
             if is_postgres:
+                order = 'DESC' if step.aggregations[0].agg_function == 'last' else 'ASC'
+                row_number_column = f"ROW_NUMBER() OVER (PARTITION BY {', '.join(step.on)} ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])} {order}) AS R"
+
                 end_query = (
                     f"SELECT FIRST_LAST_P.* FROM"
                     f"  (SELECT {', '.join(selected_columns + step.on + [row_number_column])} FROM {query.query_name}) FIRST_LAST_P "
@@ -181,6 +183,8 @@ def first_last_query_string_with_group_and_granularity(
                     table_alias='FIRST_LAST_Q',
                 )
             else:
+                row_number_column = f"ROW_NUMBER() OVER (PARTITION BY {', '.join(step.on)} ORDER BY {', '.join([f'{c[0]}' for c in scope_cols])}) AS R"
+
                 # the difference on the  if col != new_col after the loop
                 end_query = f"SELECT *,{', '.join(selected_columns + [row_number_column])} FROM {query.query_name} QUALIFY R = 1"
                 # we fresh an concatenate the final first_last_string
