@@ -2,6 +2,7 @@ import json
 import logging
 from typing import Tuple
 
+from geopandas import GeoDataFrame
 from pandas import DataFrame
 from pandas.io.json import build_table_schema
 
@@ -67,6 +68,9 @@ def execute_pipeline(
             )
         except Exception as e:
             raise PipelineExecutionFailure(step, index, e) from e
+    if isinstance(df, GeoDataFrame):
+        # GeoDataFrame.to_json does not support orient='records'
+        df = DataFrame(df)
     return df, PipelineExecutionReport(steps_reports=step_reports)
 
 
@@ -83,13 +87,23 @@ def preview_pipeline(
     Note: it's required to use pandas `to_json` methods, as it convert NaN and dates to an appropriate format.
     """
     df, _ = execute_pipeline(pipeline, domain_retriever)
+
+    def _default_formatter(obj):
+        if hasattr(obj, 'geom_type'):
+            return obj.geom_type
+        return obj
+
     return json.dumps(
         {
             'schema': build_table_schema(df, index=False),
             'offset': offset,
             'limit': limit,
             'total': df.shape[0],
-            'data': json.loads(df[offset : offset + limit].to_json(orient='records')),
+            'data': json.loads(
+                df[offset : offset + limit].to_json(
+                    orient='records', default_handler=_default_formatter
+                )
+            ),
         }
     )
 

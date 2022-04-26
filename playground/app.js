@@ -34,7 +34,7 @@ const VARIABLES = {
   value1: 2,
   value2: 13,
   groupname: 'Group 1',
-}
+};
 
 const AVAILABLE_VARIABLES = [
   {
@@ -45,7 +45,7 @@ const AVAILABLE_VARIABLES = [
   },
   {
     category: 'Dates',
-    label: 'Ange\'s birthday',
+    label: "Ange's birthday",
     identifier: 'angeBirthday',
     value: VARIABLES.angeBirthday,
   },
@@ -114,7 +114,9 @@ setAvailableCodeEditors({
 });
 
 // Example to set send analytics method
-const sendAnalytics = ({name, value}) => { console.debug('Analytics event send ::', { name, value }) };
+const sendAnalytics = ({ name, value }) => {
+  console.debug('Analytics event send ::', { name, value });
+};
 defineSendAnalytics(sendAnalytics);
 
 const CASTERS = {
@@ -189,28 +191,32 @@ class MongoService {
 
     let isResponseOk, responseContent, query;
 
-    if(USE_MONGO_BACKEND_TRANSLATOR) {
-      const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+    if (USE_MONGO_BACKEND_TRANSLATOR) {
+      const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
+        dereferencedPipeline,
+        VARIABLES,
+      );
 
       // FIXME it would be better if the mongo translator returned a tuple (collection, query)
-      const { domain: collection, pipeline: subpipeline } = filterOutDomain(dereferencedPipelineWithoutVariables);
+      const { domain: collection, pipeline: subpipeline } = filterOutDomain(
+        dereferencedPipelineWithoutVariables,
+      );
 
       const response = await fetch('/mongo', {
-          method: 'POST',
-          body: JSON.stringify({
-            limit: limit,
-            offset: offset,
-            collection: collection,
-            pipeline: subpipeline
-          }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        method: 'POST',
+        body: JSON.stringify({
+          limit: limit,
+          offset: offset,
+          collection: collection,
+          pipeline: subpipeline,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       isResponseOk = response.ok;
       responseContent = await response.json();
       query = responseContent.query;
-
     } else {
       const { domain, pipeline: subpipeline } = filterOutDomain(dereferencedPipeline);
       const queryWithVariables = mongoTranslator.translate(subpipeline);
@@ -273,7 +279,10 @@ class PandasService {
     // This does not modify the pipeline, but checks if all steps are supported
     pandasTranslator.translate(dereferencedPipeline);
 
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
+      dereferencedPipeline,
+      VARIABLES,
+    );
 
     const url = new URL(window.location.origin + '/pandas');
     url.searchParams.set('limit', limit);
@@ -287,8 +296,8 @@ class PandasService {
       },
       parameters: {
         limit: limit,
-        offset: offset
-      }
+        offset: offset,
+      },
     });
     const result = await response.json();
 
@@ -307,7 +316,7 @@ class PandasService {
       if (typeof result === 'string') {
         error.message = result;
       } else {
-        error = {...result, ...error};
+        error = { ...result, ...error };
       }
       return {
         error: [error],
@@ -327,7 +336,10 @@ class SnowflakeService {
 
     // This does not modify the pipeline, but checks if all steps are supported
     snowflakeTranslator.translate(dereferencedPipeline);
-    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(dereferencedPipeline, VARIABLES);
+    const dereferencedPipelineWithoutVariables = exampleInterpolateFunc(
+      dereferencedPipeline,
+      VARIABLES,
+    );
 
     const url = new URL(window.location.origin + '/snowflake');
     url.searchParams.set('limit', limit);
@@ -341,8 +353,8 @@ class SnowflakeService {
       },
       parameters: {
         limit: limit,
-        offset: offset
-      }
+        offset: offset,
+      },
     });
     const result = await response.json();
 
@@ -395,7 +407,7 @@ async function buildVueApp() {
       };
     },
     created: async function() {
-      registerModule(this.$store, {
+      const registrationOpts = {
         currentPipelineName: 'pipeline',
         pipelines: {
           // Identifiers for Snowflake (SQL) should be uppercase (no support for other casing for now)
@@ -413,8 +425,12 @@ async function buildVueApp() {
               },
             },
             {
-              name:'top', groups:[], rank_on:'Transaction_date', sort:'asc', limit:100
-            }
+              name: 'top',
+              groups: [],
+              rank_on: 'Transaction_date',
+              sort: 'asc',
+              limit: 100,
+            },
           ],
           pipelineAmex: [
             {
@@ -466,7 +482,7 @@ async function buildVueApp() {
             {
               name: 'filter',
               condition: {
-                column: TRANSLATOR == 'snowflake' ? 'DAY' :'day',
+                column: TRANSLATOR == 'snowflake' ? 'DAY' : 'day',
                 operator: 'from',
                 value: new Date('2021-11-19T00:00:00Z'),
               },
@@ -480,9 +496,61 @@ async function buildVueApp() {
         variables: VARIABLES,
 
         featureFlags: {
-          RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable'
-        }
-      });
+          RELATIVE_DATE_FILTERING: args.get('RELATIVE_DATE_FILTERING') || 'disable',
+        },
+      };
+      if (TRANSLATOR === 'pandas') {
+        registrationOpts.pipelines.pipelineDepartements = [
+          {
+            domain: 'departements-france',
+            name: 'domain',
+          },
+          {
+            name: 'join',
+            right_pipeline: 'departements-regions-france',
+            type: 'left',
+            on: [['dep', 'code_departement']],
+          },
+          // NOTE: uncomment this once dissolve is implemented
+          // {
+          //   name: 'text',
+          //   new_column: 'whitespace',
+          //   text: ' ',
+          // },
+          // {
+          //   name: 'concatenate',
+          //   columns: ['nom_departement', 'whitespace'],
+          //   separator: ',',
+          //   new_column_name: 'departement_nom',
+          // },
+          // {
+          //   name: 'select',
+          //   columns: [
+          //     'code_departement',
+          //     'departement_nom',
+          //     'code_region',
+          //     'nom_region',
+          //     'geometry',
+          //   ],
+          // },
+          // {
+          //   name: 'dissolve',
+          //   groups: ['code_region'],
+          //   include_nulls: false,
+          //   aggregations: [
+          //     {
+          //       column: 'departement_nom',
+          //       agg_function: 'sum',
+          //     },
+          //     {
+          //       column: 'nom_region',
+          //       agg_function: 'first',
+          //     },
+          //   ],
+          // },
+        ];
+      }
+      registerModule(this.$store, registrationOpts);
       // Add variables
       store.commit(VQBnamespace('setAvailableVariables'), {
         availableVariables: AVAILABLE_VARIABLES,
@@ -531,18 +599,18 @@ async function buildVueApp() {
         this.isCodeOpened = true;
       },
       isSelectedTranslator: function(translator) {
-        return TRANSLATOR === translator
+        return TRANSLATOR === translator;
       },
     },
   });
 
-  updateLastExecutedQuery = (query) => {
+  updateLastExecutedQuery = query => {
     if (query == null || typeof query === 'string') {
       vm.lastExecutedQuery = query;
     } else {
       vm.lastExecutedQuery = JSON.stringify(query, null, 2);
     }
-  }
+  };
 }
 
 document.addEventListener('DOMContentLoaded', () => buildVueApp());
