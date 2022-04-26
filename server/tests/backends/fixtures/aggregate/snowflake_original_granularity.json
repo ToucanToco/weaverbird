@@ -2,7 +2,6 @@
   "exclude": [
     "pandas",
     "mysql",
-    "postgres",
     "mongo"
   ],
   "step": {
