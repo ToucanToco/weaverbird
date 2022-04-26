@@ -12,6 +12,7 @@ from .cumsum import CumSumStep, CumSumStepWithVariable
 from .customsql import CustomSqlStep, CustomSqlStepWithVariables
 from .date_extract import DateExtractStep, DateExtractStepWithVariable
 from .delete import DeleteStep
+from .dissolve import DissolveStep
 from .domain import DomainStep
 from .duplicate import DuplicateStep
 from .duration import DurationStep, DurationStepWithVariable

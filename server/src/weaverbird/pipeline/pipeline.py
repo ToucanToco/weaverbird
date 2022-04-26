@@ -24,6 +24,7 @@ from .steps import (
     DateExtractStep,
     DateExtractStepWithVariable,
     DeleteStep,
+    DissolveStep,
     DomainStep,
     DuplicateStep,
     DurationStep,
@@ -123,6 +124,7 @@ PipelineStep = Union[
     UnpivotStep,
     UppercaseStep,
     WaterfallStep,
+    DissolveStep,
 ]
 
 
