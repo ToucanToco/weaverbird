@@ -1,7 +1,6 @@
 {
   "exclude": [
     "mysql",
-    "postgres",
     "snowflake"
   ],
   "step": {
@@ -10,7 +9,7 @@
         "name": "ifthenelse",
         "if": {
           "column": "NAME",
-          "value": ".oo",
+          "value": ".(oo|ika)",
           "operator": "matches"
         },
         "newColumn": "COND",
@@ -47,6 +46,11 @@
         "NAME": "bar",
         "AGE": 20,
         "SCORE": 200
+      },
+      {
+        "NAME": "pika",
+        "AGE": 13,
+        "SCORE": 1000
       }
     ]
   },
@@ -84,6 +88,12 @@
         "AGE": 20,
         "SCORE": 200,
         "COND": "glinglin"
+      },
+      {
+        "NAME": "pika",
+        "AGE": 13,
+        "SCORE": 1000,
+        "COND": "tintin"
       }
     ]
   }

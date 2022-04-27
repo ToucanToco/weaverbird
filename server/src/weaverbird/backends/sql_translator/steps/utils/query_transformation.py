@@ -33,7 +33,12 @@ SQL_NULLITY_OPERATORS = {
     'notnull': 'IS NOT NULL',
 }
 
-SQL_MATCH_OPERATORS = {
+POSTGRESQL_MATCH_OPERATORS = {
+    'matches': 'SIMILAR TO',
+    'notmatches': 'NOT SIMILAR TO',
+}
+
+SNOWFLAKE_SQL_MATCH_OPERATORS = {
     'matches': 'RLIKE',
     'notmatches': 'NOT RLIKE',
 }
@@ -74,7 +79,20 @@ def apply_condition(condition: Condition, query: str, *, is_postgres: bool = Fal
         # just to escape single quotes from crashing the snowflakeSQL query
         if type(condition.value) == str:
             condition.value = sanitize_input(condition.value)
-        query += f"{condition.column} {SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
+        if is_postgres:
+            # Quoting https://www.postgresql.org/docs/current/functions-matching.html#FUNCTIONS-SIMILARTO-REGEXP:
+            #     SIMILAR TO uses _ and % as wildcard characters denoting any single character and any string,
+            #     respectively (these are comparable to . and .* in POSIX regular expressions).
+            #     In addition to these facilities borrowed from LIKE, SIMILAR TO supports pattern-matching metacharacters
+            #     borrowed from POSIX regular expressions.
+            # Since the pattern `condition.value` is a POSIX regular expression,
+            # we only need to replace the `.` and `.*` but can keep all the rest!
+            pattern = condition.value.replace('.*', '%').replace('.', '_')
+            query += (
+                f"{condition.column} {POSTGRESQL_MATCH_OPERATORS[condition.operator]} '{pattern}'"
+            )
+        else:
+            query += f"{condition.column} {SNOWFLAKE_SQL_MATCH_OPERATORS[condition.operator]} '{condition.value}'"
     elif isinstance(condition, InclusionCondition):
         values_tuple_str = '(' + ', '.join([f'\'{v}\'' for v in condition.value]) + ')'
         query += (
