@@ -86,6 +86,7 @@ export const ACTION_CATEGORIES: ActionCategories = {
     { name: 'append', label: 'Append datasets' },
     { name: 'join', label: 'Join datasets' },
   ],
+  geo: [{ name: 'dissolve', label: 'Geographic dissolve' }],
 };
 
 export const SEARCH_ACTION: groupActions[] = [
@@ -120,6 +121,10 @@ export const SEARCH_ACTION: groupActions[] = [
   {
     type: 'combine',
     actions: [...ACTION_CATEGORIES.combine],
+  },
+  {
+    type: 'geo',
+    actions: [...ACTION_CATEGORIES.geo],
   },
   {
     type: 'Others actions',
@@ -182,6 +187,13 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
     enable: true,
     icon: 'object-group',
     label: 'Combine',
+  },
+  {
+    category: 'geo',
+    enable: true,
+    // FIXME: couldn't find a working map icon
+    icon: 'draw-polygon',
+    label: 'Geo',
   },
 ];
 

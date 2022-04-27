@@ -145,6 +145,9 @@ export class BaseTranslator implements StepMatcher<OutputStep> {
   delete(step: Readonly<S.DeleteStep>) {}
 
   @unsupported
+  dissolve(step: Readonly<S.DissolveStep>) {}
+
+  @unsupported
   domain(step: Readonly<S.DomainStep>) {}
 
   @unsupported

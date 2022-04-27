@@ -253,6 +253,10 @@ export class PipelineInterpolator implements StepMatcher<S.PipelineStep> {
     return { ...step };
   }
 
+  dissolve(step: Readonly<S.DissolveStep>) {
+    return { ...step };
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return { ...step };
   }

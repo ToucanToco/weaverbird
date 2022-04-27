@@ -11,6 +11,7 @@ import customSchema from './custom';
 import customSqlSchema from './customsql';
 import dateextractSchema from './dateextract';
 import deleteSchema from './delete';
+import dissolveSchema from './dissolve';
 import domainSchema from './domain';
 import duplicateSchema from './duplicate';
 import durationSchema from './duration';
@@ -60,6 +61,7 @@ const factories: { [stepname: string]: buildSchemaType } = {
   customsql: customSqlSchema,
   dateextract: dateextractSchema,
   delete: deleteSchema,
+  dissolve: dissolveSchema,
   domain: domainSchema,
   duplicate: duplicateSchema,
   duration: durationSchema,

@@ -58,6 +58,10 @@ export class PandasTranslator extends BaseTranslator {
     return step;
   }
 
+  dissolve(step: Readonly<S.DissolveStep>) {
+    return step;
+  }
+
   domain(step: Readonly<S.DomainStep>) {
     return step;
   }

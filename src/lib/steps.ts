@@ -211,6 +211,21 @@ export type DeleteStep = {
   columns: string[];
 };
 
+export type DissolveStep = {
+  name: 'dissolve';
+  groups: string[];
+  agg_function:
+    | 'sum'
+    | 'avg'
+    | 'count'
+    | 'count distinct'
+    | 'count distinct with null values'
+    | 'min'
+    | 'max'
+    | 'first'
+    | 'last';
+};
+
 export type Statistics = 'count' | 'max' | 'min' | 'average' | 'variance' | 'standard deviation';
 export type Quantile = {
   label?: string;
@@ -503,6 +518,7 @@ export type PipelineStep =
   | CustomSqlStep
   | DateExtractStep
   | DeleteStep
+  | DissolveStep
   | DuplicateColumnStep
   | DomainStep
   | EvolutionStep
