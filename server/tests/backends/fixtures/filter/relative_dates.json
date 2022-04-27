@@ -1,8 +1,7 @@
 {
   "description": "Dates from/until can be specified relative to another date.",
   "exclude": [
-    "mysql",
-    "postgres"
+    "mysql"
   ],
   "step": {
     "pipeline": [

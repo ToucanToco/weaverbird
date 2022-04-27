@@ -16,7 +16,7 @@ from weaverbird.pipeline.steps import IfthenelseStep
 from weaverbird.pipeline.steps.ifthenelse import IfThenElse
 
 
-def build_conditional_expression(step: IfthenelseStep):
+def build_conditional_expression(step: IfthenelseStep, *, is_postgres: bool = False):
     built_string = ''
     current_nested_step = step
 
@@ -24,13 +24,13 @@ def build_conditional_expression(step: IfthenelseStep):
         current_nested_step.else_value, IfThenElse
     ):
         built_string += (
-            f"WHEN {apply_condition(current_nested_step.condition, '')} "
+            f"WHEN {apply_condition(current_nested_step.condition, '', is_postgres=is_postgres)} "
             f"THEN {current_nested_step.then} "
         )
         current_nested_step = current_nested_step.else_value
 
     built_string += (
-        f"WHEN {apply_condition(current_nested_step.condition, '').replace(',)', ')')} "
+        f"WHEN {apply_condition(current_nested_step.condition, '', is_postgres=is_postgres).replace(',)', ')')} "
         f"THEN {current_nested_step.then} ELSE {current_nested_step.else_value} "
         f"END"
     )
@@ -65,7 +65,7 @@ def translate_ifthenelse(
     new_query = SQLQuery(
         query_name=query_name,
         transformed_query=f"""{query.transformed_query}, {query_name} AS"""
-        f""" (SELECT {completed_fields}, CASE {build_conditional_expression(step)} AS {step.new_column.upper()}"""
+        f""" (SELECT {completed_fields}, CASE {build_conditional_expression(step, is_postgres=sql_dialect == 'postgres')} AS {step.new_column.upper()}"""
         f""" FROM {query.query_name})""",
     )
 

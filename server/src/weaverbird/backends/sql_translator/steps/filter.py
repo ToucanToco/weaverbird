@@ -30,12 +30,15 @@ def translate_filter(
         columns_filter=[]
     )
 
+    step_query = apply_condition(
+        step.condition,
+        f'SELECT {completed_fields} FROM {query.query_name} WHERE ',
+        is_postgres=sql_dialect == 'postgres',
+    )
+
     new_query = SQLQuery(
         query_name=query_name,
-        transformed_query=f"""{query.transformed_query}, {query_name} AS ({
-        apply_condition(
-            step.condition,
-            f'''SELECT {completed_fields} FROM {query.query_name} WHERE ''')})""",
+        transformed_query=f'{query.transformed_query}, {query_name} AS ({step_query})',
         selection_query=build_selection_query(
             query.metadata_manager.retrieve_query_metadata_columns(), query_name
         ),

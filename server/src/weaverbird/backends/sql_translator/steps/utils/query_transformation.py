@@ -44,16 +44,22 @@ SQL_INCLUSION_OPERATORS = {
 }
 
 
-def apply_condition(condition: Condition, query: str) -> str:
+def apply_condition(condition: Condition, query: str, *, is_postgres: bool = False) -> str:
     if isinstance(condition, ComparisonCondition):
         try:
             if isinstance(condition.value, datetime.datetime) or isinstance(
                 condition.value, datetime.date
             ):
-                query += (
-                    f'to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
-                    f'to_timestamp(\'{condition.value.isoformat()}\')'
-                )
+                if is_postgres:
+                    query += (
+                        f"CAST({condition.column} AS TIMESTAMP) {SQL_COMPARISON_OPERATORS[condition.operator]} "
+                        f"CAST('{condition.value.isoformat()}' AS TIMESTAMP)"
+                    )
+                else:
+                    query += (
+                        f'to_timestamp({condition.column}) {SQL_COMPARISON_OPERATORS[condition.operator]} '
+                        f'to_timestamp(\'{condition.value.isoformat()}\')'
+                    )
             else:
                 float(condition.value)
                 query += f'{condition.column} {SQL_COMPARISON_OPERATORS[condition.operator]} {condition.value}'
@@ -85,12 +91,25 @@ def apply_condition(condition: Condition, query: str) -> str:
                 sign = 1
             else:
                 raise NotImplementedError
-            value_query_part = f"dateadd({ value.duration }, { sign * value.quantity }, '{ value.date.isoformat() }'::DATE)"
+
+            if is_postgres:
+                # e.g. CAST('2021-11-01T12:34:56' AS DATE) + (1 * INTERVAL '1 month')
+                value_query_part = f"CAST('{value.date.isoformat()}' AS DATE) + ({sign * value.quantity} * INTERVAL '1 {value.duration}')"
+            else:
+                # e.g. dateadd(month, 1, '2021-11-01T12:34:56'::DATE)
+                value_query_part = f"dateadd({ value.duration }, { sign * value.quantity }, '{ value.date.isoformat() }'::DATE)"
         else:
-            value_query_part = f"to_timestamp('{ value.isoformat() }')"
+            if is_postgres:
+                value_query_part = f"CAST('{ value.isoformat() }' AS TIMESTAMP)"
+            else:
+                value_query_part = f"to_timestamp('{ value.isoformat() }')"
 
         # Remove time info from the column to filter on
-        column = f'to_timestamp({ condition.column })'
+        if is_postgres:
+            column = f'CAST({ condition.column } AS TIMESTAMP)'
+        else:
+            column = f'to_timestamp({ condition.column })'
+
         column_without_time = f"DATE_TRUNC('DAY', { column })"
         # Do the same with the value to compare it to
         value_without_time = f"DATE_TRUNC('DAY', { value_query_part })"
@@ -98,13 +117,13 @@ def apply_condition(condition: Condition, query: str) -> str:
         query += f'{ column_without_time } { SQL_COMPARISON_OPERATORS[condition.operator] } { value_without_time }'
 
     elif isinstance(condition, ConditionComboAnd):
-        query = apply_condition(condition.and_[0], query)
+        query = apply_condition(condition.and_[0], query, is_postgres=is_postgres)
         for c in condition.and_[1:]:
-            query = apply_condition(c, f'{query} AND ')
+            query = apply_condition(c, f'{query} AND ', is_postgres=is_postgres)
     elif isinstance(condition, ConditionComboOr):
-        query = apply_condition(condition.or_[0], query)
+        query = apply_condition(condition.or_[0], query, is_postgres=is_postgres)
         for c in condition.or_[1:]:
-            query = apply_condition(c, f'{query} OR ')
+            query = apply_condition(c, f'{query} OR ', is_postgres=is_postgres)
     else:
         raise NotImplementedError('Only comparison conditions are implemented')
     return query
