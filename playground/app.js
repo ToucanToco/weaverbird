@@ -502,8 +502,50 @@ async function buildVueApp() {
       if (TRANSLATOR === 'pandas') {
         registrationOpts.pipelines.pipelineDepartements = [
           {
-            name: 'domain',
             domain: 'departements-france',
+            name: 'domain',
+          },
+          {
+            name: 'join',
+            right_pipeline: 'departements-regions-france',
+            type: 'left',
+            on: [['dep', 'code_departement']],
+          },
+          {
+            name: 'text',
+            new_column: 'whitespace',
+            text: ' ',
+          },
+          {
+            name: 'concatenate',
+            columns: ['nom_departement', 'whitespace'],
+            separator: ',',
+            new_column_name: 'departement_nom',
+          },
+          {
+            name: 'select',
+            columns: [
+              'code_departement',
+              'departement_nom',
+              'code_region',
+              'nom_region',
+              'geometry',
+            ],
+          },
+          {
+            name: 'dissolve',
+            groups: ['code_region'],
+            include_nulls: false,
+            aggregations: [
+              {
+                column: 'departement_nom',
+                agg_function: 'sum',
+              },
+              {
+                column: 'nom_region',
+                agg_function: 'first',
+              },
+            ],
           },
         ];
       }
