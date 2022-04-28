@@ -17,22 +17,23 @@
       :available-variables="availableVariables"
       :variable-delimiters="variableDelimiters"
     />
-    <AutocompleteWidget
-      class="orderInput"
-      name="Aggregation method:"
-      v-model="editedStep.agg_function"
-      :options="[
-        'sum',
-        'avg',
-        'count',
-        'count distinct',
-        'count distinct with null values',
-        'min',
-        'max',
-        'first',
-        'last',
-      ]"
-      data-path=".agg_function"
+    <ListWidget
+      v-model="editedStep.aggregations"
+      addFieldName="Add aggregation"
+      class="toremove"
+      name="And aggregate..."
+      :defaultItem="defaultAggregation"
+      :widget="widgetAggregation"
+      :automatic-new-field="false"
+      data-path=".aggregations"
+      :errors="errors"
+      :available-variables="availableVariables"
+      :variable-delimiters="variableDelimiters"
+    />
+    <CheckboxWidget
+      class="keepNullsCheckbox"
+      label="Keep original granularity and add aggregation(s) in new column(s)"
+      v-model="editedStep.include_nulls"
     />
     <StepFormButtonbar />
   </div>
@@ -41,18 +42,21 @@
 import Component from 'vue-class-component';
 import { Prop } from 'vue-property-decorator';
 
-import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
-import { PipelineStepName, DissolveStep } from '@/lib/steps';
+import CheckboxWidget from '@/components/stepforms/widgets/Checkbox.vue';
+import { DissolveStep, PipelineStepName } from '@/lib/steps';
 import { VariableDelimiters, VariablesBucket } from '@/lib/variables';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
+import DissolveAggregationWidget from './widgets/DissolveAggregation.vue';
+import ListWidget from './widgets/List.vue';
 import MultiselectWidget from './widgets/Multiselect.vue';
 
 @Component({
   name: 'dissolve-step-form',
   components: {
-    AutocompleteWidget,
+    CheckboxWidget,
+    ListWidget,
     MultiselectWidget,
   },
 })
@@ -65,10 +69,15 @@ export default class RankStepForm extends BaseStepForm<DissolveStep> {
 
   @Prop({
     type: Object,
-    default: () => ({ name: 'dissolve', groups: [], agg_function: 'sum' }),
+    default: () => ({ name: 'dissolve', groups: [], include_nulls: false, aggregations: [] }),
   })
   initialStepValue!: DissolveStep;
 
   readonly title: string = 'Dissolve';
+  widgetAggregation = DissolveAggregationWidget;
+
+  get defaultAggregation() {
+    return { column: '', agg_function: '' };
+  }
 }
 </script>

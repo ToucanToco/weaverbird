@@ -191,8 +191,7 @@ export const CATEGORY_BUTTONS: ButtonDef[] = [
   {
     category: 'geo',
     enable: true,
-    // FIXME: couldn't find a working map icon
-    icon: 'draw-polygon',
+    icon: 'map-marked-alt',
     label: 'Geo',
   },
 ];

@@ -203,7 +203,7 @@ class StepLabeller implements StepMatcher<string> {
   }
 
   dissolve(step: Readonly<S.DissolveStep>) {
-    return `Dissolves geographical data through ${step.agg_function} grouped by ${formatMulticol(step.groups)}`;
+    return `Dissolves geographical data grouped by ${formatMulticol(step.groups)}`;
   }
 
   domain(step: Readonly<S.DomainStep>) {

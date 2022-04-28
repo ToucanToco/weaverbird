@@ -211,19 +211,16 @@ export type DeleteStep = {
   columns: string[];
 };
 
+export type DissolveAggregation = {
+  agg_function: 'sum' | 'avg' | 'count' | 'count distinct' | 'min' | 'max' | 'first' | 'last';
+  column: string;
+};
+
 export type DissolveStep = {
   name: 'dissolve';
   groups: string[];
-  agg_function:
-    | 'sum'
-    | 'avg'
-    | 'count'
-    | 'count distinct'
-    | 'count distinct with null values'
-    | 'min'
-    | 'max'
-    | 'first'
-    | 'last';
+  aggregations: DissolveAggregation[];
+  include_nulls?: boolean;
 };
 
 export type Statistics = 'count' | 'max' | 'min' | 'average' | 'variance' | 'standard deviation';

@@ -19,21 +19,28 @@ export default {
         placeholder: 'Add columns',
       },
     },
-    agg_function: {
-      type: 'string',
-      enum: [
-        'sum',
-        'avg',
-        'count',
-        'count distinct',
-        'count distinct with null values',
-        'min',
-        'max',
-        'first',
-        'last',
-      ],
+    aggregations: {
+      type: 'array',
+      items: {
+        type: 'object',
+        minLength: 1,
+        properties: {
+          column: { type: 'string' },
+          agg_function: {
+            type: 'string',
+            enum: ['sum', 'avg', 'count', 'count distinct', 'min', 'max', 'first', 'last'],
+          },
+        },
+        required: ['column', 'agg_function'],
+        additionalProperties: false,
+        title: 'Aggregations',
+        description: 'The aggregations to execute',
+      },
+    },
+    include_nulls: {
+      type: 'boolean',
     },
   },
-  required: ['name', 'groups', 'agg_function'],
+  required: ['name', 'groups', 'aggregations'],
   additionalProperties: false,
 };
