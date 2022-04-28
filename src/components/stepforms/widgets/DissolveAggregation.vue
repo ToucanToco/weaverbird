@@ -43,7 +43,7 @@ export default class DissolveAggregationWidget extends Vue {
   @Prop({ type: String, default: null })
   dataPath!: string;
 
-  @Prop({ type: Object, default: () => ({ column: '', agg_function: 'sum'}) })
+  @Prop({ type: Object, default: () => ({ column: '', agg_function: 'sum' }) })
   value!: DissolveAggregation;
 
   @Prop({ type: Array, default: () => [] })
