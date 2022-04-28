@@ -12,7 +12,10 @@
                 "groups": [
                     "country"
                 ],
-                "agg_function": "avg"
+                "aggregations": [{
+                    "column": "inhabitants",
+                    "agg_function": "avg"
+                }]
             }
         ]
     },

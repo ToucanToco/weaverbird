@@ -12,7 +12,17 @@
                 "groups": [
                     "country"
                 ],
-                "agg_function": "count distinct including empty"
+                "aggregations": [
+                    {
+                        "column": "inhabitants",
+                        "agg_function": "avg"
+                    },
+                    {
+                        "column": "region",
+                        "agg_function": "count distinct"
+                    }
+                ],
+                "include_nulls": true
             }
         ]
     },
@@ -76,7 +86,7 @@
                 {
                     "type": "Feature",
                     "properties": {
-                        "country": null,
+                        "country": "france",
                         "inhabitants": 500,
                         "region": "monaco"
                     },
@@ -137,24 +147,52 @@
                 "type": "Feature",
                 "properties": {
                     "country": "france",
-                    "inhabitants": 1,
-                    "region": 1
+                    "inhabitants": 2750,
+                    "region": 2
                 },
                 "geometry": {
-                    "type": "LineString",
-                    "coordinates": [
-                        [
-                            -0.230712890625,
-                            42.88401467044253
-                        ],
-                        [
-                            -0.274658203125,
-                            43.92163712834673
-                        ],
-                        [
-                            1.549072265625,
-                            45.034714778688624
-                        ]
+                    "type": "GeometryCollection",
+                    "geometries": [
+                        {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    -0.230712890625,
+                                    42.88401467044253
+                                ],
+                                [
+                                    -0.274658203125,
+                                    43.92163712834673
+                                ],
+                                [
+                                    1.549072265625,
+                                    45.034714778688624
+                                ]
+                            ]
+                        },
+                        {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        -5.306396484375,
+                                        46.837649560937464
+                                    ],
+                                    [
+                                        -0.670166015625,
+                                        46.837649560937464
+                                    ],
+                                    [
+                                        -0.670166015625,
+                                        49.095452162534826
+                                    ],
+                                    [
+                                        -5.306396484375,
+                                        46.837649560937464
+                                    ]
+                                ]
+                            ]
+                        }
                     ]
                 }
             },
@@ -162,7 +200,7 @@
                 "type": "Feature",
                 "properties": {
                     "country": "spain",
-                    "inhabitants": 1,
+                    "inhabitants": 15000,
                     "region": 1
                 },
                 "geometry": {
@@ -193,50 +231,28 @@
                 "type": "Feature",
                 "properties": {
                     "country": null,
-                    "inhabitants": 2,
-                    "region": 2
+                    "inhabitants": 300,
+                    "region": 1
                 },
                 "geometry": {
-                    "type": "MultiPolygon",
+                    "type": "Polygon",
                     "coordinates": [
                         [
                             [
-                                [
-                                    46.464646,
-                                    -0.1337
-                                ],
-                                [
-                                    -0.1337,
-                                    42.424242
-                                ],
-                                [
-                                    42.424242,
-                                    46.464646
-                                ],
-                                [
-                                    46.464646,
-                                    -0.1337
-                                ]
-                            ]
-                        ],
-                        [
+                                42.424242,
+                                46.464646
+                            ],
                             [
-                                [
-                                    -0.670166015625,
-                                    49.095452162534826
-                                ],
-                                [
-                                    -0.670166015625,
-                                    46.837649560937464
-                                ],
-                                [
-                                    -5.306396484375,
-                                    46.837649560937464
-                                ],
-                                [
-                                    -0.670166015625,
-                                    49.095452162534826
-                                ]
+                                46.464646,
+                                -0.1337
+                            ],
+                            [
+                                -0.1337,
+                                42.424242
+                            ],
+                            [
+                                42.424242,
+                                46.464646
                             ]
                         ]
                     ]

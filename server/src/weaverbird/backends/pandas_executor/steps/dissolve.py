@@ -1,8 +1,10 @@
+from typing import Dict, List
+
 from geopandas import GeoDataFrame
 from pandas import DataFrame
 
 from weaverbird.backends.pandas_executor.types import DomainRetriever, PipelineExecutor
-from weaverbird.pipeline.steps.dissolve import AggregateFn, DissolveStep
+from weaverbird.pipeline.steps.dissolve import Aggregation, DissolveStep
 
 
 class UnsupportedGeoOperation(Exception):
@@ -10,19 +12,19 @@ class UnsupportedGeoOperation(Exception):
         super().__init__(f"Unsupported Geo operation: {msg}")
 
 
-_COUNT_DISCTINCT_INCLUDING_EMPTY = 'count distinct including empty'
-
 _AGG_FUNC_ALIASES = {
     'avg': 'mean',
     'count distinct': 'nunique',
-    _COUNT_DISCTINCT_INCLUDING_EMPTY: 'nunique',
 }
 
 
-def _translate_agg_func(fn: AggregateFn) -> str:
-    if fn in _AGG_FUNC_ALIASES:
-        return _AGG_FUNC_ALIASES[fn]
-    return fn
+def _translate_agg_func(aggregations: List[Aggregation]) -> Dict[str, str]:
+    return {
+        agg.column: _AGG_FUNC_ALIASES[agg.agg_function]
+        if agg.agg_function in _AGG_FUNC_ALIASES
+        else agg.agg_function
+        for agg in aggregations
+    }
 
 
 def execute_dissolve(
@@ -36,8 +38,7 @@ def execute_dissolve(
 
     return df.dissolve(
         by=step.groups,
-        aggfunc=_translate_agg_func(step.agg_function),
+        aggfunc=_translate_agg_func(step.aggregations),
         as_index=False,
-        # If we want to count empty values, we need to keep NAs
-        dropna=step.agg_function != _COUNT_DISCTINCT_INCLUDING_EMPTY,
+        dropna=not step.include_nulls,
     )

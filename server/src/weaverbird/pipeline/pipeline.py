@@ -91,6 +91,7 @@ PipelineStep = Union[
     CustomSqlStep,
     DateExtractStep,
     DeleteStep,
+    DissolveStep,
     DomainStep,
     DuplicateStep,
     DurationStep,
