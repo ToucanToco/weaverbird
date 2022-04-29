@@ -11,6 +11,7 @@ from weaverbird.backends.mongo_translator.steps.filter import translate_filter
 from weaverbird.backends.mongo_translator.steps.formula import translate_formula
 from weaverbird.backends.mongo_translator.steps.ifthenelse import translate_ifthenelse
 from weaverbird.backends.mongo_translator.steps.join import translate_join
+from weaverbird.backends.mongo_translator.steps.lowercase import translate_lowercase
 from weaverbird.backends.mongo_translator.steps.rename import translate_rename
 from weaverbird.backends.mongo_translator.steps.replace import translate_replace
 from weaverbird.backends.mongo_translator.steps.select import translate_select
@@ -35,6 +36,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'formula': translate_formula,
     'ifthenelse': translate_ifthenelse,  # type: ignore
     'join': translate_join,
+    'lowercase': translate_lowercase,
     'rename': translate_rename,
     'replace': translate_replace,
     'select': translate_select,
