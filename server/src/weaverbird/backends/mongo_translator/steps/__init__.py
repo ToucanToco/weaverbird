@@ -13,6 +13,7 @@ from weaverbird.backends.mongo_translator.steps.fromdate import translate_fromda
 from weaverbird.backends.mongo_translator.steps.ifthenelse import translate_ifthenelse
 from weaverbird.backends.mongo_translator.steps.join import translate_join
 from weaverbird.backends.mongo_translator.steps.lowercase import translate_lowercase
+from weaverbird.backends.mongo_translator.steps.pivot import translate_pivot
 from weaverbird.backends.mongo_translator.steps.rename import translate_rename
 from weaverbird.backends.mongo_translator.steps.replace import translate_replace
 from weaverbird.backends.mongo_translator.steps.select import translate_select
@@ -41,6 +42,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'ifthenelse': translate_ifthenelse,  # type: ignore
     'join': translate_join,
     'lowercase': translate_lowercase,
+    'pivot': translate_pivot,
     'rename': translate_rename,
     'replace': translate_replace,
     'select': translate_select,
