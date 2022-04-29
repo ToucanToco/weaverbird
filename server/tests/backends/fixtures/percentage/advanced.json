@@ -1,0 +1,118 @@
+{
+  "exclude": [
+    "snowflake",
+    "mysql",
+    "postgres"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "percentage",
+        "column": "AGE",
+        "group": ["GROUP"],
+        "new_column_name": "AGE_PERCENT"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "GROUP",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "alel",
+        "GROUP": "A",
+        "AGE": 24
+      },
+      {
+        "NAME": "nicholas",
+        "GROUP": "A",
+        "AGE": 33
+      },
+      {
+        "NAME": "zimar",
+        "GROUP": "A",
+        "AGE": 33
+      },
+      {
+        "NAME": "bar",
+        "GROUP": "A",
+        "AGE": 10
+      },
+      {
+        "NAME": "foo",
+        "GROUP": "B",
+        "AGE": 0
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "AGE",
+          "type": "integer"
+        },
+        {
+          "name": "AGE_PERCENT",
+          "type": "number"
+        },
+        {
+          "name": "GROUP",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "alel",
+        "AGE": 24,
+        "GROUP": "A",
+        "AGE_PERCENT": 0.24
+      },
+      {
+        "NAME": "nicholas",
+        "AGE": 33,
+        "GROUP": "A",
+        "AGE_PERCENT": 0.33
+      },
+      {
+        "NAME": "zimar",
+        "AGE": 33,
+        "GROUP": "A",
+        "AGE_PERCENT": 0.33
+      },
+      {
+        "NAME": "bar",
+        "AGE": 10,
+        "GROUP": "A",
+        "AGE_PERCENT": 0.10
+      },
+      {
+        "NAME": "foo",
+        "AGE": 0,
+        "GROUP": "B",
+        "AGE_PERCENT": null
+      }
+    ]
+  }
+}
