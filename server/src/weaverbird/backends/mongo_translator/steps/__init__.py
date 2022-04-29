@@ -9,6 +9,7 @@ from weaverbird.backends.mongo_translator.steps.convert import translate_convert
 from weaverbird.backends.mongo_translator.steps.domain import translate_domain
 from weaverbird.backends.mongo_translator.steps.filter import translate_filter
 from weaverbird.backends.mongo_translator.steps.formula import translate_formula
+from weaverbird.backends.mongo_translator.steps.fromdate import translate_fromdate
 from weaverbird.backends.mongo_translator.steps.ifthenelse import translate_ifthenelse
 from weaverbird.backends.mongo_translator.steps.join import translate_join
 from weaverbird.backends.mongo_translator.steps.lowercase import translate_lowercase
@@ -36,6 +37,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'domain': translate_domain,
     'filter': translate_filter,
     'formula': translate_formula,
+    'fromdate': translate_fromdate,
     'ifthenelse': translate_ifthenelse,  # type: ignore
     'join': translate_join,
     'lowercase': translate_lowercase,
