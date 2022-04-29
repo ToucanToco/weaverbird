@@ -9,6 +9,7 @@
       {
         "name": "percentage",
         "column": "AGE",
+        "group": ["GROUP"],
         "new_column_name": "AGE_PERCENT"
       }
     ]
@@ -23,6 +24,10 @@
         {
           "name": "AGE",
           "type": "integer"
+        },
+        {
+          "name": "GROUP",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -30,23 +35,28 @@
     "data": [
       {
         "NAME": "alel",
-        "AGE": 25
+        "GROUP": "A",
+        "AGE": 24
       },
       {
         "NAME": "nicholas",
+        "GROUP": "A",
         "AGE": 33
       },
       {
         "NAME": "zimar",
+        "GROUP": "A",
         "AGE": 33
       },
       {
         "NAME": "bar",
-        "AGE": 25
+        "GROUP": "A",
+        "AGE": 10
       },
       {
         "NAME": "foo",
-        "AGE": 22
+        "GROUP": "B",
+        "AGE": 0
       }
     ]
   },
@@ -64,6 +74,10 @@
         {
           "name": "AGE_PERCENT",
           "type": "number"
+        },
+        {
+          "name": "GROUP",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
@@ -71,28 +85,33 @@
     "data": [
       {
         "NAME": "alel",
-        "AGE": 25,
-        "AGE_PERCENT": 0.181159
+        "AGE": 24,
+        "GROUP": "A",
+        "AGE_PERCENT": 0.24
       },
       {
         "NAME": "nicholas",
         "AGE": 33,
-        "AGE_PERCENT": 0.23913
+        "GROUP": "A",
+        "AGE_PERCENT": 0.33
       },
       {
         "NAME": "zimar",
         "AGE": 33,
-        "AGE_PERCENT": 0.23913
+        "GROUP": "A",
+        "AGE_PERCENT": 0.33
       },
       {
         "NAME": "bar",
-        "AGE": 25,
-        "AGE_PERCENT": 0.181159
+        "AGE": 10,
+        "GROUP": "A",
+        "AGE_PERCENT": 0.10
       },
       {
         "NAME": "foo",
-        "AGE": 22,
-        "AGE_PERCENT": 0.15942
+        "AGE": 0,
+        "GROUP": "B",
+        "AGE_PERCENT": null
       }
     ]
   }
