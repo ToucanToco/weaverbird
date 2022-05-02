@@ -1,5 +1,6 @@
 from typing import Any, Callable, Dict
 
+from weaverbird.backends.mongo_translator.steps.addmissingdates import translate_addmissingdates
 from weaverbird.backends.mongo_translator.steps.aggregate import translate_aggregate
 from weaverbird.backends.mongo_translator.steps.append import translate_append
 from weaverbird.backends.mongo_translator.steps.argmax import translate_argmax
@@ -35,6 +36,7 @@ from weaverbird.backends.mongo_translator.steps.uppercase import translate_upper
 # each of this function take a particular step as input
 # so it is not possible to use `Dict[str, Callable[[BaseStep], list]]
 mongo_step_translator: Dict[str, Callable[[Any], list]] = {
+    'addmissingdates': translate_addmissingdates,
     'aggregate': translate_aggregate,
     'append': translate_append,
     'argmax': translate_argmax,
