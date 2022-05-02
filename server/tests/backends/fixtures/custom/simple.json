@@ -2,7 +2,8 @@
     "exclude": [
         "snowflake",
         "postgres",
-        "mysql"
+        "mysql",
+        "pandas"
     ],
     "step": {
         "name": "custom",
