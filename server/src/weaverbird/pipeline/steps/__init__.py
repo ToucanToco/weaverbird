@@ -9,6 +9,7 @@ from .comparetext import CompareTextStep, CompareTextStepWithVariables
 from .concatenate import ConcatenateStep, ConcatenateStepWithVariable
 from .convert import ConvertStep
 from .cumsum import CumSumStep, CumSumStepWithVariable
+from .custom import CustomStep
 from .customsql import CustomSqlStep, CustomSqlStepWithVariables
 from .date_extract import DateExtractStep, DateExtractStepWithVariable
 from .delete import DeleteStep
