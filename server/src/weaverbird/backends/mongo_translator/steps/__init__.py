@@ -19,6 +19,7 @@ from weaverbird.backends.mongo_translator.steps.rename import translate_rename
 from weaverbird.backends.mongo_translator.steps.replace import translate_replace
 from weaverbird.backends.mongo_translator.steps.select import translate_select
 from weaverbird.backends.mongo_translator.steps.sort import translate_sort
+from weaverbird.backends.mongo_translator.steps.substring import translate_substring
 from weaverbird.backends.mongo_translator.steps.text import translate_text
 from weaverbird.backends.mongo_translator.steps.todate import translate_todate
 from weaverbird.backends.mongo_translator.steps.top import translate_top
@@ -49,6 +50,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'replace': translate_replace,
     'select': translate_select,
     'sort': translate_sort,
+    'substring': translate_substring,
     'text': translate_text,
     'todate': translate_todate,
     'top': translate_top,
