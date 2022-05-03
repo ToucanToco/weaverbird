@@ -14,57 +14,57 @@ def combinations(iterable: list) -> list:
     )
 
 
-def columnMap(s: List[str]) -> Dict[str, str]:
+def column_map(s: List[str]) -> Dict[str, str]:
     return {e: f'${e}' for e in s}
 
 
 def translate_totals(step: TotalsStep) -> List[MongoStep]:
     facet: Dict[str, List[MongoStep]] = {}
     groups: List[str] = step.groups or []
-    addFields: MongoStep = {}
+    add_fields: MongoStep = {}
     project: MongoStep = {'_id': 0}  # ensures $project stage will never be empty
     # list of columns to combine
-    toCombine: List[str] = [c.total_column for c in step.total_dimensions]
+    to_combine: List[str] = [c.total_column for c in step.total_dimensions]
     # get combinations, remove last combo (most granular combination of columns
     # so not useful to compute total rows) and add an empty tuple (to compute the grand total)
-    combos: List[Tuple] = combinations(toCombine)[:-1]
+    combos: List[Tuple] = combinations(to_combine)[:-1]
     combos.append(tuple())
 
-    for aggfStep in step.aggregations:
-        for i in range(len(aggfStep.columns)):
-            addFields[aggfStep.new_columns[i]] = f'${aggfStep.columns[i]}'
-            if aggfStep.new_columns[i] != aggfStep.columns[i]:
-                project[aggfStep.columns[i]] = 0
+    for agg_step in step.aggregations:
+        for i in range(len(agg_step.columns)):
+            add_fields[agg_step.new_columns[i]] = f'${agg_step.columns[i]}'
+            if agg_step.new_columns[i] != agg_step.columns[i]:
+                project[agg_step.columns[i]] = 0
 
-    facet['originalData'] = [{'$addFields': addFields}, {'$project': project}]
+    facet['originalData'] = [{'$addFields': add_fields}, {'$project': project}]
 
     for i in range(len(combos)):
         comb = combos[i]
         # List of columns that that will be used to group the aggregations computation
         # i.e. we will compute total rows for dimensions not included in this group id
-        id = columnMap(list(comb) + list(groups))
+        id = column_map(list(comb) + list(groups))
         aggs: Dict[str, dict] = {}
         # get columns not in aggregation, i.e. columns that will hold the total rows labels
-        totalColumns: List[str] = [e for e in toCombine if e not in comb]
-        countDistinctAddFields = {}
+        total_columns: List[str] = [e for e in to_combine if e not in comb]
+        count_distinct_add_fields = {}
 
-        for aggfStep in step.aggregations:
-            for j in range(len(aggfStep.columns)):
-                valueCol = aggfStep.columns[j]
-                aggregatedCol = aggfStep.new_columns[j]
-                aggFunc = aggfStep.agg_function
-                if aggFunc == 'count':
-                    aggs[aggregatedCol] = {'$sum': 1}
-                elif aggFunc == 'count distinct':
+        for agg_step in step.aggregations:
+            for j in range(len(agg_step.columns)):
+                value_col = agg_step.columns[j]
+                aggregated_col = agg_step.new_columns[j]
+                agg_func = agg_step.agg_function
+                if agg_func == 'count':
+                    aggs[aggregated_col] = {'$sum': 1}
+                elif agg_func == 'count distinct':
                     # build a set of unique values
-                    aggs[aggregatedCol] = {'$addToSet': f'${valueCol}'}
+                    aggs[aggregated_col] = {'$addToSet': f'${value_col}'}
                     # count the number of items in the set
-                    countDistinctAddFields[aggregatedCol] = {'$size': f'${aggregatedCol}'}
+                    count_distinct_add_fields[aggregated_col] = {'$size': f'${aggregated_col}'}
                 else:
-                    aggs[aggregatedCol] = {f'${aggFunc}': f'${valueCol}'}
+                    aggs[aggregated_col] = {f'${agg_func}': f'${value_col}'}
 
-        addFieldsToAddToPipeline = (
-            [{'$addFields': countDistinctAddFields}] if countDistinctAddFields else []
+        add_fields_to_add_to_pipeline = (
+            [{'$addFields': count_distinct_add_fields}] if count_distinct_add_fields else []
         )
 
         facet[f'combo_{i}'] = [
@@ -74,7 +74,7 @@ def translate_totals(step: TotalsStep) -> List[MongoStep]:
                     **aggs,
                 },
             },
-            *addFieldsToAddToPipeline,
+            *add_fields_to_add_to_pipeline,
             {
                 '$project': {
                     '_id': 0,
@@ -86,7 +86,7 @@ def translate_totals(step: TotalsStep) -> List[MongoStep]:
                     **{
                         dimension.total_column: dimension.total_rows_label
                         for dimension in step.total_dimensions
-                        if dimension.total_column in totalColumns
+                        if dimension.total_column in total_columns
                     },
                 },
             },
