@@ -4,52 +4,52 @@ from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import RollupStep
 
 
-def columnMap(s: List[str]) -> Dict[str, str]:
+def column_map(s: List[str]) -> Dict[str, str]:
     return {e: f'${e}' for e in s}
 
 
 def translate_rollup(step: RollupStep) -> List[MongoStep]:
     facet: Dict[str, List[MongoStep]] = {}
-    labelCol = step.label_col or 'label'
-    levelCol = step.level_col or 'level'
-    parentLabelCol = step.parent_label_col or 'parent'
-    addFields = {}
+    label_col = step.label_col or 'label'
+    level_col = step.level_col or 'level'
+    parent_label_col = step.parent_label_col or 'parent'
+    add_fields = {}
 
     for idx, elem in enumerate(step.hierarchy):
-        id = columnMap(step.hierarchy[: idx + 1] + (step.groupby or []))
+        id = column_map(step.hierarchy[: idx + 1] + (step.groupby or []))
         aggs: Dict[str, dict] = {}
-        for aggfStep in step.aggregations:
-            cols = aggfStep.columns
-            newcols = aggfStep.new_columns
+        for agg_step in step.aggregations:
+            cols = agg_step.columns
+            new_cols = agg_step.new_columns
 
-            if aggfStep.agg_function == 'count':
+            if agg_step.agg_function == 'count':
                 for i in range(len(cols)):
-                    # cols and newcols are always of same length
-                    aggs[newcols[i]] = {'$sum': 1}
-            elif aggfStep.agg_function == 'count distinct':
+                    # cols and new_cols are always of same length
+                    aggs[new_cols[i]] = {'$sum': 1}
+            elif agg_step.agg_function == 'count distinct':
                 # specific step needed to count distinct values
                 for i in range(len(cols)):
                     # build a set of unique values
-                    aggs[newcols[i]] = {'$addToSet': f'${cols[i]}'}
+                    aggs[new_cols[i]] = {'$addToSet': f'${cols[i]}'}
                     # count the number of items in the set
-                    addFields[newcols[i]] = {'$size': f'${newcols[i]}'}
+                    add_fields[new_cols[i]] = {'$size': f'${new_cols[i]}'}
             else:
                 for i in range(len(cols)):
-                    # cols and newcols are always of same length
-                    aggs[newcols[i]] = {f'${aggfStep.agg_function}': f'${cols[i]}'}
+                    # cols and new_cols are always of same length
+                    aggs[new_cols[i]] = {f'${agg_step.agg_function}': f'${cols[i]}'}
 
         project: dict = {
             '_id': 0,
             **{k: f'$_id.{k}' for k in id.keys()},
             **{k: 1 for k in aggs.keys()},
-            labelCol: f'$_id.{elem}',
-            levelCol: elem,
+            label_col: f'$_id.{elem}',
+            level_col: elem,
         }
 
         if idx > 0:
-            project[parentLabelCol] = f'$_id.{step.hierarchy[idx - 1]}'
+            project[parent_label_col] = f'$_id.{step.hierarchy[idx - 1]}'
 
-        addFieldsToAddToPipeline = [{'$addFields': addFields}] if addFields else []
+        addFieldsToAddToPipeline = [{'$addFields': add_fields}] if add_fields else []
 
         facet[f'level_{idx}'] = [
             {
