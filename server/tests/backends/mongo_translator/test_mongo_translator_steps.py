@@ -5,6 +5,7 @@ import uuid
 import docker
 import pandas as pd
 import pytest
+from pandas.api.types import is_datetime64_any_dtype, is_numeric_dtype
 from pymongo import MongoClient
 
 from tests.utils import assert_dataframes_content_equals, get_spec_from_json_fixture, retrieve_case
@@ -44,12 +45,37 @@ def mongo_database(mongo_server_port):
     return client['tests']
 
 
+def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
+    non_numeric_cols = [col for col, dtype in df.dtypes.iteritems() if not is_numeric_dtype(dtype)]
+    # Ensure we have None for non-numeric columns such as datetiems or
+    # strings, rather than NaT or NaN (for strings)
+    for col in non_numeric_cols:
+        if is_datetime64_any_dtype(df[col]):
+            # Mongo client is not tz-aware, so we make the objects
+            # naive here
+            df[col] = df[col].dt.tz_localize(None)
+        df[col] = df[col].astype('object').where(pd.notna(df[col]), None)
+
+    return df
+
+
+def _sanitized_df_from_pandas_table(df_spec: dict) -> pd.DataFrame:
+    df = _sanitize_df(pd.read_json(json.dumps(df_spec), orient='table'))
+    bool_cols = [f['name'] for f in df_spec['schema']['fields'] if f['type'] == 'boolean']
+    # By default, pandas converts null bools to False. This enforces
+    # use of nullable booleans
+    for col in bool_cols:
+        df[col] = pd.Series((record[col] for record in df_spec['data']), dtype='boolean')
+
+    return df
+
+
 @pytest.mark.parametrize('case_id,case_spec_file_path', test_cases)
 def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path):
     # insert in mongoDB
     collection_uid = uuid.uuid4().hex
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
-    data = pd.read_json(json.dumps(spec['input']), orient='table').to_dict(orient='records')
+    data = _sanitized_df_from_pandas_table(spec['input']).to_dict(orient='records')
     mongo_database[collection_uid].insert_many(data)
     if 'other_inputs' in spec and (
         'join' in case_id or 'append' in case_id
@@ -67,14 +93,11 @@ def test_mongo_translator_pipeline(mongo_database, case_id, case_spec_file_path)
     query = translate_pipeline(pipeline)
     # execute query
     result = list(mongo_database[collection_uid].aggregate(query))
-    df = pd.DataFrame(result)
+    df = _sanitize_df(pd.DataFrame(result))
     if '_id' in df:
         df.drop('_id', axis=1, inplace=True)
-    expected_df = pd.read_json(
-        json.dumps(
-            spec[f'expected_{exec_type}' if f'expected_{exec_type}' in spec else 'expected']
-        ),
-        orient='table',
+    expected_df = _sanitized_df_from_pandas_table(
+        spec[f'expected_{exec_type}' if f'expected_{exec_type}' in spec else 'expected']
     )
 
     assert_dataframes_content_equals(df, expected_df)
