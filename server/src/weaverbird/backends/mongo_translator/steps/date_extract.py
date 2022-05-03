@@ -1,11 +1,10 @@
-from copy import deepcopy
-from typing import List
+from typing import List, Union
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import DateExtractStep
 
 
-def _truncate_date_to_day(expr: dict) -> MongoStep:
+def _truncate_date_to_day(expr: Union[dict, str]) -> MongoStep:
     return {
         '$dateTrunc': {
             'unit': 'day',
@@ -307,7 +306,7 @@ def translate_date_extract(step: DateExtractStep) -> List[MongoStep]:
         ]
     else:
         date_info = step.date_info.copy()
-        new_columns = deepcopy(step.new_columns)
+        new_columns = step.new_columns.copy()
 
     for i, d in enumerate(date_info):
         if d in _ADVANCED_DATE_EXTRACT_MAP:
