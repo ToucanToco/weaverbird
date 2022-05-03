@@ -16,6 +16,7 @@ from weaverbird.backends.mongo_translator.steps.join import translate_join
 from weaverbird.backends.mongo_translator.steps.lowercase import translate_lowercase
 from weaverbird.backends.mongo_translator.steps.percentage import translate_percentage
 from weaverbird.backends.mongo_translator.steps.pivot import translate_pivot
+from weaverbird.backends.mongo_translator.steps.rank import translate_rank
 from weaverbird.backends.mongo_translator.steps.rename import translate_rename
 from weaverbird.backends.mongo_translator.steps.replace import translate_replace
 from weaverbird.backends.mongo_translator.steps.select import translate_select
@@ -48,6 +49,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'percentage': translate_percentage,
     'pivot': translate_pivot,
     'rename': translate_rename,
+    'rank': translate_rank,
     'replace': translate_replace,
     'select': translate_select,
     'sort': translate_sort,
