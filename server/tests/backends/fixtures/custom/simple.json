@@ -1,67 +1,121 @@
 {
-  "exclude": [
-    "mysql",
-    "pandas",
-    "postgres",
-    "mongo"
-  ],
-  "step": {
-    "name": "customsql",
-    "pipeline": [
-      {
-        "name": "customsql",
-        "query": "SELECT AGE FROM ##PREVIOUS_STEP## WHERE AGE > 0;"
-      }
-    ]
-  },
-  "input": {
-    "schema": {
-      "fields": [
-        {
-          "name": "NAME",
-          "type": "string"
-        },
-        {
-          "name": "AGE",
-          "type": "integer"
-        },
-        {
-          "name": "SCORE",
-          "type": "integer"
-        }
-      ],
-      "pandas_version": "0.20.0"
+    "exclude": [
+        "snowflake",
+        "postgres",
+        "mysql",
+        "pandas"
+    ],
+    "step": {
+        "name": "custom",
+        "pipeline": [
+            {
+                "name": "custom",
+                "query": "[{\"$project\": {\"COMPANY\": \"$COMPANY\", \"COUNTRY\": \"$COUNTRY\", \"_vqbToUnpivot\": {\"$objectToArray\": {\"CURRENCY\": {\"$ifNull\": [\"$CURRENCY\", null]}, \"PROVIDER\": {\"$ifNull\": [\"$PROVIDER\", null]}}}}}, {\"$unwind\": \"$_vqbToUnpivot\"}, {\"$project\": {\"COMPANY\": \"$COMPANY\", \"COUNTRY\": \"$COUNTRY\", \"KPI\": \"$_vqbToUnpivot.k\", \"VALUE\": \"$_vqbToUnpivot.v\"}}]"
+            }
+        ]
     },
-    "data": [
-      {
-        "NAME": "foo",
-        "AGE": 42,
-        "SCORE": 100
-      },
-      {
-        "NAME": "bar",
-        "AGE": 43,
-        "SCORE": 200
-      }
-    ]
-  },
-  "expected": {
-    "schema": {
-      "fields": [
-        {
-          "name": "AGE",
-          "type": "integer"
-        }
-      ],
-      "pandas_version": "0.20.0"
+    "input": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "COMPANY",
+                    "type": "string"
+                },
+                {
+                    "name": "COUNTRY",
+                    "type": "string"
+                },
+                {
+                    "name": "CURRENCY",
+                    "type": "string"
+                },
+                {
+                    "name": "PROVIDER",
+                    "type": "string"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "COMPANY": "EVIL CORP",
+                "COUNTRY": "US",
+                "CURRENCY": "DOLLARS",
+                "PROVIDER": "PONZI"
+            },
+            {
+                "COMPANY": "ENRON",
+                "COUNTRY": "US",
+                "CURRENCY": "DOLLARS",
+                "PROVIDER": "ANDERSEN"
+            },
+            {
+                "COMPANY": "THERANOS",
+                "COUNTRY": "US",
+                "CURRENCY": "DOLLARS",
+                "PROVIDER": "HOLMES"
+            }
+        ]
     },
-    "data": [
-      {
-        "AGE": 42
-      },
-      {
-        "AGE": 43
-      }
-    ]
-  }
+    "expected": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "COMPANY",
+                    "type": "string"
+                },
+                {
+                    "name": "COUNTRY",
+                    "type": "string"
+                },
+                {
+                    "name": "KPI",
+                    "type": "string"
+                },
+                {
+                    "name": "VALUE",
+                    "type": "string"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "COMPANY": "EVIL CORP",
+                "COUNTRY": "US",
+                "KPI": "CURRENCY",
+                "VALUE": "DOLLARS"
+            },
+            {
+                "COMPANY": "ENRON",
+                "COUNTRY": "US",
+                "KPI": "CURRENCY",
+                "VALUE": "DOLLARS"
+            },
+            {
+                "COMPANY": "THERANOS",
+                "COUNTRY": "US",
+                "KPI": "CURRENCY",
+                "VALUE": "DOLLARS"
+            },
+            {
+                "COMPANY": "EVIL CORP",
+                "COUNTRY": "US",
+                "KPI": "PROVIDER",
+                "VALUE": "PONZI"
+            },
+            {
+                "COMPANY": "ENRON",
+                "COUNTRY": "US",
+                "KPI": "PROVIDER",
+                "VALUE": "ANDERSEN"
+            },
+            {
+                "COMPANY": "THERANOS",
+                "COUNTRY": "US",
+                "KPI": "PROVIDER",
+                "VALUE": "HOLMES"
+            }
+        ]
+    }
 }
