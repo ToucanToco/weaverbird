@@ -6,13 +6,13 @@ from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
+DatesGranularity = Union[Literal['day'], Literal['week'], Literal['month'], Literal['year']]
+
 
 class AddMissingDatesStep(BaseStep):
     name = Field('addmissingdates', const=True)
     dates_column: ColumnName = Field(alias='datesColumn')
-    dates_granularity: Union[
-        Literal['day'], Literal['week'], Literal['month'], Literal['year']
-    ] = Field(alias='datesGranularity')
+    dates_granularity: DatesGranularity = Field(alias='datesGranularity')
     groups: List[ColumnName] = []
 
 
