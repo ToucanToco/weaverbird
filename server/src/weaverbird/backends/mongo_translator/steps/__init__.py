@@ -43,6 +43,7 @@ from weaverbird.backends.mongo_translator.steps.trim import translate_trim
 from weaverbird.backends.mongo_translator.steps.uniquegroups import translate_uniquegroups
 from weaverbird.backends.mongo_translator.steps.unpivot import translate_unpivot
 from weaverbird.backends.mongo_translator.steps.uppercase import translate_uppercase
+from weaverbird.backends.mongo_translator.steps.waterfall import translate_waterfall
 
 # I would like to have a better type for the callable, but I don't know how to do it.
 # each of this function take a particular step as input
@@ -91,4 +92,5 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'uniquegroups': translate_uniquegroups,
     'unpivot': translate_unpivot,
     'uppercase': translate_uppercase,
+    'waterfall': translate_waterfall,
 }
