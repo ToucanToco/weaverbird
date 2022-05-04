@@ -2,8 +2,7 @@
   "exclude": [
     "mysql",
     "snowflake",
-    "postgres",
-    "mongo"
+    "postgres"
   ],
   "step": {
     "pipeline": [
