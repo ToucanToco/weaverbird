@@ -1,0 +1,144 @@
+{
+  "exclude": [
+    "mysql",
+    "snowflake",
+    "postgres",
+    "mongo"
+  ],
+  "step": {
+    "pipeline": [
+        {
+            "name": "waterfall",
+            "valueColumn": "REVENUE",
+            "milestonesColumn": "YEAR",
+            "start": 2018,
+            "end": 2019,
+            "labelsColumn": "CITY",
+            "sortBy": "value",
+            "order": "desc"
+        }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "CITY",
+          "type": "string"
+        },
+        {
+          "name": "YEAR",
+          "type": "integer"
+        },
+        {
+          "name": "REVENUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "CITY": "Bordeaux",
+        "YEAR": 2019,
+        "REVENUE": 135
+      },
+      {
+        "CITY": "Boston",
+        "YEAR": 2019,
+        "REVENUE": 275
+      },
+      {
+        "CITY": "New-York",
+        "YEAR": 2019,
+        "REVENUE": 115
+      },
+      {
+        "CITY": "Paris",
+        "YEAR": 2019,
+        "REVENUE": 450
+      },
+      {
+        "CITY": "Paris",
+        "YEAR": 2019,
+        "REVENUE": 10
+      },
+      {
+        "CITY": "Bordeaux",
+        "YEAR": 2018,
+        "REVENUE": 98
+      },
+      {
+        "CITY": "Boston",
+        "YEAR": 2018,
+        "REVENUE": 245
+      },
+      {
+        "CITY": "New-York",
+        "YEAR": 2018,
+        "REVENUE": 103
+      },
+      {
+        "CITY": "Paris",
+        "YEAR": 2018,
+        "REVENUE": 385
+      },
+      {
+        "CITY": "Paris",
+        "YEAR": 2018,
+        "REVENUE": 10
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL_waterfall",
+          "type": "string"
+        },
+        {
+          "name": "TYPE_waterfall",
+          "type": "string"
+        },
+        {
+          "name": "REVENUE",
+          "type": "number"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL_waterfall": "2018",
+        "TYPE_waterfall": null,
+        "REVENUE": 841
+      },
+      {
+        "LABEL_waterfall": "Paris",
+        "TYPE_waterfall": "Parent",
+        "REVENUE": 65
+      },
+      {
+        "LABEL_waterfall": "Bordeaux",
+        "TYPE_waterfall": "Parent",
+        "REVENUE": 37
+      },
+      {
+        "LABEL_waterfall": "Boston",
+        "TYPE_waterfall": "Parent",
+        "REVENUE": 30
+      },
+      {
+        "LABEL_waterfall": "New-York",
+        "TYPE_waterfall": "Parent",
+        "REVENUE": 12
+      },
+      {
+        "LABEL_waterfall": "2019",
+        "TYPE_waterfall": null,
+        "REVENUE": 985
+      }
+    ]
+  }
+}
