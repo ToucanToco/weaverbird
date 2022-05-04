@@ -56,7 +56,7 @@ def _sanitize_df(df: pd.DataFrame) -> pd.DataFrame:
             df[col] = df[col].dt.tz_localize(None)
         df[col] = df[col].astype('object').where(pd.notna(df[col]), None)
 
-    return df
+    return df[sorted(df.columns)]  # order of columns may be different between pandas and mongo
 
 
 def _sanitized_df_from_pandas_table(df_spec: dict) -> pd.DataFrame:
