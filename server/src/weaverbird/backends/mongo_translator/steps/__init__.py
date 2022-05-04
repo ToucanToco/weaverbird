@@ -39,6 +39,7 @@ from weaverbird.backends.mongo_translator.steps.text import translate_text
 from weaverbird.backends.mongo_translator.steps.todate import translate_todate
 from weaverbird.backends.mongo_translator.steps.top import translate_top
 from weaverbird.backends.mongo_translator.steps.totals import translate_totals
+from weaverbird.backends.mongo_translator.steps.trim import translate_trim
 from weaverbird.backends.mongo_translator.steps.uniquegroups import translate_uniquegroups
 from weaverbird.backends.mongo_translator.steps.unpivot import translate_unpivot
 from weaverbird.backends.mongo_translator.steps.uppercase import translate_uppercase
@@ -86,6 +87,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'todate': translate_todate,
     'totals': translate_totals,
     'top': translate_top,
+    'trim': translate_trim,
     'uniquegroups': translate_uniquegroups,
     'unpivot': translate_unpivot,
     'uppercase': translate_uppercase,
