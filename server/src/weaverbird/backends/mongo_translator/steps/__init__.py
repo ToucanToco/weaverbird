@@ -31,6 +31,7 @@ from weaverbird.backends.mongo_translator.steps.rollup import translate_rollup
 from weaverbird.backends.mongo_translator.steps.select import translate_select
 from weaverbird.backends.mongo_translator.steps.sort import translate_sort
 from weaverbird.backends.mongo_translator.steps.split import translate_split
+from weaverbird.backends.mongo_translator.steps.statistics import translate_statistics
 from weaverbird.backends.mongo_translator.steps.substring import translate_substring
 from weaverbird.backends.mongo_translator.steps.text import translate_text
 from weaverbird.backends.mongo_translator.steps.todate import translate_todate
@@ -75,6 +76,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'select': translate_select,
     'sort': translate_sort,
     'split': translate_split,
+    'statistics': translate_statistics,
     'substring': translate_substring,
     'text': translate_text,
     'todate': translate_todate,

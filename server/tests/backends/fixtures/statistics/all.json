@@ -1,0 +1,146 @@
+{
+    "exclude": [
+        "snowflake",
+        "mysql",
+        "postgres",
+        "pandas"
+    ],
+    "step": {
+        "pipeline": [
+            {
+                "name": "statistics",
+                "column": "Value",
+                "statistics": [
+                    "count",
+                    "max",
+                    "min",
+                    "average",
+                    "variance",
+                    "standard deviation"
+                ],
+                "quantiles": [
+                    {
+                        "label": "median",
+                        "nth": 1,
+                        "order": 2
+                    },
+                    {
+                        "nth": 2,
+                        "order": 3
+                    }
+                ],
+                "groupby_columns": [
+                    "Group"
+                ]
+            }
+        ]
+    },
+    "input": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "Group",
+                    "type": "string"
+                },
+                {
+                    "name": "Value",
+                    "type": "number"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "Group": "Group 1",
+                "Value": 13.0
+            },
+            {
+                "Group": "Group 1",
+                "Value": 7.0
+            },
+            {
+                "Group": "Group 1",
+                "Value": 5.0
+            },
+            {
+                "Group": "Group 2",
+                "Value": 1.0
+            },
+            {
+                "Group": "Group 2",
+                "Value": 10.0
+            },
+            {
+                "Group": "Group 2",
+                "Value": 12.0
+            }
+        ]
+    },
+    "expected": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "count",
+                    "type": "integer"
+                },
+                {
+                    "name": "max",
+                    "type": "number"
+                },
+                {
+                    "name": "min",
+                    "type": "number"
+                },
+                {
+                    "name": "average",
+                    "type": "number"
+                },
+                {
+                    "name": "Group",
+                    "type": "string"
+                },
+                {
+                    "name": "variance",
+                    "type": "number"
+                },
+                {
+                    "name": "standard deviation",
+                    "type": "number"
+                },
+                {
+                    "name": "median",
+                    "type": "number"
+                },
+                {
+                    "name": "2-th 3-quantile",
+                    "type": "number"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "count": 3,
+                "max": 13.0,
+                "min": 5.0,
+                "average": 8.3333333333,
+                "Group": "Group 1",
+                "variance": 11.5555555556,
+                "standard deviation": 3.3993463424,
+                "median": 6.0,
+                "2-th 3-quantile": 10.0
+            },
+            {
+                "count": 3,
+                "max": 12.0,
+                "min": 1.0,
+                "average": 7.6666666667,
+                "Group": "Group 2",
+                "variance": 22.8888888889,
+                "standard deviation": 4.7842333648,
+                "median": 5.5,
+                "2-th 3-quantile": 11.0
+            }
+        ]
+    }
+}
