@@ -40,22 +40,22 @@
     },
     "data": [
       {
-        "DATE": "2019-01-01 00:00:01",
+        "DATE": "2019-01-01 00:00:00",
         "VALUE": 2,
         "COUNTRY": "France"
       },
       {
-        "DATE": "2019-01-01 00:00:02",
+        "DATE": "2019-01-01 00:00:00",
         "VALUE": 1,
         "COUNTRY": "Italy"
       },
       {
-        "DATE": "2020-01-01 00:00:01",
+        "DATE": "2020-01-01 00:00:00",
         "VALUE": 4,
         "COUNTRY": "France"
       },
       {
-        "DATE": "2020-01-01 00:00:02",
+        "DATE": "2020-01-01 00:00:00",
         "VALUE": 0.5,
         "COUNTRY": "Italy"
       }
@@ -85,28 +85,28 @@
     },
     "data": [
       {
-        "DATE": "2019-01-01 00:00:01",
+        "DATE": "2019-01-01 00:00:00",
         "VALUE": 2,
         "COUNTRY": "France",
         "POUET": null
       },
       {
-        "DATE": "2019-01-01 00:00:02",
+        "DATE": "2019-01-01 00:00:00",
         "VALUE": 1,
         "COUNTRY": "Italy",
         "POUET": null
       },
       {
-        "DATE": "2020-01-01 00:00:01",
+        "DATE": "2020-01-01 00:00:00",
         "VALUE": 4,
         "COUNTRY": "France",
-        "POUET": null
+        "POUET": 1
       },
       {
-        "DATE": "2020-01-01 00:00:02",
+        "DATE": "2020-01-01 00:00:00",
         "VALUE": 0.5,
         "COUNTRY": "Italy",
-        "POUET": null
+        "POUET": -0.5
       }
     ]
   }
