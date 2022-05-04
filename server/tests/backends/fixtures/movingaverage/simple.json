@@ -1,0 +1,127 @@
+{
+    "exclude": [
+        "mysql",
+        "postgres",
+        "snowflake"
+    ],
+    "step": {
+        "pipeline": [
+            {
+                "name": "movingaverage",
+                "valueColumn": "value",
+                "columnToSort": "date",
+                "movingWindow": 2
+            }
+        ]
+    },
+    "input": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "date",
+                    "type": "string"
+                },
+                {
+                    "name": "value",
+                    "type": "integer"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "date": "2018-01-01",
+                "value": 75
+            },
+            {
+                "date": "2018-01-02",
+                "value": 80
+            },
+            {
+                "date": "2018-01-03",
+                "value": 82
+            },
+            {
+                "date": "2018-01-04",
+                "value": 83
+            },
+            {
+                "date": "2018-01-05",
+                "value": 80
+            },
+            {
+                "date": "2018-01-06",
+                "value": 86
+            },
+            {
+                "date": "2018-01-07",
+                "value": 79
+            },
+            {
+                "date": "2018-01-08",
+                "value": 76
+            }
+        ]
+    },
+    "expected": {
+        "schema": {
+            "fields": [
+                {
+                    "name": "date",
+                    "type": "string"
+                },
+                {
+                    "name": "value",
+                    "type": "integer"
+                },
+                {
+                    "name": "value_MOVING_AVG",
+                    "type": "number"
+                }
+            ],
+            "pandas_version": "0.20.0"
+        },
+        "data": [
+            {
+                "date": "2018-01-01",
+                "value": 75,
+                "value_MOVING_AVG": null
+            },
+            {
+                "date": "2018-01-02",
+                "value": 80,
+                "value_MOVING_AVG": 77.5
+            },
+            {
+                "date": "2018-01-03",
+                "value": 82,
+                "value_MOVING_AVG": 81.0
+            },
+            {
+                "date": "2018-01-04",
+                "value": 83,
+                "value_MOVING_AVG": 82.5
+            },
+            {
+                "date": "2018-01-05",
+                "value": 80,
+                "value_MOVING_AVG": 81.5
+            },
+            {
+                "date": "2018-01-06",
+                "value": 86,
+                "value_MOVING_AVG": 83.0
+            },
+            {
+                "date": "2018-01-07",
+                "value": 79,
+                "value_MOVING_AVG": 82.5
+            },
+            {
+                "date": "2018-01-08",
+                "value": 76,
+                "value_MOVING_AVG": 77.5
+            }
+        ]
+    }
+}
