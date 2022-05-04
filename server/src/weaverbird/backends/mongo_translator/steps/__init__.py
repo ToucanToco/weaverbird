@@ -5,6 +5,7 @@ from weaverbird.backends.mongo_translator.steps.aggregate import translate_aggre
 from weaverbird.backends.mongo_translator.steps.append import translate_append
 from weaverbird.backends.mongo_translator.steps.argmax import translate_argmax
 from weaverbird.backends.mongo_translator.steps.argmin import translate_argmin
+from weaverbird.backends.mongo_translator.steps.comparetext import translate_comparetext
 from weaverbird.backends.mongo_translator.steps.concatenate import translate_concatenate
 from weaverbird.backends.mongo_translator.steps.convert import translate_convert
 from weaverbird.backends.mongo_translator.steps.cumsum import translate_cumsum
@@ -51,6 +52,7 @@ mongo_step_translator: Dict[str, Callable[[Any], list]] = {
     'append': translate_append,
     'argmax': translate_argmax,
     'argmin': translate_argmin,
+    'comparetext': translate_comparetext,
     'concatenate': translate_concatenate,
     'convert': translate_convert,
     'cumsum': translate_cumsum,
