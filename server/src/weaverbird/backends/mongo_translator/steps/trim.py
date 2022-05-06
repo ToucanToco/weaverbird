@@ -5,8 +5,6 @@ from weaverbird.pipeline.steps import TrimStep
 
 
 def translate_trim(step: TrimStep) -> List[MongoStep]:
-    cols = step.columns or []
-
-    add_fields = {x: {'$trim': {'input': f'${x}'}} for x in cols}
+    add_fields = {x: {'$trim': {'input': f'${x}'}} for x in step.columns}
 
     return [{'$addFields': add_fields}]
