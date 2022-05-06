@@ -2,8 +2,7 @@
   "exclude": [
     "mysql",
     "snowflake",
-    "postgres",
-    "mongo"
+    "postgres"
   ],
   "step": {
     "pipeline": [
@@ -80,6 +79,57 @@
       }
     ]
   },
+  "expected_mongo": {
+    "schema": {
+      "fields": [
+        {
+          "name": "LABEL_waterfall",
+          "type": "string"
+        },
+        {
+          "name": "REVENUE",
+          "type": "integer"
+        },
+        {
+          "name": "TYPE_waterfall",
+          "type": "string"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "LABEL_waterfall": 2018,
+        "REVENUE": 831,
+        "TYPE_waterfall": null
+      },
+      {
+        "LABEL_waterfall": "Paris",
+        "REVENUE": 65,
+        "TYPE_waterfall": "parent"
+      },
+      {
+        "LABEL_waterfall": "Bordeaux",
+        "REVENUE": 37,
+        "TYPE_waterfall": "parent"
+      },
+      {
+        "LABEL_waterfall": "Boston",
+        "REVENUE": 30,
+        "TYPE_waterfall": "parent"
+      },
+      {
+        "LABEL_waterfall": "New-York",
+        "REVENUE": 12,
+        "TYPE_waterfall": "parent"
+      },
+      {
+        "LABEL_waterfall": 2019,
+        "REVENUE": 975,
+        "TYPE_waterfall": null
+      }
+    ]
+  },
   "expected": {
     "schema": {
       "fields": [
@@ -88,12 +138,12 @@
           "type": "string"
         },
         {
-          "name": "TYPE_waterfall",
-          "type": "string"
-        },
-        {
           "name": "REVENUE",
           "type": "number"
+        },
+        {
+          "name": "TYPE_waterfall",
+          "type": "string"
         }
       ],
       "pandas_version": "0.20.0"
