@@ -35,3 +35,15 @@ db['november-2021-hours'].find().forEach(function(d) {
     }
   })
 });
+
+
+const revenueProductDatasetTableSchema = db['revenue-product-dataset'].find()[0];
+db['revenue-product-dataset'].insert(revenueProductDatasetTableSchema.data);
+db['revenue-product-dataset'].remove({_id: revenueProductDatasetTableSchema._id});
+db['revenue-product-dataset'].find().forEach(function(d) {
+  db['revenue-product-dataset'].update({_id: d._id}, {
+    $set: {
+      date: new Date(d.date),
+    }
+  })
+});
