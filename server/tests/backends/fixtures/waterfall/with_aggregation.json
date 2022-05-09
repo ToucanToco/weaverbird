@@ -58,6 +58,11 @@
         "REVENUE": 450
       },
       {
+        "CITY": "Paris",
+        "YEAR": 2019,
+        "REVENUE": 10
+      },
+      {
         "CITY": "Bordeaux",
         "YEAR": 2018,
         "REVENUE": 98
@@ -76,6 +81,11 @@
         "CITY": "Paris",
         "YEAR": 2018,
         "REVENUE": 385
+      },
+      {
+        "CITY": "Paris",
+        "YEAR": 2018,
+        "REVENUE": 10
       }
     ]
   },
@@ -87,12 +97,12 @@
           "type": "string"
         },
         {
-          "name": "REVENUE",
-          "type": "integer"
-        },
-        {
           "name": "TYPE_waterfall",
           "type": "string"
+        },
+        {
+          "name": "REVENUE",
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -100,33 +110,33 @@
     "data": [
       {
         "LABEL_waterfall": 2018,
-        "REVENUE": 831,
-        "TYPE_waterfall": null
+        "TYPE_waterfall": null,
+        "REVENUE": 841
       },
       {
         "LABEL_waterfall": "Paris",
-        "REVENUE": 65,
-        "TYPE_waterfall": "parent"
+        "TYPE_waterfall": "parent",
+        "REVENUE": 65
       },
       {
         "LABEL_waterfall": "Bordeaux",
-        "REVENUE": 37,
-        "TYPE_waterfall": "parent"
+        "TYPE_waterfall": "parent",
+        "REVENUE": 37
       },
       {
         "LABEL_waterfall": "Boston",
-        "REVENUE": 30,
-        "TYPE_waterfall": "parent"
+        "TYPE_waterfall": "parent",
+        "REVENUE": 30
       },
       {
         "LABEL_waterfall": "New-York",
-        "REVENUE": 12,
-        "TYPE_waterfall": "parent"
+        "TYPE_waterfall": "parent",
+        "REVENUE": 12
       },
       {
         "LABEL_waterfall": 2019,
-        "REVENUE": 975,
-        "TYPE_waterfall": null
+        "TYPE_waterfall": null,
+        "REVENUE": 985
       }
     ]
   },
@@ -138,12 +148,12 @@
           "type": "string"
         },
         {
-          "name": "REVENUE",
-          "type": "number"
-        },
-        {
           "name": "TYPE_waterfall",
           "type": "string"
+        },
+        {
+          "name": "REVENUE",
+          "type": "number"
         }
       ],
       "pandas_version": "0.20.0"
@@ -152,7 +162,7 @@
       {
         "LABEL_waterfall": "2018",
         "TYPE_waterfall": null,
-        "REVENUE": 831
+        "REVENUE": 841
       },
       {
         "LABEL_waterfall": "Paris",
@@ -177,7 +187,7 @@
       {
         "LABEL_waterfall": "2019",
         "TYPE_waterfall": null,
-        "REVENUE": 975
+        "REVENUE": 985
       }
     ]
   }
