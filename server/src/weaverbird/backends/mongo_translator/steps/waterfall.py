@@ -7,7 +7,7 @@ from weaverbird.pipeline.steps import WaterfallStep
 def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
     concatMongo = {}
     facet = {}
-    groupby = step.groupby or []
+    groupby = step.groupby
     parents = [step.parentsColumn] if step.parentsColumn else []
 
     def _column_map(colnames: list) -> dict:
@@ -19,7 +19,7 @@ def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
         {
             '$group': {
                 '_id': _column_map(groupby + [step.milestonesColumn]),
-                (step.valueColumn): {'$sum': f'${step.valueColumn}'},
+                step.valueColumn: {'$sum': f'${step.valueColumn}'},
             },
         },
         {
@@ -32,7 +32,7 @@ def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
                     else {}
                 ),
                 'TYPE_waterfall': None,
-                (step.valueColumn): 1,
+                step.valueColumn: 1,
                 '_vqbOrder': {
                     '$cond': [{'$eq': [f'$_id.{step.milestonesColumn}', step.start]}, -1, 1]
                 },
@@ -48,7 +48,7 @@ def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
                 '_id': _column_map(
                     groupby + parents + [step.labelsColumn] + [step.milestonesColumn]
                 ),
-                (step.valueColumn): {'$sum': f'${step.valueColumn}'},
+                step.valueColumn: {'$sum': f'${step.valueColumn}'},
             },
         },
         {
@@ -71,7 +71,7 @@ def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
                 'LABEL_waterfall': f'$_id.{step.labelsColumn}',
                 **({'GROUP_waterfall': f'$_id.{step.parentsColumn}'} if step.parentsColumn else {}),
                 'TYPE_waterfall': 'child' if step.parentsColumn else 'parent',
-                (step.valueColumn): {
+                step.valueColumn: {
                     '$reduce': {
                         'input': '$_vqbValuesArray',
                         'initialValue': 0,
@@ -91,7 +91,7 @@ def translate_waterfall(step: WaterfallStep) -> List[MongoStep]:
             {
                 '$group': {
                     '_id': _column_map(groupby + parents + [step.milestonesColumn]),
-                    (step.valueColumn): {'$sum': f'${step.valueColumn}'},
+                    step.valueColumn: {'$sum': f'${step.valueColumn}'},
                 },
             },
             {
