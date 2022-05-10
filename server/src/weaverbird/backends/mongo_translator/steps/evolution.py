@@ -1,4 +1,4 @@
-from typing import Any, List
+from typing import Any, Dict, List
 
 from weaverbird.backends.mongo_translator.steps.types import MongoStep
 from weaverbird.pipeline.steps import EvolutionStep
@@ -11,8 +11,7 @@ def translate_evolution(step: EvolutionStep) -> List[MongoStep]:
         else f'{step.value_col}_EVOL_{step.evolution_format.upper()}'
     )
     error_msg = 'Error: More than one previous date found for the specified index columns'
-    add_field_date_prev: dict[str, Any] = {}
-    add_field_result: dict[str, Any] = {}
+    add_field_result: Dict[str, Any] = {}
 
     if step.evolution_format == 'abs':
         add_field_result[new_column] = {
@@ -39,43 +38,21 @@ def translate_evolution(step: EvolutionStep) -> List[MongoStep]:
         }
 
     if step.evolution_type == 'vsLastYear':
-        add_field_date_prev['_VQB_DATE_PREV'] = {
-            '$dateFromParts': {
-                'year': {'$subtract': [{'$year': f'${step.date_col}'}, 1]},
-                'month': {'$month': f'${step.date_col}'},
-                'day': {'$dayOfMonth': f'${step.date_col}'},
-            },
-        }
+        unit = 'year'
     elif step.evolution_type == 'vsLastMonth':
-        add_field_date_prev['_VQB_DATE_PREV'] = {
-            '$dateFromParts': {
-                'year': {
-                    '$cond': [
-                        {'$eq': [{'$month': f'${step.date_col}'}, 1]},
-                        {'$subtract': [{'$year': f'${step.date_col}'}, 1]},
-                        {'$year': f'${step.date_col}'},
-                    ],
-                },
-                'month': {
-                    '$cond': [
-                        {'$eq': [{'$month': f'${step.date_col}'}, 1]},
-                        12,
-                        {'$subtract': [{'$month': f'${step.date_col}'}, 1]},
-                    ],
-                },
-                'day': {'$dayOfMonth': f'${step.date_col}'},
-            },
-        }
+        unit = 'month'
     else:
-        add_field_date_prev['_VQB_DATE_PREV'] = {
-            '$subtract': [
-                f'${step.date_col}',
-                60 * 60 * 24 * 1000 * (7 if step.evolution_type == 'vsLastWeek' else 1),
-            ],
-        }
+        unit = 'week'
 
     return [
-        {'$addFields': add_field_date_prev},
+        {
+            '$addFields': {
+                '_VQB_DATE_PREV': {
+                    # NOTE: This requires mongo>=5.0
+                    '$dateSubtract': {'startDate': f'${step.date_col}', 'unit': unit, 'amount': 1}
+                }
+            }
+        },
         {
             '$facet': {
                 '_VQB_ORIGINALS': [{'$project': {'_id': 0}}],
