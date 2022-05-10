@@ -1,0 +1,8 @@
+FROM mongo:5
+
+ADD ./datastore /datasources
+
+# Import data from datastore/ into the database
+ENV MONGO_INITDB_DATABASE=playground_data
+ADD ./init-mongo/01-import-files.sh /docker-entrypoint-initdb.d/01-import-files.sh
+ADD ./init-mongo/02-adjust-types.js /docker-entrypoint-initdb.d/02-adjust-types.js
