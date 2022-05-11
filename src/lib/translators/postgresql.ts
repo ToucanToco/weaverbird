@@ -8,8 +8,8 @@ import * as S from '@/lib/steps';
 import { BaseTranslator } from './base';
 
 /* istanbul ignore next */
-export class SnowflakeTranslator extends BaseTranslator {
-  static label = 'Snowflake';
+export class PostgreSQLTranslator extends BaseTranslator {
+  static label = 'PostgreSQL';
 
   // addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
   //   return step;
