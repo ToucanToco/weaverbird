@@ -80,7 +80,7 @@ export default class TopStepForm extends BaseStepForm<TopStep> {
 
   @VQBModule.State variableDelimiters?: VariableDelimiters;
 
-  @Prop({ type: Object, default: () => ({ name: 'top', rank_on: '', sort: 'asc' }) })
+  @Prop({ type: Object, default: () => ({ name: 'top', rank_on: '', sort: 'desc' }) })
   initialStepValue!: TopStep;
 
   readonly title: string = 'Top N rows';
