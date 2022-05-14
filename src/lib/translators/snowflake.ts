@@ -35,9 +35,9 @@ export class SnowflakeTranslator extends BaseTranslator {
   //   return step;
   // }
 
-  // convert(step: Readonly<S.ConvertStep>) {
-  //   return step;
-  // }
+  convert(step: Readonly<S.ConvertStep>) {
+    return step;
+  }
 
   // cumsum(step: Readonly<S.CumSumStep>) {
   //   return step;
@@ -79,9 +79,9 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // fromdate(step: Readonly<S.FromDateStep>) {
-  //   return step;
-  // }
+  fromdate(step: Readonly<S.FromDateStep>) {
+    return step;
+  }
 
   // ifthenelse(step: Readonly<S.IfThenElseStep>) {
   //   return step;
