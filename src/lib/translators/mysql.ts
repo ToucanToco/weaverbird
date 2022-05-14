@@ -143,9 +143,9 @@ export class MySQLTranslator extends BaseTranslator {
     return step;
   }
 
-  // todate(step: Readonly<S.ToDateStep>) {
-  //   return step;
-  // }
+  todate(step: Readonly<S.ToDateStep>) {
+    return step;
+  }
 
   top(step: Readonly<S.TopStep>) {
     return step;
