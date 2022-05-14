@@ -75,9 +75,9 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // formula(step: Readonly<S.FormulaStep>) {
-  //   return step;
-  // }
+  formula(step: Readonly<S.FormulaStep>) {
+    return step;
+  }
 
   // fromdate(step: Readonly<S.FromDateStep>) {
   //   return step;
