@@ -15,17 +15,17 @@ export class MySQLTranslator extends BaseTranslator {
   //   return step;
   // }
 
-  // aggregate(step: Readonly<S.AggregateStep>) {
-  //   return step;
-  // }
+  aggregate(step: Readonly<S.AggregateStep>) {
+    return step;
+  }
 
-  // argmax(step: Readonly<S.ArgmaxStep>) {
-  //   return step;
-  // }
+  argmax(step: Readonly<S.ArgmaxStep>) {
+    return step;
+  }
 
-  // argmin(step: Readonly<S.ArgminStep>) {
-  //   return step;
-  // }
+  argmin(step: Readonly<S.ArgminStep>) {
+    return step;
+  }
 
   // comparetext(step: Readonly<S.CompareTextStep>) {
   //   return step;
@@ -123,9 +123,9 @@ export class MySQLTranslator extends BaseTranslator {
     return step;
   }
 
-  // sort(step: Readonly<S.SortStep>) {
-  //   return step;
-  // }
+  sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
 
   // split(step: Readonly<S.SplitStep>) {
   //   return step;
@@ -147,9 +147,9 @@ export class MySQLTranslator extends BaseTranslator {
   //   return step;
   // }
 
-  // top(step: Readonly<S.TopStep>) {
-  //   return step;
-  // }
+  top(step: Readonly<S.TopStep>) {
+    return step;
+  }
 
   // totals(step: Readonly<S.AddTotalRowsStep>) {
   //   return step;

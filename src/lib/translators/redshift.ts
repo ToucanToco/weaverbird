@@ -123,9 +123,9 @@ export class RedshiftTranslator extends BaseTranslator {
     return step;
   }
 
-  // sort(step: Readonly<S.SortStep>) {
-  //   return step;
-  // }
+  sort(step: Readonly<S.SortStep>) {
+    return step;
+  }
 
   // split(step: Readonly<S.SplitStep>) {
   //   return step;
