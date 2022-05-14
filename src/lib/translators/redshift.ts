@@ -43,6 +43,10 @@ export class RedshiftTranslator extends BaseTranslator {
   //   return step;
   // }
 
+  // customsql(step: Readonly<S.CustomSqlStep>) {
+  //   return step;
+  // }
+
   // dateextract(step: Readonly<S.DateExtractStep>) {
   //   return step;
   // }
@@ -127,9 +131,9 @@ export class RedshiftTranslator extends BaseTranslator {
     return step;
   }
 
-  // split(step: Readonly<S.SplitStep>) {
-  //   return step;
-  // }
+  split(step: Readonly<S.SplitStep>) {
+    return step;
+  }
 
   // statistics(step: Readonly<S.StatisticsStep>) {
   //   return step;
