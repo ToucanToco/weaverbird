@@ -139,9 +139,9 @@ export class MySQLTranslator extends BaseTranslator {
   //   return step;
   // }
 
-  // text(step: Readonly<S.AddTextColumnStep>) {
-  //   return step;
-  // }
+  text(step: Readonly<S.AddTextColumnStep>) {
+    return step;
+  }
 
   // todate(step: Readonly<S.ToDateStep>) {
   //   return step;
