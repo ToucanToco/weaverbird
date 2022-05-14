@@ -111,9 +111,9 @@ export class MySQLTranslator extends BaseTranslator {
     return step;
   }
 
-  // replace(step: Readonly<S.ReplaceStep>) {
-  //   return step;
-  // }
+  replace(step: Readonly<S.ReplaceStep>) {
+    return step;
+  }
 
   // rollup(step: Readonly<S.RollupStep>) {
   //   return step;
@@ -155,9 +155,9 @@ export class MySQLTranslator extends BaseTranslator {
   //   return step;
   // }
 
-  // trim(step: Readonly<S.TrimStep>) {
-  //   return step;
-  // }
+  trim(step: Readonly<S.TrimStep>) {
+    return step;
+  }
 
   // uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
   //   return step;
