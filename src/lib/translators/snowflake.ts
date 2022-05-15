@@ -27,9 +27,9 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // comparetext(step: Readonly<S.CompareTextStep>) {
-  //   return step;
-  // }
+  comparetext(step: Readonly<S.CompareTextStep>) {
+    return step;
+  }
 
   // concatenate(step: Readonly<S.ConcatenateStep>) {
   //   return step;
