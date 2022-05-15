@@ -115,10 +115,6 @@ export class RedshiftTranslator extends BaseTranslator {
     return step;
   }
 
-  uniquegroups(step: Readonly<S.UniqueGroupsStep>) {
-    return step;
-  }
-
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
   }
