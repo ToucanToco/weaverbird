@@ -59,9 +59,9 @@ export class MySQLTranslator extends BaseTranslator {
     return step;
   }
 
-  // duplicate(step: Readonly<S.DuplicateColumnStep>) {
-  //   return step;
-  // }
+  duplicate(step: Readonly<S.DuplicateColumnStep>) {
+    return step;
+  }
 
   // duration(step: Readonly<S.ComputeDurationStep>) {
   //   return step;
