@@ -5,7 +5,7 @@
 
 import * as S from '@/lib/steps';
 
-import { BaseTranslator } from './base';
+import { BaseTranslator, ValidationError } from './base';
 
 /* istanbul ignore next */
 export class PostgreSQLTranslator extends BaseTranslator {
@@ -121,5 +121,26 @@ export class PostgreSQLTranslator extends BaseTranslator {
 
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
+  }
+
+  validate(customEditedStep: S.CustomSqlStep): ValidationError[] | null {
+    try {
+      if (
+        !customEditedStep.query.toLowerCase().includes('select') &&
+        !customEditedStep.query.toLowerCase().includes('##previous_step##')
+      ) {
+        throw new Error('Invalid Query: should use SELECT and ##PREVIOUS_STEP## keywords');
+      } else {
+        return null;
+      }
+    } catch (e) {
+      return [
+        {
+          keyword: 'sql',
+          dataPath: '.query',
+          message: (e as Error).message,
+        },
+      ];
+    }
   }
 }

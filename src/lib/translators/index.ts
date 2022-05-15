@@ -11,6 +11,7 @@ import { VariableDelimiters } from '../variables';
 import { AthenaTranslator } from './athena';
 import { BaseTranslator } from './base';
 import { EmptyTranslator } from './empty';
+import { GoogleBigQueryTranslator } from './googlebigquery';
 import { Mongo36Translator } from './mongo';
 import { Mongo40Translator } from './mongo4';
 import { Mongo50Translator } from './mongo5';
@@ -25,6 +26,7 @@ import { SnowflakeTranslator } from './snowflake';
 export type VqbTranslator =
   | 'athena'
   | 'empty'
+  | 'googlebigquery'
   | 'mongo36'
   | 'mongo40'
   | 'mongo42'
@@ -89,6 +91,7 @@ registerTranslator('mongo40', Mongo40Translator);
 registerTranslator('mongo42', Mongo42Translator);
 registerTranslator('mongo50', Mongo50Translator);
 registerTranslator('mysql', MySQLTranslator);
+registerTranslator('googlebigquery', GoogleBigQueryTranslator);
 registerTranslator('pandas', PandasTranslator);
 registerTranslator('pandas-no_joins', PandasNoJoinsTranslator);
 registerTranslator('postgresql', PostgreSQLTranslator);

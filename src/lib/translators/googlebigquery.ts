@@ -8,8 +8,8 @@ import * as S from '@/lib/steps';
 import { BaseTranslator, ValidationError } from './base';
 
 /* istanbul ignore next */
-export class MySQLTranslator extends BaseTranslator {
-  static label = 'MySQL';
+export class GoogleBigQueryTranslator extends BaseTranslator {
+  static label = 'GoogleBigQuery';
 
   aggregate(step: Readonly<S.AggregateStep>) {
     return step;
@@ -91,13 +91,13 @@ export class MySQLTranslator extends BaseTranslator {
     return step;
   }
 
-  split(step: Readonly<S.SplitStep>) {
-    return step;
-  }
+  // split(step: Readonly<S.SplitStep>) {
+  //   return step;
+  // }
 
-  substring(step: Readonly<S.SubstringStep>) {
-    return step;
-  }
+  // substring(step: Readonly<S.SubstringStep>) {
+  //   return step;
+  // }
 
   text(step: Readonly<S.AddTextColumnStep>) {
     return step;
