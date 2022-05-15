@@ -11,10 +11,6 @@ import { BaseTranslator } from './base';
 export class SnowflakeTranslator extends BaseTranslator {
   static label = 'Snowflake';
 
-  // addmissingdates(step: Readonly<S.AddMissingDatesStep>) {
-  //   return step;
-  // }
-
   aggregate(step: Readonly<S.AggregateStep>) {
     return step;
   }
@@ -39,17 +35,9 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // cumsum(step: Readonly<S.CumSumStep>) {
-  //   return step;
-  // }
-
-  // customsql(step: Readonly<S.CustomSqlStep>) {
-  //   return step;
-  // }
-
-  // dateextract(step: Readonly<S.DateExtractStep>) {
-  //   return step;
-  // }
+  customsql(step: Readonly<S.CustomSqlStep>) {
+    return step;
+  }
 
   delete(step: Readonly<S.DeleteStep>) {
     return step;
@@ -62,14 +50,6 @@ export class SnowflakeTranslator extends BaseTranslator {
   duplicate(step: Readonly<S.DuplicateColumnStep>) {
     return step;
   }
-
-  // duration(step: Readonly<S.ComputeDurationStep>) {
-  //   return step;
-  // }
-
-  // evolution(step: Readonly<S.EvolutionStep>) {
-  //   return step;
-  // }
 
   fillna(step: Readonly<S.FillnaStep>) {
     return step;
@@ -87,29 +67,13 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // ifthenelse(step: Readonly<S.IfThenElseStep>) {
-  //   return step;
-  // }
+  ifthenelse(step: Readonly<S.IfThenElseStep>) {
+    return step;
+  }
 
   lowercase(step: Readonly<S.ToLowerStep>) {
     return step;
   }
-
-  // movingaverage(step: Readonly<S.MovingAverageStep>) {
-  //   return step;
-  // }
-
-  // percentage(step: Readonly<S.PercentageStep>) {
-  //   return step;
-  // }
-
-  // pivot(step: Readonly<S.PivotStep>) {
-  //   return step;
-  // }
-
-  // rank(step: Readonly<S.RankStep>) {
-  //   return step;
-  // }
 
   rename(step: Readonly<S.RenameStep>) {
     return step;
@@ -118,10 +82,6 @@ export class SnowflakeTranslator extends BaseTranslator {
   replace(step: Readonly<S.ReplaceStep>) {
     return step;
   }
-
-  // rollup(step: Readonly<S.RollupStep>) {
-  //   return step;
-  // }
 
   select(step: Readonly<S.SelectStep>) {
     return step;
@@ -134,10 +94,6 @@ export class SnowflakeTranslator extends BaseTranslator {
   split(step: Readonly<S.SplitStep>) {
     return step;
   }
-
-  // statistics(step: Readonly<S.StatisticsStep>) {
-  //   return step;
-  // }
 
   substring(step: Readonly<S.SubstringStep>) {
     return step;
@@ -155,10 +111,6 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // totals(step: Readonly<S.AddTotalRowsStep>) {
-  //   return step;
-  // }
-
   trim(step: Readonly<S.TrimStep>) {
     return step;
   }
@@ -167,15 +119,7 @@ export class SnowflakeTranslator extends BaseTranslator {
     return step;
   }
 
-  // unpivot(step: Readonly<S.UnpivotStep>) {
-  //   return step;
-  // }
-
   uppercase(step: Readonly<S.ToUpperStep>) {
     return step;
   }
-
-  // waterfall(step: Readonly<S.WaterfallStep>) {
-  //   return step;
-  // }
 }
