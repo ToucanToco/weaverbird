@@ -131,9 +131,9 @@ export class MySQLTranslator extends BaseTranslator {
     return step;
   }
 
-  split(step: Readonly<S.SplitStep>) {
-    return step;
-  }
+  // split(step: Readonly<S.SplitStep>) {
+  //   return step;
+  // }
 
   // statistics(step: Readonly<S.StatisticsStep>) {
   //   return step;
