@@ -62,6 +62,7 @@ export function getTranslator(backend: VqbTranslator): BaseTranslator {
       ).join(' | ')}`,
     );
   }
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   return new TRANSLATORS[backend]!();
 }
 

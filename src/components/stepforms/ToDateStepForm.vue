@@ -51,6 +51,7 @@ import ColumnPicker from '@/components/stepforms/ColumnPicker.vue';
 import AutocompleteWidget from '@/components/stepforms/widgets/Autocomplete.vue';
 import InputTextWidget from '@/components/stepforms/widgets/InputText.vue';
 import { PipelineStepName, ToDateStep } from '@/lib/steps';
+import { VqbTranslator } from '@/lib/translators';
 import { VQBModule } from '@/store';
 
 import BaseStepForm from './StepForm.vue';
@@ -100,7 +101,18 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
   readonly datePresets = this.formatOptions
     .filter(d => d.format !== 'guess' && d.format !== 'custom')
     .map(d => d.format);
-  readonly translators = [
+  readonly translators: { id: VqbTranslator; label: string; doc: string }[] = [
+    {
+      id: 'athena',
+      label: 'Athena',
+      doc: 'https://prestodb.io/docs/0.217/functions/datetime.html',
+    },
+    {
+      id: 'googlebigquery',
+      label: 'Google Big Query',
+      doc:
+        'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
+    },
     {
       id: 'mongo36',
       label: 'Mongo 3.6',
@@ -126,6 +138,11 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
         'https://docs.mongodb.com/manual/reference/operator/aggregation/dateFromString/index.html#datefromstring-format-specifiers',
     },
     {
+      id: 'mysql',
+      label: 'MySQL',
+      doc: 'https://dev.mysql.com/doc/refman/8.0/en/date-and-time-functions.html',
+    },
+    {
       id: 'pandas',
       label: 'Pandas',
       doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
@@ -134,6 +151,22 @@ export default class ToDateStepForm extends BaseStepForm<ToDateStep> {
       id: 'pandas-no_joins',
       label: 'Pandas',
       doc: 'https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes',
+    },
+    {
+      id: 'postgresql',
+      label: 'PostgreSQL',
+      doc: 'https://www.postgresql.org/docs/current/functions-formatting.html',
+    },
+    {
+      id: 'redshift',
+      label: 'Redshift',
+      doc: 'https://docs.aws.amazon.com/redshift/latest/dg/r_FORMAT_strings.html',
+    },
+    {
+      id: 'snowflake',
+      label: 'Snowflake',
+      doc:
+        'https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section',
     },
   ];
 

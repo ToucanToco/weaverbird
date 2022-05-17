@@ -104,7 +104,8 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
     {
       id: 'googlebigquery',
       label: 'Google Big Query',
-      doc: 'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
+      doc:
+        'https://cloud.google.com/bigquery/docs/reference/standard-sql/format-elements#format_elements_date_time',
     },
     {
       id: 'mongo36',
@@ -158,7 +159,8 @@ export default class FromDateStepForm extends BaseStepForm<FromDateStep> {
     {
       id: 'snowflake',
       label: 'Snowflake',
-      doc: 'https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section',
+      doc:
+        'https://docs.snowflake.com/en/user-guide/date-time-input-output.html#about-the-format-specifiers-in-this-section',
     },
   ];
   selectedFormat: FormatOption = this.formatOptions[0];
