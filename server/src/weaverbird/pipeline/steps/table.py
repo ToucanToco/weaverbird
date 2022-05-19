@@ -1,8 +1,8 @@
-from pydantic import Field
+from typing import Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
 
 class TableStep(BaseStep):
-    name = Field('domain', const=True)
+    name: Literal['domain'] = 'domain'
     domain: str

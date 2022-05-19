@@ -1,9 +1,9 @@
-from pydantic import Field
+from typing import Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.types import ColumnName
 
 
 class UppercaseStep(BaseStep):
-    name = Field('uppercase', const=True)
+    name: Literal['uppercase'] = 'uppercase'
     column: ColumnName

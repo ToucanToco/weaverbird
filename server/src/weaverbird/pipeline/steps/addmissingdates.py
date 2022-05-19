@@ -10,7 +10,7 @@ DatesGranularity = Union[Literal['day'], Literal['week'], Literal['month'], Lite
 
 
 class AddMissingDatesStep(BaseStep):
-    name = Field('addmissingdates', const=True)
+    name: Literal['addmissingdates'] = 'addmissingdates'
     dates_column: ColumnName = Field(alias='datesColumn')
     dates_granularity: DatesGranularity = Field(alias='datesGranularity')
     groups: List[ColumnName] = []

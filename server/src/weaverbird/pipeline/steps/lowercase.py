@@ -1,9 +1,9 @@
-from pydantic import Field
+from typing import Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.types import ColumnName
 
 
 class LowercaseStep(BaseStep):
-    name = Field('lowercase', const=True)
+    name: Literal['lowercase'] = 'lowercase'
     column: ColumnName

@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import Field
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
@@ -6,7 +8,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class SplitStep(BaseStep):
-    name = Field('split', const=True)
+    name: Literal['split'] = 'split'
     column: ColumnName
     delimiter: str
     # at least one col to keep

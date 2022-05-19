@@ -43,7 +43,7 @@ class Aggregation(BaseModel):
 
 
 class AggregateStep(BaseStep):
-    name = Field('aggregate', const=True)
+    name: Literal['aggregate'] = 'aggregate'
     on: List[ColumnName] = []
     aggregations: Sequence[Aggregation]
     keep_original_granularity: Optional[bool] = Field(

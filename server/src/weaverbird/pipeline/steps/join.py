@@ -1,4 +1,4 @@
-from typing import List, Literal, Tuple, Union
+from typing import List, Literal, Tuple
 
 from pydantic import Field
 
@@ -12,8 +12,8 @@ JoinColumnsPair = Tuple[ColumnName, ColumnName]
 
 
 class JoinStep(BaseStep):
-    name = Field('join', const=True)
-    right_pipeline: Union[PipelineOrDomainNameOrReference]
+    name: Literal['join'] = 'join'
+    right_pipeline: PipelineOrDomainNameOrReference
     type: Literal['left', 'inner', 'left outer']
     on: List[JoinColumnsPair] = Field(..., min_items=1)
 

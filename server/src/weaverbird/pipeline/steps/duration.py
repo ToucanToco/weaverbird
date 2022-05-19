@@ -15,7 +15,7 @@ DURATIONS_IN_SECOND = {'seconds': _SECOND, 'minutes': _MINUTE, 'hours': _HOUR, '
 
 
 class DurationStep(BaseStep):
-    name: str = Field('duration', const=True)
+    name: Literal['duration'] = 'duration'
     new_column_name: ColumnName = Field(alias='newColumnName')
     start_date_column: ColumnName = Field(alias='startDateColumn')
     end_date_column: ColumnName = Field(alias='endDateColumn')

@@ -1,14 +1,12 @@
 from typing import List, Literal, Union
 
-from pydantic import Field
-
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import TemplatedVariable
 
 
 class PivotStep(BaseStep):
-    name = Field('pivot', const=True)
+    name: Literal['pivot'] = 'pivot'
     index: List[str]
     column_to_pivot: str
     value_column: str

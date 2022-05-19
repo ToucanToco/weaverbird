@@ -1,8 +1,8 @@
-from pydantic import Field
+from typing import Literal
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 
 
 class CustomStep(BaseStep):
-    name = Field('custom', const=True)
+    name: Literal['custom'] = 'custom'
     query: str

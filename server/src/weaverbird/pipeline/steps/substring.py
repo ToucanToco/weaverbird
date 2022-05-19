@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import Field
 
@@ -7,7 +7,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class SubstringStep(BaseStep):
-    name = Field('substring', const=True)
+    name: Literal['substring'] = 'substring'
     column: ColumnName
     new_column_name: Optional[ColumnName] = Field(alias='newColumnName')
     start_index: int
