@@ -103,6 +103,7 @@ export default class VariableTag extends Vue {
    */
   get variableValue() {
     const value = this.variable?.value || '';
+    if (value instanceof Date) return value.toDateString();
     return Array.isArray(value) ? value.join(', ') : value;
   }
 

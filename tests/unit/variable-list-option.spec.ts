@@ -65,7 +65,7 @@ describe('Variable List option', () => {
     });
     it('should display date value with default toString', () => {
       expect(wrapper.find('.widget-variable-option__value').text()).toBe(
-        new Date(1623398957013).toString(),
+        new Date(1623398957013).toDateString(),
       );
     });
   });
@@ -119,7 +119,7 @@ describe('Variable List option', () => {
       {
         type: 'date',
         value: new Date(1623398957013),
-        attendedValue: `"${new Date(1623398957013).toString()}"`,
+        attendedValue: `"${new Date(1623398957013).toDateString()}"`,
       },
     ].forEach(
       ({ type, value, attendedValue }: { type: string; value: any; attendedValue: any }) => {

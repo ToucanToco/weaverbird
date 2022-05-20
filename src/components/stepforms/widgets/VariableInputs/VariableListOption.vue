@@ -50,7 +50,7 @@ export default class VariableListOption extends Vue {
   showOnlyLabel!: boolean;
 
   get formattedValue(): string {
-    return this.value instanceof Date ? this.value.toString() : this.value;
+    return this.value instanceof Date ? this.value.toDateString() : this.value;
   }
 
   get readableValue(): string {
