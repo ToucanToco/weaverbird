@@ -179,5 +179,8 @@ class PipelineWithVariables(BaseModel):
 
     def render(self, variables: Dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
-        steps_rendered = [step.render(variables, renderer) for step in self.steps]
+        steps_rendered = [
+            step.render(variables, renderer) if hasattr(step, 'render') else step  # type: ignore
+            for step in self.steps
+        ]
         return Pipeline(steps=steps_rendered)
