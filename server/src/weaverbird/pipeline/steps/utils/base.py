@@ -14,3 +14,7 @@ class BaseStep(BaseModel):
     # None values are excluded, to avoid triggering validations error in front-ends
     def dict(self, *, exclude_none: bool = True, **kwargs) -> Dict:
         return super().dict(exclude_none=True, **kwargs)
+
+    def render(self, *args, **kwargs) -> 'BaseStep':
+        # nothing to do, since it's not a StepWithVariables
+        return self
