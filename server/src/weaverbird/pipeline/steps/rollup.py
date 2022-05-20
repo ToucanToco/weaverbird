@@ -1,4 +1,4 @@
-from typing import List, Optional, Sequence, Union
+from typing import List, Literal, Optional, Sequence, Union
 
 from pydantic import Field
 
@@ -10,7 +10,7 @@ from .aggregate import Aggregation, AggregationWithVariables
 
 
 class RollupStep(BaseStep):
-    name = Field('rollup', const=True)
+    name: Literal['rollup'] = 'rollup'
     hierarchy: List[ColumnName]
     # The list of columnns to aggregate, with related aggregation function to use:
     aggregations: Sequence[Aggregation]

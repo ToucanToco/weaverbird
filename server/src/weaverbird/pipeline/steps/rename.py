@@ -1,4 +1,4 @@
-from typing import List, Tuple, Union
+from typing import List, Literal, Tuple, Union
 
 from pydantic import Field, root_validator
 
@@ -8,7 +8,7 @@ from weaverbird.pipeline.types import TemplatedVariable
 
 
 class RenameStep(BaseStep):
-    name = Field('rename', const=True)
+    name: Literal['rename'] = 'rename'
     to_rename: List[Tuple[str, str]] = Field(..., alias='toRename')
 
     @root_validator(pre=True)

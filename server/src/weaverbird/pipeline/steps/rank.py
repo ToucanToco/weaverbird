@@ -8,7 +8,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class RankStep(BaseStep):
-    name = Field('rank', const=True)
+    name: Literal['rank'] = 'rank'
     value_col: ColumnName = Field(alias='valueCol')
     order: Literal['asc', 'desc']
     method: Literal['standard', 'dense']

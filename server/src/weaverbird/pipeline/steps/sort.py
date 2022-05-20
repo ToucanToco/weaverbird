@@ -1,6 +1,6 @@
 from typing import List, Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames
@@ -15,5 +15,5 @@ class ColumnSort(BaseModel):
 
 
 class SortStep(BaseStep):
-    name = Field('sort', const=True)
+    name: Literal['sort'] = 'sort'
     columns: List[ColumnSort]

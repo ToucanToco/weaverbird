@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from pydantic import Field
 
@@ -7,7 +7,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class MovingAverageStep(BaseStep):
-    name = Field('movingaverage', const=True)
+    name: Literal['movingaverage'] = 'movingaverage'
 
     value_column: Optional[ColumnName] = Field(None, alias='valueColumn')
     column_to_sort: ColumnName = Field(alias='columnToSort')

@@ -1,4 +1,4 @@
-from typing import Any, Union
+from typing import Any, Literal, Union
 
 from pydantic import BaseModel, Field
 
@@ -25,7 +25,7 @@ class IfthenelseStep(BaseStep, IfThenElse):
     class Config(PopulatedWithFieldnames):
         ...
 
-    name = Field('ifthenelse', const=True)
+    name: Literal['ifthenelse'] = 'ifthenelse'
     new_column: ColumnName = Field(alias='newColumn')
 
 

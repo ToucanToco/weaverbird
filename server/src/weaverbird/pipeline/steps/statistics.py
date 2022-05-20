@@ -20,7 +20,7 @@ class StatisticsStep(BaseStep):
     class Config(PopulatedWithFieldnames):
         ...
 
-    name = Field('statistics', const=True)
+    name: Literal['statistics'] = 'statistics'
     column: ColumnName
     groupby_columns: List[ColumnName] = Field([], alias='groupbyColumns')
     statistics: List[Statistics]
