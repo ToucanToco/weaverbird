@@ -15,6 +15,11 @@ class CumSumStep(BaseStep):
 
     @root_validator(pre=True)
     def handle_legacy_syntax(cls, values):
+        if 'valueColumn' in values:
+            values['value_column'] = values.pop('valueColumn')
+        if 'newColumn' in values:
+            values['new_column'] = values.pop('newColumn')
+
         if 'value_column' in values:
             values['to_cumsum'] = [(values.pop('value_column'), values.pop('new_column', None))]
         return values
