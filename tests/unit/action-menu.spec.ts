@@ -12,68 +12,59 @@ localVue.use(Vuex);
 type PanelElement = {
   label: string;
   stepName: string | null;
-  index: number;
 };
 
 const FIRST_PANEL: PanelElement[] = [
   {
     label: 'Rename column',
     stepName: 'rename',
-    index: 0,
   },
   {
     label: 'Duplicate column',
     stepName: 'duplicate',
-    index: 1,
   },
   // "Delete" operation directly commit the step into the store, so it does not emit the stepname
   // it will be test apart of Rename and Duplicate
   {
     label: 'Delete column',
     stepName: null,
-    index: 2,
   },
 ];
+const DELETE_INDEX = FIRST_PANEL.findIndex(x => x.label === 'Delete column');
 
 const SECOND_PANEL: PanelElement[] = [
   {
     label: 'Filter values',
     stepName: 'filter',
-    index: 0,
   },
   {
     label: 'Fill null values',
     stepName: 'fillna',
-    index: 1,
   },
   {
     label: 'Replace values',
     stepName: 'replace',
-    index: 2,
   },
   {
     label: 'Sort values',
     stepName: 'sort',
-    index: 3,
   },
   {
     label: 'Trim spaces',
     stepName: 'trim',
-    index: 4,
   },
   // "Get unique values" operation directly commit the step into the store, so it does not emit the stepname
   // it will be test apart
   {
     label: 'Get unique values',
     stepName: null,
-    index: 5,
   },
   {
     label: 'Compute Statistics',
     stepName: 'statistics',
-    index: 6,
   },
 ];
+const GET_UNIQUE_INDEX = SECOND_PANEL.findIndex(x => x.label === 'Get unique values');
 
 describe('Action Menu', () => {
   let mountWrapper: any;
@@ -123,11 +114,10 @@ describe('Action Menu', () => {
 
   it('should display the first panel', async () => {
     const { wrapper } = await mountWrapper();
-    let el: PanelElement;
-    for (el of FIRST_PANEL) {
+    for (const el of FIRST_PANEL) {
       expect(wrapper.html()).toContain(el.label);
     }
-    for (el of SECOND_PANEL) {
+    for (const el of SECOND_PANEL) {
       expect(wrapper.html()).not.toContain(el.label);
     }
 
@@ -145,24 +135,22 @@ describe('Action Menu', () => {
   });
 
   it('should close on click on any operation', async () => {
-    let el: PanelElement;
-    for (el of FIRST_PANEL) {
+    for (const elIndex of FIRST_PANEL.keys()) {
       const { wrapper } = await mountWrapper();
       await wrapper
         .findAll('.action-menu__option')
-        .at(el.index)
+        .at(elIndex)
         .trigger('click');
       expect(wrapper.emitted().closed).toBeTruthy();
     }
   });
 
   it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
-    let el: PanelElement;
-    for (el of FIRST_PANEL) {
+    for (const [elIndex, el] of FIRST_PANEL.entries()) {
       const { wrapper } = await mountWrapper();
       await wrapper
         .findAll('.action-menu__option')
-        .at(el.index)
+        .at(elIndex)
         .trigger('click');
       await wrapper.vm.$nextTick();
       if (el.stepName) {
@@ -201,7 +189,7 @@ describe('Action Menu', () => {
       const { wrapper, store } = await mountWrapper();
       await wrapper
         .findAll('.action-menu__option')
-        .at(2) //delete operation is at index 2
+        .at(DELETE_INDEX)
         .trigger('click');
       await wrapper.vm.$nextTick();
       expect(store.getters[VQBnamespace('pipeline')]).toEqual([
@@ -213,7 +201,7 @@ describe('Action Menu', () => {
       const { wrapper, store } = await mountWrapper(true);
       await wrapper
         .findAll('.action-menu__option')
-        .at(2) //delete operation is at index 2
+        .at(DELETE_INDEX)
         .trigger('click');
       await wrapper.vm.$nextTick();
       expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
@@ -237,11 +225,10 @@ describe('Action Menu', () => {
 
     it('should display the second panel', async () => {
       const { wrapper } = await mountWrapperAndClickOnOperation();
-      let el: PanelElement;
-      for (el of FIRST_PANEL) {
+      for (const el of FIRST_PANEL) {
         expect(wrapper.html()).not.toContain(el.label);
       }
-      for (el of SECOND_PANEL) {
+      for (const el of SECOND_PANEL) {
         expect(wrapper.html()).toContain(el.label);
       }
     });
@@ -252,22 +239,20 @@ describe('Action Menu', () => {
       expect(wrapper.find('.action-menu__option--back').exists()).toBeTruthy();
       await wrapper.find('.action-menu__option--back').trigger('click');
 
-      let el: PanelElement;
-      for (el of FIRST_PANEL) {
+      for (const el of FIRST_PANEL) {
         expect(wrapper.html()).toContain(el.label);
       }
-      for (el of SECOND_PANEL) {
+      for (const el of SECOND_PANEL) {
         expect(wrapper.html()).not.toContain(el.label);
       }
     });
 
     it('should close on click on any operation', async () => {
-      let el: PanelElement;
-      for (el of SECOND_PANEL) {
+      for (const elIndex of SECOND_PANEL.keys()) {
         const { wrapper } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
-          .at(el.index)
+          .at(elIndex)
           .trigger('click');
         await wrapper.vm.$nextTick();
         expect(wrapper.emitted().closed).toBeTruthy();
@@ -275,12 +260,11 @@ describe('Action Menu', () => {
     });
 
     it('should emit "actionClicked" with the corresponding "stepName" when click on an operation', async () => {
-      let el: PanelElement;
-      for (el of SECOND_PANEL) {
+      for (const [elIndex, el] of SECOND_PANEL.entries()) {
         const { wrapper } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
-          .at(el.index)
+          .at(elIndex)
           .trigger('click');
         await wrapper.vm.$nextTick();
         if (el.stepName) {
@@ -294,7 +278,7 @@ describe('Action Menu', () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation();
         await wrapper
           .findAll('.action-menu__option')
-          .at(5) // "Get unique values" operation is at index 5
+          .at(GET_UNIQUE_INDEX)
           .trigger('click');
         await wrapper.vm.$nextTick();
         expect(store.getters[VQBnamespace('pipeline')]).toEqual([
@@ -306,7 +290,7 @@ describe('Action Menu', () => {
         const { wrapper, store } = await mountWrapperAndClickOnOperation(true);
         await wrapper
           .findAll('.action-menu__option')
-          .at(5) // "Get unique values" operation is at index 5
+          .at(GET_UNIQUE_INDEX)
           .trigger('click');
         await wrapper.vm.$nextTick();
         expect(store.getters[VQBnamespace('isEditingStep')]).toBeFalsy();
@@ -320,11 +304,10 @@ describe('Action Menu', () => {
       wrapper.setProps({ visible: true });
       await wrapper.vm.$nextTick();
 
-      let el: PanelElement;
-      for (el of FIRST_PANEL) {
+      for (const el of FIRST_PANEL) {
         expect(wrapper.html()).toContain(el.label);
       }
-      for (el of SECOND_PANEL) {
+      for (const el of SECOND_PANEL) {
         expect(wrapper.html()).not.toContain(el.label);
       }
 
