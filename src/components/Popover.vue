@@ -118,17 +118,16 @@ export default class Popover extends Vue {
 
     // Save original parent before moving into body to use its position
     this.parent = this.$el.parentElement;
-    // Remove element from parent: it will be added to body when `setupPosition`
-    if (this.parent !== null) {
-      this.parent.removeChild(this.$el);
-    } else {
+    let { parent } = this;
+    if (parent === null) {
       throw new Error('The popover has no parent!');
     }
 
-    // Get all scrollable parents
-    const parents = [];
-    let { parent } = this;
+    // Remove element from parent: it will be added to body when `setupPosition`
+    parent.removeChild(this.$el);
 
+    // Get all scrollable parents
+    const parents: HTMLElement[] = [];
     while (parent !== this.weaverbirdPopoverContainer) {
       parents.push(parent);
       if (parent.parentElement) {
