@@ -104,6 +104,7 @@ describe('Action Menu', () => {
         store,
         localVue,
         propsData: { visible: true, columnName: 'dreamfall' },
+        attachToDocument: true,
       });
       return { wrapper, store };
     };

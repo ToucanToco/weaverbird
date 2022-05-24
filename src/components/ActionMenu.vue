@@ -162,7 +162,9 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   get currentUnique() {
-    return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as DataSetColumn).uniques;
+    return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as
+      | DataSetColumn
+      | undefined)?.uniques;
   }
 
   get isStepSupported() {
