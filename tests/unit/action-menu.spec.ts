@@ -38,6 +38,10 @@ const SECOND_PANEL: PanelElement[] = [
     stepName: 'filter',
   },
   {
+    label: 'Top N values',
+    stepName: 'top',
+  },
+  {
     label: 'Fill null values',
     stepName: 'fillna',
   },
