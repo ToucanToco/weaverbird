@@ -66,6 +66,9 @@
             >
               Filter values
             </div>
+            <div class="action-menu__option" v-if="isStepSupported('top')" @click="openStep('top')">
+              Top N values
+            </div>
             <div
               class="action-menu__option"
               v-if="isStepSupported('fillna')"
