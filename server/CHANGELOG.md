@@ -1,5 +1,13 @@
 # Changelog (weaverbird python package)
 
+## [0.12.1] - 2022-05-24
+
+- Fix: handle cumsum legacy syntax aliases
+
+## [0.12.0] - 2022-05-22
+
+- Use discriminated union for faster validation on steps and cleaner error messages
+
 ## [0.11.2] - 2022-03-09
 
 - Mongo: Fix Join & Append steps to handle domain steps as str
