@@ -36,6 +36,18 @@ describe('Top Step Form', () => {
   runner.testCancel();
   runner.testResetSelectedIndex();
 
+  it('should pass down default properties to the input components', async () => {
+    const wrapper = runner.shallowMount(undefined, {
+      data: {
+        editedStep: { name: 'top', rank_on: 'foo', limit: 3 },
+      },
+    });
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find('.limitInput').props('value')).toEqual(3);
+    expect(wrapper.find('.sortOrderInput').props('value')).toEqual('desc');
+    expect(wrapper.find('.groupbyColumnsInput').props('value')).toEqual([]);
+  });
+
   it('should pass down the properties to the input components', async () => {
     const wrapper = runner.shallowMount(undefined, {
       data: {
