@@ -1,5 +1,10 @@
 # Changelog (weaverbird npm package)
 
+## [0.83.1] - 2022-05-27
+
+### Fixed
+- Fix ifthenelse step with date conditions
+
 ## [0.83.0] - 2022-05-24
 
 ### Changed
@@ -1236,6 +1241,7 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.83.1]: https://github.com/ToucanToco/weaverbird/compare/v0.83.1...v0.83.0
 [0.83.0]: https://github.com/ToucanToco/weaverbird/compare/v0.83.0...v0.82.3
 [0.82.3]: https://github.com/ToucanToco/weaverbird/compare/v0.82.3...v0.82.2
 [0.82.2]: https://github.com/ToucanToco/weaverbird/compare/v0.82.1...v0.82.2
