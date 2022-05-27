@@ -4579,46 +4579,42 @@ describe.each(['36', '40', '42', '50'])(`Mongo %s translator`, version => {
               if: {
                 $and: [
                   {
-                    $expr: {
-                      $gte:
-                        version >= '5'
-                          ? [
-                              {
-                                $dateTrunc: {
-                                  date: '$DATE_FROM',
-                                  unit: 'day',
-                                },
+                    $gte:
+                      version >= '5'
+                        ? [
+                            {
+                              $dateTrunc: {
+                                date: '$DATE_FROM',
+                                unit: 'day',
                               },
-                              {
-                                $dateTrunc: {
-                                  date: new Date('2021-08-08T00:00:00.000Z'),
-                                  unit: 'day',
-                                },
+                            },
+                            {
+                              $dateTrunc: {
+                                date: new Date('2021-08-08T00:00:00.000Z'),
+                                unit: 'day',
                               },
-                            ]
-                          : ['$DATE_FROM', new Date('2021-08-08T00:00:00.000Z')],
-                    },
+                            },
+                          ]
+                        : ['$DATE_FROM', new Date('2021-08-08T00:00:00.000Z')],
                   },
                   {
-                    $expr: {
-                      $lte:
-                        version >= '5'
-                          ? [
-                              {
-                                $dateTrunc: {
-                                  date: '$DATE_UNTIL',
-                                  unit: 'day',
-                                },
+                    $lte:
+                      version >= '5'
+                        ? [
+                            {
+                              $dateTrunc: {
+                                date: '$DATE_UNTIL',
+                                unit: 'day',
                               },
-                              {
-                                $dateTrunc: {
-                                  date: new Date('2021-11-24T23:59:59.999Z'),
-                                  unit: 'day',
-                                },
+                            },
+                            {
+                              $dateTrunc: {
+                                date: new Date('2021-11-24T23:59:59.999Z'),
+                                unit: 'day',
                               },
-                            ]
-                          : ['$DATE_UNTIL', new Date('2021-11-24T23:59:59.999Z')],
-                    },
+                            },
+                          ]
+                        : ['$DATE_UNTIL', new Date('2021-11-24T23:59:59.999Z')],
                   },
                 ],
               },
