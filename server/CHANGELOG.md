@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.12.2] - 2022-05-27
+
+- Fix ifthenelse step with date conditions
+
 ## [0.12.1] - 2022-05-24
 
 - Fix: handle cumsum legacy syntax aliases
