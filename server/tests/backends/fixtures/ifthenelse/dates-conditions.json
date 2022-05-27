@@ -1,0 +1,78 @@
+{
+  "exclude": [
+    "mysql",
+    "postgres",
+    "snowflake"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "ifthenelse",
+        "newColumn": "BEFOREMARCH",
+        "if": {
+          "column": "DATE",
+          "operator": "until",
+          "value": "date: 2022-03-01 00:00:00"
+        },
+        "then": "True",
+        "else": "False"
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "DATE",
+          "type": "datetime"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "DATE": "2022-05-27 00:00:00"
+      },
+      {
+        "NAME": "bar",
+        "DATE": "2022-01-01 00:00:00"
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "NAME",
+          "type": "string"
+        },
+        {
+          "name": "DATE",
+          "type": "datetime"
+        },
+        {
+          "name": "BEFOREMARCH",
+          "type": "boolean"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "NAME": "foo",
+        "DATE": "2022-05-27 00:00:00",
+        "BEFOREMARCH": false
+      },
+      {
+        "NAME": "bar",
+        "DATE": "2022-01-01 00:00:00",
+        "BEFOREMARCH": true
+      }
+    ]
+  }
+}
