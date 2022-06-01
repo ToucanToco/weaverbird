@@ -41,7 +41,7 @@ def execute_pipeline(
                     execute_pipeline=execute_pipeline,
                 )
             logger.info(
-                '[pandas-step-monitor] - {step}',
+                f'[pandas-step-monitor] - {step}',
                 extra={
                     'step_index': index,
                     'step_name': step,
@@ -51,7 +51,7 @@ def execute_pipeline(
                         'rows': len(df),
                         'columns': len(df.columns),
                     },
-                }
+                },
             )
             step_reports.append(
                 StepExecutionReport(
