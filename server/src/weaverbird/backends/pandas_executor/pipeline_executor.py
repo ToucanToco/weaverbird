@@ -41,7 +41,7 @@ def execute_pipeline(
                     execute_pipeline=execute_pipeline,
                 )
             logger.info(
-                f'[pandas-step-monitor] - {step}',
+                '[pandas-step-monitor]',
                 extra={
                     'step_index': index,
                     'step_name': step,
