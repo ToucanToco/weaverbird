@@ -12,7 +12,7 @@ from weaverbird.backends.pandas_executor.types import (
     StepExecutionReport,
 )
 from weaverbird.pipeline import Pipeline, PipelineStep
-from weaverbird.utils import StopWatch, convert_size
+from weaverbird.utils import StopWatch
 
 logger = logging.getLogger(__name__)
 
@@ -41,7 +41,17 @@ def execute_pipeline(
                     execute_pipeline=execute_pipeline,
                 )
             logger.info(
-                f'step {step} used {convert_size(df.memory_usage().sum())}, took {stopwatch.interval}s to execute'
+                '[pandas-step-monitor]',
+                extra={
+                    'step_index': index,
+                    'step_name': step,
+                    'elapsed_time': int(stopwatch.interval * 1000),
+                    'sizes': {
+                        'memory_used': df.memory_usage().sum(),
+                        'rows': len(df),
+                        'columns': len(df.columns),
+                    },
+                },
             )
             step_reports.append(
                 StepExecutionReport(
