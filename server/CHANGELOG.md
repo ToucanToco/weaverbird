@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.12.3] - 2022-06-02
+
+- Added logs for each step under pandas executor
+
 ## [0.12.2] - 2022-05-27
 
 - Fix ifthenelse step with date conditions
