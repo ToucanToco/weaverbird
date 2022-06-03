@@ -1,8 +1,12 @@
 # Changelog (weaverbird python package)
 
+## [0.12.5] - 2022-06-03
+
+- Updated the parsing format of a step monitoring (pandas)
+
 ## [0.12.4] - 2022-06-03
 
-- fix parsing error for Step(s) objects from logs
+- Fix parsing error for Step(s) objects from logs
 
 ## [0.12.3] - 2022-06-02
 
