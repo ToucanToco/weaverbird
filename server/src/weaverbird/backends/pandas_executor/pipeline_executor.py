@@ -41,13 +41,14 @@ def execute_pipeline(
                     execute_pipeline=execute_pipeline,
                 )
             logger.info(
-                '[pandas-step-monitor]',
+                '[step-monitor]',
                 extra={
+                    'type': 'pandas',
                     'step_index': index,
-                    'step_name': step,
+                    'step_name': str(step),
                     'elapsed_time': int(stopwatch.interval * 1000),
                     'sizes': {
-                        'memory_used': df.memory_usage().sum(),
+                        'memory_used': int(df.memory_usage().sum()),
                         'rows': len(df),
                         'columns': len(df.columns),
                     },
