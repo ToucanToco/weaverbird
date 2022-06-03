@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.12.4] - 2022-06-03
+
+- fix parsing error for Step(s) objects from logs
+
 ## [0.12.3] - 2022-06-02
 
 - Added logs for each step under pandas executor
