@@ -43,8 +43,9 @@ def execute_pipeline(
             logger.info(
                 '[step-monitor]',
                 extra={
-                    'type': 'pandas',
+                    'type': 'monitoring',
                     'step': {
+                        'type': 'pandas',
                         'index': index + 1,
                         'name': step.name,
                         'details': step.dict(),
