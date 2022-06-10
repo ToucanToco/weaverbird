@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from typing_extensions import Annotated
 
 from .steps import (
     AddMissingDatesStep,
@@ -78,53 +79,56 @@ from .steps import (
     WaterfallStepWithVariable,
 )
 
-PipelineStep = Union[
-    AddMissingDatesStep,
-    AggregateStep,
-    AppendStep,
-    ArgmaxStep,
-    ArgminStep,
-    CompareTextStep,
-    ConcatenateStep,
-    ConvertStep,
-    CumSumStep,
-    CustomSqlStep,
-    CustomStep,
-    DateExtractStep,
-    DeleteStep,
-    DomainStep,
-    DuplicateStep,
-    DurationStep,
-    EvolutionStep,
-    FillnaStep,
-    FilterStep,
-    FormulaStep,
-    FromdateStep,
-    FromdateStep,
-    IfthenelseStep,
-    JoinStep,
-    LowercaseStep,
-    MovingAverageStep,
-    PercentageStep,
-    PivotStep,
-    RankStep,
-    RenameStep,
-    ReplaceStep,
-    RollupStep,
-    SelectStep,
-    SortStep,
-    SplitStep,
-    StatisticsStep,
-    SubstringStep,
-    TextStep,
-    ToDateStep,
-    TopStep,
-    TotalsStep,
-    TrimStep,
-    UniqueGroupsStep,
-    UnpivotStep,
-    UppercaseStep,
-    WaterfallStep,
+PipelineStep = Annotated[
+    Union[
+        AddMissingDatesStep,
+        AggregateStep,
+        AppendStep,
+        ArgmaxStep,
+        ArgminStep,
+        CompareTextStep,
+        ConcatenateStep,
+        ConvertStep,
+        CumSumStep,
+        CustomSqlStep,
+        CustomStep,
+        DateExtractStep,
+        DeleteStep,
+        DomainStep,
+        DuplicateStep,
+        DurationStep,
+        EvolutionStep,
+        FillnaStep,
+        FilterStep,
+        FormulaStep,
+        FromdateStep,
+        FromdateStep,
+        IfthenelseStep,
+        JoinStep,
+        LowercaseStep,
+        MovingAverageStep,
+        PercentageStep,
+        PivotStep,
+        RankStep,
+        RenameStep,
+        ReplaceStep,
+        RollupStep,
+        SelectStep,
+        SortStep,
+        SplitStep,
+        StatisticsStep,
+        SubstringStep,
+        TextStep,
+        ToDateStep,
+        TopStep,
+        TotalsStep,
+        TrimStep,
+        UniqueGroupsStep,
+        UnpivotStep,
+        UppercaseStep,
+        WaterfallStep,
+    ],
+    Field(discriminator='name'),  # noqa: F821
 ]
 
 
@@ -135,35 +139,38 @@ class Pipeline(BaseModel):
         return super().dict(exclude_none=True, **kwargs)
 
 
-PipelineStepWithVariables = Union[
-    AddMissingDatesStepWithVariables,
-    AggregateStepWithVariables,
-    AppendStepWithVariable,
-    ArgmaxStepWithVariable,
-    ArgminStepWithVariable,
-    CompareTextStepWithVariables,
-    ConcatenateStepWithVariable,
-    CumSumStepWithVariable,
-    DateExtractStepWithVariable,
-    DurationStepWithVariable,
-    EvolutionStepWithVariable,
-    FillnaStepWithVariable,
-    FilterStepWithVariables,
-    FormulaStepWithVariable,
-    IfThenElseStepWithVariables,
-    JoinStepWithVariable,
-    PivotStepWithVariable,
-    RankStepWithVariable,
-    RenameStepWithVariable,
-    ReplaceStepWithVariable,
-    RollupStepWithVariable,
-    SplitStepWithVariable,
-    TextStepWithVariable,
-    TopStepWithVariables,
-    TotalsStepWithVariable,
-    UniqueGroupsStepWithVariable,
-    UnpivotStepWithVariable,
-    WaterfallStepWithVariable,
+PipelineStepWithVariables = Annotated[
+    Union[
+        AddMissingDatesStepWithVariables,
+        AggregateStepWithVariables,
+        AppendStepWithVariable,
+        ArgmaxStepWithVariable,
+        ArgminStepWithVariable,
+        CompareTextStepWithVariables,
+        ConcatenateStepWithVariable,
+        CumSumStepWithVariable,
+        DateExtractStepWithVariable,
+        DurationStepWithVariable,
+        EvolutionStepWithVariable,
+        FillnaStepWithVariable,
+        FilterStepWithVariables,
+        FormulaStepWithVariable,
+        IfThenElseStepWithVariables,
+        JoinStepWithVariable,
+        PivotStepWithVariable,
+        RankStepWithVariable,
+        RenameStepWithVariable,
+        ReplaceStepWithVariable,
+        RollupStepWithVariable,
+        SplitStepWithVariable,
+        TextStepWithVariable,
+        TopStepWithVariables,
+        TotalsStepWithVariable,
+        UniqueGroupsStepWithVariable,
+        UnpivotStepWithVariable,
+        WaterfallStepWithVariable,
+    ],
+    Field(discriminator='name'),  # noqa: F821
 ]
 
 
@@ -173,6 +180,7 @@ class PipelineWithVariables(BaseModel):
     def render(self, variables: Dict[str, Any], renderer) -> Pipeline:
         # TODO it must be more efficient to render the full pipeline once
         steps_rendered = [
-            step.render(variables, renderer) if hasattr(step, 'render') else step for step in self.steps  # type: ignore
+            step.render(variables, renderer) if hasattr(step, 'render') else step  # type: ignore
+            for step in self.steps
         ]
         return Pipeline(steps=steps_rendered)

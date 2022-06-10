@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 
 from pydantic import Field
 
@@ -7,7 +7,7 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class PercentageStep(BaseStep):
-    name = Field('percentage', const=True)
+    name: Literal['percentage'] = 'percentage'
     column: ColumnName
     group: List[ColumnName] = Field(default=[])
     new_column_name: ColumnName = Field(alias='newColumnName', default=None)

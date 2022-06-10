@@ -1,7 +1,5 @@
 from typing import Any, List, Literal, Optional, Union
 
-from pydantic import Field
-
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.render_variables import StepWithVariablesMixin
 from weaverbird.pipeline.types import ColumnName, TemplatedVariable
@@ -14,7 +12,7 @@ _RESULT_COLUMN = 'result'
 
 
 class WaterfallStep(BaseStep):
-    name = Field('waterfall', const=True)
+    name: Literal['waterfall'] = 'waterfall'
     valueColumn: ColumnName
     milestonesColumn: ColumnName
     start: Any

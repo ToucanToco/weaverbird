@@ -41,7 +41,22 @@ def execute_pipeline(
                     execute_pipeline=execute_pipeline,
                 )
             logger.info(
-                f'step {step} used {convert_size(df.memory_usage().sum())}, took {stopwatch.interval}s to execute'
+                '[step-monitor]',
+                extra={
+                    'type': 'monitoring',
+                    'step': {
+                        'type': 'pandas',
+                        'index': index + 1,
+                        'name': step.name,
+                        'details': step.dict(),
+                        'elapsed_time': stopwatch.interval * 1000,
+                        'sizes': {
+                            'memory_used': convert_size(df.memory_usage(deep=True).sum()),
+                            'rows': len(df),
+                            'columns': len(df.columns),
+                        },
+                    },
+                },
             )
             step_reports.append(
                 StepExecutionReport(

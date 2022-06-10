@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Literal
 
 from pydantic import Field
 
@@ -7,5 +7,5 @@ from weaverbird.pipeline.types import ColumnName
 
 
 class SelectStep(BaseStep):
-    name = Field('select', const=True)
+    name: Literal['select'] = 'select'
     columns: List[ColumnName] = Field(min_items=1)

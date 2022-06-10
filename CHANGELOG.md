@@ -1,6 +1,19 @@
 # Changelog (weaverbird npm package)
 
-## [0.82.3] - 2033-03-23
+## [0.83.1] - 2022-05-27
+
+### Fixed
+- Fix ifthenelse step with date conditions
+
+## [0.83.0] - 2022-05-24
+
+### Changed
+- Use 'desc' order by default for top step
+
+### Feat
+- Add top step in other options
+
+## [0.82.3] - 2022-03-23
 
 ### Fixed
 - Mongo translator: handle years and timestamps correctly
@@ -39,6 +52,7 @@
 ### Added
 
 - UI: display columns of the right dataset in join step
+- Cumsum step: can handle multiple columns at once (by @CharlesRngrd)
 
 ### Changed
 
@@ -89,12 +103,6 @@ Preview source subset: improve design and move component under domain step
 ### Added
 
 - NewDateInput: send analytics event when selecting a relative date
-
-## Unreleased
-
-## Added
-
-- Cumsum step: can handle multiple columns at once (by @CharlesRngrd)
 
 ## [0.77.0] - 2021-12-06
 
@@ -1233,6 +1241,8 @@ TabbedRangeCalendars: keep selected tab unchanged when updated enabled calendars
 
 ## Unreleased
 
+[0.83.1]: https://github.com/ToucanToco/weaverbird/compare/v0.83.1...v0.83.0
+[0.83.0]: https://github.com/ToucanToco/weaverbird/compare/v0.83.0...v0.82.3
 [0.82.3]: https://github.com/ToucanToco/weaverbird/compare/v0.82.3...v0.82.2
 [0.82.2]: https://github.com/ToucanToco/weaverbird/compare/v0.82.1...v0.82.2
 [0.82.1]: https://github.com/ToucanToco/weaverbird/compare/v0.82.0...v0.82.1

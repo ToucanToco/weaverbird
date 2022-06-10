@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Any, List, Literal, Union
 
 from pydantic import BaseModel, Field
+from typing_extensions import Annotated
 
 from weaverbird.pipeline.dates import RelativeDate
 from weaverbird.pipeline.types import ColumnName, PopulatedWithFieldnames
@@ -41,12 +42,15 @@ class DateBoundCondition(BaseModel):
     value: Union[RelativeDate, datetime, str]
 
 
-SimpleCondition = Union[
-    ComparisonCondition,
-    InclusionCondition,
-    NullCondition,
-    MatchCondition,
-    DateBoundCondition,
+SimpleCondition = Annotated[
+    Union[
+        ComparisonCondition,
+        InclusionCondition,
+        NullCondition,
+        MatchCondition,
+        DateBoundCondition,
+    ],
+    Field(discriminator='operator'),  # noqa: F821
 ]
 
 

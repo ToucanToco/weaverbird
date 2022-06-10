@@ -1,6 +1,6 @@
 {
   "name": "weaverbird",
-  "version": "0.82.3",
+  "version": "0.83.1",
   "description": "A generic Visual Query Builder built in Vue.js",
   "bugs": {
     "url": "https://github.com/ToucanToco/weaverbird/issues",
@@ -89,6 +89,7 @@
     "sass": "^1.29.0",
     "sass-loader": "^10.1.0",
     "ts-jest": "^24.0.2",
+    "tslib": "^2.4.0",
     "typedoc": "^0.15.0",
     "typedoc-plugin-markdown": "^1.1.27",
     "typescript": "^3.7.0",

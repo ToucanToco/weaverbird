@@ -47,7 +47,7 @@ DATE_INFO = Union[
 
 
 class DateExtractStep(BaseStep):
-    name = Field('dateextract', const=True)
+    name: Literal['dateextract'] = 'dateextract'
     column: str
     date_info: List[DATE_INFO] = Field([], alias=('dateInfo'))
     new_columns: List[ColumnName] = Field([], alias='newColumns')

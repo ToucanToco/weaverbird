@@ -11,7 +11,7 @@ EVOLUTION_FORMAT = Literal['abs', 'pct']
 
 
 class EvolutionStep(BaseStep):
-    name = Field('evolution', const=True)
+    name: Literal['evolution'] = 'evolution'
     date_col: str = Field(alias='dateCol')
     value_col: str = Field(alias='valueCol')
     evolution_type: EVOLUTION_TYPE = Field(alias='evolutionType')

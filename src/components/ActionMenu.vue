@@ -66,6 +66,9 @@
             >
               Filter values
             </div>
+            <div class="action-menu__option" v-if="isStepSupported('top')" @click="openStep('top')">
+              Top N values
+            </div>
             <div
               class="action-menu__option"
               v-if="isStepSupported('fillna')"
@@ -162,7 +165,9 @@ export default class ActionMenu extends Vue {
   @VQBModule.Getter unsupportedSteps!: PipelineStepName[];
 
   get currentUnique() {
-    return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as DataSetColumn).uniques;
+    return (this.columnHeaders.find(hdr => hdr.name === this.columnName) as
+      | DataSetColumn
+      | undefined)?.uniques;
   }
 
   get isStepSupported() {

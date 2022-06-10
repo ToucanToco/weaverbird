@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import Field
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
@@ -6,7 +8,7 @@ from weaverbird.pipeline.types import ColumnName, TemplatedVariable
 
 
 class CompareTextStep(BaseStep):
-    name: str = Field('comparetext', const=True)
+    name: Literal['comparetext'] = 'comparetext'
     new_column_name: ColumnName = Field(alias='newColumnName')
     str_col_1: ColumnName = Field(alias='strCol1')
     str_col_2: ColumnName = Field(alias='strCol2')

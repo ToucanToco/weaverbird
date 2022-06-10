@@ -1,5 +1,26 @@
 # Changelog (weaverbird python package)
 
+## [0.12.6] - 2022-06-06
+
+- Fix parsing error for Step(s) objects from logs
+- Updated the parsing format of a step monitoring (pandas)
+
+## [0.12.3] - 2022-06-02
+
+- Added logs for each step under pandas executor
+
+## [0.12.2] - 2022-05-27
+
+- Fix ifthenelse step with date conditions
+
+## [0.12.1] - 2022-05-24
+
+- Fix: handle cumsum legacy syntax aliases
+
+## [0.12.0] - 2022-05-22
+
+- Use discriminated union for faster validation on steps and cleaner error messages
+
 ## [0.11.2] - 2022-03-09
 
 - Mongo: Fix Join & Append steps to handle domain steps as str

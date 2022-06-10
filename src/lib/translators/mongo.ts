@@ -2188,18 +2188,14 @@ export class Mongo36Translator extends BaseTranslator {
           }
         }
 
-        // $dateAdd operators are aggregation operators, so they can't be used directly in $match steps
-        // They need to be used with $expr
         if (cond.operator === 'from' || cond.operator === 'until') {
           return {
-            $expr: {
-              [operatorMapping[cond.operator]]: [
-                this.truncateDateToDay($$(cond.column)),
-                this.truncateDateToDay(
-                  isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
-                ),
-              ],
-            },
+            [operatorMapping[cond.operator]]: [
+              this.truncateDateToDay($$(cond.column)),
+              this.truncateDateToDay(
+                isRelativeDate(cond.value) ? this.translateRelativeDate(cond.value) : cond.value,
+              ),
+            ],
           };
         }
 

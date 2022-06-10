@@ -83,16 +83,14 @@ def build_dates_expressions(
             ]
     if cond.operator == 'from' or cond.operator == 'until':
         cond_expression = {
-            '$expr': {
-                operator_mapping[cond.operator]: [
-                    truncate_to_day(f'${cond.column}'),
-                    truncate_to_day(
-                        translate_relative_date(cond.value)
-                        if isinstance(cond.value, RelativeDate)
-                        else cond.value
-                    ),
-                ]
-            }
+            operator_mapping[cond.operator]: [
+                truncate_to_day(f'${cond.column}'),
+                truncate_to_day(
+                    translate_relative_date(cond.value)
+                    if isinstance(cond.value, RelativeDate)
+                    else cond.value
+                ),
+            ]
         }
     return cond_expression
 

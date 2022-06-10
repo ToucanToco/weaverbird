@@ -1,4 +1,4 @@
-from typing import List, Sequence, Union
+from typing import List, Literal, Sequence, Union
 
 from pydantic import BaseModel, Field, validator
 
@@ -18,7 +18,7 @@ class TotalDimension(BaseModel):
 
 
 class TotalsStep(BaseStep):
-    name = Field('totals', const=True)
+    name: Literal['totals'] = 'totals'
     total_dimensions: List[TotalDimension] = Field(alias='totalDimensions')
     aggregations: Sequence[Aggregation]
     groups: List[ColumnName] = Field(min_items=0, default=[])

@@ -91,7 +91,7 @@ def get_spec_from_json_fixture(case_id: str, case_spec_file_path: str) -> dict:
     spec_file = open(case_spec_file_path, 'r')
 
     # if it's a date type step like the filter on date
-    if 'filter_' in case_id and 'date' in case_id:
+    if 'date' in case_id:
 
         def _datetime_parser(dct):
             for k, v in dct.items():

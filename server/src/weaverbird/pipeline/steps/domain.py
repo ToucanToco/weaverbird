@@ -1,11 +1,9 @@
-from typing import Union
-
-from pydantic import Field
+from typing import Literal, Union
 
 from weaverbird.pipeline.steps.utils.base import BaseStep
 from weaverbird.pipeline.steps.utils.combination import Reference
 
 
 class DomainStep(BaseStep):
-    name = Field('domain', const=True)
+    name: Literal['domain'] = 'domain'
     domain: Union[str, Reference]
