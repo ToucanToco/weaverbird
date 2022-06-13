@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## [0.13.0] - 2022-06-13
+
+- Bump from python 3.8 to 3.10
+
 ## [0.12.6] - 2022-06-06
 
 - Fix parsing error for Step(s) objects from logs
