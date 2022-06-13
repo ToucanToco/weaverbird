@@ -1,5 +1,6 @@
 import json
 
+import geopandas as gpd
 import pandas as pd
 import pytest
 
@@ -14,8 +15,12 @@ test_cases = retrieve_case('pandas_executor', 'pandas')
 def test_pandas_execute_pipeline(case_id, case_spec_file_path):
     spec = get_spec_from_json_fixture(case_id, case_spec_file_path)
 
-    df_in = pd.read_json(json.dumps(spec['input']), orient='table')
-    df_out = pd.read_json(json.dumps(spec['expected']), orient='table')
+    if spec['input'].get('schema') == 'geojson':
+        df_in = gpd.read_file(json.dumps(spec['input']['data']))
+        df_out = gpd.read_file(json.dumps(spec['expected']))
+    else:
+        df_in = pd.read_json(json.dumps(spec['input']), orient='table')
+        df_out = pd.read_json(json.dumps(spec['expected']), orient='table')
     dfs_in_others = {
         k: pd.read_json(json.dumps(v), orient='table')
         for (k, v) in spec.get('other_inputs', {}).items()
