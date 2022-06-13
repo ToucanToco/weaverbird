@@ -1,0 +1,55 @@
+{
+  "description": "it should not fail when deleting a column that does not exist in the dataset",
+  "exclude": [
+    "mysql"
+  ],
+  "step": {
+    "pipeline": [
+      {
+        "name": "delete",
+        "columns": [
+          "NAME",
+          "SCORE"
+        ]
+      }
+    ]
+  },
+  "input": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": 42
+      },
+      {
+        "VALUE": 43
+      }
+    ]
+  },
+  "expected": {
+    "schema": {
+      "fields": [
+        {
+          "name": "VALUE",
+          "type": "integer"
+        }
+      ],
+      "pandas_version": "0.20.0"
+    },
+    "data": [
+      {
+        "VALUE": 42
+      },
+      {
+        "VALUE": 43
+      }
+    ]
+  }
+}
