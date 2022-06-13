@@ -11,16 +11,15 @@ clean:
 
 .PHONY: install
 install:
-	pip install -U pip
-	pip install .
+	poetry install --no-dev
 
 .PHONY: install-dev
 install-dev:
-	pip install -e ".[dev]"
+	poetry install
 
 .PHONY: install-playground
 install-playground:
-	pip install ".[playground]"
+	poetry install -E playground
 
 .PHONY: format
 format:
@@ -43,24 +42,11 @@ all: test lint
 
 .PHONY: build
 build:
-	pip install build
-	python -m build
+	poetry build
 
 .PHONY: upload
 upload:
-	pip install twine
-	twine upload dist/*
-
-# Easy mode to use locally with pyCharm
-.PHONY: install_local
-install_local:
-	rm -rf dist/*
-	make build
-	FILENAME="$(shell ls -1t dist/*.gz | head -1)"; echo $$FILENAME
-	FILENAME="$(shell ls -1t dist/*.gz | head -1)"; pip install $$FILENAME
-
-.PHONY: execute_local_test
-execute_local_test: install_local test
+	poetry publish --build
 
 .PHONY: start_docker_playground
 start_docker_playground:

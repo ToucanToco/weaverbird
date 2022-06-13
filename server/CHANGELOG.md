@@ -1,5 +1,10 @@
 # Changelog (weaverbird python package)
 
+## [0.13.0] - 2022-06-13
+
+- Move to poetry for dependency management
+- Dropped python<3.10 support
+
 ## [0.12.6] - 2022-06-06
 
 - Fix parsing error for Step(s) objects from logs
