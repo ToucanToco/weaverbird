@@ -1,0 +1,265 @@
+{
+    "exclude": [
+        "mysql",
+        "postgres",
+        "snowflake",
+        "mongo"
+    ],
+    "step": {
+        "pipeline": [
+            {
+                "name": "dissolve",
+                "groups": [
+                    "country"
+                ],
+                "aggregations": [
+                    {
+                        "columns": ["inhabitants"],
+                        "agg_function": "avg",
+                        "new_columns": ["inhabitants_avg"]
+                    },
+                    {
+                        "columns": ["region"],
+                        "agg_function": "count distinct",
+                        "new_columns": ["region_distinct_count"]
+                    }
+                ],
+                "include_nulls": true
+            }
+        ]
+    },
+    "input": {
+        "schema": "geojson",
+        "data": {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "country": "france",
+                        "inhabitants": 5000,
+                        "region": "occitanie"
+                    },
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [
+                            [
+                                -0.230712890625,
+                                42.88401467044253
+                            ],
+                            [
+                                -0.274658203125,
+                                43.92163712834673
+                            ],
+                            [
+                                1.549072265625,
+                                45.034714778688624
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "country": "spain",
+                        "inhabitants": 15000,
+                        "region": "north_east"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    -1.571044921875,
+                                    42.956422511073335
+                                ],
+                                [
+                                    -3.7353515625,
+                                    40.730608477796636
+                                ],
+                                [
+                                    -0.406494140625,
+                                    39.59722324495565
+                                ]
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "country": "france",
+                        "inhabitants": 500,
+                        "region": "monaco"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    -5.306396484375,
+                                    46.837649560937464
+                                ],
+                                [
+                                    -0.670166015625,
+                                    46.837649560937464
+                                ],
+                                [
+                                    -0.670166015625,
+                                    49.095452162534826
+                                ]
+                            ]
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "country": null,
+                        "inhabitants": 300,
+                        "region": "andorre"
+                    },
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [
+                                    42.424242,
+                                    46.464646
+                                ],
+                                [
+                                    46.464646,
+                                    -0.1337
+                                ],
+                                [
+                                    -0.1337,
+                                    42.424242
+                                ]
+                            ]
+                        ]
+                    }
+                }
+            ]
+        }
+    },
+    "expected": {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "country": "france",
+                    "inhabitants": 2750,
+                    "region": 2
+                },
+                "geometry": {
+                    "type": "GeometryCollection",
+                    "geometries": [
+                        {
+                            "type": "LineString",
+                            "coordinates": [
+                                [
+                                    -0.230712890625,
+                                    42.88401467044253
+                                ],
+                                [
+                                    -0.274658203125,
+                                    43.92163712834673
+                                ],
+                                [
+                                    1.549072265625,
+                                    45.034714778688624
+                                ]
+                            ]
+                        },
+                        {
+                            "type": "Polygon",
+                            "coordinates": [
+                                [
+                                    [
+                                        -5.306396484375,
+                                        46.837649560937464
+                                    ],
+                                    [
+                                        -0.670166015625,
+                                        46.837649560937464
+                                    ],
+                                    [
+                                        -0.670166015625,
+                                        49.095452162534826
+                                    ],
+                                    [
+                                        -5.306396484375,
+                                        46.837649560937464
+                                    ]
+                                ]
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "country": "spain",
+                    "inhabitants": 15000,
+                    "region": 1
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                -1.571044921875,
+                                42.956422511073335
+                            ],
+                            [
+                                -3.7353515625,
+                                40.730608477796636
+                            ],
+                            [
+                                -0.406494140625,
+                                39.59722324495565
+                            ],
+                            [
+                                -1.571044921875,
+                                42.956422511073335
+                            ]
+                        ]
+                    ]
+                }
+            },
+            {
+                "type": "Feature",
+                "properties": {
+                    "country": null,
+                    "inhabitants": 300,
+                    "region": 1
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [
+                        [
+                            [
+                                42.424242,
+                                46.464646
+                            ],
+                            [
+                                46.464646,
+                                -0.1337
+                            ],
+                            [
+                                -0.1337,
+                                42.424242
+                            ],
+                            [
+                                42.424242,
+                                46.464646
+                            ]
+                        ]
+                    ]
+                }
+            }
+        ]
+    }
+}
