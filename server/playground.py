@@ -29,6 +29,7 @@ from glob import glob
 from os.path import basename, splitext
 from typing import Dict, Union
 
+import geopandas as gpd
 import pandas as pd
 import snowflake.connector
 from pandas.io.json import build_table_schema
@@ -88,11 +89,17 @@ async def parse_request_json(request: Request):
 # Load all csv in playground's pandas datastore
 csv_files = glob('../playground/datastore/*.csv')
 json_files = glob('../playground/datastore/*.json')
+geojson_files = glob('../playground/datastore/*.geojson')
+
 DOMAINS = {
     **{splitext(basename(csv_file))[0]: pd.read_csv(csv_file) for csv_file in csv_files},
     **{
         splitext(basename(json_file))[0]: pd.read_json(json_file, orient='table')
         for json_file in json_files
+    },
+    **{
+        splitext(basename(geojson_file))[0]: gpd.read_file(geojson_file)
+        for geojson_file in geojson_files
     },
 }
 
