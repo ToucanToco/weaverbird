@@ -511,6 +511,15 @@ async function buildVueApp() {
             type: 'left',
             on: [['dep', 'code_departement']],
           },
+          {
+            name: 'join',
+            right_pipeline: 'doses-vaccin-departement-france',
+            type: 'left',
+            on: [
+              ['code_departement', 'code_departement'],
+              ['code_region', 'code_region'],
+            ],
+          },
           // NOTE: uncomment this once dissolve is implemented
           // {
           //   name: 'text',
