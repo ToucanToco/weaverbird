@@ -1,6 +1,3 @@
-import pytest
-
-from weaverbird.backends.sql_translator.metadata import MetadataError
 from weaverbird.backends.sql_translator.steps import translate_delete
 from weaverbird.pipeline.steps import DeleteStep
 
@@ -21,12 +18,16 @@ def test_translate_select(query):
     assert query.query_name == 'DELETE_STEP_1'
 
 
-def test_translate_select_error(query, mocker):
+def test_translate_select_invalid_column(query, mocker):
+    """
+    It should not fail if a column does not exist
+    """
     step = DeleteStep(name='delete', columns=['RAICHU', 'BIDULE'])
 
-    with pytest.raises(MetadataError):
-        translate_delete(
-            step,
-            query,
-            index=1,
-        )
+    query = translate_delete(
+        step,
+        query,
+        index=1,
+    )
+    assert 'BIDULE' not in query.selection_query
+    assert 'RAICHU' not in query.selection_query

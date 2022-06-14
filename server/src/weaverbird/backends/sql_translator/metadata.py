@@ -164,9 +164,9 @@ class TableMetadata(BaseModel):
 
     def remove_column(self, column_name: str) -> None:
         c_name = column_name.upper()
-        if c_name not in self.columns:
-            raise MetadataError(f'Error to delete column {c_name}({column_name}), column not exist')
-        self.columns[c_name].remove()
+        if c_name in self.columns:
+            self.columns[c_name].remove()
+        # else warn that column does not exist
 
     def remove_columns(self, columns_name: List[str]) -> int:
         i = 0
