@@ -1,8 +1,8 @@
 # Changelog (weaverbird python package)
 
-## Unreleased
+## [0.14.0] - 2022-06-14
 
-- Fix: stop failing when deleting a non-existing columns
+- Changed: deleting a non-existing columns doesn't trigger an error (pandas, SQL)
 
 ## [0.13.0] - 2022-06-13
 
