@@ -1,5 +1,9 @@
 # Changelog (weaverbird python package)
 
+## Unreleased
+
+- Fix: stop failing when deleting a non-existing columns
+
 ## [0.13.0] - 2022-06-13
 
 - Move to poetry for dependency management
