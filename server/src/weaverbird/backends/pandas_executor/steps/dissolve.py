@@ -30,9 +30,11 @@ def execute_dissolve(
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
 
-    return df_to_geodf(df).dissolve(
-        by=step.groups,
-        aggfunc=_translate_agg_func(step.aggregations),
-        as_index=False,
-        dropna=not step.include_nulls,
+    return DataFrame(
+        df_to_geodf(df).dissolve(
+            by=step.groups,
+            aggfunc=_translate_agg_func(step.aggregations),
+            as_index=False,
+            dropna=not step.include_nulls,
+        )
     )
