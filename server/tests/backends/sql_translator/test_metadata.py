@@ -91,8 +91,8 @@ def test_remove_column_table_not_exist(sql_query_metadata):
 
 
 def test_remove_column_column_not_exist(sql_query_metadata):
-    with pytest.raises(MetadataError):
-        sql_query_metadata.remove_table_column('table_1', 'column_not_exist')
+    # Should not raise
+    sql_query_metadata.remove_table_column('table_1', 'column_not_exist')
 
 
 def test_remove_column(sql_query_metadata):

@@ -143,16 +143,15 @@ def test_errors(pipeline_executor):
                 steps=[
                     {'name': 'domain', 'domain': 'domain_a'},
                     {
-                        'name': 'delete',
-                        'columns': ['columnThatDoesNotExist', 'whatever'],
+                        'name': 'sort',
+                        'columns': [{'column': 'whatever', 'order': 'asc'}],
                     },
                 ]
             )
         )
     exception_message = excinfo.value.message
     assert 'Step #2' in exception_message
-    assert 'delete' in exception_message
-    assert 'columnThatDoesNotExist' in exception_message
+    assert 'sort' in exception_message
     assert 'whatever' in exception_message
     assert excinfo.value.details['index'] == 1
     assert excinfo.value.details['message'] == exception_message
