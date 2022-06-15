@@ -29,7 +29,6 @@ def execute_dissolve(
     domain_retriever: DomainRetriever = None,
     execute_pipeline: PipelineExecutor = None,
 ) -> DataFrame:
-
     return DataFrame(
         df_to_geodf(df).dissolve(
             by=step.groups,

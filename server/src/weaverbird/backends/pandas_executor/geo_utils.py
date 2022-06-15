@@ -8,8 +8,12 @@ class UnsupportedGeoOperation(Exception):
 
 
 def df_to_geodf(df: pd.DataFrame) -> gpd.GeoDataFrame:
-    if not (isinstance(df, gpd.GeoDataFrame) and hasattr(df, 'geometry')):
-        raise UnsupportedGeoOperation("df must be a GeoDataFrame and 'geometry' must be set")
+    if not (isinstance(df, pd.DataFrame) and hasattr(df, 'geometry')):
+        raise UnsupportedGeoOperation("df must be a DataFrame and 'geometry' must be set")
+
+    # Checking this second because we can have a GeoDataFrame without geometry
+    if isinstance(df, gpd.GeoDataFrame):
+        return df
 
     try:
         return gpd.GeoDataFrame(df)
